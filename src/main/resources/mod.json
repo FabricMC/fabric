@@ -1,0 +1,12 @@
+{
+  "id": "fabric",
+  "name": "Fabric API",
+  "version": "0.0.1",
+  "side": "universal",
+  "initializers": [
+  ],
+  "mixins": {
+    "client": "net.fabricmc.fabric.mixins.client.json",
+    "common": "net.fabricmc.fabric.mixins.common.json"
+  }
+}

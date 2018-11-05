@@ -1,0 +1,39 @@
+buildscript {
+	repositories {
+		jcenter()
+		maven {
+			name = 'Fabric'
+			url = 'http://maven.modmuss50.me/'
+		}
+	}
+	dependencies {
+		classpath "net.fabricmc:fabric-loom:0.0.13-SNAPSHOT"
+	}
+}
+
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'idea'
+}
+
+apply plugin: net.fabricmc.loom.LoomGradlePlugin
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+archivesBaseName = "fabric"
+version = "0.0.1"
+
+minecraft {
+	refmapName = "net.fabricmc.fabric.refmap.json"
+}
+
+dependencies {
+	minecraft "minecraft:18w44a:33"
+	modCompile "net.fabricmc:fabric-loader:18w44a-0.1.0.42"
+}
+
+apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/maven.gradle'
+apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/license.gradle'
+apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
