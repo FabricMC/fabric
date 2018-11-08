@@ -20,6 +20,7 @@ import net.fabricmc.fabric.resources.ModResourcePackUtil;
 import net.minecraft.client.MinecraftGame;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,6 +37,6 @@ public class MixinMinecraftGame {
 
     @Inject(method = "reloadResources()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
     public void reloadResources(CallbackInfo info, List<ResourcePack> list) {
-        ModResourcePackUtil.appendModResourcePacks(list);
+        ModResourcePackUtil.appendModResourcePacks(list, ResourceType.ASSETS);
     }
 }

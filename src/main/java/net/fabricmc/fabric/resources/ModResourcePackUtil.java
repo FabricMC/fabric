@@ -21,6 +21,7 @@ import net.fabricmc.loader.FabricLoader;
 import net.fabricmc.loader.ModContainer;
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -28,6 +29,9 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Internal utilities for managing resource packs.
+ */
 public final class ModResourcePackUtil {
     public static final int PACK_FORMAT_VERSION = 4;
 
@@ -35,7 +39,7 @@ public final class ModResourcePackUtil {
 
     }
 
-    public static void appendModResourcePacks(List<ResourcePack> packList) {
+    public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
         for (ModContainer container : FabricLoader.INSTANCE.getMods()) {
             File file = container.getOriginFile();
             if (file.isDirectory()) {
@@ -50,12 +54,12 @@ public final class ModResourcePackUtil {
     }
 
     public static boolean containsDefault(ModInfo info, String filename) {
-        return "pack.mcmeta".equals(filename) || "icon.png".equals(filename);
+        return "pack.mcmeta".equals(filename) || "pack.png".equals(filename);
     }
 
     public static InputStream openDefault(ModInfo info, String filename) {
         switch (filename) {
-            case "icon.png":
+            case "pack.png":
                 return ModResourcePackUtil.class.getClassLoader().getResourceAsStream("assets/fabric/textures/misc/default_icon.png");
             case "pack.mcmeta":
                 String description = info.getName();

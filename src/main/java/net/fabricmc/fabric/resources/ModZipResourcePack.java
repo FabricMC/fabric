@@ -18,7 +18,7 @@ package net.fabricmc.fabric.resources;
 
 import com.google.common.io.ByteStreams;
 import net.fabricmc.loader.ModInfo;
-import net.minecraft.class_3266;
+import net.minecraft.resource.ResourceNotFoundException;
 import net.minecraft.resource.ZipResourcePack;
 
 import java.io.File;
@@ -46,7 +46,7 @@ public class ModZipResourcePack extends ZipResourcePack {
         } catch (FileNotFoundException e) {
             InputStream stream = ModResourcePackUtil.openDefault(info, filename);
             if (stream == null) {
-                throw new class_3266(this.base, filename);
+                throw new ResourceNotFoundException(this.base, filename);
             }
             return stream;
         }

@@ -3,6 +3,9 @@
   "package": "net.fabricmc.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "commands.MixinServerCommandManager",
+    "networking.MixinServerPlayNetworkHandler",
+    "networking.MixinSPacketCustomPayload",
     "resources.MixinMinecraftServer"
   ],
   "refmap": "net.fabricmc.fabric.refmap.json",

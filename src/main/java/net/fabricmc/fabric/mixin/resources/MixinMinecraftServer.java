@@ -20,6 +20,7 @@ import net.fabricmc.fabric.resources.ModResourcePackUtil;
 import net.minecraft.client.MinecraftGame;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,8 +37,8 @@ public class MixinMinecraftServer {
     @Shadow
     private ReloadableResourceManager dataManager;
 
-    @Inject(method = "method_3752", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void method_3752(LevelProperties properties, CallbackInfo info, List<ResourcePack> list) {
-        ModResourcePackUtil.appendModResourcePacks(list);
+    @Inject(method = "reloadDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void reloadDataPacks(LevelProperties properties, CallbackInfo info, List<ResourcePack> list) {
+        ModResourcePackUtil.appendModResourcePacks(list, ResourceType.DATA);
     }
 }
