@@ -22,7 +22,6 @@ import net.minecraft.command.ServerCommandSource;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class CommandRegistry {
@@ -31,7 +30,7 @@ public class CommandRegistry {
 	private final List<Consumer<CommandDispatcher<ServerCommandSource>>> serverCommands;
 	private final List<Consumer<CommandDispatcher<ServerCommandSource>>> dedicatedServerCommands;
 
-	public CommandRegistry() {
+	protected CommandRegistry() {
 		this.serverCommands = new ArrayList<>();
 		this.dedicatedServerCommands = new ArrayList<>();
 	}

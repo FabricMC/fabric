@@ -26,7 +26,7 @@ import net.minecraft.util.ThreadTaskQueue;
  * the correct task queue to enqueue synchronization-requiring code on.
  */
 public interface PacketContext {
-	Side getSide();
+	Side getNetworkSide();
 	EntityPlayer getPlayer();
 	ThreadTaskQueue getTaskQueue();
 }

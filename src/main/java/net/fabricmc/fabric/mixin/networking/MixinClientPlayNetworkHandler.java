@@ -20,14 +20,15 @@ import net.fabricmc.api.Side;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
-import net.fabricmc.fabric.networking.impl.PacketContextImpl;
 import net.minecraft.client.MinecraftGame;
 import net.minecraft.client.network.handler.ClientGameNetworkHandler;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerServer;
 import net.minecraft.network.handler.ServerPlayNetworkHandler;
 import net.minecraft.network.packet.client.CPacketCustomPayload;
 import net.minecraft.network.packet.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ThreadTaskQueue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,13 +36,31 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientGameNetworkHandler.class)
-public class MixinClientPlayNetworkHandler {
+public class MixinClientPlayNetworkHandler implements PacketContext {
+	@Shadow
+	private MinecraftGame game;
+
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CPacketCustomPayload packet, CallbackInfo info) {
 		MinecraftGame game = MinecraftGame.getInstance();
 
-		if (CustomPayloadHandlerRegistry.CLIENT.accept(packet.getChannel(), new PacketContextImpl(Side.CLIENT, game.player, game), packet.getData())) {
+		if (CustomPayloadHandlerRegistry.CLIENT.accept(packet.getChannel(), this, packet.getData())) {
 			info.cancel();
 		}
+	}
+
+	@Override
+	public Side getNetworkSide() {
+		return Side.CLIENT;
+	}
+
+	@Override
+	public EntityPlayer getPlayer() {
+		return game.player;
+	}
+
+	@Override
+	public ThreadTaskQueue getTaskQueue() {
+		return game;
 	}
 }

@@ -20,11 +20,12 @@ import net.fabricmc.api.Side;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
-import net.fabricmc.fabric.networking.impl.PacketContextImpl;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerServer;
 import net.minecraft.network.handler.ServerPlayNetworkHandler;
 import net.minecraft.network.packet.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ThreadTaskQueue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,24 +33,33 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ServerPlayNetworkHandler.class)
-public class MixinServerPlayNetworkHandler {
+public class MixinServerPlayNetworkHandler implements PacketContext {
 	@Shadow
 	private MinecraftServer server;
 	@Shadow
 	private EntityPlayerServer player;
 
-	private PacketContext fabricPacketContext;
-
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(SPacketCustomPayload packet, CallbackInfo info) {
-		if (fabricPacketContext == null || fabricPacketContext.getPlayer() != player) {
-			fabricPacketContext = new PacketContextImpl(Side.SERVER, player, server);
-		}
-
 		SPacketCustomPayloadAccessor accessor = ((SPacketCustomPayloadAccessor) packet);
 
-		if (CustomPayloadHandlerRegistry.SERVER.accept(accessor.getChannel(), fabricPacketContext, accessor.getData())) {
+		if (CustomPayloadHandlerRegistry.SERVER.accept(accessor.getChannel(), this, accessor.getData())) {
 			info.cancel();
 		}
+	}
+
+	@Override
+	public Side getNetworkSide() {
+		return Side.SERVER;
+	}
+
+	@Override
+	public EntityPlayer getPlayer() {
+		return player;
+	}
+
+	@Override
+	public ThreadTaskQueue getTaskQueue() {
+		return server;
 	}
 }
