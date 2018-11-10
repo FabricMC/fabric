@@ -8,7 +8,6 @@
     "networking.MixinSPacketCustomPayload",
     "resources.MixinMinecraftServer"
   ],
-  "refmap": "net.fabricmc.fabric.refmap.json",
   "injectors": {
     "defaultRequire": 1
   }

@@ -6,7 +6,6 @@
     "networking.MixinClientPlayNetworkHandler",
     "resources.MixinMinecraftGame"
   ],
-  "refmap": "net.fabricmc.fabric.refmap.json",
   "injectors": {
     "defaultRequire": 1
   }
