@@ -25,6 +25,7 @@ import net.fabricmc.fabric.registry.RemapException;
 import net.fabricmc.fabric.registry.RemappableRegistry;
 import net.minecraft.class_3513;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.DefaultMappedRegistry;
 import net.minecraft.util.registry.IdRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,11 +38,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(IdRegistry.class)
 public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry<T>, RegistryListener<T> {
 	@Shadow
-	protected static final Logger ID_LOGGER = LogManager.getLogger();
+	protected static Logger ID_LOGGER;
 	@Shadow
 	protected class_3513<T> idStore;
 	@Shadow
 	protected BiMap<Identifier, T> objectMap;
+	@Shadow
+	private int nextId;
 
 	private Object2IntMap<Identifier> initialIdMap;
 	private RegistryListener[] listeners;
@@ -69,11 +72,17 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	}
 
 	@Override
-	public void remap(Object2IntMap<Identifier> idMap) throws RemapException {
-		//noinspection unchecked
+	public void remap(Object2IntMap<Identifier> idMap, boolean reallocateMissingEntries) throws RemapException {
+		//noinspection unchecked, ConstantConditions
 		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
 
-		if (!idMap.keySet().equals(registry.keys())) {
+		Object defaultValue = null;
+		//noinspection ConstantConditions
+		if (registry instanceof DefaultMappedRegistry) {
+			defaultValue = registry.get(((DefaultMappedRegistry) registry).method_10137());
+		}
+
+		if (!reallocateMissingEntries && !idMap.keySet().equals(registry.keys())) {
 			throw new RemapException("Source and destination keys differ!");
 		}
 
@@ -85,6 +94,25 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			}
 		}
 
+		if (reallocateMissingEntries) {
+			int maxValue = 0;
+
+			Object2IntMap<Identifier> idMapOld = idMap;
+			idMap = new Object2IntOpenHashMap<>();
+			for (Identifier id : idMapOld.keySet()) {
+				int v = idMapOld.getInt(id);
+				idMap.put(id, v);
+				if (v > maxValue) maxValue = v;
+			}
+
+			for (Identifier id : registry.keys()) {
+				if (!idMap.containsKey(id)) {
+					ID_LOGGER.warn("Adding " + id + " to registry.");
+					idMap.put(id, ++maxValue);
+				}
+			}
+		}
+
 		if (listeners != null) {
 			for (RegistryListener listener : listeners) {
 				listener.beforeCleared(registry);
@@ -93,11 +121,24 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 		// We don't really need to clear anything but idStore yet.
 		idStore.method_15229();
+		nextId = 0;
 
-		for (Identifier identifier : objectMap.keySet()) {
+		for (Identifier identifier : idMap.keySet()) {
 			int id = idMap.getInt(identifier);
 			T object = objectMap.get(identifier);
+			if (object == null) {
+				ID_LOGGER.warn(identifier + " missing from registry, but requested!");
+				continue;
+				
+				//noinspection unchecked, ConstantConditions
+				// object = (T) defaultValue;
+				// objectMap.put(identifier, object);
+			}
+
 			idStore.method_15230(object, id);
+			if (nextId <= id) {
+				nextId = id + 1;
+			}
 
 			if (listeners != null) {
 				for (RegistryListener listener : listeners) {
@@ -110,7 +151,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Override
 	public void unmap() throws RemapException {
 		if (initialIdMap != null) {
-			remap(initialIdMap);
+			remap(initialIdMap, true);
 			initialIdMap = null;
 		}
 	}

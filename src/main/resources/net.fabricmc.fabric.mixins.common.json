@@ -10,6 +10,7 @@
     "registry.MixinIdList",
     "registry.MixinIdRegistry",
     "registry.MixinServerPlayNetworkHandler",
+    "registry.MixinWorldSaveHandler",
     "resources.MixinMinecraftServer"
   ],
   "injectors": {

@@ -46,7 +46,6 @@ public final class RegistrySyncManager {
 
 	public static CPacketCustomPayload createPacket() {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeVarInt(1);
 		buf.writeTagCompound(toTag(true));
 
 		CPacketCustomPayload packet = new CPacketCustomPayload(ID, buf);
@@ -54,14 +53,10 @@ public final class RegistrySyncManager {
 	}
 
 	public static void receivePacket(PacketContext context, PacketByteBuf buf) {
-		int version = buf.readVarInt();
-		if (version != 1) {
-			// TODO: log error
-		}
-
 		TagCompound compound = buf.readTagCompound();
+
 		try {
-			apply(compound);
+			apply(compound, false);
 		} catch (RemapException e) {
 			// TODO: log error properly
 			e.printStackTrace();
@@ -89,10 +84,16 @@ public final class RegistrySyncManager {
 			}
 		}
 
-		return mainTag;
+		TagCompound tag = new TagCompound();
+		tag.setInt("version", 1);
+		tag.setTag("registries", mainTag);
+
+		return tag;
 	}
 
-	public static void apply(TagCompound mainTag) throws RemapException {
+	public static void apply(TagCompound tag, boolean reallocateMissingEntries) throws RemapException {
+		TagCompound mainTag = tag.getTagCompound("registries");
+
 		for (Identifier registryId : Registry.REGISTRIES.keys()) {
 			if (!mainTag.hasKey(registryId.toString())) {
 				continue;
@@ -105,7 +106,7 @@ public final class RegistrySyncManager {
 				for (String key : registryTag.getKeys()) {
 					idMap.put(new Identifier(key), registryTag.getInt(key));
 				}
-				((RemappableRegistry) registry).remap(idMap);
+				((RemappableRegistry) registry).remap(idMap, reallocateMissingEntries);
 			}
 		}
 	}
