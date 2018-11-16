@@ -19,15 +19,10 @@ package net.fabricmc.fabric.mixin.networking;
 import net.fabricmc.api.Side;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
-import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
 import net.minecraft.client.MinecraftGame;
-import net.minecraft.client.network.handler.ClientGameNetworkHandler;
+import net.minecraft.client.network.handler.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerServer;
-import net.minecraft.network.handler.ServerPlayNetworkHandler;
 import net.minecraft.network.packet.client.CPacketCustomPayload;
-import net.minecraft.network.packet.server.SPacketCustomPayload;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ThreadTaskQueue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientGameNetworkHandler.class)
+@Mixin(ClientPlayNetworkHandler.class)
 public class MixinClientPlayNetworkHandler implements PacketContext {
 	@Shadow
 	private MinecraftGame game;
