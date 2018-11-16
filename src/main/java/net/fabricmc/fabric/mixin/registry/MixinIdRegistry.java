@@ -1,0 +1,117 @@
+/*
+ * Copyright (c) 2016, 2017, 2018 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.mixin.registry;
+
+import com.google.common.collect.BiMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.fabric.registry.ListenableRegistry;
+import net.fabricmc.fabric.registry.RegistryListener;
+import net.fabricmc.fabric.registry.RemapException;
+import net.fabricmc.fabric.registry.RemappableRegistry;
+import net.minecraft.class_3513;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.IdRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+@Mixin(IdRegistry.class)
+public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry<T>, RegistryListener<T> {
+	@Shadow
+	protected static final Logger ID_LOGGER = LogManager.getLogger();
+	@Shadow
+	protected class_3513<T> idStore;
+	@Shadow
+	protected BiMap<Identifier, T> objectMap;
+
+	private Object2IntMap<Identifier> initialIdMap;
+	private RegistryListener[] listeners;
+
+	@Override
+	public void registerListener(RegistryListener<T> listener) {
+		if (listeners == null) {
+			listeners = new RegistryListener[] { listener };
+		} else {
+			RegistryListener[] newListeners = new RegistryListener[listeners.length + 1];
+			System.arraycopy(listeners, 0, newListeners, 0, listeners.length);
+			newListeners[listeners.length] = listener;
+			listeners = newListeners;
+		}
+	}
+
+	@Inject(method = "set", at = @At("HEAD"))
+	public void set(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
+		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
+		if (listeners != null) {
+			for (RegistryListener listener : listeners) {
+				listener.beforeRegistered(registry, id, identifier, object, !registry.contains(identifier));
+			}
+		}
+	}
+
+	@Override
+	public void remap(Object2IntMap<Identifier> idMap) throws RemapException {
+		//noinspection unchecked
+		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
+
+		if (!idMap.keySet().equals(registry.keys())) {
+			throw new RemapException("Source and destination keys differ!");
+		}
+
+		if (initialIdMap == null) {
+			initialIdMap = new Object2IntOpenHashMap<>();
+			for (Identifier id : registry.keys()) {
+				//noinspection unchecked
+				initialIdMap.put(id, registry.getRawId(registry.get(id)));
+			}
+		}
+
+		if (listeners != null) {
+			for (RegistryListener listener : listeners) {
+				listener.beforeCleared(registry);
+			}
+		}
+
+		// We don't really need to clear anything but idStore yet.
+		idStore.method_15229();
+
+		for (Identifier identifier : objectMap.keySet()) {
+			int id = idMap.getInt(identifier);
+			T object = objectMap.get(identifier);
+			idStore.method_15230(object, id);
+
+			if (listeners != null) {
+				for (RegistryListener listener : listeners) {
+					listener.beforeRegistered(registry, id, identifier, object, false);
+				}
+			}
+		}
+	}
+
+	@Override
+	public void unmap() throws RemapException {
+		if (initialIdMap != null) {
+			remap(initialIdMap);
+			initialIdMap = null;
+		}
+	}
+}

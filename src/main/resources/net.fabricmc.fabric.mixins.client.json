@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "networking.MixinClientPlayNetworkHandler",
+    "registry.client.MixinBlockColorMap",
+    "registry.client.MixinItemColorMap",
     "resources.MixinMinecraftGame"
   ],
   "injectors": {

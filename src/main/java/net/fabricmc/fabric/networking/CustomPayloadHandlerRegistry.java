@@ -42,9 +42,14 @@ public class CustomPayloadHandlerRegistry {
 	}
 
 	public boolean accept(Identifier identifier, PacketContext context, PacketByteBuf buf) {
-		BiConsumer<PacketContext, PacketByteBuf> consumer = consumerMap.get(context);
+		BiConsumer<PacketContext, PacketByteBuf> consumer = consumerMap.get(identifier);
 		if (consumer != null) {
-			consumer.accept(context, buf);
+			try {
+				consumer.accept(context, buf);
+			} catch (Throwable t) {
+				// TODO: handle better
+				t.printStackTrace();
+			}
 			return true;
 		} else {
 			return false;

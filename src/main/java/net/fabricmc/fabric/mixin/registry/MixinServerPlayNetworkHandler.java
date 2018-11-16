@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.mixin.registry;
 
 import net.fabricmc.api.Side;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
-import net.minecraft.client.MinecraftGame;
-import net.minecraft.client.network.handler.ClientPlayNetworkHandler;
+import net.fabricmc.fabric.registry.RegistrySyncManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerServer;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.Packet;
 import net.minecraft.network.handler.ServerPlayNetworkHandler;
-import net.minecraft.network.packet.client.CPacketCustomPayload;
 import net.minecraft.network.packet.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ThreadTaskQueue;
@@ -35,30 +35,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ClientPlayNetworkHandler.class)
-public class MixinClientPlayNetworkHandler implements PacketContext {
+@Mixin(ServerPlayNetworkHandler.class)
+public abstract class MixinServerPlayNetworkHandler {
 	@Shadow
-	private MinecraftGame game;
+	public abstract void sendPacket(Packet<?> var1);
 
-	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	public void onCustomPayload(CPacketCustomPayload packet, CallbackInfo info) {
-		if (CustomPayloadHandlerRegistry.CLIENT.accept(packet.getChannel(), this, packet.getData())) {
-			info.cancel();
-		}
-	}
-
-	@Override
-	public Side getNetworkSide() {
-		return Side.CLIENT;
-	}
-
-	@Override
-	public EntityPlayer getPlayer() {
-		return game.player;
-	}
-
-	@Override
-	public ThreadTaskQueue getTaskQueue() {
-		return game;
+	@Inject(method = "<init>", at = @At("RETURN"))
+	public void init(MinecraftServer server, ClientConnection connection, EntityPlayerServer player, CallbackInfo info) {
+		//if (server.isDedicated()) {
+		sendPacket(RegistrySyncManager.createPacket());
+		//}
 	}
 }
