@@ -26,12 +26,12 @@ import net.minecraft.world.biome.Biome;
 
 public class BootstrapBiomeRegistryListener implements RegistryListener<Biome> {
 	@Override
-	public void beforeCleared(Registry<Biome> registry) {
+	public void beforeRegistryCleared(Registry<Biome> registry) {
 		((ExtendedIdList) Biome.PARENT_BIOME_ID_MAP).clear();
 	}
 
 	@Override
-	public void beforeRegistered(Registry<Biome> registry, int id, Identifier identifier, Biome object, boolean isNew) {
+	public void beforeRegistryRegistration(Registry<Biome> registry, int id, Identifier identifier, Biome object, boolean isNew) {
 		// refer net.minecraft.biome.Biomes
 		if (object.hasParent()) {
 			Biome.PARENT_BIOME_ID_MAP.add(object, id);

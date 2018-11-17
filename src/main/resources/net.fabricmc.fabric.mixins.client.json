@@ -6,6 +6,7 @@
     "networking.MixinClientPlayNetworkHandler",
     "registry.client.MixinBlockColorMap",
     "registry.client.MixinItemColorMap",
+    "registry.client.MixinItemModelMap",
     "resources.MixinMinecraftGame"
   ],
   "injectors": {

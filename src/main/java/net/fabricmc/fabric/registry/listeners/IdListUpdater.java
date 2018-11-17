@@ -42,7 +42,7 @@ public class IdListUpdater<K, V> implements RegistryListener<K> {
 	}
 
 	@Override
-	public void beforeCleared(Registry<K> registry) {
+	public void beforeRegistryCleared(Registry<K> registry) {
 		mapperCache.clear();
 		for (Identifier id : registry.keys()) {
 			int rawId = registry.getRawId(registry.get(id));
@@ -56,7 +56,7 @@ public class IdListUpdater<K, V> implements RegistryListener<K> {
 	}
 
 	@Override
-	public void beforeRegistered(Registry<K> registry, int id, Identifier identifier, K object, boolean isNew) {
+	public void beforeRegistryRegistration(Registry<K> registry, int id, Identifier identifier, K object, boolean isNew) {
 		if (mapperCache.containsKey(identifier)) {
 			mappers.add(mapperCache.get(identifier), id);
 		}

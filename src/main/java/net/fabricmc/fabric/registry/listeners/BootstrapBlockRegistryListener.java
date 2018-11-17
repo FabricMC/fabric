@@ -26,12 +26,12 @@ import net.minecraft.util.registry.Registry;
 
 public class BootstrapBlockRegistryListener implements RegistryListener<Block> {
 	@Override
-	public void beforeCleared(Registry<Block> registry) {
+	public void beforeRegistryCleared(Registry<Block> registry) {
 		((ExtendedIdList) Block.BLOCKSTATE_ID_LIST).clear();
 	}
 
 	@Override
-	public void beforeRegistered(Registry<Block> registry, int id, Identifier identifier, Block object, boolean isNew) {
+	public void beforeRegistryRegistration(Registry<Block> registry, int id, Identifier identifier, Block object, boolean isNew) {
 		// refer net.minecraft.block.Blocks
 		for (BlockState state : object.getStateFactory().getStates()) {
 			state.method_11590();

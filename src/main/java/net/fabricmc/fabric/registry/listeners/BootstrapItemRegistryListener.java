@@ -25,12 +25,12 @@ import net.minecraft.util.registry.Registry;
 
 public class BootstrapItemRegistryListener implements RegistryListener<Item> {
 	@Override
-	public void beforeCleared(Registry<Item> registry) {
+	public void beforeRegistryCleared(Registry<Item> registry) {
 		Item.BLOCK_ITEM_MAP.clear();
 	}
 
 	@Override
-	public void beforeRegistered(Registry<Item> registry, int id, Identifier identifier, Item object, boolean isNew) {
+	public void beforeRegistryRegistration(Registry<Item> registry, int id, Identifier identifier, Item object, boolean isNew) {
 		// refer net.minecraft.item.Items
 		if (object instanceof ItemBlock) {
 			((ItemBlock) object).method_7713(Item.BLOCK_ITEM_MAP, object);
