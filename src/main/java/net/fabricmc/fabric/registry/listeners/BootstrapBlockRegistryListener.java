@@ -27,7 +27,7 @@ import net.minecraft.util.registry.Registry;
 public class BootstrapBlockRegistryListener implements RegistryListener<Block> {
 	@Override
 	public void beforeRegistryCleared(Registry<Block> registry) {
-		((ExtendedIdList) Block.BLOCKSTATE_ID_LIST).clear();
+		((ExtendedIdList) Block.STATE_IDS).clear();
 	}
 
 	@Override
@@ -35,9 +35,14 @@ public class BootstrapBlockRegistryListener implements RegistryListener<Block> {
 		// refer net.minecraft.block.Blocks
 		for (BlockState state : object.getStateFactory().getStates()) {
 			state.method_11590();
-			Block.BLOCKSTATE_ID_LIST.method_10205(state);
+			Block.STATE_IDS.add(state);
 		}
+	}
 
+	@Override
+	public void afterRegistryRegistration(Registry<Block> registry, int id, Identifier identifier, Block object) {
+		System.out.println(identifier);
+		// refer net.minecraft.block.Blocks
 		object.getDropTableId();
 	}
 }

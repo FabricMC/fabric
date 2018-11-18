@@ -61,12 +61,24 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "ConstantConditions" })
 	@Inject(method = "set", at = @At("HEAD"))
-	public void set(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
+	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
 		if (listeners != null) {
 			for (RegistryListener listener : listeners) {
 				listener.beforeRegistryRegistration(registry, id, identifier, object, !registry.contains(identifier));
+			}
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "ConstantConditions" })
+	@Inject(method = "set", at = @At("RETURN"))
+	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
+		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
+		if (listeners != null) {
+			for (RegistryListener listener : listeners) {
+				listener.afterRegistryRegistration(registry, id, identifier, object);
 			}
 		}
 	}
@@ -120,7 +132,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 
 		// We don't really need to clear anything but idStore yet.
-		idStore.method_15229();
+		idStore.clear();
 		nextId = 0;
 
 		for (Identifier identifier : idMap.keySet()) {

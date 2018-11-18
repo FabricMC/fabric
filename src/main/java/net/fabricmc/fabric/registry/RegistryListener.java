@@ -22,4 +22,5 @@ import net.minecraft.util.registry.Registry;
 public interface RegistryListener<T> {
 	default void beforeRegistryCleared(Registry<T> registry) {}
 	default void beforeRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object, boolean isNew) {}
+	default void afterRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object) {}
 }

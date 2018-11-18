@@ -33,7 +33,7 @@ public class BootstrapItemRegistryListener implements RegistryListener<Item> {
 	public void beforeRegistryRegistration(Registry<Item> registry, int id, Identifier identifier, Item object, boolean isNew) {
 		// refer net.minecraft.item.Items
 		if (object instanceof ItemBlock) {
-			((ItemBlock) object).method_7713(Item.BLOCK_ITEM_MAP, object);
+			((ItemBlock) object).registerBlockItemMap(Item.BLOCK_ITEM_MAP, object);
 		}
 	}
 }

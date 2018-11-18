@@ -34,7 +34,7 @@ public class BootstrapBiomeRegistryListener implements RegistryListener<Biome> {
 	public void beforeRegistryRegistration(Registry<Biome> registry, int id, Identifier identifier, Biome object, boolean isNew) {
 		// refer net.minecraft.biome.Biomes
 		if (object.hasParent()) {
-			Biome.PARENT_BIOME_ID_MAP.add(object, id);
+			Biome.PARENT_BIOME_ID_MAP.set(object, id);
 		}
 	}
 }

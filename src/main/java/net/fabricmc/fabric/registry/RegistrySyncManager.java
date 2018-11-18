@@ -95,7 +95,7 @@ public final class RegistrySyncManager {
 		TagCompound mainTag = tag.getTagCompound("registries");
 
 		for (Identifier registryId : Registry.REGISTRIES.keys()) {
-			if (!mainTag.hasKey(registryId.toString())) {
+			if (!mainTag.containsKey(registryId.toString())) {
 				continue;
 			}
 

@@ -58,7 +58,7 @@ public class IdListUpdater<K, V> implements RegistryListener<K> {
 	@Override
 	public void beforeRegistryRegistration(Registry<K> registry, int id, Identifier identifier, K object, boolean isNew) {
 		if (mapperCache.containsKey(identifier)) {
-			mappers.add(mapperCache.get(identifier), id);
+			mappers.set(mapperCache.get(identifier), id);
 		}
 	}
 }

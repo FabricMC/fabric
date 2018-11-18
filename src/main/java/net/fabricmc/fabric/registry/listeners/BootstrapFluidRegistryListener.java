@@ -28,14 +28,14 @@ import net.minecraft.util.registry.Registry;
 public class BootstrapFluidRegistryListener implements RegistryListener<Fluid> {
 	@Override
 	public void beforeRegistryCleared(Registry<Fluid> registry) {
-		((ExtendedIdList) Block.BLOCKSTATE_ID_LIST).clear();
+		((ExtendedIdList) Fluid.STATE_IDS).clear();
 	}
 
 	@Override
 	public void beforeRegistryRegistration(Registry<Fluid> registry, int id, Identifier identifier, Fluid object, boolean isNew) {
 		// refer net.minecraft.fluid.Fluids
 		for (FluidState state : object.getStateFactory().getStates()) {
-			Fluid.field_15904.method_10205(state);
+			Fluid.STATE_IDS.add(state);
 		}
 	}
 }

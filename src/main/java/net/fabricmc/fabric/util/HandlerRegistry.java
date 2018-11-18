@@ -14,29 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry;
+package net.fabricmc.fabric.util;
 
-import net.fabricmc.fabric.registry.ExtendedIdList;
-import net.minecraft.util.IdList;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-
-import java.util.IdentityHashMap;
-import java.util.List;
-
-@Mixin(IdList.class)
-public class MixinIdList implements ExtendedIdList {
-	@Shadow
-	private int nextId;
-	@Shadow
-	private IdentityHashMap idMap;
-	@Shadow
-	private List list;
-
-	@Override
-	public void clear() {
-		nextId = 0;
-		idMap.clear();
-		list.clear();
-	}
+public interface HandlerRegistry<T> {
+	void register(T handler);
 }
