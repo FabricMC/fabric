@@ -91,7 +91,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		Object defaultValue = null;
 		//noinspection ConstantConditions
 		if (registry instanceof DefaultMappedRegistry) {
-			defaultValue = registry.get(((DefaultMappedRegistry) registry).method_10137());
+			defaultValue = registry.get(((DefaultMappedRegistry) registry).getDefaultId());
 		}
 
 		if (!reallocateMissingEntries && !idMap.keySet().equals(registry.keys())) {
