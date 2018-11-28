@@ -23,8 +23,8 @@ import net.fabricmc.fabric.registry.ListenableRegistry;
 import net.fabricmc.fabric.registry.RegistryListener;
 import net.fabricmc.fabric.registry.RemapException;
 import net.fabricmc.fabric.registry.RemappableRegistry;
-import net.minecraft.class_3513;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Int2ObjectBiMap;
 import net.minecraft.util.registry.DefaultMappedRegistry;
 import net.minecraft.util.registry.IdRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -40,7 +40,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Shadow
 	protected static Logger ID_LOGGER;
 	@Shadow
-	protected class_3513<T> idStore;
+	protected Int2ObjectBiMap<T> idStore;
 	@Shadow
 	protected BiMap<Identifier, T> objectMap;
 	@Shadow
@@ -147,7 +147,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 				// objectMap.put(identifier, object);
 			}
 
-			idStore.method_15230(object, id);
+			idStore.put(object, id);
 			if (nextId <= id) {
 				nextId = id + 1;
 			}

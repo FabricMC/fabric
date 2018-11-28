@@ -7,6 +7,7 @@
     "registry.client.MixinBlockColorMap",
     "registry.client.MixinItemColorMap",
     "registry.client.MixinItemModelMap",
+    "render.MixinBlockEntityRenderManager",
     "resources.MixinMinecraftGame"
   ],
   "injectors": {

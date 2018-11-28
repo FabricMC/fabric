@@ -14,32 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.commands;
+package net.fabricmc.fabric.mixin.render;
 
-import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.commands.CommandRegistry;
-import net.minecraft.server.command.ServerCommandManager;
-import net.minecraft.server.command.ServerCommandSource;
-import org.apache.logging.log4j.Logger;
+import com.google.common.collect.Maps;
+import net.fabricmc.fabric.client.render.FabricBlockEntityRendererRegistry;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ServerCommandManager.class)
-public class MixinServerCommandManager {
-	@Shadow
-	private static Logger LOGGER;
-	@Shadow
-	private CommandDispatcher<ServerCommandSource> dispatcher;
+import java.util.Map;
 
-	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
-	public void addMethods(boolean dedicated, CallbackInfo info) {
-		// TODO: Run before findAmbiguities
-		CommandRegistry.INSTANCE.entries(false).forEach((e) -> e.accept(dispatcher));
-		if (dedicated) {
-			CommandRegistry.INSTANCE.entries(true).forEach((e) -> e.accept(dispatcher));
-		}
+@Mixin(BlockEntityRenderManager.class)
+public class MixinBlockEntityRenderManager {
+	@Shadow
+	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> blockEntityRenderers;
+
+	@Inject(method = "<init>()V", at = @At("RETURN"))
+	public void init(CallbackInfo info) {
+		FabricBlockEntityRendererRegistry.INSTANCE.setBlockEntityRendererMap(blockEntityRenderers);
 	}
 }

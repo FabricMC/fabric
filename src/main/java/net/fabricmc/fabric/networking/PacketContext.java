@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.networking;
 
 import net.fabricmc.api.Side;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ThreadTaskQueue;
 
 /**
@@ -27,6 +27,6 @@ import net.minecraft.util.ThreadTaskQueue;
  */
 public interface PacketContext {
 	Side getNetworkSide();
-	EntityPlayer getPlayer();
+	PlayerEntity getPlayer();
 	ThreadTaskQueue getTaskQueue();
 }

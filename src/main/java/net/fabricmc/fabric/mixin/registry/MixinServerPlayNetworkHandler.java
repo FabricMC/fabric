@@ -21,13 +21,11 @@ import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
 import net.fabricmc.fabric.registry.RegistrySyncManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerServer;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
-import net.minecraft.network.handler.ServerPlayNetworkHandler;
-import net.minecraft.network.packet.server.SPacketCustomPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ThreadTaskQueue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -41,7 +39,7 @@ public abstract class MixinServerPlayNetworkHandler {
 	public abstract void sendPacket(Packet<?> var1);
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void init(MinecraftServer server, ClientConnection connection, EntityPlayerServer player, CallbackInfo info) {
+	public void init(MinecraftServer server, ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
 		//if (server.isDedicated()) {
 		sendPacket(RegistrySyncManager.createPacket());
 		//}

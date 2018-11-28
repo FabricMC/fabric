@@ -19,7 +19,7 @@ package net.fabricmc.fabric.registry.listeners;
 import net.fabricmc.fabric.registry.ExtendedIdList;
 import net.fabricmc.fabric.registry.RegistryListener;
 import net.minecraft.item.Item;
-import net.minecraft.item.block.ItemBlock;
+import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -32,8 +32,8 @@ public class BootstrapItemRegistryListener implements RegistryListener<Item> {
 	@Override
 	public void beforeRegistryRegistration(Registry<Item> registry, int id, Identifier identifier, Item object, boolean isNew) {
 		// refer net.minecraft.item.Items
-		if (object instanceof ItemBlock) {
-			((ItemBlock) object).registerBlockItemMap(Item.BLOCK_ITEM_MAP, object);
+		if (object instanceof BlockItem) {
+			((BlockItem) object).registerBlockItemMap(Item.BLOCK_ITEM_MAP, object);
 		}
 	}
 }

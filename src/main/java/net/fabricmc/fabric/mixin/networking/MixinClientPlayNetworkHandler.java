@@ -21,12 +21,9 @@ import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
 import net.minecraft.client.MinecraftGame;
-import net.minecraft.client.network.handler.ClientPlayNetworkHandler;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerServer;
-import net.minecraft.network.handler.ServerPlayNetworkHandler;
-import net.minecraft.network.packet.client.CPacketCustomPayload;
-import net.minecraft.network.packet.server.SPacketCustomPayload;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.packet.CustomPayloadClientPacket;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ThreadTaskQueue;
 import org.spongepowered.asm.mixin.Mixin;
@@ -41,7 +38,7 @@ public class MixinClientPlayNetworkHandler implements PacketContext {
 	private MinecraftGame game;
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	public void onCustomPayload(CPacketCustomPayload packet, CallbackInfo info) {
+	public void onCustomPayload(CustomPayloadClientPacket packet, CallbackInfo info) {
 		if (CustomPayloadHandlerRegistry.CLIENT.accept(packet.getChannel(), this, packet.getData())) {
 			info.cancel();
 		}
@@ -53,7 +50,7 @@ public class MixinClientPlayNetworkHandler implements PacketContext {
 	}
 
 	@Override
-	public EntityPlayer getPlayer() {
+	public PlayerEntity getPlayer() {
 		return game.player;
 	}
 

@@ -20,11 +20,11 @@ import net.fabricmc.api.Side;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerServer;
-import net.minecraft.network.handler.ServerPlayNetworkHandler;
-import net.minecraft.network.packet.server.SPacketCustomPayload;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.packet.CustomPayloadServerPacket;
 import net.minecraft.util.ThreadTaskQueue;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,10 +37,10 @@ public class MixinServerPlayNetworkHandler implements PacketContext {
 	@Shadow
 	private MinecraftServer server;
 	@Shadow
-	private EntityPlayerServer player;
+	private ServerPlayerEntity player;
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	public void onCustomPayload(SPacketCustomPayload packet, CallbackInfo info) {
+	public void onCustomPayload(CustomPayloadServerPacket packet, CallbackInfo info) {
 		SPacketCustomPayloadAccessor accessor = ((SPacketCustomPayloadAccessor) packet);
 
 		if (CustomPayloadHandlerRegistry.SERVER.accept(accessor.getChannel(), this, accessor.getData())) {
@@ -54,7 +54,7 @@ public class MixinServerPlayNetworkHandler implements PacketContext {
 	}
 
 	@Override
-	public EntityPlayer getPlayer() {
+	public PlayerEntity getPlayer() {
 		return player;
 	}
 

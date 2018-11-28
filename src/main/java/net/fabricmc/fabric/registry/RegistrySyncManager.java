@@ -22,9 +22,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
-import net.minecraft.entity.player.EntityPlayerServer;
+import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.nbt.TagCompound;
-import net.minecraft.network.packet.client.CPacketCustomPayload;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.IdRegistry;
@@ -44,11 +43,11 @@ public final class RegistrySyncManager {
 
 	}
 
-	public static CPacketCustomPayload createPacket() {
+	public static CustomPayloadClientPacket createPacket() {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeTagCompound(toTag(true));
 
-		CPacketCustomPayload packet = new CPacketCustomPayload(ID, buf);
+	    CustomPayloadClientPacket packet = new CustomPayloadClientPacket(ID, buf);
 		return packet;
 	}
 

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.command.ServerCommandSource;
+import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
