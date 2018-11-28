@@ -22,15 +22,15 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
 import java.util.Map;
 
-public class FabricBlockEntityRendererRegistry {
-	public static final FabricBlockEntityRendererRegistry INSTANCE = new FabricBlockEntityRendererRegistry();
+public class BlockEntityRendererRegistry {
+	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
 	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> blockEntityRenderers;
 
-	private FabricBlockEntityRendererRegistry() {
+	private BlockEntityRendererRegistry() {
 
 	}
 
-	public void setBlockEntityRendererMap(Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> map) {
+	public void initialize(Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> map) {
 		if (blockEntityRenderers != null && blockEntityRenderers != map) {
 			throw new RuntimeException("Tried to set blockEntityRenderers twice!");
 		}
