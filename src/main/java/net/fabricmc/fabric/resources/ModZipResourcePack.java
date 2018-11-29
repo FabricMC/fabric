@@ -26,7 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class ModZipResourcePack extends ZipResourcePack {
+public class ModZipResourcePack extends ZipResourcePack implements ModResourcePack {
     private final ModInfo info;
 
     public ModZipResourcePack(ModInfo info, File file) {
@@ -56,4 +56,9 @@ public class ModZipResourcePack extends ZipResourcePack {
     public boolean containsFilename(String filename) {
         return super.containsFilename(filename) || ModResourcePackUtil.containsDefault(info, filename);
     }
+
+	@Override
+	public ModInfo getModInfo() {
+		return info;
+	}
 }

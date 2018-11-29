@@ -22,7 +22,7 @@ import net.minecraft.resource.ResourceNotFoundException;
 
 import java.io.*;
 
-public class ModDirectoryResourcePack extends DirectoryResourcePack {
+public class ModDirectoryResourcePack extends DirectoryResourcePack implements ModResourcePack {
     private final ModInfo info;
 
     public ModDirectoryResourcePack(ModInfo info, File file) {
@@ -52,4 +52,9 @@ public class ModDirectoryResourcePack extends DirectoryResourcePack {
     protected boolean containsFilename(String filename) {
         return super.containsFilename(filename) || ModResourcePackUtil.containsDefault(info, filename);
     }
+
+	@Override
+	public ModInfo getModInfo() {
+		return info;
+	}
 }
