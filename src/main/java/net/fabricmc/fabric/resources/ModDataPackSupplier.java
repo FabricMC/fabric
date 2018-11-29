@@ -18,23 +18,30 @@ package net.fabricmc.fabric.resources;
 
 import net.minecraft.class_3285;
 import net.minecraft.class_3288;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ModDataPackSupplier implements class_3285 {
-	private final ModResourcePack pack;
-
-	public ModDataPackSupplier(ModResourcePack pack) {
-		this.pack = pack;
-	}
-
 	@Override
 	public <T extends class_3288> void method_14453(Map<String, T> map, class_3288.class_3290<T> class_3290) {
-		T var3 = class_3288.method_14456("fabric:" + pack.getModInfo().getId(),
-			false, () -> this.pack, class_3290, class_3288.class_3289.BOTTOM);
+		// TODO: "vanilla" does not emit a message; neither should a modded datapack
+		List<ResourcePack> packs = new ArrayList<>();
+		ModResourcePackUtil.appendModResourcePacks(packs, ResourceType.DATA);
+		for (ResourcePack pack : packs) {
+			if (!(pack instanceof ModResourcePack)) {
+				throw new RuntimeException("Not a ModResourcePack!");
+			}
 
-		if (var3 != null) {
-			map.put(var3.method_14463(), var3);
+			T var3 = class_3288.method_14456("fabric/" + ((ModResourcePack) pack).getModInfo().getId(),
+				false, () -> pack, class_3290, class_3288.class_3289.BOTTOM);
+
+			if (var3 != null) {
+				map.put(var3.method_14463(), var3);
+			}
 		}
 	}
 }

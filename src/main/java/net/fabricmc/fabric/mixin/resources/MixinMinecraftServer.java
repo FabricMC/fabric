@@ -45,15 +45,6 @@ public class MixinMinecraftServer {
 
     @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_3283;method_14443(Lnet/minecraft/class_3285;)V", ordinal = 1))
     public void method_3800(File file, LevelProperties properties, CallbackInfo info) {
-    	// TODO: "vanilla" does not emit a message; neither should a modded datapack
-    	List<ResourcePack> packs = new ArrayList<>();
-        ModResourcePackUtil.appendModResourcePacks(packs, ResourceType.DATA);
-        for (ResourcePack pack : packs) {
-        	if (!(pack instanceof ModResourcePack)) {
-        		throw new RuntimeException("Not a ModResourcePack!");
-	        }
-
-			field_4595.method_14443(new ModDataPackSupplier((ModResourcePack) pack));
-        }
+	    field_4595.method_14443(new ModDataPackSupplier());
     }
 }

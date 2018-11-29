@@ -19,6 +19,7 @@ package net.fabricmc.fabric.resources;
 import com.google.common.io.ByteStreams;
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.ResourceNotFoundException;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.ZipResourcePack;
 
 import java.io.File;

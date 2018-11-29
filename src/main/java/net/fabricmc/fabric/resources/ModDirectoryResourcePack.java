@@ -19,6 +19,7 @@ package net.fabricmc.fabric.resources;
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.DirectoryResourcePack;
 import net.minecraft.resource.ResourceNotFoundException;
+import net.minecraft.resource.ResourceType;
 
 import java.io.*;
 

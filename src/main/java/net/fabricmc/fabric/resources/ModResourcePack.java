@@ -18,7 +18,11 @@ package net.fabricmc.fabric.resources;
 
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
 
 public interface ModResourcePack extends ResourcePack {
 	ModInfo getModInfo();
+	default boolean provides(ResourceType type) {
+		return true;
+	}
 }
