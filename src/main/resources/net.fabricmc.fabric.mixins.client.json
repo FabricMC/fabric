@@ -9,6 +9,7 @@
     "registry.client.MixinItemModelMap",
     "render.MixinBlockEntityRenderManager",
     "render.MixinEntityRenderManager",
+    "render.MixinSpriteAtlasTexture",
     "resources.MixinMinecraftGame"
   ],
   "injectors": {
