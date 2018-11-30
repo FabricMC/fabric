@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.render;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.sun.istack.internal.Nullable;
 import net.fabricmc.fabric.client.texture.*;
 import net.fabricmc.fabric.util.HandlerList;
 import net.minecraft.class_1050;
@@ -70,7 +69,7 @@ public abstract class MixinSpriteAtlasTexture {
 	public abstract void addSpriteToLoad(ResourceManager var1, Identifier var2);
 
 	@Redirect(method = "reload", at = @At(value = "NEW", target = "net/minecraft/client/texture/Sprite"))
-	public Sprite newSprite(Identifier id, class_1050 c, @Nullable AnimationResourceMetadata animationMetadata) {
+	public Sprite newSprite(Identifier id, class_1050 c, AnimationResourceMetadata animationMetadata) {
 		if (sprites.containsKey(id)) {
 			return sprites.get(id);
 		} else {
