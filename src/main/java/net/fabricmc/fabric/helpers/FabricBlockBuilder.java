@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.helpers;
 
+import net.fabricmc.fabric.tools.ToolManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;

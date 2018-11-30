@@ -23,7 +23,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
-import net.minecraft.nbt.TagCompound;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.IdRegistry;
@@ -52,7 +52,7 @@ public final class RegistrySyncManager {
 	}
 
 	public static void receivePacket(PacketContext context, PacketByteBuf buf) {
-		TagCompound compound = buf.readTagCompound();
+		CompoundTag compound = buf.readTagCompound();
 
 		try {
 			apply(compound, false);
@@ -62,8 +62,8 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	public static TagCompound toTag(boolean isClientSync) {
-		TagCompound mainTag = new TagCompound();
+	public static CompoundTag toTag(boolean isClientSync) {
+		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.keys()) {
 			if (REGISTRY_BLACKLIST.contains(registryId)) {
@@ -74,7 +74,7 @@ public final class RegistrySyncManager {
 
 			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
 			if (registry instanceof IdRegistry && registry instanceof RemappableRegistry) {
-				TagCompound registryTag = new TagCompound();
+				CompoundTag registryTag = new CompoundTag();
 				//noinspection unchecked
 				for (Identifier identifier : (Set<Identifier>) registry.keys()) {
 					registryTag.setInt(identifier.toString(), registry.getRawId(registry.get(identifier)));
@@ -83,22 +83,22 @@ public final class RegistrySyncManager {
 			}
 		}
 
-		TagCompound tag = new TagCompound();
+		CompoundTag tag = new CompoundTag();
 		tag.setInt("version", 1);
 		tag.setTag("registries", mainTag);
 
 		return tag;
 	}
 
-	public static void apply(TagCompound tag, boolean reallocateMissingEntries) throws RemapException {
-		TagCompound mainTag = tag.getTagCompound("registries");
+	public static void apply(CompoundTag tag, boolean reallocateMissingEntries) throws RemapException {
+		CompoundTag mainTag = tag.getTagCompound("registries");
 
 		for (Identifier registryId : Registry.REGISTRIES.keys()) {
 			if (!mainTag.containsKey(registryId.toString())) {
 				continue;
 			}
 
-			TagCompound registryTag = mainTag.getTagCompound(registryId.toString());
+			CompoundTag registryTag = mainTag.getTagCompound(registryId.toString());
 			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
 			if (registry instanceof IdRegistry && registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();

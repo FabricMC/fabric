@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.client.render;
 
-import net.minecraft.client.render.entity.EntityRenderManager;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
@@ -30,7 +30,7 @@ import java.util.function.Function;
 public class EntityRendererRegistry {
 	@FunctionalInterface
 	public interface Factory {
-		EntityRenderer<? extends Entity> create(EntityRenderManager manager, EntityRendererRegistry.Context context);
+		EntityRenderer<? extends Entity> create(EntityRenderDispatcher manager, EntityRendererRegistry.Context context);
 	}
 
 	public static final class Context {
@@ -54,14 +54,14 @@ public class EntityRendererRegistry {
 	}
 
 	public static final EntityRendererRegistry INSTANCE = new EntityRendererRegistry();
-	private final Map<EntityRenderManager, Context> renderManagerMap = new WeakHashMap<>();
+	private final Map<EntityRenderDispatcher, Context> renderManagerMap = new WeakHashMap<>();
 	private final Map<Class<? extends Entity>, EntityRendererRegistry.Factory> renderSupplierMap = new HashMap<>();
 
 	private EntityRendererRegistry() {
 
 	}
 
-	public void initialize(EntityRenderManager manager, TextureManager textureManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> map) {
+	public void initialize(EntityRenderDispatcher manager, TextureManager textureManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> map) {
 		synchronized (renderSupplierMap) {
 			if (renderManagerMap.containsKey(manager)) {
 				return;
@@ -79,7 +79,7 @@ public class EntityRendererRegistry {
 		synchronized (renderSupplierMap) {
 			// TODO: warn on duplicate
 			renderSupplierMap.put(entityClass, factory);
-			for (EntityRenderManager manager : renderManagerMap.keySet()) {
+			for (EntityRenderDispatcher manager : renderManagerMap.keySet()) {
 				renderManagerMap.get(manager).rendererMap.put(entityClass, factory.create(manager, renderManagerMap.get(manager)));
 			}
 		}

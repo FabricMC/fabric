@@ -42,13 +42,19 @@ public final class ModResourcePackUtil {
     public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
         for (ModContainer container : FabricLoader.INSTANCE.getMods()) {
             File file = container.getOriginFile();
+            ResourcePack pack = null;
+
             if (file.isDirectory()) {
-                packList.add(new ModDirectoryResourcePack(container.getInfo(), file));
+            	pack = new ModDirectoryResourcePack(container.getInfo(), file);
             } else {
                 String name = file.getName().toLowerCase(Locale.ROOT);
                 if (name.endsWith(".zip") || name.endsWith(".jar")) {
-                    packList.add(new ModZipResourcePack(container.getInfo(), file));
+                    pack = new ModZipResourcePack(container.getInfo(), file);
                 }
+            }
+
+            if (pack != null && !pack.getNamespaces(type).isEmpty()) {
+            	packList.add(pack);
             }
         }
     }

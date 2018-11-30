@@ -41,7 +41,6 @@ public class BootstrapBlockRegistryListener implements RegistryListener<Block> {
 
 	@Override
 	public void afterRegistryRegistration(Registry<Block> registry, int id, Identifier identifier, Block object) {
-		System.out.println(identifier);
 		// refer net.minecraft.block.Blocks
 		object.getDropTableId();
 	}

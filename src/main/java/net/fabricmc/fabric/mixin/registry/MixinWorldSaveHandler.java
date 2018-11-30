@@ -18,8 +18,8 @@ package net.fabricmc.fabric.mixin.registry;
 
 import net.fabricmc.fabric.registry.RegistrySyncManager;
 import net.fabricmc.fabric.registry.RemapException;
-import net.minecraft.nbt.TagCompound;
-import net.minecraft.nbt.TagStorageHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.OldWorldSaveHandler;
 import net.minecraft.world.level.LevelProperties;
 import org.apache.logging.log4j.Logger;
@@ -42,13 +42,13 @@ public class MixinWorldSaveHandler {
 	private static Logger LOGGER;
 	@Shadow
 	public File worldDir;
-	private TagCompound lastSavedIdMap = null;
+	private CompoundTag lastSavedIdMap = null;
 
 	private boolean readWorldIdMap(File file) {
 		try {
 			if (file.exists()) {
 				FileInputStream fileInputStream = new FileInputStream(file);
-				TagCompound tag = TagStorageHelper.readCompoundTagCompressed(fileInputStream);
+				CompoundTag tag = NbtIo.readCompressed(fileInputStream);
 				fileInputStream.close();
 				if (tag != null) {
 					RegistrySyncManager.apply(tag, true);
@@ -80,7 +80,7 @@ public class MixinWorldSaveHandler {
 			}
 		}
 
-		TagCompound newIdMap = RegistrySyncManager.toTag(false);
+		CompoundTag newIdMap = RegistrySyncManager.toTag(false);
 		if (!newIdMap.equals(lastSavedIdMap)) {
 			for (int i = ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
 				File file = getWorldIdMapFile(i);
@@ -96,7 +96,7 @@ public class MixinWorldSaveHandler {
 
 			try {
 				FileOutputStream fileOutputStream = new FileOutputStream(getWorldIdMapFile(0));
-				TagStorageHelper.writeCompoundTagCompressed(newIdMap, fileOutputStream);
+				NbtIo.writeCompressed(newIdMap, fileOutputStream);
 				fileOutputStream.close();
 			} catch (IOException e) {
 				e.printStackTrace();

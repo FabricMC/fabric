@@ -16,16 +16,18 @@
 
 package net.fabricmc.fabric.resources;
 
-import com.google.common.io.ByteStreams;
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.ResourceNotFoundException;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.ZipResourcePack;
+import net.minecraft.util.Identifier;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.function.Predicate;
 
 public class ModZipResourcePack extends ZipResourcePack implements ModResourcePack {
     private final ModInfo info;
@@ -52,6 +54,16 @@ public class ModZipResourcePack extends ZipResourcePack implements ModResourcePa
             return stream;
         }
     }
+
+	@Override
+	public Collection<Identifier> findResources(ResourceType var1, String var2, int var3, Predicate<String> var4) {
+		System.out.println("called " + var1 + " " + var2 + " " + var3);
+		Collection<Identifier> test = super.findResources(var1, var2, var3, var4);
+		for (Identifier id : test) {
+			System.out.println("- " + id);
+		}
+		return test;
+	}
 
     @Override
     public boolean containsFilename(String filename) {

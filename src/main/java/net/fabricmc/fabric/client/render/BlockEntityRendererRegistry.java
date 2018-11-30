@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.client.render;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.block.entity.BlockEntityRenderManager;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
 import java.util.Map;
@@ -41,6 +41,6 @@ public class BlockEntityRendererRegistry {
 	public void register(Class<? extends BlockEntity> blockEntityClass, BlockEntityRenderer<? extends BlockEntity> blockEntityRenderer) {
 		// TODO: warn on duplicate
 		blockEntityRenderers.put(blockEntityClass, blockEntityRenderer);
-		blockEntityRenderer.setRenderManager(BlockEntityRenderManager.instance);
+		blockEntityRenderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
 	}
 }

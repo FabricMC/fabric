@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.render;
 
 import net.fabricmc.fabric.client.render.EntityRendererRegistry;
-import net.minecraft.client.render.entity.EntityRenderManager;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
@@ -30,13 +30,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
 
-@Mixin(EntityRenderManager.class)
+@Mixin(EntityRenderDispatcher.class)
 public class MixinEntityRenderManager {
 	@Shadow
-	private Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> RENDER_MAP;
+	private Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> renderers;
 
 	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;)V", at = @At("RETURN"))
 	public void init(TextureManager textureManager, ItemRenderer itemRenderer, CallbackInfo info) {
-		EntityRendererRegistry.INSTANCE.initialize((EntityRenderManager) (Object) this, textureManager, itemRenderer, RENDER_MAP);
+		EntityRendererRegistry.INSTANCE.initialize((EntityRenderDispatcher) (Object) this, textureManager, itemRenderer, renderers);
 	}
 }

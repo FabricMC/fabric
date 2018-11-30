@@ -12,7 +12,9 @@
     "registry.MixinIdRegistry",
     "registry.MixinServerPlayNetworkHandler",
     "registry.MixinWorldSaveHandler",
-    "resources.MixinMinecraftServer"
+    "resources.MixinMinecraftServer",
+    "tools.MixinItemStack",
+    "tools.MixinMiningToolItem"
   ],
   "injectors": {
     "defaultRequire": 1
