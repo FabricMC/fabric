@@ -21,7 +21,6 @@ import net.fabricmc.fabric.resources.ModResourcePack;
 import net.fabricmc.fabric.resources.ModResourcePackUtil;
 import net.minecraft.class_3283;
 import net.minecraft.class_3288;
-import net.minecraft.client.MinecraftGame;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;

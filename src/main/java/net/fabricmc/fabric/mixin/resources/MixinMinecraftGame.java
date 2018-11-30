@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.resources;
 
 import net.fabricmc.fabric.resources.ModResourcePackUtil;
-import net.minecraft.client.MinecraftGame;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
-@Mixin(MinecraftGame.class)
+@Mixin(MinecraftClient.class)
 public class MixinMinecraftGame {
     @Shadow
     private ReloadableResourceManager resourceManager;

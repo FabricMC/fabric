@@ -17,5 +17,5 @@
 package net.fabricmc.fabric.tools;
 
 public interface MiningToolDelegate {
-	float getMiningToolEfficiency();
+	float getBlockBreakingSpeed();
 }

@@ -47,7 +47,7 @@ public abstract class MixinItemStack {
 		if (this.getItem() instanceof MiningToolDelegate) {
 			TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
 			if (triState != TriState.DEFAULT) {
-				info.setReturnValue(triState.get() ? ((MiningToolDelegate) this.getItem()).getMiningToolEfficiency() : 1.0F);
+				info.setReturnValue(triState.get() ? ((MiningToolDelegate) this.getItem()).getBlockBreakingSpeed() : 1.0F);
 				info.cancel();
 			}
 		}

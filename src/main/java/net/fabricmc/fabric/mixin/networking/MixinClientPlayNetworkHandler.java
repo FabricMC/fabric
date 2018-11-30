@@ -20,7 +20,7 @@ import net.fabricmc.api.Side;
 import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
-import net.minecraft.client.MinecraftGame;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +35,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinClientPlayNetworkHandler implements PacketContext {
 	@Shadow
-	private MinecraftGame game;
+	private MinecraftClient client;
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadClientPacket packet, CallbackInfo info) {
@@ -51,11 +51,11 @@ public class MixinClientPlayNetworkHandler implements PacketContext {
 
 	@Override
 	public PlayerEntity getPlayer() {
-		return game.player;
+		return client.player;
 	}
 
 	@Override
 	public ThreadTaskQueue getTaskQueue() {
-		return game;
+		return client;
 	}
 }

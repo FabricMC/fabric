@@ -45,14 +45,14 @@ public final class RegistrySyncManager {
 
 	public static CustomPayloadClientPacket createPacket() {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeTagCompound(toTag(true));
+		buf.writeCompoundTag(toTag(true));
 
 	    CustomPayloadClientPacket packet = new CustomPayloadClientPacket(ID, buf);
 		return packet;
 	}
 
 	public static void receivePacket(PacketContext context, PacketByteBuf buf) {
-		CompoundTag compound = buf.readTagCompound();
+		CompoundTag compound = buf.readCompoundTag();
 
 		try {
 			apply(compound, false);
@@ -77,28 +77,28 @@ public final class RegistrySyncManager {
 				CompoundTag registryTag = new CompoundTag();
 				//noinspection unchecked
 				for (Identifier identifier : (Set<Identifier>) registry.keys()) {
-					registryTag.setInt(identifier.toString(), registry.getRawId(registry.get(identifier)));
+					registryTag.putInt(identifier.toString(), registry.getRawId(registry.get(identifier)));
 				}
-				mainTag.setTag(registryId.toString(), registryTag);
+				mainTag.put(registryId.toString(), registryTag);
 			}
 		}
 
 		CompoundTag tag = new CompoundTag();
-		tag.setInt("version", 1);
-		tag.setTag("registries", mainTag);
+		tag.putInt("version", 1);
+		tag.put("registries", mainTag);
 
 		return tag;
 	}
 
 	public static void apply(CompoundTag tag, boolean reallocateMissingEntries) throws RemapException {
-		CompoundTag mainTag = tag.getTagCompound("registries");
+		CompoundTag mainTag = tag.getCompound("registries");
 
 		for (Identifier registryId : Registry.REGISTRIES.keys()) {
 			if (!mainTag.containsKey(registryId.toString())) {
 				continue;
 			}
 
-			CompoundTag registryTag = mainTag.getTagCompound(registryId.toString());
+			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
 			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
 			if (registry instanceof IdRegistry && registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();

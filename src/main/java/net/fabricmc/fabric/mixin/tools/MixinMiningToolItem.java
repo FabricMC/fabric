@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.Shadow;
 @Mixin(MiningToolItem.class)
 public class MixinMiningToolItem implements MiningToolDelegate {
 	@Shadow
-	protected float efficiency;
+	protected float blockBreakingSpeed;
 
 	@Override
-	public float getMiningToolEfficiency() {
-		return efficiency;
+	public float getBlockBreakingSpeed() {
+		return blockBreakingSpeed;
 	}
 }

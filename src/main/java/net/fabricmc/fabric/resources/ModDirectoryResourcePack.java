@@ -52,16 +52,6 @@ public class ModDirectoryResourcePack extends DirectoryResourcePack implements M
         }
     }
 
-	@Override
-	public Collection<Identifier> findResources(ResourceType var1, String var2, int var3, Predicate<String> var4) {
-    	System.out.println("called " + var1 + " " + var2 + " " + var3);
-		Collection<Identifier> test = super.findResources(var1, var2, var3, var4);
-		for (Identifier id : test) {
-			System.out.println("- " + id);
-		}
-		return test;
-	}
-
     @Override
     protected boolean containsFilename(String filename) {
         return super.containsFilename(filename) || ModResourcePackUtil.containsDefault(info, filename);
