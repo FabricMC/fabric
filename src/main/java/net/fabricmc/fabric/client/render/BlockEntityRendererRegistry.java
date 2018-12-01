@@ -20,27 +20,38 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class BlockEntityRendererRegistry {
 	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
-	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> blockEntityRenderers;
+	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers;
+	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderersTmp = new HashMap<>();
 
 	private BlockEntityRendererRegistry() {
 
 	}
 
 	public void initialize(Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> map) {
-		if (blockEntityRenderers != null && blockEntityRenderers != map) {
-			throw new RuntimeException("Tried to set blockEntityRenderers twice!");
+		if (renderers != null && renderers != map) {
+			throw new RuntimeException("Tried to set renderers twice!");
 		}
 
-		blockEntityRenderers = map;
+		renderers = map;
+		for (BlockEntityRenderer renderer : renderersTmp.values()) {
+			renderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
+		}
+		renderers.putAll(renderersTmp);
+		renderersTmp = null;
 	}
 
 	public void register(Class<? extends BlockEntity> blockEntityClass, BlockEntityRenderer<? extends BlockEntity> blockEntityRenderer) {
 		// TODO: warn on duplicate
-		blockEntityRenderers.put(blockEntityClass, blockEntityRenderer);
-		blockEntityRenderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
+		if (renderers != null) {
+			renderers.put(blockEntityClass, blockEntityRenderer);
+			blockEntityRenderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
+		} else {
+			renderersTmp.put(blockEntityClass, blockEntityRenderer);
+		}
 	}
 }

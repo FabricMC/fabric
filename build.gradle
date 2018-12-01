@@ -7,7 +7,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.0.13-SNAPSHOT"
+		classpath "net.fabricmc:fabric-loom:0.0.14-SNAPSHOT"
 	}
 }
 
@@ -31,8 +31,8 @@ minecraft {
 
 dependencies {
 	minecraft "com.mojang:minecraft:18w48b"
-	mappings "net.fabricmc:pomf:18w48b.4"
-	modCompile "net.fabricmc:fabric-loader:0.1.0.48"
+	mappings "net.fabricmc:pomf:18w48b.7"
+	modCompile "net.fabricmc:fabric-loader:0.1.0.49"
 }
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/maven.gradle'
