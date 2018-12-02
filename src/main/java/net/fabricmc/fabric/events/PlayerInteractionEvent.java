@@ -18,9 +18,7 @@ package net.fabricmc.fabric.events;
 
 import net.fabricmc.fabric.util.HandlerList;
 import net.fabricmc.fabric.util.HandlerRegistry;
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -52,9 +50,9 @@ public final class PlayerInteractionEvent {
 		ActionResult interact(PlayerEntity player, World world, Hand hand);
 	}
 
-	public static HandlerRegistry<Block> BREAK_BLOCK = new HandlerList<>();
-	public static HandlerRegistry<BlockPositioned> INTERACT_BLOCK = new HandlerList<>();
-	public static HandlerRegistry<Item> INTERACT_ITEM = new HandlerList<>();
+	public static final HandlerRegistry<Block> BREAK_BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<BlockPositioned> INTERACT_BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<Item> INTERACT_ITEM = new HandlerList<>();
 
 	private PlayerInteractionEvent() {
 
