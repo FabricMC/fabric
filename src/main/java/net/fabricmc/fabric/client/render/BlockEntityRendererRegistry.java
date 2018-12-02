@@ -37,6 +37,10 @@ public class BlockEntityRendererRegistry {
 			throw new RuntimeException("Tried to set renderers twice!");
 		}
 
+		if (renderers == map) {
+			return;
+		}
+
 		renderers = map;
 		for (BlockEntityRenderer renderer : renderersTmp.values()) {
 			renderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
