@@ -42,7 +42,7 @@ public class FabricBlockBuilder {
 		void fabric_setDropTable(Identifier id);
 	}
 
-	private final Block.Builder delegate;
+	protected final Block.Builder delegate;
 	private final FabricBlockBuilder.Delegate castDelegate;
 
 	protected FabricBlockBuilder(Material material) {
