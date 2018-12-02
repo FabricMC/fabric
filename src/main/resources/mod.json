@@ -4,6 +4,7 @@
   "version": "0.0.2",
   "side": "universal",
   "initializers": [
+    "net.fabricmc.fabric.FabricAPI"
   ],
   "mixins": {
     "client": "net.fabricmc.fabric.mixins.client.json",
