@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.tools;
 
+import net.fabricmc.fabric.helpers.FabricBuilderEvent;
 import net.fabricmc.fabric.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -28,17 +29,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class ToolManager {
-	private static class Entry {
+	public interface Entry {
+		void breakByHand(boolean value);
+		void putBreakByTool(Tag<Item> tag, int miningLevel);
+	}
+
+	private static class EntryImpl implements Entry {
 		@SuppressWarnings("unchecked")
 		private Tag<Item>[] tags = (Tag<Item>[]) new Tag[0];
 		private int[] tagLevels = new int[0];
 		private TriState defaultValue = TriState.DEFAULT;
 
-		public void setDefaultValue(TriState defaultValue) {
-			this.defaultValue = defaultValue;
+		@Override
+		public void breakByHand(boolean value) {
+			this.defaultValue = TriState.of(value);
 		}
 
-		public void addTag(Tag<Item> tag, int miningLevel) {
+		@Override
+		public void putBreakByTool(Tag<Item> tag, int miningLevel) {
 			for (int i = 0; i < tags.length; i++) {
 				if (tags[i] == tag) {
 					tagLevels[i] = miningLevel;
@@ -58,23 +66,40 @@ public final class ToolManager {
 		}
 	}
 
-	private static final Map<Block, Entry> entries = new HashMap<>();
+	private static final Map<Block.Builder, EntryImpl> entriesPre = new HashMap<>();
+	private static final Map<Block, EntryImpl> entries = new HashMap<>();
 
 	private ToolManager() {
 
 	}
 
-	private static Entry computeEntry(Block b) {
-		return entries.computeIfAbsent(b, (bb) -> new Entry());
+	static {
+		FabricBuilderEvent.BLOCK.register(ToolManager::onBlockRegistered);
 	}
 
+	private static void onBlockRegistered(Block.Builder builder, Block block) {
+		EntryImpl entry = entriesPre.get(builder);
+		if (entry != null) {
+			entries.put(block, entry);
+		}
+	}
+
+	public static Entry get(Block.Builder builder) {
+		return entriesPre.computeIfAbsent(builder, (bb) -> new EntryImpl());
+	}
+
+	private static Entry get(Block block) {
+		return entries.computeIfAbsent(block, (bb) -> new EntryImpl());
+	}
+
+	@Deprecated
 	public static void registerBreakByHand(Block block, boolean value) {
-		computeEntry(block).defaultValue = TriState.of(value);
+		get(block).breakByHand(value);
 	}
 
+	@Deprecated
 	public static void registerBreakByTool(Block block, Tag<Item> tag, int miningLevel) {
-		computeEntry(block).defaultValue = TriState.FALSE;
-		computeEntry(block).addTag(tag, miningLevel);
+		get(block).putBreakByTool(tag, miningLevel);
 	}
 
 	public static int getMiningLevel(ItemStack stack) {
@@ -86,7 +111,7 @@ public final class ToolManager {
 	}
 
 	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state) {
-		Entry entry = entries.get(state.getBlock());
+		EntryImpl entry = entries.get(state.getBlock());
 		if (entry != null) {
 			Item item = stack.getItem();
 			for (int i = 0; i < entry.tags.length; i++) {

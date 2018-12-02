@@ -19,7 +19,9 @@ package net.fabricmc.fabric.helpers;
 import net.fabricmc.fabric.tools.ToolManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.MapColor;
@@ -60,6 +62,24 @@ public class FabricBlockBuilder {
 	public static FabricBlockBuilder copy(Block base) {
 		return new FabricBlockBuilder(base);
 	}
+
+	/* FABRIC HELPERS */
+
+	public FabricBlockBuilder setBreakByHand(boolean value) {
+		ToolManager.get(delegate).breakByHand(value);
+		return this;
+	}
+
+	public FabricBlockBuilder setBreakByTool(Tag<Item> tag) {
+		return setBreakByTool(tag, 0);
+	}
+
+	public FabricBlockBuilder setBreakByTool(Tag<Item> tag, int miningLevel) {
+		ToolManager.get(delegate).putBreakByTool(tag, miningLevel);
+		return this;
+	}
+
+	/* DELEGATE WRAPPERS */
 
 	public FabricBlockBuilder setMapColor(MapColor color) {
 		castDelegate.fabric_setMapColor(color);
@@ -127,6 +147,8 @@ public class FabricBlockBuilder {
 		castDelegate.fabric_setFriction(value);
 		return this;
 	}
+
+	/* BUILDING LOGIC */
 
 	public Block.Builder build() {
 		return delegate;

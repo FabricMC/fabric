@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "commands.MixinServerCommandManager",
+    "helpers.MixinBlock",
     "helpers.MixinBlockBuilder",
+    "helpers.MixinItem",
     "networking.MixinServerPlayNetworkHandler",
     "networking.MixinSPacketCustomPayload",
     "registry.MixinBootstrap",
