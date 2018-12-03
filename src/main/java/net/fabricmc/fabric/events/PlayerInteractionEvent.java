@@ -23,11 +23,14 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Facing;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
 /**
  * This is a class for INTERACTION EVENTS (think left-clicking/right-clicking). For block placement/break
  * events, look elsewhere - this just handles the interaction!
+ *
+ * These hook in BEFORE the spectator checks, so make sure to check for the player's game mode as well!
  *
  * CURRENT LIMITATIONS:
  *
@@ -41,8 +44,18 @@ public final class PlayerInteractionEvent {
 	}
 
 	@FunctionalInterface
+	public interface Entity {
+		ActionResult interact(PlayerEntity player, World world, Hand hand, net.minecraft.entity.Entity entity);
+	}
+
+	@FunctionalInterface
 	public interface BlockPositioned {
 		ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Facing facing, float hitX, float hitY, float hitZ);
+	}
+
+	@FunctionalInterface
+	public interface EntityPositioned {
+		ActionResult interact(PlayerEntity player, World world, Hand hand, net.minecraft.entity.Entity entity, Vec3d hitPos);
 	}
 
 	@FunctionalInterface
@@ -50,9 +63,18 @@ public final class PlayerInteractionEvent {
 		ActionResult interact(PlayerEntity player, World world, Hand hand);
 	}
 
-	public static final HandlerRegistry<Block> BREAK_BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<Block> ATTACK_BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<Entity> ATTACK_ENTITY = new HandlerList<>();
+	
+	// TODO: For completeness' sake, but requires us to add a custom packet. Is it worth the complexity?
+	/* public static final HandlerRegistry<Item> ATTACK_ITEM = new HandlerList<>(); */
+
 	public static final HandlerRegistry<BlockPositioned> INTERACT_BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<EntityPositioned> INTERACT_ENTITY_POSITIONED = new HandlerList<>();
 	public static final HandlerRegistry<Item> INTERACT_ITEM = new HandlerList<>();
+
+	@Deprecated
+	public static final HandlerRegistry<Block> BREAK_BLOCK = ATTACK_BLOCK;
 
 	private PlayerInteractionEvent() {
 

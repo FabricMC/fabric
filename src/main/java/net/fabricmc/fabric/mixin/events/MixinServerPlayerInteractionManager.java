@@ -44,7 +44,7 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
 	public void startBlockBreak(BlockPos pos, Facing facing, CallbackInfo info) {
-		for (Object handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.BREAK_BLOCK).getBackingArray()) {
+		for (Object handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
 			PlayerInteractionEvent.Block event = (PlayerInteractionEvent.Block) handler;
 			ActionResult result = event.interact(player, world, Hand.MAIN, pos, facing);
 			if (result != ActionResult.PASS) {

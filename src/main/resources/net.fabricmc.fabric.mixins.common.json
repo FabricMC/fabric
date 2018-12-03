@@ -5,6 +5,8 @@
   "mixins": [
     "commands.MixinServerCommandManager",
     "events.MixinMinecraftServer",
+    "events.MixinServerPlayNetworkHandler",
+    "events.MixinServerPlayerEntity",
     "events.MixinServerPlayerInteractionManager",
     "events.MixinWorld",
     "helpers.MixinBlock",
