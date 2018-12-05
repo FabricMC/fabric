@@ -19,19 +19,19 @@ package net.fabricmc.fabric.helpers;
 import net.fabricmc.fabric.tools.ToolManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.MapColor;
 import net.minecraft.world.loot.LootTables;
 
 import java.util.function.Function;
 
 public class FabricBlockBuilder {
 	public interface Delegate {
-		void fabric_setMapColor(MapColor color);
+		void fabric_setMapColor(MaterialColor color);
 		void fabric_setCollidable(boolean value);
 		void fabric_setSoundGroup(BlockSoundGroup group);
 		void fabric_setLuminance(int value);
@@ -81,13 +81,13 @@ public class FabricBlockBuilder {
 
 	/* DELEGATE WRAPPERS */
 
-	public FabricBlockBuilder setMapColor(MapColor color) {
+	public FabricBlockBuilder setMapColor(MaterialColor color) {
 		castDelegate.fabric_setMapColor(color);
 		return this;
 	}
 
 	public FabricBlockBuilder setMapColor(DyeColor color) {
-		castDelegate.fabric_setMapColor(color.getMapColor());
+		castDelegate.fabric_setMapColor(color.getMaterialColor());
 		return this;
 	}
 

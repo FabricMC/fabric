@@ -64,12 +64,12 @@ public class MixinClientPlayNetworkHandler {
 		}
 	}
 
-	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;deserialize(Lnet/minecraft/nbt/CompoundTag;)V"))
+	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;fromTag(Lnet/minecraft/nbt/CompoundTag;)V"))
 	public void deserializeBlockEntityChunkData(BlockEntity entity, CompoundTag tag) {
 		if (entity instanceof ClientSerializable) {
 			((ClientSerializable) entity).fromClientTag(tag);
 		} else {
-			entity.deserialize(tag);
+			entity.fromTag(tag);
 		}
 	}
 }

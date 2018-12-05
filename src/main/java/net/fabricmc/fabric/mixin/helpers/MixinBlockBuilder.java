@@ -19,9 +19,9 @@ package net.fabricmc.fabric.mixin.helpers;
 import net.fabricmc.fabric.helpers.FabricBlockBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
+import net.minecraft.block.MaterialColor;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.MapColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
@@ -30,7 +30,7 @@ public class MixinBlockBuilder implements FabricBlockBuilder.Delegate {
 	@Shadow
 	private Material material;
 	@Shadow
-	private MapColor mapColor;
+	private MaterialColor materialColor;
 	@Shadow
 	private boolean collidable;
 	@Shadow
@@ -49,8 +49,8 @@ public class MixinBlockBuilder implements FabricBlockBuilder.Delegate {
 	private Identifier dropTableId;
 
 	@Override
-	public void fabric_setMapColor(MapColor color) {
-		mapColor = color;
+	public void fabric_setMapColor(MaterialColor color) {
+		materialColor = color;
 	}
 
 	@Override

@@ -30,9 +30,9 @@ minecraft {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:18w48b"
-	mappings "net.fabricmc:pomf:18w48b.16"
-	modCompile "net.fabricmc:fabric-loader:0.1.0.49"
+	minecraft "com.mojang:minecraft:18w49a"
+	mappings "net.fabricmc:pomf:18w49a.2"
+	modCompile "net.fabricmc:fabric-loader:0.1.0.52"
 }
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/maven.gradle'

@@ -40,8 +40,8 @@ public abstract class MixinBlockEntity {
 	@Shadow
 	public abstract BlockPos getPos();
 
-	@Inject(at = @At("HEAD"), method = "getUpdatePacket", cancellable = true)
-	public void getUpdatePacket(CallbackInfoReturnable<BlockEntityUpdateClientPacket> info) {
+	@Inject(at = @At("HEAD"), method = "toUpdatePacket", cancellable = true)
+	public void toUpdatePacket(CallbackInfoReturnable<BlockEntityUpdateClientPacket> info) {
 		Object self = (Object) this;
 
 		if (self instanceof ClientSerializable) {
@@ -64,8 +64,8 @@ public abstract class MixinBlockEntity {
 		}
 	}
 
-	@Inject(at = @At("RETURN"), method = "serializeInitialChunkData", cancellable = true)
-	public void serializeInitialChunkData(CallbackInfoReturnable<CompoundTag> info) {
+	@Inject(at = @At("RETURN"), method = "toInitialChunkDataTag", cancellable = true)
+	public void toInitialChunkDataTag(CallbackInfoReturnable<CompoundTag> info) {
 		Object self = (Object) this;
 
 		if (self instanceof ClientSerializable && info.getReturnValue() != null) {
