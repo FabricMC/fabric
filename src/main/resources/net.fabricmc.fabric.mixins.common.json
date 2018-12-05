@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "block.entity.MixinBlockEntity",
     "commands.MixinServerCommandManager",
     "events.MixinMinecraftServer",
     "events.MixinServerPlayNetworkHandler",
