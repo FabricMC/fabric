@@ -21,6 +21,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.BlockEntityUpdateClientPacket;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.Logger;
@@ -28,6 +29,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -59,6 +61,15 @@ public class MixinClientPlayNetworkHandler {
 			}
 
 			info.cancel();
+		}
+	}
+
+	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;deserialize(Lnet/minecraft/nbt/CompoundTag;)V"))
+	public void deserializeBlockEntityChunkData(BlockEntity entity, CompoundTag tag) {
+		if (entity instanceof ClientSerializable) {
+			((ClientSerializable) entity).fromClientTag(tag);
+		} else {
+			entity.deserialize(tag);
 		}
 	}
 }
