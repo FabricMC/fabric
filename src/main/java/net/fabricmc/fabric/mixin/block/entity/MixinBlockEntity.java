@@ -58,7 +58,7 @@ public abstract class MixinBlockEntity {
 			}
 
 			tag.putString("id", entityId.toString());
-			((ClientSerializable) self).toClientTag(tag);
+			tag = ((ClientSerializable) self).toClientTag(tag);
 			info.setReturnValue(new BlockEntityUpdateClientPacket(getPos(), 127, tag));
 			info.cancel();
 		}
