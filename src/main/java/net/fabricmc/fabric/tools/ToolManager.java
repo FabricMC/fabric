@@ -92,11 +92,19 @@ public final class ToolManager {
 		return entries.computeIfAbsent(block, (bb) -> new EntryImpl());
 	}
 
+	/**
+	 * @deprecated Use {@link net.fabricmc.fabric.helpers.FabricBlockBuilder FabricBlockBuilder} for your own blocks.
+	 * TODO: Add a way to manipulate the values for non-owned blocks.
+	 */
 	@Deprecated
 	public static void registerBreakByHand(Block block, boolean value) {
 		get(block).breakByHand(value);
 	}
 
+	/**
+	 * @deprecated Use {@link net.fabricmc.fabric.helpers.FabricBlockBuilder FabricBlockBuilder} for your own blocks.
+	 * TODO: Add a way to manipulate the values for non-owned blocks.
+	 */
 	@Deprecated
 	public static void registerBreakByTool(Block block, Tag<Item> tag, int miningLevel) {
 		get(block).putBreakByTool(tag, miningLevel);

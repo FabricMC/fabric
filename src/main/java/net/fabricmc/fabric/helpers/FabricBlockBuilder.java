@@ -81,14 +81,30 @@ public class FabricBlockBuilder {
 
 	/* DELEGATE WRAPPERS */
 
-	public FabricBlockBuilder setMapColor(MaterialColor color) {
+	public FabricBlockBuilder setMaterialColor(MaterialColor color) {
 		castDelegate.fabric_setMapColor(color);
 		return this;
 	}
 
-	public FabricBlockBuilder setMapColor(DyeColor color) {
+	public FabricBlockBuilder setMaterialColor(DyeColor color) {
 		castDelegate.fabric_setMapColor(color.getMaterialColor());
 		return this;
+	}
+
+	/**
+	 * @deprecated Use {@link #setMaterialColor(MaterialColor) setMaterialColor} instead.
+	 */
+	@Deprecated
+	public FabricBlockBuilder setMapColor(MaterialColor color) {
+		return setMaterialColor(color);
+	}
+
+	/**
+	 * @deprecated Use {@link #setMaterialColor(DyeColor) setMaterialColor} instead.
+	 */
+	@Deprecated
+	public FabricBlockBuilder setMapColor(DyeColor color) {
+		return setMaterialColor(color);
 	}
 
 	public FabricBlockBuilder setCollidable(boolean value) {

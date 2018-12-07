@@ -73,6 +73,10 @@ public final class PlayerInteractionEvent {
 	public static final HandlerRegistry<EntityPositioned> INTERACT_ENTITY_POSITIONED = new HandlerList<>();
 	public static final HandlerRegistry<Item> INTERACT_ITEM = new HandlerList<>();
 
+	/**
+	 * @deprecated Use {@link #ATTACK_BLOCK ATTACK_BLOCK} instead.
+	 */
+	@SuppressWarnings("DeprecatedIsStillUsed")
 	@Deprecated
 	public static final HandlerRegistry<Block> BREAK_BLOCK = ATTACK_BLOCK;
 
