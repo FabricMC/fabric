@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Side;
 import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.minecraft.client.MinecraftClient;

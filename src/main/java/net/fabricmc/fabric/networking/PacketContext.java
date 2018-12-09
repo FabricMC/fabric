@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.networking;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Side;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ThreadTaskQueue;
 
