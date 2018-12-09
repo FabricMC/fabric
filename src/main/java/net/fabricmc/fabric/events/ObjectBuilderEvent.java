@@ -14,24 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.events.client;
+package net.fabricmc.fabric.events;
 
-import net.fabricmc.fabric.events.TickEvent;
 import net.fabricmc.fabric.util.HandlerList;
 import net.fabricmc.fabric.util.HandlerRegistry;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 /**
- * Events emitted during the ticking process for Minecraft client objects.
- *
- * @see TickEvent
+ * This is a class for events emitted when a Block.Builder/Item.Builder is
+ * turned into a Block or Item. You can use these to extend these builders with
+ * your own methods and transparently add the resulting information to a Map.
  */
-public final class ClientTickEvent {
-	public static final HandlerRegistry<Consumer<MinecraftClient>> CLIENT = new HandlerList<>();
+public final class ObjectBuilderEvent {
+	public static final HandlerRegistry<BiConsumer<Block.Builder, Block>> BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<BiConsumer<Item.Builder, Item>> ITEM = new HandlerList<>();
 
-	private ClientTickEvent() {
+	private ObjectBuilderEvent() {
 
 	}
 }

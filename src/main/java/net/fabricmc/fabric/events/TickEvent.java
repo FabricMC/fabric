@@ -24,6 +24,10 @@ import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
+/**
+ * Events emitted during the ticking process for global Minecraft objects.
+ * You can use them as endpoints to tick your own, related logic "globally".
+ */
 public final class TickEvent {
 	public static final HandlerRegistry<Consumer<MinecraftServer>> SERVER = new HandlerList<>();
 	public static final HandlerRegistry<Consumer<World>> WORLD = new HandlerList<>();

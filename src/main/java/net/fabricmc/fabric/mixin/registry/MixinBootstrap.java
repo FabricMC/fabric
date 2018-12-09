@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
+import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
 import net.fabricmc.fabric.registry.ListenableRegistry;
 import net.fabricmc.fabric.registry.RegistrySyncManager;
 import net.fabricmc.fabric.registry.listeners.BootstrapBiomeRegistryListener;
@@ -54,6 +54,6 @@ public class MixinBootstrap {
 		((ListenableRegistry<Item>) Registry.ITEMS).registerListener(new BootstrapItemRegistryListener());
 
 		// The packet code is not side-specific, so this is fine!
-		CustomPayloadHandlerRegistry.CLIENT.register(RegistrySyncManager.ID, RegistrySyncManager::receivePacket);
+		CustomPayloadPacketRegistry.CLIENT.register(RegistrySyncManager.ID, RegistrySyncManager::receivePacket);
 	}
 }

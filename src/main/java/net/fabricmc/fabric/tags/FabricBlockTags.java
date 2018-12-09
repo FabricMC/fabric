@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.helpers;
+package net.fabricmc.fabric.tags;
 
-import net.fabricmc.fabric.util.HandlerList;
-import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
 
-import java.util.function.BiConsumer;
+/**
+ * Block tags provided by Fabric.
+ */
+public class FabricBlockTags {
+	private FabricBlockTags() {
 
-public final class FabricBuilderEvent {
-	public static final HandlerRegistry<BiConsumer<Block.Builder, Block>> BLOCK = new HandlerList<>();
-	public static final HandlerRegistry<BiConsumer<Item.Builder, Item>> ITEM = new HandlerList<>();
+	}
 
-	private FabricBuilderEvent() {
-
+	private static Tag<Block> register(String id) {
+		return TagRegistry.block(new Identifier("fabric", id));
 	}
 }

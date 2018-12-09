@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.networking.CustomPayloadHandlerRegistry;
 import net.fabricmc.fabric.networking.PacketContext;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.nbt.CompoundTag;
@@ -30,8 +29,6 @@ import net.minecraft.util.registry.IdRegistry;
 import net.minecraft.util.registry.ModifiableRegistry;
 import net.minecraft.util.registry.Registry;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 public final class RegistrySyncManager {

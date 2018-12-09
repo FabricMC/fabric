@@ -23,7 +23,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 archivesBaseName = "fabric"
-version = "0.0.3-SNAPSHOT"
+version = "0.1.0-SNAPSHOT"
 
 minecraft {
 	refmapName = "net.fabricmc.fabric.refmap.json"
@@ -31,7 +31,7 @@ minecraft {
 
 dependencies {
 	minecraft "com.mojang:minecraft:18w49a"
-	mappings "net.fabricmc:pomf:18w49a.2"
+	mappings "net.fabricmc:pomf:18w49a.16"
 	modCompile "net.fabricmc:fabric-loader:0.1.0.52"
 }
 

@@ -16,14 +16,9 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.resources.ModDataPackSupplier;
-import net.fabricmc.fabric.resources.ModResourcePack;
-import net.fabricmc.fabric.resources.ModResourcePackUtil;
+import net.fabricmc.fabric.resources.impl.ModDataPackSupplier;
 import net.minecraft.class_3283;
 import net.minecraft.class_3288;
-import net.minecraft.resource.ReloadableResourceManager;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,11 +26,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {

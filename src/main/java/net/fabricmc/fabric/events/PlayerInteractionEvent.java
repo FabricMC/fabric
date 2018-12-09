@@ -55,7 +55,7 @@ public final class PlayerInteractionEvent {
 
 	@FunctionalInterface
 	public interface EntityPositioned {
-		ActionResult interact(PlayerEntity player, World world, Hand hand, net.minecraft.entity.Entity entity, Vec3d hitPos);
+		ActionResult interact(PlayerEntity player, World world, Hand hand, net.minecraft.entity.Entity entity, Vec3d hitPosition);
 	}
 
 	@FunctionalInterface
@@ -63,14 +63,38 @@ public final class PlayerInteractionEvent {
 		ActionResult interact(PlayerEntity player, World world, Hand hand);
 	}
 
+	/**
+	 * Event emitted when a player "attacks" a block.
+	 */
 	public static final HandlerRegistry<Block> ATTACK_BLOCK = new HandlerList<>();
+
+	/**
+	 * Event emitted when a player "attacks" an entity.
+	 */
 	public static final HandlerRegistry<Entity> ATTACK_ENTITY = new HandlerList<>();
 	
 	// TODO: For completeness' sake, but requires us to add a custom packet. Is it worth the complexity?
 	/* public static final HandlerRegistry<Item> ATTACK_ITEM = new HandlerList<>(); */
 
+	/**
+	 * Event emitted when a player interacts with a block.
+	 */
 	public static final HandlerRegistry<BlockPositioned> INTERACT_BLOCK = new HandlerList<>();
+
+	/**
+	 * Event emitted when a player interacts with an entity.
+	 *
+	 * Developer note: Minecraft provides two methods to interact with
+	 * Entities - one takes in a hit position, the other does not. However,
+	 * all vanilla interaction cases seem to use one, then the other - as such,
+	 * only one event is currently provided, but it is accordingly named in
+	 * the case of a second event being necessary.
+	 */
 	public static final HandlerRegistry<EntityPositioned> INTERACT_ENTITY_POSITIONED = new HandlerList<>();
+
+	/**
+	 * Event emitted when a player interacts with an item.
+	 */
 	public static final HandlerRegistry<Item> INTERACT_ITEM = new HandlerList<>();
 
 	/**

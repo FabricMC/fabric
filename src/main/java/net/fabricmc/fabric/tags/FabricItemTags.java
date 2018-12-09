@@ -21,6 +21,9 @@ import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
+/**
+ * Item tags provdied by Fabric.
+ */
 public class FabricItemTags {
 	public static final Tag<Item> AXES = register("axes");
 	public static final Tag<Item> HOES = register("hoes");
@@ -28,7 +31,11 @@ public class FabricItemTags {
 	public static final Tag<Item> SHOVELS = register("shovels");
 	public static final Tag<Item> SWORDS = register("swords");
 
+	private FabricItemTags() {
+
+	}
+
 	private static Tag<Item> register(String id) {
-		return new ItemTags.class_3490(new Identifier("fabric", id));
+		return TagRegistry.item(new Identifier("fabric", id));
 	}
 }

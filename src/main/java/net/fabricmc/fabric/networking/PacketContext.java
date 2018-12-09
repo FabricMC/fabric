@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.networking;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Side;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ThreadTaskQueue;
@@ -26,7 +27,38 @@ import net.minecraft.util.ThreadTaskQueue;
  * the correct task queue to enqueue synchronization-requiring code on.
  */
 public interface PacketContext {
-	Side getNetworkSide();
+	/**
+	 * Get the environment associated with the packet.
+	 *
+	 * @return EnvType.CLIENT if processing packet on the client side,
+	 *         EnvType.SERVER otherwise.
+	 */
+	EnvType getPacketEnvironment();
+
+	/**
+	 * Get the player associated with the packet.
+	 *
+	 * On the client side, this always returns the client-side player instance.
+	 * On the server side, it returns the player belonging to the client this
+	 * packet was sent by.
+	 *
+	 * @return The player associated with the packet.
+	 */
 	PlayerEntity getPlayer();
+
+	/**
+	 * Get the task queue for a given side.
+	 *
+	 * As Minecraft networking I/O is asynchronous, but a lot of its logic is
+	 * not thread-safe, it is recommended to do the following:
+	 *
+	 * - read and parse the PacketByteBuf,
+	 * - run the packet response logic through the main thread task queue via
+	 *   ThreadTaskQueue.execute(). The method will check if it's not already
+	 *   on the main thread in order to avoid unnecessary delays, so don't
+	 *   worry about that!
+	 *
+	 * @return The thread task queue.
+	 */
 	ThreadTaskQueue getTaskQueue();
 }

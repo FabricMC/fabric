@@ -23,16 +23,26 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
-public class CustomPayloadHandlerRegistry {
-	public static final CustomPayloadHandlerRegistry CLIENT = new CustomPayloadHandlerRegistry();
-	public static final CustomPayloadHandlerRegistry SERVER = new CustomPayloadHandlerRegistry();
+/**
+ * Registry for CustomPayload-based packet handling. You can use this
+ * to register your own CustomPayload packet handlers.
+ */
+public class CustomPayloadPacketRegistry {
+	public static final CustomPayloadPacketRegistry CLIENT = new CustomPayloadPacketRegistry();
+	public static final CustomPayloadPacketRegistry SERVER = new CustomPayloadPacketRegistry();
 
 	protected final Map<Identifier, BiConsumer<PacketContext, PacketByteBuf>> consumerMap;
 
-	protected CustomPayloadHandlerRegistry() {
+	protected CustomPayloadPacketRegistry() {
 		consumerMap = new HashMap<>();
 	}
 
+	/**
+	 * Register a packet.
+	 *
+	 * @param id The packet Identifier.
+	 * @param consumer The method used for handling the packet.
+	 */
 	public void register(Identifier id, BiConsumer<PacketContext, PacketByteBuf> consumer) {
 		if (consumerMap.containsKey(id)) {
 			// TODO: log warning
@@ -41,8 +51,16 @@ public class CustomPayloadHandlerRegistry {
 		consumerMap.put(id, consumer);
 	}
 
-	public boolean accept(Identifier identifier, PacketContext context, PacketByteBuf buf) {
-		BiConsumer<PacketContext, PacketByteBuf> consumer = consumerMap.get(identifier);
+	/**
+	 * Hook for accepting packets used in Fabric mixins.
+	 *
+	 * @param id The packet Identifier received.
+	 * @param context The packet context provided.
+	 * @param buf The packet data buffer received.
+	 * @return Whether or not the packet was handled by this packet registry.
+	 */
+	public boolean accept(Identifier id, PacketContext context, PacketByteBuf buf) {
+		BiConsumer<PacketContext, PacketByteBuf> consumer = consumerMap.get(id);
 		if (consumer != null) {
 			try {
 				consumer.accept(context, buf);

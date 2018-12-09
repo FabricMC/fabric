@@ -29,6 +29,14 @@ import net.minecraft.world.loot.LootTables;
 
 import java.util.function.Function;
 
+/**
+ * Fabric's version of Block.Builder. Adds additional methods and hooks
+ * not found in the original class.
+ *
+ * To use it, simply replace Block.Builder.create() with
+ * FabricBlockBuilder.create() and add .build() at the end to return the
+ * vanilla Block.Builder instance beneath.
+ */
 public class FabricBlockBuilder {
 	public interface Delegate {
 		void fabric_setMapColor(MaterialColor color);

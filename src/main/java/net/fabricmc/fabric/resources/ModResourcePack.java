@@ -20,9 +20,13 @@ import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 
+/**
+ * Interface implemented by mod-provided resource packs.
+ */
 public interface ModResourcePack extends ResourcePack {
-	ModInfo getModInfo();
-	default boolean provides(ResourceType type) {
-		return true;
-	}
+	/**
+	 * @return The ModInfo object associated with the mod providing this
+	 *         resource pack.
+	 */
+	ModInfo getFabricModInfo();
 }

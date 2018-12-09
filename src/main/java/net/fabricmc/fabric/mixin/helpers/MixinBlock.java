@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.helpers;
 
-import net.fabricmc.fabric.helpers.FabricBuilderEvent;
+import net.fabricmc.fabric.events.ObjectBuilderEvent;
 import net.fabricmc.fabric.util.HandlerList;
 import net.minecraft.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,7 @@ import java.util.function.BiConsumer;
 public class MixinBlock {
 	@Inject(method = "<init>(Lnet/minecraft/block/Block$Builder;)V", at = @At("RETURN"))
 	public void init(Block.Builder builder, CallbackInfo info) {
-		for (Object o : ((HandlerList<BiConsumer<Block.Builder, Block>>) FabricBuilderEvent.BLOCK).getBackingArray()) {
+		for (Object o : ((HandlerList<BiConsumer<Block.Builder, Block>>) ObjectBuilderEvent.BLOCK).getBackingArray()) {
 			((BiConsumer<Block.Builder, Block>) o).accept(builder, (Block) (Object) this);
 		}
 	}

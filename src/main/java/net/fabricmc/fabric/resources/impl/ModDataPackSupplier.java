@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.resources;
+package net.fabricmc.fabric.resources.impl;
 
+import net.fabricmc.fabric.resources.ModResourcePack;
 import net.minecraft.class_3285;
 import net.minecraft.class_3288;
 import net.minecraft.resource.ResourcePack;
@@ -36,7 +37,7 @@ public class ModDataPackSupplier implements class_3285 {
 				throw new RuntimeException("Not a ModResourcePack!");
 			}
 
-			T var3 = class_3288.method_14456("fabric/" + ((ModResourcePack) pack).getModInfo().getId(),
+			T var3 = class_3288.method_14456("fabric/" + ((ModResourcePack) pack).getFabricModInfo().getId(),
 				false, () -> pack, class_3290, class_3288.class_3289.BOTTOM);
 
 			if (var3 != null) {

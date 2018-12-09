@@ -14,25 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.resources;
+package net.fabricmc.fabric.resources.impl;
 
+import net.fabricmc.fabric.resources.ModResourcePack;
 import net.fabricmc.loader.ModInfo;
+import net.minecraft.resource.DirectoryResourcePack;
 import net.minecraft.resource.ResourceNotFoundException;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.ZipResourcePack;
-import net.minecraft.util.Identifier;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.function.Predicate;
+import java.io.*;
 
-public class ModZipResourcePack extends ZipResourcePack implements ModResourcePack {
+public class ModDirectoryResourcePack extends DirectoryResourcePack implements ModResourcePack {
     private final ModInfo info;
 
-    public ModZipResourcePack(ModInfo info, File file) {
+    public ModDirectoryResourcePack(ModInfo info, File file) {
         super(file);
         this.info = info;
     }
@@ -56,12 +50,12 @@ public class ModZipResourcePack extends ZipResourcePack implements ModResourcePa
     }
 
     @Override
-    public boolean containsFilename(String filename) {
+    protected boolean containsFilename(String filename) {
         return super.containsFilename(filename) || ModResourcePackUtil.containsDefault(info, filename);
     }
 
 	@Override
-	public ModInfo getModInfo() {
+	public ModInfo getFabricModInfo() {
 		return info;
 	}
 }
