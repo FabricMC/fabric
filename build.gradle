@@ -25,6 +25,9 @@ targetCompatibility = 1.8
 archivesBaseName = "fabric"
 version = "0.1.0"
 
+def ENV = System.getenv()
+version = version + "." + (ENV.BUILD_NUMBER ?: "local")
+
 minecraft {
 	refmapName = "net.fabricmc.fabric.refmap.json"
 }
