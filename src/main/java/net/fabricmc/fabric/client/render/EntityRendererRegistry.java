@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Function;
 
+/**
+ * Helper class for registering EntityRenderers.
+ */
 public class EntityRendererRegistry {
 	@FunctionalInterface
 	public interface Factory {

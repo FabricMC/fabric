@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.helpers;
+package net.fabricmc.fabric.mixin.events.objectbuilder;
 
 import net.fabricmc.fabric.events.ObjectBuilderEvent;
 import net.fabricmc.fabric.util.HandlerList;

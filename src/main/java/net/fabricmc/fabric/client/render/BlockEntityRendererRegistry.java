@@ -23,6 +23,9 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Helper class for registering BlockEntityRenderers.
+ */
 public class BlockEntityRendererRegistry {
 	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
 	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers;

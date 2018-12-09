@@ -22,6 +22,9 @@ import net.minecraft.util.Identifier;
 import java.util.Map;
 import java.util.function.Consumer;
 
+/**
+ * Helper class for registering Sprites during loading.
+ */
 public class SpriteRegistry {
 	private final Map<Identifier, Sprite> spriteMap;
 	private final Consumer<Identifier> defaultSpriteRegister;
@@ -31,10 +34,20 @@ public class SpriteRegistry {
 		this.defaultSpriteRegister = defaultSpriteRegister;
 	}
 
+	/**
+	 * Register a sprite to be loaded using the default implementation.
+	 *
+	 * @param id The sprite identifier.
+	 */
 	public void register(Identifier id) {
 		this.defaultSpriteRegister.accept(id);
 	}
 
+	/**
+	 * Register a custom sprite to be added and loaded.
+	 *
+	 * @param sprite The sprite to be added.
+	 */
 	public void register(Sprite sprite) {
 		this.spriteMap.put(sprite.getId(), sprite);
 	}

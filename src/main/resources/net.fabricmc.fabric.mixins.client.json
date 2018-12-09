@@ -4,15 +4,15 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "block.entity.MixinClientPlayNetworkHandler",
-    "events.MixinClientPlayerInteractionManager",
-    "events.MixinMinecraftClient",
+    "client.render.MixinBlockEntityRenderManager",
+    "client.render.MixinEntityRenderManager",
+    "client.texture.MixinSpriteAtlasTexture",
+    "events.playerinteraction.MixinClientPlayerInteractionManager",
+    "events.tick.MixinMinecraftClient",
     "networking.MixinClientPlayNetworkHandler",
     "registry.client.MixinBlockColorMap",
     "registry.client.MixinItemColorMap",
     "registry.client.MixinItemModelMap",
-    "render.MixinBlockEntityRenderManager",
-    "render.MixinEntityRenderManager",
-    "render.MixinSpriteAtlasTexture",
     "resources.MixinMinecraftGame"
   ],
   "injectors": {

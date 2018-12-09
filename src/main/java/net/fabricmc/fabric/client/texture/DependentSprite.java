@@ -24,8 +24,11 @@ import java.util.Set;
  * Implement this interface on a Sprite to declare additional dependencies
  * that should be processed prior to this sprite.
  *
- * TODO: Implement this!
+ * Best used in conjunction with {@link CustomSpriteLoader}.
  */
 public interface DependentSprite {
+	/**
+	 * @return A set of all sprites that should be loaded before this sprite.
+	 */
 	Set<Identifier> getDependencies();
 }

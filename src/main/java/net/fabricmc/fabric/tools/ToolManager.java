@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.tools;
 
+import net.fabricmc.fabric.block.FabricBlockBuilder;
 import net.fabricmc.fabric.events.ObjectBuilderEvent;
 import net.fabricmc.fabric.util.TriState;
 import net.minecraft.block.Block;
@@ -93,7 +94,7 @@ public final class ToolManager {
 	}
 
 	/**
-	 * @deprecated Use {@link net.fabricmc.fabric.helpers.FabricBlockBuilder FabricBlockBuilder} for your own blocks.
+	 * @deprecated Use {@link FabricBlockBuilder FabricBlockBuilder} for your own blocks.
 	 * TODO: Add a way to manipulate the values for non-owned blocks.
 	 */
 	@Deprecated
@@ -102,7 +103,7 @@ public final class ToolManager {
 	}
 
 	/**
-	 * @deprecated Use {@link net.fabricmc.fabric.helpers.FabricBlockBuilder FabricBlockBuilder} for your own blocks.
+	 * @deprecated Use {@link FabricBlockBuilder FabricBlockBuilder} for your own blocks.
 	 * TODO: Add a way to manipulate the values for non-owned blocks.
 	 */
 	@Deprecated

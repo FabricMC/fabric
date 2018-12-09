@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.render;
+package net.fabricmc.fabric.mixin.client.texture;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.fabricmc.fabric.client.texture.*;
+import net.fabricmc.fabric.client.texture.impl.FabricSprite;
+import net.fabricmc.fabric.events.client.SpriteEvent;
 import net.fabricmc.fabric.util.HandlerList;
 import net.minecraft.class_1050;
 import net.minecraft.client.MinecraftClient;
@@ -31,8 +31,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportElement;
-import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -87,8 +85,8 @@ public abstract class MixinSpriteAtlasTexture {
 		//noinspection RedundantCast,ConstantConditions
 		if ((SpriteAtlasTexture) (Object) this == MinecraftClient.getInstance().getSpriteAtlas()) {
 			SpriteRegistry registry = new SpriteRegistry(sprites, (id) -> addSpriteToLoad(manager, id));
-			for (Object provider : ((HandlerList<SpriteProvider>) SpriteProvider.HANDLER).getBackingArray()) {
-				((SpriteProvider) provider).registerSprites(registry);
+			for (Object provider : ((HandlerList<SpriteEvent.Provider>) SpriteEvent.PROVIDE).getBackingArray()) {
+				((SpriteEvent.Provider) provider).registerSprites(registry);
 			}
 		}
 

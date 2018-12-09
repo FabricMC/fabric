@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.render;
+package net.fabricmc.fabric.mixin.events.objectbuilder;
 
-import net.fabricmc.fabric.client.render.BlockEntityRendererRegistry;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.fabricmc.fabric.events.ObjectBuilderEvent;
+import net.fabricmc.fabric.util.HandlerList;
+import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
+import java.util.function.BiConsumer;
 
-@Mixin(BlockEntityRenderDispatcher.class)
-public class MixinBlockEntityRenderManager {
-	@Shadow
-	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers;
-
-	@Inject(method = "<init>()V", at = @At("RETURN"))
-	public void init(CallbackInfo info) {
-		BlockEntityRendererRegistry.INSTANCE.initialize(renderers);
+@Mixin(Item.class)
+public class MixinItem {
+	@Inject(method = "<init>(Lnet/minecraft/item/Item$Builder;)V", at = @At("RETURN"))
+	public void init(Item.Builder builder, CallbackInfo info) {
+		for (Object o : ((HandlerList<BiConsumer<Item.Builder, Item>>) ObjectBuilderEvent.ITEM).getBackingArray()) {
+			((BiConsumer<Item.Builder, Item>) o).accept(builder, (Item) (Object) this);
+		}
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.events;
+package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.util.HandlerList;

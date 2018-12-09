@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.helpers;
+package net.fabricmc.fabric.mixin.block;
 
-import net.fabricmc.fabric.helpers.FabricBlockBuilder;
+import net.fabricmc.fabric.block.FabricBlockBuilder;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;

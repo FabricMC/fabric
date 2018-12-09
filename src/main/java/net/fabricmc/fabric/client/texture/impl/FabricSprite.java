@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.client.texture;
+package net.fabricmc.fabric.client.texture.impl;
 
-import net.fabricmc.fabric.util.HandlerList;
-import net.fabricmc.fabric.util.HandlerRegistry;
+import net.minecraft.class_1050;
+import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.util.Identifier;
 
-/**
- * Use this interface to register providers for your own custom atlas sprites.
- */
-@FunctionalInterface
-public interface SpriteProvider {
-	final HandlerRegistry<SpriteProvider> HANDLER = new HandlerList<>();
+public class FabricSprite extends Sprite {
+	public FabricSprite(Identifier var1, int var2, int var3) {
+		super(var1, var2, var3);
+	}
 
-	void registerSprites(SpriteRegistry registry);
+	public FabricSprite(Identifier identifier, class_1050 class_1050, AnimationResourceMetadata animationResourceMetadata) {
+		super(identifier, class_1050, animationResourceMetadata);
+	}
 }

@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.helpers;
+package net.fabricmc.fabric.mixin.events.tick;
 
-import net.fabricmc.fabric.events.ObjectBuilderEvent;
+import net.fabricmc.fabric.events.PlayerInteractionEvent;
+import net.fabricmc.fabric.events.TickEvent;
 import net.fabricmc.fabric.util.HandlerList;
-import net.minecraft.item.Item;
+import net.minecraft.util.Profiler;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
-@Mixin(Item.class)
-public class MixinItem {
-	@Inject(method = "<init>(Lnet/minecraft/item/Item$Builder;)V", at = @At("RETURN"))
-	public void init(Item.Builder builder, CallbackInfo info) {
-		for (Object o : ((HandlerList<BiConsumer<Item.Builder, Item>>) ObjectBuilderEvent.ITEM).getBackingArray()) {
-			((BiConsumer<Item.Builder, Item>) o).accept(builder, (Item) (Object) this);
-		}
+@Mixin(World.class)
+public class MixinWorld {
+	@Shadow
+	private Profiler profiler;
+
+	@Inject(at = @At("RETURN"), method = "updateEntities")
+	public void updateEntities(CallbackInfo info) {
+		TickEvent.tick(TickEvent.WORLD, (World) (Object) this, this.profiler);
 	}
 }

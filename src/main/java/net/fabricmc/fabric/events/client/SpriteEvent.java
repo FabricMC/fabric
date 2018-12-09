@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.client.texture;
+package net.fabricmc.fabric.events.client;
 
-import net.minecraft.class_1050;
-import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.Identifier;
+import net.fabricmc.fabric.client.texture.SpriteRegistry;
+import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerRegistry;
 
-public class FabricSprite extends Sprite {
-	public FabricSprite(Identifier var1, int var2, int var3) {
-		super(var1, var2, var3);
+public class SpriteEvent {
+	@FunctionalInterface
+	public interface Provider {
+		void registerSprites(SpriteRegistry registry);
 	}
 
-	public FabricSprite(Identifier identifier, class_1050 class_1050, AnimationResourceMetadata animationResourceMetadata) {
-		super(identifier, class_1050, animationResourceMetadata);
-	}
+	public static final HandlerRegistry<Provider> PROVIDE = new HandlerList<>();
 }

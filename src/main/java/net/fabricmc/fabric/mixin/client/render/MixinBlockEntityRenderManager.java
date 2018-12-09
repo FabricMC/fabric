@@ -14,28 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.events;
+package net.fabricmc.fabric.mixin.client.render;
 
-import net.fabricmc.fabric.events.TickEvent;
-import net.fabricmc.fabric.events.client.ClientTickEvent;
-import net.minecraft.class_3689;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.server.MinecraftServer;
+import net.fabricmc.fabric.client.render.BlockEntityRendererRegistry;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.BooleanSupplier;
+import java.util.Map;
 
-@Mixin(MinecraftClient.class)
-public class MixinMinecraftClient {
+@Mixin(BlockEntityRenderDispatcher.class)
+public class MixinBlockEntityRenderManager {
 	@Shadow
-	private class_3689 profiler;
+	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers;
 
-	@Inject(at = @At("RETURN"), method = "tick")
-	public void tick(CallbackInfo info) {
-		TickEvent.tick(ClientTickEvent.CLIENT, (MinecraftClient) (Object) this, this.profiler);
+	@Inject(method = "<init>()V", at = @At("RETURN"))
+	public void init(CallbackInfo info) {
+		BlockEntityRendererRegistry.INSTANCE.initialize(renderers);
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.helpers;
+package net.fabricmc.fabric.block;
 
 import net.fabricmc.fabric.tools.ToolManager;
 import net.minecraft.block.Block;

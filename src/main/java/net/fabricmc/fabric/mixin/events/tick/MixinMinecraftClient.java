@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.events;
+package net.fabricmc.fabric.mixin.events.tick;
 
-import net.fabricmc.fabric.events.ServerEvent;
 import net.fabricmc.fabric.events.TickEvent;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.events.client.ClientTickEvent;
 import net.minecraft.class_3689;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,23 +28,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
-@Mixin(MinecraftServer.class)
-public class MixinMinecraftServer {
+@Mixin(MinecraftClient.class)
+public class MixinMinecraftClient {
 	@Shadow
 	private class_3689 profiler;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;method_3791(Lnet/minecraft/server/ServerMetadata;)V", ordinal = 0), method = "run")
-	public void afterSetupServer(CallbackInfo info) {
-		for (Object handler : ((HandlerList<Consumer<MinecraftServer>>) ServerEvent.START).getBackingArray()) {
-			//noinspection unchecked
-			((Consumer) handler).accept((Object) this);
-		}
-	}
-
-	@Inject(at = @At("RETURN"), method = "method_3813")
-	protected void method_3813(BooleanSupplier var1, CallbackInfo info) {
-		TickEvent.tick(TickEvent.SERVER, (MinecraftServer) (Object) this, this.profiler);
+	@Inject(at = @At("RETURN"), method = "tick")
+	public void tick(CallbackInfo info) {
+		TickEvent.tick(ClientTickEvent.CLIENT, (MinecraftClient) (Object) this, this.profiler);
 	}
 }
