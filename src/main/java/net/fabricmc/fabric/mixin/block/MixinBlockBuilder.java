@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.block;
 
-import net.fabricmc.fabric.block.FabricBlockBuilder;
+import net.fabricmc.fabric.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -25,8 +25,8 @@ import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(Block.Builder.class)
-public class MixinBlockBuilder implements FabricBlockBuilder.Delegate {
+@Mixin(Block.Settings.class)
+public class MixinBlockBuilder implements FabricBlockSettings.Delegate {
 	@Shadow
 	private Material material;
 	@Shadow

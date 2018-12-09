@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.tools;
 
-import net.fabricmc.fabric.block.FabricBlockBuilder;
+import net.fabricmc.fabric.block.FabricBlockSettings;
 import net.fabricmc.fabric.events.ObjectBuilderEvent;
 import net.fabricmc.fabric.util.TriState;
 import net.minecraft.block.Block;
@@ -31,7 +31,7 @@ import java.util.Map;
 
 public final class ToolManager {
 	public interface Entry {
-		void breakByHand(boolean value);
+		void setBreakByHand(boolean value);
 		void putBreakByTool(Tag<Item> tag, int miningLevel);
 	}
 
@@ -42,7 +42,7 @@ public final class ToolManager {
 		private TriState defaultValue = TriState.DEFAULT;
 
 		@Override
-		public void breakByHand(boolean value) {
+		public void setBreakByHand(boolean value) {
 			this.defaultValue = TriState.of(value);
 		}
 
@@ -67,7 +67,7 @@ public final class ToolManager {
 		}
 	}
 
-	private static final Map<Block.Builder, EntryImpl> entriesPre = new HashMap<>();
+	private static final Map<Block.Settings, EntryImpl> entriesPre = new HashMap<>();
 	private static final Map<Block, EntryImpl> entries = new HashMap<>();
 
 	private ToolManager() {
@@ -78,40 +78,50 @@ public final class ToolManager {
 		ObjectBuilderEvent.BLOCK.register(ToolManager::onBlockRegistered);
 	}
 
-	private static void onBlockRegistered(Block.Builder builder, Block block) {
-		EntryImpl entry = entriesPre.get(builder);
+	private static void onBlockRegistered(Block.Settings settings, Block block) {
+		EntryImpl entry = entriesPre.get(settings);
 		if (entry != null) {
 			entries.put(block, entry);
 		}
 	}
 
-	public static Entry get(Block.Builder builder) {
-		return entriesPre.computeIfAbsent(builder, (bb) -> new EntryImpl());
+	/**
+	 * Get the Entry for a given instance of Block.Settings.
+	 *
+	 * This method is meant to be used by Block.Settings wrappers, and it is
+	 * recommended that you simply use the wrapper methods in
+	 * {@link FabricBlockSettings} instead.
+	 *
+	 * @param settings
+	 * @return
+	 */
+	public static Entry entry(Block.Settings settings) {
+		return entriesPre.computeIfAbsent(settings, (bb) -> new EntryImpl());
 	}
 
-	private static Entry get(Block block) {
+	private static Entry entry(Block block) {
 		return entries.computeIfAbsent(block, (bb) -> new EntryImpl());
 	}
 
 	/**
-	 * @deprecated Use {@link FabricBlockBuilder FabricBlockBuilder} for your own blocks.
+	 * @deprecated Use {@link FabricBlockSettings FabricBlockSettings} for your own blocks.
 	 * TODO: Add a way to manipulate the values for non-owned blocks.
 	 */
 	@Deprecated
 	public static void registerBreakByHand(Block block, boolean value) {
-		get(block).breakByHand(value);
+		entry(block).setBreakByHand(value);
 	}
 
 	/**
-	 * @deprecated Use {@link FabricBlockBuilder FabricBlockBuilder} for your own blocks.
+	 * @deprecated Use {@link FabricBlockSettings FabricBlockSettings} for your own blocks.
 	 * TODO: Add a way to manipulate the values for non-owned blocks.
 	 */
 	@Deprecated
 	public static void registerBreakByTool(Block block, Tag<Item> tag, int miningLevel) {
-		get(block).putBreakByTool(tag, miningLevel);
+		entry(block).putBreakByTool(tag, miningLevel);
 	}
 
-	public static int getMiningLevel(ItemStack stack) {
+	private static int getMiningLevel(ItemStack stack) {
 		if (stack.getItem() instanceof ToolItem) {
 			return ((ToolItem) stack.getItem()).getType().getMiningLevel();
 		} else {
@@ -119,6 +129,9 @@ public final class ToolManager {
 		}
 	}
 
+	/**
+	 * Hook for ItemStack.isEffectiveOn and similar methods.
+	 */
 	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state) {
 		EntryImpl entry = entries.get(state.getBlock());
 		if (entry != null) {

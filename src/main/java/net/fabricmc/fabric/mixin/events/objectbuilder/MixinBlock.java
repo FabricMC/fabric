@@ -28,10 +28,10 @@ import java.util.function.BiConsumer;
 
 @Mixin(Block.class)
 public class MixinBlock {
-	@Inject(method = "<init>(Lnet/minecraft/block/Block$Builder;)V", at = @At("RETURN"))
-	public void init(Block.Builder builder, CallbackInfo info) {
-		for (Object o : ((HandlerList<BiConsumer<Block.Builder, Block>>) ObjectBuilderEvent.BLOCK).getBackingArray()) {
-			((BiConsumer<Block.Builder, Block>) o).accept(builder, (Block) (Object) this);
+	@Inject(method = "<init>(Lnet/minecraft/block/Block$Settings;)V", at = @At("RETURN"))
+	public void init(Block.Settings builder, CallbackInfo info) {
+		for (Object o : ((HandlerList<BiConsumer<Block.Settings, Block>>) ObjectBuilderEvent.BLOCK).getBackingArray()) {
+			((BiConsumer<Block.Settings, Block>) o).accept(builder, (Block) (Object) this);
 		}
 	}
 }

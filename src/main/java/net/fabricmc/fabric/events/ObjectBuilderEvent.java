@@ -24,13 +24,13 @@ import net.minecraft.item.Item;
 import java.util.function.BiConsumer;
 
 /**
- * This is a class for events emitted when a Block.Builder/Item.Builder is
+ * This is a class for events emitted when a Block.Settings/Item.Settings is
  * turned into a Block or Item. You can use these to extend these builders with
  * your own methods and transparently add the resulting information to a Map.
  */
 public final class ObjectBuilderEvent {
-	public static final HandlerRegistry<BiConsumer<Block.Builder, Block>> BLOCK = new HandlerList<>();
-	public static final HandlerRegistry<BiConsumer<Item.Builder, Item>> ITEM = new HandlerList<>();
+	public static final HandlerRegistry<BiConsumer<Block.Settings, Block>> BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<BiConsumer<Item.Settings, Item>> ITEM = new HandlerList<>();
 
 	private ObjectBuilderEvent() {
 

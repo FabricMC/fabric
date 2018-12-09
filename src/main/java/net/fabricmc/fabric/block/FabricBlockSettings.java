@@ -30,14 +30,14 @@ import net.minecraft.world.loot.LootTables;
 import java.util.function.Function;
 
 /**
- * Fabric's version of Block.Builder. Adds additional methods and hooks
+ * Fabric's version of Block.Settings. Adds additional methods and hooks
  * not found in the original class.
  *
- * To use it, simply replace Block.Builder.create() with
- * FabricBlockBuilder.create() and add .build() at the end to return the
- * vanilla Block.Builder instance beneath.
+ * To use it, simply replace Block.Settings.create() with
+ * FabricBlockSettings.create() and add .build() at the end to return the
+ * vanilla Block.Settings instance beneath.
  */
-public class FabricBlockBuilder {
+public class FabricBlockSettings {
 	public interface Delegate {
 		void fabric_setMapColor(MaterialColor color);
 		void fabric_setCollidable(boolean value);
@@ -50,51 +50,51 @@ public class FabricBlockBuilder {
 		void fabric_setDropTable(Identifier id);
 	}
 
-	protected final Block.Builder delegate;
-	private final FabricBlockBuilder.Delegate castDelegate;
+	protected final Block.Settings delegate;
+	private final FabricBlockSettings.Delegate castDelegate;
 
-	protected FabricBlockBuilder(Material material) {
-		delegate = Block.Builder.create(material);
-		castDelegate = (FabricBlockBuilder.Delegate) delegate;
+	protected FabricBlockSettings(Material material) {
+		delegate = Block.Settings.create(material);
+		castDelegate = (FabricBlockSettings.Delegate) delegate;
 	}
 
-	protected FabricBlockBuilder(Block base) {
-		delegate = Block.Builder.copy(base);
-		castDelegate = (FabricBlockBuilder.Delegate) delegate;
+	protected FabricBlockSettings(Block base) {
+		delegate = Block.Settings.copy(base);
+		castDelegate = (FabricBlockSettings.Delegate) delegate;
 	}
 
-	public static FabricBlockBuilder create(Material material) {
-		return new FabricBlockBuilder(material);
+	public static FabricBlockSettings create(Material material) {
+		return new FabricBlockSettings(material);
 	}
 
-	public static FabricBlockBuilder copy(Block base) {
-		return new FabricBlockBuilder(base);
+	public static FabricBlockSettings copy(Block base) {
+		return new FabricBlockSettings(base);
 	}
 
 	/* FABRIC HELPERS */
 
-	public FabricBlockBuilder setBreakByHand(boolean value) {
-		ToolManager.get(delegate).breakByHand(value);
+	public FabricBlockSettings setBreakByHand(boolean value) {
+		ToolManager.entry(delegate).setBreakByHand(value);
 		return this;
 	}
 
-	public FabricBlockBuilder setBreakByTool(Tag<Item> tag) {
+	public FabricBlockSettings setBreakByTool(Tag<Item> tag) {
 		return setBreakByTool(tag, 0);
 	}
 
-	public FabricBlockBuilder setBreakByTool(Tag<Item> tag, int miningLevel) {
-		ToolManager.get(delegate).putBreakByTool(tag, miningLevel);
+	public FabricBlockSettings setBreakByTool(Tag<Item> tag, int miningLevel) {
+		ToolManager.entry(delegate).putBreakByTool(tag, miningLevel);
 		return this;
 	}
 
 	/* DELEGATE WRAPPERS */
 
-	public FabricBlockBuilder setMaterialColor(MaterialColor color) {
+	public FabricBlockSettings setMaterialColor(MaterialColor color) {
 		castDelegate.fabric_setMapColor(color);
 		return this;
 	}
 
-	public FabricBlockBuilder setMaterialColor(DyeColor color) {
+	public FabricBlockSettings setMaterialColor(DyeColor color) {
 		castDelegate.fabric_setMapColor(color.getMaterialColor());
 		return this;
 	}
@@ -103,7 +103,7 @@ public class FabricBlockBuilder {
 	 * @deprecated Use {@link #setMaterialColor(MaterialColor) setMaterialColor} instead.
 	 */
 	@Deprecated
-	public FabricBlockBuilder setMapColor(MaterialColor color) {
+	public FabricBlockSettings setMapColor(MaterialColor color) {
 		return setMaterialColor(color);
 	}
 
@@ -111,74 +111,74 @@ public class FabricBlockBuilder {
 	 * @deprecated Use {@link #setMaterialColor(DyeColor) setMaterialColor} instead.
 	 */
 	@Deprecated
-	public FabricBlockBuilder setMapColor(DyeColor color) {
+	public FabricBlockSettings setMapColor(DyeColor color) {
 		return setMaterialColor(color);
 	}
 
-	public FabricBlockBuilder setCollidable(boolean value) {
+	public FabricBlockSettings setCollidable(boolean value) {
 		castDelegate.fabric_setCollidable(value);
 		return this;
 	}
 
-	public FabricBlockBuilder setSoundGroup(BlockSoundGroup group) {
+	public FabricBlockSettings setSoundGroup(BlockSoundGroup group) {
 		castDelegate.fabric_setSoundGroup(group);
 		return this;
 	}
 
-	public FabricBlockBuilder acceptRandomTicks() {
+	public FabricBlockSettings acceptRandomTicks() {
 		castDelegate.fabric_setRandomTicks(true);
 		return this;
 	}
 
-	public FabricBlockBuilder setLuminance(int value) {
+	public FabricBlockSettings setLuminance(int value) {
 		castDelegate.fabric_setLuminance(value);
 		return this;
 	}
 
-	public FabricBlockBuilder setHardness(float value) {
+	public FabricBlockSettings setHardness(float value) {
 		castDelegate.fabric_setHardness(value);
 		castDelegate.fabric_setResistance(value);
 		return this;
 	}
 
-	public FabricBlockBuilder setResistance(float value) {
+	public FabricBlockSettings setResistance(float value) {
 		castDelegate.fabric_setResistance(value);
 		return this;
 	}
 
-	public FabricBlockBuilder setStrength(float hardness, float resistance) {
+	public FabricBlockSettings setStrength(float hardness, float resistance) {
 		castDelegate.fabric_setHardness(hardness);
 		castDelegate.fabric_setResistance(resistance);
 		return this;
 	}
 
-	public FabricBlockBuilder noDropTable() {
+	public FabricBlockSettings noDropTable() {
 		castDelegate.fabric_setDropTable(LootTables.EMPTY);
 		return this;
 	}
 
-	public FabricBlockBuilder copyDropTable(Block block) {
+	public FabricBlockSettings copyDropTable(Block block) {
 		castDelegate.fabric_setDropTable(block.getDropTableId());
 		return this;
 	}
 
-	public FabricBlockBuilder setDropTable(Identifier id) {
+	public FabricBlockSettings setDropTable(Identifier id) {
 		castDelegate.fabric_setDropTable(id);
 		return this;
 	}
 
-	public FabricBlockBuilder setFrictionCoefficient(float value) {
+	public FabricBlockSettings setFrictionCoefficient(float value) {
 		castDelegate.fabric_setFriction(value);
 		return this;
 	}
 
 	/* BUILDING LOGIC */
 
-	public Block.Builder build() {
+	public Block.Settings build() {
 		return delegate;
 	}
 
-	public <T> T build(Function<Block.Builder, T> function) {
+	public <T> T build(Function<Block.Settings, T> function) {
 		return function.apply(delegate);
 	}
 }
