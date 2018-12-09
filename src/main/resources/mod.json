@@ -3,6 +3,8 @@
   "name": "Fabric API",
   "version": "0.0.2",
   "side": "universal",
+  "description": "Core API module providing key hooks and intercompatibility features.",
+  "license": "Apache-2.0",
   "initializers": [
     "net.fabricmc.fabric.FabricAPI"
   ],
