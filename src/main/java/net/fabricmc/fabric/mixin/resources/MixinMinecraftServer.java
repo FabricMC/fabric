@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.mixin.resources;
 
 import net.fabricmc.fabric.resources.impl.ModDataPackSupplier;
-import net.minecraft.class_3283;
-import net.minecraft.class_3288;
+import net.minecraft.resource.ResourcePackContainer;
+import net.minecraft.resource.ResourcePackContainerManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,10 +32,10 @@ import java.io.File;
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
     @Shadow
-    private class_3283<class_3288> field_4595;
+    private ResourcePackContainerManager<ResourcePackContainer> field_4595;
 
-    @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_3283;method_14443(Lnet/minecraft/class_3285;)V", ordinal = 1))
+    @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
     public void method_3800(File file, LevelProperties properties, CallbackInfo info) {
-	    field_4595.method_14443(new ModDataPackSupplier());
+	    field_4595.addCreator(new ModDataPackSupplier());
     }
 }

@@ -17,18 +17,18 @@
 package net.fabricmc.fabric.resources.impl;
 
 import net.fabricmc.fabric.resources.ModResourcePack;
-import net.minecraft.class_3285;
-import net.minecraft.class_3288;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackContainer;
+import net.minecraft.resource.ResourcePackCreator;
 import net.minecraft.resource.ResourceType;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class ModDataPackSupplier implements class_3285 {
+public class ModDataPackSupplier implements ResourcePackCreator {
 	@Override
-	public <T extends class_3288> void method_14453(Map<String, T> map, class_3288.class_3290<T> class_3290) {
+	public <T extends ResourcePackContainer> void registerContainer(Map<String, T> map, ResourcePackContainer.Factory<T> factory) {
 		// TODO: "vanilla" does not emit a message; neither should a modded datapack
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, ResourceType.DATA);
@@ -37,11 +37,11 @@ public class ModDataPackSupplier implements class_3285 {
 				throw new RuntimeException("Not a ModResourcePack!");
 			}
 
-			T var3 = class_3288.method_14456("fabric/" + ((ModResourcePack) pack).getFabricModInfo().getId(),
-				false, () -> pack, class_3290, class_3288.class_3289.BOTTOM);
+			T var3 = ResourcePackContainer.of("fabric/" + ((ModResourcePack) pack).getFabricModInfo().getId(),
+				false, () -> pack, factory, ResourcePackContainer.SortingDirection.BOTTOM);
 
 			if (var3 != null) {
-				map.put(var3.method_14463(), var3);
+				map.put(var3.getName(), var3);
 			}
 		}
 	}

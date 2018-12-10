@@ -35,8 +35,8 @@ public class MixinMinecraftServer {
 	@Shadow
 	private class_3689 profiler;
 
-	@Inject(at = @At("RETURN"), method = "method_3813")
-	protected void method_3813(BooleanSupplier var1, CallbackInfo info) {
+	@Inject(at = @At("RETURN"), method = "tick")
+	protected void tick(BooleanSupplier var1, CallbackInfo info) {
 		TickEvent.tick(TickEvent.SERVER, (MinecraftServer) (Object) this, this.profiler);
 	}
 }
