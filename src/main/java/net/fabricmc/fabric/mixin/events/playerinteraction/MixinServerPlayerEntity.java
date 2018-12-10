@@ -19,13 +19,10 @@ package net.fabricmc.fabric.mixin.events.playerinteraction;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.util.HandlerList;
 import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.packet.PlayerInteractEntityServerPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,9 +33,8 @@ public class MixinServerPlayerEntity {
 	public void onPlayerInteractEntity(Entity target, CallbackInfo info) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 
-		for (Object handler : ((HandlerList<PlayerInteractionEvent.Entity>) PlayerInteractionEvent.ATTACK_ENTITY).getBackingArray()) {
-			PlayerInteractionEvent.Entity event = (PlayerInteractionEvent.Entity) handler;
-			ActionResult result = event.interact(player, player.getEntityWorld(), Hand.MAIN, target);
+		for (PlayerInteractionEvent.Entity handler : ((HandlerList<PlayerInteractionEvent.Entity>) PlayerInteractionEvent.ATTACK_ENTITY).getBackingArray()) {
+			ActionResult result = handler.interact(player, player.getEntityWorld(), Hand.MAIN, target);
 			if (result != ActionResult.PASS) {
 				info.cancel();
 				return;

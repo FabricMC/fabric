@@ -37,19 +37,18 @@ public final class TickEvent {
 	}
 
 	public static <T> void tick(HandlerRegistry<Consumer<T>> registry, T object, Profiler profiler) {
-		Object[] handlers = ((HandlerList<Consumer<T>>) registry).getBackingArray();
+		Consumer<T>[] handlers = ((HandlerList<Consumer<T>>) registry).getBackingArray();
 		if (handlers.length > 0) {
 			profiler.begin("fabric");
 
 			int i = 0;
-			for (Object handler : handlers) {
+			for (Consumer<T> handler : handlers) {
 				if ((i++) == 0) {
 					profiler.begin(handler.getClass().getName());
 				} else {
 					profiler.endBegin(handler.getClass().getName());
 				}
-				//noinspection unchecked
-				((Consumer<T>) handler).accept(object);
+				handler.accept(object);
 			}
 
 			if (i > 0) {

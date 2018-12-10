@@ -44,9 +44,8 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
 	public void startBlockBreak(BlockPos pos, Facing facing, CallbackInfo info) {
-		for (Object handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
-			PlayerInteractionEvent.Block event = (PlayerInteractionEvent.Block) handler;
-			ActionResult result = event.interact(player, world, Hand.MAIN, pos, facing);
+		for (PlayerInteractionEvent.Block handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
+			ActionResult result = handler.interact(player, world, Hand.MAIN, pos, facing);
 			if (result != ActionResult.PASS) {
 				// The client might have broken the block on its side, so make sure to let it know.
 				this.player.networkHandler.sendPacket(new BlockUpdateClientPacket(world, pos));
@@ -58,9 +57,8 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At("HEAD"), method = "interactBlock", cancellable = true)
 	public void interactBlock(PlayerEntity player, World world, ItemStack stack, Hand hand, BlockPos pos, Facing facing, float hitX, float hitY, float hitZ, CallbackInfoReturnable<ActionResult> info) {
-		for (Object handler : ((HandlerList<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray()) {
-			PlayerInteractionEvent.BlockPositioned event = (PlayerInteractionEvent.BlockPositioned) handler;
-			ActionResult result = event.interact(player, world, hand, pos, facing, hitX, hitY, hitZ);
+		for (PlayerInteractionEvent.BlockPositioned handler : ((HandlerList<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray()) {
+			ActionResult result = handler.interact(player, world, hand, pos, facing, hitX, hitY, hitZ);
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result);
 				info.cancel();
@@ -71,9 +69,8 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At("HEAD"), method = "interactItem", cancellable = true)
 	public void interactItem(PlayerEntity player, World world, ItemStack stack, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		for (Object handler : ((HandlerList<PlayerInteractionEvent.Item>) PlayerInteractionEvent.INTERACT_ITEM).getBackingArray()) {
-			PlayerInteractionEvent.Item event = (PlayerInteractionEvent.Item) handler;
-			ActionResult result = event.interact(player, world, hand);
+		for (PlayerInteractionEvent.Item handler : ((HandlerList<PlayerInteractionEvent.Item>) PlayerInteractionEvent.INTERACT_ITEM).getBackingArray()) {
+			ActionResult result = handler.interact(player, world, hand);
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result);
 				info.cancel();

@@ -30,8 +30,8 @@ import java.util.function.BiConsumer;
 public class MixinBlock {
 	@Inject(method = "<init>(Lnet/minecraft/block/Block$Settings;)V", at = @At("RETURN"))
 	public void init(Block.Settings builder, CallbackInfo info) {
-		for (Object o : ((HandlerList<BiConsumer<Block.Settings, Block>>) ObjectBuilderEvent.BLOCK).getBackingArray()) {
-			((BiConsumer<Block.Settings, Block>) o).accept(builder, (Block) (Object) this);
+		for (BiConsumer<Block.Settings, Block> consumer : ((HandlerList<BiConsumer<Block.Settings, Block>>) ObjectBuilderEvent.BLOCK).getBackingArray()) {
+			consumer.accept(builder, (Block) (Object) this);
 		}
 	}
 }
