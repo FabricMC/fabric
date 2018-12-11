@@ -39,10 +39,10 @@ import java.util.function.Function;
  */
 public class FabricBlockSettings {
 	public interface Delegate {
-		void fabric_setMapColor(MaterialColor color);
+		void fabric_setMaterialColor(MaterialColor color);
 		void fabric_setCollidable(boolean value);
 		void fabric_setSoundGroup(BlockSoundGroup group);
-		void fabric_setLuminance(int value);
+		void fabric_setLightLevel(int value);
 		void fabric_setHardness(float value);
 		void fabric_setResistance(float value);
 		void fabric_setRandomTicks(boolean value);
@@ -53,18 +53,25 @@ public class FabricBlockSettings {
 	protected final Block.Settings delegate;
 	private final FabricBlockSettings.Delegate castDelegate;
 
-	protected FabricBlockSettings(Material material) {
-		delegate = Block.Settings.create(material);
-		castDelegate = (FabricBlockSettings.Delegate) delegate;
+	protected FabricBlockSettings(Material material, MaterialColor color) {
+		this(Block.Settings.create(material, color));
 	}
 
 	protected FabricBlockSettings(Block base) {
-		delegate = Block.Settings.copy(base);
+		this(Block.Settings.copy(base));
+	}
+
+	protected FabricBlockSettings(final Block.Settings delegate) {
+		this.delegate = delegate;
 		castDelegate = (FabricBlockSettings.Delegate) delegate;
 	}
 
-	public static FabricBlockSettings create(Material material) {
-		return new FabricBlockSettings(material);
+	public static FabricBlockSettings of(Material material) {
+		return of(material, material.getColor());
+	}
+
+	public static FabricBlockSettings of(Material material, MaterialColor color) {
+		return new FabricBlockSettings(material, color);
 	}
 
 	public static FabricBlockSettings copy(Block base) {
@@ -73,101 +80,81 @@ public class FabricBlockSettings {
 
 	/* FABRIC HELPERS */
 
-	public FabricBlockSettings setBreakByHand(boolean value) {
+	public FabricBlockSettings breakByHand(boolean value) {
 		ToolManager.entry(delegate).setBreakByHand(value);
 		return this;
 	}
 
-	public FabricBlockSettings setBreakByTool(Tag<Item> tag) {
-		return setBreakByTool(tag, 0);
+	public FabricBlockSettings breakByTool(Tag<Item> tag) {
+		return breakByTool(tag, 0);
 	}
 
-	public FabricBlockSettings setBreakByTool(Tag<Item> tag, int miningLevel) {
+	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		ToolManager.entry(delegate).putBreakByTool(tag, miningLevel);
 		return this;
 	}
 
 	/* DELEGATE WRAPPERS */
 
-	public FabricBlockSettings setMaterialColor(MaterialColor color) {
-		castDelegate.fabric_setMapColor(color);
+	public FabricBlockSettings materialColor(MaterialColor color) {
+		castDelegate.fabric_setMaterialColor(color);
 		return this;
 	}
 
-	public FabricBlockSettings setMaterialColor(DyeColor color) {
-		castDelegate.fabric_setMapColor(color.getMaterialColor());
-		return this;
+	public FabricBlockSettings materialColor(DyeColor color) {
+		return this.materialColor(color.getMaterialColor());
 	}
 
-	/**
-	 * @deprecated Use {@link #setMaterialColor(MaterialColor) setMaterialColor} instead.
-	 */
-	@Deprecated
-	public FabricBlockSettings setMapColor(MaterialColor color) {
-		return setMaterialColor(color);
-	}
-
-	/**
-	 * @deprecated Use {@link #setMaterialColor(DyeColor) setMaterialColor} instead.
-	 */
-	@Deprecated
-	public FabricBlockSettings setMapColor(DyeColor color) {
-		return setMaterialColor(color);
-	}
-
-	public FabricBlockSettings setCollidable(boolean value) {
+	public FabricBlockSettings collidable(boolean value) {
 		castDelegate.fabric_setCollidable(value);
 		return this;
 	}
 
-	public FabricBlockSettings setSoundGroup(BlockSoundGroup group) {
+	public FabricBlockSettings sounds(BlockSoundGroup group) {
 		castDelegate.fabric_setSoundGroup(group);
 		return this;
 	}
 
-	public FabricBlockSettings acceptRandomTicks() {
+	public FabricBlockSettings ticksRandomly() {
 		castDelegate.fabric_setRandomTicks(true);
 		return this;
 	}
 
-	public FabricBlockSettings setLuminance(int value) {
-		castDelegate.fabric_setLuminance(value);
+	public FabricBlockSettings lightLevel(int value) {
+		castDelegate.fabric_setLightLevel(value);
 		return this;
 	}
 
-	public FabricBlockSettings setHardness(float value) {
+	public FabricBlockSettings hardness(float value) {
 		castDelegate.fabric_setHardness(value);
+		return this;
+	}
+
+	public FabricBlockSettings resistance(float value) {
 		castDelegate.fabric_setResistance(value);
 		return this;
 	}
 
-	public FabricBlockSettings setResistance(float value) {
-		castDelegate.fabric_setResistance(value);
-		return this;
-	}
-
-	public FabricBlockSettings setStrength(float hardness, float resistance) {
+	public FabricBlockSettings strength(float hardness, float resistance) {
 		castDelegate.fabric_setHardness(hardness);
 		castDelegate.fabric_setResistance(resistance);
 		return this;
 	}
 
-	public FabricBlockSettings noDropTable() {
-		castDelegate.fabric_setDropTable(LootTables.EMPTY);
-		return this;
+	public FabricBlockSettings dropsNothing() {
+		return this.drops(LootTables.EMPTY);
 	}
 
-	public FabricBlockSettings copyDropTable(Block block) {
-		castDelegate.fabric_setDropTable(block.getDropTableId());
-		return this;
+	public FabricBlockSettings dropsLike(Block block) {
+		return this.drops(block.getDropTableId());
 	}
 
-	public FabricBlockSettings setDropTable(Identifier id) {
+	public FabricBlockSettings drops(Identifier id) {
 		castDelegate.fabric_setDropTable(id);
 		return this;
 	}
 
-	public FabricBlockSettings setFrictionCoefficient(float value) {
+	public FabricBlockSettings friction(float value) {
 		castDelegate.fabric_setFriction(value);
 		return this;
 	}
@@ -180,5 +167,160 @@ public class FabricBlockSettings {
 
 	public <T> T build(Function<Block.Settings, T> function) {
 		return function.apply(delegate);
+	}
+
+	/* DEPRECATIONS */
+
+	/**
+	 * @deprecated Use {@link #of(Material) of} instead.
+	 */
+	@Deprecated
+	public static FabricBlockSettings create(Material material) {
+		return of(material);
+	}
+
+	/**
+	 * @deprecated Use {@link #breakByHand(boolean) breakByHand} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setBreakByHand(boolean value) {
+		return this.breakByHand(value);
+	}
+
+	/**
+	 * @deprecated Use {@link #breakByTool(Tag) breakByTool} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setBreakByTool(Tag<Item> tag) {
+		return this.breakByTool(tag);
+	}
+
+	/**
+	 * @deprecated Use {@link #breakByTool(Tag, int) breakByTool} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setBreakByTool(Tag<Item> tag, int miningLevel) {
+		return this.breakByTool(tag, miningLevel);
+	}
+
+	/**
+	 * @deprecated Use {@link #setMaterialColor(MaterialColor) setMaterialColor} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setMapColor(MaterialColor color) {
+		return this.materialColor(color);
+	}
+
+	/**
+	 * @deprecated Use {@link #setMaterialColor(DyeColor) setMaterialColor} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setMapColor(DyeColor color) {
+		return this.materialColor(color);
+	}
+
+	/**
+	 * @deprecated Use {@link #materialColor(DyeColor) materialColor} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setMaterialColor(MaterialColor color) {
+		return this.materialColor(color);
+	}
+
+	/**
+	 * @deprecated Use {@link #materialColor(DyeColor) materialColor} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setMaterialColor(DyeColor color) {
+		return this.materialColor(color);
+	}
+
+	/**
+	 * @deprecated Use {@link #collidable(boolean) collidable} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setCollidable(boolean value) {
+		castDelegate.fabric_setCollidable(value);
+		return this;
+	}
+
+	/**
+	 * @deprecated Use {@link #sounds(BlockSoundGroup) sounds} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setSoundGroup(BlockSoundGroup group) {
+		return this.sounds(group);
+	}
+
+	/**
+	 * @deprecated Use {@link #ticksRandomly() ticksRandomly} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings acceptRandomTicks() {
+		return this.ticksRandomly();
+	}
+
+	/**
+	 * @deprecated Use {@link #lightLevel(int) lightLevel} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setLuminance(int value) {
+		return this.lightLevel(value);
+	}
+
+	/**
+	 * @deprecated Use {@link #hardness(float) hardness} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setHardness(float value) {
+		return this.hardness(value);
+	}
+
+	/**
+	 * @deprecated Use {@link #resistance(float) resistance} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setResistance(float value) {
+		return this.resistance(value);
+	}
+
+	/**
+	 * @deprecated Use {@link #strength(float, float) strength} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setStrength(float hardness, float resistance) {
+		return this.strength(hardness, resistance);
+	}
+
+	/**
+	 * @deprecated Use {@link #dropsNothing() dropsNothing} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings noDropTable() {
+		return this.dropsNothing();
+	}
+
+	/**
+	 * @deprecated Use {@link #dropsLike(Block) dropsLike} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings copyDropTable(Block block) {
+		return this.dropsLike(block);
+	}
+
+	/**
+	 * @deprecated Use {@link #drops(Identifier) drops} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setDropTable(Identifier id) {
+		return this.drops(id);
+	}
+
+	/**
+	 * @deprecated Use {@link #friction(float) friction} instead.
+	 */
+	@Deprecated
+	public FabricBlockSettings setFrictionCoefficient(float value) {
+		return this.friction(value);
 	}
 }
