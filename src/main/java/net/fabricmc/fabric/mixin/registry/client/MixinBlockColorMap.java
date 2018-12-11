@@ -17,12 +17,10 @@
 package net.fabricmc.fabric.mixin.registry.client;
 
 import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.registry.listeners.IdListUpdater;
+import net.fabricmc.fabric.registry.impl.listeners.IdListUpdater;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockColorMap;
 import net.minecraft.client.render.block.BlockColorMapper;
-import net.minecraft.client.render.item.ItemColorMap;
-import net.minecraft.client.render.item.ItemColorMapper;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;

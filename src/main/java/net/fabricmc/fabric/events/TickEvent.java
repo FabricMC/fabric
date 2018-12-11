@@ -29,8 +29,8 @@ import java.util.function.Consumer;
  * You can use them as endpoints to tick your own, related logic "globally".
  */
 public final class TickEvent {
-	public static final HandlerRegistry<Consumer<MinecraftServer>> SERVER = new HandlerList<>();
-	public static final HandlerRegistry<Consumer<World>> WORLD = new HandlerList<>();
+	public static final HandlerRegistry<Consumer<MinecraftServer>> SERVER = new HandlerList<>(Consumer.class);
+	public static final HandlerRegistry<Consumer<World>> WORLD = new HandlerList<>(Consumer.class);
 
 	private TickEvent() {
 

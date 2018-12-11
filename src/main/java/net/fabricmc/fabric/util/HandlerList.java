@@ -16,13 +16,16 @@
 
 package net.fabricmc.fabric.util;
 
+import java.lang.reflect.Array;
+
 public class HandlerList<T> implements HandlerRegistry<T> {
-	private static final Object[] EMPTY = new Object[0];
+	private final Class tClass;
 	private T[] array;
 
 	@SuppressWarnings("unchecked")
-	public HandlerList() {
-		this.array = (T[]) EMPTY;
+	public HandlerList(Class theClass) {
+		this.tClass = theClass;
+		this.array = (T[]) Array.newInstance(tClass, 0);
 	}
 
 	@Override
@@ -34,7 +37,7 @@ public class HandlerList<T> implements HandlerRegistry<T> {
 		}
 
 		//noinspection unchecked
-		T[] newArray = (T[]) new Object[array.length + 1];
+		T[] newArray = (T[]) Array.newInstance(tClass, array.length + 1);
 		System.arraycopy(array, 0, newArray, 0, array.length);
 		newArray[array.length] = handler;
 		array = newArray;

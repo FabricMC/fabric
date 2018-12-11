@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.registry.listeners;
+package net.fabricmc.fabric.registry.impl.listeners;
 
 import net.fabricmc.fabric.registry.ExtendedIdList;
 import net.fabricmc.fabric.registry.RegistryListener;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 
-public class BootstrapBiomeRegistryListener implements RegistryListener<Biome> {
+public class BootstrapFluidRegistryListener implements RegistryListener<Fluid> {
 	@Override
-	public void beforeRegistryCleared(Registry<Biome> registry) {
-		((ExtendedIdList) Biome.PARENT_BIOME_ID_MAP).clear();
+	public void beforeRegistryCleared(Registry<Fluid> registry) {
+		((ExtendedIdList) Fluid.STATE_IDS).clear();
 	}
 
 	@Override
-	public void beforeRegistryRegistration(Registry<Biome> registry, int id, Identifier identifier, Biome object, boolean isNew) {
-		// refer net.minecraft.biome.Biomes
-		if (object.hasParent()) {
-			Biome.PARENT_BIOME_ID_MAP.set(object, id);
+	public void beforeRegistryRegistration(Registry<Fluid> registry, int id, Identifier identifier, Fluid object, boolean isNew) {
+		// refer net.minecraft.fluid.Fluids
+		for (FluidState state : object.getStateFactory().getStates()) {
+			Fluid.STATE_IDS.add(state);
 		}
 	}
 }

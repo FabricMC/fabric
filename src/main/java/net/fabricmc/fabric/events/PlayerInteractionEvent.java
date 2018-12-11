@@ -66,12 +66,12 @@ public final class PlayerInteractionEvent {
 	/**
 	 * Event emitted when a player "attacks" a block.
 	 */
-	public static final HandlerRegistry<Block> ATTACK_BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<Block> ATTACK_BLOCK = new HandlerList<>(Block.class);
 
 	/**
 	 * Event emitted when a player "attacks" an entity.
 	 */
-	public static final HandlerRegistry<Entity> ATTACK_ENTITY = new HandlerList<>();
+	public static final HandlerRegistry<Entity> ATTACK_ENTITY = new HandlerList<>(Entity.class);
 	
 	// TODO: For completeness' sake, but requires us to add a custom packet. Is it worth the complexity?
 	/* public static final HandlerRegistry<Item> ATTACK_ITEM = new HandlerList<>(); */
@@ -79,7 +79,7 @@ public final class PlayerInteractionEvent {
 	/**
 	 * Event emitted when a player interacts with a block.
 	 */
-	public static final HandlerRegistry<BlockPositioned> INTERACT_BLOCK = new HandlerList<>();
+	public static final HandlerRegistry<BlockPositioned> INTERACT_BLOCK = new HandlerList<>(BlockPositioned.class);
 
 	/**
 	 * Event emitted when a player interacts with an entity.
@@ -90,12 +90,12 @@ public final class PlayerInteractionEvent {
 	 * only one event is currently provided, but it is accordingly named in
 	 * the case of a second event being necessary.
 	 */
-	public static final HandlerRegistry<EntityPositioned> INTERACT_ENTITY_POSITIONED = new HandlerList<>();
+	public static final HandlerRegistry<EntityPositioned> INTERACT_ENTITY_POSITIONED = new HandlerList<>(EntityPositioned.class);
 
 	/**
 	 * Event emitted when a player interacts with an item.
 	 */
-	public static final HandlerRegistry<Item> INTERACT_ITEM = new HandlerList<>();
+	public static final HandlerRegistry<Item> INTERACT_ITEM = new HandlerList<>(Item.class);
 
 	/**
 	 * @deprecated Use {@link #ATTACK_BLOCK ATTACK_BLOCK} instead.

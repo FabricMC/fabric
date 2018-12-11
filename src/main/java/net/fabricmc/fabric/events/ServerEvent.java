@@ -25,7 +25,7 @@ import net.minecraft.world.World;
 import java.util.function.Consumer;
 
 public final class ServerEvent {
-	public static final HandlerRegistry<Consumer<MinecraftServer>> START = new HandlerList<>();
+	public static final HandlerRegistry<Consumer<MinecraftServer>> START = new HandlerList<>(Consumer.class);
 
 	private ServerEvent() {
 

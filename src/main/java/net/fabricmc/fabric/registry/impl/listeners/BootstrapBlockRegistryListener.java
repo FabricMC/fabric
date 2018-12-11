@@ -14,28 +14,33 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.registry.listeners;
+package net.fabricmc.fabric.registry.impl.listeners;
 
 import net.fabricmc.fabric.registry.ExtendedIdList;
 import net.fabricmc.fabric.registry.RegistryListener;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class BootstrapFluidRegistryListener implements RegistryListener<Fluid> {
+public class BootstrapBlockRegistryListener implements RegistryListener<Block> {
 	@Override
-	public void beforeRegistryCleared(Registry<Fluid> registry) {
-		((ExtendedIdList) Fluid.STATE_IDS).clear();
+	public void beforeRegistryCleared(Registry<Block> registry) {
+		((ExtendedIdList) Block.STATE_IDS).clear();
 	}
 
 	@Override
-	public void beforeRegistryRegistration(Registry<Fluid> registry, int id, Identifier identifier, Fluid object, boolean isNew) {
-		// refer net.minecraft.fluid.Fluids
-		for (FluidState state : object.getStateFactory().getStates()) {
-			Fluid.STATE_IDS.add(state);
+	public void beforeRegistryRegistration(Registry<Block> registry, int id, Identifier identifier, Block object, boolean isNew) {
+		// refer net.minecraft.block.Blocks
+		for (BlockState state : object.getStateFactory().getStates()) {
+			state.method_11590();
+			Block.STATE_IDS.add(state);
 		}
+	}
+
+	@Override
+	public void afterRegistryRegistration(Registry<Block> registry, int id, Identifier identifier, Block object) {
+		// refer net.minecraft.block.Blocks
+		object.getDropTableId();
 	}
 }

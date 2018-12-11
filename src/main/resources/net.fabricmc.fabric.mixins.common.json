@@ -6,6 +6,8 @@
     "block.MixinBlockBuilder",
     "block.entity.MixinBlockEntity",
     "commands.MixinServerCommandManager",
+    "entity.MixinEntityTracker",
+    "entity.MixinEntityTrackerEntry",
     "events.objectbuilder.MixinBlock",
     "events.objectbuilder.MixinItem",
     "events.playerinteraction.MixinServerPlayNetworkHandler",

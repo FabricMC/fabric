@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  * @see TickEvent
  */
 public final class ClientTickEvent {
-	public static final HandlerRegistry<Consumer<MinecraftClient>> CLIENT = new HandlerList<>();
+	public static final HandlerRegistry<Consumer<MinecraftClient>> CLIENT = new HandlerList<>(Consumer.class);
 
 	private ClientTickEvent() {
 

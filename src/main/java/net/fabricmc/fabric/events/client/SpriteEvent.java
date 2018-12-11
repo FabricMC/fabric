@@ -26,5 +26,5 @@ public class SpriteEvent {
 		void registerSprites(SpriteRegistry registry);
 	}
 
-	public static final HandlerRegistry<Provider> PROVIDE = new HandlerList<>();
+	public static final HandlerRegistry<Provider> PROVIDE = new HandlerList<>(Provider.class);
 }

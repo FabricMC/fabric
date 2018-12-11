@@ -54,7 +54,7 @@ public class FabricBlockSettings {
 	private final FabricBlockSettings.Delegate castDelegate;
 
 	protected FabricBlockSettings(Material material, MaterialColor color) {
-		this(Block.Settings.create(material, color));
+		this(Block.Settings.of(material, color));
 	}
 
 	protected FabricBlockSettings(Block base) {

@@ -29,8 +29,8 @@ import java.util.function.BiConsumer;
  * your own methods and transparently add the resulting information to a Map.
  */
 public final class ObjectBuilderEvent {
-	public static final HandlerRegistry<BiConsumer<Block.Settings, Block>> BLOCK = new HandlerList<>();
-	public static final HandlerRegistry<BiConsumer<Item.Settings, Item>> ITEM = new HandlerList<>();
+	public static final HandlerRegistry<BiConsumer<Block.Settings, Block>> BLOCK = new HandlerList<>(BiConsumer.class);
+	public static final HandlerRegistry<BiConsumer<Item.Settings, Item>> ITEM = new HandlerList<>(BiConsumer.class);
 
 	private ObjectBuilderEvent() {
 
