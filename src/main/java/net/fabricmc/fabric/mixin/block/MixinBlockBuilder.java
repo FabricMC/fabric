@@ -49,7 +49,7 @@ public class MixinBlockBuilder implements FabricBlockSettings.Delegate {
 	private Identifier dropTableId;
 
 	@Override
-	public void fabric_setMapColor(MaterialColor color) {
+	public void fabric_setMaterialColor(MaterialColor color) {
 		materialColor = color;
 	}
 
@@ -64,7 +64,7 @@ public class MixinBlockBuilder implements FabricBlockSettings.Delegate {
 	}
 
 	@Override
-	public void fabric_setLuminance(int value) {
+	public void fabric_setLightLevel(int value) {
 		luminance = value;
 	}
 
