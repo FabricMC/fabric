@@ -85,8 +85,8 @@ public abstract class MixinSpriteAtlasTexture {
 		//noinspection RedundantCast,ConstantConditions
 		if ((SpriteAtlasTexture) (Object) this == MinecraftClient.getInstance().getSpriteAtlas()) {
 			SpriteRegistry registry = new SpriteRegistry(sprites, (id) -> addSpriteToLoad(manager, id));
-			for (Object provider : ((HandlerList<SpriteEvent.Provider>) SpriteEvent.PROVIDE).getBackingArray()) {
-				((SpriteEvent.Provider) provider).registerSprites(registry);
+			for (SpriteEvent.Provider provider : ((HandlerList<SpriteEvent.Provider>) SpriteEvent.PROVIDE).getBackingArray()) {
+				provider.registerSprites(registry);
 			}
 		}
 

@@ -18,11 +18,11 @@ package net.fabricmc.fabric.util;
 
 public class HandlerList<T> implements HandlerRegistry<T> {
 	private static final Object[] EMPTY = new Object[0];
-	private Object[] array;
+	private T[] array;
 
 	@SuppressWarnings("unchecked")
 	public HandlerList() {
-		this.array = EMPTY;
+		this.array = (T[]) EMPTY;
 	}
 
 	@Override
@@ -40,7 +40,7 @@ public class HandlerList<T> implements HandlerRegistry<T> {
 		array = newArray;
 	}
 
-	public Object[] getBackingArray() {
+	public T[] getBackingArray() {
 		return array;
 	}
 }
