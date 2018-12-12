@@ -35,6 +35,6 @@ public class MixinBlockEntityRenderManager {
 
 	@Inject(method = "<init>()V", at = @At("RETURN"))
 	public void init(CallbackInfo info) {
-		BlockEntityRendererRegistry.INSTANCE.initialize(renderers);
+		BlockEntityRendererRegistry.INSTANCE.initialize((BlockEntityRenderDispatcher) (Object) this, renderers);
 	}
 }

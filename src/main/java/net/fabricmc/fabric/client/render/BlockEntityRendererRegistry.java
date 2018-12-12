@@ -35,7 +35,7 @@ public class BlockEntityRendererRegistry {
 
 	}
 
-	public void initialize(Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> map) {
+	public void initialize(BlockEntityRenderDispatcher instance, Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> map) {
 		if (renderers != null && renderers != map) {
 			throw new RuntimeException("Tried to set renderers twice!");
 		}
@@ -46,7 +46,7 @@ public class BlockEntityRendererRegistry {
 
 		renderers = map;
 		for (BlockEntityRenderer renderer : renderersTmp.values()) {
-			renderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
+			renderer.setRenderManager(instance);
 		}
 		renderers.putAll(renderersTmp);
 		renderersTmp = null;
