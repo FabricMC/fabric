@@ -25,30 +25,34 @@ import java.util.function.Function;
 
 // TODO: javadocs
 public class FabricEntityTypeBuilder<T extends Entity> {
-	protected final EntityType.Builder<T> delegate;
+	private final Class<? extends T> entityClass;
+	private final Function<? super World, ? extends T> function;
+	private boolean saveable = true;
+	private boolean summonable = true;
 	private int trackingDistance = -1;
 	private int updateIntervalTicks = -1;
 	private boolean alwaysUpdateVelocity = true;
 
-	protected FabricEntityTypeBuilder(EntityType.Builder<T> delegate) {
-		this.delegate = delegate;
+	protected FabricEntityTypeBuilder(Class<? extends T> entityClass, Function<? super World, ? extends T> function) {
+		this.entityClass = entityClass;
+		this.function = function;
 	}
 
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(Class<? extends T> entityClass) {
-		return new FabricEntityTypeBuilder<>(EntityType.Builder.create(entityClass));
+		return new FabricEntityTypeBuilder<>(entityClass, (w) -> null);
 	}
 
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(Class<? extends T> entityClass, Function<? super World, ? extends T> function) {
-		return new FabricEntityTypeBuilder<>(EntityType.Builder.create(entityClass, function));
+		return new FabricEntityTypeBuilder<>(entityClass, function);
 	}
 
 	public FabricEntityTypeBuilder<T> disableSummon() {
-		delegate.disableSummon();
+		this.summonable = false;
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> disableSaving() {
-		delegate.disableSaving();
+		this.saveable = false;
 		return this;
 	}
 
@@ -64,7 +68,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	public EntityType<T> build(String id) {
-		EntityType type = delegate.build(id);
+		if (this.saveable) {
+			// SNIP! Modded datafixers are not supported anyway.
+			// TODO: Flesh out once modded datafixers exist.
+		}
+
+		EntityType<T> type = new EntityType<>(this.entityClass, this.function, this.saveable, this.summonable, null);
 		if (trackingDistance != -1) {
 			EntityTrackingRegistry.INSTANCE.register(type, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 		}
