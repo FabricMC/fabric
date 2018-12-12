@@ -21,6 +21,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.resource.ReloadableResourceManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,17 +39,23 @@ public class EntityRendererRegistry {
 
 	public static final class Context {
 		private final TextureManager textureManager;
+		private final ReloadableResourceManager resourceManager;
 		private final ItemRenderer itemRenderer;
 		private final Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> rendererMap;
 
-		private Context(TextureManager textureManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> rendererMap) {
+		private Context(TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> rendererMap) {
 			this.textureManager = textureManager;
+			this.resourceManager = resourceManager;
 			this.itemRenderer = itemRenderer;
 			this.rendererMap = rendererMap;
 		}
 
 		public TextureManager getTextureManager() {
 			return textureManager;
+		}
+
+		public ReloadableResourceManager getResourceManager() {
+			return resourceManager;
 		}
 
 		public ItemRenderer getItemRenderer() {
@@ -64,13 +71,13 @@ public class EntityRendererRegistry {
 
 	}
 
-	public void initialize(EntityRenderDispatcher manager, TextureManager textureManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> map) {
+	public void initialize(EntityRenderDispatcher manager, TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> map) {
 		synchronized (renderSupplierMap) {
 			if (renderManagerMap.containsKey(manager)) {
 				return;
 			}
 
-			Context context = new Context(textureManager, itemRenderer, map);
+			Context context = new Context(textureManager, resourceManager, itemRenderer, map);
 			renderManagerMap.put(manager, context);
 			for (Class<? extends Entity> c : renderSupplierMap.keySet()) {
 				map.put(c, renderSupplierMap.get(c).create(manager, context));

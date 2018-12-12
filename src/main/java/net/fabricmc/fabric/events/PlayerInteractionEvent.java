@@ -22,7 +22,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Facing;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
@@ -40,7 +40,7 @@ import net.minecraft.world.World;
 public final class PlayerInteractionEvent {
 	@FunctionalInterface
 	public interface Block {
-		ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Facing facing);
+		ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction);
 	}
 
 	@FunctionalInterface
@@ -50,7 +50,7 @@ public final class PlayerInteractionEvent {
 
 	@FunctionalInterface
 	public interface BlockPositioned {
-		ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Facing facing, float hitX, float hitY, float hitZ);
+		ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction, float hitX, float hitY, float hitZ);
 	}
 
 	@FunctionalInterface

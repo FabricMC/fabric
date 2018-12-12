@@ -25,7 +25,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Facing;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -33,14 +32,14 @@ import java.util.List;
 public class FabricAPI implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		PlayerInteractionEvent.BREAK_BLOCK.register((player, world, hand, pos, facing) -> {
+		PlayerInteractionEvent.BREAK_BLOCK.register((player, world, hand, pos, direction) -> {
 			BlockState state = world.getBlockState(pos);
 			if (state instanceof BreakInteractable) {
-				if (((BreakInteractable) state).onBreakInteract(state, world, pos, player, hand, facing)) {
+				if (((BreakInteractable) state).onBreakInteract(state, world, pos, player, hand, direction)) {
 					return ActionResult.FAILURE;
 				}
 			} else if (state.getBlock() instanceof BreakInteractable) {
-				if (((BreakInteractable) state.getBlock()).onBreakInteract(state, world, pos, player, hand, facing)) {
+				if (((BreakInteractable) state.getBlock()).onBreakInteract(state, world, pos, player, hand, direction)) {
 					return ActionResult.FAILURE;
 				}
 			}

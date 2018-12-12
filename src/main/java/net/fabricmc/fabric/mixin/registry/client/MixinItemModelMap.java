@@ -47,7 +47,7 @@ public class MixinItemModelMap implements RegistryListener<Item> {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onInit(BakedModelManager bakedModelManager, CallbackInfo info) {
-		((ListenableRegistry<Item>) Registry.ITEMS).registerListener(this);
+		((ListenableRegistry<Item>) Registry.ITEM).registerListener(this);
 	}
 
 	@Override

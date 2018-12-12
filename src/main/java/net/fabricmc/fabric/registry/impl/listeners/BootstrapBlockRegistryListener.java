@@ -33,7 +33,7 @@ public class BootstrapBlockRegistryListener implements RegistryListener<Block> {
 	public void beforeRegistryRegistration(Registry<Block> registry, int id, Identifier identifier, Block object, boolean isNew) {
 		// refer net.minecraft.block.Blocks
 		for (BlockState state : object.getStateFactory().getStates()) {
-			state.method_11590();
+			state.initShapeCache();
 			Block.STATE_IDS.add(state);
 		}
 	}

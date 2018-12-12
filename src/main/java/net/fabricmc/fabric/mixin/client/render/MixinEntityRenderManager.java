@@ -22,6 +22,7 @@ import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.resource.ReloadableResourceManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,8 +36,8 @@ public class MixinEntityRenderManager {
 	@Shadow
 	private Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> renderers;
 
-	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;)V", at = @At("RETURN"))
-	public void init(TextureManager textureManager, ItemRenderer itemRenderer, CallbackInfo info) {
-		EntityRendererRegistry.INSTANCE.initialize((EntityRenderDispatcher) (Object) this, textureManager, itemRenderer, renderers);
+	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;)V", at = @At("RETURN"), require = 0)
+	public void init(TextureManager textureManager,ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
+		EntityRendererRegistry.INSTANCE.initialize((EntityRenderDispatcher) (Object) this, textureManager, manager, itemRenderer, renderers);
 	}
 }

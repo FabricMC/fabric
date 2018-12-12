@@ -36,7 +36,7 @@ public class MixinBlockColorMap implements IdListUpdater.Container<BlockColorMap
 
 	@Inject(method = "create", at = @At("RETURN"))
 	private static void create(CallbackInfoReturnable<BlockColorMap> info) {
-		((ListenableRegistry) Registry.BLOCKS).registerListener(new IdListUpdater<Block, BlockColorMapper>((IdListUpdater.Container<BlockColorMapper>) (Object) info.getReturnValue()));
+		((ListenableRegistry) Registry.BLOCK).registerListener(new IdListUpdater<Block, BlockColorMapper>((IdListUpdater.Container<BlockColorMapper>) (Object) info.getReturnValue()));
 	}
 
 	@Override

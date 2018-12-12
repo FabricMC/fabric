@@ -26,7 +26,7 @@ import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Facing;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -43,9 +43,9 @@ public class MixinServerPlayerInteractionManager {
 	public ServerPlayerEntity player;
 
 	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
-	public void startBlockBreak(BlockPos pos, Facing facing, CallbackInfo info) {
+	public void startBlockBreak(BlockPos pos, Direction direction, CallbackInfo info) {
 		for (PlayerInteractionEvent.Block handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
-			ActionResult result = handler.interact(player, world, Hand.MAIN, pos, facing);
+			ActionResult result = handler.interact(player, world, Hand.MAIN, pos, direction);
 			if (result != ActionResult.PASS) {
 				// The client might have broken the block on its side, so make sure to let it know.
 				this.player.networkHandler.sendPacket(new BlockUpdateClientPacket(world, pos));
@@ -56,9 +56,9 @@ public class MixinServerPlayerInteractionManager {
 	}
 
 	@Inject(at = @At("HEAD"), method = "interactBlock", cancellable = true)
-	public void interactBlock(PlayerEntity player, World world, ItemStack stack, Hand hand, BlockPos pos, Facing facing, float hitX, float hitY, float hitZ, CallbackInfoReturnable<ActionResult> info) {
+	public void interactBlock(PlayerEntity player, World world, ItemStack stack, Hand hand, BlockPos pos, Direction direction, float hitX, float hitY, float hitZ, CallbackInfoReturnable<ActionResult> info) {
 		for (PlayerInteractionEvent.BlockPositioned handler : ((HandlerList<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray()) {
-			ActionResult result = handler.interact(player, world, hand, pos, facing, hitX, hitY, hitZ);
+			ActionResult result = handler.interact(player, world, hand, pos, direction, hitX, hitY, hitZ);
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result);
 				info.cancel();

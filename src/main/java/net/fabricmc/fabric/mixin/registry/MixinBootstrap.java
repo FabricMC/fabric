@@ -48,10 +48,10 @@ public class MixinBootstrap {
 		Object o3 = Fluids.EMPTY;
 		Object o2 = Items.AIR;
 
-		((ListenableRegistry<Biome>) Registry.BIOMES).registerListener(new BootstrapBiomeRegistryListener());
-		((ListenableRegistry<Block>) Registry.BLOCKS).registerListener(new BootstrapBlockRegistryListener());
-		((ListenableRegistry<Fluid>) Registry.FLUIDS).registerListener(new BootstrapFluidRegistryListener());
-		((ListenableRegistry<Item>) Registry.ITEMS).registerListener(new BootstrapItemRegistryListener());
+		((ListenableRegistry<Biome>) Registry.BIOME).registerListener(new BootstrapBiomeRegistryListener());
+		((ListenableRegistry<Block>) Registry.BLOCK).registerListener(new BootstrapBlockRegistryListener());
+		((ListenableRegistry<Fluid>) Registry.FLUID).registerListener(new BootstrapFluidRegistryListener());
+		((ListenableRegistry<Item>) Registry.ITEM).registerListener(new BootstrapItemRegistryListener());
 
 		// The packet code is not side-specific, so this is fine!
 		CustomPayloadPacketRegistry.CLIENT.register(RegistrySyncManager.ID, RegistrySyncManager::receivePacket);

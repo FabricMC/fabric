@@ -30,7 +30,7 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Facing;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
@@ -51,9 +51,9 @@ public class MixinClientPlayerInteractionManager {
 	private GameMode gameMode;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
-	public void attackBlock(BlockPos pos, Facing facing, CallbackInfoReturnable<Boolean> info) {
+	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		for (PlayerInteractionEvent.Block handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
-			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, facing);
+			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, direction);
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result == ActionResult.SUCCESS);
 				info.cancel();
@@ -63,13 +63,13 @@ public class MixinClientPlayerInteractionManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "method_2902", cancellable = true)
-	public void method_2902(BlockPos pos, Facing facing, CallbackInfoReturnable<Boolean> info) {
+	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		if (!gameMode.isCreative()) {
 			return;
 		}
 
 		for (PlayerInteractionEvent.Block handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
-			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, facing);
+			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, direction);
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result == ActionResult.SUCCESS);
 				info.cancel();
@@ -79,7 +79,7 @@ public class MixinClientPlayerInteractionManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0), method = "interactBlock", cancellable = true)
-	public void interactBlock(ClientPlayerEntity player, ClientWorld world, BlockPos pos, Facing facing, Vec3d vec, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+	public void interactBlock(ClientPlayerEntity player, ClientWorld world, BlockPos pos, Direction direction, Vec3d vec, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		PlayerInteractionEvent.BlockPositioned[] backingArray = ((HandlerList<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray();
 		if (backingArray.length > 0) {
 			float hitX = (float) (vec.x - pos.getX());
@@ -87,10 +87,10 @@ public class MixinClientPlayerInteractionManager {
 			float hitZ = (float) (vec.z - pos.getZ());
 
 			for (PlayerInteractionEvent.BlockPositioned handler : backingArray) {
-				ActionResult result = handler.interact(player, world, hand, pos, facing, hitX, hitY, hitZ);
+				ActionResult result = handler.interact(player, world, hand, pos, direction, hitX, hitY, hitZ);
 				if (result != ActionResult.PASS) {
 					if (result == ActionResult.SUCCESS) {
-						this.networkHandler.sendPacket(new PlayerInteractBlockServerPacket(pos, facing, hand, hitX, hitY, hitZ));
+						this.networkHandler.sendPacket(new PlayerInteractBlockServerPacket(pos, direction, hand, hitX, hitY, hitZ));
 					}
 					info.setReturnValue(result);
 					info.cancel();

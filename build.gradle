@@ -23,7 +23,7 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 archivesBaseName = "fabric"
-version = "0.1.0"
+version = "0.1.1"
 
 def ENV = System.getenv()
 version = version + "." + (ENV.BUILD_NUMBER ?: "local")
@@ -33,9 +33,9 @@ minecraft {
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:18w49a"
-	mappings "net.fabricmc:yarn:18w49a.11"
-	modCompile "net.fabricmc:fabric-loader:0.2.0.62"
+	minecraft "com.mojang:minecraft:18w50a"
+	mappings "net.fabricmc:yarn:18w50a.2"
+	modCompile "net.fabricmc:fabric-loader:0.2.0.64"
 }
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/maven.gradle'
