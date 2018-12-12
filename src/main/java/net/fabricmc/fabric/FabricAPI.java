@@ -33,11 +33,6 @@ import java.util.List;
 public class FabricAPI implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		List<String> ss = null;
-		for (String s : ss) {
-			s.length();
-		}
-
 		PlayerInteractionEvent.BREAK_BLOCK.register((player, world, hand, pos, facing) -> {
 			BlockState state = world.getBlockState(pos);
 			if (state instanceof BreakInteractable) {
