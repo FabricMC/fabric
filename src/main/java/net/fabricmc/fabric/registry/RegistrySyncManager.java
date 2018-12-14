@@ -51,12 +51,14 @@ public final class RegistrySyncManager {
 	public static void receivePacket(PacketContext context, PacketByteBuf buf) {
 		CompoundTag compound = buf.readCompoundTag();
 
-		try {
-			apply(compound, false);
-		} catch (RemapException e) {
-			// TODO: log error properly
-			e.printStackTrace();
-		}
+		context.getTaskQueue().execute(() -> {
+			try {
+				apply(compound, false);
+			} catch (RemapException e) {
+				// TODO: log error properly
+				e.printStackTrace();
+			}
+		});
 	}
 
 	public static CompoundTag toTag(boolean isClientSync) {
