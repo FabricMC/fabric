@@ -1,18 +1,32 @@
+/*
+ * Copyright (c) 2016, 2017, 2018 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.container;
 
 import io.netty.buffer.Unpooled;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.container.Container;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
-import net.minecraft.util.math.BlockPos;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
@@ -20,61 +34,39 @@ import java.util.function.Consumer;
  */
 public class ContainerHelper {
 
-	static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
-	private static final Map<Identifier, BiFunction<PlayerEntity, PacketByteBuf, Container>> containerMap = new HashMap<>();
+	private static final Logger LOGGER = LogManager.getLogger();
 
-	/**
-	 * Use this in conjunction with the FabricContainerProvider aware openGui method
-	 */
-	public static final BiFunction<PlayerEntity, BlockPos, Container> CONTAINER_PROVIDER_FUNCTION = (playerEntity, pos) -> {
-		BlockEntity blockEntity = playerEntity.world.getBlockEntity(pos);
-		if (blockEntity instanceof FabricContainerProvider) {
-			return ((FabricContainerProvider) blockEntity).createContainer(playerEntity.inventory, playerEntity);
+	private static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
+	private static final Map<Identifier, ContainerFactory<Container>> FACTORIES = new HashMap<>();
+
+	public static void registerFactory(Identifier identifier, ContainerFactory<Container> context) {
+		if (FACTORIES.containsKey(identifier)) {
+			throw new RuntimeException("A factory has already been registered as " + identifier.toString());
 		}
-		return null;
-	};
-
-	/**
-	 *
-	 * @param identifier
-	 * @param containerFunction
-	 */
-	public static void registerContainerHandler(Identifier identifier, BiFunction<PlayerEntity, PacketByteBuf, Container> containerFunction){
-		containerMap.put(identifier, containerFunction);
-	}
-
-	public static void registerBlockContainerHandler(Identifier identifier, BiFunction<PlayerEntity, BlockPos, Container> containerFunction){
-		registerContainerHandler(identifier, (playerEntity, packetByteBuf) -> {
-			BlockPos pos = packetByteBuf.readBlockPos();
-			return containerFunction.apply(playerEntity, pos);
-		});
+		FACTORIES.put(identifier, context);
 	}
 
 	/**
-	 *
 	 * Sends a pack to the client to open the gui, and opens the container on the server side
 	 *
 	 * @param identifier the identifier that you registered your gui and container handler with
-	 * @param byteBufConsumer a {@link PacketByteBuf} that you can write your own data to
-	 * @param playerEntity the player that the gui should be opened on
+	 * @param writer a {@link PacketByteBuf} that you can write your own data to
+	 * @param player the player that the gui should be opened on
 	 */
-	public static void openGui(Identifier identifier, Consumer<PacketByteBuf> byteBufConsumer, ServerPlayerEntity playerEntity) {
+	public static void openContainer(Identifier identifier, Consumer<PacketByteBuf> writer, ServerPlayerEntity player) {
+		int syncId = 120; //Write a container sync id, does this need to change?
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeString(identifier.toString());
-		byteBufConsumer.accept(buf);
-		playerEntity.networkHandler.sendPacket(new CustomPayloadClientPacket(OPEN_CONTAINER, buf));
+		buf.writeInt(syncId);
+		writer.accept(buf);
+		player.networkHandler.sendPacket(new CustomPayloadClientPacket(OPEN_CONTAINER, buf));
 
-		playerEntity.container = containerMap.get(identifier).apply(playerEntity, buf);
-		playerEntity.container.addListener(playerEntity);
-	}
-
-	/**
-	 *  Opens a gui for a tile that implements FabricContainerProvider
-	 * @param containerProvider the container provider
-	 * @param pos The block pos of the container provider
-	 * @param playerEntity The player that the gui will be opened on
-	 */
-	public static void openGui(FabricContainerProvider containerProvider, BlockPos pos, ServerPlayerEntity playerEntity) {
-		openGui(containerProvider.getContainerIdentifier(), packetByteBuf -> packetByteBuf.writeBlockPos(pos), playerEntity);
+		if (!FACTORIES.containsKey(identifier)) {
+			LOGGER.error("No container factory found for %s ", identifier.toString());
+			return;
+		}
+		player.container = FACTORIES.get(identifier).create(player, buf);
+		player.container.syncId = syncId;
+		player.container.addListener(player);
 	}
 }
