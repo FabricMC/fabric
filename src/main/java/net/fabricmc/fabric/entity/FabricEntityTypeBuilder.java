@@ -67,7 +67,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
+	@Deprecated
 	public EntityType<T> build(String id) {
+		return build();
+	}
+
+	public EntityType<T> build() {
 		if (this.saveable) {
 			// SNIP! Modded datafixers are not supported anyway.
 			// TODO: Flesh out once modded datafixers exist.
