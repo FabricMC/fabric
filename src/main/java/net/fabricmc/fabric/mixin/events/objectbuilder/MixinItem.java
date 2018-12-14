@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.events.objectbuilder;
 
 import net.fabricmc.fabric.events.ObjectBuilderEvent;
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.events.server;
 
 import net.fabricmc.fabric.events.ServerEvent;
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

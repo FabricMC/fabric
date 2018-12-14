@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.events;
 
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.server.MinecraftServer;
 

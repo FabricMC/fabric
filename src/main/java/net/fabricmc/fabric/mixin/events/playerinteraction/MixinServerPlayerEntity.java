@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;

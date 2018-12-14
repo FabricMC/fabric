@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.util;
+package net.fabricmc.fabric.util;
 
 import net.fabricmc.fabric.util.HandlerRegistry;
 

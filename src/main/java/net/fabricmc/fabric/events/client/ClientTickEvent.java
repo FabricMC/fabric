@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.events.client;
 
 import net.fabricmc.fabric.events.TickEvent;
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.client.MinecraftClient;
 

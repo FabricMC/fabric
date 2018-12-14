@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.events;
 
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -74,7 +74,7 @@ public final class PlayerInteractionEvent {
 	public static final HandlerRegistry<Entity> ATTACK_ENTITY = new HandlerArray<>(Entity.class);
 	
 	// TODO: For completeness' sake, but requires us to add a custom packet. Is it worth the complexity?
-	/* public static final HandlerRegistry<Item> ATTACK_ITEM = new HandlerArray<>(); */
+	/* public static final HandlerRegistry<Item> ATTACK_ITEM = new HanderList<>(); */
 
 	/**
 	 * Event emitted when a player interacts with a block.

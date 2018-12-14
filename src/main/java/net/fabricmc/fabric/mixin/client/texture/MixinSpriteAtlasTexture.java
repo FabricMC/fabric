@@ -20,7 +20,7 @@ import com.google.common.base.Joiner;
 import net.fabricmc.fabric.client.texture.*;
 import net.fabricmc.fabric.impl.client.texture.FabricSprite;
 import net.fabricmc.fabric.events.client.SpriteEvent;
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.class_1050;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;

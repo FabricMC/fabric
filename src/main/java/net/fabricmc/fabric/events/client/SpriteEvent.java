@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.events.client;
 
 import net.fabricmc.fabric.client.texture.SpriteRegistry;
-import net.fabricmc.fabric.impl.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 
 public class SpriteEvent {
