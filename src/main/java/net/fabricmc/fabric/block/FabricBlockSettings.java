@@ -74,6 +74,10 @@ public class FabricBlockSettings {
 		return new FabricBlockSettings(material, color);
 	}
 
+	public static FabricBlockSettings of(Material material, DyeColor color) {
+		return of(material, color.getMaterialColor());
+	}
+
 	public static FabricBlockSettings copy(Block base) {
 		return new FabricBlockSettings(base);
 	}
@@ -110,6 +114,11 @@ public class FabricBlockSettings {
 		return this;
 	}
 
+	public FabricBlockSettings noCollision() {
+		castDelegate.fabric_setCollidable(false);
+		return this;
+	}
+
 	public FabricBlockSettings sounds(BlockSoundGroup group) {
 		castDelegate.fabric_setSoundGroup(group);
 		return this;
@@ -138,6 +147,19 @@ public class FabricBlockSettings {
 	public FabricBlockSettings strength(float hardness, float resistance) {
 		castDelegate.fabric_setHardness(hardness);
 		castDelegate.fabric_setResistance(resistance);
+		return this;
+	}
+
+	public FabricBlockSettings strength(float both) {
+		return strength(both, both);
+	}
+
+	public FabricBlockSettings breakInstantly() {
+		return strength(0.0F);
+	}
+
+	public FabricBlockSettings isPistonExtension() {
+		this.pistonExtension = true;
 		return this;
 	}
 
