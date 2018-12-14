@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "block.entity.MixinClientPlayNetworkHandler",
+    "bugfix.MixinBiomeColors",
     "client.render.MixinBlockEntityRenderManager",
     "client.render.MixinEntityRenderManager",
     "client.texture.MixinSpriteAtlasTexture",

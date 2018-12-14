@@ -22,12 +22,12 @@ import java.lang.reflect.Array;
  * @deprecated Use HandlerArray.
  */
 @Deprecated
-public class HanderList<T> implements HandlerRegistry<T> {
+public class HandlerList<T> implements HandlerRegistry<T> {
 	private final Class tClass;
 	private T[] array;
 
 	@SuppressWarnings("unchecked")
-	public HanderList(Class theClass) {
+	public HandlerList(Class theClass) {
 		this.tClass = theClass;
 		this.array = (T[]) Array.newInstance(tClass, 0);
 	}
