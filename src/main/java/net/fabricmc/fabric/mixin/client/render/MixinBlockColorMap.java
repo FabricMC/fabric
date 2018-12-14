@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.render;
 
-import net.fabricmc.fabric.impl.client.render.ColorMapperRegistryImpl;
+import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockColorMap;
 import net.minecraft.client.render.block.BlockColorMapper;
@@ -30,14 +30,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockColorMap.class)
-public class MixinBlockColorMap implements ColorMapperRegistryImpl.ColorMapperHolder<Block, BlockColorMapper> {
+public class MixinBlockColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<Block, BlockColorMapper> {
 	@Shadow
 	@Final
 	private IdList<BlockColorMapper> mappers;
 
 	@Inject(method = "create", at = @At("RETURN"))
 	private static void create(CallbackInfoReturnable<BlockColorMap> info) {
-		ColorMapperRegistryImpl.BLOCKS.initialize(info.getReturnValue());
+		ColorProviderRegistryImpl.BLOCK.initialize(info.getReturnValue());
 	}
 
 	@Override

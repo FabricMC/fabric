@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.render;
 
-import net.fabricmc.fabric.api.client.render.ColorMapperRegistry;
+import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockColorMap;
 import net.minecraft.client.render.block.BlockColorMapper;
@@ -27,15 +27,15 @@ import net.minecraft.item.ItemContainer;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public abstract class ColorMapperRegistryImpl<T, Mapper, Underlying> implements ColorMapperRegistry<T, Mapper> {
-	public static final ColorMapperRegistryImpl<Block, BlockColorMapper, BlockColorMap> BLOCKS = new ColorMapperRegistryImpl<Block, BlockColorMapper, BlockColorMap>() {
+public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> implements ColorProviderRegistry<T, Provider> {
+	public static final ColorProviderRegistryImpl<Block, BlockColorMapper, BlockColorMap> BLOCK = new ColorProviderRegistryImpl<Block, BlockColorMapper, BlockColorMap>() {
 		@Override
 		void registerUnderlying(BlockColorMap map, BlockColorMapper mapper, Block block) {
 			map.register(mapper, block);
 		}
 	};
 
-	public static final ColorMapperRegistryImpl<ItemContainer, ItemColorMapper, ItemColorMap> ITEMS = new ColorMapperRegistryImpl<ItemContainer, ItemColorMapper, ItemColorMap>() {
+	public static final ColorProviderRegistryImpl<ItemContainer, ItemColorMapper, ItemColorMap> ITEM = new ColorProviderRegistryImpl<ItemContainer, ItemColorMapper, ItemColorMap>() {
 		@Override
 		void registerUnderlying(ItemColorMap map, ItemColorMapper mapper, ItemContainer block) {
 			map.method_1708(mapper, block);
@@ -43,9 +43,9 @@ public abstract class ColorMapperRegistryImpl<T, Mapper, Underlying> implements 
 	};
 
 	private Underlying colorMap;
-	private Map<T, Mapper> tempMappers = new IdentityHashMap<>();
+	private Map<T, Provider> tempMappers = new IdentityHashMap<>();
 
-	abstract void registerUnderlying(Underlying colorMap, Mapper mapper, T objects);
+	abstract void registerUnderlying(Underlying colorMap, Provider provider, T objects);
 
 	public void initialize(Underlying colorMap) {
 		if (this.colorMap != null) {
@@ -54,7 +54,7 @@ public abstract class ColorMapperRegistryImpl<T, Mapper, Underlying> implements 
 		}
 
 		this.colorMap = colorMap;
-		for (Map.Entry<T, Mapper> mappers : tempMappers.entrySet()) {
+		for (Map.Entry<T, Provider> mappers : tempMappers.entrySet()) {
 			registerUnderlying(colorMap, mappers.getValue(), mappers.getKey());
 		}
 		tempMappers = null;
@@ -62,21 +62,21 @@ public abstract class ColorMapperRegistryImpl<T, Mapper, Underlying> implements 
 
 	@Override
 	@SafeVarargs
-	public final void register(Mapper mapper, T... objects) {
+	public final void register(Provider provider, T... objects) {
 		if (colorMap != null) {
-			for (T object : objects) registerUnderlying(colorMap, mapper, object);
+			for (T object : objects) registerUnderlying(colorMap, provider, object);
 		} else {
-			for (T object : objects) tempMappers.put(object, mapper);
+			for (T object : objects) tempMappers.put(object, provider);
 		}
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Mapper get(T object) {
-		return colorMap == null ? null : ((ColorMapperHolder<T, Mapper>) colorMap).get(object);
+	public Provider get(T object) {
+		return colorMap == null ? null : ((ColorMapperHolder<T, Provider>) colorMap).get(object);
 	}
 
-	public interface ColorMapperHolder<T, Mapper> {
-		Mapper get(T item);
+	public interface ColorMapperHolder<T, Provider> {
+		Provider get(T item);
 	}
 }

@@ -16,33 +16,33 @@
 
 package net.fabricmc.fabric.api.client.render;
 
-import net.fabricmc.fabric.impl.client.render.ColorMapperRegistryImpl;
+import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockColorMapper;
 import net.minecraft.client.render.item.ItemColorMapper;
 import net.minecraft.item.ItemContainer;
 
-public interface ColorMapperRegistry<T, Mapper> {
-	ColorMapperRegistry<ItemContainer, ItemColorMapper> ITEMS = ColorMapperRegistryImpl.ITEMS;
+public interface ColorProviderRegistry<T, Provider> {
+	ColorProviderRegistry<ItemContainer, ItemColorMapper> ITEM = ColorProviderRegistryImpl.ITEM;
 
-	ColorMapperRegistry<Block, BlockColorMapper> BLOCKS = ColorMapperRegistryImpl.BLOCKS;
+	ColorProviderRegistry<Block, BlockColorMapper> BLOCK = ColorProviderRegistryImpl.BLOCK;
 
 	/**
-	 * Register a color mapper for one or more objects
+	 * Register a color provider for one or more objects
 	 *
-	 * @param mapper  The color mapper to register.
-	 * @param objects The objects which should be coloured using this mapper.
+	 * @param provider The color provider to register.
+	 * @param objects  The objects which should be colored using this provider.
 	 */
-	void register(Mapper mapper, T... objects);
+	void register(Provider provider, T... objects);
 
 	/**
-	 * Get a color mapper for the provided object.
+	 * Get a color provider for the given object.
 	 *
 	 * Please note that the underlying registry may not be fully populated or stable until the game has started,
 	 * as other mods may overwrite the registry.
 	 *
-	 * @param object The object to acquire the mapper for.
-	 * @return The registered mapper for this mapper, or {@code null} if none is registered or available.
+	 * @param object The object to acquire the provide for.
+	 * @return The registered mapper for this provider, or {@code null} if none is registered or available.
 	 */
-	Mapper get(T object);
+	Provider get(T object);
 }
