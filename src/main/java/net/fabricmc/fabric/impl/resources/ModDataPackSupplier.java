@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.resources.impl;
+package net.fabricmc.fabric.impl.resources;
 
 import net.fabricmc.fabric.resources.ModResourcePack;
 import net.minecraft.resource.ResourcePack;

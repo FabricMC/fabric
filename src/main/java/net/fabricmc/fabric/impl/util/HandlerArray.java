@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.util;
+package net.fabricmc.fabric.impl.util;
+
+import net.fabricmc.fabric.util.HandlerRegistry;
 
 import java.lang.reflect.Array;
 
-public class HandlerList<T> implements HandlerRegistry<T> {
+public class HandlerArray<T> implements HandlerRegistry<T> {
 	private final Class tClass;
 	private T[] array;
 
 	@SuppressWarnings("unchecked")
-	public HandlerList(Class theClass) {
+	public HandlerArray(Class theClass) {
 		this.tClass = theClass;
 		this.array = (T[]) Array.newInstance(tClass, 0);
 	}

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.events.client;
 
 import net.fabricmc.fabric.events.TickEvent;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.impl.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.client.MinecraftClient;
 
@@ -29,7 +29,7 @@ import java.util.function.Consumer;
  * @see TickEvent
  */
 public final class ClientTickEvent {
-	public static final HandlerRegistry<Consumer<MinecraftClient>> CLIENT = new HandlerList<>(Consumer.class);
+	public static final HandlerRegistry<Consumer<MinecraftClient>> CLIENT = new HandlerArray<>(Consumer.class);
 
 	private ClientTickEvent() {
 

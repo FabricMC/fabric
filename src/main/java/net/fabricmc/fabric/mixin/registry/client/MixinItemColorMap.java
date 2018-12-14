@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.registry.client;
 
 import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.registry.impl.listeners.IdListUpdater;
+import net.fabricmc.fabric.impl.registry.IdListUpdater;
 import net.minecraft.client.render.block.BlockColorMap;
 import net.minecraft.client.render.item.ItemColorMap;
 import net.minecraft.client.render.item.ItemColorMapper;

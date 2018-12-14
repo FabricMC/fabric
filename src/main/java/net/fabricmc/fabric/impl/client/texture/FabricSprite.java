@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.client.texture.impl;
+package net.fabricmc.fabric.impl.client.texture;
 
 import net.minecraft.class_1050;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;

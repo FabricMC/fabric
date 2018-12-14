@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.resources.impl.ModResourcePackUtil;
+import net.fabricmc.fabric.impl.resources.ModResourcePackUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePack;

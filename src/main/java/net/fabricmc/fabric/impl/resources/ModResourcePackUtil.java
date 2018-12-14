@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.resources.impl;
+package net.fabricmc.fabric.impl.resources;
 
 import com.google.common.base.Charsets;
 import net.fabricmc.loader.FabricLoader;

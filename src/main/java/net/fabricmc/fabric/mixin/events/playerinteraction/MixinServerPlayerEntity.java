@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.impl.util.HandlerArray;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -33,7 +33,7 @@ public class MixinServerPlayerEntity {
 	public void onPlayerInteractEntity(Entity target, CallbackInfo info) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 
-		for (PlayerInteractionEvent.Entity handler : ((HandlerList<PlayerInteractionEvent.Entity>) PlayerInteractionEvent.ATTACK_ENTITY).getBackingArray()) {
+		for (PlayerInteractionEvent.Entity handler : ((HandlerArray<PlayerInteractionEvent.Entity>) PlayerInteractionEvent.ATTACK_ENTITY).getBackingArray()) {
 			ActionResult result = handler.interact(player, player.getEntityWorld(), Hand.MAIN, target);
 			if (result != ActionResult.PASS) {
 				info.cancel();
