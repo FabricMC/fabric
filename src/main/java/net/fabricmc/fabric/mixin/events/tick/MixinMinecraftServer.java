@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.mixin.events.tick;
 
-import net.fabricmc.fabric.events.ServerEvent;
 import net.fabricmc.fabric.events.TickEvent;
-import net.fabricmc.fabric.util.HandlerList;
 import net.minecraft.class_3689;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {

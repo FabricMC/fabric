@@ -18,9 +18,9 @@ package net.fabricmc.fabric.mixin.client.texture;
 
 import com.google.common.base.Joiner;
 import net.fabricmc.fabric.client.texture.*;
-import net.fabricmc.fabric.client.texture.impl.FabricSprite;
+import net.fabricmc.fabric.impl.client.texture.FabricSprite;
 import net.fabricmc.fabric.events.client.SpriteEvent;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.impl.util.HandlerArray;
 import net.minecraft.class_1050;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
@@ -85,7 +85,7 @@ public abstract class MixinSpriteAtlasTexture {
 		//noinspection RedundantCast,ConstantConditions
 		if ((SpriteAtlasTexture) (Object) this == MinecraftClient.getInstance().getSpriteAtlas()) {
 			SpriteRegistry registry = new SpriteRegistry(sprites, (id) -> addSpriteToLoad(manager, id));
-			for (SpriteEvent.Provider provider : ((HandlerList<SpriteEvent.Provider>) SpriteEvent.PROVIDE).getBackingArray()) {
+			for (SpriteEvent.Provider provider : ((HandlerArray<SpriteEvent.Provider>) SpriteEvent.PROVIDE).getBackingArray()) {
 				provider.registerSprites(registry);
 			}
 		}

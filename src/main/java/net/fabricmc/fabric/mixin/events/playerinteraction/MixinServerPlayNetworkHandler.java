@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.impl.util.HandlerArray;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.packet.PlayerInteractEntityServerPacket;
@@ -35,7 +35,7 @@ public class MixinServerPlayNetworkHandler {
 
 	@Inject(method = "onPlayerInteractEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;interactAt(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;"), cancellable = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityServerPacket packet, CallbackInfo info) {
-		for (PlayerInteractionEvent.EntityPositioned handler : ((HandlerList<PlayerInteractionEvent.EntityPositioned>) PlayerInteractionEvent.INTERACT_ENTITY_POSITIONED).getBackingArray()) {
+		for (PlayerInteractionEvent.EntityPositioned handler : ((HandlerArray<PlayerInteractionEvent.EntityPositioned>) PlayerInteractionEvent.INTERACT_ENTITY_POSITIONED).getBackingArray()) {
 			ActionResult result = handler.interact(player, player.getEntityWorld(), packet.getHand(), packet.getEntity(player.world), packet.getHitPosition());
 			if (result != ActionResult.PASS) {
 				info.cancel();

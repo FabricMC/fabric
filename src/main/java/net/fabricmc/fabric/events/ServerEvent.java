@@ -16,16 +16,14 @@
 
 package net.fabricmc.fabric.events;
 
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.impl.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Profiler;
-import net.minecraft.world.World;
 
 import java.util.function.Consumer;
 
 public final class ServerEvent {
-	public static final HandlerRegistry<Consumer<MinecraftServer>> START = new HandlerList<>(Consumer.class);
+	public static final HandlerRegistry<Consumer<MinecraftServer>> START = new HandlerArray<>(Consumer.class);
 
 	private ServerEvent() {
 
