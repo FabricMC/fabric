@@ -1,6 +1,7 @@
 buildscript {
 	repositories {
 		jcenter()
+		gradlePluginPortal()
 		maven {
 			name = 'Fabric'
 			url = 'http://maven.fabricmc.net/'
@@ -15,6 +16,7 @@ plugins {
 	id 'java'
 	id 'eclipse'
 	id 'idea'
+	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
 apply plugin: net.fabricmc.loom.LoomGradlePlugin
@@ -23,19 +25,39 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 archivesBaseName = "fabric"
-version = "0.1.1"
+
+def baseVersion = "0.1.1"
+def mcVersion = "18w50a"
 
 def ENV = System.getenv()
-version = version + "." + (ENV.BUILD_NUMBER ?: "local")
+version = baseVersion + "." + (ENV.BUILD_NUMBER ?: "local")
 
 minecraft {
 	refmapName = "net.fabricmc.fabric.refmap.json"
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:18w50a"
-	mappings "net.fabricmc:yarn:18w50a.2"
+	minecraft "com.mojang:minecraft:$mcVersion"
+	mappings "net.fabricmc:yarn:$mcVersion.2"
 	modCompile "net.fabricmc:fabric-loader:0.2.0.64"
+}
+
+curseforge {
+	if (project.hasProperty('curse_api_key')){
+		apiKey = project.getProperty('curse_api_key')
+	}
+	project {
+		id = '306612'
+		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
+		releaseType = 'alpha'
+		addGameVersion '1.14-Snapshot'
+		mainArtifact(jar) {
+			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
+		}
+	}
+	options{
+		forgeGradleIntegration = false
+	}
 }
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/maven.gradle'
