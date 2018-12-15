@@ -38,7 +38,7 @@ minecraft {
 
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion.9"
+	mappings "net.fabricmc:yarn:$mcVersion.21"
 	modCompile "net.fabricmc:fabric-loader:0.2.0.68"
 }
 

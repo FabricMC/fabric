@@ -22,7 +22,7 @@ import net.minecraft.client.render.block.BlockColorMap;
 import net.minecraft.client.render.block.BlockColorMapper;
 import net.minecraft.client.render.item.ItemColorMap;
 import net.minecraft.client.render.item.ItemColorMapper;
-import net.minecraft.item.ItemContainer;
+import net.minecraft.item.ItemProvider;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -35,10 +35,10 @@ public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> impleme
 		}
 	};
 
-	public static final ColorProviderRegistryImpl<ItemContainer, ItemColorMapper, ItemColorMap> ITEM = new ColorProviderRegistryImpl<ItemContainer, ItemColorMapper, ItemColorMap>() {
+	public static final ColorProviderRegistryImpl<ItemProvider, ItemColorMapper, ItemColorMap> ITEM = new ColorProviderRegistryImpl<ItemProvider, ItemColorMapper, ItemColorMap>() {
 		@Override
-		void registerUnderlying(ItemColorMap map, ItemColorMapper mapper, ItemContainer block) {
-			map.method_1708(mapper, block);
+		void registerUnderlying(ItemColorMap map, ItemColorMapper mapper, ItemProvider block) {
+			map.register(mapper, block);
 		}
 	};
 

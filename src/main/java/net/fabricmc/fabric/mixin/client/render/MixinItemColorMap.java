@@ -20,7 +20,7 @@ import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.client.render.block.BlockColorMap;
 import net.minecraft.client.render.item.ItemColorMap;
 import net.minecraft.client.render.item.ItemColorMapper;
-import net.minecraft.item.ItemContainer;
+import net.minecraft.item.ItemProvider;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Final;
@@ -31,18 +31,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemColorMap.class)
-public class MixinItemColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<ItemContainer, ItemColorMapper> {
+public class MixinItemColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<ItemProvider, ItemColorMapper> {
 	@Shadow
 	@Final
-	private IdList<ItemColorMapper> field_1996;
+	private IdList<ItemColorMapper> mappers;
 
-	@Inject(method = "method_1706", at = @At("RETURN"))
-	private static void method_1706(BlockColorMap blockMap, CallbackInfoReturnable<ItemColorMap> info) {
+	@Inject(method = "create", at = @At("RETURN"))
+	private static void create(BlockColorMap blockMap, CallbackInfoReturnable<ItemColorMap> info) {
 		ColorProviderRegistryImpl.ITEM.initialize(info.getReturnValue());
 	}
 
 	@Override
-	public ItemColorMapper get(ItemContainer item) {
-		return field_1996.getInt(Registry.ITEM.getRawId(item.getItem()));
+	public ItemColorMapper get(ItemProvider item) {
+		return mappers.getInt(Registry.ITEM.getRawId(item.getItem()));
 	}
 }

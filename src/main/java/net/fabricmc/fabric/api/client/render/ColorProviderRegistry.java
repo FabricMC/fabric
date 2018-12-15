@@ -20,10 +20,10 @@ import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockColorMapper;
 import net.minecraft.client.render.item.ItemColorMapper;
-import net.minecraft.item.ItemContainer;
+import net.minecraft.item.ItemProvider;
 
 public interface ColorProviderRegistry<T, Provider> {
-	ColorProviderRegistry<ItemContainer, ItemColorMapper> ITEM = ColorProviderRegistryImpl.ITEM;
+	ColorProviderRegistry<ItemProvider, ItemColorMapper> ITEM = ColorProviderRegistryImpl.ITEM;
 
 	ColorProviderRegistry<Block, BlockColorMapper> BLOCK = ColorProviderRegistryImpl.BLOCK;
 

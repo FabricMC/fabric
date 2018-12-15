@@ -33,15 +33,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemColorMap.class)
 public class MixinItemColorMap implements IdListUpdater.Container<ItemColorMapper> {
 	@Shadow
-	private IdList<ItemColorMapper> field_1996;
+	private IdList<ItemColorMapper> mappers;
 
-	@Inject(method = "method_1706", at = @At("RETURN"))
-	private static void method_1706(BlockColorMap blockMap, CallbackInfoReturnable<ItemColorMap> info) {
+	@Inject(method = "create", at = @At("RETURN"))
+	private static void create(BlockColorMap blockMap, CallbackInfoReturnable<ItemColorMap> info) {
 		((ListenableRegistry) Registry.ITEM).registerListener(new IdListUpdater<Item, ItemColorMapper>((IdListUpdater.Container<ItemColorMapper>) (Object) info.getReturnValue()));
 	}
 
 	@Override
 	public IdList<ItemColorMapper> getIdListForRegistryUpdating() {
-		return field_1996;
+		return mappers;
 	}
 }

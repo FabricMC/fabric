@@ -48,6 +48,7 @@ public class FabricBlockSettings {
 		void fabric_setRandomTicks(boolean value);
 		void fabric_setFriction(float value);
 		void fabric_setDropTable(Identifier id);
+		void fabric_setDynamicBounds(boolean value);
 	}
 
 	protected final Block.Settings delegate;
@@ -72,6 +73,10 @@ public class FabricBlockSettings {
 
 	public static FabricBlockSettings of(Material material, MaterialColor color) {
 		return new FabricBlockSettings(material, color);
+	}
+
+	public static FabricBlockSettings of(Material material, DyeColor color) {
+		return new FabricBlockSettings(material, color.getMaterialColor());
 	}
 
 	public static FabricBlockSettings copy(Block base) {
@@ -110,6 +115,10 @@ public class FabricBlockSettings {
 		return this;
 	}
 
+	public FabricBlockSettings noCollision() {
+		return collidable(false);
+	}
+
 	public FabricBlockSettings sounds(BlockSoundGroup group) {
 		castDelegate.fabric_setSoundGroup(group);
 		return this;
@@ -141,6 +150,10 @@ public class FabricBlockSettings {
 		return this;
 	}
 
+	public FabricBlockSettings breakInstantly() {
+		return hardness(0.0F);
+	}
+
 	public FabricBlockSettings dropsNothing() {
 		return this.drops(LootTables.EMPTY);
 	}
@@ -156,6 +169,11 @@ public class FabricBlockSettings {
 
 	public FabricBlockSettings friction(float value) {
 		castDelegate.fabric_setFriction(value);
+		return this;
+	}
+
+	public FabricBlockSettings dynamicBounds() {
+		castDelegate.fabric_setDynamicBounds(true);
 		return this;
 	}
 
