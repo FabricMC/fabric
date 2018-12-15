@@ -1,0 +1,11 @@
+{
+  "id": "fabric_test",
+  "name": "Fabric API Tests",
+  "version": "0.1.1",
+  "side": "universal",
+  "description": "A series of test mods to check Fabric works.",
+  "license": "Apache-2.0",
+  "initializers": [
+    "net.fabricmc.fabric.colormapper.ColorProviderMod"
+  ]
+}

@@ -5,8 +5,10 @@
   "mixins": [
     "block.entity.MixinClientPlayNetworkHandler",
     "bugfix.MixinBiomeColors",
+    "client.render.MixinBlockColorMap",
     "client.render.MixinBlockEntityRenderManager",
     "client.render.MixinEntityRenderManager",
+    "client.render.MixinItemColorMap",
     "client.texture.MixinSpriteAtlasTexture",
     "events.playerinteraction.MixinClientPlayerInteractionManager",
     "events.tick.MixinMinecraftClient",
