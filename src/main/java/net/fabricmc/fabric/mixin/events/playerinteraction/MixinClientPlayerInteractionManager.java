@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -26,6 +26,8 @@ import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.packet.PlayerInteractBlockServerPacket;
+import net.minecraft.server.network.packet.PlayerInteractEntityServerPacket;
+import net.minecraft.server.network.packet.PlayerInteractItemServerPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.HitResult;
@@ -52,7 +54,7 @@ public class MixinClientPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
-		for (PlayerInteractionEvent.Block handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
+		for (PlayerInteractionEvent.Block handler : ((HandlerArray<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
 			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, direction);
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result == ActionResult.SUCCESS);
@@ -68,7 +70,7 @@ public class MixinClientPlayerInteractionManager {
 			return;
 		}
 
-		for (PlayerInteractionEvent.Block handler : ((HandlerList<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
+		for (PlayerInteractionEvent.Block handler : ((HandlerArray<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
 			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, direction);
 			if (result != ActionResult.PASS) {
 				info.setReturnValue(result == ActionResult.SUCCESS);
@@ -80,7 +82,7 @@ public class MixinClientPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0), method = "interactBlock", cancellable = true)
 	public void interactBlock(ClientPlayerEntity player, ClientWorld world, BlockPos pos, Direction direction, Vec3d vec, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		PlayerInteractionEvent.BlockPositioned[] backingArray = ((HandlerList<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray();
+		PlayerInteractionEvent.BlockPositioned[] backingArray = ((HandlerArray<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray();
 		if (backingArray.length > 0) {
 			float hitX = (float) (vec.x - pos.getX());
 			float hitY = (float) (vec.y - pos.getY());
@@ -100,11 +102,14 @@ public class MixinClientPlayerInteractionManager {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0), method = "interactItem", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "interactItem", cancellable = true)
 	public void interactItem(PlayerEntity player, World world, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		for (PlayerInteractionEvent.Item handler : ((HandlerList<PlayerInteractionEvent.Item>) PlayerInteractionEvent.INTERACT_ITEM).getBackingArray()) {
+		for (PlayerInteractionEvent.Item handler : ((HandlerArray<PlayerInteractionEvent.Item>) PlayerInteractionEvent.INTERACT_ITEM).getBackingArray()) {
 			ActionResult result = handler.interact(player, world, hand);
 			if (result != ActionResult.PASS) {
+				if (result == ActionResult.SUCCESS) {
+					this.networkHandler.sendPacket(new PlayerInteractItemServerPacket(hand));
+				}
 				info.setReturnValue(result);
 				info.cancel();
 				return;
@@ -112,25 +117,31 @@ public class MixinClientPlayerInteractionManager {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "attackEntity", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "attackEntity", cancellable = true)
 	public void attackEntity(PlayerEntity player, Entity entity, CallbackInfo info) {
-		for (PlayerInteractionEvent.Entity handler : ((HandlerList<PlayerInteractionEvent.Entity>) PlayerInteractionEvent.ATTACK_ENTITY).getBackingArray()) {
+		for (PlayerInteractionEvent.Entity handler : ((HandlerArray<PlayerInteractionEvent.Entity>) PlayerInteractionEvent.ATTACK_ENTITY).getBackingArray()) {
 			ActionResult result = handler.interact(player, player.getEntityWorld(), Hand.MAIN /* TODO */, entity);
 			if (result != ActionResult.PASS) {
+				if (result == ActionResult.SUCCESS) {
+					this.networkHandler.sendPacket(new PlayerInteractEntityServerPacket(entity));
+				}
 				info.cancel();
 				return;
 			}
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "interactEntityAtLocation", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "interactEntityAtLocation", cancellable = true)
 	public void interactEntityAtLocation(PlayerEntity player, Entity entity, HitResult hitResult, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		// TODO: Remove double Vec3d creation?
 		Vec3d hitVec = new Vec3d(hitResult.pos.x - entity.x, hitResult.pos.y - entity.y, hitResult.pos.z - entity.z);
 
-		for (PlayerInteractionEvent.EntityPositioned handler : ((HandlerList<PlayerInteractionEvent.EntityPositioned>) PlayerInteractionEvent.INTERACT_ENTITY_POSITIONED).getBackingArray()) {
+		for (PlayerInteractionEvent.EntityPositioned handler : ((HandlerArray<PlayerInteractionEvent.EntityPositioned>) PlayerInteractionEvent.INTERACT_ENTITY_POSITIONED).getBackingArray()) {
 			ActionResult result = handler.interact(player, player.getEntityWorld(), hand, entity, hitVec);
 			if (result != ActionResult.PASS) {
+				if (result == ActionResult.SUCCESS) {
+					this.networkHandler.sendPacket(new PlayerInteractEntityServerPacket(entity, hand, hitVec));
+				}
 				info.setReturnValue(result);
 				info.cancel();
 				return;

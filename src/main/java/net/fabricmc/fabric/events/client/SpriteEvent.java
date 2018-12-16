@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.events.client;
 
 import net.fabricmc.fabric.client.texture.SpriteRegistry;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 
 public class SpriteEvent {
@@ -26,5 +26,5 @@ public class SpriteEvent {
 		void registerSprites(SpriteRegistry registry);
 	}
 
-	public static final HandlerRegistry<Provider> PROVIDE = new HandlerList<>(Provider.class);
+	public static final HandlerRegistry<Provider> PROVIDE = new HandlerArray<>(Provider.class);
 }

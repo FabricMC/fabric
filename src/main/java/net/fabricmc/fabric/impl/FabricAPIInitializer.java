@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric;
+package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.block.BreakInteractable;
@@ -26,10 +26,11 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.List;
 
-public class FabricAPI implements ModInitializer {
+public class FabricAPIInitializer implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		PlayerInteractionEvent.BREAK_BLOCK.register((player, world, hand, pos, direction) -> {

@@ -47,6 +47,8 @@ public class MixinBlockBuilder implements FabricBlockSettings.Delegate {
 	private float friction;
 	@Shadow
 	private Identifier dropTableId;
+	@Shadow
+	private boolean dynamicBounds;
 
 	@Override
 	public void fabric_setMaterialColor(MaterialColor color) {
@@ -91,5 +93,10 @@ public class MixinBlockBuilder implements FabricBlockSettings.Delegate {
 	@Override
 	public void fabric_setDropTable(Identifier id) {
 		dropTableId = id;
+	}
+
+	@Override
+	public void fabric_setDynamicBounds(boolean value) {
+		dynamicBounds = value;
 	}
 }

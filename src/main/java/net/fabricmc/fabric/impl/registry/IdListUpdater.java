@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.registry.impl.listeners;
+package net.fabricmc.fabric.impl.registry;
 
 import net.fabricmc.fabric.registry.ExtendedIdList;
 import net.fabricmc.fabric.registry.RegistryListener;

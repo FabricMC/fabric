@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.events;
 
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -29,8 +29,8 @@ import java.util.function.BiConsumer;
  * your own methods and transparently add the resulting information to a Map.
  */
 public final class ObjectBuilderEvent {
-	public static final HandlerRegistry<BiConsumer<Block.Settings, Block>> BLOCK = new HandlerList<>(BiConsumer.class);
-	public static final HandlerRegistry<BiConsumer<Item.Settings, Item>> ITEM = new HandlerList<>(BiConsumer.class);
+	public static final HandlerRegistry<BiConsumer<Block.Settings, Block>> BLOCK = new HandlerArray<>(BiConsumer.class);
+	public static final HandlerRegistry<BiConsumer<Item.Settings, Item>> ITEM = new HandlerArray<>(BiConsumer.class);
 
 	private ObjectBuilderEvent() {
 

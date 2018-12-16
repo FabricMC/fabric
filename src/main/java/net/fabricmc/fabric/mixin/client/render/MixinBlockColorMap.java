@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.client;
+package net.fabricmc.fabric.mixin.client.render;
 
-import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.IdListUpdater;
+import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
+import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockColorMap;
-import net.minecraft.client.render.item.ItemColorMap;
-import net.minecraft.client.render.item.ItemColorMapper;
-import net.minecraft.item.Item;
+import net.minecraft.client.render.block.BlockColorMapper;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.Registry;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ItemColorMap.class)
-public class MixinItemColorMap implements IdListUpdater.Container<ItemColorMapper> {
+@Mixin(BlockColorMap.class)
+public class MixinBlockColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<Block, BlockColorMapper> {
 	@Shadow
-	private IdList<ItemColorMapper> mappers;
+	@Final
+	private IdList<BlockColorMapper> mappers;
 
 	@Inject(method = "create", at = @At("RETURN"))
-	private static void create(BlockColorMap blockMap, CallbackInfoReturnable<ItemColorMap> info) {
-		((ListenableRegistry) Registry.ITEM).registerListener(new IdListUpdater<Item, ItemColorMapper>((IdListUpdater.Container<ItemColorMapper>) (Object) info.getReturnValue()));
+	private static void create(CallbackInfoReturnable<BlockColorMap> info) {
+		ColorProviderRegistryImpl.BLOCK.initialize(info.getReturnValue());
 	}
 
 	@Override
-	public IdList<ItemColorMapper> getIdListForRegistryUpdating() {
-		return mappers;
+	public BlockColorMapper get(Block block) {
+		return mappers.getInt(Registry.BLOCK.getRawId(block));
 	}
 }

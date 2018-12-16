@@ -35,6 +35,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 @Mixin(IdRegistry.class)
 public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry<T>, RegistryListener<T> {
 	@Shadow
@@ -135,7 +139,10 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		idStore.clear();
 		nextId = 0;
 
-		for (Identifier identifier : idMap.keySet()) {
+		List<Identifier> idsInOrder = new ArrayList<>(idMap.keySet());
+		idsInOrder.sort(Comparator.comparingInt(idMap::getInt));
+
+		for (Identifier identifier : idsInOrder) {
 			int id = idMap.getInt(identifier);
 			T object = objectMap.get(identifier);
 			if (object == null) {

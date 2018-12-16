@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.events;
 
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Profiler;
@@ -29,15 +29,15 @@ import java.util.function.Consumer;
  * You can use them as endpoints to tick your own, related logic "globally".
  */
 public final class TickEvent {
-	public static final HandlerRegistry<Consumer<MinecraftServer>> SERVER = new HandlerList<>(Consumer.class);
-	public static final HandlerRegistry<Consumer<World>> WORLD = new HandlerList<>(Consumer.class);
+	public static final HandlerRegistry<Consumer<MinecraftServer>> SERVER = new HandlerArray<>(Consumer.class);
+	public static final HandlerRegistry<Consumer<World>> WORLD = new HandlerArray<>(Consumer.class);
 
 	private TickEvent() {
 
 	}
 
 	public static <T> void tick(HandlerRegistry<Consumer<T>> registry, T object, Profiler profiler) {
-		Consumer<T>[] handlers = ((HandlerList<Consumer<T>>) registry).getBackingArray();
+		Consumer<T>[] handlers = ((HandlerArray<Consumer<T>>) registry).getBackingArray();
 		if (handlers.length > 0) {
 			profiler.begin("fabric");
 

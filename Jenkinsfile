@@ -7,7 +7,7 @@ node {
 
    sh "rm -rf build/libs/"
    sh "chmod +x gradlew"
-   sh "./gradlew build uploadArchives --refresh-dependencies --stacktrace"
+   sh "./gradlew build uploadArchives curseforge --refresh-dependencies --stacktrace"
 
    stage "Archive artifacts"
 

@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.events.server;
 
 import net.fabricmc.fabric.events.ServerEvent;
-import net.fabricmc.fabric.util.HandlerList;
+import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 public class MixinMinecraftServer {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;method_3791(Lnet/minecraft/server/ServerMetadata;)V", ordinal = 0), method = "run")
 	public void afterSetupServer(CallbackInfo info) {
-		for (Consumer<MinecraftServer> handler : ((HandlerList<Consumer<MinecraftServer>>) ServerEvent.START).getBackingArray()) {
+		for (Consumer<MinecraftServer> handler : ((HandlerArray<Consumer<MinecraftServer>>) ServerEvent.START).getBackingArray()) {
 			handler.accept((MinecraftServer) (Object) this);
 		}
 	}

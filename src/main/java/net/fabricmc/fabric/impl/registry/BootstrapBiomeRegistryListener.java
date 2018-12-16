@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.registry.impl.listeners;
+package net.fabricmc.fabric.impl.registry;
 
+import net.fabricmc.fabric.registry.ExtendedIdList;
 import net.fabricmc.fabric.registry.RegistryListener;
-import net.minecraft.item.Item;
-import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 
-public class BootstrapItemRegistryListener implements RegistryListener<Item> {
+public class BootstrapBiomeRegistryListener implements RegistryListener<Biome> {
 	@Override
-	public void beforeRegistryCleared(Registry<Item> registry) {
-		Item.BLOCK_ITEM_MAP.clear();
+	public void beforeRegistryCleared(Registry<Biome> registry) {
+		((ExtendedIdList) Biome.PARENT_BIOME_ID_MAP).clear();
 	}
 
 	@Override
-	public void beforeRegistryRegistration(Registry<Item> registry, int id, Identifier identifier, Item object, boolean isNew) {
-		// refer net.minecraft.item.Items
-		if (object instanceof BlockItem) {
-			((BlockItem) object).registerBlockItemMap(Item.BLOCK_ITEM_MAP, object);
+	public void beforeRegistryRegistration(Registry<Biome> registry, int id, Identifier identifier, Biome object, boolean isNew) {
+		// refer net.minecraft.biome.Biomes
+		if (object.hasParent()) {
+			Biome.PARENT_BIOME_ID_MAP.set(object, id);
 		}
 	}
 }
