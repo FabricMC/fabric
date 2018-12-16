@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.PacketByteBuf;
 
+@FunctionalInterface
 public interface ContainerFactory<T> {
 
 	/**
