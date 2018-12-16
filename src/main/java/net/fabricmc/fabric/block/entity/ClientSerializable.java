@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.block.entity;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 
 /**
@@ -25,5 +24,6 @@ import net.minecraft.nbt.CompoundTag;
  */
 public interface ClientSerializable {
 	void fromClientTag(CompoundTag tag);
+
 	CompoundTag toClientTag(CompoundTag tag);
 }

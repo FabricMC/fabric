@@ -44,7 +44,7 @@ public final class RegistrySyncManager {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(toTag(true));
 
-	    CustomPayloadClientPacket packet = new CustomPayloadClientPacket(ID, buf);
+		CustomPayloadClientPacket packet = new CustomPayloadClientPacket(ID, buf);
 		return packet;
 	}
 

@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.util;
 
-import net.fabricmc.fabric.util.HandlerRegistry;
-
 import java.lang.reflect.Array;
 
 public class HandlerArray<T> implements HandlerRegistry<T> {

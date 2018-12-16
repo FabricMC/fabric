@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.block.entity;
 import net.fabricmc.fabric.block.entity.ClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.BlockEntityUpdateClientPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
@@ -28,9 +27,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(BlockEntity.class)
 public abstract class MixinBlockEntity {

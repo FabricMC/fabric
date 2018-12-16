@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.tags;
 
 import net.minecraft.item.Item;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 

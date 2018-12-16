@@ -32,11 +32,11 @@ import java.util.List;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftGame {
-    @Shadow
-    private ReloadableResourceManager resourceManager;
+	@Shadow
+	private ReloadableResourceManager resourceManager;
 
-    @Inject(method = "reloadResources()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void reloadResources(CallbackInfo info, List<ResourcePack> list) {
-        ModResourcePackUtil.appendModResourcePacks(list, ResourceType.ASSETS);
-    }
+	@Inject(method = "reloadResources()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void reloadResources(CallbackInfo info, List<ResourcePack> list) {
+		ModResourcePackUtil.appendModResourcePacks(list, ResourceType.ASSETS);
+	}
 }

@@ -18,7 +18,6 @@ package net.fabricmc.fabric.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.world.World;
 
 import java.util.function.Function;

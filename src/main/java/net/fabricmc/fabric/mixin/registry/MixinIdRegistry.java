@@ -27,7 +27,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
 import net.minecraft.util.registry.DefaultMappedRegistry;
 import net.minecraft.util.registry.IdRegistry;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -118,7 +117,9 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			for (Identifier id : idMapOld.keySet()) {
 				int v = idMapOld.getInt(id);
 				idMap.put(id, v);
-				if (v > maxValue) maxValue = v;
+				if (v > maxValue) {
+					maxValue = v;
+				}
 			}
 
 			for (Identifier id : registry.keys()) {
@@ -148,7 +149,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			if (object == null) {
 				ID_LOGGER.warn(identifier + " missing from registry, but requested!");
 				continue;
-				
+
 				//noinspection unchecked, ConstantConditions
 				// object = (T) defaultValue;
 				// objectMap.put(identifier, object);

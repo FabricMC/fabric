@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.mixin.misc;
 
-import com.google.common.collect.Lists;
 import net.fabricmc.loader.FabricLoader;
 import net.fabricmc.loader.ModContainer;
-import net.fabricmc.loader.ModInfo;
 import net.minecraft.util.SystemUtil;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportElement;
@@ -30,7 +28,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Mixin(CrashReport.class)
 public abstract class MixinCrashReport {

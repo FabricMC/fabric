@@ -32,6 +32,7 @@ import java.util.Map;
 public final class ToolManager {
 	public interface Entry {
 		void setBreakByHand(boolean value);
+
 		void putBreakByTool(Tag<Item> tag, int miningLevel);
 	}
 

@@ -18,7 +18,6 @@ package net.fabricmc.fabric.resources;
 
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourceType;
 
 /**
  * Interface implemented by mod-provided resource packs.

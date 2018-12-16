@@ -78,7 +78,7 @@ public final class PlayerInteractionEvent {
 	 * Event emitted when a player "attacks" an entity.
 	 */
 	public static final HandlerRegistry<Entity> ATTACK_ENTITY = new HandlerArray<>(Entity.class);
-	
+
 	// TODO: For completeness' sake, but requires us to add a custom packet. Is it worth the complexity?
 	/* public static final HandlerRegistry<Item> ATTACK_ITEM = new HandlerList<>(); */
 

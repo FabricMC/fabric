@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.mixin.client.texture;
 
 import com.google.common.base.Joiner;
-import net.fabricmc.fabric.client.texture.*;
-import net.fabricmc.fabric.impl.client.texture.FabricSprite;
+import net.fabricmc.fabric.client.texture.CustomSpriteLoader;
+import net.fabricmc.fabric.client.texture.DependentSprite;
+import net.fabricmc.fabric.client.texture.SpriteRegistry;
 import net.fabricmc.fabric.events.client.SpriteEvent;
+import net.fabricmc.fabric.impl.client.texture.FabricSprite;
 import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.class_1050;
 import net.minecraft.client.MinecraftClient;
@@ -63,6 +65,7 @@ public abstract class MixinSpriteAtlasTexture {
 
 	@Shadow
 	public abstract Sprite getSprite(Identifier id);
+
 	@Shadow
 	public abstract void addSpriteToLoad(ResourceManager var1, Identifier var2);
 

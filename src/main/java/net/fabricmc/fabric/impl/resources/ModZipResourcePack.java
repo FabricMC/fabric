@@ -27,35 +27,35 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class ModZipResourcePack extends ZipResourcePack implements ModResourcePack {
-    private final ModInfo info;
+	private final ModInfo info;
 
-    public ModZipResourcePack(ModInfo info, File file) {
-        super(file);
-        this.info = info;
-    }
+	public ModZipResourcePack(ModInfo info, File file) {
+		super(file);
+		this.info = info;
+	}
 
-    @Override
-    public String getName() {
-        return ModResourcePackUtil.getName(info);
-    }
+	@Override
+	public String getName() {
+		return ModResourcePackUtil.getName(info);
+	}
 
-    @Override
-    protected InputStream openFilename(String filename) throws IOException {
-        try {
-            return super.openFilename(filename);
-        } catch (FileNotFoundException e) {
-            InputStream stream = ModResourcePackUtil.openDefault(info, filename);
-            if (stream == null) {
-                throw new ResourceNotFoundException(this.base, filename);
-            }
-            return stream;
-        }
-    }
+	@Override
+	protected InputStream openFilename(String filename) throws IOException {
+		try {
+			return super.openFilename(filename);
+		} catch (FileNotFoundException e) {
+			InputStream stream = ModResourcePackUtil.openDefault(info, filename);
+			if (stream == null) {
+				throw new ResourceNotFoundException(this.base, filename);
+			}
+			return stream;
+		}
+	}
 
-    @Override
-    public boolean containsFilename(String filename) {
-        return super.containsFilename(filename) || ModResourcePackUtil.containsDefault(info, filename);
-    }
+	@Override
+	public boolean containsFilename(String filename) {
+		return super.containsFilename(filename) || ModResourcePackUtil.containsDefault(info, filename);
+	}
 
 	@Override
 	public ModInfo getFabricModInfo() {

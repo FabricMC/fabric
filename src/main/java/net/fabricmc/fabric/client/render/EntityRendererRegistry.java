@@ -26,7 +26,6 @@ import net.minecraft.resource.ReloadableResourceManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.function.Function;
 
 /**
  * Helper class for registering EntityRenderers.

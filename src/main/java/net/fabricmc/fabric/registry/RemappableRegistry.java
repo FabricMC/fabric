@@ -21,5 +21,6 @@ import net.minecraft.util.Identifier;
 
 public interface RemappableRegistry {
 	void remap(Object2IntMap<Identifier> idMap, boolean reallocateMissingEntries) throws RemapException;
+
 	void unmap() throws RemapException;
 }

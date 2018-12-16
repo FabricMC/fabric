@@ -40,14 +40,23 @@ import java.util.function.Function;
 public class FabricBlockSettings {
 	public interface Delegate {
 		void fabric_setMaterialColor(MaterialColor color);
+
 		void fabric_setCollidable(boolean value);
+
 		void fabric_setSoundGroup(BlockSoundGroup group);
+
 		void fabric_setLightLevel(int value);
+
 		void fabric_setHardness(float value);
+
 		void fabric_setResistance(float value);
+
 		void fabric_setRandomTicks(boolean value);
+
 		void fabric_setFriction(float value);
+
 		void fabric_setDropTable(Identifier id);
+
 		void fabric_setDynamicBounds(boolean value);
 	}
 

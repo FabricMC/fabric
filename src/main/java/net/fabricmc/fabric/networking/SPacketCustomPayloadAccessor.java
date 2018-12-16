@@ -25,5 +25,6 @@ import net.minecraft.util.PacketByteBuf;
  */
 public interface SPacketCustomPayloadAccessor {
 	Identifier getChannel();
+
 	PacketByteBuf getData();
 }

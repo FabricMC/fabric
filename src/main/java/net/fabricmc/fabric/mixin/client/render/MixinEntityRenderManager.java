@@ -37,7 +37,7 @@ public class MixinEntityRenderManager {
 	private Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> renderers;
 
 	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;)V", at = @At("RETURN"), require = 0)
-	public void init(TextureManager textureManager,ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
+	public void init(TextureManager textureManager, ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
 		EntityRendererRegistry.INSTANCE.initialize((EntityRenderDispatcher) (Object) this, textureManager, manager, itemRenderer, renderers);
 	}
 }

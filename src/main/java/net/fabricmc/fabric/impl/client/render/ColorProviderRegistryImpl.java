@@ -49,7 +49,9 @@ public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> impleme
 
 	public void initialize(Underlying colorMap) {
 		if (this.colorMap != null) {
-			if (this.colorMap != colorMap) throw new IllegalStateException("Cannot set colorMap twice");
+			if (this.colorMap != colorMap) {
+				throw new IllegalStateException("Cannot set colorMap twice");
+			}
 			return;
 		}
 
@@ -64,9 +66,13 @@ public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> impleme
 	@SafeVarargs
 	public final void register(Provider provider, T... objects) {
 		if (colorMap != null) {
-			for (T object : objects) registerUnderlying(colorMap, provider, object);
+			for (T object : objects) {
+				registerUnderlying(colorMap, provider, object);
+			}
 		} else {
-			for (T object : objects) tempMappers.put(object, provider);
+			for (T object : objects) {
+				tempMappers.put(object, provider);
+			}
 		}
 	}
 

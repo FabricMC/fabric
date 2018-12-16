@@ -31,7 +31,9 @@ public class ColorProviderMod implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		if (!ENABLED) return;
+		if (!ENABLED) {
+			return;
+		}
 		LOGGER.info("Initialising ColorProviderMod");
 
 		// Redstone is now the same color as grass
