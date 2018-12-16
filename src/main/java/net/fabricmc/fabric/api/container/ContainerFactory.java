@@ -14,13 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.container;
+package net.fabricmc.fabric.api.container;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.PacketByteBuf;
 
 public interface ContainerFactory<T> {
 
+	/**
+	 *
+	 * Creates the new gui or container
+	 *
+	 * @param player the player that is opening the gui/container
+	 * @param buf the buffer contains the same data that was provided with {@Link ContainerProviderRegistry.openContainer}
+	 * @return the new gui or container
+	 */
 	T create(PlayerEntity player, PacketByteBuf buf);
 
 }

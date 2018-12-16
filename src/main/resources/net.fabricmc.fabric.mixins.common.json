@@ -26,7 +26,8 @@
     "registry.MixinWorldSaveHandler",
     "resources.MixinMinecraftServer",
     "tools.MixinItemStack",
-    "tools.MixinMiningToolItem"
+    "tools.MixinMiningToolItem",
+    "container.MixinServerPlayerEntity"
   ],
   "injectors": {
     "defaultRequire": 1

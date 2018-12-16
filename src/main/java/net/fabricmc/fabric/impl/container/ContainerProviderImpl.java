@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.container;
+package net.fabricmc.fabric.impl.container;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.container.ContainerFactory;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.container.Container;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,43 +31,42 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-/**
- * Helper/registry for handling custom containers. This class is used to register the container and send the packet to the client
- */
-public class ContainerHelper {
+public class ContainerProviderImpl implements ContainerProviderRegistry {
+
+	/**
+	 * Use the instance provided by ContainerProviderRegistry
+	 */
+	public static final ContainerProviderRegistry INSTANCE = new ContainerProviderImpl();
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
 	private static final Map<Identifier, ContainerFactory<Container>> FACTORIES = new HashMap<>();
 
-	public static void registerFactory(Identifier identifier, ContainerFactory<Container> context) {
+	public void registerFactory(Identifier identifier, ContainerFactory<Container> factory) {
 		if (FACTORIES.containsKey(identifier)) {
 			throw new RuntimeException("A factory has already been registered as " + identifier.toString());
 		}
-		FACTORIES.put(identifier, context);
+		FACTORIES.put(identifier, factory);
 	}
 
-	/**
-	 * Sends a pack to the client to open the gui, and opens the container on the server side
-	 *
-	 * @param identifier the identifier that you registered your gui and container handler with
-	 * @param writer a {@link PacketByteBuf} that you can write your own data to
-	 * @param player the player that the gui should be opened on
-	 */
-	public static void openContainer(Identifier identifier, Consumer<PacketByteBuf> writer, ServerPlayerEntity player) {
-		int syncId = 120; //Write a container sync id, does this need to change?
+	public void openContainer(Identifier identifier, Consumer<PacketByteBuf> writer, ServerPlayerEntity player) {
+		SyncIDProvider syncIDProvider = (SyncIDProvider) player;
+		int syncId = syncIDProvider.incrementSyncID();
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeString(identifier.toString());
+		buf.writeIdentifier(identifier);
 		buf.writeInt(syncId);
+
 		writer.accept(buf);
 		player.networkHandler.sendPacket(new CustomPayloadClientPacket(OPEN_CONTAINER, buf));
 
-		if (!FACTORIES.containsKey(identifier)) {
+		ContainerFactory<Container> factory = FACTORIES.get(identifier);
+		if (factory == null) {
 			LOGGER.error("No container factory found for %s ", identifier.toString());
 			return;
 		}
-		player.container = FACTORIES.get(identifier).create(player, buf);
+
+		player.container = factory.create(player, new PacketByteBuf(buf.duplicate()));
 		player.container.syncId = syncId;
 		player.container.addListener(player);
 	}
