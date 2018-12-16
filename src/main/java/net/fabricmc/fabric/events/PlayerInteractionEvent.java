@@ -32,10 +32,16 @@ import net.minecraft.world.World;
  *
  * These hook in BEFORE the spectator checks, so make sure to check for the player's game mode as well!
  *
+ * In general, the events return an ActionResult with the following side effects:
+ * - SUCCESS cancels further processing and, on the client, sends a packet to the server.
+ * - PASS falls back to further processing.
+ * - FAIL cancels further processing and does not send a packet to the server.
+ *
  * CURRENT LIMITATIONS:
  *
  * - INTERACT_BLOCK/INTERACT_ITEM do not expect the ItemStack instance in the player's held hand to change!
  *   If you must do that, consider returning an ActionResult.SUCCESS and re-emitting the event in some manner!
+ * - ATTACK_BLOCK does not let you control the packet sending process yet.
  */
 public final class PlayerInteractionEvent {
 	@FunctionalInterface
