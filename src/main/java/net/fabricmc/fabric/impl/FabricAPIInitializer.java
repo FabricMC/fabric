@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.block.BreakInteractable;
-import net.fabricmc.fabric.containers.ContainerMod;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.network.ClientPlayerInteractionManager;
@@ -48,6 +47,5 @@ public class FabricAPIInitializer implements ModInitializer {
 
 			return ActionResult.PASS;
 		});
-		new ContainerMod().onInitialize();
 	}
 }
