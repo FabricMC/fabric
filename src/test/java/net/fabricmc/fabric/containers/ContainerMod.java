@@ -41,7 +41,7 @@ public class ContainerMod implements ModInitializer {
 					BlockPos pos = context.getSource().getEntity().getPos();
 
 					//Opens a container, sending the block pos
-					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_CONTAINER, buf -> buf.writeBlockPos(pos), context.getSource().getPlayer());
+					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_CONTAINER, context.getSource().getPlayer(), buf -> buf.writeBlockPos(pos));
 
 					return 1;
 				})));

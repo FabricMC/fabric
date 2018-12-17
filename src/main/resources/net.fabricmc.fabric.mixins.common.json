@@ -6,6 +6,7 @@
     "block.MixinBlockBuilder",
     "block.entity.MixinBlockEntity",
     "commands.MixinServerCommandManager",
+    "container.MixinServerPlayerEntity",
     "entity.MixinEntityTracker",
     "entity.MixinEntityTrackerEntry",
     "events.objectbuilder.MixinBlock",
@@ -26,8 +27,7 @@
     "registry.MixinWorldSaveHandler",
     "resources.MixinMinecraftServer",
     "tools.MixinItemStack",
-    "tools.MixinMiningToolItem",
-    "container.MixinServerPlayerEntity"
+    "tools.MixinMiningToolItem"
   ],
   "injectors": {
     "defaultRequire": 1

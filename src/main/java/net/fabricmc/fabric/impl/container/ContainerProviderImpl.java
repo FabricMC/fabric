@@ -50,12 +50,12 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		FACTORIES.put(identifier, factory);
 	}
 
-	public void openContainer(Identifier identifier, Consumer<PacketByteBuf> writer, ServerPlayerEntity player) {
-		SyncIDProvider syncIDProvider = (SyncIDProvider) player;
-		int syncId = syncIDProvider.incrementSyncID();
+	public void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer) {
+		SyncIdProvider syncIDProvider = (SyncIdProvider) player;
+		int syncId = syncIDProvider.incrementSyncId();
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeIdentifier(identifier);
-		buf.writeInt(syncId);
+		buf.writeByte(syncId);
 
 		writer.accept(buf);
 		player.networkHandler.sendPacket(new CustomPayloadClientPacket(OPEN_CONTAINER, buf));
@@ -66,7 +66,11 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 			return;
 		}
 
-		player.container = factory.create(player, new PacketByteBuf(buf.duplicate()));
+		PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
+		clonedBuf.readIdentifier();
+		clonedBuf.readUnsignedByte();
+
+		player.container = factory.create(player, clonedBuf);
 		player.container.syncId = syncId;
 		player.container.addListener(player);
 	}

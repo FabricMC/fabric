@@ -52,7 +52,7 @@ public class GuiProviderImpl implements ClientModInitializer, GuiProviderRegistr
 	public void onInitializeClient() {
 		CustomPayloadPacketRegistry.CLIENT.register(OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
-			int syncId = packetByteBuf.readInt();
+			int syncId = packetByteBuf.readUnsignedByte();
 			MinecraftClient.getInstance().execute(() -> {
 				ContainerFactory<ContainerGui> factory = FACTORIES.get(identifier);
 				if (factory == null) {

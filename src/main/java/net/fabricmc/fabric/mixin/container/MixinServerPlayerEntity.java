@@ -16,24 +16,24 @@
 
 package net.fabricmc.fabric.mixin.container;
 
-import net.fabricmc.fabric.impl.container.SyncIDProvider;
+import net.fabricmc.fabric.impl.container.SyncIdProvider;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class MixinServerPlayerEntity implements SyncIDProvider {
+public abstract class MixinServerPlayerEntity implements SyncIdProvider {
 	@Shadow private int containerSyncId;
 
 	@Shadow protected abstract void incrementContainerSyncId();
 
 	@Override
-	public int getSyncID() {
+	public int getSyncId() {
 		return containerSyncId;
 	}
 
 	@Override
-	public int incrementSyncID() {
+	public int incrementSyncId() {
 		incrementContainerSyncId();
 		return containerSyncId;
 	}

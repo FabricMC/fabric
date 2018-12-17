@@ -38,5 +38,5 @@ public interface ContainerProviderRegistry {
 	 */
 	void registerFactory(Identifier identifier, ContainerFactory<Container> factory);
 
-	void openContainer(Identifier identifier, Consumer<PacketByteBuf> writer, ServerPlayerEntity player);
+	void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer);
 }

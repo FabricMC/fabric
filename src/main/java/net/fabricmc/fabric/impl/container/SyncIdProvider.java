@@ -19,18 +19,18 @@ package net.fabricmc.fabric.impl.container;
 /**
  * This is a interface that is present on a ServerPlayerEntity, it allows access to the sync id.
  */
-public interface SyncIDProvider {
+public interface SyncIdProvider {
 
 	/**
 	 * @return the current sync id of the player
 	 */
-	int getSyncID();
+	int getSyncId();
 
 	/**
 	 * gets and sets the new player sync id, and returns the new value
 	 *
 	 * @return the new sync id of the player
 	 */
-	int incrementSyncID();
+	int incrementSyncId();
 
 }
