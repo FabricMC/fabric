@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 public final class ServerEvent {
 	public static final HandlerRegistry<Consumer<MinecraftServer>> START = new HandlerArray<>(Consumer.class);
+	public static final HandlerRegistry<Consumer<MinecraftServer>> STOP = new HandlerArray<>(Consumer.class);
 
 	private ServerEvent() {
 
