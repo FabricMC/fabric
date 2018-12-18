@@ -22,7 +22,7 @@ import net.fabricmc.fabric.registry.RegistrySyncManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.integrated.IntegratedServer;
 
-public class FabricAPIClientInitiailizer implements ClientModInitializer {
+public class FabricAPIClientInitializer implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		CustomPayloadPacketRegistry.CLIENT.register(RegistrySyncManager.ID, (ctx, buf) -> {
