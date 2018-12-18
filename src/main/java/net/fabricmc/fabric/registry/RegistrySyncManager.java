@@ -51,23 +51,25 @@ public final class RegistrySyncManager {
 		return packet;
 	}
 
-	public static void receivePacket(PacketContext context, PacketByteBuf buf) {
+	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept) {
 		CompoundTag compound = buf.readCompoundTag();
 
-		try {
-			context.getTaskQueue().executeFuture(() -> {
-				try {
-					apply(compound, false);
-				} catch (RemapException e) {
-					// TODO: log error properly
-					e.printStackTrace();
-				}
-			}).get(30, TimeUnit.SECONDS);
-		} catch (ExecutionException e) {
-			e.printStackTrace();
-		} catch (InterruptedException | TimeoutException e) {
-			// TODO: better error handling
-			new Exception("Failed to apply received packets in time!", e).printStackTrace();
+		if (accept) {
+			try {
+				context.getTaskQueue().executeFuture(() -> {
+					try {
+						apply(compound, false);
+					} catch (RemapException e) {
+						// TODO: log error properly
+						e.printStackTrace();
+					}
+				}).get(30, TimeUnit.SECONDS);
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			} catch (InterruptedException | TimeoutException e) {
+				// TODO: better error handling
+				new Exception("Failed to apply received packets in time!", e).printStackTrace();
+			}
 		}
 	}
 

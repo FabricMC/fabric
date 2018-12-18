@@ -6,7 +6,8 @@
   "description": "Core API module providing key hooks and intercompatibility features.",
   "license": "Apache-2.0",
   "initializers": [
-    "net.fabricmc.fabric.impl.FabricAPIInitializer"
+    "net.fabricmc.fabric.impl.FabricAPIInitializer",
+    "net.fabricmc.fabric.impl.FabricAPIClientInitializer"
   ],
   "mixins": {
     "client": "net.fabricmc.fabric.mixins.client.json",
