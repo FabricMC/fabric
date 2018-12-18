@@ -17,10 +17,8 @@
 package net.fabricmc.fabric.containers;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.commands.CommandRegistry;
-import net.minecraft.client.gui.ContainerGui;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandManager;
@@ -52,11 +50,6 @@ public class ContainerMod implements ModInitializer {
 			return new ExampleContainer(pos, player);
 		});
 
-		//Registers a gui factory that opens our example gui, this reads the block pos from the buffer
-		GuiProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (player, buf) -> {
-			BlockPos pos = buf.readBlockPos();
-			return new ExampleContainerGui(pos, player);
-		});
 	}
 
 	//A basic container that prints to console when opened, this should print on the client + server
@@ -72,22 +65,6 @@ public class ContainerMod implements ModInitializer {
 		@Override
 		public boolean canUse(PlayerEntity playerEntity) {
 			return true;
-		}
-	}
-
-	//A container gui that shows the block pos that was sent
-	public static class ExampleContainerGui extends ContainerGui {
-
-		BlockPos pos;
-
-		public ExampleContainerGui(BlockPos pos, PlayerEntity playerEntity) {
-			super(new ExampleContainer(pos, playerEntity));
-			this.pos = pos;
-		}
-
-		@Override
-		protected void drawBackground(float v, int i, int i1) {
-			fontRenderer.draw(pos.toString(), width / 2, height / 2, 0);
 		}
 	}
 

@@ -22,11 +22,6 @@ package net.fabricmc.fabric.impl.container;
 public interface SyncIdProvider {
 
 	/**
-	 * @return the current sync id of the player
-	 */
-	int getSyncId();
-
-	/**
 	 * gets and sets the new player sync id, and returns the new value
 	 *
 	 * @return the new sync id of the player
