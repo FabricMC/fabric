@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.mixin.resources;
 
 import net.fabricmc.fabric.impl.resources.ModDataPackSupplier;
+import net.fabricmc.loader.FabricLoader;
+import net.minecraft.resource.FileResourcePackCreator;
 import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainerManager;
 import net.minecraft.server.MinecraftServer;
@@ -36,6 +38,7 @@ public class MixinMinecraftServer {
 
     @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
     public void method_3800(File file, LevelProperties properties, CallbackInfo info) {
+	    field_4595.addCreator(new FileResourcePackCreator(new File(FabricLoader.INSTANCE.getGameDirectory(), "datapacks")));
 	    field_4595.addCreator(new ModDataPackSupplier());
     }
 }
