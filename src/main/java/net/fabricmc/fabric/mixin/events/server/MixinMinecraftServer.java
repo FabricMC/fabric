@@ -34,4 +34,11 @@ public class MixinMinecraftServer {
 			handler.accept((MinecraftServer) (Object) this);
 		}
 	}
+
+	@Inject(at = @At("HEAD"), method = "shutdown")
+	public void beforeShutdownServer(CallbackInfo info) {
+		for (Consumer<MinecraftServer> handler : ((HandlerArray<Consumer<MinecraftServer>>) ServerEvent.STOP).getBackingArray()) {
+			handler.accept((MinecraftServer) (Object) this);
+		}
+	}
 }
