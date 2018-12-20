@@ -10,6 +10,6 @@ public class ServerEventMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerEvent.START.register(server -> LOGGER.info("Server starting (" + server + ")"));
-		ServerEvent.STOP.register(server -> LOGGER.info("Server stopped (" + server + ")"));
+		ServerEvent.STOP.register(server -> LOGGER.info("Server stopping (" + server + ")"));
 	}
 }

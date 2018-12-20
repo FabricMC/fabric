@@ -35,11 +35,8 @@ public class MixinMinecraftServer {
 		}
 	}
 
-	@Inject(
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;exit()V", shift = At.Shift.BY, by = -2, ordinal = 0),
-		method = "run"
-	)
-	public void beforeExitServer(CallbackInfo info) {
+	@Inject(at = @At("HEAD"), method = "shutdown")
+	public void beforeShutdownServer(CallbackInfo info) {
 		for (Consumer<MinecraftServer> handler : ((HandlerArray<Consumer<MinecraftServer>>) ServerEvent.STOP).getBackingArray()) {
 			handler.accept((MinecraftServer) (Object) this);
 		}
