@@ -28,7 +28,7 @@ public abstract class MixinServerPlayerEntity implements SyncIdProvider {
 	@Shadow protected abstract void incrementContainerSyncId();
 
 	@Override
-	public int incrementSyncId() {
+	public int fabric_incrementSyncId() {
 		incrementContainerSyncId();
 		return containerSyncId;
 	}

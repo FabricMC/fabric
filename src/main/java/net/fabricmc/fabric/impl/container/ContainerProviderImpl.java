@@ -55,7 +55,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 	@Override
 	public void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer) {
 		SyncIdProvider syncIDProvider = (SyncIdProvider) player;
-		int syncId = syncIDProvider.incrementSyncId();
+		int syncId = syncIDProvider.fabric_incrementSyncId();
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeIdentifier(identifier);
 		buf.writeByte(syncId);

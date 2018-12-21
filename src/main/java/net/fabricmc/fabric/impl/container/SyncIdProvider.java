@@ -26,6 +26,6 @@ public interface SyncIdProvider {
 	 *
 	 * @return the new sync id of the player
 	 */
-	int incrementSyncId();
+	int fabric_incrementSyncId();
 
 }
