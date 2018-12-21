@@ -52,8 +52,5 @@ public class MixinBootstrap {
 		((ListenableRegistry<Block>) Registry.BLOCK).registerListener(new BootstrapBlockRegistryListener());
 		((ListenableRegistry<Fluid>) Registry.FLUID).registerListener(new BootstrapFluidRegistryListener());
 		((ListenableRegistry<Item>) Registry.ITEM).registerListener(new BootstrapItemRegistryListener());
-
-		// The packet code is not side-specific, so this is fine!
-		CustomPayloadPacketRegistry.CLIENT.register(RegistrySyncManager.ID, RegistrySyncManager::receivePacket);
 	}
 }

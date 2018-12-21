@@ -16,17 +16,16 @@
 
 package net.fabricmc.fabric.events;
 
-import net.fabricmc.fabric.util.HandlerArray;
-import net.fabricmc.fabric.util.HandlerRegistry;
-import net.minecraft.server.MinecraftServer;
+import net.fabricmc.api.ModInitializer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.util.function.Consumer;
+public class ServerEventMod implements ModInitializer {
+	private static final Logger LOGGER = LogManager.getLogger();
 
-public final class ServerEvent {
-	public static final HandlerRegistry<Consumer<MinecraftServer>> START = new HandlerArray<>(Consumer.class);
-	public static final HandlerRegistry<Consumer<MinecraftServer>> STOP = new HandlerArray<>(Consumer.class);
-
-	private ServerEvent() {
-
+	@Override
+	public void onInitialize() {
+		ServerEvent.START.register(server -> LOGGER.info("Server starting (" + server + ")"));
+		ServerEvent.STOP.register(server -> LOGGER.info("Server stopping (" + server + ")"));
 	}
 }

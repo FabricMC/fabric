@@ -30,6 +30,9 @@ import net.minecraft.util.registry.ModifiableRegistry;
 import net.minecraft.util.registry.Registry;
 
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 public final class RegistrySyncManager {
 	public static final Identifier ID = new Identifier("fabric", "registry/sync");
@@ -48,17 +51,26 @@ public final class RegistrySyncManager {
 		return packet;
 	}
 
-	public static void receivePacket(PacketContext context, PacketByteBuf buf) {
+	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept) {
 		CompoundTag compound = buf.readCompoundTag();
 
-		context.getTaskQueue().execute(() -> {
+		if (accept) {
 			try {
-				apply(compound, false);
-			} catch (RemapException e) {
-				// TODO: log error properly
+				context.getTaskQueue().executeFuture(() -> {
+					try {
+						apply(compound, false);
+					} catch (RemapException e) {
+						// TODO: log error properly
+						e.printStackTrace();
+					}
+				}).get(30, TimeUnit.SECONDS);
+			} catch (ExecutionException e) {
 				e.printStackTrace();
+			} catch (InterruptedException | TimeoutException e) {
+				// TODO: better error handling
+				new Exception("Failed to apply received packets in time!", e).printStackTrace();
 			}
-		});
+		}
 	}
 
 	public static CompoundTag toTag(boolean isClientSync) {
