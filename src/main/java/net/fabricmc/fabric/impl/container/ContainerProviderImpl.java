@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.container.Container;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -43,6 +44,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 	private static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
 	private static final Map<Identifier, ContainerFactory<Container>> FACTORIES = new HashMap<>();
 
+	@Override
 	public void registerFactory(Identifier identifier, ContainerFactory<Container> factory) {
 		if (FACTORIES.containsKey(identifier)) {
 			throw new RuntimeException("A factory has already been registered as " + identifier.toString());
@@ -50,6 +52,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		FACTORIES.put(identifier, factory);
 	}
 
+	@Override
 	public void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer) {
 		SyncIdProvider syncIDProvider = (SyncIdProvider) player;
 		int syncId = syncIDProvider.incrementSyncId();
@@ -60,18 +63,26 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		writer.accept(buf);
 		player.networkHandler.sendPacket(new CustomPayloadClientPacket(OPEN_CONTAINER, buf));
 
-		ContainerFactory<Container> factory = FACTORIES.get(identifier);
-		if (factory == null) {
-			LOGGER.error("No container factory found for %s ", identifier.toString());
-			return;
-		}
-
 		PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
 		clonedBuf.readIdentifier();
 		clonedBuf.readUnsignedByte();
 
-		player.container = factory.create(player, clonedBuf);
+		Container container = createContainer(identifier, player, clonedBuf);
+		if(container == null){
+			return;
+		}
+		player.container = container;
 		player.container.syncId = syncId;
 		player.container.addListener(player);
+	}
+
+	@Override
+	public Container createContainer(Identifier identifier, PlayerEntity player, PacketByteBuf buf){
+		ContainerFactory<Container> factory = FACTORIES.get(identifier);
+		if (factory == null) {
+			LOGGER.error("No container factory found for %s ", identifier.toString());
+			return null;
+		}
+		return factory.create(identifier, player, buf);
 	}
 }

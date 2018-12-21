@@ -19,9 +19,12 @@ package net.fabricmc.fabric.impl.client.gui;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.container.GuiSupplier;
 import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.container.Container;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,6 +52,11 @@ public class GuiProviderImpl implements ClientModInitializer, GuiProviderRegistr
 	}
 
 	@Override
+	public <C extends Container> void registerFactory(Identifier identifier, GuiSupplier<C> guiSupplier) {
+		registerFactory(identifier, (id, player, buf) -> guiSupplier.create(ContainerProviderRegistry.INSTANCE.createContainer(id, player, buf)));
+	}
+
+	@Override
 	public void onInitializeClient() {
 		CustomPayloadPacketRegistry.CLIENT.register(OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
@@ -59,7 +67,7 @@ public class GuiProviderImpl implements ClientModInitializer, GuiProviderRegistr
 					LOGGER.error("No factory found for " + identifier.toString());
 					return;
 				}
-				ContainerGui gui = factory.create(packetContext.getPlayer(), packetByteBuf);
+				ContainerGui gui = factory.create(identifier, packetContext.getPlayer(), packetByteBuf);
 				gui.container.syncId = syncId;
 				MinecraftClient.getInstance().openGui(gui);
 			});

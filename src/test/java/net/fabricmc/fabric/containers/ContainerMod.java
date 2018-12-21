@@ -45,7 +45,7 @@ public class ContainerMod implements ModInitializer {
 				})));
 
 		//Registers a container factory that opens our example Container, this reads the block pos from the buffer
-		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (player, buf) -> {
+		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
 			return new ExampleContainer(pos, player);
 		});

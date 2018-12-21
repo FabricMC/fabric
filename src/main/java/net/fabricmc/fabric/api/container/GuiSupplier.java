@@ -16,22 +16,12 @@
 
 package net.fabricmc.fabric.api.container;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.container.Container;
 
 @FunctionalInterface
-public interface ContainerFactory<T> {
+public interface GuiSupplier<C extends Container> {
 
-	/**
-	 *
-	 * Creates the new gui or container
-	 *
-	 * @param identifier the Identifier is the name that was used when registering the factory
-	 * @param player the player that is opening the gui/container
-	 * @param buf the buffer contains the same data that was provided with {@Link ContainerProviderRegistry.openContainer}
-	 * @return the new gui or container
-	 */
-	T create(Identifier identifier, PlayerEntity player, PacketByteBuf buf);
+	ContainerGui create(C container);
 
 }

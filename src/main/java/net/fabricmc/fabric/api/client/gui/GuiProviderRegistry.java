@@ -18,8 +18,10 @@ package net.fabricmc.fabric.api.client.gui;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.api.container.GuiSupplier;
 import net.fabricmc.fabric.impl.client.gui.GuiProviderImpl;
 import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.container.Container;
 import net.minecraft.util.Identifier;
 
 public interface GuiProviderRegistry {
@@ -34,5 +36,14 @@ public interface GuiProviderRegistry {
 	 * @param factory the gui factory, this should return a new {@link ContainerGui}
 	 */
 	void registerFactory(Identifier identifier, ContainerFactory<ContainerGui> factory);
+
+	/**
+	 *
+	 * Register a GuiSupplier that will be used to create a new gui when provided with a container
+	 *
+	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
+	 * @param guiSupplier the supplier that should be used to create the new gui
+	 */
+	<C extends Container> void registerFactory(Identifier identifier, GuiSupplier<C> guiSupplier);
 
 }

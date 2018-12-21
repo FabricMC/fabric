@@ -27,10 +27,13 @@ public class ContainerModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		//Registers a gui factory that opens our example gui, this reads the block pos from the buffer
-		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, (player, buf) -> {
+		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, (identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
 			return new ExampleContainerGui(pos, player);
 		});
+
+		//Registers a gui factory that opens our example gui, this uses the container created by ContainerProviderRegistry
+		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, ExampleContainerGui2::new);
 	}
 
 	//A container gui that shows the block pos that was sent
@@ -41,6 +44,23 @@ public class ContainerModClient implements ClientModInitializer {
 		public ExampleContainerGui(BlockPos pos, PlayerEntity playerEntity) {
 			super(new ContainerMod.ExampleContainer(pos, playerEntity));
 			this.pos = pos;
+		}
+
+		@Override
+		protected void drawBackground(float v, int i, int i1) {
+			fontRenderer.draw(pos.toString(), width / 2, height / 2, 0);
+		}
+	}
+
+
+	//A container gui that shows how you can take in a container provided by a GuiSupplier
+	public static class ExampleContainerGui2 extends ContainerGui {
+
+		BlockPos pos;
+
+		public ExampleContainerGui2(ContainerMod.ExampleContainer container) {
+			super(container);
+			this.pos = container.pos;
 		}
 
 		@Override
