@@ -20,7 +20,7 @@ import net.minecraft.client.gui.ContainerGui;
 import net.minecraft.container.Container;
 
 @FunctionalInterface
-public interface GuiSupplier<C extends Container> {
+public interface GuiFactory<C extends Container> {
 
 	ContainerGui create(C container);
 

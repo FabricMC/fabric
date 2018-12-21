@@ -53,7 +53,7 @@ public class ContainerModClient implements ClientModInitializer {
 	}
 
 
-	//A container gui that shows how you can take in a container provided by a GuiSupplier
+	//A container gui that shows how you can take in a container provided by a GuiFactory
 	public static class ExampleContainerGui2 extends ContainerGui {
 
 		BlockPos pos;

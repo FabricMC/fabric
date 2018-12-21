@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.container;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 import net.minecraft.container.Container;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -49,14 +48,4 @@ public interface ContainerProviderRegistry {
 	 */
 	void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer);
 
-	/**
-	 *
-	 * This is used to create a new container from the registered factory's
-	 *
-	 * @param identifier the identifier that was registered when creating the container factory
-	 * @param player the player that the container is being opened on
-	 * @param buf the PacketByteBuf that can contain data supplied when opening the container
-	 * @return a new container that has been created with the registered factories
-	 */
-	<C extends Container> C createContainer(Identifier identifier, PlayerEntity player, PacketByteBuf buf);
 }

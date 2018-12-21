@@ -76,13 +76,12 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		player.container.addListener(player);
 	}
 
-	@Override
-	public Container createContainer(Identifier identifier, PlayerEntity player, PacketByteBuf buf){
+	public <C extends Container> C createContainer(Identifier identifier, PlayerEntity player, PacketByteBuf buf){
 		ContainerFactory<Container> factory = FACTORIES.get(identifier);
 		if (factory == null) {
 			LOGGER.error("No container factory found for %s ", identifier.toString());
 			return null;
 		}
-		return factory.create(identifier, player, buf);
+		return (C) factory.create(identifier, player, buf);
 	}
 }

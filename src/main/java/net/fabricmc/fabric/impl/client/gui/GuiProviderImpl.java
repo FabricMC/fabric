@@ -19,7 +19,8 @@ package net.fabricmc.fabric.impl.client.gui;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.container.GuiSupplier;
+import net.fabricmc.fabric.api.container.GuiFactory;
+import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ContainerGui;
@@ -51,14 +52,14 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 	}
 
 	@Override
-	public <C extends Container> void registerFactory(Identifier identifier, GuiSupplier<C> guiSupplier) {
+	public <C extends Container> void registerFactory(Identifier identifier, GuiFactory<C> guiFactory) {
 		registerFactory(identifier, (identifier1, player, buf) -> {
-			C container = ContainerProviderRegistry.INSTANCE.createContainer(identifier1, player, buf);
+			C container = ((ContainerProviderImpl)ContainerProviderRegistry.INSTANCE).createContainer(identifier1, player, buf);
 			if(container == null){
 				LOGGER.error("A null container was created for " + identifier1.toString());
 				return null;
 			}
-			return guiSupplier.create(container);
+			return guiFactory.create(container);
 		});
 	}
 
