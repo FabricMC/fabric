@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.gui;
 
-import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
@@ -32,7 +31,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GuiProviderImpl implements ClientModInitializer, GuiProviderRegistry {
+public class GuiProviderImpl implements GuiProviderRegistry {
 
 	/**
 	 * Use the instance provided by GuiProviderRegistry
@@ -53,11 +52,17 @@ public class GuiProviderImpl implements ClientModInitializer, GuiProviderRegistr
 
 	@Override
 	public <C extends Container> void registerFactory(Identifier identifier, GuiSupplier<C> guiSupplier) {
-		registerFactory(identifier, (id, player, buf) -> guiSupplier.create(ContainerProviderRegistry.INSTANCE.createContainer(id, player, buf)));
+		registerFactory(identifier, (identifier1, player, buf) -> {
+			C container = ContainerProviderRegistry.INSTANCE.createContainer(identifier1, player, buf);
+			if(container == null){
+				LOGGER.error("A null container was created for " + identifier1.toString());
+				return null;
+			}
+			return guiSupplier.create(container);
+		});
 	}
 
-	@Override
-	public void onInitializeClient() {
+	public void init() {
 		CustomPayloadPacketRegistry.CLIENT.register(OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
 			int syncId = packetByteBuf.readUnsignedByte();
