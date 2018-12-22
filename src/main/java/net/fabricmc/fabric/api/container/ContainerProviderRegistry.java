@@ -57,9 +57,5 @@ public interface ContainerProviderRegistry {
 	 * @param player the player that should open the container
 	 * @param writer a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
 	 */
-	default void openContainer(Identifier identifier, PlayerEntity player, Consumer<PacketByteBuf> writer) {
-		if (player instanceof ServerPlayerEntity) {
-			openContainer(identifier, (ServerPlayerEntity) player, writer);
-		}
-	}
+	void openContainer(Identifier identifier, PlayerEntity player, Consumer<PacketByteBuf> writer);
 }

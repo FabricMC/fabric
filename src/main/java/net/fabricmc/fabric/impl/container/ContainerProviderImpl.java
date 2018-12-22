@@ -59,7 +59,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 			return;
 		}
 
-		openContainer(identifier, player, writer);
+		openContainer(identifier, (ServerPlayerEntity) player, writer);
 	}
 
 	@Override
