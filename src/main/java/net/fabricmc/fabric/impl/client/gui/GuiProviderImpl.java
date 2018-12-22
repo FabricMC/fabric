@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.gui;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.container.GuiFactory;
+import net.fabricmc.fabric.api.client.gui.GuiFactory;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
 import net.minecraft.client.MinecraftClient;
@@ -46,7 +46,7 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 
 	public void registerFactory(Identifier identifier, ContainerFactory<ContainerGui> factory) {
 		if (FACTORIES.containsKey(identifier)) {
-			throw new RuntimeException("A factory has already been registered as " + identifier.toString());
+			throw new RuntimeException("A factory has already been registered as " + identifier + "!");
 		}
 		FACTORIES.put(identifier, factory);
 	}
@@ -54,9 +54,9 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 	@Override
 	public <C extends Container> void registerFactory(Identifier identifier, GuiFactory<C> guiFactory) {
 		registerFactory(identifier, (identifier1, player, buf) -> {
-			C container = ((ContainerProviderImpl)ContainerProviderRegistry.INSTANCE).createContainer(identifier1, player, buf);
+			C container = ContainerProviderImpl.INSTANCE.createContainer(identifier1, player, buf);
 			if(container == null){
-				LOGGER.error("A null container was created for " + identifier1.toString());
+				LOGGER.error("Could not open container for %s - a null object was created!", identifier1.toString());
 				return null;
 			}
 			return guiFactory.create(container);
@@ -70,7 +70,7 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 			MinecraftClient.getInstance().execute(() -> {
 				ContainerFactory<ContainerGui> factory = FACTORIES.get(identifier);
 				if (factory == null) {
-					LOGGER.error("No factory found for " + identifier.toString());
+					LOGGER.error("No GUI factory found for %s!", identifier.toString());
 					return;
 				}
 				ContainerGui gui = factory.create(identifier, packetContext.getPlayer(), packetByteBuf);

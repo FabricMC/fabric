@@ -37,7 +37,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 	/**
 	 * Use the instance provided by ContainerProviderRegistry
 	 */
-	public static final ContainerProviderRegistry INSTANCE = new ContainerProviderImpl();
+	public static final ContainerProviderImpl INSTANCE = new ContainerProviderImpl();
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -50,6 +50,16 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 			throw new RuntimeException("A factory has already been registered as " + identifier.toString());
 		}
 		FACTORIES.put(identifier, factory);
+	}
+
+	@Override
+	public void openContainer(Identifier identifier, PlayerEntity player, Consumer<PacketByteBuf> writer) {
+		if (!(player instanceof ServerPlayerEntity)) {
+			LOGGER.warn("Please only use ContainerProviderRegistry.openContainer() with server-sided player entities!");
+			return;
+		}
+
+		openContainer(identifier, player, writer);
 	}
 
 	@Override
@@ -79,7 +89,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 	public <C extends Container> C createContainer(Identifier identifier, PlayerEntity player, PacketByteBuf buf){
 		ContainerFactory<Container> factory = FACTORIES.get(identifier);
 		if (factory == null) {
-			LOGGER.error("No container factory found for %s ", identifier.toString());
+			LOGGER.error("No container factory found for %s!", identifier.toString());
 			return null;
 		}
 		return (C) factory.create(identifier, player, buf);

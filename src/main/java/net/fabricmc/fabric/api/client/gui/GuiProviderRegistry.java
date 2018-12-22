@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.gui;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.container.GuiFactory;
 import net.fabricmc.fabric.impl.client.gui.GuiProviderImpl;
 import net.minecraft.client.gui.ContainerGui;
 import net.minecraft.container.Container;
@@ -30,20 +29,21 @@ public interface GuiProviderRegistry {
 
 	/**
 	 *
-	 * Register a gui factory, this should only be done on the client side and not on the dedicated server.
-	 *
-	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
-	 * @param factory the gui factory, this should return a new {@link ContainerGui}
-	 */
-	void registerFactory(Identifier identifier, ContainerFactory<ContainerGui> factory);
-
-	/**
-	 *
-	 * Register a GuiFactory that will be used to create a new gui when provided with a container
+	 * Register a "Container -> ContainerGui" factory. This is used only on the client side.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
 	 * @param guiFactory the supplier that should be used to create the new gui
 	 */
 	<C extends Container> void registerFactory(Identifier identifier, GuiFactory<C> guiFactory);
+
+	/**
+	 *
+	 * Register a "packet -> ContainerGui" factory. This is used only on the client side, and allows you
+	 * to override the default behaviour of re-using the existing "packet -> Container" logic.
+	 *
+	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
+	 * @param factory the gui factory, this should return a new {@link ContainerGui}
+	 */
+	void registerFactory(Identifier identifier, ContainerFactory<ContainerGui> factory);
 
 }

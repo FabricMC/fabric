@@ -25,7 +25,7 @@ public interface ContainerFactory<T> {
 
 	/**
 	 *
-	 * Creates the new gui or container
+	 * Creates the new object.
 	 *
 	 * @param identifier the Identifier is the name that was used when registering the factory
 	 * @param player the player that is opening the gui/container

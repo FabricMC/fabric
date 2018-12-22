@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.container;
+package net.fabricmc.fabric.api.client.gui;
 
 import net.minecraft.client.gui.ContainerGui;
 import net.minecraft.container.Container;

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.container;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 import net.minecraft.container.Container;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -31,7 +32,7 @@ public interface ContainerProviderRegistry {
 
 	/**
 	 *
-	 * Register a container factory
+	 * Register a "packet buffer -> container" factory. This is used both on the client and server side.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link GuiProviderRegistry}
 	 * @param factory the ContainerFactory that should return a new {@link Container}
@@ -40,7 +41,7 @@ public interface ContainerProviderRegistry {
 
 	/**
 	 *
-	 * This is used to open a container on the client, call this from the server
+	 * Open a modded container.
 	 *
 	 * @param identifier the identifier that was used when registering the container
 	 * @param player the player that should open the container
@@ -48,4 +49,17 @@ public interface ContainerProviderRegistry {
 	 */
 	void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer);
 
+	/**
+	 *
+	 * Open a modded container. This should be called on the server side - it has no effect on the client side.
+	 *
+	 * @param identifier the identifier that was used when registering the container
+	 * @param player the player that should open the container
+	 * @param writer a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
+	 */
+	default void openContainer(Identifier identifier, PlayerEntity player, Consumer<PacketByteBuf> writer) {
+		if (player instanceof ServerPlayerEntity) {
+			openContainer(identifier, (ServerPlayerEntity) player, writer);
+		}
+	}
 }
