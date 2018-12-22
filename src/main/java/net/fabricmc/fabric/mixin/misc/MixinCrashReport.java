@@ -49,7 +49,7 @@ public abstract class MixinCrashReport {
 	private void method_559(CallbackInfo info) {
 		getElement().add("Fabric Mods", () -> {
 			Map<String, String> mods = new TreeMap<>();
-			for (ModContainer container : FabricLoader.INSTANCE.getMods()) {
+			for (ModContainer container : FabricLoader.INSTANCE.getModContainers()) {
 				mods.put(container.getInfo().getName(), container.getInfo().getVersionString() + " (" + container.getOriginFile().getName() + ")");
 			}
 

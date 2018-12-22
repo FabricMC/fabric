@@ -40,7 +40,7 @@ public final class ModResourcePackUtil {
     }
 
     public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
-        for (ModContainer container : FabricLoader.INSTANCE.getMods()) {
+        for (ModContainer container : FabricLoader.INSTANCE.getModContainers()) {
             File file = container.getOriginFile();
             ResourcePack pack = null;
 
