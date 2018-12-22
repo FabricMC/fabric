@@ -6,6 +6,7 @@
   "description": "A series of test mods to check Fabric works.",
   "license": "Apache-2.0",
   "initializers": [
+    "net.fabricmc.fabric.client.events.CustomBakedModelMod",
     "net.fabricmc.fabric.colormapper.ColorProviderMod",
     "net.fabricmc.fabric.events.ServerEventMod"
   ]
