@@ -4,11 +4,11 @@ buildscript {
 		gradlePluginPortal()
 		maven {
 			name = 'Fabric'
-			url = 'http://maven.fabricmc.net/'
+			url = 'https://maven.fabricmc.net/'
 		}
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.1.0-SNAPSHOT"
+		classpath "net.fabricmc:fabric-loom:0.2.0-SNAPSHOT"
 	}
 }
 
@@ -39,7 +39,12 @@ minecraft {
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
 	mappings "net.fabricmc:yarn:$mcVersion.34"
-	modCompile "net.fabricmc:fabric-loader:0.2.0.70"
+	modCompile "net.fabricmc:fabric-loader:0.3.0.72"
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
 }
 
 curseforge {
