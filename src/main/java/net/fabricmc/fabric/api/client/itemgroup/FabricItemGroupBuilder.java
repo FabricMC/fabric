@@ -26,30 +26,61 @@ import java.util.function.Supplier;
 public final class FabricItemGroupBuilder {
 
 	private Identifier identifier;
-	private  Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
+	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
 
 	private FabricItemGroupBuilder(Identifier identifier) {
 		this.identifier = identifier;
 	}
 
-	public static FabricItemGroupBuilder create(Identifier identifier){
+	/**
+	 *
+	 * Create a new Item Group Builder
+	 *
+	 * @param identifier the id will become the name of the ItemGroup and will be used for the translation key
+	 * @return a FabricItemGroupBuilder
+	 */
+	public static FabricItemGroupBuilder create(Identifier identifier) {
 		return new FabricItemGroupBuilder(identifier);
 	}
 
-	public FabricItemGroupBuilder icon(Supplier<ItemStack> stackSupplier){
+	/**
+	 *
+	 * This is used to add an icon to to the item group
+	 *
+	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
+	public FabricItemGroupBuilder icon(Supplier<ItemStack> stackSupplier) {
 		this.stackSupplier = stackSupplier;
 		return this;
 	}
 
-	public ItemGroup build(){
-		((ItemGroupExtensions)ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
-		return new ItemGroup(ItemGroup.GROUPS.length -1, identifier.toString()) {
+	/**
+	 *
+	 * This is a single method that makes creating an ItemGroup with an icon one call
+	 *
+	 * @param identifier the id will become the name of the ItemGroup and will be used for the translation key
+	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
+	 * @return An instance of the built ItemGroup
+	 */
+	public static ItemGroup build(Identifier identifier, Supplier<ItemStack> stackSupplier){
+		return new FabricItemGroupBuilder(identifier).icon(stackSupplier).build();
+	}
+
+	/**
+	 *
+	 *  Create an instance of the ItemGroup
+	 *
+	 * @return An instance of the built ItemGroup
+	 */
+	public ItemGroup build() {
+		((ItemGroupExtensions) ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
+		return new ItemGroup(ItemGroup.GROUPS.length - 1, identifier.toString()) {
 			@Override
 			public ItemStack getIconItem() {
 				return stackSupplier.get();
 			}
 		};
 	}
-
 
 }

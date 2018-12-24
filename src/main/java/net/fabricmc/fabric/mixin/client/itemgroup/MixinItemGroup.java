@@ -29,35 +29,41 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(ItemGroup.class)
 public abstract class MixinItemGroup implements ItemGroupExtensions {
 
-	@Shadow @Final @Mutable
+	@Shadow
+	@Final
+	@Mutable
 	public static ItemGroup[] GROUPS;
 
-	@Shadow public abstract int getId();
+	@Shadow
+	public abstract int getId();
 
-	@Shadow public abstract boolean isTopRow();
+	@Shadow
+	public abstract boolean isTopRow();
 
-	@Shadow @Final private int id;
+	@Shadow
+	@Final
+	private int id;
 
 	@Override
 	public void fabric_expandArray() {
 		ItemGroup[] tempGroups = GROUPS;
 		GROUPS = new ItemGroup[GROUPS.length + 1];
-		for(ItemGroup group : tempGroups){
+		for (ItemGroup group : tempGroups) {
 			GROUPS[group.getId()] = group;
 		}
 	}
 
 	@Inject(method = "isTopRow", cancellable = true, at = @At("HEAD"))
-	private void isTopRow(CallbackInfoReturnable<Boolean> info){
-		if(getId() > 11){
+	private void isTopRow(CallbackInfoReturnable<Boolean> info) {
+		if (getId() > 11) {
 			info.setReturnValue((id - 12) % 9 < 4);
 		}
 	}
 
 	@Inject(method = "getColumn", cancellable = true, at = @At("HEAD"))
-	private void getColumn(CallbackInfoReturnable<Integer> info){
-		if(getId() > 11){
-			if(isTopRow()){
+	private void getColumn(CallbackInfoReturnable<Integer> info) {
+		if (getId() > 11) {
+			if (isTopRow()) {
 				info.setReturnValue((id - 12) % 9);
 			} else {
 				info.setReturnValue((id - 12) % 9 - 4);

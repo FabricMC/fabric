@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.client.itemgroup;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.util.Identifier;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -25,6 +28,7 @@ import java.util.function.Consumer;
 
 public class FabricCreativeGuiComponents {
 
+	private static final Identifier BUTTON_TEX = new Identifier("fabric", "textures/gui/creative_buttons.png");
 	public static final Set<ItemGroup> COMMON_GROUPS = new HashSet<>();
 
 	static {
@@ -51,11 +55,16 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void draw(int int_1, int int_2, float float_1) {
+		public void draw(int mouseX, int mouseY, float float_1) {
 			this.visible = extensions.fabric_isButtonVisible(type);
 			this.enabled = extensions.fabric_isButtonEnabled(type);
 
-			super.draw(int_1, int_2, float_1);
+			if (this.visible) {
+				MinecraftClient minecraftClient = MinecraftClient.getInstance();
+				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
+				GlStateManager.color4f(1F, 1F, 1F, 1F);
+				this.drawTexturedRect(this.x, this.y, (type == Type.NEXT ? 12 : 0), (enabled ? 0 : 12), 12, 12);
+			}
 		}
 	}
 
@@ -72,6 +81,5 @@ public class FabricCreativeGuiComponents {
 			this.clickConsumer = clickConsumer;
 		}
 	}
-
 
 }

@@ -29,11 +29,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-
 @Mixin(CreativePlayerInventoryGui.class)
 public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInventoryGui implements CreativeGuiExtensions {
 
-	@Shadow protected abstract void setSelectedTab(ItemGroup itemGroup_1);
+	@Shadow
+	protected abstract void setSelectedTab(ItemGroup itemGroup_1);
 
 	private int currentPage = 0;
 
@@ -43,16 +43,16 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	@Override
 	public void fabric_nextPage() {
-		if((currentPage + 1) * 12 > ItemGroup.GROUPS.length){
+		if ((currentPage + 1) * 12 > ItemGroup.GROUPS.length) {
 			return;
 		}
-		currentPage ++;
+		currentPage++;
 		updateSelection();
 	}
 
 	@Override
 	public void fabric_previousPage() {
-		if(currentPage == 0){
+		if (currentPage == 0) {
 			return;
 		}
 		currentPage--;
@@ -66,32 +66,32 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	@Override
 	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
-		if(type == FabricCreativeGuiComponents.Type.NEXT){
+		if (type == FabricCreativeGuiComponents.Type.NEXT) {
 			return !((currentPage + 1) * 12 > ItemGroup.GROUPS.length);
 		}
-		if(type == FabricCreativeGuiComponents.Type.PREVIOUS){
+		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
 			return currentPage != 0;
 		}
 		return false;
 	}
 
-	private void updateSelection(){
+	private void updateSelection() {
 		int nextTab;
-		if(currentPage == 0){
+		if (currentPage == 0) {
 			nextTab = 0;
 		} else {
-			nextTab = 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (currentPage -1));
+			nextTab = 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (currentPage - 1));
 		}
 
 		setSelectedTab(ItemGroup.GROUPS[nextTab]);
 	}
 
 	@Inject(method = "onInitialized", at = @At("RETURN"))
-	private void onInitialized(CallbackInfo info){
+	private void onInitialized(CallbackInfo info) {
 		updateSelection();
 
-		int xpos = left + 171;
-		int ypos = top + 5;
+		int xpos = left + 170;
+		int ypos = top + 4;
 
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1001, xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1001, xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
@@ -99,43 +99,42 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	@Inject(method = "setSelectedTab", at = @At("HEAD"), cancellable = true)
 	private void setSelectedTab(ItemGroup itemGroup, CallbackInfo info) {
-		if(!isGroupVisible(itemGroup)){
+		if (!isGroupVisible(itemGroup)) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "method_2471", at = @At("HEAD"), cancellable = true)
-	private void method_2471(ItemGroup itemGroup, int mx, int my, CallbackInfoReturnable<Boolean> info){
-		if(!isGroupVisible(itemGroup)){
+	private void method_2471(ItemGroup itemGroup, int mx, int my, CallbackInfoReturnable<Boolean> info) {
+		if (!isGroupVisible(itemGroup)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "isClickInTab", at = @At("HEAD"), cancellable = true)
-	private void isClickInTab(ItemGroup itemGroup, double mx, double my, CallbackInfoReturnable<Boolean> info){
-		if(!isGroupVisible(itemGroup)){
+	private void isClickInTab(ItemGroup itemGroup, double mx, double my, CallbackInfoReturnable<Boolean> info) {
+		if (!isGroupVisible(itemGroup)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "method_2468", at = @At("HEAD"), cancellable = true)
-	private void method_2468(ItemGroup itemGroup, CallbackInfo info){
-		if(!isGroupVisible(itemGroup)){
+	private void method_2468(ItemGroup itemGroup, CallbackInfo info) {
+		if (!isGroupVisible(itemGroup)) {
 			info.cancel();
 		}
 	}
 
-	private boolean isGroupVisible(ItemGroup itemGroup){
-		if(FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)){
+	private boolean isGroupVisible(ItemGroup itemGroup) {
+		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
 			return true;
 		}
-		if(itemGroup.getId() < 12){
+		if (itemGroup.getId() < 12) {
 			return currentPage == 0;
 		}
 		int page = (int) Math.floor((itemGroup.getId() - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
 		return currentPage == page + 1;
 
 	}
-
 
 }
