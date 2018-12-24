@@ -29,10 +29,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+
 @Mixin(CreativePlayerInventoryGui.class)
 public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInventoryGui implements CreativeGuiExtensions {
-
-	@Shadow private static int selectedTab;
 
 	@Shadow protected abstract void setSelectedTab(ItemGroup itemGroup_1);
 
@@ -77,12 +76,14 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 	}
 
 	private void updateSelection(){
+		int nextTab;
 		if(currentPage == 0){
-			selectedTab = 0;
+			nextTab = 0;
 		} else {
-			selectedTab = 12 + 10 * (currentPage -1);
+			nextTab = 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (currentPage -1));
 		}
-		setSelectedTab(ItemGroup.GROUPS[selectedTab]);
+
+		setSelectedTab(ItemGroup.GROUPS[nextTab]);
 	}
 
 	@Inject(method = "onInitialized", at = @At("RETURN"))

@@ -25,14 +25,23 @@ import java.util.function.Supplier;
 
 public final class FabricItemGroupBuilder {
 
+	private Identifier identifier;
 	private  Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
+
+	private FabricItemGroupBuilder(Identifier identifier) {
+		this.identifier = identifier;
+	}
+
+	public static FabricItemGroupBuilder create(Identifier identifier){
+		return new FabricItemGroupBuilder(identifier);
+	}
 
 	public FabricItemGroupBuilder icon(Supplier<ItemStack> stackSupplier){
 		this.stackSupplier = stackSupplier;
 		return this;
 	}
 
-	public ItemGroup create(Identifier identifier){
+	public ItemGroup build(){
 		((ItemGroupExtensions)ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
 		return new ItemGroup(ItemGroup.GROUPS.length -1, identifier.toString()) {
 			@Override

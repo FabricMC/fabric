@@ -30,6 +30,7 @@ public class FabricCreativeGuiComponents {
 	static {
 		COMMON_GROUPS.add(ItemGroup.SEARCH);
 		COMMON_GROUPS.add(ItemGroup.INVENTORY);
+		COMMON_GROUPS.add(ItemGroup.HOTBAR);
 	}
 
 	public static class ItemGroupButtonWidget extends ButtonWidget {

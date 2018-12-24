@@ -34,6 +34,10 @@ public abstract class MixinItemGroup implements ItemGroupExtensions {
 
 	@Shadow public abstract int getId();
 
+	@Shadow public abstract boolean isTopRow();
+
+	@Shadow @Final private int id;
+
 	@Override
 	public void fabric_expandArray() {
 		ItemGroup[] tempGroups = GROUPS;
@@ -46,15 +50,19 @@ public abstract class MixinItemGroup implements ItemGroupExtensions {
 	@Inject(method = "isTopRow", cancellable = true, at = @At("HEAD"))
 	private void isTopRow(CallbackInfoReturnable<Boolean> info){
 		if(getId() > 11){
-			//We show 10 tabs per page, where as vanilla actually has 12
-			info.setReturnValue((getId() - 12) % 10 < 5);
+			info.setReturnValue((id - 12) % 9 < 4);
 		}
 	}
 
 	@Inject(method = "getColumn", cancellable = true, at = @At("HEAD"))
 	private void getColumn(CallbackInfoReturnable<Integer> info){
 		if(getId() > 11){
-			info.setReturnValue(((getId() - 12 % 10) % 5));
+			if(isTopRow()){
+				info.setReturnValue((id - 12) % 9);
+			} else {
+				info.setReturnValue((id - 12) % 9 - 4);
+			}
+
 		}
 	}
 }
