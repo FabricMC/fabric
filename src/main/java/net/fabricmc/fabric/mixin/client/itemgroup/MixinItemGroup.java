@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.itemgroup;
 
+import net.fabricmc.fabric.client.itemgroup.FabricCreativeGuiComponents;
 import net.fabricmc.fabric.client.itemgroup.ItemGroupExtensions;
 import net.minecraft.item.ItemGroup;
 import org.spongepowered.asm.mixin.Final;
@@ -56,7 +57,7 @@ public abstract class MixinItemGroup implements ItemGroupExtensions {
 	@Inject(method = "isTopRow", cancellable = true, at = @At("HEAD"))
 	private void isTopRow(CallbackInfoReturnable<Boolean> info) {
 		if (getId() > 11) {
-			info.setReturnValue((id - 12) % 9 < 4);
+			info.setReturnValue((id - 12) % (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) < 4);
 		}
 	}
 
@@ -64,9 +65,9 @@ public abstract class MixinItemGroup implements ItemGroupExtensions {
 	private void getColumn(CallbackInfoReturnable<Integer> info) {
 		if (getId() > 11) {
 			if (isTopRow()) {
-				info.setReturnValue((id - 12) % 9);
+				info.setReturnValue((id - 12) % (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
 			} else {
-				info.setReturnValue((id - 12) % 9 - 4);
+				info.setReturnValue((id - 12) % (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) - 4);
 			}
 
 		}
