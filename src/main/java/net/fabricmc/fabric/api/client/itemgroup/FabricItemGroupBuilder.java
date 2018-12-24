@@ -19,14 +19,18 @@ package net.fabricmc.fabric.api.client.itemgroup;
 import net.fabricmc.fabric.client.itemgroup.ItemGroupExtensions;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class FabricItemGroupBuilder {
 
 	private Identifier identifier;
 	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
+	private Consumer<List<ItemStack>> stacksForDisplay;
 
 	private FabricItemGroupBuilder(Identifier identifier) {
 		this.identifier = identifier;
@@ -57,6 +61,18 @@ public final class FabricItemGroupBuilder {
 
 	/**
 	 *
+	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items
+	 *
+	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
+	 * @return a reference to the FabricItemGroupBuilder
+	 */
+	public FabricItemGroupBuilder stacksForDisplay(Consumer<List<ItemStack>> stacksForDisplay){
+		this.stacksForDisplay = stacksForDisplay;
+		return this;
+	}
+
+	/**
+	 *
 	 * This is a single method that makes creating an ItemGroup with an icon one call
 	 *
 	 * @param identifier the id will become the name of the ItemGroup and will be used for the translation key
@@ -79,6 +95,15 @@ public final class FabricItemGroupBuilder {
 			@Override
 			public ItemStack getIconItem() {
 				return stackSupplier.get();
+			}
+
+			@Override
+			public void getStacksForDisplay(DefaultedList<ItemStack> stacks) {
+				if(stacksForDisplay != null){
+					stacksForDisplay.accept(stacks);
+					return;
+				}
+				super.getStacksForDisplay(stacks);
 			}
 		};
 	}

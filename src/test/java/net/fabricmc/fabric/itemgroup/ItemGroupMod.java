@@ -18,6 +18,7 @@ package net.fabricmc.fabric.itemgroup;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -25,9 +26,28 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+
 public class ItemGroupMod implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		//This creates your standard Item Group
+		ItemGroup group = FabricItemGroupBuilder.build(new Identifier("fabric", "fabric_test_tab"), () -> new ItemStack(Items.IRON_CHESTPLATE));
+		Item testItem = new Item(new Item.Settings().itemGroup(group));
+		Registry.ITEM.register(new Identifier("fabric_test", "itemgroup"), testItem);
+
+
+		//Creates a tab with all items (including ones that dont show in search such as the command block)
+		FabricItemGroupBuilder.create(new Identifier("fabric", "all")).stacksForDisplay(itemStacks -> Registry.ITEM.forEach(item -> itemStacks.add(new ItemStack(item)))).build();
+
+		//Creates a group with all modded items in
+		FabricItemGroupBuilder.create(new Identifier("fabric", "modded")).stacksForDisplay(itemStacks -> Registry.ITEM.forEach(item -> {
+			if(!Registry.ITEM.getId(item).getNamespace().equals("minecraft")){
+				itemStacks.add(new ItemStack(item));
+			}
+		})).icon(() -> new ItemStack(Blocks.TNT)).build();
+
+
+		//These are just padding to ensure more than one page works
 		FabricItemGroupBuilder.create(new Identifier("fabric", "test1")).icon(() -> new ItemStack(Items.APPLE)).build();
 		FabricItemGroupBuilder.create(new Identifier("fabric", "test2")).build();
 		FabricItemGroupBuilder.create(new Identifier("fabric", "test3")).build();
@@ -41,9 +61,6 @@ public class ItemGroupMod implements ClientModInitializer {
 		FabricItemGroupBuilder.create(new Identifier("fabric", "test11")).build();
 		FabricItemGroupBuilder.create(new Identifier("fabric", "test12")).build();
 		FabricItemGroupBuilder.create(new Identifier("fabric", "test13")).build();
-		ItemGroup group = FabricItemGroupBuilder.create(new Identifier("fabric", "test14")).build();
 
-		Item testItem = new Item(new Item.Settings().itemGroup(group));
-		Registry.ITEM.register(new Identifier("fabric_test", "itemgroup"), testItem);
 	}
 }
