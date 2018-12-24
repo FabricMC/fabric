@@ -16,26 +16,28 @@
 
 package net.fabricmc.fabric.api.client.model;
 
-import net.fabricmc.fabric.impl.client.model.ModelLoaderRegistryImpl;
+import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public interface ModelLoaderRegistry {
-	ModelLoaderRegistry INSTANCE = ModelLoaderRegistryImpl.INSTANCE;
+public interface ModelLoadingRegistry {
+	ModelLoadingRegistry INSTANCE = ModelLoadingRegistryImpl.INSTANCE;
 
 	/**
-	 * Register a ModelRequester provider.
+	 * Register a model appender, which can request loading additional models.
 	 *
-	 * @param requesterSupplier The ModelRequester supplier, instantiated with every ModelLoader.
+	 * @param appender
 	 */
-	void registerRequester(Supplier<ModelRequester> requesterSupplier);
+	void registerAppender(ModelAppender appender);
 
 	/**
-	 * Register a CustomModelLoader provider.
+	 * Register a ModelProvider supplier.
 	 *
-	 * @param loaderSupplier The CustomModelLoader supplier, instantiated with every ModelLoader.
+	 * @param providerSupplier The ModelProvider supplier, instantiated with every ModelLoader.
 	 */
-	void registerLoader(Function<ResourceManager, CustomModelLoader> loaderSupplier);
+	void registerProvider(Function<ResourceManager, ModelProvider> providerSupplier);
 }

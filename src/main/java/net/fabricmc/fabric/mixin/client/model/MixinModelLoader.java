@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.client.model;
 
 import net.fabricmc.fabric.impl.client.model.ModelLoaderHooks;
-import net.fabricmc.fabric.impl.client.model.ModelLoaderRegistryImpl;
+import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
@@ -37,7 +37,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	@Shadow
 	private ResourceManager resourceContainer;
 
-	private ModelLoaderRegistryImpl.LoaderInstance fabric_mlrLoaderInstance;
+	private ModelLoadingRegistryImpl.LoaderInstance fabric_mlrLoaderInstance;
 
 	@Shadow
 	private void addModel(ModelIdentifier id) {
@@ -49,9 +49,9 @@ public class MixinModelLoader implements ModelLoaderHooks {
 
 	}
 
-	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "loadCustomModel", cancellable = true)
 	private void loadModel(Identifier id, CallbackInfo ci) {
-		UnbakedModel customModel = fabric_mlrLoaderInstance.loadModel(id);
+		UnbakedModel customModel = fabric_mlrLoaderInstance.loadCustomModel(id);
 		if (customModel != null) {
 			putModel(id, customModel);
 			ci.cancel();
@@ -64,7 +64,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 			//noinspection RedundantCast
 			ModelLoaderHooks hooks = (ModelLoaderHooks) (Object) this;
 
-			fabric_mlrLoaderInstance = ModelLoaderRegistryImpl.begin(resourceContainer);
+			fabric_mlrLoaderInstance = ModelLoadingRegistryImpl.begin((ModelLoader) (Object) this, resourceContainer);
 			fabric_mlrLoaderInstance.onModelPopulation(hooks::fabric_addModel);
 		}
 	}
@@ -72,7 +72,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void initFinishedHook(CallbackInfo info) {
 		//noinspection ConstantConditions
-		fabric_mlrLoaderInstance.finish((ModelLoader) (Object) this);
+		fabric_mlrLoaderInstance.finish();
 	}
 
 	@Override

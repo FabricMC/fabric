@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.client.model;
 
-public class CustomModelLoaderException extends Exception {
-	public CustomModelLoaderException(String s) {
+public class ModelProviderException extends Exception {
+	public ModelProviderException(String s) {
 		super(s);
 	}
 
-	public CustomModelLoaderException(String s, Throwable t) {
+	public ModelProviderException(String s, Throwable t) {
 		super(s, t);
 	}
 }

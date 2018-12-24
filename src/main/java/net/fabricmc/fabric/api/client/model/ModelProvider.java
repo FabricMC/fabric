@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.model;
 
+import com.sun.istack.internal.Nullable;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
@@ -29,7 +30,7 @@ import net.minecraft.util.Identifier;
  * As CustomModelLoaders are instantiated with a new ModelLoader, it is safe
  * (and recommended!) to cache information inside a loader.
  *
- * Keep in mind that only *one* CustomModelLoader may respond to a given model
+ * Keep in mind that only *one* ModelProvider may respond to a given model
  * at any time. If you're writing, say, an OBJ loader, this means you could
  * easily conflict with another OBJ loader unless you take some precautions,
  * for example:
@@ -37,16 +38,16 @@ import net.minecraft.util.Identifier;
  * a) Only load files with a mod-suffixed name, such as .architect.obj,
  * b) Only load files from an explicit list of namespaces, registered elsewhere.
  */
-public interface CustomModelLoader {
-	/**
-	 * @param id The model identifier. Vanilla provides a {@link Identifier} or {@link ModelIdentifier}.
-	 * @return True if this loader can load a given identifier.
-	 */
-	boolean accepts(Identifier id);
+@FunctionalInterface
+public interface ModelProvider {
+	public interface Context {
+		UnbakedModel loadModel(Identifier id);
+	}
 
 	/**
 	 * @param id The model identifier. Vanilla provides a {@link Identifier} or {@link ModelIdentifier}.
-	 * @return The loaded UnbakedModel.
+	 * @return The loaded UnbakedModel, or null if this ModelProvider doesn't handle a specific Identifier
+	 * (or if there was no error!).
 	 */
-	UnbakedModel load(Identifier id) throws CustomModelLoaderException;
+	@Nullable UnbakedModel load(Identifier id, Context context) throws ModelProviderException;
 }
