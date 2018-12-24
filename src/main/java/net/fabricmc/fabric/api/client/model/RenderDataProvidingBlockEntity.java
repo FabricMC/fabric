@@ -17,5 +17,5 @@
 package net.fabricmc.fabric.api.client.model;
 
 public interface RenderDataProvidingBlockEntity {
-	Object getRenderDataObject();
+	Object getRenderData();
 }

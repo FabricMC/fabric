@@ -16,25 +16,12 @@
 
 package net.fabricmc.fabric.api.client.model;
 
-import net.minecraft.block.BlockEntityProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
 public interface RenderCacheView extends BlockView {
-	default <T> T getRenderDataObject(BlockPos pos) {
-		BlockState state = getBlockState(pos);
-		Object obj = ((RenderDataProvidingBlock) state.getBlock()).getRenderDataObject(state, this, pos);
-
-		if (obj == null && state.getBlock() instanceof BlockEntityProvider) {
-			BlockEntity entity = getBlockEntity(pos);
-			if (entity instanceof RenderDataProvidingBlockEntity) {
-				obj = ((RenderDataProvidingBlockEntity) entity).getRenderDataObject();
-			}
-		}
-
+	default <T> T getCachedBlockEntityRenderData(BlockPos pos) {
 		//noinspection unchecked
-		return obj != null ? (T) obj : null;
+		return (T) ((RenderDataProvidingBlockEntity) getBlockEntity(pos)).getRenderData();
 	}
 }

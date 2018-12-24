@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.Mixin;
 @Mixin(BlockEntity.class)
 public class MixinBlockEntity implements RenderDataProvidingBlockEntity {
 	@Override
-	public Object getRenderDataObject() {
+	public Object getRenderData() {
 		return null;
 	}
 }

@@ -9,7 +9,6 @@
     "client.render.MixinBlockEntityRenderManager",
     "client.render.MixinEntityRenderManager",
     "client.render.MixinItemColorMap",
-    "client.rendercache.MixinBlock",
     "client.rendercache.MixinBlockEntity",
     "client.rendercache.MixinBlockModelRenderer",
     "client.rendercache.MixinClass853",

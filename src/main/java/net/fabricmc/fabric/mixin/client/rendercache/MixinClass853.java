@@ -17,12 +17,10 @@
 package net.fabricmc.fabric.mixin.client.rendercache;
 
 import net.fabricmc.fabric.api.client.model.RenderCacheView;
-import net.fabricmc.fabric.api.client.model.RenderDataProvidingBlock;
 import net.fabricmc.fabric.api.client.model.RenderDataProvidingBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.class_853;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
@@ -32,11 +30,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 @Mixin(class_853.class)
 public abstract class MixinClass853 implements RenderCacheView {
-	private Object[] fabric_renderDataObjects;
+	private Map<BlockPos, Object> fabric_renderDataObjects;
 
 	@Shadow
 	private int field_4486;
@@ -47,29 +46,19 @@ public abstract class MixinClass853 implements RenderCacheView {
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	public void init(World world, int cxOff, int czOff, WorldChunk[][] chunks, BlockPos posFrom, BlockPos posTo, CallbackInfo info) {
-		this.fabric_renderDataObjects = new Object[this.field_4486 * this.field_4484 * this.field_4482];
-
-		for (BlockPos pos : BlockPos.iterateBoxPositionsMutable(posFrom, posTo)) {
-			int cx = (pos.getX() >> 4) - cxOff;
-			int cz = (pos.getZ() >> 4) - czOff;
-			WorldChunk chunk = chunks[cx][cz];
-			BlockState state = chunk.getBlockState(pos);
-			fabric_renderDataObjects[method_3691(pos)] = ((RenderDataProvidingBlock) state.getBlock()).getRenderDataObject(state, world, pos);
-		}
+		this.fabric_renderDataObjects = new HashMap<>();
 
 		for (WorldChunk[] chunkA : chunks) {
 			for (WorldChunk chunkB : chunkA) {
 				for (BlockEntity entity : chunkB.getBlockEntityMap().values()) {
-					Object o = ((RenderDataProvidingBlockEntity) entity).getRenderDataObject();
+					Object o = ((RenderDataProvidingBlockEntity) entity).getRenderData();
 					if (o != null) {
 						BlockPos entPos = entity.getPos();
+						// TODO: If we're using a Map and not an array, should this stay?
 						if (entPos.getX() >= posFrom.getX() && entPos.getX() <= posTo.getX()
 							&& entPos.getY() >= posFrom.getY() && entPos.getY() <= posTo.getY()
 							&& entPos.getZ() >= posFrom.getZ() && entPos.getY() <= posTo.getZ()) {
-							int pos = method_3691(entity.getPos());
-							if (fabric_renderDataObjects[pos] == null) {
-								fabric_renderDataObjects[pos] = o;
-							}
+							fabric_renderDataObjects.put(entity.getPos(), o);
 						}
 					}
 				}
@@ -81,8 +70,8 @@ public abstract class MixinClass853 implements RenderCacheView {
 	protected abstract int method_3691(BlockPos blockPos_1);
 
 	@Override
-	public <T> T getRenderDataObject(BlockPos pos) {
+	public <T> T getCachedBlockEntityRenderData(BlockPos pos) {
 		//noinspection unchecked
-		return (T) fabric_renderDataObjects[method_3691(pos)];
+		return (T) fabric_renderDataObjects.get(pos);
 	}
 }

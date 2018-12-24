@@ -28,18 +28,22 @@ import java.util.Random;
 import java.util.function.Consumer;
 
 // TODO NORELEASE add Nullables
-public interface DynamicBakedModel extends BakedModel {
+public interface DynamicBakedModel<RenderDataType> extends BakedModel {
 	@Override
 	default List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-		List<BakedQuad> list = Lists.newArrayList();
-		gatherQuads(null, null, state, face, random, list::add);
-		return list;
+		return getQuads(null, state, face, random);
 	}
 
-	// TODO NORELEASE: Consumer<BakedQuad> is better for cases in which we always generate dynamically, but
-	// passing a List<BakedQuad> would be more optimized for cases in which the data is "mostly hits".
-	// How should we support both approaches?
-	// TODO NORELEASE: Should this provide just the RenderData object (which could simply include a view/pos reference), or all three, or just the two
-	// + use gets? (one array lookup either way)
-	void gatherQuads(RenderCacheView view, BlockPos pos, BlockState state, Direction face, Random random, Consumer<BakedQuad> quadConsumer);
+	/**
+	 * Get the render data for this dynamic baked model.
+	 *
+	 * Please note that this is called OUTSIDE the main thread! This means two things:
+	 *
+	 * (a) your call should be thread-safe - in vanilla's case, this means block states,
+	 *     fluid states, cached block entity render data and - to some extent - light values,
+	 * (b) any heavy computation you're doing, if it fits (a), should be done HERE!
+	 */
+	RenderDataType getRenderData(BlockState state, RenderCacheView view, BlockPos pos);
+
+	List<BakedQuad> getQuads(/*@Nullable*/ RenderDataType dataType, BlockState state, Direction face, Random random);
 }
