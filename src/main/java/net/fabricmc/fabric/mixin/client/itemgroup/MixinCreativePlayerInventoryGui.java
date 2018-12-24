@@ -93,8 +93,9 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		int xpos = left + 170;
 		int ypos = top + 4;
 
-		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1001, xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1001, xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
+		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1002, xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
+
 	}
 
 	@Inject(method = "setSelectedTab", at = @At("HEAD"), cancellable = true)
@@ -137,4 +138,8 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	}
 
+	@Override
+	public int fabric_currentPage() {
+		return currentPage;
+	}
 }
