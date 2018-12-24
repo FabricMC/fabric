@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model;
 
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.resource.ResourceManager;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.util.Identifier;
 
-import java.util.function.Consumer;
-
-@FunctionalInterface
-public interface ModelAppender {
-	void append(ResourceManager manager, Consumer<ModelIdentifier> modelAdder);
+public interface ModelProviderContext {
+	UnbakedModel loadModel(Identifier id);
 }

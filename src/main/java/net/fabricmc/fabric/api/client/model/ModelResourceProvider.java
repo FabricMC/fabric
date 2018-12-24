@@ -21,15 +21,18 @@ import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 /**
- * Interface for custom model loaders.
+ * Interface for model resource providers.
  *
- * Custom model loaders hook the part where a ModelIdentifier is resolved in
- * the loaded resource manager and loaded as an UnbakedModel.
+ * Model resource providers hook the loading of model *files* from the resource tree;
+ * that is, in vanilla, it handles going from "minecraft:block/stone" to a
+ * "assets/minecraft/models/block/stone.json" file.
  *
- * As CustomModelLoaders are instantiated with a new ModelLoader, it is safe
+ * This is where you want to add your own custom model formats.
+ *
+ * As providers are instantiated with a new provider, it is safe
  * (and recommended!) to cache information inside a loader.
  *
- * Keep in mind that only *one* ModelProvider may respond to a given model
+ * Keep in mind that only *one* ModelResourceProvider may respond to a given model
  * at any time. If you're writing, say, an OBJ loader, this means you could
  * easily conflict with another OBJ loader unless you take some precautions,
  * for example:
@@ -38,15 +41,12 @@ import net.minecraft.util.Identifier;
  * b) Only load files from an explicit list of namespaces, registered elsewhere.
  */
 @FunctionalInterface
-public interface ModelProvider {
-	public interface Context {
-		UnbakedModel loadModel(Identifier id);
-	}
+public interface ModelResourceProvider {
 
 	/**
-	 * @param id The model identifier. Vanilla provides a {@link Identifier} or {@link ModelIdentifier}.
-	 * @return The loaded UnbakedModel, or null if this ModelProvider doesn't handle a specific Identifier
+	 * @param resourceId The resource identifier to be loaded.
+	 * @return The loaded UnbakedModel, or null if this ModelResourceProvider doesn't handle a specific Identifier
 	 * (or if there was no error!).
 	 */
-	/* @Nullable */ UnbakedModel load(Identifier id, Context context) throws ModelProviderException;
+	/* @Nullable */ UnbakedModel load(Identifier resourceId, ModelProviderContext context) throws ModelProviderException;
 }

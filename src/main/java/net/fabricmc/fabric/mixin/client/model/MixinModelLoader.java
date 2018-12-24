@@ -51,7 +51,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 
 	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
 	private void loadModel(Identifier id, CallbackInfo ci) {
-		UnbakedModel customModel = fabric_mlrLoaderInstance.loadCustomModel(id);
+		UnbakedModel customModel = fabric_mlrLoaderInstance.loadModelFromVariant(id);
 		if (customModel != null) {
 			putModel(id, customModel);
 			ci.cancel();

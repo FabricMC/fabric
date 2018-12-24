@@ -17,12 +17,9 @@
 package net.fabricmc.fabric.api.client.model;
 
 import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public interface ModelLoadingRegistry {
 	ModelLoadingRegistry INSTANCE = ModelLoadingRegistryImpl.INSTANCE;
@@ -35,9 +32,16 @@ public interface ModelLoadingRegistry {
 	void registerAppender(ModelAppender appender);
 
 	/**
-	 * Register a ModelProvider supplier.
+	 * Register a ModelResourceProvider supplier.
 	 *
-	 * @param providerSupplier The ModelProvider supplier, instantiated with every ModelLoader.
+	 * @param providerSupplier The ModelResourceProvider supplier, instantiated with every ModelLoader.
 	 */
-	void registerProvider(Function<ResourceManager, ModelProvider> providerSupplier);
+	void registerResourceProvider(Function<ResourceManager, ModelResourceProvider> providerSupplier);
+
+	/**
+	 * Register a ModelVariantProvider supplier.
+	 *
+	 * @param providerSupplier The ModelVariantProvider supplier, instantiated with every ModelLoader.
+	 */
+	void registerVariantProvider(Function<ResourceManager, ModelVariantProvider> providerSupplier);
 }

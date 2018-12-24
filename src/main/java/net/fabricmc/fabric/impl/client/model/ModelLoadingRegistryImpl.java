@@ -18,14 +18,11 @@ package net.fabricmc.fabric.impl.client.model;
 
 import com.google.common.collect.Lists;
 import com.sun.istack.internal.Nullable;
-import net.fabricmc.fabric.api.client.model.ModelAppender;
-import net.fabricmc.fabric.api.client.model.ModelProvider;
-import net.fabricmc.fabric.api.client.model.ModelProviderException;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.model.*;
 import net.fabricmc.loader.launch.common.FabricLauncherBase;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -33,19 +30,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	private static final boolean DEBUG_MODEL_LOADING = FabricLauncherBase.getLauncher().isDevelopment()
 		|| Boolean.valueOf(System.getProperty("fabric.debugModelLoading", "false"));
 
-	public static class LoaderInstance implements ModelProvider.Context {
+	@FunctionalInterface
+	private static interface CustomModelItf<T> {
+		UnbakedModel load(T obj) throws ModelProviderException;
+	}
+
+	public static class LoaderInstance implements ModelProviderContext {
 		private final Logger logger;
 		private final ResourceManager manager;
-		private final List<ModelProvider> modelLoaders;
+		private final List<ModelVariantProvider> modelVariantProviders;
+		private final List<ModelResourceProvider> modelResourceProviders;
 		private final List<ModelAppender> modelAppenders;
 		private ModelLoader loader;
 
@@ -53,7 +56,8 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			this.logger = ModelLoadingRegistryImpl.LOGGER;
 			this.loader = loader;
 			this.manager = manager;
-			this.modelLoaders = i.loaderSuppliers.stream().map((s) -> s.apply(manager)).collect(Collectors.toList());
+			this.modelVariantProviders = i.variantProviderSuppliers.stream().map((s) -> s.apply(manager)).collect(Collectors.toList());
+			this.modelResourceProviders = i.resourceProviderSuppliers.stream().map((s) -> s.apply(manager)).collect(Collectors.toList());
 			this.modelAppenders = i.appenders;
 		}
 
@@ -72,12 +76,11 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 		}
 
-		@Nullable
-		public UnbakedModel loadCustomModel(Identifier identifier) {
+		private <T> UnbakedModel loadCustomModel(CustomModelItf<T> function, Collection<T> loaders, String debugName) {
 			if (!DEBUG_MODEL_LOADING) {
-				for (ModelProvider provider : modelLoaders) {
+				for (T provider : loaders) {
 					try {
-						UnbakedModel model = provider.load(identifier, this);
+						UnbakedModel model = function.load(provider);
 						if (model != null) {
 							return model;
 						}
@@ -91,12 +94,12 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 
 			UnbakedModel modelLoaded = null;
-			ModelProvider providerUsed = null;
-			List<ModelProvider> providersApplied = null;
+			T providerUsed = null;
+			List<T> providersApplied = null;
 
-			for (ModelProvider provider : modelLoaders) {
+			for (T provider : loaders) {
 				try {
-					UnbakedModel model = provider.load(identifier, this);
+					UnbakedModel model = function.load(provider);
 					if (model != null) {
 						if (providersApplied != null) {
 							providersApplied.add(provider);
@@ -114,14 +117,43 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 
 			if (providersApplied != null) {
-				StringBuilder builder = new StringBuilder("Conflict - multiple ModelProviders claimed the same unbaked model:");
-				for (ModelProvider loader : providersApplied) {
+				StringBuilder builder = new StringBuilder("Conflict - multiple " + debugName + "s claimed the same unbaked model:");
+				for (T loader : providersApplied) {
 					builder.append("\n\t - ").append(loader.getClass().getName());
 				}
 				logger.error(builder.toString());
 				return null;
 			} else {
 				return modelLoaded;
+			}
+		}
+
+		@Nullable
+		public UnbakedModel loadModelFromResource(Identifier resourceId) {
+			return loadCustomModel((r) -> r.load(resourceId, this), modelResourceProviders, "resource provider");
+		}
+
+		@Nullable
+		public UnbakedModel loadModelFromVariant(Identifier variantId) {
+			if (!(variantId instanceof ModelIdentifier)) {
+				return loadModelFromResource(variantId);
+			} else {
+				ModelIdentifier modelId = (ModelIdentifier) variantId;
+				UnbakedModel model = loadCustomModel((r) -> r.load((ModelIdentifier) variantId, this), modelVariantProviders, "resource provider");
+				if (model != null) {
+					return model;
+				}
+
+				// Replicating the special-case from ModelLoader as loadModelFromJson is insufficiently patchable
+				if (Objects.equals(modelId.getVariant(), "inventory")) {
+					Identifier resourceId = new Identifier(modelId.getNamespace(), "item/" + modelId.getPath());
+					model = loadModelFromResource(resourceId);
+					if (model != null) {
+						return model;
+					}
+				}
+
+				return null;
 			}
 		}
 
@@ -133,7 +165,8 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 	public static final ModelLoadingRegistryImpl INSTANCE = new ModelLoadingRegistryImpl();
 
-	private final List<Function<ResourceManager, ModelProvider>> loaderSuppliers = new ArrayList<>();
+	private final List<Function<ResourceManager, ModelVariantProvider>> variantProviderSuppliers = new ArrayList<>();
+	private final List<Function<ResourceManager, ModelResourceProvider>> resourceProviderSuppliers = new ArrayList<>();
 	private final List<ModelAppender> appenders = new ArrayList<>();
 
 	@Override
@@ -142,8 +175,13 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	}
 
 	@Override
-	public void registerProvider(Function<ResourceManager, ModelProvider> loaderSupplier) {
-		loaderSuppliers.add(loaderSupplier);
+	public void registerResourceProvider(Function<ResourceManager, ModelResourceProvider> providerSupplier) {
+		resourceProviderSuppliers.add(providerSupplier);
+	}
+
+	@Override
+	public void registerVariantProvider(Function<ResourceManager, ModelVariantProvider> providerSupplier) {
+		variantProviderSuppliers.add(providerSupplier);
 	}
 
 	public static LoaderInstance begin(ModelLoader loader, ResourceManager manager) {
