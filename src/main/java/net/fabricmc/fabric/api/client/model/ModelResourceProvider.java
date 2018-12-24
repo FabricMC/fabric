@@ -37,8 +37,8 @@ import net.minecraft.util.Identifier;
  * easily conflict with another OBJ loader unless you take some precautions,
  * for example:
  *
- * a) Only load files with a mod-suffixed name, such as .architect.obj,
- * b) Only load files from an explicit list of namespaces, registered elsewhere.
+ * a) Only loadModelResource files with a mod-suffixed name, such as .architect.obj,
+ * b) Only loadModelResource files from an explicit list of namespaces, registered elsewhere.
  */
 @FunctionalInterface
 public interface ModelResourceProvider {
@@ -48,5 +48,5 @@ public interface ModelResourceProvider {
 	 * @return The loaded UnbakedModel, or null if this ModelResourceProvider doesn't handle a specific Identifier
 	 * (or if there was no error!).
 	 */
-	/* @Nullable */ UnbakedModel load(Identifier resourceId, ModelProviderContext context) throws ModelProviderException;
+	/* @Nullable */ UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException;
 }

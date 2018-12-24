@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.client.model.*;
 import net.fabricmc.loader.launch.common.FabricLauncherBase;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -30,7 +29,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -130,7 +128,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 		@Nullable
 		public UnbakedModel loadModelFromResource(Identifier resourceId) {
-			return loadCustomModel((r) -> r.load(resourceId, this), modelResourceProviders, "resource provider");
+			return loadCustomModel((r) -> r.loadModelResource(resourceId, this), modelResourceProviders, "resource provider");
 		}
 
 		@Nullable
@@ -139,7 +137,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 				return loadModelFromResource(variantId);
 			} else {
 				ModelIdentifier modelId = (ModelIdentifier) variantId;
-				UnbakedModel model = loadCustomModel((r) -> r.load((ModelIdentifier) variantId, this), modelVariantProviders, "resource provider");
+				UnbakedModel model = loadCustomModel((r) -> r.loadModelVariant((ModelIdentifier) variantId, this), modelVariantProviders, "resource provider");
 				if (model != null) {
 					return model;
 				}

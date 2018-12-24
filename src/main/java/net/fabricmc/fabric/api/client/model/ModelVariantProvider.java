@@ -45,5 +45,5 @@ public interface ModelVariantProvider {
 	 * @return The loaded UnbakedModel, or null if this ModelVariantProvider doesn't handle a specific Identifier
 	 * (or if there was no error!).
 	 */
-	/* @Nullable */ UnbakedModel load(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException;
+	/* @Nullable */ UnbakedModel loadModelVariant(ModelIdentifier modelId, ModelProviderContext context) throws ModelProviderException;
 }
