@@ -1,7 +1,23 @@
+/*
+ * Copyright (c) 2016, 2017, 2018 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.mixin.client.itemgroup;
 
 import net.fabricmc.fabric.client.itemgroup.CreativeGuiExtensions;
-import net.fabricmc.fabric.client.itemgroup.FabricItemGroupUtils;
+import net.fabricmc.fabric.client.itemgroup.FabricCreativeGuiComponents;
 import net.minecraft.client.gui.ingame.AbstractPlayerInventoryGui;
 import net.minecraft.client.gui.ingame.CreativePlayerInventoryGui;
 import net.minecraft.container.Container;
@@ -27,7 +43,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 	}
 
 	@Override
-	public void fabric_NextPage() {
+	public void fabric_nextPage() {
 		if((currentPage + 1) * 12 > ItemGroup.GROUPS.length){
 			return;
 		}
@@ -36,7 +52,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 	}
 
 	@Override
-	public void fabric_PreviousPage() {
+	public void fabric_previousPage() {
 		if(currentPage == 0){
 			return;
 		}
@@ -45,16 +61,16 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 	}
 
 	@Override
-	public boolean fabric_isButtonVisible(FabricItemGroupUtils.Type type) {
+	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
 		return ItemGroup.GROUPS.length != 12;
 	}
 
 	@Override
-	public boolean fabric_isButtonEnabled(FabricItemGroupUtils.Type type) {
-		if(type == FabricItemGroupUtils.Type.NEXT){
+	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
+		if(type == FabricCreativeGuiComponents.Type.NEXT){
 			return !((currentPage + 1) * 12 > ItemGroup.GROUPS.length);
 		}
-		if(type == FabricItemGroupUtils.Type.PREVIOUS){
+		if(type == FabricCreativeGuiComponents.Type.PREVIOUS){
 			return currentPage != 0;
 		}
 		return false;
@@ -76,46 +92,46 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		int xpos = left + 171;
 		int ypos = top + 5;
 
-		addButton(new FabricItemGroupUtils.FabricItemGroupButtonWidget(1001, xpos, ypos, FabricItemGroupUtils.Type.PREVIOUS, this));
-		addButton(new FabricItemGroupUtils.FabricItemGroupButtonWidget(1001, xpos + 10, ypos, FabricItemGroupUtils.Type.NEXT, this));
+		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1001, xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
+		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1001, xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
 	}
 
 	@Inject(method = "setSelectedTab", at = @At("HEAD"), cancellable = true)
 	private void setSelectedTab(ItemGroup itemGroup, CallbackInfo info) {
-		if(!isGroupVisable(itemGroup)){
+		if(!isGroupVisible(itemGroup)){
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "method_2471", at = @At("HEAD"), cancellable = true)
 	private void method_2471(ItemGroup itemGroup, int mx, int my, CallbackInfoReturnable<Boolean> info){
-		if(!isGroupVisable(itemGroup)){
+		if(!isGroupVisible(itemGroup)){
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "isClickInTab", at = @At("HEAD"), cancellable = true)
 	private void isClickInTab(ItemGroup itemGroup, double mx, double my, CallbackInfoReturnable<Boolean> info){
-		if(!isGroupVisable(itemGroup)){
+		if(!isGroupVisible(itemGroup)){
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "method_2468", at = @At("HEAD"), cancellable = true)
 	private void method_2468(ItemGroup itemGroup, CallbackInfo info){
-		if(!isGroupVisable(itemGroup)){
+		if(!isGroupVisible(itemGroup)){
 			info.cancel();
 		}
 	}
 
-	private boolean isGroupVisable(ItemGroup itemGroup){
-		if(itemGroup == ItemGroup.SEARCH || itemGroup == ItemGroup.INVENTORY){
+	private boolean isGroupVisible(ItemGroup itemGroup){
+		if(FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)){
 			return true;
 		}
 		if(itemGroup.getId() < 12){
 			return currentPage == 0;
 		}
-		int page = (int) Math.floor((itemGroup.getId() - 12) / 10);
+		int page = (int) Math.floor((itemGroup.getId() - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
 		return currentPage == page + 1;
 
 	}
