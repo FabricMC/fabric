@@ -17,7 +17,9 @@
 package net.fabricmc.fabric.api.client.model;
 
 import com.google.common.collect.Lists;
+import net.fabricmc.fabric.impl.client.model.RenderCacheHelperImpl;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.BlockPos;
@@ -31,7 +33,7 @@ import java.util.function.Consumer;
 public interface DynamicBakedModel<RenderDataType> extends BakedModel {
 	@Override
 	default List<BakedQuad> getQuads(BlockState state, Direction face, Random random) {
-		return getQuads(null, state, face, random);
+		return getQuads(null, RenderCacheHelperImpl.getRenderLayer(state), state, face, random);
 	}
 
 	/**
@@ -45,5 +47,5 @@ public interface DynamicBakedModel<RenderDataType> extends BakedModel {
 	 */
 	RenderDataType getRenderData(BlockState state, RenderCacheView view, BlockPos pos);
 
-	List<BakedQuad> getQuads(/*@Nullable*/ RenderDataType dataType, BlockState state, Direction face, Random random);
+	List<BakedQuad> getQuads(/*@Nullable*/ RenderDataType dataType, BlockRenderLayer layer, BlockState state, Direction face, Random random);
 }

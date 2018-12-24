@@ -19,11 +19,13 @@ package net.fabricmc.fabric.mixin.client.rendercache;
 import net.fabricmc.fabric.api.client.model.DynamicBakedModel;
 import net.fabricmc.fabric.api.client.model.RenderCacheView;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
+import net.fabricmc.fabric.impl.client.model.RenderCacheHelperImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
+import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.crash.CrashException;
@@ -55,12 +57,13 @@ public class MixinBlockModelRenderer {
 
 			try {
 				Object renderData = ((DynamicBakedModel) model).getRenderData(state, (RenderCacheView) view, pos);
+				BlockRenderLayer layer = RenderCacheHelperImpl.getRenderLayer(state);
 
 				boolean result;
 				if (useAO) {
-					result = fabric_tesselateSmoothDynamic(renderData, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
+					result = fabric_tesselateSmoothDynamic(renderData, layer, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
 				} else {
-					result = fabric_tesselateFlatDynamic(renderData, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
+					result = fabric_tesselateFlatDynamic(renderData, layer, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
 				}
 				info.setReturnValue(result);
 				info.cancel();
@@ -74,12 +77,12 @@ public class MixinBlockModelRenderer {
 		}
 	}
 
-	public boolean fabric_tesselateSmoothDynamic(Object renderData, ExtendedBlockView view, DynamicBakedModel model, BlockState state, BlockPos pos, BufferBuilder builder, boolean allSides, Random rand, long seed) {
+	public boolean fabric_tesselateSmoothDynamic(Object renderData, BlockRenderLayer layer, ExtendedBlockView view, DynamicBakedModel model, BlockState state, BlockPos pos, BufferBuilder builder, boolean allSides, Random rand, long seed) {
 		// TODO NORELEASE: AmbientOcclusionCalculator is non-public... ugh...
-		return fabric_tesselateFlatDynamic(renderData, view, model, state, pos, builder, allSides, rand, seed);
+		return fabric_tesselateFlatDynamic(renderData, layer, view, model, state, pos, builder, allSides, rand, seed);
 	}
 
-	public boolean fabric_tesselateFlatDynamic(Object renderData, ExtendedBlockView view, DynamicBakedModel model, BlockState state, BlockPos pos, BufferBuilder builder, boolean allSides, Random rand, long seed) {
+	public boolean fabric_tesselateFlatDynamic(Object renderData, BlockRenderLayer layer, ExtendedBlockView view, DynamicBakedModel model, BlockState state, BlockPos pos, BufferBuilder builder, boolean allSides, Random rand, long seed) {
 		List<BakedQuad> quads;
 		BitSet bitSet = new BitSet(3);
 		boolean rendered = false;
@@ -87,7 +90,7 @@ public class MixinBlockModelRenderer {
 		for (Direction direction : fabric_directionValues) {
 			rand.setSeed(seed);
 			//noinspection unchecked
-			quads = model.getQuads(renderData, state, direction, rand);
+			quads = model.getQuads(renderData, layer, state, direction, rand);
 			if (!quads.isEmpty()) {
 				int brightness = state.getBlockBrightness(view, pos.offset(direction));
 				tesselateQuadsFlat(view, state, pos, brightness, false, builder, quads, bitSet);
@@ -97,7 +100,7 @@ public class MixinBlockModelRenderer {
 		}
 
 		//noinspection unchecked
-		quads = model.getQuads(renderData, state, null, rand);
+		quads = model.getQuads(renderData, layer, state, null, rand);
 		if (!quads.isEmpty()) {
 			tesselateQuadsFlat(view, state, pos, -1, true, builder, quads, bitSet);
 			rendered = true;
