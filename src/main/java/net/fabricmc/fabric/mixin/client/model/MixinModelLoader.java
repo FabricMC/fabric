@@ -49,7 +49,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 
 	}
 
-	@Inject(at = @At("HEAD"), method = "loadCustomModel", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
 	private void loadModel(Identifier id, CallbackInfo ci) {
 		UnbakedModel customModel = fabric_mlrLoaderInstance.loadCustomModel(id);
 		if (customModel != null) {

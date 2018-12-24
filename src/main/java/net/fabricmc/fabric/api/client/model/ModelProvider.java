@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.model;
 
-import com.sun.istack.internal.Nullable;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
@@ -49,5 +48,5 @@ public interface ModelProvider {
 	 * @return The loaded UnbakedModel, or null if this ModelProvider doesn't handle a specific Identifier
 	 * (or if there was no error!).
 	 */
-	@Nullable UnbakedModel load(Identifier id, Context context) throws ModelProviderException;
+	/* @Nullable */ UnbakedModel load(Identifier id, Context context) throws ModelProviderException;
 }
