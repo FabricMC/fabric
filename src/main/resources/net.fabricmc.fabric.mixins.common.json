@@ -26,6 +26,7 @@
     "registry.MixinServerPlayNetworkHandler",
     "registry.MixinWorldSaveHandler",
     "resources.MixinMinecraftServer",
+    "server.MixinMinecraftServer",
     "tools.MixinItemStack",
     "tools.MixinMiningToolItem"
   ],
