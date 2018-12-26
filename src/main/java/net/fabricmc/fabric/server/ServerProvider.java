@@ -41,6 +41,7 @@ public final class ServerProvider {
 	 * @param server
 	 */
 	public static void set(MinecraftServer server) {
-		ServerProvider.instance = server;
+		if (server == null || instance == null)
+			ServerProvider.instance = server;
 	}
 }
