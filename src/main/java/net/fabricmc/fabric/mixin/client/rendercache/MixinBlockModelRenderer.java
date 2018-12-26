@@ -37,9 +37,11 @@ import net.minecraft.world.ExtendedBlockView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
@@ -49,31 +51,25 @@ import java.util.Random;
 public class MixinBlockModelRenderer {
 	private static final Direction[] fabric_directionValues = Direction.values();
 
-	// TODO NORELEASE: should this be split into two hooks to arrow overriding AO check?
-	@Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "tesselateSmooth", cancellable = true)
 	public void tesselateSmoothRedir(ExtendedBlockView view, BakedModel model, BlockState state, BlockPos pos, BufferBuilder builder, boolean bool, Random random, long seed, CallbackInfoReturnable<Boolean> info) {
 		if (model instanceof DynamicBakedModel && view instanceof RenderCacheView) {
-			boolean useAO = MinecraftClient.isAmbientOcclusionEnabled() && state.getLuminance() == 0 && model.useAmbientOcclusion();
+			Object renderData = ((DynamicBakedModel) model).getRenderData(state, (RenderCacheView) view, pos);
+			BlockRenderLayer layer = RenderCacheHelperImpl.getRenderLayer(state);
+			boolean result = fabric_tesselateSmoothDynamic(renderData, layer, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
+			info.setReturnValue(result);
+			info.cancel();
+		}
+	}
 
-			try {
-				Object renderData = ((DynamicBakedModel) model).getRenderData(state, (RenderCacheView) view, pos);
-				BlockRenderLayer layer = RenderCacheHelperImpl.getRenderLayer(state);
-
-				boolean result;
-				if (useAO) {
-					result = fabric_tesselateSmoothDynamic(renderData, layer, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
-				} else {
-					result = fabric_tesselateFlatDynamic(renderData, layer, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
-				}
-				info.setReturnValue(result);
-				info.cancel();
-			} catch (Throwable t) {
-				CrashReport report = CrashReport.create(t, "Tesselating dynamic block model");
-				CrashReportElement reportElementModel = report.addElement("Dynamic block being tesselated");
-				CrashReportElement.addBlockInfo(reportElementModel, pos, state);
-				reportElementModel.add("Using AO", useAO);
-				throw new CrashException(report);
-			}
+	@Inject(at = @At("HEAD"), method = "tesselateFlat", cancellable = true)
+	public void tesselateFlatRedir(ExtendedBlockView view, BakedModel model, BlockState state, BlockPos pos, BufferBuilder builder, boolean bool, Random random, long seed, CallbackInfoReturnable<Boolean> info) {
+		if (model instanceof DynamicBakedModel && view instanceof RenderCacheView) {
+			Object renderData = ((DynamicBakedModel) model).getRenderData(state, (RenderCacheView) view, pos);
+			BlockRenderLayer layer = RenderCacheHelperImpl.getRenderLayer(state);
+			boolean result = fabric_tesselateFlatDynamic(renderData, layer, view, (DynamicBakedModel) model, state, pos, builder, bool, random, seed);
+			info.setReturnValue(result);
+			info.cancel();
 		}
 	}
 

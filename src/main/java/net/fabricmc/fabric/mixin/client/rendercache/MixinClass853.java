@@ -70,7 +70,7 @@ public abstract class MixinClass853 implements RenderCacheView {
 	protected abstract int method_3691(BlockPos blockPos_1);
 
 	@Override
-	public <T> T getCachedBlockEntityRenderData(BlockPos pos) {
+	public <T> T getCachedRenderData(BlockPos pos) {
 		//noinspection unchecked
 		return (T) fabric_renderDataObjects.get(pos);
 	}

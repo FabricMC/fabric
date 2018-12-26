@@ -19,8 +19,21 @@ package net.fabricmc.fabric.api.client.model;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
+/**
+ * BlockView-extending interface which additionally provides data gathered from
+ * {@link RenderDataProvidingBlockEntity}.
+ *
+ * This interface is only guaranteed to be present in the client environment.
+ */
 public interface RenderCacheView extends BlockView {
-	default <T> T getCachedBlockEntityRenderData(BlockPos pos) {
+	/**
+	 * Get cached rendering information from a block entity at a given position.
+	 *
+	 * @param pos The block position.
+	 * @param <T> The type of the data gathered from a given block position.
+	 * @return The data gathered from {@link RenderDataProvidingBlockEntity} at that position, or null.
+	 */
+	default <T> T getCachedRenderData(BlockPos pos) {
 		//noinspection unchecked
 		return (T) ((RenderDataProvidingBlockEntity) getBlockEntity(pos)).getRenderData();
 	}
