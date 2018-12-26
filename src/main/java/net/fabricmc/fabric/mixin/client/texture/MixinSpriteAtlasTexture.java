@@ -149,7 +149,7 @@ public abstract class MixinSpriteAtlasTexture {
 					return;
 				}
 			} catch (RuntimeException | IOException e) {
-				LOGGER.error("Unable to loadModelResource custom sprite {}: {}", sprite.getId(), e);
+				LOGGER.error("Unable to load custom sprite {}: {}", sprite.getId(), e);
 				info.setReturnValue(false);
 				info.cancel();
 				return;

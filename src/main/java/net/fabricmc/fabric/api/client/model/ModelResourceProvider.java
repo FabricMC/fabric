@@ -37,8 +37,8 @@ import net.minecraft.util.Identifier;
  * easily conflict with another OBJ loader unless you take some precautions,
  * for example:
  *
- * a) Only loadModelResource files with a mod-suffixed name, such as .architect.obj,
- * b) Only loadModelResource files from an explicit list of namespaces, registered elsewhere.
+ * a) Only load files with a mod-suffixed name, such as .architect.obj,
+ * b) Only load files from an explicit list of namespaces, registered elsewhere.
  */
 @FunctionalInterface
 public interface ModelResourceProvider {
