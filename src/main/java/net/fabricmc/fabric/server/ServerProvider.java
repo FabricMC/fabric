@@ -41,7 +41,8 @@ public final class ServerProvider {
 	 * @param server
 	 */
 	public static void set(MinecraftServer server) {
-		if (server == null || instance == null)
-			ServerProvider.instance = server;
+		if (server != null && instance != null)
+			throw new IllegalStateException("Only one instance of MinecraftServer is allowed");
+		ServerProvider.instance = server;
 	}
 }
