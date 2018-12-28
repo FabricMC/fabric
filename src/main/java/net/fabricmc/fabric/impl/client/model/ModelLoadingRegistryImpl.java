@@ -65,7 +65,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 				throw new RuntimeException("Called loadModel too late!");
 			}
 
-			return loader.getOrLoadModel(id);
+			return ((ModelLoaderHooks) loader).fabric_loadModel(id);
 		}
 
 		public void onModelPopulation(Consumer<ModelIdentifier> addModel) {

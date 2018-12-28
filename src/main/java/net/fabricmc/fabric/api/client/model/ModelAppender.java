@@ -23,5 +23,5 @@ import java.util.function.Consumer;
 
 @FunctionalInterface
 public interface ModelAppender {
-	void appendAll(ResourceManager manager, Consumer<ModelIdentifier> modelAdder);
+	void appendAll(ResourceManager manager, Consumer<ModelIdentifier> out);
 }

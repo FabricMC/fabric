@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.model;
 
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 import net.fabricmc.fabric.impl.client.model.ModelLoaderHooks;
 import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 import net.minecraft.client.render.model.ModelLoader;
@@ -29,6 +31,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Map;
+import java.util.Set;
+
 @Mixin(ModelLoader.class)
 public class MixinModelLoader implements ModelLoaderHooks {
 	// this is the first one
@@ -36,6 +41,10 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	public static ModelIdentifier MISSING;
 	@Shadow
 	private ResourceManager resourceContainer;
+	@Shadow
+	private Set<Identifier> field_5390;
+	@Shadow
+	private Map<Identifier, UnbakedModel> unbakedModels;
 
 	private ModelLoadingRegistryImpl.LoaderInstance fabric_mlrLoaderInstance;
 
@@ -49,8 +58,13 @@ public class MixinModelLoader implements ModelLoaderHooks {
 
 	}
 
+	@Shadow
+	private void loadModel(Identifier id) {
+
+	}
+
 	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
-	private void loadModel(Identifier id, CallbackInfo ci) {
+	private void loadModelHook(Identifier id, CallbackInfo ci) {
 		UnbakedModel customModel = fabric_mlrLoaderInstance.loadModelFromVariant(id);
 		if (customModel != null) {
 			putModel(id, customModel);
@@ -78,5 +92,15 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	@Override
 	public void fabric_addModel(ModelIdentifier id) {
 		addModel(id);
+	}
+
+	@Override
+	public UnbakedModel fabric_loadModel(Identifier id) {
+		if (!field_5390.add(id)) {
+			throw new IllegalStateException("Circular reference while loading " + id);
+		}
+		loadModel(id);
+		field_5390.remove(id);
+		return unbakedModels.get(id);
 	}
 }
