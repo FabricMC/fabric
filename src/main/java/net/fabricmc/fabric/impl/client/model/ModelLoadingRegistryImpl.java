@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.client.model;
 
 import com.google.common.collect.Lists;
-import com.sun.istack.internal.Nullable;
 import net.fabricmc.fabric.api.client.model.*;
 import net.fabricmc.loader.launch.common.FabricLauncherBase;
 import net.minecraft.client.render.model.ModelLoader;
@@ -126,12 +125,12 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 		}
 
-		@Nullable
+		/* @Nullable */
 		public UnbakedModel loadModelFromResource(Identifier resourceId) {
 			return loadCustomModel((r) -> r.loadModelResource(resourceId, this), modelResourceProviders, "resource provider");
 		}
 
-		@Nullable
+		/* @Nullable */
 		public UnbakedModel loadModelFromVariant(Identifier variantId) {
 			if (!(variantId instanceof ModelIdentifier)) {
 				return loadModelFromResource(variantId);
