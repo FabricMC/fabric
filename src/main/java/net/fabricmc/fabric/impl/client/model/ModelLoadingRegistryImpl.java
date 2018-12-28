@@ -70,7 +70,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 		public void onModelPopulation(Consumer<ModelIdentifier> addModel) {
 			for (ModelAppender appender : modelAppenders) {
-				appender.append(manager, addModel);
+				appender.appendAll(manager, addModel);
 			}
 		}
 

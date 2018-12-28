@@ -17,8 +17,20 @@
 package net.fabricmc.fabric.api.client.model;
 
 import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
+/**
+ * The model loading context used during model providing.
+ */
 public interface ModelProviderContext {
+	/**
+	 * Load a model using a {@link Identifier}, {@link ModelIdentifier}, ...
+	 *
+	 * Please note that the game engine keeps track of circular model loading calls on its own.
+	 *
+	 * @param id The model identifier.
+	 * @return The UnbakedModel. Can return a missing model if it's not present!
+	 */
 	UnbakedModel loadModel(Identifier id);
 }
