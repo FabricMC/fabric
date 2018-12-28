@@ -91,7 +91,7 @@ public final class FabricItemGroupBuilder {
 	 */
 	public ItemGroup build() {
 		((ItemGroupExtensions) ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
-		return new ItemGroup(ItemGroup.GROUPS.length - 1, identifier.toString()) {
+		return new ItemGroup(ItemGroup.GROUPS.length - 1, String.format("%s.%s", identifier.getNamespace(), identifier.getPath())) {
 			@Override
 			public ItemStack getIconItem() {
 				return stackSupplier.get();

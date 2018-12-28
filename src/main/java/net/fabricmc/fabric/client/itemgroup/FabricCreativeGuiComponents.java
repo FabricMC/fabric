@@ -66,6 +66,7 @@ public class FabricCreativeGuiComponents {
 			if (this.visible) {
 				MinecraftClient minecraftClient = MinecraftClient.getInstance();
 				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
+				GlStateManager.disableLighting();
 				GlStateManager.color4f(1F, 1F, 1F, 1F);
 				this.drawTexturedRect(this.x, this.y, (type == Type.NEXT ? 12 : 0), (enabled ? 0 : 12), 12, 12);
 
