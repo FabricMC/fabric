@@ -7,6 +7,7 @@
     "bugfix.MixinBiomeColors",
     "client.itemgroup.MixinItemGroup",
     "client.itemgroup.MixinCreativePlayerInventoryGui",
+    "client.model.MixinModelLoader",
     "client.render.MixinBlockColorMap",
     "client.render.MixinBlockEntityRenderManager",
     "client.render.MixinEntityRenderManager",
