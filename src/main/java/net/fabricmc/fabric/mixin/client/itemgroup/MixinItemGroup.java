@@ -17,23 +17,16 @@
 package net.fabricmc.fabric.mixin.client.itemgroup;
 
 import net.fabricmc.fabric.client.itemgroup.FabricCreativeGuiComponents;
-import net.fabricmc.fabric.client.itemgroup.ItemGroupExtensions;
 import net.minecraft.item.ItemGroup;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ItemGroup.class)
-public abstract class MixinItemGroup implements ItemGroupExtensions {
-
-	@Shadow
-	@Final
-	@Mutable
-	public static ItemGroup[] GROUPS;
+public abstract class MixinItemGroup {
 
 	@Shadow
 	public abstract int getId();
@@ -45,14 +38,6 @@ public abstract class MixinItemGroup implements ItemGroupExtensions {
 	@Final
 	private int id;
 
-	@Override
-	public void fabric_expandArray() {
-		ItemGroup[] tempGroups = GROUPS;
-		GROUPS = new ItemGroup[GROUPS.length + 1];
-		for (ItemGroup group : tempGroups) {
-			GROUPS[group.getId()] = group;
-		}
-	}
 
 	@Inject(method = "isTopRow", cancellable = true, at = @At("HEAD"))
 	private void isTopRow(CallbackInfoReturnable<Boolean> info) {

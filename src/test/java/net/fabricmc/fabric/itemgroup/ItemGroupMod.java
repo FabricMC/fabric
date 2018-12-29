@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.itemgroup;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
@@ -27,9 +27,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 
-public class ItemGroupMod implements ClientModInitializer {
+public class ItemGroupMod implements ModInitializer {
 	@Override
-	public void onInitializeClient() {
+	public void onInitialize() {
 		//This creates your standard Item Group
 		ItemGroup group = FabricItemGroupBuilder.build(new Identifier("fabric", "fabric_test_tab"), () -> new ItemStack(Items.IRON_CHESTPLATE));
 		Item testItem = new Item(new Item.Settings().itemGroup(group));
