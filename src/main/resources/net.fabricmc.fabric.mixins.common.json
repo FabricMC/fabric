@@ -17,6 +17,7 @@
     "events.server.MixinMinecraftServer",
     "events.tick.MixinMinecraftServer",
     "events.tick.MixinWorld",
+    "itemgroup.MixinItemGroup",
     "misc.MixinCrashReport",
     "networking.MixinServerPlayNetworkHandler",
     "networking.MixinSPacketCustomPayload",
