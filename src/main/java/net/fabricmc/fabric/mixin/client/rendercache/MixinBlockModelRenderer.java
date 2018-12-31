@@ -90,7 +90,6 @@ public class MixinBlockModelRenderer {
 			if (!quads.isEmpty()) {
 				int brightness = state.getBlockBrightness(view, pos.offset(direction));
 				tesselateQuadsFlat(view, state, pos, brightness, false, builder, quads, bitSet);
-				quads.clear();
 				rendered = true;
 			}
 		}

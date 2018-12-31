@@ -23,6 +23,10 @@ public class RenderCacheHelperImpl {
 	public static final ThreadLocal<BlockRenderLayer> DYNAMIC_MODEL_RENDER_LAYER = new ThreadLocal<>();
 
 	public static BlockRenderLayer getRenderLayer(BlockState state) {
+		if (state == null) {
+			return null;
+		}
+
 		BlockRenderLayer layer = DYNAMIC_MODEL_RENDER_LAYER.get();
 		return layer != null ? layer : state.getBlock().getRenderLayer();
 	}
