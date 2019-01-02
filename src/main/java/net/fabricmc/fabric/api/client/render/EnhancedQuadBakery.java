@@ -47,8 +47,7 @@ import net.minecraft.util.math.Direction;
  * <li>Repeat as needed with changes, optionally calling {@link #clearSettings()} first.</li>  
  * 
  */
-public final class EnhancedQuadBakery
-{
+public final class EnhancedQuadBakery {
     /**
      * Controls alpha and mip-map settings for each texture layer via BlockRenderLayer.<p>
      * 
@@ -56,18 +55,16 @@ public final class EnhancedQuadBakery
      * <li>If SOLID occurs it must be first. Only one SOLID layer is possible. (Anything else would be pointless.)</li>
      * <li>TRANSLUCENT layers must be "above" SOLID and CUTOUT layers.</li>
      */
-    public final void setRenderLayer(TextureDepth textureLayer, BlockRenderLayer layer)
-    {
+    public final void setRenderLayer(TextureDepth textureLayer, BlockRenderLayer layer) {
         
     }
     
     /**
-     * Enables or disables mip-mapping for the texture in the given layer.<p>
+     * Sets texture dept for next output quad. Changing does not clear values 
+     * for unused layers - higher layers not used simply won't be included in output.<p>
      * 
-     * Mip-map is enabled by default. Disabling is useful for textures with sharp
-     * edges or to prevent unwanted blending with background pixels.<p>
-     * 
-     * Applies to the next completed quad and remains in effect for all subsequent quads until changed.
+     * SINGLE by default. Change applies to the next output quad and remains 
+     * in effect for all subsequent quads until changed.
      */
     public final void setTextureDepth(TextureDepth textureDepth) {
         
@@ -210,8 +207,7 @@ public final class EnhancedQuadBakery
      * Returns the minimum array size to store this quad. Useful 
      * for {@link #outputBakedQuadData(int[], int)}
      */
-    public final int intSize()
-    {
+    public final int intSize() {
         return 0;
     }
     
@@ -263,8 +259,7 @@ public final class EnhancedQuadBakery
      * Models that do dynamic baking should use {@link #outputBakedQuadData(int[], int)}
      * and manage their own allocations.
      */
-    public final int[] outputBakedQuadData()
-    {
+    public final int[] outputBakedQuadData() {
         int[] result = new int[intSize()];
         outputBakedQuadData(result, 0);
         return result;
@@ -273,8 +268,7 @@ public final class EnhancedQuadBakery
     /**
      * Retrieves face direction from a baked quad. Returns null for quads not coplanar with a block face.
      */
-    public static Direction getBlockFace(int[] vertexData, int index)
-    {
+    public static Direction getBlockFace(int[] vertexData, int index) {
         // TODO Auto-generated method stub
         return null;
     }
@@ -283,8 +277,7 @@ public final class EnhancedQuadBakery
      * Returns bit flags position-aligned to BlockRenderLayer ordinals indicating
      * which block render layers are present in the given baked quad.
      */
-    public static int getExtantLayers(int[] vertexData, int index)
-    {
+    public static int getExtantLayers(int[] vertexData, int index) {
         // TODO Auto-generated method stub
         return 0;
     }
