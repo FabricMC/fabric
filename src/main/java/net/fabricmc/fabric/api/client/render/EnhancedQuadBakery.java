@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.api.client.render;
 
+import static net.minecraft.util.math.MathHelper.equalsApproximate;
+
 import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Direction.Axis;
 
 /**
  * Generates vertex data needed to implement EnhancedBakedQuad.<p>
@@ -71,7 +74,25 @@ public final class EnhancedQuadBakery {
      * 
      * Some restrictions apply:<p>
      * <li>If SOLID occurs it must be first. Only one SOLID layer is possible. (Anything else would be pointless.)</li>
-     * <li>TRANSLUCENT layers must be "above" SOLID and CUTOUT layers.</li>
+     * <li>TRANSLUCENT layers must be "above" SOLID and CUTOUT layers.</li><p>
+     * 
+     * Block Entity Renderer quads have an additional restriction:
+     * If TRANSLUCENT occurs, then SOLID must also occur (as the first layer).
+     * This is necessary because transparency sort will is not feasible for
+     * dynamic rendering, but translucent overlay textures on solid quads 
+     * can be rendered correctly without sorting. <p>
+     * 
+     * Lastly, note that CUTOUT textures are likely to cause Z fighting if a solid
+     * texture or other CUTOUT textures are also present. This class does not try
+     * to prevent Z-fighting by "bumping" overlay layers out because that approach
+     * is unreliable at longer render distances due to the single precision floating 
+     * point calculations used in the GPU.<p>
+     * 
+     * To avoid Z-fighting with multiple texture layers, use CUTOUT textures that do 
+     * not overlap, or use a SOLID base texture with one or two TRANSLUCENT overlay textures.<p>
+     * 
+     * Add-on rendering mods that implement blending in shaders may render SOLID-CUTOUT
+     * overlays correctly, but no check for that is made here.
      */
     public final void setRenderLayer(TextureDepth textureLayer, BlockRenderLayer renderLayer) {
 	Quad.setRenderLayer(textureLayer, renderLayer, vertexData, 0);
@@ -94,7 +115,7 @@ public final class EnhancedQuadBakery {
      * Looking at the front of your quad, positions 0-3 should go counterclockwise.
      */
     public final void position(int vertexIndex, float x, float y, float z) {
-	Vertex.position(vertexIndex, x, y, z, vertexData, 0);
+	Vertex.setPos(vertexIndex, x, y, z, vertexData, 0);
     }
 
     /**
@@ -102,7 +123,7 @@ public final class EnhancedQuadBakery {
      * or need vertex normals.  If omitted, computed face normal will be used.
      */
     public final void normal(int vertexIndex, float x, float y, float z) {
-	Vertex.normal(vertexIndex, x, y, z, vertexData, 0);
+	Vertex.setNormal(vertexIndex, x, y, z, vertexData, 0);
     }
 
     /**
@@ -115,6 +136,18 @@ public final class EnhancedQuadBakery {
     }
 
     /**
+     * Facing of this quad for texturing purposes. Has no
+     * effect on lighting, but is used to interpret texture rotation. <p>
+     * 
+     * Null by default.  If not assigned, will be inferred 
+     * from quad geometry.  This can be ambiguous for wedges,
+     * cylinders or other non-cubic shapes, so it best to assign it.
+     */
+    public final void setNominalFace(Direction face) {
+	Quad.setNominalFace(face, vertexData, 0);
+    }
+    
+    /**
      * Assigns given texture atlas sprite to texture layer. 
      * Textures outside the texture atlas are unsupported. 
      */
@@ -122,6 +155,46 @@ public final class EnhancedQuadBakery {
 	sprites[textureDepth.ordinal()] = sprite;
     }
 
+    /**
+     * Causes texture for the given layer to appear rotated,
+     * relative to nominal face. (See {@link #setNominalFace(Direction)})<p>
+     * 
+     * Conventions for what "unrotated" means are the same as 
+     * for conventional JSON models.<p>
+     *
+     * 0 = no rotation, 1 = 90 degrees, 2 = 180, 3 = 270.
+     * Values outside the 0-3 range wrap. (Does modulo for you.)
+     * are handled via modulo division.  Zero by default.
+     */
+    public final void setRotation(TextureDepth textureDepth, int rotation) {
+    	//TODO, plus better docs, & clear defaults
+    }
+    
+    /**
+     * When enabled, texture coordinate for the given layer are 
+     * assigned based on vertex position and uv coordinates set by
+     * {@link #uv(int, TextureDepth, float, float)} are ignored.<p>
+     * 
+     * Conventions for what "unrotated" means are the same as 
+     * for conventional JSON models.<p>
+     *
+     * 0 = no rotation, 1 = 90 degrees, 2 = 180, 3 = 270.
+     * Values outside the 0-3 range wrap. (Does modulo for you.)
+     * are handled via modulo division.  Zero by default.<p>
+     * 
+     * Enabled by default, because most models are textured this way.
+     * However, setting any UV coordinate via {@link #uv(int, TextureDepth, float, float)}
+     * disables this feature automatically for the involved layer.<p>
+     * 
+     * Always derives texture coordinates based on nominal face, even
+     * when the quad is not co-planar with that face, and the result is
+     * the same as if the quad were projected onto the nominal face, which
+     * is often the desired result.<p>
+     */
+    public final void enableLockUV(TextureDepth textureDepth, boolean enable) {
+    	//TODO, plus better docs, & clear defaults
+    }
+    
     /**
      * Assigns UV coordinates for the given vertex. UV coordinates should be in the 0-16
      * range per Minecraft convention. (Coordinates are relative to the sprite, not the texture atlas.  
@@ -131,11 +204,11 @@ public final class EnhancedQuadBakery {
       coordinates needed for rendering.
      */
     public final void uv(int vertexIndex, TextureDepth textureDepth, float u, float v) {
-	Vertex.uv(vertexIndex, textureDepth, u, v, vertexData, 0);
+	Vertex.setUV(vertexIndex, textureDepth, u, v, vertexData, 0);
     }
 
     /**
-     * Assigns color to vertex for the given texture layer.  Texture color will be multiplied
+     * Assigns color to vertex for the given texture layer.  Texture pixel colors will be multiplied
      * by this color.  The alpha component is only used for TRANSLUCENT layer rendering.<p>
      * 
      * Colors low byte should be red, followed by green and blue, and alpha as the high byte. 
@@ -144,7 +217,7 @@ public final class EnhancedQuadBakery {
      * Default value for all layers is white. (0xFFFFFFFF)
      */
     public final void color(int vertexIndex, TextureDepth textureDepth, int color) {
-	Vertex.color(vertexIndex, textureDepth, color, vertexData, 0);
+	Vertex.setColor(vertexIndex, textureDepth, color, vertexData, 0);
     }
 
     /**
@@ -301,36 +374,7 @@ public final class EnhancedQuadBakery {
      * Will throw an exception if the array is too small. Use {@link #intSize()} to check.
      */
     public final int outputBakedQuadData(int [] target, int start) {
-
-	// Will need to do the stuff below, with modifications and additions for the expanded feature set
-	return 0;
-	//    
-	//      public BakedQuad bake(Vector3f vector3f_1, Vector3f vector3f_2, ModelElementFace modelElementFace_1, Sprite sprite_1, Direction direction_1, ModelRotationContainer modelRotationContainer_1, @Nullable net.minecraft.client.render.model.json.ModelRotation modelRotation_1, boolean boolean_1) {
-	//          ModelElementTexture modelElementTexture_1 = modelElementFace_1.textureData;
-	//          if (modelRotationContainer_1.isUvLocked()) {
-	//             modelElementTexture_1 = this.method_3454(modelElementFace_1.textureData, direction_1, modelRotationContainer_1.getRotation());
-	//          }
-	//
-	//          float[] floats_1 = new float[modelElementTexture_1.uvs.length];
-	//          System.arraycopy(modelElementTexture_1.uvs, 0, floats_1, 0, floats_1.length);
-	//          float float_1 = (float)sprite_1.getWidth() / (sprite_1.getMaxU() - sprite_1.getMinU());
-	//          float float_2 = (float)sprite_1.getHeight() / (sprite_1.getMaxV() - sprite_1.getMinV());
-	//          float float_3 = 4.0F / Math.max(float_2, float_1);
-	//          float float_4 = (modelElementTexture_1.uvs[0] + modelElementTexture_1.uvs[0] + modelElementTexture_1.uvs[2] + modelElementTexture_1.uvs[2]) / 4.0F;
-	//          float float_5 = (modelElementTexture_1.uvs[1] + modelElementTexture_1.uvs[1] + modelElementTexture_1.uvs[3] + modelElementTexture_1.uvs[3]) / 4.0F;
-	//          modelElementTexture_1.uvs[0] = MathHelper.lerp(float_3, modelElementTexture_1.uvs[0], float_4);
-	//          modelElementTexture_1.uvs[2] = MathHelper.lerp(float_3, modelElementTexture_1.uvs[2], float_4);
-	//          modelElementTexture_1.uvs[1] = MathHelper.lerp(float_3, modelElementTexture_1.uvs[1], float_5);
-	//          modelElementTexture_1.uvs[3] = MathHelper.lerp(float_3, modelElementTexture_1.uvs[3], float_5);
-	//          int[] ints_1 = this.method_3458(modelElementTexture_1, sprite_1, direction_1, this.method_3459(vector3f_1, vector3f_2), modelRotationContainer_1.getRotation(), modelRotation_1, boolean_1);
-	//          Direction direction_2 = method_3467(ints_1);
-	//          System.arraycopy(floats_1, 0, modelElementTexture_1.uvs, 0, floats_1.length);
-	//          if (modelRotation_1 == null) {
-	//             this.method_3462(ints_1, direction_2);
-	//          }
-	//
-	//          return new BakedQuad(ints_1, modelElementFace_1.tintIndex, direction_2, sprite_1);
-	//       }
+	return Bakery.outputBakedQuadData(vertexData, 0, sprites, target, start);
     }
 
     /**
@@ -456,14 +500,15 @@ public final class EnhancedQuadBakery {
 	}
 
 	/**
-	 * Face used for texture semantics. Always non-null.
+	 * Face used for texture semantics.
 	 */
 	public static Direction getNominalFace(int[] vertexData, int index) {
-	    return DIRECTIONS_WITH_NONE[1 + NOMINAL_FACE.get(vertexData[index])];
+	    return DIRECTIONS_WITH_NONE[NOMINAL_FACE.get(vertexData[index])];
 	}
 
 	public static void setNominalFace(Direction face, int[] vertexData, int index) {
-	    vertexData[index] = ACTUAL_FACE.set(1 + face.ordinal(), vertexData[index]);
+	    int faceIndex = face == null ? 0 : face.ordinal() + 1;
+	    vertexData[index] = NOMINAL_FACE.set(faceIndex, vertexData[index]);
 	}
 
 	/**
@@ -555,58 +600,254 @@ public final class EnhancedQuadBakery {
 	static final int NORM_Y = 4;
 	static final int NORM_Z = 5;
 	static final int COLOR_0 = 6;
-	
+
 	// layer attributes
 	static final int LAYER_U = 0;
 	static final int LAYER_V = 1;
 	static final int LAYER_COLOR = 2;
-	
+
 	static final int FIXED_VERTEX_STRIDE = 6; // pos + normal
 	static final int FIXED_QUAD_STRIDE = FIXED_VERTEX_STRIDE * 4;
 	static final int LAYER_VERTEX_STRIDE = 3; // UV + color;
 	static final int LAYER_QUAD_STRIDE = LAYER_VERTEX_STRIDE * 4;
 	static final int FIRST_LAYER_INDEX = FIXED_VERTEX_STRIDE * 4 + Quad.HEADER_STRIDE;
-	
+
 	static final int MINIMUM_VERTEX_STRIDE = FIXED_VERTEX_STRIDE + LAYER_VERTEX_STRIDE;
 	static final int MAX_VERTEX_STRIDE = FIXED_VERTEX_STRIDE + LAYER_VERTEX_STRIDE;
 
 	public static final int MISSING_NORMAL = Float.floatToRawIntBits(Float.NaN);
-	
-	public static void position(int vertexIndex, float x, float y, float z, int[] vertexData, int index) {
+
+	public static void setPos(int vertexIndex, float x, float y, float z, int[] vertexData, int index) {
 	    final int baseIndex = index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE;
 	    vertexData[baseIndex + POS_X] = Float.floatToRawIntBits(x);
 	    vertexData[baseIndex + POS_Y] = Float.floatToRawIntBits(y);
 	    vertexData[baseIndex + POS_Z] = Float.floatToRawIntBits(z);
 	}
 
-	public static void normal(int vertexIndex, float x, float y, float z, int[] vertexData, int index) {
+	public static float getPosX(int vertexIndex, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + POS_X]);
+	}
+
+	public static float getPosY(int vertexIndex, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + POS_Y]);
+	}
+
+	public static float getPosZ(int vertexIndex, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + POS_Z]);
+	}
+
+	public static void setNormal(int vertexIndex, float x, float y, float z, int[] vertexData, int index) {
 	    final int baseIndex = index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE;
 	    vertexData[baseIndex + NORM_X] = Float.floatToRawIntBits(x);
 	    vertexData[baseIndex + NORM_Y] = Float.floatToRawIntBits(y);
 	    vertexData[baseIndex + NORM_Z] = Float.floatToRawIntBits(z);
 	}
-	
-	public static void clearNormals(int[] vertexData, int index) {
-	    for(int i = 0; i < 4; i++)
-		normal(i, MISSING_NORMAL, MISSING_NORMAL, MISSING_NORMAL, vertexData, index);
+
+	public static void setNormalIfMissing(int vertexIndex, float x, float y, float z, int[] vertexData, int index) {
+	    final int baseIndex = index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE;
+	    if(vertexData[baseIndex + NORM_X] == MISSING_NORMAL) {
+    	    vertexData[baseIndex + NORM_X] = Float.floatToRawIntBits(x);
+    	    vertexData[baseIndex + NORM_Y] = Float.floatToRawIntBits(y);
+    	    vertexData[baseIndex + NORM_Z] = Float.floatToRawIntBits(z);
+	    }
 	}
 	
-	public static void uv(int vertexIndex, TextureDepth textureDepth, float u, float v, int[] vertexData, int index) {
+	public static float getNormX(int vertexIndex, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + NORM_X]);
+	}
+
+	public static float getNormY(int vertexIndex, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + NORM_Y]);
+	}
+
+	public static float getNormZ(int vertexIndex, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + NORM_Z]);
+	}
+
+	public static void clearNormals(int[] vertexData, int index) {
+	    for(int i = 0; i < 4; i++)
+		setNormal(i, MISSING_NORMAL, MISSING_NORMAL, MISSING_NORMAL, vertexData, index);
+	}
+
+	public static void setUV(int vertexIndex, TextureDepth textureDepth, float u, float v, int[] vertexData, int index) {
 	    final int baseIndex = index + FIRST_LAYER_INDEX
-		+ LAYER_QUAD_STRIDE * textureDepth.ordinal()
-	    	+ LAYER_VERTEX_STRIDE * vertexIndex;
+		    + LAYER_QUAD_STRIDE * textureDepth.ordinal()
+		    + LAYER_VERTEX_STRIDE * vertexIndex;
 	    vertexData[baseIndex + LAYER_U] = Float.floatToRawIntBits(u);
 	    vertexData[baseIndex + LAYER_V] = Float.floatToRawIntBits(v);
 	}
-	
-	public static void color(int vertexIndex, TextureDepth textureDepth, int color, int[] vertexData, int index) {
+
+	public static float getU(int vertexIndex, TextureDepth textureDepth, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + FIRST_LAYER_INDEX + LAYER_U
+	                                           + LAYER_QUAD_STRIDE * textureDepth.ordinal() + LAYER_VERTEX_STRIDE * vertexIndex]);
+	}
+
+	public static float getV(int vertexIndex, TextureDepth textureDepth, int[] vertexData, int index) {
+	    return Float.intBitsToFloat(vertexData[index + FIRST_LAYER_INDEX + LAYER_V
+	                                           + LAYER_QUAD_STRIDE * textureDepth.ordinal() + LAYER_VERTEX_STRIDE * vertexIndex]);
+	}
+
+	public static void setColor(int vertexIndex, TextureDepth textureDepth, int color, int[] vertexData, int index) {
 	    final int colorIndex = index + FIRST_LAYER_INDEX + LAYER_COLOR
-		+ LAYER_QUAD_STRIDE * textureDepth.ordinal()
-	    	+ LAYER_VERTEX_STRIDE * vertexIndex;
+		    + LAYER_QUAD_STRIDE * textureDepth.ordinal()
+		    + LAYER_VERTEX_STRIDE * vertexIndex;
 	    vertexData[colorIndex] = color;
 	}
     }
 
     static final int MAX_TEXTURE_DEPTH = TextureDepth.values().length;
     private static final int MAX_QUAD_STRIDE = Quad.HEADER_STRIDE + Vertex.MAX_VERTEX_STRIDE * 4;
+
+    /**
+     * Holds the static methods used for baking.
+     */
+    static abstract class Bakery
+    {
+        static final float EPSILON_MIN = 1.0E-4F;
+        static final float EPSILON_MAX = 0.9999F;
+		/**
+		 * Underlying static implementation of {@link EnhancedQuadBakery#outputBakedQuadData(int[], int)}
+		 * Requires an array of sprites, because those aren't serialized with the vertex data.<p>
+		 * 
+		 * Does not change data in source array.
+		 */
+		static int outputBakedQuadData(int[] source, int sourceStart, Sprite[] sprites, int[] target, int targetStart) {
+
+		    // we don't want to change the source state, so start by copying
+		    // to target, and then use target for remaining operations.
+		    final int quadSize = Quad.quadSize(source, targetStart);
+		    System.arraycopy(source, sourceStart, target, targetStart, quadSize);
+		    
+		    final float x0 = Vertex.getPosX(0, target, targetStart);
+		    final float y0 = Vertex.getPosY(0, target, targetStart);
+		    final float z0 = Vertex.getPosZ(0, target, targetStart);
+		    final float x1 = Vertex.getPosX(1, target, targetStart);
+		    final float y1 = Vertex.getPosY(1, target, targetStart);
+		    final float z1 = Vertex.getPosZ(1, target, targetStart);
+		    final float x2 = Vertex.getPosX(2, target, targetStart);
+		    final float y2 = Vertex.getPosY(2, target, targetStart);
+		    final float z2 = Vertex.getPosZ(2, target, targetStart);
+		    final float x3 = Vertex.getPosX(3, target, targetStart);
+		    final float y3 = Vertex.getPosY(3, target, targetStart);
+		    final float z3 = Vertex.getPosZ(3, target, targetStart);
+		    
+		    // compute our face normal - verbose to put all here but allows us to use primitives only
+		    float normX, normY, normZ;
+		    {
+		    	final float dx0 = x0 - x1;
+		    	final float dy0 = y0 - y1;
+		    	final float dz0 = z0 - z1;
+		    	final float dx1 = x2 - x0;
+		    	final float dy1 = y2 - y0;
+		    	final float dz1 = z2 - z0;
+	
+		    	normX = dy0 * dz1 - dy1 * dz0;
+		    	normY = dx0 * dz1 - dx1 * dz0;
+		    	normZ = dx0 * dy1 - dx1 * dy0;
+	
+		    	float l = (float) Math.sqrt(normX * normX + normY * normY + normZ * normZ);
+		    	if(l != 0) {
+		    		normX /= l;
+		    		normY /= l;
+		    		normZ /= l;
+		    	}
+		    }
+	
+		    populateMissingNormals(target, targetStart, normX, normY, normZ);
+		    
+		    // Analyze geometry and plug nominal face if missing.
+		    // Other bits are needed during lighting for face culling and shading.
+		    
+		    Direction geometricFace = null;
+		    boolean isOnBlockFace = false;
+		    
+		    switch(longestAxis(normX, normY, normZ)) {
+	            case X:
+	            {
+	    		    final float minX = min(x0, x1, x2, x3);
+	    		    final float maxX = max(x0, x1, x2, x3);
+	                boolean onPlane = equalsApproximate(minX, maxX);
+	                if(normX > 0) {
+	                	geometricFace = Direction.EAST;
+	                    isOnBlockFace = onPlane && maxX >= EPSILON_MAX;
+	                } else {
+	                	geometricFace = Direction.WEST;
+	                    isOnBlockFace = onPlane && minX <= EPSILON_MIN;
+	                }
+	                break;
+	            }
+	            case Y: {
+	    		    final float minY = min(y0, y1, y2, y3);
+	    		    final float maxY = max(y0, y1, y2, y3);
+	                boolean onPlane = equalsApproximate(minY, maxY);
+	                if(normY > 0) {
+	                	geometricFace = Direction.UP;
+	                    isOnBlockFace = onPlane && maxY >= EPSILON_MAX;
+	                } else {
+	                	geometricFace = Direction.DOWN;
+	                    isOnBlockFace = onPlane && minY <= EPSILON_MIN;
+	                }
+	                break;
+	            }
+	            case Z: {
+	    		    final float minZ = min(z0, z1, z2, z3);
+	    		    final float maxZ = max(z0, z1, z2, z3);
+	                boolean onPlane = equalsApproximate(minZ, maxZ);
+	                if(normZ > 0) {
+	                	geometricFace = Direction.SOUTH;
+	                    isOnBlockFace = onPlane && maxZ >= EPSILON_MAX;
+	                } else {
+	                	geometricFace = Direction.NORTH;
+	                    isOnBlockFace = onPlane && minZ <= EPSILON_MIN;
+	                }
+	                break;
+	            }
+	        }
+		    
+		    Quad.setActulFace(isOnBlockFace ? geometricFace : null, target, targetStart);
+		    
+		    Direction nominalFace = Quad.getNominalFace(target, targetStart);
+		    if(nominalFace == null) {
+		    	nominalFace = geometricFace;
+		    	Quad.setNominalFace(nominalFace, target, targetStart);
+		    }
+	        
+		    //TODO, by layer...
+		    // handle lock UV
+		    // handle texture rotation
+		    // handle texture flip?
+		    // final interpolation
+		    // prevent bleeding / holes?
+
+	        return quadSize;
+		}
+		
+		static private Axis longestAxis(float faceNormX, float faceNormY, float faceNormZ) {
+		    Axis result = Axis.Y;
+		    float longest = Math.abs(faceNormY);
+	
+		    float a = Math.abs(faceNormX);
+		    if(a > longest)
+		    {
+			result = Axis.X;
+			longest = a;
+		    }
+	
+		    return Math.abs(faceNormZ) > longest
+			    ? Axis.Z : result;
+		}
+	
+		static private void populateMissingNormals(int[] target, int targetStart, float normX, float normY, float normZ) {
+		    for(int i = 0; i < 4; i++)
+		    	Vertex.setNormalIfMissing(i, normX, normY, normZ, target, targetStart);
+		}
+		
+		static private float min(float a, float b, float c, float d) {
+			return Math.min(Math.min(a, b), Math.min(d, c));
+		}
+		
+		static private float max(float a, float b, float c, float d) {
+			return Math.max(Math.max(a, b), Math.max(d, c));
+		}
+    }
 }
