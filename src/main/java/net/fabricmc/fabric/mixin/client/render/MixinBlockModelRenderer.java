@@ -90,10 +90,10 @@ public class MixinBlockModelRenderer
             final EnhancedBakedQuad quad = quads.next();
             final int[] vertexData = quad.getVertexData();
             final int index = quad.firstVertexIndex();
-            final Direction blockFace = EnhancedQuadBakery.getBlockFace(vertexData, index);
+            final Direction blockFace = EnhancedQuadBakery.Quad.getActualFace(vertexData, index);
             if(blockFace == null || data.shouldOutputSide(blockFace))
             {
-                final int quadLayerFlags = EnhancedQuadBakery.getExtantLayers(vertexData, index);
+                final int quadLayerFlags = EnhancedQuadBakery.Quad.getExtantLayers(vertexData, index);
                 resultBitFlags |= quadLayerFlags;
                 initializedFlags = intializeBuffersAsNeeded(initializedFlags, quadLayerFlags, access, blockPos);
                 tesselateEnhancedQuad(quad, vertexData, index, builders, data);
