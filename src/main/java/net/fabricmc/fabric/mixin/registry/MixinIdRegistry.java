@@ -174,4 +174,9 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			initialIdMap = null;
 		}
 	}
+
+	@Override
+	public int nextId() {
+		return nextId;
+	}
 }

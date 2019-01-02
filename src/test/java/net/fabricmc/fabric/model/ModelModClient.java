@@ -98,7 +98,7 @@ public class ModelModClient implements ClientModInitializer {
 							}
 
 							@Override
-							public ModelTransformation getTransformations() {
+							public ModelTransformation getTransformation() {
 								return ModelTransformation.ORIGIN;
 							}
 

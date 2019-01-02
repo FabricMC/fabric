@@ -40,9 +40,9 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	@Shadow
 	public static ModelIdentifier MISSING;
 	@Shadow
-	private ResourceManager resourceContainer;
+	private ResourceManager resourceManager;
 	@Shadow
-	private Set<Identifier> field_5390;
+	private Set<Identifier> modelsToLoad;
 	@Shadow
 	private Map<Identifier, UnbakedModel> unbakedModels;
 
@@ -78,7 +78,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 			//noinspection RedundantCast
 			ModelLoaderHooks hooks = (ModelLoaderHooks) (Object) this;
 
-			fabric_mlrLoaderInstance = ModelLoadingRegistryImpl.begin((ModelLoader) (Object) this, resourceContainer);
+			fabric_mlrLoaderInstance = ModelLoadingRegistryImpl.begin((ModelLoader) (Object) this, resourceManager);
 			fabric_mlrLoaderInstance.onModelPopulation(hooks::fabric_addModel);
 		}
 	}
@@ -96,11 +96,11 @@ public class MixinModelLoader implements ModelLoaderHooks {
 
 	@Override
 	public UnbakedModel fabric_loadModel(Identifier id) {
-		if (!field_5390.add(id)) {
+		if (!modelsToLoad.add(id)) {
 			throw new IllegalStateException("Circular reference while loading " + id);
 		}
 		loadModel(id);
-		field_5390.remove(id);
+		modelsToLoad.remove(id);
 		return unbakedModels.get(id);
 	}
 }

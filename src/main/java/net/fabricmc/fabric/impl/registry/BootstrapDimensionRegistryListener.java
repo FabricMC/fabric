@@ -14,13 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.registry;
+package net.fabricmc.fabric.impl.registry;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import net.fabricmc.fabric.impl.dimension.DimensionTypeExtensions;
+import net.fabricmc.fabric.registry.RegistryListener;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.dimension.DimensionType;
 
-public interface RemappableRegistry {
-	void remap(Object2IntMap<Identifier> idMap, boolean reallocateMissingEntries) throws RemapException;
-	void unmap() throws RemapException;
-	int nextId();
+public class BootstrapDimensionRegistryListener implements RegistryListener<DimensionType> {
+
+	@Override
+	public void beforeRegistryRegistration(Registry<DimensionType> registry, int id, Identifier identifier, DimensionType object, boolean isNew) {
+		DimensionTypeExtensions extensions = (DimensionTypeExtensions) object;
+		extensions.fabric_setId(id);
+	}
 }

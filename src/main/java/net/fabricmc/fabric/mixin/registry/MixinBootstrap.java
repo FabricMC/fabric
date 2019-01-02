@@ -16,13 +16,8 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
+import net.fabricmc.fabric.impl.registry.*;
 import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.registry.RegistrySyncManager;
-import net.fabricmc.fabric.impl.registry.BootstrapBiomeRegistryListener;
-import net.fabricmc.fabric.impl.registry.BootstrapBlockRegistryListener;
-import net.fabricmc.fabric.impl.registry.BootstrapFluidRegistryListener;
-import net.fabricmc.fabric.impl.registry.BootstrapItemRegistryListener;
 import net.minecraft.Bootstrap;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -33,6 +28,7 @@ import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -47,10 +43,12 @@ public class MixinBootstrap {
 		Object o1 = Blocks.AIR;
 		Object o3 = Fluids.EMPTY;
 		Object o2 = Items.AIR;
+		Object o4 = DimensionType.THE_END;
 
 		((ListenableRegistry<Biome>) Registry.BIOME).registerListener(new BootstrapBiomeRegistryListener());
 		((ListenableRegistry<Block>) Registry.BLOCK).registerListener(new BootstrapBlockRegistryListener());
 		((ListenableRegistry<Fluid>) Registry.FLUID).registerListener(new BootstrapFluidRegistryListener());
 		((ListenableRegistry<Item>) Registry.ITEM).registerListener(new BootstrapItemRegistryListener());
+		((ListenableRegistry<DimensionType>) Registry.DIMENSION).registerListener(new BootstrapDimensionRegistryListener());
 	}
 }

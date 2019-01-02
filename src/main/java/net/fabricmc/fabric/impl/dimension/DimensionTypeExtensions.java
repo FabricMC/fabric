@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.registry;
+package net.fabricmc.fabric.impl.dimension;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.util.Identifier;
+public interface DimensionTypeExtensions {
 
-public interface RemappableRegistry {
-	void remap(Object2IntMap<Identifier> idMap, boolean reallocateMissingEntries) throws RemapException;
-	void unmap() throws RemapException;
-	int nextId();
+	int fabric_getId();
+
+	void fabric_setId(int id);
+
 }
