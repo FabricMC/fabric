@@ -328,24 +328,31 @@ public final class EnhancedQuadBakery {
 	 * Will be full brightness (0xFFFFFF) by default.<br>
 	 * Changes apply to all subsequent vertices until changed.<p>
 	 */
-	public final void setEmissiveLightMap(int lightRGB) {
-		Quad.setEmissiveLightMap(lightRGB, vertexData, 0);
+	public final void setEmissiveLightMap(int vertexIndex, int lightRGB) {
+		Vertex.setEmissiveLightMap(vertexIndex, lightRGB, vertexData, 0);
 	}
 
 	/**
 	 * Version of {@link #setEmissiveLightMap(int)} that accepts unpacked int components.
 	 */
-	public final void setEmissiveLightMap(int red, int green, int blue) {
-		setEmissiveLightMap(red | (green << 8) | (blue << 16));
+	public final void setEmissiveLightMap(int vertexIndex, int red, int green, int blue) {
+		setEmissiveLightMap(vertexIndex, red | (green << 8) | (blue << 16));
 	}
 
 	/**
 	 * Version of {@link #setEmissiveLightMap(int)} that accepts unpacked float components.
 	 */
-	public final void setEmissiveLightMap(float red, float green, float blue) {
-		setEmissiveLightMap(Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255));
+	public final void setEmissiveLightMap(int vertexIndex, float red, float green, float blue) {
+		setEmissiveLightMap(vertexIndex, Math.round(red * 255), Math.round(green * 255), Math.round(blue * 255));
 	}
 
+	/**
+	 * Reset all lightmaps to default (full brightness).
+	 */
+	public final void clearEmissiveLightMap() {
+		Vertex.clearLightmaps(vertexData, 0);
+	}
+	
 	/**
 	 * Returns all settings to default values.
 	 */
@@ -355,7 +362,7 @@ public final class EnhancedQuadBakery {
 		sprites[2] = null;
 		textureBits = Texture.DEFAULT_TEXTURE_BITS;
 		vertexData[0] = Quad.DEFAULT_CONTROL_BITS;
-		setEmissiveLightMap(0xFFFFFF);
+		clearEmissiveLightMap();
 		clearNormals();
 	}
 
@@ -461,8 +468,7 @@ public final class EnhancedQuadBakery {
 		}
 
 		static final int CONTROL_FLAGS = 0;
-		static final int LIGHTMAP = 1;
-		static final int HEADER_STRIDE = 2;
+		static final int HEADER_STRIDE = 1;
 
 		/** Directions by 1-based ordinal.  For efficient lookup. */
 		private static final Direction[] DIRECTIONS_WITH_NONE = new Direction[7];
@@ -472,14 +478,6 @@ public final class EnhancedQuadBakery {
 
 		/** Local copy to avoid defensive array copying by JVM at run time due to concurrency. */
 		private static final BlockRenderLayer[] LAYERS = BlockRenderLayer.values();
-
-		public static void setEmissiveLightMap(int lightRGB, int[] vertexData, int index) {
-			vertexData[LIGHTMAP + index] = lightRGB;
-		}
-
-		public static int getEmissiveLightMap(int[] vertexData, int index) {
-			return vertexData[LIGHTMAP + index];
-		}
 
 		public static BlockRenderLayer getRenderLayer(TextureDepth textureLayer, int[] vertexData, int index) {
 			return LAYERS[RENDER_LAYER[textureLayer.ordinal()].get(vertexData[index])];
@@ -606,14 +604,15 @@ public final class EnhancedQuadBakery {
 		static final int NORM_X = 3;
 		static final int NORM_Y = 4;
 		static final int NORM_Z = 5;
-		static final int COLOR_0 = 6;
+		static final int LIGHTMAP = 6;
+
 
 		// layer attributes
 		static final int LAYER_U = 0;
 		static final int LAYER_V = 1;
 		static final int LAYER_COLOR = 2;
 
-		static final int FIXED_VERTEX_STRIDE = 6; // pos + normal
+		static final int FIXED_VERTEX_STRIDE = 7; // pos + normal + lightmap
 		static final int FIXED_QUAD_STRIDE = FIXED_VERTEX_STRIDE * 4;
 		static final int LAYER_VERTEX_STRIDE = 3; // UV + color;
 		static final int LAYER_QUAD_STRIDE = LAYER_VERTEX_STRIDE * 4;
@@ -674,6 +673,19 @@ public final class EnhancedQuadBakery {
 		public static void clearNormals(int[] vertexData, int index) {
 			for(int i = 0; i < 4; i++)
 				setNormal(i, MISSING_NORMAL, MISSING_NORMAL, MISSING_NORMAL, vertexData, index);
+		}
+
+		public static void setEmissiveLightMap(int vertexIndex, int lightRGB, int[] vertexData, int index) {
+			vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + LIGHTMAP] = lightRGB;
+		}
+
+		public static int getEmissiveLightMap(int vertexIndex, int[] vertexData, int index) {
+			return vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + LIGHTMAP];
+		}
+		
+		public static void clearLightmaps(int[] vertexData, int index) {
+			for(int i = 0; i < 4; i++)
+				setEmissiveLightMap(i, 0xFFFFFF, vertexData, index);
 		}
 
 		public static void setUV(int vertexIndex, TextureDepth textureDepth, float u, float v, int[] vertexData, int index) {
@@ -831,46 +843,45 @@ public final class EnhancedQuadBakery {
 			boolean isOnBlockFace = false;
 
 			switch(longestAxis(normX, normY, normZ)) {
-			case X:
-			{
-				final float minX = min(x0, x1, x2, x3);
-				final float maxX = max(x0, x1, x2, x3);
-				boolean onPlane = equalsApproximate(minX, maxX);
-				if(normX > 0) {
-					geometricFace = Direction.EAST;
-					isOnBlockFace = onPlane && maxX >= EPSILON_MAX;
-				} else {
-					geometricFace = Direction.WEST;
-					isOnBlockFace = onPlane && minX <= EPSILON_MIN;
+				case X: {
+					final float minX = min(x0, x1, x2, x3);
+					final float maxX = max(x0, x1, x2, x3);
+					boolean onPlane = equalsApproximate(minX, maxX);
+					if(normX > 0) {
+						geometricFace = Direction.EAST;
+						isOnBlockFace = onPlane && maxX >= EPSILON_MAX;
+					} else {
+						geometricFace = Direction.WEST;
+						isOnBlockFace = onPlane && minX <= EPSILON_MIN;
+					}
+					break;
 				}
-				break;
-			}
-			case Y: {
-				final float minY = min(y0, y1, y2, y3);
-				final float maxY = max(y0, y1, y2, y3);
-				boolean onPlane = equalsApproximate(minY, maxY);
-				if(normY > 0) {
-					geometricFace = Direction.UP;
-					isOnBlockFace = onPlane && maxY >= EPSILON_MAX;
-				} else {
-					geometricFace = Direction.DOWN;
-					isOnBlockFace = onPlane && minY <= EPSILON_MIN;
+				case Y: {
+					final float minY = min(y0, y1, y2, y3);
+					final float maxY = max(y0, y1, y2, y3);
+					boolean onPlane = equalsApproximate(minY, maxY);
+					if(normY > 0) {
+						geometricFace = Direction.UP;
+						isOnBlockFace = onPlane && maxY >= EPSILON_MAX;
+					} else {
+						geometricFace = Direction.DOWN;
+						isOnBlockFace = onPlane && minY <= EPSILON_MIN;
+					}
+					break;
 				}
-				break;
-			}
-			case Z: {
-				final float minZ = min(z0, z1, z2, z3);
-				final float maxZ = max(z0, z1, z2, z3);
-				boolean onPlane = equalsApproximate(minZ, maxZ);
-				if(normZ > 0) {
-					geometricFace = Direction.SOUTH;
-					isOnBlockFace = onPlane && maxZ >= EPSILON_MAX;
-				} else {
-					geometricFace = Direction.NORTH;
-					isOnBlockFace = onPlane && minZ <= EPSILON_MIN;
+				case Z: {
+					final float minZ = min(z0, z1, z2, z3);
+					final float maxZ = max(z0, z1, z2, z3);
+					boolean onPlane = equalsApproximate(minZ, maxZ);
+					if(normZ > 0) {
+						geometricFace = Direction.SOUTH;
+						isOnBlockFace = onPlane && maxZ >= EPSILON_MAX;
+					} else {
+						geometricFace = Direction.NORTH;
+						isOnBlockFace = onPlane && minZ <= EPSILON_MIN;
+					}
+					break;
 				}
-				break;
-			}
 			}
 
 			Quad.setActulFace(isOnBlockFace ? geometricFace : null, target, targetStart);
