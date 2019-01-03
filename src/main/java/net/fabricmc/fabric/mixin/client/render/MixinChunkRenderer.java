@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.fabricmc.fabric.api.client.render.FabricVertexLighter;
 import net.minecraft.class_852;
 import net.minecraft.class_853;
 import net.minecraft.block.Block;
@@ -41,13 +42,20 @@ public class MixinChunkRenderer
 {
     /**
      * Gives enhanced block tesselate access to stuff it needs layers/flags when it encounters an enhanced model.
-     * Ugly and probably slow, but minimally invasive.
+     * Ugly and probably slow, but minimally invasive.<p>
+     * 
+     * Also shares ThreadLocal with lighter, vs having a separate ThreadLocal.
+     * 
+     * TODO: look for an instance that will reliably be in our render thread and mixin there,
+     *  vs. a threadlocal lookup. Seems like any of our arguments might suffice.
      */
     static class ChunkRenderAccess
     {
         ChunkRenderer chunkRenderer;
         ChunkRenderData chunkRenderData;
         ChunkRenderDataTask chunkRenderDataTask;
+        FabricVertexLighter lighter;
+        
         boolean[] resultFlags;
         
         void prepare(ChunkRenderer chunkRenderer, ChunkRenderData chunkRenderData, ChunkRenderDataTask chunkRenderDataTask, boolean[] resultFlags) {

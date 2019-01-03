@@ -97,7 +97,7 @@ public class MixinBlockModelRenderer
                 final int quadLayerFlags = FabricQuadBakery.Quad.getExtantLayers(vertexData, index);
                 resultBitFlags |= quadLayerFlags;
                 initializedFlags = intializeBuffersAsNeeded(initializedFlags, quadLayerFlags, access, blockPos);
-                tesselateEnhancedQuad(quad, vertexData, index, builders, data);
+                access.lighter.lightFabricBlockModel(quad, vertexData, index, builders, data);
             }
         }
         
@@ -107,22 +107,6 @@ public class MixinBlockModelRenderer
         access.clear();
         
         return (resultBitFlags & (1 << primaryLayer.ordinal())) != 0;
-    }
-    
-    /**
-     * Outputs one or more quads to appropriate buffers with lighting and coloring
-     * based on metadata saved at bake time. Handles randomized position offsets 
-     * and block tinting as needed. Block tint is per-quad based on enable flags in metadata.
-     * 
-     * Diffuse shading honors vertex normals to allow for non-cubic geometry.
-     * Likewise, AO calculations are enhanced for same purpose. (Vanilla AO doesn't handle
-     * triangles or non-square quads.) 
-     * 
-     * Face culling has already happened before this point.
-     */
-    private static void tesselateEnhancedQuad(FabricBakedQuad quad, int[] vertexData, int index, BlockLayeredBufferBuilder builders, ModelData data) {
-        // TODO - MAGIC HAPPENS HERE
-        
     }
 
     /** 
@@ -164,7 +148,7 @@ public class MixinBlockModelRenderer
     
     private static final ThreadLocal<ModelData> MODEL_DATA = ThreadLocal.withInitial(ModelData::new);
     
-    private static class ModelData implements RenderCacheView {
+    public static class ModelData implements RenderCacheView {
         BlockPos pos;
         ExtendedBlockView world;
         BlockState blockState;
