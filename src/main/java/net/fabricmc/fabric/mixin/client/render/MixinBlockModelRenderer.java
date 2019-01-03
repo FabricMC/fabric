@@ -23,9 +23,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.api.client.model.BlockModelData;
 import net.fabricmc.fabric.api.client.model.FabricBakedModel;
 import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
+import net.fabricmc.fabric.api.client.model.RenderCacheView;
 import net.fabricmc.fabric.api.client.render.FabricQuadBakery;
 import net.fabricmc.fabric.mixin.client.render.MixinChunkRenderer.ChunkRenderAccess;
 import net.minecraft.block.Block;
@@ -37,6 +37,7 @@ import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -84,7 +85,7 @@ public class MixinBlockModelRenderer
         int resultBitFlags = initializedFlags;
         
         final ModelData data = MODEL_DATA.get().prepare(blockPos, blockView, blockState, renderSeed);
-        final List<FabricBakedQuad> quads = bakedModel.getBlockQuads(data);
+        final List<FabricBakedQuad> quads = bakedModel.getFabricBlockQuads(data, blockState, blockPos, data.random);
         final int limit = quads.size();
         for(int i = 0; i < limit; i++) {
             final FabricBakedQuad quad = quads.get(i);
@@ -163,14 +164,11 @@ public class MixinBlockModelRenderer
     
     private static final ThreadLocal<ModelData> MODEL_DATA = ThreadLocal.withInitial(ModelData::new);
     
-    private static class ModelData implements BlockModelData {
+    private static class ModelData implements RenderCacheView {
         BlockPos pos;
         ExtendedBlockView world;
         BlockState blockState;
-        final Random rand = new Random();
-        
-        protected BlockEntity blockEntity;
-        protected boolean needsBlockEntityLookup;
+        final Random random = new Random();
         
         protected int sideLookupCompletionFlags = 0;
         protected int sideLookupResultFlags = 0;
@@ -184,9 +182,7 @@ public class MixinBlockModelRenderer
             this.pos = pos;
             this.world = world;
             this.blockState = blockState;
-            this.blockEntity = null;
-            this.rand.setSeed(randomSeed);
-            needsBlockEntityLookup = true;
+            this.random.setSeed(randomSeed);
             
             if(blockState.getBlock().getOffsetType() == OffsetType.NONE) {
                 offsetX = 0;
@@ -202,34 +198,6 @@ public class MixinBlockModelRenderer
             
             return this;
         }
-
-        @Override
-        public final BlockPos pos() {
-            return this.pos;
-        }
-
-        @Override
-        public final ExtendedBlockView world() {
-            return world;
-        }
-
-        @Override
-        public final BlockState blockState() {
-            return blockState;
-        }
-
-        @Override
-        public final BlockEntity blockEntity() {
-            // TODO: retrieve from ChunkRenderer hashMap directly if faster
-            if(this.needsBlockEntityLookup)
-                blockEntity = world.getBlockEntity(pos);
-            return blockEntity;
-        }
-
-        @Override
-        public final Random random() {
-            return rand;
-        }
         
         final boolean shouldOutputSide(Direction side) {
             final int mask = 1 << (side.ordinal());
@@ -243,5 +211,27 @@ public class MixinBlockModelRenderer
             else
                 return (sideLookupResultFlags & mask) != 0;
         }
+
+		@Override
+		public BlockEntity getBlockEntity(BlockPos var1) {
+			// always null at render time
+			return null;
+		}
+
+		@Override
+		public BlockState getBlockState(BlockPos pos) {
+			return world.getBlockState(pos);
+		}
+
+		@Override
+		public FluidState getFluidState(BlockPos pos) {
+			return world.getFluidState(pos);
+		}
+
+		@Override
+		public <T> T getCachedRenderData() {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
 }
