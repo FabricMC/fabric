@@ -30,41 +30,41 @@ package net.fabricmc.fabric.api.client.model;
  * Vertex data <em>must</em> be packed via the FabricQuadBakery.</li>
  */
 public interface FabricBakedQuad {
-    
-    /**
-     * Serves the same purpose as BakedQuad.getVertexData() but
-     * data must be baked with FabricQuadBakery.<p>
-     * 
-     * The other significant difference is that quad data does not 
-     * need to start at array index 0. Consumer will look for vertex
-     * data starting at {@link #firstVertexIndex()}.  This can improve
-     * efficiency for implementations that keep multiple quads in a single array.
-     */
-    int[] getVertexData();
-    
-    /**
-     * If your vertex data is in a shared array, override this to provide
-     * the start index instead of copying your data to a transfer array.
-     */
-    default int firstVertexIndex() {
-        return 0;
-    }
-    
-    /**
-     * Same as BakedQuad.hasColor() but will only apply to texture
-     * layers that are configured to use it.  Configuration is
-     * packed in baked vertex data by QuadTailor.
-     */
-    default boolean hasColor() {
-       return getColorIndex() != -1;
-    }
 
-    /**
-     * Same as BakedQuad.getColorIndex() but will only apply to texture
-     * layers that are configured to use it.  Configuration is
-     * packed in baked vertex data by QuadTailor.
-     */
-    default int getColorIndex() {
-       return -1;
-    }
+	/**
+	 * Serves the same purpose as BakedQuad.getVertexData() but
+	 * data must be baked with FabricQuadBakery.<p>
+	 * 
+	 * The other significant difference is that quad data does not 
+	 * need to start at array index 0. Consumer will look for vertex
+	 * data starting at {@link #firstVertexIndex()}.  This can improve
+	 * efficiency for implementations that keep multiple quads in a single array.
+	 */
+	int[] getVertexData();
+
+	/**
+	 * If your vertex data is in a shared array, override this to provide
+	 * the start index instead of copying your data to a transfer array.
+	 */
+	default int firstVertexIndex() {
+		return 0;
+	}
+
+	/**
+	 * Same as BakedQuad.hasColor() but will only apply to texture
+	 * layers that are configured to use it.  Configuration is
+	 * packed in baked vertex data by QuadTailor.
+	 */
+	default boolean hasColor() {
+		return getColorIndex() != -1;
+	}
+
+	/**
+	 * Same as BakedQuad.getColorIndex() but will only apply to texture
+	 * layers that are configured to use it.  Configuration is
+	 * packed in baked vertex data by QuadTailor.
+	 */
+	default int getColorIndex() {
+		return -1;
+	}
 }

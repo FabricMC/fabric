@@ -201,14 +201,14 @@ public final class FabricQuadBakery {
 	public final void enableFlipU(TextureDepth textureDepth, boolean enable) {
 		textureBits = Texture.enableFlipU(textureBits, textureDepth, enable);
 	}
-	
+
 	/**
 	 * Same as {@link #enableFlipU(TextureDepth, boolean)} but for V coordinate.
 	 */
 	public final void enableFlipV(TextureDepth textureDepth, boolean enable) {
 		textureBits = Texture.enableFlipV(textureBits, textureDepth, enable);
 	}
-	
+
 	/**
 	 * UV coordinates by default are assumed to be 0-16 scale for consistency
 	 * with conventional Minecraft model format. This is scaled to 0-1 during
@@ -220,7 +220,7 @@ public final class FabricQuadBakery {
 	public final void enableUVScale(TextureDepth textureDepth, boolean enable) {
 		textureBits = Texture.enableUVScale(textureBits, textureDepth, enable);
 	}
-	
+
 	/**
 	 * Disables all texture transformation for the given layer and uses provided
 	 * texture coordinates as-is. This means caller is responsible for handling 
@@ -242,7 +242,7 @@ public final class FabricQuadBakery {
 	 */
 	public final void uv(int vertexIndex, TextureDepth textureDepth, float u, float v) {
 		Vertex.setUV(vertexIndex, textureDepth, u, v, vertexData, 0);
-		
+
 		// implies we don't want to derive uv from geometry
 		enableLockUV(textureDepth, false);
 	}
@@ -391,7 +391,7 @@ public final class FabricQuadBakery {
 	public final void clearEmissiveLightMap() {
 		Vertex.clearLightmaps(vertexData, 0);
 	}
-	
+
 	/**
 	 * Returns all settings to default values.
 	 */
@@ -559,11 +559,11 @@ public final class FabricQuadBakery {
 		}
 
 		private static final TextureDepth[] DEPTHS = TextureDepth.values();
-		
+
 		public static int getTextureDepthOrdinal(int[] vertexData, int index) {
 			return TEXTURE_DEPTH.get(vertexData[index]);
 		}
-		
+
 		public static TextureDepth getTextureDepth(int[] vertexData, int index) {
 			return DEPTHS[getTextureDepthOrdinal(vertexData, index)];
 		}
@@ -721,7 +721,7 @@ public final class FabricQuadBakery {
 		public static int getEmissiveLightMap(int vertexIndex, int[] vertexData, int index) {
 			return vertexData[index + Quad.HEADER_STRIDE + vertexIndex * FIXED_VERTEX_STRIDE + LIGHTMAP];
 		}
-		
+
 		public static void clearLightmaps(int[] vertexData, int index) {
 			for(int i = 0; i < 4; i++)
 				setEmissiveLightMap(i, 0xFFFFFF, vertexData, index);
@@ -738,34 +738,34 @@ public final class FabricQuadBakery {
 			vertexData[baseIndex + LAYER_U] = Float.floatToRawIntBits(u);
 			vertexData[baseIndex + LAYER_V] = Float.floatToRawIntBits(v);
 		}
-		
+
 		public static float getU(int vertexIndex, TextureDepth textureDepth, int[] vertexData, int index) {
 			return getU(vertexIndex, textureDepth.ordinal(), vertexData, index);
 		}
 
 		public static float getU(int vertexIndex, int textureDepthOrdinal, int[] vertexData, int index) {
 			return Float.intBitsToFloat(vertexData[index + FIRST_LAYER_INDEX + LAYER_U
-			    + LAYER_QUAD_STRIDE * textureDepthOrdinal + LAYER_VERTEX_STRIDE * vertexIndex]);
+			                                       + LAYER_QUAD_STRIDE * textureDepthOrdinal + LAYER_VERTEX_STRIDE * vertexIndex]);
 		}
-		
+
 		public static float getV(int vertexIndex, TextureDepth textureDepth, int[] vertexData, int index) {
 			return getV(vertexIndex, textureDepth.ordinal(), vertexData, index);
 		}
-		
+
 		public static float getV(int vertexIndex, int textureDepthOrdinal, int[] vertexData, int index) {
 			return Float.intBitsToFloat(vertexData[index + FIRST_LAYER_INDEX + LAYER_V
-			    + LAYER_QUAD_STRIDE * textureDepthOrdinal + LAYER_VERTEX_STRIDE * vertexIndex]);
+			                                       + LAYER_QUAD_STRIDE * textureDepthOrdinal + LAYER_VERTEX_STRIDE * vertexIndex]);
 		}
 
 		public static void setColor(int vertexIndex, TextureDepth textureDepth, int color, int[] vertexData, int index) {
 			final int colorIndex = index + FIRST_LAYER_INDEX + LAYER_COLOR
-				+ LAYER_QUAD_STRIDE * textureDepth.ordinal()
-				+ LAYER_VERTEX_STRIDE * vertexIndex;
+					+ LAYER_QUAD_STRIDE * textureDepth.ordinal()
+					+ LAYER_VERTEX_STRIDE * vertexIndex;
 			vertexData[colorIndex] = color;
 		}
 
 		private static final float NORMALIZE_MULTIPLIER = 1f / 16f;
-		
+
 		/** Scales from 0-16 to 0-1 */
 		public static void normalizeUV(int layer, int[] vertexData, int baseIndex) {
 			for(int v = 0; v < 4; v++) 
@@ -774,7 +774,7 @@ public final class FabricQuadBakery {
 						NORMALIZE_MULTIPLIER * getV(v, layer, vertexData, baseIndex), 
 						vertexData, baseIndex);
 		}
-		
+
 		/** Inverts U coordinates.  Assumes normalized (0-1) values. */
 		public static void flipUV(int layer, int[] vertexData, int baseIndex, boolean flipU, boolean flipV) {
 			for(int i = 0; i < 4; i++) {
@@ -814,7 +814,7 @@ public final class FabricQuadBakery {
 		public static boolean isRawUV(int textureBits, int layerOrdinal) {
 			return (textureBits & (1 << (layerOrdinal + RAW_UV_SHIFT))) != 0;
 		}
-		
+
 		public static int enableUVScale(int priorBits, TextureDepth layer, boolean enable) {
 			final int mask = 1 << (UV_SCALE_SHIFT + layer.ordinal());
 			return enable ? (priorBits | mask) : (priorBits & ~mask);
@@ -823,16 +823,16 @@ public final class FabricQuadBakery {
 		public static boolean isUVScaleEnabled(int textureBits, int layerOrdinal) {
 			return (textureBits & (1 << (layerOrdinal + UV_SCALE_SHIFT))) != 0;
 		}
-		
+
 		public static int enableFlipU(int priorBits, TextureDepth layer, boolean enable) {
 			final int mask = 1 << (FLIP_U_SHIFT + layer.ordinal());
 			return enable ? (priorBits | mask) : (priorBits & ~mask);
 		}
-		
+
 		public static boolean isFlipU(int textureBits, int layerOrdinal) {
 			return (textureBits & (1 << (layerOrdinal + FLIP_U_SHIFT))) != 0;
 		}
-		
+
 		public static int enableFlipV(int priorBits, TextureDepth layer, boolean enable) {
 			final int mask = 1 << (FLIP_V_SHIFT + layer.ordinal());
 			return enable ? (priorBits | mask) : (priorBits & ~mask);
@@ -841,18 +841,18 @@ public final class FabricQuadBakery {
 		public static boolean isFlipV(int textureBits, int layerOrdinal) {
 			return (textureBits & (1 << (layerOrdinal + FLIP_V_SHIFT))) != 0;
 		}
-		
+
 		static int setRotation(int priorBits, TextureDepth layer, int rotation)
 		{
 			final int shift = ROTATION_SHIFT + layer.ordinal() * 2;
 			return (priorBits & ~(3 << shift)) | ((rotation % 4) << shift);
 		}
-		
+
 		static int getRotation(int textureBits, int layerOrdinal) {
 			final int shift = ROTATION_SHIFT + layerOrdinal * 2;
 			return (textureBits >> shift) & 3;
 		}
-		
+
 		static int setLockUV(int priorBits, TextureDepth layer, boolean enable) {
 			final int mask = 1 << layer.ordinal();
 			return enable ? (priorBits | mask) : (priorBits & ~mask);
@@ -947,45 +947,45 @@ public final class FabricQuadBakery {
 			boolean isOnBlockFace = false;
 
 			switch(longestAxis(normX, normY, normZ)) {
-				case X: {
-					final float minX = min(x0, x1, x2, x3);
-					final float maxX = max(x0, x1, x2, x3);
-					boolean onPlane = equalsApproximate(minX, maxX);
-					if(normX > 0) {
-						geometricFace = Direction.EAST;
-						isOnBlockFace = onPlane && maxX >= EPSILON_MAX;
-					} else {
-						geometricFace = Direction.WEST;
-						isOnBlockFace = onPlane && minX <= EPSILON_MIN;
-					}
-					break;
+			case X: {
+				final float minX = min(x0, x1, x2, x3);
+				final float maxX = max(x0, x1, x2, x3);
+				boolean onPlane = equalsApproximate(minX, maxX);
+				if(normX > 0) {
+					geometricFace = Direction.EAST;
+					isOnBlockFace = onPlane && maxX >= EPSILON_MAX;
+				} else {
+					geometricFace = Direction.WEST;
+					isOnBlockFace = onPlane && minX <= EPSILON_MIN;
 				}
-				case Y: {
-					final float minY = min(y0, y1, y2, y3);
-					final float maxY = max(y0, y1, y2, y3);
-					boolean onPlane = equalsApproximate(minY, maxY);
-					if(normY > 0) {
-						geometricFace = Direction.UP;
-						isOnBlockFace = onPlane && maxY >= EPSILON_MAX;
-					} else {
-						geometricFace = Direction.DOWN;
-						isOnBlockFace = onPlane && minY <= EPSILON_MIN;
-					}
-					break;
+				break;
+			}
+			case Y: {
+				final float minY = min(y0, y1, y2, y3);
+				final float maxY = max(y0, y1, y2, y3);
+				boolean onPlane = equalsApproximate(minY, maxY);
+				if(normY > 0) {
+					geometricFace = Direction.UP;
+					isOnBlockFace = onPlane && maxY >= EPSILON_MAX;
+				} else {
+					geometricFace = Direction.DOWN;
+					isOnBlockFace = onPlane && minY <= EPSILON_MIN;
 				}
-				case Z: {
-					final float minZ = min(z0, z1, z2, z3);
-					final float maxZ = max(z0, z1, z2, z3);
-					boolean onPlane = equalsApproximate(minZ, maxZ);
-					if(normZ > 0) {
-						geometricFace = Direction.SOUTH;
-						isOnBlockFace = onPlane && maxZ >= EPSILON_MAX;
-					} else {
-						geometricFace = Direction.NORTH;
-						isOnBlockFace = onPlane && minZ <= EPSILON_MIN;
-					}
-					break;
+				break;
+			}
+			case Z: {
+				final float minZ = min(z0, z1, z2, z3);
+				final float maxZ = max(z0, z1, z2, z3);
+				boolean onPlane = equalsApproximate(minZ, maxZ);
+				if(normZ > 0) {
+					geometricFace = Direction.SOUTH;
+					isOnBlockFace = onPlane && maxZ >= EPSILON_MAX;
+				} else {
+					geometricFace = Direction.NORTH;
+					isOnBlockFace = onPlane && minZ <= EPSILON_MIN;
 				}
+				break;
+			}
 			}
 
 			Quad.setActulFace(isOnBlockFace ? geometricFace : null, target, targetStart);
@@ -1008,7 +1008,7 @@ public final class FabricQuadBakery {
 			return quadSize;
 		}
 
-		
+
 		/**
 		 * Handles all texture transformation and interpolation. 
 		 */
@@ -1017,11 +1017,11 @@ public final class FabricQuadBakery {
 			// honor pre-baked UVs if requested
 			if(Texture.isRawUV(textureBits, layer))
 				return;
-			
+
 			// Normalize to 0-1 if we are getting 0-16, for sake of sanity
 			if(Texture.isUVScaleEnabled(textureBits, layer))
 				Vertex.normalizeUV(layer, vertexData, baseIndex);
-			
+
 			// handle lock UV
 			if(Texture.isLockUV(textureBits, layer)) {
 				UVLocker locker = UVLOCKERS[Quad.getNominalFace(vertexData, baseIndex).ordinal()];
@@ -1033,72 +1033,72 @@ public final class FabricQuadBakery {
 
 			// handle texture rotation
 			applyTextureRotation(Texture.getRotation(textureBits, layer), layer, vertexData, baseIndex);
-			
+
 			// handle texture flip
 			final boolean flipU = Texture.isFlipU(textureBits, layer);
 			final boolean flipV = Texture.isFlipV(textureBits, layer);
 			if(flipU || flipV)
 				Vertex.flipUV(layer, vertexData, baseIndex, flipU, flipV);
-			
-	        // TODO: prevent bleeding / holes?
 
-	        // final interpolation
-	        final float spriteMinU = sprite.getMinU();
-	        final float spriteSpanU = sprite.getMaxU() - spriteMinU;
-	        final float spriteMinV = sprite.getMinV();
-	        final float spriteSpanV = sprite.getMaxV() - spriteMinV;
-			
-	        // Doing it here faster than calling sprite methods
-	        // They compute span each call and normalize inputs, 
-	        // so we'd have to rescale before we called, only 
-	        // to have the sprite renormalize immediately.
-	        for(int i = 0; i < 4; i++)
-	        	Vertex.setUV(i, layer, 
-	        			spriteMinU + Vertex.getU(i, layer, vertexData, baseIndex) * spriteSpanU, 
-	        			spriteMinV + Vertex.getV(i, layer, vertexData, baseIndex) * spriteSpanV, 
-	        			vertexData, baseIndex);
-            
+			// TODO: prevent bleeding / holes?
+
+			// final interpolation
+			final float spriteMinU = sprite.getMinU();
+			final float spriteSpanU = sprite.getMaxU() - spriteMinU;
+			final float spriteMinV = sprite.getMinV();
+			final float spriteSpanV = sprite.getMaxV() - spriteMinV;
+
+			// Doing it here faster than calling sprite methods
+			// They compute span each call and normalize inputs, 
+			// so we'd have to rescale before we called, only 
+			// to have the sprite renormalize immediately.
+			for(int i = 0; i < 4; i++)
+				Vertex.setUV(i, layer, 
+						spriteMinU + Vertex.getU(i, layer, vertexData, baseIndex) * spriteSpanU, 
+						spriteMinV + Vertex.getV(i, layer, vertexData, baseIndex) * spriteSpanV, 
+						vertexData, baseIndex);
+
 		}
-	    
+
 		/** 
 		 * Rotates texture around the center of sprite.
 		 * Assumes normalized coordinates.
 		 * */
-	    private static void applyTextureRotation(int rotation, int layer, int[] vertexData, int baseIndex)
-	    {
-	       switch(rotation)
-	       {
-	       case 0: // ROTATE_NONE
-	       default:
-	           break;
-	           
-	       case 1: //ROTATE_90
-	           for(int i = 0; i < 4; i++) {
-	        	   float uNew = Vertex.getV(i, layer, vertexData, baseIndex);
-	               float vNew = Vertex.getU(i, layer, vertexData, baseIndex);
-	               Vertex.setUV(i, layer, uNew, vNew, vertexData, baseIndex);
-	           }
-	           break;
+		private static void applyTextureRotation(int rotation, int layer, int[] vertexData, int baseIndex)
+		{
+			switch(rotation)
+			{
+			case 0: // ROTATE_NONE
+			default:
+				break;
 
-	       case 2: //ROTATE_180
-	           for(int i = 0; i < 4; i++) {
-	               float uNew = 1 - Vertex.getU(i, layer, vertexData, baseIndex);
-	               float vNew = 1 - Vertex.getV(i, layer, vertexData, baseIndex);
-	               Vertex.setUV(i, layer, uNew, vNew, vertexData, baseIndex);
-	           }
-	           break;
-	       
-	       case 3: //ROTATE_270
-	           for(int i = 0; i < 4; i++) {
-	               float vNew = Vertex.getU(i, layer, vertexData, baseIndex);
-	               float uNew = 1 - Vertex.getV(i, layer, vertexData, baseIndex);
-	               Vertex.setUV(i, layer, uNew, vNew, vertexData, baseIndex);
-	           }
-	        break;
-	       
-	       }
-	    }
-	    
+			case 1: //ROTATE_90
+				for(int i = 0; i < 4; i++) {
+					float uNew = Vertex.getV(i, layer, vertexData, baseIndex);
+					float vNew = Vertex.getU(i, layer, vertexData, baseIndex);
+					Vertex.setUV(i, layer, uNew, vNew, vertexData, baseIndex);
+				}
+				break;
+
+			case 2: //ROTATE_180
+				for(int i = 0; i < 4; i++) {
+					float uNew = 1 - Vertex.getU(i, layer, vertexData, baseIndex);
+					float vNew = 1 - Vertex.getV(i, layer, vertexData, baseIndex);
+					Vertex.setUV(i, layer, uNew, vNew, vertexData, baseIndex);
+				}
+				break;
+
+			case 3: //ROTATE_270
+				for(int i = 0; i < 4; i++) {
+					float vNew = Vertex.getU(i, layer, vertexData, baseIndex);
+					float uNew = 1 - Vertex.getV(i, layer, vertexData, baseIndex);
+					Vertex.setUV(i, layer, uNew, vNew, vertexData, baseIndex);
+				}
+				break;
+
+			}
+		}
+
 		static private Axis longestAxis(float faceNormX, float faceNormY, float faceNormZ) {
 			Axis result = Axis.Y;
 			float longest = Math.abs(faceNormY);
@@ -1127,27 +1127,27 @@ public final class FabricQuadBakery {
 			return Math.max(Math.max(a, b), Math.max(d, c));
 		}
 	}
-	
+
 	@FunctionalInterface
-    private static interface UVLocker {
-        void apply(int vertexIndex, int layerIndex, int[] vertexData, int baseIndex);
-    }
-    
-    private static final UVLocker [] UVLOCKERS = new UVLocker[6];
-    
-    static {
-        UVLOCKERS[Direction.EAST.ordinal()] = (v, l, d, b) -> 
-        	Vertex.setUV(v, l, 1 - Vertex.getPosZ(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
-        UVLOCKERS[Direction.WEST.ordinal()] = (v, l, d, b) -> 
-        	Vertex.setUV(l, v, Vertex.getPosZ(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
-        UVLOCKERS[Direction.NORTH.ordinal()] = (v, l, d, b) -> 
-        	Vertex.setUV(l, v, 1 - Vertex.getPosX(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
-        UVLOCKERS[Direction.SOUTH.ordinal()] = (v, l, d, b) -> 
-        	Vertex.setUV(l, v, Vertex.getPosX(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
-        UVLOCKERS[Direction.DOWN.ordinal()] = (v, l, d, b) -> 
-        	Vertex.setUV(l, v, Vertex.getPosX(v, d, b), 1 - Vertex.getPosZ(v, d, b), d, b);
-        // TODO: confirm matches MC default semantic - believe mine was flipped and so changed it to match
-        UVLOCKERS[Direction.UP.ordinal()] = (v, l, d, b) -> 
-        	Vertex.setUV(l, v, Vertex.getPosX(v, d, b), 1 - Vertex.getPosZ(v, d, b), d, b);
-    }
+	private static interface UVLocker {
+		void apply(int vertexIndex, int layerIndex, int[] vertexData, int baseIndex);
+	}
+
+	private static final UVLocker [] UVLOCKERS = new UVLocker[6];
+
+	static {
+		UVLOCKERS[Direction.EAST.ordinal()] = (v, l, d, b) -> 
+		Vertex.setUV(v, l, 1 - Vertex.getPosZ(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
+		UVLOCKERS[Direction.WEST.ordinal()] = (v, l, d, b) -> 
+		Vertex.setUV(l, v, Vertex.getPosZ(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
+		UVLOCKERS[Direction.NORTH.ordinal()] = (v, l, d, b) -> 
+		Vertex.setUV(l, v, 1 - Vertex.getPosX(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
+		UVLOCKERS[Direction.SOUTH.ordinal()] = (v, l, d, b) -> 
+		Vertex.setUV(l, v, Vertex.getPosX(v, d, b), 1 - Vertex.getPosY(v, d, b), d, b);
+		UVLOCKERS[Direction.DOWN.ordinal()] = (v, l, d, b) -> 
+		Vertex.setUV(l, v, Vertex.getPosX(v, d, b), 1 - Vertex.getPosZ(v, d, b), d, b);
+		// TODO: confirm matches MC default semantic - believe mine was flipped and so changed it to match
+		UVLOCKERS[Direction.UP.ordinal()] = (v, l, d, b) -> 
+		Vertex.setUV(l, v, Vertex.getPosX(v, d, b), 1 - Vertex.getPosZ(v, d, b), d, b);
+	}
 }
