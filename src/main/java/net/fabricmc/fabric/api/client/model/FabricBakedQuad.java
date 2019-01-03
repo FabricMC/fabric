@@ -27,13 +27,13 @@ package net.fabricmc.fabric.api.client.model;
  * 
  * <li>Vertex data includes additional meta-data to support efficient 
  * chunk rebuilds and hide details not useful for the implementation.
- * Vertex data <em>must</em> be packed via the EnhancedQuadBakery.</li>
+ * Vertex data <em>must</em> be packed via the FabricQuadBakery.</li>
  */
-public interface TailoredQuad {
+public interface FabricBakedQuad {
     
     /**
      * Serves the same purpose as BakedQuad.getVertexData() but
-     * data must be baked with QuadTailor.<p>
+     * data must be baked with FabricQuadBakery.<p>
      * 
      * The other significant difference is that quad data does not 
      * need to start at array index 0. Consumer will look for vertex

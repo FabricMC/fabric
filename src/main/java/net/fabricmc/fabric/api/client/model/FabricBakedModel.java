@@ -24,7 +24,7 @@ import net.minecraft.client.render.model.BakedModel;
  * Implement for BakedModel sub-types that require dynamic, 
  * emissive or multi-layer texturing.<p>
  */
-public interface TailoredModel extends BakedModel {
+public interface FabricBakedModel extends BakedModel {
     
     /**
      * Similar in purpose to BakedModel.getQuads(), except:<p>
@@ -53,12 +53,12 @@ public interface TailoredModel extends BakedModel {
      * list instances or facade objects to avoid object allocation at render time. 
      * 
      */
-     List<TailoredQuad> getBlockQuads(BlockModelData modelData);
+     List<FabricBakedQuad> getBlockQuads(BlockModelData modelData);
      
      /**
       * Same purpose as {@link #getBlockQuads(BlockModelData)} but for items.
       * 
       * (Placeholder, very much WIP...)
       */
-     List<TailoredQuad> getItemQuads(ItemModelData modelData);
+     List<FabricBakedQuad> getItemQuads(ItemModelData modelData);
 }

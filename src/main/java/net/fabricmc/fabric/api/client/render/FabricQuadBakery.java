@@ -60,13 +60,13 @@ import net.minecraft.util.math.Direction.Axis;
  * recommended for Block Entity Renderers and/or extensive dynamic model baking at render time
  * in order to minimize overhead and garbage collection stutter. 
  */
-public final class QuadTailor {
+public final class FabricQuadBakery {
 
 	private final int[] vertexData = new int[MAX_QUAD_STRIDE];
 	private final Sprite[] sprites = new Sprite[3];
 	private int textureBits = Texture.DEFAULT_TEXTURE_BITS;
 
-	public QuadTailor() {
+	public FabricQuadBakery() {
 		clear();
 	}
 
@@ -883,7 +883,7 @@ public final class QuadTailor {
 		static final float EPSILON_MIN = 1.0E-4F;
 		static final float EPSILON_MAX = 0.9999F;
 		/**
-		 * Underlying static implementation of {@link QuadTailor#outputBakedQuadData(int[], int)}
+		 * Underlying static implementation of {@link FabricQuadBakery#outputBakedQuadData(int[], int)}
 		 * Requires an array of sprites, because those aren't serialized with the vertex data.<p>
 		 * 
 		 * Does not change data in source array.
