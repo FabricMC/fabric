@@ -24,16 +24,16 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 
 /**
- * Generates vertex data needed to implement EnhancedBakedQuad.<p>
+ * Generates vertex data needed to implement TailoredQuad.<p>
  * 
- * "Baking" is mostly about assigning renderable texture coordinates.
- * We also assign missing vertex normals. At this point we do not 
+ * "Quad Baking" is mostly about assigning renderable texture coordinates.
+ * We also assign missing vertex normals. When this happens we do not 
  * know where the model will be rendered, so we cannot complete 
- * the lighting calculation but we can analyze geometry and capture
+ * lighting calculations but we can analyze geometry and capture
  * information that can be reused when the qauds are lit later on.<p>
  * 
  * For conventional quads, render results will be identical to normal Minecraft. However,
- * Enhanced Quads support the following additional features:<p>
+ * Tailored Quads support the following additional features:<p>
  * 
  * <li>Multiple texture layers. Fabric will render these as separate quads using the
  * conventional Minecraft render pipeline but advanced rendering mods may render them in a single pass.</li><p>
@@ -60,13 +60,13 @@ import net.minecraft.util.math.Direction.Axis;
  * recommended for Block Entity Renderers and/or extensive dynamic model baking at render time
  * in order to minimize overhead and garbage collection stutter. 
  */
-public final class EnhancedQuadBakery {
+public final class QuadTailor {
 
 	private final int[] vertexData = new int[MAX_QUAD_STRIDE];
 	private final Sprite[] sprites = new Sprite[3];
 	private int textureBits = Texture.DEFAULT_TEXTURE_BITS;
 
-	public EnhancedQuadBakery() {
+	public QuadTailor() {
 		clear();
 	}
 
@@ -779,7 +779,7 @@ public final class EnhancedQuadBakery {
 		static final float EPSILON_MIN = 1.0E-4F;
 		static final float EPSILON_MAX = 0.9999F;
 		/**
-		 * Underlying static implementation of {@link EnhancedQuadBakery#outputBakedQuadData(int[], int)}
+		 * Underlying static implementation of {@link QuadTailor#outputBakedQuadData(int[], int)}
 		 * Requires an array of sprites, because those aren't serialized with the vertex data.<p>
 		 * 
 		 * Does not change data in source array.

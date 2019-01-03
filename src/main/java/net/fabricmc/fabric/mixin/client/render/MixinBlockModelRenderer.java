@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.fabric.api.client.model.BlockModelData;
-import net.fabricmc.fabric.api.client.model.EnhancedBakedModel;
-import net.fabricmc.fabric.api.client.model.EnhancedBakedQuad;
-import net.fabricmc.fabric.api.client.render.EnhancedQuadBakery;
+import net.fabricmc.fabric.api.client.model.TailoredModel;
+import net.fabricmc.fabric.api.client.model.TailoredQuad;
+import net.fabricmc.fabric.api.client.render.QuadTailor;
 import net.fabricmc.fabric.mixin.client.render.MixinChunkRenderer.ChunkRenderAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -48,12 +48,12 @@ public class MixinBlockModelRenderer
 
     @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
     public void onTesselate(ExtendedBlockView blockView, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, boolean checkOcclusion, Random random, long renderSeed, CallbackInfoReturnable<Boolean> info) {
-        if(bakedModel instanceof EnhancedBakedModel)
+        if(bakedModel instanceof TailoredModel)
         {
             
             // checkOcclusion is always true for chunk rebuilds (hard-coded constant), so we don't bother to pass it
             // woudln't make sense for it to be otherwise
-            info.setReturnValue(this.fabricTesselate(blockView, (EnhancedBakedModel)bakedModel, blockState, blockPos, bufferBuilder, renderSeed));
+            info.setReturnValue(this.fabricTesselate(blockView, (TailoredModel)bakedModel, blockState, blockPos, bufferBuilder, renderSeed));
             info.cancel();
         }
     }
@@ -71,7 +71,7 @@ public class MixinBlockModelRenderer
      * @return result for the block render layer.  If other render layers are also populated,
      * this method has to handle initating those buffers and setting flags as appropriate.
      */
-    boolean fabricTesselate(ExtendedBlockView blockView, EnhancedBakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, long renderSeed)
+    boolean fabricTesselate(ExtendedBlockView blockView, TailoredModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, long renderSeed)
     {
         final BlockRenderLayer primaryLayer = blockState.getBlock().getRenderLayer();
         final ChunkRenderAccess access = MixinChunkRenderer.CURRENT_CHUNK_RENDER.get();
@@ -84,16 +84,16 @@ public class MixinBlockModelRenderer
         int resultBitFlags = initializedFlags;
         
         final ModelData data = MODEL_DATA.get().prepare(blockPos, blockView, blockState, renderSeed);
-        final Iterator<EnhancedBakedQuad> quads = bakedModel.getBlockQuads(data);
+        final Iterator<TailoredQuad> quads = bakedModel.getBlockQuads(data);
         
         while(quads.hasNext()) {
-            final EnhancedBakedQuad quad = quads.next();
+            final TailoredQuad quad = quads.next();
             final int[] vertexData = quad.getVertexData();
             final int index = quad.firstVertexIndex();
-            final Direction blockFace = EnhancedQuadBakery.Quad.getActualFace(vertexData, index);
+            final Direction blockFace = QuadTailor.Quad.getActualFace(vertexData, index);
             if(blockFace == null || data.shouldOutputSide(blockFace))
             {
-                final int quadLayerFlags = EnhancedQuadBakery.Quad.getExtantLayers(vertexData, index);
+                final int quadLayerFlags = QuadTailor.Quad.getExtantLayers(vertexData, index);
                 resultBitFlags |= quadLayerFlags;
                 initializedFlags = intializeBuffersAsNeeded(initializedFlags, quadLayerFlags, access, blockPos);
                 tesselateEnhancedQuad(quad, vertexData, index, builders, data);
@@ -119,7 +119,7 @@ public class MixinBlockModelRenderer
      * 
      * Face culling has already happened before this point.
      */
-    private static void tesselateEnhancedQuad(EnhancedBakedQuad quad, int[] vertexData, int index, BlockLayeredBufferBuilder builders, ModelData data) {
+    private static void tesselateEnhancedQuad(TailoredQuad quad, int[] vertexData, int index, BlockLayeredBufferBuilder builders, ModelData data) {
         // TODO - MAGIC HAPPENS HERE
         
     }

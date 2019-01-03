@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.model;
 
-import java.util.Iterator;
+import java.util.List;
 
 import net.minecraft.client.render.model.BakedModel;
 
@@ -24,15 +24,10 @@ import net.minecraft.client.render.model.BakedModel;
  * Implement for BakedModel sub-types that require dynamic, 
  * emissive or multi-layer texturing.<p>
  */
-public interface EnhancedBakedModel extends BakedModel {
+public interface TailoredModel extends BakedModel {
     
     /**
      * Similar in purpose to BakedModel.getQuads(), except:<p>
-     * 
-     * <li> Iterator so that implementations aren't forced to create lists.
-     * Iterator reference will not be retained, and implementation that 
-     * generate quads dynamically should consider reusing iterator instances 
-     * to avoid object allocation that will negatively affect frame rate.</li><p>
      * 
      * <li> This method will always be called exactly one time per chunk rebuild,
      * irrespective of which or how many block render layers included in the model.
@@ -50,15 +45,20 @@ public interface EnhancedBakedModel extends BakedModel {
      * 
      * This means dynamic models can perform lookups or other expensive computations 
      * within a single call and do not need to cache results for other passes unless 
-     * the information will be useful across chunk rebuilds.
+     * the information will be useful across chunk rebuilds.<p>
+     * 
+     * Caller will not retain a list reference and list will be referenced
+     * using only indexed get methods. (No Iterator instance will be requested.)
+     * Implementations that generate quads dynamically are encouraged to reuse 
+     * list instances or facade objects to avoid object allocation at render time. 
      * 
      */
-     Iterator<EnhancedBakedQuad> getBlockQuads(BlockModelData modelData);
+     List<TailoredQuad> getBlockQuads(BlockModelData modelData);
      
      /**
       * Same purpose as {@link #getBlockQuads(BlockModelData)} but for items.
       * 
       * (Placeholder, very much WIP...)
       */
-     Iterator<EnhancedBakedQuad> getItemQuads(ItemModelData modelData);
+     List<TailoredQuad> getItemQuads(ItemModelData modelData);
 }

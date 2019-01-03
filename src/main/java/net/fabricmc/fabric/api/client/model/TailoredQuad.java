@@ -29,11 +29,11 @@ package net.fabricmc.fabric.api.client.model;
  * chunk rebuilds and hide details not useful for the implementation.
  * Vertex data <em>must</em> be packed via the EnhancedQuadBakery.</li>
  */
-public interface EnhancedBakedQuad {
+public interface TailoredQuad {
     
     /**
      * Serves the same purpose as BakedQuad.getVertexData() but
-     * data must be baked with EnhancedQuadBakery.<p>
+     * data must be baked with QuadTailor.<p>
      * 
      * The other significant difference is that quad data does not 
      * need to start at array index 0. Consumer will look for vertex
@@ -53,7 +53,7 @@ public interface EnhancedBakedQuad {
     /**
      * Same as BakedQuad.hasColor() but will only apply to texture
      * layers that are configured to use it.  Configuration is
-     * packed in baked vertex data by EnhancedQuadBakery.
+     * packed in baked vertex data by QuadTailor.
      */
     default boolean hasColor() {
        return getColorIndex() != -1;
@@ -62,7 +62,7 @@ public interface EnhancedBakedQuad {
     /**
      * Same as BakedQuad.getColorIndex() but will only apply to texture
      * layers that are configured to use it.  Configuration is
-     * packed in baked vertex data by EnhancedQuadBakery.
+     * packed in baked vertex data by QuadTailor.
      */
     default int getColorIndex() {
        return -1;
