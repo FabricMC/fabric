@@ -20,7 +20,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * Extension of FabricBakedModel for models needing access to world state other than
+ * Extension of {@link FabricBakedModel} for models needing access to world state other than
  * neighboring block states, fluid states and lighting.  Typical use case is to retrieve
  * Block Entity data, but can be used to access any world state that would normally be
  * unavailable in render threads. <p>
@@ -32,7 +32,7 @@ import net.minecraft.util.math.BlockPos;
  *
  * @param <RenderDataType> The type of the object returned from {@link FabricBakedModel#getRenderData(BlockState, RenderCacheView, BlockPos)}.
  */
-public interface FabricDynamicBakedModel<RenderDataType> extends FabricBakedModel {
+public interface DynamicBakedModel<RenderDataType> extends FabricBakedModel {
 
 	/**
 	 * Provides render data for this dynamic baked model that must be retrieved

@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.model;
 
 import net.minecraft.world.BlockView;
+import net.minecraft.world.ExtendedBlockView;
 
 /**
  * BlockView-extending interface to be used by FabricBakedModel for model
@@ -40,16 +41,16 @@ import net.minecraft.world.BlockView;
  */
 public interface RenderCacheView extends BlockView {
 
-	/**
-	 * For models that implement FabricDynamicBakedModel, this will be the most
-	 * recent value provided by the implementation for the current block position.<p>
+    /**
+     * For models that implement DynamicBakedModel, this will be the most
+     * recent value provided by the implementation for the current block position.<p>
 
-	 * Always null outside of block rendering (items, damage models, etc).
-	 * Always null for models that do not implement FabricDynamicBakedModel or 
-	 * if data has not been provided by the model.
-	 *
-	 * @param <T> The render data type specific to the consuming model.
-	 */
-	<T> T getCachedRenderData();
+     * Always null outside of block rendering (items, damage models, etc).
+     * Always null for models that do not implement FabricDynamicBakedModel or 
+     * if data has not been provided by the model.
+     *
+     * @param <T> The render data type specific to the consuming model.
+     */
+    <T> T getCachedRenderData();
 
 }

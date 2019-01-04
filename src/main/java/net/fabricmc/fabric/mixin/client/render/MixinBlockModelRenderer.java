@@ -26,13 +26,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.fabricmc.fabric.api.client.model.FabricBakedModel;
 import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
 import net.fabricmc.fabric.api.client.model.RenderCacheView;
-import net.fabricmc.fabric.api.client.render.FabricQuadBakery;
-import net.fabricmc.fabric.api.client.render.RenderConfiguration;
+import net.fabricmc.fabric.api.client.render.LighterBlockView;
+import net.fabricmc.fabric.impl.client.render.RenderConfiguration;
 import net.fabricmc.fabric.mixin.client.render.MixinChunkRenderer.ChunkRenderAccess;
-import net.minecraft.block.Block;
-import net.minecraft.block.Block.OffsetType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
@@ -40,28 +37,32 @@ import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.ExtendedBlockView;
 
 @Mixin(BlockModelRenderer.class)
 public class MixinBlockModelRenderer
 {
-
+    static interface RenderCachePrivateView extends RenderCacheView, ExtendedBlockView, LighterBlockView {
+        
+        boolean shouldOutputSide(Direction side);
+        
+        void prepare(BlockPos pos, BlockState blockState);
+    }
+    
     @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
     public void onTesselate(ExtendedBlockView blockView, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, boolean checkOcclusion, Random random, long renderSeed, CallbackInfoReturnable<Boolean> info) {
         if(bakedModel instanceof FabricBakedModel) {
             // checkOcclusion is always true for chunk rebuilds (hard-coded constant), so we don't bother to pass it
             // woudln't make sense for it to be otherwise
-            info.setReturnValue(this.fabricTesselate(blockView, (FabricBakedModel)bakedModel, blockState, blockPos, bufferBuilder, renderSeed));
+            random.setSeed(renderSeed);
+            info.setReturnValue(this.fabricTesselate((RenderCachePrivateView) blockView, (FabricBakedModel) bakedModel, blockState, blockPos, bufferBuilder, random));
             info.cancel();
         } else if (RenderConfiguration.useConsistentLighting()) {
-	        info.setReturnValue(this.standardTesselate(blockView, bakedModel, blockState, blockPos, bufferBuilder, renderSeed));
+	        info.setReturnValue(this.standardTesselate((RenderCachePrivateView) blockView, bakedModel, blockState, blockPos, bufferBuilder, random, renderSeed));
 	        info.cancel();
         }
-        	
     }
     
     /**
@@ -75,9 +76,9 @@ public class MixinBlockModelRenderer
      * @param renderSeed      
      * 
      * @return result for the block render layer.  If other render layers are also populated,
-     * this method has to handle initating those buffers and setting flags as appropriate.
+     * this method has to handle initializing those buffers and setting flags as appropriate.
      */
-    boolean fabricTesselate(ExtendedBlockView blockView, FabricBakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, long renderSeed)
+    boolean fabricTesselate(RenderCachePrivateView blockView, FabricBakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, Random random)
     {
         final BlockRenderLayer primaryLayer = blockState.getBlock().getRenderLayer();
         final ChunkRenderAccess access = MixinChunkRenderer.CURRENT_CHUNK_RENDER.get();
@@ -86,22 +87,20 @@ public class MixinBlockModelRenderer
         BlockLayeredBufferBuilder builders = access.chunkRenderDataTask.getBufferBuilders();
         
         // caller will have initialized the primary buffer for us
-        int initializedFlags = 1 << primaryLayer.ordinal(); // <-- TODO: retrieve flags for other layers from new accessor interface on ChunkRenderer
+        int initializedFlags = 1 << primaryLayer.ordinal();
         int resultBitFlags = initializedFlags;
         
-        final ModelData data = MODEL_DATA.get().prepare(blockPos, blockView, blockState, renderSeed);
-        final List<FabricBakedQuad> quads = bakedModel.getFabricBlockQuads(data, blockState, blockPos, data.random);
+        blockView.prepare(blockPos, blockState);
+        final List<FabricBakedQuad> quads = bakedModel.getFabricBakedQuads(blockView, blockState, blockPos, random);
         final int limit = quads.size();
         for(int i = 0; i < limit; i++) {
             final FabricBakedQuad quad = quads.get(i);
-            final int[] vertexData = quad.getVertexData();
-            final int index = quad.firstVertexIndex();
-            final Direction blockFace = FabricQuadBakery.Quad.getActualFace(vertexData, index);
-            if(blockFace == null || data.shouldOutputSide(blockFace)) {
-                final int quadLayerFlags = FabricQuadBakery.Quad.getExtantLayers(vertexData, index);
+            final Direction blockFace = quad.getGeometricFace();
+            if(blockFace == null || blockView.shouldOutputSide(blockFace)) {
+                final int quadLayerFlags = quad.getRenderLayerFlags();
                 resultBitFlags |= quadLayerFlags;
                 initializedFlags = intializeBuffersAsNeeded(initializedFlags, quadLayerFlags, access, blockPos);
-                access.lighter.lightFabricBakedQuad(vertexData, index, builders, data);
+                access.lighter.lightFabricBakedQuad(quad, builders, blockView);
             }
         }
         
@@ -120,14 +119,12 @@ public class MixinBlockModelRenderer
      * 
      * Doing this here vs. hooking methods further down the stack offers better cache exploitation.
      */
-    boolean standardTesselate(ExtendedBlockView blockView, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, long renderSeed)
+    boolean standardTesselate(RenderCachePrivateView blockView, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, Random random, long renderSeed)
     {
         final BlockRenderLayer renderLayer = blockState.getBlock().getRenderLayer();
         final ChunkRenderAccess access = MixinChunkRenderer.CURRENT_CHUNK_RENDER.get();
         // Retrieve buffer builder array - we'll need it
         BlockLayeredBufferBuilder builders = access.chunkRenderDataTask.getBufferBuilders();
-        final ModelData data = MODEL_DATA.get().prepare(blockPos, blockView, blockState, renderSeed);
-        final Random random = data.random;
         final boolean useAO = MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0 && bakedModel.useAmbientOcclusion();
         boolean didOutput = false;
         
@@ -135,10 +132,8 @@ public class MixinBlockModelRenderer
         	final Direction face = DIRECTIONS[i];
         	random.setSeed(renderSeed);
         	List<BakedQuad> quads = bakedModel.getQuads(blockState, face, random);
-        	if (!quads.isEmpty() && data.shouldOutputSide(face)) {
-                // TODO: need to be handled in lighter for flat
-        		// int int_1 = blockState_1.getBlockBrightness(extendedBlockView_1, blockPos_1.offset(direction_1));
-                access.lighter.lightStandardBakedQuads(quads, builders, data, renderLayer, useAO);
+        	if (!quads.isEmpty() && blockView.shouldOutputSide(face)) {
+                access.lighter.lightStandardBakedQuads(quads, builders, blockView, renderLayer, useAO);
                 didOutput = true;
              }
         }
@@ -146,7 +141,7 @@ public class MixinBlockModelRenderer
         random.setSeed(renderSeed);
         List<BakedQuad> quads = bakedModel.getQuads(blockState, (Direction)null, random);
         if (!quads.isEmpty()) {
-        	access.lighter.lightStandardBakedQuads(quads, builders, data, renderLayer, useAO);
+        	access.lighter.lightStandardBakedQuads(quads, builders, blockView, renderLayer, useAO);
             didOutput = true;
         }
         
@@ -155,7 +150,6 @@ public class MixinBlockModelRenderer
         
         return didOutput;
     }
-    
     
     /** 
      * Save non-primary result flags back to chunk renderer state
@@ -192,78 +186,5 @@ public class MixinBlockModelRenderer
                // access.chunkRenderer.method_3655(builder, pos);
             }
         }
-    }
-    
-    private static final ThreadLocal<ModelData> MODEL_DATA = ThreadLocal.withInitial(ModelData::new);
-    
-    public static class ModelData implements RenderCacheView {
-        BlockPos pos;
-        ExtendedBlockView world;
-        BlockState blockState;
-        final Random random = new Random();
-        
-        protected int sideLookupCompletionFlags = 0;
-        protected int sideLookupResultFlags = 0;
-        
-        // cache model offsets for plants, etc.
-        float offsetX = 0;
-        float offsetY = 0;
-        float offsetZ = 0;
-        
-        final ModelData prepare(BlockPos pos, ExtendedBlockView world, BlockState blockState, long randomSeed) {
-            this.pos = pos;
-            this.world = world;
-            this.blockState = blockState;
-            this.random.setSeed(randomSeed);
-            
-            if(blockState.getBlock().getOffsetType() == OffsetType.NONE) {
-                offsetX = 0;
-                offsetY = 0;
-                offsetZ = 0;
-            }
-            else {
-                Vec3d offset = blockState.getOffsetPos(world, pos);
-                offsetX = (float) offset.x;
-                offsetY = (float) offset.y;
-                offsetZ = (float) offset.z;
-            }
-            
-            return this;
-        }
-        
-        final boolean shouldOutputSide(Direction side) {
-            final int mask = 1 << (side.ordinal());
-            if((sideLookupCompletionFlags & mask) == 0) {
-                sideLookupCompletionFlags |= mask;
-                boolean result = Block.shouldDrawSide(blockState, world, pos, side);
-                if(result)
-                    sideLookupResultFlags |= mask;
-                return result;
-            }
-            else
-                return (sideLookupResultFlags & mask) != 0;
-        }
-
-		@Override
-		public BlockEntity getBlockEntity(BlockPos var1) {
-			// always null at render time
-			return null;
-		}
-
-		@Override
-		public BlockState getBlockState(BlockPos pos) {
-			return world.getBlockState(pos);
-		}
-
-		@Override
-		public FluidState getFluidState(BlockPos pos) {
-			return world.getFluidState(pos);
-		}
-
-		@Override
-		public <T> T getCachedRenderData() {
-			// TODO Auto-generated method stub
-			return null;
-		}
     }
 }

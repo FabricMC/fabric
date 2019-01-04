@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.render;
+package net.fabricmc.fabric.impl.client.render;
 
 import java.util.function.Supplier;
+
+import net.fabricmc.fabric.api.client.render.FabricVertexLighter;
 
 /**
  * Placeholder - not decided where this should go
@@ -24,20 +26,20 @@ import java.util.function.Supplier;
  */
 public abstract class RenderConfiguration {
 
-	private static Supplier<FabricVertexLighter> lighterFactory = () -> null;
-	
-	public static FabricVertexLighter createLighter() {
-		return lighterFactory.get();
-	}
+    private static Supplier<FabricVertexLighter> lighterFactory = () -> null;
 
-	private static boolean useConsistentLighting = true;
+    public static FabricVertexLighter createLighter() {
+        return lighterFactory.get();
+    }
 
-	/**
-	 * True if lighter should apply to standard baked models, if present.
-	 */
-	public static boolean useConsistentLighting() {
-		return useConsistentLighting;
-	}
-	
+    private static boolean useConsistentLighting = true;
+
+    /**
+     * True if lighter should apply to standard baked models, if present.
+     */
+    public static boolean useConsistentLighting() {
+        return useConsistentLighting;
+    }
+
 
 }

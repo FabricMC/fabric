@@ -74,27 +74,17 @@ public interface FabricBakedModel extends BakedModel {
 	 * 						Implementations that generate quads dynamically are encouraged to reuse 
 	 * 						list instances or facade objects to avoid object allocation at render time. 
 	 */
-	List<FabricBakedQuad> getFabricBlockQuads(RenderCacheView renderView, BlockState state, BlockPos pos, Random random);
+	List<FabricBakedQuad> getFabricBakedQuads(RenderCacheView renderView, BlockState state, BlockPos pos, Random random);
 
+	// TODO Add default compatibility handleror document expectations.
 	@Override
 	default List<BakedQuad> getQuads(BlockState var1, Direction var2, Random var3) {
 
-		// TODO Add default handlers for compatibility.
-
-		// This will never be called for block rendering, but will be called
-		// for block breaking render, and possibly by other mods looking to "wrap" the model
-		// or do something else with it, (e.g. multipart) and which don't recognize this interface.
-
-		// Block breaking render only uses geometry so should be an optimized
-		// special case, especially for multi - layer quads.  
-
-		// May be good to also provide an abstract reference implementation so 
-		// results can be lazily constructed and cached and encourage authors to extend
-		// or do similar with the provided handlers.
+		// This will never be called for block rendering when a vertex lighter is enabled, 
+	    // but will be called for block breaking render, and possibly by other mods looking 
+	    // to "wrap" the model or do something else with it, (e.g. multipart) and which 
+	    /// don't recognize this interface.
 
 		return null;
 	}
-
-
-
 }

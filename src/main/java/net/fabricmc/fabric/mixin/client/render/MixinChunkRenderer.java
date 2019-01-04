@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.fabricmc.fabric.api.client.render.FabricVertexLighter;
-import net.fabricmc.fabric.api.client.render.RenderConfiguration;
+import net.fabricmc.fabric.impl.client.render.RenderConfiguration;
 import net.minecraft.class_852;
 import net.minecraft.class_853;
 import net.minecraft.block.Block;

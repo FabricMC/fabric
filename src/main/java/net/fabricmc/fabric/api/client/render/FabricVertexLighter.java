@@ -18,13 +18,16 @@ package net.fabricmc.fabric.api.client.render;
 
 import java.util.List;
 
-import net.fabricmc.fabric.mixin.client.render.MixinBlockModelRenderer.ModelData;
+import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
 import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
 import net.minecraft.client.render.model.BakedQuad;
 
 public interface FabricVertexLighter {
 
+    /** TODO */
+	void prepare();
+	
 	/**
 	 * Outputs one or more quads to appropriate buffers with lighting and coloring
 	 * based on provided metadata. Handles randomized position offsets 
@@ -32,10 +35,15 @@ public interface FabricVertexLighter {
 	 * 
 	 * Face culling has already happened before this point.
 	 */
-	void lightFabricBakedQuad(int[] vertexData, int index, BlockLayeredBufferBuilder builders,
-			ModelData data);
+	void lightFabricBakedQuad(FabricBakedQuad quad, BlockLayeredBufferBuilder builders, LighterBlockView blockView);
 
-	void lightStandardBakedQuads(List<BakedQuad> quads, BlockLayeredBufferBuilder builders, ModelData data,
+	/**
+	 * Applies lighting to standard Minecraft quads. Handles randomized position offsets 
+     * and block tinting as needed. Face culling has already happened before this point.
+	 */
+	void lightStandardBakedQuads(List<BakedQuad> quads, BlockLayeredBufferBuilder builders, LighterBlockView blockView,
 			BlockRenderLayer renderLayer, boolean useAO);
 
+	/** TODO */
+	void release();
 }
