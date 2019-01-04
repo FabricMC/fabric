@@ -34,10 +34,9 @@ public interface EntityTeleporter {
 	 */
 	void teleport(Entity entity, ServerWorld previousWorld, ServerWorld newWorld);
 
-	//TODO move this out of here?
 	/**
 	 *
-	 * This is used to set the entitys location, it must be used when moving a player
+	 * This is used to set the entities location, it must be used when moving a player
 	 *
 	 * @param entity the entity to set the location for
 	 * @param pos the pos to move the entity to

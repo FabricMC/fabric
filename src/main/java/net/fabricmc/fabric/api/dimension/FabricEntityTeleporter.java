@@ -20,7 +20,6 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionComponents;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
 
-//TODO find better names for these classes and methods
 public interface FabricEntityTeleporter {
 
 	FabricEntityTeleporter INSTANCE = FabricDimensionComponents.INSTANCE;
