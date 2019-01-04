@@ -27,7 +27,23 @@ import net.minecraft.util.Identifier;
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!
  */
 public class FabricKeyBinding extends KeyBinding {
-	public FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
+	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
 		super("key." + id.toString().replace(':', '.'), type, code, category);
+	}
+
+	public static class Builder {
+		protected final FabricKeyBinding binding;
+
+		protected Builder(FabricKeyBinding binding) {
+			this.binding = binding;
+		}
+
+		public FabricKeyBinding build() {
+			return binding;
+		}
+
+		public static Builder create(Identifier id, InputUtil.Type type, int code, String category) {
+			return new Builder(new FabricKeyBinding(id, type, code, category));
+		}
 	}
 }
