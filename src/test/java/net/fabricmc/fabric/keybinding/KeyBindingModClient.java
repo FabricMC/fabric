@@ -27,12 +27,12 @@ public class KeyBindingModClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		KeyBindingRegistry.INSTANCE.addCategory("fabric.test");
 		KeyBindingRegistry.INSTANCE.register(
-			new FabricKeyBinding(
+			FabricKeyBinding.Builder.create(
 				new Identifier("fabric:test"),
 				InputUtil.Type.KEY_KEYBOARD,
 				37,
 				"fabric.test"
-			)
+			).build()
 		);
 	}
 }
