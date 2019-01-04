@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.fabricmc.fabric.api.client.render;
 
-import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
+import java.util.List;
+
 import net.fabricmc.fabric.mixin.client.render.MixinBlockModelRenderer.ModelData;
+import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
+import net.minecraft.client.render.model.BakedQuad;
 
-public class FabricVertexLighter {
+public interface FabricVertexLighter {
 
-	final AoCalculator aoCalc = new AoCalculator();
-	
-    /**
-     * Outputs one or more quads to appropriate buffers with lighting and coloring
-     * based on metadata saved at bake time. Handles randomized position offsets 
-     * and block tinting as needed. Block tint is per-quad based on enable flags in metadata.
-     * 
-     * Diffuse shading honors vertex normals to allow for non-cubic geometry.
-     * Likewise, AO calculations are enhanced for same purpose. (Vanilla AO doesn't handle
-     * triangles or non-square quads.) 
-     * 
-     * Face culling has already happened before this point.
-     */
-	public final void lightFabricBlockModel(FabricBakedQuad quad, int[] vertexData, int index,
-			BlockLayeredBufferBuilder builders, ModelData data) {
-		// TODO Auto-generated method stub
-		
-	}
+	/**
+	 * Outputs one or more quads to appropriate buffers with lighting and coloring
+	 * based on provided metadata. Handles randomized position offsets 
+	 * and block tinting as needed. Block tint is per-quad based on enable flags in metadata.
+	 * 
+	 * Face culling has already happened before this point.
+	 */
+	void lightFabricBakedQuad(int[] vertexData, int index, BlockLayeredBufferBuilder builders,
+			ModelData data);
+
+	void lightStandardBakedQuads(List<BakedQuad> quads, BlockLayeredBufferBuilder builders, ModelData data,
+			BlockRenderLayer renderLayer, boolean useAO);
+
 }

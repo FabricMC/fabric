@@ -27,16 +27,19 @@ import net.fabricmc.fabric.api.client.model.FabricBakedModel;
 import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
 import net.fabricmc.fabric.api.client.model.RenderCacheView;
 import net.fabricmc.fabric.api.client.render.FabricQuadBakery;
+import net.fabricmc.fabric.api.client.render.RenderConfiguration;
 import net.fabricmc.fabric.mixin.client.render.MixinChunkRenderer.ChunkRenderAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.Block.OffsetType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.block.BlockRenderLayer;
 import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -49,14 +52,16 @@ public class MixinBlockModelRenderer
 
     @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
     public void onTesselate(ExtendedBlockView blockView, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, boolean checkOcclusion, Random random, long renderSeed, CallbackInfoReturnable<Boolean> info) {
-        if(bakedModel instanceof FabricBakedModel)
-        {
-            
+        if(bakedModel instanceof FabricBakedModel) {
             // checkOcclusion is always true for chunk rebuilds (hard-coded constant), so we don't bother to pass it
             // woudln't make sense for it to be otherwise
             info.setReturnValue(this.fabricTesselate(blockView, (FabricBakedModel)bakedModel, blockState, blockPos, bufferBuilder, renderSeed));
             info.cancel();
+        } else if (RenderConfiguration.useConsistentLighting()) {
+	        info.setReturnValue(this.standardTesselate(blockView, bakedModel, blockState, blockPos, bufferBuilder, renderSeed));
+	        info.cancel();
         }
+        	
     }
     
     /**
@@ -92,12 +97,11 @@ public class MixinBlockModelRenderer
             final int[] vertexData = quad.getVertexData();
             final int index = quad.firstVertexIndex();
             final Direction blockFace = FabricQuadBakery.Quad.getActualFace(vertexData, index);
-            if(blockFace == null || data.shouldOutputSide(blockFace))
-            {
+            if(blockFace == null || data.shouldOutputSide(blockFace)) {
                 final int quadLayerFlags = FabricQuadBakery.Quad.getExtantLayers(vertexData, index);
                 resultBitFlags |= quadLayerFlags;
                 initializedFlags = intializeBuffersAsNeeded(initializedFlags, quadLayerFlags, access, blockPos);
-                access.lighter.lightFabricBlockModel(quad, vertexData, index, builders, data);
+                access.lighter.lightFabricBakedQuad(vertexData, index, builders, data);
             }
         }
         
@@ -109,6 +113,50 @@ public class MixinBlockModelRenderer
         return (resultBitFlags & (1 << primaryLayer.ordinal())) != 0;
     }
 
+    static final Direction[] DIRECTIONS = Direction.values();
+    
+    /**
+     * Emulates standard model render with fabric lighter when consistent lighting is enabled.
+     * 
+     * Doing this here vs. hooking methods further down the stack offers better cache exploitation.
+     */
+    boolean standardTesselate(ExtendedBlockView blockView, BakedModel bakedModel, BlockState blockState, BlockPos blockPos, BufferBuilder bufferBuilder, long renderSeed)
+    {
+        final BlockRenderLayer renderLayer = blockState.getBlock().getRenderLayer();
+        final ChunkRenderAccess access = MixinChunkRenderer.CURRENT_CHUNK_RENDER.get();
+        // Retrieve buffer builder array - we'll need it
+        BlockLayeredBufferBuilder builders = access.chunkRenderDataTask.getBufferBuilders();
+        final ModelData data = MODEL_DATA.get().prepare(blockPos, blockView, blockState, renderSeed);
+        final Random random = data.random;
+        final boolean useAO = MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0 && bakedModel.useAmbientOcclusion();
+        boolean didOutput = false;
+        
+        for(int i = 0; i < 6; i++) {
+        	final Direction face = DIRECTIONS[i];
+        	random.setSeed(renderSeed);
+        	List<BakedQuad> quads = bakedModel.getQuads(blockState, face, random);
+        	if (!quads.isEmpty() && data.shouldOutputSide(face)) {
+                // TODO: need to be handled in lighter for flat
+        		// int int_1 = blockState_1.getBlockBrightness(extendedBlockView_1, blockPos_1.offset(direction_1));
+                access.lighter.lightStandardBakedQuads(quads, builders, data, renderLayer, useAO);
+                didOutput = true;
+             }
+        }
+        	
+        random.setSeed(renderSeed);
+        List<BakedQuad> quads = bakedModel.getQuads(blockState, (Direction)null, random);
+        if (!quads.isEmpty()) {
+        	access.lighter.lightStandardBakedQuads(quads, builders, data, renderLayer, useAO);
+            didOutput = true;
+        }
+        
+        // don't hold references
+        access.clear();
+        
+        return didOutput;
+    }
+    
+    
     /** 
      * Save non-primary result flags back to chunk renderer state
      */
