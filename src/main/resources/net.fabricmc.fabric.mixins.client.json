@@ -7,6 +7,8 @@
     "bugfix.MixinBiomeColors",
     "client.itemgroup.MixinItemGroup",
     "client.itemgroup.MixinCreativePlayerInventoryGui",
+    "client.keybinding.MixinGameOptions",
+    "client.keybinding.MixinKeyBinding",
     "client.model.MixinModelLoader",
     "client.render.MixinBlockColorMap",
     "client.render.MixinBlockEntityRenderManager",
