@@ -56,4 +56,36 @@ import net.minecraft.client.render.model.BakedModel;
  */
 public interface FabricBakedModel extends BakedModel, FabricBakedQuadProducer {
 	
+    /**
+     * All implementations of FabricBakedModel are expected to be immutable by default.<p>
+     * 
+     * "Immutable" in this case means that all <em>public</em> properties will never change
+     * and all FabricBakedQuad produced by this instance will also be immutable.
+     * An immutable instance can therefore be reliably wrapped or aggregated by some other 
+     * mod or implementation without copying.<p>
+     * 
+     * The immutable guarantee extends to side-effects and outputs of {@link #getItemPropertyOverrides()}. 
+     * Calling that method will not change any publicly observable attribute of this instance
+     * and all models returns will also be immutable. However, the guarantee does <em>not</em> require
+     * that the results of {@link #getItemPropertyOverrides()} always be identical.<p>
+     * 
+     * Consumers that "wrap" or keep a reference to an FabricBakedModel instance should always
+     * check {@link #isImmutable()} and if it returns false, obtain an immutable reference via
+     * {@link #toImmutable()}.  (Unless some specific functionality in this implementation
+     * provides for using or keeping a mutable reference.)<p>
+     * 
+     * The means for obtaining or editing a mutable instance are left to implementations.
+     * Mutable implementations <em>must</em> override this method to return true.
+     */
+    public default boolean isImmutable() {
+        return true;
+    }
+    
+    /**
+     * All implementations that offer mutability <em>must</em> override this method to 
+     * produce a reliably immutable instance.
+     */
+    public default FabricBakedModel toImmutable() {
+        return this;
+    }
 }

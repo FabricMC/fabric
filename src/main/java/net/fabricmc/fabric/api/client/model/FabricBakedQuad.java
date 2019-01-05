@@ -115,4 +115,38 @@ public interface FabricBakedQuad {
         int color0 = getColorIndex(); // TODO - check if color applies to layer 0
         return new BakedQuad(vertexData, color0, getFace(), getSprite());
     }
+    
+    /**
+     * All implementations of FabricBakedQuad are expected to be immutable by default.<p>
+     * 
+     * "Immutable" in this case means that all <em>public</em> properties and vertex data
+     * reported by this instance will never change.  An immutable instance can therefore
+     * be reliably wrapped or aggregated by some other mod or implementation without copying.<p>
+     * 
+     * Note that this implies a quad will have either a block or item vertex format, and
+     * will have no way for this to be changed.  In particular, mod authors should be 
+     * cautious of capturing a quad with an unspecified (context-dependent) vertex format
+     * and using it in a different context.  In such cases, depending on usage,  it may be
+     * necessary to infer the format based on the context in which the quad was obtained, 
+     * and then create an instance with the specific and defined vertex format you require.<p>
+     * 
+     * Consumers that "wrap" or keep a reference to an FabricBakedQuad instance should always
+     * check {@link #isImmutable()} and if it returns false, obtain an immutable reference via
+     * {@link #toImmutable()}.  (Unless some specific functionality in this implementation
+     * provides for using or keeping a mutable reference.)<p>
+     * 
+     * The means for obtaining or editing a mutable instance are left to implementations.
+     * Mutable implementations <em>must</em> override this method to return true.
+     */
+    public default boolean isImmutable() {
+        return true;
+    }
+    
+    /**
+     * All implementations that offer mutability <em>must</em> override this method to 
+     * produce a reliably immutable instance.
+     */
+    public default FabricBakedQuad toImmutable() {
+        return this;
+    }
 }
