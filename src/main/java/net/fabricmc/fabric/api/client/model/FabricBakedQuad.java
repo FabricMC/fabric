@@ -16,26 +16,33 @@
 
 package net.fabricmc.fabric.api.client.model;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 /**
- * Similar to BakedQuad in purpose and operation but not meant
- * to be an extension of that class.  Some key differences:<p>
+ * Mirror of {@link BakedQuad} in purpose and operation but provides extended
+ * vertex data and does not force concrete subclassing of BakedQuad.<p>
  * 
- * <li>Does not expose a face attribute because that is baked into the vertex data.</li><p>
+ * Fabric causes BakedQuads to implement FabricBakedQuad, so you if you
+ * already have a BakedQuad instance you can safely cast it to FabricBakedQuad
+ * any place a FabricBakedQuad instance is required.<p>
  * 
- * <li>Does not expose a sprite attribute because enhanced quads can be
- * multi-textured. Not intended to support re-texturing.</li><p>
+ * Conversely, a FabricBakedQuad does <em>not</em> need to be a BakedQuad. 
+ * However, it is trivial to convert to convert to a BakedQuad and a default 
+ * method for that purpose is provided. See {@link #toBakedQuad()}<p>
  * 
- * <li>Vertex data includes additional meta-data to support efficient 
- * chunk rebuilds and hide details not useful for the implementation.
- * Vertex data <em>must</em> be packed via the FabricQuadBakery.</li>
+ * For compatibility, implementations must ensure the first texture layer is
+ * always the desired default appearance when a rendering plugin is not available,
+ * and also ensure the first layer is associated with {@link Block#getRenderLayer()}.
  */
 public interface FabricBakedQuad {
 
+    
     /**
-     * Serves the same purpose as BakedQuad.getVertexData() but
-     * data must conform to a fabric vertex format.<p>
+     * Serves the same purpose as {@link BakedQuad#getVertexData()} but
+     * data may be extended to conform to a fabric vertex format.<p>
      * 
      * The other significant difference is that quad data does not 
      * need to start at array index 0. Consumer will look for vertex
@@ -53,7 +60,7 @@ public interface FabricBakedQuad {
     }
 
     /**
-     * Same as BakedQuad.hasColor() but will only apply to texture
+     * Same as {@link BakedQuad#hasColor()} but will only apply to texture
      * layers that are configured to use it via {@link #getLightingFlags()}.
      */
     default boolean hasColor() {
@@ -61,15 +68,24 @@ public interface FabricBakedQuad {
     }
 
     /**
-     * Same as BakedQuad.getColorIndex() but will only apply to texture
+     * Same as {@link BakedQuad#getColorIndex()} but will only apply to texture
      * layers that are configured to use it. 
      */
     default int getColorIndex() {
         return -1;
     }
 
-    Direction getGeometricFace();
+    /**
+     * Same as {@link BakedQuad#getFace()}. Identifies the geometric face of 
+     * this polygon. Must be null if not co-planar with a block face.
+     */
+    Direction getFace();
 
+    /**
+     * Same as {@link BakedQuad#getSprite()}
+     */
+    public Sprite getSprite();
+     
     int getRenderLayerFlags();
 
     public FabricVertexFormat getFormat();
@@ -83,4 +99,20 @@ public interface FabricBakedQuad {
     // raw quad
 
     public int getLightingFlags();
+    
+    /**
+     * Create a new baked quad based on the first texture layer.
+     * The first 28 elements of all vertex formats are identical to ensure
+     * this is always a trivial operation, because the need for backward
+     * compatibility is inevitable.<p>
+     * 
+     * Non-dynamic implementations should override this method to cache the result.
+     */
+    public default BakedQuad toBakedQuad()
+    {
+        int[] vertexData = new int[28];
+        System.arraycopy(getVertexData(), firstVertexIndex(), vertexData, 0, 28);
+        int color0 = getColorIndex(); // TODO - check if color applies to layer 0
+        return new BakedQuad(vertexData, color0, getFace(), getSprite());
+    }
 }

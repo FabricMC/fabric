@@ -16,18 +16,7 @@
 
 package net.fabricmc.fabric.api.client.render;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+//TODO: lots of docs
+public interface RenderPlugin {
 
-@Environment(EnvType.CLIENT)
-public enum TextureDepth
-{
-    SINGLE,
-    DOUBLE,
-    TRIPLE;
-
-    public final int layerCount()
-    {
-        return this.ordinal() + 1;
-    }
 }

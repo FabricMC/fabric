@@ -16,75 +16,28 @@
 
 package net.fabricmc.fabric.api.client.model;
 
-import java.util.List;
 import java.util.Random;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
 /**
- * Interface for static models that use the extended quad/vertex specification
- * (emissive lighting, multi-layer, etc) available in FabricBakedQuads.<p>
+ * Interface for models that use the extended quad/vertex specification
+ * (emissive lighting, multi-layer, etc) or dynamic model customization.<p>
+ * 
+ * Implementations must take care to provide a working {@link #getQuads(BlockState, net.minecraft.util.math.Direction, Random)}
+ * method.  The getQuads() method will be used when no rendering plugin is active,
+ * and will always be used for block breaking renders.  Mods that do not recognize
+ * this interface may also use getQuads() to "wrap" this model, etc.<p>
+ * 
+ * FabricBakedQuads can be trivially converted to standard BakedQuad instances
+ * via {@link FabricBakedQuad#toBakedQuad()}. However, each call results in a new 
+ * allocation in the default implementation.<p>
+ * 
+ * If this model is likely to persist over multiple chunk rebuilds (for block models) or
+ * multiple render passes, implementations should ensure BakedQuad instances are cached
+ * to avoid reallocating them whenever they are requested.  This can and should be done lazily.
  */
-public interface FabricBakedModel extends BakedModel {
-	/**
-	 * Similar in purpose to BakedModel.getQuads(), except:<p>
-	 * 
-	 * <li> This method will always be called exactly one time per chunk rebuild,
-	 * irrespective of which or how many block render layers included in the model.
-	 * Models must output all quads in a single pass. Occlusion culling is handled
-	 * automatically using face meta-data that include with the vertex data.</li><p>
-	 * 
-	 * <li> BakedModel.isAmbientOcclusion() is ignored because fabric quads
-	 * specify this pre-bake, per layer.  The information is instead retrieved from 
-	 * the vertex data in the quad.</li><p>
-	 * 
-	 * <li> The RenderView parameter provides access to cached
-	 * block state, fluid state, and lighting information. Block Entity access
-	 * will always return null to ensure thread safety because this method
-	 * is called outside the main client thread.</li><p>
-	 * 
-	 * Because the method is called only one for all faces and render layers, 
-	 * dynamic models can perform lookups or other expensive computations 
-	 * at all once and do not need to cache results for other passes unless 
-	 * the information will be useful across chunk rebuilds.<p>
-	 * 
-	 * Caller will not retain a list reference and list will be referenced
-	 * using only indexed get methods. (No Iterator instance will be requested.)
-	 * Implementations that generate quads dynamically are encouraged to reuse 
-	 * list instances or facade objects to avoid object allocation at render time. 
-	 * 
-	 * Important distinction regarding random: getFabricBlockQuads is called only 1X.  
-	 * Normally random is initialized with the same seed prior to each face/render layer.
-	 * For sake of performance this isn't done with fabric baked models.  
-	 * Implementations must apply the same random bits to parts of the model that expect it.<p>
-	 * 
-	 * Model should not retain references to any input parameters because they 
-	 * may be mutable and/or threadlocal.<p>
-	 * 
-	 * @param renderView	Access to cached world state, render state.
-	 * @param pos			Position of block model in the world. 
-	 * @param state			BlockState at model position.
-	 * @param random		Randomizer. See notes above.			
-	 * @return				List of FabricBakedQuad.
-	 *      				Caller will not retain a list reference and list will be referenced via get().
-	 * 						Implementations that generate quads dynamically are encouraged to reuse 
-	 * 						list instances or facade objects to avoid object allocation at render time. 
-	 */
-	List<FabricBakedQuad> getFabricBakedQuads(RenderCacheView renderView, BlockState state, BlockPos pos, Random random);
-
-	// TODO Add default compatibility handleror document expectations.
-	@Override
-	default List<BakedQuad> getQuads(BlockState var1, Direction var2, Random var3) {
-
-		// This will never be called for block rendering when a vertex lighter is enabled, 
-	    // but will be called for block breaking render, and possibly by other mods looking 
-	    // to "wrap" the model or do something else with it, (e.g. multipart) and which 
-	    /// don't recognize this interface.
-
-		return null;
-	}
+public interface FabricBakedModel extends BakedModel, FabricBakedQuadProducer {
+	
 }
