@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.keybinding;
 
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 

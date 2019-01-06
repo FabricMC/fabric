@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.keybinding;
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -83,14 +83,14 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 		for (KeyBinding exBinding : fabricKeyBindingList) {
 			if (exBinding == binding) {
 				return false;
-			} else if (exBinding.method_1431().equals(binding.method_1431())) {
-				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.method_1431() + "!");
+			} else if (exBinding.getId().equals(binding.getId())) {
+				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getId() + "!");
 			}
 		}
 
-		if (!hasCategory(binding.method_1423())) {
-			LOGGER.warn("Tried to register key binding with unregistered category '" + binding.method_1423() + "' - please use addCategory to ensure intended category ordering!");
-			addCategory(binding.method_1423());
+		if (!hasCategory(binding.getCategory())) {
+			LOGGER.warn("Tried to register key binding with unregistered category '" + binding.getCategory() + "' - please use addCategory to ensure intended category ordering!");
+			addCategory(binding.getCategory());
 		}
 
 		fabricKeyBindingList.add(binding);

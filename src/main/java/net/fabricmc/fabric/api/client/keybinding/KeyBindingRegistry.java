@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.client.keybinding;
 
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 
 /**
  * Interface for registering key bindings.
