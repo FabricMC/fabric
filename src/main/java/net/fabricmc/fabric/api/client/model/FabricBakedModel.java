@@ -60,12 +60,13 @@ public interface FabricBakedModel extends BakedModel, FabricBakedQuadProducer {
      * An immutable instance can therefore be reliably wrapped or aggregated by some other 
      * mod or implementation without copying.<p>
      * 
-     * The immutable guarantee extends to side-effects and outputs of {@link #getItemPropertyOverrides()}. 
-     * Calling that method will not change any publicly observable attribute of this instance
-     * and all models returns will also be immutable. However, the guarantee does <em>not</em> require
-     * that the results of {@link #getItemPropertyOverrides()} always be identical.<p>
+     * The immutable guarantee extends to side-effects of {@link #getItemPropertyOverrides()},
+     * but <em>not</em> the outputs of that method. Calling that method will not change 
+     * any publicly observable attribute of this instance but models returned may or may
+     * not immutable. Nor does the guarantee require the results of {@link #getItemPropertyOverrides()} 
+     * to always be identical.<p>
      * 
-     * Consumers that "wrap" or keep a reference to an FabricBakedModel instance should always
+     * Consumers that "wrap" or keep a reference to a FabricBakedModel instance should always
      * check {@link #isImmutable()} and if it returns false, obtain an immutable reference via
      * {@link #toImmutable()}.  (Unless some specific functionality in this implementation
      * provides for using or keeping a mutable reference.)<p>
