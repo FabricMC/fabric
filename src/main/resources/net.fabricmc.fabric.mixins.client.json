@@ -9,6 +9,8 @@
     "client.itemgroup.MixinCreativePlayerInventoryGui",
     "client.model.MixinBakedQuad",
     "client.model.MixinBakedModel",
+    "client.keybinding.MixinGameOptions",
+    "client.keybinding.MixinKeyBinding",
     "client.model.MixinModelLoader",
     "client.render.MixinBlockColorMap",
     "client.render.MixinBlockEntity",
