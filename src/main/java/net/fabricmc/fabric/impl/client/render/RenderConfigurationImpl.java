@@ -21,10 +21,10 @@ import net.fabricmc.fabric.api.client.render.RenderConfiguration;
 
 public final class RenderConfigurationImpl implements RenderConfiguration{
     public static final RenderConfigurationImpl INSTANCE = new RenderConfigurationImpl();
-    
+
     // private constructor
     private RenderConfigurationImpl() { };
-    
+
     @Override
     public final void registerRenderPlugIn(RenderPlugin plugin) {
         if(plugin != null && activePlugIn == null) {
@@ -32,17 +32,17 @@ public final class RenderConfigurationImpl implements RenderConfiguration{
             hasActivePlugIn = true;
         }
     }
-    
+
     private RenderPlugin activePlugIn = null;
-    
+
     /** avoids null test every call to {@link #isRenderPluginActive()} */
     private boolean hasActivePlugIn = false;
-    
+
     @Override
     public final RenderPlugin getActiveRenderPlugin() {
         return activePlugIn;
     }
-    
+
     @Override
     public final boolean isRenderPluginActive() {
         return hasActivePlugIn;

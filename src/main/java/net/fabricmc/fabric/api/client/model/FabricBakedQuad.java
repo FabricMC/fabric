@@ -25,20 +25,20 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 /**
- * Mirror of {@link BakedQuad} in purpose and operation but provides extended
- * vertex data and does not force concrete subclassing of BakedQuad.<p>
+ * Mirror of {@link BakedQuad} in purpose and operation but supports extended
+ * vertex formats and does not force concrete subclassing of BakedQuad.<p>
  * 
  * Fabric causes BakedQuads to implement FabricBakedQuad, so you if you
  * already have a BakedQuad instance you can safely cast it to FabricBakedQuad
  * any place a FabricBakedQuad instance is required.<p>
  * 
  * Conversely, a FabricBakedQuad does <em>not</em> need to be a BakedQuad. 
- * However, it is trivial to convert to convert to a BakedQuad when vertex
+ * However, it is trivial to convert a FabricBakedQuad to a BakedQuad when vertex
  * formats are compatible and a default method for that purpose is provided.<p>
  * 
- * For compatibility, implementations must ensure the first texture layer is
- * always the desired default appearance when a rendering plugin is not available,
- * and also ensure the first layer is associated with {@link Block#getRenderLayer()}.<p>
+ * For compatibility, quads with multiple texture layers must ensure the first texture layer is
+ * always the desired default appearance when a rendering plug-in is not available,
+ * and also ensure the first texture layer is associated with {@link Block#getRenderLayer()}.<p>
  * 
  * @see {@link #toBakedQuad()}<p>
  */
@@ -94,13 +94,13 @@ public interface FabricBakedQuad {
      * to use it or implement any special handling for it.
      */
     Sprite getSprite();
-     
+    
     /**
      * Bit flags identifying the BlockRenderLayer for each layer in this quad. <p>
      * 
      * When a {@link RenderPlugin#equals(Object)} is active and this model is
      * rendered in a block context, the plug in will use this information to 
-     * control alpha, cutout and mipmapping for the texture layers in this quad.<p>
+     * control alpha, cutout and mip-mapping for the texture layers in this quad.<p>
      * 
      * If zero, or if no render plug in is active, this value is ignored and block models
      * will be rendered using the render layer of the block associated with this model.
@@ -110,7 +110,7 @@ public interface FabricBakedQuad {
      * Format is two bits per layer, with values 0-3 corresponding to {@link BlockRenderLayer} ordinal
      * with the first texture layer in the least-significant bit position. For example, {@link BlockRenderLayer#TRANSLUCENT}
      * for layer 3 would be represented as 0b110000. Up to sixteen texture layers can be represented, 
-     * though few if any rendering plug-ins are ever likely to support that many.
+     * though few if any rendering plug-ins are ever likely to support that many.<p>
      * 
      * Some logical restrictions and best practices apply for quads that 
      * do not specify a custom shader...<p>
@@ -121,13 +121,13 @@ public interface FabricBakedQuad {
      * TRANSLUCENT layers should be after SOLID and CUTOUT layers, though it
      * may not matter for render plug-ins using shaders for texture blending.<p>
      * 
-     * Block Entity Renderer quads have an additional, important restriction:
+     * {@link FastRenderableBlockEntity} quads have an additional, important restriction:
      * If TRANSLUCENT occurs, then SOLID <em>must</em> also occur (as the first layer).
      * This is necessary because transparency sort for that scenario is typically not feasible 
      * with contemporary hardware, but translucent overlay textures on solid quads 
      * can be rendered correctly without sorting. This specification does not
-     * define what a render plug-in will do with stand-alone translucent BER quads, 
-     * but unless the plug-in is doing <em>very</em> sophisticated transparency handling,
+     * define what a render plug-in will do with stand-alone translucent FRBE quads, 
+     * but unless the plug-in is doing very sophisticated transparency handling,
      * it almost certainly will not be the desired result.<p>
      * 
      * Lastly, note that CUTOUT textures are likely to cause Z-fighting if a solid
@@ -153,7 +153,7 @@ public interface FabricBakedQuad {
      * Alternatively, the implementation must override {@link #toBakedQuad()} and translate the
      * vertex data to the appropriate standard format. The first approach is typically more performant.<p>
      * 
-     * If a render plug-in is present, this value must be one of the standard Minecraft formats
+     * If a render plug-in is present, this value must be one of the standard formats in {@link FabricVertexFormat}
      * (which all plug-ins will support) or a format supported by the plug in.  Rendering behavior
      * in the case of unsupported formats is not defined by this specification.
      */
@@ -165,7 +165,7 @@ public interface FabricBakedQuad {
      * plug-ins support shaders, and the default value of -1 indicates that 
      * "standard" rendering should be used for this quad.<p>
      * 
-     * What a "standard" render looks like is entirely at the discretion of the 
+     * What a standard render looks like is entirely at the discretion of the 
      * render plug-in author(s), so that players, pack makers and mod authors 
      * can make their own decisions based on aesthetics and/or performance considerations.<p>
      * 
@@ -206,7 +206,7 @@ public interface FabricBakedQuad {
      * Create a new baked quad based on the first texture layer.<p>
      * 
      * Using an internal vertex format that is binary-compatible with Minecraft 
-     * standards (meaning the first 28 integers specify match a vanilla quad) is
+     * standards (meaning the first 28 integers specify a vanilla quad) is
      * useful as a means to ensure this is a trivial operation
      * because the need for backward compatibility is inevitable.<p>
      * 
@@ -219,8 +219,7 @@ public interface FabricBakedQuad {
     default BakedQuad toBakedQuad() {
         int[] vertexData = new int[28];
         System.arraycopy(getVertexData(), firstVertexIndex(), vertexData, 0, 28);
-        int color0 = getColorIndex(); // TODO - check if color applies to layer 0
-        return new BakedQuad(vertexData, color0, getFace(), getSprite());
+        return new BakedQuad(vertexData, getColorIndex(), getFace(), getSprite());
     }
     
     /**
@@ -232,8 +231,8 @@ public interface FabricBakedQuad {
      * reported by this instance will never change.  An immutable instance can therefore
      * be reliably wrapped or aggregated by some other mod or implementation without copying.<p>
      * 
-     * Note this implies an immutable quad will have either a block or item vertex format, and
-     * will have no way for this to be changed.  In particular, mod authors should be 
+     * Note this implies an immutable quad will have fixed vertex format, with
+     * no way for this to be changed.  In particular, mod authors should be 
      * cautious of capturing a quad with an unspecified (context-dependent) vertex format
      * and using it in a different context.  In such cases, depending on usage,  it may be
      * necessary to infer the format based on the context in which the quad was obtained, 

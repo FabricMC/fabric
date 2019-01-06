@@ -51,7 +51,6 @@ import net.minecraft.client.render.model.BakedModel;
  * @see {@link FabricBakedQuad}
  */
 public interface FabricBakedModel extends BakedModel, FabricBakedQuadProducer {
-	
     /**
      * All implementations of FabricBakedModel are expected to be mutable by default.<p>
      * 

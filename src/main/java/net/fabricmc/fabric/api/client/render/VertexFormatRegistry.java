@@ -21,7 +21,7 @@ import net.minecraft.util.Identifier;
 
 public interface VertexFormatRegistry {
     VertexFormatRegistry INSTANCE = VertexFormatRegistryImpl.INSTANCE;
-    
+
     /**
      * Makes a vertex format discoverable by other mods.
      * The three standard formats will always be pre-registered.<p>
@@ -34,7 +34,7 @@ public interface VertexFormatRegistry {
      * different identifier.
      */
     boolean register(FabricVertexFormat format);
-    
+
     /**
      * Retrieve an existing format with the given identifier.
      * Returns null if no matching format is present.

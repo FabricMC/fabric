@@ -24,10 +24,6 @@ import net.fabricmc.fabric.impl.client.render.RenderConfigurationImpl;
 public interface RenderConfiguration {
     RenderConfiguration INSTANCE = RenderConfigurationImpl.INSTANCE;
 
-    // TODO: should we log a warning for a second registration attempt?
-    // Would a hard failure be better? If so, is UnsupportedOperationException
-    // sufficient or do we want a custom exception?
-    
     /**
      * Rendering extension mods must implement {@link RenderPlugin} and 
      * call this method during initialization.<p>
@@ -36,14 +32,15 @@ public interface RenderConfiguration {
      * If a second mod attempts to register as the render plug in
      * this method will fail softly, to allow for mods that implement
      * other features in addition to being a render plug-in. However,
-     * this is not recommended - plug in mods should do one thing.<p>
+     * this is not recommended. Plug-in mods should do one thing.<p>
      * 
      * @see {@link RenderPlugin}
      */
     void registerRenderPlugIn(RenderPlugin plugin);
 
     /**
-     * Access to render plugin for creating and retrieving shaders and uniforms.
+     * Access to render plug-in for creating and retrieving shaders and uniforms.
+     * Plug-ins are not required to support those features.
      * Will return null if no render plug in is active.
      */
     RenderPlugin getActiveRenderPlugin();

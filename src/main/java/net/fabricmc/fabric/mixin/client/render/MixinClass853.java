@@ -35,7 +35,7 @@ import net.minecraft.world.chunk.WorldChunk;
 @Mixin(class_853.class)
 public abstract class MixinClass853 implements ModelBlockView {
     private HashMap<BlockPos, Object> fabric_renderDataObjects;
-    
+
     @Inject(at = @At("RETURN"), method = "<init>")
     public void init(World world, int cxOff, int czOff, WorldChunk[][] chunks, BlockPos posFrom, BlockPos posTo, CallbackInfo info) {
         HashMap<BlockPos, Object> map = new HashMap<>();
@@ -47,7 +47,7 @@ public abstract class MixinClass853 implements ModelBlockView {
                     if (entPos.getX() >= posFrom.getX() && entPos.getX() <= posTo.getX()
                             && entPos.getY() >= posFrom.getY() && entPos.getY() <= posTo.getY()
                             && entPos.getZ() >= posFrom.getZ() && entPos.getY() <= posTo.getZ()) {
-                        
+
                         Object o = ((RenderDataProvidingBlockEntity) entry.getValue()).getRenderData();
                         if (o != null) {
                             map.put(entPos, o);
@@ -56,7 +56,7 @@ public abstract class MixinClass853 implements ModelBlockView {
                 }
             }
         }
-        
+
         this.fabric_renderDataObjects = map;
     }
 

@@ -31,8 +31,7 @@ import net.minecraft.block.entity.BlockEntity;
  * and well-checked for unusual states.<p>
  * 
  * This method is also used for a similar purpose but with significant differences
- * by Block Entities that implement {@link FastRenderableBlockEntity}.  Look there
- * for more information.
+ * by Block Entities that implement {@link FastRenderableBlockEntity}.
  */
 @FunctionalInterface
 public interface RenderDataProvidingBlockEntity {

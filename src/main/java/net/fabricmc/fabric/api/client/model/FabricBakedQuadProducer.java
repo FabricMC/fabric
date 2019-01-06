@@ -44,7 +44,7 @@ public interface FabricBakedQuadProducer {
      * <H1>General Notes</H1><p>
      *      
      * The {@link #produceFabricBakedQuads(ModelBlockView, BlockState, BlockPos, Random, long, Consumer)} method 
-     * is used for block rendering, block entity rendering and item rendering, with 
+     * is used for block rendering, fast block entity rendering and item rendering, with 
      * differences described in the sections below.  In all contexts, the method
      * will be called exactly once, and must produce all quads that should be rendered.<p>
      *  
@@ -63,10 +63,10 @@ public interface FabricBakedQuadProducer {
      * 
      * <H1>Block Rendering</H1><p>
      * 
-     * Implementation must infer that block model quads are requested when the block-specific
+     * Implementations must infer that block model quads are requested when the block-specific
      * parameters (world view, block state and block position) are non-null.  Quads returned
-     * in that context MUST use a block-compatible vertex format. (The first 28 elements must
-     * match standard Minecraft block format.)  Render plug-ins are not <em>required</em> to translate
+     * in that context must use {@link FabricVertexFormat#STANDARD_BLOCK} or a plug-in provided 
+     * format known to be supported for block rendering. Render plug-ins are not required to translate
      * vertex formats if a mismatched format is provided, which could lead to visual defects.<p>
      * 
      * If vertex format is {@link FabricVertexFormat#STANDARD_UNSPECIFIED}
@@ -82,10 +82,6 @@ public interface FabricBakedQuadProducer {
      * obscured by neighboring blocks.  Performing this check in the model allows implementations 
      * to exploit internal knowledge of geometry to avoid unnecessary checks.<p>
      * 
-     * If vertex format for quads is something other than {@link FabricVertexFormat#STANDARD_UNSPECIFIED}
-     * BakedModel.isAmbientOcclusion() will be ignored by the RenderPlugIn because it will 
-     * expect {@link FabricBakedQuad}s to specify that information per-layer.<p>
-     * 
      * The RenderView parameter provides access to cached block state, fluid state, 
      * and lighting information. Models should avoid using {@link ModelBlockView#getBlockEntity(BlockPos)}
      * to ensure thread safety because this method is called outside the main client thread.
@@ -94,14 +90,14 @@ public interface FabricBakedQuadProducer {
      * With {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
      * parameter is normally initialized with the same seed prior to each face/render layer.
      * Because this method is called only once per block, implementations should reseed the 
-     * provided Random for models that expect it. This will especially important for implementations 
+     * provided Random for models that expect it. This is especially important for implementations 
      * that "wrap" existing models that do not implement this interface.<p>
      *
      * <H1>Block Entity Rendering</H1><p>
      * 
      * This method will be called to re-buffer block models for {@link BlockEntity}s that implement
      * {@link FastRenderableBlockEntity}.  Behavior in that case is almost identical to a conventional
-     * block render, except that the block view parameter will always be null, because cached world
+     * block render, except the block view parameter will always be null because cached world
      * state will not be available. Implementations using that feature must capture all information that
      * relies on world state in an earlier call to {@link RenderDataProvidingBlockEntity#getRenderData()}.<p>
      * 
@@ -110,21 +106,20 @@ public interface FabricBakedQuadProducer {
      *
      * <H1>Item Rendering</H1><p>
      * 
-     * Implementations must infer that item model quads are requested when the block-specific
-     * parameters (world view, block state and block position) are null.  Quads returned
-     * in that context MUST use an item-compatible vertex format. (The first 28 elements must
-     * match standard Minecraft item format.)  Render plug-ins are not <em>required</em> to 
-     * translate vertex formats if a mismatched format is provided, which could lead to visual defects.<p>
+     * Implementations must infer that item model quads are requested when the block-state
+     * parameter is null.  Quads returned in that context must use {@link FabricVertexFormat#STANDARD_ITEM}
+     * or an item-compatible vertex format defined by the current render plug-in. Render plug-ins are 
+     * not required to translate vertex formats if a mismatched format is provided, which could lead to visual defects.<p>
      * 
      * If the vertex format of any quad is {@link FabricVertexFormat#STANDARD_UNSPECIFIED}
-     * the render plug in will assume the vertex format is {@link FabricVertexFormat#STANDARD_ITEM},
+     * the render plug-in will assume the vertex format is {@link FabricVertexFormat#STANDARD_ITEM}
      * when this call is made in an item-rendering context.  This should only be the case for standard Minecraft
      * {@link BakedQuad}s that are being cast to {@link FabricBakedQuad}.<p>
      * 
      * To remain consistent with Minecraft item rendering, the random parameter sent by the 
      * render plug in will be non-null, and the seed will always be 42.<p>
      * 
-     * Item quads models are not expected to have dynamic customization at this stage.  Customization
+     * Item models are not expected to have dynamic customization at this stage.  Customization
      * of item models happens via {@link BakedModel#getItemPropertyOverrides()}, as it does with
      * standard {@link BakedModel}s.  This model should be the result of that method when {@link #produceFabricBakedQuads(ModelBlockView, BlockState, BlockPos, Random, long, Consumer)}
      * is called, and any necessary customization should have already occurred.<p>

@@ -26,26 +26,26 @@ import net.minecraft.world.BlockView;
  * 
  * There are differences from BlockView consumers must understand:<p>
  * 
- * <li> BlockEntity implementations that provide data for model customization should implement 
+ * BlockEntity implementations that provide data for model customization should implement 
  * {@link RenderDataProvidingBlockEntity} which will be queried on the main thread when a render
  * chunk is enqueued for rebuild. The model should retrieve the results via {@link #getCachedRenderData()}.
  * While {@link #getBlockEntity(net.minecraft.util.math.BlockPos)} is not disabled, it
  * is not thread-safe for use on render threads.  Models that violate this guidance are
- * responsible for any necessary synchronization or collision detection.</li><p>
+ * responsible for any necessary synchronization or collision detection.<p>
  * 
- * <li> {@link #getBlockState(net.minecraft.util.math.BlockPos)} and {@link #getFluidState(net.minecraft.util.math.BlockPos)}
+ * {@link #getBlockState(net.minecraft.util.math.BlockPos)} and {@link #getFluidState(net.minecraft.util.math.BlockPos)}
  * will always reflect the state cached with the render chunk.  Block and fluid states
  * can thus be different from main-thread world state due to lag between block update
  * application from network packets and render chunk rebuilds. Use of {@link #getCachedRenderData()}
- * will ensures consistency of model state with the rest of the chunk being rendered.</li><p>
+ * will ensure consistency of model state with the rest of the chunk being rendered.<p>
  *
  * This interface is only guaranteed to be present in the client environment.
  */
 public interface ModelBlockView extends BlockView {
     /**
      * For models associated with Block Entities that implement {@link RenderDataProvidingBlockEntity}
-     * this will be the most recent value provided by that implementation for the current block position.<p>
-
+     * this will be the most recent value provided by that implementation for the given block position.<p>
+     *
      * Null in all other cases, or if the result from the implementation was null.<p>
      *
      * @param <T> The render data type specific to the consuming model.

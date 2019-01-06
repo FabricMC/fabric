@@ -24,20 +24,20 @@ import net.minecraft.util.Identifier;
 
 public class VertexFormatRegistryImpl implements VertexFormatRegistry {
     public static final VertexFormatRegistryImpl INSTANCE = new VertexFormatRegistryImpl();
-    
+
     private final HashMap<Identifier, FabricVertexFormat> map = new HashMap<>();
-    
+
     private VertexFormatRegistryImpl() {
         register(FabricVertexFormatImpl.STANDARD_BLOCK);
         register(FabricVertexFormatImpl.STANDARD_ITEM);
         register(FabricVertexFormatImpl.STANDARD_UNSPECIFIED);
     };
-    
+
     @Override
     public boolean register(FabricVertexFormat format) {
         if(map.containsKey(format.id()))
             return false;
-        
+
         map.put(format.id(), format);
         return true;
     }
@@ -46,5 +46,4 @@ public class VertexFormatRegistryImpl implements VertexFormatRegistry {
     public FabricVertexFormat get(Identifier id) {
         return map.get(id);
     }
-
 }

@@ -21,14 +21,14 @@ import net.minecraft.util.Identifier;
 
 public class FabricVertexFormatImpl implements FabricVertexFormat {
     public static final FabricVertexFormatImpl STANDARD_ITEM = new FabricVertexFormatImpl(
-            new Identifier("minecraft", "item"), true, false);
-    
+            new Identifier("fabric", "item"), true, false);
+
     public static final FabricVertexFormatImpl STANDARD_BLOCK = new FabricVertexFormatImpl(
-            new Identifier("minecraft", "block"), false, true);
-    
+            new Identifier("fabric", "block"), false, true);
+
     public static final FabricVertexFormatImpl STANDARD_UNSPECIFIED = new FabricVertexFormatImpl(
-            new Identifier("minecraft", "unspecified"), true, true);
-    
+            new Identifier("fabric", "unspecified"), true, true);
+
     private final Identifier id;
     private final boolean isItemModelCompatible;
     private final boolean isBlockModelCompatible;
@@ -38,7 +38,7 @@ public class FabricVertexFormatImpl implements FabricVertexFormat {
         this.isItemModelCompatible = isItem;
         this.isBlockModelCompatible = isBlock;
     }
-    
+
     @Override
     public Identifier id() {
         return id;
