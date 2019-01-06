@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.model;
 import net.fabricmc.fabric.api.client.render.FabricVertexFormat;
 import net.fabricmc.fabric.api.client.render.RenderPlugin;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.block.BlockRenderLayer;
+import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
