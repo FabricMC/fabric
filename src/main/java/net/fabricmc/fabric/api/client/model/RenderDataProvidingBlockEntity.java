@@ -19,16 +19,20 @@ package net.fabricmc.fabric.api.client.model;
 import net.minecraft.block.entity.BlockEntity;
 
 /**
- * Interface for {@link BlockEntity}s which provide "render data".
+ * Interface for {@link BlockEntity}s which provide "render data".<p>
  *
  * Render data is additional rendering information separate from the BlockState,
  * cached during chunk cache building on the main thread (safely) and accessible
- * during chunk rendering on non-main threads.
+ * during chunk rendering on non-main threads.<p>
  *
  * For this reason, please ensure that all accesses to the passed render data are
  * thread-safe. This can be achieved by, for example, passing a pre-generated
  * immutable object, or ensuring all gets performed on the passed object are atomic
- * and well-checked for unusual states.
+ * and well-checked for unusual states.<p>
+ * 
+ * This method is also used for a similar purpose but with significant differences
+ * by Block Entities that implement {@link FastBlockEntityRenderer}.  Look there
+ * for more information.
  */
 @FunctionalInterface
 public interface RenderDataProvidingBlockEntity {

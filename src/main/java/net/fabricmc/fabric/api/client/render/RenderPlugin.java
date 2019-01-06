@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.api.client.render;
 
 import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
+import net.fabricmc.fabric.api.client.model.FabricBakedQuadProducer;
+import net.fabricmc.fabric.api.client.model.FastBlockEntityRenderer;
 import net.minecraft.util.Identifier;
 
 /**
@@ -32,21 +34,67 @@ import net.minecraft.util.Identifier;
  */
 public interface RenderPlugin {
 
+    /**
+     * True if this plug-in implements the feature specified by {@link FastBlockEntityRenderer}
+     */
+    boolean isFastBlockEntityRenderSupported();
+
+    /**
+     * True if the given format can be accepted by this plug-in as output from
+     * {@link FabricBakedQuadProducer#produceFabricBakedQuads()}.<p>
+     * 
+     * All plug-ins <em>must</em> support at least the three standard vertex formats
+     * defined in {@link FabricVertexFormat}.
+     */
     boolean isSupportedForModelInput(FabricVertexFormat format);
     
+    /**
+     * True if the given vertex format can be rendered using the standard lighting
+     * and coloration logic implemented by this plug-in. This check refers to the model vertex 
+     * format output in {@link FabricBakedQuadProducer#produceFabricBakedQuads()}.<p>
+     * 
+     * If true, it implies that {@link #isSupportedForModelInput(FabricVertexFormat)} is also true.
+     * However, some model vertex format can be input but not rendered.  This is typically the
+     * case only for specialized vertex formats meant for used by custom shaders.<p>
+     * 
+     * If the format is not something the plug-in can render directly from a vertex
+     * buffer, a true result implies the plug-in will automatically handle any necessary
+     * translation.  There is no equivalent to {@link #isTranslationSupported()} for standard renders.
+     */
     boolean isSupportedForStandardRender(FabricVertexFormat format);
     
-    boolean isSupportedForShaders(FabricVertexFormat format);
+    /**
+     * True if the given vertex format can be made available to custom shaders by this plug-in.
+     * Will always be false for plug-ins that do not support shaders. A true result does not
+     * imply the format can be loaded from a model, but in that case the format will only be
+     * available to shaders if the plug-in supports the necessary format translation.
+     */
+    default boolean isSupportedForShaders(FabricVertexFormat format) {
+        return false;
+    }
     
+    /**
+     * True if the plug-in is able to accept the modelFormat as input and make it available
+     * to a custom shader in the given shader format. 
+     */
     boolean isTranslationSupported(FabricVertexFormat modelFormat, FabricVertexFormat shaderFormat);
     
+    /**
+     * The maximum number of texture layers supported by this plug-in for multi-texture rendering.
+     * Must be at least 1. Plug-ins are not required to support this feature.<p>
+     * 
+     * The Minecraft light-map texture is, strictly speaking, a form of multi-texture rendering, but
+     * this result only refers to additional UV texture coordinates that can be provided from models.
+     */
     default int maxTextureDepth() {
         return 1;
     }
     
     /**
-     * Identifies the set of feature flag supported by this plug-in.
-     * Intended to support and encourage adoption of shared feature sets.<p>
+     * Identifies the set of feature flags supported by this plug-in. The use of
+     * a name-spaced identifier is meant to encourage adoption of shared feature sets.<p>
+     * 
+     * A null result implies that no additional features are supported.<p>
      * 
      * @see {@link RenderPlugin#supportedFeatureFlags()}, {@link FabricBakedQuad#getFeatureFlags()}
      */

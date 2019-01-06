@@ -22,7 +22,22 @@ import net.minecraft.util.Identifier;
 public interface VertexFormatRegistry {
     VertexFormatRegistry INSTANCE = VertexFormatRegistryImpl.INSTANCE;
     
+    /**
+     * Makes a vertex format discoverable by other mods.
+     * The three standard formats will always be pre-registered.<p>
+     * 
+     * Returns true of the format was added.  Returns false if 
+     * the format was already present.
+     * 
+     * Format creates are advised not to change formats once released
+     * to avoid conflicts. Updated formats should be released with a
+     * different identifier.
+     */
     boolean register(FabricVertexFormat format);
     
+    /**
+     * Retrieve an existing format with the given identifier.
+     * Returns null if no matching format is present.
+     */
     FabricVertexFormat get(Identifier id);
 }

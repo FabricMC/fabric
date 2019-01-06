@@ -97,15 +97,26 @@ public interface FabricBakedQuadProducer {
      * provided Random for models that expect it. This will especially important for implementations 
      * that "wrap" existing models that do not implement this interface.<p>
      *
+     * <H1>Block Entity Rendering</H1><p>
+     * 
+     * This method will be called to re-buffer block models for {@link BlockEntity}s that implement
+     * {@link FastBlockEntityRenderer}.  Behavior in that case is almost identical to a conventional
+     * block render, except that the block view parameter will always be null, because cached world
+     * state will not be available. Implementations using that feature must capture all information that
+     * relies on world state in an earlier call to {@link RenderDataProvidingBlockEntity#getRenderData()}.<p>
+     * 
+     * Consult {@link FastBlockEntityRenderer} for additional information.<p>
+     *  
+     *
      * <H1>Item Rendering</H1><p>
      * 
-     * Implementation must infer that item model quads are requested when the block-specific
+     * Implementations must infer that item model quads are requested when the block-specific
      * parameters (world view, block state and block position) are null.  Quads returned
      * in that context MUST use an item-compatible vertex format. (The first 28 elements must
      * match standard Minecraft item format.)  Render plug-ins are not <em>required</em> to 
      * translate vertex formats if a mismatched format is provided, which could lead to visual defects.<p>
      * 
-     * If vertex format of any quad is {@link FabricVertexFormat#STANDARD_UNSPECIFIED}
+     * If the vertex format of any quad is {@link FabricVertexFormat#STANDARD_UNSPECIFIED}
      * the render plug in will assume the vertex format is {@link FabricVertexFormat#STANDARD_ITEM},
      * when this call is made in an item-rendering context.  This should only be the case for standard Minecraft
      * {@link BakedQuad}s that are being cast to {@link FabricBakedQuad}.<p>
