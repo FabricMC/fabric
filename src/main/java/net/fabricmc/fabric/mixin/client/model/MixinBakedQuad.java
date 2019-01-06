@@ -39,7 +39,7 @@ public abstract class MixinBakedQuad implements FabricBakedQuad {
     }
 
     @Override
-    public int getLightingFlags() {
+    public int getFeatureFlags() {
         return 0;
     }
 }

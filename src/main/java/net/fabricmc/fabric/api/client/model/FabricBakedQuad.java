@@ -66,7 +66,7 @@ public interface FabricBakedQuad {
 
     /**
      * Same as {@link BakedQuad#hasColor()} but will not apply to texture
-     * layers for which it is disabled via {@link #getLightingFlags()}, when the
+     * layers for which it is disabled via {@link #getFeatureFlags()}, when the
      * active render plug-in supports that feature.
      */
     default boolean hasColor() {
@@ -75,7 +75,7 @@ public interface FabricBakedQuad {
 
     /**
      * Same as {@link BakedQuad#getColorIndex()} but will not apply to texture
-     * layers for which it is disabled via {@link #getLightingFlags()}, when the
+     * layers for which it is disabled via {@link #getFeatureFlags()}, when the
      * active render plug-in supports that feature.
      */
     default int getColorIndex() {
@@ -179,23 +179,26 @@ public interface FabricBakedQuad {
     }
     
     /**
-     * Bitwise flags indicating color and lighting treatment requested of the 
-     * active rendering plug-in.<p>
+     * Bitwise flags indicating activation of special color, lighting or other 
+     * optional features supported by the active rendering plug-in.<p>
      * 
-     * The available flags and their effects are documented in {@link ModelRenderOptions}.
-     * To construct a value, flags are simply added or bitwise or'd together.<p>
+     * The available flags and their effects are defined per implementation.
+     * Plug-ins can adopt shared standards for feature sets. The feature set
+     * for the current rendering plug-in is identified by {@link RenderPlugin#featureSetId()}.
+     * To construct a value, bit flags defined by the feature set are added or bitwise or'd together.<p>
      * 
-     * The large number of options and the fact that the options are queried for
+     * The large number of potential options and the fact that options are queried for
      * every quad are the rationale for a bit-wise representation with a single 
-     * access method. Models are never required to implement this feature
-     * and the flags are specified so that a zero value always indicates normal block 
+     * access method. Plug-ins are never required to implement extended options
+     * and flags are always specified so that a zero value always indicates normal block 
      * tint and normal lighting.<p>
      * 
-     * Render plug-ins are not required to implement all the specified options.
-     * Models can query the available features via {@link RenderPlugin#supportedLightingFlags()}.
-     * Set bits in that result will correspond to bit positions of the flags specified below.<p>
+     * Render plug-ins are not required to implement all the options in the
+     * feature set they adopt. Models can query the available features via {@link RenderPlugin#supportedFeatureFlags()}.
+     * Set bits in that result will correspond to bit positions of the flags in the
+     * feature set.<p>
      */
-    default int getLightingFlags() {
+    default int getFeatureFlags() {
         return 0;
     }
     

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.client.render;
 
+import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
+import net.minecraft.util.Identifier;
+
 /**
  * Interface for rendering plug-ins that provide enhanced capabilities
  * for model lighting, buffering and rendering.  All plug-ins should
@@ -41,7 +44,23 @@ public interface RenderPlugin {
         return 1;
     }
     
-    default int supportedLightingFlags() {
+    /**
+     * Identifies the set of feature flag supported by this plug-in.
+     * Intended to support and encourage adoption of shared feature sets.<p>
+     * 
+     * @see {@link RenderPlugin#supportedFeatureFlags()}, {@link FabricBakedQuad#getFeatureFlags()}
+     */
+    default Identifier featureSetId() {
+        return null;
+    }
+    
+    /**
+     * Identifies which options in the current feature set are supported by this plug-in.
+     * Plug-ins are not required to implement all features declared in a feature set.<p>
+     * 
+     * @see {@link RenderPlugin#featureSetId()}, {@link FabricBakedQuad#getFeatureFlags()}
+     */
+    default int supportedFeatureFlags() {
         return 0;
     }
 }
