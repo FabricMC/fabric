@@ -36,6 +36,7 @@ import net.minecraft.util.math.BlockPos;
  * Implementations of {@link FabricBakedModel} should implement this interface without
  * reference to or reliance on the default implementation in {@link BakedModel}.
  */
+@FunctionalInterface
 public interface FabricBakedQuadProducer {
     /**
      * Similar in purpose to BakedModel.getQuads(), with significant differences:<p>

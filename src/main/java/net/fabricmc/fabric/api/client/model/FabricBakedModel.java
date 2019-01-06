@@ -63,7 +63,7 @@ public interface FabricBakedModel extends BakedModel, FabricBakedQuadProducer {
      * The immutable guarantee extends to side-effects of {@link #getItemPropertyOverrides()},
      * but <em>not</em> the outputs of that method. Calling that method will not change 
      * any publicly observable attribute of this instance but models returned may or may
-     * not immutable. Nor does the guarantee require the results of {@link #getItemPropertyOverrides()} 
+     * not be immutable. Nor does the guarantee require the results of {@link #getItemPropertyOverrides()} 
      * to always be identical.<p>
      * 
      * Consumers that "wrap" or keep a reference to a FabricBakedModel instance should always

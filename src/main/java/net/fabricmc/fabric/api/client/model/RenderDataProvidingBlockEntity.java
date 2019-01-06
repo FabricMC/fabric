@@ -30,6 +30,7 @@ import net.minecraft.block.entity.BlockEntity;
  * immutable object, or ensuring all gets performed on the passed object are atomic
  * and well-checked for unusual states.
  */
+@FunctionalInterface
 public interface RenderDataProvidingBlockEntity {
     /**
      * @return The render data provided by this object. Can be null.
