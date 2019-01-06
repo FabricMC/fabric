@@ -18,6 +18,8 @@
     "events.tick.MixinMinecraftServer",
     "events.tick.MixinWorld",
     "itemgroup.MixinItemGroup",
+    "loot.MixinLootEntries",
+    "loot.MixinTagEntry",
     "misc.MixinCrashReport",
     "networking.MixinServerPlayNetworkHandler",
     "networking.MixinSPacketCustomPayload",
