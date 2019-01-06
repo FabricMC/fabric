@@ -100,12 +100,12 @@ public interface FabricBakedQuadProducer {
      * <H1>Block Entity Rendering</H1><p>
      * 
      * This method will be called to re-buffer block models for {@link BlockEntity}s that implement
-     * {@link FastBlockEntityRenderer}.  Behavior in that case is almost identical to a conventional
+     * {@link FastRenderableBlockEntity}.  Behavior in that case is almost identical to a conventional
      * block render, except that the block view parameter will always be null, because cached world
      * state will not be available. Implementations using that feature must capture all information that
      * relies on world state in an earlier call to {@link RenderDataProvidingBlockEntity#getRenderData()}.<p>
      * 
-     * Consult {@link FastBlockEntityRenderer} for additional information.<p>
+     * Consult {@link FastRenderableBlockEntity} for additional information.<p>
      *  
      *
      * <H1>Item Rendering</H1><p>

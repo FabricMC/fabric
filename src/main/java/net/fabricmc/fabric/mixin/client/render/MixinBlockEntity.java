@@ -16,14 +16,25 @@
 
 package net.fabricmc.fabric.mixin.client.render;
 
+import net.fabricmc.fabric.api.client.model.FastRenderableBlockEntity;
 import net.fabricmc.fabric.api.client.model.RenderDataProvidingBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(BlockEntity.class)
-public class MixinBlockEntity implements RenderDataProvidingBlockEntity {
+public class MixinBlockEntity implements RenderDataProvidingBlockEntity, FastRenderableBlockEntity {
     @Override
     public Object getRenderData() {
         return null;
+    }
+
+    @Override
+    public boolean isFastRenderSupported() {
+        return false;
+    }
+
+    @Override
+    public boolean checkForRenderUpdate(int tickCounter) {
+        return false;
     }
 }

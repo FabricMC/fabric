@@ -35,7 +35,7 @@ import net.minecraft.block.entity.BlockEntity;
  * 
  * When these conditions are met, the plug-in will do the following:
  * <li>At least once per client tick (20X per second) the plug-in will call
- * {@link FastBlockEntityRenderer#checkForRenderUpdate(int)} from the main client thread.</li>
+ * {@link FastRenderableBlockEntity#checkForRenderUpdate(int)} from the main client thread.</li>
  * <li>If that method returns true, the plug-in will then call {@link RenderDataProvidingBlockEntity#getRenderData()},
  * also from the main client thread.</li>
  * <li>The plug-in will retrieve (or will already have) the {@link FabricBakedModel} for the block
@@ -45,10 +45,10 @@ import net.minecraft.block.entity.BlockEntity;
  * with the render data returned by the block entity. <em>The ModelBlockView parameter will be null.</em>  
  * This call <em>may occur on a thread other than the main client thread,</em> depending on the plug-in.</li>
  * <li>The plug-in will buffer the quads returned by {@link FabricBakedModel#produceFabricBakedQuads()} and
- * render them for each subsequent frame until {@link FastBlockEntityRenderer#checkForRenderUpdate(int)} returns true.
+ * render them for each subsequent frame until {@link FastRenderableBlockEntity#checkForRenderUpdate(int)} returns true.
  * When that happens, the process repeats.</li><p>
  * 
- * <b>Notes for {@link FastBlockEntityRenderer} implementors:</b><p>
+ * <b>Notes for {@link FastRenderableBlockEntity} implementors:</b><p>
  *
  * The plug-in is expected to render the model as it would any other.  If the plug-in supports 
  * emissive lighting, layered textures,  or custom shaders, those features should also work in this context.<p>
@@ -81,7 +81,7 @@ import net.minecraft.block.entity.BlockEntity;
  * The Fabric API causes {@link BlockEntity} to implement both this interface
  * and {@link RenderDataProvidingBlockEntity}, with {@link #isFastRenderSupported()}
  * returning false by default.  This means a plug-in can (and should) always safely 
- * cast any {@link BlockEntity} reference to {@link FastBlockEntityRenderer} and
+ * cast any {@link BlockEntity} reference to {@link FastRenderableBlockEntity} and
  * check {@link #isFastRenderSupported()} without <code>instanceof</code> tests.<p>
  * 
  * The plug-in is responsible for implementing <em>all</em> other contracts created
@@ -89,7 +89,7 @@ import net.minecraft.block.entity.BlockEntity;
  * to give plug-in authors complete flexibility in approach and feature support.
  * Plug-ins are encouraged but not required to support this interface.
  */
-public interface FastBlockEntityRenderer {
+public interface FastRenderableBlockEntity {
     
     /**
      * Must be true for fast block entity rendering to be enabled.

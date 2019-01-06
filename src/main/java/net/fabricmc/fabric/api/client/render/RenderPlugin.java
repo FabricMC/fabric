@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.render;
 
 import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
 import net.fabricmc.fabric.api.client.model.FabricBakedQuadProducer;
-import net.fabricmc.fabric.api.client.model.FastBlockEntityRenderer;
+import net.fabricmc.fabric.api.client.model.FastRenderableBlockEntity;
 import net.minecraft.util.Identifier;
 
 /**
@@ -35,7 +35,7 @@ import net.minecraft.util.Identifier;
 public interface RenderPlugin {
 
     /**
-     * True if this plug-in implements the feature specified by {@link FastBlockEntityRenderer}
+     * True if this plug-in implements the feature specified by {@link FastRenderableBlockEntity}
      */
     boolean isFastBlockEntityRenderSupported();
 
