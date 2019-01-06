@@ -46,7 +46,7 @@ public class FabricVertexFormatImpl implements FabricVertexFormat {
 
     @Override
     public int integerQuadStride() {
-        return 112;
+        return 28;
     }
 
     @Override
