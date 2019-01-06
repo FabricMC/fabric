@@ -18,21 +18,24 @@ package net.fabricmc.fabric.api.client.model;
 
 import java.util.Random;
 
+import net.fabricmc.fabric.api.client.render.RenderPlugin;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 
 /**
- * Interface for models that use the extended quad/vertex specification
- * (emissive lighting, multi-layer, etc) or dynamic model customization.<p>
+ * Interface for models that use extended quad/vertex specification, 
+ * dynamic model customization, or rendering features (emissive lighting, 
+ * multi-layer textures, etc) supported by the current {@link RenderPlugin}
+ * These features will only activate when a rendering plug-in is present.<p>
  * 
  * <H1>General Notes</H1><p>
  * 
- * Implementations must take care to provide a working {@link #getQuads(BlockState, net.minecraft.util.math.Direction, Random)}
+ * Implementations must provide a working {@link #getQuads(BlockState, net.minecraft.util.math.Direction, Random)}
  * method.  The getQuads() method will be used when no rendering plugin is active,
  * and will usually be used for block breaking renders and other auxilliary purposes.
  * Mods that do not recognize this interface may also use getQuads() to "wrap" this model, etc.<p>
  * 
- * FabricBakedQuads can be trivially converted to standard BakedQuad instances
+ * FabricBakedQuads can be converted to standard BakedQuad instances
  * via {@link FabricBakedQuad#toBakedQuad()}. However, each call results in a new 
  * allocation. If {@link #getQuads(BlockState, net.minecraft.util.math.Direction, Random)}getmodel 
  * is likely to be called multiple times, implementations should ensure BakedQuad instances are cached
