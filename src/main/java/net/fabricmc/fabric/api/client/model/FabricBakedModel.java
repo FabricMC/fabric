@@ -29,38 +29,31 @@ import net.minecraft.client.render.model.BakedModel;
  * 
  * Implementations must take care to provide a working {@link #getQuads(BlockState, net.minecraft.util.math.Direction, Random)}
  * method.  The getQuads() method will be used when no rendering plugin is active,
- * and will always be used for block breaking renders.  Mods that do not recognize
- * this interface may also use getQuads() to "wrap" this model, etc.<p>
+ * and will usually be used for block breaking renders and other auxilliary purposes.
+ * Mods that do not recognize this interface may also use getQuads() to "wrap" this model, etc.<p>
  * 
  * FabricBakedQuads can be trivially converted to standard BakedQuad instances
  * via {@link FabricBakedQuad#toBakedQuad()}. However, each call results in a new 
- * allocation in the default implementation.<p>
- * 
- * If this model is likely to persist over multiple chunk rebuilds (for block models) or
- * multiple render passes, implementations should ensure BakedQuad instances are cached
- * to avoid reallocating them whenever they are requested.  This can and should be done lazily.
+ * allocation. If {@link #getQuads(BlockState, net.minecraft.util.math.Direction, Random)}getmodel 
+ * is likely to be called multiple times, implementations should ensure BakedQuad instances are cached
+ * to avoid reallocating them whenever they are requested.  This can and should be done lazily.<p>
  * 
  * <H1>Item Rendering</H1><p>
  * 
  * Implementations that want to access advanced rendering features for Items
  * should simply return instances of FabricBakedModel from {@link #getItemPropertyOverrides()}.
- * Render plug-ins that support item rendering will then render your item models
- * with whatever enhanced features the plug in supports.<p>
+ * Render plug-ins that support item rendering will then render the item models
+ * with whatever enhanced features the plug-in supports.<p>
  * 
- * IN ALL CASES the first 28 vertex elements in any item model MUST use an item-compatible format.
- * As with block models, the first layer of your model (if it has more than one) should
- * give a minimally acceptable "default" appearance by itself. This is necessary for compatibility
- * when your model is being rendered without a plug in, or if the current plug in does not 
- * support item rendering.
- * 
+ * @see {@link FabricBakedQuad}
  */
 public interface FabricBakedModel extends BakedModel, FabricBakedQuadProducer {
 	
     /**
-     * All implementations of FabricBakedModel are expected to be immutable by default.<p>
+     * All implementations of FabricBakedModel are expected to be mutable by default.<p>
      * 
      * "Immutable" in this case means that all <em>public</em> properties will never change
-     * and all FabricBakedQuad produced by this instance will also be immutable.
+     * and all FabricBakedQuad instance produced by this instance will also be immutable.
      * An immutable instance can therefore be reliably wrapped or aggregated by some other 
      * mod or implementation without copying.<p>
      * 
@@ -77,15 +70,11 @@ public interface FabricBakedModel extends BakedModel, FabricBakedQuadProducer {
      * The means for obtaining or editing a mutable instance are left to implementations.
      * Mutable implementations <em>must</em> override this method to return true.
      */
-    public default boolean isImmutable() {
-        return true;
-    }
-    
-    /**
-     * All implementations that offer mutability <em>must</em> override this method to 
-     * produce a reliably immutable instance.
-     */
-    public default FabricBakedModel toImmutable() {
-        return this;
+    default boolean isImmutable() {
+        // TODO: this should be overridden to true for instances that are known to 
+        // be immutable outputs of static model loading.  However, that will require
+        // some analysis of subclasses and likely injection scenarios to provide
+        // a reliable result.  Not implemented in the current version.
+        return false;
     }
 }

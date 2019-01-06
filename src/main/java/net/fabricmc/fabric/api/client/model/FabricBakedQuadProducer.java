@@ -64,12 +64,12 @@ public interface FabricBakedQuadProducer {
      * Implementation must infer that block model quads are requested when the block-specific
      * parameters (world view, block state and block position) are non-null.  Quads returned
      * in that context MUST use a block-compatible vertex format. (The first 28 elements must
-     * match standard Minecraft block format.)  Render plug-ins are NOT required to translate
-     * vertex formats if a non-block format is provided, which could lead to visual defects.<p>
+     * match standard Minecraft block format.)  Render plug-ins are not <em>required</em> to translate
+     * vertex formats if a mismatched format is provided, which could lead to visual defects.<p>
      * 
      * If vertex format is {@link FabricVertexFormat#STANDARD_UNSPECIFIED}
      * the render plug in will assume the vertex format is {@link FabricVertexFormat#STANDARD_BLOCK},
-     * because this is a block-rendering context.  This should only be the case for standard Minecraft
+     * when this is a block-rendering context.  This should only be the case for standard Minecraft
      * {@link BakedQuad}s that are being cast to {@link FabricBakedQuad}.<p>
      * 
      * As in other contexts, this method will always be called exactly one time per block position 
@@ -100,12 +100,12 @@ public interface FabricBakedQuadProducer {
      * Implementation must infer that item model quads are requested when the block-specific
      * parameters (world view, block state and block position) are null.  Quads returned
      * in that context MUST use an item-compatible vertex format. (The first 28 elements must
-     * match standard Minecraft item format.)  Render plug-ins are NOT required to translate
-     * vertex formats if a non-item format is provided, which could lead to visual defects.<p>
+     * match standard Minecraft item format.)  Render plug-ins are not <em>required</em> to 
+     * translate vertex formats if a mismatched format is provided, which could lead to visual defects.<p>
      * 
      * If vertex format of any quad is {@link FabricVertexFormat#STANDARD_UNSPECIFIED}
      * the render plug in will assume the vertex format is {@link FabricVertexFormat#STANDARD_ITEM},
-     * because this is a block-rendering context.  This should only be the case for standard Minecraft
+     * when this call is made in an item-rendering context.  This should only be the case for standard Minecraft
      * {@link BakedQuad}s that are being cast to {@link FabricBakedQuad}.<p>
      * 
      * To remain consistent with Minecraft item rendering, the random parameter sent by the 
