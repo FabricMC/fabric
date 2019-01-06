@@ -16,7 +16,18 @@
 
 package net.fabricmc.fabric.api.client.render;
 
-//TODO: lots of docs
+/**
+ * Sub-types of RenderPlugin that support shaders and uniforms are
+ * to be defined outside the scope of the core Fabric API.  Plug-ins are
+ * not required to implement such extensions.
+ */
 public interface RenderPlugin {
 
+    default int maxTextureDepth() {
+        return 1;
+    }
+    
+    default int supportedLightingFlags() {
+        return 0;
+    }
 }

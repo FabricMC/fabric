@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
 import net.fabricmc.fabric.api.client.model.FabricBakedQuadProducer;
 import net.fabricmc.fabric.api.client.model.ModelBlockView;
+import net.fabricmc.fabric.impl.client.model.BakedModelMixinHelper;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
@@ -42,7 +43,7 @@ public interface MixinBakedModel extends FabricBakedQuadProducer {
     @Override
     default public void produceFabricBakedQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, Consumer<FabricBakedQuad> consumer) {
         final BakedModel me = (BakedModel)this;
-	    final Direction[] DIRECTIONS = MixinBakedModelHelper.DIRECTIONS;
+	    final Direction[] DIRECTIONS = BakedModelMixinHelper.DIRECTIONS;
 
         for(int i = 0; i < 6; i++) {
             random.setSeed(seed);
