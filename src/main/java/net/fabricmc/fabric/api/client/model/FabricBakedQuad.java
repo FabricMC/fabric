@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.model;
 
+import net.fabricmc.fabric.api.client.render.FabricVertexFormat;
 import net.fabricmc.fabric.api.client.render.RenderPlugin;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.block.BlockRenderLayer;

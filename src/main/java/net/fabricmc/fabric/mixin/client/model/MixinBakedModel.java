@@ -39,17 +39,16 @@ import net.minecraft.util.math.Direction;
  */
 @Mixin(BakedModel.class)
 public interface MixinBakedModel extends FabricBakedQuadProducer {
-
     @Override
-    default public void produceFabricBakedQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, Consumer<FabricBakedQuad> consumer) {
+    default void produceFabricBakedQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, Consumer<FabricBakedQuad> consumer) {
         final BakedModel me = (BakedModel)this;
 	    final Direction[] DIRECTIONS = BakedModelMixinHelper.DIRECTIONS;
 
         for(int i = 0; i < 6; i++) {
             random.setSeed(seed);
             List<BakedQuad> quads = me.getQuads(state, DIRECTIONS[i], random);
-            if(!quads.isEmpty() && Block.shouldDrawSide(state, blockView, pos, DIRECTIONS[i])) {
-                final int count = quads.size();
+            final int count = quads.size();
+            if(count != 0 && Block.shouldDrawSide(state, blockView, pos, DIRECTIONS[i])) {
                 for(int j = 0; j < count; j++)
                     consumer.accept((FabricBakedQuad) quads.get(j));
             }
@@ -57,8 +56,8 @@ public interface MixinBakedModel extends FabricBakedQuadProducer {
 
         random.setSeed(seed);
         List<BakedQuad> quads = me.getQuads(state, null, random);
-        if(!quads.isEmpty()) {
-            final int count = quads.size();
+        final int count = quads.size();
+        if(count != 0) {
             for(int j = 0; j < count; j++)
                 consumer.accept((FabricBakedQuad) quads.get(j));
         }

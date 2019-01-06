@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.client.model;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.fabricmc.fabric.api.client.model.FabricBakedQuad;
-import net.fabricmc.fabric.api.client.model.FabricVertexFormat;
+import net.fabricmc.fabric.api.client.render.FabricVertexFormat;
 import net.minecraft.client.render.model.BakedQuad;
 
 /**

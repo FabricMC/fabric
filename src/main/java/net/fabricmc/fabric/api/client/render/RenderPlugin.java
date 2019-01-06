@@ -17,12 +17,26 @@
 package net.fabricmc.fabric.api.client.render;
 
 /**
- * Sub-types of RenderPlugin that support shaders and uniforms are
- * to be defined outside the scope of the core Fabric API.  Plug-ins are
- * not required to implement such extensions.
+ * Interface for rendering plug-ins that provide enhanced capabilities
+ * for model lighting, buffering and rendering.  All plug-ins should
+ * minimally accept block and item models using standard vertex formats. <p>
+ * 
+ * The currently installed and active render plug-in, if present, can be 
+ * retrieved via {@link RenderConfiguration#getActiveRenderPlugin()}.<p>
+ * 
+ * Sub-types of RenderPlugin that support additional capabilities, including
+ * shaders and uniforms are to be defined outside the scope of the core Fabric API.
  */
 public interface RenderPlugin {
 
+    boolean isSupportedForModelInput(FabricVertexFormat format);
+    
+    boolean isSupportedForStandardRender(FabricVertexFormat format);
+    
+    boolean isSupportedForShaders(FabricVertexFormat format);
+    
+    boolean isTranslationSupported(FabricVertexFormat modelFormat, FabricVertexFormat shaderFormat);
+    
     default int maxTextureDepth() {
         return 1;
     }

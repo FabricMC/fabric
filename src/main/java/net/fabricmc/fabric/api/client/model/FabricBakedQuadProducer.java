@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.model;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import net.fabricmc.fabric.api.client.render.FabricVertexFormat;
 import net.fabricmc.fabric.api.client.render.RenderPlugin;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedQuad;
