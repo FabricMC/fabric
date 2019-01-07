@@ -14,42 +14,30 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.loot;
+package net.fabricmc.fabric.impl.loot;
 
+import net.fabricmc.fabric.api.loot.LootEntryRegistry;
 import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
 
 import java.util.function.Consumer;
 
-/**
- * Fabric's extensions to {@code net.minecraft.world.loot.entry.LootEntries}.
- *
- * @see #register
- */
-public final class FabricLootEntries {
+public final class LootEntryRegistryImpl implements LootEntryRegistry {
 	private static Consumer<LootEntry.Serializer<?>> registerFunction;
+	public static final LootEntryRegistryImpl INSTANCE = new LootEntryRegistryImpl();
 
-	/**
-	 * Registers loot entry types.
-	 *
-	 * @param serializer the loot entry serializer
-	 */
-	public static void register(LootEntry.Serializer<?> serializer) {
+	private LootEntryRegistryImpl() {}
+
+	@Override
+	public void register(LootEntry.Serializer<?> serializer) {
 		loadLootEntries();
 		registerFunction.accept(serializer);
 	}
 
-	// INTERNALS
-
-	/**
-	 * INTERNAL!
-	 *
-	 * @param registerFunction
-	 */
 	@Deprecated
 	@SuppressWarnings("DeprecatedIsStillUsed")
 	public static void setRegisterFunction(Consumer<LootEntry.Serializer<?>> registerFunction) {
-		FabricLootEntries.registerFunction = registerFunction;
+		LootEntryRegistryImpl.registerFunction = registerFunction;
 	}
 
 	private static void loadLootEntries() {

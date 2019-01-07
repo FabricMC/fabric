@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot;
+package net.fabricmc.fabric.api.loot;
 
 import net.fabricmc.fabric.impl.loot.LootEntryRegistryImpl;
-import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LootEntries.class)
-public class MixinLootEntries {
-	@Shadow
-	private static void register(LootEntry.Serializer<?> lootEntry$Serializer_1) {}
+/**
+ * Fabric's extensions to {@code net.minecraft.world.loot.entry.LootEntries}.
+ *
+ * @see #register
+ */
+public interface LootEntryRegistry {
+	LootEntryRegistry INSTANCE = LootEntryRegistryImpl.INSTANCE;
 
-	@SuppressWarnings("deprecation")
-	@Inject(method = "<clinit>", at = @At("RETURN"))
-	private static void onClinit(CallbackInfo info) {
-		LootEntryRegistryImpl.setRegisterFunction(MixinLootEntries::register);
-	}
+	/**
+	 * Registers loot entry types.
+	 *
+	 * @param serializer the loot entry serializer
+	 */
+	void register(LootEntry.Serializer<?> serializer);
 }
