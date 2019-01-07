@@ -30,7 +30,6 @@ public class MixinLootEntries {
 	@Shadow
 	private static void register(LootEntry.Serializer<?> lootEntry$Serializer_1) {}
 
-	@SuppressWarnings("deprecation")
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void onClinit(CallbackInfo info) {
 		LootEntryRegistryImpl.setRegisterFunction(MixinLootEntries::register);

@@ -34,8 +34,6 @@ public final class LootEntryRegistryImpl implements LootEntryRegistry {
 		registerFunction.accept(serializer);
 	}
 
-	@Deprecated
-	@SuppressWarnings("DeprecatedIsStillUsed")
 	public static void setRegisterFunction(Consumer<LootEntry.Serializer<?>> registerFunction) {
 		LootEntryRegistryImpl.registerFunction = registerFunction;
 	}
