@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.loot;
 
-import net.minecraft.item.Item;
-import net.minecraft.tag.Tag;
 import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
 
@@ -56,9 +54,5 @@ public final class FabricLootEntries {
 
 	private static void loadLootEntries() {
 		try { Class.forName(LootEntries.class.getCanonicalName()); } catch (ClassNotFoundException e) {}
-	}
-
-	public interface TagEntryDelegate {
-		Tag<Item> fabric_getTag();
 	}
 }

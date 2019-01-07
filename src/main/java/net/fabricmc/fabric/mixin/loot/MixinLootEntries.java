@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.mixin.loot;
 
 import net.fabricmc.fabric.loot.FabricLootEntries;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.loot.RandomTagEntry;
 import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,7 +33,6 @@ public class MixinLootEntries {
 	@SuppressWarnings("deprecation")
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void onClinit(CallbackInfo info) {
-		register(new RandomTagEntry.Serializer(new Identifier("fabric:random_from_tag")));
 		FabricLootEntries.setRegisterFunction(MixinLootEntries::register);
 	}
 }
