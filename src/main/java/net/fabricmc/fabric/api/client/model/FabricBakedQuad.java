@@ -94,29 +94,31 @@ public interface FabricBakedQuad {
      * to use it or implement any special handling for it.
      */
     Sprite getSprite();
+
+    Block b();
     
     /**
-     * Bit flags identifying the BlockRenderLayer for each layer in this quad. <p>
+     * Bit flags identifying the BlockRenderLayer for each layer in this quad.<p>
      * 
-     * When a {@link RenderPlugin#equals(Object)} is active and this model is
-     * rendered in a block context, the plug in will use this information to 
+     * When a {@link RenderPlugin} is active and this model is
+     * rendered in a block context, the-plug in will use this information to 
      * control alpha, cutout and mip-mapping for the texture layers in this quad.<p>
      * 
-     * If zero, or if no render plug in is active, this value is ignored and block models
-     * will be rendered using the render layer of the block associated with this model.
+     * If the value is negative, or if no render plug in is active, this value is ignored and block models
+     * will be rendered using {@link Block#getRenderLayer()} on the block associated with this model.
      * Render plug-ins may or may not honor these flags for item models.  If not, quads
      * in item models will typically be rendered with translucency enabled.<p>
      * 
      * Format is two bits per layer, with values 0-3 corresponding to {@link BlockRenderLayer} ordinal
      * with the first texture layer in the least-significant bit position. For example, {@link BlockRenderLayer#TRANSLUCENT}
-     * for layer 3 would be represented as 0b110000. Up to sixteen texture layers can be represented, 
-     * though few if any rendering plug-ins are ever likely to support that many.<p>
+     * for layer 3 would be represented as 0b110000. Up to fifteen texture layers can be represented, 
+     * though no rendering plug-ins are ever likely to support that many.<p>
      * 
-     * Some logical restrictions and best practices apply for quads that 
-     * do not specify a custom shader...<p>
+     * For quads with multiple texture layers, some logical restrictions and best practices 
+     * apply (absent a custom shader):<p>
      * 
-     * If SOLID occurs it should be first. Only one SOLID layer is logically useful, 
-     * because any layer before SOLID would be overwritten in the frame buffer.<p>
+     * If SOLID occurs it should appear only once and it should be for the first texture layer. 
+     * This is a logical constraint - any layer before SOLID would be overwritten in the frame buffer.<p>
      * 
      * TRANSLUCENT layers should be after SOLID and CUTOUT layers, though it
      * may not matter for render plug-ins using shaders for texture blending.<p>
@@ -131,10 +133,10 @@ public interface FabricBakedQuad {
      * it almost certainly will not be the desired result.<p>
      * 
      * Lastly, note that CUTOUT textures are likely to cause Z-fighting if a solid
-     * texture or other CUTOUT textures are also present. Most plug-ins will not try to prevent 
-     * Z-fighting by "bumping" overlay layers out (or will fail to do so) because that 
-     * approach is unreliable at longer render distances due to the single-precision floating 
-     * point calculations used in the GPU.<p>
+     * texture or other CUTOUT textures are also present. Plug-ins using the fixed OpenGL 
+     * pipeline may try to prevent Z-fighting by "bumping" overlay vertices a small distance
+     * away from block center but that approach is unreliable at longer render distances due 
+     * to the single-precision floating point calculations used in the GPU.<p>
      * 
      * To avoid Z-fighting with multiple texture layers, mods can either require a render plug-in
      * that correctly renders SOLID-CUTOUT overlays correctly via in-shader texture blending,
@@ -143,8 +145,10 @@ public interface FabricBakedQuad {
      * burden for plug-ins that offer in-shader texture blending, but does limit texture 
      * selection to textures designed for translucent renders.<p>
      */
-    int getRenderLayerFlags();
-    
+    default int getRenderLayerFlags() {
+        return -1;
+    }
+
     /**
      * Describes the byte-wise organization of data returned by {@link #getVertexData()}.<p>
      * 
@@ -177,7 +181,7 @@ public interface FabricBakedQuad {
     default int getShaderId() {
         return -1;
     }
-    
+
     /**
      * Bitwise flags indicating activation of special color, lighting or other 
      * optional features supported by the active rendering plug-in.<p>
@@ -201,7 +205,7 @@ public interface FabricBakedQuad {
     default int getFeatureFlags() {
         return 0;
     }
-    
+
     /**
      * Create a new baked quad based on the first texture layer.<p>
      * 
@@ -221,7 +225,7 @@ public interface FabricBakedQuad {
         System.arraycopy(getVertexData(), firstVertexIndex(), vertexData, 0, 28);
         return new BakedQuad(vertexData, getColorIndex(), getFace(), getSprite());
     }
-    
+
     /**
      * All implementations of FabricBakedQuad are expected to be mutable by default.
      * While this is not necessarily an accurate assumption, it is safest to assume

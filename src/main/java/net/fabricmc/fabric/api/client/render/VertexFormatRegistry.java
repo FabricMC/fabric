@@ -27,9 +27,9 @@ public interface VertexFormatRegistry {
      * The three standard formats will always be pre-registered.<p>
      * 
      * Returns true of the format was added.  Returns false if 
-     * the format was already present.
+     * the format was already present.<p>
      * 
-     * Format creates are advised not to change formats once released
+     * Format authors are advised not to change formats once released
      * to avoid conflicts. Updated formats should be released with a
      * different identifier.
      */
