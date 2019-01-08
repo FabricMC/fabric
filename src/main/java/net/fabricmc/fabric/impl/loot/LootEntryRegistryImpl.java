@@ -23,6 +23,7 @@ import net.minecraft.world.loot.entry.LootEntry;
 import java.util.function.Consumer;
 
 public final class LootEntryRegistryImpl implements LootEntryRegistry {
+	private static boolean hasLoaded = false;
 	private static Consumer<LootEntry.Serializer<?>> registerFunction;
 	public static final LootEntryRegistryImpl INSTANCE = new LootEntryRegistryImpl();
 
@@ -30,7 +31,7 @@ public final class LootEntryRegistryImpl implements LootEntryRegistry {
 
 	@Override
 	public void register(LootEntry.Serializer<?> serializer) {
-		loadLootEntries();
+		if (!hasLoaded) loadLootEntries();
 		registerFunction.accept(serializer);
 	}
 
@@ -40,5 +41,6 @@ public final class LootEntryRegistryImpl implements LootEntryRegistry {
 
 	private static void loadLootEntries() {
 		try { Class.forName(LootEntries.class.getCanonicalName()); } catch (ClassNotFoundException e) {}
+		hasLoaded = true;
 	}
 }
