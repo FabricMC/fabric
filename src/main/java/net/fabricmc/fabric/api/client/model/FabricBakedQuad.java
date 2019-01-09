@@ -94,8 +94,6 @@ public interface FabricBakedQuad {
      * to use it or implement any special handling for it.
      */
     Sprite getSprite();
-
-    Block b();
     
     /**
      * Bit flags identifying the BlockRenderLayer for each layer in this quad.<p>
