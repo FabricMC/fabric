@@ -27,7 +27,7 @@ targetCompatibility = 1.8
 archivesBaseName = "fabric"
 
 def baseVersion = "0.1.4"
-def mcVersion = "18w50a"
+def mcVersion = "19w02a"
 
 def ENV = System.getenv()
 version = baseVersion + "." + (ENV.BUILD_NUMBER ?: "local")
@@ -38,7 +38,7 @@ minecraft {
 
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion.91"
+	mappings "net.fabricmc:yarn:$mcVersion.10"
 	modCompile "net.fabricmc:fabric-loader:0.3.2.91"
 }
 

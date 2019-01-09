@@ -77,21 +77,20 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		clonedBuf.readIdentifier();
 		clonedBuf.readUnsignedByte();
 
-		Container container = createContainer(identifier, player, clonedBuf);
+		Container container = createContainer(syncId, identifier, player, clonedBuf);
 		if(container == null){
 			return;
 		}
 		player.container = container;
-		player.container.syncId = syncId;
 		player.container.addListener(player);
 	}
 
-	public <C extends Container> C createContainer(Identifier identifier, PlayerEntity player, PacketByteBuf buf){
+	public <C extends Container> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf){
 		ContainerFactory<Container> factory = FACTORIES.get(identifier);
 		if (factory == null) {
 			LOGGER.error("No container factory found for %s!", identifier.toString());
 			return null;
 		}
-		return (C) factory.create(identifier, player, buf);
+		return (C) factory.create(syncId, identifier, player, buf);
 	}
 }

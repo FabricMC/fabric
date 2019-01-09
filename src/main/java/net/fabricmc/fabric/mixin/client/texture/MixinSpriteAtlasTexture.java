@@ -30,7 +30,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportElement;
+import net.minecraft.util.crash.CrashReportSection;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -128,7 +128,7 @@ public abstract class MixinSpriteAtlasTexture {
 				for (DependentSprite sprite : dependentSprites) {
 					Identifier id = ((Sprite) sprite).getId();
 					if (!spritesToLoad.contains(id)) {
-						CrashReportElement element = report.addElement("Unresolved sprite");
+						CrashReportSection element = report.addElement("Unresolved sprite");
 						element.add("Sprite", id);
 						element.add("Dependencies", Joiner.on(',').join(sprite.getDependencies()));
 					}

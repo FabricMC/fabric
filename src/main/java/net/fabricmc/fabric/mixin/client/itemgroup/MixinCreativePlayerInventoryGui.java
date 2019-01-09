@@ -21,7 +21,9 @@ import net.fabricmc.fabric.client.itemgroup.FabricCreativeGuiComponents;
 import net.minecraft.client.gui.ingame.AbstractPlayerInventoryGui;
 import net.minecraft.client.gui.ingame.CreativePlayerInventoryGui;
 import net.minecraft.container.Container;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.text.TextComponent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,14 +34,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(CreativePlayerInventoryGui.class)
 public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInventoryGui implements CreativeGuiExtensions {
 
+	public MixinCreativePlayerInventoryGui(Container container_1, PlayerInventory playerInventory_1, TextComponent textComponent_1) {
+		super(container_1, playerInventory_1, textComponent_1);
+	}
+
 	@Shadow
 	protected abstract void setSelectedTab(ItemGroup itemGroup_1);
 
 	private int currentPage = 0;
 
-	public MixinCreativePlayerInventoryGui(Container container_1) {
-		super(container_1);
-	}
 
 	@Override
 	public void fabric_nextPage() {

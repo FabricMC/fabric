@@ -19,7 +19,7 @@ package net.fabricmc.fabric.events;
 import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.Profiler;
+import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 
 import java.util.function.Consumer;
@@ -39,22 +39,22 @@ public final class TickEvent {
 	public static <T> void tick(HandlerRegistry<Consumer<T>> registry, T object, Profiler profiler) {
 		Consumer<T>[] handlers = ((HandlerArray<Consumer<T>>) registry).getBackingArray();
 		if (handlers.length > 0) {
-			profiler.begin("fabric");
+			profiler.push("fabric");
 
 			int i = 0;
 			for (Consumer<T> handler : handlers) {
 				if ((i++) == 0) {
-					profiler.begin(handler.getClass().getName());
+					profiler.push(handler.getClass().getName());
 				} else {
-					profiler.endBegin(handler.getClass().getName());
+					profiler.swap(handler.getClass().getName());
 				}
 				handler.accept(object);
 			}
 
 			if (i > 0) {
-				profiler.end();
+				profiler.pop();
 			}
-			profiler.end();
+			profiler.pop();
 		}
 	}
 }

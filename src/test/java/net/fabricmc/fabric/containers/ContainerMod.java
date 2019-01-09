@@ -19,8 +19,10 @@ package net.fabricmc.fabric.containers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.commands.CommandRegistry;
+import net.minecraft.class_3917;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -28,6 +30,7 @@ import net.minecraft.util.math.BlockPos;
 public class ContainerMod implements ModInitializer {
 
 	public static final Identifier EXAMPLE_CONTAINER = new Identifier("fabric_container", "example_container");
+	public static final Identifier EXAMPLE_CONTAINER_2 = new Identifier("fabric_container", "example_container_2");
 
 	@Override
 	public void onInitialize() {
@@ -45,21 +48,31 @@ public class ContainerMod implements ModInitializer {
 				})));
 
 		//Registers a container factory that opens our example Container, this reads the block pos from the buffer
-		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (identifier, player, buf) -> {
+		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
-			return new ExampleContainer(pos, player);
+			return new ExampleContainer(syncId, pos, player);
 		});
-
+		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER_2, (syncId, identifier, player, buf) -> {
+			BlockPos pos = buf.readBlockPos();
+			return new ExampleContainer(syncId, pos, player);
+		});
 	}
 
 	//A basic container that prints to console when opened, this should print on the client + server
 	public static class ExampleContainer extends Container {
-
+		public final PlayerInventory playerInventory;
 		BlockPos pos;
 
-		public ExampleContainer(BlockPos pos, PlayerEntity playerEntity) {
+		public ExampleContainer(int syncId, BlockPos pos, PlayerEntity playerEntity) {
+			super(syncId);
 			this.pos = pos;
+			this.playerInventory = playerEntity.inventory;
 			System.out.println("Opened container, " + pos);
+		}
+
+		@Override
+		public class_3917<?> method_17358() {
+			return null;
 		}
 
 		@Override
