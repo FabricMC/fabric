@@ -23,7 +23,7 @@ import net.minecraft.world.loot.entry.LootEntry;
  * Fabric's extensions to {@code net.minecraft.world.loot.entry.LootEntries} for registering
  * custom loot entry types.
  *
- * @see #register
+ * @see #registerType
  */
 public interface LootEntryRegistry {
 	LootEntryRegistry INSTANCE = LootEntryRegistryImpl.INSTANCE;
@@ -33,5 +33,5 @@ public interface LootEntryRegistry {
 	 *
 	 * @param serializer the loot entry serializer
 	 */
-	void register(LootEntry.Serializer<?> serializer);
+	void registerType(LootEntry.Serializer<?> serializer);
 }
