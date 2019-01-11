@@ -88,7 +88,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 	public <C extends Container> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf){
 		ContainerFactory<Container> factory = FACTORIES.get(identifier);
 		if (factory == null) {
-			LOGGER.error("No container factory found for %s!", identifier.toString());
+			LOGGER.error("No container factory found for {}!", identifier.toString());
 			return null;
 		}
 		return (C) factory.create(syncId, identifier, player, buf);
