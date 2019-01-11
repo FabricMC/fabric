@@ -123,11 +123,11 @@ public interface FabricBakedQuad {
      * 
      * {@link FastRenderableBlockEntity} quads have an additional, important restriction:
      * If TRANSLUCENT occurs, then SOLID <em>must</em> also occur (as the first layer).
-     * This is necessary because transparency sort for that scenario is typically not feasible 
+     * This is necessary because translucency sort for that scenario is typically not feasible 
      * with contemporary hardware, but translucent overlay textures on solid quads 
      * can be rendered correctly without sorting. This specification does not
      * define what a render plug-in will do with stand-alone translucent FRBE quads, 
-     * but unless the plug-in is doing very sophisticated transparency handling,
+     * but unless the plug-in is doing very sophisticated translucency handling,
      * it almost certainly will not be the desired result.<p>
      * 
      * Lastly, note that CUTOUT textures are likely to cause Z-fighting if a solid
