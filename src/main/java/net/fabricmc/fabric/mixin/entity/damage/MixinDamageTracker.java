@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.entity.damage;
 import net.fabricmc.fabric.block.Climbable;
 import net.minecraft.block.Block;
 import net.minecraft.entity.damage.DamageTracker;
+import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,17 +33,23 @@ abstract public class MixinDamageTracker {
     @Shadow
     private String fallDeathSuffix;
 
-    @Inject(method = "setFallDeathSuffix", at = @At(value = "JUMP", ordinal = 3, shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void setFallDeathSuffix(CallbackInfo ci, final Block block) {
+    @Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    public void setFallDeathSuffix(CallbackInfo ci) {
+        //To avoid casting to damage tracker multiple times.
+        final DamageTracker thisTracker = ((DamageTracker) (Object) this);
+
+        final Block block = thisTracker.getEntity().world.getBlockState(new BlockPos(thisTracker.getEntity().x, thisTracker.getEntity().getBoundingBox().minY, thisTracker.getEntity().z)).getBlock();
 
         if (block instanceof Climbable) {
-            String suffix = ((Climbable) block).getDeathSuffix();
+            String suffix = ((Climbable) block).getFallDeathSuffix();
             if (suffix != null) {
                 fallDeathSuffix = suffix;
             }
             else {
                fallDeathSuffix = "ladder";
             }
+
+            ci.cancel();
         }
     }
 }

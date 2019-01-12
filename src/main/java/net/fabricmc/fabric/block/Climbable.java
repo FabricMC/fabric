@@ -37,10 +37,10 @@ public interface Climbable {
     }
 
     /**
-     * The suffix of the death message for this block.
+     * The suffix of the death message when falling off this block.
      *
      * @return the suffix of the death message.
      */
-    String getDeathSuffix();
+    String getFallDeathSuffix();
 
 }
