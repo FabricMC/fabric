@@ -14,26 +14,35 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.entity;
+package net.fabricmc.fabric.mixin.entity.damage;
 
 import net.fabricmc.fabric.block.Climbable;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageTracker;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-@Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity {
+@Mixin(DamageTracker.class)
+abstract public class MixinDamageTracker {
 
+    @Shadow
+    private String fallDeathSuffix;
 
-    @Inject(method = "canClimb", at = @At(value = "RETURN", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void canClimb(CallbackInfoReturnable<Boolean> cir, final BlockState state, final Block block) {
+    @Inject(method = "setFallDeathSuffix", at = @At(value = "JUMP", ordinal = 3, shift = At.Shift.BY, by = 2), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void setFallDeathSuffix(CallbackInfo ci, final Block block) {
+
         if (block instanceof Climbable) {
-            cir.setReturnValue(((Climbable) block).canClimb((LivingEntity) (Object) this, state, ((LivingEntity) (Object) this).getPos()));
+            String suffix = ((Climbable) block).getDeathSuffix();
+            if (suffix != null) {
+                fallDeathSuffix = suffix;
+            }
+            else {
+               fallDeathSuffix = "ladder";
+            }
         }
     }
 }

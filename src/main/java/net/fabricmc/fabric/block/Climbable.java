@@ -1,20 +1,32 @@
-package net.fabricmc.fabric.block;
-
-/**
- * Created by RedstoneParadox on 1/6/2019.
+/*
+ * Copyright (c) 2016, 2017, 2018 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
+
+package net.fabricmc.fabric.block;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * Implement this on blocks that you want an entity to be able to climb.
+ * Blocks that implement this can be climbed by LivingEntities.
  */
 public interface Climbable {
 
     /**
-     * Method to determine if the block could be climbed.
+     * Determines if the passed LivingEntity can climb this block.
      *
      * @param livingEntity The LivingEntity that is attempting to climb this block.
      * @param blockState The blockstate of the ladder being climbed.
@@ -25,21 +37,10 @@ public interface Climbable {
     }
 
     /**
-     * The suffix of the death message for this block
+     * The suffix of the death message for this block.
      *
      * @return the suffix of the death message.
      */
-    default String getDeathSuffix() {
-        return null;
-    }
-
-    /**
-     * Used to determine if this block can be climbed in the same manner as scaffolding.
-     *
-     * @return if true, LivingEntities will be able to climb this block in the same manner as scaffolding.
-     */
-    default boolean scaffoldingStyleClimbing() {
-        return false;
-    }
+    String getDeathSuffix();
 
 }
