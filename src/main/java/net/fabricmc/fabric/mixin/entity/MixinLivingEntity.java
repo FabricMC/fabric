@@ -30,10 +30,13 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 public abstract class MixinLivingEntity {
 
 
-    @Inject(method = "canClimb", at = @At(value = "RETURN", ordinal = 1), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "canClimb", at = @At(value = "RETURN", ordinal = 2), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     public void canClimb(CallbackInfoReturnable<Boolean> cir, final BlockState state, final Block block) {
+
+        final LivingEntity thisLivingEntity = (LivingEntity) (Object) this;
+
         if (block instanceof Climbable) {
-            cir.setReturnValue(((Climbable) block).canClimb((LivingEntity) (Object) this, state, ((LivingEntity) (Object) this).getPos()));
+            cir.setReturnValue(((Climbable) block).canClimb(thisLivingEntity, state, thisLivingEntity.getPos()));
         }
     }
 }
