@@ -36,7 +36,7 @@ public class MixinBlockEntity implements DynamicModelBlockEntity, DynamicRenderB
 
     @Override
     public Object getDynamicRenderData(int tickCounter, float fractionalTick, boolean forceRefresh) {
-        return false;
+        return null;
     }
 
     @Override
