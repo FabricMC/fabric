@@ -26,7 +26,7 @@ public final class ModelRendererAccessImpl implements ModelRendererAccess{
     private ModelRendererAccessImpl() { };
 
     @Override
-    public final void registerRenderPlugIn(ModelRenderer renderer) {
+    public final void registerModelRenderer(ModelRenderer renderer) {
         if(renderer != null && activeRenderer == null) {
             activeRenderer = renderer;
             hasActiveRenderer = true;

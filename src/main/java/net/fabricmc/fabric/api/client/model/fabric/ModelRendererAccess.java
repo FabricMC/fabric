@@ -28,25 +28,21 @@ public interface ModelRendererAccess {
      * Rendering extension mods must implement {@link ModelRenderer} and 
      * call this method during initialization.<p>
      * 
-     * Only one render plugin can be active in any game instance.
-     * If a second mod attempts to register as the render plug in
-     * this method will fail softly, to allow for mods that implement
-     * other features in addition to being a render plug-in. However,
-     * this is not recommended. Plug-in mods should do one thing.<p>
-     * 
-     * @see {@link ModelRenderer}
+     * Only one {@link ModelRenderer} plugin can be active in any game instance.
+     * If a second mod attempts to register this method will fail softly, 
+     * to allow for mods that implement other features in addition to being a 
+     * render plug-in. However, this is not recommended. {@link ModelRenderer} mods should do one thing.<p>
      */
-    void registerRenderPlugIn(ModelRenderer plugin);
+    void registerModelRenderer(ModelRenderer plugin);
 
     /**
-     * Access to render plug-in for creating and retrieving shaders and uniforms.
-     * Plug-ins are not required to support those features.
-     * Will return null if no render plug in is active.
+     * Access to the current {@link ModelRenderer} for creating and retrieving model builders 
+     * and materials. Will return null if no render plug in is active.
      */
     ModelRenderer getActiveRenderer();
 
     /**
-     * Performant test for {@link #getActiveRenderPlugin()} != null;
+     * Performant test for {@link #getActiveRenderer()} != null;
      */
     boolean isRendererActive();
 }

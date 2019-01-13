@@ -16,6 +16,30 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+/**
+ * A reference to a model material that specifies texture blending,
+ * lighting, coloring and other aspects of quad rendering. Every
+ * quad sent to a {@link ModelVertexConsumer} is associated with a material.<p>
+ * 
+ * A material instance is always immutable and thread-safe.  References to a material 
+ * remain valid until the end of the current game session.<p>
+ * 
+ * This interface has no methods because the internal state is for use only
+ * by the {@link ModelRenderer} and the implementation is meant to be
+ * optimized according to how the renderer manages vertex buffers and draw calls.<p>
+ * 
+ * A {@link ModelMaterial} instance can only be created by a {@link ModelMaterialBuilder}
+ * instance obtained via {@link ModelRenderer#getMaterialBuilder()}.<p>
+ * 
+ * Materials can be registered and shared between mods using {@link ModelRenderer#getMaterial(net.minecraft.util.Identifier)}
+ * and {@link ModelRenderer#registerMaterial(net.minecraft.util.Identifier, ModelMaterial)}.
+ * The registering mod is responsible for creating each registered material at startup.<p>
+ * 
+ * Materials are not required to know their registration identity, and two materials
+ * with the same attributes may or may not satisfy equality and identity tests. Model 
+ * implementations should never attempt to analyze materials or implement control logic based on them.
+ * They are only tokens for communicating quad attributes to the ModelRenderer.
+ */
 public interface ModelMaterial {
-    // currently no members
+    // no members
 }

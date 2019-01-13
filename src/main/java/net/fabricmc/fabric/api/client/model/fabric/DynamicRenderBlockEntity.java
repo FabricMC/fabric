@@ -20,9 +20,8 @@ import net.minecraft.block.entity.BlockEntity;
 
 
 /**
- * When a {@link ModelRenderer} is present and it supports
- * this feature, this interface enables performant batched 
- * rendering of block models that require frequent buffering.<p>
+ * When a {@link ModelRenderer} is present, this interface enables performant
+ * batched rendering of block models that require frequent buffering.<p>
  * 
  * This feature will only be active when all the following conditions are met:
  * <li>A @{@link ModelRenderer} is active. This can be tested via {@link ModelRendererAccess#isRendererActive()}</li>
@@ -33,8 +32,8 @@ import net.minecraft.block.entity.BlockEntity;
  * When these conditions are met, the renderer will do the following:
  * <li>At least once per client tick (20X per second) the plug-in will call
  * {@link DynamicRenderBlockEntity#checkForRenderUpdate()} from the main client thread.</li>
- * <li>If the previous call gave a non-null result, the renderer will call {@link DynamicRenderBlockEntity#produceModelVertexData()} 
- * with the result of the previous step. This call <em>may occur on a thread other than the main client thread,</em> 
+ * <li>If the call returns a non-null result, the renderer will call {@link DynamicRenderBlockEntity#produceModelVertexData()}, 
+ * passing the result as input. <em>This call may occur on a thread other than the main client thread,</em> 
  * depending on the renderer implementation.</li>
  * <li>The renderer will buffer the provided quads and render them for each subsequent frame until {@link DynamicRenderBlockEntity#checkForRenderUpdate(int)} 
  * and returns a non-null result. When that happens, the process repeats.</li><p>
@@ -42,12 +41,15 @@ import net.minecraft.block.entity.BlockEntity;
  * <b>Notes for {@link DynamicRenderBlockEntity} implementors:</b><p>
  *
  * Any block model associated with the block entity will continue to render.  The quads provided
- * via {@link DynamicRenderBlockEntity#produceModelVertexData()} are additive. If your model has
- * both static and dynamic components, it is good practice to render the static parts as a block model,
- * and render the dynamic parts using this interface.<p>
+ * via {@link DynamicRenderBlockEntity#produceModelVertexData()} are additive. Similarly, models
+ * created with {@link ModelBuilder#buildDynamic()} will have their dynamic quads buffered during
+ * chunk rebuild.<p>
  * 
- * The renderer is expected to render the provided quads as it would any others.  The main difference is
- * the lack of a build() step to create a baked model - which would be pointless given the frequent updates.<p>
+ *  If your model has some parts that are static, some that depend on nearby world state, and some
+ *  parts that change each tick or frame (as is often the case with machine blocks), then you will
+ *  get best performance by sending the static quads to the model builder before the dynamic model
+ *  is built, and including any quads that don't require per-frame or per-tick updates in the the
+ *  dynamic block model.<p>
  * 
  * Obviously, {@link DynamicRenderBlockEntity#produceModelVertexData()} will be called frequently.
  * Models for fast rendering should be simple or otherwise implement caching or other optimizations
@@ -58,7 +60,7 @@ import net.minecraft.block.entity.BlockEntity;
  * world state during the call to {@link DynamicModelBlockEntity#getModelData()}
  * and persist that state in the render data returned by that method.<p>
  * 
- * When this feature is active, the renderer will <em>not</em> prevent any BlockEntityRenderer associated with 
+ * The renderer will <em>not</em> prevent any BlockEntityRenderer associated with 
  * the BlockEntity from being rendered. But there is no requirement that a BlockEntity using this feature have 
  * a specific BlockEntityRenderer associated with it.<p>
  * 
@@ -103,15 +105,15 @@ public interface DynamicRenderBlockEntity {
      * BlockEntity. The counter may or may not be associated with any other
      * Minecraft counter and should only be used to determine if a refresh is required.<p>
      *  
-     * @param fractionalTick  How much of one tick has passed since the last
-     * client tick.  Intended for per-frame dynamic renders with time-dependent animations.<p>
+     * @param fractionalTick  Indicates how much of the current client tick in progress has 
+     * elapsed.  Intended for per-frame dynamic renders with time-dependent animations.<p>
      * 
      * @param forceRefresh  True if the renderer needs the model to re-buffer quads even if
      * the block entity state is current.  May be used, for example, if user presses F3 + A to
      * force a render reload. <p>
      * 
      * @return  Non-null object if the dynamic quads for this BlockEntity should be re-buffered.
-     * Note that renderers will not use this result except to pass it back to the BlockEntity
+     * Renderers must not use or retain this result except to pass it back to the BlockEntity
      * in {@link #produceModelVertexData()}.  Implementations may safely reuse state objects to
      * prevent wasteful memory allocation.
      */
@@ -126,5 +128,8 @@ public interface DynamicRenderBlockEntity {
         return false;
     }
     
+    /**
+     * Accepts dynamic model content. See {@link ModelVertexConsumer} for details.
+     */
     void produceDynamicVertexData(Object modelState, ModelVertexConsumer consumer);
 }

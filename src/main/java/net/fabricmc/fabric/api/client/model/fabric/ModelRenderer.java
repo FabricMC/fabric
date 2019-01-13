@@ -19,22 +19,42 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import net.minecraft.util.Identifier;
 
 /**
- * Interface for rendering plug-ins that provide enhanced capabilities
- * for model lighting, buffering and rendering.  All plug-ins must
- * minimally accept the three standard vertex formats defined in {@link FabricVertexFormat}.<p>
- * 
- * The currently installed and active render plug-in, if present, can be 
- * retrieved via {@link ModelRendererAccess#getActiveRenderPlugin()}.<p>
- * 
- * Sub-types of ModelRenderer that support additional capabilities, including
- * shaders and uniforms are to be defined outside the scope of the core Fabric API.
+ * Interface for model rendering plug-ins that provide enhanced capabilities
+ * for model lighting, buffering and rendering. Such plug-ins implement the
+ * enhanced modeling interfaces specified by the Fabric API.<p>
  */
 public interface ModelRenderer {
+    /**
+     * Obtain a new {@link ModelBuilder} instance used to create 
+     * baked models with enhanced features.<p>
+     * 
+     * Renderer does not retain a reference to returned instances and they should be re-used for 
+     * multiple models when possible to avoid memory allocation overhead.
+     */
     ModelBuilder getModelBuilder();
     
+    /**
+     * Obtain a new {@link ModelMaterialBuilder} instance used to create 
+     * new {@link ModelMaterial} instances.<p>
+     * 
+     * Renderer does not retain a reference to returned instances and they should be re-used for 
+     * multiple materials when possible to avoid memory allocation overhead.
+     */
     ModelMaterialBuilder getMaterialBuilder();
 
+    /**
+     * Return a material previously registered via {@link #registerMaterial(Identifier, ModelMaterial)}.
+     * Will return null if no material was found matching the given identifier.
+     */
     ModelMaterial getMaterial(Identifier id);
     
+    /**
+     * Register a material for re-used by other mods or models within a mod.
+     * The registry does not persist registrations - mods must create and register 
+     * all materials at game initialization.<p>
+     * 
+     * Returns false if a material with the given identifier is already present,
+     * leaving the existing material intact.
+     */
     boolean registerMaterial(Identifier id, ModelMaterial material);
 }
