@@ -35,7 +35,7 @@ public class ContainerMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		//Registers a basic server side command that shows that the openContainer works from the server side.
-		CommandRegistry.INSTANCE.register(false, serverCommandSourceCommandDispatcher ->
+		CommandRegistry.INSTANCE.register(CommandRegistry.Side.SERVER, serverCommandSourceCommandDispatcher ->
 			serverCommandSourceCommandDispatcher.register(ServerCommandManager
 				.literal("container")
 				.executes(context -> {

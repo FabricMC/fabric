@@ -29,21 +29,55 @@ public class CommandRegistry {
 
 	private final List<Consumer<CommandDispatcher<ServerCommandSource>>> serverCommands;
 	private final List<Consumer<CommandDispatcher<ServerCommandSource>>> dedicatedServerCommands;
+	private final List<Consumer<CommandDispatcher<ServerCommandSource>>> clientCommands;
 
 	protected CommandRegistry() {
 		this.serverCommands = new ArrayList<>();
 		this.dedicatedServerCommands = new ArrayList<>();
+		this.clientCommands = new ArrayList<>();
 	}
 
+	@Deprecated
 	public List<Consumer<CommandDispatcher<ServerCommandSource>>> entries(boolean dedicated) {
 		return Collections.unmodifiableList(dedicated ? dedicatedServerCommands : serverCommands);
 	}
 
+	public List<Consumer<CommandDispatcher<ServerCommandSource>>> serverEntries() {
+		return Collections.unmodifiableList(serverCommands);
+	}
+
+	public List<Consumer<CommandDispatcher<ServerCommandSource>>> dedicatedServerEntries() {
+		return Collections.unmodifiableList(dedicatedServerCommands);
+	}
+
+	public List<Consumer<CommandDispatcher<ServerCommandSource>>> clientEntries() {
+		return Collections.unmodifiableList(clientCommands);
+	}
+
+	@Deprecated
 	public void register(boolean dedicated, Consumer<CommandDispatcher<ServerCommandSource>> consumer) {
 		if (dedicated) {
 			dedicatedServerCommands.add(consumer);
 		} else {
 			serverCommands.add(consumer);
 		}
+	}
+
+	public void register(Side side, Consumer<CommandDispatcher<ServerCommandSource>> consumer) {
+		switch (side) {
+			case SERVER:
+				serverCommands.add(consumer);
+				break;
+			case CLIENT:
+				clientCommands.add(consumer);
+				break;
+			case DEDICATED_SERVER:
+				dedicatedServerCommands.add(consumer);
+				break;
+		}
+	}
+
+	public enum Side {
+		SERVER, DEDICATED_SERVER, CLIENT
 	}
 }
