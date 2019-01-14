@@ -61,15 +61,17 @@ public interface ModelVertexConsumer {
     void setQuadColorIndex(int colorIndex);
     
     /**
-     * Value functions identically to {@link BakedQuad#getFace()} and is
-     * used by renderer / model builder in same way.  Value remains in effect
-     * for all subsequent quads sent to this consumer until changed.<p>
+     * If non-null, quad is coplanar with a block face which, if known, simplifies
+     * or shortcuts geometric analysis that might otherwise be needed.
+     * Set to null if quad is not coplanar or if this is not known. <p>
      * 
-     * This is NOT the cull face and must be non-null. It controls some aspects 
-     * in the standard Minecraft lighting model and is necessary to emulate
-     * standard rendering.  The default value is {@link Direction#UP}.
+     * Value remains in effect for all subsequent quads sent to this consumer until changed.<p>
+     * 
+     * This is different than the value reported by {@link BakedQuad#getFace()}. That value
+     * is computed based on face geometry and must be non-null in vanilla quads.
+     * Model render implementations will emulate this behavior as needed.
      */
-    void setQuadLightingFace(Direction face);
+    void setQuadCullFace(Direction face);
     
     /**
      * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
