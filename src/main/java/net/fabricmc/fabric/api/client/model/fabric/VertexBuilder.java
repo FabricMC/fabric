@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.util.math.Direction;
 
 /**
  * Similar in concept to {@link BufferBuilder} with 
@@ -37,7 +35,7 @@ import net.minecraft.util.math.Direction;
  * {@link #setColor(int, int, int, int, int)} and {@link #setTexture(int, float, float)}
  * can be used.
  */
-public interface ModelVertexConsumer {
+public interface VertexBuilder {
     /**
      * Must be called at the start of each quad, before
      * sending any vertex data.  Material must be an
@@ -49,29 +47,9 @@ public interface ModelVertexConsumer {
      * Call to explicitly flush a completed quad. 
      * Useful in dynamic rendering contexts to flush the last quad.
      * Will be called implicitly when {@link #begin(ModelMaterial)} is
-     * called or when this is a {@link ModelBuilder} instance and a model is built.
+     * called or when this is a {@link FastVertexBuilder} instance and a model is built.
      */
     void end();
-    
-    /**
-     * Value functions identically to {@link BakedQuad#getColorIndex()} and is
-     * used by renderer / model builder in same way.  Value remains in effect
-     * for all subsequent quads sent to this consumer until changed. Default value is -1.
-     */
-    void setQuadColorIndex(int colorIndex);
-    
-    /**
-     * If non-null, quad is coplanar with a block face which, if known, simplifies
-     * or shortcuts geometric analysis that might otherwise be needed.
-     * Set to null if quad is not coplanar or if this is not known. <p>
-     * 
-     * Value remains in effect for all subsequent quads sent to this consumer until changed.<p>
-     * 
-     * This is different than the value reported by {@link BakedQuad#getFace()}. That value
-     * is computed based on face geometry and must be non-null in vanilla quads.
-     * Model render implementations will emulate this behavior as needed.
-     */
-    void setQuadCullFace(Direction face);
     
     /**
      * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
@@ -97,7 +75,7 @@ public interface ModelVertexConsumer {
      * entire quad at once.  Requires that vertex data be closely packed into 28 
      * contiguous array elements.
      * 
-     * {@link ModelVertexConsumer} implementations should override this default
+     * {@link VertexBuilder} implementations should override this default
      * implementation if it offers a performance benefit.
      */
     default void putStandardQuadData(int[] quadData, int startIndex, boolean isItem) {

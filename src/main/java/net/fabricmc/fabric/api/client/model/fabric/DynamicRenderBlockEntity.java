@@ -41,15 +41,12 @@ import net.minecraft.block.entity.BlockEntity;
  * <b>Notes for {@link DynamicRenderBlockEntity} implementors:</b><p>
  *
  * Any block model associated with the block entity will continue to render.  The quads provided
- * via {@link DynamicRenderBlockEntity#produceModelVertexData()} are additive. Similarly, models
- * created with {@link ModelBuilder#buildDynamic()} will have their dynamic quads buffered during
- * chunk rebuild.<p>
+ * via {@link DynamicRenderBlockEntity#produceModelVertexData()} are additive.<p>
  * 
- *  If your model has some parts that are static, some that depend on nearby world state, and some
- *  parts that change each tick or frame (as is often the case with machine blocks), then you will
- *  get best performance by sending the static quads to the model builder before the dynamic model
- *  is built, and including any quads that don't require per-frame or per-tick updates in the the
- *  dynamic block model.<p>
+ * If your model has some parts that are static, some that depend on nearby world state, and some
+ * parts that change each tick or frame (as is often the case with machine blocks), then you will
+ * get best performance by including any quads that don't require per-frame or per-tick updates in
+ * a static or dynamic block model.<p>
  * 
  * Obviously, {@link DynamicRenderBlockEntity#produceModelVertexData()} will be called frequently.
  * Models for fast rendering should be simple or otherwise implement caching or other optimizations
@@ -129,7 +126,7 @@ public interface DynamicRenderBlockEntity {
     }
     
     /**
-     * Accepts dynamic model content. See {@link ModelVertexConsumer} for details.
+     * Accepts dynamic model content. See {@link DynamicVertexConsumer} for details.
      */
-    void produceDynamicVertexData(Object modelState, ModelVertexConsumer consumer);
+    void produceDynamicVertexData(Object modelState, DynamicVertexConsumer consumer);
 }

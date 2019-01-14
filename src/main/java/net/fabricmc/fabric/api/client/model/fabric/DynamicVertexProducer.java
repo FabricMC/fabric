@@ -22,17 +22,25 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * Interface to be implemented by dynamic block models created via
- * {@link ModelBuilder#buildDynamic()}.<p>
+ * Interface for baked models that need to generate or customize vertex data based on 
+ * world state instead of or in addition to block state when render chunks are rebuilt.<p>
  * 
- * Note that dynamic elements are additive - models with static quads can, and should, 
- * provide static quads to the model builder before calling {@link ModelBuilder#buildDynamic()}.
+ * Dynamic elements are additive - models with static quads should output static quads 
+ * via the less expensive {@link FastVertexProducer} interface.<p>
+ * 
+ * Note for {@link ModelRenderer} implementors: Fabric causes BakedModel to extend this
+ * interface with {@link #hasDynamicVertexData()} returning false. This means any BakedModel instance
+ * can be safely cast to this interface without an instanceof check.
  */
-@FunctionalInterface
-public interface DynamicModelVertexProducer {
+public interface DynamicVertexProducer {
+    /**
+     * Must be true when chunk is rebuilt for interface to activate.
+     */
+    boolean hasDynamicVertexData();
+    
     /**
      * This method will be called during chunk rebuilds to generate the dynamic portion of a
-     * block model created with {@link ModelBuilder#buildDynamic()}.<p>
+     * block model when the model implements this interface and {@link #hasDynamicVertexData()} is true.<p>
      * 
      * This method will always be called exactly one time per block position 
      * per chunk rebuild, irrespective of which or how many faces or block render layers are included 
@@ -54,5 +62,5 @@ public interface DynamicModelVertexProducer {
      * provided Random for models that expect it. This is especially important for implementations 
      * that "wrap" existing models that do not implement this interface.<p>
      */
-    void produceModelVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelVertexConsumer consumer);
+    void produceDynamicVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, DynamicVertexConsumer consumer);
 }

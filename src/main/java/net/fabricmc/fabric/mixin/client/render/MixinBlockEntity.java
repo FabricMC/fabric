@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.client.render;
 
 import net.fabricmc.fabric.api.client.model.fabric.DynamicRenderBlockEntity;
-import net.fabricmc.fabric.api.client.model.fabric.ModelVertexConsumer;
+import net.fabricmc.fabric.api.client.model.fabric.DynamicVertexConsumer;
 import net.fabricmc.fabric.api.client.model.fabric.DynamicModelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,7 +40,7 @@ public class MixinBlockEntity implements DynamicModelBlockEntity, DynamicRenderB
     }
 
     @Override
-    public void produceDynamicVertexData(Object modelState, ModelVertexConsumer consumer) {
+    public void produceDynamicVertexData(Object modelState, DynamicVertexConsumer consumer) {
         // NOOP
     }
 }
