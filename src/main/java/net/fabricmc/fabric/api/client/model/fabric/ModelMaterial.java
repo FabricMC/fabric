@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.util.Identifier;
+
 /**
  * A reference to a model material that specifies texture blending,
  * lighting, coloring and other aspects of quad rendering. Every
@@ -38,9 +42,42 @@ package net.fabricmc.fabric.api.client.model.fabric;
  * Materials are not required to know their registration identity, and two materials
  * with the same attributes may or may not satisfy equality and identity tests. Model 
  * implementations should never attempt to analyze materials or implement control logic based on them.
- * They are only tokens for communicating quad attributes to the ModelRenderer.
+ * They are only tokens for communicating quad attributes to the ModelRenderer.<p>
+ * 
+ * <b>STANDARD MATERIALS</b><p>
+ * 
+ * All {@link ModelRenderer} implementations must pre-register the water and lava materials
+ * using the identifiers defined below.  This gives models access to any fancy renders that may
+ * be implemented for those materials.<p>
  */
 public interface ModelMaterial {
+    
+    /**
+     * This will be identical to the material that would be obtained by calling {@link ModelMaterialBuilder#build()}
+     * on a new, unaltered, {@link ModelMaterialBuilder} instance.  It is defined here for clarity and convenience.
+     * 
+     * Quads using this material have a single texture layer, use {@link Block#getRenderLayer()} of the associated
+     * block to determine texture blending (or translucent for item models),  honor block color index, 
+     * are non-emissive, and have {@link ShadingMode} inferred from {@link BakedModel#useAmbientOcclusion()} 
+     * and block light level.  All standard, non-fluid baked models are rendered using this material.<p>
+     * 
+     * {@link ModelRenderer} implementations may or may not define and use more explicit materials for the 
+     * various context-dependent combinations of shading and render layer and those are not defined or exposed.
+     */
+    Identifier MATERIAL_STANDARD = new Identifier("minecraft", "standard");
+    
+    /**
+     * Material that is used for water rendering.  Useful if the model renderer implements
+     * some kind of fancy render for water and you want a model to use the same effect.
+     */
+    Identifier MATERIAL_WATER = new Identifier("minecraft", "water");
+    
+    /**
+     * Material that is used for lava rendering.  Useful if the model renderer implements
+     * some kind of fancy render for lava and you want a model to use the same effect.
+     */
+    Identifier MATERIAL_LAVA = new Identifier("minecraft", "lava");
+    
     /**
      * The number of integers needed to represent a single quad with this materials.
      * For use by models to allocate vertex storage and transfer vertex data.

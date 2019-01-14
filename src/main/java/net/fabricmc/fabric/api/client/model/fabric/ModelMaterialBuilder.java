@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
+import net.minecraft.client.render.model.BakedModel;
 
 /**
  * Creates a {@link ModelMaterial} instance used to communicate
@@ -59,11 +61,15 @@ public interface ModelMaterialBuilder {
      * will emulate the way that Minecraft renders each pass. But this does 
      * NOT mean the texture will be rendered in a specific render pass - some
      * implementations may not use the standard Minecraft render passes.<p>
+     * 
+     * CAN be null and is null by default. A null value means the renderer
+     * will use {@link Block#getRenderLayer()} for the associate block, or
+     * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
      */
     default void setBlendMode(BlockRenderLayer blendMode) {
         setBlendMode(0, blendMode);
     }
-
+    
     /**
      * Sets blend mode for a specific texture layer. Useful when texture depth is > 1.
      */
@@ -82,7 +88,11 @@ public interface ModelMaterialBuilder {
     
     /**
      * Specifies if and how pixel color should be modified by diffuse 
-     * shading and ambient occlusion. See {@link ShadingMode}
+     * shading and ambient occlusion. See {@link ShadingMode}.<p>
+     * 
+     * ShadingMode CAN be null and is null by default.  A null value
+     * means the shading mode should be inferred from {@link BakedModel#useAmbientOcclusion()}
+     * and block light level. (Normal Minecraft rendering)
      */
     default void setShading(ShadingMode shading) {
         setShading(0, shading);
