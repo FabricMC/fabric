@@ -19,8 +19,9 @@ package net.fabricmc.fabric.containers;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.commands.CommandRegistry;
-import net.minecraft.class_3917;
 import net.minecraft.container.Container;
+import net.minecraft.container.ContainerType;
+import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.command.ServerCommandManager;
@@ -31,6 +32,7 @@ public class ContainerMod implements ModInitializer {
 
 	public static final Identifier EXAMPLE_CONTAINER = new Identifier("fabric_container", "example_container");
 	public static final Identifier EXAMPLE_CONTAINER_2 = new Identifier("fabric_container", "example_container_2");
+	public static final Identifier EXAMPLE_INVENTORY_CONTAINER = new Identifier("fabric_container", "example_inventory_container");
 
 	@Override
 	public void onInitialize() {
@@ -42,7 +44,7 @@ public class ContainerMod implements ModInitializer {
 					BlockPos pos = context.getSource().getEntity().getPos();
 
 					//Opens a container, sending the block pos
-					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_CONTAINER, context.getSource().getPlayer(), buf -> buf.writeBlockPos(pos));
+					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_INVENTORY_CONTAINER, context.getSource().getPlayer(), buf -> buf.writeBlockPos(pos));
 
 					return 1;
 				})));
@@ -55,6 +57,9 @@ public class ContainerMod implements ModInitializer {
 		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER_2, (syncId, identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
 			return new ExampleContainer(syncId, pos, player);
+		});
+		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_INVENTORY_CONTAINER, (syncId, identifier, player, buf) -> {
+			return new ExampleInventoryContainer(syncId, player);
 		});
 	}
 
@@ -71,7 +76,7 @@ public class ContainerMod implements ModInitializer {
 		}
 
 		@Override
-		public class_3917<?> method_17358() {
+		public ContainerType<?> getType() {
 			return null;
 		}
 
@@ -81,4 +86,32 @@ public class ContainerMod implements ModInitializer {
 		}
 	}
 
+	public static class ExampleInventoryContainer extends Container {
+		public final PlayerInventory playerInventory;
+		BlockPos pos;
+
+		public ExampleInventoryContainer(int syncId, PlayerEntity playerEntity) {
+			super(syncId);
+			this.playerInventory = playerEntity.inventory;
+			for(int i = 0; i < 3; ++i) {
+				for(int j = 0; j < 9; ++j) {
+					this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+				}
+			}
+
+			for(int j = 0; j < 9; ++j) {
+				this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
+			}
+		}
+
+		@Override
+		public ContainerType<?> getType() {
+			return null;
+		}
+
+		@Override
+		public boolean canUse(PlayerEntity playerEntity) {
+			return true;
+		}
+	}
 }

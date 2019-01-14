@@ -74,6 +74,7 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 					return;
 				}
 				ContainerGui gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
+				packetContext.getPlayer().container = gui.getContainer();
 				MinecraftClient.getInstance().openGui(gui);
 			});
 		});
