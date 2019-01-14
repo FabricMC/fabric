@@ -41,5 +41,21 @@ package net.fabricmc.fabric.api.client.model.fabric;
  * They are only tokens for communicating quad attributes to the ModelRenderer.
  */
 public interface ModelMaterial {
-    // no members
+    /**
+     * The number of integers needed to represent a single quad with this materials.
+     * For use by models to allocate vertex storage and transfer vertex data.
+     */
+    int quadStride();
+    
+    /**
+     * Transient unique identifier for this material.  Can be used to serialize a 
+     * material in a primitive type (typically int[]).  Materials can be retrieved
+     * via {@link ModelRenderer#getMaterial(int)}.<p>.
+     * 
+     * Index values are only valid in the current game session.  They should never be
+     * used in world saves. For that use case, rely on materials registered via 
+     * {@link ModelRenderer#registerMaterial(net.minecraft.util.Identifier, ModelMaterial)}
+     * and serialize the registration identifier.
+     */
+    int index();
 }

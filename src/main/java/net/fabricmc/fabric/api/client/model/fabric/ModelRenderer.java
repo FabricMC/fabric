@@ -49,6 +49,12 @@ public interface ModelRenderer {
     ModelMaterial getMaterial(Identifier id);
     
     /**
+     * Retrieve a material using the material's index. See {@link ModelMaterial#index()}.
+     * Will return null if no material was found matching the given identifier.
+     */
+    ModelMaterial getMaterial(int index);
+    
+    /**
      * Register a material for re-used by other mods or models within a mod.
      * The registry does not persist registrations - mods must create and register 
      * all materials at game initialization.<p>
