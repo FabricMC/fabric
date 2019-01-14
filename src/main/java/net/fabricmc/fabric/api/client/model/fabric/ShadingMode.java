@@ -25,7 +25,7 @@ public enum ShadingMode {
      * Vertex color(s) will be modified (reduced) for both diffuse shading
      * and ambient occlusion.  This is the default for normal solid blocks.
      */
-    SHADED,
+    SHADED(true, true),
     
     /**
      * Vertex color(s) will be modified (reduced) for ambient occlusion but
@@ -38,7 +38,7 @@ public enum ShadingMode {
      * may lead to inconsistent or unattractive lighting when a more 
      * sophisticated lighting model is in use.
      */
-    AMBIENT_OCCLUSION_ONLY,
+    AMBIENT_OCCLUSION_ONLY(false, true),
     
     /**
      * Vertex color(s) will be modified (reduced) for diffuse shading but
@@ -47,12 +47,20 @@ public enum ShadingMode {
      * afforded by diffuse shading but not necessarily from the potentially
      * more variable effects of ambient occlusion.
      */
-    DIFFUSE_ONLY,
+    DIFFUSE_ONLY(true, false),
     
     /**
      * Vertex color(s) is unmodified except for world brightness, which can
      * also be overridden by enabling emissive rendering and providing
      * a per-vertex brightness.
      */
-    FLAT
+    FLAT(false, false);
+    
+    public final boolean hasDiffuseShading;
+    public final boolean hasAmbientOcclusion;
+    
+    private ShadingMode(boolean hasDiffuseShading, boolean hasAmbientOcclusion) {
+        this.hasDiffuseShading = hasDiffuseShading;
+        this.hasAmbientOcclusion = hasAmbientOcclusion;
+    }
 }
