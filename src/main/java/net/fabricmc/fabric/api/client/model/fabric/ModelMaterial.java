@@ -67,18 +67,6 @@ public interface ModelMaterial {
     Identifier MATERIAL_STANDARD = new Identifier("minecraft", "standard");
     
     /**
-     * Material that is used for water rendering.  Useful if the model renderer implements
-     * some kind of fancy render for water and you want a model to use the same effect.
-     */
-    Identifier MATERIAL_WATER = new Identifier("minecraft", "water");
-    
-    /**
-     * Material that is used for lava rendering.  Useful if the model renderer implements
-     * some kind of fancy render for lava and you want a model to use the same effect.
-     */
-    Identifier MATERIAL_LAVA = new Identifier("minecraft", "lava");
-    
-    /**
      * The number of integers needed to represent a single quad with this materials.
      * For use by models to allocate vertex storage and transfer vertex data.
      */
