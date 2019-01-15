@@ -35,17 +35,4 @@ public interface DynamicVertexConsumer extends FastVertexConsumer, VertexBuilder
      * for all subsequent quads sent to this consumer until changed. Default value is -1.
      */
     void setQuadColorIndex(int colorIndex);
-    
-    /**
-     * If non-null, quad is coplanar with a block face which, if known, simplifies
-     * or shortcuts geometric analysis that might otherwise be needed.
-     * Set to null if quad is not coplanar or if this is not known. <p>
-     * 
-     * Value remains in effect for all subsequent quads sent to this consumer until changed.<p>
-     * 
-     * This is different than the value reported by {@link BakedQuad#getFace()}. That value
-     * is computed based on face geometry and must be non-null in vanilla quads.
-     * Model render implementations will emulate this behavior as needed.
-     */
-    void setQuadCullFace(Direction face);
 }
