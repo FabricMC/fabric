@@ -14,25 +14,33 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.entity;
+package net.fabricmc.fabric.mixin.block;
 
 import net.fabricmc.fabric.block.Climbable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.LadderBlock;
+import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.util.math.BlockPos;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity {
+@Mixin(TrapdoorBlock.class)
+public abstract class MixinTrapdoorBlock implements Climbable {
 
-    @Inject(method = "canClimb", at = @At(value = "RETURN", ordinal = 2), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void canClimb(CallbackInfoReturnable<Boolean> cir, final BlockState state, final Block block) {
+    @Shadow
+    @Final
+    public static BooleanProperty field_11631;
 
-        final LivingEntity thisLivingEntity = (LivingEntity) (Object) this;
-        cir.setReturnValue(((Climbable) block).canClimb(thisLivingEntity, state, thisLivingEntity.getPos()));
+    @Override
+    public boolean canClimb(LivingEntity entity, BlockState state, BlockPos pos) {
+        Boolean isOpen = state.get(field_11631);
+        Block ladderBlock = entity.world.getBlockState(pos.down()).getBlock();
+
+        return ladderBlock instanceof LadderBlock && isOpen;
     }
+
 }

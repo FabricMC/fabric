@@ -41,11 +41,7 @@ public abstract class MixinDamageTracker {
     public void setFallDeathSuffix(CallbackInfo ci) {
 
         final Block block = entity.world.getBlockState(new BlockPos(entity.x, entity.getBoundingBox().minY, entity.z)).getBlock();
-
-        if (block instanceof Climbable) {
-            String suffix = ((Climbable) block).getFallDeathSuffix();
-            fallDeathSuffix = suffix != null ? suffix : "ladder";
-            ci.cancel();
-        }
+        fallDeathSuffix = ((Climbable) block).getFallDeathSuffix();
+        ci.cancel();
     }
 }

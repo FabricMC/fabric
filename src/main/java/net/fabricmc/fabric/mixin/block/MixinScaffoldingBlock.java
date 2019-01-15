@@ -14,33 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.block;
+package net.fabricmc.fabric.mixin.block;
 
+import net.fabricmc.fabric.block.Climbable;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
+import org.spongepowered.asm.mixin.Mixin;
 
-/**
- * Blocks that implement this can be climbed by LivingEntities.
- */
-public interface Climbable {
+@Mixin(ScaffoldingBlock.class)
+public abstract class MixinScaffoldingBlock implements Climbable {
 
-    /**
-     * Determines if the passed LivingEntity can climb this block.
-     *
-     * @param entity The LivingEntity that is attempting to climb this block.
-     * @param state The block state of the ladder being climbed.
-     * @param pos The position of the block.
-     */
-    boolean canClimb(LivingEntity entity, BlockState state, BlockPos pos);
-
-    /**
-     * The suffix of the death message when falling off this block.
-     *
-     * @return the suffix of the death message.
-     */
-    default String getFallDeathSuffix() {
-        return "generic";
+    @Override
+    public boolean canClimb(LivingEntity entity, BlockState state, BlockPos pos) {
+        //The sneaking check actually happens elsewhere so this can just return true.
+        return true;
     }
 
 }
