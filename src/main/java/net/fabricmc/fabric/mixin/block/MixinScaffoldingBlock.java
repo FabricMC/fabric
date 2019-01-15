@@ -28,7 +28,6 @@ public abstract class MixinScaffoldingBlock implements Climbable {
 
     @Override
     public boolean canClimb(LivingEntity entity, BlockState state, BlockPos pos) {
-        //The sneaking check actually happens elsewhere so this can just return true.
         return true;
     }
 
