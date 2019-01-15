@@ -29,18 +29,19 @@ import net.minecraft.util.math.BlockPos;
  * via the less expensive {@link FastVertexProducer} interface.<p>
  * 
  * Note for {@link ModelRenderer} implementors: Fabric causes BakedModel to extend this
- * interface with {@link #hasDynamicVertexData()} returning false. This means any BakedModel instance
+ * interface with {@link #hasVertexData()} returning false. This means any BakedModel instance
  * can be safely cast to this interface without an instanceof check.
  */
-public interface DynamicVertexProducer {
+public interface VertexProducer {
     /**
      * Must be true when chunk is rebuilt for interface to activate.
      */
-    boolean hasDynamicVertexData();
+    boolean hasVertexData();
     
     /**
-     * This method will be called during chunk rebuilds to generate the dynamic portion of a
-     * block model when the model implements this interface and {@link #hasDynamicVertexData()} is true.<p>
+     * This method will be called during chunk rebuilds to generate both the static and
+     * dynamic portions of a block model when the model implements this interface and 
+     * {@link #hasVertexData()} is true.<p>
      * 
      * This method will always be called exactly one time per block position 
      * per chunk rebuild, irrespective of which or how many faces or block render layers are included 
@@ -62,5 +63,5 @@ public interface DynamicVertexProducer {
      * provided Random for models that expect it. This is especially important for implementations 
      * that "wrap" existing models that do not implement this interface.<p>
      */
-    void produceDynamicVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, DynamicVertexConsumer consumer);
+    void produceVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, DynamicVertexConsumer consumer);
 }

@@ -16,20 +16,17 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import net.minecraft.util.math.Direction;
-
 /**
  * Interface for models with static, pre-baked vertex data to quickly
  * send that data into the rendering pipeline. The vertex data must have
  * been previously baked using {@link ModelMaterialBuilder}.<p>
  * 
- * For best performance, model should send multiple quads per invocation
- * and send all quads for a given material before sending quads with 
- * a different material. To achieve this is is helpful to material keep vertex
+ * For best performance, model should send all quads for a given material before sending 
+ * quads with a different material. To achieve this is is helpful to keep vertex
  * data in a single array organized by material and side and storing offsets
  * and material identifiers either elsewhere in the same array or a different structure.
  */
 @FunctionalInterface
 public interface FastVertexConsumer {
-    void acceptFastVertexData(ModelMaterial material, int colorIndex, Direction cullFace, int[] vertexData, int startIndex, int quadCount);
+    void acceptFastVertexData(ModelMaterial material, int colorIndex, int[] vertexData, int startIndex);
 }
