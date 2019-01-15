@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.entity.damage;
 
-import net.fabricmc.fabric.block.Climbable;
+import net.fabricmc.fabric.api.block.Climbable;
 import net.minecraft.block.Block;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageTracker;

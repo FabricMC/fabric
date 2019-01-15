@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.block;
 
-import net.fabricmc.fabric.block.Climbable;
+import net.fabricmc.fabric.api.block.Climbable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LadderBlock;

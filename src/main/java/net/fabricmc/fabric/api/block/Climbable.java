@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.block;
+package net.fabricmc.fabric.api.block;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -35,9 +35,8 @@ public interface Climbable {
     boolean canClimb(LivingEntity entity, BlockState state, BlockPos pos);
 
     /**
-     * The suffix of the death message when falling off this block.
-     *
-     * @return the suffix of the death message.
+     * The suffix of the death message when falling off this block and dying. Your translation file should include the
+     * translation key "death.fell.accident.suffix", where "suffix" is a string returned by this method.
      */
     default String getFallDeathSuffix() {
         return "generic";

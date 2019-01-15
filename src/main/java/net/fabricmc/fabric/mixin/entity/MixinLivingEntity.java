@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.block.Climbable;
+import net.fabricmc.fabric.api.block.Climbable;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
