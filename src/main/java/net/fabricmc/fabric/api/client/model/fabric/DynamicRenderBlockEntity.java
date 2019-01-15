@@ -83,7 +83,7 @@ public interface DynamicRenderBlockEntity {
     
     /**
      * Called once per client tick, or per-frame if {@link #checkEveryFrame()} is true.
-     * If the result is true, the render plug-in will re-buffer the model
+     * If the result is non-null, the render plug-in will re-buffer the model
      * associated with this Block/BlockEntity and render the results for
      * all subsequent frames until the next true result.<p>
      * 
@@ -109,12 +109,13 @@ public interface DynamicRenderBlockEntity {
      * the block entity state is current.  May be used, for example, if user presses F3 + A to
      * force a render reload. <p>
      * 
-     * @return  Non-null object if the dynamic quads for this BlockEntity should be re-buffered.
-     * Renderers must not use or retain this result except to pass it back to the BlockEntity
-     * in {@link #produceModelVertexData()}.  Implementations may safely reuse state objects to
-     * prevent wasteful memory allocation.
+     * @return  Non-null producer if the dynamic quads for this BlockEntity should be re-buffered.
+     * The producer may be invoked off the main thread and must contain or have thread-safe
+     * access to any and all state it needs to operate. Renderers must not use or retain the
+     * producer except to generate vertex data. Implementations may safely reuse producer 
+     * objects to prevent wasteful memory allocation.
      */
-    Object getDynamicRenderData(int tickCounter, float fractionalTick, boolean forceRefresh);
+    DynamicVertexProducer getDynamicVertexProducer(int tickCounter, float fractionalTick, boolean forceRefresh);
     
     /**
      * Some animated blocks may benefit from per-frame model updates. Those blocks
@@ -124,9 +125,4 @@ public interface DynamicRenderBlockEntity {
     default boolean checkEveryFrame() {
         return false;
     }
-    
-    /**
-     * Accepts dynamic model content. See {@link DynamicVertexConsumer} for details.
-     */
-    void produceDynamicVertexData(Object modelState, DynamicVertexConsumer consumer);
 }
