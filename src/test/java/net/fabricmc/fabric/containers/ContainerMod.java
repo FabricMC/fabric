@@ -69,15 +69,10 @@ public class ContainerMod implements ModInitializer {
 		BlockPos pos;
 
 		public ExampleContainer(int syncId, BlockPos pos, PlayerEntity playerEntity) {
-			super(syncId);
+			super(null, syncId);
 			this.pos = pos;
 			this.playerInventory = playerEntity.inventory;
 			System.out.println("Opened container, " + pos);
-		}
-
-		@Override
-		public ContainerType<?> getType() {
-			return null;
 		}
 
 		@Override
@@ -91,7 +86,7 @@ public class ContainerMod implements ModInitializer {
 		BlockPos pos;
 
 		public ExampleInventoryContainer(int syncId, PlayerEntity playerEntity) {
-			super(syncId);
+			super(null, syncId);
 			this.playerInventory = playerEntity.inventory;
 			for(int i = 0; i < 3; ++i) {
 				for(int j = 0; j < 9; ++j) {
@@ -102,11 +97,6 @@ public class ContainerMod implements ModInitializer {
 			for(int j = 0; j < 9; ++j) {
 				this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
 			}
-		}
-
-		@Override
-		public ContainerType<?> getType() {
-			return null;
 		}
 
 		@Override

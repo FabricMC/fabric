@@ -18,6 +18,8 @@ package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.util.HandlerArray;
+import net.minecraft.class_3965;
+import net.minecraft.class_3966;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -30,7 +32,6 @@ import net.minecraft.server.network.packet.PlayerInteractEntityServerPacket;
 import net.minecraft.server.network.packet.PlayerInteractItemServerPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -81,9 +82,13 @@ public class MixinClientPlayerInteractionManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;getStackInHand(Lnet/minecraft/util/Hand;)Lnet/minecraft/item/ItemStack;", ordinal = 0), method = "interactBlock", cancellable = true)
-	public void interactBlock(ClientPlayerEntity player, ClientWorld world, BlockPos pos, Direction direction, Vec3d vec, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+	public void interactBlock(ClientPlayerEntity player, ClientWorld world, Hand hand, class_3965 blockHitResult, CallbackInfoReturnable<ActionResult> info) {
 		PlayerInteractionEvent.BlockPositioned[] backingArray = ((HandlerArray<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray();
 		if (backingArray.length > 0) {
+			Vec3d vec = blockHitResult.method_17784();
+			BlockPos pos = blockHitResult.method_17777();
+			Direction direction = blockHitResult.method_17780();
+
 			float hitX = (float) (vec.x - pos.getX());
 			float hitY = (float) (vec.y - pos.getY());
 			float hitZ = (float) (vec.z - pos.getZ());
@@ -92,7 +97,7 @@ public class MixinClientPlayerInteractionManager {
 				ActionResult result = handler.interact(player, world, hand, pos, direction, hitX, hitY, hitZ);
 				if (result != ActionResult.PASS) {
 					if (result == ActionResult.SUCCESS) {
-						this.networkHandler.sendPacket(new PlayerInteractBlockServerPacket(pos, direction, hand, hitX, hitY, hitZ));
+						this.networkHandler.sendPacket(new PlayerInteractBlockServerPacket(hand, blockHitResult));
 					}
 					info.setReturnValue(result);
 					info.cancel();
@@ -132,9 +137,9 @@ public class MixinClientPlayerInteractionManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "interactEntityAtLocation", cancellable = true)
-	public void interactEntityAtLocation(PlayerEntity player, Entity entity, HitResult hitResult, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+	public void interactEntityAtLocation(PlayerEntity player, Entity entity, class_3966 hitResult, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		// TODO: Remove double Vec3d creation?
-		Vec3d hitVec = new Vec3d(hitResult.pos.x - entity.x, hitResult.pos.y - entity.y, hitResult.pos.z - entity.z);
+		Vec3d hitVec = hitResult.method_17784().subtract(entity.x, entity.y, entity.z);
 
 		for (PlayerInteractionEvent.EntityPositioned handler : ((HandlerArray<PlayerInteractionEvent.EntityPositioned>) PlayerInteractionEvent.INTERACT_ENTITY_POSITIONED).getBackingArray()) {
 			ActionResult result = handler.interact(player, player.getEntityWorld(), hand, entity, hitVec);
