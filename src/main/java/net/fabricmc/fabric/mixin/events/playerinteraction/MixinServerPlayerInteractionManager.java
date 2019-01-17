@@ -18,13 +18,13 @@ package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.util.HandlerArray;
-import net.minecraft.class_3965;
 import net.minecraft.client.network.packet.BlockUpdateClientPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.BlockHitResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -58,11 +58,11 @@ public class MixinServerPlayerInteractionManager {
 	}
 
 	@Inject(at = @At("HEAD"), method = "interactBlock", cancellable = true)
-	public void interactBlock(PlayerEntity player, World world, ItemStack stack, Hand hand, class_3965 blockHitResult, CallbackInfoReturnable<ActionResult> info) {
+	public void interactBlock(PlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
 		for (PlayerInteractionEvent.BlockPositioned handler : ((HandlerArray<PlayerInteractionEvent.BlockPositioned>) PlayerInteractionEvent.INTERACT_BLOCK).getBackingArray()) {
-			Vec3d vec = blockHitResult.method_17784();
-			BlockPos pos = blockHitResult.method_17777();
-			Direction direction = blockHitResult.method_17780();
+			Vec3d vec = blockHitResult.getPos();
+			BlockPos pos = blockHitResult.getBlockPos();
+			Direction direction = blockHitResult.getSide();
 
 			float hitX = (float) (vec.x - pos.getX());
 			float hitY = (float) (vec.y - pos.getY());
