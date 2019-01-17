@@ -43,14 +43,32 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	private int currentPage = 0;
 
+	private int fabric_getPageOffset(int page) {
+		switch (page) {
+			case 0:
+				return 0;
+			case 1:
+				return 12;
+			default:
+				return 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (page - 1));
+		}
+	}
+
+	private int fabric_getOffsetPage(int offset) {
+		if (offset < 12) {
+			return 0;
+		} else {
+			return 1 + ((offset - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
+		}
+	}
 
 	@Override
 	public void fabric_nextPage() {
-		if ((currentPage + 1) * 12 > ItemGroup.GROUPS.length) {
+		if (fabric_getPageOffset(currentPage + 1) > ItemGroup.GROUPS.length) {
 			return;
 		}
 		currentPage++;
-		updateSelection();
+		fabric_updateSelection();
 	}
 
 	@Override
@@ -59,7 +77,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 			return;
 		}
 		currentPage--;
-		updateSelection();
+		fabric_updateSelection();
 	}
 
 	@Override
@@ -70,7 +88,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 	@Override
 	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
 		if (type == FabricCreativeGuiComponents.Type.NEXT) {
-			return !((currentPage + 1) * 12 > ItemGroup.GROUPS.length);
+			return !(fabric_getPageOffset(currentPage + 1) > ItemGroup.GROUPS.length);
 		}
 		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
 			return currentPage != 0;
@@ -78,20 +96,13 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		return false;
 	}
 
-	private void updateSelection() {
-		int nextTab;
-		if (currentPage == 0) {
-			nextTab = 0;
-		} else {
-			nextTab = 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (currentPage - 1));
-		}
-
-		setSelectedTab(ItemGroup.GROUPS[nextTab]);
+	private void fabric_updateSelection() {
+		setSelectedTab(ItemGroup.GROUPS[fabric_getPageOffset(currentPage)]);
 	}
 
 	@Inject(method = "onInitialized", at = @At("RETURN"))
 	private void onInitialized(CallbackInfo info) {
-		updateSelection();
+		fabric_updateSelection();
 
 		int xpos = left + 170;
 		int ypos = top + 4;
@@ -133,11 +144,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
 			return true;
 		}
-		if (itemGroup.getId() < 12) {
-			return currentPage == 0;
-		}
-		int page = (int) Math.floor((itemGroup.getId() - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
-		return currentPage == page + 1;
+		return currentPage == fabric_getOffsetPage(itemGroup.getId());
 
 	}
 
