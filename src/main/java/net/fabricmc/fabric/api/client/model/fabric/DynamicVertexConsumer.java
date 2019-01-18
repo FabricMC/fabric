@@ -26,8 +26,11 @@ import net.minecraft.util.math.Direction;
  * Models should pre-bake vertex data with {@link FastVertexBuilder} and use 
  * {@link FastVertexConsumer#acceptFastVertexData(ModelMaterial, int, Direction, int[], int, int)}
  * whenever possible.<p>
+ * 
+ * This interface also extends {@link StandardQuadConsumer}.  Fabric causes vanilla
+ * baked models to send their quads via that interface.
  */
-public interface DynamicVertexConsumer extends FastVertexConsumer, VertexBuilder {
+public interface DynamicVertexConsumer extends FastVertexConsumer, VertexBuilder, StandardQuadConsumer {
     
     /**
      * Value functions identically to {@link BakedQuad#getColorIndex()} and is

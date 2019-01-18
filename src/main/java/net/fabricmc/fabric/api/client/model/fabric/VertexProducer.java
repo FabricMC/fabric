@@ -26,22 +26,18 @@ import net.minecraft.util.math.BlockPos;
  * world state instead of or in addition to block state when render chunks are rebuilt.<p>
  * 
  * Dynamic elements are additive - models with static quads should output static quads 
- * via the less expensive {@link FastVertexProducer} interface.<p>
+ * via the less expensive {@link FastVertexConsumer} interface. The provided consumer
+ * will implement this interface also.<p>
  * 
  * Note for {@link ModelRenderer} implementors: Fabric causes BakedModel to extend this
- * interface with {@link #hasVertexData()} returning false. This means any BakedModel instance
+ * interface with {@link #hasVertexData()} and to produce standard vertex data. This means any BakedModel instance
  * can be safely cast to this interface without an instanceof check.
  */
+@FunctionalInterface
 public interface VertexProducer {
     /**
-     * Must be true when chunk is rebuilt for interface to activate.
-     */
-    boolean hasVertexData();
-    
-    /**
      * This method will be called during chunk rebuilds to generate both the static and
-     * dynamic portions of a block model when the model implements this interface and 
-     * {@link #hasVertexData()} is true.<p>
+     * dynamic portions of a block model when the model implements this interface.<p>
      * 
      * This method will always be called exactly one time per block position 
      * per chunk rebuild, irrespective of which or how many faces or block render layers are included 

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.client.model;
 
+import static net.fabricmc.fabric.impl.client.model.BakedModelMixinHelper.DIRECTIONS;
+
+import java.util.List;
 import java.util.Random;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,8 +26,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.fabricmc.fabric.api.client.model.fabric.DynamicVertexConsumer;
 import net.fabricmc.fabric.api.client.model.fabric.VertexProducer;
 import net.fabricmc.fabric.api.client.model.fabric.ModelBlockView;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -32,13 +37,33 @@ import net.minecraft.util.math.BlockPos;
  */
 @Mixin(BakedModel.class)
 public interface MixinBakedModel extends VertexProducer {
-    @Override
-    default boolean hasVertexData() {
-        return false;
-    }
 
     @Override
     default void produceVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, DynamicVertexConsumer consumer) {
-        // should never be called, and does nothing if it somehow is
+        BakedModel me = (BakedModel)this;
+        
+        for(int i = 0; i < 6; i++) {
+            random.setSeed(seed);
+            List<BakedQuad> quads = me.getQuads(state, DIRECTIONS[i], random);
+            final int count = quads.size();
+            if(count != 0 && Block.shouldDrawSide(state, blockView, pos, DIRECTIONS[i])) {
+                consumer.setQuadCullFace(DIRECTIONS[i]);
+                for(int j = 0; j < count; j++) {
+                    BakedQuad q = quads.get(j);
+                    consumer.accept(q, false);
+                }
+            }
+        }
+
+        random.setSeed(seed);
+        List<BakedQuad> quads = me.getQuads(state, null, random);
+        final int count = quads.size();
+        if(count != 0) {
+            consumer.setQuadCullFace(null);
+            for(int j = 0; j < count; j++) {
+                BakedQuad q = quads.get(j);
+                consumer.accept(q, false);
+            }
+        }
     }
 }
