@@ -33,7 +33,8 @@
                   "condition": "minecraft:survives_explosion"
                 }
               ],
-              "name": "minecraft:wool"
+              "name": "minecraft:wool",
+              "expand": false
             }
           ]
         }
