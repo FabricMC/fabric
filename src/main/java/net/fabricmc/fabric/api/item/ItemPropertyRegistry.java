@@ -26,6 +26,7 @@ public interface ItemPropertyRegistry<V> {
 	public static final ItemPropertyRegistry<Integer> FUEL = FuelRegistry.INSTANCE;
 	public static final ItemPropertyRegistry<Float> COMPOSTING_CHANCE = CompostingChanceRegistry.INSTANCE;
 
+	V get(ItemProvider item);
 	void add(ItemProvider item, V value);
 	void add(Tag<Item> tag, V value);
 	void remove(ItemProvider item);

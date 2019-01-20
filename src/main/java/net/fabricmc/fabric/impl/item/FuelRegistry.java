@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.item;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.api.item.ItemPropertyRegistry;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
@@ -36,6 +37,11 @@ public class FuelRegistry implements ItemPropertyRegistry<Integer> {
 
 	private FuelRegistry() {
 
+	}
+
+	@Override
+	public Integer get(ItemProvider item) {
+		return AbstractFurnaceBlockEntity.createBurnableMap().get(item.getItem());
 	}
 
 	@Override

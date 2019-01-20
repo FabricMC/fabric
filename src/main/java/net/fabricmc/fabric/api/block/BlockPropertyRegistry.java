@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.api.block;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
 
 public interface BlockPropertyRegistry<V> {
+	V get(Block block);
 	void add(Block block, V value);
 	void add(Tag<Block> tag, V value);
 	void remove(Block block);
