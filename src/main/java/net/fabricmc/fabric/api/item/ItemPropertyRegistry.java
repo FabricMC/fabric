@@ -16,25 +16,18 @@
 
 package net.fabricmc.fabric.api.item;
 
-import net.fabricmc.fabric.impl.item.FuelRegistryImpl;
+import net.fabricmc.fabric.impl.item.CompostingChanceRegistry;
+import net.fabricmc.fabric.impl.item.FuelRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
 
-/**
- * Registry for item fuel values.
- */
-public interface FuelRegistry {
-	public static final FuelRegistry INSTANCE = FuelRegistryImpl.INSTANCE;
+public interface ItemPropertyRegistry<V> {
+	public static final ItemPropertyRegistry<Integer> FUEL = FuelRegistry.INSTANCE;
+	public static final ItemPropertyRegistry<Float> COMPOSTING_CHANCE = CompostingChanceRegistry.INSTANCE;
 
-	void add(ItemProvider item, int cookTime);
-	void add(Tag<Item> tag, int cookTime);
-
-	default void remove(ItemProvider item) {
-		add(item, 0);
-	}
-
-	default void remove(Tag<Item> tag) {
-		add(tag, 0);
-	}
+	void add(ItemProvider item, V value);
+	void add(Tag<Item> tag, V value);
+	void remove(ItemProvider item);
+	void remove(Tag<Item> tag);
 }

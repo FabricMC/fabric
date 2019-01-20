@@ -18,31 +18,50 @@ package net.fabricmc.fabric.impl.item;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.fabricmc.fabric.api.item.FuelRegistry;
+import net.fabricmc.fabric.api.item.ItemPropertyRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Map;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
-public class FuelRegistryImpl implements FuelRegistry {
-	public static final FuelRegistryImpl INSTANCE = new FuelRegistryImpl();
+public class FuelRegistry implements ItemPropertyRegistry<Integer> {
+	public static final FuelRegistry INSTANCE = new FuelRegistry();
+	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemProvider> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
 
-	private FuelRegistryImpl() {
+	private FuelRegistry() {
 
 	}
 
 	@Override
-	public void add(ItemProvider item, int cookTime) {
+	public void add(ItemProvider item, Integer cookTime) {
+		if (cookTime > 32767) {
+			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + item + ")");
+		}
 		itemCookTimes.put(item, cookTime);
 	}
 
 	@Override
-	public void add(Tag<Item> tag, int cookTime) {
+	public void add(Tag<Item> tag, Integer cookTime) {
+		if (cookTime > 32767) {
+			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + tag.getId() + ")");
+		}
 		tagCookTimes.put(tag, cookTime);
+	}
+
+	@Override
+	public void remove(ItemProvider item) {
+		add(item, 0);
+	}
+
+	@Override
+	public void remove(Tag<Item> tag) {
+		add(tag, 0);
 	}
 
 	public void apply(Map<Item, Integer> map) {

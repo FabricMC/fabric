@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.item;
+package net.fabricmc.fabric.api.block;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.ItemPropertyRegistry;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.minecraft.block.Block;
+import net.minecraft.tag.Tag;
 
-public class FuelMod implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		ItemPropertyRegistry.INSTANCE.add(Items.APPLE, 200);
-		ItemPropertyRegistry.INSTANCE.remove(Blocks.OAK_PLANKS);
-	}
+public interface BlockPropertyRegistry<V> {
+	void add(Block block, V value);
+	void add(Tag<Block> tag, V value);
+	void remove(Block block);
+	void remove(Tag<Block> tag);
 }

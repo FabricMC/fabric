@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import net.fabricmc.fabric.impl.item.FuelRegistryImpl;
+import net.fabricmc.fabric.impl.item.FuelRegistry;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,6 +30,6 @@ import java.util.Map;
 public class MixinAbstractFurnaceBlockEntity {
 	@Inject(at = @At("RETURN"), method = "getBurnTimeMap")
 	private static void burnTimeMapHook(CallbackInfoReturnable<Map<Item, Integer>> info) {
-		FuelRegistryImpl.INSTANCE.apply(info.getReturnValue());
+		FuelRegistry.INSTANCE.apply(info.getReturnValue());
 	}
 }
