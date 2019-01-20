@@ -34,7 +34,7 @@ import java.util.function.Function;
  * not found in the original class.
  *
  * To use it, simply replace Block.Settings.create() with
- * FabricBlockSettings.create() and addReloadListener .build() at the end to return the
+ * FabricBlockSettings.create() and add .build() at the end to return the
  * vanilla Block.Settings instance beneath.
  */
 public class FabricBlockSettings {

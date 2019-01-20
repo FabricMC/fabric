@@ -31,7 +31,7 @@ public class MixinEntityTrackerEntry {
 	@Shadow
 	private Entity entity;
 
-	@Inject(at = @At(value = "CONSTANT", args = {"stringValue=Don't know how to addReloadListener "}), method = "createSpawnPacket", cancellable = true)
+	@Inject(at = @At(value = "CONSTANT", args = {"stringValue=Don't know how to add "}), method = "createSpawnPacket", cancellable = true)
 	public void createSpawnPacket(CallbackInfoReturnable<Packet> info) {
 		Packet packet = EntityTrackingRegistry.INSTANCE.createSpawnPacket(entity);
 		if (packet != null) {

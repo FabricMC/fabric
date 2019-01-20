@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
  * "minecraft:models/stone" model ({@link ModelResourceProvider} handles the later step).
  *
  * The most common use of this is to cooperate with a {@link ModelAppender}, but it can
- * also allow you to addReloadListener your own block- or item-state formats. To trigger the loading
+ * also allow you to add your own block- or item-state formats. To trigger the loading
  * of another model, use the passed {@link ModelProviderContext}.
  *
  * As every model loading is instantiated with a new provider, it is safe

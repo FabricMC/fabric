@@ -49,7 +49,7 @@ public final class FabricItemGroupBuilder {
 
 	/**
 	 *
-	 * This is used to addReloadListener an icon to to the item group
+	 * This is used to add an icon to to the item group
 	 *
 	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
 	 * @return a reference to the FabricItemGroupBuilder
