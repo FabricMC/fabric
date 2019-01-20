@@ -37,9 +37,11 @@ public interface FastVertexBuilder extends VertexBuilder {
      * @param targetIndex  Array index where vertex output will start.
      * Builder will advance the index internally as quads are output.<p>
      * 
-     * @param isItem If true, builder will store vertex data suitable for
-     * item rendering. Use when building item models.  When false, builder
-     * will output vertex data for block rendering.
+     * @param isItem Signals rendering intent for renderer to enable
+     * format optimizations. If true, packed vertex data is expected to be
+     * used for item rendering. Use when building item models. When false, 
+     * builder will assume the intent is block rendering. Not all renderers
+     * make use of or benefit from this hint.<p>
      */
     void prepare(int[] target, int targetIndex, boolean isItem);
     

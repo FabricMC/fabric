@@ -47,4 +47,5 @@ public final class ModelRendererAccessImpl implements ModelRendererAccess{
     public final boolean isRendererActive() {
         return hasActiveRenderer;
     }
+    
 }
