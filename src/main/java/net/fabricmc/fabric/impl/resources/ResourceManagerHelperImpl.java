@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.impl.resources;
 
 import com.google.common.collect.Lists;
-import net.fabricmc.fabric.api.resource.KeyedResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceListenerRegistry;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -27,37 +27,37 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
-public class ResourceListenerRegistryImpl implements ResourceListenerRegistry {
-	private static final Map<ResourceType, ResourceListenerRegistryImpl> registryMap = new HashMap<>();
+public class ResourceManagerHelperImpl implements ResourceManagerHelper {
+	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private final List<KeyedResourceReloadListener> addedListeners = new ArrayList<>();
+	private final List<IdentifiableResourceReloadListener> addedListeners = new ArrayList<>();
 
-	public static ResourceListenerRegistry get(ResourceType type) {
-		return registryMap.computeIfAbsent(type, (t) -> new ResourceListenerRegistryImpl());
+	public static ResourceManagerHelper get(ResourceType type) {
+		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
 	}
 
 	public static void sort(ResourceType type, List<ResourceReloadListener> listeners) {
-		ResourceListenerRegistryImpl instance = registryMap.get(type);
+		ResourceManagerHelperImpl instance = registryMap.get(type);
 		if (instance != null) {
 			instance.sort(listeners);
 		}
 	}
 
-	public void sort(List<ResourceReloadListener> listeners) {
+	protected void sort(List<ResourceReloadListener> listeners) {
 		listeners.removeAll(addedListeners);
 
 		// General rules:
 		// - We *do not* touch the ordering of vanilla listeners. Ever.
 		//   While dependency values are provided where possible, we cannot
 		//   trust them 100%. Only code doesn't lie.
-		// - We add all custom listeners after vanilla listeners. Same reasons.
+		// - We addReloadListener all custom listeners after vanilla listeners. Same reasons.
 
-		List<KeyedResourceReloadListener> listenersToAdd = Lists.newArrayList(addedListeners);
+		List<IdentifiableResourceReloadListener> listenersToAdd = Lists.newArrayList(addedListeners);
 		Set<Identifier> resolvedIds = new HashSet<>();
 		for (ResourceReloadListener listener : listeners) {
-			if (listener instanceof KeyedResourceReloadListener) {
-				resolvedIds.add(((KeyedResourceReloadListener) listener).getFabricId());
+			if (listener instanceof IdentifiableResourceReloadListener) {
+				resolvedIds.add(((IdentifiableResourceReloadListener) listener).getFabricId());
 			}
 		}
 
@@ -65,9 +65,9 @@ public class ResourceListenerRegistryImpl implements ResourceListenerRegistry {
 		while (listeners.size() != lastSize) {
 			lastSize = listeners.size();
 
-			Iterator<KeyedResourceReloadListener> it = listenersToAdd.iterator();
+			Iterator<IdentifiableResourceReloadListener> it = listenersToAdd.iterator();
 			while (it.hasNext()) {
-				KeyedResourceReloadListener listener = it.next();
+				IdentifiableResourceReloadListener listener = it.next();
 				if (resolvedIds.containsAll(listener.getFabricIdDependencies())) {
 					resolvedIds.add(listener.getFabricId());
 					listeners.add(listener);
@@ -76,12 +76,13 @@ public class ResourceListenerRegistryImpl implements ResourceListenerRegistry {
 			}
 		}
 
-		for (KeyedResourceReloadListener listener : listenersToAdd) {
+		for (IdentifiableResourceReloadListener listener : listenersToAdd) {
 			LOGGER.warn("Could not resolve dependencies for listener: " + listener.getFabricId() + "!");
 		}
 	}
 
-	public void add(KeyedResourceReloadListener listener) {
+	@Override
+	public void addReloadListener(IdentifiableResourceReloadListener listener) {
 		addedListeners.add(listener);
 	}
 }

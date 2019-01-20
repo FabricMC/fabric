@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.api.resource.KeyedResourceReloadListener;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.minecraft.client.audio.SoundLoader;
 import net.minecraft.client.font.FontRendererManager;
@@ -27,7 +27,6 @@ import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.recipe.RecipeManager;
-import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.CommandFunctionManager;
 import net.minecraft.tag.TagManager;
@@ -45,7 +44,7 @@ public class MixinKeyedResourceReloadListener {
 		/* private */
 		WorldRenderer.class, BlockRenderManager.class, ItemRenderer.class
 	})
-	public static abstract class Client implements KeyedResourceReloadListener {
+	public static abstract class Client implements IdentifiableResourceReloadListener {
 		private Collection<Identifier> fabric_idDeps;
 		private Identifier fabric_id;
 
@@ -96,7 +95,7 @@ public class MixinKeyedResourceReloadListener {
 		RecipeManager.class, ServerAdvancementLoader.class, CommandFunctionManager.class, LootManager.class, TagManager.class
 		/* private */
 	})
-	public static abstract class Server implements KeyedResourceReloadListener {
+	public static abstract class Server implements IdentifiableResourceReloadListener {
 		private Collection<Identifier> fabric_idDeps;
 		private Identifier fabric_id;
 

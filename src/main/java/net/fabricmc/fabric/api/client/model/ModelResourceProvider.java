@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
  * that is, in vanilla, it handles going from "minecraft:block/stone" to a
  * "assets/minecraft/models/block/stone.json" file.
  *
- * This is where you want to add your own custom model formats.
+ * This is where you want to addReloadListener your own custom model formats.
  *
  * As providers are instantiated with a new provider, it is safe
  * (and recommended!) to cache information inside a loader.

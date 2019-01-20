@@ -16,13 +16,26 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.fabricmc.fabric.impl.resources.ResourceListenerRegistryImpl;
+import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 
-public interface ResourceListenerRegistry {
-	void add(KeyedResourceReloadListener listener);
+/**
+ * Helper for working with {@link ResourceManager} instances.
+ */
+public interface ResourceManagerHelper {
+	/**
+	 * Add a resource reload listener for a given registry.
+	 * @param listener The resource reload listener.
+	 */
+	void addReloadListener(IdentifiableResourceReloadListener listener);
 
-	static ResourceListenerRegistry get(ResourceType type) {
-		return ResourceListenerRegistryImpl.get(type);
+	/**
+	 * Get the ResourceManagerHelper instance for a given resource type.
+	 * @param type The given resource type.
+	 * @return The ResourceManagerHelper instance.
+	 */
+	static ResourceManagerHelper get(ResourceType type) {
+		return ResourceManagerHelperImpl.get(type);
 	}
 }

@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.resources;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.resource.KeyedResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceListenerRegistry;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -29,7 +29,7 @@ import java.util.Collections;
 public class ResourceReloadModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ResourceListenerRegistry.get(ResourceType.ASSETS).add(new KeyedResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc2");
@@ -46,7 +46,7 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			}
 		});
 
-		ResourceListenerRegistry.get(ResourceType.ASSETS).add(new KeyedResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc1");
@@ -58,7 +58,7 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			}
 		});
 
-		ResourceListenerRegistry.get(ResourceType.ASSETS).add(new KeyedResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc_should_not_resolve");

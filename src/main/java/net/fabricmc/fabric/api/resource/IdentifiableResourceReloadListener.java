@@ -22,9 +22,24 @@ import net.minecraft.util.Identifier;
 import java.util.Collection;
 import java.util.Collections;
 
-public interface KeyedResourceReloadListener extends ResourceReloadListener {
+/**
+ * Interface for "identifiable" resource reload listeners.
+ *
+ * "Identifiable" listeners have an unique identifier, which can be depended on, and can
+ * provide dependencies that they would like to see executed before themselves.
+ *
+ * {@link ResourceReloadListenerKeys}
+ */
+public interface IdentifiableResourceReloadListener extends ResourceReloadListener {
+	/**
+	 * @return The unique identifier of this listener.
+	 */
 	Identifier getFabricId();
 
+	/**
+	 * @return The identifiers of listeners this listener expects to have been
+	 * executed before itself.
+	 */
 	default Collection<Identifier> getFabricIdDependencies() {
 		return Collections.emptyList();
 	}

@@ -30,7 +30,7 @@ public abstract class MixinEntityTracker {
 	@Shadow
 	public abstract void add(Entity var1, int var2, int var3, boolean var4);
 
-	@Inject(at = @At("HEAD"), method = "add", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "addReloadListener", cancellable = true)
 	public void add(Entity entity, CallbackInfo info) {
 		if (entity != null) {
 			EntityTrackingRegistry.Entry entry = EntityTrackingRegistry.INSTANCE.get(entity.getType());

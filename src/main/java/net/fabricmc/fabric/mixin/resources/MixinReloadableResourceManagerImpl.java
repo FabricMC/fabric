@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.impl.resources.ResourceListenerRegistryImpl;
+import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
 import net.minecraft.resource.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,6 +35,6 @@ public class MixinReloadableResourceManagerImpl {
 
 	@Inject(at = @At("HEAD"), method = "reload")
 	public void reload(List<ResourcePack> packs, CallbackInfo info) {
-		ResourceListenerRegistryImpl.sort(type, listeners);
+		ResourceManagerHelperImpl.sort(type, listeners);
 	}
 }

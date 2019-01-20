@@ -18,6 +18,11 @@ package net.fabricmc.fabric.api.resource;
 
 import net.minecraft.util.Identifier;
 
+/**
+ * This class contains default keys for various Minecraft resource reload listeners.
+ *
+ * {@link IdentifiableResourceReloadListener}
+ */
 public final class ResourceReloadListenerKeys {
 	// client
 	public static final Identifier SOUNDS = new Identifier("minecraft:sounds");
