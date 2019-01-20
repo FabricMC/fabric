@@ -25,9 +25,9 @@ import java.util.Map;
 @Mixin(KeyBinding.class)
 public class MixinKeyBinding {
 	@Shadow
-	private static Map<String, Integer> field_1656;
+	private static Map<String, Integer> categoryOrderMap;
 
 	private static Map<String, Integer> fabric_getCategoryMap() {
-		return field_1656;
+		return categoryOrderMap;
 	}
 }
