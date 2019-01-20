@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
 
@@ -27,10 +28,6 @@ import net.minecraft.util.Identifier;
  * 
  * A material instance is always immutable and thread-safe.  References to a material 
  * remain valid until the end of the current game session.<p>
- * 
- * This interface has no methods because the internal state is for use only
- * by the {@link ModelRenderer} and the implementation is meant to be
- * optimized according to how the renderer manages vertex buffers and draw calls.<p>
  * 
  * A {@link ModelMaterial} instance can only be created by a {@link ModelMaterialBuilder}
  * instance obtained via {@link ModelRenderer#getMaterialBuilder()}.<p>
@@ -83,4 +80,34 @@ public interface ModelMaterial {
      * and serialize the registration identifier.
      */
     int index();
+    
+    /**
+     * How many color/uv layers are in the material. Minimum is 1.
+     * See {@link ModelMaterialBuilder#setTextureDepth(int)}
+     */
+    int textureDepth();
+
+    /**
+     * Texture blending mode renderer should use for the given layer.
+     * See {@link ModelMaterialBuilder#setBlendMode(BlockRenderLayer)}
+     */
+    BlockRenderLayer blendMode(int layerIndex);
+
+    /**
+     * Lighting renderer should apply for the given layer.
+     * See {@link ModelMaterialBuilder#setShading(ShadingMode)}
+     */
+    ShadingMode shadingMode(int layerIndex);
+
+    /**
+     * If true, renderer applies custom brightness to the given layer.
+     * See {@link ModelMaterialBuilder#setEmissive(boolean)}
+     */
+    boolean isEmissive(int layerIndex);
+
+    /**
+     * If true, color index is not applied to the given layer.
+     * See {@link ModelMaterialBuilder#enableColorIndex(int, boolean)}.
+     */
+    boolean disableColorIndex(int layerIndex);
 }
