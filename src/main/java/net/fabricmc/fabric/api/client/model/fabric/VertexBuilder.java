@@ -49,7 +49,12 @@ public interface VertexBuilder {
      * Call to explicitly flush a completed quad. 
      * Useful in dynamic rendering contexts to flush the last quad.
      * Will be called implicitly when {@link #begin(ModelMaterial)} is
-     * called.
+     * called.<p>
+     * 
+     * TODO: consider making this required (not implicit) and returning
+     * the number of integers output.  Would allow renderers to use
+     * variable-length strides per material vs having each material
+     * report a fixed stride.
      */
     void end();
     
