@@ -19,31 +19,22 @@ package net.fabricmc.fabric.api.client.model.fabric;
 /**
  * Interface for models with static, pre-baked vertex data to quickly
  * send that data into the rendering pipeline. The vertex data must have
- * been previously baked using {@link ModelMaterialBuilder}.<p>
+ * been previously baked using {@link FastVertexBuilder}.<p>
  * 
- * TODO: not sure below paragraph is really true - renderer is going to need
- * to sort quads to buffers no matter what - especially using fixed pipeline.
- * And may become irrelevant per TODOs below...
- * 
- * For best performance, model should send all quads for a given material before sending 
- * quads with a different material. To achieve this it is helpful to keep vertex
- * data in a single array organized by material and side and storing offsets
- * and material identifiers either elsewhere in the same array or a different structure.
- * 
- * TODO: Evaluate adding a multi-quad variant for array-packed quads, or...
- * 
- * TODO: Consider having renderer serialize the material with the vertex data instead of
- * requiring the model to send it.  Material has to match anyway, and it seems this just
- * creates additional burden on the model implementation and also the opportunity
- * for the model to break stuff by sending mismatched materials.  If change is made, renderer
- * should probably provide a way to query the material of packed vertices.
- * 
- * TODO: Same question for color index. Does it need to be dynamic in the model or should
- * it be pre-baked? If pre-baked, then this call could simply be 
- * acceptFastVertexData(int[] vertexData, int startIndex, int endIndex) and it
- * could iterate quads until it gets to the end of the range.
+ * Designed to favor implementations that pack multiple quads into a single
+ * [] int array and will iterate all quads in the given range. However,
+ * models are still responsible for face culling and, for multi-part or
+ * compound models, determining which parts to render.  This means models still
+ * need to track array ranges by face/part.<p>
  */
 @FunctionalInterface
 public interface FastVertexConsumer {
-    void acceptFastVertexData(ModelMaterial material, int colorIndex, int[] vertexData, int startIndex);
+    /**
+     * Renders/processes vertex data previously packed using {@link FastVertexBuilder}.<p>
+     * 
+     * @param vertexData  Array with one or more packed quads.
+     * @param startIndex  Array index of first quad.
+     * @param endIndex    End of range (exclusive). Range can include multiple quads.
+     */
+    void acceptFastVertexData(int[] vertexData, int startIndex, int endIndex);
 }

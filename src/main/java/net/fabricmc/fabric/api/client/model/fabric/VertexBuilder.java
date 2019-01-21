@@ -67,6 +67,13 @@ public interface VertexBuilder {
     void setQuadCullFace(Direction face);
     
     /**
+     * Value functions identically to {@link BakedQuad#getColorIndex()} and is
+     * used by renderer / model builder in same way.  Value remains in effect
+     * for all subsequent quads sent to this consumer until changed. Default value is -1.
+     */
+    void setColorIndex(int colorIndex);
+    
+    /**
      * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
      * This method should be performant whenever caller's vertex representation makes it feasible.<p>
      * 

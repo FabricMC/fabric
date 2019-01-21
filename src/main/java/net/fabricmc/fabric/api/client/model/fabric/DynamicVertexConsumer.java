@@ -16,26 +16,18 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.util.math.Direction;
-
 /**
- * Used by dynamic models to buffer vertex data at render time.<p>
+ * This is the consumer made available to models for buffering vertex data at render time.
+ * Is the union of three different interfaces:<p>
+ * <li>{@link FastVertexConsumer} Used by models to send vertex data previously baked 
+ * via {@link FastVertexBuilder}. The fastest option and preferred whenever feasible.</li><p>
  * 
- * Note this interface extends {@link FastVertexConsumer}.
- * Models should pre-bake vertex data with {@link FastVertexBuilder} and use 
- * {@link FastVertexConsumer#acceptFastVertexData(ModelMaterial, int, Direction, int[], int, int)}
- * whenever possible.<p>
+ * <li>{@link VertexBuilder} For models that need to generate vertex data on the fly.
+ * Should be used sparingly - only for model components that can't be pre-baked.</li><p>
  * 
- * This interface also extends {@link StandardQuadConsumer}.  Fabric causes vanilla
- * baked models to send their quads via that interface.
+ * <li>{@link StandardQuadConsumer} Fabric causes vanilla baked models to send their 
+ * quads via this interface. Can also be used by "hybrid" models that contain a mix
+ * of vanilla baked quads and fast/dynamic vertexes to render the vanilla quad parts.</li>
  */
 public interface DynamicVertexConsumer extends FastVertexConsumer, VertexBuilder, StandardQuadConsumer {
-    
-    /**
-     * Value functions identically to {@link BakedQuad#getColorIndex()} and is
-     * used by renderer / model builder in same way.  Value remains in effect
-     * for all subsequent quads sent to this consumer until changed. Default value is -1.
-     */
-    void setQuadColorIndex(int colorIndex);
 }

@@ -70,4 +70,10 @@ public interface ModelRenderer {
      * leaving the existing material intact.
      */
     boolean registerMaterial(Identifier id, ModelMaterial material);
+
+    /**
+     * Maximum integer array length needed to serialize a single quad in any ModelMaterial.
+     * Useful for model implementations to size transfer/working arrays, etc.
+     */
+    int maxQuadStride();
 }
