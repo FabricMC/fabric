@@ -24,7 +24,7 @@ import net.minecraft.item.Items;
 public class FuelMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ItemPropertyRegistry.INSTANCE.add(Items.APPLE, 200);
-		ItemPropertyRegistry.INSTANCE.remove(Blocks.OAK_PLANKS);
+		ItemPropertyRegistry.FUEL.add(Items.APPLE, 200);
+		ItemPropertyRegistry.FUEL.remove(Blocks.OAK_PLANKS);
 	}
 }
