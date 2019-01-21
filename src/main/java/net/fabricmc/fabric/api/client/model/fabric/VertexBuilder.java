@@ -21,21 +21,10 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
 
 /**
- * Similar in concept to {@link BufferBuilder} with 
- * restricted options for mutating vertex data.<p>
- * 
+ * Similar in concept to {@link BufferBuilder} but simpler
+ * and not tied to NIO or any other specific implementation.
  * Decouples models from the vertex format(s) used by
  * ModelRenderer to allow compatibility across diverse implementations.<p>
- * 
- * Caller must call {@link #vertex(float, float, float)} to start each vertex, 
- * but remaining per-vertex operations are more loosely ordered
- * because the inner vertex format isn't known to the caller.<p>
- * 
- * A sequence restriction does apply when the material texture depth > 1.
- * In that case, calls to {@link #colorTexture(int, float, float)} must
- * come in layer order. (0, 1, etc..) or the layer-indexed methods
- * {@link #setColor(int, int, int, int, int)} and {@link #setTexture(int, float, float)}
- * can be used.
  */
 public interface VertexBuilder {
     /**
@@ -46,17 +35,23 @@ public interface VertexBuilder {
     void begin(ModelMaterial material);
     
     /**
-     * Call to explicitly flush a completed quad. 
-     * Useful in dynamic rendering contexts to flush the last quad.
-     * Will be called implicitly when {@link #begin(ModelMaterial)} is
-     * called.<p>
+     * Call to flush a completed quad, after calling {@link #begin(ModelMaterial)}
+     * and inputing quad properties and vertex data.<p>
      * 
-     * TODO: consider making this required (not implicit) and returning
-     * the number of integers output.  Would allow renderers to use
-     * variable-length strides per material vs having each material
-     * report a fixed stride.
+     * Implementations should reset the builder state when this
+     * method is called (clear normals, colors, etc.), unless the
+     * state is explicitly meant to persist across invocations, as
+     * defined in method docs. For example, see {@link #setQuadCullFace(Direction)}.<p>
      */
     void end();
+    
+    /**
+     * Concise alias for {@link #end()} followed by {@link #begin(ModelMaterial)}.
+     */
+    default void endBegin(ModelMaterial material) {
+        end();
+        begin(material);
+    }
     
     /**
      * If non-null, quad is coplanar with a block face which, if known, simplifies
@@ -73,7 +68,10 @@ public interface VertexBuilder {
     
     /**
      * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
-     * This method should be performant whenever caller's vertex representation makes it feasible
+     * This method should be performant whenever caller's vertex representation makes it feasible.<p>
+     * 
+     * Calling this method does not begin or end a quad.  It should be called after {@link #begin(ModelMaterial)}.
+     * Intended use is for quick input when formats allow.
      */
     void putStandardQuadData(int[] quadData, int startIndex, boolean isItem);
     
