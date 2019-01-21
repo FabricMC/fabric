@@ -50,7 +50,7 @@ public class MixinKeyedResourceReloadListener {
 
 		@Override
 		@SuppressWarnings({ "ConstantConditions", "RedundantCast" })
-		public Collection<Identifier> getFabricIdDependencies() {
+		public Collection<Identifier> getFabricDependencies() {
 			if (fabric_idDeps == null) {
 				Object self = (Object) this;
 				if (self instanceof BakedModelManager || self instanceof WorldRenderer) {
@@ -101,7 +101,7 @@ public class MixinKeyedResourceReloadListener {
 
 		@Override
 		@SuppressWarnings({ "ConstantConditions", "RedundantCast" })
-		public Collection<Identifier> getFabricIdDependencies() {
+		public Collection<Identifier> getFabricDependencies() {
 			if (fabric_idDeps == null) {
 				Object self = (Object) this;
 

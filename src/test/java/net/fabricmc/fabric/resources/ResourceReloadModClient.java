@@ -36,7 +36,7 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			}
 
 			@Override
-			public Collection<Identifier> getFabricIdDependencies() {
+			public Collection<Identifier> getFabricDependencies() {
 				return Collections.singletonList(new Identifier("fabric:rrmc1"));
 			}
 
@@ -65,7 +65,7 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			}
 
 			@Override
-			public Collection<Identifier> getFabricIdDependencies() {
+			public Collection<Identifier> getFabricDependencies() {
 				return Collections.singletonList(new Identifier("fabric:rrmc_nonexistent"));
 			}
 

@@ -68,7 +68,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 			Iterator<IdentifiableResourceReloadListener> it = listenersToAdd.iterator();
 			while (it.hasNext()) {
 				IdentifiableResourceReloadListener listener = it.next();
-				if (resolvedIds.containsAll(listener.getFabricIdDependencies())) {
+				if (resolvedIds.containsAll(listener.getFabricDependencies())) {
 					resolvedIds.add(listener.getFabricId());
 					listeners.add(listener);
 					it.remove();

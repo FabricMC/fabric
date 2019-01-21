@@ -25,8 +25,9 @@ import java.util.Collections;
 /**
  * Interface for "identifiable" resource reload listeners.
  *
- * "Identifiable" listeners have an unique identifier, which can be depended on, and can
- * provide dependencies that they would like to see executed before themselves.
+ * "Identifiable" listeners have an unique identifier, which can be depended on,
+ * and can provide dependencies that they would like to see executed before
+ * themselves.
  *
  * {@link ResourceReloadListenerKeys}
  */
@@ -40,7 +41,25 @@ public interface IdentifiableResourceReloadListener extends ResourceReloadListen
 	 * @return The identifiers of listeners this listener expects to have been
 	 * executed before itself.
 	 */
-	default Collection<Identifier> getFabricIdDependencies() {
+	default Collection<Identifier> getFabricDependencies() {
 		return Collections.emptyList();
+	}
+
+	/**
+	 * By default, resource reload listeners in Minecraft are all executed on
+	 * the game's main thread while the game is paused. This means they do not
+	 * need to provide any guarantees regarding their thread safety, or usage
+	 * of resources potentially modified by other reload listeners.
+	 *
+	 * "Thread safety", in this context, refers simply to independence; namely
+	 * whether or not, under the condition that all of its dependencies have
+	 * already been processed, this resource reload listener can run without
+	 * accessing or modifying areas it does not control in a non-thread-safe
+	 * manner.
+	 *
+	 * @return Whether or not the listener can be executed in a thread-safe way.
+	 */
+	default boolean isListenerThreadSafe() {
+		return false;
 	}
 }
