@@ -16,27 +16,14 @@
 
 package net.fabricmc.fabric.mixin.client.render;
 
-import net.fabricmc.fabric.api.client.model.fabric.DynamicRenderBlockEntity;
-import net.fabricmc.fabric.api.client.model.fabric.ModelRenderContext;
-import net.fabricmc.fabric.api.client.model.fabric.DynamicVertexProducer;
 import net.fabricmc.fabric.api.client.model.fabric.DynamicModelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(BlockEntity.class)
-public class MixinBlockEntity implements DynamicModelBlockEntity, DynamicRenderBlockEntity {
+public class MixinBlockEntity implements DynamicModelBlockEntity {
     @Override
     public Object getDynamicModelData() {
-        return null;
-    }
-
-    @Override
-    public boolean isDynamicRenderSupported() {
-        return false;
-    }
-
-    @Override
-    public DynamicVertexProducer getDynamicVertexProducer(int tickCounter, float fractionalTick, boolean forceRefresh) {
         return null;
     }
 }
