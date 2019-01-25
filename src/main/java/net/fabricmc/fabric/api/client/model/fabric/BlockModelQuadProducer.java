@@ -34,7 +34,7 @@ import net.minecraft.util.math.BlockPos;
  * can be safely cast to this interface without an instanceof check.
  */
 @FunctionalInterface
-public interface VertexProducer {
+public interface BlockModelQuadProducer {
     /**
      * This method will be called during chunk rebuilds to generate both the static and
      * dynamic portions of a block model when the model implements this interface.<p>
@@ -59,5 +59,5 @@ public interface VertexProducer {
      * provided Random for models that expect it. This is especially important for implementations 
      * that "wrap" existing models that do not implement this interface.<p>
      */
-    void produceVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext consumer);
+    void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext consumer);
 }

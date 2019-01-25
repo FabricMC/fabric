@@ -24,7 +24,7 @@ import java.util.Random;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.fabricmc.fabric.api.client.model.fabric.ModelRenderContext;
-import net.fabricmc.fabric.api.client.model.fabric.VertexProducer;
+import net.fabricmc.fabric.api.client.model.fabric.BlockModelQuadProducer;
 import net.fabricmc.fabric.api.client.model.fabric.ModelBlockView;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -36,10 +36,10 @@ import net.minecraft.util.math.BlockPos;
  * Avoids instanceof checks for baked models.
  */
 @Mixin(BakedModel.class)
-public interface MixinBakedModel extends VertexProducer {
+public interface MixinBakedModel extends BlockModelQuadProducer {
 
     @Override
-    default void produceVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext consumer) {
+    default void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext consumer) {
         BakedModel me = (BakedModel)this;
         
         for(int i = 0; i < 6; i++) {
