@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.item;
+package net.fabricmc.fabric.api.registry;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.fabricmc.fabric.api.util.Item2ObjectMap;
+import net.fabricmc.fabric.impl.item.FuelRegistryImpl;
 
-public class FuelMod implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		FuelRegistry.INSTANCE.add(Items.APPLE, 200);
-		FuelRegistry.INSTANCE.remove(Blocks.OAK_PLANKS);
-	}
+/**
+ * Registry of items to 0-32767 fuel burn time values, in in-game ticks.
+ */
+public interface FuelRegistry extends Item2ObjectMap<Integer> {
+	public static final FuelRegistry INSTANCE = new FuelRegistryImpl();
 }

@@ -14,28 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api;
+package net.fabricmc.fabric.api.registry;
 
 import net.fabricmc.fabric.api.util.Item2ObjectMap;
 import net.fabricmc.fabric.impl.item.CompostingChanceRegistryImpl;
-import net.fabricmc.fabric.impl.item.FuelRegistryImpl;
 
 /**
- * Proxy class for Minecraft's "global" property maps.
+ * Registry of items to 0.0-1.0 values, defining the chance of a given item
+ * increasing the Composter block's level
  */
-public final class GlobalPropertyMaps {
-	/**
-	 * A map of items to fuel burning time, in in-game ticks.
-	 */
-	public static final Item2ObjectMap<Integer> FUEL = FuelRegistryImpl.INSTANCE;
-
-	/**
-	 * A map of items to an 0.0 - 1.0 chance of increasing the composter
-	 * block's level.
-	 */
-	public static final Item2ObjectMap<Float> COMPOSTING_CHANCE = CompostingChanceRegistryImpl.INSTANCE;
-
-	private GlobalPropertyMaps() {
-
-	}
+public interface CompostingChanceRegistry extends Item2ObjectMap<Float> {
+	public static final CompostingChanceRegistry INSTANCE = new CompostingChanceRegistryImpl();
 }

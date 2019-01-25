@@ -18,8 +18,7 @@ package net.fabricmc.fabric.impl.item;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.fabricmc.fabric.api.properties.FuelRegistry;
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;

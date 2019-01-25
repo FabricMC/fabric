@@ -16,8 +16,7 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import net.fabricmc.fabric.api.properties.CompostingChanceRegistry;
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
+import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
