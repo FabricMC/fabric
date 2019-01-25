@@ -34,13 +34,6 @@ public interface ModelRenderer {
     QuadPackager getQuadPackager();
     
     /**
-     * Obtain a {@link VertexReader} instance used to read
-     * vertex data that has been baked using {@link FastVertexBuilder}.
-     * Implementations that are thread-safe may return the same instance.
-     */
-    VertexReader getVertexReader();
-    
-    /**
      * Obtain a new {@link ModelMaterialBuilder} instance used to create 
      * new {@link ModelMaterial} instances.<p>
      * 
