@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.item;
+package net.fabricmc.fabric.api.block;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+/**
+ * Proxy class for Minecraft's "global" block property maps.
+ */
+public final class GlobalBlockProperties {
+	private GlobalBlockProperties() {
 
-public class FuelMod implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		Item2ObjectMap.FUEL.add(Items.APPLE, 200);
-		Item2ObjectMap.FUEL.remove(Blocks.OAK_PLANKS);
 	}
 }

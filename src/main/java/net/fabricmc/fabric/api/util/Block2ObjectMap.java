@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.item;
+package net.fabricmc.fabric.api.util;
 
-import net.fabricmc.fabric.impl.item.CompostingChanceRegistry;
-import net.fabricmc.fabric.impl.item.FuelRegistry;
-import net.minecraft.item.Item;
+import net.minecraft.block.Block;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
 
-public interface ItemPropertyRegistry<V> {
-	public static final ItemPropertyRegistry<Integer> FUEL = FuelRegistry.INSTANCE;
-	public static final ItemPropertyRegistry<Float> COMPOSTING_CHANCE = CompostingChanceRegistry.INSTANCE;
-
-	V get(ItemProvider item);
-	void add(ItemProvider item, V value);
-	void add(Tag<Item> tag, V value);
-	void remove(ItemProvider item);
-	void remove(Tag<Item> tag);
+public interface Block2ObjectMap<V> {
+	V get(Block block);
+	void add(Block block, V value);
+	void add(Tag<Block> tag, V value);
+	void remove(Block block);
+	void remove(Tag<Block> tag);
 }

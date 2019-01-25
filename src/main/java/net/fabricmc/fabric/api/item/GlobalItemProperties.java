@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.item;
+package net.fabricmc.fabric.api.item;
 
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.Items;
+import net.fabricmc.fabric.impl.item.CompostingChanceRegistry;
+import net.fabricmc.fabric.impl.item.FuelRegistry;
 
-public class FuelMod implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		Item2ObjectMap.FUEL.add(Items.APPLE, 200);
-		Item2ObjectMap.FUEL.remove(Blocks.OAK_PLANKS);
+/**
+ * Proxy class for Minecraft's "global" item property maps.
+ */
+public final class GlobalItemProperties {
+	/**
+	 * A map of items to fuel burning time, in in-game ticks.
+	 */
+	public static final Item2ObjectMap<Integer> FUEL = FuelRegistry.INSTANCE;
+
+	/**
+	 * A map of items to an 0.0 - 1.0 chance of increasing the composter
+	 * block's level.
+	 */
+	public static final Item2ObjectMap<Float> COMPOSTING_CHANCE = CompostingChanceRegistry.INSTANCE;
+
+	private GlobalItemProperties() {
+
 	}
 }
