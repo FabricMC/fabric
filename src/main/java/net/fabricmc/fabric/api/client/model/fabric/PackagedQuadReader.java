@@ -5,14 +5,12 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
 /**
- * Utility interface for working with vertex data packed by
- * {@link FastVertexBuilder}.  Enables models to do analysis,
+ * Utility interface for working with quad data packed by
+ * {@link QuadPackager}.  Enables models to do analysis,
  * re-texturing or standard quad generation without knowing the
  * renderer's vertex formats and without retaining redundant information.<p>
- * 
- * Obtain instances via {@link ModelRenderer#getVertexReader()}.
  */
-public interface VertexReader {
+public interface PackagedQuadReader {
     /**
      * Reads baked vertex data and outputs a standard baked quad 
      * vertex data in the given array and location. Uses texture
