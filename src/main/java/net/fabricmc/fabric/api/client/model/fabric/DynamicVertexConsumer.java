@@ -22,12 +22,12 @@ package net.fabricmc.fabric.api.client.model.fabric;
  * <li>{@link FastVertexConsumer} Used by models to send vertex data previously baked 
  * via {@link FastVertexBuilder}. The fastest option and preferred whenever feasible.</li><p>
  * 
- * <li>{@link VertexBuilder} For models that need to generate vertex data on the fly.
+ * <li>{@link QuadBuilder} For models that need to generate vertex data on the fly.
  * Should be used sparingly - only for model components that can't be pre-baked.</li><p>
  * 
  * <li>{@link StandardQuadConsumer} Fabric causes vanilla baked models to send their 
  * quads via this interface. Can also be used by "hybrid" models that contain a mix
  * of vanilla baked quads and fast/dynamic vertexes to render the vanilla quad parts.</li>
  */
-public interface DynamicVertexConsumer extends FastVertexConsumer, VertexBuilder, StandardQuadConsumer {
+public interface DynamicVertexConsumer extends FastVertexConsumer, QuadBuilder, StandardQuadConsumer {
 }

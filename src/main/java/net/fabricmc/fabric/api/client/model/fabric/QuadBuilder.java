@@ -26,7 +26,7 @@ import net.minecraft.util.math.Direction;
  * Decouples models from the vertex format(s) used by
  * ModelRenderer to allow compatibility across diverse implementations.<p>
  */
-public interface VertexBuilder {
+public interface QuadBuilder {
     /**
      * Must be called at the start of each quad, before
      * sending any vertex data.  Material must be an
