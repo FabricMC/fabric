@@ -26,16 +26,16 @@ import net.minecraft.util.math.Direction;
  * Decouples models from the vertex format(s) used by
  * ModelRenderer to allow compatibility across diverse implementations.<p>
  */
-public interface VertexBuilder {
+public interface QuadPackager {
     /**
      * Must be called at the start of each quad, before
      * sending any vertex data.  Material must be an
      * instanced provided by the active {@link ModelRenderer}.
      */
-    void begin(ModelMaterial material);
+    void beginQuad(ModelMaterial material);
     
     /**
-     * Call to flush a completed quad, after calling {@link #begin(ModelMaterial)}
+     * Call to flush a completed quad, after calling {@link #beginQuad(ModelMaterial)}
      * and inputing quad properties and vertex data.<p>
      * 
      * Implementations should reset the builder state when this
@@ -43,22 +43,24 @@ public interface VertexBuilder {
      * state is explicitly meant to persist across invocations, as
      * defined in method docs. For example, see {@link #setQuadCullFace(Direction)}.<p>
      */
-    void end();
+    void buildQuad();
     
     /**
-     * Concise alias for {@link #end()} followed by {@link #begin(ModelMaterial)}.
+     * Concise alias for {@link #buildQuad()} followed by {@link #beginQuad(ModelMaterial)}.
      */
-    default void endBegin(ModelMaterial material) {
-        end();
-        begin(material);
+    default void endBeginQuad(ModelMaterial material) {
+        buildQuad();
+        beginQuad(material);
     }
+    
+    PackagedQuads buildPackage();
     
     /**
      * If non-null, quad is coplanar with a block face which, if known, simplifies
      * or shortcuts geometric analysis that might otherwise be needed.
      * Set to null if quad is not coplanar or if this is not known. <p>
      * 
-     * Value remains in effect for all subsequent quads sent to this consumer until changed.<p>
+     * Value remains in effect for all subsequent quads sent to this builder until changed.<p>
      * 
      * This is different than the value reported by {@link BakedQuad#getFace()}. That value
      * is computed based on face geometry and must be non-null in vanilla quads.
@@ -77,7 +79,7 @@ public interface VertexBuilder {
      * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
      * This method should be performant whenever caller's vertex representation makes it feasible.<p>
      * 
-     * Calling this method does not begin or end a quad.  It should be called after {@link #begin(ModelMaterial)}.
+     * Calling this method does not begin or end a quad.  It should be called after {@link #beginQuad(ModelMaterial)}.
      * Intended use is for quick input when formats allow.
      */
     void putStandardQuadData(int[] quadData, int startIndex, boolean isItem);
@@ -89,25 +91,7 @@ public interface VertexBuilder {
      * that coordinates remain in the 0-1 range, with multi-block meshes
      * split into multiple per-block models.
      */
-    void setVertex(int vertexIndex, float x, float y, float z);
-    
-    /**
-     * All-at-once per-vertex method for the major vertex components.
-     * Only handles first texture layer.
-     */
-    default void setVertex(int vertexIndex, float x, float y, float z, int color, float u, float v) {
-        setVertex(vertexIndex, x, y, z);
-        setColorTexture(vertexIndex, color, u, v);
-    }
-    
-    /**
-     * All-at-once per-vertex method for the major vertex components.
-     * Includes normals. Only handles first texture layer.
-     */
-    default void setVertex(int vertexIndex, float x, float y, float z, int color, float u, float v, float normX, float normY, float normZ) {
-        setVertex(vertexIndex, x, y, z, color, u, v);
-        setVertexNormal(vertexIndex, normX, normY, normZ);
-    }
+    void setPos(int vertexIndex, float x, float y, float z);
     
     /**
      * Adds a vertex normal. Models that have per-vertex
@@ -123,29 +107,6 @@ public interface VertexBuilder {
     void setVertexNormal(int vertexIndex, float x, float y, float z);
     
     /**
-     * Sets vertex color and texture coordinate for the given vertex and texture layer.<p>
-     * 
-     * TEXTURE COORDINATES MUST BE PRE-BAKED. The {@link ModelRenderer} implementation
-     * will not handle texture interpolation or adjustment.<p>
-     * 
-     * Color should have red in the low byte and alpha in the high byte.  
-     * The {@link ModelRenderer} implementation will handle any component 
-     * swizzling needed for OpenGL or to account for local endian-ness.<p>
-     */
-    default void setColorTexture(int vertexIndex, int textureLayer, int color, float u, float v) {
-        setColor(vertexIndex, textureLayer, color);
-        setTexture(vertexIndex, textureLayer, u, v);
-    }
-    
-    /**
-     * Concise version of {@link #setColorTexture(int, int, int, float, float)} for single-layer models.
-     */
-    default void setColorTexture(int vertexIndex, int color, float u, float v) {
-        setColor(vertexIndex, 0, color);
-        setTexture(vertexIndex, 0, u, v);
-    }
-    
-    /**
      * Per-vertex brightness input.
      */
     void setBrightness(int vertexIndex, int brightness);
@@ -159,13 +120,6 @@ public interface VertexBuilder {
     void setColor(int vertexIndex, int layerIndex, int color);
     
     /**
-     * Concise version of {@link #setColor(int, int, int)} for single-layer models.
-     */
-    default void setColor(int vertexIndex, int color) {
-        setColor(vertexIndex, 0, color);
-    }
-    
-    /**
      * Per-vertex texture coordinate input. 
      * 
      * @param layerIndex Texture layer.  Must be within the range implied by the
@@ -175,50 +129,4 @@ public interface VertexBuilder {
      * @param v  texture coordinate - MUST BE PRE-BAKED
      */
     void setTexture(int vertexIndex, int layerIndex, float u, float v);
-    
-    /**
-     * Concise version of {@link #setTexture(int, int, float, float)} for single-layer models.
-     */
-    default void setTexture(int vertexIndex, float u, float v) {
-        setTexture(vertexIndex, 0, u, v);
-    }
-    
-    /**
-     * Quad color input - accepts all four vertices at once.<p>
-     * 
-     * All vertices must have already been created via {@link #vertex()} or
-     * one of the direct transfer methods: {@link #putStandardVertexData(int[], int, boolean)} or
-     * {@link #putStandardQuadData(int[], int, boolean)}<p>
-     * 
-     * @param layerIndex Texture layer.  Must be within the range implied by the
-     * texture depth of the material.<p>
-     * 
-     * @param c0  first vertex color
-     * @param c1  second vertex color
-     * @param c2  third vertex color
-     * @param c3  fourth vertex color
-     */
-    default void setQuadColor(int layerIndex, int c0, int c1, int c2, int c3) {
-        setColor(0, layerIndex, c0);
-        setColor(1, layerIndex, c1);
-        setColor(2, layerIndex, c2);
-        setColor(3, layerIndex, c3);
-    }
-    
-    /**
-     * Concise version of {@link #setColor(int, int, int, int, int)} for single-layer models.
-     */
-    default void setQuadColor(int c0, int c1, int c2, int c3) {
-        setQuadColor(0, c0, c1, c2, c3);
-    }
-    
-    /**
-     * Quad brightness input - accepts all four vertices at once.<p>
-     */
-    default void setQuadBrightness(int b0, int b1, int b2, int b3) {
-        setBrightness(0, b0);
-        setBrightness(1, b1);
-        setBrightness(2, b2);
-        setBrightness(3, b3);
-    }
 }

@@ -25,7 +25,7 @@ package net.fabricmc.fabric.api.client.model.fabric;
  * the active renderer.  The renderer controls (and hides) the format of the baked data, 
  * and the behavior of the quad is defined via {@link ModelMaterial}.<p>
  */
-public interface FastVertexBuilder extends VertexBuilder {
+public interface FastVertexBuilder extends QuadPackager {
     /**
      * Must be called before any vertex data is input.  Identifies
      * output location for baked vertex data.<p>
