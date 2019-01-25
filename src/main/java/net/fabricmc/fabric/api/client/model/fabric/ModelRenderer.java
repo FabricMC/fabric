@@ -25,13 +25,13 @@ import net.minecraft.util.Identifier;
  */
 public interface ModelRenderer {
     /**
-     * Obtain a new {@link FastVertexBuilder} instance used to create 
+     * Obtain a new {@link QuadPackager} instance used to create 
      * baked models with enhanced features.<p>
      * 
      * Renderer does not retain a reference to returned instances and they should be re-used for 
      * multiple models when possible to avoid memory allocation overhead.
      */
-    FastVertexBuilder getVertexBuilder();
+    QuadPackager getQuadPackager();
     
     /**
      * Obtain a {@link VertexReader} instance used to read
