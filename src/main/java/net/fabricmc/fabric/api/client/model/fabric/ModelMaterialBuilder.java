@@ -22,7 +22,7 @@ import net.minecraft.client.render.model.BakedModel;
 
 /**
  * Creates a {@link ModelMaterial} instance used to communicate
- * quad rendering characteristics to a {@link DynamicVertexConsumer}.<p>
+ * quad rendering characteristics to a {@link ModelRenderContext}.<p>
  *
  * Must be obtained via {@link ModelRenderer#getMaterialBuilder()}.<p>
  * 
@@ -82,7 +82,7 @@ public interface ModelMaterialBuilder {
      * This is useful when there are multiple texture layers and only some of 
      * them should have color index applied. If there is only layer or all
      * layers are disabled, it is simpler to disable the color index itself
-     * by sending a colorIndex value of -1 to the {@link DynamicVertexConsumer}.
+     * by sending a colorIndex value of -1 to the {@link ModelRenderContext}.
      */
     void enableColorIndex(int layerIndex, boolean isEnabled);
     
@@ -104,7 +104,7 @@ public interface ModelMaterialBuilder {
     void setShading(int layerIndex, ShadingMode shading);
     
     /**
-     * When true, brightness value provided via {@link DynamicVertexConsumer#brightness(int)}
+     * When true, brightness value provided via {@link ModelRenderContext#brightness(int)}
      * will be used as the minimum lightmap brightness.  Usually this is used to 
      * implement full brightness but less-than-full brightness values are valid.<p>
      * 

@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
 /**
  * A reference to a model material that specifies texture blending,
  * lighting, coloring and other aspects of quad rendering. Every
- * quad sent to a {@link DynamicVertexConsumer} is associated with a material.<p>
+ * quad sent to a {@link ModelRenderContext} is associated with a material.<p>
  * 
  * A material instance is always immutable and thread-safe.  References to a material 
  * remain valid until the end of the current game session.<p>

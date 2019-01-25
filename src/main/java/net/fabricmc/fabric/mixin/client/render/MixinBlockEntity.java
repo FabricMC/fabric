@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.client.render;
 
 import net.fabricmc.fabric.api.client.model.fabric.DynamicRenderBlockEntity;
-import net.fabricmc.fabric.api.client.model.fabric.DynamicVertexConsumer;
+import net.fabricmc.fabric.api.client.model.fabric.ModelRenderContext;
 import net.fabricmc.fabric.api.client.model.fabric.DynamicVertexProducer;
 import net.fabricmc.fabric.api.client.model.fabric.DynamicModelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;

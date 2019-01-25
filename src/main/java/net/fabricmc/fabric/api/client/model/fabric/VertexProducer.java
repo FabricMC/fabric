@@ -26,7 +26,7 @@ import net.minecraft.util.math.BlockPos;
  * world state instead of or in addition to block state when render chunks are rebuilt.<p>
  * 
  * Dynamic elements are additive - models with static quads should output static quads 
- * via the less expensive {@link FastVertexConsumer} interface. The provided consumer
+ * via the less expensive {@link PackagedQuadConsumer} interface. The provided consumer
  * will implement this interface also.<p>
  * 
  * Note for {@link ModelRenderer} implementors: Fabric causes BakedModel to extend this
@@ -59,5 +59,5 @@ public interface VertexProducer {
      * provided Random for models that expect it. This is especially important for implementations 
      * that "wrap" existing models that do not implement this interface.<p>
      */
-    void produceVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, DynamicVertexConsumer consumer);
+    void produceVertexData(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext consumer);
 }

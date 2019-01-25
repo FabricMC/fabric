@@ -24,5 +24,5 @@ package net.fabricmc.fabric.api.client.model.fabric;
  */
 @FunctionalInterface
 public interface DynamicVertexProducer {
-    void produceVertexData(DynamicVertexConsumer consumer);
+    void produceVertexData(ModelRenderContext consumer);
 }
