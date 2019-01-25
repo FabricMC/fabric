@@ -20,21 +20,25 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.loot.LootEntryRegistry;
+import net.fabricmc.fabric.api.registry.LootEntryTypeRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.world.loot.LootChoice;
 import net.minecraft.world.loot.condition.LootCondition;
+import net.minecraft.world.loot.context.LootContext;
 import net.minecraft.world.loot.entry.LootEntry;
 import net.minecraft.world.loot.entry.TagEntry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.function.Consumer;
 
 public class LootEntryMod implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	@Override
 	public void onInitialize() {
-		LootEntryRegistry.INSTANCE.registerType(new TestSerializer());
+		LootEntryTypeRegistry.INSTANCE.register(new TestSerializer());
 	}
 
 	private static class TestSerializer extends LootEntry.Serializer<TagEntry> {

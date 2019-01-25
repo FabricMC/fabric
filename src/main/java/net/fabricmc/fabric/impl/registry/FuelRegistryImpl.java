@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.item;
+package net.fabricmc.fabric.impl.registry;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -30,6 +30,7 @@ import java.util.Map;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
 public class FuelRegistryImpl implements FuelRegistry {
+	public static final FuelRegistryImpl INSTANCE = new FuelRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemProvider> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
@@ -40,7 +41,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 
 	@Override
 	public Integer get(ItemProvider item) {
-		return AbstractFurnaceBlockEntity.createBurnableMap().get(item.getItem());
+		return AbstractFurnaceBlockEntity.createFuelTimeMap().get(item.getItem());
 	}
 
 	@Override
@@ -48,7 +49,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 		if (cookTime > 32767) {
 			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + item + ")");
 		}
-		itemCookTimes.put(item, cookTime);
+		itemCookTimes.put(item, cookTime.intValue());
 	}
 
 	@Override
@@ -56,7 +57,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 		if (cookTime > 32767) {
 			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + tag.getId() + ")");
 		}
-		tagCookTimes.put(tag, cookTime);
+		tagCookTimes.put(tag, cookTime.intValue());
 	}
 
 	@Override

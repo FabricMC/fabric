@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.item;
+package net.fabricmc.fabric.impl.registry;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.minecraft.block.ComposterBlock;

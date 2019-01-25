@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import net.fabricmc.fabric.impl.loot.LootEntryRegistryImpl;
+import net.fabricmc.fabric.impl.registry.LootEntryTypeRegistryImpl;
 import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +32,6 @@ public class MixinLootEntries {
 
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void onClinit(CallbackInfo info) {
-		LootEntryRegistryImpl.setRegisterFunction(MixinLootEntries::register);
+		LootEntryTypeRegistryImpl.setRegisterFunction(MixinLootEntries::register);
 	}
 }
