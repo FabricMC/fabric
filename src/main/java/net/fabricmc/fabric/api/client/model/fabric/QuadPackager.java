@@ -53,6 +53,10 @@ public interface QuadPackager {
         beginQuad(material);
     }
     
+    /**
+     * Returns a new {@link PackagedQuads} instance containing all
+     * quads added to this builder and resets the builder to an empty state<p>
+     */
     PackagedQuads buildPackage();
     
     /**

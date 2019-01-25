@@ -64,12 +64,6 @@ public interface ModelMaterial {
     Identifier MATERIAL_STANDARD = new Identifier("minecraft", "standard");
     
     /**
-     * The number of integers needed to represent a single quad with this materials.
-     * For use by models to allocate vertex storage and transfer vertex data.
-     */
-    int quadStride();
-    
-    /**
      * Transient unique identifier for this material.  Can be used to serialize a 
      * material in a primitive type (typically int[]).  Materials can be retrieved
      * via {@link ModelRenderer#getMaterial(int)}.<p>.
