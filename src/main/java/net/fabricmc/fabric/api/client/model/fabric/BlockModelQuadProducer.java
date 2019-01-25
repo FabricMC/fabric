@@ -58,5 +58,5 @@ public interface BlockModelQuadProducer {
      * Model authors should note this method is called only once per block, and reseed if needed.
      * For wrapped vanilla baked models, it will probably be easier to use {@link ModelRenderContext#fallbackModelConsumer()}.<p>
      */
-    void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext consumer);
+    void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext context);
 }
