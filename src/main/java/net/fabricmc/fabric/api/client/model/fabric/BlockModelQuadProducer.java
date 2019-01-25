@@ -43,9 +43,9 @@ public interface BlockModelQuadProducer {
      * per chunk rebuild, irrespective of which or how many faces or block render layers are included 
      * in the model. Models must output all quads in a single pass.<p>
      * 
-     * Models with face-planar quads must handle face occlusion and omit quads on faces 
-     * obscured by neighboring blocks.  Performing this check in the model allows implementations 
-     * to exploit internal knowledge of geometry to avoid unnecessary checks.<p>
+     * Renderer will handle face occlusion and filter quads on faces 
+     * obscured by neighboring blocks.  Models only need to consider "sides" to the
+     * extent the model is driven by connection with neighbor blocks or other world state.<p>
      * 
      * The RenderView parameter provides access to cached block state, fluid state, 
      * and lighting information. Models should avoid using {@link ModelBlockView#getBlockEntity(BlockPos)}
@@ -53,11 +53,10 @@ public interface BlockModelQuadProducer {
      * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}.
      * Look to {@link ModelBlockView#getCachedRenderData(BlockPos)} for more information.<p>
      * 
-     * With {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
-     * parameter is normally initialized with the same seed prior to each face/render layer.
-     * Because this method is called only once per block, implementations should reseed the 
-     * provided Random for models that expect it. This is especially important for implementations 
-     * that "wrap" existing models that do not implement this interface.<p>
+     * Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
+     * parameter is normally initialized with the same seed prior to each face layer.
+     * Model authors should note this method is called only once per block, and reseed if needed.
+     * For wrapped vanilla baked models, it will probably be easier to use {@link ModelRenderContext#fallbackModelConsumer()}.<p>
      */
     void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext consumer);
 }
