@@ -50,7 +50,7 @@ public interface VertexReader {
      * model or model library. Meant for re-texturing, analysis
      * and transformation use cases.
      */
-    void outputToVertexBuilder(int[] source, int sourceIndex, QuadBuilder target);
+    void outputToVertexBuilder(int[] source, int sourceIndex, VertexBuilder target);
     
     /**
      * Retrieves the material serialized in the vertex data by {@link FastVertexBuilder}
