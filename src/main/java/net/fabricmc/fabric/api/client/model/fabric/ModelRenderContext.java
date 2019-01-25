@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
+import java.util.function.Consumer;
+
 import net.minecraft.client.render.model.BakedModel;
 
 /**
