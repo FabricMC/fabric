@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.util;
 
-import net.fabricmc.fabric.impl.item.CompostingChanceRegistry;
-import net.fabricmc.fabric.impl.item.FuelRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;

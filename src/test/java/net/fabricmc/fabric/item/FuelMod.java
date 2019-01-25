@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.item;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.properties.FuelRegistry;
 import net.fabricmc.fabric.api.util.Item2ObjectMap;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
@@ -24,7 +25,7 @@ import net.minecraft.item.Items;
 public class FuelMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		Item2ObjectMap.FUEL.add(Items.APPLE, 200);
-		Item2ObjectMap.FUEL.remove(Blocks.OAK_PLANKS);
+		FuelRegistry.INSTANCE.add(Items.APPLE, 200);
+		FuelRegistry.INSTANCE.remove(Blocks.OAK_PLANKS);
 	}
 }

@@ -16,15 +16,14 @@
 
 package net.fabricmc.fabric.impl.item;
 
+import net.fabricmc.fabric.api.properties.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.util.Item2ObjectMap;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
 
-public class CompostingChanceRegistry implements Item2ObjectMap<Float> {
-	public static final CompostingChanceRegistry INSTANCE = new CompostingChanceRegistry();
-
+public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	@Override
 	public Float get(ItemProvider item) {
 		return ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getOrDefault(item.getItem(), 0.0F);
