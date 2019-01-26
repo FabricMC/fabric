@@ -19,7 +19,6 @@
     "events.tick.MixinWorld",
     "item.MixinAbstractFurnaceBlockEntity",
     "itemgroup.MixinItemGroup",
-    "loot.MixinLootEntries",
     "misc.MixinCrashReport",
     "networking.MixinServerPlayNetworkHandler",
     "networking.MixinSPacketCustomPayload",
