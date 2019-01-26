@@ -1,15 +1,18 @@
-node {
-   stage 'Checkout'
+pipeline {
+   agent any
+   stages {
 
-   checkout scm
+      stage ('Build') {
+         when {
+            branch 'master'
+         }
+         steps {
+            sh "rm -rf build/libs/"
+            sh "chmod +x gradlew"
+            sh "./gradlew build uploadArchives curseforge --refresh-dependencies --stacktrace"
 
-   stage 'Build'
-
-   sh "rm -rf build/libs/"
-   sh "chmod +x gradlew"
-   sh "./gradlew build uploadArchives curseforge --refresh-dependencies --stacktrace"
-
-   stage "Archive artifacts"
-
-   archive 'build/libs/*'
+            archiveArtifacts artifacts: '**/build/libs/*.jar', fingerprint: true
+         }
+      }
+   }
 }
