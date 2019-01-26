@@ -71,11 +71,6 @@ public final class PlayerInteractionEvent {
 	}
 
 	/**
-	 * Event emitted when a player "attacks" a block.
-	 */
-	public static final HandlerRegistry<Block> ATTACK_BLOCK = new HandlerArray<>(Block.class);
-
-	/**
 	 * Event emitted when a player "attacks" an entity.
 	 */
 	public static final HandlerRegistry<Entity> ATTACK_ENTITY = new HandlerArray<>(Entity.class);
@@ -103,13 +98,6 @@ public final class PlayerInteractionEvent {
 	 * Event emitted when a player interacts with an item.
 	 */
 	public static final HandlerRegistry<Item> INTERACT_ITEM = new HandlerArray<>(Item.class);
-
-	/**
-	 * @deprecated Use {@link #ATTACK_BLOCK ATTACK_BLOCK} instead.
-	 */
-	@SuppressWarnings("DeprecatedIsStillUsed")
-	@Deprecated
-	public static final HandlerRegistry<Block> BREAK_BLOCK = ATTACK_BLOCK;
 
 	private PlayerInteractionEvent() {
 

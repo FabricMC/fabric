@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
+import net.fabricmc.fabric.api.listener.ListenerReference;
+import net.fabricmc.fabric.api.listener.ListenerRegistry;
+import net.fabricmc.fabric.api.listener.interaction.AttackBlockEventV1;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.client.MinecraftClient;
@@ -53,15 +56,14 @@ public class MixinClientPlayerInteractionManager {
 	@Shadow
 	private GameMode gameMode;
 
+	private static final ListenerReference<AttackBlockEventV1> fabric_attackBlockRef = ListenerRegistry.INSTANCE.get(AttackBlockEventV1.class);
+
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
-		for (PlayerInteractionEvent.Block handler : ((HandlerArray<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
-			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, direction);
-			if (result != ActionResult.PASS) {
-				info.setReturnValue(result == ActionResult.SUCCESS);
-				info.cancel();
-				return;
-			}
+		ActionResult result = fabric_attackBlockRef.get().interact(client.player, client.world, Hand.MAIN, pos, direction);
+		if (result != ActionResult.PASS) {
+			info.setReturnValue(result == ActionResult.SUCCESS);
+			info.cancel();
 		}
 	}
 
@@ -71,13 +73,10 @@ public class MixinClientPlayerInteractionManager {
 			return;
 		}
 
-		for (PlayerInteractionEvent.Block handler : ((HandlerArray<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
-			ActionResult result = handler.interact(client.player, client.world, Hand.MAIN, pos, direction);
-			if (result != ActionResult.PASS) {
-				info.setReturnValue(result == ActionResult.SUCCESS);
-				info.cancel();
-				return;
-			}
+		ActionResult result = fabric_attackBlockRef.get().interact(client.player, client.world, Hand.MAIN, pos, direction);
+		if (result != ActionResult.PASS) {
+			info.setReturnValue(result == ActionResult.SUCCESS);
+			info.cancel();
 		}
 	}
 

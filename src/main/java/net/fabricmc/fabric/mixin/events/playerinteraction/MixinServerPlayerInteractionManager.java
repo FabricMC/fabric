@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
+import net.fabricmc.fabric.api.listener.ListenerReference;
+import net.fabricmc.fabric.api.listener.ListenerRegistry;
+import net.fabricmc.fabric.api.listener.interaction.AttackBlockEventV1;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.client.network.packet.BlockUpdateClientPacket;
@@ -44,16 +47,15 @@ public class MixinServerPlayerInteractionManager {
 	@Shadow
 	public ServerPlayerEntity player;
 
+	private static final ListenerReference<AttackBlockEventV1> fabric_attackBlockRef = ListenerRegistry.INSTANCE.get(AttackBlockEventV1.class);
+
 	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
 	public void startBlockBreak(BlockPos pos, Direction direction, CallbackInfo info) {
-		for (PlayerInteractionEvent.Block handler : ((HandlerArray<PlayerInteractionEvent.Block>) PlayerInteractionEvent.ATTACK_BLOCK).getBackingArray()) {
-			ActionResult result = handler.interact(player, world, Hand.MAIN, pos, direction);
-			if (result != ActionResult.PASS) {
-				// The client might have broken the block on its side, so make sure to let it know.
-				this.player.networkHandler.sendPacket(new BlockUpdateClientPacket(world, pos));
-				info.cancel();
-				return;
-			}
+		ActionResult result = fabric_attackBlockRef.get().interact(player, world, Hand.MAIN, pos, direction);
+		if (result != ActionResult.PASS) {
+			// The client might have broken the block on its side, so make sure to let it know.
+			this.player.networkHandler.sendPacket(new BlockUpdateClientPacket(world, pos));
+			info.cancel();
 		}
 	}
 

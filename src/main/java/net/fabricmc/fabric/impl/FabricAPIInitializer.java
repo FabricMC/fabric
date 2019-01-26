@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.listener.ListenerRegistry;
+import net.fabricmc.fabric.api.listener.interaction.AttackBlockEventV1;
 import net.fabricmc.fabric.block.BreakInteractable;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.minecraft.block.BlockState;
@@ -33,7 +35,20 @@ import java.util.List;
 public class FabricAPIInitializer implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		PlayerInteractionEvent.BREAK_BLOCK.register((player, world, hand, pos, direction) -> {
+		ListenerRegistry.INSTANCE.registerType(AttackBlockEventV1.class, (listeners) -> (player, world, hand, pos, direction) -> {
+			for (AttackBlockEventV1 event : listeners) {
+				ActionResult result = event.interact(player, world, hand, pos, direction);
+				if (result != ActionResult.PASS) {
+					return result;
+				}
+			}
+
+			return ActionResult.PASS;
+		});
+
+		ListenerRegistry.INSTANCE.register(AttackBlockEventV1.class, (player, world, hand, pos, direction) -> {
+			System.out.println("--- DEMO --- AttackBlockEventV1 called!");
+
 			BlockState state = world.getBlockState(pos);
 			if (state instanceof BreakInteractable) {
 				if (((BreakInteractable) state).onBreakInteract(state, world, pos, player, hand, direction)) {
