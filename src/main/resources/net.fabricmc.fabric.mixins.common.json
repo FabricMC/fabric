@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "block.MixinBlockBuilder",
+    "block.MixinWorld",
     "block.entity.MixinBlockEntity",
     "commands.MixinServerCommandManager",
     "container.MixinServerPlayerEntity",
