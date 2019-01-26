@@ -56,6 +56,11 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Ident
 
 	@Override
 	public void onResourceReload(ResourceManager var1) {
+		reload();
+		tagsPresent = true;
+	}
+
+	private void reload() {
 		computedEntries.clear();
 		// tags take precedence before blocks
 		for (Tag<Block> tag : registeredEntriesTag.keySet()) {
@@ -94,11 +99,19 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Ident
 	@Override
 	public void add(Block block, Entry value) {
 		registeredEntriesBlock.put(block, value);
+
+		if (tagsPresent) {
+			reload();
+		}
 	}
 
 	@Override
 	public void add(Tag<Block> tag, Entry value) {
 		registeredEntriesTag.put(tag, value);
+
+		if (tagsPresent) {
+			reload();
+		}
 	}
 
 	@Override
@@ -113,12 +126,20 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Ident
 
 	@Override
 	public void clear(Block block) {
-		registeredEntriesBlock.clear();
+		registeredEntriesBlock.remove(block);
+
+		if (tagsPresent) {
+			reload();
+		}
 	}
 
 	@Override
 	public void clear(Tag<Block> tag) {
-		registeredEntriesTag.clear();
+		registeredEntriesTag.remove(tag);
+
+		if (tagsPresent) {
+			reload();
+		}
 	}
 
 	public static FlammableBlockRegistryImpl getInstance(Block block) {
