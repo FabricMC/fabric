@@ -88,10 +88,14 @@ public interface ModelMaterial {
     BlockRenderLayer blendMode(int layerIndex);
 
     /**
-     * Lighting renderer should apply for the given layer.
-     * See {@link ModelMaterialBuilder#setShading(ShadingMode)}
+     * Vertex color(s) will be modified for diffuse shading unless disabled.
      */
-    ShadingMode shadingMode(int layerIndex);
+    boolean disableDiffuse(int layerIndex);
+    
+    /**
+     * Vertex color(s) will be modified for ambient occlusion unless disabled.
+     */
+    boolean disableAo(int layerIndex);
 
     /**
      * If true, renderer applies custom brightness to the given layer.
