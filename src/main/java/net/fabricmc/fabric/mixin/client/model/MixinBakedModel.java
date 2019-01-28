@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import net.fabricmc.fabric.api.client.model.fabric.BlockModelQuadProducer;
 import net.fabricmc.fabric.api.client.model.fabric.ModelBlockView;
-import net.fabricmc.fabric.api.client.model.fabric.ModelRenderContext;
+import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
@@ -33,7 +33,7 @@ import net.minecraft.util.math.BlockPos;
 @Mixin(BakedModel.class)
 public interface MixinBakedModel extends BlockModelQuadProducer {
     @Override
-    default void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext context) {
-        context.fallbackModelConsumer().accept((BakedModel)this);
+    default void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+        context.fallbackConsumer().accept((BakedModel)this);
     }
 }
