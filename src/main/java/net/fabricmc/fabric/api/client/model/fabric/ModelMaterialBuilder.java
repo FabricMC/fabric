@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
-import net.minecraft.client.render.model.BakedModel;
 
 /**
  * Creates a {@link ModelMaterial} instance used to communicate
@@ -87,21 +86,24 @@ public interface ModelMaterialBuilder {
     void enableColorIndex(int layerIndex, boolean isEnabled);
     
     /**
-     * Specifies if and how pixel color should be modified by diffuse 
-     * shading and ambient occlusion. See {@link ShadingMode}.<p>
-     * 
-     * ShadingMode CAN be null and is null by default.  A null value
-     * means the shading mode should be inferred from {@link BakedModel#useAmbientOcclusion()}
-     * and block light level. (Normal Minecraft rendering)
+     * Vertex color(s) will be modified for diffuse shading unless disabled.
      */
-    default void setShading(ShadingMode shading) {
-        setShading(0, shading);
-    }
+    void disableDiffuse(int layerIndex, boolean disable);
     
     /**
-     * Sets shading mode for a specific texture layer. Useful when texture depth is > 1.
+     * Vertex color(s) will be modified for diffuse shading unless disabled.
      */
-    void setShading(int layerIndex, ShadingMode shading);
+    boolean disableDiffuse(int layerIndex);
+    
+    /**
+     * Vertex color(s) will be modified for ambient occlusion unless disabled.
+     */
+    void disableAo(int layerIndex, boolean disable);
+    
+    /**
+     * Vertex color(s) will be modified for ambient occlusion unless disabled.
+     */
+    boolean disableAo(int layerIndex);
     
     /**
      * When true, brightness value provided via {@link ModelRenderContext#brightness(int)}
