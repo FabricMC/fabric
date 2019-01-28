@@ -1,16 +1,33 @@
+/*
+ * Copyright (c) 2016, 2017, 2018 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 
 /**
  * Utility interface for working with quad data packed by
- * {@link QuadPackager}.  Enables models to do analysis,
+ * {@link MeshBuilder}.  Enables models to do analysis,
  * re-texturing or standard quad generation without knowing the
  * renderer's vertex formats and without retaining redundant information.<p>
  */
-public interface PackagedQuadReader {
+public interface Quad {
     /**
      * Reads baked vertex data and outputs a standard baked quad 
      * vertex data in the given array and location. Uses texture
@@ -40,7 +57,7 @@ public interface PackagedQuadReader {
      * @param isItem If true, will output vertex normals. Otherwise will output
      * lightmaps, per Minecraft vertex formats for baked models.
      */
-    void outputStandardVertexData(int[] source, int sourceIndex, int layerIndex, int[] target, int targetIndex, boolean isItem);
+    void toMinecraft(int layerIndex, int[] target, int targetIndex, boolean isItem);
     
     /**
      * Extracts all quad properties to the given vertex builder.
@@ -48,24 +65,37 @@ public interface PackagedQuadReader {
      * model or model library. Meant for re-texturing, analysis
      * and transformation use cases.
      */
-    void outputToVertexBuilder(int[] source, int sourceIndex, QuadPackager target);
+    void toPackager(MeshBuilder target);
     
     /**
-     * Retrieves the material serialized in the vertex data by {@link FastVertexBuilder}
+     * Retrieves the material serialized with the quad.
      */
-    ModelMaterial getMaterial(int[] source, int sourceIndex);
+    ModelMaterial material();
     
     /**
-     * Retrieves the quad color index serialized in the vertex data by {@link FastVertexBuilder}
+     * Retrieves the quad color index serialized with the quad.
      */
-    int getColorIndex(int[] source, int sourceIndex);
+    int colorIndex();
     
     /**
      * Equivalent to {@link BakedQuad#getFace()}. This is the face used for vanilla lighting
      * calculations and will be the block face to which the quad is most closely aligned. Always
      * the same as cull face for quads that are on a block face, but never null.
      */
-    Direction getLightFace(int[] source, int sourceIndex);
+    Direction lightFace();
+    
+    /**
+     * If non-null, quad should not be rendered in-world if the 
+     * opposite face of a neighbor block occludes it.
+     */
+    Direction cullFace();
+    
+    /**
+     * See {@link MutableQuad#nominalFace(Direction)}.
+     */
+    Direction nominalFace();
+    
+    Vector3f faceNormal();
     
     /**
      * Generates a new BakedQuad instance with texture
@@ -89,9 +119,11 @@ public interface PackagedQuadReader {
      * supported by vanilla features. Will retain emissive light maps, for example,
      * but the standard Minecraft renderer will not use them.
      */
-    default BakedQuad createBakedQuad(int[] source, int sourceIndex, int layerIndex, Sprite sprite, boolean isItem) {
+    default BakedQuad toBakedQuad(int layerIndex, Sprite sprite, boolean isItem) {
         int vertexData[] = new int[28];
-        outputStandardVertexData(source, sourceIndex, layerIndex, vertexData, 0, isItem);
-        return new BakedQuad(vertexData, getColorIndex(source, sourceIndex), getLightFace(source, sourceIndex), sprite);
+        toMinecraft(layerIndex, vertexData, 0, isItem);
+        return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite);
     }
+    
+    Vertex vertex(int vertexIndex);
 }
