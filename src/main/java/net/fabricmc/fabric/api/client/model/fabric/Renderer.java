@@ -23,36 +23,36 @@ import net.minecraft.util.Identifier;
  * for model lighting, buffering and rendering. Such plug-ins implement the
  * enhanced modeling interfaces specified by the Fabric API.<p>
  */
-public interface ModelRenderer {
+public interface Renderer {
     /**
-     * Obtain a new {@link QuadPackager} instance used to create 
+     * Obtain a new {@link MeshBuilder} instance used to create 
      * baked models with enhanced features.<p>
      * 
      * Renderer does not retain a reference to returned instances and they should be re-used for 
      * multiple models when possible to avoid memory allocation overhead.
      */
-    QuadPackager getQuadPackager();
+    MeshBuilder getQuadPackager();
     
     /**
-     * Obtain a new {@link ModelMaterialBuilder} instance used to create 
-     * new {@link ModelMaterial} instances.<p>
+     * Obtain a new {@link MaterialFinder} instance used to create 
+     * new {@link RenderMaterial} instances.<p>
      * 
      * Renderer does not retain a reference to returned instances and they should be re-used for 
      * multiple materials when possible to avoid memory allocation overhead.
      */
-    ModelMaterialBuilder getMaterialBuilder();
+    MaterialFinder getMaterialBuilder();
 
     /**
-     * Return a material previously registered via {@link #registerMaterial(Identifier, ModelMaterial)}.
+     * Return a material previously registered via {@link #registerMaterial(Identifier, RenderMaterial)}.
      * Will return null if no material was found matching the given identifier.
      */
-    ModelMaterial getMaterial(Identifier id);
+    RenderMaterial getMaterial(Identifier id);
     
     /**
-     * Retrieve a material using the material's index. See {@link ModelMaterial#index()}.
+     * Retrieve a material using the material's index. See {@link RenderMaterial#index()}.
      * Will return null if no material was found matching the given identifier.
      */
-    ModelMaterial getMaterial(int index);
+    RenderMaterial getMaterial(int index);
     
     /**
      * Register a material for re-used by other mods or models within a mod.
@@ -62,11 +62,5 @@ public interface ModelRenderer {
      * Returns false if a material with the given identifier is already present,
      * leaving the existing material intact.
      */
-    boolean registerMaterial(Identifier id, ModelMaterial material);
-
-    /**
-     * Maximum integer array length needed to serialize a single quad in any ModelMaterial.
-     * Useful for model implementations to size transfer/working arrays, etc.
-     */
-    int maxQuadStride();
+    boolean registerMaterial(Identifier id, RenderMaterial material);
 }

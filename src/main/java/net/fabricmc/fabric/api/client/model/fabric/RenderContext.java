@@ -26,17 +26,18 @@ import net.minecraft.client.render.model.BakedModel;
  * A future enhancement will offer a quad transformer (for animations) and a dynamic
  * quad builder for per-frame renders.
  */
-public interface ModelRenderContext {
+public interface RenderContext {
     /**
      * Used by models to send vertex data previously baked 
-     * via {@link QuadPackager}. The fastest option and preferred whenever feasible.
+     * via {@link MeshBuilder}. The fastest option and preferred whenever feasible.
      */
-    Consumer<PackagedQuads> packagedQuadConsumer();
+    Consumer<Mesh> meshConsumer();
     
     /**
      * Fabric causes vanilla baked models to send themselves 
      * via this interface. Can also be used by compound models that contain a mix
      * of vanilla baked models, packaged quads and/or dynamic elements.
      */
-    Consumer<BakedModel> fallbackModelConsumer();
+    Consumer<BakedModel> fallbackConsumer();
+
 }

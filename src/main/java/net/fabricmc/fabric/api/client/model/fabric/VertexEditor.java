@@ -33,7 +33,7 @@ public interface VertexEditor extends Vertex {
      * in hope of avoiding re-computation in the renderer but this may or may
      * not be useful depending on the implementation and use case<p>
      * 
-     * {@link ModelRenderer} implementations should honor vertex normals for
+     * {@link Renderer} implementations should honor vertex normals for
      * diffuse lighting - modifying vertex color(s) or packing normals in the vertex 
      * buffer as appropriate for the rendering method/vertex format in effect.<p>
      */

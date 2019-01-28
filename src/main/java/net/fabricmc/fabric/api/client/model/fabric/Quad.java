@@ -70,7 +70,7 @@ public interface Quad {
     /**
      * Retrieves the material serialized with the quad.
      */
-    ModelMaterial material();
+    RenderMaterial material();
     
     /**
      * Retrieves the quad color index serialized with the quad.

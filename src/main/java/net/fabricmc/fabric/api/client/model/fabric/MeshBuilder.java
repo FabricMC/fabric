@@ -30,9 +30,9 @@ public interface MeshBuilder {
      * earlier.  Do not retain references.  Must call {@link QuadMaker#emit()}
      * to add the quad to the mesh.<p>
      * 
-     * Material must be an instance provided by the active {@link ModelRenderer}.
+     * Material must be an instance provided by the active {@link Renderer}.
      */
-    QuadMaker quad(ModelMaterial material);
+    QuadMaker quad(RenderMaterial material);
     
     /**
      * Returns a new {@link Mesh} instance containing all

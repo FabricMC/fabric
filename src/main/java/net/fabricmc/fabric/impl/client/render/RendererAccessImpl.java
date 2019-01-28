@@ -16,30 +16,30 @@
 
 package net.fabricmc.fabric.impl.client.render;
 
-import net.fabricmc.fabric.api.client.model.fabric.ModelRendererAccess;
-import net.fabricmc.fabric.api.client.model.fabric.ModelRenderer;
+import net.fabricmc.fabric.api.client.model.fabric.RendererAccess;
+import net.fabricmc.fabric.api.client.model.fabric.Renderer;
 
-public final class ModelRendererAccessImpl implements ModelRendererAccess{
-    public static final ModelRendererAccessImpl INSTANCE = new ModelRendererAccessImpl();
+public final class RendererAccessImpl implements RendererAccess{
+    public static final RendererAccessImpl INSTANCE = new RendererAccessImpl();
 
     // private constructor
-    private ModelRendererAccessImpl() { };
+    private RendererAccessImpl() { };
 
     @Override
-    public final void registerModelRenderer(ModelRenderer renderer) {
+    public final void registerModelRenderer(Renderer renderer) {
         if(renderer != null && activeRenderer == null) {
             activeRenderer = renderer;
             hasActiveRenderer = true;
         }
     }
 
-    private ModelRenderer activeRenderer = null;
+    private Renderer activeRenderer = null;
 
     /** avoids null test every call to {@link #isRendererActive()} */
     private boolean hasActiveRenderer = false;
 
     @Override
-    public final ModelRenderer getActiveRenderer() {
+    public final Renderer getActiveRenderer() {
         return activeRenderer;
     }
 

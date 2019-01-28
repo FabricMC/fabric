@@ -24,16 +24,16 @@ import net.minecraft.util.Identifier;
 /**
  * A reference to a model material that specifies texture blending,
  * lighting, coloring and other aspects of quad rendering. Every
- * quad sent to a {@link ModelRenderContext} is associated with a material.<p>
+ * quad sent to a {@link RenderContext} is associated with a material.<p>
  * 
  * A material instance is always immutable and thread-safe.  References to a material 
  * remain valid until the end of the current game session.<p>
  * 
- * A {@link ModelMaterial} instance can only be created by a {@link ModelMaterialBuilder}
- * instance obtained via {@link ModelRenderer#getMaterialBuilder()}.<p>
+ * A {@link RenderMaterial} instance can only be created by a {@link MaterialFinder}
+ * instance obtained via {@link Renderer#getMaterialBuilder()}.<p>
  * 
- * Materials can be registered and shared between mods using {@link ModelRenderer#getMaterial(net.minecraft.util.Identifier)}
- * and {@link ModelRenderer#registerMaterial(net.minecraft.util.Identifier, ModelMaterial)}.
+ * Materials can be registered and shared between mods using {@link Renderer#getMaterial(net.minecraft.util.Identifier)}
+ * and {@link Renderer#registerMaterial(net.minecraft.util.Identifier, RenderMaterial)}.
  * The registering mod is responsible for creating each registered material at startup.<p>
  * 
  * Materials are not required to know their registration identity, and two materials
@@ -43,22 +43,22 @@ import net.minecraft.util.Identifier;
  * 
  * <b>STANDARD MATERIALS</b><p>
  * 
- * All {@link ModelRenderer} implementations must pre-register the water and lava materials
+ * All {@link Renderer} implementations must pre-register the water and lava materials
  * using the identifiers defined below.  This gives models access to any fancy renders that may
  * be implemented for those materials.<p>
  */
-public interface ModelMaterial {
+public interface RenderMaterial {
     
     /**
-     * This will be identical to the material that would be obtained by calling {@link ModelMaterialBuilder#build()}
-     * on a new, unaltered, {@link ModelMaterialBuilder} instance.  It is defined here for clarity and convenience.
+     * This will be identical to the material that would be obtained by calling {@link MaterialFinder#build()}
+     * on a new, unaltered, {@link MaterialFinder} instance.  It is defined here for clarity and convenience.
      * 
      * Quads using this material have a single texture layer, use {@link Block#getRenderLayer()} of the associated
      * block to determine texture blending (or translucent for item models),  honor block color index, 
      * are non-emissive, and have {@link ShadingMode} inferred from {@link BakedModel#useAmbientOcclusion()} 
      * and block light level.  All standard, non-fluid baked models are rendered using this material.<p>
      * 
-     * {@link ModelRenderer} implementations may or may not define and use more explicit materials for the 
+     * {@link Renderer} implementations may or may not define and use more explicit materials for the 
      * various context-dependent combinations of shading and render layer and those are not defined or exposed.
      */
     Identifier MATERIAL_STANDARD = new Identifier("minecraft", "standard");
@@ -66,24 +66,24 @@ public interface ModelMaterial {
     /**
      * Transient unique identifier for this material.  Can be used to serialize a 
      * material in a primitive type (typically int[]).  Materials can be retrieved
-     * via {@link ModelRenderer#getMaterial(int)}.<p>.
+     * via {@link Renderer#getMaterial(int)}.<p>.
      * 
      * Index values are only valid in the current game session.  They should never be
      * used in world saves. For that use case, rely on materials registered via 
-     * {@link ModelRenderer#registerMaterial(net.minecraft.util.Identifier, ModelMaterial)}
+     * {@link Renderer#registerMaterial(net.minecraft.util.Identifier, RenderMaterial)}
      * and serialize the registration identifier.
      */
     int index();
     
     /**
      * How many color/uv layers are in the material. Minimum is 1.
-     * See {@link ModelMaterialBuilder#setTextureDepth(int)}
+     * See {@link MaterialFinder#setTextureDepth(int)}
      */
     int textureDepth();
 
     /**
      * Texture blending mode renderer should use for the given layer.
-     * See {@link ModelMaterialBuilder#setBlendMode(BlockRenderLayer)}
+     * See {@link MaterialFinder#setBlendMode(BlockRenderLayer)}
      */
     BlockRenderLayer blendMode(int layerIndex);
 
@@ -99,13 +99,13 @@ public interface ModelMaterial {
 
     /**
      * If true, renderer applies custom brightness to the given layer.
-     * See {@link ModelMaterialBuilder#setEmissive(boolean)}
+     * See {@link MaterialFinder#setEmissive(boolean)}
      */
     boolean isEmissive(int layerIndex);
 
     /**
      * If true, color index is not applied to the given layer.
-     * See {@link ModelMaterialBuilder#enableColorIndex(int, boolean)}.
+     * See {@link MaterialFinder#enableColorIndex(int, boolean)}.
      */
     boolean disableColorIndex(int layerIndex);
 }

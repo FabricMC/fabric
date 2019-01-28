@@ -16,30 +16,30 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import net.fabricmc.fabric.impl.client.render.ModelRendererAccessImpl;
+import net.fabricmc.fabric.impl.client.render.RendererAccessImpl;
 
 /**
  * Registration and access for rendering extensions.
  */
-public interface ModelRendererAccess {
-    ModelRendererAccess INSTANCE = ModelRendererAccessImpl.INSTANCE;
+public interface RendererAccess {
+    RendererAccess INSTANCE = RendererAccessImpl.INSTANCE;
 
     /**
-     * Rendering extension mods must implement {@link ModelRenderer} and 
+     * Rendering extension mods must implement {@link Renderer} and 
      * call this method during initialization.<p>
      * 
-     * Only one {@link ModelRenderer} plugin can be active in any game instance.
+     * Only one {@link Renderer} plugin can be active in any game instance.
      * If a second mod attempts to register this method will fail softly, 
      * to allow for mods that implement other features in addition to being a 
-     * render plug-in. However, this is not recommended. {@link ModelRenderer} mods should do one thing.<p>
+     * render plug-in. However, this is not recommended. {@link Renderer} mods should do one thing.<p>
      */
-    void registerModelRenderer(ModelRenderer plugin);
+    void registerModelRenderer(Renderer plugin);
 
     /**
-     * Access to the current {@link ModelRenderer} for creating and retrieving model builders 
+     * Access to the current {@link Renderer} for creating and retrieving model builders 
      * and materials. Will return null if no render plug in is active.
      */
-    ModelRenderer getActiveRenderer();
+    Renderer getActiveRenderer();
 
     /**
      * Performant test for {@link #getActiveRenderer()} != null;

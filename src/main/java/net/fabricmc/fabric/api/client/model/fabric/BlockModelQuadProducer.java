@@ -29,7 +29,7 @@ import net.minecraft.util.math.BlockPos;
  * via the less expensive {@link PackagedQuadConsumer} interface. The provided consumer
  * will implement this interface also.<p>
  * 
- * Note for {@link ModelRenderer} implementors: Fabric causes BakedModel to extend this
+ * Note for {@link Renderer} implementors: Fabric causes BakedModel to extend this
  * interface with {@link #hasVertexData()} and to produce standard vertex data. This means any BakedModel instance
  * can be safely cast to this interface without an instanceof check.
  */
@@ -56,7 +56,7 @@ public interface BlockModelQuadProducer {
      * Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
      * parameter is normally initialized with the same seed prior to each face layer.
      * Model authors should note this method is called only once per block, and reseed if needed.
-     * For wrapped vanilla baked models, it will probably be easier to use {@link ModelRenderContext#fallbackModelConsumer()}.<p>
+     * For wrapped vanilla baked models, it will probably be easier to use {@link RenderContext#fallbackModelConsumer()}.<p>
      */
-    void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, ModelRenderContext context);
+    void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
 }

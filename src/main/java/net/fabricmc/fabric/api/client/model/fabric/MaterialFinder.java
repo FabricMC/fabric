@@ -20,17 +20,17 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
 
 /**
- * Creates a {@link ModelMaterial} instance used to communicate
- * quad rendering characteristics to a {@link ModelRenderContext}.<p>
+ * Creates a {@link RenderMaterial} instance used to communicate
+ * quad rendering characteristics to a {@link RenderContext}.<p>
  *
- * Must be obtained via {@link ModelRenderer#getMaterialBuilder()}.<p>
+ * Must be obtained via {@link Renderer#getMaterialBuilder()}.<p>
  * 
  * Implementations or future Fabric API extensions may add attributes
  * for shaders or other features that modify quad rendering.
  */
-public interface ModelMaterialBuilder {
+public interface MaterialFinder {
     /**
-     * Create a new {@link ModelMaterial} instance encoding all
+     * Create a new {@link RenderMaterial} instance encoding all
      * of the current settings in this builder. The settings in
      * this builder are not changed.<p>
      * 
@@ -38,18 +38,18 @@ public interface ModelMaterialBuilder {
      * needless memory allocation. ModelRenderer implementations
      * may or may not cache material construction.
      */
-    ModelMaterial build();
+    RenderMaterial build();
     
     /**
      * When > 1, ModelVertexConsumer will accept additional
-     * color and UV coordinates for each vertex. {@link ModelRenderer}
+     * color and UV coordinates for each vertex. {@link Renderer}
      * implementations should support at least three texture layers.
      * The default, minimum value is 1.<p>
      * 
      * Additional layers are useful for overlay textures -
      * borders, decals, patterns, machine status, etc.
      * Specifying overlay textures as part of the same quad
-     * can enable the {@link ModelRenderer} to optimize memory
+     * can enable the {@link Renderer} to optimize memory
      * usage and texture blending, depending on implementation.
      */
     void setTextureDepth(int depth);
@@ -81,7 +81,7 @@ public interface ModelMaterialBuilder {
      * This is useful when there are multiple texture layers and only some of 
      * them should have color index applied. If there is only layer or all
      * layers are disabled, it is simpler to disable the color index itself
-     * by sending a colorIndex value of -1 to the {@link ModelRenderContext}.
+     * by sending a colorIndex value of -1 to the {@link RenderContext}.
      */
     void enableColorIndex(int layerIndex, boolean isEnabled);
     
@@ -106,7 +106,7 @@ public interface ModelMaterialBuilder {
     boolean disableAo(int layerIndex);
     
     /**
-     * When true, brightness value provided via {@link ModelRenderContext#brightness(int)}
+     * When true, brightness value provided via {@link RenderContext#brightness(int)}
      * will be used as the minimum lightmap brightness.  Usually this is used to 
      * implement full brightness but less-than-full brightness values are valid.<p>
      * 
