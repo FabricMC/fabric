@@ -2,6 +2,13 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.minecraft.client.util.math.Matrix4f;
 
+/**
+ * Interfaces for uniform initialization. Called
+ * by renderer when uniform should be potentially updated
+ * from game state.<p>
+ * 
+ * See {@link ShaderManager} and {@link UniformRefreshFrequency}
+ */
 public interface Uniform {
     @FunctionalInterface
     public interface Uniform1f extends Uniform {

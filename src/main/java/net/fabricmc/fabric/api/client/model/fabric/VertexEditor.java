@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+//TODO: add standard attribute binding names for shader materials
+
 public interface VertexEditor extends Vertex {
     /**
      * Sets the geometric vertex position for the given vertex, 
@@ -36,6 +38,10 @@ public interface VertexEditor extends Vertex {
      * {@link Renderer} implementations should honor vertex normals for
      * diffuse lighting - modifying vertex color(s) or packing normals in the vertex 
      * buffer as appropriate for the rendering method/vertex format in effect.<p>
+     * 
+     * The "extra" parameter is for shader authors to make use of space normally wasted.
+     * In most implementations it will be packed as signed, normalized float 
+     * with low effective precision: 1/127.
      */
     VertexEditor normal(float x, float y, float z, float extra);
     

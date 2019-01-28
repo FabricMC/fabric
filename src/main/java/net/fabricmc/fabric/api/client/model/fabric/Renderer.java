@@ -19,9 +19,9 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import net.minecraft.util.Identifier;
 
 /**
- * Interface for model rendering plug-ins that provide enhanced capabilities
+ * Interface for rendering plug-ins that provide enhanced capabilities
  * for model lighting, buffering and rendering. Such plug-ins implement the
- * enhanced modeling interfaces specified by the Fabric API.<p>
+ * enhanced model rendering interfaces specified by the Fabric API.<p>
  */
 public interface Renderer {
     /**

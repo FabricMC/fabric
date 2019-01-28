@@ -18,6 +18,19 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import java.util.function.Consumer;
 
+/**
+ * A bundle of on or more {@link Quad} instances encoded by the renderer,
+ * typically via {@link Renderer#meshBuilder()}.<p>
+ * 
+ * Similar in purpose to the List<BakedQuad> instances returned by BakedModel, but 
+ * affords the renderer the ability to optimize the format for performance
+ * and memory allocation.
+ */
 public interface Mesh {
+    /**
+     * Use to access all of the quads encoded in this mesh. The quad instances
+     * sent to the consumer will likely be threadlocal/reused and should never
+     * be retained by the consumer.
+     */
     public void forEach(Consumer<Quad> consumer);
 }

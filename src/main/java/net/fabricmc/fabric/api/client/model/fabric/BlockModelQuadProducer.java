@@ -41,7 +41,7 @@ public interface BlockModelQuadProducer {
      * 
      * This method will always be called exactly one time per block position 
      * per chunk rebuild, irrespective of which or how many faces or block render layers are included 
-     * in the model. Models must output all quads in a single pass.<p>
+     * in the model. Models must output all quads/meshes in a single pass.<p>
      * 
      * Renderer will handle face occlusion and filter quads on faces 
      * obscured by neighboring blocks.  Models only need to consider "sides" to the

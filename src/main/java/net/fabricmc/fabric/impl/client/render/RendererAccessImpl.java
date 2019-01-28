@@ -47,5 +47,4 @@ public final class RendererAccessImpl implements RendererAccess{
     public final boolean isRendererActive() {
         return hasActiveRenderer;
     }
-    
 }

@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import net.minecraft.client.render.model.BakedModel;
 
 /**
- * This defines the object made available to models for buffering vertex data at render time.<p>
+ * This defines the instance made available to models for buffering vertex data at render time.<p>
  *
  * A future enhancement will offer a quad transformer (for animations) and a dynamic
  * quad builder for per-frame renders.
@@ -29,9 +30,17 @@ import net.minecraft.client.render.model.BakedModel;
 public interface RenderContext {
     /**
      * Used by models to send vertex data previously baked 
-     * via {@link MeshBuilder}. The fastest option and preferred whenever feasible.
+     * via {@link MeshBuilder}. The fastest option and preferred whenever feasible.<p>
+     * 
+     * Meshes sent to the consumer may be accompanied by a {@link QuadMaker} consumer - an "editor".
+     * If provided, all quads in the mesh will be passed to the editor for modification before
+     * offsets, face culling or lighting are applies.  This allows animation and mesh customization.
+     * The editor can also filter out quads by exiting before calling {@link QuadMaker#emit()}.<p>
+     * 
+     * Meshes are never mutated by the editor - only the buffered quads. This ensures thread-safe
+     * use of meshes across multiple chunk builders.
      */
-    Consumer<Mesh> meshConsumer();
+    BiConsumer<Mesh, Consumer<QuadMaker>> meshConsumer();
     
     /**
      * Fabric causes vanilla baked models to send themselves 
@@ -39,5 +48,4 @@ public interface RenderContext {
      * of vanilla baked models, packaged quads and/or dynamic elements.
      */
     Consumer<BakedModel> fallbackConsumer();
-
 }

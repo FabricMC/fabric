@@ -19,34 +19,69 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.util.math.Vector4f;
 
+/**
+ * Read-only view of vertex data created via {@link VertexEditor}.
+ * See that class for additional detail.
+ */
 public interface Vertex {
+    /**
+     * Pass a non-null target to avoid allocation - will be returned with values.
+     * Otherwise returns a new instance.
+     */
     Vector3f copyPos(Vector3f target);
     float x();
     float y();
     float z();
    
+    /**
+     * If false, no vertex normal was provided.
+     * Lighting should use face normal in that case.
+     */
     boolean hasNormal();
+    
+    /**
+     * Pass a non-null target to avoid allocation - will be returned with values.
+     * Otherwise returns a new instance. Returns null if normal not present.
+     */
     Vector3f copyNormal(Vector3f target);
+    
+    /**
+     * Pass a non-null target to avoid allocation - will be returned with values.
+     * Otherwise returns a new instance. Returns null if normal not present.
+     */
     Vector4f copyNormal(Vector4f target);
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
     float normX();
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
     float normY();
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
     float normZ();
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
     float normExtra();
     
     int lightmap();
-    
+
     int color();
-    
-    int color2();
-    
-    int color3();
-    
     float u();
     float v();
     
+    int color2();
     float u2();
     float v2();
     
+    int color3();
     float u3();
     float v3();
 }

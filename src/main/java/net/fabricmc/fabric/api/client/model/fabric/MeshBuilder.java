@@ -19,8 +19,10 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import net.minecraft.client.render.BufferBuilder;
 
 /**
- * Similar in concept to {@link BufferBuilder} but simpler
- * and not tied to NIO or any other specific implementation.
+ * Similar in purpose to {@link BufferBuilder} but simpler
+ * and not tied to NIO or any other specific implementation,
+ * plus designed to handle both static and dynamic building.<p>
+ * 
  * Decouples models from the vertex format(s) used by
  * ModelRenderer to allow compatibility across diverse implementations.<p>
  */

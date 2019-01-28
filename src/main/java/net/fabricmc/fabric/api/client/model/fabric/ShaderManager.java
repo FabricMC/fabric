@@ -17,12 +17,12 @@ import net.fabricmc.fabric.api.client.model.fabric.Uniform.UniformMatrix4f;
  * to control vertex attribute bindings and lighting model interaction.<p>
  * 
  * Also handles creation of uniforms via one of the provided "uniform..." methods.
- * Uniforms can never be directly obtained - this prevents abuse of uniforms that
+ * Does not expose uniform instances directly - this discourages abuse of uniforms that
  * would damage performance due to excessive updates. (Per-block uniforms, for example,
- * are not possible.)<p>
+ * are not advisable.)<p>
  * 
- * Using a uniform in shader is simple: reference the uniform by name in your 
- * declaration. The renderer will ensure the uniforms is bound and updated appropriately.<p>
+ * Using a uniform in shader is simple: reference the uniform by name in your GLSL
+ * declarations. The renderer will ensure the uniform is bound and updated appropriately.<p>
  * 
  * Uniforms share the same name-space. This simplifies implementations by avoiding the
  * need to rename/rebind conflicting uniform names in the renderer.  Use a prefix or 

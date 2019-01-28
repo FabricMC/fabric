@@ -33,19 +33,6 @@ public interface Quad {
      * vertex data in the given array and location. Uses texture
      * coordinates and colors from the indicated layer.<p>
      * 
-     * Primary use case is generating damage models or other operations outside
-     * the renderer. Models that are able to generate mesh geometry on the fly or 
-     * retrieve it from a pre-baked source may find that a cleaner approach.<p>
-     * 
-     * Note that for damage models, the original texture sprite is needed
-     * to derive the non-interpolated UV coordinates for re-texturing.
-     * Model renderers only accept baked UV coordinates and so models
-     * that use this approach still need to track the original sprites.
-     * 
-     * @param source Data previously packed by {@link FastVertexBuilder}.
-     * 
-     * @param sourceIndex Index where packed data starts.
-     * 
      * @param layerIndex The texture layer to be used for the quad.
      * Pass 0 for single-layer quads.
      * 
@@ -60,12 +47,10 @@ public interface Quad {
     void toMinecraft(int layerIndex, int[] target, int targetIndex, boolean isItem);
     
     /**
-     * Extracts all quad properties to the given vertex builder.
-     * Typically the target will be something implemented by a 
-     * model or model library. Meant for re-texturing, analysis
-     * and transformation use cases.
+     * Extracts all quad properties to the given QuadMaker instance.
+     * Meant for re-texturing, analysis and static transformation use cases.
      */
-    void toPackager(MeshBuilder target);
+    void copyTo(QuadMaker target);
     
     /**
      * Retrieves the material serialized with the quad.
@@ -80,13 +65,15 @@ public interface Quad {
     /**
      * Equivalent to {@link BakedQuad#getFace()}. This is the face used for vanilla lighting
      * calculations and will be the block face to which the quad is most closely aligned. Always
-     * the same as cull face for quads that are on a block face, but never null.
+     * the same as cull face for quads that are on a block face, but never null.<p>
      */
     Direction lightFace();
     
     /**
      * If non-null, quad should not be rendered in-world if the 
-     * opposite face of a neighbor block occludes it.
+     * opposite face of a neighbor block occludes it.<p>
+     * 
+     * See {@link QuadMaker#cullFace(Direction)}.
      */
     Direction cullFace();
     
@@ -95,6 +82,14 @@ public interface Quad {
      */
     Direction nominalFace();
     
+    /**
+     * Normal of the quad as implied by geometry. Will be invalid
+     * if quad vertices are not co-planar.  Typically computed lazily
+     * on demand and not encoded.<p>
+     * 
+     * Not typically needed by models. Exposed to enable standard lighting
+     * utility functions for use by renderers.
+     */
     Vector3f faceNormal();
     
     /**
@@ -125,5 +120,8 @@ public interface Quad {
         return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite);
     }
     
+    /**
+     * Retrieves the indicated vertex. Quads have four vertices.
+     */
     Vertex vertex(int vertexIndex);
 }

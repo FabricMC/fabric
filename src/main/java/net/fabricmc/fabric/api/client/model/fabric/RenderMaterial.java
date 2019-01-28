@@ -76,7 +76,7 @@ import net.minecraft.util.Identifier;
  * Special materials can be obtained using {@link Renderer#materialById(Identifier)}
  * with a known identifier. Renderers may provided other means of access. Popular 
  * special materials could be implemented by multiple renderers, however there is 
- * no requirement that special materials be cross-compatibile.
+ * no requirement that special materials be cross-compatible.
  */
 public interface RenderMaterial {
     /**

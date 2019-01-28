@@ -40,8 +40,7 @@ public interface MaterialFinder {
     /**
      * When > 1, ModelVertexConsumer will accept additional
      * color and UV coordinates for each vertex. {@link Renderer}
-     * implementations should support at least three texture layers.
-     * The default, minimum value is 1.<p>
+     * implementations should support up to three texture layers.<p>
      * 
      * Additional layers are useful for overlay textures -
      * borders, decals, patterns, machine status, etc.

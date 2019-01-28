@@ -19,14 +19,25 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
 
+/**
+ * A mutable {@link Quad} instance. Used during static mesh 
+ * building and also for dynamic renders/mesh transforms.<p>
+ * 
+ * Instances of {@link QuadMaker} will practically always be
+ * threadlocal and/or reused - do not retain references.
+ */
 public interface QuadMaker extends Quad {
+    /**
+     * Vertices on {@link QuadMaker} are mutable.
+     */
     @Override
     VertexEditor vertex(int vertexIndex);
     
     /**
      * If non-null, quad is coplanar with a block face which, if known, simplifies
      * or shortcuts geometric analysis that might otherwise be needed.
-     * Set to null if quad is not coplanar or if this is not known. <p>
+     * Set to null if quad is not coplanar or if this is not known. 
+     * Also controls face culling during block rendering.<p>
      * 
      * Null by default.<p>
      * 
@@ -45,13 +56,12 @@ public interface QuadMaker extends Quad {
      * Should be the expected value of {@link #lightFace()}. Value will be confirmed
      * and if invalid the correct light face will be calculated.<p>
      * 
-     * This may be especially useful for dynamic renders. Null by default, and set
-     * automatically by {@link #cullFace()}.<p>
+     * Null by default, and set automatically by {@link #cullFace()}.<p>
      * 
      * Models may also find this useful as the face for texture UV locking and rotation semantics.<p>
      * 
-     * NOTE: This value is not persisted independently when the quad is packed.
-     * When reading packed quads, this value will always be the same as {@link #lightFace()}.
+     * NOTE: This value is not persisted independently when the quad is encoded.
+     * When reading encoded quads, this value will always be the same as {@link #lightFace()}.
      */
     QuadMaker nominalFace(Direction face);
     
@@ -66,10 +76,14 @@ public interface QuadMaker extends Quad {
      * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
      * This method should be performant whenever caller's vertex representation makes it feasible.<p>
      * 
-     * Calling this method does not begin or end a quad.  It should be called after {@link #quad(ModelMaterial)}.
-     * Intended use is for quick input when formats allow.
+     * Calling this method does not emit quad.  
      */
     QuadMaker fromMinecraft(int[] quadData, int startIndex, boolean isItem);
     
+    /**
+     * In static mesh building, causes quad to be appended to the mesh being built.
+     * In a dynamic render context, causes quad to be output for rendering.
+     * In all cases, invalidates the current instance.
+     */
     void emit();
 }
