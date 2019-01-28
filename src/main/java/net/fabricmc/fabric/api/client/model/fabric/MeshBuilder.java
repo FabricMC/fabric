@@ -26,13 +26,13 @@ import net.minecraft.client.render.BufferBuilder;
  */
 public interface MeshBuilder {
     /**
-     * Starts a new quad. Invalidates any {@link MutableQuad} returned 
-     * earlier.  Do not retain references.  Must call {@link MutableQuad#emit()}
+     * Starts a new quad. Invalidates any {@link QuadMaker} returned 
+     * earlier.  Do not retain references.  Must call {@link QuadMaker#emit()}
      * to add the quad to the mesh.<p>
      * 
      * Material must be an instance provided by the active {@link ModelRenderer}.
      */
-    MutableQuad quad(ModelMaterial material);
+    QuadMaker quad(ModelMaterial material);
     
     /**
      * Returns a new {@link Mesh} instance containing all

@@ -91,7 +91,7 @@ public interface Quad {
     Direction cullFace();
     
     /**
-     * See {@link MutableQuad#nominalFace(Direction)}.
+     * See {@link QuadMaker#nominalFace(Direction)}.
      */
     Direction nominalFace();
     
