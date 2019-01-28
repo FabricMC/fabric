@@ -31,7 +31,7 @@ public interface Renderer {
      * Renderer does not retain a reference to returned instances and they should be re-used for 
      * multiple models when possible to avoid memory allocation overhead.
      */
-    MeshBuilder getQuadPackager();
+    MeshBuilder meshBuilder();
     
     /**
      * Obtain a new {@link MaterialFinder} instance used to create 
@@ -40,19 +40,13 @@ public interface Renderer {
      * Renderer does not retain a reference to returned instances and they should be re-used for 
      * multiple materials when possible to avoid memory allocation overhead.
      */
-    MaterialFinder getMaterialBuilder();
+    MaterialFinder materialFinder();
 
     /**
      * Return a material previously registered via {@link #registerMaterial(Identifier, RenderMaterial)}.
      * Will return null if no material was found matching the given identifier.
      */
-    RenderMaterial getMaterial(Identifier id);
-    
-    /**
-     * Retrieve a material using the material's index. See {@link RenderMaterial#index()}.
-     * Will return null if no material was found matching the given identifier.
-     */
-    RenderMaterial getMaterial(int index);
+    RenderMaterial materialById(Identifier id);
     
     /**
      * Register a material for re-used by other mods or models within a mod.
@@ -63,4 +57,10 @@ public interface Renderer {
      * leaving the existing material intact.
      */
     boolean registerMaterial(Identifier id, RenderMaterial material);
+    
+    /**
+     * Access to {@link ShaderManager} for attachment of shaders to standard materials.
+     * Will return null if this renderer does not support that feature.
+     */
+    ShaderManager shaderManager();
 }

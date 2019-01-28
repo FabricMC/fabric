@@ -20,25 +20,22 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
 
 /**
- * Creates a {@link RenderMaterial} instance used to communicate
+ * Finds standard {@link RenderMaterial} instances used to communicate
  * quad rendering characteristics to a {@link RenderContext}.<p>
  *
- * Must be obtained via {@link Renderer#getMaterialBuilder()}.<p>
- * 
- * Implementations or future Fabric API extensions may add attributes
- * for shaders or other features that modify quad rendering.
+ * Must be obtained via {@link Renderer#materialFinder()}.
  */
 public interface MaterialFinder {
     /**
-     * Create a new {@link RenderMaterial} instance encoding all
+     * Returns the standard material encoding all
      * of the current settings in this builder. The settings in
      * this builder are not changed.<p>
      * 
      * Resulting instances can and should be re-used to prevent
-     * needless memory allocation. ModelRenderer implementations
-     * may or may not cache material construction.
+     * needless memory allocation. {@link Renderer} implementations
+     * may or may not cache standard material instances.
      */
-    RenderMaterial build();
+    RenderMaterial find();
     
     /**
      * When > 1, ModelVertexConsumer will accept additional
@@ -106,12 +103,13 @@ public interface MaterialFinder {
     boolean disableAo(int layerIndex);
     
     /**
-     * When true, brightness value provided via {@link RenderContext#brightness(int)}
+     * When true, brightness value provided via {@link VertexEditor#lightmap()}
      * will be used as the minimum lightmap brightness.  Usually this is used to 
      * implement full brightness but less-than-full brightness values are valid.<p>
      * 
      * Note that color will still be modified by diffuse shading and ambient occlusion,
-     * by default.  Most of the time, you will want to disable those via {@link #setShading(ShadingMode)}.
+     * by default.  Most of the time, you will want to disable those via {@link #disableAo(int, boolean)}
+     * and {@link #disableDiffuse(int, boolean)}.
      */
     default void setEmissive(boolean isEmissive) {
         setEmissive(0, isEmissive);
