@@ -26,7 +26,7 @@ public final class RendererAccessImpl implements RendererAccess{
     private RendererAccessImpl() { };
 
     @Override
-    public final void registerModelRenderer(Renderer renderer) {
+    public final void registerRenderer(Renderer renderer) {
         if(renderer != null && activeRenderer == null) {
             activeRenderer = renderer;
             hasActiveRenderer = true;
@@ -35,16 +35,16 @@ public final class RendererAccessImpl implements RendererAccess{
 
     private Renderer activeRenderer = null;
 
-    /** avoids null test every call to {@link #isRendererActive()} */
+    /** avoids null test every call to {@link #hasRenderer()} */
     private boolean hasActiveRenderer = false;
 
     @Override
-    public final Renderer getActiveRenderer() {
+    public final Renderer getRenderer() {
         return activeRenderer;
     }
 
     @Override
-    public final boolean isRendererActive() {
+    public final boolean hasRenderer() {
         return hasActiveRenderer;
     }
 }

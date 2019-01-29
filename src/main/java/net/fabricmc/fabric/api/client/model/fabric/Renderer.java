@@ -34,8 +34,8 @@ public interface Renderer {
     MeshBuilder meshBuilder();
     
     /**
-     * Obtain a new {@link MaterialFinder} instance used to create 
-     * new {@link RenderMaterial} instances.<p>
+     * Obtain a new {@link MaterialFinder} instance used to retrieve 
+     * standard {@link RenderMaterial} instances.<p>
      * 
      * Renderer does not retain a reference to returned instances and they should be re-used for 
      * multiple materials when possible to avoid memory allocation overhead.
@@ -49,7 +49,7 @@ public interface Renderer {
     RenderMaterial materialById(Identifier id);
     
     /**
-     * Register a material for re-used by other mods or models within a mod.
+     * Register a material for re-use by other mods or models within a mod.
      * The registry does not persist registrations - mods must create and register 
      * all materials at game initialization.<p>
      * 

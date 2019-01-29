@@ -22,14 +22,13 @@ import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 
 /**
- * Utility interface for working with quad data packed by
- * {@link MeshBuilder}.  Enables models to do analysis,
- * re-texturing or standard quad generation without knowing the
+ * Interface for reading quad data encoded by {@link MeshBuilder}.
+ * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.<p>
  */
 public interface Quad {
     /**
-     * Reads baked vertex data and outputs a standard baked quad 
+     * Reads baked vertex data and outputs standard baked quad 
      * vertex data in the given array and location. Uses texture
      * coordinates and colors from the indicated layer.<p>
      * 
@@ -47,7 +46,8 @@ public interface Quad {
     void toVanilla(int layerIndex, int[] target, int targetIndex, boolean isItem);
     
     /**
-     * Extracts all quad properties to the given QuadMaker instance.
+     * Extracts all quad properties to the given {@link QuadMaker} instance.
+     * Must be used before calling {@link QuadMaker#emit()} on the target instance.
      * Meant for re-texturing, analysis and static transformation use cases.
      */
     void copyTo(QuadMaker target);
@@ -103,9 +103,8 @@ public interface Quad {
      * @param layerIndex The texture layer to be used for the quad.
      * Pass 0 for single-layer quads.
      * 
-     * @param sprite  {@link FastVertexBuilder} does not serialize sprites,
-     * so the sprite must be provided. Models that use this method need to
-     * track sprites per quad/layer.
+     * @param sprite  {@link QuadMaker} does not serialize sprites
+     * so the sprite must be provided by the caller.
      * 
      * @param isItem If true, will output vertex normals. Otherwise will output
      * lightmaps, per Minecraft vertex formats for baked models.

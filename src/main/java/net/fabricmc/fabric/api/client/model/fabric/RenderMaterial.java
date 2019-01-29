@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.Identifier;
 
 /**
@@ -26,9 +25,6 @@ import net.minecraft.util.Identifier;
  * 
  * A material instance is always immutable and thread-safe.  References to a material 
  * remain valid until the end of the current game session.<p>
- * 
- * A {@link RenderMaterial} instance can only be created by a {@link MaterialFinder}
- * instance obtained via {@link Renderer#materialFinder()}.<p>
  * 
  * Materials can be registered and shared between mods using {@link Renderer#registerMaterial(net.minecraft.util.Identifier, RenderMaterial)}.
  * The registering mod is responsible for creating each registered material at startup.<p>
@@ -65,7 +61,7 @@ import net.minecraft.util.Identifier;
  * vertex attributes can be re-purposed to fit the needs of the shader author.<p>
  * 
  * Shader materials are an optional {@link Renderer} feature.
- * {@link Renderer#shaderManager()} will return null if shaders are unsupported.
+ * {@link Renderer#shaderManager()} will return null if shaders are unsupported.<p>
  * 
  * <b>SPECIAL MATERIALS</b><p>
  * 
@@ -74,7 +70,7 @@ import net.minecraft.util.Identifier;
  * vertex attributes via extensions to {@link MeshBuilder} and {@link QuadMaker}.<p>
  * 
  * Special materials can be obtained using {@link Renderer#materialById(Identifier)}
- * with a known identifier. Renderers may provided other means of access. Popular 
+ * with a known identifier. Renderers may provide other means of access. Popular 
  * special materials could be implemented by multiple renderers, however there is 
  * no requirement that special materials be cross-compatible.
  */
@@ -84,14 +80,12 @@ public interface RenderMaterial {
      * on a new, unaltered, {@link MaterialFinder} instance.  It is defined here for clarity and convenience.
      * 
      * Quads using this material have a single texture layer, use {@link Block#getRenderLayer()} of the associated
-     * block to determine texture blending (or translucent for item models),  honor block color index, 
-     * are non-emissive, and have {@link ShadingMode} inferred from {@link BakedModel#useAmbientOcclusion()} 
-     * and block light level.  All standard, non-fluid baked models are rendered using this material.<p>
+     * block to determine texture blending,  honor block color index, are non-emissive, and apply both diffuse and 
+     * ambient occlusion shading to vertex colors.<p>
      * 
-     * {@link Renderer} implementations may or may not define and use more explicit materials for the 
-     * various context-dependent combinations of shading and render layer and those are not defined or exposed.
+     * All standard, non-fluid baked models are rendered using this material.
      */
-    Identifier MATERIAL_STANDARD = new Identifier("minecraft", "standard");
+    Identifier MATERIAL_STANDARD = new Identifier("fabric", "standard");
     
     /**
      * How many color/uv layers are in the material. Minimum is 1.

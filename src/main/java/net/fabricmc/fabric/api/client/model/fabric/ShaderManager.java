@@ -14,18 +14,19 @@ import net.fabricmc.fabric.api.client.model.fabric.Uniform.Uniform4i;
 import net.fabricmc.fabric.api.client.model.fabric.Uniform.UniformMatrix4f;
 
 /**
- * Allows creation of shader-based custom renders using standard materials
- * to control vertex attribute bindings and lighting model interaction.<p>
+ * Allows creation of shader-based custom materials by attaching shaders
+ * to standard materials. The standard material controls vertex attribute
+ * bindings and lighting model interaction.<p>
  * 
  * Also handles creation of uniforms via one of the provided "uniform..." methods.
  * Does not expose uniform instances directly - this discourages abuse of uniforms that
  * would damage performance due to excessive updates. (Per-block uniforms, for example,
  * are not advisable.)<p>
  * 
- * Using a uniform in shader is simple: reference the uniform by name in your GLSL
+ * Using a uniform in a shader is simple: reference the uniform by name in the shader GLSL
  * declarations. The renderer will ensure the uniform is bound and updated appropriately.<p>
  * 
- * Uniforms share the same name-space. This simplifies implementations by avoiding the
+ * Uniforms share the same name space. This simplifies implementations by avoiding the
  * need to rename/rebind conflicting uniform names in the renderer.  Use a prefix or 
  * suffix to ensure uniqueness and/or publish names of uniforms that should be reused.<p>
  * 
@@ -56,7 +57,7 @@ public interface ShaderManager {
     /**
      * {@link Uniform3f} with viewing entity eye position. Refreshed every frame.
      */
-    public static String UNIFORM_EYE_POSITION = "u_eye_position";
+    public static String UNIFORM_EYE_POSITION = "u_eyePosition";
     
     /**
      * {@link Uniform3f} with fog parameters: end, end-start, and density. Zero density means linear fog.
@@ -75,11 +76,11 @@ public interface ShaderManager {
      * will be modified by lighting.<p>
      * 
      * See {@link QuadMaker} for standard vertex attribute binding names. Uniforms will be automatically
-     * associated based on header declarations.<p>
+     * associated with a shader if the uniform name appears in the shader header declarations.<p>
      * 
      * Renderers should re-query sources and recompile shaders on resource reload and whenever renderer
-     * reload occurs. (Happens when user presses F3+A or changes some graphics settings.) This handles
-     * shader code distributed via resource packs and enables shader debugging without a game restart.<p>
+     * reload occurs. (Happens when user presses F3+A or changes some graphics settings.) This allows
+     * shader code distribution via resource packs and enables shader debugging without a game restart.<p>
      * 
      * @param standard  Must be a standard material.
      * @param vertexSource  Supplier for GLSL 120 vertex shader source. Renderer will strip redundant header declarations.

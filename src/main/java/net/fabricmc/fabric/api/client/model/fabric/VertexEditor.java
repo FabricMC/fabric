@@ -46,40 +46,42 @@ public interface VertexEditor extends Vertex {
     VertexEditor normal(float x, float y, float z, float extra);
     
     /**
-     * Vertex brightness input.
+     * Minimum block brightness. Has no effect unless emissive lighting is
+     * enabled in at least one layer of the material for this quad.
      */
     VertexEditor lightmap(int lightmap);
     
     /**
-     * Vertex color. 
+     * Color for first texture layer.
      */
     VertexEditor color(int color);
     
     /**
-     * Vertex color. 
-     */
-    VertexEditor color2(int color);
-    
-    /**
-     * Vertex color. 
-     */
-    VertexEditor color3(int color);
-    
-    /**
-     * Texture coordinate input. 
-     * 
-     * @param u  texture coordinate - MUST BE PRE-BAKED
-     * @param v  texture coordinate - MUST BE PRE-BAKED
+     * Interpolated ("baked") texture coordinates for first texture layer. 
      */
     VertexEditor uv(float u, float v);
     
     /**
-     * Texture coordinate input. 
+     * Color for second texture layer.
+     * Throws IndexOutOfBoundsException if material texture depth < 2.
+     */
+    VertexEditor color2(int color);
+    
+    /**
+     * Interpolated ("baked") texture coordinates for second texture layer.
+     * Throws IndexOutOfBoundsException if material texture depth < 2.
      */
     VertexEditor uv2(float u, float v);
     
     /**
-     * Texture coordinate input. 
+     * Color for third texture layer.
+     * Throws IndexOutOfBoundsException if material texture depth < 3.
+     */
+    VertexEditor color3(int color);
+    
+    /**
+     * Interpolated ("baked") texture coordinates for third texture layer.
+     * Throws IndexOutOfBoundsException if material texture depth < 3.
      */
     VertexEditor uv3(float u, float v);
 }

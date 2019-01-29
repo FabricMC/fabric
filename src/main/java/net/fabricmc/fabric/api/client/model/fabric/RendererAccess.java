@@ -33,16 +33,16 @@ public interface RendererAccess {
      * to allow for mods that implement other features in addition to being a 
      * render plug-in. However, this is not recommended. {@link Renderer} mods should do one thing.<p>
      */
-    void registerModelRenderer(Renderer plugin);
+    void registerRenderer(Renderer plugin);
 
     /**
      * Access to the current {@link Renderer} for creating and retrieving model builders 
      * and materials. Will return null if no render plug in is active.
      */
-    Renderer getActiveRenderer();
+    Renderer getRenderer();
 
     /**
-     * Performant test for {@link #getActiveRenderer()} != null;
+     * Performant test for {@link #getRenderer()} != null;
      */
-    boolean isRendererActive();
+    boolean hasRenderer();
 }

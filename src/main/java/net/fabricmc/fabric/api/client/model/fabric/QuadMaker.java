@@ -67,8 +67,7 @@ public interface QuadMaker extends Quad {
     
     /**
      * Value functions identically to {@link BakedQuad#getColorIndex()} and is
-     * used by renderer / model builder in same way.  Value remains in effect
-     * for all subsequent quads sent to this consumer until changed. Default value is -1.
+     * used by renderer / model builder in same way. Default value is -1.
      */
     QuadMaker colorIndex(int colorIndex);
     
@@ -76,7 +75,7 @@ public interface QuadMaker extends Quad {
      * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
      * This method should be performant whenever caller's vertex representation makes it feasible.<p>
      * 
-     * Calling this method does not emit quad.  
+     * Calling this method does not emit the quad.  
      */
     QuadMaker fromVanilla(int[] quadData, int startIndex, boolean isItem);
     
