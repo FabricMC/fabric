@@ -121,6 +121,12 @@ public interface Quad {
     }
     
     /**
+     * Retrieves the integer tag encoded with this quad via {@link QuadMaker#tag(int)}.
+     * Will return zero if no tag was set.  For use by models.
+     */
+    int tag();
+    
+    /**
      * Retrieves the indicated vertex. Quads have four vertices.
      */
     Vertex vertex(int vertexIndex);

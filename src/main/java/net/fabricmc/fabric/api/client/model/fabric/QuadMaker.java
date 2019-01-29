@@ -78,7 +78,14 @@ public interface QuadMaker extends Quad {
      * 
      * Calling this method does not emit quad.  
      */
-    QuadMaker fromMinecraft(int[] quadData, int startIndex, boolean isItem);
+    QuadMaker fromVanilla(int[] quadData, int startIndex, boolean isItem);
+    
+    /**
+     * Encodes an integer tag with this quad that can later be retrieved via
+     * {@link Quad#tag()}.  Useful for models that want to perform conditional
+     * transformation or filtering on static meshes.
+     */
+    QuadMaker tag(int tag);
     
     /**
      * In static mesh building, causes quad to be appended to the mesh being built.
