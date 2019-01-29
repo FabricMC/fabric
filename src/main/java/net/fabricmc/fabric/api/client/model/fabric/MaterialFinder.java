@@ -51,7 +51,7 @@ public interface MaterialFinder {
      * Extra color/UV coordinates can also be re-purposed for
      * customer shaders that require expanded vertex attributes.
      */
-    void textureDepth(int depth);
+    MaterialFinder textureDepth(int depth);
 
     /**
      * Defines how texture pixels will be blended with the scene.
@@ -64,7 +64,7 @@ public interface MaterialFinder {
      * will use {@link Block#getRenderLayer()} for the associate block, or
      * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
      */
-    void blendMode(int layerIndex, BlockRenderLayer blendMode);
+    MaterialFinder blendMode(int layerIndex, BlockRenderLayer blendMode);
 
     /**
      * Vertex color(s) will be modified for quad color index unless disabled.<p>
@@ -74,17 +74,17 @@ public interface MaterialFinder {
      * layers are disabled, it is simpler to disable the color index itself
      * by sending a colorIndex value of -1 to the {@link RenderContext}.
      */
-    void disableColorIndex(int layerIndex, boolean disable);
+    MaterialFinder disableColorIndex(int layerIndex, boolean disable);
     
     /**
      * Vertex color(s) will be modified for diffuse shading unless disabled.
      */
-    void disableDiffuse(int layerIndex, boolean disable);
+    MaterialFinder disableDiffuse(int layerIndex, boolean disable);
     
     /**
      * Vertex color(s) will be modified for ambient occlusion unless disabled.
      */
-    void disableAo(int layerIndex, boolean disable);
+    MaterialFinder disableAo(int layerIndex, boolean disable);
     
     /**
      * When true, brightness value provided via {@link VertexEditor#lightmap()}
@@ -96,5 +96,5 @@ public interface MaterialFinder {
      * by default.  Most of the time, you will want to disable those via {@link #disableAo(int, boolean)}
      * and {@link #disableDiffuse(int, boolean)}.
      */
-    void emissive(int layerIndex, boolean isEmissive);
+    MaterialFinder emissive(int layerIndex, boolean isEmissive);
 }
