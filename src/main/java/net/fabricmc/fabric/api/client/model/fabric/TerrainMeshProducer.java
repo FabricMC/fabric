@@ -22,19 +22,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * Interface for baked models that need to generate or customize vertex data based on 
- * world state instead of or in addition to block state when render chunks are rebuilt.<p>
- * 
- * Dynamic elements are additive - models with static quads should output static quads 
- * via the less expensive {@link PackagedQuadConsumer} interface. The provided consumer
- * will implement this interface also.<p>
+ * Interface for baked models that output meshes with enhanced rendering features.
+ * Can also be used to generate or customize outputs based on world state instead of
+ * or in addition to block state when render chunks are rebuilt.<p>
  * 
  * Note for {@link Renderer} implementors: Fabric causes BakedModel to extend this
  * interface with {@link #hasVertexData()} and to produce standard vertex data. This means any BakedModel instance
  * can be safely cast to this interface without an instanceof check.
  */
 @FunctionalInterface
-public interface BlockModelQuadProducer {
+public interface TerrainMeshProducer {
     /**
      * This method will be called during chunk rebuilds to generate both the static and
      * dynamic portions of a block model when the model implements this interface.<p>
