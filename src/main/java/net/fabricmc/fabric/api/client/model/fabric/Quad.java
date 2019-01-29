@@ -44,7 +44,7 @@ public interface Quad {
      * @param isItem If true, will output vertex normals. Otherwise will output
      * lightmaps, per Minecraft vertex formats for baked models.
      */
-    void toMinecraft(int layerIndex, int[] target, int targetIndex, boolean isItem);
+    void toVanilla(int layerIndex, int[] target, int targetIndex, boolean isItem);
     
     /**
      * Extracts all quad properties to the given QuadMaker instance.
@@ -116,7 +116,7 @@ public interface Quad {
      */
     default BakedQuad toBakedQuad(int layerIndex, Sprite sprite, boolean isItem) {
         int vertexData[] = new int[28];
-        toMinecraft(layerIndex, vertexData, 0, isItem);
+        toVanilla(layerIndex, vertexData, 0, isItem);
         return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite);
     }
     
