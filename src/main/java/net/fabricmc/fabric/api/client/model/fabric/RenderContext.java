@@ -22,10 +22,7 @@ import java.util.function.Consumer;
 import net.minecraft.client.render.model.BakedModel;
 
 /**
- * This defines the instance made available to models for buffering vertex data at render time.<p>
- *
- * A future enhancement will offer a quad transformer (for animations) and a dynamic
- * quad builder for per-frame renders.
+ * This defines the instance made available to models for buffering vertex data at render time.
  */
 public interface RenderContext {
     /**
@@ -33,8 +30,8 @@ public interface RenderContext {
      * via {@link MeshBuilder}. The fastest option and preferred whenever feasible.<p>
      * 
      * Meshes sent to the consumer may be accompanied by a {@link QuadMaker} consumer - an "editor".
-     * If provided, all quads in the mesh will be passed to the editor for modification before
-     * offsets, face culling or lighting are applies.  This allows animation and mesh customization.
+     * If non-null, all quads in the mesh will be passed to the editor for modification before
+     * offsets, face culling or lighting are applied.  Meant for animation and mesh customization.
      * The editor can also filter out quads by exiting before calling {@link QuadMaker#emit()}.<p>
      * 
      * Meshes are never mutated by the editor - only the buffered quads. This ensures thread-safe
@@ -48,4 +45,20 @@ public interface RenderContext {
      * of vanilla baked models, packaged quads and/or dynamic elements.
      */
     Consumer<BakedModel> fallbackConsumer();
+    
+    /**
+     * Returns a {@link QuadMaker} instance that emits directly to the render buffer.
+     * It remains necessary to call {@link QuadMaker#emit()} to output the quad.<p>
+     * 
+     * This method will always be less performant than passing pre-baked meshes
+     * via {@link #meshConsumer()}. It should be used sparingly for model components that
+     * demand it - text, icons, dynamic indicators, or other elements that vary too 
+     * much for static baking to be feasible.<p>
+     * 
+     * Calling this method invalidates any {@link QuadMaker} returned earlier.  
+     * Will be threadlocal/re-used - do not retain references.<p>
+     * 
+     * Material must be an instance provided by the active {@link Renderer}.
+     */
+    QuadMaker quad(RenderMaterial material);
 }
