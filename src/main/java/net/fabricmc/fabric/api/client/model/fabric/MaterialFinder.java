@@ -28,8 +28,8 @@ import net.minecraft.block.BlockRenderLayer;
 public interface MaterialFinder {
     /**
      * Returns the standard material encoding all
-     * of the current settings in this builder. The settings in
-     * this builder are not changed.<p>
+     * of the current settings in this finder. The settings in
+     * this finder are not changed.<p>
      * 
      * Resulting instances can and should be re-used to prevent
      * needless memory allocation. {@link Renderer} implementations
@@ -38,17 +38,20 @@ public interface MaterialFinder {
     RenderMaterial find();
     
     /**
-     * When > 1, ModelVertexConsumer will accept additional
-     * color and UV coordinates for each vertex. {@link Renderer}
-     * implementations should support up to three texture layers.<p>
+     * When > 1, {@link QuadMaker} will accept additional
+     * color and UV coordinates for each vertex. Standard materials
+     * support up to three texture layers.<p>
      * 
      * Additional layers are useful for overlay textures -
      * borders, decals, patterns, machine status, etc.
      * Specifying overlay textures as part of the same quad
      * can enable the {@link Renderer} to optimize memory
-     * usage and texture blending, depending on implementation.
+     * usage and texture blending, depending on implementation.<p>
+     * 
+     * Extra color/UV coordinates can also be re-purposed for
+     * customer shaders that require expanded vertex attributes.
      */
-    void setTextureDepth(int depth);
+    void textureDepth(int depth);
 
     /**
      * Defines how texture pixels will be blended with the scene.
@@ -61,25 +64,17 @@ public interface MaterialFinder {
      * will use {@link Block#getRenderLayer()} for the associate block, or
      * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
      */
-    default void setBlendMode(BlockRenderLayer blendMode) {
-        setBlendMode(0, blendMode);
-    }
-    
-    /**
-     * Sets blend mode for a specific texture layer. Useful when texture depth is > 1.
-     */
-    void setBlendMode(int layerIndex, BlockRenderLayer blendMode);
+    void blendMode(int layerIndex, BlockRenderLayer blendMode);
 
     /**
-     * Enables or disables application of quad color index to the texture in 
-     * a given layer.  Enabled by default.<p>
+     * Vertex color(s) will be modified for quad color index unless disabled.<p>
      * 
      * This is useful when there are multiple texture layers and only some of 
      * them should have color index applied. If there is only layer or all
      * layers are disabled, it is simpler to disable the color index itself
      * by sending a colorIndex value of -1 to the {@link RenderContext}.
      */
-    void enableColorIndex(int layerIndex, boolean isEnabled);
+    void disableColorIndex(int layerIndex, boolean disable);
     
     /**
      * Vertex color(s) will be modified for diffuse shading unless disabled.
@@ -87,35 +82,19 @@ public interface MaterialFinder {
     void disableDiffuse(int layerIndex, boolean disable);
     
     /**
-     * Vertex color(s) will be modified for diffuse shading unless disabled.
-     */
-    boolean disableDiffuse(int layerIndex);
-    
-    /**
      * Vertex color(s) will be modified for ambient occlusion unless disabled.
      */
     void disableAo(int layerIndex, boolean disable);
     
     /**
-     * Vertex color(s) will be modified for ambient occlusion unless disabled.
-     */
-    boolean disableAo(int layerIndex);
-    
-    /**
      * When true, brightness value provided via {@link VertexEditor#lightmap()}
      * will be used as the minimum lightmap brightness.  Usually this is used to 
-     * implement full brightness but less-than-full brightness values are valid.<p>
+     * implement full brightness but less-than-full brightness values are valid.
+     * False by default<p>
      * 
      * Note that color will still be modified by diffuse shading and ambient occlusion,
      * by default.  Most of the time, you will want to disable those via {@link #disableAo(int, boolean)}
      * and {@link #disableDiffuse(int, boolean)}.
      */
-    default void setEmissive(boolean isEmissive) {
-        setEmissive(0, isEmissive);
-    }
-    
-    /**
-     * Controls application of custom brightness for a specific texture layer. Useful when texture depth is > 1.
-     */
-    void setEmissive(int layerIndex, boolean isEmissive);
+    void emissive(int layerIndex, boolean isEmissive);
 }

@@ -95,7 +95,7 @@ public interface RenderMaterial {
     
     /**
      * How many color/uv layers are in the material. Minimum is 1.
-     * See {@link MaterialFinder#setTextureDepth(int)}
+     * See {@link MaterialFinder#textureDepth(int)}
      */
     int textureDepth();
 }
