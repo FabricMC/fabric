@@ -14,20 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.keybinding;
+package net.fabricmc.fabric.mixin.item;
 
-import net.minecraft.client.options.KeyBinding;
+import net.fabricmc.fabric.impl.registry.FuelRegistryImpl;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Map;
 
-@Mixin(KeyBinding.class)
-public class MixinKeyBinding {
-	@Shadow
-	private static Map<String, Integer> categoryOrderMap;
-
-	private static Map<String, Integer> fabric_getCategoryMap() {
-		return categoryOrderMap;
+@Mixin(AbstractFurnaceBlockEntity.class)
+public class MixinAbstractFurnaceBlockEntity {
+	@Inject(at = @At("RETURN"), method = "createFuelTimeMap")
+	private static void fuelTimeMapHook(CallbackInfoReturnable<Map<Item, Integer>> info) {
+		FuelRegistryImpl.INSTANCE.apply(info.getReturnValue());
 	}
 }

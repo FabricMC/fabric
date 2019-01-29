@@ -28,7 +28,7 @@ public class FabricAPIClientInitializer implements ClientModInitializer {
 	public void onInitializeClient() {
 		CustomPayloadPacketRegistry.CLIENT.register(RegistrySyncManager.ID, (ctx, buf) -> {
 			// if not hosting server, apply packet
-			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().method_1496());
+			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
 		});
 
 		((GuiProviderImpl)GuiProviderImpl.INSTANCE).init();

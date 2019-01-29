@@ -41,25 +41,47 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 	@Shadow
 	protected abstract void setSelectedTab(ItemGroup itemGroup_1);
 
-	private int currentPage = 0;
+	@Shadow
+	public abstract int method_2469(); /* XXX getSelectedTab XXX */
 
+	// "static" matches selectedTab
+	private static int fabric_currentPage = 0;
+
+	private int fabric_getPageOffset(int page) {
+		switch (page) {
+			case 0:
+				return 0;
+			case 1:
+				return 12;
+			default:
+				return 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (page - 1));
+		}
+	}
+
+	private int fabric_getOffsetPage(int offset) {
+		if (offset < 12) {
+			return 0;
+		} else {
+			return 1 + ((offset - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
+		}
+	}
 
 	@Override
 	public void fabric_nextPage() {
-		if ((currentPage + 1) * 12 > ItemGroup.GROUPS.length) {
+		if (fabric_getPageOffset(fabric_currentPage + 1) > ItemGroup.GROUPS.length) {
 			return;
 		}
-		currentPage++;
-		updateSelection();
+		fabric_currentPage++;
+		fabric_updateSelection();
 	}
 
 	@Override
 	public void fabric_previousPage() {
-		if (currentPage == 0) {
+		if (fabric_currentPage == 0) {
 			return;
 		}
-		currentPage--;
-		updateSelection();
+		fabric_currentPage--;
+		fabric_updateSelection();
 	}
 
 	@Override
@@ -70,28 +92,27 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 	@Override
 	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
 		if (type == FabricCreativeGuiComponents.Type.NEXT) {
-			return !((currentPage + 1) * 12 > ItemGroup.GROUPS.length);
+			return !(fabric_getPageOffset(fabric_currentPage + 1) > ItemGroup.GROUPS.length);
 		}
 		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
-			return currentPage != 0;
+			return fabric_currentPage != 0;
 		}
 		return false;
 	}
 
-	private void updateSelection() {
-		int nextTab;
-		if (currentPage == 0) {
-			nextTab = 0;
-		} else {
-			nextTab = 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (currentPage - 1));
-		}
+	private void fabric_updateSelection() {
+		int minPos = fabric_getPageOffset(fabric_currentPage);
+		int maxPos = fabric_getPageOffset(fabric_currentPage + 1) - 1;
+		int curPos = method_2469();
 
-		setSelectedTab(ItemGroup.GROUPS[nextTab]);
+		if (curPos < minPos || curPos > maxPos) {
+			setSelectedTab(ItemGroup.GROUPS[fabric_getPageOffset(fabric_currentPage)]);
+		}
 	}
 
 	@Inject(method = "onInitialized", at = @At("RETURN"))
 	private void onInitialized(CallbackInfo info) {
-		updateSelection();
+		fabric_updateSelection();
 
 		int xpos = left + 170;
 		int ypos = top + 4;
@@ -103,46 +124,42 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	@Inject(method = "setSelectedTab", at = @At("HEAD"), cancellable = true)
 	private void setSelectedTab(ItemGroup itemGroup, CallbackInfo info) {
-		if (!isGroupVisible(itemGroup)) {
+		if (!fabric_isGroupVisible(itemGroup)) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "method_2471", at = @At("HEAD"), cancellable = true)
 	private void method_2471(ItemGroup itemGroup, int mx, int my, CallbackInfoReturnable<Boolean> info) {
-		if (!isGroupVisible(itemGroup)) {
+		if (!fabric_isGroupVisible(itemGroup)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "isClickInTab", at = @At("HEAD"), cancellable = true)
 	private void isClickInTab(ItemGroup itemGroup, double mx, double my, CallbackInfoReturnable<Boolean> info) {
-		if (!isGroupVisible(itemGroup)) {
+		if (!fabric_isGroupVisible(itemGroup)) {
 			info.setReturnValue(false);
 		}
 	}
 
 	@Inject(method = "method_2468", at = @At("HEAD"), cancellable = true)
 	private void method_2468(ItemGroup itemGroup, CallbackInfo info) {
-		if (!isGroupVisible(itemGroup)) {
+		if (!fabric_isGroupVisible(itemGroup)) {
 			info.cancel();
 		}
 	}
 
-	private boolean isGroupVisible(ItemGroup itemGroup) {
+	private boolean fabric_isGroupVisible(ItemGroup itemGroup) {
 		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
 			return true;
 		}
-		if (itemGroup.getId() < 12) {
-			return currentPage == 0;
-		}
-		int page = (int) Math.floor((itemGroup.getId() - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
-		return currentPage == page + 1;
+		return fabric_currentPage == fabric_getOffsetPage(itemGroup.getId());
 
 	}
 
 	@Override
 	public int fabric_currentPage() {
-		return currentPage;
+		return fabric_currentPage;
 	}
 }

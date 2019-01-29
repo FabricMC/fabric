@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.keybinding;
+package net.fabricmc.fabric.api.util;
 
-import net.minecraft.client.options.KeyBinding;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemProvider;
+import net.minecraft.tag.Tag;
 
-import java.util.Map;
-
-@Mixin(KeyBinding.class)
-public class MixinKeyBinding {
-	@Shadow
-	private static Map<String, Integer> categoryOrderMap;
-
-	private static Map<String, Integer> fabric_getCategoryMap() {
-		return categoryOrderMap;
-	}
+public interface Item2ObjectMap<V> {
+	V get(ItemProvider item);
+	void add(ItemProvider item, V value);
+	void add(Tag<Item> tag, V value);
+	void remove(ItemProvider item);
+	void remove(Tag<Item> tag);
 }

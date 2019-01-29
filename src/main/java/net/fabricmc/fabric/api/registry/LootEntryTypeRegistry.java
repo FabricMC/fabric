@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.keybinding;
+package net.fabricmc.fabric.api.registry;
 
-import net.minecraft.client.options.KeyBinding;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import net.fabricmc.fabric.impl.registry.LootEntryTypeRegistryImpl;
+import net.minecraft.world.loot.entry.LootEntry;
 
-import java.util.Map;
+/**
+ * Fabric's extensions to {@code net.minecraft.world.loot.entry.LootEntries} for registering
+ * custom loot entry types.
+ *
+ * @see #register
+ */
+public interface LootEntryTypeRegistry {
+	final LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 
-@Mixin(KeyBinding.class)
-public class MixinKeyBinding {
-	@Shadow
-	private static Map<String, Integer> categoryOrderMap;
-
-	private static Map<String, Integer> fabric_getCategoryMap() {
-		return categoryOrderMap;
-	}
+	/**
+	 * Registers a loot entry type by its serializer.
+	 *
+	 * @param serializer the loot entry serializer
+	 */
+	void register(LootEntry.Serializer<?> serializer);
 }

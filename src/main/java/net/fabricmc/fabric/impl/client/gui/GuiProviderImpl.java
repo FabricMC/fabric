@@ -56,7 +56,7 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 		registerFactory(identifier, (syncId, identifier1, player, buf) -> {
 			C container = ContainerProviderImpl.INSTANCE.createContainer(syncId, identifier1, player, buf);
 			if(container == null){
-				LOGGER.error("Could not open container for %s - a null object was created!", identifier1.toString());
+				LOGGER.error("Could not open container for {} - a null object was created!", identifier1.toString());
 				return null;
 			}
 			return guiFactory.create(container);
@@ -70,10 +70,11 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 			MinecraftClient.getInstance().execute(() -> {
 				ContainerFactory<ContainerGui> factory = FACTORIES.get(identifier);
 				if (factory == null) {
-					LOGGER.error("No GUI factory found for %s!", identifier.toString());
+					LOGGER.error("No GUI factory found for {}!", identifier.toString());
 					return;
 				}
 				ContainerGui gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
+				packetContext.getPlayer().container = gui.getContainer();
 				MinecraftClient.getInstance().openGui(gui);
 			});
 		});

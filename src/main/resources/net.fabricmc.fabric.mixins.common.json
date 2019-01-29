@@ -17,6 +17,7 @@
     "events.server.MixinMinecraftServer",
     "events.tick.MixinMinecraftServer",
     "events.tick.MixinWorld",
+    "item.MixinAbstractFurnaceBlockEntity",
     "itemgroup.MixinItemGroup",
     "misc.MixinCrashReport",
     "networking.MixinServerPlayNetworkHandler",
@@ -26,7 +27,9 @@
     "registry.MixinIdRegistry",
     "registry.MixinServerPlayNetworkHandler",
     "registry.MixinWorldSaveHandler",
+    "resources.MixinKeyedResourceReloadListener$Server",
     "resources.MixinMinecraftServer",
+    "resources.MixinReloadableResourceManagerImpl",
     "tools.MixinItemStack",
     "tools.MixinMiningToolItem"
   ],

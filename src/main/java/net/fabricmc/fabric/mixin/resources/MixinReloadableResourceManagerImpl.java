@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.keybinding;
+package net.fabricmc.fabric.mixin.resources;
 
-import net.minecraft.client.options.KeyBinding;
+import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
+import net.minecraft.resource.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
+import java.util.List;
 
-@Mixin(KeyBinding.class)
-public class MixinKeyBinding {
+@Mixin(ReloadableResourceManagerImpl.class)
+public class MixinReloadableResourceManagerImpl {
 	@Shadow
-	private static Map<String, Integer> categoryOrderMap;
+	private List<ResourceReloadListener> listeners;
+	@Shadow
+	private ResourceType type;
 
-	private static Map<String, Integer> fabric_getCategoryMap() {
-		return categoryOrderMap;
+	@Inject(at = @At("HEAD"), method = "reload")
+	public void reload(List<ResourcePack> packs, CallbackInfo info) {
+		ResourceManagerHelperImpl.sort(type, listeners);
 	}
 }

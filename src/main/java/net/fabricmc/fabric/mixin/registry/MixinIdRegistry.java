@@ -71,7 +71,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
 		if (listeners != null) {
 			for (RegistryListener listener : listeners) {
-				listener.beforeRegistryRegistration(registry, id, identifier, object, !registry.contains(identifier));
+				listener.beforeRegistryRegistration(registry, id, identifier, object, !objectMap.containsKey(identifier));
 			}
 		}
 	}

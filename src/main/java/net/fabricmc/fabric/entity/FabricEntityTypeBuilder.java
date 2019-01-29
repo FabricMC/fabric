@@ -32,6 +32,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private int trackingDistance = -1;
 	private int updateIntervalTicks = -1;
 	private boolean alwaysUpdateVelocity = true;
+	private float width = -1.0f, height = -1.0f;
 
 	protected FabricEntityTypeBuilder(Class<? extends T> entityClass, Function<? super World, ? extends T> function) {
 		this.entityClass = entityClass;
@@ -53,6 +54,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 	public FabricEntityTypeBuilder<T> disableSaving() {
 		this.saveable = false;
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> size(float width, float height) {
+		this.width = width;
+		this.height = height;
 		return this;
 	}
 
@@ -78,7 +85,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new EntityType<>(this.entityClass, this.function, this.saveable, this.summonable, null);
+		EntityType<T> type = new EntityType<>(this.entityClass, this.function, this.saveable, this.summonable, null, this.width, this.height);
 		if (trackingDistance != -1) {
 			EntityTrackingRegistry.INSTANCE.register(type, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 		}

@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.keybinding;
+package net.fabricmc.fabric.item;
 
-import net.minecraft.client.options.KeyBinding;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.FuelRegistry;
+import net.minecraft.block.Blocks;
+import net.minecraft.item.Items;
 
-import java.util.Map;
-
-@Mixin(KeyBinding.class)
-public class MixinKeyBinding {
-	@Shadow
-	private static Map<String, Integer> categoryOrderMap;
-
-	private static Map<String, Integer> fabric_getCategoryMap() {
-		return categoryOrderMap;
+public class FuelMod implements ModInitializer {
+	@Override
+	public void onInitialize() {
+		FuelRegistry.INSTANCE.add(Items.APPLE, 200);
+		FuelRegistry.INSTANCE.remove(Blocks.OAK_PLANKS);
 	}
 }

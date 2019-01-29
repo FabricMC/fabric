@@ -54,6 +54,7 @@ public final class PlayerInteractionEvent {
 		ActionResult interact(PlayerEntity player, World world, Hand hand, net.minecraft.entity.Entity entity);
 	}
 
+	// TODO: Use class_3965
 	@FunctionalInterface
 	public interface BlockPositioned {
 		ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction, float hitX, float hitY, float hitZ);

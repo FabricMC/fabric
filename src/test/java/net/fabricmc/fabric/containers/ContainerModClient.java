@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.containers;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.minecraft.client.gui.ContainerGui;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.StringTextComponent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 public class ContainerModClient implements ClientModInitializer {
@@ -35,6 +37,9 @@ public class ContainerModClient implements ClientModInitializer {
 
 		//Registers a gui factory that opens our example gui, this uses the container created by ContainerProviderRegistry
 		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER_2, ExampleContainerGui2::new);
+
+		//Registers a gui factory that opens our example inventory gui
+		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_INVENTORY_CONTAINER, ExampleInventoryContainerGui::new);
 	}
 
 	//A container gui that shows the block pos that was sent
@@ -67,6 +72,23 @@ public class ContainerModClient implements ClientModInitializer {
 		@Override
 		protected void drawBackground(float v, int i, int i1) {
 			fontRenderer.draw(pos.toString(), width / 2, height / 2, 0);
+		}
+	}
+
+	//A container gui that has the player's inventory
+	public static class ExampleInventoryContainerGui extends ContainerGui<ContainerMod.ExampleInventoryContainer> {
+
+		private static final Identifier BG_TEXTURE = new Identifier("textures/gui/container/horse.png");
+
+		public ExampleInventoryContainerGui(ContainerMod.ExampleInventoryContainer container) {
+			super(container, container.playerInventory, new StringTextComponent("Example Inventory GUI"));
+		}
+
+		@Override
+		protected void drawBackground(float v, int i, int i1) {
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			client.getTextureManager().bindTexture(BG_TEXTURE);
+			this.drawTexturedRect(left, top, 0, 0, containerWidth, containerHeight);
 		}
 	}
 
