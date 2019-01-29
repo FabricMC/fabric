@@ -1,6 +1,7 @@
 package net.fabricmc.fabric.api.client.model.fabric;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.client.model.fabric.Uniform.Uniform1f;
 import net.fabricmc.fabric.api.client.model.fabric.Uniform.Uniform1i;
@@ -76,14 +77,18 @@ public interface ShaderManager {
      * See {@link QuadMaker} for standard vertex attribute binding names. Uniforms will be automatically
      * associated based on header declarations.<p>
      * 
+     * Renderers should re-query sources and recompile shaders on resource reload and whenever renderer
+     * reload occurs. (Happens when user presses F3+A or changes some graphics settings.) This handles
+     * shader code distributed via resource packs and enables shader debugging without a game restart.<p>
+     * 
      * @param standard  Must be a standard material.
-     * @param vertexSource  GLSL 120 vertex shader source. Renderer will strip redundant header declarations.
-     * @param fragmentSource GLSL 120 vertex shader source. Renderer will strip redundant header declarations.
-     * @param flags  TBD - flags to control other shader configuration
+     * @param vertexSource  Supplier for GLSL 120 vertex shader source. Renderer will strip redundant header declarations.
+     * @param fragmentSource Supplier for GLSL 120 fragment shader source. Renderer will strip redundant header declarations.
+     * @param flags - Flags to control other shader configuration.  Reserved for future use.
      * 
      * @return The new material.  Material will act as a standard material if source compilation fails.
      */
-    RenderMaterial shaderMaterial(RenderMaterial standard, String vertexSource, String fragmentSource, int flags);
+    RenderMaterial shaderMaterial(RenderMaterial baseMaterial, Supplier<String> vertexSource, Supplier<String> fragmentSource, int flags);
     
     /**
      * Creates a new uniform. See {@link ShaderManager} header for additional info.
