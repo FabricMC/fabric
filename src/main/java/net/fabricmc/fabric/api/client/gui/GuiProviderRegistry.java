@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.gui;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.impl.client.gui.GuiProviderImpl;
-import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.util.Identifier;
 
@@ -29,7 +29,7 @@ public interface GuiProviderRegistry {
 
 	/**
 	 *
-	 * Register a "Container -> ContainerGui" factory. This is used only on the client side.
+	 * Register a "Container -> ContainerScreen" factory. This is used only on the client side.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
 	 * @param guiFactory the supplier that should be used to create the new gui
@@ -38,12 +38,12 @@ public interface GuiProviderRegistry {
 
 	/**
 	 *
-	 * Register a "packet -> ContainerGui" factory. This is used only on the client side, and allows you
+	 * Register a "packet -> ContainerScreen" factory. This is used only on the client side, and allows you
 	 * to override the default behaviour of re-using the existing "packet -> Container" logic.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
-	 * @param factory the gui factory, this should return a new {@link ContainerGui}
+	 * @param factory the gui factory, this should return a new {@link ContainerScreen}
 	 */
-	void registerFactory(Identifier identifier, ContainerFactory<ContainerGui> factory);
+	void registerFactory(Identifier identifier, ContainerFactory<ContainerScreen> factory);
 
 }

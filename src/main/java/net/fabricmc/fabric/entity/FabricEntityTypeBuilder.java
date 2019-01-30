@@ -17,15 +17,19 @@
 package net.fabricmc.fabric.entity;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EntityType.Builder;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.function.Function;
 
 // TODO: javadocs
 public class FabricEntityTypeBuilder<T extends Entity> {
-	private final Class<? extends T> entityClass;
+	private static final Logger LOGGER = LogManager.getLogger();
+	private final EntityCategory category;
 	private final Function<? super World, ? extends T> function;
 	private boolean saveable = true;
 	private boolean summonable = true;
@@ -34,17 +38,35 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean alwaysUpdateVelocity = true;
 	private float width = -1.0f, height = -1.0f;
 
+	@Deprecated
 	protected FabricEntityTypeBuilder(Class<? extends T> entityClass, Function<? super World, ? extends T> function) {
-		this.entityClass = entityClass;
+		LOGGER.warn("[FabricEntityTypeBuilder] Please specify EntityCategory for " + entityClass.getName() + "!");
+		this.category = EntityCategory.MISC;
 		this.function = function;
 	}
 
+	protected FabricEntityTypeBuilder(EntityCategory category, Function<? super World, ? extends T> function) {
+		this.category = category;
+		this.function = function;
+	}
+
+	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(Class<? extends T> entityClass) {
 		return new FabricEntityTypeBuilder<>(entityClass, (w) -> null);
 	}
 
+	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(Class<? extends T> entityClass, Function<? super World, ? extends T> function) {
+		LOGGER.warn("[FabricEntityTypeBuilder] Please specify EntityCategory for " + entityClass.getName() + "!");
 		return new FabricEntityTypeBuilder<>(entityClass, function);
+	}
+
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
+		return new FabricEntityTypeBuilder<>(category, (w) -> null);
+	}
+
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, Function<? super World, ? extends T> function) {
+		return new FabricEntityTypeBuilder<>(category, function);
 	}
 
 	public FabricEntityTypeBuilder<T> disableSummon() {
@@ -85,7 +107,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new EntityType<>(this.entityClass, this.function, this.saveable, this.summonable, null, this.width, this.height);
+		EntityType<T> type = new EntityType<T>(this.function, this.category, this.saveable, this.summonable, null, this.width, this.height);
 		if (trackingDistance != -1) {
 			EntityTrackingRegistry.INSTANCE.register(type, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 		}
