@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import java.util.function.Consumer;
+
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
 
@@ -85,6 +87,16 @@ public interface QuadMaker extends Quad {
      * transformation or filtering on static meshes.
      */
     QuadMaker tag(int tag);
+    
+    /**
+     * Helper to iterate vertices.
+     */
+    default QuadMaker forEachVertex(Consumer<VertexEditor> consumer) {
+        for(int i = 0; i < 4; i++) {
+            consumer.accept(vertex(i));
+        }
+        return this;
+    }
     
     /**
      * In static mesh building, causes quad to be appended to the mesh being built.
