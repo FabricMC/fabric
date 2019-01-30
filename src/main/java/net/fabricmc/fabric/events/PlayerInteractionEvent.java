@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 
 /**
  * This is a class for INTERACTION EVENTS (think left-clicking/right-clicking). For block placement/break
- * events, look elsewhere - this just handles the interaction!
+ * events, look elsewhere - this just handles the callbacks!
  *
  * These hook in BEFORE the spectator checks, so make sure to check for the player's game mode as well!
  *
@@ -88,7 +88,7 @@ public final class PlayerInteractionEvent {
 	 *
 	 * Developer note: Minecraft provides two methods to interact with
 	 * Entities - one takes in a hit position, the other does not. However,
-	 * all vanilla interaction cases seem to use one, then the other - as such,
+	 * all vanilla callbacks cases seem to use one, then the other - as such,
 	 * only one event is currently provided, but it is accordingly named in
 	 * the case of a second event being necessary.
 	 */

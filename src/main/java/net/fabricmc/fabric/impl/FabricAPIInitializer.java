@@ -17,26 +17,20 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.listener.ListenerRegistry;
-import net.fabricmc.fabric.api.listener.interaction.AttackBlockEventV1;
+import net.fabricmc.fabric.api.event.PlayerInteractionEvents;
+import net.fabricmc.fabric.api.event.listener.ListenerTypeFactory;
+import net.fabricmc.fabric.api.event.callbacks.PlayerInteractCallback;
 import net.fabricmc.fabric.block.BreakInteractable;
-import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-
-import java.util.List;
 
 public class FabricAPIInitializer implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ListenerRegistry.INSTANCE.registerType(AttackBlockEventV1.class, (listeners) -> (player, world, hand, pos, direction) -> {
-			for (AttackBlockEventV1 event : listeners) {
+		ListenerTypeFactory.INSTANCE.registerListenerClass(PlayerInteractCallback.class,
+			(player, world, hand, pos, direction) -> ActionResult.PASS,
+			(listeners) -> (player, world, hand, pos, direction) -> {
+			for (PlayerInteractCallback event : listeners) {
 				ActionResult result = event.interact(player, world, hand, pos, direction);
 				if (result != ActionResult.PASS) {
 					return result;
@@ -46,8 +40,8 @@ public class FabricAPIInitializer implements ModInitializer {
 			return ActionResult.PASS;
 		});
 
-		ListenerRegistry.INSTANCE.register(AttackBlockEventV1.class, (player, world, hand, pos, direction) -> {
-			System.out.println("--- DEMO --- AttackBlockEventV1 called!");
+		PlayerInteractionEvents.ATTACK_BLOCK.register(PlayerInteractCallback.class, (player, world, hand, pos, direction) -> {
+			System.out.println("--- DEMO --- PlayerInteractCallback called!");
 
 			BlockState state = world.getBlockState(pos);
 			if (state instanceof BreakInteractable) {

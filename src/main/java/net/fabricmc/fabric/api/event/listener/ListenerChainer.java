@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.listener;
+package net.fabricmc.fabric.api.event.listener;
 
 @FunctionalInterface
 public interface ListenerChainer<T> {

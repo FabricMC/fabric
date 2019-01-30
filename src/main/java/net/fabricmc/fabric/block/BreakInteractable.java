@@ -28,7 +28,7 @@ import net.minecraft.world.World;
  */
 public interface BreakInteractable {
 	/**
-	 * @return True if the block accepted the interaction and it should no longer be processed.
+	 * @return True if the block accepted the callbacks and it should no longer be processed.
 	 */
 	boolean onBreakInteract(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction direction);
 }
