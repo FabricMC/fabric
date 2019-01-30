@@ -46,7 +46,8 @@ public interface Quad {
     void toVanilla(int layerIndex, int[] target, int targetIndex, boolean isItem);
     
     /**
-     * Extracts all quad properties to the given {@link QuadMaker} instance.
+     * Extracts all quad properties except material to the given {@link QuadMaker} instance.
+     * If quad materials have different texture depths, only the common layers are copied.
      * Must be used before calling {@link QuadMaker#emit()} on the target instance.
      * Meant for re-texturing, analysis and static transformation use cases.
      */
