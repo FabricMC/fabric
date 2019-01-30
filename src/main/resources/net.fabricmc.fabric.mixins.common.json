@@ -8,7 +8,6 @@
     "commands.MixinServerCommandManager",
     "container.MixinServerPlayerEntity",
     "entity.MixinEntityTracker",
-    "entity.MixinEntityTrackerEntry",
     "events.objectbuilder.MixinBlock",
     "events.objectbuilder.MixinItem",
     "events.playerinteraction.MixinServerPlayNetworkHandler",
