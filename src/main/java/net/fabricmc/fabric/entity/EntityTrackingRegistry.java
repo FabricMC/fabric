@@ -19,6 +19,8 @@ package net.fabricmc.fabric.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.Packet;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +28,7 @@ import java.util.function.Function;
 
 // TODO: javadocs
 public class EntityTrackingRegistry {
+	private static final Logger LOGGER = LogManager.getLogger();
 	public static class Entry {
 		private final int trackingDistance;
 		private final int updateIntervalTicks;
@@ -52,7 +55,6 @@ public class EntityTrackingRegistry {
 
 	public static final EntityTrackingRegistry INSTANCE = new EntityTrackingRegistry();
 	private final Map<EntityType, Entry> entries = new HashMap<>();
-	private final Map<EntityType, Function<Entity, Packet>> spawnPacketProviders = new HashMap<>();
 
 	private EntityTrackingRegistry() {
 
@@ -62,13 +64,9 @@ public class EntityTrackingRegistry {
 		return entries.get(type);
 	}
 
+	@Deprecated
 	public Packet createSpawnPacket(Entity entity) {
-		Function<Entity, Packet> packetFunction = spawnPacketProviders.get(entity.getType());
-		if (packetFunction != null) {
-			return packetFunction.apply(entity);
-		} else {
-			return null;
-		}
+		return null;
 	}
 
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks) {
@@ -79,7 +77,8 @@ public class EntityTrackingRegistry {
 		entries.put(type, new Entry(trackingDistance, updateIntervalTicks, alwaysUpdateVelocity));
 	}
 
+	@Deprecated
 	public void registerSpawnPacketProvider(EntityType type, Function<Entity, Packet> packetFunction) {
-		spawnPacketProviders.put(type, packetFunction);
+		LOGGER.warn("[EntityTrackingRegistry] As of 19w05a, registerSpawnPacketProvider is a no-op! Update your mod!");
 	}
 }
