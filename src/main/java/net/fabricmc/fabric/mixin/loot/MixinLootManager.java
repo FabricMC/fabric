@@ -41,7 +41,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Map;
 
 @Mixin(LootManager.class)
@@ -50,7 +49,7 @@ public class MixinLootManager {
 	@Shadow @Final private static Logger LOGGER;
 	@Shadow @Final private static Gson gson;
 	private static final String PATH = "loot_pools";
-	private static final int LOOT_POOLS_LENGTH = PATH.length() + 1; // Includes the slash as well
+	private static final int PATH_LENGTH = PATH.length() + 1; // Includes the slash as well
 
 	/**
 	 * A map of loot pools adders with the keys being the targets.
@@ -61,12 +60,12 @@ public class MixinLootManager {
 	private void loadAdders(ResourceManager manager, CallbackInfo info) {
 		manager.findResources(PATH, (name) -> name.endsWith(".json")).forEach(id2 -> {
 			String originalPath = id2.getPath();
-			Identifier id = new Identifier(id2.getNamespace(), originalPath.substring(LOOT_POOLS_LENGTH, originalPath.length() - jsonLength));
+			Identifier id = new Identifier(id2.getNamespace(), originalPath.substring(PATH_LENGTH, originalPath.length() - jsonLength));
 			try {
 				try (Resource resource = manager.getResource(id2)) {
 					LootPoolAdder adder = JsonHelper.deserialize(gson, IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8), LootPoolAdder.class);
 					if (adder != null) {
-						if (adder.targets.length == 0) {
+						if (adder.targets.size() == 0) {
 							LOGGER.warn("[Fabric] Loot pool adder {} has no targets", id);
 						}
 
@@ -82,10 +81,10 @@ public class MixinLootManager {
 	}
 
 	// TODO: Replace the redirect with this
-    /*@Inject(method = "onResourceReload", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void addLootPools(ResourceManager manager, CallbackInfo info, Iterator var2, Identifier identifier_1, String string_1, Identifier identifier_2, Resource resource_1, Object o, LootSupplier supplier) {
-        addLootPools(supplier);
-    }*/
+	/*@Inject(method = "onResourceReload", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), locals = LocalCapture.CAPTURE_FAILHARD)
+	private void addLootPools(ResourceManager manager, CallbackInfo info, Iterator p0, Identifier p1, String p2, Identifier id, Resource p3, Object p4, LootSupplier supplier) {
+		addLootPools(id, supplier);
+	}*/
 
 	// TODO: Remove ugly redirect
 	@Redirect(method = "onResourceReload", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/JsonHelper;deserialize(Lcom/google/gson/Gson;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;")))
@@ -98,7 +97,7 @@ public class MixinLootManager {
 		ArrayList<LootPool> pools = new ArrayList<>();
 
 		for (LootPoolAdder adder : lootPoolAdders.get(id)) {
-			pools.addAll(Arrays.asList(adder.pools));
+			pools.addAll(adder.pools);
 		}
 
 		((LootSupplierHooks) supplier).fabric_addPools(pools.toArray(new LootPool[0]));

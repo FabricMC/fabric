@@ -18,7 +18,9 @@ package net.fabricmc.fabric.impl.loot;
 
 import net.minecraft.world.loot.LootPool;
 
+import java.util.List;
+
 public class LootPoolAdder {
-	public String[] targets;
-	public LootPool[] pools;
+	public List<String> targets;
+	public List<LootPool> pools;
 }
