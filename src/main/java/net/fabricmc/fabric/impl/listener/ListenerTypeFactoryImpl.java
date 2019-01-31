@@ -53,11 +53,7 @@ public class ListenerTypeFactoryImpl implements ListenerTypeFactory {
 		}
 
 		@Override
-		public <C> void register(Class<C> type, C listener) {
-			if (this.type != type) {
-				throw new RuntimeException("Unsupported type: " + type + " != " + this.type);
-			}
-
+		public void register(T listener) {
 			listeners.add(listener);
 			update();
 		}

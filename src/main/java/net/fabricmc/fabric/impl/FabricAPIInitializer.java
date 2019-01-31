@@ -40,7 +40,7 @@ public class FabricAPIInitializer implements ModInitializer {
 			return ActionResult.PASS;
 		});
 
-		PlayerInteractionEvents.ATTACK_BLOCK.register(PlayerInteractCallback.class, (player, world, hand, pos, direction) -> {
+		PlayerInteractionEvents.ATTACK_BLOCK.register((player, world, hand, pos, direction) -> {
 			System.out.println("--- DEMO --- PlayerInteractCallback called!");
 
 			BlockState state = world.getBlockState(pos);

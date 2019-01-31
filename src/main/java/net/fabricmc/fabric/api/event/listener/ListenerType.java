@@ -7,5 +7,5 @@ public abstract class ListenerType<T> {
 		return reference;
 	}
 
-	public abstract <C> void register(Class<C> type, C listener);
+	public abstract void register(T listener);
 }
