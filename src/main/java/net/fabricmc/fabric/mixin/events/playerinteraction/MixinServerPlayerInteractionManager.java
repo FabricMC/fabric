@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
 import net.fabricmc.fabric.api.event.PlayerInteractionEvents;
-import net.fabricmc.fabric.api.event.listener.ListenerTypeFactory;
-import net.fabricmc.fabric.api.event.callbacks.PlayerInteractCallback;
 import net.fabricmc.fabric.events.PlayerInteractionEvent;
 import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.client.network.packet.BlockUpdateClientPacket;
@@ -49,7 +47,7 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
 	public void startBlockBreak(BlockPos pos, Direction direction, CallbackInfo info) {
-		ActionResult result = PlayerInteractionEvents.ATTACK_BLOCK.get().interact(player, world, Hand.MAIN, pos, direction);
+		ActionResult result = PlayerInteractionEvents.ATTACK_BLOCK.invoker().interact(player, world, Hand.MAIN, pos, direction);
 		if (result != ActionResult.PASS) {
 			// The client might have broken the block on its side, so make sure to let it know.
 			this.player.networkHandler.sendPacket(new BlockUpdateClientPacket(world, pos));
