@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import java.util.function.Consumer;
+
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
 
@@ -92,4 +94,13 @@ public interface QuadMaker extends Quad {
      * In all cases, invalidates the current instance.
      */
     void emit();
+    
+    @Override
+    @SuppressWarnings("unchecked")
+    default <T extends Vertex> QuadMaker forEachVertex(Consumer<T> consumer) {
+        for(int i = 0; i < 4; i++) {
+            consumer.accept((T) vertex(i));
+        }
+        return this;
+    }
 }
