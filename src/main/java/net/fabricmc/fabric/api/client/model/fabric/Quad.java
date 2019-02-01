@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import java.util.function.Consumer;
+
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
@@ -130,4 +132,15 @@ public interface Quad {
      * Retrieves the indicated vertex. Quads have four vertices.
      */
     Vertex vertex(int vertexIndex);
+    
+    /**
+     * Helper to iterate vertices.
+     */
+    @SuppressWarnings("unchecked")
+    default <T extends Vertex> Quad forEachVertex(Consumer<T> consumer) {
+        for(int i = 0; i < 4; i++) {
+            consumer.accept((T) vertex(i));
+        }
+        return this;
+    }
 }
