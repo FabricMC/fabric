@@ -21,6 +21,7 @@
     "registry.client.MixinBlockColorMap",
     "registry.client.MixinItemColorMap",
     "registry.client.MixinItemModelMap",
+    "registry.client.MixinParticleManager",
     "resources.MixinKeyedResourceReloadListener$Client",
     "resources.MixinMinecraftGame"
   ],

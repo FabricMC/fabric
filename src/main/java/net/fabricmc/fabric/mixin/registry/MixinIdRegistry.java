@@ -23,6 +23,7 @@ import net.fabricmc.fabric.registry.ListenableRegistry;
 import net.fabricmc.fabric.registry.RegistryListener;
 import net.fabricmc.fabric.registry.RemapException;
 import net.fabricmc.fabric.registry.RemappableRegistry;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
 import net.minecraft.util.registry.DefaultMappedRegistry;
