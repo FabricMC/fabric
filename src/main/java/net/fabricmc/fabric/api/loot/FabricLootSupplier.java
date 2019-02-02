@@ -14,13 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.loot;
+package net.fabricmc.fabric.api.loot;
 
 import net.minecraft.world.loot.LootPool;
+import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.function.LootFunction;
 
-import java.util.List;
-
-public class LootPoolAdder {
-	public List<String> targets;
-	public List<LootPool> pools;
+/**
+ * An interface implemented by all {@code net.minecraft.world.loot.LootSupplier} instances when
+ * Fabric API is present. Contains accessors for various fields.
+ */
+public interface FabricLootSupplier {
+	default LootSupplier toVanilla() {
+		return (LootSupplier) this;
+	}
+	LootPool[] getPools();
+	void setPools(LootPool[] pools);
+	LootFunction[] getFunctions();
+	void setFunctions(LootFunction[] functions);
 }

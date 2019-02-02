@@ -16,22 +16,25 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import net.fabricmc.fabric.api.loot.FabricLootSupplier;
+import net.fabricmc.fabric.api.loot.FabricLootPool;
 import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.LootTableRange;
+import net.minecraft.world.loot.UniformLootTableRange;
+import net.minecraft.world.loot.condition.LootCondition;
+import net.minecraft.world.loot.entry.LootEntry;
 import net.minecraft.world.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(LootSupplier.class)
-public interface MixinLootSupplier extends FabricLootSupplier {
+@Mixin(LootPool.class)
+public interface MixinLootPool extends FabricLootPool {
 	@Accessor
 	@Override
-	LootPool[] getPools();
+	LootEntry[] getEntries();
 
 	@Accessor
 	@Override
-	void setPools(LootPool[] pools);
+	LootCondition[] getConditions();
 
 	@Accessor
 	@Override
@@ -39,5 +42,29 @@ public interface MixinLootSupplier extends FabricLootSupplier {
 
 	@Accessor
 	@Override
-	void setFunctions(LootFunction[] functions);
+	LootTableRange getRolls();
+
+	@Accessor
+	@Override
+	UniformLootTableRange getBonusRolls();
+
+	@Accessor
+	@Override
+	void setEntries(LootEntry[] entries);
+
+	@Accessor
+	@Override
+	void setConditions(LootCondition[] conditions);
+
+	@Accessor
+	@Override
+	void setFunctions(LootFunction[] entries);
+
+	@Accessor
+	@Override
+	void setRolls(LootTableRange rolls);
+
+	@Accessor
+	@Override
+	void setBonusRolls(UniformLootTableRange bonusRolls);
 }

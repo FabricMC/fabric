@@ -20,6 +20,7 @@
     "item.MixinAbstractFurnaceBlockEntity",
     "itemgroup.MixinItemGroup",
     "loot.MixinLootManager",
+    "loot.MixinLootPool",
     "loot.MixinLootSupplier",
     "misc.MixinCrashReport",
     "networking.MixinServerPlayNetworkHandler",

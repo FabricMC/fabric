@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot;
+package net.fabricmc.fabric.api.events;
 
 import net.fabricmc.fabric.api.loot.FabricLootSupplier;
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootSupplier;
-import net.minecraft.world.loot.function.LootFunction;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.fabricmc.fabric.util.HandlerArray;
+import net.fabricmc.fabric.util.HandlerRegistry;
+import net.minecraft.util.Identifier;
 
-@Mixin(LootSupplier.class)
-public interface MixinLootSupplier extends FabricLootSupplier {
-	@Accessor
-	@Override
-	LootPool[] getPools();
+import java.util.function.BiConsumer;
 
-	@Accessor
-	@Override
-	void setPools(LootPool[] pools);
-
-	@Accessor
-	@Override
-	LootFunction[] getFunctions();
-
-	@Accessor
-	@Override
-	void setFunctions(LootFunction[] functions);
+/**
+ * An event handler that is called when loot tables are loaded.
+ * Use {@link #REGISTRY} to register instances.
+ */
+@FunctionalInterface
+public interface LootTableLoadingCallback extends BiConsumer<Identifier, FabricLootSupplier> {
+	final HandlerRegistry<LootTableLoadingCallback> REGISTRY = new HandlerArray<>(LootTableLoadingCallback.class);
 }
