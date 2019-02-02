@@ -57,11 +57,11 @@ public class MixinLootManager {
 
 	@Inject(method = "onResourceReload", at = @At("HEAD"))
 	private void loadAdders(ResourceManager manager, CallbackInfo info) {
-		manager.findResources(PATH, (name) -> name.endsWith(".json")).forEach(id2 -> {
-			String originalPath = id2.getPath();
-			Identifier id = new Identifier(id2.getNamespace(), originalPath.substring(PATH_LENGTH, originalPath.length() - jsonLength));
+		manager.findResources(PATH, (name) -> name.endsWith(".json")).forEach(fullId -> {
+			String originalPath = fullId.getPath();
+			Identifier id = new Identifier(fullId.getNamespace(), originalPath.substring(PATH_LENGTH, originalPath.length() - jsonLength));
 			try {
-				try (Resource resource = manager.getResource(id2)) {
+				try (Resource resource = manager.getResource(fullId)) {
 					LootPoolAdder adder = JsonHelper.deserialize(gson, IOUtils.toString(resource.getInputStream(), StandardCharsets.UTF_8), LootPoolAdder.class);
 					if (adder != null) {
 						if (adder.targets.size() == 0) {
@@ -74,7 +74,7 @@ public class MixinLootManager {
 					}
 				}
 			} catch (Throwable t) {
-				LOGGER.error("[Fabric] Couldn't read loot pool adder {} from {}", id, id2, t);
+				LOGGER.error("[Fabric] Couldn't read loot pool adder {} from {}", id, fullId, t);
 			}
 		});
 	}
