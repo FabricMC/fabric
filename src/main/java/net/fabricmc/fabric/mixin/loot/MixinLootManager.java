@@ -35,8 +35,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.nio.charset.StandardCharsets;
@@ -48,6 +46,7 @@ public class MixinLootManager {
 	@Shadow @Final public static int jsonLength;
 	@Shadow @Final private static Logger LOGGER;
 	@Shadow @Final private static Gson gson;
+	@Shadow @Final private Map<Identifier, LootSupplier> suppliers;
 	private static final String PATH = "loot_pools";
 	private static final int PATH_LENGTH = PATH.length() + 1; // Includes the slash as well
 
@@ -80,26 +79,15 @@ public class MixinLootManager {
 		});
 	}
 
-	// TODO: Replace the redirect with this
-	/*@Inject(method = "onResourceReload", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void addLootPools(ResourceManager manager, CallbackInfo info, Iterator p0, Identifier p1, String p2, Identifier id, Resource p3, Object p4, LootSupplier supplier) {
-		addLootPools(id, supplier);
-	}*/
+	@Inject(method = "onResourceReload", at = @At("RETURN"))
+	private void injectAdders(ResourceManager manager, CallbackInfo info) {
+		suppliers.forEach((id, supplier) -> {
+			ArrayList<LootPool> pools = new ArrayList<>();
+			for (LootPoolAdder adder : lootPoolAdders.get(id)) {
+				pools.addAll(adder.pools);
+			}
 
-	// TODO: Remove ugly redirect
-	@Redirect(method = "onResourceReload", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/JsonHelper;deserialize(Lcom/google/gson/Gson;Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;")))
-	private Object put(Map map, Object key, Object value) {
-		addLootPools((Identifier) key, (LootSupplier) value);
-		return map.put(key, value);
-	}
-
-	private void addLootPools(Identifier id, LootSupplier supplier) {
-		ArrayList<LootPool> pools = new ArrayList<>();
-
-		for (LootPoolAdder adder : lootPoolAdders.get(id)) {
-			pools.addAll(adder.pools);
-		}
-
-		((LootSupplierHooks) supplier).fabric_addPools(pools.toArray(new LootPool[0]));
+			((LootSupplierHooks) supplier).fabric_addPools(pools.toArray(new LootPool[0]));
+		});
 	}
 }
