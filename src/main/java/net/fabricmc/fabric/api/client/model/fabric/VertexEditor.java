@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.util.math.Vector4f;
+
 public interface VertexEditor extends Vertex {
     /**
      * Sets the geometric vertex position for the given vertex, 
@@ -27,6 +30,13 @@ public interface VertexEditor extends Vertex {
      * Standard shader binding: gl_Vertex
      */
     VertexEditor pos(float x, float y, float z);
+    
+    /**
+     * Same as {@link #pos(float, float, float)} but accepts vector type.
+     */
+    default VertexEditor pos(Vector3f vec) {
+        return pos(vec.x(), vec.y(), vec.z());
+    }
     
     /**
      * Adds a vertex normal. Models that have per-vertex
@@ -48,6 +58,20 @@ public interface VertexEditor extends Vertex {
      * Standard shader binding: vec4 in_normal
      */
     VertexEditor normal(float x, float y, float z, float extra);
+    
+    /**
+     * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
+     */
+    default VertexEditor normal(Vector3f vec) {
+        return normal(vec.x(), vec.y(), vec.z(), 0);
+    }
+    
+    /**
+     * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
+     */
+    default VertexEditor normal(Vector4f vec) {
+        return normal(vec.x(), vec.y(), vec.z(), vec.w());
+    }
     
     /**
      * Minimum block brightness. Has no effect unless emissive lighting is
