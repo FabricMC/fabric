@@ -17,8 +17,7 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.PlayerInteractionEvents;
-import net.fabricmc.fabric.api.event.callbacks.PlayerInteractCallback;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.block.BreakInteractable;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ActionResult;
@@ -26,7 +25,7 @@ import net.minecraft.util.ActionResult;
 public class FabricAPIInitializer implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		PlayerInteractionEvents.ATTACK_BLOCK.register((player, world, hand, pos, direction) -> {
+		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			System.out.println("--- DEMO --- PlayerInteractCallback called!");
 
 			BlockState state = world.getBlockState(pos);

@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.events.client;
+package net.fabricmc.fabric.api.event.server;
 
-import net.fabricmc.fabric.events.TickEvent;
-import net.fabricmc.fabric.util.HandlerArray;
-import net.fabricmc.fabric.util.HandlerRegistry;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.server.MinecraftServer;
 
-import java.util.function.Consumer;
+public interface ServerStartCallback {
+	public static final Event<ServerStartCallback> EVENT = EventFactory.arrayBacked(ServerStartCallback.class,
+		(listeners) -> (server) -> {
+			for (ServerStartCallback event : listeners) {
+				event.onStartServer(server);
+			}
+		}
+	);
 
-/**
- * Events emitted during the ticking process for Minecraft client objects.
- *
- * @see TickEvent
- */
-public final class ClientTickEvent {
-	public static final HandlerRegistry<Consumer<MinecraftClient>> CLIENT = new HandlerArray<>(Consumer.class);
-
-	private ClientTickEvent() {
-
-	}
+	void onStartServer(MinecraftServer server);
 }

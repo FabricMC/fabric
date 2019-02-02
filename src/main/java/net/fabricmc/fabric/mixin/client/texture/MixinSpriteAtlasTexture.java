@@ -17,10 +17,9 @@
 package net.fabricmc.fabric.mixin.client.texture;
 
 import com.google.common.base.Joiner;
+import net.fabricmc.fabric.api.event.client.SpriteRegistrationCallback;
 import net.fabricmc.fabric.client.texture.*;
 import net.fabricmc.fabric.impl.client.texture.FabricSprite;
-import net.fabricmc.fabric.events.client.SpriteEvent;
-import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.class_1050;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
@@ -82,13 +81,8 @@ public abstract class MixinSpriteAtlasTexture {
 
 	@Inject(at = @At("HEAD"), method = "reload")
 	public void reload(ResourceManager manager, CallbackInfo info) {
-		//noinspection RedundantCast,ConstantConditions
-		if ((SpriteAtlasTexture) (Object) this == MinecraftClient.getInstance().getSpriteAtlas()) {
-			SpriteRegistry registry = new SpriteRegistry(sprites, (id) -> addSpriteToLoad(manager, id));
-			for (SpriteEvent.Provider provider : ((HandlerArray<SpriteEvent.Provider>) SpriteEvent.PROVIDE).getBackingArray()) {
-				provider.registerSprites(registry);
-			}
-		}
+		SpriteRegistrationCallback.Registry registry = new SpriteRegistrationCallback.Registry(sprites, (id) -> addSpriteToLoad(manager, id));
+		SpriteRegistrationCallback.EVENT.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
 		Set<DependentSprite> dependentSprites = new HashSet<>();

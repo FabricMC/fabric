@@ -14,8 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.util;
+package net.fabricmc.fabric.api.event.registry;
 
-public interface HandlerRegistry<T> {
-	void register(T handler);
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.block.Block;
+
+public interface BlockBuildingCallback {
+	public static Event<BlockBuildingCallback> EVENT = EventFactory.arrayBacked(BlockBuildingCallback.class,
+		(listeners) -> (settings, builtBlock) -> {
+			for (BlockBuildingCallback callback : listeners) {
+				callback.building(settings, builtBlock);
+			}
+		}
+	);
+
+	void building(Block.Settings settings, Block builtBlock);
 }

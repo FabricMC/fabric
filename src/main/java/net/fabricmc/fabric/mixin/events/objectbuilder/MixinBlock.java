@@ -16,22 +16,17 @@
 
 package net.fabricmc.fabric.mixin.events.objectbuilder;
 
-import net.fabricmc.fabric.events.ObjectBuilderEvent;
-import net.fabricmc.fabric.util.HandlerArray;
+import net.fabricmc.fabric.api.event.registry.BlockBuildingCallback;
 import net.minecraft.block.Block;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.BiConsumer;
-
 @Mixin(Block.class)
 public class MixinBlock {
 	@Inject(method = "<init>(Lnet/minecraft/block/Block$Settings;)V", at = @At("RETURN"))
 	public void init(Block.Settings builder, CallbackInfo info) {
-		for (BiConsumer<Block.Settings, Block> consumer : ((HandlerArray<BiConsumer<Block.Settings, Block>>) ObjectBuilderEvent.BLOCK).getBackingArray()) {
-			consumer.accept(builder, (Block) (Object) this);
-		}
+		BlockBuildingCallback.EVENT.invoker().building(builder, (Block) (Object) this);
 	}
 }

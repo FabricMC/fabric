@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.impl.event;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -7,22 +23,33 @@ import java.lang.invoke.MethodHandleProxies;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public final class EventFactoryImpl {
+	private static final List<ArrayBackedEvent<?>> ARRAY_BACKED_EVENTS = new ArrayList<>();
+
 	private EventFactoryImpl() {
 
 	}
 
+	public static void invalidate() {
+		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
+	}
+
 	public static <T> Event<T> arrayBacked(Class<T> type, Function<T[], T> joiner) {
-		return arrayBacked(type, buildEmptyInvoker(type, joiner), joiner);
+		return arrayBacked(type, null /* buildEmptyInvoker(type, joiner) */, joiner);
 	}
 
 	public static <T> Event<T> arrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> joiner) {
-		return new ArrayBackedEvent<>(type, emptyInvoker, joiner);
+		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, emptyInvoker, joiner);
+		ARRAY_BACKED_EVENTS.add(event);
+		return event;
 	}
 
-	// Code originally by sfPlayer1
+	// Code originally by sfPlayer1.
+	// Unfortunately, it's slightly slower than just passing an empty array in the first place.
 	private static <T> T buildEmptyInvoker(Class<T> handlerClass, Function<T[], T> invokerSetup) {
 		// find the functional interface method
 		Method funcIfMethod = null;

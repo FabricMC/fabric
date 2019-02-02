@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.block;
+package net.fabricmc.fabric.api.event.player;
 
-import net.minecraft.block.BlockState;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-/**
- * Convienence interface for blocks which listen to "break interactions" (left-click).
- */
-public interface BreakInteractable {
-	/**
-	 * @return True if the block accepted the player and it should no longer be processed.
-	 */
-	boolean onBreakInteract(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, Direction direction);
+public interface UseItemCallback {
+	public static final Event<UseItemCallback> EVENT = EventFactory.arrayBacked(UseItemCallback.class,
+		(listeners) -> (player, world, hand) -> {
+			for (UseItemCallback event : listeners) {
+				ActionResult result = event.interact(player, world, hand);
+				if (result != ActionResult.PASS) {
+					return result;
+				}
+			}
+
+			return ActionResult.PASS;
+		}
+	);
+
+	ActionResult interact(PlayerEntity player, World world, Hand hand);
 }

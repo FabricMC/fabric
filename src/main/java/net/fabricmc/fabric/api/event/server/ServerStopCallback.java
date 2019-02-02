@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.events;
+package net.fabricmc.fabric.api.event.server;
 
-import net.fabricmc.fabric.util.HandlerArray;
-import net.fabricmc.fabric.util.HandlerRegistry;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
 
-import java.util.function.Consumer;
+public interface ServerStopCallback {
+	public static final Event<ServerStopCallback> EVENT = EventFactory.arrayBacked(ServerStopCallback.class,
+		(listeners) -> (server) -> {
+			for (ServerStopCallback event : listeners) {
+				event.onStopServer(server);
+			}
+		}
+	);
 
-public final class ServerEvent {
-	public static final HandlerRegistry<Consumer<MinecraftServer>> START = new HandlerArray<>(Consumer.class);
-	public static final HandlerRegistry<Consumer<MinecraftServer>> STOP = new HandlerArray<>(Consumer.class);
-
-	private ServerEvent() {
-
-	}
+	void onStopServer(MinecraftServer server);
 }

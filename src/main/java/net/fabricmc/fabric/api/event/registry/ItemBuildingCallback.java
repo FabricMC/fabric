@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.events.client;
+package net.fabricmc.fabric.api.event.registry;
 
-import net.fabricmc.fabric.client.texture.SpriteRegistry;
-import net.fabricmc.fabric.util.HandlerArray;
-import net.fabricmc.fabric.util.HandlerRegistry;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.item.Item;
 
-public class SpriteEvent {
-	@FunctionalInterface
-	public interface Provider {
-		void registerSprites(SpriteRegistry registry);
-	}
+public interface ItemBuildingCallback {
+	public static Event<ItemBuildingCallback> EVENT = EventFactory.arrayBacked(ItemBuildingCallback.class,
+		(listeners) -> (settings, builtItem) -> {
+			for (ItemBuildingCallback callback : listeners) {
+				callback.building(settings, builtItem);
+			}
+		}
+	);
 
-	public static final HandlerRegistry<Provider> PROVIDE = new HandlerArray<>(Provider.class);
+	void building(Item.Settings settings, Item builtItem);
 }
