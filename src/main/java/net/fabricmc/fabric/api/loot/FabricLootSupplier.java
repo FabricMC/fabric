@@ -18,7 +18,10 @@ package net.fabricmc.fabric.api.loot;
 
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
+
+import java.util.Arrays;
 
 /**
  * An interface implemented by all {@code net.minecraft.world.loot.LootSupplier} instances when
@@ -32,4 +35,18 @@ public interface FabricLootSupplier {
 	void setPools(LootPool[] pools);
 	LootFunction[] getFunctions();
 	void setFunctions(LootFunction[] functions);
+	LootContextType getType();
+
+	/**
+	 * Uses {@link #getPools()} and {@link #setPools(LootPool[])} to
+	 * add the pools to this LootSupplier.
+	 *
+	 * @param pools the pools
+	 */
+	default void addPools(LootPool... pools) {
+		LootPool[] oldPools = getPools();
+		LootPool[] newPools = Arrays.copyOf(oldPools, oldPools.length + pools.length);
+		System.arraycopy(pools, 0, newPools, oldPools.length, pools.length);
+		setPools(newPools);
+	}
 }

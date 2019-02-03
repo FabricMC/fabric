@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.loot;
 import net.fabricmc.fabric.api.loot.FabricLootSupplier;
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -40,4 +41,8 @@ public interface MixinLootSupplier extends FabricLootSupplier {
 	@Accessor
 	@Override
 	void setFunctions(LootFunction[] functions);
+
+	@Accessor
+	@Override
+	LootContextType getType();
 }
