@@ -19,15 +19,16 @@ package net.fabricmc.fabric.api.events;
 import net.fabricmc.fabric.api.loot.FabricLootSupplier;
 import net.fabricmc.fabric.util.HandlerArray;
 import net.fabricmc.fabric.util.HandlerRegistry;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-
-import java.util.function.BiConsumer;
 
 /**
  * An event handler that is called when loot tables are loaded.
  * Use {@link #REGISTRY} to register instances.
  */
 @FunctionalInterface
-public interface LootTableLoadingCallback extends BiConsumer<Identifier, FabricLootSupplier> {
+public interface LootTableLoadingCallback {
 	final HandlerRegistry<LootTableLoadingCallback> REGISTRY = new HandlerArray<>(LootTableLoadingCallback.class);
+
+	void onLoading(ResourceManager manager, Identifier id, FabricLootSupplier supplier);
 }

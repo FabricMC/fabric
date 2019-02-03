@@ -43,7 +43,7 @@ public class MixinLootManager {
 					.getBackingArray();
 
 			for (LootTableLoadingCallback handler : handlers) {
-				handler.accept(id, (FabricLootSupplier) supplier);
+				handler.onLoading(manager, id, (FabricLootSupplier) supplier);
 			}
 		});
 	}

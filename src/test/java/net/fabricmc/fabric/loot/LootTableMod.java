@@ -27,7 +27,7 @@ import net.minecraft.world.loot.entry.ItemEntry;
 public class LootTableMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		LootTableLoadingCallback.REGISTRY.register((id, supplier) -> {
+		LootTableLoadingCallback.REGISTRY.register((manager, id, supplier) -> {
 			if ("minecraft:blocks/dirt".equals(id.toString())) {
 				LootPool pool = LootPool.create()
 						.withEntry(ItemEntry.builder(Items.FEATHER))
