@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.client.gui.GuiFactory;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.ContainerGui;
+import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
@@ -42,9 +42,9 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
-	private static final Map<Identifier, ContainerFactory<ContainerGui>> FACTORIES = new HashMap<>();
+	private static final Map<Identifier, ContainerFactory<ContainerScreen>> FACTORIES = new HashMap<>();
 
-	public void registerFactory(Identifier identifier, ContainerFactory<ContainerGui> factory) {
+	public void registerFactory(Identifier identifier, ContainerFactory<ContainerScreen> factory) {
 		if (FACTORIES.containsKey(identifier)) {
 			throw new RuntimeException("A factory has already been registered as " + identifier + "!");
 		}
@@ -68,14 +68,14 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 			Identifier identifier = packetByteBuf.readIdentifier();
 			int syncId = packetByteBuf.readUnsignedByte();
 			MinecraftClient.getInstance().execute(() -> {
-				ContainerFactory<ContainerGui> factory = FACTORIES.get(identifier);
+				ContainerFactory<ContainerScreen> factory = FACTORIES.get(identifier);
 				if (factory == null) {
 					LOGGER.error("No GUI factory found for {}!", identifier.toString());
 					return;
 				}
-				ContainerGui gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
+				ContainerScreen gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
 				packetContext.getPlayer().container = gui.getContainer();
-				MinecraftClient.getInstance().openGui(gui);
+				MinecraftClient.getInstance().openScreen(gui);
 			});
 		});
 	}

@@ -18,8 +18,8 @@ package net.fabricmc.fabric.mixin.client.itemgroup;
 
 import net.fabricmc.fabric.client.itemgroup.CreativeGuiExtensions;
 import net.fabricmc.fabric.client.itemgroup.FabricCreativeGuiComponents;
-import net.minecraft.client.gui.ingame.AbstractPlayerInventoryGui;
-import net.minecraft.client.gui.ingame.CreativePlayerInventoryGui;
+import net.minecraft.client.gui.ingame.AbstractPlayerInventoryScreen;
+import net.minecraft.client.gui.ingame.CreativePlayerInventoryScreen;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
@@ -31,8 +31,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(CreativePlayerInventoryGui.class)
-public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInventoryGui implements CreativeGuiExtensions {
+@Mixin(CreativePlayerInventoryScreen.class)
+public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInventoryScreen implements CreativeGuiExtensions {
 
 	public MixinCreativePlayerInventoryGui(Container container_1, PlayerInventory playerInventory_1, TextComponent textComponent_1) {
 		super(container_1, playerInventory_1, textComponent_1);
