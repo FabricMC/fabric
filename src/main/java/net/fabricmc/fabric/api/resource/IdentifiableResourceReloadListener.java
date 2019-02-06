@@ -31,7 +31,7 @@ import java.util.Collections;
  *
  * {@link ResourceReloadListenerKeys}
  */
-public interface IdentifiableResourceReloadListener extends ResourceReloadListener {
+public interface IdentifiableResourceReloadListener<T> extends ResourceReloadListener<T> {
 	/**
 	 * @return The unique identifier of this listener.
 	 */
@@ -43,23 +43,5 @@ public interface IdentifiableResourceReloadListener extends ResourceReloadListen
 	 */
 	default Collection<Identifier> getFabricDependencies() {
 		return Collections.emptyList();
-	}
-
-	/**
-	 * By default, resource reload listeners in Minecraft are all executed on
-	 * the game's main thread while the game is paused. This means they do not
-	 * need to provide any guarantees regarding their thread safety, or usage
-	 * of resources potentially modified by other reload listeners.
-	 *
-	 * "Thread safety", in this context, refers simply to independence; namely
-	 * whether or not, under the condition that all of its dependencies have
-	 * already been processed, this resource reload listener can run without
-	 * accessing or modifying areas it does not control in a non-thread-safe
-	 * manner.
-	 *
-	 * @return Whether or not the listener can be executed in a thread-safe way.
-	 */
-	default boolean isListenerThreadSafe() {
-		return false;
 	}
 }

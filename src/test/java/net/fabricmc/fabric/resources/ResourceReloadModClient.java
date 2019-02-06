@@ -22,14 +22,26 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
 
 public class ResourceReloadModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener<Void>() {
+			@Override
+			public CompletableFuture<Void> prepare(ResourceManager var1, Profiler var2) {
+				return null;
+			}
+
+			@Override
+			public void apply(ResourceManager var1, Void var2, Profiler var3) {
+				System.out.println("Reloading (should run as #2)");
+			}
+
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc2");
@@ -39,26 +51,26 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			public Collection<Identifier> getFabricDependencies() {
 				return Collections.singletonList(new Identifier("fabric:rrmc1"));
 			}
-
-			@Override
-			public void onResourceReload(ResourceManager var1) {
-				System.out.println("Reloading (should run as #2)");
-			}
 		});
 
-		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener<Void>() {
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc1");
 			}
 
 			@Override
-			public void onResourceReload(ResourceManager var1) {
+			public CompletableFuture<Void> prepare(ResourceManager var1, Profiler var2) {
+				return null;
+			}
+
+			@Override
+			public void apply(ResourceManager var1, Void var2, Profiler var3) {
 				System.out.println("Reloading (should run as #1)");
 			}
 		});
 
-		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.ASSETS).addReloadListener(new IdentifiableResourceReloadListener<Void>() {
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc_should_not_resolve");
@@ -70,7 +82,12 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			}
 
 			@Override
-			public void onResourceReload(ResourceManager var1) {
+			public CompletableFuture<Void> prepare(ResourceManager var1, Profiler var2) {
+				return null;
+			}
+
+			@Override
+			public void apply(ResourceManager var1, Void var2, Profiler var3) {
 			}
 		});
 	}

@@ -25,13 +25,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.function.BooleanSupplier;
+
 @Mixin(World.class)
 public class MixinWorld {
 	@Shadow
 	private Profiler profiler;
 
-	@Inject(at = @At("RETURN"), method = "updateEntities")
-	public void updateEntities(CallbackInfo info) {
+	@Inject(at = @At("RETURN"), method = "tick")
+	public void tick(BooleanSupplier booleanSupplier, CallbackInfo info) {
 		TickEvent.tick(TickEvent.WORLD, (World) (Object) this, this.profiler);
 	}
 }

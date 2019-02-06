@@ -41,15 +41,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.transformer.meta.MixinInner;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Mixin(SpriteAtlasTexture.class)
 public abstract class MixinSpriteAtlasTexture {
+	// TODO
+
 	@Shadow
 	private static Logger LOGGER;
 	@Shadow
@@ -61,21 +61,22 @@ public abstract class MixinSpriteAtlasTexture {
 	@Shadow
 	private int mipLevel;
 
-	@Shadow
+	/*@Shadow
 	public abstract Sprite getSprite(Identifier id);
 	@Shadow
 	public abstract void addSpriteToLoad(ResourceManager var1, Identifier var2);
 
-	@Redirect(method = "reload", at = @At(value = "NEW", target = "net/minecraft/client/texture/Sprite"))
+	// private Collection<Sprite> method_18164(ResourceManager resourceManager_1, Set<Identifier> set_1) {
+	@Redirect(method = "method_18164", at = @At(value = "NEW", target = "net/minecraft/client/texture/Sprite"))
 	public Sprite newSprite(Identifier id, class_1050 c, AnimationResourceMetadata animationMetadata) {
 		if (sprites.containsKey(id)) {
 			return sprites.get(id);
 		} else {
 			return new FabricSprite(id, c, animationMetadata);
 		}
-	}
+	} */
 
-	@Inject(at = @At("HEAD"), method = "build")
+	/* @Inject(at = @At("HEAD"), method = "build")
 	public void build(ResourceManager var1, Iterable<Identifier> var2, CallbackInfo info) {
 		this.sprites.clear();
 	}
@@ -136,7 +137,7 @@ public abstract class MixinSpriteAtlasTexture {
 				throw new CrashException(report);
 			}
 		}
-	}
+	} */
 
 	@Inject(at = @At("HEAD"), method = "loadSprite", cancellable = true)
 	public void loadSprite(ResourceManager manager, Sprite sprite, CallbackInfoReturnable<Boolean> info) {

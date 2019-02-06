@@ -28,7 +28,7 @@ public interface ResourceManagerHelper {
 	 * Add a resource reload listener for a given registry.
 	 * @param listener The resource reload listener.
 	 */
-	void addReloadListener(IdentifiableResourceReloadListener listener);
+	void addReloadListener(IdentifiableResourceReloadListener<?> listener);
 
 	/**
 	 * Get the ResourceManagerHelper instance for a given resource type.
