@@ -92,11 +92,13 @@ public class KeyCode
 	public static final int KEY_NUM_DIVIDE = 331;
 	public static final int KEY_NUM_SUBTRACT = 333;
 
+	/* Arrow Keys KeyCodes */
 	public static final int KEY_UP = 265;
 	public static final int KEY_DOWN = 264;
 	public static final int KEY_LEFT = 263;
 	public static final int KEY_RIGHT = 262;
 
+	/* General KeyCodes */
 	public static final int KEY_APOSTROPHE = 39;
 	public static final int KEY_BACKSLASH = 92;
 	public static final int KEY_COMMA = 44;
@@ -122,8 +124,29 @@ public class KeyCode
 	public static final int KEY_ENTER = 257;
 	public static final int KEY_ESCAPE = 256;
 	public static final int KEY_BACKSPACE = 259;
-	
+	public static final int KEY_DELETE = 261;
+	public static final int KEY_END = 269;
+	public static final int KEY_HOME = 268;
+	public static final int KEY_INSERT = 260;
+	public static final int KEY_PAGE_DOWN = 267;
+	public static final int KEY_PAG_UP = 266;
+	public static final int KEY_CAPS_LOCK = 280;
+	public static final int KEY_PAUSE = 284;
+	public static final int KEY_SCROLL_LOCK = 281;
+	public static final int KEY_MENU = 348;
+	public static final int KEY_PRINT_SCREEN = 283;
+	public static final int KEY_WORLD_1 = 161;
+	public static final int KEY_WORLD_2 = 162;
 
+	/* Moouse KeyCodes */
+	public static final int MOUSE_LEFT_CLICK = 0;
+	public static final int MOUSE_RIGHT_CLICK = 1;
+	public static final int MOUSE_MIDDLE_CLICK = 2;
+	public static final int MOUSE_4 = 3;
+	public static final int MOUSE_5 = 4;
+	public static final int MOUSE_6 = 5;
+	public static final int MOUSE_7 = 6;
+	public static final int MOUSE_8 = 7;
 
 
 }
