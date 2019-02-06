@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.registry.ExtendedIdList;
+import net.fabricmc.fabric.impl.registry.ExtendedIdList;
 import net.minecraft.util.IdList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

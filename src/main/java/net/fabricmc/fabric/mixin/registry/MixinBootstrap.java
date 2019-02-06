@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
-import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.registry.RegistrySyncManager;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.BootstrapBiomeRegistryListener;
 import net.fabricmc.fabric.impl.registry.BootstrapBlockRegistryListener;
 import net.fabricmc.fabric.impl.registry.BootstrapFluidRegistryListener;

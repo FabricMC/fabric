@@ -25,6 +25,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+/**
+ * Callback for left-clicking ("attacking") a block.
+ *
+ * Upon return:
+ * - SUCCESS cancels further processing and, on the client, sends a packet to the server.
+ * - PASS falls back to further processing.
+ * - FAIL cancels further processing and does not send a packet to the server.
+ *
+ * ATTACK_BLOCK does not let you control the packet sending process yet.
+ */
 public interface AttackBlockCallback {
 	public static final Event<AttackBlockCallback> EVENT = EventFactory.arrayBacked(AttackBlockCallback.class,
 		(listeners) -> (player, world, hand, pos, direction) -> {

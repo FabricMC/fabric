@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.itemgroup;
 
-import net.fabricmc.fabric.client.itemgroup.ItemGroupExtensions;
+import net.fabricmc.fabric.impl.itemgroup.ItemGroupExtensions;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;

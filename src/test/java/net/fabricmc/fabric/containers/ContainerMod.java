@@ -18,9 +18,8 @@ package net.fabricmc.fabric.containers;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.commands.CommandRegistry;
+import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.container.Container;
-import net.minecraft.container.ContainerType;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;

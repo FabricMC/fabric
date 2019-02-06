@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.tools.MiningToolDelegate;
+import net.fabricmc.fabric.impl.tools.MiningToolDelegate;
 import net.minecraft.item.MiningToolItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

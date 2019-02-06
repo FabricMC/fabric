@@ -26,6 +26,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+/**
+ * Callback for right-clicking ("using") a block.
+ *
+ * Upon return:
+ * - SUCCESS cancels further processing and, on the client, sends a packet to the server.
+ * - PASS falls back to further processing.
+ * - FAIL cancels further processing and does not send a packet to the server.
+ */
 public interface UseBlockCallback {
 	public static final Event<UseBlockCallback> EVENT = EventFactory.arrayBacked(UseBlockCallback.class,
 		(listeners) -> (player, world, hand, hitResult) -> {

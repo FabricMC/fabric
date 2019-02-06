@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.mixin.block.entity;
 
-import net.fabricmc.fabric.block.entity.ClientSerializable;
+import net.fabricmc.fabric.api.block.entity.ClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.BlockEntityUpdateClientPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

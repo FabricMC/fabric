@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.registry;
 
-import net.fabricmc.fabric.registry.ExtendedIdList;
-import net.fabricmc.fabric.registry.RegistryListener;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Identifier;

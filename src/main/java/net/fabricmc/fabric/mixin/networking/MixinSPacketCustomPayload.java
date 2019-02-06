@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
-import net.fabricmc.fabric.networking.SPacketCustomPayloadAccessor;
+import net.fabricmc.fabric.impl.network.SPacketCustomPayloadAccessor;
 import net.minecraft.server.network.packet.CustomPayloadServerPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;

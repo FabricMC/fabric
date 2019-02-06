@@ -18,10 +18,9 @@ package net.fabricmc.fabric.impl.client.gui;
 
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.client.gui.GuiFactory;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
-import net.fabricmc.fabric.networking.CustomPayloadPacketRegistry;
+import net.fabricmc.fabric.api.network.CustomPayloadPacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;

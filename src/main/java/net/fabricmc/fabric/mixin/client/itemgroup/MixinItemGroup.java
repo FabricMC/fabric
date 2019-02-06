@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.itemgroup;
 
-import net.fabricmc.fabric.client.itemgroup.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
 import net.minecraft.item.ItemGroup;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.entity.EntityTrackingRegistry;
+import net.fabricmc.fabric.api.entity.EntityTrackingRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.EntityTracker;
 import org.spongepowered.asm.mixin.Mixin;

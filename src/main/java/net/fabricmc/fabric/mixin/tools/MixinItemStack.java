@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.tools.MiningToolDelegate;
-import net.fabricmc.fabric.tools.ToolManager;
-import net.fabricmc.fabric.util.TriState;
+import net.fabricmc.fabric.impl.tools.MiningToolDelegate;
+import net.fabricmc.fabric.impl.tools.ToolManager;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
