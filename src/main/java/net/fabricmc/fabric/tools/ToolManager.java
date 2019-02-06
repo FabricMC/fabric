@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.tools;
 
+import net.fabricmc.fabric.api.event.registry.BlockBuildingCallback;
 import net.fabricmc.fabric.block.FabricBlockSettings;
-import net.fabricmc.fabric.events.ObjectBuilderEvent;
 import net.fabricmc.fabric.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -75,7 +75,7 @@ public final class ToolManager {
 	}
 
 	static {
-		ObjectBuilderEvent.BLOCK.register(ToolManager::onBlockRegistered);
+		BlockBuildingCallback.EVENT.register(ToolManager::onBlockRegistered);
 	}
 
 	private static void onBlockRegistered(Block.Settings settings, Block block) {

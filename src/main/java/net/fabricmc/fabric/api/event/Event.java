@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.util;
+package net.fabricmc.fabric.api.event;
 
-public interface HandlerRegistry<T> {
-	void register(T handler);
+public abstract class Event<T> {
+	protected T invoker;
+
+	public final T invoker() {
+		return invoker;
+	}
+
+	public abstract void register(T listener);
 }

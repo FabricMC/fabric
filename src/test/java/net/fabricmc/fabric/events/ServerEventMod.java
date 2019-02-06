@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.events;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.server.ServerStartCallback;
+import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +27,7 @@ public class ServerEventMod implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerEvent.START.register(server -> LOGGER.info("Server starting (" + server + ")"));
-		ServerEvent.STOP.register(server -> LOGGER.info("Server stopping (" + server + ")"));
+		ServerStartCallback.EVENT.register(server -> LOGGER.info("Server starting (" + server + ")"));
+		ServerStopCallback.EVENT.register(server -> LOGGER.info("Server stopping (" + server + ")"));
 	}
 }

@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.events.client;
+package net.fabricmc.fabric.api.event.registry;
 
-import net.fabricmc.fabric.events.TickEvent;
-import net.fabricmc.fabric.util.HandlerArray;
-import net.fabricmc.fabric.util.HandlerRegistry;
-import net.minecraft.client.MinecraftClient;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.block.Block;
 
-import java.util.function.Consumer;
+public interface BlockBuildingCallback {
+	public static Event<BlockBuildingCallback> EVENT = EventFactory.arrayBacked(BlockBuildingCallback.class,
+		(listeners) -> (settings, builtBlock) -> {
+			for (BlockBuildingCallback callback : listeners) {
+				callback.building(settings, builtBlock);
+			}
+		}
+	);
 
-/**
- * Events emitted during the ticking process for Minecraft client objects.
- *
- * @see TickEvent
- */
-public final class ClientTickEvent {
-	public static final HandlerRegistry<Consumer<MinecraftClient>> CLIENT = new HandlerArray<>(Consumer.class);
-
-	private ClientTickEvent() {
-
-	}
+	void building(Block.Settings settings, Block builtBlock);
 }
