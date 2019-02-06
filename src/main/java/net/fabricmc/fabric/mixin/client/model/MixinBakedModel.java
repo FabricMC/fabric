@@ -33,7 +33,12 @@ import net.minecraft.util.math.BlockPos;
 @Mixin(BakedModel.class)
 public interface MixinBakedModel extends TerrainMeshProducer {
     @Override
-    default void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+    public default void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
+    }
+    
+    @Override
+    public default boolean isVanillaProducer() {
+        return true;
     }
 }

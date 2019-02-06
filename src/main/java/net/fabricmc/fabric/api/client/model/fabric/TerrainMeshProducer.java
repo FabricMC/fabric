@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import java.lang.ref.WeakReference;
 import java.util.Random;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Interface for baked models that output meshes with enhanced rendering features.
@@ -30,7 +33,6 @@ import net.minecraft.util.math.BlockPos;
  * interface with {@link #hasVertexData()} and to produce standard vertex data. This means any BakedModel instance
  * can be safely cast to this interface without an instanceof check.
  */
-@FunctionalInterface
 public interface TerrainMeshProducer {
     /**
      * This method will be called during chunk rebuilds to generate both the static and
@@ -56,4 +58,43 @@ public interface TerrainMeshProducer {
      * For wrapped vanilla baked models, it will probably be easier to use {@link RenderContext#fallbackModelConsumer()}.<p>
      */
     void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
+
+    /**
+     * When true, signals renderer this producer is a vanilla baked model and calls to
+     * {@link #produceQuads(ModelBlockView, BlockState, BlockPos, Random, long, RenderContext)} will
+     * only use {@link RenderContext#fallbackConsumer()}. Allows the renderer to route vanilla models
+     * through the unmodified vanilla pipeline if desired.<p>
+     * 
+     * Fabric overrides to true for vanilla baked models.  
+     * Enhanced models that use this API should return false,
+     * otherwise the API will not recognize the model.<p>
+     */
+    boolean isVanillaProducer(); 
+    
+    /**
+     * If non-null, the result will be used to render block-breaking instead of the output
+     * from {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}.<p>
+     * 
+     * This method will always be called from the main client thread. No special concurrency
+     * precautions apply. (It's safe to access BlockEntity state from here.)<p>
+     * 
+     * There are at least three use cases when overriding is helpful:
+     * <li>Dynamic models that have variable shape based on world state.</li>
+     * <li>Models painted with multi-block textures that render poorly when the sub-texture 
+     * uv coordinates are re-mapped to the block breaking texture.</li>
+     * <li>Multi-layer quads that would normally output two or three co-planar quads from
+     * {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)} -
+     * the extra quads are useless overhead and a simpler damage model can be substituted.</li><p>
+     * 
+     * Note that damage rendering does not care about the specific textures on the model, 
+     * it simply re-maps quads to the block-breaking texture. No enhanced rendering features apply.<p>
+     * 
+     * This method may never be called for any particular model (depends on player behavior)
+     * but if it is called, the calls will be rapid: once per frame. Implementations 
+     * with dynamic, non-trivial damage models should consider caching the result.
+     * {@link WeakReference} would be suitable for this.
+     */
+    default BakedModel getDamageModel(ExtendedBlockView blockView, BlockState state, BlockPos pos) {
+        return null;
+    }
 }
