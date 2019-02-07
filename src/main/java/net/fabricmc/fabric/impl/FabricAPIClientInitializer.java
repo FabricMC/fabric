@@ -17,15 +17,15 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.network.ClientPacketRegistry;
 import net.fabricmc.fabric.impl.client.gui.GuiProviderImpl;
-import net.fabricmc.fabric.api.network.CustomPayloadPacketRegistry;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.client.MinecraftClient;
 
 public class FabricAPIClientInitializer implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		CustomPayloadPacketRegistry.CLIENT.register(RegistrySyncManager.ID, (ctx, buf) -> {
+		ClientPacketRegistry.INSTANCE.register(RegistrySyncManager.ID, (ctx, buf) -> {
 			// if not hosting server, apply packet
 			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
 		});

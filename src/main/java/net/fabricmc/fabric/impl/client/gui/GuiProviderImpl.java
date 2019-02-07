@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.client.gui;
 import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.client.gui.GuiFactory;
+import net.fabricmc.fabric.api.network.ClientPacketRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
-import net.fabricmc.fabric.api.network.CustomPayloadPacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
@@ -63,7 +63,7 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 	}
 
 	public void init() {
-		CustomPayloadPacketRegistry.CLIENT.register(OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
+		ClientPacketRegistry.INSTANCE.register(OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
 			int syncId = packetByteBuf.readUnsignedByte();
 			MinecraftClient.getInstance().execute(() -> {

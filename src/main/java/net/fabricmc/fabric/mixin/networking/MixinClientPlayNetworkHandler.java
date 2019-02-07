@@ -17,8 +17,9 @@
 package net.fabricmc.fabric.mixin.networking;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.network.CustomPayloadPacketRegistry;
+import net.fabricmc.fabric.api.network.ClientPacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.impl.network.ClientPacketRegistryImpl;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
@@ -37,7 +38,7 @@ public class MixinClientPlayNetworkHandler implements PacketContext {
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadClientPacket packet, CallbackInfo info) {
-		if (CustomPayloadPacketRegistry.CLIENT.accept(packet.getChannel(), this, packet.getData())) {
+		if (((ClientPacketRegistryImpl) ClientPacketRegistry.INSTANCE).accept(packet.getChannel(), this, packet.getData())) {
 			info.cancel();
 		}
 	}
