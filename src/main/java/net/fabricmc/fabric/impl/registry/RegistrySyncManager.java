@@ -122,4 +122,13 @@ public final class RegistrySyncManager {
 			}
 		}
 	}
+
+	public static void unmap() throws RemapException {
+		for (Identifier registryId : Registry.REGISTRIES.keys()) {
+			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
+			if (registry instanceof RemappableRegistry) {
+				((RemappableRegistry) registry).unmap();
+			}
+		}
+	}
 }
