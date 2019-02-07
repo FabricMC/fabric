@@ -64,21 +64,11 @@ public class EntityTrackingRegistry {
 		return entries.get(type);
 	}
 
-	@Deprecated
-	public Packet createSpawnPacket(Entity entity) {
-		return null;
-	}
-
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks) {
 		register(type, trackingDistance, updateIntervalTicks, true);
 	}
 
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
 		entries.put(type, new Entry(trackingDistance, updateIntervalTicks, alwaysUpdateVelocity));
-	}
-
-	@Deprecated
-	public void registerSpawnPacketProvider(EntityType type, Function<Entity, Packet> packetFunction) {
-		LOGGER.warn("[EntityTrackingRegistry] As of 19w05a, registerSpawnPacketProvider is a no-op! Update your mod!");
 	}
 }

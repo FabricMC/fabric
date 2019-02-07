@@ -37,27 +37,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean alwaysUpdateVelocity = true;
 	private float width = -1.0f, height = -1.0f;
 
-	@Deprecated
-	protected FabricEntityTypeBuilder(Class<? extends T> entityClass, Function<? super World, ? extends T> function) {
-		LOGGER.warn("[FabricEntityTypeBuilder] Please specify EntityCategory for " + entityClass.getName() + "!");
-		this.category = EntityCategory.MISC;
-		this.function = function;
-	}
-
 	protected FabricEntityTypeBuilder(EntityCategory category, Function<? super World, ? extends T> function) {
 		this.category = category;
 		this.function = function;
-	}
-
-	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(Class<? extends T> entityClass) {
-		return new FabricEntityTypeBuilder<>(entityClass, (w) -> null);
-	}
-
-	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(Class<? extends T> entityClass, Function<? super World, ? extends T> function) {
-		LOGGER.warn("[FabricEntityTypeBuilder] Please specify EntityCategory for " + entityClass.getName() + "!");
-		return new FabricEntityTypeBuilder<>(entityClass, function);
 	}
 
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
@@ -93,11 +75,6 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		this.updateIntervalTicks = updateIntervalTicks;
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
 		return this;
-	}
-
-	@Deprecated
-	public EntityType<T> build(String id) {
-		return build();
 	}
 
 	public EntityType<T> build() {
