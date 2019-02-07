@@ -35,12 +35,12 @@ public final class EventFactory {
 		EventFactoryImpl.invalidate();
 	}
 
-	public static <T> Event<T> createArrayBacked(Class<T> type, Function<T[], T> joiner) {
-		return EventFactoryImpl.createArrayBacked(type, joiner);
+	public static <T> Event<T> createArrayBacked(Class<T> type, Function<T[], T> invokerFactory) {
+		return EventFactoryImpl.createArrayBacked(type, invokerFactory);
 	}
 
-	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> joiner) {
-		return EventFactoryImpl.createArrayBacked(type, emptyInvoker, joiner);
+	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
+		return EventFactoryImpl.createArrayBacked(type, emptyInvoker, invokerFactory);
 	}
 
 	public static String getHandlerName(Object event) {
