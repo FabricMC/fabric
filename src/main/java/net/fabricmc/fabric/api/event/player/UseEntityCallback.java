@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 
 /**
  * Callback for right-clicking ("using") an entity.
+ * Is hooked in before the spectator check, so make sure to check for the player's game mode as well!
  *
  * Upon return:
  * - SUCCESS cancels further processing and, on the client, sends a packet to the server.

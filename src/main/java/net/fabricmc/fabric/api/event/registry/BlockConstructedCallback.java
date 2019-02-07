@@ -20,10 +20,10 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.Block;
 
-public interface BlockBuildingCallback {
-	public static Event<BlockBuildingCallback> EVENT = EventFactory.arrayBacked(BlockBuildingCallback.class,
+public interface BlockConstructedCallback {
+	public static Event<BlockConstructedCallback> EVENT = EventFactory.arrayBacked(BlockConstructedCallback.class,
 		(listeners) -> (settings, builtBlock) -> {
-			for (BlockBuildingCallback callback : listeners) {
+			for (BlockConstructedCallback callback : listeners) {
 				callback.building(settings, builtBlock);
 			}
 		}
