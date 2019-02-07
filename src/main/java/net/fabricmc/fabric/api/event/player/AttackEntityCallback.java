@@ -35,7 +35,7 @@ import net.minecraft.world.World;
  * - FAIL cancels further processing and does not send a packet to the server.
  */
 public interface AttackEntityCallback {
-	public static final Event<AttackEntityCallback> EVENT = EventFactory.arrayBacked(AttackEntityCallback.class,
+	public static final Event<AttackEntityCallback> EVENT = EventFactory.createArrayBacked(AttackEntityCallback.class,
 		(listeners) -> (player, world, hand, entity, hitResult) -> {
 			for (AttackEntityCallback event : listeners) {
 				ActionResult result = event.interact(player, world, hand, entity, hitResult);

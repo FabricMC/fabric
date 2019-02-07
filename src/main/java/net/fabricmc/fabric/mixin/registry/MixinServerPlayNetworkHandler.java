@@ -35,9 +35,7 @@ public abstract class MixinServerPlayNetworkHandler {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void init(MinecraftServer server, ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
-		//if (server.isDedicated()) {
-		// TODO: If integrated and local, don't send the packet
+		// TODO: If integrated and local, don't send the packet (it's ignored)
 		sendPacket(RegistrySyncManager.createPacket());
-		//}
 	}
 }

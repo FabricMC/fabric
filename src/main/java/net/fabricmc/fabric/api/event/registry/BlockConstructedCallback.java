@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.Block;
 
 public interface BlockConstructedCallback {
-	public static Event<BlockConstructedCallback> EVENT = EventFactory.arrayBacked(BlockConstructedCallback.class,
+	public static Event<BlockConstructedCallback> EVENT = EventFactory.createArrayBacked(BlockConstructedCallback.class,
 		(listeners) -> (settings, builtBlock) -> {
 			for (BlockConstructedCallback callback : listeners) {
 				callback.building(settings, builtBlock);

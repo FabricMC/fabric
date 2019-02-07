@@ -19,7 +19,9 @@ package net.fabricmc.fabric.api.network;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -34,7 +36,7 @@ public class CustomPayloadPacketRegistry {
 	protected final Map<Identifier, BiConsumer<PacketContext, PacketByteBuf>> consumerMap;
 
 	protected CustomPayloadPacketRegistry() {
-		consumerMap = new HashMap<>();
+		consumerMap = new LinkedHashMap<>();
 	}
 
 	/**

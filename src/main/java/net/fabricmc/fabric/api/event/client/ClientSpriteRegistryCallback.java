@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public interface ClientSpriteRegistryCallback {
-	public static final Event<ClientSpriteRegistryCallback> EVENT = EventFactory.arrayBacked(ClientSpriteRegistryCallback.class,
+	public static final Event<ClientSpriteRegistryCallback> EVENT = EventFactory.createArrayBacked(ClientSpriteRegistryCallback.class,
 		(listeners) -> (atlasTexture, registry) -> {
 			for (ClientSpriteRegistryCallback callback : listeners) {
 				callback.registerSprites(atlasTexture, registry);

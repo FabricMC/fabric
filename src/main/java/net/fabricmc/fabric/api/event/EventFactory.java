@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.event;
 
 import net.fabricmc.fabric.impl.event.EventFactoryImpl;
-import net.fabricmc.loader.launch.common.FabricLauncherBase;
 
 import java.util.function.Function;
 
@@ -36,11 +35,15 @@ public final class EventFactory {
 		EventFactoryImpl.invalidate();
 	}
 
-	public static <T> Event<T> arrayBacked(Class<T> type, Function<T[], T> joiner) {
-		return EventFactoryImpl.arrayBacked(type, joiner);
+	public static <T> Event<T> createArrayBacked(Class<T> type, Function<T[], T> joiner) {
+		return EventFactoryImpl.createArrayBacked(type, joiner);
 	}
 
-	public static <T> Event<T> arrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> joiner) {
-		return EventFactoryImpl.arrayBacked(type, emptyInvoker, joiner);
+	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> joiner) {
+		return EventFactoryImpl.createArrayBacked(type, emptyInvoker, joiner);
+	}
+
+	public static String getHandlerName(Object event) {
+		return event.getClass().getName();
 	}
 }

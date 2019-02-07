@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.item.Item;
 
 public interface ItemConstructedCallback {
-	public static Event<ItemConstructedCallback> EVENT = EventFactory.arrayBacked(ItemConstructedCallback.class,
+	public static Event<ItemConstructedCallback> EVENT = EventFactory.createArrayBacked(ItemConstructedCallback.class,
 		(listeners) -> (settings, builtItem) -> {
 			for (ItemConstructedCallback callback : listeners) {
 				callback.building(settings, builtItem);

@@ -37,7 +37,7 @@ import net.minecraft.world.World;
  * ATTACK_BLOCK does not let you control the packet sending process yet.
  */
 public interface AttackBlockCallback {
-	public static final Event<AttackBlockCallback> EVENT = EventFactory.arrayBacked(AttackBlockCallback.class,
+	public static final Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
 		(listeners) -> (player, world, hand, pos, direction) -> {
 			for (AttackBlockCallback event : listeners) {
 				ActionResult result = event.interact(player, world, hand, pos, direction);

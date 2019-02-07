@@ -33,7 +33,7 @@ import net.minecraft.world.World;
  * - FAIL cancels further processing and does not send a packet to the server.
  */
 public interface UseItemCallback {
-	public static final Event<UseItemCallback> EVENT = EventFactory.arrayBacked(UseItemCallback.class,
+	public static final Event<UseItemCallback> EVENT = EventFactory.createArrayBacked(UseItemCallback.class,
 		(listeners) -> (player, world, hand) -> {
 			for (UseItemCallback event : listeners) {
 				ActionResult result = event.interact(player, world, hand);
