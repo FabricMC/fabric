@@ -24,23 +24,61 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 /**
- * The client->server packet registry.
+ * The client-side packet registry.
+ *
+ * It is used for:
+ *
+ * - registering client-side packet receivers (server -> client packets)
+ * - sending packets to the server (client -> server packets).
  */
 public interface ClientSidePacketRegistry extends PacketRegistry {
 	static final ClientSidePacketRegistry INSTANCE = new ClientSidePacketRegistryImpl();
 
+	/**
+	 * Check if the server declared the ability to receive a given packet ID
+	 * using the vanilla "register/unregister" protocol.
+	 *
+	 * @param id The packet identifier.
+	 * @return True if the server side declared a given packet identifier.
+	 */
 	boolean canServerReceive(Identifier id);
 
+	/**
+	 * Send a packet to the server.
+
+	 * @param packet The packet to be sent.
+	 * @param completionListener Completion listener. Can be used to check for
+	 * the success or failure of sending a given packet, among others.
+	 */
 	void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener);
 
+	/**
+	 * Send an identifier/buffer-based packet to the server.
+
+	 * @param id The packet identifier.
+	 * @param buf The packet byte buffer.
+	 * @param completionListener Completion listener. Can be used to check for
+	 * the success or failure of sending a given packet, among others.
+	 */
 	default void sendToServer(Identifier id, PacketByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		sendToServer(toPacket(id, buf), completionListener);
 	}
 
+	/**
+	 * Send a packet to the server.
+
+	 * @param packet The packet to be sent.
+	 */
 	default void sendToServer(Packet<?> packet) {
 		sendToServer(packet, null);
 	}
 
+	/**
+	 * Send an identifier/buffer-based packet to the server.
+
+	 * @param id The packet identifier.
+	 * @param buf The packet byte buffer.
+	 */
 	default void sendToServer(Identifier id, PacketByteBuf buf) {
 		sendToServer(id, buf, null);
 	}

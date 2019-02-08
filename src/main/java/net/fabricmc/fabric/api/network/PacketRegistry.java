@@ -21,6 +21,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 public interface PacketRegistry {
+	/**
+	 * Turn a (identifier, byte buffer) pair into a "custom payload" packet
+	 * suitable for sending in the PacketRegistry's sending direction.
+	 *
+	 * @param id The identifier.
+	 * @param buf The byte buffer.
+	 * @return
+	 */
 	Packet<?> toPacket(Identifier id, PacketByteBuf buf);
 
 	/**

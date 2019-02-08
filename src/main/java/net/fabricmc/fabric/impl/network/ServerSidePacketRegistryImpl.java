@@ -35,7 +35,7 @@ import java.util.HashSet;
 import java.util.WeakHashMap;
 
 public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
-	private static final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
+	private final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
 
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {

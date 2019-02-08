@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry.client;
 
+import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.minecraft.client.MinecraftClient;
@@ -35,6 +36,8 @@ public class MixinMinecraftClient {
 	// Unmap the registry before loading a new SP/MP setup.
 	@Inject(at = @At("RETURN"), method = "method_18096")
 	public void method_18096(Screen screen_1, CallbackInfo info) {
+		ClientSidePacketRegistryImpl.invalidateRegisteredIdList();
+
 		try {
 			RegistrySyncManager.unmap();
 		} catch (RemapException e) {

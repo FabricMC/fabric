@@ -33,7 +33,11 @@ import java.util.Collections;
 import java.util.HashSet;
 
 public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements ClientSidePacketRegistry {
-	private static final Collection<Identifier> serverPayloadIds = new HashSet<>();
+	private final Collection<Identifier> serverPayloadIds = new HashSet<>();
+
+	public static void invalidateRegisteredIdList() {
+		((ClientSidePacketRegistryImpl) ClientSidePacketRegistry.INSTANCE).serverPayloadIds.clear();
+	}
 
 	@Override
 	public boolean canServerReceive(Identifier id) {
