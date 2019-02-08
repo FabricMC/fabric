@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.container;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.impl.network.PacketTypes;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
@@ -41,7 +42,6 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
 	private static final Map<Identifier, ContainerFactory<Container>> FACTORIES = new HashMap<>();
 
 	@Override
@@ -71,7 +71,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		buf.writeByte(syncId);
 
 		writer.accept(buf);
-		player.networkHandler.sendPacket(new CustomPayloadClientPacket(OPEN_CONTAINER, buf));
+		player.networkHandler.sendPacket(new CustomPayloadClientPacket(PacketTypes.OPEN_CONTAINER, buf));
 
 		PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
 		clonedBuf.readIdentifier();
@@ -91,6 +91,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 			LOGGER.error("No container factory found for {}!", identifier.toString());
 			return null;
 		}
+		//noinspection unchecked
 		return (C) factory.create(syncId, identifier, player, buf);
 	}
 }

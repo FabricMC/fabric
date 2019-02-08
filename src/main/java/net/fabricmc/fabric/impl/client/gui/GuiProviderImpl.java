@@ -21,6 +21,7 @@ import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.client.gui.GuiFactory;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
+import net.fabricmc.fabric.impl.network.PacketTypes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
@@ -40,7 +41,6 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
 	private static final Map<Identifier, ContainerFactory<ContainerScreen>> FACTORIES = new HashMap<>();
 
 	public void registerFactory(Identifier identifier, ContainerFactory<ContainerScreen> factory) {
@@ -63,7 +63,7 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 	}
 
 	public void init() {
-		ClientSidePacketRegistry.INSTANCE.register(OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
+		ClientSidePacketRegistry.INSTANCE.register(PacketTypes.OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
 			int syncId = packetByteBuf.readUnsignedByte();
 			MinecraftClient.getInstance().execute(() -> {

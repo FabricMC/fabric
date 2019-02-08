@@ -18,8 +18,10 @@ package net.fabricmc.fabric.impl.network;
 
 import net.minecraft.util.Identifier;
 
-class PacketTypes {
+public final class PacketTypes {
 	static final Identifier BRAND = new Identifier("minecraft:brand");
 	static final Identifier REGISTER = new Identifier("minecraft:register");
 	static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
+
+	public static final Identifier OPEN_CONTAINER = new Identifier("fabric", "container/open");
 }

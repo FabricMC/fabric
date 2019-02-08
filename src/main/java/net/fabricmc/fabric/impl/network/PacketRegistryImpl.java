@@ -20,14 +20,12 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
 	protected final Map<Identifier, PacketConsumer> consumerMap;
@@ -36,8 +34,9 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		consumerMap = new LinkedHashMap<>();
 	}
 
-	public Collection<Identifier> getRegisteredPacketIds() {
-		return consumerMap.keySet();
+	public static Packet<?> createInitialRegisterPacket(PacketRegistry registry) {
+		PacketRegistryImpl impl = (PacketRegistryImpl) registry;
+		return impl.createRegisterTypePacket(PacketTypes.REGISTER, impl.consumerMap.keySet());
 	}
 
 	@Override
