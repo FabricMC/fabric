@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.impl.network;
 
-import net.fabricmc.fabric.impl.network.SPacketCustomPayloadAccessor;
-import net.minecraft.server.network.packet.CustomPayloadServerPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(CustomPayloadServerPacket.class)
-public class MixinSPacketCustomPayload implements SPacketCustomPayloadAccessor {
-	@Shadow
-	private Identifier channel;
-	@Shadow
-	private PacketByteBuf data;
-
-	@Override
-	public Identifier getChannel() {
-		return channel;
-	}
-
-	@Override
-	public PacketByteBuf getData() {
-		return data;
-	}
+/**
+ * Helper interface containing getters for SPacketCustomPayload
+ * which were omitted from the compiled game.
+ */
+public interface CustomPayloadC2SPacketAccessor {
+	Identifier getChannel();
+	PacketByteBuf getData();
 }

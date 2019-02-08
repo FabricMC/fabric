@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.network;
 
+import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
@@ -29,9 +30,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
-	private static final Identifier MC_REGISTER = new Identifier("minecraft:register");
-	private static final Identifier MC_UNREGISTER = new Identifier("minecraft:unregister");
-
 	protected final Map<Identifier, PacketConsumer> consumerMap;
 
 	PacketRegistryImpl() {
@@ -65,6 +63,16 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	protected abstract void onRegister(Identifier id);
 	protected abstract void onUnregister(Identifier id);
 	protected abstract Collection<Identifier> getIdCollectionFor(PacketContext context);
+	protected abstract void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids);
+	protected abstract void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids);
+
+	protected Packet<?> createRegisterTypePacket(Identifier id, Collection<Identifier> ids) {
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		for (Identifier a : ids) {
+			buf.writeString(a.toString());
+		}
+		return toPacket(id, buf);
+	}
 
 	/**
 	 * Hook for accepting packets used in Fabric mixins.
@@ -75,7 +83,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	 * @return Whether or not the packet was handled by this packet registry.
 	 */
 	public boolean accept(Identifier id, PacketContext context, PacketByteBuf buf) {
-		if (id.equals(MC_REGISTER) || id.equals(MC_UNREGISTER)) {
+		if (id.equals(PacketTypes.REGISTER) || id.equals(PacketTypes.UNREGISTER)) {
 			Collection<Identifier> ids = new HashSet<>();
 			while (buf.readerIndex() < buf.writerIndex() /* TODO: check correctness */) {
 				Identifier newId = new Identifier(buf.readString(32767));
@@ -83,10 +91,12 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			}
 
 			Collection<Identifier> target = getIdCollectionFor(context);
-			if (id.equals(MC_UNREGISTER)) {
+			if (id.equals(PacketTypes.UNREGISTER)) {
 				target.removeAll(ids);
+				onReceivedUnregisterPacket(context, ids);
 			} else {
 				target.addAll(ids);
+				onReceivedRegisterPacket(context, ids);
 			}
 			return false; // continue execution for other mods
 		}

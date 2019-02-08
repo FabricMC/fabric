@@ -18,7 +18,8 @@ package net.fabricmc.fabric.impl.network;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.fabricmc.fabric.api.network.ClientPacketRegistry;
+import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -28,9 +29,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
-public class ClientPacketRegistryImpl extends PacketRegistryImpl implements ClientPacketRegistry {
+public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements ClientSidePacketRegistry {
 	private static final Collection<Identifier> serverPayloadIds = new HashSet<>();
 
 	@Override
@@ -60,16 +62,32 @@ public class ClientPacketRegistryImpl extends PacketRegistryImpl implements Clie
 
 	@Override
 	protected void onRegister(Identifier id) {
-		// TODO: allow dynamic
+		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+		if (handler != null) {
+			handler.sendPacket(createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)));
+		}
 	}
 
 	@Override
 	protected void onUnregister(Identifier id) {
-		// TODO: allow dynamic
+		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+		if (handler != null) {
+			handler.sendPacket(createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)));
+		}
 	}
 
 	@Override
 	protected Collection<Identifier> getIdCollectionFor(PacketContext context) {
 		return serverPayloadIds;
+	}
+
+	@Override
+	protected void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids) {
+		S2CPacketTypeCallback.REGISTERED.invoker().accept(ids);
+	}
+
+	@Override
+	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
+		S2CPacketTypeCallback.UNREGISTERED.invoker().accept(ids);
 	}
 }

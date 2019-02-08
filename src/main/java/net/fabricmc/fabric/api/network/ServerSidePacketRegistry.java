@@ -18,8 +18,7 @@ package net.fabricmc.fabric.api.network;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.fabricmc.fabric.impl.network.ClientPacketRegistryImpl;
-import net.fabricmc.fabric.impl.network.ServerPacketRegistryImpl;
+import net.fabricmc.fabric.impl.network.ServerSidePacketRegistryImpl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
@@ -28,8 +27,8 @@ import net.minecraft.util.PacketByteBuf;
 /**
  * The client->server packet registry.
  */
-public interface ServerPacketRegistry extends PacketRegistry {
-	static final ServerPacketRegistry INSTANCE = new ServerPacketRegistryImpl();
+public interface ServerSidePacketRegistry extends PacketRegistry {
+	static final ServerSidePacketRegistry INSTANCE = new ServerSidePacketRegistryImpl();
 
 	boolean canPlayerReceive(PlayerEntity player, Identifier id);
 

@@ -17,13 +17,9 @@
 package net.fabricmc.fabric.impl.network;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 
-/**
- * Helper interface containing getters for SPacketCustomPayload
- * which were omitted from the compiled game.
- */
-public interface SPacketCustomPayloadAccessor {
-	Identifier getChannel();
-	PacketByteBuf getData();
+class PacketTypes {
+	static final Identifier BRAND = new Identifier("minecraft:brand");
+	static final Identifier REGISTER = new Identifier("minecraft:register");
+	static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
 }

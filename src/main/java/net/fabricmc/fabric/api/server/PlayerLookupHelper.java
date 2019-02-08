@@ -34,7 +34,7 @@ public interface PlayerLookupHelper {
 	}
 
 	static PlayerLookupHelper get(MinecraftServer server) {
-		return PlayerLookupHelperImpl.get(server);
+		return server == null ? null : PlayerLookupHelperImpl.get(server);
 	}
 
 	Stream<PlayerEntity> players();

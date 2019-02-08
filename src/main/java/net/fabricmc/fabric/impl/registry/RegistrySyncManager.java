@@ -20,10 +20,8 @@ import com.google.common.collect.ImmutableSet;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.network.ClientPacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerPacketRegistry;
-import net.minecraft.client.network.packet.CustomPayloadClientPacket;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
@@ -50,7 +48,7 @@ public final class RegistrySyncManager {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(toTag(true));
 
-		return ServerPacketRegistry.INSTANCE.toPacket(ID, buf);
+		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
 	}
 
 	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept) {

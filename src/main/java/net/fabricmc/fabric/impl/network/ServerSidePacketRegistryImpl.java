@@ -18,8 +18,10 @@ package net.fabricmc.fabric.impl.network;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
 import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerPacketRegistry;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.server.PlayerLookupHelper;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
@@ -28,10 +30,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.WeakHashMap;
 
-public class ServerPacketRegistryImpl extends PacketRegistryImpl implements ServerPacketRegistry {
+public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
 	private static final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
 
 	@Override
@@ -60,16 +63,34 @@ public class ServerPacketRegistryImpl extends PacketRegistryImpl implements Serv
 
 	@Override
 	protected void onRegister(Identifier id) {
-		// TODO: allow dynamic
+		PlayerLookupHelper helper = PlayerLookupHelper.get();
+		if (helper != null) {
+			Packet<?> packet = createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id));
+			helper.players().forEach((p) -> sendToPlayer(p, packet));
+		}
 	}
 
 	@Override
 	protected void onUnregister(Identifier id) {
-		// TODO: allow dynamic
+		PlayerLookupHelper helper = PlayerLookupHelper.get();
+		if (helper != null) {
+			Packet<?> packet = createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id));
+			helper.players().forEach((p) -> sendToPlayer(p, packet));
+		}
 	}
 
 	@Override
 	protected Collection<Identifier> getIdCollectionFor(PacketContext context) {
 		return playerPayloadIds.computeIfAbsent(context.getPlayer(), (p) -> new HashSet<>());
+	}
+
+	@Override
+	protected void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids) {
+		C2SPacketTypeCallback.REGISTERED.invoker().accept(context.getPlayer(), ids);
+	}
+
+	@Override
+	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
+		C2SPacketTypeCallback.UNREGISTERED.invoker().accept(context.getPlayer(), ids);
 	}
 }
