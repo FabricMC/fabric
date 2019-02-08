@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.network;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.fabricmc.fabric.api.server.PlayerLookupHelper;
+import net.fabricmc.fabric.api.server.PlayerLookup;
 import net.fabricmc.fabric.impl.network.ServerSidePacketRegistryImpl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
@@ -33,7 +33,7 @@ import net.minecraft.util.PacketByteBuf;
  * - registering server-side packet receivers (client -> server packets)
  * - sending packets to clients (server -> client packets).
  *
- * For iterating over clients in a server, see {@link PlayerLookupHelper}.
+ * For iterating over clients in a server, see {@link PlayerLookup}.
  */
 public interface ServerSidePacketRegistry extends PacketRegistry {
 	static final ServerSidePacketRegistry INSTANCE = new ServerSidePacketRegistryImpl();

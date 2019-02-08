@@ -21,7 +21,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerLookupHelper;
+import net.fabricmc.fabric.api.server.PlayerLookup;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
@@ -63,7 +63,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	protected void onRegister(Identifier id) {
-		PlayerLookupHelper helper = PlayerLookupHelper.get();
+		PlayerLookup helper = PlayerLookup.get();
 		if (helper != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id));
 			helper.players().forEach((p) -> sendToPlayer(p, packet));
@@ -72,7 +72,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	protected void onUnregister(Identifier id) {
-		PlayerLookupHelper helper = PlayerLookupHelper.get();
+		PlayerLookup helper = PlayerLookup.get();
 		if (helper != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id));
 			helper.players().forEach((p) -> sendToPlayer(p, packet));
