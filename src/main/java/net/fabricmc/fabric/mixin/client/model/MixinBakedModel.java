@@ -20,25 +20,42 @@ import java.util.Random;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.fabricmc.fabric.api.client.model.fabric.TerrainMeshProducer;
+import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
 import net.fabricmc.fabric.api.client.model.fabric.ModelBlockView;
 import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ExtendedBlockView;
 
 /**
- * Avoids instanceof checks for baked models.
+ * Avoids instanceof checks and enables consistent code path for all baked models.
  */
 @Mixin(BakedModel.class)
-public interface MixinBakedModel extends TerrainMeshProducer {
+public interface MixinBakedModel extends FabricBakedModel {
     @Override
-    public default void produceQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+    public default boolean isVanillaModel() {
+        return true;
+    }
+    
+    @Override
+    public default void produceTerrainQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
     
     @Override
-    public default boolean isVanillaProducer() {
-        return true;
+    default void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context) {
+        context.fallbackConsumer().accept((BakedModel)this);        
+    }
+
+    @Override
+    default void produceEntityQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+        context.fallbackConsumer().accept((BakedModel)this);
+    }
+
+    @Override
+    default void produceFeatureQuads(BlockState state, Random random, long seed, RenderContext context) {
+        context.fallbackConsumer().accept((BakedModel)this);
     }
 }
