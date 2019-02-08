@@ -14,21 +14,40 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.api.tag;
 
-import net.minecraft.block.Block;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-/**
- * Block tags provided by Fabric.
- */
-public class FabricBlockTags {
-	private FabricBlockTags() {
+import java.util.Collection;
+
+public class TagDelegate<T> extends Tag<T> {
+	protected Tag<T> delegate;
+
+	public TagDelegate(Identifier id, Tag<T> delegate) {
+		super(id);
+		this.delegate = delegate;
+	}
+
+	protected void onAccess() {
 
 	}
 
-	private static Tag<Block> register(String id) {
-		return TagRegistry.block(new Identifier("fabric", id));
+	@Override
+	public boolean contains(T var1) {
+		onAccess();
+		return delegate.contains(var1);
+	}
+
+	@Override
+	public Collection<T> values() {
+		onAccess();
+		return delegate.values();
+	}
+
+	@Override
+	public Collection<Tag.Entry<T>> entries() {
+		onAccess();
+		return delegate.entries();
 	}
 }

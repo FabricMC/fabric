@@ -22,9 +22,11 @@ import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerLookup;
+import net.fabricmc.loader.FabricLoader;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -63,19 +65,19 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	protected void onRegister(Identifier id) {
-		PlayerLookup helper = PlayerLookup.get();
-		if (helper != null) {
+		MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
+		if (server != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id));
-			helper.players().forEach((p) -> sendToPlayer(p, packet));
+			PlayerLookup.all(server).forEach((p) -> sendToPlayer(p, packet));
 		}
 	}
 
 	@Override
 	protected void onUnregister(Identifier id) {
-		PlayerLookup helper = PlayerLookup.get();
-		if (helper != null) {
+		MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
+		if (server != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id));
-			helper.players().forEach((p) -> sendToPlayer(p, packet));
+			PlayerLookup.all(server).forEach((p) -> sendToPlayer(p, packet));
 		}
 	}
 

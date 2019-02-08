@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.api.tag;
 
-import net.minecraft.item.Item;
+import net.minecraft.block.Block;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 /**
- * Item tags provdied by Fabric.
+ * Block tags provided by Fabric.
  */
-public class FabricItemTags {
-	public static final Tag<Item> AXES = register("axes");
-	public static final Tag<Item> HOES = register("hoes");
-	public static final Tag<Item> PICKAXES = register("pickaxes");
-	public static final Tag<Item> SHOVELS = register("shovels");
-	public static final Tag<Item> SWORDS = register("swords");
-
-	private FabricItemTags() {
+public class FabricBlockTags {
+	private FabricBlockTags() {
 
 	}
 
-	private static Tag<Item> register(String id) {
-		return TagRegistry.item(new Identifier("fabric", id));
+	private static Tag<Block> register(String id) {
+		return TagRegistry.block(new Identifier("fabric", id));
 	}
 }

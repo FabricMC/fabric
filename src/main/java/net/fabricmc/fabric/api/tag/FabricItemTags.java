@@ -14,40 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.api.tag;
 
+import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
+/**
+ * Item tags provdied by Fabric.
+ */
+public class FabricItemTags {
+	public static final Tag<Item> AXES = register("axes");
+	public static final Tag<Item> HOES = register("hoes");
+	public static final Tag<Item> PICKAXES = register("pickaxes");
+	public static final Tag<Item> SHOVELS = register("shovels");
+	public static final Tag<Item> SWORDS = register("swords");
 
-public class TagDelegate<T> extends Tag<T> {
-	protected Tag<T> delegate;
+	private FabricItemTags() {
 
-	public TagDelegate(Identifier id, Tag<T> delegate) {
-		super(id);
-		this.delegate = delegate;
 	}
 
-	protected void onAccess() {
-
-	}
-
-	@Override
-	public boolean contains(T var1) {
-		onAccess();
-		return delegate.contains(var1);
-	}
-
-	@Override
-	public Collection<T> values() {
-		onAccess();
-		return delegate.values();
-	}
-
-	@Override
-	public Collection<Tag.Entry<T>> entries() {
-		onAccess();
-		return delegate.entries();
+	private static Tag<Item> register(String id) {
+		return TagRegistry.item(new Identifier("fabric", id));
 	}
 }
