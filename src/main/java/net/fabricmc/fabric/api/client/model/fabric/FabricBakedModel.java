@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference;
 import java.util.Random;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.block.BlockRenderManager;
+import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -133,7 +133,7 @@ public interface FabricBakedModel {
      * Called to render block models with world state outside of chunk rebuild or block entity rendering.
      * Typically this happens when the block is being rendered as an entity, not as a block placed in the world.
      * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
-     * should invoke this for all calls to {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, ExtendedBlockView, net.minecraft.client.render.BufferBuilder, Random)}
+     * should invoke this for all calls to {@link BlockModelRenderer#tesselate(ExtendedBlockView, BakedModel, BlockState, BlockPos, net.minecraft.client.render.BufferBuilder, boolean, Random, long)}
      * that occur outside of chunk rebuilds to allow for features added by mods, unless 
      * {@link #isVanillaModel()} returns true.<p>
      * 
