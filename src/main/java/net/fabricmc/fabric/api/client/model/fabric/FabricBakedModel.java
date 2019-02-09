@@ -157,21 +157,6 @@ public interface FabricBakedModel {
     void produceEntityQuads( ExtendedBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
     
     /**
-     * Called to render block models when world state is not available and {@link #isVanillaModel()} 
-     * returns false. Typically this happens when the block is being rendered as a "feature" that is
-     * part of a larger entity. Two places where this happens are blocks held by Endermen and blocks 
-     * placed in a mine cart.<p>
-     * 
-     * Renderer will honor enhanced rendering features in the provided quads, but for
-     * models with appearance that varies based on world state the model author will 
-     * have to determine what static appearance is appropriate for these situations.<p>
-     * 
-     * While this method is generally called from the main client thread, best practice will
-     * be to make implementations thread-safe.
-     */
-    void produceFeatureQuads(BlockState state, Random random, long seed, RenderContext context);
-    
-    /**
      * Allows renderers (and potentially compound models) to optimize caching of model output
      * by identifying the inputs that affect model appearance. This is meant to be used in a 
      * terrain-rendering context.<p>
