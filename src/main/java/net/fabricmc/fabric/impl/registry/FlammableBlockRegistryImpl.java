@@ -44,8 +44,6 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Ident
 	private final Map<Block, FlammableBlockRegistry.Entry> registeredEntriesBlock = new HashMap<>();
 	private final Map<Tag<Block>, FlammableBlockRegistry.Entry> registeredEntriesTag = new HashMap<>();
 	private final Map<Block, FlammableBlockRegistry.Entry> computedEntries = new HashMap<>();
-	private final Object2IntMap<Block> computedBurnChances = new Object2IntOpenHashMap<>();
-	private final Object2IntMap<Block> computedSpreadChances = new Object2IntOpenHashMap<>();
 	private final Identifier id;
 	private final Block key;
 	private boolean tagsPresent = false;
@@ -79,14 +77,14 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Ident
 		}
 		computedEntries.putAll(registeredEntriesBlock);
 
-		computedBurnChances.clear();
+		/* computedBurnChances.clear();
 		computedSpreadChances.clear();
 
 		for (Block block : computedEntries.keySet()) {
 			FlammableBlockRegistry.Entry entry = computedEntries.get(block);
 			computedBurnChances.put(block, entry.getBurnChance());
 			computedSpreadChances.put(block, entry.getSpreadChance());
-		}
+		} */
 	}
 
 	// User-facing fire registry interface - queries vanilla fire block
