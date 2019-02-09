@@ -53,9 +53,4 @@ public interface MixinBakedModel extends FabricBakedModel {
     default void produceEntityQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
-
-    @Override
-    default void produceFeatureQuads(BlockState state, Random random, long seed, RenderContext context) {
-        context.fallbackConsumer().accept((BakedModel)this);
-    }
 }
