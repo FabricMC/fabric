@@ -125,19 +125,6 @@ public interface FabricBakedModel {
     void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context);
     
     /**
-     * Purpose and function is similar to {@link #getDamageModel(ExtendedBlockView, BlockState, BlockPos)}.
-     * Called when an item model has a "glow". The result, if non-null, is used to render
-     * a shimmering, translucent overlay effect on the item.  If null, then the model returned
-     * by {@link BakedModel#getItemPropertyOverrides()} will be used, which is the normal behavior.<p>
-     * 
-     * Useful when a model outputs variable, dynamic geometry via {@link #produceItemQuads(ItemStack, Random, long, RenderContext)}
-     * and also accepts enchantments.  
-     */
-    default BakedModel getItemGlowModel(ItemStack stack) {
-        return null;
-    }
-    
-    /**
      * Called to render block models with world state outside of chunk rebuild or block entity rendering.
      * Typically this happens when the block is being rendered as an entity, not as a block placed in the world.
      * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
