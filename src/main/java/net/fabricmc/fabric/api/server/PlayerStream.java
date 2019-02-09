@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.server;
 
 import net.fabricmc.fabric.impl.server.EntityTrackerStreamAccessor;
-import net.fabricmc.loader.FabricLoader;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
@@ -31,13 +31,22 @@ import net.minecraft.world.chunk.ChunkPos;
 
 import java.util.stream.Stream;
 
-public final class PlayerLookup {
-	private PlayerLookup() {
+/**
+ * Helper streams for looking up players on a server.
+ *
+ * In general, most of these methods will only function with a {@link ServerWorld} instance.
+ */
+public final class PlayerStream {
+	private PlayerStream() {
 
 	}
 
 	public static Stream<ServerPlayerEntity> all(MinecraftServer server) {
 		return server.getPlayerManager().getPlayerList().stream();
+	}
+
+	public static Stream<PlayerEntity> world(World world) {
+		return world.players.stream();
 	}
 
 	public static Stream<PlayerEntity> watching(World world, ChunkPos pos) {
@@ -55,7 +64,9 @@ public final class PlayerLookup {
 	 * resulting stream.
 	 */
 	@SuppressWarnings("JavaDoc")
-	public static Stream<PlayerEntity> watching(World world, Entity entity) {
+	public static Stream<PlayerEntity> watching(Entity entity) {
+		World world = entity.getEntityWorld();
+
 		if (world instanceof ServerWorld) {
 			EntityTracker tracker = ((ServerWorld) world).getEntityTracker();
 			if (tracker instanceof EntityTrackerStreamAccessor) {
@@ -66,6 +77,10 @@ public final class PlayerLookup {
 
 		// fallback
 		return watching(world, new ChunkPos((int) (entity.x / 16.0D), (int) (entity.z / 16.0D)));
+	}
+
+	public static Stream<PlayerEntity> watching(BlockEntity entity) {
+		return watching(entity.getWorld(), entity.getPos());
 	}
 
 	public static Stream<PlayerEntity> watching(World world, BlockPos pos) {
@@ -80,9 +95,5 @@ public final class PlayerLookup {
 	public static Stream<PlayerEntity> around(World world, BlockPos pos, double radius) {
 		double radiusSq = radius * radius;
 		return world(world).filter((p) -> p.squaredDistanceToCenter(pos) <= radiusSq);
-	}
-
-	public static Stream<PlayerEntity> world(World world) {
-		return world.players.stream();
 	}
 }

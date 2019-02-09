@@ -21,7 +21,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.server.PlayerLookup;
+import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.client.network.packet.CustomPayloadClientPacket;
 import net.minecraft.entity.player.PlayerEntity;
@@ -68,7 +68,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 		MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
 		if (server != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id));
-			PlayerLookup.all(server).forEach((p) -> sendToPlayer(p, packet));
+			PlayerStream.all(server).forEach((p) -> sendToPlayer(p, packet));
 		}
 	}
 
@@ -77,7 +77,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 		MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
 		if (server != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id));
-			PlayerLookup.all(server).forEach((p) -> sendToPlayer(p, packet));
+			PlayerStream.all(server).forEach((p) -> sendToPlayer(p, packet));
 		}
 	}
 
