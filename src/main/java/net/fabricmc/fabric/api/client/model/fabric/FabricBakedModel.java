@@ -121,6 +121,11 @@ public interface FabricBakedModel {
      * on the <em>result</em> of  {@link #getItemPropertyOverrides()}.  However, that 
      * method can simply return the base model because the output from this method will
      * be used for rendering.<p>
+     * 
+     * Renderer implementations should also use this method to obtain the quads used
+     * for item enchantment glint rendering.  This means models can put geometric variation
+     * logic here, instead of returning every possible shape from {@link #getItemPropertyOverrides()}
+     * as vanilla baked models.
      */
     void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context);
     
