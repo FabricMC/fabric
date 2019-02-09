@@ -27,13 +27,15 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
-public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, IdentifiableResourceReloadListener {
+public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, IdentifiableResourceReloadListener<Void> {
 	private static final FlammableBlockRegistry.Entry REMOVED = new FlammableBlockRegistry.Entry(0, 0);
 	private static final Map<Block, FlammableBlockRegistryImpl> REGISTRIES = new HashMap<>();
 	private static final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
@@ -55,7 +57,13 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Ident
 	}
 
 	@Override
-	public void onResourceReload(ResourceManager var1) {
+	public CompletableFuture prepare(ResourceManager var1, Profiler var2) {
+		return CompletableFuture.completedFuture(null);
+	}
+
+	// TODO: Asynchronous?
+	@Override
+	public void apply(ResourceManager var1, Void var2, Profiler var3) {
 		reload();
 		tagsPresent = true;
 	}
