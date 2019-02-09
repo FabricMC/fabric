@@ -170,4 +170,44 @@ public interface FabricBakedModel {
      * be to make implementations thread-safe.
      */
     void produceFeatureQuads(BlockState state, Random random, long seed, RenderContext context);
+    
+    /**
+     * Allows renderers (and potentially compound models) to optimize caching of model output
+     * by identifying the inputs that affect model appearance. This is meant to be used in a 
+     * terrain-rendering context.<p>
+     * 
+     * The value should be {@link #ALWAYS_CACHE}, {@link #NEVER_CACHE} or some additive combination
+     * of the VARY_BY_XXXX constants defined below.<p>
+     * 
+     * It not required that models implement this feature, but models with complex meshes that could 
+     * be cached should consider doing so.  Similarly, renderers are not required to implement
+     * a caching feature.
+     */
+    default int cacheFlags() {
+        return NEVER_CACHE;
+    }
+    
+    /** Model is invariant and can always be safely cached. See {@link #cacheFlags()} */
+    public static final int ALWAYS_CACHE = 0;
+    
+    /** Model output depends on block state input. See {@link #cacheFlags()} */
+    public static final int VARY_BY_BLOCKSTATE = 1;
+    
+    /** Model output depends on random seed (which in turn depends on position). See {@link #cacheFlags()} */
+    public static final int VARY_BY_SEED = 2;
+    
+    /** Model output depends on position values not captured by the random seed. See {@link #cacheFlags()} */
+    public static final int VARY_BY_POS = 4;
+    
+    /** Model output depends on the state of directly adjacent neighbor blocks. See {@link #cacheFlags()} */
+    public static final int VARY_BY_ADJACENT = 8;
+    
+    /** Model output depends on the state of diagonally adjacent neighbor blocks. See {@link #cacheFlags()} */
+    public static final int VARY_BY_DIAGONAL = 16;
+    
+    /** Model output depends on {@link DynamicModelBlockEntity#getDynamicModelData()}. See {@link #cacheFlags()} */
+    public static final int VARY_BY_BLOCK_ENTITY = 32;
+    
+    /** Model output is non-deterministic and should never be cached. See {@link #cacheFlags()} */
+    public static final int NEVER_CACHE = -1;
 }
