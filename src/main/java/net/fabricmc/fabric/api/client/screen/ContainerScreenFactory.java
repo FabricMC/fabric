@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gui;
+package net.fabricmc.fabric.api.client.screen;
 
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
 
 @FunctionalInterface
-public interface GuiFactory<C extends Container> {
+public interface ContainerScreenFactory<C extends Container> {
 
 	ContainerScreen create(C container);
 

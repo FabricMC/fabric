@@ -18,7 +18,7 @@ package net.fabricmc.fabric.containers;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
+import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.text.StringTextComponent;
@@ -30,16 +30,16 @@ public class ContainerModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		//Registers a gui factory that opens our example gui, this reads the block pos from the buffer
-		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {
+		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
 			return new ExampleContainerScreen(syncId, pos, player);
 		});
 
 		//Registers a gui factory that opens our example gui, this uses the container created by ContainerProviderRegistry
-		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER_2, ExampleContainerScreen2::new);
+		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER_2, ExampleContainerScreen2::new);
 
 		//Registers a gui factory that opens our example inventory gui
-		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_INVENTORY_CONTAINER, ExampleInventoryContainerScreen::new);
+		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_INVENTORY_CONTAINER, ExampleInventoryContainerScreen::new);
 	}
 
 	//A container gui that shows the block pos that was sent
@@ -59,7 +59,7 @@ public class ContainerModClient implements ClientModInitializer {
 	}
 
 
-	//A container gui that shows how you can take in a container provided by a GuiFactory
+	//A container gui that shows how you can take in a container provided by a ContainerScreenFactory
 	public static class ExampleContainerScreen2 extends ContainerScreen<ContainerMod.ExampleContainer> {
 
 		BlockPos pos;

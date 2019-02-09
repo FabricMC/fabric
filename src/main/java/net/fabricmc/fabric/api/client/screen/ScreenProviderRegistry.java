@@ -14,27 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gui;
+package net.fabricmc.fabric.api.client.screen;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.impl.client.gui.GuiProviderImpl;
+import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.util.Identifier;
 
-public interface GuiProviderRegistry {
+public interface ScreenProviderRegistry {
 
-	GuiProviderRegistry INSTANCE = GuiProviderImpl.INSTANCE;
+	ScreenProviderRegistry INSTANCE = ScreenProviderRegistryImpl.INSTANCE;
 
 	/**
 	 *
 	 * Register a "Container -> ContainerScreen" factory. This is used only on the client side.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
-	 * @param guiFactory the supplier that should be used to create the new gui
+	 * @param containerScreenFactory the supplier that should be used to create the new gui
 	 */
-	<C extends Container> void registerFactory(Identifier identifier, GuiFactory<C> guiFactory);
+	<C extends Container> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory);
 
 	/**
 	 *

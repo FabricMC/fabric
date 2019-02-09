@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.impl.client.gui.GuiProviderImpl;
+import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.fabricmc.fabric.api.network.CustomPayloadPacketRegistry;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.client.MinecraftClient;
@@ -30,6 +30,6 @@ public class FabricAPIClientInitializer implements ClientModInitializer {
 			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
 		});
 
-		((GuiProviderImpl)GuiProviderImpl.INSTANCE).init();
+		((ScreenProviderRegistryImpl) ScreenProviderRegistryImpl.INSTANCE).init();
 	}
 }
