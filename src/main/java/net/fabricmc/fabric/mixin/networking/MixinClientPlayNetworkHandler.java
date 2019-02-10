@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
 import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
+import net.fabricmc.fabric.impl.network.PacketTypes;
 import net.minecraft.class_2901;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
@@ -51,6 +52,14 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	@Inject(at = @At("RETURN"), method = "onGameJoin")
 	public void onGameJoin(GameJoinClientPacket packet, CallbackInfo info) {
 		sendPacket(PacketRegistryImpl.createInitialRegisterPacket(ClientSidePacketRegistry.INSTANCE));
+	}
+
+	// Optional hook: it only removes a warning message.
+	@Inject(method = "onCustomPayload", at = @At(value = "CONSTANT", args = "stringValue=Unknown custom packed identifier: {}"), cancellable = true, require = 0)
+	public void onCustomPayloadNotFound(CustomPayloadClientPacket packet, CallbackInfo info) {
+		if (packet.getChannel().equals(PacketTypes.REGISTER) || packet.getChannel().equals(PacketTypes.UNREGISTER)) {
+			info.cancel();
+		}
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)

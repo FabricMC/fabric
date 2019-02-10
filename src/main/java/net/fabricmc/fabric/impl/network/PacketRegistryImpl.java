@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.network;
 
+import com.google.common.base.Charsets;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
@@ -25,6 +26,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
@@ -67,8 +69,14 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 	protected Packet<?> createRegisterTypePacket(Identifier id, Collection<Identifier> ids) {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		boolean first = true;
 		for (Identifier a : ids) {
-			buf.writeString(a.toString());
+			if (!first) {
+				buf.writeByte(0);
+			} else {
+				first = false;
+			}
+			buf.writeBytes(a.toString().getBytes(StandardCharsets.US_ASCII));
 		}
 		return toPacket(id, buf);
 	}
@@ -84,9 +92,28 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	public boolean accept(Identifier id, PacketContext context, PacketByteBuf buf) {
 		if (id.equals(PacketTypes.REGISTER) || id.equals(PacketTypes.UNREGISTER)) {
 			Collection<Identifier> ids = new HashSet<>();
-			while (buf.readerIndex() < buf.writerIndex() /* TODO: check correctness */) {
-				Identifier newId = new Identifier(buf.readString(32767));
-				ids.add(newId);
+
+			{
+				StringBuilder sb = new StringBuilder();
+				char c;
+
+				while (buf.readerIndex() < buf.writerIndex()) {
+					c = (char) buf.readByte();
+					if (c == 0) {
+						String s = sb.toString();
+						if (!s.isEmpty()) {
+							ids.add(new Identifier(s));
+						}
+						sb = new StringBuilder();
+					} else {
+						sb.append(c);
+					}
+				}
+
+				String s = sb.toString();
+				if (!s.isEmpty()) {
+					ids.add(new Identifier(s));
+				}
 			}
 
 			Collection<Identifier> target = getIdCollectionFor(context);
