@@ -17,8 +17,9 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.block.ContextSensitivePickable;
-import net.fabricmc.fabric.api.event.client.player.ClientPickItemCallback;
+import net.fabricmc.fabric.api.block.BlockPickInteractionAware;
+import net.fabricmc.fabric.api.entity.EntityPickInteractionAware;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
@@ -38,20 +39,20 @@ public class FabricAPIClientInitializer implements ClientModInitializer {
 			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
 		});
 
-		ClientPickItemCallback.EVENT.register(((player, result, container) -> {
+		ClientPickBlockCallback.EVENT.register(((player, result, container) -> {
 			if (result instanceof BlockHitResult) {
 				BlockView view = player.getEntityWorld();
 				BlockPos pos = ((BlockHitResult) result).getBlockPos();
 				BlockState state = view.getBlockState(pos);
 
-				if (state.getBlock() instanceof ContextSensitivePickable) {
-					container.setStack(((ContextSensitivePickable) state.getBlock()).getPickStack(state, view, pos, player, result));
+				if (state.getBlock() instanceof BlockPickInteractionAware) {
+					container.setStack(((BlockPickInteractionAware) state.getBlock()).getPickedStack(state, view, pos, player, result));
 				}
 			} else if (result instanceof EntityHitResult) {
 				Entity entity = ((EntityHitResult) result).getEntity();
 
-				if (entity instanceof net.fabricmc.fabric.api.entity.ContextSensitivePickable) {
-					container.setStack(((net.fabricmc.fabric.api.entity.ContextSensitivePickable) entity).getPickStack(player, result));
+				if (entity instanceof EntityPickInteractionAware) {
+					container.setStack(((EntityPickInteractionAware) entity).getPickedStack(player, result));
 				}
 			}
 

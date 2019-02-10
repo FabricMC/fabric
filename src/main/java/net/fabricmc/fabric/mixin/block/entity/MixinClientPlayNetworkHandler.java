@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.block.entity;
 
-import net.fabricmc.fabric.api.block.entity.ClientSerializable;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -39,9 +39,9 @@ public class MixinClientPlayNetworkHandler {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/BlockEntityUpdateClientPacket;getActionId()I", ordinal = 0), method = "onBlockEntityUpdate", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	public void onBlockEntityUpdate(BlockEntityUpdateClientPacket packet, CallbackInfo info, BlockEntity entity) {
-		if (entity instanceof ClientSerializable) {
+		if (entity instanceof BlockEntityClientSerializable) {
 			if (packet.getActionId() == 127) {
-				ClientSerializable serializable = (ClientSerializable) entity;
+				BlockEntityClientSerializable serializable = (BlockEntityClientSerializable) entity;
 				String id = packet.getCompoundTag().getString("id");
 				if (id != null) {
 					Identifier otherIdObj = BlockEntityType.getId(entity.getType());
@@ -65,8 +65,8 @@ public class MixinClientPlayNetworkHandler {
 
 	@Redirect(method = "onChunkData", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;fromTag(Lnet/minecraft/nbt/CompoundTag;)V"))
 	public void deserializeBlockEntityChunkData(BlockEntity entity, CompoundTag tag) {
-		if (entity instanceof ClientSerializable) {
-			((ClientSerializable) entity).fromClientTag(tag);
+		if (entity instanceof BlockEntityClientSerializable) {
+			((BlockEntityClientSerializable) entity).fromClientTag(tag);
 		} else {
 			entity.fromTag(tag);
 		}

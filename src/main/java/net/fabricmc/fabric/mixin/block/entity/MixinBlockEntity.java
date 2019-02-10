@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.block.entity;
 
-import net.fabricmc.fabric.api.block.entity.ClientSerializable;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateClientPacket;
@@ -41,7 +41,7 @@ public abstract class MixinBlockEntity {
 	public void toUpdatePacket(CallbackInfoReturnable<BlockEntityUpdateClientPacket> info) {
 		Object self = (Object) this;
 
-		if (self instanceof ClientSerializable) {
+		if (self instanceof BlockEntityClientSerializable) {
 			// Mojang's serialization of x/y/z into the update packet is redundant,
 			// as we have a separate fromClientTag() we don't do it.
 			// However, we use the "id" field for type discernment, as actionId
@@ -55,7 +55,7 @@ public abstract class MixinBlockEntity {
 			}
 
 			tag.putString("id", entityId.toString());
-			tag = ((ClientSerializable) self).toClientTag(tag);
+			tag = ((BlockEntityClientSerializable) self).toClientTag(tag);
 			info.setReturnValue(new BlockEntityUpdateClientPacket(getPos(), 127, tag));
 			info.cancel();
 		}
@@ -65,8 +65,8 @@ public abstract class MixinBlockEntity {
 	public void toInitialChunkDataTag(CallbackInfoReturnable<CompoundTag> info) {
 		Object self = (Object) this;
 
-		if (self instanceof ClientSerializable && info.getReturnValue() != null) {
-			info.setReturnValue(((ClientSerializable) self).toClientTag(info.getReturnValue()));
+		if (self instanceof BlockEntityClientSerializable && info.getReturnValue() != null) {
+			info.setReturnValue(((BlockEntityClientSerializable) self).toClientTag(info.getReturnValue()));
 		}
 	}
 }

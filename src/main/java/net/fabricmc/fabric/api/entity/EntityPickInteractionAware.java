@@ -20,6 +20,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
 
-public interface ContextSensitivePickable {
-	ItemStack getPickStack(/* nullable */ PlayerEntity player, /* nullable */ HitResult result);
+public interface EntityPickInteractionAware {
+	ItemStack getPickedStack(/* nullable */ PlayerEntity player, /* nullable */ HitResult result);
 }

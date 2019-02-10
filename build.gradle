@@ -26,7 +26,7 @@ targetCompatibility = 1.8
 
 archivesBaseName = "fabric"
 
-def baseVersion = "0.1.5"
+def baseVersion = "0.2.0"
 def mcVersion = "19w06a"
 
 def ENV = System.getenv()

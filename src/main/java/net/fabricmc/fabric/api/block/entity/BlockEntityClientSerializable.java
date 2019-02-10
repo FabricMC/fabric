@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.block;
+package net.fabricmc.fabric.api.block.entity;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.hit.HitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.nbt.CompoundTag;
 
-public interface ContextSensitivePickable {
-	ItemStack getPickStack(BlockState state, BlockView view, BlockPos pos, /* nullable */ PlayerEntity player, /* nullable */ HitResult result);
+/**
+ * Implement this interace on a BlockEntity which you would like to be
+ * synchronized with the client side using the built-in engine methods.
+ */
+public interface BlockEntityClientSerializable {
+	void fromClientTag(CompoundTag tag);
+	CompoundTag toClientTag(CompoundTag tag);
 }

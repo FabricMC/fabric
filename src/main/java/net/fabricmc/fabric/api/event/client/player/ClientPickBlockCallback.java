@@ -30,7 +30,7 @@ import net.minecraft.util.hit.HitResult;
  * wish for execution to continue, return false to cancel the item picking
  * operation (for example, if you want to route to the server side, etc.)
  */
-public interface ClientPickItemCallback {
+public interface ClientPickBlockCallback {
 	public static final class Container {
 		private ItemStack stack;
 
@@ -47,9 +47,9 @@ public interface ClientPickItemCallback {
 		}
 	}
 
-	public static final Event<ClientPickItemCallback> EVENT = EventFactory.arrayBacked(ClientPickItemCallback.class,
+	public static final Event<ClientPickBlockCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockCallback.class,
 		(listeners) -> (player, result, container) -> {
-			for (ClientPickItemCallback event : listeners) {
+			for (ClientPickBlockCallback event : listeners) {
 				if (!event.pick(player, result, container)) {
 					return false;
 				}

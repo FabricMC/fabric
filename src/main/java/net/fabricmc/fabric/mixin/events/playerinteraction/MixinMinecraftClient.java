@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
-import net.fabricmc.fabric.api.event.client.player.ClientPickItemCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,11 +31,11 @@ public class MixinMinecraftClient {
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z", ordinal = 2), method = "doItemPick", ordinal = 0)
 	public ItemStack modifyItemPick(ItemStack stack) {
-		ClientPickItemCallback.Container ctr = new ClientPickItemCallback.Container(stack);
+		ClientPickBlockCallback.Container ctr = new ClientPickBlockCallback.Container(stack);
 		//noinspection ConstantConditions
 		MinecraftClient client = (MinecraftClient) (Object) this;
 
-		boolean toContinue = ClientPickItemCallback.EVENT.invoker().pick(client.player, client.hitResult, ctr);
+		boolean toContinue = ClientPickBlockCallback.EVENT.invoker().pick(client.player, client.hitResult, ctr);
 		if (!toContinue) {
 			fabric_itemPickCancelled = true;
 			return ItemStack.EMPTY;
