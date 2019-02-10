@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import net.fabricmc.fabric.resources.ModResourcePack;
+import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackCreator;

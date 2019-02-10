@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.registry.RegistrySyncManager;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
+import net.fabricmc.fabric.impl.network.ServerSidePacketRegistryImpl;
+import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
@@ -35,9 +38,9 @@ public abstract class MixinServerPlayNetworkHandler {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void init(MinecraftServer server, ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
-		//if (server.isDedicated()) {
-		// TODO: If integrated and local, don't send the packet
+		// TODO: If integrated and local, don't send the packet (it's ignored)
+		// TODO: Refactor out into network + move registry hook to event
+		sendPacket(PacketRegistryImpl.createInitialRegisterPacket(ServerSidePacketRegistry.INSTANCE));
 		sendPacket(RegistrySyncManager.createPacket());
-		//}
 	}
 }

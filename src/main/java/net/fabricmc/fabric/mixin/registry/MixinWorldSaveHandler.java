@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.registry.RegistrySyncManager;
-import net.fabricmc.fabric.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
+import net.fabricmc.fabric.impl.registry.RemapException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.OldWorldSaveHandler;

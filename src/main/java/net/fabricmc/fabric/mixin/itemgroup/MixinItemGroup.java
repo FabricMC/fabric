@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
-import net.fabricmc.fabric.client.itemgroup.ItemGroupExtensions;
+import net.fabricmc.fabric.impl.itemgroup.ItemGroupExtensions;
 import net.minecraft.item.ItemGroup;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

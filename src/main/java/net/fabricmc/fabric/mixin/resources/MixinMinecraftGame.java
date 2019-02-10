@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
+import com.google.common.collect.Lists;
 import net.fabricmc.fabric.impl.resources.ModResourcePackUtil;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.DefaultClientResourcePack;
+import net.minecraft.resource.DefaultResourcePack;
 import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -37,6 +40,15 @@ public class MixinMinecraftGame {
 
     @Inject(method = "reloadResources()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
     public void reloadResources(CallbackInfo info, List<ResourcePack> list) {
-        ModResourcePackUtil.appendModResourcePacks(list, ResourceType.ASSETS);
+    	List<ResourcePack> oldList = Lists.newArrayList(list);
+    	list.clear();
+    	for (int i = 0; i < oldList.size(); i++) {
+    		ResourcePack pack = oldList.get(i);
+    		list.add(pack);
+
+    		if (pack instanceof DefaultClientResourcePack) {
+			    ModResourcePackUtil.appendModResourcePacks(list, ResourceType.ASSETS);
+		    }
+	    }
     }
 }

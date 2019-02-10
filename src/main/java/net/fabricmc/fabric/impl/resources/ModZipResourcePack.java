@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import net.fabricmc.fabric.resources.ModResourcePack;
+import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.resource.ResourceNotFoundException;
 import net.minecraft.resource.ZipResourcePack;

@@ -22,6 +22,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	@Override
 	public Float get(ItemProvider item) {
@@ -46,5 +49,15 @@ public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	@Override
 	public void remove(Tag<Item> tag) {
 		throw new UnsupportedOperationException("Tags currently not supported!");
+	}
+
+	@Override
+	public void clear(ItemProvider item) {
+		throw new UnsupportedOperationException("CompostingChanceRegistry operates directly on the vanilla map - clearing not supported!");
+	}
+
+	@Override
+	public void clear(Tag<Item> tag) {
+		throw new UnsupportedOperationException("CompostingChanceRegistry operates directly on the vanilla map - clearing not supported!");
 	}
 }

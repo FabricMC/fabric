@@ -70,16 +70,18 @@ public class FuelRegistryImpl implements FuelRegistry {
 		add(tag, 0);
 	}
 
-	public void apply(Map<Item, Integer> map) {
-		for (ItemProvider item : itemCookTimes.keySet()) {
-			int time = itemCookTimes.getInt(item);
-			if (time <= 0) {
-				map.remove(item.getItem());
-			} else {
-				map.put(item.getItem(), time);
-			}
-		}
+	@Override
+	public void clear(ItemProvider item) {
+		itemCookTimes.removeInt(item);
+	}
 
+	@Override
+	public void clear(Tag<Item> tag) {
+		tagCookTimes.removeInt(tag);
+	}
+
+	public void apply(Map<Item, Integer> map) {
+		// tags take precedence before blocks
 		for (Tag<Item> tag : tagCookTimes.keySet()) {
 			int time = tagCookTimes.getInt(tag);
 			if (time <= 0) {
@@ -90,6 +92,15 @@ public class FuelRegistryImpl implements FuelRegistry {
 				for (Item i : tag.values()) {
 					map.put(i, time);
 				}
+			}
+		}
+
+		for (ItemProvider item : itemCookTimes.keySet()) {
+			int time = itemCookTimes.getInt(item);
+			if (time <= 0) {
+				map.remove(item.getItem());
+			} else {
+				map.put(item.getItem(), time);
 			}
 		}
 	}

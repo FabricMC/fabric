@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.events.tick;
 
-import net.fabricmc.fabric.events.TickEvent;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.profiler.DisableableProfiler;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,11 +29,8 @@ import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
-	@Shadow
-	private DisableableProfiler profiler;
-
 	@Inject(at = @At("RETURN"), method = "tick")
 	protected void tick(BooleanSupplier var1, CallbackInfo info) {
-		TickEvent.tick(TickEvent.SERVER, (MinecraftServer) (Object) this, this.profiler);
+		ServerTickCallback.EVENT.invoker().tick((MinecraftServer) (Object) this);
 	}
 }

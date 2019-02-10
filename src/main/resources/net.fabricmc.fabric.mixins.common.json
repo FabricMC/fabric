@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "block.MixinBlockBuilder",
+    "block.MixinFireBlock",
     "block.entity.MixinBlockEntity",
     "commands.MixinServerCommandManager",
     "container.MixinServerPlayerEntity",
@@ -20,8 +21,8 @@
     "item.MixinAbstractFurnaceBlockEntity",
     "itemgroup.MixinItemGroup",
     "misc.MixinCrashReport",
+    "networking.MixinCustomPayloadC2SPacket",
     "networking.MixinServerPlayNetworkHandler",
-    "networking.MixinSPacketCustomPayload",
     "registry.MixinBootstrap",
     "registry.MixinIdList",
     "registry.MixinIdRegistry",

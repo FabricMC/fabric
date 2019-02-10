@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.registry;
 
-import net.fabricmc.fabric.registry.RegistryListener;
 import net.minecraft.item.Item;
 import net.minecraft.item.block.BlockItem;
 import net.minecraft.util.Identifier;
