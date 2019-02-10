@@ -50,17 +50,17 @@ public interface FabricBakedModel {
      * extent the model is driven by connection with neighbor blocks or other world state.<p>
      * 
      * The RenderView parameter provides access to cached block state, fluid state, 
-     * and lighting information. Models should avoid using {@link ModelBlockView#getBlockEntity(BlockPos)}
+     * and lighting information. Models should avoid using {@link TerrainBlockView#getBlockEntity(BlockPos)}
      * to ensure thread safety because this method is called outside the main client thread.
      * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}.
-     * Look to {@link ModelBlockView#getCachedRenderData(BlockPos)} for more information.<p>
+     * Look to {@link TerrainBlockView#getCachedRenderData(BlockPos)} for more information.<p>
      * 
      * Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
      * parameter is normally initialized with the same seed prior to each face layer.
      * Model authors should note this method is called only once per block, and reseed if needed.
      * For wrapped vanilla baked models, it will probably be easier to use {@link RenderContext#fallbackModelConsumer()}.<p>
      */
-    void produceTerrainQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
+    void produceTerrainQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
 
     /**
      * When true, signals renderer this producer is a vanilla baked model without

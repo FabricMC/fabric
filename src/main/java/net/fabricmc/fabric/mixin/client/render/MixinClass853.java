@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.client.model.fabric.ModelBlockView;
+import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
 import net.fabricmc.fabric.api.client.model.fabric.DynamicModelBlockEntity;
 import net.minecraft.class_853;
 import net.minecraft.block.entity.BlockEntity;
@@ -33,7 +33,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
 @Mixin(class_853.class)
-public abstract class MixinClass853 implements ModelBlockView {
+public abstract class MixinClass853 implements TerrainBlockView {
     private HashMap<BlockPos, Object> fabric_renderDataObjects;
 
     @Inject(at = @At("RETURN"), method = "<init>")

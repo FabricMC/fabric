@@ -21,7 +21,7 @@ import java.util.Random;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
-import net.fabricmc.fabric.api.client.model.fabric.ModelBlockView;
+import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
 import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
@@ -40,7 +40,7 @@ public interface MixinBakedModel extends FabricBakedModel {
     }
     
     @Override
-    public default void produceTerrainQuads(ModelBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+    public default void produceTerrainQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
     

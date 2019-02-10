@@ -41,7 +41,7 @@ import net.minecraft.world.BlockView;
  *
  * This interface is only guaranteed to be present in the client environment.
  */
-public interface ModelBlockView extends BlockView {
+public interface TerrainBlockView extends BlockView {
     /**
      * For models associated with Block Entities that implement {@link DynamicModelBlockEntity}
      * this will be the most recent value provided by that implementation for the given block position.<p>
