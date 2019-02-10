@@ -17,11 +17,11 @@
 package net.fabricmc.fabric.mixin.client.model;
 
 import java.util.Random;
+import java.util.function.Function;
 
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
-import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
 import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
@@ -35,22 +35,17 @@ import net.minecraft.world.ExtendedBlockView;
 @Mixin(BakedModel.class)
 public interface MixinBakedModel extends FabricBakedModel {
     @Override
-    public default boolean isVanillaModel() {
+    public default boolean isVanilla() {
         return true;
     }
     
     @Override
-    public default void produceTerrainQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+    public default void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
     
     @Override
     default void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);        
-    }
-
-    @Override
-    default void produceBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
-        context.fallbackConsumer().accept((BakedModel)this);
     }
 }

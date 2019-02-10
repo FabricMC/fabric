@@ -18,9 +18,9 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import java.lang.ref.WeakReference;
 import java.util.Random;
+import java.util.function.Function;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -32,36 +32,49 @@ import net.minecraft.world.ExtendedBlockView;
  * or in addition to block state when render chunks are rebuilt.<p>
  * 
  * Note for {@link Renderer} implementors: Fabric causes BakedModel to extend this
- * interface with {@link #isVanillaModel()} == true and to produce standard vertex data. 
+ * interface with {@link #isVanilla()} == true and to produce standard vertex data. 
  * This means any BakedModel instance can be safely cast to this interface without an instanceof check.
  */
 public interface FabricBakedModel {
     /**
      * This method will be called during chunk rebuilds to generate both the static and
      * dynamic portions of a block model when the model implements this interface and
-     * {@link #isVanillaModel()} returns false. <p>
+     * {@link #isVanilla()} returns false. <p>
      * 
-     * This method will always be called exactly one time per block position 
-     * per chunk rebuild, irrespective of which or how many faces or block render layers are included 
+     * During chunk rebuild, this method will always be called exactly one time per block
+     * position, irrespective of which or how many faces or block render layers are included 
      * in the model. Models must output all quads/meshes in a single pass.<p>
      * 
-     * Renderer will handle face occlusion and filter quads on faces 
-     * obscured by neighboring blocks.  Models only need to consider "sides" to the
+     * Also called to render block models outside of chunk rebuild or block entity rendering.
+     * Typically this happens when the block is being rendered as an entity, not as a block placed in the world.
+     * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
+     * should invoke this for all calls to {@link BlockModelRenderer#tesselate(ExtendedBlockView, BakedModel, BlockState, BlockPos, net.minecraft.client.render.BufferBuilder, boolean, Random, long)}
+     * that occur outside of chunk rebuilds to allow for features added by mods, unless 
+     * {@link #isVanilla()} returns true.<p>
+     * 
+     * Outside of chunk rebuilds, this method will be called every frame. Model implementations should 
+     * rely on pre-baked meshes as much as possible and keep transformation to a minimum.  The provided 
+     * block position may be the <em>nearest</em> block position and not actual. For this reason, neighbor
+     * state lookups are best avoided or will require special handling. Block entity lookups are 
+     * likely to fail and/or give meaningless results.<p>
+     * 
+     * In all cases, renderer will handle face occlusion and filter quads on faces obscured by 
+     * neighboring blocks (if appropriate).  Models only need to consider "sides" to the
      * extent the model is driven by connection with neighbor blocks or other world state.<p>
      * 
-     * The RenderView parameter provides access to cached block state, fluid state, 
-     * and lighting information. Models should avoid using {@link TerrainBlockView#getBlockEntity(BlockPos)}
-     * to ensure thread safety because this method is called outside the main client thread.
-     * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}.
-     * Look to {@link TerrainBlockView#getCachedRenderData(BlockPos)} for more information.<p>
+     * Models should avoid using {@link TerrainBlockView#getBlockEntity(BlockPos)}
+     * to ensure thread safety because this method may be called outside the main client thread.
+     * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}
+     * and then use the provided safeAccessor function to retrieve it.  When called from the
+     * main thread, the function will simply retrieve the data directly.<p>
      * 
      * Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
      * parameter is normally initialized with the same seed prior to each face layer.
      * Model authors should note this method is called only once per block, and reseed if needed.
      * For wrapped vanilla baked models, it will probably be easier to use {@link RenderContext#fallbackModelConsumer()}.<p>
      */
-    void produceTerrainQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
-
+    void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
+    
     /**
      * When true, signals renderer this producer is a vanilla baked model without
      * any enhanced features from this API. Allows the renderer to optimize or
@@ -71,7 +84,7 @@ public interface FabricBakedModel {
      * Enhanced models that use this API should return false,
      * otherwise the API will not recognize the model.<p>
      */
-    boolean isVanillaModel(); 
+    boolean isVanilla(); 
     
     /**
      * If non-null, the result will be used to render block-breaking instead of the output
@@ -103,7 +116,7 @@ public interface FabricBakedModel {
     /**
      * This method will be called during item rendering to generate both the static and
      * dynamic portions of an item model when the model implements this interface and
-     * {@link #isVanillaModel()} returns false.<p>
+     * {@link #isVanilla()} returns false.<p>
      * 
      * Vanilla item rendering is normally very limited. It ignores lightmaps, vertex colors,
      * and vertex normals. Renderers are expected to implement enhanced features for item 
@@ -130,61 +143,12 @@ public interface FabricBakedModel {
     void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context);
     
     /**
-     * Called to render block models with world state outside of chunk rebuild or block entity rendering.
-     * Typically this happens when the block is being rendered as an entity, not as a block placed in the world.
-     * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
-     * should invoke this for all calls to {@link BlockModelRenderer#tesselate(ExtendedBlockView, BakedModel, BlockState, BlockPos, net.minecraft.client.render.BufferBuilder, boolean, Random, long)}
-     * that occur outside of chunk rebuilds to allow for features added by mods, unless 
-     * {@link #isVanillaModel()} returns true.<p>
+     * If true, model output varies based only on BlockState and random seed. If model output
+     * depends on any other inputs or is non-deterministic, must return false.<p>
      * 
-     * This method will be called every frame. Model implementations should rely on pre-baked meshes 
-     * as much as possible and keep transformation to a minimum.  The provided block position will 
-     * typically be the <em>nearest</em> block position and not actual. For this reason, neighbor
-     * state lookups are best avoided or will require special handling. Block entity lookups are 
-     * likely to fail and/or give meaningless results.<p>
-     * 
-     * While this method is generally called from the main client thread, best practice will
-     * be to make implementations thread-safe.
-     */
-    void produceBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
-    
-    /**
      * Allows renderers (and potentially compound models) to optimize caching of model output
      * by identifying the inputs that affect model appearance. This is meant to be used in a 
-     * terrain-rendering context.<p>
-     * 
-     * The value should be {@link #ALWAYS_CACHE}, {@link #NEVER_CACHE} or some additive combination
-     * of the VARY_BY_XXXX constants defined below.<p>
-     * 
-     * It not required that models implement this feature, but models with complex meshes that could 
-     * be cached should consider doing so.  Similarly, renderers are not required to implement
-     * a caching feature.
+     * terrain-rendering context.
      */
-    default int cacheFlags() {
-        return NEVER_CACHE;
-    }
-    
-    /** Model is invariant and can always be safely cached. See {@link #cacheFlags()} */
-    public static final int ALWAYS_CACHE = 0;
-    
-    /** Model output depends on block state input. See {@link #cacheFlags()} */
-    public static final int VARY_BY_BLOCKSTATE = 1;
-    
-    /** Model output depends on random seed (which in turn depends on position). See {@link #cacheFlags()} */
-    public static final int VARY_BY_SEED = 2;
-    
-    /** Model output depends on position values not captured by the random seed. See {@link #cacheFlags()} */
-    public static final int VARY_BY_POS = 4;
-    
-    /** Model output depends on the state of directly adjacent neighbor blocks. See {@link #cacheFlags()} */
-    public static final int VARY_BY_ADJACENT = 8;
-    
-    /** Model output depends on the state of diagonally adjacent neighbor blocks. See {@link #cacheFlags()} */
-    public static final int VARY_BY_DIAGONAL = 16;
-    
-    /** Model output depends on {@link DynamicModelBlockEntity#getDynamicModelData()}. See {@link #cacheFlags()} */
-    public static final int VARY_BY_BLOCK_ENTITY = 32;
-    
-    /** Model output is non-deterministic and should never be cached. See {@link #cacheFlags()} */
-    public static final int NEVER_CACHE = -1;
+    boolean isRegular();
 }
