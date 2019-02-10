@@ -21,7 +21,7 @@ import net.minecraft.world.loot.LootSupplier;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 
-import java.util.Arrays;
+import java.util.List;
 
 /**
  * An interface implemented by all {@code net.minecraft.world.loot.LootSupplier} instances when
@@ -31,22 +31,7 @@ public interface FabricLootSupplier {
 	default LootSupplier toVanilla() {
 		return (LootSupplier) this;
 	}
-	LootPool[] getPools();
-	void setPools(LootPool[] pools);
-	LootFunction[] getFunctions();
-	void setFunctions(LootFunction[] functions);
+	List<LootPool> getPools();
+	List<LootFunction> getFunctions();
 	LootContextType getType();
-
-	/**
-	 * Uses {@link #getPools()} and {@link #setPools(LootPool[])} to
-	 * add the pools to this LootSupplier.
-	 *
-	 * @param pools the pools
-	 */
-	default void addPools(LootPool... pools) {
-		LootPool[] oldPools = getPools();
-		LootPool[] newPools = Arrays.copyOf(oldPools, oldPools.length + pools.length);
-		System.arraycopy(pools, 0, newPools, oldPools.length, pools.length);
-		setPools(newPools);
-	}
 }

@@ -35,7 +35,7 @@ public class LootTableMod implements ModInitializer {
 						.withCondition(SurvivesExplosionLootCondition.method_871())
 						.build();
 
-				supplier.addPools(pool);
+				supplier.withPool(pool);
 			}
 		});
 	}

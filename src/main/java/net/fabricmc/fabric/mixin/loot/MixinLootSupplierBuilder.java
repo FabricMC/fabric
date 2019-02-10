@@ -16,44 +16,28 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import net.fabricmc.fabric.api.loot.FabricLootPool;
+import net.fabricmc.fabric.impl.loot.LootSupplierBuilderHooks;
 import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootTableRange;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.world.loot.LootSupplier;
 import net.minecraft.world.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Arrays;
 import java.util.List;
 
-@Mixin(LootPool.class)
-public abstract class MixinLootPool implements FabricLootPool {
-	@Shadow @Final private LootEntry[] entries;
-
-	@Shadow @Final private LootCondition[] conditions;
-
-	@Shadow @Final private LootFunction[] functions;
+@Mixin(LootSupplier.Builder.class)
+public class MixinLootSupplierBuilder implements LootSupplierBuilderHooks {
+	@Shadow @Final private List<LootFunction> functions;
+	@Shadow @Final private List<LootPool> pools;
 
 	@Override
-	public List<LootEntry> getEntries() {
-		return Arrays.asList(entries);
+	public List<LootPool> fabric_getPools() {
+		return pools;
 	}
 
 	@Override
-	public List<LootCondition> getConditions() {
-		return Arrays.asList(conditions);
+	public List<LootFunction> fabric_getFunctions() {
+		return functions;
 	}
-
-	@Override
-	public List<LootFunction> getFunctions() {
-		return Arrays.asList(functions);
-	}
-
-	@Accessor
-	@Override
-	public abstract LootTableRange getRolls();
 }

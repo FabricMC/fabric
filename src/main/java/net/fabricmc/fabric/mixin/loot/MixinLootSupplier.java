@@ -21,28 +21,30 @@ import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.LootSupplier;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Mixin(LootSupplier.class)
-public interface MixinLootSupplier extends FabricLootSupplier {
-	@Accessor
+public abstract class MixinLootSupplier implements FabricLootSupplier {
+	@Shadow @Final private LootPool[] pools;
+	@Shadow @Final private LootFunction[] functions;
+
 	@Override
-	LootPool[] getPools();
+	public List<LootPool> getPools() {
+		return Arrays.asList(pools);
+	}
+
+	@Override
+	public List<LootFunction> getFunctions() {
+		return Arrays.asList(functions);
+	}
 
 	@Accessor
 	@Override
-	void setPools(LootPool[] pools);
-
-	@Accessor
-	@Override
-	LootFunction[] getFunctions();
-
-	@Accessor
-	@Override
-	void setFunctions(LootFunction[] functions);
-
-	@Accessor
-	@Override
-	LootContextType getType();
+	public abstract LootContextType getType();
 }

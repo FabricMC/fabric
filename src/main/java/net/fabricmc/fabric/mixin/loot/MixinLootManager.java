@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.loot;
 
 import net.fabricmc.fabric.api.event.loot.LootTableLoadingCallback;
-import net.fabricmc.fabric.api.loot.FabricLootSupplier;
+import net.fabricmc.fabric.api.loot.FabricLootSupplierBuilder;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.loot.LootManager;
@@ -35,12 +35,20 @@ import java.util.Map;
 public class MixinLootManager {
 	@Shadow @Final private Map<Identifier, LootSupplier> suppliers;
 
-	@Inject(method = "onResourceReload", at = @At("RETURN"))
+	@Inject(method = "method_14491", at = @At("RETURN"))
 	private void onResourceReload(ResourceManager manager, CallbackInfo info) {
-		suppliers.forEach(
-				(id, supplier) -> LootTableLoadingCallback.EVENT.invoker().onLoading(
-						manager, id, (FabricLootSupplier) supplier
-				)
+		suppliers.entrySet().forEach(
+				(entry) -> {
+					Identifier id = entry.getKey();
+					LootSupplier supplier = entry.getValue();
+					FabricLootSupplierBuilder builder = FabricLootSupplierBuilder.of(supplier);
+
+					LootTableLoadingCallback.EVENT.invoker().onLoading(
+							manager, id, builder
+					);
+
+					entry.setValue(builder.create());
+				}
 		);
 	}
 }
