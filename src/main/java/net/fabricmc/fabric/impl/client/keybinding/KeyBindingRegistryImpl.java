@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.client.keybinding;
 
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

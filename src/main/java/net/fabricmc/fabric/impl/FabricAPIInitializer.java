@@ -17,30 +17,22 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.block.BreakInteractable;
-import net.fabricmc.fabric.events.PlayerInteractionEvent;
+import net.fabricmc.fabric.api.block.BlockAttackInteractionAware;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.network.ClientPlayerInteractionManager;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.MixinEnvironment;
-
-import java.util.List;
 
 public class FabricAPIInitializer implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		PlayerInteractionEvent.BREAK_BLOCK.register((player, world, hand, pos, direction) -> {
+		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			BlockState state = world.getBlockState(pos);
-			if (state instanceof BreakInteractable) {
-				if (((BreakInteractable) state).onBreakInteract(state, world, pos, player, hand, direction)) {
+			if (state instanceof BlockAttackInteractionAware) {
+				if (((BlockAttackInteractionAware) state).onAttackInteraction(state, world, pos, player, hand, direction)) {
 					return ActionResult.FAILURE;
 				}
-			} else if (state.getBlock() instanceof BreakInteractable) {
-				if (((BreakInteractable) state.getBlock()).onBreakInteract(state, world, pos, player, hand, direction)) {
+			} else if (state.getBlock() instanceof BlockAttackInteractionAware) {
+				if (((BlockAttackInteractionAware) state.getBlock()).onAttackInteraction(state, world, pos, player, hand, direction)) {
 					return ActionResult.FAILURE;
 				}
 			}

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
+import com.google.common.collect.Lists;
 import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
 import net.minecraft.resource.*;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,12 +30,15 @@ import java.util.List;
 @Mixin(ReloadableResourceManagerImpl.class)
 public class MixinReloadableResourceManagerImpl {
 	@Shadow
-	private List<ResourceReloadListener> listeners;
+	private List<ResourceReloadListener<?>> field_17935;
+	@Shadow
+	private List<ResourceReloadListener<?>> field_17936;
 	@Shadow
 	private ResourceType type;
 
 	@Inject(at = @At("HEAD"), method = "reload")
 	public void reload(List<ResourcePack> packs, CallbackInfo info) {
-		ResourceManagerHelperImpl.sort(type, listeners);
+		ResourceManagerHelperImpl.sort(type, field_17935);
+		ResourceManagerHelperImpl.sort(type, field_17936);
 	}
 }

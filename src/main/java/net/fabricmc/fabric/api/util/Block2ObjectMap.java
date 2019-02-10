@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.util;
 
 import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
 
@@ -26,4 +27,6 @@ public interface Block2ObjectMap<V> {
 	void add(Tag<Block> tag, V value);
 	void remove(Block block);
 	void remove(Tag<Block> tag);
+	void clear(Block block);
+	void clear(Tag<Block> tag);
 }

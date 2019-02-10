@@ -16,17 +16,26 @@
 
 package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.entity.EntityTrackingRegistry;
+import net.fabricmc.fabric.api.entity.EntityTrackingRegistry;
+import net.fabricmc.fabric.impl.server.EntityTrackerEntryStreamAccessor;
+import net.fabricmc.fabric.impl.server.EntityTrackerStreamAccessor;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.EntityTracker;
+import net.minecraft.server.network.EntityTrackerEntry;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.IntHashMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.stream.Stream;
+
 @Mixin(EntityTracker.class)
-public abstract class MixinEntityTracker {
+public abstract class MixinEntityTracker implements EntityTrackerStreamAccessor {
+	@Shadow
+	private IntHashMap<EntityTrackerEntry> trackedEntitiesById;
 	@Shadow
 	public abstract void add(Entity var1, int var2, int var3, boolean var4);
 
@@ -38,6 +47,16 @@ public abstract class MixinEntityTracker {
 				add(entity, entry.getTrackingDistance(), entry.getUpdateIntervalTicks(), entry.alwaysUpdateVelocity());
 				info.cancel();
 			}
+		}
+	}
+
+	@Override
+	public Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity) {
+		EntityTrackerEntry entry = trackedEntitiesById.get(entity.getEntityId());
+		if (entry != null) {
+			return ((EntityTrackerEntryStreamAccessor) entry).fabric_getTrackingPlayers();
+		} else {
+			return Stream.empty();
 		}
 	}
 }

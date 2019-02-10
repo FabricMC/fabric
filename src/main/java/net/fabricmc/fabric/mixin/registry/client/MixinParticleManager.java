@@ -17,13 +17,11 @@
 package net.fabricmc.fabric.mixin.registry.client;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.registry.RegistryListener;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
+import net.fabricmc.fabric.impl.registry.RegistryListener;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.item.Item;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

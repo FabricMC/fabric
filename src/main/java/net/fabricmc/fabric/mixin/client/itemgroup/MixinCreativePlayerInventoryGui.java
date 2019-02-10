@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.itemgroup;
 
-import net.fabricmc.fabric.client.itemgroup.CreativeGuiExtensions;
-import net.fabricmc.fabric.client.itemgroup.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.itemgroup.CreativeGuiExtensions;
+import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
 import net.minecraft.client.gui.ingame.AbstractPlayerInventoryScreen;
 import net.minecraft.client.gui.ingame.CreativePlayerInventoryScreen;
 import net.minecraft.container.Container;

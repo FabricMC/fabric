@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.commands.CommandRegistry;
+import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.Logger;

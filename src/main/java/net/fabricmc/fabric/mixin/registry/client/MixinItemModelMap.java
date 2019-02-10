@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.mixin.registry.client;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.registry.RegistryListener;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
+import net.fabricmc.fabric.impl.registry.RegistryListener;
 import net.minecraft.client.render.item.ItemModels;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedModelManager;
