@@ -14,19 +14,29 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.events.objectbuilder;
+package net.fabricmc.fabric.mixin.networking;
 
-import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
-import net.minecraft.block.Block;
+import net.fabricmc.fabric.impl.network.CustomPayloadC2SPacketAccessor;
+import net.minecraft.server.network.packet.CustomPayloadServerPacket;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(Block.class)
-public class MixinBlock {
-	@Inject(method = "<init>(Lnet/minecraft/block/Block$Settings;)V", at = @At("RETURN"))
-	public void init(Block.Settings builder, CallbackInfo info) {
-		BlockConstructedCallback.EVENT.invoker().building(builder, (Block) (Object) this);
+@Mixin(CustomPayloadServerPacket.class)
+public class MixinCustomPayloadC2SPacket implements CustomPayloadC2SPacketAccessor {
+	@Shadow
+	private Identifier channel;
+	@Shadow
+	private PacketByteBuf data;
+
+	@Override
+	public Identifier getChannel() {
+		return channel;
+	}
+
+	@Override
+	public PacketByteBuf getData() {
+		return data;
 	}
 }

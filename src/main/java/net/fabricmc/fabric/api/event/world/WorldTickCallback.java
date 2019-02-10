@@ -21,13 +21,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.World;
 
 public interface WorldTickCallback {
-	public static final Event<WorldTickCallback> EVENT = EventFactory.arrayBacked(WorldTickCallback.class,
+	public static final Event<WorldTickCallback> EVENT = EventFactory.createArrayBacked(WorldTickCallback.class,
 		(listeners) -> {
 			if (EventFactory.isProfilingEnabled()) {
 				return (world) -> {
 					world.getProfiler().push("fabricWorldTick");
 					for (WorldTickCallback event : listeners) {
-						world.getProfiler().push(event.getClass().getName());
+						world.getProfiler().push(EventFactory.getHandlerName(event));
 						event.tick(world);
 						world.getProfiler().pop();
 					}

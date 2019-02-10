@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.gui;
 
-import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
+import net.fabricmc.fabric.api.client.screen.ContainerScreenFactory;
+import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
-import net.fabricmc.fabric.api.client.gui.GuiFactory;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
-import net.fabricmc.fabric.api.network.CustomPayloadPacketRegistry;
+import net.fabricmc.fabric.impl.network.PacketTypes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.container.Container;
@@ -31,16 +32,15 @@ import org.apache.logging.log4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GuiProviderImpl implements GuiProviderRegistry {
+public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 
 	/**
-	 * Use the instance provided by GuiProviderRegistry
+	 * Use the instance provided by ScreenProviderRegistry
 	 */
-	public static final GuiProviderRegistry INSTANCE = new GuiProviderImpl();
+	public static final ScreenProviderRegistry INSTANCE = new ScreenProviderRegistryImpl();
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final Identifier OPEN_CONTAINER = new Identifier("fabric", "open_container");
 	private static final Map<Identifier, ContainerFactory<ContainerScreen>> FACTORIES = new HashMap<>();
 
 	public void registerFactory(Identifier identifier, ContainerFactory<ContainerScreen> factory) {
@@ -51,19 +51,19 @@ public class GuiProviderImpl implements GuiProviderRegistry {
 	}
 
 	@Override
-	public <C extends Container> void registerFactory(Identifier identifier, GuiFactory<C> guiFactory) {
+	public <C extends Container> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory) {
 		registerFactory(identifier, (syncId, identifier1, player, buf) -> {
 			C container = ContainerProviderImpl.INSTANCE.createContainer(syncId, identifier1, player, buf);
 			if(container == null){
 				LOGGER.error("Could not open container for {} - a null object was created!", identifier1.toString());
 				return null;
 			}
-			return guiFactory.create(container);
+			return containerScreenFactory.create(container);
 		});
 	}
 
 	public void init() {
-		CustomPayloadPacketRegistry.CLIENT.register(OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
+		ClientSidePacketRegistry.INSTANCE.register(PacketTypes.OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
 			int syncId = packetByteBuf.readUnsignedByte();
 			MinecraftClient.getInstance().execute(() -> {

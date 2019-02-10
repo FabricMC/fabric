@@ -14,40 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.block;
 
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.minecraft.block.Blocks;
 
-import java.util.Collection;
-
-public class TagDelegate<T> extends Tag<T> {
-	protected Tag<T> delegate;
-
-	public TagDelegate(Identifier id, Tag<T> delegate) {
-		super(id);
-		this.delegate = delegate;
-	}
-
-	protected void onAccess() {
-
-	}
-
+public class FireMod implements ModInitializer {
 	@Override
-	public boolean contains(T var1) {
-		onAccess();
-		return delegate.contains(var1);
-	}
-
-	@Override
-	public Collection<T> values() {
-		onAccess();
-		return delegate.values();
-	}
-
-	@Override
-	public Collection<Tag.Entry<T>> entries() {
-		onAccess();
-		return delegate.entries();
+	public void onInitialize() {
+		FlammableBlockRegistry.getDefaultInstance().add(Blocks.STONE, 100, 100);
+		FlammableBlockRegistry.getDefaultInstance().remove(Blocks.OAK_PLANKS);
 	}
 }

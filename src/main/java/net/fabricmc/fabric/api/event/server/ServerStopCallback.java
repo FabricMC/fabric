@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
 
 public interface ServerStopCallback {
-	public static final Event<ServerStopCallback> EVENT = EventFactory.arrayBacked(ServerStopCallback.class,
+	public static final Event<ServerStopCallback> EVENT = EventFactory.createArrayBacked(ServerStopCallback.class,
 		(listeners) -> (server) -> {
 			for (ServerStopCallback event : listeners) {
 				event.onStopServer(server);

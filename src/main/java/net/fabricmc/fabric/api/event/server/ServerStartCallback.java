@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
 
 public interface ServerStartCallback {
-	public static final Event<ServerStartCallback> EVENT = EventFactory.arrayBacked(ServerStartCallback.class,
+	public static final Event<ServerStartCallback> EVENT = EventFactory.createArrayBacked(ServerStartCallback.class,
 		(listeners) -> (server) -> {
 			for (ServerStartCallback event : listeners) {
 				event.onStartServer(server);

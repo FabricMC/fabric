@@ -24,14 +24,14 @@ import java.util.function.Function;
 
 class ArrayBackedEvent<T> extends Event<T> {
 	private final Class<T> type;
-	private final Function<T[], T> joiner;
+	private final Function<T[], T> invokerFactory;
 	private final T dummyInvoker;
 	private T[] handlers;
 
-	ArrayBackedEvent(Class<T> type, T dummyInvoker, Function<T[], T> joiner) {
+	ArrayBackedEvent(Class<T> type, T dummyInvoker, Function<T[], T> invokerFactory) {
 		this.type = type;
 		this.dummyInvoker = dummyInvoker;
-		this.joiner = joiner;
+		this.invokerFactory = invokerFactory;
 		update();
 	}
 
@@ -41,12 +41,12 @@ class ArrayBackedEvent<T> extends Event<T> {
 				invoker = dummyInvoker;
 			} else {
 				//noinspection unchecked
-				invoker = joiner.apply((T[]) Array.newInstance(type, 0));
+				invoker = invokerFactory.apply((T[]) Array.newInstance(type, 0));
 			}
 		} else if (handlers.length == 1) {
 			invoker = handlers[0];
 		} else {
-			invoker = joiner.apply(handlers);
+			invoker = invokerFactory.apply(handlers);
 		}
 	}
 

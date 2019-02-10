@@ -18,18 +18,16 @@ package net.fabricmc.fabric.api.event.client;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.ActionResult;
 
 public interface ClientTickCallback {
-	public static final Event<ClientTickCallback> EVENT = EventFactory.arrayBacked(ClientTickCallback.class,
+	public static final Event<ClientTickCallback> EVENT = EventFactory.createArrayBacked(ClientTickCallback.class,
 		(listeners) -> {
 			if (EventFactory.isProfilingEnabled()) {
 				return (client) -> {
 					client.getProfiler().push("fabricClientTick");
 					for (ClientTickCallback event : listeners) {
-						client.getProfiler().push(event.getClass().getName());
+						client.getProfiler().push(EventFactory.getHandlerName(event));
 						event.tick(client);
 						client.getProfiler().pop();
 					}

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.event;
 import net.fabricmc.fabric.api.event.Event;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandleProxies;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.*;
@@ -38,12 +37,12 @@ public final class EventFactoryImpl {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
 	}
 
-	public static <T> Event<T> arrayBacked(Class<T> type, Function<T[], T> joiner) {
-		return arrayBacked(type, null /* buildEmptyInvoker(type, joiner) */, joiner);
+	public static <T> Event<T> createArrayBacked(Class<T> type, Function<T[], T> invokerFactory) {
+		return createArrayBacked(type, null /* buildEmptyInvoker(type, invokerFactory) */, invokerFactory);
 	}
 
-	public static <T> Event<T> arrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> joiner) {
-		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, emptyInvoker, joiner);
+	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
+		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, emptyInvoker, invokerFactory);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;
 	}

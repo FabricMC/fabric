@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 /**
  * Convienence interface for blocks which listen to "break interactions" (left-click).
  */
-public interface BreakInteractable {
+public interface AttackInteractable {
 	/**
 	 * @return True if the block accepted the player and it should no longer be processed.
 	 */

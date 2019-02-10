@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.api.event.registry;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.Block;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
 
-/**
- * Block tags provided by Fabric.
- */
-public class FabricBlockTags {
-	private FabricBlockTags() {
+public interface BlockConstructedCallback {
+	public static Event<BlockConstructedCallback> EVENT = EventFactory.createArrayBacked(BlockConstructedCallback.class,
+		(listeners) -> (settings, builtBlock) -> {
+			for (BlockConstructedCallback callback : listeners) {
+				callback.building(settings, builtBlock);
+			}
+		}
+	);
 
-	}
-
-	private static Tag<Block> register(String id) {
-		return TagRegistry.block(new Identifier("fabric", id));
-	}
+	void building(Block.Settings settings, Block builtBlock);
 }

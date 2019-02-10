@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.block.ContextSensitivePickable;
 import net.fabricmc.fabric.api.event.client.player.ClientPickItemCallback;
-import net.fabricmc.fabric.impl.client.gui.GuiProviderImpl;
-import net.fabricmc.fabric.api.network.CustomPayloadPacketRegistry;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -33,7 +33,7 @@ import net.minecraft.world.BlockView;
 public class FabricAPIClientInitializer implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		CustomPayloadPacketRegistry.CLIENT.register(RegistrySyncManager.ID, (ctx, buf) -> {
+		ClientSidePacketRegistry.INSTANCE.register(RegistrySyncManager.ID, (ctx, buf) -> {
 			// if not hosting server, apply packet
 			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
 		});
@@ -58,6 +58,6 @@ public class FabricAPIClientInitializer implements ClientModInitializer {
 			return true;
 		}));
 
-		((GuiProviderImpl)GuiProviderImpl.INSTANCE).init();
+		((ScreenProviderRegistryImpl) ScreenProviderRegistryImpl.INSTANCE).init();
 	}
 }

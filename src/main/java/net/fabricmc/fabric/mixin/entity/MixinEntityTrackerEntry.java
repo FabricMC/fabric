@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.impl.network.SPacketCustomPayloadAccessor;
-import net.minecraft.server.network.packet.CustomPayloadServerPacket;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.fabricmc.fabric.impl.server.EntityTrackerEntryStreamAccessor;
+import net.minecraft.server.network.EntityTrackerEntry;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-@Mixin(CustomPayloadServerPacket.class)
-public class MixinSPacketCustomPayload implements SPacketCustomPayloadAccessor {
+import java.util.Set;
+import java.util.stream.Stream;
+
+@Mixin(EntityTrackerEntry.class)
+public class MixinEntityTrackerEntry implements EntityTrackerEntryStreamAccessor {
 	@Shadow
-	private Identifier channel;
-	@Shadow
-	private PacketByteBuf data;
+	private Set<ServerPlayerEntity> trackingPlayers;
 
 	@Override
-	public Identifier getChannel() {
-		return channel;
-	}
-
-	@Override
-	public PacketByteBuf getData() {
-		return data;
+	public Stream<ServerPlayerEntity> fabric_getTrackingPlayers() {
+		return trackingPlayers.stream();
 	}
 }

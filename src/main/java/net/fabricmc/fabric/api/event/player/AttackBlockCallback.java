@@ -27,6 +27,7 @@ import net.minecraft.world.World;
 
 /**
  * Callback for left-clicking ("attacking") a block.
+ * Is hooked in before the spectator check, so make sure to check for the player's game mode as well!
  *
  * Upon return:
  * - SUCCESS cancels further processing and, on the client, sends a packet to the server.
@@ -36,7 +37,7 @@ import net.minecraft.world.World;
  * ATTACK_BLOCK does not let you control the packet sending process yet.
  */
 public interface AttackBlockCallback {
-	public static final Event<AttackBlockCallback> EVENT = EventFactory.arrayBacked(AttackBlockCallback.class,
+	public static final Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
 		(listeners) -> (player, world, hand, pos, direction) -> {
 			for (AttackBlockCallback event : listeners) {
 				ActionResult result = event.interact(player, world, hand, pos, direction);

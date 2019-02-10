@@ -14,19 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.util;
+package net.fabricmc.fabric.api.client.screen;
 
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemProvider;
-import net.minecraft.tag.Tag;
+import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.container.Container;
 
-public interface Block2ObjectMap<V> {
-	V get(Block block);
-	void add(Block block, V value);
-	void add(Tag<Block> tag, V value);
-	void remove(Block block);
-	void remove(Tag<Block> tag);
-	void clear(Block block);
-	void clear(Tag<Block> tag);
+@FunctionalInterface
+public interface ContainerScreenFactory<C extends Container> {
+
+	ContainerScreen create(C container);
+
 }

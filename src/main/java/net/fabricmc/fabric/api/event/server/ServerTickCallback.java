@@ -21,13 +21,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
 
 public interface ServerTickCallback {
-	public static final Event<ServerTickCallback> EVENT = EventFactory.arrayBacked(ServerTickCallback.class,
+	public static final Event<ServerTickCallback> EVENT = EventFactory.createArrayBacked(ServerTickCallback.class,
 		(listeners) -> {
 			if (EventFactory.isProfilingEnabled()) {
 				return (server) -> {
 					server.getProfiler().push("fabricServerTick");
 					for (ServerTickCallback event : listeners) {
-						server.getProfiler().push(event.getClass().getName());
+						server.getProfiler().push(EventFactory.getHandlerName(event));
 						event.tick(server);
 						server.getProfiler().pop();
 					}

@@ -26,4 +26,6 @@ public interface Item2ObjectMap<V> {
 	void add(Tag<Item> tag, V value);
 	void remove(ItemProvider item);
 	void remove(Tag<Item> tag);
+	void clear(ItemProvider item);
+	void clear(Tag<Item> tag);
 }

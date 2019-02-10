@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.gui;
+package net.fabricmc.fabric.impl.network;
 
-import net.minecraft.client.gui.ContainerScreen;
-import net.minecraft.container.Container;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 
-@FunctionalInterface
-public interface GuiFactory<C extends Container> {
-
-	ContainerScreen create(C container);
-
+/**
+ * Helper interface containing getters for SPacketCustomPayload
+ * which were omitted from the compiled game.
+ */
+public interface CustomPayloadC2SPacketAccessor {
+	Identifier getChannel();
+	PacketByteBuf getData();
 }

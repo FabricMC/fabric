@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.events.objectbuilder;
 
-import net.fabricmc.fabric.api.event.registry.ItemBuildingCallback;
+import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,6 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinItem {
 	@Inject(method = "<init>(Lnet/minecraft/item/Item$Settings;)V", at = @At("RETURN"))
 	public void init(Item.Settings builder, CallbackInfo info) {
-		ItemBuildingCallback.EVENT.invoker().building(builder, (Item) (Object) this);
+		ItemConstructedCallback.EVENT.invoker().building(builder, (Item) (Object) this);
 	}
 }

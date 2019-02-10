@@ -14,20 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.registry;
+package net.fabricmc.fabric.impl.server;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.item.Item;
+import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-public interface ItemBuildingCallback {
-	public static Event<ItemBuildingCallback> EVENT = EventFactory.arrayBacked(ItemBuildingCallback.class,
-		(listeners) -> (settings, builtItem) -> {
-			for (ItemBuildingCallback callback : listeners) {
-				callback.building(settings, builtItem);
-			}
-		}
-	);
+import java.util.stream.Stream;
 
-	void building(Item.Settings settings, Item builtItem);
+public interface EntityTrackerStreamAccessor {
+	Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity);
 }

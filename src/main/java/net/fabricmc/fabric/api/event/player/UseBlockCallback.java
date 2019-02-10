@@ -22,12 +22,11 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 /**
  * Callback for right-clicking ("using") a block.
+ * Is hooked in before the spectator check, so make sure to check for the player's game mode as well!
  *
  * Upon return:
  * - SUCCESS cancels further processing and, on the client, sends a packet to the server.
@@ -35,7 +34,7 @@ import net.minecraft.world.World;
  * - FAIL cancels further processing and does not send a packet to the server.
  */
 public interface UseBlockCallback {
-	public static final Event<UseBlockCallback> EVENT = EventFactory.arrayBacked(UseBlockCallback.class,
+	public static final Event<UseBlockCallback> EVENT = EventFactory.createArrayBacked(UseBlockCallback.class,
 		(listeners) -> (player, world, hand, hitResult) -> {
 			for (UseBlockCallback event : listeners) {
 				ActionResult result = event.interact(player, world, hand, hitResult);

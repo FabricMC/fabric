@@ -26,10 +26,10 @@ import net.minecraft.util.Identifier;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public interface SpriteRegistrationCallback {
-	public static final Event<SpriteRegistrationCallback> EVENT = EventFactory.arrayBacked(SpriteRegistrationCallback.class,
+public interface ClientSpriteRegistryCallback {
+	public static final Event<ClientSpriteRegistryCallback> EVENT = EventFactory.createArrayBacked(ClientSpriteRegistryCallback.class,
 		(listeners) -> (atlasTexture, registry) -> {
-			for (SpriteRegistrationCallback callback : listeners) {
+			for (ClientSpriteRegistryCallback callback : listeners) {
 				callback.registerSprites(atlasTexture, registry);
 			}
 		}
@@ -37,7 +37,7 @@ public interface SpriteRegistrationCallback {
 
 	void registerSprites(SpriteAtlasTexture atlasTexture, Registry registry);
 
-	static void registerBlockAtlas(SpriteRegistrationCallback callback) {
+	static void registerBlockAtlas(ClientSpriteRegistryCallback callback) {
 		EVENT.register((atlasTexture, registry) -> {
 			if (atlasTexture == MinecraftClient.getInstance().getSpriteAtlas()) {
 				callback.registerSprites(atlasTexture, registry);
