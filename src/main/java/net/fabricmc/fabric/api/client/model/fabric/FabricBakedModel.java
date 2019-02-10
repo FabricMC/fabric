@@ -146,7 +146,7 @@ public interface FabricBakedModel {
      * While this method is generally called from the main client thread, best practice will
      * be to make implementations thread-safe.
      */
-    void produceEntityQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
+    void produceBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
     
     /**
      * Allows renderers (and potentially compound models) to optimize caching of model output
