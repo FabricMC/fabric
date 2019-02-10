@@ -42,7 +42,11 @@ public final class PlayerStream {
 	}
 
 	public static Stream<ServerPlayerEntity> all(MinecraftServer server) {
-		return server.getPlayerManager().getPlayerList().stream();
+		if (server.getPlayerManager() != null) {
+			return server.getPlayerManager().getPlayerList().stream();
+		} else {
+			return Stream.empty();
+		}
 	}
 
 	public static Stream<PlayerEntity> world(World world) {
