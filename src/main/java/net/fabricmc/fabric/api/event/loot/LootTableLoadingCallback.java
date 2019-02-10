@@ -14,21 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.events;
+package net.fabricmc.fabric.api.event.loot;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.loot.FabricLootSupplier;
-import net.fabricmc.fabric.util.HandlerArray;
-import net.fabricmc.fabric.util.HandlerRegistry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 /**
  * An event handler that is called when loot tables are loaded.
- * Use {@link #REGISTRY} to register instances.
+ * Use {@link #EVENT} to register instances.
  */
 @FunctionalInterface
 public interface LootTableLoadingCallback {
-	final HandlerRegistry<LootTableLoadingCallback> REGISTRY = new HandlerArray<>(LootTableLoadingCallback.class);
+	final Event<LootTableLoadingCallback> EVENT = EventFactory.createArrayBacked(
+			LootTableLoadingCallback.class,
+			(listeners) -> (manager, id, supplier) -> {
+				for (LootTableLoadingCallback callback : listeners) {
+					callback.onLoading(manager, id, supplier);
+				}
+			}
+	);
 
 	void onLoading(ResourceManager manager, Identifier id, FabricLootSupplier supplier);
 }

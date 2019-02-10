@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.loot;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.events.LootTableLoadingCallback;
+import net.fabricmc.fabric.api.event.loot.LootTableLoadingCallback;
 import net.minecraft.item.Items;
 import net.minecraft.world.loot.ConstantLootTableRange;
 import net.minecraft.world.loot.LootPool;
@@ -27,7 +27,7 @@ import net.minecraft.world.loot.entry.ItemEntry;
 public class LootTableMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		LootTableLoadingCallback.REGISTRY.register((manager, id, supplier) -> {
+		LootTableLoadingCallback.EVENT.register((manager, id, supplier) -> {
 			if ("minecraft:blocks/dirt".equals(id.toString())) {
 				LootPool pool = LootPool.create()
 						.withEntry(ItemEntry.builder(Items.FEATHER))

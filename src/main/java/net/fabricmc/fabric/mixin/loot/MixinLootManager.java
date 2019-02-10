@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import net.fabricmc.fabric.api.events.LootTableLoadingCallback;
+import net.fabricmc.fabric.api.event.loot.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.loot.FabricLootSupplier;
-import net.fabricmc.fabric.util.HandlerArray;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.loot.LootManager;
@@ -38,13 +37,10 @@ public class MixinLootManager {
 
 	@Inject(method = "onResourceReload", at = @At("RETURN"))
 	private void onResourceReload(ResourceManager manager, CallbackInfo info) {
-		suppliers.forEach((id, supplier) -> {
-			LootTableLoadingCallback[] handlers = ((HandlerArray<LootTableLoadingCallback>) LootTableLoadingCallback.REGISTRY)
-					.getBackingArray();
-
-			for (LootTableLoadingCallback handler : handlers) {
-				handler.onLoading(manager, id, (FabricLootSupplier) supplier);
-			}
-		});
+		suppliers.forEach(
+				(id, supplier) -> LootTableLoadingCallback.EVENT.invoker().onLoading(
+						manager, id, (FabricLootSupplier) supplier
+				)
+		);
 	}
 }
