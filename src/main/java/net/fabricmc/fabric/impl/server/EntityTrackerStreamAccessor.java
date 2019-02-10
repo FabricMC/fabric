@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.network;
+package net.fabricmc.fabric.impl.server;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-/**
- * Helper interface containing getters for SPacketCustomPayload
- * which were omitted from the compiled game.
- */
-public interface SPacketCustomPayloadAccessor {
-	Identifier getChannel();
-	PacketByteBuf getData();
+import java.util.stream.Stream;
+
+public interface EntityTrackerStreamAccessor {
+	Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity);
 }

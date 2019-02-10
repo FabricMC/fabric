@@ -14,39 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.api.tag;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.TagContainer;
 import net.minecraft.util.Identifier;
 
 /**
- * Helper methods for registering Tags.
+ * Block tags provided by Fabric.
  */
-public final class TagRegistry {
-	private TagRegistry() {
+public class FabricBlockTags {
+	private FabricBlockTags() {
 
 	}
 
-	public static Tag<Block> block(Identifier id) {
-		return new TagDelegate<Block>(id, null) {
-			private TagContainer<Block> container;
-
-			@Override
-			protected void onAccess() {
-				if (container != BlockTags.getContainer()) {
-					container = BlockTags.getContainer();
-					delegate = container.getOrCreate(this.getId());
-				}
-			}
-		};
-	}
-
-	public static Tag<Item> item(Identifier id) {
-		return new ItemTags.class_3490(id);
+	private static Tag<Block> register(String id) {
+		return TagRegistry.block(new Identifier("fabric", id));
 	}
 }

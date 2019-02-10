@@ -21,8 +21,9 @@ import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.network.PacketContext;
-import net.minecraft.client.network.packet.CustomPayloadClientPacket;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.IdRegistry;
@@ -43,12 +44,11 @@ public final class RegistrySyncManager {
 
 	}
 
-	public static CustomPayloadClientPacket createPacket() {
+	public static Packet<?> createPacket() {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(toTag(true));
 
-	    CustomPayloadClientPacket packet = new CustomPayloadClientPacket(ID, buf);
-		return packet;
+		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
 	}
 
 	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept) {
@@ -117,6 +117,15 @@ public final class RegistrySyncManager {
 					idMap.put(new Identifier(key), registryTag.getInt(key));
 				}
 				((RemappableRegistry) registry).remap(idMap, reallocateMissingEntries);
+			}
+		}
+	}
+
+	public static void unmap() throws RemapException {
+		for (Identifier registryId : Registry.REGISTRIES.keys()) {
+			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
+			if (registry instanceof RemappableRegistry) {
+				((RemappableRegistry) registry).unmap();
 			}
 		}
 	}

@@ -14,21 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.impl.server;
 
-import net.minecraft.block.Block;
-import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
+import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
 
-/**
- * Block tags provided by Fabric.
- */
-public class FabricBlockTags {
-	private FabricBlockTags() {
+import java.util.stream.Stream;
 
-	}
-
-	private static Tag<Block> register(String id) {
-		return TagRegistry.block(new Identifier("fabric", id));
-	}
+public interface EntityTrackerEntryStreamAccessor {
+	Stream<ServerPlayerEntity> fabric_getTrackingPlayers();
 }

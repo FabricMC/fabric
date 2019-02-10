@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tags;
+package net.fabricmc.fabric.api.tag;
 
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
