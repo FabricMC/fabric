@@ -16,6 +16,7 @@
     "client.render.MixinItemColorMap",
     "client.texture.MixinSpriteAtlasTexture",
     "events.playerinteraction.MixinClientPlayerInteractionManager",
+    "events.playerinteraction.MixinMinecraftClient",
     "events.tick.MixinMinecraftClient",
     "networking.MixinClientPlayNetworkHandler",
     "registry.client.MixinBlockColorMap",

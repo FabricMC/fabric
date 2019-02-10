@@ -17,10 +17,18 @@
 package net.fabricmc.fabric.impl;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.block.ContextSensitivePickable;
+import net.fabricmc.fabric.api.event.client.player.ClientPickItemCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.Entity;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.hit.EntityHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 
 public class FabricAPIClientInitializer implements ClientModInitializer {
 	@Override
@@ -29,6 +37,26 @@ public class FabricAPIClientInitializer implements ClientModInitializer {
 			// if not hosting server, apply packet
 			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
 		});
+
+		ClientPickItemCallback.EVENT.register(((player, result, container) -> {
+			if (result instanceof BlockHitResult) {
+				BlockView view = player.getEntityWorld();
+				BlockPos pos = ((BlockHitResult) result).getBlockPos();
+				BlockState state = view.getBlockState(pos);
+
+				if (state.getBlock() instanceof ContextSensitivePickable) {
+					container.setStack(((ContextSensitivePickable) state.getBlock()).getPickStack(state, view, pos, player, result));
+				}
+			} else if (result instanceof EntityHitResult) {
+				Entity entity = ((EntityHitResult) result).getEntity();
+
+				if (entity instanceof net.fabricmc.fabric.api.entity.ContextSensitivePickable) {
+					container.setStack(((net.fabricmc.fabric.api.entity.ContextSensitivePickable) entity).getPickStack(player, result));
+				}
+			}
+
+			return true;
+		}));
 
 		((ScreenProviderRegistryImpl) ScreenProviderRegistryImpl.INSTANCE).init();
 	}
