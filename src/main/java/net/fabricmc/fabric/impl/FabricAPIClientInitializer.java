@@ -20,12 +20,14 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.block.BlockPickInteractionAware;
 import net.fabricmc.fabric.api.entity.EntityPickInteractionAware;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -39,24 +41,24 @@ public class FabricAPIClientInitializer implements ClientModInitializer {
 			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
 		});
 
-		ClientPickBlockCallback.EVENT.register(((player, result, container) -> {
+		ClientPickBlockGatherCallback.EVENT.register(((player, result) -> {
 			if (result instanceof BlockHitResult) {
 				BlockView view = player.getEntityWorld();
 				BlockPos pos = ((BlockHitResult) result).getBlockPos();
 				BlockState state = view.getBlockState(pos);
 
 				if (state.getBlock() instanceof BlockPickInteractionAware) {
-					container.setStack(((BlockPickInteractionAware) state.getBlock()).getPickedStack(state, view, pos, player, result));
+					return (((BlockPickInteractionAware) state.getBlock()).getPickedStack(state, view, pos, player, result));
 				}
 			} else if (result instanceof EntityHitResult) {
 				Entity entity = ((EntityHitResult) result).getEntity();
 
 				if (entity instanceof EntityPickInteractionAware) {
-					container.setStack(((EntityPickInteractionAware) entity).getPickedStack(player, result));
+					return ((EntityPickInteractionAware) entity).getPickedStack(player, result);
 				}
 			}
 
-			return true;
+			return ItemStack.EMPTY;
 		}));
 
 		((ScreenProviderRegistryImpl) ScreenProviderRegistryImpl.INSTANCE).init();

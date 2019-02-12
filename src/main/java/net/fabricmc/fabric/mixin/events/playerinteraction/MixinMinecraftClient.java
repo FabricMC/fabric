@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
@@ -37,7 +37,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
-	private boolean fabric_itemPickSucceeded;
 	private boolean fabric_itemPickCancelled;
 
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemPick()V"), method = "method_1508")
@@ -45,41 +44,52 @@ public abstract class MixinMinecraftClient {
 		fabric_doItemPickWrapper();
 	}
 
+	@SuppressWarnings("deprecation")
+	private ItemStack fabric_emulateOldPick() {
+		MinecraftClient client = (MinecraftClient) (Object) this;
+		ClientPickBlockCallback.Container ctr = new ClientPickBlockCallback.Container(ItemStack.EMPTY);
+		ClientPickBlockCallback.EVENT.invoker().pick(client.player, client.hitResult, ctr);
+		return ctr.getStack();
+	}
+
 	private void fabric_doItemPickWrapper() {
-		// I HATE EVERYTHING THAT STANDS FOR THIS CODE
-		fabric_itemPickSucceeded = false;
-		doItemPick();
-		if (!fabric_itemPickSucceeded) {
-			// vanilla method bailed early, so we have to do this absurd kludge
-			ClientPickBlockCallback.Container ctr = new ClientPickBlockCallback.Container(ItemStack.EMPTY);
-			//noinspection ConstantConditions
-			MinecraftClient client = (MinecraftClient) (Object) this;
+		MinecraftClient client = (MinecraftClient) (Object) this;
 
-			if (ClientPickBlockCallback.EVENT.invoker().pick(client.player, client.hitResult, ctr)) {
-				// we cannot just jump into the middle of doItemPick, so we have to
-				// mimic vanilla logic here
+		// Do a "best effort" emulation of the old events.
+		ItemStack stack = ClientPickBlockGatherCallback.EVENT.invoker().pick(client.player, client.hitResult);
+		// TODO: Remove in 0.3.0
+		if (stack.isEmpty()) {
+			stack = fabric_emulateOldPick();
+		}
 
-				ItemStack stack = ctr.getStack();
-				PlayerInventory playerInventory = client.player.inventory;
+		if (stack.isEmpty()) {
+			doItemPick();
+		} else {
+			// I don't like that we clone vanilla logic here, but it's our best bet for now.
+			PlayerInventory playerInventory = client.player.inventory;
 
-				if (client.player.abilities.creativeMode && Screen.isControlPressed() && client.hitResult.getType() == HitResult.Type.BLOCK) {
-					BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.hitResult).getBlockPos());
-					if (be != null) {
-						stack = addBlockEntityNbt(stack, be);
-					}
+			if (client.player.abilities.creativeMode && Screen.isControlPressed() && client.hitResult.getType() == HitResult.Type.BLOCK) {
+				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.hitResult).getBlockPos());
+				if (be != null) {
+					stack = addBlockEntityNbt(stack, be);
 				}
+			}
 
-				if (client.player.abilities.creativeMode) {
-					playerInventory.addPickBlock(stack);
-					client.interactionManager.method_2909(client.player.getStackInHand(Hand.MAIN), 36 + playerInventory.selectedSlot);
-				} else {
-					int slot = playerInventory.getSlotWithStack(stack);
-					if (slot >= 0) {
-						if (PlayerInventory.isValidHotbarIndex(slot)) {
-							playerInventory.selectedSlot = slot;
-						} else {
-							client.interactionManager.pickFromInventory(slot);
-						}
+			stack = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.hitResult, stack);
+			if (stack.isEmpty()) {
+				return;
+			}
+
+			if (client.player.abilities.creativeMode) {
+				playerInventory.addPickBlock(stack);
+				client.interactionManager.method_2909(client.player.getStackInHand(Hand.MAIN), 36 + playerInventory.selectedSlot);
+			} else {
+				int slot = playerInventory.getSlotWithStack(stack);
+				if (slot >= 0) {
+					if (PlayerInventory.isValidHotbarIndex(slot)) {
+						playerInventory.selectedSlot = slot;
+					} else {
+						client.interactionManager.pickFromInventory(slot);
 					}
 				}
 			}
@@ -91,28 +101,17 @@ public abstract class MixinMinecraftClient {
 	@Shadow
 	public abstract ItemStack addBlockEntityNbt(ItemStack itemStack_1, BlockEntity blockEntity_1);
 
-	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z", ordinal = 2), method = "doItemPick", ordinal = 0)
+	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick", ordinal = 0)
 	public ItemStack modifyItemPick(ItemStack stack) {
-		fabric_itemPickSucceeded = true;
-
-		ClientPickBlockCallback.Container ctr = new ClientPickBlockCallback.Container(stack);
-		//noinspection ConstantConditions
 		MinecraftClient client = (MinecraftClient) (Object) this;
-
-		boolean toContinue = ClientPickBlockCallback.EVENT.invoker().pick(client.player, client.hitResult, ctr);
-		if (!toContinue) {
-			fabric_itemPickCancelled = true;
-			return ItemStack.EMPTY;
-		} else {
-			fabric_itemPickCancelled = false;
-			return ctr.getStack();
-		}
+		ItemStack result = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.hitResult, stack);
+		fabric_itemPickCancelled = result.isEmpty();
+		return result;
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isEmpty()Z", ordinal = 2), method = "doItemPick", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick", cancellable = true)
 	public void cancelItemPick(CallbackInfo info) {
 		if (fabric_itemPickCancelled) {
-			fabric_itemPickCancelled = false;
 			info.cancel();
 		}
 	}
