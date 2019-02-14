@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "initializers": [
     "net.fabricmc.fabric.impl.FabricAPIInitializer",
-    "net.fabricmc.fabric.impl.FabricAPIClientInitializer"
+    "net.fabricmc.fabric.events.PickBlockEventModClient"
   ],
   "mixins": {
     "client": "net.fabricmc.fabric.mixins.client.json",
