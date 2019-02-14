@@ -39,11 +39,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class MixinMinecraftClient {
 	private boolean fabric_itemPickCancelled;
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemPick()V"), method = "method_1508")
-	private void sillyRedirection() {
-		fabric_doItemPickWrapper();
-	}
-
 	@SuppressWarnings("deprecation")
 	private ItemStack fabric_emulateOldPick() {
 		MinecraftClient client = (MinecraftClient) (Object) this;
@@ -52,7 +47,8 @@ public abstract class MixinMinecraftClient {
 		return ctr.getStack();
 	}
 
-	private void fabric_doItemPickWrapper() {
+	@Inject(at = @At("HEAD"), method = "doItemPick", cancellable = true)
+	private void fabric_doItemPickWrapper(CallbackInfo info) {
 		MinecraftClient client = (MinecraftClient) (Object) this;
 
 		// Do a "best effort" emulation of the old events.
@@ -63,8 +59,10 @@ public abstract class MixinMinecraftClient {
 		}
 
 		if (stack.isEmpty()) {
-			doItemPick();
+			// fall through
 		} else {
+			info.cancel();
+
 			// I don't like that we clone vanilla logic here, but it's our best bet for now.
 			PlayerInventory playerInventory = client.player.inventory;
 
