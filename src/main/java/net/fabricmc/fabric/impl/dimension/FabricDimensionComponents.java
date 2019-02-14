@@ -17,25 +17,27 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import net.fabricmc.fabric.api.dimension.EntityTeleporter;
-import net.fabricmc.fabric.api.dimension.FabricEntityTeleporter;
+import net.fabricmc.fabric.api.dimension.FabricTeleporter;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 //INTERNAL ONLY, dont use this modders, use the APIs provided
-public class FabricDimensionComponents implements FabricEntityTeleporter {
+public class FabricDimensionComponents implements FabricTeleporter {
 
 	public static final FabricDimensionComponents INSTANCE = new FabricDimensionComponents();
 
 	public EntityTeleporter NEXT_TELEPORTER = null;
 	private List<DimensionType> moddedDimensionTypes = new ArrayList<>();
+	private Map<DimensionType, EntityTeleporter> defaultTeleporters = new HashMap<>();
 
 
-	public void addModdedDimension(DimensionType type){
+	public void addModdedDimension(DimensionType type, EntityTeleporter teleporter){
 		moddedDimensionTypes.add(type);
+		if(teleporter != null){
+			defaultTeleporters.put(type, teleporter);
+		}
 	}
 
 	public List<DimensionType> getModdedDimensionTypes(){
@@ -52,5 +54,10 @@ public class FabricDimensionComponents implements FabricEntityTeleporter {
 		}
 		NEXT_TELEPORTER = entityTeleporter;
 		entity.changeDimension(dimension);
+	}
+
+	@Override
+	public void changeDimension(Entity entity, DimensionType dimensionType) {
+		changeDimension(entity, dimensionType, defaultTeleporters.getOrDefault(dimensionType, EntityTeleporter.DEFAULT_TELEPORTER));
 	}
 }

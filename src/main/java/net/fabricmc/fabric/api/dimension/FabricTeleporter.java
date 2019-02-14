@@ -20,9 +20,9 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionComponents;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
 
-public interface FabricEntityTeleporter {
+public interface FabricTeleporter {
 
-	FabricEntityTeleporter INSTANCE = FabricDimensionComponents.INSTANCE;
+	FabricTeleporter INSTANCE = FabricDimensionComponents.INSTANCE;
 
 	/**
 	 *
@@ -33,5 +33,7 @@ public interface FabricEntityTeleporter {
 	 * @param entityTeleporter an instance of EntityTeleporter
 	 */
 	void changeDimension(Entity entity, DimensionType dimension, EntityTeleporter entityTeleporter);
+
+	void changeDimension(Entity entity, DimensionType dimensionType);
 
 }

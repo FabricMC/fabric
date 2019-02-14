@@ -33,6 +33,7 @@ public class DimensionTypeBuilder {
 	private int id;
 	private BiFunction<World, DimensionType, ? extends Dimension> dimensionFactory = OverworldDimension::new;
 	private boolean hasSkyLight = true;
+	private EntityTeleporter teleporter = EntityTeleporter.DEFAULT_TELEPORTER;
 
 	private DimensionTypeBuilder(Identifier identifier, int id) {
 		if(Registry.DIMENSION.contains(identifier)){
@@ -73,6 +74,11 @@ public class DimensionTypeBuilder {
 		return this;
 	}
 
+	public DimensionTypeBuilder teleporter(EntityTeleporter teleporter){
+		this.teleporter = teleporter;
+		return this;
+	}
+
 	private String getDimensionName(){
 		return identifier.getNamespace() + "_" + identifier.getPath();
 	}
@@ -84,9 +90,9 @@ public class DimensionTypeBuilder {
 	 * @return an instance of {@link DimensionType}
 	 */
 	public DimensionType build(){
-		DimensionType dimensionType = new FabricDimensionType(((RemappableRegistry)Registry.DIMENSION).nextId(), getDimensionName(), "DIM_" + getDimensionName(), dimensionFactory, hasSkyLight);
+		DimensionType dimensionType = new FabricDimensionType(id, getDimensionName(), "DIM_" + getDimensionName(), dimensionFactory, hasSkyLight);
 		Registry.set(Registry.DIMENSION, id, identifier.toString(), dimensionType);
-		FabricDimensionComponents.INSTANCE.addModdedDimension(dimensionType);
+		FabricDimensionComponents.INSTANCE.addModdedDimension(dimensionType, teleporter);
 		return dimensionType;
 	}
 

@@ -20,13 +20,15 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.gen.Heightmap;
 
+@FunctionalInterface
 public interface EntityTeleporter {
 
+	EntityTeleporter DEFAULT_TELEPORTER = (entity, previousWorld, newWorld) -> EntityTeleporter.setEntityLocation(entity, newWorld.getSpawnPos());
+
 	/**
-	 * This is used to create a portal if needed, as well as set the player location in the new dim
-	 *
-	 * when you return true no other placement handlers will be called when the player is moving
+	 * This is used to set the entities location in a world, and spawn a portal if required. Use setEntityLocation when setting the location
 	 *
 	 * @param entity the entity that is traveling between 2 dims
 	 * @param previousWorld the world that the entity is traveling from
@@ -41,7 +43,7 @@ public interface EntityTeleporter {
 	 * @param entity the entity to set the location for
 	 * @param pos the pos to move the entity to
 	 */
-	default void setEntityLocation(Entity entity, BlockPos pos) {
+	static void setEntityLocation(Entity entity, BlockPos pos) {
 		if (entity instanceof ServerPlayerEntity) {
 			((ServerPlayerEntity) entity).networkHandler.teleportRequest(pos.getX(), pos.getY(), pos.getZ(), 0, 0);
 			((ServerPlayerEntity) entity).networkHandler.syncWithPlayerPosition();

@@ -30,7 +30,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerManager.class)
 public class MixinPlayerManager {
 
-	//This is hooking into the vanilla teleportation logic, but if teleporter has been set it will be used rather  than the vanilla logic
+	//This is hooking into the vanilla teleportation logic, but if DEFAULT_TELEPORTER has been set it will be used rather  than the vanilla logic
 	@Inject(method = "method_14558", at = @At("HEAD"), cancellable = true)
 	private static void method_14558(ServerPlayerEntity entity, DimensionType dimensionType, ServerWorld previousWorld, ServerWorld newWorld, CallbackInfo info) {
 		if (FabricDimensionComponents.INSTANCE.NEXT_TELEPORTER != null) {
