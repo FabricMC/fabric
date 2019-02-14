@@ -16,22 +16,17 @@
 
 package net.fabricmc.fabric.mixin.events.objectbuilder;
 
-import net.fabricmc.fabric.events.ObjectBuilderEvent;
-import net.fabricmc.fabric.util.HandlerArray;
+import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.BiConsumer;
-
 @Mixin(Item.class)
 public class MixinItem {
 	@Inject(method = "<init>(Lnet/minecraft/item/Item$Settings;)V", at = @At("RETURN"))
 	public void init(Item.Settings builder, CallbackInfo info) {
-		for (BiConsumer<Item.Settings, Item> consumer : ((HandlerArray<BiConsumer<Item.Settings, Item>>) ObjectBuilderEvent.ITEM).getBackingArray()) {
-			consumer.accept(builder, (Item) (Object) this);
-		}
+		ItemConstructedCallback.EVENT.invoker().building(builder, (Item) (Object) this);
 	}
 }

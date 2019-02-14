@@ -16,8 +16,7 @@
 
 package net.fabricmc.fabric.mixin.events.playerinteraction;
 
-import net.fabricmc.fabric.events.PlayerInteractionEvent;
-import net.fabricmc.fabric.util.HandlerArray;
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -32,13 +31,9 @@ public class MixinServerPlayerEntity {
 	@Inject(method = "attack", at = @At("HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Entity target, CallbackInfo info) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
-
-		for (PlayerInteractionEvent.Entity handler : ((HandlerArray<PlayerInteractionEvent.Entity>) PlayerInteractionEvent.ATTACK_ENTITY).getBackingArray()) {
-			ActionResult result = handler.interact(player, player.getEntityWorld(), Hand.MAIN, target);
-			if (result != ActionResult.PASS) {
-				info.cancel();
-				return;
-			}
+		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN, target, null);
+		if (result != ActionResult.PASS) {
+			info.cancel();
 		}
 	}
 }

@@ -19,15 +19,14 @@ package net.fabricmc.fabric.mixin.registry;
 import com.google.common.collect.BiMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.registry.ListenableRegistry;
-import net.fabricmc.fabric.registry.RegistryListener;
-import net.fabricmc.fabric.registry.RemapException;
-import net.fabricmc.fabric.registry.RemappableRegistry;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
+import net.fabricmc.fabric.impl.registry.RegistryListener;
+import net.fabricmc.fabric.impl.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
 import net.minecraft.util.registry.DefaultMappedRegistry;
 import net.minecraft.util.registry.IdRegistry;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -71,7 +70,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
 		if (listeners != null) {
 			for (RegistryListener listener : listeners) {
-				listener.beforeRegistryRegistration(registry, id, identifier, object, !registry.contains(identifier));
+				listener.beforeRegistryRegistration(registry, id, identifier, object, !objectMap.containsKey(identifier));
 			}
 		}
 	}

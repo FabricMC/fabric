@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.containers;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.gui.GuiProviderRegistry;
-import net.minecraft.client.gui.ContainerGui;
+import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.minecraft.client.gui.ContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.text.StringTextComponent;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
 public class ContainerModClient implements ClientModInitializer {
@@ -27,22 +30,25 @@ public class ContainerModClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		//Registers a gui factory that opens our example gui, this reads the block pos from the buffer
-		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, (identifier, player, buf) -> {
+		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
-			return new ExampleContainerGui(pos, player);
+			return new ExampleContainerScreen(syncId, pos, player);
 		});
 
 		//Registers a gui factory that opens our example gui, this uses the container created by ContainerProviderRegistry
-		GuiProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, ExampleContainerGui2::new);
+		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER_2, ExampleContainerScreen2::new);
+
+		//Registers a gui factory that opens our example inventory gui
+		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_INVENTORY_CONTAINER, ExampleInventoryContainerScreen::new);
 	}
 
 	//A container gui that shows the block pos that was sent
-	public static class ExampleContainerGui extends ContainerGui {
+	public static class ExampleContainerScreen extends ContainerScreen<ContainerMod.ExampleContainer> {
 
 		BlockPos pos;
 
-		public ExampleContainerGui(BlockPos pos, PlayerEntity playerEntity) {
-			super(new ContainerMod.ExampleContainer(pos, playerEntity));
+		public ExampleContainerScreen(int syncId, BlockPos pos, PlayerEntity playerEntity) {
+			super(new ContainerMod.ExampleContainer(syncId, pos, playerEntity), playerEntity.inventory, new StringTextComponent("Example GUI"));
 			this.pos = pos;
 		}
 
@@ -53,19 +59,36 @@ public class ContainerModClient implements ClientModInitializer {
 	}
 
 
-	//A container gui that shows how you can take in a container provided by a GuiFactory
-	public static class ExampleContainerGui2 extends ContainerGui {
+	//A container gui that shows how you can take in a container provided by a ContainerScreenFactory
+	public static class ExampleContainerScreen2 extends ContainerScreen<ContainerMod.ExampleContainer> {
 
 		BlockPos pos;
 
-		public ExampleContainerGui2(ContainerMod.ExampleContainer container) {
-			super(container);
+		public ExampleContainerScreen2(ContainerMod.ExampleContainer container) {
+			super(container, container.playerInventory, new StringTextComponent("Example GUI 2"));
 			this.pos = container.pos;
 		}
 
 		@Override
 		protected void drawBackground(float v, int i, int i1) {
 			fontRenderer.draw(pos.toString(), width / 2, height / 2, 0);
+		}
+	}
+
+	//A container gui that has the player's inventory
+	public static class ExampleInventoryContainerScreen extends ContainerScreen<ContainerMod.ExampleInventoryContainer> {
+
+		private static final Identifier BG_TEXTURE = new Identifier("textures/gui/container/horse.png");
+
+		public ExampleInventoryContainerScreen(ContainerMod.ExampleInventoryContainer container) {
+			super(container, container.playerInventory, new StringTextComponent("Example Inventory GUI"));
+		}
+
+		@Override
+		protected void drawBackground(float v, int i, int i1) {
+			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+			client.getTextureManager().bindTexture(BG_TEXTURE);
+			this.drawTexturedRect(left, top, 0, 0, containerWidth, containerHeight);
 		}
 	}
 

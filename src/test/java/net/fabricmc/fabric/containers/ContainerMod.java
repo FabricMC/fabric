@@ -18,9 +18,11 @@ package net.fabricmc.fabric.containers;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.commands.CommandRegistry;
+import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.container.Container;
+import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -28,6 +30,8 @@ import net.minecraft.util.math.BlockPos;
 public class ContainerMod implements ModInitializer {
 
 	public static final Identifier EXAMPLE_CONTAINER = new Identifier("fabric_container", "example_container");
+	public static final Identifier EXAMPLE_CONTAINER_2 = new Identifier("fabric_container", "example_container_2");
+	public static final Identifier EXAMPLE_INVENTORY_CONTAINER = new Identifier("fabric_container", "example_inventory_container");
 
 	@Override
 	public void onInitialize() {
@@ -39,26 +43,34 @@ public class ContainerMod implements ModInitializer {
 					BlockPos pos = context.getSource().getEntity().getPos();
 
 					//Opens a container, sending the block pos
-					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_CONTAINER, context.getSource().getPlayer(), buf -> buf.writeBlockPos(pos));
+					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_INVENTORY_CONTAINER, context.getSource().getPlayer(), buf -> buf.writeBlockPos(pos));
 
 					return 1;
 				})));
 
 		//Registers a container factory that opens our example Container, this reads the block pos from the buffer
-		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (identifier, player, buf) -> {
+		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
-			return new ExampleContainer(pos, player);
+			return new ExampleContainer(syncId, pos, player);
 		});
-
+		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER_2, (syncId, identifier, player, buf) -> {
+			BlockPos pos = buf.readBlockPos();
+			return new ExampleContainer(syncId, pos, player);
+		});
+		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_INVENTORY_CONTAINER, (syncId, identifier, player, buf) -> {
+			return new ExampleInventoryContainer(syncId, player);
+		});
 	}
 
 	//A basic container that prints to console when opened, this should print on the client + server
 	public static class ExampleContainer extends Container {
-
+		public final PlayerInventory playerInventory;
 		BlockPos pos;
 
-		public ExampleContainer(BlockPos pos, PlayerEntity playerEntity) {
+		public ExampleContainer(int syncId, BlockPos pos, PlayerEntity playerEntity) {
+			super(null, syncId);
 			this.pos = pos;
+			this.playerInventory = playerEntity.inventory;
 			System.out.println("Opened container, " + pos);
 		}
 
@@ -68,4 +80,27 @@ public class ContainerMod implements ModInitializer {
 		}
 	}
 
+	public static class ExampleInventoryContainer extends Container {
+		public final PlayerInventory playerInventory;
+		BlockPos pos;
+
+		public ExampleInventoryContainer(int syncId, PlayerEntity playerEntity) {
+			super(null, syncId);
+			this.playerInventory = playerEntity.inventory;
+			for(int i = 0; i < 3; ++i) {
+				for(int j = 0; j < 9; ++j) {
+					this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+				}
+			}
+
+			for(int j = 0; j < 9; ++j) {
+				this.addSlot(new Slot(playerInventory, j, 8 + j * 18, 142));
+			}
+		}
+
+		@Override
+		public boolean canUse(PlayerEntity playerEntity) {
+			return true;
+		}
+	}
 }

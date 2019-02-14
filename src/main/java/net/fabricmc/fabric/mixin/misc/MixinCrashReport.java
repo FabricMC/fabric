@@ -22,7 +22,7 @@ import net.fabricmc.loader.ModContainer;
 import net.fabricmc.loader.ModInfo;
 import net.minecraft.util.SystemUtil;
 import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportElement;
+import net.minecraft.util.crash.CrashReportSection;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,19 +35,11 @@ import java.util.*;
 @Mixin(CrashReport.class)
 public abstract class MixinCrashReport {
 	@Shadow
-	public abstract CrashReportElement getElement();
+	public abstract CrashReportSection getSystemDetailsSection();
 
-	@Inject(at = @At("HEAD"), method = "generateWittyComment", cancellable = true)
-	private static void generateWittyComment(CallbackInfoReturnable<String> info) {
-		if (SystemUtil.getMeasuringTimeNano() % 14723 == 0) {
-			info.setReturnValue("OOPSIE WOOPSIE!! Uwu We made a fucky wucky!! A wittle fucko boingo! The code monkeys at our headquarters are working VEWY HAWD to fix this!");
-			info.cancel();
-		}
-	}
-
-	@Inject(at = @At("RETURN"), method = "method_559")
-	private void method_559(CallbackInfo info) {
-		getElement().add("Fabric Mods", () -> {
+	@Inject(at = @At("RETURN"), method = "fillSystemDetails")
+	private void fillSystemDetails(CallbackInfo info) {
+		getSystemDetailsSection().add("Fabric Mods", () -> {
 			Map<String, String> mods = new TreeMap<>();
 			for (ModContainer container : FabricLoader.INSTANCE.getModContainers()) {
 				mods.put(container.getInfo().getName(), container.getInfo().getVersionString() + " (" + container.getOriginFile().getName() + ")");

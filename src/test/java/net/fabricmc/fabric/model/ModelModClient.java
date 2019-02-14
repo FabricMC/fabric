@@ -18,7 +18,7 @@ package net.fabricmc.fabric.model;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.events.client.ClientTickEvent;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.*;
@@ -114,7 +114,7 @@ public class ModelModClient implements ClientModInitializer {
 			}
 		}));
 
-		ClientTickEvent.CLIENT.register((client) -> {
+		ClientTickCallback.EVENT.register((client) -> {
 			if (client.getBakedModelManager().getModel(new ModelIdentifier("fabric:model#custom"))
 				== bakedModel && bakedModel != null) {
 				System.out.println("--- MODEL LOADED! ---");
