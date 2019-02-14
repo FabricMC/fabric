@@ -27,8 +27,8 @@ import net.minecraft.class_2901;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.packet.CustomPayloadClientPacket;
-import net.minecraft.client.network.packet.GameJoinClientPacket;
+import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
+import net.minecraft.client.network.packet.GameJoinS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
@@ -50,20 +50,20 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	public abstract void sendPacket(Packet<?> var1);
 
 	@Inject(at = @At("RETURN"), method = "onGameJoin")
-	public void onGameJoin(GameJoinClientPacket packet, CallbackInfo info) {
+	public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		sendPacket(PacketRegistryImpl.createInitialRegisterPacket(ClientSidePacketRegistry.INSTANCE));
 	}
 
 	// Optional hook: it only removes a warning message.
 	@Inject(method = "onCustomPayload", at = @At(value = "CONSTANT", args = "stringValue=Unknown custom packed identifier: {}"), cancellable = true, require = 0)
-	public void onCustomPayloadNotFound(CustomPayloadClientPacket packet, CallbackInfo info) {
+	public void onCustomPayloadNotFound(CustomPayloadS2CPacket packet, CallbackInfo info) {
 		if (packet.getChannel().equals(PacketTypes.REGISTER) || packet.getChannel().equals(PacketTypes.UNREGISTER)) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	public void onCustomPayload(CustomPayloadClientPacket packet, CallbackInfo info) {
+	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo info) {
 		if (((ClientSidePacketRegistryImpl) ClientSidePacketRegistry.INSTANCE).accept(packet.getChannel(), this, packet.getData())) {
 			info.cancel();
 		}
