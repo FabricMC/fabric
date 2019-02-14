@@ -40,7 +40,7 @@ public abstract class MixinMinecraftClient {
 	private boolean fabric_itemPickSucceeded;
 	private boolean fabric_itemPickCancelled;
 
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemPick()V"), method = "method_1508")
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;doItemPick()V"), method = "handleInputEvents")
 	private void sillyRedirection() {
 		fabric_doItemPickWrapper();
 	}

@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.Packet;
-import net.minecraft.server.network.packet.CustomPayloadServerPacket;
+import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
@@ -61,7 +61,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	public Packet<?> toPacket(Identifier id, PacketByteBuf buf) {
-		return new CustomPayloadServerPacket(id, buf);
+		return new CustomPayloadC2SPacket(id, buf);
 	}
 
 	@Override

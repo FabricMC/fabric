@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.packet.BlockEntityUpdateClientPacket;
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.Logger;
@@ -37,8 +37,8 @@ public class MixinClientPlayNetworkHandler {
 	@Shadow
 	private static Logger LOGGER;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/BlockEntityUpdateClientPacket;getActionId()I", ordinal = 0), method = "onBlockEntityUpdate", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-	public void onBlockEntityUpdate(BlockEntityUpdateClientPacket packet, CallbackInfo info, BlockEntity entity) {
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/BlockEntityUpdateS2CPacket;getActionId()I", ordinal = 0), method = "onBlockEntityUpdate", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+	public void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, CallbackInfo info, BlockEntity entity) {
 		if (entity instanceof BlockEntityClientSerializable) {
 			if (packet.getActionId() == 127) {
 				BlockEntityClientSerializable serializable = (BlockEntityClientSerializable) entity;

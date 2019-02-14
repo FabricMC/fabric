@@ -31,20 +31,20 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private final List<IdentifiableResourceReloadListener<?>> addedListeners = new ArrayList<>();
+	private final List<IdentifiableResourceReloadListener> addedListeners = new ArrayList<>();
 
 	public static ResourceManagerHelper get(ResourceType type) {
 		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
 	}
 
-	public static void sort(ResourceType type, List<ResourceReloadListener<?>> listeners) {
+	public static void sort(ResourceType type, List<ResourceReloadListener> listeners) {
 		ResourceManagerHelperImpl instance = registryMap.get(type);
 		if (instance != null) {
 			instance.sort(listeners);
 		}
 	}
 
-	protected void sort(List<ResourceReloadListener<?>> listeners) {
+	protected void sort(List<ResourceReloadListener> listeners) {
 		listeners.removeAll(addedListeners);
 
 		// General rules:
@@ -53,7 +53,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		//   trust them 100%. Only code doesn't lie.
 		// - We addReloadListener all custom listeners after vanilla listeners. Same reasons.
 
-		List<IdentifiableResourceReloadListener<?>> listenersToAdd = Lists.newArrayList(addedListeners);
+		List<IdentifiableResourceReloadListener> listenersToAdd = Lists.newArrayList(addedListeners);
 		Set<Identifier> resolvedIds = new HashSet<>();
 		for (ResourceReloadListener listener : listeners) {
 			if (listener instanceof IdentifiableResourceReloadListener) {
@@ -65,7 +65,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		while (listeners.size() != lastSize) {
 			lastSize = listeners.size();
 
-			Iterator<IdentifiableResourceReloadListener<?>> it = listenersToAdd.iterator();
+			Iterator<IdentifiableResourceReloadListener> it = listenersToAdd.iterator();
 			while (it.hasNext()) {
 				IdentifiableResourceReloadListener listener = it.next();
 				if (resolvedIds.containsAll(listener.getFabricDependencies())) {
@@ -82,7 +82,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	}
 
 	@Override
-	public void addReloadListener(IdentifiableResourceReloadListener<?> listener) {
+	public void addReloadListener(IdentifiableResourceReloadListener listener) {
 		addedListeners.add(listener);
 	}
 }

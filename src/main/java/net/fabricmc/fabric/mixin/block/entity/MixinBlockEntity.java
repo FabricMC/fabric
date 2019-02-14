@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.block.entity;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.network.packet.BlockEntityUpdateClientPacket;
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -38,7 +38,7 @@ public abstract class MixinBlockEntity {
 	public abstract BlockPos getPos();
 
 	@Inject(at = @At("HEAD"), method = "toUpdatePacket", cancellable = true)
-	public void toUpdatePacket(CallbackInfoReturnable<BlockEntityUpdateClientPacket> info) {
+	public void toUpdatePacket(CallbackInfoReturnable<BlockEntityUpdateS2CPacket> info) {
 		Object self = (Object) this;
 
 		if (self instanceof BlockEntityClientSerializable) {
@@ -56,7 +56,7 @@ public abstract class MixinBlockEntity {
 
 			tag.putString("id", entityId.toString());
 			tag = ((BlockEntityClientSerializable) self).toClientTag(tag);
-			info.setReturnValue(new BlockEntityUpdateClientPacket(getPos(), 127, tag));
+			info.setReturnValue(new BlockEntityUpdateS2CPacket(getPos(), 127, tag));
 			info.cancel();
 		}
 	}

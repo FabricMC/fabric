@@ -16,26 +16,16 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.SynchronousResourceReloadListener;
+import net.minecraft.util.profiler.Profiler;
+
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 
 /**
- * Helper for working with {@link ResourceManager} instances.
+ * A simplified version of the "resource reload listener" interface, hiding the
+ * peculiarities of the API and ensuring all data is loaded on the main thread.
  */
-public interface ResourceManagerHelper {
-	/**
-	 * Add a resource reload listener for a given registry.
-	 * @param listener The resource reload listener.
-	 */
-	void addReloadListener(IdentifiableResourceReloadListener listener);
-
-	/**
-	 * Get the ResourceManagerHelper instance for a given resource type.
-	 * @param type The given resource type.
-	 * @return The ResourceManagerHelper instance.
-	 */
-	static ResourceManagerHelper get(ResourceType type) {
-		return ResourceManagerHelperImpl.get(type);
-	}
+public interface SimpleSynchronousResourceReloadListener extends IdentifiableResourceReloadListener, SynchronousResourceReloadListener {
 }

@@ -38,7 +38,7 @@ public class MixinMinecraftGame {
     @Shadow
     private ReloadableResourceManager resourceManager;
 
-    @Inject(method = "reloadResources()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "reloadResources()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/List;Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
     public void reloadResources(CallbackInfo info, List<ResourcePack> list) {
     	List<ResourcePack> oldList = Lists.newArrayList(list);
     	list.clear();

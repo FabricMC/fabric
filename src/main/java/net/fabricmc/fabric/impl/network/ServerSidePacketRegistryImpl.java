@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.loader.FabricLoader;
-import net.minecraft.client.network.packet.CustomPayloadClientPacket;
+import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
@@ -60,7 +60,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	public Packet<?> toPacket(Identifier id, PacketByteBuf buf) {
-		return new CustomPayloadClientPacket(id, buf);
+		return new CustomPayloadS2CPacket(id, buf);
 	}
 
 	@Override
