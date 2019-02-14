@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.registry;
 
 import net.fabricmc.fabric.impl.dimension.DimensionTypeExtensions;
-import net.fabricmc.fabric.registry.RegistryListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;

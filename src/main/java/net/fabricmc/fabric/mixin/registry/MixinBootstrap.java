@@ -16,11 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.BootstrapBiomeRegistryListener;
-import net.fabricmc.fabric.impl.registry.BootstrapBlockRegistryListener;
-import net.fabricmc.fabric.impl.registry.BootstrapFluidRegistryListener;
-import net.fabricmc.fabric.impl.registry.BootstrapItemRegistryListener;
+import net.fabricmc.fabric.impl.registry.*;
 import net.minecraft.Bootstrap;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;

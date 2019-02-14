@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.dimension;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionComponents;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,12 +32,12 @@ public class MixinPlayerManager {
 
 	//This is hooking into the vanilla teleportation logic, but if teleporter has been set it will be used rather  than the vanilla logic
 	@Inject(method = "method_14558", at = @At("HEAD"), cancellable = true)
-	private void method_14558(Entity entity, DimensionType dimensionType, ServerWorld previousWorld, ServerWorld newWorld, CallbackInfo info) {
+	private static void method_14558(ServerPlayerEntity entity, DimensionType dimensionType, ServerWorld previousWorld, ServerWorld newWorld, CallbackInfo info) {
 		if (FabricDimensionComponents.INSTANCE.NEXT_TELEPORTER != null) {
 			FabricDimensionComponents.INSTANCE.NEXT_TELEPORTER.teleport(entity, previousWorld, newWorld);
 
 			newWorld.spawnEntity(entity);
-			newWorld.method_8553(entity, false);
+			newWorld.method_8553(entity);
 			entity.setWorld(newWorld);
 
 			FabricDimensionComponents.INSTANCE.NEXT_TELEPORTER = null;

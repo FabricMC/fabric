@@ -9,7 +9,6 @@
     "commands.MixinServerCommandManager",
     "container.MixinServerPlayerEntity",
     "dimension.MixinDimensionType",
-    "dimension.MixinMinecraftServer",
     "dimension.MixinPlayerManager",
     "entity.MixinEntityTracker",
     "entity.MixinEntityTrackerEntry",

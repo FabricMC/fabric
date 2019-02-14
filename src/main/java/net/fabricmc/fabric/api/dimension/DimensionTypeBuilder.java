@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.dimension;
 
 import net.fabricmc.fabric.impl.dimension.DimensionTypeExtensions;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionComponents;
-import net.fabricmc.fabric.registry.RemappableRegistry;
+import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;

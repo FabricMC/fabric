@@ -20,7 +20,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.dimension.DimensionTypeBuilder;
 import net.fabricmc.fabric.api.dimension.EntityTeleporter;
 import net.fabricmc.fabric.api.dimension.FabricEntityTeleporter;
-import net.fabricmc.fabric.events.PlayerInteractionEvent;
+import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
@@ -43,7 +43,7 @@ public class DimensionMod implements ModInitializer {
 			.build();
 
 		//Right click a diamond to go to the dim
-		PlayerInteractionEvent.INTERACT_BLOCK.register((player, world, hand, pos, direction, hitX, hitY, hitZ) -> {
+		AttackBlockCallback.EVENT.register((player, world, hand, pos, direction) -> {
 			if (world.getBlockState(pos).getBlock() == Blocks.DIAMOND_BLOCK) {
 
 				FabricEntityTeleporter.INSTANCE.changeDimension(player, EXAMPLE_TYPE, new EntityTeleporter() {
