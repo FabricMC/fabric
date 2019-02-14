@@ -42,12 +42,10 @@ public class MixinBootstrap {
 		Object o1 = Blocks.AIR;
 		Object o3 = Fluids.EMPTY;
 		Object o2 = Items.AIR;
-		Object o4 = DimensionType.THE_END;
 
 		((ListenableRegistry<Biome>) Registry.BIOME).registerListener(new BootstrapBiomeRegistryListener());
 		((ListenableRegistry<Block>) Registry.BLOCK).registerListener(new BootstrapBlockRegistryListener());
 		((ListenableRegistry<Fluid>) Registry.FLUID).registerListener(new BootstrapFluidRegistryListener());
 		((ListenableRegistry<Item>) Registry.ITEM).registerListener(new BootstrapItemRegistryListener());
-		((ListenableRegistry<DimensionType>) Registry.DIMENSION).registerListener(new BootstrapDimensionRegistryListener());
 	}
 }

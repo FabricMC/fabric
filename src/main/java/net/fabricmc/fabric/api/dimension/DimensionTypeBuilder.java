@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.dimension;
 
-import net.fabricmc.fabric.impl.dimension.DimensionTypeExtensions;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionComponents;
 import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 import net.minecraft.util.Identifier;
@@ -31,14 +30,19 @@ import java.util.function.BiFunction;
 public class DimensionTypeBuilder {
 
 	private Identifier identifier;
+	private int id;
 	private BiFunction<World, DimensionType, ? extends Dimension> dimensionFactory = OverworldDimension::new;
 	private boolean hasSkyLight = true;
 
-	private DimensionTypeBuilder(Identifier identifier) {
+	private DimensionTypeBuilder(Identifier identifier, int id) {
 		if(Registry.DIMENSION.contains(identifier)){
 			throw new RuntimeException("Dimension already exists with name " + identifier.toString());
 		}
+		if(Registry.DIMENSION.getInt(id) != null){
+			throw new RuntimeException("Dimension already exists with id " + id);
+		}
 		this.identifier = identifier;
+		this.id = id;
 	}
 
 	/**
@@ -48,8 +52,8 @@ public class DimensionTypeBuilder {
 	 * @param identifier the identifier will be used as the name of the DimensionType and will also be used for the save directory
 	 * @return a DimensionTypeBuilder
 	 */
-	public static DimensionTypeBuilder create(Identifier identifier){
-		return new DimensionTypeBuilder(identifier);
+	public static DimensionTypeBuilder create(Identifier identifier, int id){
+		return new DimensionTypeBuilder(identifier, id);
 	}
 
 	public DimensionTypeBuilder factory(BiFunction<World, DimensionType, ? extends Dimension> dimensionFactory) {
@@ -81,8 +85,7 @@ public class DimensionTypeBuilder {
 	 */
 	public DimensionType build(){
 		DimensionType dimensionType = new FabricDimensionType(((RemappableRegistry)Registry.DIMENSION).nextId(), getDimensionName(), "DIM_" + getDimensionName(), dimensionFactory, hasSkyLight);
-		DimensionTypeExtensions extensions = (DimensionTypeExtensions) dimensionType;
-		Registry.set(Registry.DIMENSION, extensions.fabric_getId(), identifier.toString(), dimensionType);
+		Registry.set(Registry.DIMENSION, id, identifier.toString(), dimensionType);
 		FabricDimensionComponents.INSTANCE.addModdedDimension(dimensionType);
 		return dimensionType;
 	}

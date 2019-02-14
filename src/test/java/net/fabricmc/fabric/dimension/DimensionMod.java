@@ -38,7 +38,7 @@ public class DimensionMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		EXAMPLE_TYPE = DimensionTypeBuilder
-			.create(new Identifier("fabric", "example_dimension"))
+			.create(new Identifier("fabric", "example_dimension"), 3)
 			.factory(ExampleDimension::new)
 			.build();
 
