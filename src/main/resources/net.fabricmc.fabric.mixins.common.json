@@ -8,6 +8,7 @@
     "block.entity.MixinBlockEntity",
     "commands.MixinServerCommandManager",
     "container.MixinServerPlayerEntity",
+    "dimension.MixinEntity",
     "dimension.MixinPlayerManager",
     "entity.MixinEntityTracker",
     "entity.MixinEntityTrackerEntry",

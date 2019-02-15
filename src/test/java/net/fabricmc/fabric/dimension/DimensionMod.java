@@ -19,15 +19,13 @@ package net.fabricmc.fabric.dimension;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.dimension.DimensionTypeBuilder;
 import net.fabricmc.fabric.api.dimension.EntityTeleporter;
-import net.fabricmc.fabric.api.dimension.FabricTeleporter;
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.world.ServerWorld;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -47,15 +45,23 @@ public class DimensionMod implements ModInitializer {
 
 		//Right click a diamond to go to the dim
 		UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
-			System.out.println("hello");
 			if (world.getBlockState(hitResult.getBlockPos()).getBlock() == Blocks.DIAMOND_BLOCK) {
 				if(world.getDimension().getType() != EXAMPLE_TYPE){
-					FabricTeleporter.INSTANCE.changeDimension(player, EXAMPLE_TYPE);
+					player.changeDimension(EXAMPLE_TYPE);
 				} else {
-					FabricTeleporter.INSTANCE.changeDimension(player, DimensionType.OVERWORLD, (entity, previousWorld, newWorld) -> {
-						EntityTeleporter.setEntityLocation(entity, new BlockPos(0, 100, 0));
-						world.setBlockState(new BlockPos(0, 99, 0), Blocks.BEDROCK.getDefaultState());
-					});
+					//TODO find a way to handle dim travel from modded dims to vanilla dims
+//					FabricTeleporter.INSTANCE.changeDimension(player, DimensionType.OVERWORLD, (entity, previousWorld, newWorld) -> {
+//						EntityTeleporter.setEntityLocation(entity, new BlockPos(0, 100, 0));
+//						world.setBlockState(new BlockPos(0, 99, 0), Blocks.BEDROCK.getDefaultState());
+//					});
+				}
+			}
+			if (world.getBlockState(hitResult.getBlockPos()).getBlock() == Blocks.EMERALD_BLOCK) {
+				if(!world.isClient && world.getDimension().getType() != EXAMPLE_TYPE && hand == Hand.MAIN){
+					//Spawns an item entity and tries to move to the other dim
+					ItemEntity itemEntity = new ItemEntity(world, hitResult.getBlockPos().getX(), hitResult.getBlockPos().getY() + 1, hitResult.getBlockPos().getZ(), new ItemStack(Items.GOLD_INGOT));
+					world.spawnEntity(itemEntity);
+					itemEntity.changeDimension(EXAMPLE_TYPE);
 				}
 			}
 			return ActionResult.PASS;

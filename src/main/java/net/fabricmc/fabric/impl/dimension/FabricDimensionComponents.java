@@ -17,26 +17,24 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import net.fabricmc.fabric.api.dimension.EntityTeleporter;
-import net.fabricmc.fabric.api.dimension.FabricTeleporter;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
 
 import java.util.*;
 
 //INTERNAL ONLY, dont use this modders, use the APIs provided
-public class FabricDimensionComponents implements FabricTeleporter {
+public class FabricDimensionComponents {
 
 	public static final FabricDimensionComponents INSTANCE = new FabricDimensionComponents();
 
-	public EntityTeleporter NEXT_TELEPORTER = null;
 	private List<DimensionType> moddedDimensionTypes = new ArrayList<>();
-	private Map<DimensionType, EntityTeleporter> defaultTeleporters = new HashMap<>();
+	private Map<DimensionType, EntityTeleporter> dimensionTeleporters = new HashMap<>();
 
 
 	public void addModdedDimension(DimensionType type, EntityTeleporter teleporter){
 		moddedDimensionTypes.add(type);
 		if(teleporter != null){
-			defaultTeleporters.put(type, teleporter);
+			dimensionTeleporters.put(type, teleporter);
 		}
 	}
 
@@ -44,20 +42,16 @@ public class FabricDimensionComponents implements FabricTeleporter {
 		return Collections.unmodifiableList(moddedDimensionTypes);
 	}
 
-	@Override
-	public void changeDimension(Entity entity, DimensionType dimension, EntityTeleporter entityTeleporter) {
-		if(entity.world.isClient){
-			return;
+	public EntityTeleporter getTeleporter(Entity entity, DimensionType dimensionType){
+		//TODO have an event or something to allow devs to handle any teleportation?
+		//Check the dimension teleporters to see if it can be handled, this would have been set when creating the dim
+		if(dimensionTeleporters.containsKey(dimensionType)){
+			return dimensionTeleporters.get(dimensionType);
 		}
-		if(entityTeleporter == null){
-			return;
+		//If its a modded dim, we want to force the default teleporter otherwise bad things can happen
+		if(getModdedDimensionTypes().contains(dimensionType)){
+			return EntityTeleporter.DEFAULT_TELEPORTER;
 		}
-		NEXT_TELEPORTER = entityTeleporter;
-		entity.changeDimension(dimension);
-	}
-
-	@Override
-	public void changeDimension(Entity entity, DimensionType dimensionType) {
-		changeDimension(entity, dimensionType, defaultTeleporters.getOrDefault(dimensionType, EntityTeleporter.DEFAULT_TELEPORTER));
+		return null;
 	}
 }

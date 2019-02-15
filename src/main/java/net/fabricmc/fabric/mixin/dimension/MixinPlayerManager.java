@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import net.fabricmc.fabric.api.dimension.EntityTeleporter;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionComponents;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.PlayerManager;
@@ -30,17 +31,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(PlayerManager.class)
 public class MixinPlayerManager {
 
-	//This is hooking into the vanilla teleportation logic, but if DEFAULT_TELEPORTER has been set it will be used rather  than the vanilla logic
+	//This is hooking into the vanilla teleportation logic for the player
 	@Inject(method = "method_14558", at = @At("HEAD"), cancellable = true)
 	private static void method_14558(ServerPlayerEntity entity, DimensionType dimensionType, ServerWorld previousWorld, ServerWorld newWorld, CallbackInfo info) {
-		if (FabricDimensionComponents.INSTANCE.NEXT_TELEPORTER != null) {
-			FabricDimensionComponents.INSTANCE.NEXT_TELEPORTER.teleport(entity, previousWorld, newWorld);
+		EntityTeleporter teleporter = FabricDimensionComponents.INSTANCE.getTeleporter(entity, newWorld.dimension.getType());
+		System.out.println("Hi:"  + teleporter);
+		if(teleporter != null){
+			System.out.println("Handling player movement to dim");
 
+			teleporter.teleport(entity, previousWorld, newWorld);
 			newWorld.spawnEntity(entity);
-			newWorld.method_8553(entity);
+			newWorld.tickEntity(entity);
 			entity.setWorld(newWorld);
 
-			FabricDimensionComponents.INSTANCE.NEXT_TELEPORTER = null;
 			info.cancel();
 		}
 	}
