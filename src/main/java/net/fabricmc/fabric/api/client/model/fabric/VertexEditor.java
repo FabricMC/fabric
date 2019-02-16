@@ -85,16 +85,48 @@ public interface VertexEditor extends Vertex {
     VertexEditor lightmap(int lightmap);
     
     /**
+     * Indexed color setter.
+     */
+    default VertexEditor color(int layerIndex, int color) {
+        switch(layerIndex) {
+        case 0:
+            return color1(color);
+        case 1:
+            return color2(color);
+        case 2:
+            return color3(color);
+        default:
+            throw new IndexOutOfBoundsException();
+        }
+    }
+    
+    /**
      * Color for first texture layer.
      * Standard shader binding: vec4 in_color
      */
-    VertexEditor color(int color);
+    VertexEditor color1(int color);
+    
+    /**
+     * Indexed texture coordinate setter.
+     */
+    default VertexEditor uv(int layerIndex, float u, float v) {
+        switch(layerIndex) {
+        case 0:
+            return uv1(u, v);
+        case 1:
+            return uv2(u, v);
+        case 2:
+            return uv3(u, v);
+        default:
+            throw new IndexOutOfBoundsException();
+        }
+    }
     
     /**
      * Interpolated ("baked") texture coordinates for first texture layer.
      * Standard shader binding: vec2 in_uv
      */
-    VertexEditor uv(float u, float v);
+    VertexEditor uv1(float u, float v);
     
     /**
      * Color for second texture layer.

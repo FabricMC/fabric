@@ -97,19 +97,67 @@ public interface Vertex {
     int lightmap();
 
     /**
+     * Indexed color retrieval.
+     */
+    default int color(int layerIndex) {
+        switch(layerIndex) {
+        case 0:
+            return color1();
+        case 1:
+            return color2();
+        case 2:
+            return color3();
+        default:
+            throw new IndexOutOfBoundsException();
+        }
+    }
+    
+    /**
      * Color for first texture layer. Black (0) if not set.
      */
-    int color();
+    int color1();
+    
+    /**
+     * Indexed texture coordinate retrieval.
+     */
+    default float u(int layerIndex) {
+        switch(layerIndex) {
+        case 0:
+            return u1();
+        case 1:
+            return u2();
+        case 2:
+            return u3();
+        default:
+            throw new IndexOutOfBoundsException();
+        }
+    }
     
     /**
      * Interpolated ("baked") horizontal texture coordinate for first texture layer. 
      */
-    float u();
+    float u1();
+    
+    /**
+     * Indexed texture coordinate retrieval.
+     */
+    default float v(int layerIndex) {
+        switch(layerIndex) {
+        case 0:
+            return v1();
+        case 1:
+            return v2();
+        case 2:
+            return v3();
+        default:
+            throw new IndexOutOfBoundsException();
+        }
+    }
     
     /**
      * Interpolated ("baked") vertical texture coordinate for first texture layer. 
      */
-    float v();
+    float v1();
     
     /**
      * Color for second texture layer. Black (0) if not set.
