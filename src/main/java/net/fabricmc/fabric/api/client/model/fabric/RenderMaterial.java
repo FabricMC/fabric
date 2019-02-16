@@ -39,7 +39,7 @@ import net.minecraft.util.Identifier;
  * <b>STANDARD MATERIALS</b><p>
  * 
  * Standard materials have "normal" rendering with options for additional
- * texture layers (up to three, total) and per-layer control over lighting,
+ * textures (up to three, total) and per-texture control over lighting,
  * color, and texture blending. In the default renderer, "normal" rendering
  * emulates unmodified Minecraft. Other renderers may offer a different aesthetic.<p>
  * 
@@ -79,7 +79,7 @@ public interface RenderMaterial {
      * This will be identical to the material that would be obtained by calling {@link MaterialFinder#find()}
      * on a new, unaltered, {@link MaterialFinder} instance.  It is defined here for clarity and convenience.
      * 
-     * Quads using this material have a single texture layer, use {@link Block#getRenderLayer()} of the associated
+     * Quads using this material have a single texture, use {@link Block#getRenderLayer()} of the associated
      * block to determine texture blending,  honor block color index, are non-emissive, and apply both diffuse and 
      * ambient occlusion shading to vertex colors.<p>
      * 
@@ -88,7 +88,7 @@ public interface RenderMaterial {
     Identifier MATERIAL_STANDARD = new Identifier("fabric", "standard");
     
     /**
-     * How many color/uv layers are in the material. Minimum is 1.
+     * How many color/uv texture coordinates are in the material. Minimum is 1.
      * See {@link MaterialFinder#textureDepth(int)}
      */
     int textureDepth();

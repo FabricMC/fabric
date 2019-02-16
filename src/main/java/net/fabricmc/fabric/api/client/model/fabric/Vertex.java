@@ -99,8 +99,8 @@ public interface Vertex {
     /**
      * Indexed color retrieval.
      */
-    default int color(int layerIndex) {
-        switch(layerIndex) {
+    default int color(int textureIndex) {
+        switch(textureIndex) {
         case 0:
             return color1();
         case 1:
@@ -113,15 +113,15 @@ public interface Vertex {
     }
     
     /**
-     * Color for first texture layer. Black (0) if not set.
+     * Color for first texture. Black (0) if not set.
      */
     int color1();
     
     /**
      * Indexed texture coordinate retrieval.
      */
-    default float u(int layerIndex) {
-        switch(layerIndex) {
+    default float u(int textureIndex) {
+        switch(textureIndex) {
         case 0:
             return u1();
         case 1:
@@ -134,15 +134,15 @@ public interface Vertex {
     }
     
     /**
-     * Interpolated ("baked") horizontal texture coordinate for first texture layer. 
+     * Interpolated ("baked") horizontal texture coordinate for first texture. 
      */
     float u1();
     
     /**
      * Indexed texture coordinate retrieval.
      */
-    default float v(int layerIndex) {
-        switch(layerIndex) {
+    default float v(int textureIndex) {
+        switch(textureIndex) {
         case 0:
             return v1();
         case 1:
@@ -155,42 +155,42 @@ public interface Vertex {
     }
     
     /**
-     * Interpolated ("baked") vertical texture coordinate for first texture layer. 
+     * Interpolated ("baked") vertical texture coordinate for first texture. 
      */
     float v1();
     
     /**
-     * Color for second texture layer. Black (0) if not set.
+     * Color for second texture. Black (0) if not set.
      * Throws IndexOutOfBoundsException if material texture depth < 2.
      */
     int color2();
     
     /**
-     * Interpolated ("baked") horizontal texture coordinate for second texture layer. 
+     * Interpolated ("baked") horizontal texture coordinate for second texture. 
      * Throws IndexOutOfBoundsException if material texture depth < 2.
      */
     float u2();
     
     /**
-     * Interpolated ("baked") vertical texture coordinate for second texture layer. 
+     * Interpolated ("baked") vertical texture coordinate for second texture. 
      * Throws IndexOutOfBoundsException if material texture depth < 2.
      */
     float v2();
     
     /**
-     * Color for third texture layer. Black (0) if not set.
+     * Color for third texture. Black (0) if not set.
      * Throws IndexOutOfBoundsException if material texture depth < 3.
      */
     int color3();
     
     /**
-     * Interpolated ("baked") horizontal texture coordinate for third texture layer. 
+     * Interpolated ("baked") horizontal texture coordinate for third texture. 
      * Throws IndexOutOfBoundsException if material texture depth < 3.
      */
     float u3();
     
     /**
-     * Interpolated ("baked") vertical texture coordinate for third texture layer. 
+     * Interpolated ("baked") vertical texture coordinate for third texture. 
      * Throws IndexOutOfBoundsException if material texture depth < 3.
      */
     float v3();

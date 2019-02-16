@@ -75,7 +75,7 @@ public interface VertexEditor extends Vertex {
     
     /**
      * Minimum block brightness. Has no effect unless emissive lighting is
-     * enabled in at least one layer of the material for this quad.
+     * enabled in at least one texture of the material for this quad.
      * Standard shader binding: vec4 in_lightmap<p>
      * 
      * While this has a standard binding, it should not be used by
@@ -87,8 +87,8 @@ public interface VertexEditor extends Vertex {
     /**
      * Indexed color setter.
      */
-    default VertexEditor color(int layerIndex, int color) {
-        switch(layerIndex) {
+    default VertexEditor color(int textureIndex, int color) {
+        switch(textureIndex) {
         case 0:
             return color1(color);
         case 1:
@@ -101,7 +101,7 @@ public interface VertexEditor extends Vertex {
     }
     
     /**
-     * Color for first texture layer.
+     * Color for first texture.
      * Standard shader binding: vec4 in_color
      */
     VertexEditor color1(int color);
@@ -109,8 +109,8 @@ public interface VertexEditor extends Vertex {
     /**
      * Indexed texture coordinate setter.
      */
-    default VertexEditor uv(int layerIndex, float u, float v) {
-        switch(layerIndex) {
+    default VertexEditor uv(int textureIndex, float u, float v) {
+        switch(textureIndex) {
         case 0:
             return uv1(u, v);
         case 1:
@@ -123,34 +123,34 @@ public interface VertexEditor extends Vertex {
     }
     
     /**
-     * Interpolated ("baked") texture coordinates for first texture layer.
+     * Interpolated ("baked") texture coordinates for first texture.
      * Standard shader binding: vec2 in_uv
      */
     VertexEditor uv1(float u, float v);
     
     /**
-     * Color for second texture layer.
+     * Color for second texture.
      * Throws IndexOutOfBoundsException if material texture depth < 2.
      * Standard shader binding: vec4 in_color2
      */
     VertexEditor color2(int color);
     
     /**
-     * Interpolated ("baked") texture coordinates for second texture layer.
+     * Interpolated ("baked") texture coordinates for second texture.
      * Throws IndexOutOfBoundsException if material texture depth < 2.
      * Standard shader binding: vec2 in_uv2
      */
     VertexEditor uv2(float u, float v);
     
     /**
-     * Color for third texture layer.
+     * Color for third texture.
      * Throws IndexOutOfBoundsException if material texture depth < 3.
      * Standard shader binding: vec4 in_color3
      */
     VertexEditor color3(int color);
     
     /**
-     * Interpolated ("baked") texture coordinates for third texture layer.
+     * Interpolated ("baked") texture coordinates for third texture.
      * Throws IndexOutOfBoundsException if material texture depth < 3.
      * Standard shader binding: vec2 in_uv3
      */

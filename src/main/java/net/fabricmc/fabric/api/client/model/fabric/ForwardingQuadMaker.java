@@ -34,8 +34,8 @@ public abstract class ForwardingQuadMaker implements QuadMaker {
     }
     
     @Override
-    public void toVanilla(int layerIndex, int[] target, int targetIndex, boolean isItem) {
-        wrapped().toVanilla(layerIndex, target, targetIndex, isItem);
+    public void toVanilla(int textureIndex, int[] target, int targetIndex, boolean isItem) {
+        wrapped().toVanilla(textureIndex, target, targetIndex, isItem);
     }
 
     @Override

@@ -32,10 +32,10 @@ public interface Quad {
     /**
      * Reads baked vertex data and outputs standard baked quad 
      * vertex data in the given array and location. Uses texture
-     * coordinates and colors from the indicated layer.<p>
+     * coordinates and colors from the indicated texture.<p>
      * 
-     * @param layerIndex The texture layer to be used for the quad.
-     * Pass 0 for single-layer quads.
+     * @param textureIndex The texture to be used for the quad.
+     * Pass 0 for single-texture quads.
      * 
      * @param target Target array for the baked quad data.
      * 
@@ -45,11 +45,11 @@ public interface Quad {
      * @param isItem If true, will output vertex normals. Otherwise will output
      * lightmaps, per Minecraft vertex formats for baked models.
      */
-    void toVanilla(int layerIndex, int[] target, int targetIndex, boolean isItem);
+    void toVanilla(int textureIndex, int[] target, int targetIndex, boolean isItem);
     
     /**
      * Extracts all quad properties except material to the given {@link QuadMaker} instance.
-     * If quad materials have different texture depths, only the common layers are copied.
+     * If quad materials have different texture depths, only the common textures are copied.
      * Must be used before calling {@link QuadMaker#emit()} on the target instance.
      * Meant for re-texturing, analysis and static transformation use cases.
      */
@@ -97,14 +97,14 @@ public interface Quad {
     
     /**
      * Generates a new BakedQuad instance with texture
-     * coordinates and colors from the indicated layer.<p>
+     * coordinates and colors from the indicated texture.<p>
      * 
-     * @param source Data previously packed by {@link FastVertexBuilder}.
+     * @param source Data previously packed by {@link MeshBuilder}.
      * 
      * @param sourceIndex Index where packed data starts.
      * 
-     * @param layerIndex The texture layer to be used for the quad.
-     * Pass 0 for single-layer quads.
+     * @param textureIndex The texture to be used for the quad.
+     * Pass 0 for single-texture quads.
      * 
      * @param sprite  {@link QuadMaker} does not serialize sprites
      * so the sprite must be provided by the caller.
@@ -116,9 +116,9 @@ public interface Quad {
      * supported by vanilla features. Will retain emissive light maps, for example,
      * but the standard Minecraft renderer will not use them.
      */
-    default BakedQuad toBakedQuad(int layerIndex, Sprite sprite, boolean isItem) {
+    default BakedQuad toBakedQuad(int textureIndex, Sprite sprite, boolean isItem) {
         int vertexData[] = new int[28];
-        toVanilla(layerIndex, vertexData, 0, isItem);
+        toVanilla(textureIndex, vertexData, 0, isItem);
         return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite);
     }
     

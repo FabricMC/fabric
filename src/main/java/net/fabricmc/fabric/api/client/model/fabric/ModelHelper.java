@@ -66,7 +66,7 @@ public class ModelHelper {
      * The array indexes correspond to {@link Direction#getId()} with the 
      * addition of {@link #NULL_FACE_ID}.<p>
      * 
-     * Multi-layer quads in the mesh will be expanded in multiple quads in the output.
+     * Multi-texture quads in the mesh will be expanded in multiple quads in the output.
      * Retrieves sprites from the block texture atlas via {@link SpriteFinder}. 
      */
     public static List<BakedQuad>[] toQuadLists(Mesh mesh) {

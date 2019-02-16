@@ -40,9 +40,9 @@ public interface MaterialFinder {
     /**
      * When > 1, {@link QuadMaker} will accept additional
      * color and UV coordinates for each vertex. Standard materials
-     * support up to three texture layers.<p>
+     * support up to three textures.<p>
      * 
-     * Additional layers are useful for overlay textures -
+     * Additional textures are useful for overlay textures -
      * borders, decals, patterns, machine status, etc.
      * Specifying overlay textures as part of the same quad
      * can enable the {@link Renderer} to optimize memory
@@ -64,27 +64,27 @@ public interface MaterialFinder {
      * will use {@link Block#getRenderLayer()} for the associate block, or
      * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
      */
-    MaterialFinder blendMode(int layerIndex, BlockRenderLayer blendMode);
+    MaterialFinder blendMode(int textureIndex, BlockRenderLayer blendMode);
 
     /**
      * Vertex color(s) will be modified for quad color index unless disabled.<p>
      * 
      * This is useful when there are multiple texture layers and only some of 
-     * them should have color index applied. If there is only layer or all
-     * layers are disabled, it is simpler to disable the color index itself
+     * them should have color index applied. If there is only texture or all
+     * textures are disabled, it is simpler to disable the color index itself
      * by sending a colorIndex value of -1 to the {@link RenderContext}.
      */
-    MaterialFinder disableColorIndex(int layerIndex, boolean disable);
+    MaterialFinder disableColorIndex(int textureIndex, boolean disable);
     
     /**
      * Vertex color(s) will be modified for diffuse shading unless disabled.
      */
-    MaterialFinder disableDiffuse(int layerIndex, boolean disable);
+    MaterialFinder disableDiffuse(int textureIndex, boolean disable);
     
     /**
      * Vertex color(s) will be modified for ambient occlusion unless disabled.
      */
-    MaterialFinder disableAo(int layerIndex, boolean disable);
+    MaterialFinder disableAo(int textureIndex, boolean disable);
     
     /**
      * When true, brightness value provided via {@link VertexEditor#lightmap()}
@@ -96,5 +96,5 @@ public interface MaterialFinder {
      * by default.  Most of the time, you will want to disable those via {@link #disableAo(int, boolean)}
      * and {@link #disableDiffuse(int, boolean)}.
      */
-    MaterialFinder emissive(int layerIndex, boolean isEmissive);
+    MaterialFinder emissive(int textureIndex, boolean isEmissive);
 }
