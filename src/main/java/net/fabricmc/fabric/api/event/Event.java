@@ -16,12 +16,37 @@
 
 package net.fabricmc.fabric.api.event;
 
+/**
+ * Base class for Event implementations.
+ *
+ * @param <T> The listener type.
+ * @see EventFactory
+ */
 public abstract class Event<T> {
+	/**
+	 * The invoker field. This should be updated by the implementation to
+	 * always refer to an instance containing all code that should be
+	 * executed upon event emission.
+	 */
 	protected T invoker;
 
+	/**
+	 * Returns the invoker instance.
+	 *
+	 * An "invoker" is an object which hides multiple registered
+	 * listeners of type T under one instance of type T, executing
+	 * them and leaving early as necessary.
+	 *
+	 * @return The invoker instance.
+	 */
 	public final T invoker() {
 		return invoker;
 	}
 
+	/**
+	 * Register a listener to the event.
+	 *
+	 * @param listener The desired listener.
+	 */
 	public abstract void register(T listener);
 }

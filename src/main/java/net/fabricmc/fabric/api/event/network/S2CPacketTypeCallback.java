@@ -23,6 +23,11 @@ import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 
+/**
+ * Event for listening to packet type registrations and unregistrations
+ * (also known as "minecraft:register" and "minecraft:unregister")
+ * in the server -> client direction.
+ */
 public interface S2CPacketTypeCallback {
 	static final Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
 		S2CPacketTypeCallback.class,
@@ -42,5 +47,10 @@ public interface S2CPacketTypeCallback {
 		}
 	);
 
+	/**
+	 * Accept a collection of types.
+	 *
+	 * @param types The provided collection of types.
+	 */
 	void accept(Collection<Identifier> types);
 }

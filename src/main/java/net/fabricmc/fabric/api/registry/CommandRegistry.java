@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Registry for server-side command providers.
+ */
 public class CommandRegistry {
 	public static final CommandRegistry INSTANCE = new CommandRegistry();
 
@@ -35,10 +38,19 @@ public class CommandRegistry {
 		this.dedicatedServerCommands = new ArrayList<>();
 	}
 
+	/**
+	 * @deprecated Will be removed in 0.3.0; should not have been exposed.
+	 */
+	@Deprecated
 	public List<Consumer<CommandDispatcher<ServerCommandSource>>> entries(boolean dedicated) {
 		return Collections.unmodifiableList(dedicated ? dedicatedServerCommands : serverCommands);
 	}
 
+	/**
+	 * Register a command provider.
+	 * @param dedicated If true, the command is only registered on the dedicated server.
+	 * @param consumer The command provider, consuming {@link CommandDispatcher}.
+	 */
 	public void register(boolean dedicated, Consumer<CommandDispatcher<ServerCommandSource>> consumer) {
 		if (dedicated) {
 			dedicatedServerCommands.add(consumer);
