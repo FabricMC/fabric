@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.client.render;
 
 import java.util.Random;
 
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -45,15 +46,14 @@ public abstract class MixinBlockRenderManager {
     @Shadow private BlockModelRenderer renderer;
     @Shadow private Random random;
     
-    private final DamageModel damageModel = new DamageModel();
-    private BakedModel wrappedModel;
+    private static final ThreadLocal<MutablePair<DamageModel, BakedModel>> DAMAGE_STATE = ThreadLocal.withInitial(() -> MutablePair.of(new DamageModel(), null));
     
     /**
      * Intercept the model assignment from getModel() - simpler than capturing entire LVT.
      */
     @ModifyVariable(method = "tesselateDamage", at = @At(value = "STORE", ordinal = 0), allow = 1, require = 1)
     private BakedModel hookTesselateDamageModel(BakedModel modelIn) {
-        wrappedModel = modelIn;
+        DAMAGE_STATE.get().right = modelIn;
         return modelIn;
     }
     
@@ -65,9 +65,10 @@ public abstract class MixinBlockRenderManager {
     @Inject(method = "tesselateDamage", cancellable = true, 
             at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/block/BlockModels;getModel(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/render/model/BakedModel;"))
     private void hookTesselateDamage(BlockState blockState, BlockPos blockPos, Sprite sprite, ExtendedBlockView blockView, CallbackInfo ci) {
-        if(wrappedModel != null && !((FabricBakedModel)wrappedModel).isVanilla() && MinecraftClient.getInstance().isMainThread()) {
-            damageModel.prepare(wrappedModel, sprite, blockState, blockPos);
-            this.renderer.tesselate(blockView, damageModel, blockState, blockPos, Tessellator.getInstance().getBufferBuilder(), true, this.random, blockState.getRenderingSeed(blockPos));
+        MutablePair<DamageModel, BakedModel> damageState = DAMAGE_STATE.get();
+        if(damageState.right != null && !((FabricBakedModel)damageState.right).isVanilla()) {
+            damageState.left.prepare(damageState.right, sprite, blockState, blockPos);
+            this.renderer.tesselate(blockView, damageState.left, blockState, blockPos, Tessellator.getInstance().getBufferBuilder(), true, this.random, blockState.getRenderingSeed(blockPos));
             ci.cancel();
         }
     }
