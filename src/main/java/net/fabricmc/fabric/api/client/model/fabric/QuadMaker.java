@@ -30,6 +30,19 @@ import net.minecraft.util.math.Direction;
  */
 public interface QuadMaker extends Quad {
     /**
+     * Assigns a different material to this quad. Useful for transformation of 
+     * existing meshes because lighting and texture blending are controlled by material.<p>
+     * 
+     * Restriction: texture depth of the new material must be the same or less than 
+     * the texture depth of the material used to create the quad.  This restriction 
+     * prevents the need for renderer implementations to allocate additional storage
+     * after a quad is already loaded for buffering or editing.<p>
+     * 
+     * Violations of this restriction will throw UnsupportedOperationException errors.
+     */
+    QuadMaker material(RenderMaterial material);
+        
+    /**
      * Vertices on {@link QuadMaker} are mutable.
      */
     @Override
