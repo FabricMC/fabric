@@ -26,6 +26,7 @@ import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
 import net.fabricmc.fabric.api.client.model.fabric.ForwardingBakedModel;
 import net.fabricmc.fabric.api.client.model.fabric.ForwardingQuadMaker;
 import net.fabricmc.fabric.api.client.model.fabric.Mesh;
+import net.fabricmc.fabric.api.client.model.fabric.ModelHelper;
 import net.fabricmc.fabric.api.client.model.fabric.QuadMaker;
 import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
 import net.fabricmc.fabric.api.client.model.fabric.RenderMaterial;
@@ -77,16 +78,10 @@ public class DamageModel extends ForwardingBakedModel {
     
     private static class DamageContext implements RenderContext {
         private final DamageQuadMaker damageQuad = new DamageQuadMaker();
-        private final Direction[] FACES = new Direction[7];
         private final Random random = new Random();
-
         private BlockState damageBlockState;
         private BlockPos damageBlockPos;
         RenderContext wrappedContext;
-        
-        DamageContext() {
-            System.arraycopy(Direction.values(), 0, FACES, 0, 6);
-        }
         
         @Override
         public BiConsumer<Mesh, Consumer<QuadMaker>> meshConsumer() {
@@ -107,19 +102,18 @@ public class DamageModel extends ForwardingBakedModel {
         public Consumer<BakedModel> fallbackConsumer() {
             return model -> {
                 final long seed = damageBlockState.getRenderingSeed(damageBlockPos);
-                for(Direction face : FACES) {
+                for(int i = 0; i < 7; i++) {
+                    Direction face = ModelHelper.faceFromIndex(i);
                     random.setSeed(seed);
                     List<BakedQuad> quads = model.getQuads(damageBlockState, face, random);
                     final int limit = quads.size();
-                    if(limit > 0) {
-                        for(int i = 0; i < limit; i++) {
-                            damageQuad.wrappedQuadMaker = wrappedContext.quad(DAMAGE_MATERIAL);
-                            BakedQuad q = quads.get(i);
-                            damageQuad.fromVanilla(q.getVertexData(), 0, false);
-                            damageQuad.cullFace(face);
-                            damageQuad.nominalFace(q.getFace());
-                            damageQuad.emit();
-                        }
+                    for(int j = 0; j < limit; j++) {
+                        damageQuad.wrappedQuadMaker = wrappedContext.quad(DAMAGE_MATERIAL);
+                        BakedQuad q = quads.get(i);
+                        damageQuad.fromVanilla(q.getVertexData(), 0, false);
+                        damageQuad.cullFace(face);
+                        damageQuad.nominalFace(q.getFace());
+                        damageQuad.emit();
                     }
                 }
             };

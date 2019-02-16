@@ -11,6 +11,7 @@
     "client.keybinding.MixinKeyBinding",
     "client.model.MixinBakedModel",
     "client.model.MixinModelLoader",
+    "client.model.MixinSpriteAtlasTexture",
     "client.render.MixinBlockColorMap",
     "client.render.MixinBlockEntity",
     "client.render.MixinBlockEntityRenderManager",
