@@ -76,7 +76,7 @@ public interface FabricBakedModel {
      * Models should avoid using {@link TerrainBlockView#getBlockEntity(BlockPos)}
      * to ensure thread safety because this method may be called outside the main client thread.
      * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}
-     * and then use the provided safeAccessor function to retrieve it.  When called from the
+     * and then use the provided safeBlockEntityAccessor function to retrieve it.  When called from the
      * main thread, the function will simply retrieve the data directly.<p>
      * 
      * Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
@@ -84,7 +84,7 @@ public interface FabricBakedModel {
      * Model authors should note this method is called only once per block, and reseed if needed.
      * For wrapped vanilla baked models, it will probably be easier to use {@link RenderContext#fallbackModelConsumer()}.<p>
      */
-    void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
+    void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeBlockEntityAccessor, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
     
     /**
      * This method will be called during item rendering to generate both the static and
