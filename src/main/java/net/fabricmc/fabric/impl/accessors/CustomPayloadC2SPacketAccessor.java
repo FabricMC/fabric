@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.impl.accessors;
 
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
@@ -26,10 +26,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
  * Helper interface containing getters for CustomPayloadC2SPacket
  * which were omitted from the compiled game.
  */
-@Mixin(CustomPayloadC2SPacket.class)
 public interface CustomPayloadC2SPacketAccessor {
-	@Accessor
 	Identifier getChannel();
-	@Accessor
 	PacketByteBuf getData();
 }

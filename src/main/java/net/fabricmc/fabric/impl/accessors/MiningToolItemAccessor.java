@@ -14,14 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tools;
+package net.fabricmc.fabric.impl.accessors;
 
-import net.minecraft.item.MiningToolItem;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-@Mixin(MiningToolItem.class)
 public interface MiningToolItemAccessor {
-	@Accessor
 	float getBlockBreakingSpeed();
 }
