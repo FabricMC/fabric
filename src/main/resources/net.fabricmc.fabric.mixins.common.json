@@ -21,7 +21,7 @@
     "item.MixinAbstractFurnaceBlockEntity",
     "itemgroup.MixinItemGroup",
     "misc.MixinCrashReport",
-    "networking.MixinCustomPayloadC2SPacket",
+    "networking.CustomPayloadC2SPacketAccessor",
     "networking.MixinServerPlayNetworkHandler",
     "registry.MixinBootstrap",
     "registry.MixinIdList",
@@ -31,8 +31,8 @@
     "resources.MixinKeyedResourceReloadListener$Server",
     "resources.MixinMinecraftServer",
     "resources.MixinReloadableResourceManagerImpl",
-    "tools.MixinItemStack",
-    "tools.MixinMiningToolItem"
+    "tools.MiningToolItemAccessor",
+    "tools.MixinItemStack"
   ],
   "injectors": {
     "defaultRequire": 1

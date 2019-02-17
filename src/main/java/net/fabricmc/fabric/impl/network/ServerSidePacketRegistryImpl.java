@@ -22,12 +22,16 @@ import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
+import net.fabricmc.fabric.mixin.networking.CustomPayloadC2SPacketAccessor;
+import net.fabricmc.fabric.mixin.networking.MixinServerPlayNetworkHandler;
 import net.fabricmc.loader.FabricLoader;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
+import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
@@ -38,6 +42,9 @@ import java.util.WeakHashMap;
 
 public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
 	private final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
+
+	public void onQueryResponse(LoginQueryResponseC2SPacket packet) {
+	}
 
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
@@ -94,5 +101,10 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
 		C2SPacketTypeCallback.UNREGISTERED.invoker().accept(context.getPlayer(), ids);
+	}
+
+	public final boolean accept(CustomPayloadC2SPacket packet, PacketContext context) {
+		CustomPayloadC2SPacketAccessor accessor = ((CustomPayloadC2SPacketAccessor) packet);
+		return accept(accessor.getChannel(), context, accessor.getData());
 	}
 }

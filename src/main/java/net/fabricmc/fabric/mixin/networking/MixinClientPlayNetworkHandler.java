@@ -23,7 +23,6 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
 import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
 import net.fabricmc.fabric.impl.network.PacketTypes;
-import net.minecraft.class_2901;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Screen;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -64,7 +63,7 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo info) {
-		if (((ClientSidePacketRegistryImpl) ClientSidePacketRegistry.INSTANCE).accept(packet.getChannel(), this, packet.getData())) {
+		if (((ClientSidePacketRegistryImpl) ClientSidePacketRegistry.INSTANCE).accept(packet, this)) {
 			info.cancel();
 		}
 	}

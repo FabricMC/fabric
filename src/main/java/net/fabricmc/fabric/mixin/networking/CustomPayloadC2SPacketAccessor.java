@@ -14,8 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tools;
+package net.fabricmc.fabric.mixin.networking;
 
-public interface MiningToolDelegate {
-	float getBlockBreakingSpeed();
+import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+/**
+ * Helper interface containing getters for CustomPayloadC2SPacket
+ * which were omitted from the compiled game.
+ */
+@Mixin(CustomPayloadC2SPacket.class)
+public interface CustomPayloadC2SPacketAccessor {
+	@Accessor
+	Identifier getChannel();
+	@Accessor
+	PacketByteBuf getData();
 }

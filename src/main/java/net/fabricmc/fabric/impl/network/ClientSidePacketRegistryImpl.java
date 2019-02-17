@@ -21,8 +21,10 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.mixin.networking.MixinClientPlayNetworkHandler;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.network.Packet;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
@@ -93,5 +95,9 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
 		S2CPacketTypeCallback.UNREGISTERED.invoker().accept(ids);
+	}
+
+	public final boolean accept(CustomPayloadS2CPacket packet, PacketContext context) {
+		return accept(packet.getChannel(), context, packet.getData());
 	}
 }

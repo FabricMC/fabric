@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.network;
+package net.fabricmc.fabric.mixin.tools;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.item.MiningToolItem;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-/**
- * Helper interface containing getters for SPacketCustomPayload
- * which were omitted from the compiled game.
- */
-public interface CustomPayloadC2SPacketAccessor {
-	Identifier getChannel();
-	PacketByteBuf getData();
+@Mixin(MiningToolItem.class)
+public interface MiningToolItemAccessor {
+	@Accessor
+	float getBlockBreakingSpeed();
 }

@@ -25,7 +25,13 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Function;
 
-// TODO: javadocs
+/**
+ * Extended version of {@link EntityType.Builder} with added registration for
+ * server->client entity tracking values.
+ *
+ * @param <T> Entity class.
+ */
+// TODO more javadocs
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final EntityCategory category;

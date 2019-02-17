@@ -39,6 +39,7 @@ public abstract class MixinEntityTracker implements EntityTrackerStreamAccessor 
 	@Shadow
 	public abstract void add(Entity var1, int var2, int var3, boolean var4);
 
+	@SuppressWarnings("deprecation")
 	@Inject(at = @At("HEAD"), method = "add", cancellable = true)
 	public void add(Entity entity, CallbackInfo info) {
 		if (entity != null) {
