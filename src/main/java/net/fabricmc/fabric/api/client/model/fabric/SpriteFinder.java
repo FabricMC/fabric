@@ -47,7 +47,7 @@ public interface SpriteFinder {
      * Note that all the above refers to u,v coordinates. Geometric vertex does not matter,
      * except to the extent it was used to determine u,v.
      */
-    Sprite find(Quad quad, int layerIndex);
+    Sprite find(Quad quad, int textureIndex);
 
     /**
      * Alternative to {@link #find(Quad, int)} when vertex centroid is already

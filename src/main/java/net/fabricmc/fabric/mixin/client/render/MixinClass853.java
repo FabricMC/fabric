@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
 import net.fabricmc.fabric.api.client.model.fabric.DynamicModelBlockEntity;
+import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
 import net.minecraft.class_853;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -46,7 +46,7 @@ public abstract class MixinClass853 implements TerrainBlockView {
                     BlockPos entPos = entry.getKey();
                     if (entPos.getX() >= posFrom.getX() && entPos.getX() <= posTo.getX()
                             && entPos.getY() >= posFrom.getY() && entPos.getY() <= posTo.getY()
-                            && entPos.getZ() >= posFrom.getZ() && entPos.getY() <= posTo.getZ()) {
+                            && entPos.getZ() >= posFrom.getZ() && entPos.getZ() <= posTo.getZ()) {
 
                         Object o = ((DynamicModelBlockEntity) entry.getValue()).getDynamicModelData();
                         if (o != null) {

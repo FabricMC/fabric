@@ -62,7 +62,7 @@ public class TextureHelper {
     public static final int LOCK_UV = 4;
     
     /**
-     * When set, U texture coordinates for the given layer are 
+     * When set, U texture coordinates for the given texture are 
      * flipped as part of baking. Can be useful for some randomization
      * and texture mapping scenarios. Results are different than what
      * can be obtained via rotation and both can be applied.
@@ -91,40 +91,40 @@ public class TextureHelper {
      * Bakes textures in the provided vertex data, handling UV locking,
      * rotation, interpolation, etc. Textures must not be already baked. 
      */
-    public static void bakeTextures(QuadMaker quad, int layerIndex, Sprite sprite, int bakeFlags) {
+    public static void bakeTextures(QuadMaker quad, int textureIndex, Sprite sprite, int bakeFlags) {
         if(quad.nominalFace() != null && (LOCK_UV & bakeFlags) != 0) {
             // Assigns normalized UV coordinates based on vertex positions
-            applyModifier(quad, layerIndex, UVLOCKERS[quad.nominalFace().getId()]);
+            applyModifier(quad, textureIndex, UVLOCKERS[quad.nominalFace().getId()]);
         } else if ((NORMALIZED & bakeFlags) == 0) {
             // Scales from 0-16 to 0-1
-            applyModifier(quad, layerIndex, (v, l) -> v.uv(l, v.u(l) * NORMALIZER, v.v(l) * NORMALIZER));
+            applyModifier(quad, textureIndex, (v, l) -> v.uv(l, v.u(l) * NORMALIZER, v.v(l) * NORMALIZER));
         }
         
         final int rotation = bakeFlags & 3;
         if(rotation != 0) {
              // Rotates texture around the center of sprite.
              // Assumes normalized coordinates.
-            applyModifier(quad, layerIndex, ROTATIONS[rotation]);
+            applyModifier(quad, textureIndex, ROTATIONS[rotation]);
         }
         
         if((FLIP_U & bakeFlags) != 0) {
             // Inverts U coordinates.  Assumes normalized (0-1) values.
-            applyModifier(quad, layerIndex, (v, l) -> v.uv(l, 1 - v.u(l), v.v(l)));
+            applyModifier(quad, textureIndex, (v, l) -> v.uv(l, 1 - v.u(l), v.v(l)));
         }
         
         if((FLIP_V & bakeFlags) != 0) {
             // Inverts V coordinates.  Assumes normalized (0-1) values.
-            applyModifier(quad, layerIndex, (v, l) -> v.uv(l, v.u(l), 1 - v.v(l)));
+            applyModifier(quad, textureIndex, (v, l) -> v.uv(l, v.u(l), 1 - v.v(l)));
         }
         
-        interpolate(quad, layerIndex, sprite);
+        interpolate(quad, textureIndex, sprite);
     }
 
     /**
      * Faster than sprite method. Sprite computes span and normalizes inputs each call, 
      * so we'd have to denormalize before we called, only to have the sprite renormalize immediately.
      */
-    private static void interpolate(QuadMaker quad, int layer, Sprite sprite) {
+    private static void interpolate(QuadMaker quad, int textureIndex, Sprite sprite) {
         final float uMin = sprite.getMinU();
         final float uSpan = sprite.getMaxU() - uMin;
         final float vMin = sprite.getMinV();
@@ -132,18 +132,18 @@ public class TextureHelper {
 
         for(int i = 0; i < 4; i++) {
             final VertexEditor v = quad.vertex(i);
-            v.uv(layer, uMin + v.u(layer) * uSpan, vMin + v.v(layer) * vSpan);
+            v.uv(textureIndex, uMin + v.u(textureIndex) * uSpan, vMin + v.v(textureIndex) * vSpan);
         }
     }
     
     @FunctionalInterface
     private static interface VertexModifier {
-        void apply(VertexEditor vertex, int layer);
+        void apply(VertexEditor vertex, int textureIndex);
     }
     
-    private static void applyModifier(QuadMaker quad, int layer, VertexModifier modifier) {
+    private static void applyModifier(QuadMaker quad, int textureIndex, VertexModifier modifier) {
         for(int i = 0; i < 4; i++) {
-            modifier.apply(quad.vertex(i), layer);
+            modifier.apply(quad.vertex(i), textureIndex);
         }
     }
     
