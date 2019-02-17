@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModelRenderer;
@@ -81,10 +82,19 @@ public interface FabricBakedModel {
      * 
      * Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
      * parameter is normally initialized with the same seed prior to each face layer.
-     * Model authors should note this method is called only once per block, and reseed if needed.
-     * For wrapped vanilla baked models, it will probably be easier to use {@link RenderContext#fallbackModelConsumer()}.<p>
+     * Model authors should note this method is called only once per block, and call the provided
+     * Random supplier multiple times if re-seeding is necessary. For wrapped vanilla baked models, 
+     * it will probably be easier to use {@link RenderContext#fallbackModelConsumer()} which handles
+     * re-seeding per face automatically.<p>
+     * 
+     * @param Access to world state. Avoid using for block entities unless thread safety can be guaranteed.
+     * @param safeBlockEntityAccessor Thread-safe access to block entity data 
+     * @param state Block state for model being rendered.
+     * @param pos Position of block for model being rendered.
+     * @param randomSupplier  Random object seeded per vanilla conventions. Call multiple times to reseed.
+     * @param context Accepts model output.
      */
-    void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeBlockEntityAccessor, BlockState state, BlockPos pos, Random random, long seed, RenderContext context);
+    void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeBlockEntityAccessor, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
     
     /**
      * This method will be called during item rendering to generate both the static and
@@ -113,7 +123,7 @@ public interface FabricBakedModel {
      * logic here, instead of returning every possible shape from {@link #getItemPropertyOverrides()}
      * as vanilla baked models.
      */
-    void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context);
+    void produceItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);
     
     /**
      * If true, model output varies based only on BlockState and random seed. If model output

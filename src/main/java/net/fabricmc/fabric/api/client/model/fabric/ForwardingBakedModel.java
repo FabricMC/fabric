@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import net.fabricmc.fabric.impl.client.model.DamageModel;
 import net.minecraft.block.BlockState;
@@ -41,8 +42,8 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
     
     @Override
     public void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor,
-            BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
-        ((FabricBakedModel)wrapped()).produceBlockQuads(blockView, safeAccessor, state, pos, random, seed, context);
+            BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        ((FabricBakedModel)wrapped()).produceBlockQuads(blockView, safeAccessor, state, pos, randomSupplier, context);
     }
 
     @Override
@@ -51,8 +52,8 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
     }
 
     @Override
-    public void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context) {
-        ((FabricBakedModel)wrapped()).produceItemQuads(stack, random, seed, context);
+    public void produceItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        ((FabricBakedModel)wrapped()).produceItemQuads(stack, randomSupplier, context);
     }
 
     @Override

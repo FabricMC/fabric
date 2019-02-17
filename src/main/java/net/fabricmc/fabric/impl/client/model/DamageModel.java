@@ -21,6 +21,7 @@ import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
 import net.fabricmc.fabric.api.client.model.fabric.ForwardingBakedModel;
@@ -71,9 +72,9 @@ public class DamageModel extends ForwardingBakedModel {
     
     @Override
     public void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor,
-            BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+            BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         damageContext.wrappedContext = context;
-        ((FabricBakedModel)wrappedModel).produceBlockQuads(blockView, safeAccessor, state, pos, random, seed, damageContext);
+        ((FabricBakedModel)wrappedModel).produceBlockQuads(blockView, safeAccessor, state, pos, randomSupplier, damageContext);
     }
     
     private static class DamageContext implements RenderContext {

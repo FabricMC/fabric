@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.client.model;
 
 import java.util.Random;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -40,12 +41,12 @@ public interface MixinBakedModel extends FabricBakedModel {
     }
     
     @Override
-    public default void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor, BlockState state, BlockPos pos, Random random, long seed, RenderContext context) {
+    public default void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
     
     @Override
-    default void produceItemQuads(ItemStack stack, Random random, long seed, RenderContext context) {
+    default void produceItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);        
     }
 }
