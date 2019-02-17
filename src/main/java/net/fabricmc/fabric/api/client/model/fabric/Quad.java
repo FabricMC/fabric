@@ -16,11 +16,10 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import java.util.function.Consumer;
-
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -129,18 +128,88 @@ public interface Quad {
     int tag();
     
     /**
-     * Retrieves the indicated vertex. Quads have four vertices.
+     * Pass a non-null target to avoid allocation - will be returned with values.
+     * Otherwise returns a new instance.
+     * See {@link VertexEditor#pos(float, float, float)}
      */
-    Vertex vertex(int vertexIndex);
+    Vector3f copyPos(int vertexIndex, Vector3f target);
     
     /**
-     * Helper to iterate vertices.
+     * Convenience: access x, y, z by index 0-2
      */
-    @SuppressWarnings("unchecked")
-    default <T extends Vertex> Quad forEachVertex(Consumer<T> consumer) {
-        for(int i = 0; i < 4; i++) {
-            consumer.accept((T) vertex(i));
-        }
-        return this;
-    }
+    float posByIndex(int vertexIndex, int coordinateIndex);
+    
+    /**
+     * Geometric position, x coordinate.
+     */
+    float x(int vertexIndex);
+    
+    /**
+     * Geometric position, y coordinate.
+     */
+    float y(int vertexIndex);
+    
+    /**
+     * Geometric position, z coordinate.
+     */
+    float z(int vertexIndex);
+   
+    /**
+     * If false, no vertex normal was provided.
+     * Lighting should use face normal in that case.
+     * See {@link VertexEditor#normal(float, float, float, float)}
+     */
+    boolean hasNormal(int vertexIndex);
+    
+    /**
+     * Pass a non-null target to avoid allocation - will be returned with values.
+     * Otherwise returns a new instance. Returns null if normal not present.
+     */
+    Vector3f copyNormal(int vertexIndex, Vector3f target);
+    
+    /**
+     * Pass a non-null target to avoid allocation - will be returned with values.
+     * Otherwise returns a new instance. Returns null if normal not present.
+     */
+    Vector4f copyNormal(int vertexIndex, Vector4f target);
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
+    float normX(int vertexIndex);
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
+    float normY(int vertexIndex);
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
+    float normZ(int vertexIndex);
+    
+    /**
+     * Will return {@link Float#NaN} if normal not present.
+     */
+    float normExtra(int vertexIndex);
+    
+    /**
+     * Minimum block brightness. Zero if not set.
+     */
+    int lightmap(int vertexIndex);
+
+    /**
+     * Retrieve vertex color.
+     */
+    int color(int vertexIndex, int textureIndex);
+    
+    /**
+     * Retrieve horizontal texture coordinates.
+     */
+    float u(int vertexIndex, int textureIndex);
+    
+    /**
+     * Retrieve vertical texture coordinates
+     */
+    float v(int vertexIndex, int textureIndex);
 }

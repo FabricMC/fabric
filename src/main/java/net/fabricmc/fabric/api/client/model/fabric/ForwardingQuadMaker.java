@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.fabricmc.fabric.impl.client.model.DamageModel;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -79,11 +80,6 @@ public abstract class ForwardingQuadMaker implements QuadMaker {
     }
 
     @Override
-    public VertexEditor vertex(int vertexIndex) {
-        return wrapped().vertex(vertexIndex);
-    }
-
-    @Override
     public QuadMaker cullFace(Direction face) {
         wrapped().cullFace(face);
         return this;
@@ -116,5 +112,115 @@ public abstract class ForwardingQuadMaker implements QuadMaker {
     @Override
     public void emit() {
         wrapped().emit();
+    }
+
+    @Override
+    public Vector3f copyPos(int vertexIndex, Vector3f target) {
+        return wrapped().copyPos(vertexIndex, target);
+    }
+
+    @Override
+    public float posByIndex(int vertexIndex, int coordinateIndex) {
+        return wrapped().posByIndex(vertexIndex, coordinateIndex);
+    }
+    
+    @Override
+    public float x(int vertexIndex) {
+        return wrapped().x(vertexIndex);
+    }
+
+    @Override
+    public float y(int vertexIndex) {
+        return wrapped().y(vertexIndex);
+    }
+
+    @Override
+    public float z(int vertexIndex) {
+        return wrapped().z(vertexIndex);
+    }
+
+    @Override
+    public boolean hasNormal(int vertexIndex) {
+        return wrapped().hasNormal(vertexIndex);
+    }
+
+    @Override
+    public Vector3f copyNormal(int vertexIndex, Vector3f target) {
+        return wrapped().copyNormal(vertexIndex, target);
+    }
+
+    @Override
+    public Vector4f copyNormal(int vertexIndex, Vector4f target) {
+        return wrapped().copyNormal(vertexIndex, target);
+    }
+
+    @Override
+    public float normX(int vertexIndex) {
+        return wrapped().normX(vertexIndex);
+    }
+
+    @Override
+    public float normY(int vertexIndex) {
+        return wrapped().normY(vertexIndex);
+    }
+
+    @Override
+    public float normZ(int vertexIndex) {
+        return wrapped().normZ(vertexIndex);
+    }
+
+    @Override
+    public float normExtra(int vertexIndex) {
+        return wrapped().normExtra(vertexIndex);
+    }
+
+    @Override
+    public int lightmap(int vertexIndex) {
+        return wrapped().lightmap(vertexIndex);
+    }
+
+    @Override
+    public int color(int vertexIndex, int textureIndex) {
+        return wrapped().color(vertexIndex, textureIndex);
+    }
+
+    @Override
+    public float u(int vertexIndex, int textureIndex) {
+        return wrapped().u(vertexIndex, textureIndex);
+    }
+
+    @Override
+    public float v(int vertexIndex, int textureIndex) {
+        return wrapped().v(vertexIndex, textureIndex);
+    }
+
+    @Override
+    public QuadMaker pos(int vertexIndex, float x, float y, float z) {
+        wrapped().pos(vertexIndex, x, y, z);
+        return this;
+    }
+
+    @Override
+    public QuadMaker normal(int vertexIndex, float x, float y, float z, float extra) {
+        wrapped().normal(vertexIndex, x, y, z, extra);
+        return this;
+    }
+
+    @Override
+    public QuadMaker lightmap(int vertexIndex, int lightmap) {
+        wrapped().lightmap(vertexIndex, lightmap);
+        return this;
+    }
+
+    @Override
+    public QuadMaker color(int vertexIndex, int textureIndex, int color) {
+        wrapped().color(vertexIndex, textureIndex, color);
+        return this;
+    }
+
+    @Override
+    public QuadMaker uv(int vertexIndex, int textureIndex, float u, float v) {
+        wrapped().uv(vertexIndex, textureIndex, u, v);
+        return this;
     }
 }

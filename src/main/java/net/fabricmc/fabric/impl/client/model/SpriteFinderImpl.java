@@ -21,7 +21,6 @@ import java.util.function.Consumer;
 
 import net.fabricmc.fabric.api.client.model.fabric.Quad;
 import net.fabricmc.fabric.api.client.model.fabric.SpriteFinder;
-import net.fabricmc.fabric.api.client.model.fabric.Vertex;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -45,13 +44,12 @@ public class SpriteFinderImpl implements SpriteFinder {
     }
 
     @Override
-    public Sprite find(Quad quad, int layerIndex) {
+    public Sprite find(Quad quad, int textureIndex) {
         float u = 0; 
         float v = 0;
         for(int i = 0; i < 4; i++) {
-            Vertex vt = quad.vertex(i);
-            u += vt.u(layerIndex);
-            v += vt.v(layerIndex);
+            u += quad.u(i, textureIndex);
+            v += quad.v(i, textureIndex);
         }
         return find(u * 0.25f, v * 0.25f);
     }

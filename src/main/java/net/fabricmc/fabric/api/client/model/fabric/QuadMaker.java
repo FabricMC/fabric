@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import java.util.function.Consumer;
-
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -42,12 +42,6 @@ public interface QuadMaker extends Quad {
      */
     QuadMaker material(RenderMaterial material);
         
-    /**
-     * Vertices on {@link QuadMaker} are mutable.
-     */
-    @Override
-    VertexEditor vertex(int vertexIndex);
-    
     /**
      * If non-null, quad is coplanar with a block face which, if known, simplifies
      * or shortcuts geometric analysis that might otherwise be needed.
@@ -102,18 +96,105 @@ public interface QuadMaker extends Quad {
     QuadMaker tag(int tag);
     
     /**
+     * Sets the geometric vertex position for the given vertex, 
+     * relative to block origin. (0,0,0).  Minecraft rendering is designed
+     * for models that fit within a single block space and is recommended 
+     * that coordinates remain in the 0-1 range, with multi-block meshes
+     * split into multiple per-block models.<p>
+     * 
+     * Standard shader binding: gl_Vertex
+     */
+    QuadMaker pos(int vertexIndex, float x, float y, float z);
+    
+    /**
+     * Same as {@link #pos(float, float, float)} but accepts vector type.
+     */
+    default QuadMaker pos(int vertexIndex, Vector3f vec) {
+        return pos(vertexIndex, vec.x(), vec.y(), vec.z());
+    }
+    
+    /**
+     * Adds a vertex normal. Models that have per-vertex
+     * normals should include them to get correct lighting when it matters.
+     * Computed face normal is used when no vertex normal is provided.<p>
+     * 
+     * {@link Renderer} implementations should honor vertex normals for
+     * diffuse lighting - modifying vertex color(s) or packing normals in the vertex 
+     * buffer as appropriate for the rendering method/vertex format in effect.<p>
+     * 
+     * The "extra" parameter is for shader authors to make use of space normally wasted.
+     * In most implementations it will be packed as a signed, normalized float 
+     * with low effective precision: 1/127.<p>
+     * 
+     * Note for renderer authors: normals should always be buffered for shader
+     * materials, even if the renderer's lighting model does not require normals
+     * in the GPU. Populate with face normal when vertex normals aren't present.<p>
+     * 
+     * Standard shader binding: vec4 in_normal
+     */
+    QuadMaker normal(int vertexIndex, float x, float y, float z, float extra);
+    
+    /**
+     * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
+     */
+    default QuadMaker normal(int vertexIndex, Vector3f vec) {
+        return normal(vertexIndex, vec.x(), vec.y(), vec.z(), 0);
+    }
+    
+    /**
+     * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
+     */
+    default QuadMaker normal(int vertexIndex, Vector4f vec) {
+        return normal(vertexIndex, vec.x(), vec.y(), vec.z(), vec.w());
+    }
+    
+    /**
+     * Minimum block brightness. Has no effect unless emissive lighting is
+     * enabled in at least one texture of the material for this quad.
+     * Standard shader binding: vec4 in_lightmap<p>
+     * 
+     * While this has a standard binding, it should not be used by
+     * shaders if lighting is enabled in the material. Renderers may alter
+     * the format of lightmaps to support the renderer's lighting model.
+     */
+    QuadMaker lightmap(int vertexIndex, int lightmap);
+    
+    /** 
+     * Convenience: set lightmap for all vertices at once.
+     */
+    default QuadMaker lightmap(int b0, int b1, int b2, int b3) {
+        lightmap(0, b0);
+        lightmap(1, b1);
+        lightmap(2, b2);
+        lightmap(3, b3);
+        return this;
+    }
+    
+    /**
+     * Set vertex color.
+     */
+    QuadMaker color(int vertexIndex, int textureIndex, int color);
+    
+    /** 
+     * Convenience: set vertex color for all vertices at once.
+     */
+    default QuadMaker color(int textureIndex, int c0, int c1, int c2, int c3) {
+        color(0, textureIndex, c0);
+        color(1, textureIndex, c1);
+        color(2, textureIndex, c2);
+        color(3, textureIndex, c3);
+        return this;
+    }
+    
+    /**
+     * Set texture coordinates.
+     */
+    QuadMaker uv(int vertexIndex, int textureIndex, float u, float v);
+    
+    /**
      * In static mesh building, causes quad to be appended to the mesh being built.
      * In a dynamic render context, causes quad to be output for rendering.
      * In all cases, invalidates the current instance.
      */
     void emit();
-    
-    @Override
-    @SuppressWarnings("unchecked")
-    default <T extends Vertex> QuadMaker forEachVertex(Consumer<T> consumer) {
-        for(int i = 0; i < 4; i++) {
-            consumer.accept((T) vertex(i));
-        }
-        return this;
-    }
 }

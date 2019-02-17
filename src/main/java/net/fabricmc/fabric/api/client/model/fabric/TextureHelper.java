@@ -97,7 +97,7 @@ public class TextureHelper {
             applyModifier(quad, textureIndex, UVLOCKERS[quad.nominalFace().getId()]);
         } else if ((NORMALIZED & bakeFlags) == 0) {
             // Scales from 0-16 to 0-1
-            applyModifier(quad, textureIndex, (v, l) -> v.uv(l, v.u(l) * NORMALIZER, v.v(l) * NORMALIZER));
+            applyModifier(quad, textureIndex, (q, i, t) -> q.uv(i, t, q.u(i, t) * NORMALIZER, q.v(i, t) * NORMALIZER));
         }
         
         final int rotation = bakeFlags & 3;
@@ -109,12 +109,12 @@ public class TextureHelper {
         
         if((FLIP_U & bakeFlags) != 0) {
             // Inverts U coordinates.  Assumes normalized (0-1) values.
-            applyModifier(quad, textureIndex, (v, l) -> v.uv(l, 1 - v.u(l), v.v(l)));
+            applyModifier(quad, textureIndex, (q, i, t) -> q.uv(i, t, 1 - q.u(i, t), q.v(i, t)));
         }
         
         if((FLIP_V & bakeFlags) != 0) {
             // Inverts V coordinates.  Assumes normalized (0-1) values.
-            applyModifier(quad, textureIndex, (v, l) -> v.uv(l, v.u(l), 1 - v.v(l)));
+            applyModifier(quad, textureIndex, (q, i, t) -> q.uv(i, t, q.u(i, t), 1 - q.v(i, t)));
         }
         
         interpolate(quad, textureIndex, sprite);
@@ -124,44 +124,42 @@ public class TextureHelper {
      * Faster than sprite method. Sprite computes span and normalizes inputs each call, 
      * so we'd have to denormalize before we called, only to have the sprite renormalize immediately.
      */
-    private static void interpolate(QuadMaker quad, int textureIndex, Sprite sprite) {
+    private static void interpolate(QuadMaker q, int textureIndex, Sprite sprite) {
         final float uMin = sprite.getMinU();
         final float uSpan = sprite.getMaxU() - uMin;
         final float vMin = sprite.getMinV();
         final float vSpan = sprite.getMaxV() - vMin;
-
         for(int i = 0; i < 4; i++) {
-            final VertexEditor v = quad.vertex(i);
-            v.uv(textureIndex, uMin + v.u(textureIndex) * uSpan, vMin + v.v(textureIndex) * vSpan);
+            q.uv(i, textureIndex, uMin + q.u(i, textureIndex) * uSpan, vMin + q.v(i, textureIndex) * vSpan);
         }
     }
     
     @FunctionalInterface
     private static interface VertexModifier {
-        void apply(VertexEditor vertex, int textureIndex);
+        void apply(QuadMaker quad, int vertexIndex, int textureIndex);
     }
     
     private static void applyModifier(QuadMaker quad, int textureIndex, VertexModifier modifier) {
         for(int i = 0; i < 4; i++) {
-            modifier.apply(quad.vertex(i), textureIndex);
+            modifier.apply(quad, i, textureIndex);
         }
     }
     
     private static final VertexModifier [] ROTATIONS = new VertexModifier[] {
         null,
-        (v, l) -> v.uv(l, v.v(l), v.u(l)), //90
-        (v, l) -> v.uv(l, 1 - v.u(l), 1 - v.v(l)), //180
-        (v, l) -> v.uv(l, 1 - v.v(l), v.u(l)) // 270
+        (q, i, t) -> q.uv(i, t, q.v(i, t), q.u(i, t)), //90
+        (q, i, t) -> q.uv(i, t, 1 - q.u(i, t), 1 - q.v(i, t)), //180
+        (q, i, t) -> q.uv(i, t, 1 - q.v(i, t), q.u(i, t)) // 270
     };
     
     private static final VertexModifier [] UVLOCKERS = new VertexModifier[6];
 
     static {
-        UVLOCKERS[Direction.EAST.getId()] = (vt, l) -> vt.uv(l, 1 - vt.z(), 1 - vt.y());
-        UVLOCKERS[Direction.WEST.getId()] = (vt, l) -> vt.uv(l, vt.z(), 1 - vt.y());
-        UVLOCKERS[Direction.NORTH.getId()] = (vt, l) -> vt.uv(l, 1 - vt.x(), 1 - vt.y());
-        UVLOCKERS[Direction.SOUTH.getId()] = (vt, l) -> vt.uv(l, vt.x(), 1 - vt.y());
-        UVLOCKERS[Direction.DOWN.getId()] = (vt, l) -> vt.uv(l, vt.x(), 1 - vt.z());
-        UVLOCKERS[Direction.UP.getId()] = (vt, l) -> vt.uv(l, vt.x(), 1 - vt.z());
+        UVLOCKERS[Direction.EAST.getId()] = (q, i, t) -> q.uv(i, t, 1 - q.z(i), 1 - q.y(i));
+        UVLOCKERS[Direction.WEST.getId()] = (q, i, t) -> q.uv(i, t, q.z(i), 1 - q.y(i));
+        UVLOCKERS[Direction.NORTH.getId()] = (q, i, t) -> q.uv(i, t, 1 - q.x(i), 1 - q.y(i));
+        UVLOCKERS[Direction.SOUTH.getId()] = (q, i, t) -> q.uv(i, t, q.x(i), 1 - q.y(i));
+        UVLOCKERS[Direction.DOWN.getId()] = (q, i, t) -> q.uv(i, t, q.x(i), 1 - q.z(i));
+        UVLOCKERS[Direction.UP.getId()] = (q, i, t) -> q.uv(i, t, q.x(i), 1 - q.z(i));
     }
 }
