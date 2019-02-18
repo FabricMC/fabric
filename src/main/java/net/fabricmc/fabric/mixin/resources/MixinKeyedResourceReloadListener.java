@@ -36,6 +36,7 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 
 public class MixinKeyedResourceReloadListener {
 	@Mixin({
@@ -82,7 +83,7 @@ public class MixinKeyedResourceReloadListener {
 				} else if (self instanceof TextureManager) {
 					fabric_id = ResourceReloadListenerKeys.TEXTURES;
 				} else {
-					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName());
+					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 				}
 			}
 
@@ -132,7 +133,7 @@ public class MixinKeyedResourceReloadListener {
 				} else if (self instanceof TagManager) {
 					fabric_id = ResourceReloadListenerKeys.TAGS;
 				} else {
-					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName());
+					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 				}
 			}
 
