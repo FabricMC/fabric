@@ -27,7 +27,11 @@ public final class RendererAccessImpl implements RendererAccess{
 
     @Override
     public final void registerRenderer(Renderer renderer) {
-        if(renderer != null && activeRenderer == null) {
+        if(renderer == null) {
+            throw new NullPointerException("Attempt to register a NULL rendering plug-in.");
+        } else if(activeRenderer != null) {
+            throw new UnsupportedOperationException("A second rendering plug-in attempted to register. Multiple rendering plug-ins are not supported.");
+        } else {
             activeRenderer = renderer;
             hasActiveRenderer = true;
         }

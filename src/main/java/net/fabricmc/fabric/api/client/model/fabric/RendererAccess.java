@@ -28,10 +28,8 @@ public interface RendererAccess {
      * Rendering extension mods must implement {@link Renderer} and 
      * call this method during initialization.<p>
      * 
-     * Only one {@link Renderer} plugin can be active in any game instance.
-     * If a second mod attempts to register this method will fail softly, 
-     * to allow for mods that implement other features in addition to being a 
-     * render plug-in. However, this is not recommended. {@link Renderer} mods should do one thing.<p>
+     * Only one {@link Renderer} plug-in can be active in any game instance.
+     * If a second mod attempts to register this method will throw an UnsupportedOperationException.
      */
     void registerRenderer(Renderer plugin);
 
