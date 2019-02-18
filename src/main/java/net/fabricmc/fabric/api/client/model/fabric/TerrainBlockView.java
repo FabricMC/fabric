@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
+import net.minecraft.world.ExtendedBlockView;
 
 /**
  * BlockView-extending interface to be used by {@link FabricBakedModel} for dynamic model
@@ -39,9 +40,15 @@ import net.minecraft.world.BlockView;
  * application from network packets and render chunk rebuilds. Use of {@link #getCachedRenderData()}
  * will ensure consistency of model state with the rest of the chunk being rendered.<p>
  *
+ * Models should avoid using {@link ExtendedBlockView#getBlockEntity(BlockPos)}
+ * to ensure thread safety because this view may be accessed outside the main client thread.
+ * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}
+ * and then use {@link #getCachedRenderData(BlockPos)} to retrieve it.  When called from the
+ * main thread, that method will simply retrieve the data directly.<p>
+ * 
  * This interface is only guaranteed to be present in the client environment.
  */
-public interface TerrainBlockView extends BlockView {
+public interface TerrainBlockView extends ExtendedBlockView {
     /**
      * For models associated with Block Entities that implement {@link DynamicModelBlockEntity}
      * this will be the most recent value provided by that implementation for the given block position.<p>
@@ -50,5 +57,8 @@ public interface TerrainBlockView extends BlockView {
      *
      * @param pos Position of the block for the block model.
      */
-    Object getCachedRenderData(BlockPos pos);
+    default Object getCachedRenderData(BlockPos pos) {
+        BlockEntity be = this.getBlockEntity(pos);
+        return be == null ? null : ((DynamicModelBlockEntity)be).getDynamicModelData();
+    }
 }

@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.impl.client.model.DamageModel;
@@ -31,7 +30,6 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Base class for specialized model implementations that need to wrap other baked models.
@@ -41,9 +39,8 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
     protected abstract BakedModel wrapped();
     
     @Override
-    public void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor,
-            BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        ((FabricBakedModel)wrapped()).produceBlockQuads(blockView, safeAccessor, state, pos, randomSupplier, context);
+    public void produceBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        ((FabricBakedModel)wrapped()).produceBlockQuads(blockView, state, pos, randomSupplier, context);
     }
 
     @Override

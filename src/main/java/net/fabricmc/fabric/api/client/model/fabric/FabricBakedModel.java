@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.model.fabric;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
@@ -74,12 +73,6 @@ public interface FabricBakedModel {
      * neighboring blocks (if appropriate).  Models only need to consider "sides" to the
      * extent the model is driven by connection with neighbor blocks or other world state.<p>
      * 
-     * Models should avoid using {@link TerrainBlockView#getBlockEntity(BlockPos)}
-     * to ensure thread safety because this method may be called outside the main client thread.
-     * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}
-     * and then use the provided safeBlockEntityAccessor function to retrieve it.  When called from the
-     * main thread, the function will simply retrieve the data directly.<p>
-     * 
      * Note: with {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}, the random 
      * parameter is normally initialized with the same seed prior to each face layer.
      * Model authors should note this method is called only once per block, and call the provided
@@ -87,14 +80,16 @@ public interface FabricBakedModel {
      * it will probably be easier to use {@link RenderContext#fallbackModelConsumer()} which handles
      * re-seeding per face automatically.<p>
      * 
-     * @param Access to world state. Avoid using for block entities unless thread safety can be guaranteed.
+     * @param Access to world state. Using {@link TerrainBlockView#getCachedRenderData(BlockPos)} to
+     * retrieve block entity state unless thread safety can be guaranteed.
      * @param safeBlockEntityAccessor Thread-safe access to block entity data 
      * @param state Block state for model being rendered.
      * @param pos Position of block for model being rendered.
-     * @param randomSupplier  Random object seeded per vanilla conventions. Call multiple times to reseed.
+     * @param randomSupplier  Random object seeded per vanilla conventions. Call multiple times to re-seed.
+     * The randomeSupplier will not be thread-safe. Do not cache or retain a reference.
      * @param context Accepts model output.
      */
-    void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeBlockEntityAccessor, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
+    void produceBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
     
     /**
      * This method will be called during item rendering to generate both the static and

@@ -17,18 +17,17 @@
 package net.fabricmc.fabric.mixin.client.model;
 
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
 import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
+import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Avoids instanceof checks and enables consistent code path for all baked models.
@@ -41,7 +40,7 @@ public interface MixinBakedModel extends FabricBakedModel {
     }
     
     @Override
-    public default void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public default void produceBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
     

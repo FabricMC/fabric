@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
@@ -32,6 +31,7 @@ import net.fabricmc.fabric.api.client.model.fabric.QuadMaker;
 import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
 import net.fabricmc.fabric.api.client.model.fabric.RenderMaterial;
 import net.fabricmc.fabric.api.client.model.fabric.RendererAccess;
+import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
 import net.fabricmc.fabric.api.client.model.fabric.TextureHelper;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
@@ -39,7 +39,6 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Specialized model wrapper that implements a general-purpose 
@@ -71,10 +70,9 @@ public class DamageModel extends ForwardingBakedModel {
     }
     
     @Override
-    public void produceBlockQuads(ExtendedBlockView blockView, Function<BlockPos, Object> safeAccessor,
-            BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void produceBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         damageContext.wrappedContext = context;
-        ((FabricBakedModel)wrappedModel).produceBlockQuads(blockView, safeAccessor, state, pos, randomSupplier, damageContext);
+        ((FabricBakedModel)wrappedModel).produceBlockQuads(blockView, state, pos, randomSupplier, damageContext);
     }
     
     private static class DamageContext implements RenderContext {
