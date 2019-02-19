@@ -37,7 +37,7 @@ public class ColorProviderMod implements ClientModInitializer {
 		// Redstone is now the same color as grass
 		ColorProviderRegistry.BLOCK.register((block, world, pos, layer) -> {
 			BlockColorMapper provider = ColorProviderRegistry.BLOCK.get(Blocks.GRASS);
-			return provider == null ? -1 : provider.getColor(block, pos, world, layer);
+			return provider == null ? -1 : provider.getColor(block, world, pos, layer);
 		}, Blocks.REDSTONE_WIRE);
 
 		// Make white dye glow red.
