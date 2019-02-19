@@ -44,8 +44,8 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
     }
 
     @Override
-    public boolean isVanilla() {
-        return ((FabricBakedModel)wrapped()).isVanilla();
+    public boolean isVanillaAdapter() {
+        return ((FabricBakedModel)wrapped()).isVanillaAdapter();
     }
 
     @Override
