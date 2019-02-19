@@ -37,15 +37,16 @@ import net.minecraft.world.ExtendedBlockView;
  */
 public interface FabricBakedModel {
     /**
-     * When true, signals renderer this producer is a vanilla baked model without
-     * any enhanced features from this API. Allows the renderer to optimize or
-     * route vanilla models through the unmodified vanilla pipeline if desired.<p>
-     * 
+     * When true, signals renderer this producer is implemented through {@link BakedModel#getQuads(BlockState, net.minecraft.util.math.Direction, Random)}.
+     * This means all vanilla baked model methods are authoritative and the model does not rely on
+     * any non-vanilla features. Allows the renderer to optimize or route vanilla models 
+     * through the unmodified vanilla pipeline if desired.<p>
+
      * Fabric overrides to true for vanilla baked models.  
      * Enhanced models that use this API should return false,
      * otherwise the API will not recognize the model.<p>
      */
-    boolean isVanilla(); 
+    boolean isVanillaAdapter(); 
     
     /**
      * This method will be called during chunk rebuilds to generate both the static and
