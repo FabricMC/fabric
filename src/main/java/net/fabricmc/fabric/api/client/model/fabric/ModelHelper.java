@@ -31,12 +31,6 @@ import net.minecraft.util.math.Direction;
  * Collection of utilities for model implementations.
  */
 public class ModelHelper {
-    private static final Direction[] FACES = new Direction[7];
-    
-    static {
-        System.arraycopy(Direction.values(), 0, FACES, 0, 6);
-    }
-    
     /** Result from {@link #toFaceIndex(Direction)} for null values. */
     public static final int NULL_FACE_ID = 6;
     
@@ -60,6 +54,13 @@ public class ModelHelper {
         return FACES[faceIndex];
     }
    
+    /** see {@link #faceFromIndex(int)} */
+    private static final Direction[] FACES = new Direction[7];
+    
+    static {
+        System.arraycopy(Direction.values(), 0, FACES, 0, 6);
+    }
+    
     /**
      * Converts a mesh into an array of lists of vanilla baked quads.
      * Useful for creating vanilla baked models when required for compatibility.
@@ -99,7 +100,7 @@ public class ModelHelper {
      * This convenient construction method applies the same scaling factors used for vanilla models.  
      * This means you can use values from a vanilla JSON file as inputs to this method.
      */
-    public static Transformation makeTransform(
+    private static Transformation makeTransform(
             float rotationX, float rotationY, float rotationZ,
             float translationX, float translationY, float translationZ,
             float scaleX, float scaleY, float scaleZ) {
