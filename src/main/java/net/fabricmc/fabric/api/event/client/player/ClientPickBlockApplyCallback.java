@@ -34,8 +34,8 @@ public interface ClientPickBlockApplyCallback {
 
 			for (ClientPickBlockApplyCallback event : listeners) {
 				stack = event.pick(player, result, stack);
-				if (stack == ItemStack.EMPTY || stack.isEmpty()) {
-					return stack;
+				if (stack.isEmpty()) {
+					return ItemStack.EMPTY;
 				}
 			}
 
