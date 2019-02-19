@@ -35,8 +35,8 @@ public abstract class ForwardingQuadMaker implements QuadMaker {
     }
     
     @Override
-    public void toVanilla(int textureIndex, int[] target, int targetIndex, boolean isItem) {
-        wrapped().toVanilla(textureIndex, target, targetIndex, isItem);
+    public void toVanilla(int spriteIndex, int[] target, int targetIndex, boolean isItem) {
+        wrapped().toVanilla(spriteIndex, target, targetIndex, isItem);
     }
 
     @Override
@@ -180,18 +180,18 @@ public abstract class ForwardingQuadMaker implements QuadMaker {
     }
 
     @Override
-    public int color(int vertexIndex, int textureIndex) {
-        return wrapped().color(vertexIndex, textureIndex);
+    public int spriteColor(int vertexIndex, int spriteIndex) {
+        return wrapped().spriteColor(vertexIndex, spriteIndex);
     }
 
     @Override
-    public float u(int vertexIndex, int textureIndex) {
-        return wrapped().u(vertexIndex, textureIndex);
+    public float spriteU(int vertexIndex, int spriteIndex) {
+        return wrapped().spriteU(vertexIndex, spriteIndex);
     }
 
     @Override
-    public float v(int vertexIndex, int textureIndex) {
-        return wrapped().v(vertexIndex, textureIndex);
+    public float spriteV(int vertexIndex, int spriteIndex) {
+        return wrapped().spriteV(vertexIndex, spriteIndex);
     }
 
     @Override
@@ -213,14 +213,14 @@ public abstract class ForwardingQuadMaker implements QuadMaker {
     }
 
     @Override
-    public QuadMaker color(int vertexIndex, int textureIndex, int color) {
-        wrapped().color(vertexIndex, textureIndex, color);
+    public QuadMaker spriteColor(int vertexIndex, int spriteIndex, int color) {
+        wrapped().spriteColor(vertexIndex, spriteIndex, color);
         return this;
     }
 
     @Override
-    public QuadMaker uv(int vertexIndex, int textureIndex, float u, float v) {
-        wrapped().uv(vertexIndex, textureIndex, u, v);
+    public QuadMaker sprite(int vertexIndex, int spriteIndex, float u, float v) {
+        wrapped().sprite(vertexIndex, spriteIndex, u, v);
         return this;
     }
 }

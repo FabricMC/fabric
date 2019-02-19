@@ -38,53 +38,38 @@ public interface MaterialFinder {
     RenderMaterial find();
     
     /**
-     * When > 1, {@link QuadMaker} will accept additional
-     * color and UV coordinates for each vertex. Standard materials
-     * support up to three textures.<p>
      * 
-     * Additional textures are useful for overlay textures -
-     * borders, decals, patterns, machine status, etc.
-     * Specifying overlay textures as part of the same quad
-     * can enable the {@link Renderer} to optimize memory
-     * usage and texture blending, depending on implementation.<p>
-     * 
-     * Extra color/UV coordinates can also be re-purposed for
-     * customer shaders that require expanded vertex attributes.
+     * Reserved for future use.  Behavior for values > 1 is currently undefined.
      */
-    MaterialFinder textureDepth(int depth);
+    MaterialFinder spriteDepth(int depth);
 
     /**
-     * Defines how texture pixels will be blended with the scene.
+     * Defines how sprite pixels will be blended with the scene.
      * Accepts {link @BlockRenderLayer} values and blending behavior
      * will emulate the way that Minecraft renders each pass. But this does 
-     * NOT mean the texture will be rendered in a specific render pass - some
+     * NOT mean the sprite will be rendered in a specific render pass - some
      * implementations may not use the standard Minecraft render passes.<p>
      * 
      * CAN be null and is null by default. A null value means the renderer
      * will use {@link Block#getRenderLayer()} for the associate block, or
      * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
      */
-    MaterialFinder blendMode(int textureIndex, BlockRenderLayer blendMode);
+    MaterialFinder blendMode(int spriteIndex, BlockRenderLayer blendMode);
 
     /**
      * Vertex color(s) will be modified for quad color index unless disabled.<p>
-     * 
-     * This is useful when there are multiple texture layers and only some of 
-     * them should have color index applied. If there is only texture or all
-     * textures are disabled, it is simpler to disable the color index itself
-     * by sending a colorIndex value of -1 to the {@link RenderContext}.
      */
-    MaterialFinder disableColorIndex(int textureIndex, boolean disable);
+    MaterialFinder disableColorIndex(int spriteIndex, boolean disable);
     
     /**
      * Vertex color(s) will be modified for diffuse shading unless disabled.
      */
-    MaterialFinder disableDiffuse(int textureIndex, boolean disable);
+    MaterialFinder disableDiffuse(int spriteIndex, boolean disable);
     
     /**
      * Vertex color(s) will be modified for ambient occlusion unless disabled.
      */
-    MaterialFinder disableAo(int textureIndex, boolean disable);
+    MaterialFinder disableAo(int spriteIndex, boolean disable);
     
     /**
      * When true, brightness value provided via {@link VertexEditor#lightmap()}
@@ -96,5 +81,5 @@ public interface MaterialFinder {
      * by default.  Most of the time, you will want to disable those via {@link #disableAo(int, boolean)}
      * and {@link #disableDiffuse(int, boolean)}.
      */
-    MaterialFinder emissive(int textureIndex, boolean isEmissive);
+    MaterialFinder emissive(int spriteIndex, boolean isEmissive);
 }

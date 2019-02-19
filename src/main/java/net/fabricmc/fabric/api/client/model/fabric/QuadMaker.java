@@ -32,13 +32,6 @@ public interface QuadMaker extends Quad {
     /**
      * Assigns a different material to this quad. Useful for transformation of 
      * existing meshes because lighting and texture blending are controlled by material.<p>
-     * 
-     * Restriction: texture depth of the new material must be the same or less than 
-     * the texture depth of the material used to create the quad.  This restriction 
-     * prevents the need for renderer implementations to allocate additional storage
-     * after a quad is already loaded for buffering or editing.<p>
-     * 
-     * Violations of this restriction will throw UnsupportedOperationException errors.
      */
     QuadMaker material(RenderMaterial material);
         
@@ -150,7 +143,7 @@ public interface QuadMaker extends Quad {
     
     /**
      * Minimum block brightness. Has no effect unless emissive lighting is
-     * enabled in at least one texture of the material for this quad.
+     * enabled in at least one sprite of the material for this quad.
      * Standard shader binding: vec4 in_lightmap<p>
      * 
      * While this has a standard binding, it should not be used by
@@ -171,25 +164,25 @@ public interface QuadMaker extends Quad {
     }
     
     /**
-     * Set vertex color.
+     * Set sprite color. Behavior for spriteIndex values > 0 is currently undefined.
      */
-    QuadMaker color(int vertexIndex, int textureIndex, int color);
+    QuadMaker spriteColor(int vertexIndex, int spriteIndex, int color);
     
     /** 
-     * Convenience: set vertex color for all vertices at once.
+     * Convenience: set sprite color for all vertices at once. Behavior for spriteIndex values > 0 is currently undefined.
      */
-    default QuadMaker color(int textureIndex, int c0, int c1, int c2, int c3) {
-        color(0, textureIndex, c0);
-        color(1, textureIndex, c1);
-        color(2, textureIndex, c2);
-        color(3, textureIndex, c3);
+    default QuadMaker spriteColor(int spriteIndex, int c0, int c1, int c2, int c3) {
+        spriteColor(0, spriteIndex, c0);
+        spriteColor(1, spriteIndex, c1);
+        spriteColor(2, spriteIndex, c2);
+        spriteColor(3, spriteIndex, c3);
         return this;
     }
     
     /**
-     * Set texture coordinates.
+     * Set sprite atlas coordinates. Behavior for spriteIndex values > 0 is currently undefined.
      */
-    QuadMaker uv(int vertexIndex, int textureIndex, float u, float v);
+    QuadMaker sprite(int vertexIndex, int spriteIndex, float u, float v);
     
     /**
      * In static mesh building, causes quad to be appended to the mesh being built.

@@ -66,7 +66,6 @@ public class ModelHelper {
      * The array indexes correspond to {@link Direction#getId()} with the 
      * addition of {@link #NULL_FACE_ID}.<p>
      * 
-     * Multi-texture quads in the mesh will be expanded in multiple quads in the output.
      * Retrieves sprites from the block texture atlas via {@link SpriteFinder}. 
      */
     public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
@@ -79,7 +78,7 @@ public class ModelHelper {
         }
         
         mesh.forEach(q -> {
-            final int limit = q.material().textureDepth();
+            final int limit = q.material().spriteDepth();
             for(int l = 0; l < limit; l++) {
                 Direction face = q.cullFace();
                 builders[face == null ? 6 : face.getId()].add(q.toBakedQuad(l, finder.find(q, l), false));

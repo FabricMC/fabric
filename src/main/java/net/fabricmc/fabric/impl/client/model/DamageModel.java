@@ -137,7 +137,7 @@ public class DamageModel extends ForwardingBakedModel {
         @Override
         public void emit() {
             wrappedQuadMaker.material(DAMAGE_MATERIAL);
-            TextureHelper.bakeTextures(wrappedQuadMaker, 0, damageSprite, TextureHelper.LOCK_UV);
+            TextureHelper.bakeSprite(wrappedQuadMaker, 0, damageSprite, TextureHelper.LOCK_UV);
             wrappedQuadMaker.colorIndex(-1);
             wrappedQuadMaker.emit();
         }

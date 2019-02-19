@@ -48,8 +48,8 @@ public class SpriteFinderImpl implements SpriteFinder {
         float u = 0; 
         float v = 0;
         for(int i = 0; i < 4; i++) {
-            u += quad.u(i, textureIndex);
-            v += quad.v(i, textureIndex);
+            u += quad.spriteU(i, textureIndex);
+            v += quad.spriteV(i, textureIndex);
         }
         return find(u * 0.25f, v * 0.25f);
     }
