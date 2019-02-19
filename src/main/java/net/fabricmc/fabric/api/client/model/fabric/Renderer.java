@@ -57,10 +57,4 @@ public interface Renderer {
      * leaving the existing material intact.
      */
     boolean registerMaterial(Identifier id, RenderMaterial material);
-    
-    /**
-     * Access to {@link ShaderManager} for attachment of shaders to standard materials.
-     * Will return null if this renderer does not support that feature.
-     */
-    ShaderManager shaderManager();
 }
