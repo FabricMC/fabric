@@ -25,8 +25,8 @@ import net.fabricmc.fabric.impl.registry.RemapException;
 import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
-import net.minecraft.util.registry.DefaultMappedRegistry;
-import net.minecraft.util.registry.IdRegistry;
+import net.minecraft.util.registry.DefaultedRegistry;
+import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,14 +38,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-@Mixin(IdRegistry.class)
+@Mixin(SimpleRegistry.class)
 public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry<T>, RegistryListener<T> {
 	@Shadow
-	protected static Logger ID_LOGGER;
+	protected static Logger LOGGER;
 	@Shadow
-	protected Int2ObjectBiMap<T> idStore;
+	protected Int2ObjectBiMap<T> indexedEntries;
 	@Shadow
-	protected BiMap<Identifier, T> objectMap;
+	protected BiMap<Identifier, T> entries;
 	@Shadow
 	private int nextId;
 
@@ -67,10 +67,10 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@SuppressWarnings({ "unchecked", "ConstantConditions" })
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
-		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
+		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
 		if (listeners != null) {
 			for (RegistryListener listener : listeners) {
-				listener.beforeRegistryRegistration(registry, id, identifier, object, !objectMap.containsKey(identifier));
+				listener.beforeRegistryRegistration(registry, id, identifier, object, !entries.containsKey(identifier));
 			}
 		}
 	}
@@ -78,7 +78,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@SuppressWarnings({ "unchecked", "ConstantConditions" })
 	@Inject(method = "set", at = @At("RETURN"))
 	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
-		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
+		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
 		if (listeners != null) {
 			for (RegistryListener listener : listeners) {
 				listener.afterRegistryRegistration(registry, id, identifier, object);
@@ -89,21 +89,21 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Override
 	public void remap(Object2IntMap<Identifier> idMap, boolean reallocateMissingEntries) throws RemapException {
 		//noinspection unchecked, ConstantConditions
-		IdRegistry<Object> registry = (IdRegistry<Object>) (Object) this;
+		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
 
 		Object defaultValue = null;
 		//noinspection ConstantConditions
-		if (registry instanceof DefaultMappedRegistry) {
-			defaultValue = registry.get(((DefaultMappedRegistry) registry).getDefaultId());
+		if (registry instanceof DefaultedRegistry) {
+			defaultValue = registry.get(((DefaultedRegistry<Object>) registry).getDefaultId());
 		}
 
-		if (!reallocateMissingEntries && !idMap.keySet().equals(registry.keys())) {
+		if (!reallocateMissingEntries && !idMap.keySet().equals(registry.getIds())) {
 			throw new RemapException("Source and destination keys differ!");
 		}
 
 		if (initialIdMap == null) {
 			initialIdMap = new Object2IntOpenHashMap<>();
-			for (Identifier id : registry.keys()) {
+			for (Identifier id : registry.getIds()) {
 				//noinspection unchecked
 				initialIdMap.put(id, registry.getRawId(registry.get(id)));
 			}
@@ -120,9 +120,9 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 				if (v > maxValue) maxValue = v;
 			}
 
-			for (Identifier id : registry.keys()) {
+			for (Identifier id : registry.getIds()) {
 				if (!idMap.containsKey(id)) {
-					ID_LOGGER.warn("Adding " + id + " to registry.");
+					LOGGER.warn("Adding " + id + " to registry.");
 					idMap.put(id, ++maxValue);
 				}
 			}
@@ -134,8 +134,8 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			}
 		}
 
-		// We don't really need to clear anything but idStore yet.
-		idStore.clear();
+		// We don't really need to clear anything but indexedEntries yet.
+		indexedEntries.clear();
 		nextId = 0;
 
 		List<Identifier> idsInOrder = new ArrayList<>(idMap.keySet());
@@ -143,17 +143,17 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 		for (Identifier identifier : idsInOrder) {
 			int id = idMap.getInt(identifier);
-			T object = objectMap.get(identifier);
+			T object = entries.get(identifier);
 			if (object == null) {
-				ID_LOGGER.warn(identifier + " missing from registry, but requested!");
+				LOGGER.warn(identifier + " missing from registry, but requested!");
 				continue;
 				
 				//noinspection unchecked, ConstantConditions
 				// object = (T) defaultValue;
-				// objectMap.put(identifier, object);
+				// entries.put(identifier, object);
 			}
 
-			idStore.put(object, id);
+			indexedEntries.put(object, id);
 			if (nextId <= id) {
 				nextId = id + 1;
 			}

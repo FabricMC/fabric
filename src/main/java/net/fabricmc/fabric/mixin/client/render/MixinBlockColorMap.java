@@ -42,6 +42,6 @@ public class MixinBlockColorMap implements ColorProviderRegistryImpl.ColorMapper
 
 	@Override
 	public BlockColorMapper get(Block block) {
-		return mappers.getInt(Registry.BLOCK.getRawId(block));
+		return mappers.get(Registry.BLOCK.getRawId(block));
 	}
 }

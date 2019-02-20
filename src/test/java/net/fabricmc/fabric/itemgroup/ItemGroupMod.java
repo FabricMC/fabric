@@ -33,8 +33,7 @@ public class ItemGroupMod implements ModInitializer {
 		//This creates your standard Item Group
 		ItemGroup group = FabricItemGroupBuilder.build(new Identifier("fabric", "fabric_test_tab"), () -> new ItemStack(Items.IRON_CHESTPLATE));
 		Item testItem = new Item(new Item.Settings().itemGroup(group));
-		Registry.ITEM.register(new Identifier("fabric_test", "itemgroup"), testItem);
-
+		Registry.ITEM.set(new Identifier("fabric_test", "itemgroup"), testItem);
 
 		//Creates a tab with all items (including ones that dont show in search such as the command block)
 		FabricItemGroupBuilder.create(new Identifier("fabric", "all")).stacksForDisplay(itemStacks -> Registry.ITEM.forEach(item -> itemStacks.add(new ItemStack(item)))).build();
