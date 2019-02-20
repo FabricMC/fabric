@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import net.fabricmc.indigo.renderer.helper.TextureHelper;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
