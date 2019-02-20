@@ -89,7 +89,7 @@ public interface FabricBakedModel {
      * The randomeSupplier will not be thread-safe. Do not cache or retain a reference.
      * @param context Accepts model output.
      */
-    void produceBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
+    void emitBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
     
     /**
      * This method will be called during item rendering to generate both the static and
@@ -118,15 +118,5 @@ public interface FabricBakedModel {
      * logic here, instead of returning every possible shape from {@link #getItemPropertyOverrides()}
      * as vanilla baked models.
      */
-    void produceItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);
-    
-    /**
-     * If true, model output varies based only on BlockState and random seed. If model output
-     * depends on any other inputs or is non-deterministic, must return false.<p>
-     * 
-     * Allows renderers (and potentially compound models) to optimize caching of model output
-     * by identifying the inputs that affect model appearance. This is meant to be used in a 
-     * terrain-rendering context.
-     */
-    boolean isRegular();
+    void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);
 }

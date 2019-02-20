@@ -28,8 +28,8 @@ import net.minecraft.client.render.BufferBuilder;
  */
 public interface MeshBuilder {
     /**
-     * Starts a new quad. Invalidates any {@link QuadMaker} returned 
-     * earlier.  Do not retain references.  Must call {@link QuadMaker#emit()}
+     * Starts a new quad. Invalidates any {@link MutableQuadView} returned 
+     * earlier.  Do not retain references.  Must call {@link MutableQuadView#emit()}
      * to add the quad to the mesh.<p>
      * 
      * Material must be an instance provided by the active {@link Renderer}.

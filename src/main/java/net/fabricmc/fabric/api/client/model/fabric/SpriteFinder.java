@@ -25,7 +25,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
  * baked vertex coordinates.  Main use is for {@link Mesh}-based models
  * to generate vanilla quads on demand without tracking and retaining
  * the sprites that were baked into the mesh. In other words, this class 
- * supplies the sprite parameter for {@link Quad#toBakedQuad(int, Sprite, boolean)}.
+ * supplies the sprite parameter for {@link QuadView#toBakedQuad(int, Sprite, boolean)}.
  */
 public interface SpriteFinder {
     /**
@@ -47,10 +47,10 @@ public interface SpriteFinder {
      * Note that all the above refers to u,v coordinates. Geometric vertex does not matter,
      * except to the extent it was used to determine u,v.
      */
-    Sprite find(Quad quad, int textureIndex);
+    Sprite find(QuadView quad, int textureIndex);
 
     /**
-     * Alternative to {@link #find(Quad, int)} when vertex centroid is already
+     * Alternative to {@link #find(QuadView, int)} when vertex centroid is already
      * known or unsuitable.  Coordinates must be in sprite interior for reliable results.
      */
     Sprite find(float u, float v);

@@ -27,7 +27,7 @@ import net.minecraft.util.math.Direction;
  * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.<p>
  */
-public interface Quad {
+public interface QuadView {
     /**
      * Reads baked vertex data and outputs standard baked quad 
      * vertex data in the given array and location.<p>
@@ -46,11 +46,11 @@ public interface Quad {
     void toVanilla(int spriteIndex, int[] target, int targetIndex, boolean isItem);
     
     /**
-     * Extracts all quad properties except material to the given {@link QuadMaker} instance.
-     * Must be used before calling {@link QuadMaker#emit()} on the target instance.
+     * Extracts all quad properties except material to the given {@link MutableQuadView} instance.
+     * Must be used before calling {@link MutableQuadView#emit()} on the target instance.
      * Meant for re-texturing, analysis and static transformation use cases.
      */
-    void copyTo(QuadMaker target);
+    void copyTo(MutableQuadView target);
     
     /**
      * Retrieves the material serialized with the quad.
@@ -73,12 +73,12 @@ public interface Quad {
      * If non-null, quad should not be rendered in-world if the 
      * opposite face of a neighbor block occludes it.<p>
      * 
-     * See {@link QuadMaker#cullFace(Direction)}.
+     * See {@link MutableQuadView#cullFace(Direction)}.
      */
     Direction cullFace();
     
     /**
-     * See {@link QuadMaker#nominalFace(Direction)}.
+     * See {@link MutableQuadView#nominalFace(Direction)}.
      */
     Direction nominalFace();
     
@@ -103,7 +103,7 @@ public interface Quad {
      * @param spriteIndex The sprite to be used for the quad.
      * Behavior for values > 0 is currently undefined.
      * 
-     * @param sprite  {@link QuadMaker} does not serialize sprites
+     * @param sprite  {@link MutableQuadView} does not serialize sprites
      * so the sprite must be provided by the caller.
      * 
      * @param isItem If true, will output vertex normals. Otherwise will output
@@ -120,7 +120,7 @@ public interface Quad {
     }
     
     /**
-     * Retrieves the integer tag encoded with this quad via {@link QuadMaker#tag(int)}.
+     * Retrieves the integer tag encoded with this quad via {@link MutableQuadView#tag(int)}.
      * Will return zero if no tag was set.  For use by models.
      */
     int tag();

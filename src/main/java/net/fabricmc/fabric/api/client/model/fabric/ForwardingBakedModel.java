@@ -36,60 +36,56 @@ import net.minecraft.util.math.Direction;
  * Avoids boilerplate code for pass-through methods. For example usage see {@link DamageModel}.
  */
 public abstract class ForwardingBakedModel implements BakedModel, FabricBakedModel {
-    protected abstract BakedModel wrapped();
+    /** implementations must set this somehow */
+    protected BakedModel wrapped;
     
     @Override
-    public void produceBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        ((FabricBakedModel)wrapped()).produceBlockQuads(blockView, state, pos, randomSupplier, context);
+    public void emitBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+        ((FabricBakedModel)wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
     }
 
     @Override
     public boolean isVanillaAdapter() {
-        return ((FabricBakedModel)wrapped()).isVanillaAdapter();
+        return ((FabricBakedModel)wrapped).isVanillaAdapter();
     }
 
     @Override
-    public void produceItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        ((FabricBakedModel)wrapped()).produceItemQuads(stack, randomSupplier, context);
-    }
-
-    @Override
-    public boolean isRegular() {
-        return ((FabricBakedModel)wrapped()).isRegular();
+    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+        ((FabricBakedModel)wrapped).emitItemQuads(stack, randomSupplier, context);
     }
 
     @Override
     public List<BakedQuad> getQuads(BlockState blockState, Direction face, Random rand) {
-        return wrapped().getQuads(blockState, face, rand);
+        return wrapped.getQuads(blockState, face, rand);
     }
 
     @Override
     public boolean useAmbientOcclusion() {
-        return wrapped().useAmbientOcclusion();
+        return wrapped.useAmbientOcclusion();
     }
 
     @Override
     public boolean hasDepthInGui() {
-        return wrapped().hasDepthInGui();
+        return wrapped.hasDepthInGui();
     }
 
     @Override
     public boolean isBuiltin() {
-        return wrapped().isBuiltin();
+        return wrapped.isBuiltin();
     }
 
     @Override
     public Sprite getSprite() {
-        return wrapped().getSprite();
+        return wrapped.getSprite();
     }
 
     @Override
     public ModelTransformation getTransformation() {
-        return wrapped().getTransformation();
+        return wrapped.getTransformation();
     }
 
     @Override
     public ModelItemPropertyOverrideList getItemPropertyOverrides() {
-        return wrapped().getItemPropertyOverrides();
+        return wrapped.getItemPropertyOverrides();
     }
 }

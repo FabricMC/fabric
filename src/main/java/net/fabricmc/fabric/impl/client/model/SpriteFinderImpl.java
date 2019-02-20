@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.model;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.client.model.fabric.Quad;
+import net.fabricmc.fabric.api.client.model.fabric.QuadView;
 import net.fabricmc.fabric.api.client.model.fabric.SpriteFinder;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
@@ -44,7 +44,7 @@ public class SpriteFinderImpl implements SpriteFinder {
     }
 
     @Override
-    public Sprite find(Quad quad, int textureIndex) {
+    public Sprite find(QuadView quad, int textureIndex) {
         float u = 0; 
         float v = 0;
         for(int i = 0; i < 4; i++) {

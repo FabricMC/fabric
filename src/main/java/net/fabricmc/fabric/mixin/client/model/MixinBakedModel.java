@@ -35,17 +35,17 @@ import net.minecraft.util.math.BlockPos;
 @Mixin(BakedModel.class)
 public interface MixinBakedModel extends FabricBakedModel {
     @Override
-    public default boolean isVanilla() {
+    public default boolean isVanillaAdapter() {
         return true;
     }
     
     @Override
-    public default void produceBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public default void emitBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
     
     @Override
-    default void produceItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+    default void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);        
     }
 }

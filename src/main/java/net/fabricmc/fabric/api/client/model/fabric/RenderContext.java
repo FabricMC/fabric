@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import net.minecraft.client.render.model.BakedModel;
@@ -26,18 +25,10 @@ import net.minecraft.client.render.model.BakedModel;
  */
 public interface RenderContext {
     /**
-     * Used by models to send vertex data previously baked 
-     * via {@link MeshBuilder}. The fastest option and preferred whenever feasible.<p>
-     * 
-     * Meshes sent to the consumer may be accompanied by a {@link QuadMaker} consumer - an "editor".
-     * If non-null, all quads in the mesh will be passed to the editor for modification before
-     * offsets, face culling or lighting are applied.  Meant for animation and mesh customization.
-     * The editor can also filter out quads by exiting before calling {@link QuadMaker#emit()}.<p>
-     * 
-     * Meshes are never mutated by the editor - only the buffered quads. This ensures thread-safe
-     * use of meshes across multiple chunk builders.
+     * Used by models to send vertex data previously baked via {@link MeshBuilder}. 
+     * The fastest option and preferred whenever feasible.
      */
-    BiConsumer<Mesh, Consumer<QuadMaker>> meshConsumer();
+    Consumer<Mesh> meshConsumer();
     
     /**
      * Fabric causes vanilla baked models to send themselves 
@@ -61,4 +52,35 @@ public interface RenderContext {
      * Material must be an instance provided by the active {@link Renderer}.
      */
     QuadMaker quad(RenderMaterial material);
+    
+    /**
+     * Causes all models/quads/meshes sent to this consumer to be transformed by the provided
+     * {@link QuadTransform} that edits each quad before buffering. Quads in the mesh will 
+     * be passed to the {@link QuadTransform} for modification before offsets, face culling or lighting are applied.  
+     * Meant for animation and mesh customization.<p>
+     * 
+     * You MUST call {@link #popTransform()} after model is done outputting quads.
+     * 
+     * More than one transformer can be added to the context.  Transformers are applied in reverse order. 
+     * (Last pushed is applied first.)<p>
+     * 
+     * Meshes are never mutated by the transformer - only buffered quads. This ensures thread-safe
+     * use of meshes/models across multiple chunk builders.<p>
+     */
+    void pushTransform(QuadTransform transform);
+    
+    /**
+     * Removes the transformation added by the last call to {@link #pushTransform(Consumer)}.
+     * MUST be called before exiting from {@link FabricBakedModel} .emit... methods.
+     */
+    void popTransform();
+    
+    @FunctionalInterface
+    public static interface QuadTransform {
+        /**
+         * Return false to filter out quads from rendering. When more than one transform
+         * is in effect, returning false means unapplied transforms will not receive the quad.
+         */
+        boolean transform(MutableQuadView quad);
+    }
 }

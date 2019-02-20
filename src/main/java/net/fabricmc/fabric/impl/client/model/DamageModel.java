@@ -122,11 +122,6 @@ public class DamageModel extends ForwardingBakedModel {
         public QuadMaker quad(RenderMaterial material) {
             damageQuad.wrappedQuadMaker = wrappedContext.quad(material);
             return damageQuad;
-        }
-    }
-
-    private static class DamageQuadMaker extends ForwardingQuadMaker {
-        private QuadMaker wrappedQuadMaker;
         private Sprite damageSprite;
         
         @Override
