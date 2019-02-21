@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import com.google.common.base.Joiner;
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.AbstractFilenameResourcePack;
@@ -27,7 +26,6 @@ import net.minecraft.util.InvalidIdentifierException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
@@ -36,7 +34,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ModNioResourcePack extends AbstractFilenameResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LogManager.getLogger();

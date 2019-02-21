@@ -10,6 +10,7 @@
     "client.keybinding.MixinGameOptions",
     "client.keybinding.MixinKeyBinding",
     "client.model.MixinModelLoader",
+    "client.render.MixinArmorFeatureRenderer",
     "client.render.MixinBlockColorMap",
     "client.render.MixinBlockEntityRenderManager",
     "client.render.MixinEntityRenderManager",
