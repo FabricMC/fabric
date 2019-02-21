@@ -29,11 +29,11 @@ public class FabricAPIInitializer implements ModInitializer {
 			BlockState state = world.getBlockState(pos);
 			if (state instanceof BlockAttackInteractionAware) {
 				if (((BlockAttackInteractionAware) state).onAttackInteraction(state, world, pos, player, hand, direction)) {
-					return ActionResult.FAILURE;
+					return ActionResult.FAIL;
 				}
 			} else if (state.getBlock() instanceof BlockAttackInteractionAware) {
 				if (((BlockAttackInteractionAware) state.getBlock()).onAttackInteraction(state, world, pos, player, hand, direction)) {
-					return ActionResult.FAILURE;
+					return ActionResult.FAIL;
 				}
 			}
 

@@ -16,22 +16,27 @@
 
 package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.impl.server.EntityTrackerEntryStreamAccessor;
-import net.minecraft.server.network.EntityTrackerEntry;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.fabricmc.fabric.impl.server.EntityTrackerStreamAccessor;
+import net.fabricmc.fabric.impl.server.EntityTrackerStorageAccessor;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
-@Mixin(EntityTrackerEntry.class)
-public class MixinEntityTrackerEntry implements EntityTrackerEntryStreamAccessor {
+@Mixin(ThreadedAnvilChunkStorage.class)
+public class MixinThreadedAnvilChunkStorage implements EntityTrackerStorageAccessor {
 	@Shadow
-	private Set<ServerPlayerEntity> trackingPlayers;
+	@Final
+	private Int2ObjectMap<EntityTrackerStreamAccessor> field_18242;
 
 	@Override
-	public Stream<ServerPlayerEntity> fabric_getTrackingPlayers() {
-		return trackingPlayers.stream();
+	public Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity) {
+		EntityTrackerStreamAccessor accessor = field_18242.get(entity.getEntityId());
+		return accessor != null ? accessor.fabric_getTrackingPlayers() : Stream.empty();
 	}
 }

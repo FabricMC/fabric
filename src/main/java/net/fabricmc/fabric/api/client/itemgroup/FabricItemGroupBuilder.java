@@ -63,10 +63,23 @@ public final class FabricItemGroupBuilder {
 	 *
 	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items
 	 *
+	 * @param appender Add ItemStack's to this list to show in the ItemGroup
+	 * @return a reference to the FabricItemGroupBuilder
+	 * @deprecated use {@link FabricItemGroupBuilder#appendItems(Consumer)}
+	 */
+	@Deprecated
+	public FabricItemGroupBuilder stacksForDisplay(Consumer<List<ItemStack>> appender) {
+		return appendItems(appender);
+	}
+
+	/**
+	 *
+	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items
+	 *
 	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
-	public FabricItemGroupBuilder stacksForDisplay(Consumer<List<ItemStack>> stacksForDisplay){
+	public FabricItemGroupBuilder appendItems(Consumer<List<ItemStack>> stacksForDisplay) {
 		this.stacksForDisplay = stacksForDisplay;
 		return this;
 	}
@@ -92,17 +105,18 @@ public final class FabricItemGroupBuilder {
 	public ItemGroup build() {
 		((ItemGroupExtensions) ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
 		return new ItemGroup(ItemGroup.GROUPS.length - 1, String.format("%s.%s", identifier.getNamespace(), identifier.getPath())) {
-
-			public ItemStack getIconItem() {
+			@Override
+			public ItemStack createIcon() {
 				return stackSupplier.get();
 			}
 
-			public void getStacksForDisplay(DefaultedList<ItemStack> stacks) {
+			@Override
+			public void appendItems(DefaultedList<ItemStack> stacks) {
 				if(stacksForDisplay != null){
 					stacksForDisplay.accept(stacks);
 					return;
 				}
-				super.getStacksForDisplay(stacks);
+				super.appendItems(stacks);
 			}
 		};
 	}

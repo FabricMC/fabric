@@ -22,5 +22,5 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.stream.Stream;
 
 public interface EntityTrackerStreamAccessor {
-	Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity);
+	Stream<ServerPlayerEntity> fabric_getTrackingPlayers();
 }

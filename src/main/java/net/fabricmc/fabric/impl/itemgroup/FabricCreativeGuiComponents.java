@@ -45,8 +45,8 @@ public class FabricCreativeGuiComponents {
 		CreativePlayerInventoryScreen gui;
 		Type type;
 
-		public ItemGroupButtonWidget(int id, int x, int y, Type type, CreativeGuiExtensions extensions) {
-			super(id, x, y, 10, 11, type.text);
+		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
+			super(x, y, 10, 11, type.text);
 			this.extensions = extensions;
 			this.type = type;
 			this.gui = (CreativePlayerInventoryScreen) extensions;

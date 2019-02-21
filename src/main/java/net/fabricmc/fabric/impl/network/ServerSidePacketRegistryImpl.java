@@ -23,7 +23,6 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.fabric.impl.accessors.CustomPayloadC2SPacketAccessor;
-import net.fabricmc.loader.FabricLoader;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
@@ -71,20 +70,22 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	protected void onRegister(Identifier id) {
-		MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
+		/* MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
 		if (server != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id));
 			PlayerStream.all(server).forEach((p) -> sendToPlayer(p, packet));
-		}
+		} */
+		// TODO
 	}
 
 	@Override
 	protected void onUnregister(Identifier id) {
-		MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
+		/* MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
 		if (server != null) {
 			Packet<?> packet = createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id));
 			PlayerStream.all(server).forEach((p) -> sendToPlayer(p, packet));
-		}
+		} */
+		// TODO
 	}
 
 	@Override

@@ -16,11 +16,8 @@
 
 package net.fabricmc.fabric.mixin.misc;
 
-import com.google.common.collect.Lists;
-import net.fabricmc.loader.FabricLoader;
-import net.fabricmc.loader.ModContainer;
-import net.fabricmc.loader.ModInfo;
-import net.minecraft.util.SystemUtil;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +25,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.*;
 
@@ -41,8 +37,10 @@ public abstract class MixinCrashReport {
 	private void fillSystemDetails(CallbackInfo info) {
 		getSystemDetailsSection().add("Fabric Mods", () -> {
 			Map<String, String> mods = new TreeMap<>();
-			for (ModContainer container : FabricLoader.INSTANCE.getModContainers()) {
-				mods.put(container.getInfo().getName(), container.getInfo().getVersionString() + " (" + container.getOriginFile().getName() + ")");
+			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
+				// mods.put(container.getInfo().getName(), container.getInfo().getVersionString() + " (" + container.getOriginUrl().getFile() + ")");
+				// TODO getName, getOriginUrl
+				mods.put(container.getMetadata().getId(), container.getMetadata().getVersion().getFriendlyString());
 			}
 
 			StringBuilder modString = new StringBuilder();
