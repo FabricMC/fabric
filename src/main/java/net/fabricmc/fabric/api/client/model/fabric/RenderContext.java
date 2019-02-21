@@ -38,20 +38,18 @@ public interface RenderContext {
     Consumer<BakedModel> fallbackConsumer();
     
     /**
-     * Returns a {@link QuadMaker} instance that emits directly to the render buffer.
-     * It remains necessary to call {@link QuadMaker#emit()} to output the quad.<p>
+     * Returns a {@link QuadEmitter} instance that emits directly to the render buffer.
+     * It remains necessary to call {@link QuadEmitter#emit()} to output the quad.<p>
      * 
      * This method will always be less performant than passing pre-baked meshes
      * via {@link #meshConsumer()}. It should be used sparingly for model components that
      * demand it - text, icons, dynamic indicators, or other elements that vary too 
      * much for static baking to be feasible.<p>
      * 
-     * Calling this method invalidates any {@link QuadMaker} returned earlier.  
-     * Will be threadlocal/re-used - do not retain references.<p>
-     * 
-     * Material must be an instance provided by the active {@link Renderer}.
+     * Calling this method invalidates any {@link QuadEmitter} returned earlier.  
+     * Will be threadlocal/re-used - do not retain references.
      */
-    QuadMaker quad(RenderMaterial material);
+    QuadEmitter getEmitter();
     
     /**
      * Causes all models/quads/meshes sent to this consumer to be transformed by the provided
@@ -66,6 +64,8 @@ public interface RenderContext {
      * 
      * Meshes are never mutated by the transformer - only buffered quads. This ensures thread-safe
      * use of meshes/models across multiple chunk builders.<p>
+     * 
+     * Only the renderer should implement or extend this interface.
      */
     void pushTransform(QuadTransform transform);
     

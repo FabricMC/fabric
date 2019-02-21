@@ -24,10 +24,12 @@ import net.minecraft.util.math.Direction;
 
 /**
  * A mutable {@link QuadView} instance. The base interface for 
- * {@link QuadMaker} and for dynamic renders/mesh transforms.<p>
+ * {@link QuadEmitter} and for dynamic renders/mesh transforms.<p>
  * 
  * Instances of {@link MutableQuadView} will practically always be
- * threadlocal and/or reused - do not retain references.
+ * threadlocal and/or reused - do not retain references.<p>
+ * 
+ * Only the renderer should implement or extend this interface.
  */
 public interface MutableQuadView extends QuadView {
     /**

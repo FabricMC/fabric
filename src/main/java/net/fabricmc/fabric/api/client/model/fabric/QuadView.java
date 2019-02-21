@@ -26,6 +26,8 @@ import net.minecraft.util.math.Direction;
  * Interface for reading quad data encoded by {@link MeshBuilder}.
  * Enables models to do analysis, re-texturing or translation without knowing the
  * renderer's vertex formats and without retaining redundant information.<p>
+ * 
+ * Only the renderer should implement or extend this interface.
  */
 public interface QuadView {
     /**

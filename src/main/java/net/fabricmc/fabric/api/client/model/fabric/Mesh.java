@@ -24,7 +24,9 @@ import java.util.function.Consumer;
  * 
  * Similar in purpose to the List<BakedQuad> instances returned by BakedModel, but 
  * affords the renderer the ability to optimize the format for performance
- * and memory allocation.
+ * and memory allocation.<p>
+ * 
+ * Only the renderer should implement or extend this interface.
  */
 public interface Mesh {
     /**

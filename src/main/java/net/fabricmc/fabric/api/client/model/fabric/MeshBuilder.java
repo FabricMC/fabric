@@ -28,13 +28,11 @@ import net.minecraft.client.render.BufferBuilder;
  */
 public interface MeshBuilder {
     /**
-     * Starts a new quad. Invalidates any {@link MutableQuadView} returned 
-     * earlier.  Do not retain references.  Must call {@link MutableQuadView#emit()}
-     * to add the quad to the mesh.<p>
-     * 
-     * Material must be an instance provided by the active {@link Renderer}.
+     * Returns the {@link QuadEmitter} used to append quad to this mesh. 
+     * Calling this method a second time invalidates any prior result.
+     * Do not retain references outside the context of building the mesh.
      */
-    QuadMaker quad(RenderMaterial material);
+    QuadEmitter getEmitter();
     
     /**
      * Returns a new {@link Mesh} instance containing all
