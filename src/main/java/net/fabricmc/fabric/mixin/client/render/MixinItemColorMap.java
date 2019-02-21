@@ -43,6 +43,6 @@ public class MixinItemColorMap implements ColorProviderRegistryImpl.ColorMapperH
 
 	@Override
 	public ItemColorMapper get(ItemProvider item) {
-		return mappers.getInt(Registry.ITEM.getRawId(item.getItem()));
+		return mappers.get(Registry.ITEM.getRawId(item.getItem()));
 	}
 }

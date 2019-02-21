@@ -16,17 +16,19 @@
 
 package net.fabricmc.fabric.api.server;
 
-import net.fabricmc.fabric.impl.server.EntityTrackerStreamAccessor;
+import net.fabricmc.fabric.impl.server.EntityTrackerStorageAccessor;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.EntityTracker;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.chunk.ChunkPos;
 
 import java.util.stream.Stream;
@@ -50,15 +52,21 @@ public final class PlayerStream {
 	}
 
 	public static Stream<PlayerEntity> world(World world) {
-		return world.players.stream();
+		if (world instanceof ServerWorld) {
+			// noinspection unchecked
+			return ((Stream<PlayerEntity>) (Stream) ((ServerWorld) world).method_18456().stream());
+		} else {
+			throw new RuntimeException("Only supported on ServerWorld!");
+		}
 	}
 
 	public static Stream<PlayerEntity> watching(World world, ChunkPos pos) {
-		if (!(world instanceof ServerWorld)) {
+		ChunkManager manager = world.getChunkManager();
+		if (!(manager instanceof ServerChunkManager)) {
 			throw new RuntimeException("Only supported on ServerWorld!");
 		} else {
-			// noinspection unchecked
-			return ((Stream<PlayerEntity>) (Stream) ((ServerWorld) world).getChunkManager().getPlayersWatchingChunk(pos, false, false));
+			//noinspection unchecked
+			return ((Stream<PlayerEntity>) (Stream) ((ServerChunkManager) manager).threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false));
 		}
 	}
 
@@ -69,18 +77,18 @@ public final class PlayerStream {
 	 */
 	@SuppressWarnings("JavaDoc")
 	public static Stream<PlayerEntity> watching(Entity entity) {
-		World world = entity.getEntityWorld();
+		ChunkManager manager = entity.getEntityWorld().getChunkManager();
 
-		if (world instanceof ServerWorld) {
-			EntityTracker tracker = ((ServerWorld) world).getEntityTracker();
-			if (tracker instanceof EntityTrackerStreamAccessor) {
+		if (manager instanceof ServerChunkManager) {
+			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;
+			if (storage instanceof EntityTrackerStorageAccessor) {
 				//noinspection unchecked
-				return ((Stream<PlayerEntity>) (Stream) ((EntityTrackerStreamAccessor) tracker).fabric_getTrackingPlayers(entity));
+				return ((Stream<PlayerEntity>) (Stream) ((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity));
 			}
 		}
 
 		// fallback
-		return watching(world, new ChunkPos((int) (entity.x / 16.0D), (int) (entity.z / 16.0D)));
+		return watching(entity.getEntityWorld(), new ChunkPos((int) (entity.x / 16.0D), (int) (entity.z / 16.0D)));
 	}
 
 	public static Stream<PlayerEntity> watching(BlockEntity entity) {

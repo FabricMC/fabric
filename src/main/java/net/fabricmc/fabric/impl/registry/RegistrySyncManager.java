@@ -26,9 +26,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
-import net.minecraft.util.registry.IdRegistry;
-import net.minecraft.util.registry.ModifiableRegistry;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -76,18 +76,18 @@ public final class RegistrySyncManager {
 	public static CompoundTag toTag(boolean isClientSync) {
 		CompoundTag mainTag = new CompoundTag();
 
-		for (Identifier registryId : Registry.REGISTRIES.keys()) {
+		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			if (REGISTRY_BLACKLIST.contains(registryId)) {
 				continue;
 			} else if (isClientSync && REGISTRY_BLACKLIST_NETWORK.contains(registryId)) {
 				continue;
 			}
 
-			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
-			if (registry instanceof IdRegistry && registry instanceof RemappableRegistry) {
+			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			if (registry instanceof SimpleRegistry && registry instanceof RemappableRegistry) {
 				CompoundTag registryTag = new CompoundTag();
 				//noinspection unchecked
-				for (Identifier identifier : (Set<Identifier>) registry.keys()) {
+				for (Identifier identifier : (Set<Identifier>) registry.getIds()) {
 					registryTag.putInt(identifier.toString(), registry.getRawId(registry.get(identifier)));
 				}
 				mainTag.put(registryId.toString(), registryTag);
@@ -104,14 +104,14 @@ public final class RegistrySyncManager {
 	public static void apply(CompoundTag tag, boolean reallocateMissingEntries) throws RemapException {
 		CompoundTag mainTag = tag.getCompound("registries");
 
-		for (Identifier registryId : Registry.REGISTRIES.keys()) {
+		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			if (!mainTag.containsKey(registryId.toString())) {
 				continue;
 			}
 
 			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
-			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
-			if (registry instanceof IdRegistry && registry instanceof RemappableRegistry) {
+			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			if (registry instanceof SimpleRegistry && registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
 				for (String key : registryTag.getKeys()) {
 					idMap.put(new Identifier(key), registryTag.getInt(key));
@@ -122,8 +122,8 @@ public final class RegistrySyncManager {
 	}
 
 	public static void unmap() throws RemapException {
-		for (Identifier registryId : Registry.REGISTRIES.keys()) {
-			ModifiableRegistry registry = Registry.REGISTRIES.get(registryId);
+		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
+			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
 			if (registry instanceof RemappableRegistry) {
 				((RemappableRegistry) registry).unmap();
 			}

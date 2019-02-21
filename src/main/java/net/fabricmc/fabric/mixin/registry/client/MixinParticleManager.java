@@ -53,7 +53,7 @@ public class MixinParticleManager implements RegistryListener<ParticleType> {
 			fabricFactoryMap = new HashMap<>();
 		}
 
-		for (Identifier id : registry.keys()) {
+		for (Identifier id : registry.getIds()) {
 			ParticleType object = registry.get(id);
 			int rawId = registry.getRawId(object);
 			ParticleFactory<?> factory = factories.get(rawId);

@@ -117,8 +117,8 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		int xpos = left + 170;
 		int ypos = top + 4;
 
-		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1001, xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
-		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(1002, xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
+		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
+		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
 
 	}
 
@@ -154,7 +154,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
 			return true;
 		}
-		return fabric_currentPage == fabric_getOffsetPage(itemGroup.getId());
+		return fabric_currentPage == fabric_getOffsetPage(itemGroup.getIndex());
 
 	}
 

@@ -57,7 +57,7 @@ public class MixinItemModelMap implements RegistryListener<Item> {
 			fabricModelMap = new HashMap<>();
 		}
 
-		for (Identifier id : registry.keys()) {
+		for (Identifier id : registry.getIds()) {
 			Item object = registry.get(id);
 			int rawId = registry.getRawId(object);
 			ModelIdentifier modelId = modelIds.get(rawId);
