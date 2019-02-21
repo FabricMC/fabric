@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.impl.tools.MiningToolDelegate;
+import net.fabricmc.fabric.impl.accessors.MiningToolItemAccessor;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -44,10 +44,10 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("HEAD"), method = "getBlockBreakingSpeed", cancellable = true)
 	public void getBlockBreakingSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-		if (this.getItem() instanceof MiningToolDelegate) {
+		if (this.getItem() instanceof MiningToolItemAccessor) {
 			TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
 			if (triState != TriState.DEFAULT) {
-				info.setReturnValue(triState.get() ? ((MiningToolDelegate) this.getItem()).getBlockBreakingSpeed() : 1.0F);
+				info.setReturnValue(triState.get() ? ((MiningToolItemAccessor) this.getItem()).getBlockBreakingSpeed() : 1.0F);
 				info.cancel();
 			}
 		}

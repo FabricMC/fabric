@@ -20,7 +20,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.impl.network.PacketTypes;
-import net.minecraft.client.network.packet.CustomPayloadClientPacket;
+import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -71,7 +71,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		buf.writeByte(syncId);
 
 		writer.accept(buf);
-		player.networkHandler.sendPacket(new CustomPayloadClientPacket(PacketTypes.OPEN_CONTAINER, buf));
+		player.networkHandler.sendPacket(new CustomPayloadS2CPacket(PacketTypes.OPEN_CONTAINER, buf));
 
 		PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
 		clonedBuf.readIdentifier();

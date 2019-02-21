@@ -28,27 +28,39 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftGame {
     @Shadow
     private ReloadableResourceManager resourceManager;
 
-    @Inject(method = "reloadResources()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;reload(Ljava/util/List;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-    public void reloadResources(CallbackInfo info, List<ResourcePack> list) {
-    	List<ResourcePack> oldList = Lists.newArrayList(list);
-    	list.clear();
-    	for (int i = 0; i < oldList.size(); i++) {
-    		ResourcePack pack = oldList.get(i);
-    		list.add(pack);
+    private void fabric_modifyResourcePackList(List<ResourcePack> list) {
+	    List<ResourcePack> oldList = Lists.newArrayList(list);
+	    list.clear();
+	    for (int i = 0; i < oldList.size(); i++) {
+		    ResourcePack pack = oldList.get(i);
+		    list.add(pack);
 
-    		if (pack instanceof DefaultClientResourcePack) {
+		    if (pack instanceof DefaultClientResourcePack) {
 			    ModResourcePackUtil.appendModResourcePacks(list, ResourceType.ASSETS);
 		    }
 	    }
+    }
+
+	@Inject(method = "init", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void initResources(CallbackInfo info, List<ResourcePack> list) {
+    	fabric_modifyResourcePackList(list);
+	}
+
+	@Inject(method = "reloadResources", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;method_18502(Lnet/minecraft/class_4071;)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
+    public void reloadResources(CallbackInfoReturnable<CompletableFuture> info, CompletableFuture<java.lang.Void> cf, List<ResourcePack> list) {
+		fabric_modifyResourcePackList(list);
     }
 }

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client.model;
 
 import com.google.common.collect.Lists;
 import net.fabricmc.fabric.api.client.model.*;
-import net.fabricmc.loader.launch.common.FabricLauncherBase;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
@@ -33,7 +33,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
-	private static final boolean DEBUG_MODEL_LOADING = FabricLauncherBase.getLauncher().isDevelopment()
+	private static final boolean DEBUG_MODEL_LOADING = FabricLoader.getInstance().isDevelopmentEnvironment()
 		|| Boolean.valueOf(System.getProperty("fabric.debugModelLoading", "false"));
 
 	@FunctionalInterface

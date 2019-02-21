@@ -26,9 +26,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-// TODO: javadocs
+/**
+ * Registry for server->client entity tracking values.
+ */
+@SuppressWarnings("deprecation")
 public class EntityTrackingRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
+
+	/**
+	 * @deprecated Should be hidden; will be removed in 0.3.0.
+	 */
+	@Deprecated
 	public static class Entry {
 		private final int trackingDistance;
 		private final int updateIntervalTicks;
@@ -60,6 +68,10 @@ public class EntityTrackingRegistry {
 
 	}
 
+	/**
+	 * @deprecated Should be hidden; will be removed in 0.3.0.
+	 */
+	@Deprecated
 	public Entry get(EntityType type) {
 		return entries.get(type);
 	}

@@ -27,8 +27,18 @@ public interface ResourceManagerHelper {
 	/**
 	 * Add a resource reload listener for a given registry.
 	 * @param listener The resource reload listener.
+	 * @deprecated Use {@link ResourceManagerHelper#registerReloadListener(IdentifiableResourceReloadListener)}
 	 */
-	void addReloadListener(IdentifiableResourceReloadListener<?> listener);
+	@Deprecated
+	default void addReloadListener(IdentifiableResourceReloadListener listener) {
+		registerReloadListener(listener);
+	}
+
+	/**
+	 * Register a resource reload listener for a given resource manager type.
+	 * @param listener The resource reload listener.
+	 */
+	void registerReloadListener(IdentifiableResourceReloadListener listener);
 
 	/**
 	 * Get the ResourceManagerHelper instance for a given resource type.

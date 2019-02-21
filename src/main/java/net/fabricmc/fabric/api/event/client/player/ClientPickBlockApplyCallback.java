@@ -23,43 +23,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
 
 /**
- * This event handler has been deprecated due to not hooking nicely
- * into the game. Please use the alternatives.
- *
- * @deprecated 0.3.0
+ * This event is emitted during the block-picking process. It can be used to
+ * modify the returned ItemStack, as well as nullify it - returning an empty
+ * ItemStack will cause the event to leave, and no block to be picked.
  */
-@SuppressWarnings("DeprecatedIsStillUsed")
-@Deprecated
-public interface ClientPickBlockCallback {
-	@Deprecated
-	public static final class Container {
-		private ItemStack stack;
+public interface ClientPickBlockApplyCallback {
+	public static final Event<ClientPickBlockApplyCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockApplyCallback.class,
+		(listeners) -> (player, result, _stack) -> {
+			ItemStack stack = _stack;
 
-		public Container(ItemStack stack) {
-			this.stack = stack;
-		}
-
-		public ItemStack getStack() {
-			return stack;
-		}
-
-		public void setStack(ItemStack stack) {
-			this.stack = stack;
-		}
-	}
-
-	@Deprecated
-	public static final Event<ClientPickBlockCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockCallback.class,
-		(listeners) -> (player, result, container) -> {
-			for (ClientPickBlockCallback event : listeners) {
-				if (!event.pick(player, result, container)) {
-					return false;
+			for (ClientPickBlockApplyCallback event : listeners) {
+				stack = event.pick(player, result, stack);
+				if (stack.isEmpty()) {
+					return ItemStack.EMPTY;
 				}
 			}
 
-			return true;
+			return stack;
 		}
 	);
 
-	boolean pick(PlayerEntity player, HitResult result, Container container);
+	ItemStack pick(PlayerEntity player, HitResult result, ItemStack stack);
 }

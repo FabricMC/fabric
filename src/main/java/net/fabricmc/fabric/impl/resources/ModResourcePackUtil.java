@@ -17,15 +17,19 @@
 package net.fabricmc.fabric.impl.resources;
 
 import com.google.common.base.Charsets;
-import net.fabricmc.loader.FabricLoader;
-import net.fabricmc.loader.ModContainer;
-import net.fabricmc.loader.ModInfo;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,35 +44,25 @@ public final class ModResourcePackUtil {
     }
 
     public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
-        for (ModContainer container : FabricLoader.INSTANCE.getModContainers()) {
-            File file = container.getOriginFile();
-            ResourcePack pack = null;
-
-            if (file.isDirectory()) {
-            	pack = new ModDirectoryResourcePack(container.getInfo(), file);
-            } else {
-                String name = file.getName().toLowerCase(Locale.ROOT);
-                if (name.endsWith(".zip") || name.endsWith(".jar")) {
-                    pack = new ModZipResourcePack(container.getInfo(), file);
-                }
-            }
-
-            if (pack != null && !pack.getNamespaces(type).isEmpty()) {
-            	packList.add(pack);
-            }
+        for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
+            Path path = container.getRoot();
+            ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
+	        if (!pack.getNamespaces(type).isEmpty()) {
+		        packList.add(pack);
+	        }
         }
     }
 
-    public static boolean containsDefault(ModInfo info, String filename) {
+    public static boolean containsDefault(ModMetadata info, String filename) {
         return "pack.mcmeta".equals(filename) || "pack.png".equals(filename);
     }
 
-    public static InputStream openDefault(ModInfo info, String filename) {
+    public static InputStream openDefault(ModMetadata info, String filename) {
         switch (filename) {
             case "pack.png":
                 return ModResourcePackUtil.class.getClassLoader().getResourceAsStream("assets/fabric/textures/misc/default_icon.png");
             case "pack.mcmeta":
-                String description = info.getName();
+                String description = info.getId(); // TODO getName
                 if (description == null) {
                     description = "";
                 } else {
@@ -81,10 +75,10 @@ public final class ModResourcePackUtil {
         }
     }
 
-    public static String getName(ModInfo info) {
-        if (info.getName() != null) {
+    public static String getName(ModMetadata info) {
+/*        if (info.getName() != null) {
             return info.getName();
-        } else {
+        } else */ { // TODO getName
             return "Fabric Mod \"" + info.getId() + "\"";
         }
     }

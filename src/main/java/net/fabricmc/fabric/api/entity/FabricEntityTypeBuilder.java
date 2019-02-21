@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.entity;
 
+import net.minecraft.class_4048;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityType;
@@ -25,28 +26,42 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.function.Function;
 
-// TODO: javadocs
+/**
+ * Extended version of {@link EntityType.Builder} with added registration for
+ * server->client entity tracking values.
+ *
+ * @param <T> Entity class.
+ */
+// TODO more javadocs
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final EntityCategory category;
-	private final Function<? super World, ? extends T> function;
+	private final EntityType.class_4049 function;
 	private boolean saveable = true;
 	private boolean summonable = true;
 	private int trackingDistance = -1;
 	private int updateIntervalTicks = -1;
 	private boolean alwaysUpdateVelocity = true;
-	private float width = -1.0f, height = -1.0f;
+	private class_4048 size = class_4048.method_18385(-1.0f, -1.0f);
 
-	protected FabricEntityTypeBuilder(EntityCategory category, Function<? super World, ? extends T> function) {
+	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.class_4049 function) {
 		this.category = category;
 		this.function = function;
 	}
 
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
-		return new FabricEntityTypeBuilder<>(category, (w) -> null);
+		return new FabricEntityTypeBuilder<>(category, (t, w) -> null);
 	}
 
+	/**
+	 * @deprecated Use {@link FabricEntityTypeBuilder#create(EntityCategory, EntityType.class_4049)}
+	 */
+	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, Function<? super World, ? extends T> function) {
+		return create(category, (t, w) -> function.apply(w));
+	}
+
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.class_4049 function) {
 		return new FabricEntityTypeBuilder<>(category, function);
 	}
 
@@ -60,9 +75,17 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
+	/**
+	 * @deprecated Use {@link FabricEntityTypeBuilder#size(class_4048)}
+	 */
+	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		this.width = width;
-		this.height = height;
+		this.size = class_4048.method_18385(width, height);
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> size(class_4048 size) {
+		this.size = size;
 		return this;
 	}
 
@@ -83,7 +106,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new EntityType<T>(this.function, this.category, this.saveable, this.summonable, null, this.width, this.height);
+		EntityType<T> type = new EntityType<T>(this.function, this.category, this.saveable, this.summonable, null, size);
 		if (trackingDistance != -1) {
 			EntityTrackingRegistry.INSTANCE.register(type, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 		}

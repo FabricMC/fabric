@@ -14,16 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.network;
+package net.fabricmc.fabric.impl.accessors;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
-
-/**
- * Helper interface containing getters for SPacketCustomPayload
- * which were omitted from the compiled game.
- */
-public interface CustomPayloadC2SPacketAccessor {
-	Identifier getChannel();
-	PacketByteBuf getData();
+public interface MiningToolItemAccessor {
+	float getBlockBreakingSpeed();
 }

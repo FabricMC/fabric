@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -35,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, IdentifiableResourceReloadListener<Void> {
+public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, SimpleSynchronousResourceReloadListener {
 	private static final FlammableBlockRegistry.Entry REMOVED = new FlammableBlockRegistry.Entry(0, 0);
 	private static final Map<Block, FlammableBlockRegistryImpl> REGISTRIES = new HashMap<>();
 	private static final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
@@ -49,19 +50,14 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Ident
 	private boolean tagsPresent = false;
 
 	private FlammableBlockRegistryImpl(Block key) {
-		ResourceManagerHelper.get(ResourceType.DATA).addReloadListener(this);
+		ResourceManagerHelper.get(ResourceType.DATA).registerReloadListener(this);
 		this.id = new Identifier("fabric:private/fire_registry_" + (++idCounter));
 		this.key = key;
 	}
 
-	@Override
-	public CompletableFuture prepare(ResourceManager var1, Profiler var2) {
-		return CompletableFuture.completedFuture(null);
-	}
-
 	// TODO: Asynchronous?
 	@Override
-	public void apply(ResourceManager var1, Void var2, Profiler var3) {
+	public void apply(ResourceManager var1) {
 		reload();
 		tagsPresent = true;
 	}

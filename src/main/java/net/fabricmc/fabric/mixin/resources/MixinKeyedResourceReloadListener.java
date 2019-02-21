@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.resources;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.minecraft.client.audio.SoundLoader;
-import net.minecraft.client.font.FontRendererManager;
+import net.minecraft.client.font.FontManager;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -36,11 +36,12 @@ import org.spongepowered.asm.mixin.Mixin;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Locale;
 
 public class MixinKeyedResourceReloadListener {
 	@Mixin({
 		/* public */
-		SoundLoader.class, FontRendererManager.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
+		SoundLoader.class, FontManager.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
 		/* private */
 		WorldRenderer.class, BlockRenderManager.class, ItemRenderer.class
 	})
@@ -73,7 +74,7 @@ public class MixinKeyedResourceReloadListener {
 
 				if (self instanceof SoundLoader) {
 					fabric_id = ResourceReloadListenerKeys.SOUNDS;
-				} else if (self instanceof FontRendererManager) {
+				} else if (self instanceof FontManager) {
 					fabric_id = ResourceReloadListenerKeys.FONTS;
 				} else if (self instanceof BakedModelManager) {
 					fabric_id = ResourceReloadListenerKeys.MODELS;
@@ -82,7 +83,7 @@ public class MixinKeyedResourceReloadListener {
 				} else if (self instanceof TextureManager) {
 					fabric_id = ResourceReloadListenerKeys.TEXTURES;
 				} else {
-					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName());
+					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 				}
 			}
 
@@ -132,7 +133,7 @@ public class MixinKeyedResourceReloadListener {
 				} else if (self instanceof TagManager) {
 					fabric_id = ResourceReloadListenerKeys.TAGS;
 				} else {
-					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName());
+					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 				}
 			}
 

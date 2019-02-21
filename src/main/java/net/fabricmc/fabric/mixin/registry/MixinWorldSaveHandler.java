@@ -20,7 +20,7 @@ import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.world.OldWorldSaveHandler;
+import net.minecraft.world.WorldSaveHandler;
 import net.minecraft.world.level.LevelProperties;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +34,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-@Mixin(value = OldWorldSaveHandler.class)
+@Mixin(WorldSaveHandler.class)
 public class MixinWorldSaveHandler {
 	private static final int ID_REGISTRY_BACKUPS = 3;
 

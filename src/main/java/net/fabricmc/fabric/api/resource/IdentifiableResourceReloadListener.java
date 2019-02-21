@@ -31,7 +31,7 @@ import java.util.Collections;
  *
  * {@link ResourceReloadListenerKeys}
  */
-public interface IdentifiableResourceReloadListener<T> extends ResourceReloadListener<T> {
+public interface IdentifiableResourceReloadListener extends ResourceReloadListener {
 	/**
 	 * @return The unique identifier of this listener.
 	 */
@@ -39,7 +39,8 @@ public interface IdentifiableResourceReloadListener<T> extends ResourceReloadLis
 
 	/**
 	 * @return The identifiers of listeners this listener expects to have been
-	 * executed before itself.
+	 * executed before itself. Please keep in mind that this only takes effect
+	 * during the application stage!
 	 */
 	default Collection<Identifier> getFabricDependencies() {
 		return Collections.emptyList();
