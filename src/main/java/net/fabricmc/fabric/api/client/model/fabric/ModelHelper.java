@@ -129,7 +129,7 @@ public class ModelHelper {
             BLOCK_3RD_PERSON_RIGHT,
             BLOCK_1ST_PERSON_LEFT,
             BLOCK_1ST_PERSON_RIGHT,
-            Transformation.ORIGIN,
+            Transformation.NONE,
             BLOCK_GUI,
             BLOCK_GROUND,
             BLOCK_FIXED);

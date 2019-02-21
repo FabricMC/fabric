@@ -36,8 +36,8 @@ public class MixinSpriteAtlasTexture implements SpriteFinderAccess {
     
     private SpriteFinderImpl fabric_spriteFinder = null;
     
-    @Inject(at = @At("RETURN"), method = "method_18159")
-    private void buildHook(SpriteAtlasTexture.class_4007 input, CallbackInfo info) {
+    @Inject(at = @At("RETURN"), method = "upload")
+    private void uploadHook(SpriteAtlasTexture.Data input, CallbackInfo info) {
         fabric_spriteFinder = null;
     }
 
