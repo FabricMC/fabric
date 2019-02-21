@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.resources;
 
+import com.google.common.base.Joiner;
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.AbstractFilenameResourcePack;
@@ -34,25 +35,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ModNioResourcePack extends AbstractFilenameResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_]+");
 	private final ModMetadata modInfo;
 	private final Path basePath;
 	private final boolean cacheable;
 	private final AutoCloseable closer;
+	private final String separator;
 
 	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer) {
-		super(new File(path.toString()));
+		super(null);
 		this.modInfo = modInfo;
-		this.basePath = path.toAbsolutePath();
+		this.basePath = path.toAbsolutePath().normalize();
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
+		this.separator = basePath.getFileSystem().getSeparator();
 	}
 
 	private Path getPath(String filename) {
-		Path childPath = basePath.resolve(filename.replaceAll("/", basePath.getFileSystem().getSeparator())).toAbsolutePath();
+		Path childPath = basePath.resolve(filename.replace("/", separator)).toAbsolutePath().normalize();
 
 		if (childPath.startsWith(basePath) && Files.exists(childPath)) {
 			return childPath;
@@ -88,23 +93,23 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 	@Override
 	public Collection<Identifier> findResources(ResourceType type, String path, int depth, Predicate<String> predicate) {
 		List<Identifier> ids = new ArrayList<>();
-		String nioPath = path.replaceAll("/", basePath.getFileSystem().getSeparator());
+		String nioPath = path.replace("/", separator);
 
 		for (String namespace : getNamespaces(type)) {
 			Path namespacePath = getPath(type.getName() + "/" + namespace);
 			if (namespacePath != null) {
-				Path searchPath = namespacePath.resolve(nioPath).toAbsolutePath();
+				Path searchPath = namespacePath.resolve(nioPath).toAbsolutePath().normalize();
 
 				if (Files.exists(searchPath)) {
 					try {
 						Files.walk(searchPath, depth)
-							.filter((p) -> Files.isRegularFile(p))
+							.filter(Files::isRegularFile)
 							.filter((p) -> {
 								String filename = p.getFileName().toString();
 								return !filename.endsWith(".mcmeta") && predicate.test(filename);
 							})
 							.map(namespacePath::relativize)
-							.map((p) -> p.toString().replaceAll(p.getFileSystem().getSeparator(), "/"))
+							.map((p) -> p.toString().replace(separator, "/"))
 							.forEach((s) -> {
 								try {
 									ids.add(new Identifier(namespace, s));
@@ -124,6 +129,10 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 
 	private Set<String> namespaceCache;
 
+	protected void warnInvalidNamespace(String s) {
+		LOGGER.warn("Fabric NioResourcePack: ignored invalid namespace: {} in mod ID {}", s, modInfo.getId());
+	}
+
 	@Override
 	public Set<String> getNamespaces(ResourceType type) {
 		if (namespaceCache != null) {
@@ -132,24 +141,29 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 
 		try {
 			Path typePath = getPath(type.getName());
-			if (typePath == null) {
+			if (typePath == null || !(Files.isDirectory(typePath))) {
 				return Collections.emptySet();
 			}
 
 			Set<String> namespaces = new HashSet<>();
-			for (Path path : Files.newDirectoryStream(typePath, (p) -> Files.isDirectory(p))) {
-				String s = path.getFileName().toString();
+			try (DirectoryStream<Path> stream = Files.newDirectoryStream(typePath, Files::isDirectory)) {
+				for (Path path : stream) {
+					String s = path.getFileName().toString();
+					// s may contain trailing slashes, remove them
+					s = s.replace(separator, "");
 
-				if (s.equals(s.toLowerCase(Locale.ROOT))) {
-					namespaces.add(s);
-				} else {
-					this.warnNonLowercaseNamespace(s);
+					if (RESOURCE_PACK_PATH.matcher(s).matches()) {
+						namespaces.add(s);
+					} else {
+						this.warnInvalidNamespace(s);
+					}
 				}
 			}
 
 			if (cacheable) {
 				namespaceCache = namespaces;
 			}
+
 			return namespaces;
 		} catch (IOException e) {
 			e.printStackTrace();
