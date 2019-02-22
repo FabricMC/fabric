@@ -68,18 +68,19 @@ class DeferredNioExecutionHandler {
 	}
 
 	static <V> V getSubmittedFuture(Future<V> future) throws IOException {
-		try {
-			return future.get();
-		} catch (ExecutionException e) {
-			Throwable t = e.getCause();
-			if (t instanceof IOException) {
-				throw (IOException) t;
-			} else {
-				throw new RuntimeException("ExecutionException which should not happen!", t);
+		while (true) {
+			try {
+				return future.get();
+			} catch (ExecutionException e) {
+				Throwable t = e.getCause();
+				if (t instanceof IOException) {
+					throw (IOException) t;
+				} else {
+					throw new RuntimeException("ExecutionException which should not happen!", t);
+				}
+			} catch (InterruptedException e) {
+				// keep calm, carry on...
 			}
-		} catch (InterruptedException e) {
-			// keep calm, carry on...
-			return getSubmittedFuture(future);
 		}
 	}
 

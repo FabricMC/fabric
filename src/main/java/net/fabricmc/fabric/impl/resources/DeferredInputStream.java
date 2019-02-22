@@ -37,9 +37,16 @@ class DeferredInputStream extends InputStream {
 		}
 	}
 
-	public DeferredInputStream(Callable<InputStream> streamSupplier) throws IOException {
+	DeferredInputStream(Callable<InputStream> streamSupplier) throws IOException {
 		stream = DeferredNioExecutionHandler.submit(streamSupplier);
 		if (stream == null) {
+			throw new IOException("Something happened while trying to create an InputStream!");
+		}
+	}
+
+	DeferredInputStream(InputStream stream) throws IOException {
+		this.stream = stream;
+		if (this.stream == null) {
 			throw new IOException("Something happened while trying to create an InputStream!");
 		}
 	}

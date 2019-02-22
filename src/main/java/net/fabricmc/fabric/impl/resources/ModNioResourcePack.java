@@ -65,12 +65,28 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 
 	@Override
 	protected InputStream openFilename(String filename) throws IOException {
-		Path path = getPathIfRegularFile(filename);
-		if (path != null) {
-			return DeferredInputStream.deferIfNeeded(() -> Files.newInputStream(path));
+		InputStream stream;
+
+		if (DeferredNioExecutionHandler.shouldDefer()) {
+			stream = DeferredNioExecutionHandler.submit(() -> {
+				Path path = getPath(filename);
+				if (path != null && Files.isRegularFile(path)) {
+					return new DeferredInputStream(Files.newInputStream(path));
+				} else {
+					return null;
+				}
+			});
+			if (stream != null) {
+				return stream;
+			}
+		} else {
+			Path path = getPath(filename);
+			if (path != null && Files.isRegularFile(path)) {
+				return Files.newInputStream(path);
+			}
 		}
 
-		InputStream stream = ModResourcePackUtil.openDefault(modInfo, filename);
+		stream = ModResourcePackUtil.openDefault(modInfo, filename);
 		if (stream != null) {
 			return stream;
 		}
@@ -79,37 +95,25 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 		throw new FileNotFoundException("\"" + filename + "\" in Fabric mod \"" + modInfo.getId() + "\"");
 	}
 
-	private Path getPathIfRegularFile(String filename) {
-		if (DeferredNioExecutionHandler.shouldDefer()) {
-			try {
-				return DeferredNioExecutionHandler.submit(() -> {
-					Path path = getPath(filename);
-					if (path != null && Files.isRegularFile(path)) {
-						return path;
-					} else {
-						return null;
-					}
-				});
-			} catch (IOException e) {
-				return null;
-			}
-		} else {
-			Path path = getPath(filename);
-			if (path != null && Files.isRegularFile(path)) {
-				return path;
-			} else {
-				return null;
-			}
-		}
-	}
-
 	@Override
 	protected boolean containsFilename(String filename) {
 		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
 			return true;
 		}
 
-		return getPathIfRegularFile(filename) != null;
+		if (DeferredNioExecutionHandler.shouldDefer()) {
+			try {
+				return DeferredNioExecutionHandler.submit(() -> {
+					Path path = getPath(filename);
+					return path != null && Files.isRegularFile(path);
+				});
+			} catch (IOException e) {
+				return false;
+			}
+		} else {
+			Path path = getPath(filename);
+			return path != null && Files.isRegularFile(path);
+		}
 	}
 
 	@Override
