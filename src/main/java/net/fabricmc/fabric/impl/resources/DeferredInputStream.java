@@ -31,10 +31,8 @@ class DeferredInputStream extends InputStream {
 
 	public static InputStream deferIfNeeded(Callable<InputStream> streamSupplier) throws IOException {
 		if (DeferredNioExecutionHandler.shouldDefer()) {
-			System.out.println("deferrink");
 			return new DeferredInputStream(streamSupplier);
 		} else {
-			System.out.println("not deferrink");
 			return DeferredNioExecutionHandler.submit(streamSupplier, false);
 		}
 	}
