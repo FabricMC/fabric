@@ -62,7 +62,7 @@ public final class ModResourcePackUtil {
             case "pack.png":
                 return ModResourcePackUtil.class.getClassLoader().getResourceAsStream("assets/fabric/textures/misc/default_icon.png");
             case "pack.mcmeta":
-                String description = info.getId(); // TODO getName
+                String description = info.getName();
                 if (description == null) {
                     description = "";
                 } else {
@@ -71,15 +71,15 @@ public final class ModResourcePackUtil {
                 String pack = String.format("{\"pack\":{\"pack_format\":" + PACK_FORMAT_VERSION + ",\"description\":\"%s\"}}", description);
                 return IOUtils.toInputStream(pack, Charsets.UTF_8);
             default:
-                throw new RuntimeException("Mismatch with .containsDefault(...)!");
+                return null;
         }
     }
 
     public static String getName(ModMetadata info) {
-/*        if (info.getName() != null) {
+        if (info.getName() != null) {
             return info.getName();
-        } else */ { // TODO getName
-            return "Fabric Mod \"" + info.getId() + "\"";
+        } else {
+        	return "Fabric Mod \"" + info.getId() + "\"";
         }
     }
 }
