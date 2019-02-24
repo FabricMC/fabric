@@ -18,7 +18,7 @@ package net.fabricmc.fabric.containers;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.fabricmc.fabric.api.command.CommandRegistry;
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -36,7 +36,7 @@ public class ContainerMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		//Registers a basic server side command that shows that the openContainer works from the server side.
-		CommandRegistry.INSTANCE.register(false, serverCommandSourceCommandDispatcher ->
+		CommandRegistry.INSTANCE.register(serverCommandSourceCommandDispatcher ->
 			serverCommandSourceCommandDispatcher.register(ServerCommandManager
 				.literal("container")
 				.executes(context -> {

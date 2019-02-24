@@ -17,7 +17,8 @@
 package net.fabricmc.fabric.mixin.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
+import net.fabricmc.fabric.api.command.CommandType;
+import net.fabricmc.fabric.impl.registry.CommandRegistryImpl;
 import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.Logger;
@@ -37,9 +38,6 @@ public class MixinServerCommandManager {
 	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
 	public void addMethods(boolean dedicated, CallbackInfo info) {
 		// TODO: Run before findAmbiguities
-		CommandRegistry.INSTANCE.entries(false).forEach((e) -> e.accept(dispatcher));
-		if (dedicated) {
-			CommandRegistry.INSTANCE.entries(true).forEach((e) -> e.accept(dispatcher));
-		}
+		CommandRegistryImpl.INSTANCE.entries(CommandType.DEFAULT, CommandType.INTEGRATED).forEach((e) -> e.accept(dispatcher));
 	}
 }
