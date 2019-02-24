@@ -38,8 +38,5 @@ public class MixinServerCommandManager {
 	public void addMethods(boolean dedicated, CallbackInfo info) {
 		// TODO: Run before findAmbiguities
 		CommandRegistry.INSTANCE.entries(false).forEach((e) -> e.accept(dispatcher));
-		if (dedicated) {
-			CommandRegistry.INSTANCE.entries(true).forEach((e) -> e.accept(dispatcher));
-		}
 	}
 }
