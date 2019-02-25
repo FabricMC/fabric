@@ -17,8 +17,11 @@
 package net.fabricmc.fabric.mixin.resources;
 
 import com.google.common.collect.Lists;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
 import net.minecraft.resource.*;
+import net.minecraft.util.Void;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,9 +42,18 @@ public class MixinReloadableResourceManagerImpl {
 	@Shadow
 	private ResourceType type;
 
-	@Inject(at = @At("HEAD"), method = "reload")
-	public void reload(Executor var1, Executor var2, List<ResourcePack> packs, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
+	private void fabric_injectListeners() {
 		ResourceManagerHelperImpl.sort(type, field_17935);
 		ResourceManagerHelperImpl.sort(type, field_17936);
+	}
+
+	@Inject(at = @At("HEAD"), method = "createReloadHandler")
+	public void createReloadHandler(Executor executor_1, Executor executor_2, CompletableFuture<Void> completableFuture_1, CallbackInfoReturnable<ResourceReloadHandler> callback) {
+		fabric_injectListeners();
+	}
+
+	@Inject(at = @At("HEAD"), method = "reload")
+	public void reload(Executor var1, Executor var2, List<ResourcePack> packs, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
+		fabric_injectListeners();
 	}
 }
