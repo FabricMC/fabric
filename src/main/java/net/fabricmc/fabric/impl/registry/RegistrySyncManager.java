@@ -58,7 +58,7 @@ public final class RegistrySyncManager {
 			try {
 				context.getTaskQueue().executeFuture(() -> {
 					try {
-						apply(compound, false);
+						apply(compound, true);
 					} catch (RemapException e) {
 						// TODO: log error properly
 						e.printStackTrace();
