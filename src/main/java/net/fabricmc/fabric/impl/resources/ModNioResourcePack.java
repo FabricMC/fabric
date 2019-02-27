@@ -16,18 +16,16 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import com.google.common.base.Joiner;
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.AbstractFilenameResourcePack;
-import net.minecraft.resource.ResourceNotFoundException;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
@@ -36,7 +34,6 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ModNioResourcePack extends AbstractFilenameResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -68,16 +65,34 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 
 	@Override
 	protected InputStream openFilename(String filename) throws IOException {
-		Path path = getPath(filename);
-		if (path != null && Files.isRegularFile(path)) {
-			return Files.newInputStream(path);
+		InputStream stream;
+
+		if (DeferredNioExecutionHandler.shouldDefer()) {
+			stream = DeferredNioExecutionHandler.submit(() -> {
+				Path path = getPath(filename);
+				if (path != null && Files.isRegularFile(path)) {
+					return new DeferredInputStream(Files.newInputStream(path));
+				} else {
+					return null;
+				}
+			});
+			if (stream != null) {
+				return stream;
+			}
+		} else {
+			Path path = getPath(filename);
+			if (path != null && Files.isRegularFile(path)) {
+				return Files.newInputStream(path);
+			}
 		}
 
-		InputStream stream = ModResourcePackUtil.openDefault(modInfo, filename);
-		if (stream == null) {
-			throw new ResourceNotFoundException(this.base, filename);
+		stream = ModResourcePackUtil.openDefault(modInfo, filename);
+		if (stream != null) {
+			return stream;
 		}
-		return stream;
+
+		// ReloadableResourceManagerImpl gets away with FileNotFoundException.
+		throw new FileNotFoundException("\"" + filename + "\" in Fabric mod \"" + modInfo.getId() + "\"");
 	}
 
 	@Override
@@ -86,8 +101,19 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 			return true;
 		}
 
-		Path path = getPath(filename);
-		return path != null && Files.isRegularFile(path);
+		if (DeferredNioExecutionHandler.shouldDefer()) {
+			try {
+				return DeferredNioExecutionHandler.submit(() -> {
+					Path path = getPath(filename);
+					return path != null && Files.isRegularFile(path);
+				});
+			} catch (IOException e) {
+				return false;
+			}
+		} else {
+			Path path = getPath(filename);
+			return path != null && Files.isRegularFile(path);
+		}
 	}
 
 	@Override

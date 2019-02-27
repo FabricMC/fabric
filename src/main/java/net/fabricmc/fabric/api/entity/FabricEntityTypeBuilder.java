@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.entity;
 
-import net.minecraft.class_4048;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.EntitySize;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -36,15 +36,15 @@ import java.util.function.Function;
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final EntityCategory category;
-	private final EntityType.class_4049 function;
+	private final EntityType.class_4049<T> function;
 	private boolean saveable = true;
 	private boolean summonable = true;
 	private int trackingDistance = -1;
 	private int updateIntervalTicks = -1;
 	private boolean alwaysUpdateVelocity = true;
-	private class_4048 size = class_4048.method_18385(-1.0f, -1.0f);
+	private EntitySize size = EntitySize.resizeable(-1.0f, -1.0f);
 
-	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.class_4049 function) {
+	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.class_4049<T> function) {
 		this.category = category;
 		this.function = function;
 	}
@@ -61,7 +61,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return create(category, (t, w) -> function.apply(w));
 	}
 
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.class_4049 function) {
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.class_4049<T> function) {
 		return new FabricEntityTypeBuilder<>(category, function);
 	}
 
@@ -76,15 +76,15 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#size(class_4048)}
+	 * @deprecated Use {@link FabricEntityTypeBuilder#size(EntitySize)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		this.size = class_4048.method_18385(width, height);
+		this.size = EntitySize.resizeable(width, height);
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> size(class_4048 size) {
+	public FabricEntityTypeBuilder<T> size(EntitySize size) {
 		this.size = size;
 		return this;
 	}

@@ -6,6 +6,7 @@
     "block.MixinBlockBuilder",
     "block.MixinFireBlock",
     "block.entity.MixinBlockEntity",
+    "commands.MixinMinecraftDedicatedServer",
     "commands.MixinServerCommandManager",
     "container.MixinServerPlayerEntity",
     "entity.MixinEntityTracker",
