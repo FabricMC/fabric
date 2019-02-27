@@ -27,7 +27,7 @@
     "registry.MixinBootstrap",
     "registry.MixinIdList",
     "registry.MixinIdRegistry",
-    "registry.MixinServerPlayNetworkHandler",
+    "registry.MixinPlayerManager",
     "registry.MixinWorldSaveHandler",
     "resources.MixinKeyedResourceReloadListener$Server",
     "resources.MixinMinecraftServer",
