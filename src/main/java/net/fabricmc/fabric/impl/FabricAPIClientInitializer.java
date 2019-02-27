@@ -27,17 +27,27 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.StringTextComponent;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FabricAPIClientInitializer implements ClientModInitializer {
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	@Override
 	public void onInitializeClient() {
 		ClientSidePacketRegistry.INSTANCE.register(RegistrySyncManager.ID, (ctx, buf) -> {
 			// if not hosting server, apply packet
-			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer());
+			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
+				LOGGER.error("Registry remapping failed!", e);
+				MinecraftClient.getInstance().getNetworkHandler().getClientConnection().disconnect(
+						new StringTextComponent("Registry remapping failed: " + e.getMessage())
+				);
+			});
 		});
 
 		ClientPickBlockGatherCallback.EVENT.register(((player, result) -> {

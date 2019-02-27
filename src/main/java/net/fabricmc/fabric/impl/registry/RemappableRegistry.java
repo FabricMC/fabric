@@ -20,6 +20,12 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.util.Identifier;
 
 public interface RemappableRegistry {
-	void remap(Object2IntMap<Identifier> idMap, boolean reallocateMissingEntries) throws RemapException;
+	enum RemapMode {
+		AUTHORITATIVE, /* remapping the server; any changes allowed */
+		REMOTE, /* remapping the client; remote must understand all IDs from the authority */
+		EXACT /* no changes allowed */
+	}
+
+	void remap(Object2IntMap<Identifier> remoteIndexedEntries, RemapMode mode) throws RemapException;
 	void unmap() throws RemapException;
 }
