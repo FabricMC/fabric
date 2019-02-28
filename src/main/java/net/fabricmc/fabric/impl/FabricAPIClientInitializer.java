@@ -25,6 +25,7 @@ import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.StringTextComponent;
@@ -44,9 +45,11 @@ public class FabricAPIClientInitializer implements ClientModInitializer {
 			// if not hosting server, apply packet
 			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
 				LOGGER.error("Registry remapping failed!", e);
-				MinecraftClient.getInstance().getNetworkHandler().getClientConnection().disconnect(
-						new StringTextComponent("Registry remapping failed: " + e.getMessage())
-				);
+				MinecraftClient.getInstance().execute(() -> {
+					((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getClientConnection().disconnect(
+							new StringTextComponent("Registry remapping failed: " + e.getMessage())
+					);
+				});
 			});
 		});
 

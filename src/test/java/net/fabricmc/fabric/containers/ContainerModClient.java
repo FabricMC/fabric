@@ -88,7 +88,7 @@ public class ContainerModClient implements ClientModInitializer {
 		protected void drawBackground(float v, int i, int i1) {
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			client.getTextureManager().bindTexture(BG_TEXTURE);
-			this.drawTexturedRect(left, top, 0, 0, containerWidth, containerHeight);
+			this.drawTexturedRect(left, top, 0, 0, width, height);
 		}
 	}
 
