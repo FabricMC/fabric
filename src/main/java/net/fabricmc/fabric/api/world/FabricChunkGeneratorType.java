@@ -16,7 +16,8 @@ public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends 
 		this.factory = factory;
 	}
 
-	public T fabric_create(World world, BiomeSource source, C config) {
+	@Override
+	public T create(World world, BiomeSource source, C config) {
 		return this.factory.create(world, source, config);
 	}
 
