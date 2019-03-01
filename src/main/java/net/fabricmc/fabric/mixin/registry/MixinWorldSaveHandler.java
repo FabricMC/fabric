@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.registry;
 
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.WorldSaveHandler;
@@ -51,7 +52,7 @@ public class MixinWorldSaveHandler {
 				CompoundTag tag = NbtIo.readCompressed(fileInputStream);
 				fileInputStream.close();
 				if (tag != null) {
-					RegistrySyncManager.apply(tag, true);
+					RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
 					return true;
 				}
 			}

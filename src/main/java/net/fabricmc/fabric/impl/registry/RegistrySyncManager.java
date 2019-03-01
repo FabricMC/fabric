@@ -34,6 +34,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 
 public final class RegistrySyncManager {
 	public static final Identifier ID = new Identifier("fabric", "registry/sync");
@@ -51,24 +52,25 @@ public final class RegistrySyncManager {
 		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
 	}
 
-	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept) {
+	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
 		CompoundTag compound = buf.readCompoundTag();
 
 		if (accept) {
 			try {
 				context.getTaskQueue().executeFuture(() -> {
+					if (compound == null) {
+						errorHandler.accept(new RemapException("Received null compound tag in sync packet!"));
+						return;
+					}
+
 					try {
-						apply(compound, false);
+						apply(compound, RemappableRegistry.RemapMode.REMOTE);
 					} catch (RemapException e) {
-						// TODO: log error properly
-						e.printStackTrace();
+						errorHandler.accept(e);
 					}
 				}).get(30, TimeUnit.SECONDS);
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			} catch (InterruptedException | TimeoutException e) {
-				// TODO: better error handling
-				new Exception("Failed to apply received packets in time!", e).printStackTrace();
+			} catch (ExecutionException | InterruptedException | TimeoutException e) {
+				errorHandler.accept(e);
 			}
 		}
 	}
@@ -101,7 +103,7 @@ public final class RegistrySyncManager {
 		return tag;
 	}
 
-	public static void apply(CompoundTag tag, boolean reallocateMissingEntries) throws RemapException {
+	public static void apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
 		CompoundTag mainTag = tag.getCompound("registries");
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
@@ -116,7 +118,7 @@ public final class RegistrySyncManager {
 				for (String key : registryTag.getKeys()) {
 					idMap.put(new Identifier(key), registryTag.getInt(key));
 				}
-				((RemappableRegistry) registry).remap(idMap, reallocateMissingEntries);
+				((RemappableRegistry) registry).remap(idMap, mode);
 			}
 		}
 	}
