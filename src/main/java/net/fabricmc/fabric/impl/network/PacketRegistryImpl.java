@@ -25,11 +25,14 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
+	protected static final Logger LOGGER = LogManager.getLogger();
 	protected final Map<Identifier, PacketConsumer> consumerMap;
 
 	PacketRegistryImpl() {
@@ -81,6 +84,43 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		return toPacket(id, buf);
 	}
 
+	private boolean acceptRegisterType(Identifier id, PacketContext context, PacketByteBuf buf) {
+		Collection<Identifier> ids = new HashSet<>();
+
+		{
+			StringBuilder sb = new StringBuilder();
+			char c;
+
+			while (buf.readerIndex() < buf.writerIndex()) {
+				c = (char) buf.readByte();
+				if (c == 0) {
+					String s = sb.toString();
+					if (!s.isEmpty()) {
+						ids.add(new Identifier(s));
+					}
+					sb = new StringBuilder();
+				} else {
+					sb.append(c);
+				}
+			}
+
+			String s = sb.toString();
+			if (!s.isEmpty()) {
+				ids.add(new Identifier(s));
+			}
+		}
+
+		Collection<Identifier> target = getIdCollectionFor(context);
+		if (id.equals(PacketTypes.UNREGISTER)) {
+			target.removeAll(ids);
+			onReceivedUnregisterPacket(context, ids);
+		} else {
+			target.addAll(ids);
+			onReceivedRegisterPacket(context, ids);
+		}
+		return false; // continue execution for other mods
+	}
+
 	/**
 	 * Hook for accepting packets used in Fabric mixins.
 	 *
@@ -91,40 +131,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	 */
 	public boolean accept(Identifier id, PacketContext context, PacketByteBuf buf) {
 		if (id.equals(PacketTypes.REGISTER) || id.equals(PacketTypes.UNREGISTER)) {
-			Collection<Identifier> ids = new HashSet<>();
-
-			{
-				StringBuilder sb = new StringBuilder();
-				char c;
-
-				while (buf.readerIndex() < buf.writerIndex()) {
-					c = (char) buf.readByte();
-					if (c == 0) {
-						String s = sb.toString();
-						if (!s.isEmpty()) {
-							ids.add(new Identifier(s));
-						}
-						sb = new StringBuilder();
-					} else {
-						sb.append(c);
-					}
-				}
-
-				String s = sb.toString();
-				if (!s.isEmpty()) {
-					ids.add(new Identifier(s));
-				}
-			}
-
-			Collection<Identifier> target = getIdCollectionFor(context);
-			if (id.equals(PacketTypes.UNREGISTER)) {
-				target.removeAll(ids);
-				onReceivedUnregisterPacket(context, ids);
-			} else {
-				target.addAll(ids);
-				onReceivedRegisterPacket(context, ids);
-			}
-			return false; // continue execution for other mods
+			return acceptRegisterType(id, context, buf);
 		}
 
 		PacketConsumer consumer = consumerMap.get(id);
@@ -132,8 +139,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			try {
 				consumer.accept(context, buf);
 			} catch (Throwable t) {
-				// TODO: handle better
-				t.printStackTrace();
+				LOGGER.warn("Failed to handle packet " + id + "!", t);
 			}
 			return true;
 		} else {
