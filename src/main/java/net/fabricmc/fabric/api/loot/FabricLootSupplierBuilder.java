@@ -16,24 +16,42 @@
 
 package net.fabricmc.fabric.api.loot;
 
+import com.google.gson.Gson;
 import net.fabricmc.fabric.impl.loot.LootSupplierBuilderHooks;
+import net.minecraft.util.JsonHelper;
+import net.minecraft.util.Lazy;
+import net.minecraft.world.loot.LootManager;
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.LootSupplier;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.stream.Stream;
 
 public class FabricLootSupplierBuilder extends LootSupplier.Builder {
+	// TODO Move with readSupplierFromJson
+	/* Reading this from LootManager to access all serializers from vanilla. */
+	private static final Lazy<Gson> GSON = new Lazy<>(() -> {
+		try {
+			Field gsonField = Stream.of(LootManager.class.getDeclaredFields())
+					.filter(field -> field.getType() == Gson.class)
+					.findFirst()
+					.orElseThrow(() -> new RuntimeException("Gson not found in LootManager!"));
+			gsonField.setAccessible(true);
+			return (Gson) gsonField.get(null);
+		} catch (Exception e) {
+			throw new RuntimeException("Exception while getting Gson instance from LootManager", e);
+		}
+	});
+
 	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;
 
 	private FabricLootSupplierBuilder() {}
 
 	private FabricLootSupplierBuilder(LootSupplier supplier) {
-		FabricLootSupplier extendedSupplier = (FabricLootSupplier) supplier;
-		extended.fabric_getPools().addAll(extendedSupplier.getPools());
-		extended.fabric_getFunctions().addAll(extendedSupplier.getFunctions());
-		withType(extendedSupplier.getType());
+		copyFrom(supplier, true);
 	}
 
 	@Override
@@ -74,11 +92,40 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 		return this;
 	}
 
+	/**
+	 * Copies the pools and functions of the {@code supplier} to this builder.
+	 * This is equal to {@code copyFrom(supplier, false)}.
+	 */
+	public FabricLootSupplierBuilder copyFrom(LootSupplier supplier) {
+		return copyFrom(supplier, false);
+	}
+
+	/**
+	 * Copies the pools and functions of the {@code supplier} to this builder.
+	 * If {@code copyType} is true, the {@link FabricLootSupplier#getType type} of the supplier is also copied.
+	 */
+	public FabricLootSupplierBuilder copyFrom(LootSupplier supplier, boolean copyType) {
+		FabricLootSupplier extendedSupplier = (FabricLootSupplier) supplier;
+		extended.fabric_getPools().addAll(extendedSupplier.getPools());
+		extended.fabric_getFunctions().addAll(extendedSupplier.getFunctions());
+
+		if (copyType) {
+			withType(extendedSupplier.getType());
+		}
+
+		return this;
+	}
+
 	public static FabricLootSupplierBuilder builder() {
 		return new FabricLootSupplierBuilder();
 	}
 
 	public static FabricLootSupplierBuilder of(LootSupplier supplier) {
 		return new FabricLootSupplierBuilder(supplier);
+	}
+
+	// TODO Move into its own class
+	public static LootSupplier readSupplierFromJson(String json) {
+		return JsonHelper.deserialize(GSON.get(), json, LootSupplier.class);
 	}
 }
