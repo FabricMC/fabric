@@ -8,7 +8,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 
 import java.util.function.Supplier;
 
-public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> extends ChunkGeneratorType {
+public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> extends ChunkGeneratorType<C, T> {
 	private final FabricChunkGeneratorFactory<C, T> factory;
 
 	public FabricChunkGeneratorType(FabricChunkGeneratorFactory<C, T> factory, boolean buffetScreenOption, Supplier<C> settingsSupplier) {
