@@ -30,7 +30,9 @@ import net.minecraft.util.math.Direction;
 /**
  * Collection of utilities for model implementations.
  */
-public class ModelHelper {
+public abstract class ModelHelper {
+    private ModelHelper() {}
+    
     /** Result from {@link #toFaceIndex(Direction)} for null values. */
     public static final int NULL_FACE_ID = 6;
     
@@ -113,24 +115,24 @@ public class ModelHelper {
                 new Vector3f(scaleX, scaleY, scaleZ));
     }
     
-    public static final Transformation BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f, 0.625f, 0.625f);
-    public static final Transformation BLOCK_GROUND = makeTransform(0, 0, 0, 0, 3, 0, 0.25f, 0.25f, 0.25f);
-    public static final Transformation BLOCK_FIXED = makeTransform(0, 0, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
-    public static final Transformation BLOCK_3RD_PERSON_RIGHT = makeTransform(75, 45, 0, 0, 2.5f, 0, 0.375f, 0.375f, 0.375f);
-    public static final Transformation BLOCK_1ST_PERSON_RIGHT = makeTransform(0, 45, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
-    public static final Transformation BLOCK_1ST_PERSON_LEFT = makeTransform(0, 225, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
+    public static final Transformation TRANSFORM_BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f, 0.625f, 0.625f);
+    public static final Transformation TRANSFORM_BLOCK_GROUND = makeTransform(0, 0, 0, 0, 3, 0, 0.25f, 0.25f, 0.25f);
+    public static final Transformation TRANSFORM_BLOCK_FIXED = makeTransform(0, 0, 0, 0, 0, 0, 0.5f, 0.5f, 0.5f);
+    public static final Transformation TRANSFORM_BLOCK_3RD_PERSON_RIGHT = makeTransform(75, 45, 0, 0, 2.5f, 0, 0.375f, 0.375f, 0.375f);
+    public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_RIGHT = makeTransform(0, 45, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
+    public static final Transformation TRANSFORM_BLOCK_1ST_PERSON_LEFT = makeTransform(0, 225, 0, 0, 0, 0, 0.4f, 0.4f, 0.4f);
     
     /**
      * Mimics the vanilla model transformation used for most vanilla blocks,
      * and should be suitable for most custom block-like models. 
      */
-    public static final ModelTransformation BLOCK = new ModelTransformation(
-            BLOCK_3RD_PERSON_RIGHT,
-            BLOCK_3RD_PERSON_RIGHT,
-            BLOCK_1ST_PERSON_LEFT,
-            BLOCK_1ST_PERSON_RIGHT,
+    public static final ModelTransformation MODEL_TRANSFORM_BLOCK = new ModelTransformation(
+            TRANSFORM_BLOCK_3RD_PERSON_RIGHT,
+            TRANSFORM_BLOCK_3RD_PERSON_RIGHT,
+            TRANSFORM_BLOCK_1ST_PERSON_LEFT,
+            TRANSFORM_BLOCK_1ST_PERSON_RIGHT,
             Transformation.NONE,
-            BLOCK_GUI,
-            BLOCK_GROUND,
-            BLOCK_FIXED);
+            TRANSFORM_BLOCK_GUI,
+            TRANSFORM_BLOCK_GROUND,
+            TRANSFORM_BLOCK_FIXED);
 }
