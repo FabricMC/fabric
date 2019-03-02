@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -156,9 +155,7 @@ public interface MutableQuadView extends QuadView {
      * relative to block origin. (0,0,0).  Minecraft rendering is designed
      * for models that fit within a single block space and is recommended 
      * that coordinates remain in the 0-1 range, with multi-block meshes
-     * split into multiple per-block models.<p>
-     * 
-     * Standard shader binding: gl_Vertex
+     * split into multiple per-block models.
      */
     MutableQuadView pos(int vertexIndex, float x, float y, float z);
     
@@ -176,42 +173,20 @@ public interface MutableQuadView extends QuadView {
      * 
      * {@link Renderer} implementations should honor vertex normals for
      * diffuse lighting - modifying vertex color(s) or packing normals in the vertex 
-     * buffer as appropriate for the rendering method/vertex format in effect.<p>
-     * 
-     * The "extra" parameter is for shader authors to make use of space normally wasted.
-     * In most implementations it will be packed as a signed, normalized float 
-     * with low effective precision: 1/127.<p>
-     * 
-     * Note for renderer authors: normals should always be buffered for shader
-     * materials, even if the renderer's lighting model does not require normals
-     * in the GPU. Populate with face normal when vertex normals aren't present.<p>
-     * 
-     * Standard shader binding: vec4 in_normal
+     * buffer as appropriate for the rendering method/vertex format in effect.
      */
-    MutableQuadView normal(int vertexIndex, float x, float y, float z, float extra);
+    MutableQuadView normal(int vertexIndex, float x, float y, float z);
     
     /**
      * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
      */
     default MutableQuadView normal(int vertexIndex, Vector3f vec) {
-        return normal(vertexIndex, vec.x(), vec.y(), vec.z(), 0);
-    }
-    
-    /**
-     * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
-     */
-    default MutableQuadView normal(int vertexIndex, Vector4f vec) {
-        return normal(vertexIndex, vec.x(), vec.y(), vec.z(), vec.w());
+        return normal(vertexIndex, vec.x(), vec.y(), vec.z());
     }
     
     /**
      * Minimum block brightness. Has no effect unless emissive lighting is
      * enabled in at least one sprite of the material for this quad.
-     * Standard shader binding: vec4 in_lightmap<p>
-     * 
-     * While this has a standard binding, it should not be used by
-     * shaders if lighting is enabled in the material. Renderers may alter
-     * the format of lightmaps to support the renderer's lighting model.
      */
     MutableQuadView lightmap(int vertexIndex, int lightmap);
     

@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.client.model.fabric;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -62,16 +61,7 @@ public interface QuadEmitter extends MutableQuadView {
     }
 
     @Override
-    QuadEmitter normal(int vertexIndex, float x, float y, float z, float extra);
-
-    @Override
     default QuadEmitter normal(int vertexIndex, Vector3f vec) {
-        MutableQuadView.super.normal(vertexIndex, vec);
-        return this;
-    }
-
-    @Override
-    default QuadEmitter normal(int vertexIndex, Vector4f vec) {
         MutableQuadView.super.normal(vertexIndex, vec);
         return this;
     }
