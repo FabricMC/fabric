@@ -36,11 +36,11 @@ import net.minecraft.util.Identifier;
  * a fixed cell size.
  */
 public class SpriteFinderImpl implements SpriteFinder {
-    private Node root = new Node(0.5f, 0.5f, 0.25f);
+    private final Node root;
     
     public SpriteFinderImpl(Map<Identifier, Sprite> sprites) {
         root = new Node(0.5f, 0.5f, 0.25f);
-        sprites.values().forEach(s -> root.add(s));
+        sprites.values().forEach(root::add);
     }
 
     @Override
