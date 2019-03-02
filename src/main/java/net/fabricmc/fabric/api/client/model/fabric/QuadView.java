@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.model.fabric;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.client.util.math.Vector4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -168,30 +167,19 @@ public interface QuadView {
     Vector3f copyNormal(int vertexIndex, Vector3f target);
     
     /**
-     * Pass a non-null target to avoid allocation - will be returned with values.
-     * Otherwise returns a new instance. Returns null if normal not present.
+     * Will return {@link Float#NaN} if normal not present.
      */
-    Vector4f copyNormal(int vertexIndex, Vector4f target);
+    float normalX(int vertexIndex);
     
     /**
      * Will return {@link Float#NaN} if normal not present.
      */
-    float normX(int vertexIndex);
+    float normalY(int vertexIndex);
     
     /**
      * Will return {@link Float#NaN} if normal not present.
      */
-    float normY(int vertexIndex);
-    
-    /**
-     * Will return {@link Float#NaN} if normal not present.
-     */
-    float normZ(int vertexIndex);
-    
-    /**
-     * Will return {@link Float#NaN} if normal not present.
-     */
-    float normExtra(int vertexIndex);
+    float normalZ(int vertexIndex);
     
     /**
      * Minimum block brightness. Zero if not set.
