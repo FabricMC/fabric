@@ -144,7 +144,7 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 								}
 							});
 					} catch (IOException e) {
-						e.printStackTrace();
+						LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + modInfo.getId() + " failed!", e);
 					}
 				}
 			}
@@ -192,7 +192,7 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 
 			return namespaces;
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.warn("getNamespaces in mod " + modInfo.getId() + " failed!", e);
 			return Collections.emptySet();
 		}
 	}

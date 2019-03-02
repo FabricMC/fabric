@@ -39,7 +39,7 @@ minecraft {
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
 	mappings "net.fabricmc:yarn:$mcVersion.4"
-	modCompile "net.fabricmc:fabric-loader:0.3.7.108"
+	modCompile "net.fabricmc:fabric-loader:0.3.7.109"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

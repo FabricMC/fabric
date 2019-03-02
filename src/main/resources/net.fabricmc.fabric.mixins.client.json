@@ -31,7 +31,8 @@
     "registry.client.MixinMinecraftClient",
     "registry.client.MixinParticleManager",
     "resources.MixinKeyedResourceReloadListener$Client",
-    "resources.MixinMinecraftGame"
+    "resources.MixinMinecraftGame",
+    "resources.MixinReloadableResourceManagerImplClient"
   ],
   "injectors": {
     "defaultRequire": 1
