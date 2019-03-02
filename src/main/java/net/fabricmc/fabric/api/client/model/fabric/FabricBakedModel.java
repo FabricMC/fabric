@@ -32,7 +32,7 @@ import net.minecraft.world.ExtendedBlockView;
  * or in addition to block state when render chunks are rebuilt.<p>
  * 
  * Note for {@link Renderer} implementors: Fabric causes BakedModel to extend this
- * interface with {@link #isVanilla()} == true and to produce standard vertex data. 
+ * interface with {@link #isVanillaAdapter()} == true and to produce standard vertex data. 
  * This means any BakedModel instance can be safely cast to this interface without an instanceof check.
  */
 public interface FabricBakedModel {
@@ -50,7 +50,7 @@ public interface FabricBakedModel {
     /**
      * This method will be called during chunk rebuilds to generate both the static and
      * dynamic portions of a block model when the model implements this interface and
-     * {@link #isVanilla()} returns false. <p>
+     * {@link #isVanillaAdapter()} returns false. <p>
      * 
      * During chunk rebuild, this method will always be called exactly one time per block
      * position, irrespective of which or how many faces or block render layers are included 
@@ -61,7 +61,7 @@ public interface FabricBakedModel {
      * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
      * should invoke this for all calls to {@link BlockModelRenderer#tesselate(ExtendedBlockView, BakedModel, BlockState, BlockPos, net.minecraft.client.render.BufferBuilder, boolean, Random, long)}
      * that occur outside of chunk rebuilds to allow for features added by mods, unless 
-     * {@link #isVanilla()} returns true.<p>
+     * {@link #isVanillaAdapter()} returns true.<p>
      * 
      * Outside of chunk rebuilds, this method will be called every frame. Model implementations should 
      * rely on pre-baked meshes as much as possible and keep transformation to a minimum.  The provided 
@@ -86,7 +86,7 @@ public interface FabricBakedModel {
      * @param state Block state for model being rendered.
      * @param pos Position of block for model being rendered.
      * @param randomSupplier  Random object seeded per vanilla conventions. Call multiple times to re-seed.
-     * The randomeSupplier will not be thread-safe. Do not cache or retain a reference.
+     * Will not be thread-safe. Do not cache or retain a reference.
      * @param context Accepts model output.
      */
     void emitBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
@@ -94,7 +94,7 @@ public interface FabricBakedModel {
     /**
      * This method will be called during item rendering to generate both the static and
      * dynamic portions of an item model when the model implements this interface and
-     * {@link #isVanilla()} returns false.<p>
+     * {@link #isVanillaAdapter()} returns false.<p>
      * 
      * Vanilla item rendering is normally very limited. It ignores lightmaps, vertex colors,
      * and vertex normals. Renderers are expected to implement enhanced features for item 
