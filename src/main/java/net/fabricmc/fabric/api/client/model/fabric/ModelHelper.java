@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.model.fabric;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
@@ -57,11 +58,7 @@ public abstract class ModelHelper {
     }
    
     /** see {@link #faceFromIndex(int)} */
-    private static final Direction[] FACES = new Direction[7];
-    
-    static {
-        System.arraycopy(Direction.values(), 0, FACES, 0, 6);
-    }
+    private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
     
     /**
      * Converts a mesh into an array of lists of vanilla baked quads.
