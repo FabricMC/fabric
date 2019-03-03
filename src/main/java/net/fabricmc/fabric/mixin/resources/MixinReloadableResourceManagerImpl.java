@@ -42,9 +42,6 @@ public class MixinReloadableResourceManagerImpl {
 	@Shadow
 	private ResourceType type;
 
-	private void fabric_injectListeners() {
-	}
-
 	@Inject(at = @At("HEAD"), method = "reload")
 	public void reload(Executor var1, Executor var2, List<ResourcePack> packs, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
 		ResourceManagerHelperImpl.sort(type, field_17935);
