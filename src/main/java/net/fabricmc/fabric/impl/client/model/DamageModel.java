@@ -62,7 +62,7 @@ public class DamageModel extends ForwardingBakedModel {
         @Override
         public boolean transform(MutableQuadView quad) {
             quad.material(DAMAGE_MATERIAL);
-            quad.sprite(0, damageSprite, MutableQuadView.BAKE_LOCK_UV);
+            quad.spriteBake(0, damageSprite, MutableQuadView.BAKE_LOCK_UV);
             quad.colorIndex(-1);
             return true;
         }

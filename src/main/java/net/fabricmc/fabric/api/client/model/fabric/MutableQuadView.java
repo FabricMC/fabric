@@ -33,32 +33,32 @@ import net.minecraft.util.math.Direction;
 public interface MutableQuadView extends QuadView {
     /**
      * Causes texture to appear with no rotation.
-     * Pass in bakeFlags parameter to {@link #sprite(int, Sprite, int)}.
+     * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
      */
     int BAKE_ROTATE_NONE = 0;
     
     /**
      * Causes texture to appear rotated 90 deg. relative to nominal face.
-     * Pass in bakeFlags parameter to {@link #sprite(int, Sprite, int)}.
+     * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
      */
     int BAKE_ROTATE_90 = 1;
     
     /**
      * Causes texture to appear rotated 180 deg. relative to nominal face.
-     * Pass in bakeFlags parameter to {@link #sprite(int, Sprite, int)}.
+     * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
      */
     int BAKE_ROTATE_180 = 2;
     
     /**
      * Causes texture to appear rotated 270 deg. relative to nominal face.
-     * Pass in bakeFlags parameter to {@link #sprite(int, Sprite, int)}.
+     * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
      */
     int BAKE_ROTATE_270 = 3;
     
     /**
      * When enabled, texture coordinate are assigned based on vertex position.
      * Any existing uv coordinates will be replaced.
-     * Pass in bakeFlags parameter to {@link #sprite(int, Sprite, int)}.<p>
+     * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.<p>
      * 
      * UV lock always derives texture coordinates based on nominal face, even
      * when the quad is not co-planar with that face, and the result is
@@ -73,7 +73,7 @@ public interface MutableQuadView extends QuadView {
      * and texture mapping scenarios. Results are different than what
      * can be obtained via rotation and both can be applied.
      * UV lock must be disabled for this feature to work.
-     * Pass in bakeFlags parameter to {@link #sprite(int, Sprite, int)}.
+     * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
      */
     int BAKE_FLIP_U = 8;
     
@@ -87,7 +87,7 @@ public interface MutableQuadView extends QuadView {
      * with conventional Minecraft model format. This is scaled to 0-1 during
      * baking before interpolation. Model loaders that already have 0-1 coordinates
      * can avoid wasteful multiplication/division by passing 0-1 coordinates directly.
-     * Pass in bakeFlags parameter to {@link #sprite(int, Sprite, int)}.
+     * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
      */
     int BAKE_NORMALIZED = 32;
     
@@ -228,5 +228,5 @@ public interface MutableQuadView extends QuadView {
      * by passing additive combinations of the BAKE_ flags defined in this interface.  
      * Behavior for spriteIndex values > 0 is currently undefined.
      */
-    MutableQuadView sprite(int spriteIndex, Sprite sprite, int bakeFlags);
+    MutableQuadView spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
 }

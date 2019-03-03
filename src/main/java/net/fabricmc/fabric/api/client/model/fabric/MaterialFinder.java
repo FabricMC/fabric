@@ -36,6 +36,12 @@ public interface MaterialFinder {
      * may or may not cache standard material instances.
      */
     RenderMaterial find();
+
+    /**
+     * Resets this instance to default values. Values will match those
+     * in effect when an instance is newly obtained via {@link Renderer#materialFinder()}.
+     */
+    MaterialFinder clear();
     
     /**
      * 

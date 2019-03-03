@@ -53,7 +53,7 @@ public interface SpriteFinder {
      * Alternative to {@link #find(QuadView, int)} when vertex centroid is already
      * known or unsuitable.  Expects normalized (0-1) coordinates on the atlas texture,
      * which should already be the case for u,v values in vanilla baked quads and in 
-     * {@link QuadView} after calling {@link MutableQuadView#sprite(int, Sprite, int)}.<p>
+     * {@link QuadView} after calling {@link MutableQuadView#spriteBake(int, Sprite, int)}.<p>
      * 
      * Coordinates must be in the sprite interior for reliable results. Generally will
      * be easier to use {@link #find(QuadView, int)} unless you know the vertex
