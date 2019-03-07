@@ -78,14 +78,16 @@ public interface MaterialFinder {
     MaterialFinder disableAo(int spriteIndex, boolean disable);
     
     /**
-     * When true, brightness value provided via {@link VertexEditor#lightmap()}
-     * will be used as the minimum lightmap brightness.  Usually this is used to 
-     * implement full brightness but less-than-full brightness values are valid.
+     * When true, sprite texture and color will be rendered at full brightness.
+     * Lightmap values provided via {@link QuadEmitter#lightmap(int)} will be ignored.
      * False by default<p>
      * 
+     * This is the preferred method for emissive lighting effects.  Some renderers
+     * with advanced lighting models may not use block lightmaps and this method will
+     * allow per-sprite emissive lighting in future extensions that support overlay sprites.<p>
+     * 
      * Note that color will still be modified by diffuse shading and ambient occlusion,
-     * by default.  Most of the time, you will want to disable those via {@link #disableAo(int, boolean)}
-     * and {@link #disableDiffuse(int, boolean)}.
+     * unless disabled via {@link #disableAo(int, boolean)} and {@link #disableDiffuse(int, boolean)}.
      */
     MaterialFinder emissive(int spriteIndex, boolean isEmissive);
 }

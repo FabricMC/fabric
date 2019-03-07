@@ -185,13 +185,19 @@ public interface MutableQuadView extends QuadView {
     }
     
     /**
-     * Minimum block brightness. Has no effect unless emissive lighting is
-     * enabled in at least one sprite of the material for this quad.
+     * Accept vanilla lightmap values.  Input values will override lightmap values
+     * computed from world state if input values are higher. Exposed for completeness
+     * but some rendering implementations with non-standard lighting model may not honor it. <p>
+     * 
+     * For emissive rendering, it is better to use {@link MaterialFinder#emissive(int, boolean)}.
      */
     MutableQuadView lightmap(int vertexIndex, int lightmap);
     
     /** 
-     * Convenience: set lightmap for all vertices at once.
+     * Convenience: set lightmap for all vertices at once. <p>
+     * 
+     * For emissive rendering, it is better to use {@link MaterialFinder#emissive(int, boolean)}.
+     * See {@link #lightmap(int, int)}. 
      */
     default MutableQuadView lightmap(int b0, int b1, int b2, int b3) {
         lightmap(0, b0);
