@@ -20,6 +20,7 @@
     "events.tick.MixinMinecraftServer",
     "events.tick.MixinWorld",
     "item.MixinAbstractFurnaceBlockEntity",
+    "item.ItemMixin",
     "itemgroup.MixinItemGroup",
     "misc.MixinCrashReport",
     "networking.MixinCustomPayloadC2SPacket",
