@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.impl.itemgroup;
 
 import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.class_4185;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ingame.CreativePlayerInventoryScreen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
@@ -39,7 +39,7 @@ public class FabricCreativeGuiComponents {
 		COMMON_GROUPS.add(ItemGroup.HOTBAR);
 	}
 
-	public static class ItemGroupButtonWidget extends ButtonWidget {
+	public static class ItemGroupButtonWidget extends class_4185 {
 
 		CreativeGuiExtensions extensions;
 		CreativePlayerInventoryScreen gui;
@@ -53,8 +53,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void method_19347(double double_1, double double_2) {
-			super.method_19347(double_1, double_2);
+		public void method_1826() {
 			type.clickConsumer.accept(extensions);
 		}
 
