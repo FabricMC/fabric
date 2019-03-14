@@ -53,8 +53,8 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void onPressed(double double_1, double double_2) {
-			super.onPressed(double_1, double_2);
+		public void method_19347(double double_1, double double_2) {
+			super.method_19347(double_1, double_2);
 			type.clickConsumer.accept(extensions);
 		}
 
