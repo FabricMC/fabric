@@ -36,18 +36,10 @@ import java.util.concurrent.Executor;
 @Mixin(ReloadableResourceManagerImpl.class)
 public class MixinReloadableResourceManagerImpl {
 	@Shadow
-	private List<ResourceReloadListener> field_17935;
-	@Shadow
-	private List<ResourceReloadListener> field_17936;
-	@Shadow
 	private ResourceType type;
 
-	private void fabric_injectListeners() {
-	}
-
-	@Inject(at = @At("HEAD"), method = "reload")
-	public void reload(Executor var1, Executor var2, List<ResourcePack> packs, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
-		ResourceManagerHelperImpl.sort(type, field_17935);
-		ResourceManagerHelperImpl.sort(type, field_17936);
+	@Inject(at = @At("HEAD"), method = "beginReloadInner")
+	public void reload(Executor var1, Executor var2, List<ResourceReloadListener> listeners, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
+		ResourceManagerHelperImpl.sort(type, listeners);
 	}
 }

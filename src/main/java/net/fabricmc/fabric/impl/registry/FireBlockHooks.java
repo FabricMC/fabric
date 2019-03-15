@@ -18,7 +18,8 @@ package net.fabricmc.fabric.impl.registry;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 
 public interface FireBlockHooks {
-	FlammableBlockRegistry.Entry fabric_getVanillaEntry(Block block);
+	FlammableBlockRegistry.Entry fabric_getVanillaEntry(BlockState block);
 }
