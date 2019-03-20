@@ -54,7 +54,7 @@ public final class PlayerStream {
 	public static Stream<PlayerEntity> world(World world) {
 		if (world instanceof ServerWorld) {
 			// noinspection unchecked
-			return ((Stream<PlayerEntity>) (Stream) ((ServerWorld) world).method_18456().stream());
+			return ((Stream<PlayerEntity>) (Stream) ((ServerWorld) world).getPlayers().stream());
 		} else {
 			throw new RuntimeException("Only supported on ServerWorld!");
 		}

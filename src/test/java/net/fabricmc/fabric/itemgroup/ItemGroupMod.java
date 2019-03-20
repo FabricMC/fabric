@@ -36,10 +36,10 @@ public class ItemGroupMod implements ModInitializer {
 		Registry.ITEM.add(new Identifier("fabric_test", "itemgroup"), testItem);
 
 		//Creates a tab with all items (including ones that dont show in search such as the command block)
-		FabricItemGroupBuilder.create(new Identifier("fabric", "all")).stacksForDisplay(itemStacks -> Registry.ITEM.forEach(item -> itemStacks.add(new ItemStack(item)))).build();
+		FabricItemGroupBuilder.create(new Identifier("fabric", "all")).appendItems(itemStacks -> Registry.ITEM.forEach(item -> itemStacks.add(new ItemStack(item)))).build();
 
 		//Creates a group with all modded items in
-		FabricItemGroupBuilder.create(new Identifier("fabric", "modded")).stacksForDisplay(itemStacks -> Registry.ITEM.forEach(item -> {
+		FabricItemGroupBuilder.create(new Identifier("fabric", "modded")).appendItems(itemStacks -> Registry.ITEM.forEach(item -> {
 			if(!Registry.ITEM.getId(item).getNamespace().equals("minecraft")){
 				itemStacks.add(new ItemStack(item));
 			}
