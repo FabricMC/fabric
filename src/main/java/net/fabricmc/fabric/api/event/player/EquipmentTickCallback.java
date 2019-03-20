@@ -4,16 +4,17 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
 public interface EquipmentTickCallback {
 	public static final Event<EquipmentTickCallback> EVENT = EventFactory.createArrayBacked(EquipmentTickCallback.class,
-			(listeners) -> (player, slot, stack) -> {
+			(listeners) -> (player, inv, slotNum, stack) -> {
 				for (EquipmentTickCallback event : listeners) {
-					event.tick(player, slot, stack);
+					event.tick(player, inv, slotNum, stack);
 				}
 			}
 	);
 
-	void tick(PlayerEntity player, EquipmentSlot slot, ItemStack stack);
+	void tick(PlayerEntity player, Inventory inv, int slotNumber, ItemStack stack);
 }

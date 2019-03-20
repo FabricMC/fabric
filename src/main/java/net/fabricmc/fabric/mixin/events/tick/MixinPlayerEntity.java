@@ -22,7 +22,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 		PlayerEntity player = (PlayerEntity)(Object)this;
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			if (!player.getEquippedStack(slot).isEmpty()) {
-				EquipmentTickCallback.EVENT.invoker().tick(player, slot, player.getEquippedStack(slot));
+				EquipmentTickCallback.EVENT.invoker().tick(player, player.inventory, slot.getEntitySlotId(), player.getEquippedStack(slot));
 			}
 		}
 	}
