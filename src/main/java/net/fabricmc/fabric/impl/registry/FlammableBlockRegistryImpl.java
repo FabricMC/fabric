@@ -90,7 +90,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 		if (entry != null) {
 			return entry;
 		} else {
-			return ((FireBlockHooks) key).fabric_getVanillaEntry(block);
+			return ((FireBlockHooks) key).fabric_getVanillaEntry(block.getDefaultState());
 		}
 	}
 

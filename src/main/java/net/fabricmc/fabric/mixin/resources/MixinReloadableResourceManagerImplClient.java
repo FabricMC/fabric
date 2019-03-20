@@ -38,9 +38,6 @@ public class MixinReloadableResourceManagerImplClient {
 	@Shadow
 	private ResourceType type;
 
-	private void fabric_injectListeners() {
-	}
-
 	@Inject(at = @At("HEAD"), method = "createReloadHandler")
 	public void createReloadHandler(Executor executor_1, Executor executor_2, CompletableFuture<Void> completableFuture_1, CallbackInfoReturnable<ResourceReloadHandler> callback) {
 		ResourceManagerHelperImpl.sort(type, field_17935);

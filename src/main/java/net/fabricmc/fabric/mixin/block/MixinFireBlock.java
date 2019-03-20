@@ -20,7 +20,9 @@ import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.impl.registry.FireBlockHooks;
 import net.fabricmc.fabric.impl.registry.FlammableBlockRegistryImpl;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.FireBlock;
+import net.minecraft.state.property.Properties;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,12 +35,12 @@ public class MixinFireBlock implements FireBlockHooks {
 	private FlammableBlockRegistryImpl fabric_registry;
 
 	@Shadow
-	private int getSpreadChance(Block block_1) {
+	private int getSpreadChance(BlockState block_1) {
 		return 0;
 	}
 
 	@Shadow
-	private int getBurnChance(Block block_1) {
+	private int getBurnChance(BlockState block_1) {
 		return 0;
 	}
 
@@ -48,25 +50,33 @@ public class MixinFireBlock implements FireBlockHooks {
 	}
 
 	@Inject(at = @At("HEAD"), method = "getBurnChance", cancellable = true)
-	private void getFabricBurnChance(Block block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block);
+	private void getFabricBurnChance(BlockState block, CallbackInfoReturnable info) {
+		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block.getBlock());
 		if (entry != null) {
-			info.setReturnValue(entry.getBurnChance());
-			info.cancel();
+			// TODO: use a (BlockState -> int) with this as the default impl
+			if (block.contains(Properties.WATERLOGGED) && block.get(Properties.WATERLOGGED)) {
+				info.setReturnValue(0);
+			} else {
+				info.setReturnValue(entry.getBurnChance());
+			}
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "getSpreadChance", cancellable = true)
-	private void getFabricSpreadChance(Block block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block);
+	private void getFabricSpreadChance(BlockState block, CallbackInfoReturnable info) {
+		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block.getBlock());
 		if (entry != null) {
-			info.setReturnValue(entry.getSpreadChance());
-			info.cancel();
+			// TODO: use a (BlockState -> int) with this as the default impl
+			if (block.contains(Properties.WATERLOGGED) && block.get(Properties.WATERLOGGED)) {
+				info.setReturnValue(0);
+			} else {
+				info.setReturnValue(entry.getSpreadChance());
+			}
 		}
 	}
 
 	@Override
-	public FlammableBlockRegistry.Entry fabric_getVanillaEntry(Block block) {
+	public FlammableBlockRegistry.Entry fabric_getVanillaEntry(BlockState block) {
 		return new FlammableBlockRegistry.Entry(getBurnChance(block), getSpreadChance(block));
 	}
 }
