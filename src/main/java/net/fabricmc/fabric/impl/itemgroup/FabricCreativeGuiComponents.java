@@ -58,18 +58,18 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void draw(int mouseX, int mouseY, float float_1) {
+		public void render(int mouseX, int mouseY, float float_1) {
 			this.visible = extensions.fabric_isButtonVisible(type);
-			this.enabled = extensions.fabric_isButtonEnabled(type);
+			this.active = extensions.fabric_isButtonEnabled(type);
 
 			if (this.visible) {
 				MinecraftClient minecraftClient = MinecraftClient.getInstance();
 				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
 				GlStateManager.disableLighting();
 				GlStateManager.color4f(1F, 1F, 1F, 1F);
-				this.drawTexturedRect(this.field_2069, this.field_2068, (type == Type.NEXT ? 12 : 0), (enabled ? 0 : 12), 12, 12);
+				this.drawTexturedRect(this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);
 
-				if(mouseX >= this.field_2069 && mouseY >= this.field_2068 && mouseX < this.field_2069 + this.width && mouseY < this.field_2068 + this.height){
+				if(mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height){
 					gui.drawTooltip(I18n.translate("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
 				}
 			}
