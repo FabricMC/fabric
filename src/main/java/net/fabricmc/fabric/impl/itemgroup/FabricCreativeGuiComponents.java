@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.impl.itemgroup;
 
 import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.class_4185;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.ingame.CreativePlayerInventoryScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
@@ -39,7 +39,7 @@ public class FabricCreativeGuiComponents {
 		COMMON_GROUPS.add(ItemGroup.HOTBAR);
 	}
 
-	public static class ItemGroupButtonWidget extends class_4185 {
+	public static class ItemGroupButtonWidget extends ButtonWidget {
 
 		CreativeGuiExtensions extensions;
 		CreativePlayerInventoryScreen gui;
@@ -53,7 +53,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void method_1826() {
+		public void onPressed() {
 			type.clickConsumer.accept(extensions);
 		}
 
@@ -67,9 +67,9 @@ public class FabricCreativeGuiComponents {
 				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
 				GlStateManager.disableLighting();
 				GlStateManager.color4f(1F, 1F, 1F, 1F);
-				this.drawTexturedRect(this.x, this.y, (type == Type.NEXT ? 12 : 0), (enabled ? 0 : 12), 12, 12);
+				this.drawTexturedRect(this.field_2069, this.field_2068, (type == Type.NEXT ? 12 : 0), (enabled ? 0 : 12), 12, 12);
 
-				if(mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height){
+				if(mouseX >= this.field_2069 && mouseY >= this.field_2068 && mouseX < this.field_2069 + this.width && mouseY < this.field_2068 + this.height){
 					gui.drawTooltip(I18n.translate("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
 				}
 			}
