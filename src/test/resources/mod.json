@@ -10,6 +10,7 @@
     "net.fabricmc.fabric.events.ServerEventMod",
     "net.fabricmc.fabric.containers.ContainerMod",
     "net.fabricmc.fabric.containers.ContainerModClient",
-    "net.fabricmc.fabric.loot.LootEntryMod"
+    "net.fabricmc.fabric.loot.LootEntryMod",
+    "net.fabricmc.fabric.events.PlayerTickEventMod"
   ]
 }
