@@ -11,7 +11,7 @@ import net.minecraft.util.Hand;
 /**
  * Callback for ticking a player's equipment.
  * Takes a player, the inventory to check, the slot number (see below), and the stack.
- * Can be extended to use any Inventory for use by Baubles-likes.
+ * Can be extended to use any Inventory for use by Baubles-likes. Don't always assume a PlayerInventory.
  *
  * NOTE: the slot number that's passed for player held items/armor is the {@link EquipmentSlot#getEntitySlotId()} value.
  * This overlaps between hand and armor equipment due to the way {@link net.minecraft.entity.player.PlayerInventory} works.
