@@ -5,6 +5,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,7 +23,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 		PlayerEntity player = (PlayerEntity)(Object)this;
 		for (EquipmentSlot slot : EquipmentSlot.values()) {
 			if (!player.getEquippedStack(slot).isEmpty()) {
-				EquipmentTickCallback.EVENT.invoker().tick(player, player.inventory, slot.getEntitySlotId(), player.getEquippedStack(slot));
+				EquipmentTickCallback.EVENT.invoker().tick(player, player.inventory, new Identifier(slot.getName()), player.getEquippedStack(slot));
 			}
 		}
 	}
