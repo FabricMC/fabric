@@ -46,15 +46,10 @@ public class FabricCreativeGuiComponents {
 		Type type;
 
 		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
-			super(x, y, 10, 11, type.text);
+			super(x, y, 10, 11, type.text, (bw) -> type.clickConsumer.accept(extensions));
 			this.extensions = extensions;
 			this.type = type;
 			this.gui = (CreativePlayerInventoryScreen) extensions;
-		}
-
-		@Override
-		public void onPressed() {
-			type.clickConsumer.accept(extensions);
 		}
 
 		@Override
