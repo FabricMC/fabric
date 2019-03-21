@@ -1,5 +1,6 @@
 package net.fabricmc.fabric.config;
 
+import blue.endless.jankson.Comment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.config.ConfigFile;
 import net.fabricmc.fabric.api.config.FabricConfigManager;

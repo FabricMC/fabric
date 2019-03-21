@@ -6,9 +6,13 @@ buildscript {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
+		maven {
+			url "https://plugins.gradle.org/m2/"
+		}
 	}
 	dependencies {
 		classpath "net.fabricmc:fabric-loom:0.2.0-SNAPSHOT"
+		classpath "com.github.jengelman.gradle.plugins:shadow:2.0.0"
 	}
 }
 
@@ -20,6 +24,7 @@ plugins {
 }
 
 apply plugin: net.fabricmc.loom.LoomGradlePlugin
+apply plugin: "com.github.johnrengelman.shadow"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

@@ -27,7 +27,7 @@ public class FabricConfigManager {
 	public static <T> T loadConfig(Class<T> clazz) {
 		String configName;
 		if(clazz.isAnnotationPresent(ConfigFile.class)){
-			configName = clazz.getAnnotation(ConfigFile.class).name();
+			configName = clazz.getAnnotation(ConfigFile.class).value();
 		} else {
 			configName = clazz.getSimpleName();
 		}
@@ -68,7 +68,7 @@ public class FabricConfigManager {
 				return result;
 			}
 			catch (IOException e) {
-				("Failed to load config File "+configName+CONFIG_FILE_EXTENSION+": ", e);
+				LOGGER.warn("Failed to load config File "+configName+CONFIG_FILE_EXTENSION+": ", e);
 			}
 		}
 		catch (SyntaxError syntaxError) {
@@ -99,7 +99,7 @@ public class FabricConfigManager {
 	public static void saveConfig(Object object){
 		String configName;
 		if(object.getClass().isAnnotationPresent(ConfigFile.class)){
-			configName = object.getClass().getAnnotation(ConfigFile.class).name();
+			configName = object.getClass().getAnnotation(ConfigFile.class).value();
 		} else {
 			configName = object.getClass().getSimpleName();
 		}
