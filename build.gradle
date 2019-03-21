@@ -1,3 +1,5 @@
+import net.fabricmc.loom.task.RemapJar
+
 buildscript {
 	repositories {
 		jcenter()
@@ -61,20 +63,21 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 shadowJar {
 	//Relocate the Jankson into the Fabric jar.
 	//This may be unnecessary, but it allows others to write their own Jankson config manager if they so desire.
-	relocate 'blue.endless.jankson', 'net.fabricmc.fabric.repackage.blue.endless.jankson'
+	relocate 'blue.endless.jankson', 'net.fabricmc.fabric.jankson'
 
-	classifier = "shadow"
+	classifier = null
 	configurations = [project.configurations.shadow]
 }
 
-//If we're using shadow, we need to let remap know it's remapping the shadowJar.
-//This will result in the main Fabric jar being named "fabric-<version>-shadow.jar".
-//As far as I'm aware, this is unavoidable with the current remap system.
-//Shout at asie about Loader 0.4.0.
-remapJar {
-	dependsOn shadowJar
+jar {
+	classifier = "slim"
+}
+
+task remapShadowJar(type: RemapJar) {
 	jar = shadowJar.archivePath
 }
+tasks.remapShadowJar.dependsOn tasks.shadowJar
+tasks.assemble.dependsOn tasks.remapShadowJar
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){
