@@ -36,7 +36,7 @@ public abstract class MixinEntity {
     private void changeDimension(DimensionType targetType, CallbackInfoReturnable<Entity> cir, MinecraftServer server, DimensionType fromType, ServerWorld fromWorld, ServerWorld toWorld) {
         fromWorld.getProfiler().push("fabric:reposition");
         AttemptDimensionTeleportCallback.EventResult result = AttemptDimensionTeleportCallback.EVENT.invoker().placeEntity((Entity) (Object) this, fromType, targetType);
-        if(result == AttemptDimensionTeleportCallback.EventResult.CANCEL_TELEPORT) {
+        if(result == AttemptDimensionTeleportCallback.EventResult.CANCEL) {
             cir.setReturnValue((Entity) (Object) this);
             fromWorld.getProfiler().pop(); // fabric:reposition
             fromWorld.getProfiler().pop(); // reposition
@@ -47,7 +47,7 @@ public abstract class MixinEntity {
                 ((FabricDimensionType) targetType).getEntityPlacer().placeEntity((Entity) (Object) this, targetType, toWorld);
                 flag = true;
             }
-            if(flag || result == AttemptDimensionTeleportCallback.EventResult.SKIP_FURTHER_PROCESSING) { // sync entity state, just as vanilla does; reason: we don't have conditional mixin wrappers (yet)
+            if(flag || result == AttemptDimensionTeleportCallback.EventResult.CONTINUE) { // sync entity state, just as vanilla does; reason: we don't have conditional mixin wrappers (yet)
                 fromWorld.getProfiler().swap("fabric:reloading"); // fabric:reposition
                 Entity entity = ((Entity) (Object) this).getType().create(toWorld);
                 if(entity != null) {

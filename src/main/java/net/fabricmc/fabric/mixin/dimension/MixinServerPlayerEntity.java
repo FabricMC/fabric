@@ -52,7 +52,7 @@ public abstract class MixinServerPlayerEntity {
         ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
         DimensionType fromType = player.dimension;
         AttemptDimensionTeleportCallback.EventResult result = AttemptDimensionTeleportCallback.EVENT.invoker().placeEntity(player, fromType, targetType);
-        if(result == AttemptDimensionTeleportCallback.EventResult.CANCEL_TELEPORT) {
+        if(result == AttemptDimensionTeleportCallback.EventResult.CANCEL) {
             cir.setReturnValue(player);
         }
         else {
@@ -63,7 +63,7 @@ public abstract class MixinServerPlayerEntity {
                 ((FabricDimensionType) targetType).getEntityPlacer().placeEntity(player, targetType, toWorld);
                 flag = true;
             }
-            if(flag || result == AttemptDimensionTeleportCallback.EventResult.SKIP_FURTHER_PROCESSING) {
+            if(flag || result == AttemptDimensionTeleportCallback.EventResult.CONTINUE) {
                 player.setPositionAndAngles(player.x, player.y, player.z, player.yaw, player.pitch); // sync the position to the client
                 player.setVelocity(Vec3d.ZERO);
                 // below code mostly copied from vanilla, since we don't have conditional mixin wrappers (yet)

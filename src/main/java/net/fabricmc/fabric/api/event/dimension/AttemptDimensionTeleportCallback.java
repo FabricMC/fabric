@@ -28,8 +28,8 @@ public interface AttemptDimensionTeleportCallback {
         EventResult currentResult = EventResult.DEFAULT;
         for(AttemptDimensionTeleportCallback callback : listeners) {
             EventResult result = callback.placeEntity(entity, from, to);
-            if(result == EventResult.CANCEL_TELEPORT) {
-                return EventResult.CANCEL_TELEPORT;
+            if(result == EventResult.CANCEL) {
+                return EventResult.CANCEL;
             }
             else if(result != EventResult.DEFAULT) {
                 currentResult = result;
@@ -48,14 +48,15 @@ public interface AttemptDimensionTeleportCallback {
 
     enum EventResult {
         /**
-         * if you don't want to have the default {@link EntityPlacer} handle entity placement and portal creation
+         * if you don't want to have the default {@link EntityPlacer} handle entity placement and portal creation,
+         * and also stop all further processing
          */
-        SKIP_FURTHER_PROCESSING,
+        CONTINUE,
         /**
          * if you want to prevent the entity from changing dimensions and stop all further processing<br/>
          * (this also means that no {@link EntityPlacer} will be invoked)
          */
-        CANCEL_TELEPORT,
+        CANCEL,
         /**
          * if you want the default {@link EntityPlacer} to handle placement of the entity
          */
