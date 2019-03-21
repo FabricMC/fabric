@@ -9,6 +9,8 @@
     "commands.MixinMinecraftDedicatedServer",
     "commands.MixinServerCommandManager",
     "container.MixinServerPlayerEntity",
+    "dimension.MixinEntity",
+    "dimension.MixinServerPlayerEntity",
     "entity.MixinEntityTracker",
     "entity.MixinThreadedAnvilChunkStorage",
     "events.objectbuilder.MixinBlock",
