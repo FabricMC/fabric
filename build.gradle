@@ -36,15 +36,39 @@ minecraft {
 	refmapName = "net.fabricmc.fabric.refmap.json"
 }
 
+repositories {
+	mavenCentral()
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
 	mappings "net.fabricmc:yarn:$mcVersion.3"
 	modCompile "net.fabricmc:fabric-loader:0.3.7.109"
+	shadow "blue.endless:jankson:1.1.1"
+	implementation "blue.endless:jankson:1.1.1"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = 'sources'
 	from sourceSets.main.allSource
+}
+
+shadowJar {
+	//Relocate the Jankson into the Fabric jar.
+	//This may be unnecessary, but it allows others to write their own Jankson config manager if they so desire.
+	relocate 'blue.endless.jankson', 'net.fabricmc.fabric.repackage.blue.endless.jankson'
+
+	classifier = "shadow"
+	configurations = [project.configurations.shadow]
+}
+
+//If we're using shadow, we need to let remap know it's remapping the shadowJar.
+//This will result in the main Fabric jar being named "fabric-<version>-shadow.jar".
+//As far as I'm aware, this is unavoidable with the current remap system.
+//Shout at asie about Loader 0.4.0.
+remapJar {
+	dependsOn shadowJar
+	jar = shadowJar.archivePath
 }
 
 curseforge {
