@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.api.config;
 
 import blue.endless.jankson.Jankson;
@@ -12,27 +28,15 @@ import java.io.IOException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * Helper class for config
+ */
 public class FabricConfigManager {
 	
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final String CONFIG_FILE_EXTENSION = ".conf";
-
-	/**
-	 * Loads a .config file from the config folder and parses it to a POJO.
-	 *
-	 * @param clazz The class of the POJO that will store all our properties
-	 * @return A new config Object containing all our options from the config file
-	 */
-	public static <T> T loadConfig(Class<T> clazz) {
-		String configName;
-		if(clazz.isAnnotationPresent(ConfigFile.class)){
-			configName = clazz.getAnnotation(ConfigFile.class).value();
-		} else {
-			configName = clazz.getSimpleName();
-		}
-		return loadConfig(clazz, configName);
-	}
+	//masquerade as JSON5, since JSON5 is a valid subset of Jankson
+	private static final String CONFIG_FILE_EXTENSION = ".json5";
 
 	/**
 	 * Loads a .config file from the config folder and parses it to a POJO.
@@ -43,12 +47,14 @@ public class FabricConfigManager {
 	 */
 	public static <T> T loadConfig(Class<T> clazz, String configName){
 		try {
-			File file = new File((FabricLoader.getInstance()).getConfigDirectory().toString()+"/"+configName+CONFIG_FILE_EXTENSION);
+			File file = new File((FabricLoader.getInstance()).getConfigDirectory(), configName+CONFIG_FILE_EXTENSION);
 			Jankson jankson = Jankson.builder().build();
 
 			//Generate config file if it doesn't exist
 			if(!file.exists()) {
-				saveConfig(clazz.newInstance(), configName);
+				T newConfig = clazz.newInstance();
+				saveConfig(newConfig, configName);
+				return newConfig;
 			}
 
 			try {
@@ -61,7 +67,7 @@ public class FabricConfigManager {
 				if(jsonElementNew instanceof JsonObject){
 					JsonObject jsonNew = (JsonObject) jsonElementNew;
 					if(json.getDelta(jsonNew).size()>= 0){
-						saveConfig(result);
+						saveConfig(result, configName);
 					}
 				}
 
@@ -87,23 +93,6 @@ public class FabricConfigManager {
 
 		//this is ... unfortunate
 		return null;
-	}
-
-	/**
-	 * Saves a POJO Config object to the disk,
-	 * and uses either the name specified in the Annotation (if available) or the simple Class name as filename.
-	 * This function is used to create new configs if they don't already exist.
-	 *
-	 * @param object The Config we want to save
-	 */
-	public static void saveConfig(Object object){
-		String configName;
-		if(object.getClass().isAnnotationPresent(ConfigFile.class)){
-			configName = object.getClass().getAnnotation(ConfigFile.class).value();
-		} else {
-			configName = object.getClass().getSimpleName();
-		}
-		saveConfig(object,configName);
 	}
 
 	/**
