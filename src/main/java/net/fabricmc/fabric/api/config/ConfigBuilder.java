@@ -25,7 +25,6 @@ import net.fabricmc.fabric.impl.config.ConfigManager;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +33,7 @@ import java.util.Map;
  */
 public class ConfigBuilder {
 	private String modId;
+	public static final String CONFIG_SUFFIX = ".json5";
 
 	/**
 	 * The list of configs for a builder.
@@ -44,10 +44,8 @@ public class ConfigBuilder {
 	private boolean singleConfig = false;
 
 	private ConfigBuilder(String modId) {
-		if(ConfigManager.modConfigs.containsKey(modId)){
-			throw new UnsupportedOperationException("Cannot have more than one config manager per mod : " + modId);
-		}
-		ConfigManager.modConfigs.put(modId, this);
+		//will throw if config already exists
+		ConfigManager.addConfig(modId, this);
 		this.modId = modId;
 	}
 
@@ -77,6 +75,8 @@ public class ConfigBuilder {
 	 *
 	 * Used to get a config file for a mod based on a subfolder
 	 *
+	 * @param clazz the config class
+	 * @param name the name of the specific config file to get from
 	 * @return the instance of the config
 	 */
 	public <T> T getConfig(Class<T> clazz, String name){
@@ -89,9 +89,9 @@ public class ConfigBuilder {
 			throw new UnsupportedOperationException("Config builder created a single config, cannot create more. Specify config name");
 		}
 		try {
-			//TODO do the config jazz here
-			File configFile = new File("config/" + (subDir ? "" : modId) + name);
-			T config = clazz.getConstructor().newInstance();
+			File configFile = new File("config/" + (subDir ? modId : ""), name + CONFIG_SUFFIX);
+			//TODO: decide whether we want to require a constructor or not
+			T config = clazz.newInstance();
 			if (!configFile.exists()) {
 				saveConfig(config, configFile);
 			} else {
@@ -117,8 +117,8 @@ public class ConfigBuilder {
 			}
 			configs.put(name, config);
 			return config;
-		} catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-			throw new RuntimeException("Failed to load config class");
+		} catch (InstantiationException | IllegalAccessException /*| InvocationTargetException | NoSuchMethodException*/ e) {
+			throw new RuntimeException("Failed to load config class", e);
 		}
 	}
 
@@ -128,7 +128,7 @@ public class ConfigBuilder {
 		String result = json.toJson(true,true);
 
 		try {
-			if (!file.getParentFile().exists())
+			if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
 			if(!file.exists())
 				file.createNewFile();
 

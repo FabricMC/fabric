@@ -1,27 +1,25 @@
 package net.fabricmc.fabric.config;
 
-import blue.endless.jankson.Comment;
 import net.fabricmc.api.ModInitializer;
-
-import java.util.ArrayList;
-import java.util.List;
+import net.fabricmc.fabric.api.config.ConfigBuilder;
 
 public class ConfigLoadMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
-//		FabricConfigManager.loadConfig(ModConfig.class);
+		//Super basic config
+		{
+			// ./config/modid.json
+			ModConfig simpleConfig = ConfigBuilder.builder("modid").getConfig(ModConfig.class);
+		}
+
+		//A mod with more than one config, in sub dirs
+		{
+			ConfigBuilder configBuilder = ConfigBuilder.builder("modid2");
+			// ./config/modid2/client.json
+			ModConfig clientConfig = configBuilder.getConfig(ModConfig.class, "client");
+			// ./config/modid2/common.json
+			ModConfig commonConfig = configBuilder.getConfig(ModConfig.class, "common");
+		}
 	}
 
-
-	public class ModConfig {
-
-		@Comment("A test int.")
-		public int value = 5;
-
-		@Comment("A test list.")
-		public List<String> allowedNames = new ArrayList<>();
-
-		@Comment("A test string.")
-		public String name = "Fabric!";
-	}
 }
