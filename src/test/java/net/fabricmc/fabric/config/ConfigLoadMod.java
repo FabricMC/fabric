@@ -2,8 +2,6 @@ package net.fabricmc.fabric.config;
 
 import blue.endless.jankson.Comment;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.config.ConfigFile;
-import net.fabricmc.fabric.api.config.FabricConfigManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +9,10 @@ import java.util.List;
 public class ConfigLoadMod implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		FabricConfigManager.loadConfig(ModConfig.class);
+//		FabricConfigManager.loadConfig(ModConfig.class);
 	}
 
-	@ConfigFile("ModConfig")
+
 	public class ModConfig {
 
 		@Comment("A test int.")
