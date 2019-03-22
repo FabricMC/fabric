@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Fabric's personal config manager. Stores mods' configs and provides hooks to interact with configs.
+ * Fabric's internal config manager. Stores mods' configs and provides hooks to interact with configs.
  */
 public class ConfigManager {
 	public static Map<String, ConfigBuilder> modConfigs = new HashMap<>();
