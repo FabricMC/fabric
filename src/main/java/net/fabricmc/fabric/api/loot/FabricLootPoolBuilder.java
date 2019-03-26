@@ -75,6 +75,35 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 		return this;
 	}
 
+	/**
+	 * Copies the entries, conditions and functions of the {@code pool} to this
+	 * builder.
+	 *
+	 * This is equal to {@code copyFrom(pool, false)}.
+	 */
+	public FabricLootPoolBuilder copyFrom(LootPool pool) {
+		return copyFrom(pool, false);
+	}
+
+	/**
+	 * Copies the entries, conditions and functions of the {@code pool} to this
+	 * builder.
+	 *
+	 * If {@code copyRolls} is true, the {@link FabricLootPool#getRolls rolls} of the pool are also copied.
+	 */
+	public FabricLootPoolBuilder copyFrom(LootPool pool, boolean copyRolls) {
+		FabricLootPool extendedPool = (FabricLootPool) pool;
+		extended.fabric_getConditions().addAll(extendedPool.getConditions());
+		extended.fabric_getFunctions().addAll(extendedPool.getFunctions());
+		extended.fabric_getEntries().addAll(extendedPool.getEntries());
+
+		if (copyRolls) {
+			withRolls(extendedPool.getRolls());
+		}
+
+		return this;
+	}
+
 	public static FabricLootPoolBuilder builder() {
 		return new FabricLootPoolBuilder();
 	}
