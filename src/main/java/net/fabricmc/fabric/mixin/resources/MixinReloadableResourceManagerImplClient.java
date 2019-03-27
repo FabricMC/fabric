@@ -32,15 +32,15 @@ import java.util.concurrent.Executor;
 @Mixin(ReloadableResourceManagerImpl.class)
 public class MixinReloadableResourceManagerImplClient {
 	@Shadow
-	private List<ResourceReloadListener> field_17935;
+	private List<ResourceReloadListener> listeners;
 	@Shadow
-	private List<ResourceReloadListener> field_17936;
+	private List<ResourceReloadListener> initialListeners;
 	@Shadow
 	private ResourceType type;
 
-	@Inject(at = @At("HEAD"), method = "createReloadHandler")
-	public void createReloadHandler(Executor executor_1, Executor executor_2, CompletableFuture<Void> completableFuture_1, CallbackInfoReturnable<ResourceReloadHandler> callback) {
-		ResourceManagerHelperImpl.sort(type, field_17935);
-		ResourceManagerHelperImpl.sort(type, field_17936);
+	@Inject(at = @At("HEAD"), method = "beginInitialMonitoredReload")
+	public void createReloadHandler(Executor executor_1, Executor executor_2, CompletableFuture<Void> completableFuture_1, CallbackInfoReturnable<ResourceReloadMonitor> callback) {
+		ResourceManagerHelperImpl.sort(type, listeners);
+		ResourceManagerHelperImpl.sort(type, initialListeners);
 	}
 }

@@ -110,7 +110,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		}
 	}
 
-	@Inject(method = "init", at = @At("RETURN"))
+	@Inject(method = "init", at = @At("RETURN"), remap = false)
 	private void init(CallbackInfo info) {
 		fabric_updateSelection();
 
