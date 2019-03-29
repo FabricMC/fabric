@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.texture;
 
-import net.minecraft.class_1050;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
 import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.PngFile;
 import net.minecraft.util.Identifier;
 
 public class FabricSprite extends Sprite {
@@ -26,7 +26,7 @@ public class FabricSprite extends Sprite {
 		super(var1, var2, var3);
 	}
 
-	public FabricSprite(Identifier identifier, class_1050 class_1050, AnimationResourceMetadata animationResourceMetadata) {
-		super(identifier, class_1050, animationResourceMetadata);
+	public FabricSprite(Identifier identifier, PngFile pngFile, AnimationResourceMetadata animationResourceMetadata) {
+		super(identifier, pngFile, animationResourceMetadata);
 	}
 }

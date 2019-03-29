@@ -29,10 +29,10 @@ import java.util.stream.Stream;
 public class MixinEntityTracker implements EntityTrackerStreamAccessor {
 	@Shadow
 	@Final
-	private Set<ServerPlayerEntity> field_18250;
+	private Set<ServerPlayerEntity> playersTracking;
 
 	@Override
 	public Stream<ServerPlayerEntity> fabric_getTrackingPlayers() {
-		return field_18250.stream();
+		return playersTracking.stream();
 	}
 }

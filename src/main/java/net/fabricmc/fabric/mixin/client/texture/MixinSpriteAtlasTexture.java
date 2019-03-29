@@ -20,10 +20,10 @@ import com.google.common.base.Joiner;
 import net.fabricmc.fabric.api.client.texture.*;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.impl.client.texture.FabricSprite;
-import net.minecraft.class_1050;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.util.PngFile;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
@@ -60,15 +60,15 @@ public abstract class MixinSpriteAtlasTexture {
 	 */
 	@SuppressWarnings("JavaDoc")
 	@Redirect(method = "method_18160", at = @At(value = "NEW", target = "net/minecraft/client/texture/Sprite"))
-	public Sprite newSprite(Identifier id, class_1050 c, AnimationResourceMetadata animationMetadata) {
+	public Sprite newSprite(Identifier id, PngFile pngFile, AnimationResourceMetadata animationMetadata) {
 		if (fabric_injectedSprites.containsKey(id)) {
 			return fabric_injectedSprites.get(id);
 		} else {
-			return new FabricSprite(id, c, animationMetadata);
+			return new FabricSprite(id, pngFile, animationMetadata);
 		}
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/SpriteAtlasTexture;method_18164(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;"), method = "stitch")
+	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/SpriteAtlasTexture;loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;"), method = "stitch")
 	public Set<Identifier> setHook(Set<Identifier> set) {
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);

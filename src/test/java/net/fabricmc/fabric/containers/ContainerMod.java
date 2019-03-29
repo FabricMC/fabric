@@ -40,7 +40,7 @@ public class ContainerMod implements ModInitializer {
 			serverCommandSourceCommandDispatcher.register(ServerCommandManager
 				.literal("container")
 				.executes(context -> {
-					BlockPos pos = context.getSource().getEntity().getPos();
+					BlockPos pos = new BlockPos(context.getSource().getEntity());
 
 					//Opens a container, sending the block pos
 					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_INVENTORY_CONTAINER, context.getSource().getPlayer(), buf -> buf.writeBlockPos(pos));

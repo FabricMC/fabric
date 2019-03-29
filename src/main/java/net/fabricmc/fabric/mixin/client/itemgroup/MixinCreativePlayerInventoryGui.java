@@ -110,8 +110,8 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 		}
 	}
 
-	@Inject(method = "onInitialized", at = @At("RETURN"))
-	private void onInitialized(CallbackInfo info) {
+	@Inject(method = "init", at = @At("RETURN"), remap = false)
+	private void init(CallbackInfo info) {
 		fabric_updateSelection();
 
 		int xpos = left + 170;

@@ -106,6 +106,6 @@ public final class PlayerStream {
 
 	public static Stream<PlayerEntity> around(World world, BlockPos pos, double radius) {
 		double radiusSq = radius * radius;
-		return world(world).filter((p) -> p.squaredDistanceToCenter(pos) <= radiusSq);
+		return world(world).filter((p) -> p.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= radiusSq);
 	}
 }

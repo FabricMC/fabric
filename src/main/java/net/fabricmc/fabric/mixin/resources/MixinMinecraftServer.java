@@ -33,10 +33,10 @@ import java.io.File;
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
     @Shadow
-    private ResourcePackContainerManager<ResourcePackContainer> field_4595;
+    private ResourcePackContainerManager<ResourcePackContainer> resourcePackContainerManager;
 
     @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
     public void method_3800(File file, LevelProperties properties, CallbackInfo info) {
-	    field_4595.addCreator(new ModResourcePackCreator(ResourceType.DATA));
+	    resourcePackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.DATA));
     }
 }

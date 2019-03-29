@@ -32,11 +32,11 @@ import java.util.stream.Stream;
 public class MixinThreadedAnvilChunkStorage implements EntityTrackerStorageAccessor {
 	@Shadow
 	@Final
-	private Int2ObjectMap<EntityTrackerStreamAccessor> field_18242;
+	private Int2ObjectMap<EntityTrackerStreamAccessor> entityTrackers;
 
 	@Override
 	public Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity) {
-		EntityTrackerStreamAccessor accessor = field_18242.get(entity.getEntityId());
+		EntityTrackerStreamAccessor accessor = entityTrackers.get(entity.getEntityId());
 		return accessor != null ? accessor.fabric_getTrackingPlayers() : Stream.empty();
 	}
 }
