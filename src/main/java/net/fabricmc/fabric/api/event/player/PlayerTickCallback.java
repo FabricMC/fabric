@@ -26,9 +26,23 @@ import net.minecraft.entity.player.PlayerEntity;
  */
 public interface PlayerTickCallback {
 	public static final Event<PlayerTickCallback> EVENT = EventFactory.createArrayBacked(PlayerTickCallback.class,
-			(listeners) -> (player) -> {
-				for (PlayerTickCallback event : listeners) {
-					event.tick(player);
+			(listeners) -> {
+				if (EventFactory.isProfilingEnabled()) {
+					return (player) -> {
+						player.getServer().getProfiler().push("fabricPlayerTick");
+						for (PlayerTickCallback event : listeners) {
+							player.getServer().getProfiler().push(EventFactory.getHandlerName(event));
+							event.tick(player);
+							player.getServer().getProfiler().pop();
+						}
+						player.getServer().getProfiler().pop();
+					};
+				} else {
+					return (player) -> {
+						for (PlayerTickCallback event : listeners) {
+							event.tick(player);
+						}
+					};
 				}
 			}
 	);
