@@ -1,3 +1,5 @@
 {
-  "fabric.gui.creativeTabPage": "Page %d/%d"
+  "fabric.gui.creativeTabPage": "Page %d/%d",
+  "fabric.command.mods_loaded": "Mods loaded:",
+  "fabric.command.by": "by"
 }
