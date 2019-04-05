@@ -36,7 +36,7 @@ import java.util.function.Function;
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final EntityCategory category;
-	private final EntityType.class_4049<T> function;
+	private final EntityType.EntityFactory<T> function;
 	private boolean saveable = true;
 	private boolean summonable = true;
 	private int trackingDistance = -1;
@@ -45,7 +45,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean immuneToFire = false;
 	private EntitySize size = EntitySize.resizeable(-1.0f, -1.0f);
 
-	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.class_4049<T> function) {
+	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
 		this.category = category;
 		this.function = function;
 	}
@@ -55,14 +55,14 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#create(EntityCategory, EntityType.class_4049)}
+	 * @deprecated Use {@link FabricEntityTypeBuilder#create(EntityCategory, EntityType.EntityFactory)}
 	 */
 	@Deprecated
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, Function<? super World, ? extends T> function) {
 		return create(category, (t, w) -> function.apply(w));
 	}
 
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.class_4049<T> function) {
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.EntityFactory<T> function) {
 		return new FabricEntityTypeBuilder<>(category, function);
 	}
 

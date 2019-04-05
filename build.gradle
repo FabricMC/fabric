@@ -27,7 +27,7 @@ targetCompatibility = 1.8
 archivesBaseName = "fabric"
 
 def baseVersion = "0.2.6"
-def mcVersion = "19w14a"
+def mcVersion = "19w14b"
 
 def ENV = System.getenv()
 version = baseVersion + "." + (ENV.BUILD_NUMBER ?: "local")
