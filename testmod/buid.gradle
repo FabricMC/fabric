@@ -1,0 +1,5 @@
+archivesBaseName = "fabric-testmod"
+
+minecraft {
+	refmapName = "net.fabricmc.fabric.testmod.refmap.json"
+}

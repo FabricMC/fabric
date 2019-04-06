@@ -18,3 +18,8 @@
 !/LICENSE
 !/README.md
 !/settings.gradle
+
+!/testmod/
+/testmod/build
+/testmod/out
+
