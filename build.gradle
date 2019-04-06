@@ -13,33 +13,45 @@ buildscript {
 }
 
 plugins {
-	id 'java'
-	id 'eclipse'
-	id 'idea'
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
-apply plugin: net.fabricmc.loom.LoomGradlePlugin
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-archivesBaseName = "fabric"
+def ENV = System.getenv()
 
 def baseVersion = "0.2.6"
 def mcVersion = "19w14b"
 
-def ENV = System.getenv()
-version = baseVersion + "." + (ENV.BUILD_NUMBER ?: "local")
+allprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+
+	apply plugin: net.fabricmc.loom.LoomGradlePlugin
+
+	version = baseVersion + "." + (ENV.BUILD_NUMBER ?: "local")
+
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	dependencies {
+		minecraft "com.mojang:minecraft:$mcVersion"
+		mappings "net.fabricmc:yarn:$mcVersion.1"
+		modCompile "net.fabricmc:fabric-loader:0.3.7.109"
+	}
+}
+
+subprojects {
+	//Depend all of the sub projects on this root project
+	dependencies {
+		compile project(':')
+	}
+}
+
+
+archivesBaseName = "fabric"
 
 minecraft {
 	refmapName = "net.fabricmc.fabric.refmap.json"
-}
-
-dependencies {
-	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion.1"
-	modCompile "net.fabricmc:fabric-loader:0.3.7.109"
 }
 
 processResources {
