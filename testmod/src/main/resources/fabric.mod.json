@@ -14,7 +14,7 @@
     "net.fabricmc.fabric.events.PickBlockEventModClient",
     "net.fabricmc.fabric.item.FuelMod",
     "net.fabricmc.fabric.itemgroup.ItemGroupMod",
-    "net.fabricmc.keybinding.KeyBindingModClient",
+    "net.fabricmc.fabric.keybinding.KeyBindingModClient",
     "net.fabricmc.fabric.loot.LootEntryMod",
     "net.fabricmc.fabric.model.ModelModClient",
     "net.fabricmc.fabric.resources.ResourceReloadModClient"
