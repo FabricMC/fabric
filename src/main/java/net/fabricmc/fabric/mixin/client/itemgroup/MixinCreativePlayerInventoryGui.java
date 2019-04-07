@@ -68,7 +68,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	@Override
 	public void fabric_nextPage() {
-		if (fabric_getPageOffset(fabric_currentPage + 1) > ItemGroup.GROUPS.length) {
+		if (fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroup.GROUPS.length) {
 			return;
 		}
 		fabric_currentPage++;
@@ -86,13 +86,13 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractPlayerInve
 
 	@Override
 	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
-		return ItemGroup.GROUPS.length != 12;
+		return ItemGroup.GROUPS.length > 12;
 	}
 
 	@Override
 	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
 		if (type == FabricCreativeGuiComponents.Type.NEXT) {
-			return !(fabric_getPageOffset(fabric_currentPage + 1) > ItemGroup.GROUPS.length);
+			return !(fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroup.GROUPS.length);
 		}
 		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
 			return fabric_currentPage != 0;
