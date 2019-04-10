@@ -26,11 +26,11 @@ targetCompatibility = 1.8
 
 archivesBaseName = "fabric"
 
-def baseVersion = "0.2.6"
-def mcVersion = "19w14b"
+def baseVersion = "0.2.7"
+def mcVersion = "1.14 Pre-Release 1"
 
 def ENV = System.getenv()
-version = baseVersion + "." + (ENV.BUILD_NUMBER ?: "local")
+version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
 minecraft {
 	refmapName = "net.fabricmc.fabric.refmap.json"
@@ -38,8 +38,8 @@ minecraft {
 
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion.1"
-	modCompile "net.fabricmc:fabric-loader:0.3.7.109"
+	mappings "net.fabricmc:yarn:$mcVersion+build.3"
+	modCompile "net.fabricmc:fabric-loader:0.4.0+build.116"
 }
 
 processResources {

@@ -29,7 +29,7 @@ public class KeyBindingModClient implements ClientModInitializer {
 		KeyBindingRegistry.INSTANCE.register(
 			FabricKeyBinding.Builder.create(
 				new Identifier("fabric:test"),
-				InputUtil.Type.KEY_KEYBOARD,
+				InputUtil.Type.KEYSYM,
 				37,
 				"fabric.test"
 			).build()
