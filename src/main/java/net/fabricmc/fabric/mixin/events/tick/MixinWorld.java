@@ -30,8 +30,8 @@ import java.util.function.BooleanSupplier;
 @Mixin(World.class)
 public class MixinWorld {
 	// TODO split into ClientWorld/ServerWorld ticks? mmm need more mappings
-	@Inject(at = @At("RETURN"), method = "method_18471")
-	public void method_18471(CallbackInfo info) {
+	@Inject(at = @At("RETURN"), method = "tickBlockEntities ")
+	public void tickBlockEntities(CallbackInfo info) {
 		WorldTickCallback.EVENT.invoker().tick((World) (Object) this);
 	}
 }

@@ -34,8 +34,8 @@ public class MixinMinecraftClient {
 	private static Logger LOGGER;
 
 	// Unmap the registry before loading a new SP/MP setup.
-	@Inject(at = @At("RETURN"), method = "method_18096")
-	public void method_18096(Screen screen_1, CallbackInfo info) {
+	@Inject(at = @At("RETURN"), method = "disconnect")
+	public void disconnect(Screen screen_1, CallbackInfo info) {
 		ClientSidePacketRegistryImpl.invalidateRegisteredIdList();
 
 		try {
