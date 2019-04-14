@@ -37,8 +37,9 @@ public class MixinServerCommandManager {
 	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
 	public void addMethods(boolean dedicated, CallbackInfo info) {
 		// TODO: Run before findAmbiguities
-		if(!dedicated){
-			CommandRegistry.INSTANCE.entries(false).forEach((e) -> e.accept(dispatcher));
+		CommandRegistry.INSTANCE.entries(false).forEach(e -> e.accept(dispatcher));
+		if (dedicated) {
+			CommandRegistry.INSTANCE.entries(true).forEach(e -> e.accept(dispatcher));
 		}
 	}
 }
