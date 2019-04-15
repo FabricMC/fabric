@@ -32,7 +32,7 @@ public interface FluidMeter {
     /**
      * Removes fluid from the internal tally, up to the given amount. If the amount given exceeds
      * the current tally, only the present amount will be removed and that amount returned as the result.
-     * (Negative amounts can never occur.)
+     * (Negative amounts can never occur.)<p>
      */
     long remove(long amount, FluidUnit unit);
     
@@ -43,7 +43,7 @@ public interface FluidMeter {
     double total(FluidUnit unit);
     
     /**
-     * Returns the total number of buckets, excluding any fractional amount. Always exact. 
+     * Returns current fluid amount in buckets, excluding any fractional amount. Always exact. 
      */
     long buckets();
     
@@ -55,24 +55,39 @@ public interface FluidMeter {
     long fraction(FluidUnit unit);
     
     /**
-     * Sets the current total, discarding the existing contents.
+     * Sets the current fluid amount, discarding the existing contents.
      */
     void set(long amount, FluidUnit unit);
     
     /**
-     * True if contained internal tally is exactly zero.
+     * True if current fluid amount is exactly zero.
      */
     boolean  isEmpty();
     
+    
+    /**
+     * True if the remaining amount is less than the smallest registered unit that can be extracted.
+     * This will generally only happen when mixed units are add/removed to the same meter (like a tank). <p>
+     * 
+     * For example, a tank that has microliter resolution holding one bucket will have an extremely small 
+     * amount remaining if two bottles are removed and then all whole remaining microliters are removed. 
+     * If microliter is the smallest registered unit, the tank would then be virtually empty because 
+     * otherwise the amount could never be removed. <p>
+     * 
+     * Such a tank might want to clear the tank at that point, (via {@link #set(long, FluidUnit)} or 
+     * do so if a different fluid is input, depending on the intended usage of the tank. 
+     */
+    boolean  isVirtualEmpty();
+    
     /** 
-     * Serializes contents to an Nbt tag. Includes the current
+     * Serializes contents to Nbt. Includes the current
      * internal denominator for fractional units in case 
      * FluidUnit configuration changes on reload.
      */
     LongArrayTag toTag();
     
     /** 
-     * Deserializes contents from an Nbt tag. If FluidUnit configuration
+     * Deserializes contents from Nbt. If FluidUnit configuration
      * is no longer compatible will attempt to convert - some fractional fluid 
      * may be lost when configuration is changed if the old amount cannot
      * be accurately represented in the new configuration.
