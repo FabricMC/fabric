@@ -54,7 +54,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 				// stay closer to the vanilla codepath
 				handler.sendPacket(packet);
 			} else {
-				handler.getClientConnection().sendPacket(packet, completionListener);
+				handler.getClientConnection().send(packet, completionListener);
 			}
 		} else {
 			// TODO: log warning

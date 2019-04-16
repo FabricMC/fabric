@@ -68,7 +68,7 @@ public class ModelModClient implements ClientModInitializer {
 					}
 
 					@Override
-					public BakedModel bake(ModelLoader var1, Function<Identifier, Sprite> var2, ModelRotationContainer var3) {
+					public BakedModel bake(ModelLoader var1, Function<Identifier, Sprite> var2, ModelBakeSettings var3) {
 						System.out.println("--- Model baked! ---");
 
 						return bakedModel = new BakedModel() {
