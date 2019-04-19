@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.entity;
 
+import net.fabricmc.fabric.impl.entity.FabricEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntitySize;
@@ -129,31 +130,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new EntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size) {
-			@Override
-			public int getMaxTrackDistance() {
-				if (trackingDistance == -1) {
-					return super.getMaxTrackDistance();
-				}
-				return (trackingDistance + 15) / 16;
-			}
-
-			@Override
-			public int getTrackTickInterval() {
-				if (updateIntervalTicks == -1) {
-					return super.getTrackTickInterval();
-				}
-				return updateIntervalTicks;
-			}
-
-			@Override
-			public boolean alwaysUpdateVelocity() {
-				if (alwaysUpdateVelocity == null) {
-					return super.alwaysUpdateVelocity();
-				}
-				return alwaysUpdateVelocity;
-			}
-		};
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}
