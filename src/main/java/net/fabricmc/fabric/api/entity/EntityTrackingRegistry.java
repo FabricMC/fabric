@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.network.Packet;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,9 +37,6 @@ import java.util.function.Function;
 public class EntityTrackingRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	/**
-	 * @deprecated Should be hidden; will be removed in 0.3.0.
-	 */
 	@Deprecated
 	public static class Entry {
 		private final int trackingDistance;
@@ -84,6 +82,7 @@ public class EntityTrackingRegistry {
 
 	@Deprecated
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
+		LOGGER.warn("Deprecation warning: As of February 2019, registering tracking via EntityTrackingRegistry is no longer effective. Use FabricEntityTypeBuilder. (Entity: " + Registry.ENTITY_TYPE.getId(type) + ")");
 		entries.put(type, new Entry(trackingDistance, updateIntervalTicks, alwaysUpdateVelocity));
 	}
 }
