@@ -33,7 +33,7 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ThreadTaskQueue;
+import net.minecraft.util.ThreadExecutor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -79,7 +79,7 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	}
 
 	@Override
-	public ThreadTaskQueue getTaskQueue() {
+	public ThreadExecutor getTaskQueue() {
 		return client;
 	}
 }

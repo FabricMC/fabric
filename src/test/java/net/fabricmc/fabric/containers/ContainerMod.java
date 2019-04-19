@@ -23,7 +23,7 @@ import net.minecraft.container.Container;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -37,7 +37,7 @@ public class ContainerMod implements ModInitializer {
 	public void onInitialize() {
 		//Registers a basic server side command that shows that the openContainer works from the server side.
 		CommandRegistry.INSTANCE.register(false, serverCommandSourceCommandDispatcher ->
-			serverCommandSourceCommandDispatcher.register(ServerCommandManager
+			serverCommandSourceCommandDispatcher.register(CommandManager
 				.literal("container")
 				.executes(context -> {
 					BlockPos pos = new BlockPos(context.getSource().getEntity());

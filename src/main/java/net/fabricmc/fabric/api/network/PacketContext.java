@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.network;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ThreadTaskQueue;
+import net.minecraft.util.ThreadExecutor;
 
 /**
  * Interface defining a context used during packet processing. Allows access
@@ -59,5 +59,5 @@ public interface PacketContext {
 	 *
 	 * @return The thread task queue.
 	 */
-	ThreadTaskQueue getTaskQueue();
+	ThreadExecutor getTaskQueue();
 }

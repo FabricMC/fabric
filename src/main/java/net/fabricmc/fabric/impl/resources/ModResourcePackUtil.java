@@ -45,7 +45,7 @@ public final class ModResourcePackUtil {
 
     public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
         for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-            Path path = container.getRoot();
+            Path path = container.getRootPath();
             ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
 	        if (!pack.getNamespaces(type).isEmpty()) {
 		        packList.add(pack);

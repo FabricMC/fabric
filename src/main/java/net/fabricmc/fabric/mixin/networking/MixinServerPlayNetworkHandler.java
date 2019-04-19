@@ -25,7 +25,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
-import net.minecraft.util.ThreadTaskQueue;
+import net.minecraft.util.ThreadExecutor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -57,7 +57,7 @@ public class MixinServerPlayNetworkHandler implements PacketContext {
 	}
 
 	@Override
-	public ThreadTaskQueue getTaskQueue() {
+	public ThreadExecutor getTaskQueue() {
 		return server;
 	}
 }
