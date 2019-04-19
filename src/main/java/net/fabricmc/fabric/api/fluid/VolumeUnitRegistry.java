@@ -16,19 +16,19 @@
 
 package net.fabricmc.fabric.api.fluid;
 
-import net.fabricmc.fabric.impl.fluid.FluidUnitRegistryImpl;
+import net.fabricmc.fabric.impl.fluid.VolumeUnitRegistryImpl;
 import net.minecraft.util.Identifier;
 
 
-public interface FluidUnitRegistry {
-    static final FluidUnitRegistry INSTANCE = FluidUnitRegistryImpl.INSTANCE;
+public interface VolumeUnitRegistry {
+    static final VolumeUnitRegistry INSTANCE = VolumeUnitRegistryImpl.INSTANCE;
     
     // Some potentially common units
-    static final FluidUnit BUCKET = INSTANCE.register(new Identifier("fabric", "bucket"), 1);
-    static final FluidUnit BOTTLE = INSTANCE.register(new Identifier("fabric", "bottle"), 3);
-    static final FluidUnit INGOT = INSTANCE.register(new Identifier("fabric", "ingot"), 9);
-    static final FluidUnit NUGGET = INSTANCE.register(new Identifier("fabric", "nugget"), 81);
-    static final FluidUnit LITER = INSTANCE.register(new Identifier("fabric", "liter"), 1000);
+    static final VolumeUnit BUCKET = INSTANCE.register(new Identifier("fabric", "bucket"), 1);
+    static final VolumeUnit BOTTLE = INSTANCE.register(new Identifier("fabric", "bottle"), 3);
+    static final VolumeUnit INGOT = INSTANCE.register(new Identifier("fabric", "ingot"), 9);
+    static final VolumeUnit NUGGET = INSTANCE.register(new Identifier("fabric", "nugget"), 81);
+    static final VolumeUnit LITER = INSTANCE.register(new Identifier("fabric", "liter"), 1000);
     
     /**
      * Creates new unit if it does not exist or returns existing unit if exact match found.
@@ -36,14 +36,14 @@ public interface FluidUnitRegistry {
      * with a different value for unitsPerBucket.<p>
      * 
      * Must be called during mod initialization and not after.  The first instantiation of
-     * {@link FluidUnit} will cause the registry to become locked. Any call after that will 
+     * {@link VolumeUnit} will cause the registry to become locked. Any call after that will 
      * throw UnsupporteOperationException.<p>
      * 
      * @param id
      * @param unitsPerBucket  Must be >= 1; will throw IllegalArgumentException otherwise
      * @return
      */
-    FluidUnit register(Identifier id, int unitsPerBucket);
+    VolumeUnit register(Identifier id, int unitsPerBucket);
     
-    FluidUnit get(Identifier id);
+    VolumeUnit get(Identifier id);
 }

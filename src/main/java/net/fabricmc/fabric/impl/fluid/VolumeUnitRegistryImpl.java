@@ -17,22 +17,22 @@
 package net.fabricmc.fabric.impl.fluid;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.fluid.FluidUnit;
-import net.fabricmc.fabric.api.fluid.FluidUnitRegistry;
+import net.fabricmc.fabric.api.fluid.VolumeUnit;
+import net.fabricmc.fabric.api.fluid.VolumeUnitRegistry;
 import net.minecraft.util.Identifier;
 
-public class FluidUnitRegistryImpl implements FluidUnitRegistry {
-    public static final FluidUnitRegistryImpl INSTANCE = new FluidUnitRegistryImpl();
+public class VolumeUnitRegistryImpl implements VolumeUnitRegistry {
+    public static final VolumeUnitRegistryImpl INSTANCE = new VolumeUnitRegistryImpl();
     
-    private static final Object2ObjectOpenHashMap<Identifier, FluidUnitImpl> UNITS = new Object2ObjectOpenHashMap<>();
+    private static final Object2ObjectOpenHashMap<Identifier, VolumeUnitImpl> UNITS = new Object2ObjectOpenHashMap<>();
     
     /** Set to non-zero value on first retrieval */
     private long leastCommonMultiple = 0;
     
-    private FluidUnitRegistryImpl() {}
+    private VolumeUnitRegistryImpl() {}
     
     @Override
-    public synchronized FluidUnit register(Identifier id, int unitsPerBucket) {
+    public synchronized VolumeUnit register(Identifier id, int unitsPerBucket) {
         if(unitsPerBucket <= 0) {
             throw new IllegalArgumentException("FluidUnit unitsPerBucket must be >= 1");
         } else if(leastCommonMultiple != 0) {
@@ -40,9 +40,9 @@ public class FluidUnitRegistryImpl implements FluidUnitRegistry {
                     + "instantiated a FluidMeter during initialization, prematurely freezing the FluidUnitRegistry.");
         }
         
-        FluidUnitImpl result = UNITS.get(id);
+        VolumeUnitImpl result = UNITS.get(id);
         if(result == null) {
-            result = new FluidUnitImpl(id, unitsPerBucket);
+            result = new VolumeUnitImpl(id, unitsPerBucket);
             UNITS.put(id, result);
         } else if (result.unitsPerBucket() != unitsPerBucket) {
             throw new IllegalStateException("FluidUnit with same identifer already exists with a different units per bucket.");
@@ -51,7 +51,7 @@ public class FluidUnitRegistryImpl implements FluidUnitRegistry {
     }
 
     @Override
-    public FluidUnit get(Identifier id) {
+    public VolumeUnit get(Identifier id) {
         return UNITS.get(id);
     }
     

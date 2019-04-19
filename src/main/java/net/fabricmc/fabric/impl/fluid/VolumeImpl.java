@@ -16,24 +16,24 @@
 
 package net.fabricmc.fabric.impl.fluid;
 
-import net.fabricmc.fabric.api.fluid.FluidMeter;
-import net.fabricmc.fabric.api.fluid.FluidUnit;
+import net.fabricmc.fabric.api.fluid.Volume;
+import net.fabricmc.fabric.api.fluid.VolumeUnit;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.util.PacketByteBuf;
 
-class FluidMeterImpl implements FluidMeter {
+class VolumeImpl implements Volume {
     private long buckets = 0;
     private long fraction = 0;
     
-    FluidMeterImpl() {};
+    VolumeImpl() {};
     
     @Override
-    public long add(long amount, FluidUnit unit) {
+    public long add(long amount, VolumeUnit unit) {
         if(buckets == Long.MAX_VALUE) {
             return 0;
         }
         
-        final long lcm = FluidUnitRegistryImpl.INSTANCE.lcm();
+        final long lcm = VolumeUnitRegistryImpl.INSTANCE.lcm();
         final long divisor = unit.unitsPerBucket();
         
         long bucketsIn = amount / divisor;
@@ -53,8 +53,8 @@ class FluidMeterImpl implements FluidMeter {
     }
 
     @Override
-    public long remove(long amount, FluidUnit unit) {
-        final long lcm = FluidUnitRegistryImpl.INSTANCE.lcm();
+    public long remove(long amount, VolumeUnit unit) {
+        final long lcm = VolumeUnitRegistryImpl.INSTANCE.lcm();
         final long divisor = unit.unitsPerBucket();
         
         long bucketsOut = amount / divisor;
@@ -82,9 +82,9 @@ class FluidMeterImpl implements FluidMeter {
     }
 
     @Override
-    public double total(FluidUnit unit) {
+    public double total(VolumeUnit unit) {
         final int unitsPerBucket = unit.unitsPerBucket();
-        return (double)buckets * unitsPerBucket + (double)fraction * unitsPerBucket / FluidUnitRegistryImpl.INSTANCE.lcm();
+        return (double)buckets * unitsPerBucket + (double)fraction * unitsPerBucket / VolumeUnitRegistryImpl.INSTANCE.lcm();
     }
 
     @Override
@@ -93,13 +93,13 @@ class FluidMeterImpl implements FluidMeter {
     }
 
     @Override
-    public long fraction(FluidUnit unit) {
-        return fraction * unit.unitsPerBucket() / FluidUnitRegistryImpl.INSTANCE.lcm();
+    public long fraction(VolumeUnit unit) {
+        return fraction * unit.unitsPerBucket() / VolumeUnitRegistryImpl.INSTANCE.lcm();
     }
 
     @Override
-    public void set(long amount, FluidUnit unit) {
-        final long lcm = FluidUnitRegistryImpl.INSTANCE.lcm();
+    public void set(long amount, VolumeUnit unit) {
+        final long lcm = VolumeUnitRegistryImpl.INSTANCE.lcm();
         final long divisor = unit.unitsPerBucket();
         buckets = amount / divisor;
         final long partialUnits = amount - (buckets * divisor);
@@ -112,7 +112,7 @@ class FluidMeterImpl implements FluidMeter {
     }
 
     @Override
-    public boolean isVirtuallyEmpty(FluidUnit unit) {
+    public boolean isVirtuallyEmpty(VolumeUnit unit) {
         return buckets == 0 && fraction(unit) == 0;
     }
     
@@ -121,7 +121,7 @@ class FluidMeterImpl implements FluidMeter {
         long[] data = new long[3];
         data[0] = buckets;
         data[1] = fraction;
-        data[2] = FluidUnitRegistryImpl.INSTANCE.lcm();
+        data[2] = VolumeUnitRegistryImpl.INSTANCE.lcm();
         return new LongArrayTag(data);
     }
 
@@ -130,7 +130,7 @@ class FluidMeterImpl implements FluidMeter {
         long[] data = tag.getLongArray();
         buckets = data[0];
         
-        final long lcm = FluidUnitRegistryImpl.INSTANCE.lcm();
+        final long lcm = VolumeUnitRegistryImpl.INSTANCE.lcm();
         if(data[2] == lcm) {
             fraction = data[1];
         } else {

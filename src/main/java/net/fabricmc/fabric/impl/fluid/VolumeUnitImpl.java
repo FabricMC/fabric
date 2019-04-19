@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.impl.fluid;
 
-import net.fabricmc.fabric.api.fluid.FluidUnit;
+import net.fabricmc.fabric.api.fluid.VolumeUnit;
 import net.minecraft.util.Identifier;
 
-final class FluidUnitImpl implements FluidUnit {
+final class VolumeUnitImpl implements VolumeUnit {
     private final Identifier id;
     private final int unitsPerBucket;
         
-    FluidUnitImpl(Identifier id, int unitsPerBucket) {
+    VolumeUnitImpl(Identifier id, int unitsPerBucket) {
         this.id = id;
         this.unitsPerBucket = unitsPerBucket;
     }

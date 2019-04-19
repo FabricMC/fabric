@@ -16,39 +16,39 @@
 
 package net.fabricmc.fabric.impl.fluid;
 
-import net.fabricmc.fabric.api.fluid.FluidMeter;
-import net.fabricmc.fabric.api.fluid.FluidMeterFactory;
-import net.fabricmc.fabric.api.fluid.FluidUnit;
+import net.fabricmc.fabric.api.fluid.Volume;
+import net.fabricmc.fabric.api.fluid.VolumeFactory;
+import net.fabricmc.fabric.api.fluid.VolumeUnit;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.util.PacketByteBuf;
 
-public class FluidMeterFactoryImpl implements FluidMeterFactory {
-    public static final FluidMeterFactoryImpl INSTANCE = new FluidMeterFactoryImpl();
+public class VolumeFactoryImpl implements VolumeFactory {
+    public static final VolumeFactoryImpl INSTANCE = new VolumeFactoryImpl();
     
-    private FluidMeterFactoryImpl() {}
+    private VolumeFactoryImpl() {}
     
     @Override
-    public FluidMeter create() {
-        return new FluidMeterImpl();
+    public Volume create() {
+        return new VolumeImpl();
     }
     
     @Override
-    public FluidMeter create(long startingAmount, FluidUnit units) {
-        FluidMeterImpl result = new FluidMeterImpl();
+    public Volume create(long startingAmount, VolumeUnit units) {
+        VolumeImpl result = new VolumeImpl();
         result.add(startingAmount, units);
         return result;
     }
     
     @Override
-    public FluidMeter fromTag(LongArrayTag tag) {
-        FluidMeterImpl result = new FluidMeterImpl();
+    public Volume fromTag(LongArrayTag tag) {
+        VolumeImpl result = new VolumeImpl();
         result.fromTag(tag);
         return result;
     }
     
     @Override
-    public FluidMeter fromPacket(PacketByteBuf packetBuffer) {
-        FluidMeterImpl result = new FluidMeterImpl();
+    public Volume fromPacket(PacketByteBuf packetBuffer) {
+        VolumeImpl result = new VolumeImpl();
         result.fromPacket(packetBuffer);
         return result;
     }

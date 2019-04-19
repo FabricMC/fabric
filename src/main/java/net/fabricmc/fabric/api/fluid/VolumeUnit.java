@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
  * Note that transfer of whole buckets is always supported and there is no need/ability
  * to register units that are larger than one bucket.
  */
-public interface FluidUnit {
+public interface VolumeUnit {
     Identifier id();
     
     int unitsPerBucket();

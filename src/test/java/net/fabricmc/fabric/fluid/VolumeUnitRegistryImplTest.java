@@ -19,40 +19,40 @@ package net.fabricmc.fabric.fluid;
 import org.junit.jupiter.api.Test;
 
 
-import net.fabricmc.fabric.api.fluid.FluidMeter;
-import net.fabricmc.fabric.api.fluid.FluidMeterFactory;
-import net.fabricmc.fabric.api.fluid.FluidUnit;
-import net.fabricmc.fabric.api.fluid.FluidUnitRegistry;
+import net.fabricmc.fabric.api.fluid.Volume;
+import net.fabricmc.fabric.api.fluid.VolumeFactory;
+import net.fabricmc.fabric.api.fluid.VolumeUnit;
+import net.fabricmc.fabric.api.fluid.VolumeUnitRegistry;
 import net.minecraft.util.Identifier;
 
 /**
  * Basic unit test for the Fluid API - not a mod.
  */
-class FluidUnitRegistryImplTest {
+class VolumeUnitRegistryImplTest {
 
     @SuppressWarnings("unused")
     @Test
     void test() {
-        FluidUnitRegistry instance = FluidUnitRegistry.INSTANCE;
-        FluidUnit microLiter = instance.register(new Identifier("fabric", "micro"), 1000000000);
-        FluidUnit quarter = instance.register(new Identifier("fabric", "quarter"), 4);
-        FluidUnit drop = instance.register(new Identifier("fabric", "drop"), 81 * 9);
-        FluidUnit level = instance.register(new Identifier("fabric", "level"), 16);
+        VolumeUnitRegistry instance = VolumeUnitRegistry.INSTANCE;
+        VolumeUnit microLiter = instance.register(new Identifier("fabric", "micro"), 1000000000);
+        VolumeUnit quarter = instance.register(new Identifier("fabric", "quarter"), 4);
+        VolumeUnit drop = instance.register(new Identifier("fabric", "drop"), 81 * 9);
+        VolumeUnit level = instance.register(new Identifier("fabric", "level"), 16);
         
-        FluidMeter meter = FluidMeterFactory.INSTANCE.create();
+        Volume meter = VolumeFactory.INSTANCE.create();
         
-        assert meter.add(1000, FluidUnitRegistry.BUCKET) == 1000;
+        assert meter.add(1000, VolumeUnitRegistry.BUCKET) == 1000;
         assert meter.add(402, quarter) == 402;
         assert meter.buckets() == 1100;
         assert meter.fraction(quarter) == 2;
-        assert meter.total(FluidUnitRegistry.BUCKET) == 1100.5;
+        assert meter.total(VolumeUnitRegistry.BUCKET) == 1100.5;
         
-        assert meter.remove(3300, FluidUnitRegistry.BOTTLE) == 3300;
+        assert meter.remove(3300, VolumeUnitRegistry.BOTTLE) == 3300;
         assert meter.buckets() == 0;
         assert !meter.isEmpty();
-        assert meter.total(FluidUnitRegistry.BUCKET) == 0.5;
-        assert meter.remove(1, FluidUnitRegistry.BOTTLE) == 1;
-        assert meter.remove(1, FluidUnitRegistry.BOTTLE) == 0;
+        assert meter.total(VolumeUnitRegistry.BUCKET) == 0.5;
+        assert meter.remove(1, VolumeUnitRegistry.BOTTLE) == 1;
+        assert meter.remove(1, VolumeUnitRegistry.BOTTLE) == 0;
         assert !meter.isEmpty();
         final long maxMicros = 1000000000 / 6;
         assert meter.remove(maxMicros, microLiter) == maxMicros;

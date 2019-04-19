@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.fluid;
 
-import net.fabricmc.fabric.impl.fluid.FluidMeterFactoryImpl;
+import net.fabricmc.fabric.impl.fluid.VolumeFactoryImpl;
 import net.minecraft.nbt.LongArrayTag;
 import net.minecraft.util.PacketByteBuf;
 
@@ -27,14 +27,14 @@ import net.minecraft.util.PacketByteBuf;
  * because fluid units may be registered in any sequence and instances
  * could become invalid if new units are registered after creation.
  */
-public interface FluidMeterFactory {
-    public static final FluidMeterFactory INSTANCE = FluidMeterFactoryImpl.INSTANCE;
+public interface VolumeFactory {
+    public static final VolumeFactory INSTANCE = VolumeFactoryImpl.INSTANCE;
 
-    FluidMeter create();
+    Volume create();
 
-    FluidMeter create(long startingAmount, FluidUnit units);
+    Volume create(long startingAmount, VolumeUnit units);
 
-    FluidMeter fromTag(LongArrayTag tag);
+    Volume fromTag(LongArrayTag tag);
 
-    FluidMeter fromPacket(PacketByteBuf packetBuffer);
+    Volume fromPacket(PacketByteBuf packetBuffer);
 }

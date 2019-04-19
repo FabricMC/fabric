@@ -22,11 +22,11 @@ import net.minecraft.util.PacketByteBuf;
 /**
  * For use within a tank, machine, item or other game entity to track
  * the stored amount of a fluid or other volumetric substance measured
- * and transfered using {@link FluidUnit}.<p>
+ * and transfered using {@link VolumeUnit}.<p>
  * 
  * By design, it serves only to handle the accounting of contents.
  * Assumes all units tracked are for the <em>same</em> fluid. (Tracking
- * multiple fluids in the same device will require more than one {@link FluidMeter}.)
+ * multiple fluids in the same device will require more than one {@link Volume}.)
  * Does not know anything about the tracked fluid or its behavior.<p>
  * 
  * The enclosing device may constrain the units allowed for transfer in or out
@@ -35,26 +35,26 @@ import net.minecraft.util.PacketByteBuf;
  * The enclosing device is also responsible for transfer semantics such as capacity limits, 
  * simulated operations, etc.
  */
-public interface FluidMeter {
+public interface Volume {
     /**
      * Adds fluid to this instance, returning the amount added. The meter can track at 
      * least {@link Long#MAX_VALUE} buckets of fluid.  Any attempt to add more than the implemented 
      * limit will result in a partial addition.
      */
-    long add(long amount, FluidUnit unit);
+    long add(long amount, VolumeUnit unit);
     
     /**
      * Removes fluid from this instance, up to the given amount. If the amount given exceeds
      * the present amount, only the present amount will be removed and that amount returned as the result.
      * (Negative amounts can never occur.)<p>
      */
-    long remove(long amount, FluidUnit unit);
+    long remove(long amount, VolumeUnit unit);
     
     /**
      * Returns the current fluid amount in the chosen unit. The integer portion of the return value
      * will be exact unless the total is larger than double precision can support. 
      */
-    double total(FluidUnit unit);
+    double total(VolumeUnit unit);
     
     /**
      * Returns current fluid amount in buckets, excluding any fractional amount. Always exact. 
@@ -66,12 +66,12 @@ public interface FluidMeter {
      * Result is rounded down when internal total is not a multiple of the requested unit.
      * Otherwise always exact.
      */
-    long fraction(FluidUnit unit);
+    long fraction(VolumeUnit unit);
     
     /**
      * Sets the current fluid amount, discarding the existing contents.
      */
-    void set(long amount, FluidUnit unit);
+    void set(long amount, VolumeUnit unit);
     
     /**
      * True if current fluid amount is exactly zero.
@@ -90,10 +90,10 @@ public interface FluidMeter {
      * If microliter is the smallest registered unit or at least the smallest unit recognized by the tank, 
      * the tank would then be virtually empty because the amount could never be removed.<p>
      * 
-     * Such a tank might want to clear the tank at that point, (via {@link #set(long, FluidUnit)} or 
+     * Such a tank might want to clear the tank at that point, (via {@link #set(long, VolumeUnit)} or 
      * do so if a different fluid is input, depending on the intended usage of the tank. 
      */
-    boolean isVirtuallyEmpty(FluidUnit unit);
+    boolean isVirtuallyEmpty(VolumeUnit unit);
     
     /** 
      * Serializes contents to Nbt. Includes the current
