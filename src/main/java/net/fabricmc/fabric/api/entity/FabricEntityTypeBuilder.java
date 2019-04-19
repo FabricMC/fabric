@@ -41,7 +41,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean summonable = true;
 	private int trackingDistance = -1;
 	private int updateIntervalTicks = -1;
-	private boolean alwaysUpdateVelocity = true;
+	private Boolean alwaysUpdateVelocity;
 	private boolean immuneToFire = false;
 	private EntitySize size = EntitySize.resizeable(-1.0f, -1.0f);
 
@@ -95,14 +95,31 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
+	@Deprecated
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistance, int updateIntervalTicks) {
 		return trackable(trackingDistance, updateIntervalTicks, true);
 	}
 
+	@Deprecated
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistance, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
 		this.trackingDistance = trackingDistance;
 		this.updateIntervalTicks = updateIntervalTicks;
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> maxTrackDistance(int chunks) {
+		this.trackingDistance = chunks * 16;
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> trackTickInterval(int ticks) {
+		this.updateIntervalTicks = ticks;
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> alwaysUpdateVelocity(boolean value) {
+		this.alwaysUpdateVelocity = value;
 		return this;
 	}
 
@@ -112,10 +129,32 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new EntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size);
-		if (trackingDistance != -1) {
-			EntityTrackingRegistry.INSTANCE.register(type, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
-		}
+		EntityType<T> type = new EntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size) {
+			@Override
+			public int getMaxTrackDistance() {
+				if (trackingDistance == -1) {
+					return super.getMaxTrackDistance();
+				}
+				return (trackingDistance + 15) / 16;
+			}
+
+			@Override
+			public int getTrackTickInterval() {
+				if (updateIntervalTicks == -1) {
+					return super.getTrackTickInterval();
+				}
+				return updateIntervalTicks;
+			}
+
+			@Override
+			public boolean alwaysUpdateVelocity() {
+				if (alwaysUpdateVelocity == null) {
+					return super.alwaysUpdateVelocity();
+				}
+				return alwaysUpdateVelocity;
+			}
+		};
+
 		return type;
 	}
 }

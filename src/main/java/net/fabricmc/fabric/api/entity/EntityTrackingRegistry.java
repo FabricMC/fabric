@@ -28,8 +28,11 @@ import java.util.function.Function;
 
 /**
  * Registry for server->client entity tracking values.
+ *
+ * @deprecated Use FabricEntityTypeBuilder methods
  */
 @SuppressWarnings("deprecation")
+@Deprecated
 public class EntityTrackingRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -61,6 +64,7 @@ public class EntityTrackingRegistry {
 		}
 	}
 
+	@Deprecated
 	public static final EntityTrackingRegistry INSTANCE = new EntityTrackingRegistry();
 	private final Map<EntityType, Entry> entries = new HashMap<>();
 
@@ -68,18 +72,17 @@ public class EntityTrackingRegistry {
 
 	}
 
-	/**
-	 * @deprecated Should be hidden; will be removed in 0.3.0.
-	 */
 	@Deprecated
 	public Entry get(EntityType type) {
 		return entries.get(type);
 	}
 
+	@Deprecated
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks) {
 		register(type, trackingDistance, updateIntervalTicks, true);
 	}
 
+	@Deprecated
 	public void register(EntityType type, int trackingDistance, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
 		entries.put(type, new Entry(trackingDistance, updateIntervalTicks, alwaysUpdateVelocity));
 	}
