@@ -108,8 +108,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> maxTrackDistance(int chunks) {
-		this.trackingDistance = chunks * 16;
+	public FabricEntityTypeBuilder<T> maxTrackDistance(int blocks) {
+		this.trackingDistance = blocks;
 		return this;
 	}
 
