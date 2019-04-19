@@ -42,7 +42,7 @@ public abstract class MixinSafeWorldView implements TerrainBlockView {
 
         for (WorldChunk[] chunkA : chunks) {
             for (WorldChunk chunkB : chunkA) {
-                for (Map.Entry<BlockPos, BlockEntity> entry: chunkB.getBlockEntityMap().entrySet()) {
+                for (Map.Entry<BlockPos, BlockEntity> entry: chunkB.getBlockEntities().entrySet()) {
                     BlockPos entPos = entry.getKey();
                     if (entPos.getX() >= posFrom.getX() && entPos.getX() <= posTo.getX()
                             && entPos.getY() >= posFrom.getY() && entPos.getY() <= posTo.getY()
