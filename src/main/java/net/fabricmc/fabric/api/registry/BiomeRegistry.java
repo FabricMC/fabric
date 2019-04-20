@@ -36,11 +36,6 @@ public class BiomeRegistry
 	{	
 		
 		Registry.register(Registry.BIOME, ID, biome);
-		
-		if (biome.hasParent())
-		{
-			Biome.PARENT_BIOME_ID_MAP.set(biome, Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(biome.getParent()))));
-		}
 
 		return biome;
 	}
