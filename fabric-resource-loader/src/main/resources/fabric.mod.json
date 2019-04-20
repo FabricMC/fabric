@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-resources",
+  "id": "fabric-resource-loader",
   "version": "${version}",
   "license": "Apache-2.0",
   "mixins": [
-    "fabric-resources.mixins.json"
+    "fabric-resource-loader.mixins.json"
   ]
 }
