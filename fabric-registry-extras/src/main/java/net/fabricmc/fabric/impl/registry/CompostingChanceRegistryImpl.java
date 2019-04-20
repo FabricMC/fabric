@@ -25,8 +25,7 @@ import net.minecraft.tag.Tag;
 import java.util.ArrayList;
 import java.util.List;
 
-public class
-CompostingChanceRegistryImpl implements CompostingChanceRegistry {
+public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	@Override
 	public Float get(ItemProvider item) {
 		return ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getOrDefault(item.getItem(), 0.0F);

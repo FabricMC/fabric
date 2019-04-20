@@ -50,24 +50,24 @@ allprojects {
 		artifacts {
 			dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: remapJar
 		}
+
+		processResources {
+			inputs.property "version", project.version
+
+			from(sourceSets.main.resources.srcDirs) {
+				include "fabric.mod.json"
+				expand "version": project.version
+			}
+
+			from(sourceSets.main.resources.srcDirs) {
+				exclude "fabric.mod.json"
+			}
+		}
 	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
 		from sourceSets.main.allSource
-	}
-
-	processResources {
-		inputs.property "version", project.version
-
-		from(sourceSets.main.resources.srcDirs) {
-			include "fabric.mod.json"
-			expand "version": project.version
-		}
-
-		from(sourceSets.main.resources.srcDirs) {
-			exclude "fabric.mod.json"
-		}
 	}
 }
 
@@ -76,6 +76,9 @@ dependencies {
 		compile project(path: ":${it.name}", configuration: "dev")
 		include project("${it.name}:")
 	}
+
+	// workaround linux segfault	
+	compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
 }
 
 archivesBaseName = "fabric"
