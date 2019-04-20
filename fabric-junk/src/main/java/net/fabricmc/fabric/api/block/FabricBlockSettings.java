@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.block;
 
+import net.fabricmc.fabric.impl.block.FabricBlockSettingDelegate;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -38,21 +39,8 @@ import java.util.function.Function;
  * vanilla Block.Settings instance beneath.
  */
 public class FabricBlockSettings {
-	public interface Delegate {
-		void fabric_setMaterialColor(MaterialColor color);
-		void fabric_setCollidable(boolean value);
-		void fabric_setSoundGroup(BlockSoundGroup group);
-		void fabric_setLightLevel(int value);
-		void fabric_setHardness(float value);
-		void fabric_setResistance(float value);
-		void fabric_setRandomTicks(boolean value);
-		void fabric_setFriction(float value);
-		void fabric_setDropTable(Identifier id);
-		void fabric_setDynamicBounds(boolean value);
-	}
-
 	protected final Block.Settings delegate;
-	private final FabricBlockSettings.Delegate castDelegate;
+	private final FabricBlockSettingDelegate castDelegate;
 
 	protected FabricBlockSettings(Material material, MaterialColor color) {
 		this(Block.Settings.of(material, color));
@@ -64,7 +52,7 @@ public class FabricBlockSettings {
 
 	protected FabricBlockSettings(final Block.Settings delegate) {
 		this.delegate = delegate;
-		castDelegate = (FabricBlockSettings.Delegate) delegate;
+		castDelegate = (FabricBlockSettingDelegate) delegate;
 	}
 
 	public static FabricBlockSettings of(Material material) {

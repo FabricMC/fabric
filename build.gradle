@@ -6,6 +6,7 @@ buildscript {
 			name = 'Fabric'
 			url = 'https://maven.fabricmc.net/'
 		}
+		mavenLocal()
 	}
 	dependencies {
 		classpath "net.fabricmc:fabric-loom:0.2.1-SNAPSHOT"
@@ -22,6 +23,10 @@ def baseVersion = "0.2.7"
 def mcVersion = "1.14 Pre-Release 5"
 
 allprojects {
+	repositories {
+		mavenLocal()
+	}
+
 	apply plugin: 'java'
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
@@ -68,6 +73,7 @@ allprojects {
 
 dependencies {
 	subprojects.each {
+		compile project(path: ":${it.name}", configuration: "dev")
 		include project("${it.name}:")
 	}
 }

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.block;
+package net.fabricmc.fabric.mixin.builders;
 
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
+import net.fabricmc.fabric.impl.block.FabricBlockSettingDelegate;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(Block.Settings.class)
-public class MixinBlockBuilder implements FabricBlockSettings.Delegate {
+public class MixinBlockBuilder implements FabricBlockSettingDelegate {
 	@Shadow
 	private Material material;
 	@Shadow

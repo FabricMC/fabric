@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.events.objectbuilder;
+package net.fabricmc.fabric.mixin.builders;
 
 import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
 import net.minecraft.block.Block;
