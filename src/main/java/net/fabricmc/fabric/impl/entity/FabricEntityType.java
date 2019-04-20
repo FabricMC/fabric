@@ -26,7 +26,7 @@ public class FabricEntityType<T extends Entity> extends EntityType<T> {
 	private final int maxTrackDistance, trackTickInterval;
 	private final Boolean alwaysUpdateVelocity;
 
-	public FabricEntityType(EntityFactory<T> entityType$EntityFactory_1, EntityCategory entityCategory_1, boolean boolean_1, boolean boolean_2, boolean boolean_3, Type<?> type_1, EntitySize entitySize_1, int maxTrackDistance, int trackTickInterval, boolean alwaysUpdateVelocity) {
+	public FabricEntityType(EntityFactory<T> entityType$EntityFactory_1, EntityCategory entityCategory_1, boolean boolean_1, boolean boolean_2, boolean boolean_3, Type<?> type_1, EntitySize entitySize_1, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
 		super(entityType$EntityFactory_1, entityCategory_1, boolean_1, boolean_2, boolean_3, type_1, entitySize_1);
 		this.maxTrackDistance = maxTrackDistance;
 		this.trackTickInterval = trackTickInterval;
