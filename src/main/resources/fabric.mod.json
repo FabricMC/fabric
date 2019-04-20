@@ -1,16 +1,46 @@
 {
+  "schemaVersion": 1,
   "id": "fabric",
-  "name": "Fabric API",
   "version": "${version}",
-  "side": "universal",
+
+  "name": "Fabric API",
   "description": "Core API module providing key hooks and intercompatibility features.",
-  "license": "Apache-2.0",
-  "initializers": [
-    "net.fabricmc.fabric.impl.FabricAPIInitializer",
-    "net.fabricmc.fabric.impl.FabricAPIClientInitializer"
+  "authors": [
+    "asiekierka"
   ],
-  "mixins": {
-    "client": "net.fabricmc.fabric.mixins.client.json",
-    "common": "net.fabricmc.fabric.mixins.common.json"
+  "contributors": [
+    "modmuss50",
+	"SquidDev",
+	"kashike",
+	"Pyrofab",
+	"doublej472",
+	"UpcraftLP",
+	"Juuxel",
+	"hea3ven",
+	"SE7-KN8"
+  ],
+  "contact": {
+    "homepage": "https://minecraft.curseforge.com/projects/fabric",
+    "sources": "https://github.com/FabricMC/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues"
+  },
+
+  "license": "Apache-2.0",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.FabricAPIInitializer"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.FabricAPIClientInitializer"
+    ]
+  },
+  "mixins": [
+    "fabric.mixins.json"
+  ],
+
+  "requires": {
+    "fabricloader": ">=0.4.0"
   }
 }
