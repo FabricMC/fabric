@@ -23,8 +23,6 @@ import net.minecraft.world.biome.Biomes;
 
 public class BiomeRegistry
 {
-	//Initialize variable. This ID will not be used since it is taken by ocean
-	private static int nextID = 0;
 	
 	//Mostly to initialise MC biomes before custom biomes
 	//If you can think of another way to do this please let me know
@@ -36,9 +34,8 @@ public class BiomeRegistry
 	*/
 	public static Biome register(Biome biome, String ID)
 	{	
-	    int numericalID = getNextId();
 		
-		Registry.register(Registry.BIOME, numericalID, ID, biome);
+		Registry.register(Registry.BIOME, ID, biome);
 		
 		if (biome.hasParent())
 		{
@@ -46,14 +43,6 @@ public class BiomeRegistry
 		}
 
 		return biome;
-	}
-	
-	private static int getNextId()
-	{
-		++nextID;
-		while (isIdTaken(nextID)) ++nextID;
-		
-		return nextID;
 	}
 	
 	public static boolean isIdTaken(int id)
