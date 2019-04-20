@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.registryextras",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinAbstractFurnaceBlockEntity",
+    "MixinFireBlock"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.itemgroup",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinItemGroup"
+  ],
+  "client": [
+    "client.MixinItemGroup",
+    "client.MixinCreativePlayerInventoryGui"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

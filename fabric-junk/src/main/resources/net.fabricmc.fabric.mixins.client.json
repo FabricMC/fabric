@@ -1,0 +1,30 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "block.entity.MixinClientPlayNetworkHandler",
+    "bugfix.MixinBiomeColors",
+    "client.keybinding.MixinGameOptions",
+    "client.keybinding.MixinKeyBinding",
+    "client.model.MixinModelLoader",
+    "client.render.MixinBlockColorMap",
+    "client.render.MixinBlockEntityRenderManager",
+    "client.render.MixinEntityRenderManager",
+    "client.render.MixinItemColorMap",
+    "client.texture.MixinSpriteAtlasTexture",
+    "events.playerinteraction.MixinClientPlayerInteractionManager",
+    "events.playerinteraction.MixinMinecraftClient",
+    "events.tick.MixinMinecraftClient",
+    "registry.client.MixinBlockColorMap",
+    "registry.client.MixinItemColorMap",
+    "registry.client.MixinItemModelMap",
+    "registry.client.MixinMinecraftClient",
+    "registry.client.MixinParticleManager",
+    "resources.MixinKeyedResourceReloadListener$Client",
+    "resources.MixinMinecraftGame"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

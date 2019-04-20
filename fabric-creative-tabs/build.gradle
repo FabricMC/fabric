@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-creative-tabs"
+version = "0.1.0"
+
+dependencies {
+	compile project(path: ':fabric-resource-loader', configuration: 'dev')
+}

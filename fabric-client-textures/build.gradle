@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-client-textures"
+version = "0.1.0"
+
+dependencies {
+	compile project(path: ':fabric-lib', configuration: 'dev')
+}
