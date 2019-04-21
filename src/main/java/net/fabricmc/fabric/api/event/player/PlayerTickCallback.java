@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.event.player;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.profiler.Profiler;
 
 /**
  * Callback for ticking a player. Useful for updating effects given by a player's equipped items.
@@ -29,13 +29,14 @@ public interface PlayerTickCallback {
 			(listeners) -> {
 				if (EventFactory.isProfilingEnabled()) {
 					return (player) -> {
-						player.getServer().getProfiler().push("fabricPlayerTick");
+						Profiler profiler = player.getServer().getProfiler();
+						profiler.push("fabricPlayerTick");
 						for (PlayerTickCallback event : listeners) {
-							player.getServer().getProfiler().push(EventFactory.getHandlerName(event));
+							profiler.push(EventFactory.getHandlerName(event));
 							event.tick(player);
-							player.getServer().getProfiler().pop();
+							profiler.pop();
 						}
-						player.getServer().getProfiler().pop();
+						profiler.pop();
 					};
 				} else {
 					return (player) -> {

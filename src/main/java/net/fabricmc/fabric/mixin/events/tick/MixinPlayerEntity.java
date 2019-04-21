@@ -34,7 +34,6 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 
 	@Inject(method = "update", at = @At("TAIL"))
 	public void tickPlayer(CallbackInfo ci) {
-		PlayerEntity player = (PlayerEntity)(Object)this;
-		PlayerTickCallback.EVENT.invoker().tick(player);
+		PlayerTickCallback.EVENT.invoker().tick((PlayerEntity) (Object) this);
 	}
 }
