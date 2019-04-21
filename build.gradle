@@ -1,49 +1,57 @@
-buildscript {
-	repositories {
-		jcenter()
-		gradlePluginPortal()
-		maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-		mavenLocal()
-	}
-	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.1-SNAPSHOT"
-	}
-}
-
 plugins {
+	id 'java'
+	id 'eclipse'
+	id 'idea'
+	id 'maven-publish'
+	id 'fabric-loom' version '0.2.1-SNAPSHOT' apply false
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
 def ENV = System.getenv()
 
-def baseVersion = "0.2.7"
+def baseVersion = "0.3.0"
 def mcVersion = "1.14 Pre-Release 5"
 
 allprojects {
-	repositories {
-		mavenLocal()
-	}
-
-	apply plugin: 'java'
-	apply plugin: 'eclipse'
-	apply plugin: 'idea'
-
-	apply plugin: net.fabricmc.loom.LoomGradlePlugin
+	apply plugin: 'maven-publish'
+	apply plugin: 'fabric-loom'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$mcVersion"
-		mappings "net.fabricmc:yarn:$mcVersion+build.2"
-		modCompile "net.fabricmc:fabric-loader:0.4.1+build.127"
+		mappings "net.fabricmc:yarn:$mcVersion+build.4"
+		modCompile "net.fabricmc:fabric-loader:0.4.1+build.129"
 	}
 
 	configurations {
 		dev
+	}
+
+	repositories {
+		mavenLocal()
+	}
+
+	// configure the maven publication
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				// add all the jars that should be included when publishing to maven
+				artifact(jar) {
+					builtBy remapJar
+				}
+				artifact(sourcesJar) {
+					builtBy remapSourcesJar
+				}
+			}
+		}	
+
+		// select the repositories you want to publish to
+		repositories {
+			// uncomment to publish to the local maven
+			// mavenLocal()
+		}
 	}
 
 	afterEvaluate {
@@ -68,6 +76,23 @@ allprojects {
 	task sourcesJar(type: Jar, dependsOn: classes) {
 		classifier = 'sources'
 		from sourceSets.main.allSource
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			pom.withXml {
+				def depsNode = asNode().appendNode("dependencies")
+				subprojects.each {
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", it.group)
+					depNode.appendNode("artifactId", it.name)
+					depNode.appendNode("version", it.version)
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}	
 	}
 }
 

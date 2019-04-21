@@ -1,3 +1,15 @@
+pluginManagement {
+	repositories {
+		jcenter()
+		gradlePluginPortal()
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+		mavenLocal()
+	}
+}
+
 include 'fabric-client-models'
 include 'fabric-client-textures'
 include 'fabric-containers'
