@@ -22,7 +22,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$mcVersion"
 		mappings "net.fabricmc:yarn:$mcVersion+build.4"
-		modCompile "net.fabricmc:fabric-loader:0.4.1+build.129"
+		modCompile "net.fabricmc:fabric-loader:0.4.2+build.131"
 	}
 
 	configurations {
@@ -38,8 +38,8 @@ allprojects {
 		publications {
 			mavenJava(MavenPublication) {
 				// add all the jars that should be included when publishing to maven
-				artifact(jar) {
-					builtBy remapJar
+				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+					builtBy remapMavenJar
 				}
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
@@ -56,7 +56,7 @@ allprojects {
 
 	afterEvaluate {
 		artifacts {
-			dev file: file("${project.buildDir}/libs/$archivesBaseName-$version-dev.jar"), type: "jar", builtBy: remapJar
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: remapJar
 		}
 
 		processResources {
@@ -79,6 +79,25 @@ allprojects {
 	}
 }
 
+subprojects {
+	task remapMavenJar(type: Copy, dependsOn: remapJar) {
+		afterEvaluate {
+			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
+			into("${project.buildDir}/libs/")
+			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
+		}
+	}
+}
+
+task remapMavenJar(type: net.fabricmc.loom.task.RemapJar, dependsOn: remapJar) {
+	afterEvaluate {
+		println("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
+		jar = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
+		destination = file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")
+		nestJar = false
+	}
+}
+
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
@@ -97,9 +116,11 @@ publishing {
 }
 
 dependencies {
-	subprojects.each {
-		compile project(path: ":${it.name}", configuration: "dev")
-		include project("${it.name}:")
+	afterEvaluate {
+		subprojects.each {
+			compile project(path: ":${it.name}", configuration: "dev")
+			include project("${it.name}:")
+		}
 	}
 
 	// workaround linux segfault	
