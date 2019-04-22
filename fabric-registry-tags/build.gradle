@@ -1,7 +1,0 @@
-archivesBaseName = "fabric-registry-tags"
-version = "0.1.0"
-
-dependencies {
-	compile project(path: ':fabric-lib', configuration: 'dev')
-	compile project(path: ':fabric-resource-loader', configuration: 'dev')
-}

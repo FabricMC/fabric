@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "id": "fabric-registry-extras",
-  "version": "${version}",
-  "license": "Apache-2.0",
-  "mixins": [
-    "fabric-registry-extras.mixins.json"
-  ]
-}

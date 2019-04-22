@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "id": "fabric-registry-tags",
-  "version": "${version}",
-  "license": "Apache-2.0"
-}

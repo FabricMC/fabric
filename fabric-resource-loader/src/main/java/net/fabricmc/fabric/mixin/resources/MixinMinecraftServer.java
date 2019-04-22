@@ -35,8 +35,8 @@ public class MixinMinecraftServer {
     @Shadow
     private ResourcePackContainerManager<ResourcePackContainer> resourcePackContainerManager;
 
-    @Inject(method = "method_3800", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
-    public void method_3800(File file, LevelProperties properties, CallbackInfo info) {
+    @Inject(method = "loadWorldDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
+    public void appendFabricDataPacks(File file, LevelProperties properties, CallbackInfo info) {
 	    resourcePackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.DATA));
     }
 }
