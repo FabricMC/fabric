@@ -33,11 +33,9 @@ allprojects {
 		mavenLocal()
 	}
 
-	// configure the maven publication
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
-				// add all the jars that should be included when publishing to maven
 				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
 					builtBy remapMavenJar
 				}
@@ -47,10 +45,16 @@ allprojects {
 			}
 		}	
 
-		// select the repositories you want to publish to
 		repositories {
-			// uncomment to publish to the local maven
-			// mavenLocal()
+			maven {
+				url "http://mavenupload.modmuss50.me/"
+				if (project.hasProperty('mavenPass')) {
+					credentials {
+						username 'buildslave'
+						password project.getProperty('mavenPass')
+					}
+				}
+			}
 		}
 	}
 
