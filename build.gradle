@@ -1,65 +1,138 @@
-buildscript {
-	repositories {
-		jcenter()
-		gradlePluginPortal()
-		maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-	}
-	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.2-SNAPSHOT"
-	}
-}
-
 plugins {
 	id 'java'
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
+	id 'fabric-loom' version '0.2.2-SNAPSHOT' apply false
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
-apply plugin: net.fabricmc.loom.LoomGradlePlugin
+def ENV = System.getenv()
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-archivesBaseName = "fabric"
-
-def baseVersion = "0.2.7"
+def baseVersion = "0.3.0"
 def mcVersion = "1.14 Pre-Release 5"
 
-def ENV = System.getenv()
-version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+allprojects {
+	apply plugin: 'maven-publish'
+	apply plugin: 'fabric-loom'
 
-minecraft {
-	refmapName = "net.fabricmc.fabric.refmap.json"
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	dependencies {
+		minecraft "com.mojang:minecraft:$mcVersion"
+		mappings "net.fabricmc:yarn:$mcVersion+build.6"
+		modCompile "net.fabricmc:fabric-loader:0.4.2+build.131"
+	}
+
+	configurations {
+		dev
+	}
+
+	repositories {
+		mavenLocal()
+	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+					builtBy remapMavenJar
+				}
+				artifact(sourcesJar) {
+					builtBy remapSourcesJar
+				}
+			}
+		}	
+
+		repositories {
+			maven {
+				url "http://mavenupload.modmuss50.me/"
+				if (project.hasProperty('mavenPass')) {
+					credentials {
+						username 'buildslave'
+						password project.getProperty('mavenPass')
+					}
+				}
+			}
+		}
+	}
+
+	afterEvaluate {
+		artifacts {
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: remapJar
+		}
+
+		processResources {
+			inputs.property "version", project.version
+
+			from(sourceSets.main.resources.srcDirs) {
+				include "fabric.mod.json"
+				expand "version": project.version
+			}
+
+			from(sourceSets.main.resources.srcDirs) {
+				exclude "fabric.mod.json"
+			}
+		}
+	}
+
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+}
+
+subprojects {
+	task remapMavenJar(type: Copy, dependsOn: remapJar) {
+		afterEvaluate {
+			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
+			into("${project.buildDir}/libs/")
+			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
+		}
+	}
+}
+
+task remapMavenJar(type: net.fabricmc.loom.task.RemapJar, dependsOn: remapJar) {
+	afterEvaluate {
+		println("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
+		jar = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
+		destination = file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")
+		nestJar = false
+	}
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			pom.withXml {
+				def depsNode = asNode().appendNode("dependencies")
+				subprojects.each {
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", it.group)
+					depNode.appendNode("artifactId", it.name)
+					depNode.appendNode("version", it.version)
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}	
+	}
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion+build.2"
-	modCompile "net.fabricmc:fabric-loader:0.4.2+build.131"
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
+	afterEvaluate {
+		subprojects.each {
+			compile project(path: ":${it.name}", configuration: "dev")
+			include project("${it.name}:")
+		}
 	}
 
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
+	// workaround linux segfault	
+	compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
+archivesBaseName = "fabric"
+version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){

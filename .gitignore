@@ -1,6 +1,10 @@
 # Ignore everything
 /*
 
+# Subprojects
+!/fabric-*
+/fabric-*/build
+
 # Folders
 !/gradle
 !/src

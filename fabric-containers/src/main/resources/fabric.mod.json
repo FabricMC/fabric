@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-containers",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "mixins": [
+    "fabric-containers.mixins.json"
+  ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl::init"
+    ]
+  }
+}

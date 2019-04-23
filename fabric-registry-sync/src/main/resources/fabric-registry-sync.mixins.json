@@ -1,0 +1,22 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.registry",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinBootstrap",
+    "MixinIdList",
+    "MixinIdRegistry",
+    "MixinPlayerManager",
+    "MixinWorldSaveHandler"
+  ],
+  "client": [
+    "client.MixinBlockColorMap",
+    "client.MixinItemColorMap",
+    "client.MixinItemModelMap",
+    "client.MixinMinecraftClient",
+    "client.MixinParticleManager"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

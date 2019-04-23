@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.network",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinCustomPayloadC2SPacket",
+    "MixinEntityTracker",
+    "MixinServerPlayNetworkHandler",
+    "MixinThreadedAnvilChunkStorage"
+  ],
+  "client": [
+    "MixinClientPlayNetworkHandler"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.eventsinteraction",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinServerPlayerEntity",
+    "MixinServerPlayerInteractionManager",
+    "MixinServerPlayNetworkHandler"
+  ],
+  "client": [
+    "MixinClientPlayerInteractionManager",
+    "MixinMinecraftClient"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
