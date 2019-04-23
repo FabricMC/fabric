@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-creative-tabs"
+archivesBaseName = "fabric-item-groups"
 version = "0.1.0"
 
 dependencies {

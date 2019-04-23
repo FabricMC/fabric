@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-creative-tabs",
+  "id": "fabric-item-groups",
   "version": "${version}",
   "license": "Apache-2.0",
   "mixins": [
-    "fabric-creative-tabs.mixins.json"
+    "fabric-item-groups.mixins.json"
   ]
 }
