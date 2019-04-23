@@ -3,6 +3,7 @@
 
 # Subprojects
 !/fabric-*
+/fabric-*/.gradle
 /fabric-*/build
 
 # Folders

@@ -95,7 +95,6 @@ subprojects {
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJar, dependsOn: remapJar) {
 	afterEvaluate {
-		println("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
 		jar = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
 		destination = file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")
 		nestJar = false
@@ -157,8 +156,8 @@ publishing {
 		maven(MavenPublication) {
 			groupId "net.fabricmc"
 			artifactId "fabric"
-			artifact (jar) {
-				builtBy remapJar
+			artifact (file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")) {
+				builtBy remapMavenJar
 			}
 			artifact (sourcesJar) {
 				builtBy remapSourcesJar
