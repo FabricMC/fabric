@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.renderer.v1.api;
 
-import net.fabricmc.fabric.impl.client.render.RendererAccessImpl;
+import net.fabricmc.fabric.renderer.v1.impl.RendererAccessImpl;
 
 /**
  * Registration and access for rendering extensions.

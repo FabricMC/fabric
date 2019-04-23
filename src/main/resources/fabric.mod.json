@@ -10,7 +10,11 @@
     "net.fabricmc.fabric.impl.FabricAPIClientInitializer"
   ],
   "mixins": {
-    "client": "net.fabricmc.fabric.mixins.client.json",
+    "client": [
+    	"net.fabricmc.fabric.mixins.client.json", 
+    	"net.fabricmc.fabric.renderer.mixins.client.json"
+	],
     "common": "net.fabricmc.fabric.mixins.common.json"
+    
   }
 }

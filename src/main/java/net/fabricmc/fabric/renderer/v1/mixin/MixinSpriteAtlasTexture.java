@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.model;
+package net.fabricmc.fabric.renderer.v1.mixin;
 
 import java.util.Map;
 
@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.impl.client.model.SpriteFinderImpl;
-import net.fabricmc.fabric.impl.client.model.SpriteFinderImpl.SpriteFinderAccess;
+import net.fabricmc.fabric.renderer.v1.impl.SpriteFinderImpl;
+import net.fabricmc.fabric.renderer.v1.impl.SpriteFinderImpl.SpriteFinderAccess;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;

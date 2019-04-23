@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.renderer.v1.api.model;
 
-import net.fabricmc.fabric.impl.client.model.SpriteFinderImpl;
 import net.fabricmc.fabric.renderer.v1.api.mesh.Mesh;
 import net.fabricmc.fabric.renderer.v1.api.mesh.MutableQuadView;
 import net.fabricmc.fabric.renderer.v1.api.mesh.QuadView;
+import net.fabricmc.fabric.renderer.v1.impl.SpriteFinderImpl;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 

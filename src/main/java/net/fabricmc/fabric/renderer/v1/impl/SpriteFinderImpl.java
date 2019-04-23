@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.model;
+package net.fabricmc.fabric.renderer.v1.impl;
 
 import java.util.Map;
 import java.util.function.Consumer;

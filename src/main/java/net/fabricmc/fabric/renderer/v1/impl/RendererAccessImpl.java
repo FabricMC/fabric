@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.render;
+package net.fabricmc.fabric.renderer.v1.impl;
 
 import net.fabricmc.fabric.renderer.v1.api.Renderer;
 import net.fabricmc.fabric.renderer.v1.api.RendererAccess;
