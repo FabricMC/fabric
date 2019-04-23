@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api.model;
 
 import net.minecraft.block.entity.BlockEntity;
 

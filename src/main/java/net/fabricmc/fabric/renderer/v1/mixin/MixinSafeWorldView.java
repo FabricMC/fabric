@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.render;
+package net.fabricmc.fabric.renderer.v1.mixin;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.client.model.fabric.DynamicModelBlockEntity;
-import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
+import net.fabricmc.fabric.renderer.v1.api.model.DynamicModelBlockEntity;
+import net.fabricmc.fabric.renderer.v1.api.render.TerrainBlockView;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.SafeWorldView;
 import net.minecraft.util.math.BlockPos;

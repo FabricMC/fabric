@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api.model;
 
 import java.util.Random;
 import java.util.function.Supplier;
 
+import net.fabricmc.fabric.renderer.v1.api.Renderer;
+import net.fabricmc.fabric.renderer.v1.api.render.RenderContext;
+import net.fabricmc.fabric.renderer.v1.api.render.TerrainBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.render;
 
-import net.fabricmc.fabric.api.client.model.fabric.RendererAccess;
-import net.fabricmc.fabric.api.client.model.fabric.Renderer;
+import net.fabricmc.fabric.renderer.v1.api.Renderer;
+import net.fabricmc.fabric.renderer.v1.api.RendererAccess;
 
 public final class RendererAccessImpl implements RendererAccess{
     public static final RendererAccessImpl INSTANCE = new RendererAccessImpl();

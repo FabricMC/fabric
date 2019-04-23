@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api;
 
+import net.fabricmc.fabric.renderer.v1.api.material.MaterialFinder;
+import net.fabricmc.fabric.renderer.v1.api.material.RenderMaterial;
+import net.fabricmc.fabric.renderer.v1.api.mesh.MeshBuilder;
 import net.minecraft.util.Identifier;
 
 /**

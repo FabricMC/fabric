@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api.mesh;
 
 import java.util.function.Consumer;
+
+import net.fabricmc.fabric.renderer.v1.api.Renderer;
 
 /**
  * A bundle of one or more {@link QuadView} instances encoded by the renderer,

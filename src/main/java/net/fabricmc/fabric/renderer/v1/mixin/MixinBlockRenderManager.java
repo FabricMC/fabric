@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.render;
+package net.fabricmc.fabric.renderer.v1.mixin;
 
 import java.util.Random;
 
@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
 import net.fabricmc.fabric.impl.client.model.DamageModel;
+import net.fabricmc.fabric.renderer.v1.api.model.FabricBakedModel;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.block.BlockModelRenderer;

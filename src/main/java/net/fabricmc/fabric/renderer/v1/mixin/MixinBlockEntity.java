@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.render;
+package net.fabricmc.fabric.renderer.v1.mixin;
 
-import net.fabricmc.fabric.api.client.model.fabric.DynamicModelBlockEntity;
+import net.fabricmc.fabric.renderer.v1.api.model.DynamicModelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 

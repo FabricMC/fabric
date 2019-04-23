@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api.render;
 
+import net.fabricmc.fabric.renderer.v1.api.model.DynamicModelBlockEntity;
+import net.fabricmc.fabric.renderer.v1.api.model.FabricBakedModel;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ExtendedBlockView;

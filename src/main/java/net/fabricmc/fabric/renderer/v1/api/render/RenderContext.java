@@ -14,10 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api.render;
 
 import java.util.function.Consumer;
 
+import net.fabricmc.fabric.renderer.v1.api.mesh.Mesh;
+import net.fabricmc.fabric.renderer.v1.api.mesh.MeshBuilder;
+import net.fabricmc.fabric.renderer.v1.api.mesh.MutableQuadView;
+import net.fabricmc.fabric.renderer.v1.api.mesh.QuadEmitter;
+import net.fabricmc.fabric.renderer.v1.api.model.FabricBakedModel;
 import net.minecraft.client.render.model.BakedModel;
 
 /**

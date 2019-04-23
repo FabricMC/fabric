@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api.mesh;
 
+import net.fabricmc.fabric.renderer.v1.api.material.RenderMaterial;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;

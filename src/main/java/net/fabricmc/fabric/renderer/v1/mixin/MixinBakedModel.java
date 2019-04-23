@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.model;
+package net.fabricmc.fabric.renderer.v1.mixin;
 
 import java.util.Random;
 import java.util.function.Supplier;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.fabricmc.fabric.api.client.model.fabric.FabricBakedModel;
-import net.fabricmc.fabric.api.client.model.fabric.RenderContext;
-import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
+import net.fabricmc.fabric.renderer.v1.api.model.FabricBakedModel;
+import net.fabricmc.fabric.renderer.v1.api.render.RenderContext;
+import net.fabricmc.fabric.renderer.v1.api.render.TerrainBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.item.ItemStack;

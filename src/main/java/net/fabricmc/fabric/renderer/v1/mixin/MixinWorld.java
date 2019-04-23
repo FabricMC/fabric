@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.model;
+package net.fabricmc.fabric.renderer.v1.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.fabricmc.fabric.api.client.model.fabric.TerrainBlockView;
+import net.fabricmc.fabric.renderer.v1.api.render.TerrainBlockView;
 import net.minecraft.world.World;
 
 /** Make {@link World} implement {@link TerrainBlockView}. */

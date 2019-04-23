@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.client.model;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.client.model.fabric.QuadView;
-import net.fabricmc.fabric.api.client.model.fabric.SpriteFinder;
+import net.fabricmc.fabric.renderer.v1.api.mesh.QuadView;
+import net.fabricmc.fabric.renderer.v1.api.model.SpriteFinder;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.model.fabric;
+package net.fabricmc.fabric.renderer.v1.api.model;
 
 import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import net.fabricmc.fabric.renderer.v1.api.mesh.Mesh;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
