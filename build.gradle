@@ -151,31 +151,5 @@ version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) 
 //	}
 //}
 
-publishing {
-	publications {
-		maven(MavenPublication) {
-			groupId "net.fabricmc"
-			artifactId "fabric"
-			artifact (file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")) {
-				builtBy remapMavenJar
-			}
-			artifact (sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
-	repositories {
-		maven {
-			url "http://mavenupload.modmuss50.me/"
-			if (project.hasProperty('mavenPass')) {
-				credentials {
-					username 'buildslave'
-					password project.getProperty('mavenPass')
-				}
-			}
-		}
-	}
-}
-
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/license.gradle'
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
