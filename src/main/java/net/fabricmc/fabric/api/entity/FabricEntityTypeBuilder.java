@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.entity;
 
+import net.fabricmc.fabric.impl.entity.FabricEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntitySize;
@@ -41,7 +42,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean summonable = true;
 	private int trackingDistance = -1;
 	private int updateIntervalTicks = -1;
-	private boolean alwaysUpdateVelocity = true;
+	private Boolean alwaysUpdateVelocity;
 	private boolean immuneToFire = false;
 	private EntitySize size = EntitySize.resizeable(-1.0f, -1.0f);
 
@@ -95,12 +96,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> trackable(int trackingDistance, int updateIntervalTicks) {
-		return trackable(trackingDistance, updateIntervalTicks, true);
+	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
+		return trackable(trackingDistanceBlocks, updateIntervalTicks, true);
 	}
 
-	public FabricEntityTypeBuilder<T> trackable(int trackingDistance, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-		this.trackingDistance = trackingDistance;
+	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
+		this.trackingDistance = trackingDistanceBlocks;
 		this.updateIntervalTicks = updateIntervalTicks;
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
 		return this;
@@ -112,10 +113,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new EntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size);
-		if (trackingDistance != -1) {
-			EntityTrackingRegistry.INSTANCE.register(type, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
-		}
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+
 		return type;
 	}
 }

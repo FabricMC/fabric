@@ -59,6 +59,7 @@ public abstract class MixinSpriteAtlasTexture {
 	 * method_18160 is a lambda used in runAsync.
 	 */
 	@SuppressWarnings("JavaDoc")
+
 	@Redirect(method = "method_18160", at = @At(value = "NEW", target = "net/minecraft/client/texture/Sprite"))
 	public Sprite newSprite(Identifier id, PngFile pngFile, AnimationResourceMetadata animationMetadata) {
 		if (fabric_injectedSprites.containsKey(id)) {

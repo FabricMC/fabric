@@ -8,7 +8,7 @@ buildscript {
 		}
 	}
 	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.1-SNAPSHOT"
+		classpath "net.fabricmc:fabric-loom:0.2.2-SNAPSHOT"
 	}
 }
 
@@ -16,6 +16,7 @@ plugins {
 	id 'java'
 	id 'eclipse'
 	id 'idea'
+	id 'maven-publish'
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
@@ -27,7 +28,7 @@ targetCompatibility = 1.8
 archivesBaseName = "fabric"
 
 def baseVersion = "0.2.7"
-def mcVersion = "1.14 Pre-Release 3"
+def mcVersion = "1.14 Pre-Release 5"
 
 def ENV = System.getenv()
 version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
@@ -38,8 +39,8 @@ minecraft {
 
 dependencies {
 	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion+build.1"
-	modCompile "net.fabricmc:fabric-loader:0.4.1+build.125"
+	mappings "net.fabricmc:yarn:$mcVersion+build.2"
+	modCompile "net.fabricmc:fabric-loader:0.4.2+build.131"
 }
 
 processResources {
@@ -78,6 +79,31 @@ curseforge {
 	}
 }
 
-apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/maven.gradle'
+publishing {
+	publications {
+		maven(MavenPublication) {
+			groupId "net.fabricmc"
+			artifactId "fabric"
+			artifact (jar) {
+				builtBy remapJar
+			}
+			artifact (sourcesJar) {
+				builtBy remapSourcesJar
+			}
+		}
+	}
+	repositories {
+		maven {
+			url "http://mavenupload.modmuss50.me/"
+			if (project.hasProperty('mavenPass')) {
+				credentials {
+					username 'buildslave'
+					password project.getProperty('mavenPass')
+				}
+			}
+		}
+	}
+}
+
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/license.gradle'
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
