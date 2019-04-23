@@ -10,7 +10,7 @@ plugins {
 def ENV = System.getenv()
 
 def baseVersion = "0.3.0-pre"
-def mcVersion = "1.14 Pre-Release 5"
+def mcVersion = "1.14"
 
 allprojects {
 	apply plugin: 'maven-publish'
@@ -21,7 +21,7 @@ allprojects {
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$mcVersion"
-		mappings "net.fabricmc:yarn:$mcVersion+build.6"
+		mappings "net.fabricmc:yarn:$mcVersion+build.1"
 		modCompile "net.fabricmc:fabric-loader:0.4.2+build.131"
 	}
 
