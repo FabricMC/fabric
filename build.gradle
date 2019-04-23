@@ -33,31 +33,6 @@ allprojects {
 		mavenLocal()
 	}
 
-	publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-					builtBy remapMavenJar
-				}
-				artifact(sourcesJar) {
-					builtBy remapSourcesJar
-				}
-			}
-		}	
-
-		repositories {
-			maven {
-				url "http://mavenupload.modmuss50.me/"
-				if (project.hasProperty('mavenPass')) {
-					credentials {
-						username 'buildslave'
-						password project.getProperty('mavenPass')
-					}
-				}
-			}
-		}
-	}
-
 	afterEvaluate {
 		artifacts {
 			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: remapJar
@@ -91,6 +66,32 @@ subprojects {
 			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
 		}
 	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+					builtBy remapMavenJar
+				}
+				artifact(sourcesJar) {
+					builtBy remapSourcesJar
+				}
+			}
+		}	
+
+		repositories {
+			maven {
+				url "http://mavenupload.modmuss50.me/"
+				if (project.hasProperty('mavenPass')) {
+					credentials {
+						username 'buildslave'
+						password project.getProperty('mavenPass')
+					}
+				}
+			}
+		}
+	}
+
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJar, dependsOn: remapJar) {
@@ -104,6 +105,12 @@ task remapMavenJar(type: net.fabricmc.loom.task.RemapJar, dependsOn: remapJar) {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
+			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+				builtBy remapMavenJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
@@ -115,6 +122,18 @@ publishing {
 				}
 			}
 		}	
+	}
+
+	repositories {
+		maven {
+			url "http://mavenupload.modmuss50.me/"
+			if (project.hasProperty('mavenPass')) {
+				credentials {
+					username 'buildslave'
+					password project.getProperty('mavenPass')
+				}
+			}
+		}
 	}
 }
 
