@@ -19,6 +19,8 @@ allprojects {
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
 
+	group = "net.fabricmc.fabric-api"
+
 	dependencies {
 		minecraft "com.mojang:minecraft:$mcVersion"
 		mappings "net.fabricmc:yarn:$mcVersion+build.1"
@@ -149,7 +151,6 @@ dependencies {
 	compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
 }
 
-archivesBaseName = "fabric"
 version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
 //curseforge {
