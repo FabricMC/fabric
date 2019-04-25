@@ -44,7 +44,7 @@ public final class MoreBlockSettings {
     }
 
     public static Settings resistance(Settings settings, float resistance) {
-        ((BlockSettingsHooks) settings).setResistance(resistance);
+        ((BlockSettingsHooks) settings).setResistance(Math.max(0.0F, resistance));
         return settings;
     }
 

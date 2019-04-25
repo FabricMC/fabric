@@ -182,7 +182,7 @@ public final class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings resistance(float resistance) {
-		hooks.setResistance(resistance);
+		hooks.setResistance(Math.max(0.0F, resistance));
 		return this;
 	}
 
