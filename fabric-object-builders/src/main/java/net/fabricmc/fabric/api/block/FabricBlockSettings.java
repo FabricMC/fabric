@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.api.block;
 
 import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
-import net.fabricmc.fabric.impl.block.FabricBlockSettingsDelegate;
 import net.fabricmc.fabric.impl.tools.ToolManager;
+import net.fabricmc.fabric.mixin.builders.BlockSettingsHooks;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -27,12 +27,8 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.loot.LootTables;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -43,56 +39,70 @@ import java.util.function.Function;
  * FabricBlockSettings.create() and add .build() at the end to return the
  * vanilla Block.Settings instance beneath.
  */
-public class FabricBlockSettings {
+public final class FabricBlockSettings {
 	static {
 		BlockConstructedCallback.EVENT.register(FabricBlockSettings::onBuild);
 	}
 
-	protected final Block.Settings delegate;
-	private final FabricBlockSettingsDelegate castDelegate;
+    private static final Map<Block.Settings, ExtraData> EXTRA_DATA = new HashMap<>();
 
-	private static class MiningInformation {
-		private final Tag<Item> tag;
-		private final int miningLevel;
+    private final Block.Settings delegate;
+	private final BlockSettingsHooks hooks;
 
-		MiningInformation(Tag<Item> tag, int miningLevel) {
-			this.tag = tag;
-			this.miningLevel = miningLevel;
-		}
+	static final class ExtraData {
+        private final List<MiningLevel> miningLevels = new ArrayList<>();
+        /* @Nullable */ private Boolean breakByHand;
+
+		private ExtraData(Block.Settings settings) {
+        }
+
+		void breakByHand(boolean breakByHand) {
+		    this.breakByHand = breakByHand;
+        }
+
+		void addMiningLevel(Tag<Item> tag, int level) {
+		    miningLevels.add(new MiningLevel(tag, level));
+        }
 	}
 
-	private static class Information {
-		private Boolean breakByHand;
-		private List<MiningInformation> miningInformation = new ArrayList<>();
-	}
+    private static final class MiningLevel {
+        private final Tag<Item> tag;
+        private final int level;
 
-	private static Map<Block.Settings, Information> info = new HashMap<>();
+        MiningLevel(Tag<Item> tag, int level) {
+            this.tag = tag;
+            this.level = level;
+        }
+    }
+
+	static ExtraData computeExtraData(Block.Settings settings) {
+	    return EXTRA_DATA.computeIfAbsent(settings, ExtraData::new);
+    }
 
 	private static void onBuild(Block.Settings settings, Block block) {
 		// TODO: Load only if fabric-mining-levels present
-		Information i = info.get(settings);
-		if (i != null) {
-			if (i.breakByHand != null) {
-				ToolManager.entry(block).setBreakByHand(i.breakByHand);
+		ExtraData data = EXTRA_DATA.get(settings);
+		if (data != null) {
+			if (data.breakByHand != null) {
+				ToolManager.entry(block).setBreakByHand(data.breakByHand);
 			}
-
-			for (MiningInformation mi : i.miningInformation) {
-				ToolManager.entry(block).putBreakByTool(mi.tag, mi.miningLevel);
+			for (MiningLevel tml : data.miningLevels) {
+				ToolManager.entry(block).putBreakByTool(tml.tag, tml.level);
 			}
 		}
 	}
 
-	protected FabricBlockSettings(Material material, MaterialColor color) {
+	private FabricBlockSettings(Material material, MaterialColor color) {
 		this(Block.Settings.of(material, color));
 	}
 
-	protected FabricBlockSettings(Block base) {
+	private FabricBlockSettings(Block base) {
 		this(Block.Settings.copy(base));
 	}
 
-	protected FabricBlockSettings(final Block.Settings delegate) {
+	private FabricBlockSettings(final Block.Settings delegate) {
 		this.delegate = delegate;
-		castDelegate = (FabricBlockSettingsDelegate) delegate;
+		hooks = (BlockSettingsHooks) delegate; // TODO: Redundant optimization?
 	}
 
 	public static FabricBlockSettings of(Material material) {
@@ -111,37 +121,39 @@ public class FabricBlockSettings {
 		return new FabricBlockSettings(base);
 	}
 
+    public static FabricBlockSettings copyOf(Block.Settings settings) {
+        return new FabricBlockSettings(settings);
+    }
+
 	/* FABRIC HELPERS */
 
-	public FabricBlockSettings breakByHand(boolean value) {
-		info.computeIfAbsent(delegate, (k) -> new Information()).breakByHand = value;
+	public FabricBlockSettings breakByHand(boolean breakByHand) {
+		computeExtraData(delegate).breakByHand(breakByHand);
 		return this;
-	}
-
-	public FabricBlockSettings breakByTool(Tag<Item> tag) {
-		return breakByTool(tag, 0);
 	}
 
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
-		info.computeIfAbsent(delegate, (k) -> new Information()).miningInformation.add(
-				new MiningInformation(tag, miningLevel)
-		);
+		computeExtraData(delegate).addMiningLevel(tag, miningLevel);
 		return this;
 	}
+
+    public FabricBlockSettings breakByTool(Tag<Item> tag) {
+        return breakByTool(tag, 0);
+    }
 
 	/* DELEGATE WRAPPERS */
 
 	public FabricBlockSettings materialColor(MaterialColor color) {
-		castDelegate.fabric_setMaterialColor(color);
+		hooks.setMaterialColor(color);
 		return this;
 	}
 
 	public FabricBlockSettings materialColor(DyeColor color) {
-		return this.materialColor(color.getMaterialColor());
+		return materialColor(color.getMaterialColor());
 	}
 
-	public FabricBlockSettings collidable(boolean value) {
-		castDelegate.fabric_setCollidable(value);
+	public FabricBlockSettings collidable(boolean collidable) {
+		hooks.setCollidable(collidable);
 		return this;
 	}
 
@@ -150,60 +162,62 @@ public class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings sounds(BlockSoundGroup group) {
-		castDelegate.fabric_setSoundGroup(group);
+		hooks.invokeSounds(group);
 		return this;
 	}
 
 	public FabricBlockSettings ticksRandomly() {
-		castDelegate.fabric_setRandomTicks(true);
+		hooks.invokeTicksRandomly();
 		return this;
 	}
 
 	public FabricBlockSettings lightLevel(int value) {
-		castDelegate.fabric_setLightLevel(value);
+		hooks.invokeLightLevel(value);
 		return this;
 	}
 
-	public FabricBlockSettings hardness(float value) {
-		castDelegate.fabric_setHardness(value);
+	public FabricBlockSettings hardness(float hardness) {
+		hooks.setHardness(hardness);
 		return this;
 	}
 
-	public FabricBlockSettings resistance(float value) {
-		castDelegate.fabric_setResistance(value);
+	public FabricBlockSettings resistance(float resistance) {
+		hooks.setResistance(resistance);
 		return this;
 	}
 
 	public FabricBlockSettings strength(float hardness, float resistance) {
-		castDelegate.fabric_setHardness(hardness);
-		castDelegate.fabric_setResistance(resistance);
+		delegate.strength(hardness, resistance);
 		return this;
 	}
 
 	public FabricBlockSettings breakInstantly() {
-		return hardness(0.0F);
-	}
-
-	public FabricBlockSettings dropsNothing() {
-		return this.drops(LootTables.EMPTY);
-	}
-
-	public FabricBlockSettings dropsLike(Block block) {
-		return this.drops(block.getDropTableId());
-	}
-
-	public FabricBlockSettings drops(Identifier id) {
-		castDelegate.fabric_setDropTable(id);
+		hooks.invokeBreakInstantly();
 		return this;
 	}
 
-	public FabricBlockSettings friction(float value) {
-		castDelegate.fabric_setFriction(value);
+	public FabricBlockSettings dropsNothing() {
+		hooks.invokeDropNothing();
+		return this;
+	}
+
+	public FabricBlockSettings dropsLike(Block block) {
+		delegate.dropsLike(block);
+		return this;
+	}
+
+	public FabricBlockSettings drops(Identifier id) {
+		hooks.setDropTableId(id);
+		return this;
+	}
+
+	public FabricBlockSettings friction(float friction) {
+	    delegate.friction(friction);
 		return this;
 	}
 
 	public FabricBlockSettings dynamicBounds() {
-		castDelegate.fabric_setDynamicBounds(true);
+		hooks.invokeDynamicBounds();
 		return this;
 	}
 
