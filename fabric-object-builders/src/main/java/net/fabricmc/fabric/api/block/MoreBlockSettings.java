@@ -87,7 +87,7 @@ public final class MoreBlockSettings {
         return ((BlockSettingsHooks) settings).invokeHasDynamicBounds();
     }
 
-    public static Settings dropNothing(Settings settings) {
+    public static Settings dropsNothing(Settings settings) {
         return ((BlockSettingsHooks) settings).invokeDropsNothing();
     }
 }
