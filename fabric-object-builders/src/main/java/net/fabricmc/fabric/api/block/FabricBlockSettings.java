@@ -39,7 +39,7 @@ import java.util.function.Function;
  * FabricBlockSettings.create() and add .build() at the end to return the
  * vanilla Block.Settings instance beneath.
  */
-public final class FabricBlockSettings {
+public class FabricBlockSettings {
 	static {
 		BlockConstructedCallback.EVENT.register(FabricBlockSettings::onBuild);
 	}
