@@ -28,66 +28,59 @@ public final class BlockSettingsHelper {
     private BlockSettingsHelper() {
     }
 
-    public static Settings breakByHand(Settings settings, boolean breakByHand) {
+    public static void breakByHand(Settings settings, boolean breakByHand) {
         FabricBlockSettings.computeExtraData(settings).breakByHand(breakByHand);
-        return settings;
     }
 
-    public static Settings breakByTool(Settings settings, Tag<Item> tag, int miningLevel) {
+    public static void breakByTool(Settings settings, Tag<Item> tag, int miningLevel) {
         FabricBlockSettings.computeExtraData(settings).addMiningLevel(tag, miningLevel);
-        return settings;
     }
 
-    public static Settings hardness(Settings settings, float hardness) {
+    public static void hardness(Settings settings, float hardness) {
         ((BlockSettingsHooks) settings).setHardness(hardness);
-        return settings;
     }
 
-    public static Settings resistance(Settings settings, float resistance) {
+    public static void resistance(Settings settings, float resistance) {
         ((BlockSettingsHooks) settings).setResistance(Math.max(0.0F, resistance));
-        return settings;
     }
 
-    public static Settings collidable(Settings settings, boolean collidable) {
+    public static void collidable(Settings settings, boolean collidable) {
         ((BlockSettingsHooks) settings).setCollidable(collidable);
-        return settings;
     }
 
-    public static Settings materialColor(Settings settings, MaterialColor materialColor) {
+    public static void materialColor(Settings settings, MaterialColor materialColor) {
         ((BlockSettingsHooks) settings).setMaterialColor(materialColor);
-        return settings;
     }
 
-    public static Settings drops(Settings settings, Identifier dropTableId) {
+    public static void drops(Settings settings, Identifier dropTableId) {
         ((BlockSettingsHooks) settings).setDropTableId(dropTableId);
-        return settings;
     }
 
-    public static Settings sounds(Settings settings, BlockSoundGroup soundGroup) {
-        return ((BlockSettingsHooks) settings).invokeSounds(soundGroup);
+    public static void sounds(Settings settings, BlockSoundGroup soundGroup) {
+        ((BlockSettingsHooks) settings).invokeSounds(soundGroup);
     }
 
-    public static Settings lightLevel(Settings settings, int lightLevel) {
-        return ((BlockSettingsHooks) settings).invokeLightLevel(lightLevel);
+    public static void lightLevel(Settings settings, int lightLevel) { 
+        ((BlockSettingsHooks) settings).invokeLightLevel(lightLevel);
     }
 
-    public static Settings breakInstantly(Settings settings) {
-        return ((BlockSettingsHooks) settings).invokeBreakInstantly();
+    public static void breakInstantly(Settings settings) {
+        ((BlockSettingsHooks) settings).invokeBreakInstantly();
     }
 
-    public static Settings strength(Settings settings, float strength) {
-        return ((BlockSettingsHooks) settings).invokeStrength(strength);
+    public static void strength(Settings settings, float strength) {
+        ((BlockSettingsHooks) settings).invokeStrength(strength);
     }
 
-    public static Settings ticksRandomly(Settings settings) {
-        return ((BlockSettingsHooks) settings).invokeTicksRandomly();
+    public static void ticksRandomly(Settings settings) {
+        ((BlockSettingsHooks) settings).invokeTicksRandomly();
     }
 
-    public static Settings dynamicBounds(Settings settings) {
-        return ((BlockSettingsHooks) settings).invokeHasDynamicBounds();
+    public static void dynamicBounds(Settings settings) {
+        ((BlockSettingsHooks) settings).invokeHasDynamicBounds();
     }
 
-    public static Settings dropsNothing(Settings settings) {
-        return ((BlockSettingsHooks) settings).invokeDropsNothing();
+    public static void dropsNothing(Settings settings) {
+        ((BlockSettingsHooks) settings).invokeDropsNothing();
     }
 }
