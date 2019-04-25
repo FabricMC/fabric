@@ -24,8 +24,8 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-public final class MoreBlockSettings {
-    private MoreBlockSettings() {
+public final class BlockSettingsHelper {
+    private BlockSettingsHelper() {
     }
 
     public static Settings breakByHand(Settings settings, boolean breakByHand) {
