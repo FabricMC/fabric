@@ -197,7 +197,7 @@ public final class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings dropsNothing() {
-		hooks.invokeDropNothing();
+		hooks.invokeDropsNothing();
 		return this;
 	}
 
@@ -217,7 +217,7 @@ public final class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings dynamicBounds() {
-		hooks.invokeDynamicBounds();
+		hooks.invokeHasDynamicBounds();
 		return this;
 	}
 

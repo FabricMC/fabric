@@ -84,10 +84,10 @@ public final class MoreBlockSettings {
     }
 
     public static Settings dynamicBounds(Settings settings) {
-        return ((BlockSettingsHooks) settings).invokeDynamicBounds();
+        return ((BlockSettingsHooks) settings).invokeHasDynamicBounds();
     }
 
     public static Settings dropNothing(Settings settings) {
-        return ((BlockSettingsHooks) settings).invokeDropNothing();
+        return ((BlockSettingsHooks) settings).invokeDropsNothing();
     }
 }
