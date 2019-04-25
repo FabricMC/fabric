@@ -46,7 +46,7 @@ public class FabricBlockSettings {
 
     private static final Map<Block.Settings, ExtraData> EXTRA_DATA = new HashMap<>();
 
-    private final Block.Settings delegate;
+    protected final Block.Settings delegate;
 	private final BlockSettingsHooks hooks;
 
 	static final class ExtraData {
@@ -92,17 +92,17 @@ public class FabricBlockSettings {
 		}
 	}
 
-	private FabricBlockSettings(Material material, MaterialColor color) {
+	protected FabricBlockSettings(Material material, MaterialColor color) {
 		this(Block.Settings.of(material, color));
 	}
 
-	private FabricBlockSettings(Block base) {
+	protected FabricBlockSettings(Block base) {
 		this(Block.Settings.copy(base));
 	}
 
-	private FabricBlockSettings(final Block.Settings delegate) {
+	protected FabricBlockSettings(final Block.Settings delegate) {
 		this.delegate = delegate;
-		hooks = (BlockSettingsHooks) delegate; // TODO: Redundant optimization?
+		hooks = (BlockSettingsHooks) delegate;
 	}
 
 	public static FabricBlockSettings of(Material material) {
