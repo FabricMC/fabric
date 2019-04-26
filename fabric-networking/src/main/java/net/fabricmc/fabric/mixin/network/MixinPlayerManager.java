@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry;
+package net.fabricmc.fabric.mixin.network;
 
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
-import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.Packet;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,12 +27,16 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(PlayerManager.class)
+import java.util.Optional;
+
+@Mixin(priority = 500, value = PlayerManager.class)
 public abstract class MixinPlayerManager {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	public void onPlayerConnect(ClientConnection lvt1, ServerPlayerEntity lvt2, CallbackInfo info) {
-		// TODO: If integrated and local, don't send the packet (it's ignored)
-		// TODO: Refactor out into network + move registry hook to event
-		lvt2.networkHandler.sendPacket(RegistrySyncManager.createPacket());
+		Optional<Packet<?>> optionalPacket = PacketRegistryImpl.createInitialRegisterPacket(ServerSidePacketRegistry.INSTANCE);
+		//noinspection OptionalIsPresent
+		if (optionalPacket.isPresent()) {
+			lvt2.networkHandler.sendPacket(optionalPacket.get());
+		}
 	}
 }

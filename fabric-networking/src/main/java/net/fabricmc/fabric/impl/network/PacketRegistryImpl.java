@@ -27,10 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
 	protected static final Logger LOGGER = LogManager.getLogger();
@@ -40,7 +37,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		consumerMap = new LinkedHashMap<>();
 	}
 
-	public static Packet<?> createInitialRegisterPacket(PacketRegistry registry) {
+	public static Optional<Packet<?>> createInitialRegisterPacket(PacketRegistry registry) {
 		PacketRegistryImpl impl = (PacketRegistryImpl) registry;
 		return impl.createRegisterTypePacket(PacketTypes.REGISTER, impl.consumerMap.keySet());
 	}
@@ -75,7 +72,11 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 	protected abstract void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids);
 
-	protected Packet<?> createRegisterTypePacket(Identifier id, Collection<Identifier> ids) {
+	protected Optional<Packet<?>> createRegisterTypePacket(Identifier id, Collection<Identifier> ids) {
+		if (ids.isEmpty()) {
+			return Optional.empty();
+		}
+
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		boolean first = true;
 		for (Identifier a : ids) {
@@ -86,7 +87,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			}
 			buf.writeBytes(a.toString().getBytes(StandardCharsets.US_ASCII));
 		}
-		return toPacket(id, buf);
+		return Optional.of(toPacket(id, buf));
 	}
 
 	private boolean acceptRegisterType(Identifier id, PacketContext context, PacketByteBuf buf) {
@@ -96,6 +97,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			StringBuilder sb = new StringBuilder();
 			char c;
 
+			int oldIndex = buf.readerIndex();
 			while (buf.readerIndex() < buf.writerIndex()) {
 				c = (char) buf.readByte();
 				if (c == 0) {
@@ -108,6 +110,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 					sb.append(c);
 				}
 			}
+			buf.readerIndex(oldIndex);
 
 			String s = sb.toString();
 			if (!s.isEmpty()) {

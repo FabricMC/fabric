@@ -69,7 +69,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	protected void onRegister(Identifier id) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
 		if (handler != null) {
-			handler.sendPacket(createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)));
+			createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	protected void onUnregister(Identifier id) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
 		if (handler != null) {
-			handler.sendPacket(createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)));
+			createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
 		}
 	}
 

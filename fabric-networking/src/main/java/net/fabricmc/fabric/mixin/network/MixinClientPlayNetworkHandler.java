@@ -35,6 +35,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.Optional;
+
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	@Shadow
@@ -45,7 +47,11 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 
 	@Inject(at = @At("RETURN"), method = "onGameJoin")
 	public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
-		sendPacket(PacketRegistryImpl.createInitialRegisterPacket(ClientSidePacketRegistry.INSTANCE));
+		Optional<Packet<?>> optionalPacket = PacketRegistryImpl.createInitialRegisterPacket(ClientSidePacketRegistry.INSTANCE);
+		//noinspection OptionalIsPresent
+		if (optionalPacket.isPresent()) {
+			sendPacket(optionalPacket.get());
+		}
 	}
 
 	// Optional hook: it only removes a warning message.
