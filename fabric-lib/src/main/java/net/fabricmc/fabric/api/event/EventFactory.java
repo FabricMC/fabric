@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,9 +50,9 @@ public final class EventFactory {
 	/**
 	 * Create an "array-backed" Event instance.
 	 *
-	 * @param type The listener class type.
+	 * @param type           The listener class type.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
-	 * @param <T> The listener type.
+	 * @param <T>            The listener type.
 	 * @return The Event instance.
 	 */
 	public static <T> Event<T> createArrayBacked(Class<T> type, Function<T[], T> invokerFactory) {
@@ -61,15 +61,15 @@ public final class EventFactory {
 
 	/**
 	 * Create an "array-backed" Event instance with a custom empty invoker.
-	 *
+	 * <p>
 	 * Having a custom empty invoker (of type (...) -> {}) increases performance
 	 * relative to iterating over an empty array; however, it only really matters
 	 * if the event is executed thousands of times a second.
 	 *
-	 * @param type The listener class type.
-	 * @param emptyInvoker The custom empty invoker.
+	 * @param type           The listener class type.
+	 * @param emptyInvoker   The custom empty invoker.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
-	 * @param <T> The listener type.
+	 * @param <T>            The listener type.
 	 * @return The Event instance.
 	 */
 	// TODO: Deprecate this once we have working codegen

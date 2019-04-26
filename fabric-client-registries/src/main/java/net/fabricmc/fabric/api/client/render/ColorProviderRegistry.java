@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public interface ColorProviderRegistry<T, Provider> {
 
 	/**
 	 * Get a color provider for the given object.
-	 *
+	 * <p>
 	 * Please note that the underlying registry may not be fully populated or stable until the game has started,
 	 * as other mods may overwrite the registry.
 	 *

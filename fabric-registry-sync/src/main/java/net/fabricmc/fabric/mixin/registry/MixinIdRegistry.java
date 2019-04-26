@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import net.fabricmc.fabric.impl.registry.RemapException;
 import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
-import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,8 +33,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.*;
 
 @Mixin(SimpleRegistry.class)
 public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry<T>, RegistryListener<T> {
@@ -55,7 +52,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Override
 	public void registerListener(RegistryListener<T> listener) {
 		if (fabric_listeners == null) {
-			fabric_listeners = new RegistryListener[] { listener };
+			fabric_listeners = new RegistryListener[]{listener};
 		} else {
 			RegistryListener[] newListeners = new RegistryListener[fabric_listeners.length + 1];
 			System.arraycopy(fabric_listeners, 0, newListeners, 0, fabric_listeners.length);
@@ -64,7 +61,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "ConstantConditions" })
+	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
@@ -75,7 +72,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "ConstantConditions" })
+	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("RETURN"))
 	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;

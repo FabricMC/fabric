@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,14 +78,14 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		clonedBuf.readUnsignedByte();
 
 		Container container = createContainer(syncId, identifier, player, clonedBuf);
-		if(container == null){
+		if (container == null) {
 			return;
 		}
 		player.container = container;
 		player.container.addListener(player);
 	}
 
-	public <C extends Container> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf){
+	public <C extends Container> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf) {
 		ContainerFactory<Container> factory = FACTORIES.get(identifier);
 		if (factory == null) {
 			LOGGER.error("No container factory found for {}!", identifier.toString());

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import net.minecraft.util.Identifier;
 public interface ModelProviderContext {
 	/**
 	 * Load a model using a {@link Identifier}, {@link ModelIdentifier}, ...
-	 *
+	 * <p>
 	 * Please note that the game engine keeps track of circular model loading calls on its own.
 	 *
 	 * @param id The model identifier.

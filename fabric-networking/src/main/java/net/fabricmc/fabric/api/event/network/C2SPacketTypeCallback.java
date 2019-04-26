@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public interface C2SPacketTypeCallback {
 	 * Accept a collection of types.
 	 *
 	 * @param client The player who is the source of the packet.
-	 * @param types The provided collection of types.
+	 * @param types  The provided collection of types.
 	 */
 	void accept(PlayerEntity client, Collection<Identifier> types);
 }

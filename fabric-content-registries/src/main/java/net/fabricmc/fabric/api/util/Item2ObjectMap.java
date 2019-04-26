@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,16 @@ import net.minecraft.tag.Tag;
 
 public interface Item2ObjectMap<V> {
 	V get(ItemProvider item);
+
 	void add(ItemProvider item, V value);
+
 	void add(Tag<Item> tag, V value);
+
 	void remove(ItemProvider item);
+
 	void remove(Tag<Item> tag);
+
 	void clear(ItemProvider item);
+
 	void clear(Tag<Item> tag);
 }

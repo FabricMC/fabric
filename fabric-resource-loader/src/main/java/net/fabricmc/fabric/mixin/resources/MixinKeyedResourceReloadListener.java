@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public class MixinKeyedResourceReloadListener {
 		private Identifier fabric_id;
 
 		@Override
-		@SuppressWarnings({ "ConstantConditions", "RedundantCast" })
+		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Collection<Identifier> getFabricDependencies() {
 			if (fabric_idDeps == null) {
 				Object self = (Object) this;
@@ -67,7 +67,7 @@ public class MixinKeyedResourceReloadListener {
 		}
 
 		@Override
-		@SuppressWarnings({ "ConstantConditions", "RedundantCast" })
+		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Identifier getFabricId() {
 			if (fabric_id == null) {
 				Object self = (Object) this;
@@ -101,7 +101,7 @@ public class MixinKeyedResourceReloadListener {
 		private Identifier fabric_id;
 
 		@Override
-		@SuppressWarnings({ "ConstantConditions", "RedundantCast" })
+		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Collection<Identifier> getFabricDependencies() {
 			if (fabric_idDeps == null) {
 				Object self = (Object) this;
@@ -117,11 +117,11 @@ public class MixinKeyedResourceReloadListener {
 		}
 
 		@Override
-		@SuppressWarnings({ "ConstantConditions", "RedundantCast" })
+		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Identifier getFabricId() {
 			if (fabric_id == null) {
 				Object self = (Object) this;
-;
+				;
 				if (self instanceof RecipeManager) {
 					fabric_id = ResourceReloadListenerKeys.RECIPES;
 				} else if (self instanceof ServerAdvancementLoader) {

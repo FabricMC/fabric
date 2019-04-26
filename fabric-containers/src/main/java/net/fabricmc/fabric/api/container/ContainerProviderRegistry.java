@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,31 +31,28 @@ public interface ContainerProviderRegistry {
 	ContainerProviderRegistry INSTANCE = ContainerProviderImpl.INSTANCE;
 
 	/**
-	 *
 	 * Register a "packet buffer -> container" factory. This is used both on the client and server side.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ScreenProviderRegistry}
-	 * @param factory the ContainerFactory that should return a new {@link Container}
+	 * @param factory    the ContainerFactory that should return a new {@link Container}
 	 */
 	void registerFactory(Identifier identifier, ContainerFactory<Container> factory);
 
 	/**
-	 *
 	 * Open a modded container.
 	 *
 	 * @param identifier the identifier that was used when registering the container
-	 * @param player the player that should open the container
-	 * @param writer a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
+	 * @param player     the player that should open the container
+	 * @param writer     a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
 	 */
 	void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer);
 
 	/**
-	 *
 	 * Open a modded container. This should be called on the server side - it has no effect on the client side.
 	 *
 	 * @param identifier the identifier that was used when registering the container
-	 * @param player the player that should open the container
-	 * @param writer a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
+	 * @param player     the player that should open the container
+	 * @param writer     a PacketByteBuf where data can be written to, this data is then accessible by the container factory when creating the container or the gui
 	 */
 	void openContainer(Identifier identifier, PlayerEntity player, Consumer<PacketByteBuf> writer);
 }

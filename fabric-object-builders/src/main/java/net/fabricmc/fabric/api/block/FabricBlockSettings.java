@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ import java.util.function.Function;
 /**
  * Fabric's version of Block.Settings. Adds additional methods and hooks
  * not found in the original class.
- *
+ * <p>
  * To use it, simply replace Block.Settings.create() with
  * FabricBlockSettings.create() and add .build() at the end to return the
  * vanilla Block.Settings instance beneath.
@@ -124,7 +124,7 @@ public class FabricBlockSettings {
 
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		info.computeIfAbsent(delegate, (k) -> new Information()).miningInformation.add(
-				new MiningInformation(tag, miningLevel)
+			new MiningInformation(tag, miningLevel)
 		);
 		return this;
 	}

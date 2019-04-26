@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,21 +28,19 @@ public interface ScreenProviderRegistry {
 	ScreenProviderRegistry INSTANCE = ScreenProviderRegistryImpl.INSTANCE;
 
 	/**
-	 *
 	 * Register a "Container -> ContainerScreen" factory. This is used only on the client side.
 	 *
-	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
+	 * @param identifier             a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
 	 * @param containerScreenFactory the supplier that should be used to create the new gui
 	 */
 	<C extends Container> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory);
 
 	/**
-	 *
 	 * Register a "packet -> ContainerScreen" factory. This is used only on the client side, and allows you
 	 * to override the default behaviour of re-using the existing "packet -> Container" logic.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
-	 * @param factory the gui factory, this should return a new {@link ContainerScreen}
+	 * @param factory    the gui factory, this should return a new {@link ContainerScreen}
 	 */
 	void registerFactory(Identifier identifier, ContainerFactory<ContainerScreen> factory);
 

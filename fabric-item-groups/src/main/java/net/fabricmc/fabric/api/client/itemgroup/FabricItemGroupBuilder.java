@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,6 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 *
 	 * Create a new Item Group Builder
 	 *
 	 * @param identifier the id will become the name of the ItemGroup and will be used for the translation key
@@ -48,7 +47,6 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 *
 	 * This is used to add an icon to to the item group
 	 *
 	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
@@ -60,7 +58,6 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 *
 	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items
 	 *
 	 * @param appender Add ItemStack's to this list to show in the ItemGroup
@@ -73,7 +70,6 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 *
 	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items
 	 *
 	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
@@ -85,20 +81,18 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 *
 	 * This is a single method that makes creating an ItemGroup with an icon one call
 	 *
-	 * @param identifier the id will become the name of the ItemGroup and will be used for the translation key
+	 * @param identifier    the id will become the name of the ItemGroup and will be used for the translation key
 	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
 	 * @return An instance of the built ItemGroup
 	 */
-	public static ItemGroup build(Identifier identifier, Supplier<ItemStack> stackSupplier){
+	public static ItemGroup build(Identifier identifier, Supplier<ItemStack> stackSupplier) {
 		return new FabricItemGroupBuilder(identifier).icon(stackSupplier).build();
 	}
 
 	/**
-	 *
-	 *  Create an instance of the ItemGroup
+	 * Create an instance of the ItemGroup
 	 *
 	 * @return An instance of the built ItemGroup
 	 */
@@ -112,7 +106,7 @@ public final class FabricItemGroupBuilder {
 
 			@Override
 			public void appendItems(DefaultedList<ItemStack> stacks) {
-				if(stacksForDisplay != null){
+				if (stacksForDisplay != null) {
 					stacksForDisplay.accept(stacks);
 					return;
 				}

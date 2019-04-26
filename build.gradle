@@ -4,6 +4,7 @@ plugins {
 	id 'idea'
 	id 'maven-publish'
 	id 'fabric-loom' version '0.2.2-SNAPSHOT' apply false
+	id 'net.minecrell.licenser' version '0.4.1'	
 //	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
@@ -15,6 +16,7 @@ def mcVersion = "1.14"
 allprojects {
 	apply plugin: 'maven-publish'
 	apply plugin: 'fabric-loom'
+	apply plugin: 'net.minecrell.licenser'
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -51,6 +53,12 @@ allprojects {
 			from(sourceSets.main.resources.srcDirs) {
 				exclude "fabric.mod.json"
 			}
+		}
+
+		license {
+			println(rootProject.file('HEADER'))
+			header rootProject.file('HEADER')
+			include '**/*.java'
 		}
 	}
 
@@ -119,7 +127,7 @@ publishing {
 					def depNode = depsNode.appendNode("dependency")
 					depNode.appendNode("groupId", it.group)
 					depNode.appendNode("artifactId", it.name)
-					depNode.appendNode("version", it.version)
+				depNode.appendNode("version", it.version)
 					depNode.appendNode("scope", "compile")
 				}
 			}
@@ -138,6 +146,9 @@ publishing {
 		}
 	}
 }
+
+task licenseFormatAll
+subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
 
 dependencies {
 	afterEvaluate {
@@ -171,5 +182,4 @@ version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) 
 //	}
 //}
 
-apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/license.gradle'
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'

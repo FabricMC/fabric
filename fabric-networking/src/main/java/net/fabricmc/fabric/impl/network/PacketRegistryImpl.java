@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
 	protected static final Logger LOGGER = LogManager.getLogger();
@@ -63,9 +62,13 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	}
 
 	protected abstract void onRegister(Identifier id);
+
 	protected abstract void onUnregister(Identifier id);
+
 	protected abstract Collection<Identifier> getIdCollectionFor(PacketContext context);
+
 	protected abstract void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids);
+
 	protected abstract void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids);
 
 	protected Packet<?> createRegisterTypePacket(Identifier id, Collection<Identifier> ids) {
@@ -122,9 +125,9 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	/**
 	 * Hook for accepting packets used in Fabric mixins.
 	 *
-	 * @param id The packet Identifier received.
+	 * @param id      The packet Identifier received.
 	 * @param context The packet context provided.
-	 * @param buf The packet data buffer received.
+	 * @param buf     The packet data buffer received.
 	 * @return Whether or not the packet was handled by this packet registry.
 	 */
 	public boolean accept(Identifier id, PacketContext context, PacketByteBuf buf) {

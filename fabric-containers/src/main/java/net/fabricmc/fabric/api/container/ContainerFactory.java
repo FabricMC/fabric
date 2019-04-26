@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,12 @@ import net.minecraft.util.PacketByteBuf;
 public interface ContainerFactory<T> {
 
 	/**
-	 *
 	 * Creates the new object.
 	 *
-	 * @param syncId The container synchronization ID.
+	 * @param syncId     The container synchronization ID.
 	 * @param identifier the Identifier is the name that was used when registering the factory
-	 * @param player the player that is opening the gui/container
-	 * @param buf the buffer contains the same data that was provided with {@Link ContainerProviderRegistry.openContainer}
+	 * @param player     the player that is opening the gui/container
+	 * @param buf        the buffer contains the same data that was provided with {@Link ContainerProviderRegistry.openContainer}
 	 * @return the new gui or container
 	 */
 	T create(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf);

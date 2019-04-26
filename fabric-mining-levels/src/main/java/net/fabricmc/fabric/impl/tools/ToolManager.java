@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Map;
 public final class ToolManager {
 	public interface Entry {
 		void setBreakByHand(boolean value);
+
 		void putBreakByTool(Tag<Item> tag, int miningLevel);
 	}
 

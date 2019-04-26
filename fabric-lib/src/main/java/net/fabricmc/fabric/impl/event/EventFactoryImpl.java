@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import net.fabricmc.fabric.api.event.Event;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -97,7 +96,7 @@ public final class EventFactoryImpl {
 
 		final Object returnValue = defValue;
 		//noinspection unchecked
-		return (T) Proxy.newProxyInstance(EventFactoryImpl.class.getClassLoader(), new Class[] { handlerClass },
+		return (T) Proxy.newProxyInstance(EventFactoryImpl.class.getClassLoader(), new Class[]{handlerClass},
 			(proxy, method, args) -> returnValue);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,20 @@
 package net.fabricmc.fabric.api.util;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemProvider;
 import net.minecraft.tag.Tag;
 
 public interface Block2ObjectMap<V> {
 	V get(Block block);
+
 	void add(Block block, V value);
+
 	void add(Tag<Block> tag, V value);
+
 	void remove(Block block);
+
 	void remove(Tag<Block> tag);
+
 	void clear(Block block);
+
 	void clear(Tag<Block> tag);
 }

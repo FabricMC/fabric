@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,16 +27,16 @@ import java.util.concurrent.Executor;
 /**
  * A simplified version of the "resource reload listener" interface, hiding the
  * peculiarities of the API.
- *
+ * <p>
  * In essence, there are two stages:
- *
+ * <p>
  * - load: create an instance of your data object containing all loaded and
- *   processed information,
+ * processed information,
  * - apply: apply the information from the data object to the game instance.
- *
+ * <p>
  * The load stage should be self-contained as it can run on any thread! However,
  * the apply stage is guaranteed to run on the game thread.
- *
+ * <p>
  * For a fully synchronous alternative, consider using
  * {@link SynchronousResourceReloadListener} in conjunction with
  * {@link IdentifiableResourceReloadListener}.
@@ -55,7 +55,7 @@ public interface SimpleResourceReloadListener<T> extends IdentifiableResourceRel
 	 * Asynchronously process and load resource-based data. The code
 	 * must be thread-safe and not modify game state!
 	 *
-	 * @param manager The resource manager used during reloading.
+	 * @param manager  The resource manager used during reloading.
 	 * @param profiler The profiler which may be used for this stage.
 	 * @param executor The executor which should be used for this stage.
 	 * @return A CompletableFuture representing the "data loading" stage.
@@ -65,7 +65,7 @@ public interface SimpleResourceReloadListener<T> extends IdentifiableResourceRel
 	/**
 	 * Synchronously apply loaded data to the game state.
 	 *
-	 * @param manager The resource manager used during reloading.
+	 * @param manager  The resource manager used during reloading.
 	 * @param profiler The profiler which may be used for this stage.
 	 * @param executor The executor which should be used for this stage.
 	 * @return A CompletableFuture representing the "data applying" stage.

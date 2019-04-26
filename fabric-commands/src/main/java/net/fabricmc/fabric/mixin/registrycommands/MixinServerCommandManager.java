@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.mixin.registrycommands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.fabric.impl.registry.CommandRegistryImpl;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -38,7 +37,7 @@ public class MixinServerCommandManager {
 	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
 	public void addMethods(boolean dedicated, CallbackInfo info) {
 		// TODO: Run before findAmbiguities
-		if(!dedicated){
+		if (!dedicated) {
 			CommandRegistryImpl.INSTANCE.entries(false).forEach((e) -> e.accept(dispatcher));
 		}
 	}

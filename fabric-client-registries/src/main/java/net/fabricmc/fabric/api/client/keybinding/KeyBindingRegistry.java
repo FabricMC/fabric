@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ public interface KeyBindingRegistry {
 
 	/**
 	 * Add a new key binding category.
+	 *
 	 * @param categoryName The key binding category name.
 	 * @return True if a new category was added.
 	 */
@@ -36,6 +37,7 @@ public interface KeyBindingRegistry {
 
 	/**
 	 * Register a new key binding.
+	 *
 	 * @param binding The key binding.
 	 * @return True if a new key binding was registered.
 	 */

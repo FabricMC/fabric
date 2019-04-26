@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import net.minecraft.util.PacketByteBuf;
 
 /**
  * The client-side packet registry.
- *
+ * <p>
  * It is used for:
- *
+ * <p>
  * - registering client-side packet receivers (server -> client packets)
  * - sending packets to the server (client -> server packets).
  */
@@ -45,20 +45,20 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 
 	/**
 	 * Send a packet to the server.
-
-	 * @param packet The packet to be sent.
+	 *
+	 * @param packet             The packet to be sent.
 	 * @param completionListener Completion listener. Can be used to check for
-	 * the success or failure of sending a given packet, among others.
+	 *                           the success or failure of sending a given packet, among others.
 	 */
 	void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener);
 
 	/**
 	 * Send an identifier/buffer-based packet to the server.
-
-	 * @param id The packet identifier.
-	 * @param buf The packet byte buffer.
+	 *
+	 * @param id                 The packet identifier.
+	 * @param buf                The packet byte buffer.
 	 * @param completionListener Completion listener. Can be used to check for
-	 * the success or failure of sending a given packet, among others.
+	 *                           the success or failure of sending a given packet, among others.
 	 */
 	default void sendToServer(Identifier id, PacketByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		sendToServer(toPacket(id, buf), completionListener);
@@ -66,7 +66,7 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 
 	/**
 	 * Send a packet to the server.
-
+	 *
 	 * @param packet The packet to be sent.
 	 */
 	default void sendToServer(Packet<?> packet) {
@@ -75,8 +75,8 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 
 	/**
 	 * Send an identifier/buffer-based packet to the server.
-
-	 * @param id The packet identifier.
+	 *
+	 * @param id  The packet identifier.
 	 * @param buf The packet byte buffer.
 	 */
 	default void sendToServer(Identifier id, PacketByteBuf buf) {

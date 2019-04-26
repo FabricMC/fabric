@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ public interface PacketRegistry {
 	 * Turn a (identifier, byte buffer) pair into a "custom payload" packet
 	 * suitable for sending in the PacketRegistry's sending direction.
 	 *
-	 * @param id The identifier.
+	 * @param id  The identifier.
 	 * @param buf The byte buffer.
 	 * @return
 	 */
@@ -34,7 +34,7 @@ public interface PacketRegistry {
 	/**
 	 * Register a packet.
 	 *
-	 * @param id The packet Identifier.
+	 * @param id       The packet Identifier.
 	 * @param consumer The method used for handling the packet.
 	 */
 	void register(Identifier id, PacketConsumer consumer);
