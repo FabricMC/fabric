@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.resources;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import java.io.IOException;
+import java.util.concurrent.*;
 
 class DeferredNioExecutionHandler {
 	private static final ThreadLocal<Boolean> DEFERRED_REQUIRED = new ThreadLocal<>();

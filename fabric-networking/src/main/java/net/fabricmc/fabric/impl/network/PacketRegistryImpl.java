@@ -27,6 +27,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
 	protected static final Logger LOGGER = LogManager.getLogger();

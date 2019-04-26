@@ -20,6 +20,7 @@ import net.minecraft.util.Void;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.Callable;
 
 /**
  * InputStream deferring to a separate I/O thread to work around
