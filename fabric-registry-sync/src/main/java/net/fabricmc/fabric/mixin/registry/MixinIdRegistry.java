@@ -94,16 +94,44 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		switch (mode) {
 			case AUTHORITATIVE:
 				break;
-			case REMOTE:
-				if (!registry.getIds().containsAll(remoteIndexedEntries.keySet())) {
-					throw new RemapException("Received ID map contains IDs unknown to the receiver!");
+			case REMOTE: {
+				List<String> strings = new ArrayList<>();
+				for (Identifier remoteId : remoteIndexedEntries.keySet()) {
+					if (!registry.getIds().contains(remoteId)) {
+						strings.add(" - " + remoteId);
+					}
 				}
-				break;
-			case EXACT:
+
+				if (!strings.isEmpty()) {
+					StringBuilder builder = new StringBuilder("Received ID map contains IDs unknown to the receiver!");
+					for (String s : strings) {
+						builder.append('\n').append(s);
+					}
+					throw new RemapException(builder.toString());
+				}
+			} break;
+			case EXACT: {
 				if (!registry.getIds().equals(remoteIndexedEntries.keySet())) {
-					throw new RemapException("Local and remote ID sets do not match!");
+					List<String> strings = new ArrayList<>();
+					for (Identifier remoteId : remoteIndexedEntries.keySet()) {
+						if (!registry.getIds().contains(remoteId)) {
+							strings.add(" - " + remoteId + " (missing on local)");
+						}
+					}
+
+					for (Identifier localId : registry.getIds()) {
+						if (!remoteIndexedEntries.keySet().contains(localId)) {
+							strings.add(" - " + localId + " (missing on remote)");
+						}
+					}
+
+					StringBuilder builder = new StringBuilder("Local and remote ID sets do not match!");
+					for (String s : strings) {
+						builder.append('\n').append(s);
+					}
+					throw new RemapException(builder.toString());
 				}
-				break;
+			} break;
 		}
 
 		// Make a copy of the previous maps.
