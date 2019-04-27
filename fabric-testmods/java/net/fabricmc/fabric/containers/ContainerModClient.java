@@ -87,8 +87,13 @@ public class ContainerModClient implements ClientModInitializer {
 		@Override
 		protected void drawBackground(float v, int i, int i1) {
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+<<<<<<< HEAD:fabric-testmods/java/net/fabricmc/fabric/containers/ContainerModClient.java
 			minecraft.getTextureManager().bindTexture(BG_TEXTURE);
 			this.blit(left, top, 0, 0, width, height);
+=======
+			client.getTextureManager().bindTexture(BG_TEXTURE);
+			this.drawTexturedRect(left, top, 0, 0, width, height);
+>>>>>>> asie/fluid-render-patch:src/test/java/net/fabricmc/fabric/containers/ContainerModClient.java
 		}
 	}
 

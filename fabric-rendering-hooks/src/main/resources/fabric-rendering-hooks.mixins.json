@@ -6,6 +6,7 @@
     "MixinBlockColorMap",
     "MixinBlockEntityRenderManager",
     "MixinEntityRenderManager",
+    "fluid.MixinFluidRenderer",
     "MixinItemColorMap"
   ],
   "injectors": {
