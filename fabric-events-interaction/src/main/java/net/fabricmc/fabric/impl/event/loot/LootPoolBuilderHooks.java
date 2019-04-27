@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ * Copyright (c) 2016, 2017, 2018 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.impl.loot;
 
-import net.fabricmc.fabric.impl.registry.LootEntryTypeRegistryImpl;
+import net.minecraft.world.loot.condition.LootCondition;
 import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.world.loot.function.LootFunction;
 
-/**
- * Fabric's extensions to {@code net.minecraft.world.loot.entry.LootEntries} for registering
- * custom loot entry types.
- *
- * @see #register
- */
-public interface LootEntryTypeRegistry {
-	final LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
+import java.util.List;
 
-	/**
-	 * Registers a loot entry type by its serializer.
-	 *
-	 * @param serializer the loot entry serializer
-	 */
-	void register(LootEntry.Serializer<?> serializer);
+public interface LootPoolBuilderHooks {
+	List<LootEntry> fabric_getEntries();
+	List<LootCondition> fabric_getConditions();
+	List<LootFunction> fabric_getFunctions();
 }
