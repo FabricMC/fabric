@@ -55,27 +55,23 @@ public final class LootJsonParser {
 
 	}
 
-	private static Gson gson() {
-		return GSON.get();
-	}
-
 	public static LootSupplier readSupplier(String json) {
-		return JsonHelper.deserialize(gson(), json, LootSupplier.class);
+		return JsonHelper.deserialize(GSON.get(), json, LootSupplier.class);
 	}
 
 	public static LootEntry readEntry(String json) {
-		return JsonHelper.deserialize(gson(), json, LootEntry.class);
+		return JsonHelper.deserialize(GSON.get(), json, LootEntry.class);
 	}
 
 	public static LootPool readPool(String json) {
-		return JsonHelper.deserialize(gson(), json, LootPool.class);
+		return JsonHelper.deserialize(GSON.get(), json, LootPool.class);
 	}
 
 	public static LootFunction readFunction(String json) {
-		return JsonHelper.deserialize(gson(), json, LootFunction.class);
+		return JsonHelper.deserialize(GSON.get(), json, LootFunction.class);
 	}
 
 	public static LootCondition readCondition(String json) {
-		return JsonHelper.deserialize(gson(), json, LootCondition.class);
+		return JsonHelper.deserialize(GSON.get(), json, LootCondition.class);
 	}
 }
