@@ -12,7 +12,6 @@ pluginManagement {
 
 rootProject.name = "fabric-api"
 
-include 'fabric-client-registries'
 include 'fabric-commands'
 include 'fabric-containers'
 include 'fabric-content-registries'
@@ -21,12 +20,14 @@ include 'fabric-events-interaction'
 include 'fabric-events-lifecycle'
 include 'fabric-item-groups'
 include 'fabric-lib'
+include 'fabric-keybindings'
 include 'fabric-mining-levels'
 include 'fabric-models'
 include 'fabric-networking'
 include 'fabric-networking-blockentity'
 include 'fabric-object-builders'
 include 'fabric-registry-sync'
+include 'fabric-rendering-hooks'
 include 'fabric-resource-loader'
 include 'fabric-tag-hooks'
 include 'fabric-textures'
