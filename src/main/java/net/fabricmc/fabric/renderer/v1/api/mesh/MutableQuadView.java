@@ -75,7 +75,6 @@ public interface MutableQuadView extends QuadView {
      * flipped as part of baking. Can be useful for some randomization
      * and texture mapping scenarios. Results are different than what
      * can be obtained via rotation and both can be applied.
-     * UV lock must be disabled for this feature to work.
      * Pass in bakeFlags parameter to {@link #spriteBake(int, Sprite, int)}.
      */
     int BAKE_FLIP_U = 8;
