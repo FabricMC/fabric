@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-loot-tables",
+  "id": "fabric-loot-tables-v1",
   "version": "${version}",
   "license": "Apache-2.0",
   "mixins": [
