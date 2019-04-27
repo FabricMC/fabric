@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.network;
+package net.fabricmc.fabric.impl.network.login;
 
+import io.netty.buffer.Unpooled;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-/**
- * Helper interface containing getters for CustomPayloadC2SPacket
- * which were omitted from the compiled game.
- */
-public interface CustomPayloadC2SPacketAccessor {
-	Identifier getChannel();
+public interface S2CLoginHandshakeCallback {
+	static final Event<S2CLoginHandshakeCallback> EVENT = EventFactory.createArrayBacked(
+		S2CLoginHandshakeCallback.class,
+		(callbacks) -> (queue) -> {
+			for (S2CLoginHandshakeCallback callback : callbacks) {
+				callback.accept(queue);
+			}
+		}
+	);
 
-	PacketByteBuf getData();
+	void accept(S2CLoginQueryQueue queue);
 }

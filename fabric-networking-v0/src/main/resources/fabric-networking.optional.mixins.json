@@ -1,0 +1,13 @@
+{
+  "_comment": "Entity tracker mixins, while helpful for performance, are not *strictly* required by the code - it will fall back, if required.",
+  "required": false,
+  "package": "net.fabricmc.fabric.mixin.network",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinEntityTracker",
+    "MixinThreadedAnvilChunkStorage"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
