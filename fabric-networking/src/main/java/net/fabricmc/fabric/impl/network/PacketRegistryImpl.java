@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -103,7 +104,12 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 				if (c == 0) {
 					String s = sb.toString();
 					if (!s.isEmpty()) {
-						ids.add(new Identifier(s));
+						try {
+							ids.add(new Identifier(s));
+						} catch (InvalidIdentifierException e) {
+							LOGGER.warn("Received invalid identifier in " + id + ": " + s + " (" + e.getLocalizedMessage() + ")");
+							LOGGER.trace(e);
+						}
 					}
 					sb = new StringBuilder();
 				} else {
