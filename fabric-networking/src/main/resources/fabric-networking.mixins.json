@@ -10,7 +10,8 @@
     "MixinThreadedAnvilChunkStorage"
   ],
   "client": [
-    "MixinClientPlayNetworkHandler"
+    "MixinClientPlayNetworkHandler",
+    "MixinMinecraftClient"
   ],
   "injectors": {
     "defaultRequire": 1

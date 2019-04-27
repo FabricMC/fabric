@@ -47,7 +47,8 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	public void register(Identifier id, PacketConsumer consumer) {
 		boolean isNew = true;
 		if (consumerMap.containsKey(id)) {
-			// TODO: log warning
+			LOGGER.warn("Registered duplicate packet " + id + "!");
+			LOGGER.trace(new Throwable());
 			isNew = false;
 		}
 
@@ -59,8 +60,12 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 	@Override
 	public void unregister(Identifier id) {
-		consumerMap.remove(id);
-		onUnregister(id);
+		if (consumerMap.remove(id) != null) {
+			onUnregister(id);
+		} else {
+			LOGGER.warn("Tried to unregister non-registered packet " + id + "!");
+			LOGGER.trace(new Throwable());
+		}
 	}
 
 	protected abstract void onRegister(Identifier id);

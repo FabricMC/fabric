@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.mixin.network;
 
+import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
+import net.fabricmc.fabric.impl.network.ServerSidePacketRegistryImpl;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.server.PlayerManager;
@@ -32,11 +34,12 @@ import java.util.Optional;
 @Mixin(priority = 500, value = PlayerManager.class)
 public abstract class MixinPlayerManager {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
-	public void onPlayerConnect(ClientConnection lvt1, ServerPlayerEntity lvt2, CallbackInfo info) {
+	public void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
 		Optional<Packet<?>> optionalPacket = PacketRegistryImpl.createInitialRegisterPacket(ServerSidePacketRegistry.INSTANCE);
 		//noinspection OptionalIsPresent
 		if (optionalPacket.isPresent()) {
-			lvt2.networkHandler.sendPacket(optionalPacket.get());
+			player.networkHandler.sendPacket(optionalPacket.get());
+			((ServerSidePacketRegistryImpl) ServerSidePacketRegistry.INSTANCE).addNetworkHandler(player.networkHandler);
 		}
 	}
 }

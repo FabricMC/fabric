@@ -56,7 +56,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 				handler.getClientConnection().send(packet, completionListener);
 			}
 		} else {
-			// TODO: log warning
+			LOGGER.warn("Sending packet " + packet + " to server failed, not connected!");
 		}
 	}
 
