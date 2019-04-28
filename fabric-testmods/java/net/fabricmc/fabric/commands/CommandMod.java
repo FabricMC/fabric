@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.commands;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.minecraft.server.command.CommandManager;
@@ -28,10 +27,10 @@ public class CommandMod implements ModInitializer {
 	public void onInitialize() {
 		CommandRegistry.INSTANCE.register(false, (dispatcher) -> dispatcher.register(
 			CommandManager.literal("fabric_test")
-			.executes(c -> {
-				c.getSource().sendFeedback(new StringTextComponent("Command works!"), false);
-				return Command.SINGLE_SUCCESS;
-			})
+				.executes(c -> {
+					c.getSource().sendFeedback(new StringTextComponent("Command works!"), false);
+					return Command.SINGLE_SUCCESS;
+				})
 		));
 
 		CommandRegistry.INSTANCE.register(true, (dispatcher) -> dispatcher.register(

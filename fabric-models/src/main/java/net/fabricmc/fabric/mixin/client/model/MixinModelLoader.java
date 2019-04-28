@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.model;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import net.fabricmc.fabric.impl.client.model.ModelLoaderHooks;
 import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 import net.minecraft.client.render.model.ModelLoader;

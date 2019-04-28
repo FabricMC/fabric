@@ -40,7 +40,7 @@ public class ItemGroupMod implements ModInitializer {
 
 		//Creates a group with all modded items in
 		FabricItemGroupBuilder.create(new Identifier("fabric", "modded")).appendItems(itemStacks -> Registry.ITEM.forEach(item -> {
-			if(!Registry.ITEM.getId(item).getNamespace().equals("minecraft")){
+			if (!Registry.ITEM.getId(item).getNamespace().equals("minecraft")) {
 				itemStacks.add(new ItemStack(item));
 			}
 		})).icon(() -> new ItemStack(Blocks.TNT)).build();

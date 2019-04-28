@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,14 +19,11 @@ package net.fabricmc.fabric.mixin.registrycommands;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.datafixers.DataFixer;
-import net.fabricmc.fabric.api.registry.CommandRegistry;
 import net.fabricmc.fabric.impl.registry.CommandRegistryImpl;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.util.UserCache;
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,7 +33,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.File;
 import java.net.Proxy;
-import java.util.function.Consumer;
 
 @Mixin(MinecraftDedicatedServer.class)
 public abstract class MixinMinecraftDedicatedServer extends MinecraftServer {
@@ -46,7 +42,7 @@ public abstract class MixinMinecraftDedicatedServer extends MinecraftServer {
 	}
 
 	@Inject(method = "setupServer", at = @At("HEAD"))
-	private void setupServer(CallbackInfoReturnable<Boolean> info){
+	private void setupServer(CallbackInfoReturnable<Boolean> info) {
 		CommandRegistryImpl.INSTANCE.entries(false).forEach((e) -> e.accept(getCommandManager().getDispatcher()));
 		CommandRegistryImpl.INSTANCE.entries(true).forEach((e) -> e.accept(getCommandManager().getDispatcher()));
 	}

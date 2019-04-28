@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,60 +24,55 @@ import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Internal utilities for managing resource packs.
  */
 public final class ModResourcePackUtil {
-    public static final int PACK_FORMAT_VERSION = 4;
+	public static final int PACK_FORMAT_VERSION = 4;
 
-    private ModResourcePackUtil() {
+	private ModResourcePackUtil() {
 
-    }
+	}
 
-    public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
-        for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-            Path path = container.getRootPath();
-            ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
-	        if (!pack.getNamespaces(type).isEmpty()) {
-		        packList.add(pack);
-	        }
-        }
-    }
+	public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
+		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
+			Path path = container.getRootPath();
+			ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
+			if (!pack.getNamespaces(type).isEmpty()) {
+				packList.add(pack);
+			}
+		}
+	}
 
-    public static boolean containsDefault(ModMetadata info, String filename) {
-        return "pack.mcmeta".equals(filename);
-    }
+	public static boolean containsDefault(ModMetadata info, String filename) {
+		return "pack.mcmeta".equals(filename);
+	}
 
-    public static InputStream openDefault(ModMetadata info, String filename) {
-        switch (filename) {
-            case "pack.mcmeta":
-                String description = info.getName();
-                if (description == null) {
-                    description = "";
-                } else {
-                    description = description.replaceAll("\"", "\\\"");
-                }
-                String pack = String.format("{\"pack\":{\"pack_format\":" + PACK_FORMAT_VERSION + ",\"description\":\"%s\"}}", description);
-                return IOUtils.toInputStream(pack, Charsets.UTF_8);
-            default:
-                return null;
-        }
-    }
+	public static InputStream openDefault(ModMetadata info, String filename) {
+		switch (filename) {
+			case "pack.mcmeta":
+				String description = info.getName();
+				if (description == null) {
+					description = "";
+				} else {
+					description = description.replaceAll("\"", "\\\"");
+				}
+				String pack = String.format("{\"pack\":{\"pack_format\":" + PACK_FORMAT_VERSION + ",\"description\":\"%s\"}}", description);
+				return IOUtils.toInputStream(pack, Charsets.UTF_8);
+			default:
+				return null;
+		}
+	}
 
-    public static String getName(ModMetadata info) {
-        if (info.getName() != null) {
-            return info.getName();
-        } else {
-        	return "Fabric Mod \"" + info.getId() + "\"";
-        }
-    }
+	public static String getName(ModMetadata info) {
+		if (info.getName() != null) {
+			return info.getName();
+		} else {
+			return "Fabric Mod \"" + info.getId() + "\"";
+		}
+	}
 }

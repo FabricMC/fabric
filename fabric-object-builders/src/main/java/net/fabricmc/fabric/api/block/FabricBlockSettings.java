@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.block;
 
 import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
 import net.fabricmc.fabric.impl.tools.ToolManager;
-import net.fabricmc.fabric.mixin.builders.BlockSettingsHooks;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -28,13 +27,16 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
  * Fabric's version of Block.Settings. Adds additional methods and hooks
  * not found in the original class.
- *
+ * <p>
  * To use it, simply replace Block.Settings.create() with
  * FabricBlockSettings.create() and add .build() at the end to return the
  * vanilla Block.Settings instance beneath.
@@ -47,7 +49,6 @@ public class FabricBlockSettings {
     private static final Map<Block.Settings, ExtraData> EXTRA_DATA = new HashMap<>();
 
     protected final Block.Settings delegate;
-	private final BlockSettingsHooks hooks;
 
 	static final class ExtraData {
         private final List<MiningLevel> miningLevels = new ArrayList<>();
@@ -102,7 +103,6 @@ public class FabricBlockSettings {
 
 	protected FabricBlockSettings(final Block.Settings delegate) {
 		this.delegate = delegate;
-		hooks = (BlockSettingsHooks) delegate;
 	}
 
 	public static FabricBlockSettings of(Material material) {
@@ -144,7 +144,7 @@ public class FabricBlockSettings {
 	/* DELEGATE WRAPPERS */
 
 	public FabricBlockSettings materialColor(MaterialColor color) {
-		hooks.setMaterialColor(color);
+		BlockSettingsExtensions.materialColor(delegate, color);
 		return this;
 	}
 
@@ -153,36 +153,37 @@ public class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings collidable(boolean collidable) {
-		hooks.setCollidable(collidable);
+		BlockSettingsExtensions.collidable(delegate, collidable);
 		return this;
 	}
 
 	public FabricBlockSettings noCollision() {
-		return collidable(false);
+		delegate.noCollision();
+		return this;
 	}
 
 	public FabricBlockSettings sounds(BlockSoundGroup group) {
-		hooks.invokeSounds(group);
+		BlockSettingsExtensions.sounds(delegate, group);
 		return this;
 	}
 
 	public FabricBlockSettings ticksRandomly() {
-		hooks.invokeTicksRandomly();
+		BlockSettingsExtensions.ticksRandomly(delegate);
 		return this;
 	}
 
-	public FabricBlockSettings lightLevel(int value) {
-		hooks.invokeLightLevel(value);
+	public FabricBlockSettings lightLevel(int lightLevel) {
+		BlockSettingsExtensions.lightLevel(delegate, lightLevel);
 		return this;
 	}
 
 	public FabricBlockSettings hardness(float hardness) {
-		hooks.setHardness(hardness);
+		BlockSettingsExtensions.hardness(delegate, hardness);
 		return this;
 	}
 
 	public FabricBlockSettings resistance(float resistance) {
-		hooks.setResistance(Math.max(0.0F, resistance));
+		BlockSettingsExtensions.resistance(delegate, resistance);
 		return this;
 	}
 
@@ -192,12 +193,12 @@ public class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings breakInstantly() {
-		hooks.invokeBreakInstantly();
+		BlockSettingsExtensions.breakInstantly(delegate);
 		return this;
 	}
 
 	public FabricBlockSettings dropsNothing() {
-		hooks.invokeDropsNothing();
+		BlockSettingsExtensions.dropsNothing(delegate);
 		return this;
 	}
 
@@ -206,8 +207,8 @@ public class FabricBlockSettings {
 		return this;
 	}
 
-	public FabricBlockSettings drops(Identifier id) {
-		hooks.setDropTableId(id);
+	public FabricBlockSettings drops(Identifier dropTableId) {
+		BlockSettingsExtensions.drops(delegate, dropTableId);
 		return this;
 	}
 
@@ -217,7 +218,7 @@ public class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings dynamicBounds() {
-		hooks.invokeHasDynamicBounds();
+		BlockSettingsExtensions.dynamicBounds(delegate);
 		return this;
 	}
 

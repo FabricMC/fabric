@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public interface RegistryListener<T> {
-	default void beforeRegistryCleared(Registry<T> registry) {}
-	default void beforeRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object, boolean isNew) {}
-	default void afterRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object) {}
+	default void beforeRegistryCleared(Registry<T> registry) {
+	}
+
+	default void beforeRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object, boolean isNew) {
+	}
+
+	default void afterRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object) {
+	}
 }

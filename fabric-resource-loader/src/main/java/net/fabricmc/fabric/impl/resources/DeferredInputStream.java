@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import net.minecraft.util.Void;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
 
 /**
  * InputStream deferring to a separate I/O thread to work around

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,20 +24,39 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.WeakHashMap;
+import java.lang.ref.WeakReference;
+import java.util.*;
+import java.util.function.Consumer;
 
 public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
 	private final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
+	private final Set<WeakReference<ServerPlayNetworkHandler>> handlers = new HashSet<>();
 
 	public void onQueryResponse(LoginQueryResponseC2SPacket packet) {
+	}
+
+	public void addNetworkHandler(ServerPlayNetworkHandler handler) {
+		handlers.add(new WeakReference<>(handler));
+	}
+
+	protected void forEachHandler(Consumer<ServerPlayNetworkHandler> consumer) {
+		Iterator<WeakReference<ServerPlayNetworkHandler>> it = handlers.iterator();
+		while (it.hasNext()) {
+			ServerPlayNetworkHandler server = it.next().get();
+			if (server != null) {
+				consumer.accept(server);
+			} else {
+				it.remove();
+			}
+		}
 	}
 
 	@Override
@@ -66,22 +85,14 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	protected void onRegister(Identifier id) {
-		/* MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
-		if (server != null) {
-			Packet<?> packet = createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id));
-			PlayerStream.all(server).forEach((p) -> sendToPlayer(p, packet));
-		} */
-		// TODO
+		createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id))
+			.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
 	}
 
 	@Override
 	protected void onUnregister(Identifier id) {
-		/* MinecraftServer server = FabricLoader.INSTANCE.getEnvironmentHandler().getServerInstance();
-		if (server != null) {
-			Packet<?> packet = createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id));
-			PlayerStream.all(server).forEach((p) -> sendToPlayer(p, packet));
-		} */
-		// TODO
+		createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id))
+			.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
 	}
 
 	@Override

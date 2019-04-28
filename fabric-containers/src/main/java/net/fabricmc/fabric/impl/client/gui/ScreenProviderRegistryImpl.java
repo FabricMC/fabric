@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	public <C extends Container> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory) {
 		registerFactory(identifier, (syncId, identifier1, player, buf) -> {
 			C container = ContainerProviderImpl.INSTANCE.createContainer(syncId, identifier1, player, buf);
-			if(container == null){
+			if (container == null) {
 				LOGGER.error("Could not open container for {} - a null object was created!", identifier1.toString());
 				return null;
 			}

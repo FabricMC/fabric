@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,10 @@ import net.minecraft.util.crash.CrashReportSection;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.io.IOException;
@@ -53,9 +56,9 @@ public abstract class MixinSpriteAtlasTexture {
 	/**
 	 * The purpose of this patch is to allow injecting sprites at the stage of Sprite instantiation, such as
 	 * Sprites with CustomSpriteLoaders.
-	 *
+	 * <p>
 	 * FabricSprite is a red herring. It's only use to go around Sprite's constructors being protected.
-	 *
+	 * <p>
 	 * method_18160 is a lambda used in runAsync.
 	 */
 	@SuppressWarnings("JavaDoc")

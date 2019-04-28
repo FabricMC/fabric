@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ import java.io.File;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
-    @Shadow
-    private ResourcePackContainerManager<ResourcePackContainer> resourcePackContainerManager;
+	@Shadow
+	private ResourcePackContainerManager<ResourcePackContainer> resourcePackContainerManager;
 
-    @Inject(method = "loadWorldDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
-    public void appendFabricDataPacks(File file, LevelProperties properties, CallbackInfo info) {
-	    resourcePackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.DATA));
-    }
+	@Inject(method = "loadWorldDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
+	public void appendFabricDataPacks(File file, LevelProperties properties, CallbackInfo info) {
+		resourcePackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.DATA));
+	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import net.fabricmc.fabric.impl.registry.RemapException;
 import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
-import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -55,7 +54,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Override
 	public void registerListener(RegistryListener<T> listener) {
 		if (fabric_listeners == null) {
-			fabric_listeners = new RegistryListener[] { listener };
+			fabric_listeners = new RegistryListener[]{listener};
 		} else {
 			RegistryListener[] newListeners = new RegistryListener[fabric_listeners.length + 1];
 			System.arraycopy(fabric_listeners, 0, newListeners, 0, fabric_listeners.length);
@@ -64,7 +63,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "ConstantConditions" })
+	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
@@ -75,7 +74,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "ConstantConditions" })
+	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("RETURN"))
 	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
@@ -95,16 +94,44 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		switch (mode) {
 			case AUTHORITATIVE:
 				break;
-			case REMOTE:
-				if (!registry.getIds().containsAll(remoteIndexedEntries.keySet())) {
-					throw new RemapException("Received ID map contains IDs unknown to the receiver!");
+			case REMOTE: {
+				List<String> strings = new ArrayList<>();
+				for (Identifier remoteId : remoteIndexedEntries.keySet()) {
+					if (!registry.getIds().contains(remoteId)) {
+						strings.add(" - " + remoteId);
+					}
 				}
-				break;
-			case EXACT:
+
+				if (!strings.isEmpty()) {
+					StringBuilder builder = new StringBuilder("Received ID map contains IDs unknown to the receiver!");
+					for (String s : strings) {
+						builder.append('\n').append(s);
+					}
+					throw new RemapException(builder.toString());
+				}
+			} break;
+			case EXACT: {
 				if (!registry.getIds().equals(remoteIndexedEntries.keySet())) {
-					throw new RemapException("Local and remote ID sets do not match!");
+					List<String> strings = new ArrayList<>();
+					for (Identifier remoteId : remoteIndexedEntries.keySet()) {
+						if (!registry.getIds().contains(remoteId)) {
+							strings.add(" - " + remoteId + " (missing on local)");
+						}
+					}
+
+					for (Identifier localId : registry.getIds()) {
+						if (!remoteIndexedEntries.keySet().contains(localId)) {
+							strings.add(" - " + localId + " (missing on remote)");
+						}
+					}
+
+					StringBuilder builder = new StringBuilder("Local and remote ID sets do not match!");
+					for (String s : strings) {
+						builder.append('\n').append(s);
+					}
+					throw new RemapException(builder.toString());
 				}
-				break;
+			} break;
 		}
 
 		// Make a copy of the previous maps.

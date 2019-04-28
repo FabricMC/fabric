@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,12 +28,12 @@ import net.minecraft.world.World;
 /**
  * Callback for left-clicking ("attacking") a block.
  * Is hooked in before the spectator check, so make sure to check for the player's game mode as well!
- *
+ * <p>
  * Upon return:
  * - SUCCESS cancels further processing and, on the client, sends a packet to the server.
  * - PASS falls back to further processing.
  * - FAIL cancels further processing and does not send a packet to the server.
- *
+ * <p>
  * ATTACK_BLOCK does not let you control the packet sending process yet.
  */
 public interface AttackBlockCallback {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,13 @@ public interface PacketContext {
 	 * Get the environment associated with the packet.
 	 *
 	 * @return EnvType.CLIENT if processing packet on the client side,
-	 *         EnvType.SERVER otherwise.
+	 * EnvType.SERVER otherwise.
 	 */
 	EnvType getPacketEnvironment();
 
 	/**
 	 * Get the player associated with the packet.
-	 *
+	 * <p>
 	 * On the client side, this always returns the client-side player instance.
 	 * On the server side, it returns the player belonging to the client this
 	 * packet was sent by.
@@ -47,15 +47,15 @@ public interface PacketContext {
 
 	/**
 	 * Get the task queue for a given side.
-	 *
+	 * <p>
 	 * As Minecraft networking I/O is asynchronous, but a lot of its logic is
 	 * not thread-safe, it is recommended to do the following:
-	 *
+	 * <p>
 	 * - read and parse the PacketByteBuf,
 	 * - run the packet response logic through the main thread task queue via
-	 *   ThreadTaskQueue.execute(). The method will check if it's not already
-	 *   on the main thread in order to avoid unnecessary delays, so don't
-	 *   worry about that!
+	 * ThreadTaskQueue.execute(). The method will check if it's not already
+	 * on the main thread in order to avoid unnecessary delays, so don't
+	 * worry about that!
 	 *
 	 * @return The thread task queue.
 	 */

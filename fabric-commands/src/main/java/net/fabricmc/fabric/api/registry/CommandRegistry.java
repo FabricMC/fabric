@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.fabric.impl.registry.CommandRegistryImpl;
 import net.minecraft.server.command.ServerCommandSource;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -33,10 +30,11 @@ public class CommandRegistry {
 
 	/**
 	 * Register a command provider.
+	 *
 	 * @param dedicated If true, the command is only registered on the dedicated server.
-	 * @param consumer The command provider, consuming {@link CommandDispatcher}.
+	 * @param consumer  The command provider, consuming {@link CommandDispatcher}.
 	 */
-	public void register(boolean dedicated, Consumer<CommandDispatcher<ServerCommandSource>> consumer)  {
+	public void register(boolean dedicated, Consumer<CommandDispatcher<ServerCommandSource>> consumer) {
 		CommandRegistryImpl.INSTANCE.register(dedicated, consumer);
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,12 @@ import net.minecraft.util.PacketByteBuf;
 
 /**
  * The server-side packet registry.
- *
+ * <p>
  * It is used for:
- *
+ * <p>
  * - registering server-side packet receivers (client -> server packets)
  * - sending packets to clients (server -> client packets).
- *
+ * <p>
  * For iterating over clients in a server, see {@link PlayerStream}.
  */
 public interface ServerSidePacketRegistry extends PacketRegistry {
@@ -50,21 +50,21 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	/**
 	 * Send a packet to a given client.
 	 *
-	 * @param player The given client.
-	 * @param packet The packet to be sent.
+	 * @param player             The given client.
+	 * @param packet             The packet to be sent.
 	 * @param completionListener Completion listener. Can be used to check for
-	 * the success or failure of sending a given packet, among others.
+	 *                           the success or failure of sending a given packet, among others.
 	 */
 	void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener);
 
 	/**
 	 * Send an identifier/buffer-based packet to a given client.
 	 *
-	 * @param player The given client.
-	 * @param id The packet identifier.
-	 * @param buf The packet byte buffer.
+	 * @param player             The given client.
+	 * @param id                 The packet identifier.
+	 * @param buf                The packet byte buffer.
 	 * @param completionListener Completion listener. Can be used to check for
-	 * the success or failure of sending a given packet, among others.
+	 *                           the success or failure of sending a given packet, among others.
 	 */
 	default void sendToPlayer(PlayerEntity player, Identifier id, PacketByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		sendToPlayer(player, toPacket(id, buf), completionListener);
@@ -84,8 +84,8 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	 * Send an identifier/buffer-based packet to a given client.
 	 *
 	 * @param player The given client.
-	 * @param id The packet identifier.
-	 * @param buf The packet byte buffer.
+	 * @param id     The packet identifier.
+	 * @param buf    The packet byte buffer.
 	 */
 	default void sendToPlayer(PlayerEntity player, Identifier id, PacketByteBuf buf) {
 		sendToPlayer(player, id, buf, null);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@ import net.fabricmc.fabric.api.registry.LootEntryTypeRegistry;
 import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
@@ -50,7 +48,8 @@ public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
 		}
 	}
 
-	private LootEntryTypeRegistryImpl() {}
+	private LootEntryTypeRegistryImpl() {
+	}
 
 	@Override
 	public void register(LootEntry.Serializer<?> serializer) {

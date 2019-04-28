@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import net.minecraft.util.PacketByteBuf;
 public interface PacketConsumer {
 	/**
 	 * Receive a CustomPayload-based packet.
-	 *
+	 * <p>
 	 * Please keep in mind that this CAN be called OUTSIDE of the main thread!
 	 * Most game operations are not thread-safe, so you should look into using
 	 * the thread task queue ({@link PacketContext#getTaskQueue()}) to split
@@ -34,7 +34,7 @@ public interface PacketConsumer {
 	 * on the main thread).
 	 *
 	 * @param context The context (receiving player, side, etc.)
-	 * @param buffer The byte buffer containing the received packet data.
+	 * @param buffer  The byte buffer containing the received packet data.
 	 */
 	void accept(PacketContext context, PacketByteBuf buffer);
 }

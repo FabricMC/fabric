@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,21 @@ package net.fabricmc.fabric.api.client.model;
 
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.Identifier;
 
 /**
  * Interface for model variant providers.
- *
+ * <p>
  * Model variant providers hook the resolution of ModelIdentifiers. In vanilla, this is
  * the part where a "minecraft:stone#normal" identifier triggers the loading of a
  * "minecraft:models/stone" model ({@link ModelResourceProvider} handles the later step).
- *
+ * <p>
  * The most common use of this is to cooperate with a {@link ModelAppender}, but it can
  * also allow you to add your own block- or item-state formats. To trigger the loading
  * of another model, use the passed {@link ModelProviderContext}.
- *
+ * <p>
  * As every model loading is instantiated with a new provider, it is safe
  * (and recommended!) to cache information.
- *
+ * <p>
  * Keep in mind that only *one* ModelVariantProvider may respond to a given model
  * at any time.
  */

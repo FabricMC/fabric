@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,5 +24,6 @@ import net.minecraft.nbt.CompoundTag;
  */
 public interface BlockEntityClientSerializable {
 	void fromClientTag(CompoundTag tag);
+
 	CompoundTag toClientTag(CompoundTag tag);
 }

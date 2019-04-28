@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,11 +24,11 @@ import java.util.Collections;
 
 /**
  * Interface for "identifiable" resource reload listeners.
- *
+ * <p>
  * "Identifiable" listeners have an unique identifier, which can be depended on,
  * and can provide dependencies that they would like to see executed before
  * themselves.
- *
+ * <p>
  * {@link ResourceReloadListenerKeys}
  */
 public interface IdentifiableResourceReloadListener extends ResourceReloadListener {

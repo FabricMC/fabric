@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ public interface CustomSpriteLoader {
 	/**
 	 * Load the sprite.
 	 *
-	 * @param manager The resource manager.
+	 * @param manager  The resource manager.
 	 * @param mipLevel The mip level for this sprite atlas.
 	 * @return true if the sprite should be added to the atlas, false otherwise
 	 * @throws IOException

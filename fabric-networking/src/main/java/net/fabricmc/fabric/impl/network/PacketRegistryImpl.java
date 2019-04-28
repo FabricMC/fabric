@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +38,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		consumerMap = new LinkedHashMap<>();
 	}
 
-	public static Packet<?> createInitialRegisterPacket(PacketRegistry registry) {
+	public static Optional<Packet<?>> createInitialRegisterPacket(PacketRegistry registry) {
 		PacketRegistryImpl impl = (PacketRegistryImpl) registry;
 		return impl.createRegisterTypePacket(PacketTypes.REGISTER, impl.consumerMap.keySet());
 	}
@@ -46,7 +47,8 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	public void register(Identifier id, PacketConsumer consumer) {
 		boolean isNew = true;
 		if (consumerMap.containsKey(id)) {
-			// TODO: log warning
+			LOGGER.warn("Registered duplicate packet " + id + "!");
+			LOGGER.trace(new Throwable());
 			isNew = false;
 		}
 
@@ -58,17 +60,29 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 	@Override
 	public void unregister(Identifier id) {
-		consumerMap.remove(id);
-		onUnregister(id);
+		if (consumerMap.remove(id) != null) {
+			onUnregister(id);
+		} else {
+			LOGGER.warn("Tried to unregister non-registered packet " + id + "!");
+			LOGGER.trace(new Throwable());
+		}
 	}
 
 	protected abstract void onRegister(Identifier id);
+
 	protected abstract void onUnregister(Identifier id);
+
 	protected abstract Collection<Identifier> getIdCollectionFor(PacketContext context);
+
 	protected abstract void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids);
+
 	protected abstract void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids);
 
-	protected Packet<?> createRegisterTypePacket(Identifier id, Collection<Identifier> ids) {
+	protected Optional<Packet<?>> createRegisterTypePacket(Identifier id, Collection<Identifier> ids) {
+		if (ids.isEmpty()) {
+			return Optional.empty();
+		}
+
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		boolean first = true;
 		for (Identifier a : ids) {
@@ -79,7 +93,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			}
 			buf.writeBytes(a.toString().getBytes(StandardCharsets.US_ASCII));
 		}
-		return toPacket(id, buf);
+		return Optional.of(toPacket(id, buf));
 	}
 
 	private boolean acceptRegisterType(Identifier id, PacketContext context, PacketByteBuf buf) {
@@ -89,18 +103,25 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			StringBuilder sb = new StringBuilder();
 			char c;
 
+			int oldIndex = buf.readerIndex();
 			while (buf.readerIndex() < buf.writerIndex()) {
 				c = (char) buf.readByte();
 				if (c == 0) {
 					String s = sb.toString();
 					if (!s.isEmpty()) {
-						ids.add(new Identifier(s));
+						try {
+							ids.add(new Identifier(s));
+						} catch (InvalidIdentifierException e) {
+							LOGGER.warn("Received invalid identifier in " + id + ": " + s + " (" + e.getLocalizedMessage() + ")");
+							LOGGER.trace(e);
+						}
 					}
 					sb = new StringBuilder();
 				} else {
 					sb.append(c);
 				}
 			}
+			buf.readerIndex(oldIndex);
 
 			String s = sb.toString();
 			if (!s.isEmpty()) {
@@ -122,9 +143,9 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	/**
 	 * Hook for accepting packets used in Fabric mixins.
 	 *
-	 * @param id The packet Identifier received.
+	 * @param id      The packet Identifier received.
 	 * @param context The packet context provided.
-	 * @param buf The packet data buffer received.
+	 * @param buf     The packet data buffer received.
 	 * @return Whether or not the packet was handled by this packet registry.
 	 */
 	public boolean accept(Identifier id, PacketContext context, PacketByteBuf buf) {

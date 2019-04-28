@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,10 @@
 package net.fabricmc.fabric.mixin.resources;
 
 import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
-import net.minecraft.resource.*;
+import net.minecraft.resource.ReloadableResourceManagerImpl;
+import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.resource.ResourceReloadMonitor;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Void;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

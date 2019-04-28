@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,11 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity implements SyncIdProvider {
-	@Shadow private int containerSyncId;
+	@Shadow
+	private int containerSyncId;
 
-	@Shadow protected abstract void incrementContainerSyncId();
+	@Shadow
+	protected abstract void incrementContainerSyncId();
 
 	@Override
 	public int fabric_incrementSyncId() {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 				handler.getClientConnection().send(packet, completionListener);
 			}
 		} else {
-			// TODO: log warning
+			LOGGER.warn("Sending packet " + packet + " to server failed, not connected!");
 		}
 	}
 
@@ -69,7 +69,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	protected void onRegister(Identifier id) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
 		if (handler != null) {
-			handler.sendPacket(createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)));
+			createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
 		}
 	}
 
@@ -77,7 +77,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	protected void onUnregister(Identifier id) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
 		if (handler != null) {
-			handler.sendPacket(createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)));
+			createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ public abstract class MixinPlayerManager {
 	public void onPlayerConnect(ClientConnection lvt1, ServerPlayerEntity lvt2, CallbackInfo info) {
 		// TODO: If integrated and local, don't send the packet (it's ignored)
 		// TODO: Refactor out into network + move registry hook to event
-		lvt2.networkHandler.sendPacket(PacketRegistryImpl.createInitialRegisterPacket(ServerSidePacketRegistry.INSTANCE));
 		lvt2.networkHandler.sendPacket(RegistrySyncManager.createPacket());
 	}
 }
