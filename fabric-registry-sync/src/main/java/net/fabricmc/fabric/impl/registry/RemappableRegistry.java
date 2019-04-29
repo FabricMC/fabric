@@ -42,7 +42,7 @@ public interface RemappableRegistry {
 		EXACT
 	}
 
-	void remap(Object2IntMap<Identifier> remoteIndexedEntries, RemapMode mode) throws RemapException;
+	void remap(String name, Object2IntMap<Identifier> remoteIndexedEntries, RemapMode mode) throws RemapException;
 
-	void unmap() throws RemapException;
+	void unmap(String name) throws RemapException;
 }

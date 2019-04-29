@@ -86,7 +86,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	}
 
 	@Override
-	public void remap(Object2IntMap<Identifier> remoteIndexedEntries, RemapMode mode) throws RemapException {
+	public void remap(String name, Object2IntMap<Identifier> remoteIndexedEntries, RemapMode mode) throws RemapException {
 		//noinspection unchecked, ConstantConditions
 		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
 
@@ -103,7 +103,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 				}
 
 				if (!strings.isEmpty()) {
-					StringBuilder builder = new StringBuilder("Received ID map contains IDs unknown to the receiver!");
+					StringBuilder builder = new StringBuilder("Received ID map for " + name + " contains IDs unknown to the receiver!");
 					for (String s : strings) {
 						builder.append('\n').append(s);
 					}
@@ -125,7 +125,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 						}
 					}
 
-					StringBuilder builder = new StringBuilder("Local and remote ID sets do not match!");
+					StringBuilder builder = new StringBuilder("Local and remote ID sets for " + name + " do not match!");
 					for (String s : strings) {
 						builder.append('\n').append(s);
 					}
@@ -227,12 +227,12 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	}
 
 	@Override
-	public void unmap() throws RemapException {
+	public void unmap(String name) throws RemapException {
 		if (fabric_prevIndexedEntries != null) {
 			entries.clear();
 			entries.putAll(fabric_prevEntries);
 
-			remap(fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
+			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
 
 			fabric_prevIndexedEntries = null;
 			fabric_prevEntries = null;

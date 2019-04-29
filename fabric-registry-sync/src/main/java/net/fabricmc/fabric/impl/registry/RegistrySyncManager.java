@@ -119,7 +119,7 @@ public final class RegistrySyncManager {
 				for (String key : registryTag.getKeys()) {
 					idMap.put(new Identifier(key), registryTag.getInt(key));
 				}
-				((RemappableRegistry) registry).remap(idMap, mode);
+				((RemappableRegistry) registry).remap(registryId.toString(), idMap, mode);
 			}
 		}
 	}
@@ -128,7 +128,7 @@ public final class RegistrySyncManager {
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
 			if (registry instanceof RemappableRegistry) {
-				((RemappableRegistry) registry).unmap();
+				((RemappableRegistry) registry).unmap(registryId.toString());
 			}
 		}
 	}
