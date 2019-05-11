@@ -3,12 +3,16 @@
   "id": "fabric-networking-v0",
   "version": "${version}",
   "license": "Apache-2.0",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.network.FabricNetworkInitializer"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.network.FabricClientNetworkInitializer"
+    ]
+  },
   "mixins": [
-<<<<<<< HEAD:fabric-networking-v0/src/main/resources/fabric.mod.json
-    "fabric-networking-v0.mixins.json"
-=======
-    "fabric-networking.mixins.json",
+    "fabric-networking-v0.mixins.json",
     "fabric-networking.optional.mixins.json"
->>>>>>> add (currently draft/internal) networking handshake API:fabric-networking/src/main/resources/fabric.mod.json
   ]
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.network;
+package net.fabricmc.fabric.mixin.network.tracker;
 
 import net.fabricmc.fabric.impl.server.EntityTrackerStreamAccessor;
 import net.minecraft.server.network.ServerPlayerEntity;
