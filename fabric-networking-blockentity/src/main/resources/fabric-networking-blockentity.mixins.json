@@ -3,7 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.networkingblockentity",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinBlockEntity",
+    "MixinBlockEntity"
+  ],
+  "client": [
     "MixinClientPlayNetworkHandler"
   ],
   "injectors": {
