@@ -3,6 +3,14 @@
   "id": "fabric-events-interaction",
   "version": "${version}",
   "license": "Apache-2.0",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.event.InteractionEventsRouter"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.event.InteractionEventsRouterClient"
+    ]
+  },
   "mixins": [
     "fabric-events-interaction.mixins.json"
   ]
