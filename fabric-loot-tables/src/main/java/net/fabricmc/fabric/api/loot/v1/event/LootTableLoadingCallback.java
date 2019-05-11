@@ -30,6 +30,7 @@ import net.minecraft.world.loot.LootSupplier;
  */
 @FunctionalInterface
 public interface LootTableLoadingCallback {
+	@FunctionalInterface
 	interface LootTableSetter {
 		void set(LootSupplier supplier);
 	}
