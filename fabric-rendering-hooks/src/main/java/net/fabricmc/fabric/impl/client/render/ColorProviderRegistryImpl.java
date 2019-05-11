@@ -18,26 +18,26 @@ package net.fabricmc.fabric.impl.client.render;
 
 import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.block.BlockColorMap;
-import net.minecraft.client.render.block.BlockColorMapper;
-import net.minecraft.client.render.item.ItemColorMap;
-import net.minecraft.client.render.item.ItemColorMapper;
-import net.minecraft.item.ItemProvider;
+import net.minecraft.client.color.block.BlockColorProvider;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.item.ItemConvertible;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> implements ColorProviderRegistry<T, Provider> {
-	public static final ColorProviderRegistryImpl<Block, BlockColorMapper, BlockColorMap> BLOCK = new ColorProviderRegistryImpl<Block, BlockColorMapper, BlockColorMap>() {
+	public static final ColorProviderRegistryImpl<Block, BlockColorProvider, BlockColors> BLOCK = new ColorProviderRegistryImpl<Block, BlockColorProvider, BlockColors>() {
 		@Override
-		void registerUnderlying(BlockColorMap map, BlockColorMapper mapper, Block block) {
+		void registerUnderlying(BlockColors map, BlockColorProvider mapper, Block block) {
 			map.register(mapper, block);
 		}
 	};
 
-	public static final ColorProviderRegistryImpl<ItemProvider, ItemColorMapper, ItemColorMap> ITEM = new ColorProviderRegistryImpl<ItemProvider, ItemColorMapper, ItemColorMap>() {
+	public static final ColorProviderRegistryImpl<ItemConvertible, ItemColorProvider, ItemColors> ITEM = new ColorProviderRegistryImpl<ItemConvertible, ItemColorProvider, ItemColors>() {
 		@Override
-		void registerUnderlying(ItemColorMap map, ItemColorMapper mapper, ItemProvider block) {
+		void registerUnderlying(ItemColors map, ItemColorProvider mapper, ItemConvertible block) {
 			map.register(mapper, block);
 		}
 	};

@@ -17,10 +17,10 @@
 package net.fabricmc.fabric.mixin.client.render;
 
 import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
-import net.minecraft.client.render.block.BlockColorMap;
-import net.minecraft.client.render.item.ItemColorMap;
-import net.minecraft.client.render.item.ItemColorMapper;
-import net.minecraft.item.ItemProvider;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Final;
@@ -30,19 +30,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(ItemColorMap.class)
-public class MixinItemColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<ItemProvider, ItemColorMapper> {
+@Mixin(ItemColors.class)
+public class MixinItemColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<ItemConvertible, ItemColorProvider> {
 	@Shadow
 	@Final
-	private IdList<ItemColorMapper> mappers;
+	private IdList<ItemColorProvider> providers;
 
 	@Inject(method = "create", at = @At("RETURN"))
-	private static void create(BlockColorMap blockMap, CallbackInfoReturnable<ItemColorMap> info) {
+	private static void create(BlockColors blockMap, CallbackInfoReturnable<ItemColors> info) {
 		ColorProviderRegistryImpl.ITEM.initialize(info.getReturnValue());
 	}
 
 	@Override
-	public ItemColorMapper get(ItemProvider item) {
-		return mappers.get(Registry.ITEM.getRawId(item.getItem()));
+	public ItemColorProvider get(ItemConvertible item) {
+		return providers.get(Registry.ITEM.getRawId(item.asItem()));
 	}
 }

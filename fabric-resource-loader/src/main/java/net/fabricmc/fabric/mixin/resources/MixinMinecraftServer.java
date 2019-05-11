@@ -33,10 +33,10 @@ import java.io.File;
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
 	@Shadow
-	private ResourcePackContainerManager<ResourcePackContainer> resourcePackContainerManager;
+	private ResourcePackContainerManager<ResourcePackContainer> dataPackContainerManager;
 
 	@Inject(method = "loadWorldDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
 	public void appendFabricDataPacks(File file, LevelProperties properties, CallbackInfo info) {
-		resourcePackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.DATA));
+		dataPackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 	}
 }

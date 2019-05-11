@@ -44,7 +44,7 @@ public class MixinBlockBuilder implements FabricBlockSettingsDelegate {
 	@Shadow
 	private boolean randomTicks;
 	@Shadow
-	private float friction;
+	private float slipperiness;
 	@Shadow
 	private Identifier dropTableId;
 	@Shadow
@@ -87,7 +87,7 @@ public class MixinBlockBuilder implements FabricBlockSettingsDelegate {
 
 	@Override
 	public void fabric_setFriction(float value) {
-		friction = value;
+		slipperiness = value;
 	}
 
 	@Override

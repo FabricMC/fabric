@@ -18,18 +18,18 @@ package net.fabricmc.fabric.mixin.resources;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
-import net.minecraft.client.audio.SoundLoader;
 import net.minecraft.client.font.FontManager;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.resource.language.LanguageManager;
+import net.minecraft.client.sound.SoundLoader;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.CommandFunctionManager;
-import net.minecraft.tag.TagManager;
+import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.loot.LootManager;
 import org.spongepowered.asm.mixin.Mixin;
@@ -93,7 +93,7 @@ public class MixinKeyedResourceReloadListener {
 
 	@Mixin({
 		/* public */
-		RecipeManager.class, ServerAdvancementLoader.class, CommandFunctionManager.class, LootManager.class, TagManager.class
+		RecipeManager.class, ServerAdvancementLoader.class, CommandFunctionManager.class, LootManager.class, RegistryTagManager.class
 		/* private */
 	})
 	public static abstract class Server implements IdentifiableResourceReloadListener {
@@ -106,7 +106,7 @@ public class MixinKeyedResourceReloadListener {
 			if (fabric_idDeps == null) {
 				Object self = (Object) this;
 
-				if (self instanceof TagManager) {
+				if (self instanceof RegistryTagManager) {
 					fabric_idDeps = Collections.emptyList();
 				} else {
 					fabric_idDeps = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
@@ -130,7 +130,7 @@ public class MixinKeyedResourceReloadListener {
 					fabric_id = ResourceReloadListenerKeys.FUNCTIONS;
 				} else if (self instanceof LootManager) {
 					fabric_id = ResourceReloadListenerKeys.LOOT_TABLES;
-				} else if (self instanceof TagManager) {
+				} else if (self instanceof RegistryTagManager) {
 					fabric_id = ResourceReloadListenerKeys.TAGS;
 				} else {
 					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));

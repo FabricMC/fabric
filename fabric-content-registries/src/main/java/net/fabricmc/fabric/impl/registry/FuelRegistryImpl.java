@@ -21,7 +21,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemProvider;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.tag.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +32,7 @@ import java.util.Map;
 public class FuelRegistryImpl implements FuelRegistry {
 	public static final FuelRegistryImpl INSTANCE = new FuelRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final Object2IntMap<ItemProvider> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
+	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
 
 	public FuelRegistryImpl() {
@@ -40,12 +40,12 @@ public class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public Integer get(ItemProvider item) {
-		return AbstractFurnaceBlockEntity.createFuelTimeMap().get(item.getItem());
+	public Integer get(ItemConvertible item) {
+		return AbstractFurnaceBlockEntity.createFuelTimeMap().get(item.asItem());
 	}
 
 	@Override
-	public void add(ItemProvider item, Integer cookTime) {
+	public void add(ItemConvertible item, Integer cookTime) {
 		if (cookTime > 32767) {
 			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + item + ")");
 		}
@@ -61,7 +61,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void remove(ItemProvider item) {
+	public void remove(ItemConvertible item) {
 		add(item, 0);
 	}
 
@@ -71,7 +71,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
-	public void clear(ItemProvider item) {
+	public void clear(ItemConvertible item) {
 		itemCookTimes.removeInt(item);
 	}
 
@@ -95,12 +95,12 @@ public class FuelRegistryImpl implements FuelRegistry {
 			}
 		}
 
-		for (ItemProvider item : itemCookTimes.keySet()) {
+		for (ItemConvertible item : itemCookTimes.keySet()) {
 			int time = itemCookTimes.getInt(item);
 			if (time <= 0) {
-				map.remove(item.getItem());
+				map.remove(item.asItem());
 			} else {
-				map.put(item.getItem(), time);
+				map.put(item.asItem(), time);
 			}
 		}
 	}

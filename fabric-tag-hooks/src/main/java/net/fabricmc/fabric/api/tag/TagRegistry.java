@@ -56,7 +56,7 @@ public final class TagRegistry {
 	}
 
 	public static Tag<EntityType<?>> entityType(Identifier id) {
-		return create(id, EntityTags::getContainer);
+		return create(id, EntityTypeTags::getContainer);
 	}
 
 	public static Tag<Fluid> fluid(Identifier id) {

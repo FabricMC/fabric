@@ -54,7 +54,7 @@ public class MixinClientPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
-		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN, pos, direction);
+		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
 		if (result != ActionResult.PASS) {
 			info.setReturnValue(result == ActionResult.SUCCESS);
 			info.cancel();
@@ -67,7 +67,7 @@ public class MixinClientPlayerInteractionManager {
 			return;
 		}
 
-		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN, pos, direction);
+		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(client.player, client.world, Hand.MAIN_HAND, pos, direction);
 		if (result != ActionResult.PASS) {
 			info.setReturnValue(result == ActionResult.SUCCESS);
 			info.cancel();
@@ -101,7 +101,7 @@ public class MixinClientPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "attackEntity", cancellable = true)
 	public void attackEntity(PlayerEntity player, Entity entity, CallbackInfo info) {
-		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN /* TODO */, entity, null);
+		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN_HAND /* TODO */, entity, null);
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
 				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity));

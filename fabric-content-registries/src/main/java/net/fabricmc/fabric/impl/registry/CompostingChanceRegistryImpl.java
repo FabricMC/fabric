@@ -19,18 +19,18 @@ package net.fabricmc.fabric.impl.registry;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemProvider;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.tag.Tag;
 
 public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	@Override
-	public Float get(ItemProvider item) {
-		return ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getOrDefault(item.getItem(), 0.0F);
+	public Float get(ItemConvertible item) {
+		return ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getOrDefault(item.asItem(), 0.0F);
 	}
 
 	@Override
-	public void add(ItemProvider item, Float value) {
-		ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.put(item.getItem(), value.floatValue());
+	public void add(ItemConvertible item, Float value) {
+		ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.put(item.asItem(), value);
 	}
 
 	@Override
@@ -39,8 +39,8 @@ public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	}
 
 	@Override
-	public void remove(ItemProvider item) {
-		ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.removeFloat(item.getItem());
+	public void remove(ItemConvertible item) {
+		ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.removeFloat(item.asItem());
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	}
 
 	@Override
-	public void clear(ItemProvider item) {
+	public void clear(ItemConvertible item) {
 		throw new UnsupportedOperationException("CompostingChanceRegistry operates directly on the vanilla map - clearing not supported!");
 	}
 

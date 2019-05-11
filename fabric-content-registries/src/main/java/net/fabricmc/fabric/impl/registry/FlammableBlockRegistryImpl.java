@@ -45,7 +45,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	private boolean tagsPresent = false;
 
 	private FlammableBlockRegistryImpl(Block key) {
-		ResourceManagerHelper.get(ResourceType.DATA).registerReloadListener(this);
+		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(this);
 		this.id = new Identifier("fabric:private/fire_registry_" + (++idCounter));
 		this.key = key;
 	}

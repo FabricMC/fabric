@@ -79,7 +79,7 @@ public abstract class MixinMinecraftClient {
 
 			if (client.player.abilities.creativeMode) {
 				playerInventory.addPickBlock(stack);
-				client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN), 36 + playerInventory.selectedSlot);
+				client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
 			} else {
 				int slot = playerInventory.getSlotWithStack(stack);
 				if (slot >= 0) {

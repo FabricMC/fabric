@@ -18,14 +18,14 @@ package net.fabricmc.fabric.api.client.render;
 
 import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.block.Block;
-import net.minecraft.client.render.block.BlockColorMapper;
-import net.minecraft.client.render.item.ItemColorMapper;
-import net.minecraft.item.ItemProvider;
+import net.minecraft.client.color.block.BlockColorProvider;
+import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.item.ItemConvertible;
 
 public interface ColorProviderRegistry<T, Provider> {
-	ColorProviderRegistry<ItemProvider, ItemColorMapper> ITEM = ColorProviderRegistryImpl.ITEM;
+	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = ColorProviderRegistryImpl.ITEM;
 
-	ColorProviderRegistry<Block, BlockColorMapper> BLOCK = ColorProviderRegistryImpl.BLOCK;
+	ColorProviderRegistry<Block, BlockColorProvider> BLOCK = ColorProviderRegistryImpl.BLOCK;
 
 	/**
 	 * Register a color provider for one or more objects

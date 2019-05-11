@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import net.minecraft.util.Void;
+import net.minecraft.util.Unit;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,7 +70,7 @@ class DeferredInputStream extends InputStream {
 	public void reset() throws IOException {
 		DeferredNioExecutionHandler.submit(() -> {
 			stream.reset();
-			return Void.INSTANCE;
+			return Unit.INSTANCE;
 		});
 	}
 
@@ -98,7 +98,7 @@ class DeferredInputStream extends InputStream {
 	public void close() throws IOException {
 		DeferredNioExecutionHandler.submit(() -> {
 			stream.close();
-			return Void.INSTANCE;
+			return Unit.INSTANCE;
 		});
 	}
 }

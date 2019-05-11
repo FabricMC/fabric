@@ -44,7 +44,7 @@ public class ModResourcePackCreator implements ResourcePackCreator {
 			}
 
 			T var3 = ResourcePackContainer.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-				false, () -> pack, factory, ResourcePackContainer.SortingDirection.BOTTOM);
+				false, () -> pack, factory, ResourcePackContainer.InsertionPosition.BOTTOM);
 
 			if (var3 != null) {
 				map.put(var3.getName(), var3);

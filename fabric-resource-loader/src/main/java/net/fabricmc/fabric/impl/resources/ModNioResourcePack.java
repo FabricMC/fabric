@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.resources;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.resource.AbstractFilenameResourcePack;
+import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
@@ -35,7 +35,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
-public class ModNioResourcePack extends AbstractFilenameResourcePack implements ModResourcePack {
+public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_]+");
 	private final ModMetadata modInfo;
@@ -64,7 +64,7 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 	}
 
 	@Override
-	protected InputStream openFilename(String filename) throws IOException {
+	protected InputStream openFile(String filename) throws IOException {
 		InputStream stream;
 
 		if (DeferredNioExecutionHandler.shouldDefer()) {
@@ -96,7 +96,7 @@ public class ModNioResourcePack extends AbstractFilenameResourcePack implements 
 	}
 
 	@Override
-	protected boolean containsFilename(String filename) {
+	protected boolean containsFile(String filename) {
 		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
 			return true;
 		}

@@ -49,7 +49,7 @@ public class MixinMinecraftGame {
 			list.add(pack);
 
 			if (pack instanceof DefaultClientResourcePack) {
-				ModResourcePackUtil.appendModResourcePacks(list, ResourceType.ASSETS);
+				ModResourcePackUtil.appendModResourcePacks(list, ResourceType.CLIENT_RESOURCES);
 				appended = true;
 			}
 		}

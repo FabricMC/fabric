@@ -45,8 +45,8 @@ import java.util.concurrent.Executor;
  */
 public interface SimpleResourceReloadListener<T> extends IdentifiableResourceReloadListener {
 	@Override
-	default CompletableFuture<Void> reload(ResourceReloadListener.Helper helper, ResourceManager manager, Profiler loadProfiler, Profiler applyProfiler, Executor loadExecutor, Executor applyExecutor) {
-		return load(manager, loadProfiler, loadExecutor).thenCompose(helper::waitForAll).thenCompose(
+	default CompletableFuture<Void> reload(ResourceReloadListener.Synchronizer helper, ResourceManager manager, Profiler loadProfiler, Profiler applyProfiler, Executor loadExecutor, Executor applyExecutor) {
+		return load(manager, loadProfiler, loadExecutor).thenCompose(helper::whenPrepared).thenCompose(
 			(o) -> apply(o, manager, applyProfiler, applyExecutor)
 		);
 	}
