@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-networking-v0",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "mixins": [
+    "fabric-networking-v0.mixins.json"
+  ]
+}

@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-rendering-v0"
+version = getSubprojectVersion(project, "0.1.0")
+
+dependencies {
+	compile project(path: ':fabric-api-base', configuration: 'dev')
+}

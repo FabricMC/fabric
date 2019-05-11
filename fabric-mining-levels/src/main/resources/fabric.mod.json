@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "id": "fabric-mining-levels",
-  "version": "${version}",
-  "license": "Apache-2.0",
-  "mixins": [
-    "fabric-mining-levels.mixins.json"
-  ]
-}

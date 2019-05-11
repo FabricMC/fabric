@@ -1,6 +1,0 @@
-{
-  "schemaVersion": 1,
-  "id": "fabric-lib",
-  "version": "${version}",
-  "license": "Apache-2.0"
-}

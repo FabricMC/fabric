@@ -16,8 +16,12 @@ def mcVersion = "1.14.1 Pre-Release 2"
 def yarnVersion = "+build.2"
 
 def getSubprojectVersion(project, version) {
-	def latestCommit = grgit.log(paths: [project.name], maxCommits: 1).get(0)
-	return version + "+" + latestCommit.id.substring(0, 8)
+	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
+	if (latestCommits.isEmpty()) {
+		return version + "+uncommited"
+	} else {
+		return version + "+" + latestCommits.get(0).id.substring(0, 8)
+	}
 }
 
 allprojects {
@@ -155,6 +159,7 @@ publishing {
 
 task licenseFormatAll
 subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
+subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 
 dependencies {
 	afterEvaluate {

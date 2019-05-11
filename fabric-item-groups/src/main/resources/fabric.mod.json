@@ -1,9 +1,0 @@
-{
-  "schemaVersion": 1,
-  "id": "fabric-item-groups",
-  "version": "${version}",
-  "license": "Apache-2.0",
-  "mixins": [
-    "fabric-item-groups.mixins.json"
-  ]
-}
