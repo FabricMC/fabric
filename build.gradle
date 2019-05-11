@@ -6,7 +6,7 @@ plugins {
 	id 'fabric-loom' version '0.2.3-SNAPSHOT' apply false
 	id 'net.minecrell.licenser' version '0.4.1'	
 	id "org.ajoberstar.grgit" version "3.1.1"
-//	id 'com.matthewprenger.cursegradle' version "1.1.2"
+	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
 def ENV = System.getenv()
@@ -175,22 +175,25 @@ dependencies {
 
 version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
-//curseforge {
-//	if (project.hasProperty('curse_api_key')){
-//		apiKey = project.getProperty('curse_api_key')
-//	}
-//	project {
-//		id = '306612'
-//		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
-//		releaseType = 'alpha'
-//		addGameVersion '1.14-Snapshot'
-//		mainArtifact(jar) {
-//			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
-//		}
-//	}
-//	options{
-//		forgeGradleIntegration = false
-//	}
-//}
+curseforge {
+	if (project.hasProperty('curse_api_key')){
+		apiKey = project.getProperty('curse_api_key')
+	}
+	project {
+		id = '306612'
+		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
+		releaseType = 'alpha'
+		addGameVersion '1.14-Snapshot'
+		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
+		}
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+		}
+	}
+	options{
+		forgeGradleIntegration = false
+	}
+}
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'

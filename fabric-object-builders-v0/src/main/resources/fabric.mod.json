@@ -4,6 +4,6 @@
   "version": "${version}",
   "license": "Apache-2.0",
   "mixins": [
-    "fabric-object-builders.mixins.json"
+    "fabric-object-builders-v0.mixins.json"
   ]
 }
