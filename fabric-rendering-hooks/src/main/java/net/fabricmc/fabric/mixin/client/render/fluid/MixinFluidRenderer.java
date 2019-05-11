@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.client.render.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.v1.fluid.FluidRenderHandler;
 import net.fabricmc.fabric.impl.client.render.fluid.FluidRendererHookContainer;
 import net.fabricmc.fabric.impl.client.render.fluid.FluidRenderHandlerRegistryImpl;
 import net.minecraft.client.render.BufferBuilder;

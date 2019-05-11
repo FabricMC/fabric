@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.render.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.fluid.FluidRenderHandlerRegistry;
-import net.minecraft.client.render.block.BiomeColors;
+import net.fabricmc.fabric.api.client.render.v1.fluid.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.v1.fluid.FluidRenderHandlerRegistry;
+import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
@@ -63,7 +63,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
             @Override
             public int getFluidColor(ExtendedBlockView view, BlockPos pos, FluidState state) {
                 if (view != null && pos != null) {
-                    return BiomeColors.waterColorAt(view, pos);
+                    return BiomeColors.getWaterColor(view, pos);
                 } else {
                     return Biomes.DEFAULT.getWaterColor();
                 }

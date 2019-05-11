@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.render.fluid;
+package net.fabricmc.fabric.api.client.render.v1.fluid;
 
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;

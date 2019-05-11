@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.render.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.v1.fluid.FluidRenderHandler;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ExtendedBlockView;
