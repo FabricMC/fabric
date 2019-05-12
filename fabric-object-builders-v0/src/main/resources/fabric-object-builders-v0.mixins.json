@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.builders",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BlockSettingsHooks",
+    "MixinBlock",
+    "MixinItem"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,97 +1,149 @@
-buildscript {
-	repositories {
-		jcenter()
-		gradlePluginPortal()
-		maven {
-			name = 'Fabric'
-			url = 'https://maven.fabricmc.net/'
-		}
-	}
-	dependencies {
-		classpath "net.fabricmc:fabric-loom:0.2.2-SNAPSHOT"
-	}
-}
-
 plugins {
 	id 'java'
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
+	id 'fabric-loom' version '0.2.3-SNAPSHOT' apply false
+	id 'net.minecrell.licenser' version '0.4.1'	
+	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
 
-apply plugin: net.fabricmc.loom.LoomGradlePlugin
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-archivesBaseName = "fabric"
-
-def baseVersion = "0.2.7"
-def mcVersion = "1.14 Pre-Release 5"
-
 def ENV = System.getenv()
-version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
-minecraft {
-	refmapName = "net.fabricmc.fabric.refmap.json"
-}
+def baseVersion = "0.3.0-pre"
+def mcVersion = "1.14.1 Pre-Release 2"
+def yarnVersion = "+build.2"
 
-dependencies {
-	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:$mcVersion+build.2"
-	modCompile "net.fabricmc:fabric-loader:0.4.2+build.131"
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-		expand "version": project.version
-	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
+def getSubprojectVersion(project, version) {
+	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
+	if (latestCommits.isEmpty()) {
+		return version + "+uncommited"
+	} else {
+		return version + "+" + latestCommits.get(0).id.substring(0, 8)
 	}
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
-}
+allprojects {
+	apply plugin: 'maven-publish'
+	apply plugin: 'fabric-loom'
+	apply plugin: 'net.minecrell.licenser'
 
-curseforge {
-	if (project.hasProperty('curse_api_key')){
-		apiKey = project.getProperty('curse_api_key')
+	sourceCompatibility = 1.8
+	targetCompatibility = 1.8
+
+	group = "net.fabricmc.fabric-api"
+
+	dependencies {
+		minecraft "com.mojang:minecraft:$mcVersion"
+		mappings "net.fabricmc:yarn:${mcVersion}${yarnVersion}"
+		modCompile "net.fabricmc:fabric-loader:0.4.6+build.144"
 	}
-	project {
-		id = '306612'
-		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
-		releaseType = 'alpha'
-		addGameVersion '1.14-Snapshot'
-		mainArtifact(jar) {
-			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
+
+	configurations {
+		dev
+	}
+
+	repositories {
+		mavenLocal()
+	}
+
+	afterEvaluate {
+		artifacts {
+			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
+		}
+
+		processResources {
+			inputs.property "version", project.version
+
+			from(sourceSets.main.resources.srcDirs) {
+				include "fabric.mod.json"
+				expand "version": project.version
+			}
+
+			from(sourceSets.main.resources.srcDirs) {
+				exclude "fabric.mod.json"
+			}
+		}
+
+		license {
+			header rootProject.file('HEADER')
+			include '**/*.java'
 		}
 	}
-	options{
-		forgeGradleIntegration = false
+
+	task sourcesJar(type: Jar, dependsOn: classes) {
+		classifier = 'sources'
+		from sourceSets.main.allSource
+	}
+}
+
+subprojects {
+	task remapMavenJar(type: Copy, dependsOn: remapJar) {
+		afterEvaluate {
+			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
+			into("${project.buildDir}/libs/")
+			rename { String fn -> "$archivesBaseName-${version}-maven.jar" }
+		}
+	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+					builtBy remapMavenJar
+				}
+				artifact(sourcesJar) {
+					builtBy remapSourcesJar
+				}
+			}
+		}	
+
+		repositories {
+			maven {
+				url "http://mavenupload.modmuss50.me/"
+				if (project.hasProperty('mavenPass')) {
+					credentials {
+						username 'buildslave'
+						password project.getProperty('mavenPass')
+					}
+				}
+			}
+		}
+	}
+
+}
+
+task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
+	afterEvaluate {
+		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
+		output = file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")
+		addNestedDependencies = false
 	}
 }
 
 publishing {
 	publications {
-		maven(MavenPublication) {
-			groupId "net.fabricmc"
-			artifactId "fabric"
-			artifact (jar) {
-				builtBy remapJar
+		mavenJava(MavenPublication) {
+			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+				builtBy remapMavenJar
 			}
-			artifact (sourcesJar) {
+			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
-		}
+			pom.withXml {
+				def depsNode = asNode().appendNode("dependencies")
+				subprojects.each {
+					def depNode = depsNode.appendNode("dependency")
+					depNode.appendNode("groupId", it.group)
+					depNode.appendNode("artifactId", it.name)
+				depNode.appendNode("version", it.version)
+					depNode.appendNode("scope", "compile")
+				}
+			}
+		}	
 	}
+
 	repositories {
 		maven {
 			url "http://mavenupload.modmuss50.me/"
@@ -105,5 +157,43 @@ publishing {
 	}
 }
 
-apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/license.gradle'
+task licenseFormatAll
+subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
+subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
+
+dependencies {
+	afterEvaluate {
+		subprojects.each {
+			compile project(path: ":${it.name}", configuration: "dev")
+			include project("${it.name}:")
+		}
+	}
+
+	// workaround linux segfault	
+	compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
+}
+
+version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+
+curseforge {
+	if (project.hasProperty('curse_api_key')){
+		apiKey = project.getProperty('curse_api_key')
+	}
+	project {
+		id = '306612'
+		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
+		releaseType = 'alpha'
+		addGameVersion '1.14-Snapshot'
+		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
+			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
+		}
+		afterEvaluate {
+			uploadTask.dependsOn("remapJar")
+		}
+	}
+	options{
+		forgeGradleIntegration = false
+	}
+}
+
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'

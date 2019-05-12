@@ -1,20 +1,15 @@
 {
+  "schemaVersion": 1,
   "id": "fabric",
   "name": "Fabric API",
   "version": "${version}",
-  "side": "universal",
   "description": "Core API module providing key hooks and intercompatibility features.",
   "license": "Apache-2.0",
-  "initializers": [
-    "net.fabricmc.fabric.impl.FabricAPIInitializer",
-    "net.fabricmc.fabric.impl.FabricAPIClientInitializer"
-  ],
-  "mixins": {
-    "client": [
-    	"net.fabricmc.fabric.mixins.client.json", 
-    	"net.fabricmc.fabric.renderer.mixins.client.json"
-	],
-    "common": "net.fabricmc.fabric.mixins.common.json"
-    
+  "icon": "assets/fabric/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
   }
 }

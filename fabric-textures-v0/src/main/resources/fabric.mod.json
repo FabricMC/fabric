@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-textures-v0",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "environment": "client",
+  "mixins": [
+    "fabric-textures-v0.mixins.json"
+  ]
+}
