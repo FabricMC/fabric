@@ -16,6 +16,9 @@ def mcVersion = "1.14.1 Pre-Release 2"
 def yarnVersion = "+build.2"
 
 def getSubprojectVersion(project, version) {
+	if (grgit == null) {
+		return version + "+nogit"
+	}
 	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
 	if (latestCommits.isEmpty()) {
 		return version + "+uncommited"
