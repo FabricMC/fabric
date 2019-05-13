@@ -20,34 +20,72 @@ import net.fabricmc.fabric.mixin.builders.MaterialBuilderHooks;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.util.DyeColor;
 
 public class FabricMaterialBuilder extends Material.Builder {
-	public FabricMaterialBuilder(MaterialColor materialColor_1) {
-		super(materialColor_1);
+	public FabricMaterialBuilder(MaterialColor color) {
+		super(color);
+	}
+
+	public FabricMaterialBuilder(DyeColor color) {
+		super(color.getMaterialColor());
 	}
 
 	@Override
-	public Material.Builder burnable() {
-		return super.burnable();
+	public FabricMaterialBuilder burnable() {
+		super.burnable();
+		return this;
 	}
 
-	public Material.Builder pistonBehavior(PistonBehavior behavior) {
+	public FabricMaterialBuilder pistonBehavior(PistonBehavior behavior) {
 		((MaterialBuilderHooks) this).setPistonBehavior(behavior);
 		return this;
 	}
 
-	public Material.Builder lightPassesThrough() {
+	public FabricMaterialBuilder lightPassesThrough() {
 		((MaterialBuilderHooks) this).invokeLightPassesThrough();
 		return this;
 	}
 
 	@Override
-	public Material.Builder destroyedByPiston() {
-		return super.destroyedByPiston();
+	public FabricMaterialBuilder destroyedByPiston() {
+		super.destroyedByPiston();
+		return this;
 	}
 
 	@Override
-	public Material.Builder blocksPistons() {
-		return super.blocksPistons();
+	public FabricMaterialBuilder blocksPistons() {
+		super.blocksPistons();
+		return this;
+	}
+
+	@Override
+	public FabricMaterialBuilder allowsMovement() {
+		super.allowsMovement();
+		return this;
+	}
+
+	@Override
+	public FabricMaterialBuilder liquid() {
+		super.liquid();
+		return this;
+	}
+
+	@Override
+	public Material.Builder notSolid() {
+		super.notSolid();
+		return this;
+	}
+
+	@Override
+	public FabricMaterialBuilder replaceable() {
+		super.replaceable();
+		return this;
+	}
+
+	@Override
+	public FabricMaterialBuilder requiresTool() {
+		super.requiresTool();
+		return this;
 	}
 }
