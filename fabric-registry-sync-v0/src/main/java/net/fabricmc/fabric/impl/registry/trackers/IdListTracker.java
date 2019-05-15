@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
-import net.fabricmc.fabric.impl.registry.ExtendedIdList;
+import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
 import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
@@ -54,7 +54,7 @@ public class IdListTracker<V, OV> implements RegistryPreClearCallback<V>, Regist
 			}
 		}
 
-		((ExtendedIdList) mappers).clear();
+		((RemovableIdList) mappers).clear();
 	}
 
 	@Override

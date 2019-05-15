@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
-import net.fabricmc.fabric.impl.registry.ExtendedIdList;
+import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
 import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
@@ -44,7 +44,7 @@ public final class StateIdTracker<T, S> implements RegistryPreClearCallback<T>, 
 
 	@Override
 	public void onPreClear() {
-		((ExtendedIdList) stateList).clear();
+		((RemovableIdList) stateList).clear();
 	}
 
 	@Override
