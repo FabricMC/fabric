@@ -20,10 +20,14 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.RegistryListener;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.fabricmc.fabric.impl.registry.RemappableRegistry;
+import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
+import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
+import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -47,42 +51,65 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Shadow
 	private int nextId;
 
+	private final Event<RegistryPreClearCallback> fabric_preClearEvent = EventFactory.createArrayBacked(RegistryPreClearCallback.class,
+		(callbacks) -> () -> {
+			for (RegistryPreClearCallback callback : callbacks) {
+				callback.onPreClear();
+			}
+		}
+	);
+
+	private final Event<RegistryPreRegisterCallback> fabric_preRegisterEvent = EventFactory.createArrayBacked(RegistryPreRegisterCallback.class,
+		(callbacks) -> (a, b, c, d) -> {
+			for (RegistryPreRegisterCallback callback : callbacks) {
+				//noinspection unchecked
+				callback.onPreRegister(a, b, c, d);
+			}
+		}
+	);
+
+	private final Event<RegistryPostRegisterCallback> fabric_postRegisterEvent = EventFactory.createArrayBacked(RegistryPostRegisterCallback.class,
+		(callbacks) -> (a, b, c) -> {
+			for (RegistryPostRegisterCallback callback : callbacks) {
+				//noinspection unchecked
+				callback.onPostRegister(a, b, c);
+			}
+		}
+	);
+
 	private Object2IntMap<Identifier> fabric_prevIndexedEntries;
 	private BiMap<Identifier, T> fabric_prevEntries;
-	private RegistryListener[] fabric_listeners;
 
 	@Override
-	public void registerListener(RegistryListener<T> listener) {
-		if (fabric_listeners == null) {
-			fabric_listeners = new RegistryListener[]{listener};
-		} else {
-			RegistryListener[] newListeners = new RegistryListener[fabric_listeners.length + 1];
-			System.arraycopy(fabric_listeners, 0, newListeners, 0, fabric_listeners.length);
-			newListeners[fabric_listeners.length] = listener;
-			fabric_listeners = newListeners;
-		}
+	public Event<RegistryPreClearCallback<T>> getPreClearEvent() {
+		//noinspection unchecked
+		return (Event<RegistryPreClearCallback<T>>) (Event) fabric_preClearEvent;
+	}
+
+	@Override
+	public Event<RegistryPreRegisterCallback<T>> getPreRegisterEvent() {
+		//noinspection unchecked
+		return (Event<RegistryPreRegisterCallback<T>>) (Event) fabric_preRegisterEvent;
+	}
+
+	@Override
+	public Event<RegistryPostRegisterCallback<T>> getPostRegisterEvent() {
+		//noinspection unchecked
+		return (Event<RegistryPostRegisterCallback<T>>) (Event) fabric_postRegisterEvent;
 	}
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
-		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
-		if (fabric_listeners != null) {
-			for (RegistryListener listener : fabric_listeners) {
-				listener.beforeRegistryRegistration(registry, id, identifier, object, !entries.containsKey(identifier));
-			}
-		}
+		boolean isNewToRegistry = !entries.containsKey(identifier);
+		fabric_preRegisterEvent.invoker().onPreRegister(id, identifier, object, isNewToRegistry);
 	}
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("RETURN"))
 	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
-		if (fabric_listeners != null) {
-			for (RegistryListener listener : fabric_listeners) {
-				listener.afterRegistryRegistration(registry, id, identifier, object);
-			}
-		}
+		fabric_postRegisterEvent.invoker().onPostRegister(id, identifier, object);
 	}
 
 	@Override
@@ -182,11 +209,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 
 		// Inform about registry clearing.
-		if (fabric_listeners != null) {
-			for (RegistryListener listener : fabric_listeners) {
-				listener.beforeRegistryCleared(registry);
-			}
-		}
+		fabric_preClearEvent.invoker().onPreClear();
 
 		// entries was handled above, if it was necessary.
 		indexedEntries.clear();
@@ -218,11 +241,8 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			}
 
 			// Notify listeners about the ID change.
-			if (fabric_listeners != null) {
-				for (RegistryListener listener : fabric_listeners) {
-					listener.beforeRegistryRegistration(registry, id, identifier, object, false);
-				}
-			}
+			//noinspection unchecked
+			fabric_preRegisterEvent.invoker().onPreRegister(id, identifier, object, false);
 		}
 	}
 

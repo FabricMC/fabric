@@ -14,18 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry;
+package net.fabricmc.fabric.impl.registry.callbacks;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
-public interface RegistryListener<T> {
-	default void beforeRegistryCleared(Registry<T> registry) {
-	}
-
-	default void beforeRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object, boolean isNew) {
-	}
-
-	default void afterRegistryRegistration(Registry<T> registry, int id, Identifier identifier, T object) {
-	}
+@FunctionalInterface
+public interface RegistryPostRegisterCallback<T> extends RegistryCallback<T> {
+	void onPostRegister(int rawId, Identifier id, T object);
 }
