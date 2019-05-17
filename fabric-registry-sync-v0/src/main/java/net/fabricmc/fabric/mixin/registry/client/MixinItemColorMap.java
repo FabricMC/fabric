@@ -16,32 +16,24 @@
 
 package net.fabricmc.fabric.mixin.registry.client;
 
-import net.fabricmc.fabric.impl.registry.IdListUpdater;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.minecraft.client.color.block.BlockColors;
+import net.fabricmc.fabric.impl.registry.trackers.IdListTracker;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.item.ItemColors;
-import net.minecraft.item.Item;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemColors.class)
-public class MixinItemColorMap implements IdListUpdater.Container<ItemColorProvider> {
+public class MixinItemColorMap {
 	@Shadow
 	private IdList<ItemColorProvider> providers;
 
-	@Inject(method = "create", at = @At("RETURN"))
-	private static void create(BlockColors blockMap, CallbackInfoReturnable<ItemColors> info) {
-		((ListenableRegistry) Registry.ITEM).registerListener(new IdListUpdater<Item, ItemColorProvider>((IdListUpdater.Container<ItemColorProvider>) (Object) info.getReturnValue()));
-	}
-
-	@Override
-	public IdList<ItemColorProvider> getIdListForRegistryUpdating() {
-		return providers;
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void create(CallbackInfo info) {
+		IdListTracker.register(Registry.ITEM, providers);
 	}
 }

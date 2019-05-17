@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.registry;
 
-public interface ExtendedIdList {
+public interface RemovableIdList<T> {
 	void clear();
+	void remove(T o);
+	void removeId(int i);
 }

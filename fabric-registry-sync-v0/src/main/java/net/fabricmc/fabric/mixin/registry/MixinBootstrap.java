@@ -17,19 +17,18 @@
 package net.fabricmc.fabric.mixin.registry;
 
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.vanilla.BootstrapBiomeRegistryListener;
-import net.fabricmc.fabric.impl.registry.vanilla.BootstrapBlockRegistryListener;
-import net.fabricmc.fabric.impl.registry.vanilla.BootstrapFluidRegistryListener;
-import net.fabricmc.fabric.impl.registry.vanilla.BootstrapItemRegistryListener;
+import net.fabricmc.fabric.impl.registry.trackers.*;
+import net.fabricmc.fabric.impl.registry.trackers.vanilla.BiomeParentTracker;
+import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockInitTracker;
+import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockItemTracker;
 import net.minecraft.Bootstrap;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,17 +37,27 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Bootstrap.class)
 public class MixinBootstrap {
+	@SuppressWarnings("unchecked")
 	@Inject(method = "setOutputStreams", at = @At("RETURN"))
 	private static void initialize(CallbackInfo info) {
-		// access Blocks, Items, ...
-		Object o0 = Biomes.THE_END;
-		Object o1 = Blocks.AIR;
-		Object o3 = Fluids.EMPTY;
-		Object o2 = Items.AIR;
+		// These seemingly pointless accesses are done to make sure each
+		// static initializer is called, to register vanilla-provided blocks
+		// and items from the respective classes - otherwise, they would
+		// duplicate our calls from below.
+		Object oBiome = Biomes.THE_END;
+		Object oBlock = Blocks.AIR;
+		Object oFluid = Fluids.EMPTY;
+		Object oItem = Items.AIR;
 
-		((ListenableRegistry<Biome>) Registry.BIOME).registerListener(new BootstrapBiomeRegistryListener());
-		((ListenableRegistry<Block>) Registry.BLOCK).registerListener(new BootstrapBlockRegistryListener());
-		((ListenableRegistry<Fluid>) Registry.FLUID).registerListener(new BootstrapFluidRegistryListener());
-		((ListenableRegistry<Item>) Registry.ITEM).registerListener(new BootstrapItemRegistryListener());
+		// state ID tracking
+		StateIdTracker.register(Registry.BLOCK, Block.STATE_IDS, (block) -> block.getStateFactory().getStates());
+		StateIdTracker.register(Registry.FLUID, Fluid.STATE_IDS, (fluid) -> fluid.getStateFactory().getStates());
+
+		// map tracking
+		BiomeParentTracker.register(Registry.BIOME);
+		BlockItemTracker.register(Registry.ITEM);
+
+		// block initialization, like Blocks
+		BlockInitTracker.register(Registry.BLOCK);
 	}
 }

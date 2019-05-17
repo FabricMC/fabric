@@ -16,27 +16,52 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.impl.registry.ExtendedIdList;
+import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.IdList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 
 import java.util.IdentityHashMap;
 import java.util.List;
 
 @Mixin(IdList.class)
-public class MixinIdList implements ExtendedIdList {
+public class MixinIdList implements RemovableIdList<Object> {
 	@Shadow
 	private int nextId;
 	@Shadow
-	private IdentityHashMap idMap;
+	private IdentityHashMap<Object, Integer> idMap;
 	@Shadow
-	private List list;
+	private List<Object> list;
 
 	@Override
 	public void clear() {
 		nextId = 0;
 		idMap.clear();
 		list.clear();
+	}
+
+	@Unique
+	private void fabric_removeInner(Object o) {
+		int value = idMap.remove(o);
+		list.set(value, null);
+		while (nextId > 1 && list.get(nextId - 1) == null) {
+			nextId--;
+		}
+	}
+
+	@Override
+	public void remove(Object o) {
+		if (idMap.containsKey(o)) {
+			fabric_removeInner(o);
+		}
+	}
+
+	@Override
+	public void removeId(int i) {
+		Object obj = list.get(i);
+		if (obj != null) {
+			fabric_removeInner(obj);
+		}
 	}
 }

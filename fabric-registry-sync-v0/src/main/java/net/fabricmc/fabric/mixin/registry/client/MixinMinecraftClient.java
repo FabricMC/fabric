@@ -36,8 +36,6 @@ public class MixinMinecraftClient {
 	// Unmap the registry before loading a new SP/MP setup.
 	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
 	public void disconnectAfter(Screen screen_1, CallbackInfo info) {
-		ClientSidePacketRegistryImpl.invalidateRegisteredIdList();
-
 		try {
 			RegistrySyncManager.unmap();
 		} catch (RemapException e) {

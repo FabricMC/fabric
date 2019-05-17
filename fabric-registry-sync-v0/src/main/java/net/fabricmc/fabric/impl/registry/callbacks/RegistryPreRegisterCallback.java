@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry;
+package net.fabricmc.fabric.impl.registry.callbacks;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
+import net.minecraft.util.Identifier;
 
-public interface ListenableRegistry<T> {
-	Event<RegistryPreClearCallback<T>> getPreClearEvent();
-	Event<RegistryPreRegisterCallback<T>> getPreRegisterEvent();
-	Event<RegistryPostRegisterCallback<T>> getPostRegisterEvent();
+@FunctionalInterface
+public interface RegistryPreRegisterCallback<T> extends RegistryCallback<T> {
+	void onPreRegister(int rawId, Identifier id, T object, boolean isNewToRegistry);
 }
