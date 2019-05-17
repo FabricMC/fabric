@@ -125,7 +125,12 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 			String s = sb.toString();
 			if (!s.isEmpty()) {
-				ids.add(new Identifier(s));
+				try {
+					ids.add(new Identifier(s));
+				} catch (InvalidIdentifierException e) {
+					LOGGER.warn("Received invalid identifier in " + id + ": " + s + " (" + e.getLocalizedMessage() + ")");
+					LOGGER.trace(e);
+				}
 			}
 		}
 
