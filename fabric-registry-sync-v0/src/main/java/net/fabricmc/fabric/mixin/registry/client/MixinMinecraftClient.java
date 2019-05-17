@@ -20,7 +20,7 @@ import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,7 +34,7 @@ public class MixinMinecraftClient {
 	private static Logger LOGGER;
 
 	// Unmap the registry before loading a new SP/MP setup.
-	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/Screen;)V")
+	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
 	public void disconnectAfter(Screen screen_1, CallbackInfo info) {
 		ClientSidePacketRegistryImpl.invalidateRegisteredIdList();
 

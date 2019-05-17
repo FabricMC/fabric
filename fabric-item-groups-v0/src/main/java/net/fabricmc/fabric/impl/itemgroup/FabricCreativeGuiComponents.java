@@ -18,7 +18,8 @@ package net.fabricmc.fabric.impl.itemgroup;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.ingame.CreativePlayerInventoryScreen;
+
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemGroup;
@@ -42,14 +43,14 @@ public class FabricCreativeGuiComponents {
 	public static class ItemGroupButtonWidget extends ButtonWidget {
 
 		CreativeGuiExtensions extensions;
-		CreativePlayerInventoryScreen gui;
+		CreativeInventoryScreen gui;
 		Type type;
 
 		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
 			super(x, y, 10, 11, type.text, (bw) -> type.clickConsumer.accept(extensions));
 			this.extensions = extensions;
 			this.type = type;
-			this.gui = (CreativePlayerInventoryScreen) extensions;
+			this.gui = (CreativeInventoryScreen) extensions;
 		}
 
 		@Override

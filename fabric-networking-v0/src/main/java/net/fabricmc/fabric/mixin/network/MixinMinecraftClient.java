@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.network;
 
 import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {
-	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/Screen;)V")
+	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
 	public void disconnectAfter(Screen screen_1, CallbackInfo info) {
 		ClientSidePacketRegistryImpl.invalidateRegisteredIdList();
 	}

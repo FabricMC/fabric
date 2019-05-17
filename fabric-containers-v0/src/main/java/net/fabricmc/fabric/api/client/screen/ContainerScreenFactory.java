@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.client.screen;
 
-import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
 
 @FunctionalInterface
 public interface ContainerScreenFactory<C extends Container> {
 
-	ContainerScreen create(C container);
+	AbstractContainerScreen create(C container);
 
 }
