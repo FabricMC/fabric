@@ -28,7 +28,7 @@ public class FabricMaterialBuilder extends Material.Builder {
 	}
 
 	public FabricMaterialBuilder(DyeColor color) {
-		super(color.getMaterialColor());
+		this(color.getMaterialColor());
 	}
 
 	@Override
