@@ -3,6 +3,11 @@
   "id": "fabric-containers-v0",
   "version": "${version}",
   "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-networking-v0": "*"
+  },
   "mixins": [
     "fabric-containers-v0.mixins.json"
   ],

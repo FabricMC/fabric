@@ -3,6 +3,11 @@
   "id": "fabric-item-groups-v0",
   "version": "${version}",
   "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-resource-loader-v0": "*"
+  },
   "mixins": [
     "fabric-item-groups-v0.mixins.json"
   ]

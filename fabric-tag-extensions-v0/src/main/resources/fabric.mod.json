@@ -2,5 +2,10 @@
   "schemaVersion": 1,
   "id": "fabric-tag-extensions-v0",
   "version": "${version}",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-resource-loader-v0": "*"
+  }
 }

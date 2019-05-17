@@ -3,6 +3,10 @@
   "id": "fabric-networking-blockentity-v0",
   "version": "${version}",
   "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*"
+  },
   "mixins": [
     "fabric-networking-blockentity-v0.mixins.json"
   ]

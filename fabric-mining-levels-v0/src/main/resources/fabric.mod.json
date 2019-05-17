@@ -3,6 +3,11 @@
   "id": "fabric-mining-levels-v0",
   "version": "${version}",
   "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-tag-extensions-v0": "*"
+  },
   "mixins": [
     "fabric-mining-levels-v0.mixins.json"
   ]
