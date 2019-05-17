@@ -22,11 +22,13 @@ import java.io.IOException;
 import java.util.concurrent.*;
 
 class DeferredNioExecutionHandler {
-	private static final ThreadLocal<Boolean> DEFERRED_REQUIRED = new ThreadLocal<>();
+	// private static final ThreadLocal<Boolean> DEFERRED_REQUIRED = new ThreadLocal<>();
+	private static final boolean DEFER_REQUESTED = System.getProperty("fabric.resource-loader.deferFilesystemOperations", "false").equalsIgnoreCase("true");
 	private static ExecutorService EXECUTOR_SERVICE;
 
 	public static boolean shouldDefer() {
-		Boolean deferRequired = DEFERRED_REQUIRED.get();
+		return DEFER_REQUESTED;
+		/* Boolean deferRequired = DEFERRED_REQUIRED.get();
 		if (deferRequired == null) {
 			deferRequired = false;
 
@@ -41,7 +43,7 @@ class DeferredNioExecutionHandler {
 			DEFERRED_REQUIRED.set(deferRequired);
 		}
 
-		return deferRequired;
+		return deferRequired; */
 	}
 
 	public static <V> V submit(Callable<V> callable, boolean cond) throws IOException {
