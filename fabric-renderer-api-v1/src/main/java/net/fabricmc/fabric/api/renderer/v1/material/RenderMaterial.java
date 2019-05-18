@@ -50,20 +50,6 @@ import net.minecraft.util.Identifier;
  * 
  * All renderer implementations should support standard materials.<p>
  * 
- * <b>SHADER MATERIALS</b><p>
- * 
- * Shader materials are standard materials with a vertex and fragment shader attached.
- * The quad attributes for standard materials have standard vertex attribute bindings
- * for cross-compatibility of shaders. Vertex colors will be modified (lit) by the 
- * renderer before the vertex shader runs, unless lighting (AO and diffuse) has been
- * disabled in the standard material.<p>
- * 
- * Shader materials do not have to implement any sort of "standard" render, and the quad
- * vertex attributes can be re-purposed to fit the needs of the shader author.<p>
- * 
- * Shader materials are an optional {@link Renderer} feature.
- * {@link Renderer#shaderManager()} will return null if shaders are unsupported.<p>
- * 
  * <b>SPECIAL MATERIALS</b><p>
  * 
  * Special materials are implemented directly by the Renderer implementation, typically
