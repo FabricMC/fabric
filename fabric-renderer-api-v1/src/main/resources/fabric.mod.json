@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-renderer-api-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*"
+  },
+  "mixins": [
+    "fabric-renderer-api-v1.mixins.json",
+    "fabric-renderer-api-v1.debughud.mixins.json"
+  ]
+}

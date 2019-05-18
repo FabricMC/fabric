@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.rendering.data",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinBlockEntity",
+    "MixinViewableWorld"
+  ],
+  "client": [
+    "client.MixinChunkRendererRegion"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
