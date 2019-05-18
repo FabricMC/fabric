@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.indigo.renderer.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "plugin": "net.fabricmc.indigo.IndigoMixinConfigPlugin",
+  "mixins": [
+  	"MixinBlockModelRenderer",
+    "MixinBufferBuilder",
+	"MixinChunkRenderer",
+    "MixinChunkRendererRegion",
+	"MixinChunkRenderTask",
+	"MixinItemRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-renderer-indigo",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-renderer-api-v1": "*"
+  },
+  "mixins": [
+    "fabric-renderer-indigo.mixins.json"
+  ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.indigo.Indigo"
+    ]
+  }
+}
