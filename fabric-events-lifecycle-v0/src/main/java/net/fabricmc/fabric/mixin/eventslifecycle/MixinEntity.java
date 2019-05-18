@@ -9,10 +9,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity {
+public abstract class MixinEntity<T extends Entity> {
 
 	@Inject(method = "tick", at = @At("TAIL"))
 	public void tickEntity(CallbackInfo ci) {
-		EntityTickCallback.event(((Entity)(Object)this).getType()).tick((Entity) (Object) this);
+		((EntityTickCallback<T>)EntityTickCallback.event(((Entity)(Object)this).getType())).tick((T)(Object)this);
 	}
 }

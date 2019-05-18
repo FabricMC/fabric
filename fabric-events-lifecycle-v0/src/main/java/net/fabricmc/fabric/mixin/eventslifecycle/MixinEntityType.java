@@ -10,29 +10,33 @@ import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(EntityType.class)
 public class MixinEntityType<T extends Entity> implements EntityTypeCaller {
+	private EntityTickCallback event;
 
 	@Override
 	public EntityTickCallback getEntityEvent() {
-		return (EntityTickCallback<T>)EventFactory.createArrayBacked(EntityTickCallback.class,
-			(listeners) -> {
-				if (EventFactory.isProfilingEnabled()) {
-					return (player) -> {
-						Profiler profiler = player.getServer().getProfiler();
-						profiler.push("fabricEntityTick");
-						for (EntityTickCallback event : listeners) {
-							profiler.push(EventFactory.getHandlerName(event));
-							event.tick(player);
+		if (event == null) {
+			event = (EntityTickCallback<T>)EventFactory.createArrayBacked(EntityTickCallback.class,
+				(listeners) -> {
+					if (EventFactory.isProfilingEnabled()) {
+						return (player) -> {
+							Profiler profiler = player.getServer().getProfiler();
+							profiler.push("fabricEntityTick");
+							for (EntityTickCallback event : listeners) {
+								profiler.push(EventFactory.getHandlerName(event));
+								event.tick(player);
+								profiler.pop();
+							}
 							profiler.pop();
-						}
-						profiler.pop();
-					};
-				} else {
-					return (player) -> {
-						for (EntityTickCallback event : listeners) {
-							event.tick(player);
-						}
-					};
-				}
-			});
+						};
+					} else {
+						return (player) -> {
+							for (EntityTickCallback event : listeners) {
+								event.tick(player);
+							}
+						};
+					}
+				});
+		}
+		return event;
 	}
 }

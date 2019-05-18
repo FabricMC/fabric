@@ -12,5 +12,5 @@ public interface EntityTickCallback<T extends Entity> {
 		return ((EntityTypeCaller)type).getEntityEvent();
 	}
 
-	void tick(Entity entity);
+	void tick(T entity);
 }
