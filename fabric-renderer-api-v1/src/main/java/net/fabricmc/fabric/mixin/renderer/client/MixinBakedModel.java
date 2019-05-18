@@ -20,7 +20,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
+import net.minecraft.world.ExtendedBlockView;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -40,7 +40,7 @@ public interface MixinBakedModel extends FabricBakedModel {
     }
     
     @Override
-    public default void emitBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public default void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         context.fallbackConsumer().accept((BakedModel)this);
     }
     

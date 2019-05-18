@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer;
+package net.fabricmc.fabric.mixin.rendering.data;
 
-import net.fabricmc.fabric.api.renderer.v1.model.DynamicModelBlockEntity;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 
 @Mixin(BlockEntity.class)
-public class MixinBlockEntity implements DynamicModelBlockEntity {
+public class MixinBlockEntity implements RenderAttachmentBlockEntity {
     @Override
-    public Object getDynamicModelData() {
+    public Object getRenderAttachmentData() {
         return null;
     }
 }

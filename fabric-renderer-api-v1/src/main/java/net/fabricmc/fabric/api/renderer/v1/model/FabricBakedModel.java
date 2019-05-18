@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
@@ -92,7 +91,7 @@ public interface FabricBakedModel {
      * Will not be thread-safe. Do not cache or retain a reference.
      * @param context Accepts model output.
      */
-    void emitBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
+    void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
     
     /**
      * This method will be called during item rendering to generate both the static and

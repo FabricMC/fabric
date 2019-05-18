@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.render;
+package net.fabricmc.fabric.api.rendering.data.v1;
 
-import net.fabricmc.fabric.api.renderer.v1.model.DynamicModelBlockEntity;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ExtendedBlockView;
@@ -30,7 +28,7 @@ import net.minecraft.world.ExtendedBlockView;
  * There are differences from BlockView consumers must understand:<p>
  * 
  * BlockEntity implementations that provide data for model customization should implement 
- * {@link DynamicModelBlockEntity} which will be queried on the main thread when a render
+ * {@link RenderAttachmentBlockEntity} which will be queried on the main thread when a render
  * chunk is enqueued for rebuild. The model should retrieve the results via {@link #getCachedRenderData()}.
  * While {@link #getBlockEntity(net.minecraft.util.math.BlockPos)} is not disabled, it
  * is not thread-safe for use on render threads.  Models that violate this guidance are
@@ -44,23 +42,23 @@ import net.minecraft.world.ExtendedBlockView;
  *
  * Models should avoid using {@link ExtendedBlockView#getBlockEntity(BlockPos)}
  * to ensure thread safety because this view may be accessed outside the main client thread.
- * Models that require Block Entity data should implement {@link DynamicModelBlockEntity}
- * and then use {@link #getCachedRenderData(BlockPos)} to retrieve it.  When called from the
+ * Models that require Block Entity data should implement {@link RenderAttachmentBlockEntity}
+ * and then use {@link #getBlockEntityRenderAttachment(BlockPos)} to retrieve it.  When called from the
  * main thread, that method will simply retrieve the data directly.<p>
  * 
  * This interface is only guaranteed to be present in the client environment.
  */
-public interface TerrainBlockView extends ExtendedBlockView {
+public interface RenderAttachedBlockView extends ExtendedBlockView {
     /**
-     * For models associated with Block Entities that implement {@link DynamicModelBlockEntity}
+     * For models associated with Block Entities that implement {@link RenderAttachmentBlockEntity}
      * this will be the most recent value provided by that implementation for the given block position.<p>
      *
      * Null in all other cases, or if the result from the implementation was null.<p>
      *
      * @param pos Position of the block for the block model.
      */
-    default Object getCachedRenderData(BlockPos pos) {
+    default Object getBlockEntityRenderAttachment(BlockPos pos) {
         BlockEntity be = this.getBlockEntity(pos);
-        return be == null ? null : ((DynamicModelBlockEntity)be).getDynamicModelData();
+        return be == null ? null : ((RenderAttachmentBlockEntity) be).getRenderAttachmentData();
     }
 }

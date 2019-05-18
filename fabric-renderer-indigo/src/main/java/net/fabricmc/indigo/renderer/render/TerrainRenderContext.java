@@ -22,7 +22,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -35,6 +34,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Implementation of {@link RenderContext} used during terrain rendering.
@@ -51,7 +51,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
     private final BlockRenderManager blockRenderManager = MinecraftClient.getInstance().getBlockRenderManager();
     
     public void setBlockView(ChunkRendererRegion blockView) {
-        blockInfo.setBlockView((TerrainBlockView) blockView);
+        blockInfo.setBlockView(blockView);
         chunkInfo.setBlockView(blockView);
     }
     

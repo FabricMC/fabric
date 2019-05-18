@@ -25,7 +25,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
 import net.fabricmc.indigo.renderer.render.BlockRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColors;
@@ -45,7 +44,7 @@ public abstract class MixinBlockModelRenderer {
         if(!((FabricBakedModel)model).isVanillaAdapter()) {
             BlockRenderContext context = CONTEXTS.get();
             if(!context.isCallingVanilla()) {
-                ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer)(Object)this, (TerrainBlockView) blockView, model, state, pos, buffer, seed));
+                ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer)(Object)this, blockView, model, state, pos, buffer, seed));
             }
         }
     }

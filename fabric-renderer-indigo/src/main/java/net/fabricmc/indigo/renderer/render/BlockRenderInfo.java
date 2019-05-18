@@ -19,13 +19,13 @@ package net.fabricmc.indigo.renderer.render;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Holds, manages and provides access to the block/world related state
@@ -37,7 +37,7 @@ import net.minecraft.util.math.Direction;
 public class BlockRenderInfo {
     private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColorMap();
     public final Random random = new Random();
-    public TerrainBlockView blockView;
+    public ExtendedBlockView blockView;
     public BlockPos blockPos;
     public BlockState blockState; 
     public long seed;
@@ -55,7 +55,7 @@ public class BlockRenderInfo {
         return result;
     };
     
-    public void setBlockView(TerrainBlockView blockView) {
+    public void setBlockView(ExtendedBlockView blockView) {
         this.blockView = blockView;
     }
     

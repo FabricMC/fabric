@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer.client;
+package net.fabricmc.fabric.mixin.rendering.data.client;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.renderer.v1.model.DynamicModelBlockEntity;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
 @Mixin(ChunkRendererRegion.class)
-public abstract class MixinChunkRendererRegion implements TerrainBlockView {
+public abstract class MixinChunkRendererRegion implements RenderAttachedBlockView {
     private HashMap<BlockPos, Object> fabric_renderDataObjects;
 
     @Inject(at = @At("RETURN"), method = "<init>")
@@ -48,7 +48,7 @@ public abstract class MixinChunkRendererRegion implements TerrainBlockView {
                             && entPos.getY() >= posFrom.getY() && entPos.getY() <= posTo.getY()
                             && entPos.getZ() >= posFrom.getZ() && entPos.getZ() <= posTo.getZ()) {
 
-                        Object o = ((DynamicModelBlockEntity) entry.getValue()).getDynamicModelData();
+                        Object o = ((RenderAttachmentBlockEntity) entry.getValue()).getRenderAttachmentData();
                         if (o != null) {
                             map.put(entPos, o);
                         }
@@ -61,7 +61,7 @@ public abstract class MixinChunkRendererRegion implements TerrainBlockView {
     }
 
     @Override
-    public Object getCachedRenderData(BlockPos pos) {
+    public Object getBlockEntityRenderAttachment(BlockPos pos) {
         return fabric_renderDataObjects.get(pos);
     }
 }

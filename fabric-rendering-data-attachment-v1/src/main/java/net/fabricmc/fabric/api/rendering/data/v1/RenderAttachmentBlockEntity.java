@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.renderer.v1.model;
+package net.fabricmc.fabric.api.rendering.data.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 
@@ -31,9 +31,9 @@ import net.minecraft.block.entity.BlockEntity;
  * and well-checked for unusual states.<p>
  */
 @FunctionalInterface
-public interface DynamicModelBlockEntity {
+public interface RenderAttachmentBlockEntity {
     /**
      * @return The model state data provided by this block entity. Can be null.
      */
-    Object getDynamicModelData();
+    Object getRenderAttachmentData();
 }

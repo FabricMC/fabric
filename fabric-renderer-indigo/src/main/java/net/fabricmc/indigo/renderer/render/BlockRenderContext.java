@@ -25,7 +25,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -78,7 +77,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
         return fabricBuffer;
     }
     
-    public boolean tesselate(BlockModelRenderer vanillaRenderer, TerrainBlockView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, long seed) {
+    public boolean tesselate(BlockModelRenderer vanillaRenderer, ExtendedBlockView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, long seed) {
         this.vanillaRenderer = vanillaRenderer;
         this.fabricBuffer = (AccessBufferBuilder) buffer;
         this.seed = seed;

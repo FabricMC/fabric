@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.renderer;
+package net.fabricmc.fabric.mixin.rendering.data;
 
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.minecraft.world.ViewableWorld;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.world.World;
-
-/** Make {@link World} implement {@link TerrainBlockView}. */
-@Mixin(World.class)
-public abstract class MixinWorld implements TerrainBlockView {
+/** Make {@link ViewableWorld} implement {@link RenderAttachedBlockView}. */
+@Mixin(ViewableWorld.class)
+public interface MixinViewableWorld extends RenderAttachedBlockView {
 
 }

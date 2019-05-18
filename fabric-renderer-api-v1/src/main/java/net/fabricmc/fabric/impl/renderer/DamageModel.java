@@ -20,7 +20,6 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.api.renderer.v1.render.TerrainBlockView;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
@@ -30,6 +29,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Specialized model wrapper that implements a general-purpose 
@@ -49,7 +49,7 @@ public class DamageModel extends ForwardingBakedModel {
     }
     
     @Override
-    public void emitBlockQuads(TerrainBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         context.pushTransform(damageTransform);
         ((FabricBakedModel)wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
         context.popTransform();
