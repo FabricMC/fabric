@@ -32,16 +32,10 @@ public class FabricClientNetworkInitializer implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientLoginQueryResponseRegistry.INSTANCE.register(new Identifier("fabric:hello"), (handler, connection, id, buffer) -> {
+		ClientLoginQueryResponseRegistry.INSTANCE.register(FabricHelloPacketBuilder.ID, (handler, connection, id, buffer) -> {
 			LOGGER.debug("fabric:hello received - connected to Fabric server!");
 
-			CompoundTag response = new CompoundTag();
-			response.putInt("version", 1);
-
-			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-			buf.writeCompoundTag(response);
-
-			return Optional.of(buf);
+			return Optional.of(FabricHelloPacketBuilder.buildHelloPacket());
 		});
 	}
 }

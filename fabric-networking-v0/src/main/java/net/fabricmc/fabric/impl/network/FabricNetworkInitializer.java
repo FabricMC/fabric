@@ -37,13 +37,7 @@ public class FabricNetworkInitializer implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		S2CLoginHandshakeCallback.EVENT.register(queue -> {
-			CompoundTag request = new CompoundTag();
-			request.putInt("version", 1);
-
-			PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-			buf.writeCompoundTag(request);
-
-			queue.sendPacket(new Identifier("fabric:hello"), buf, (handler, connection, id, responseBuf) -> {
+			queue.sendPacket(FabricHelloPacketBuilder.ID, FabricHelloPacketBuilder.buildHelloPacket(), (handler, connection, id, responseBuf) -> {
 				CompoundTag response;
 				try {
 					response = responseBuf.readCompoundTag();
