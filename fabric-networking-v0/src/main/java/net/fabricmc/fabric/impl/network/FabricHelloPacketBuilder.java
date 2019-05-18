@@ -29,7 +29,8 @@ class FabricHelloPacketBuilder {
 
 	static PacketByteBuf buildHelloPacket() {
 		CompoundTag tag = new CompoundTag();
-		tag.putInt("version", 1);
+		tag.putInt("versionMajor", 1);
+		tag.putInt("versionMinor", 0);
 
 		CompoundTag modsTag = new CompoundTag();
 		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
