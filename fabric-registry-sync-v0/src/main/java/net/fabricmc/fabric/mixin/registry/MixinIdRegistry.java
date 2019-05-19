@@ -109,6 +109,13 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		if (!entries.containsKey(identifier)) {
 			fabric_addObjectEvent.invoker().onAddObject(id, identifier, object);
+		} else {
+			T oldObject = entries.get(identifier);
+			int oldId = indexedEntries.getId(oldObject);
+			if (oldObject != object || oldId != id) {
+				fabric_removeObjectEvent.invoker().onRemoveObject(oldId, identifier, oldObject);
+				fabric_addObjectEvent.invoker().onAddObject(id, identifier, object);
+			}
 		}
 	}
 
