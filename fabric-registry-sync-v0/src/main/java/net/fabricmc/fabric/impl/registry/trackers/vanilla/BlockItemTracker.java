@@ -16,34 +16,27 @@
 
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 
-public final class BlockItemTracker implements RegistryPreClearCallback<Item>, RegistryPostRegisterCallback<Item> {
+public final class BlockItemTracker implements RegistryAddObjectCallback<Item> {
 	private BlockItemTracker() {
 
 	}
 
-	public static void register(SimpleRegistry<Item> registry) {
+	public static void register(Registry<Item> registry) {
 		BlockItemTracker tracker = new BlockItemTracker();
-		((ListenableRegistry<Item>) registry).getPreClearEvent().register(tracker);
-		((ListenableRegistry<Item>) registry).getPostRegisterEvent().register(tracker);
+		RegistryAddObjectCallback.event(registry).register(tracker);
 	}
 
 	@Override
-	public void onPostRegister(int rawId, Identifier id, Item object) {
+	public void onAddObject(int rawId, Identifier id, Item object) {
 		if (object instanceof BlockItem) {
 			((BlockItem) object).registerBlockItemMap(Item.BLOCK_ITEM_MAP, object);
 		}
-	}
-
-	@Override
-	public void onPreClear() {
-		Item.BLOCK_ITEM_MAP.clear();
 	}
 }

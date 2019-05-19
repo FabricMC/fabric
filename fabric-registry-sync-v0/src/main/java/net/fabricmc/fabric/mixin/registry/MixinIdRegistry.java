@@ -18,16 +18,19 @@ package net.fabricmc.fabric.mixin.registry;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryRemoveObjectCallback;
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
+import net.fabricmc.fabric.impl.registry.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.fabricmc.fabric.impl.registry.RemappableRegistry;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -43,7 +46,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.*;
 
 @Mixin(SimpleRegistry.class)
-public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry<T> {
+public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry {
 	@Shadow
 	protected Int2ObjectBiMap<T> indexedEntries;
 	@Shadow
@@ -53,28 +56,29 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Unique
 	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 
-	private final Event<RegistryPreClearCallback> fabric_preClearEvent = EventFactory.createArrayBacked(RegistryPreClearCallback.class,
-		(callbacks) -> () -> {
-			for (RegistryPreClearCallback callback : callbacks) {
-				callback.onPreClear();
+	private final Event<RegistryAddObjectCallback> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryAddObjectCallback.class,
+		(callbacks) -> (rawId, id, object) -> {
+			for (RegistryAddObjectCallback callback : callbacks) {
+				//noinspection unchecked
+				callback.onAddObject(rawId, id, object);
 			}
 		}
 	);
 
-	private final Event<RegistryPreRegisterCallback> fabric_preRegisterEvent = EventFactory.createArrayBacked(RegistryPreRegisterCallback.class,
-		(callbacks) -> (a, b, c, d) -> {
-			for (RegistryPreRegisterCallback callback : callbacks) {
+	private final Event<RegistryRemoveObjectCallback> fabric_removeObjectEvent = EventFactory.createArrayBacked(RegistryRemoveObjectCallback.class,
+		(callbacks) -> (rawId, id, object) -> {
+			for (RegistryRemoveObjectCallback callback : callbacks) {
 				//noinspection unchecked
-				callback.onPreRegister(a, b, c, d);
+				callback.onRemoveObject(rawId, id, object);
 			}
 		}
 	);
 
-	private final Event<RegistryPostRegisterCallback> fabric_postRegisterEvent = EventFactory.createArrayBacked(RegistryPostRegisterCallback.class,
-		(callbacks) -> (a, b, c) -> {
-			for (RegistryPostRegisterCallback callback : callbacks) {
+	private final Event<RegistryRemapCallback> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryRemapCallback.class,
+		(callbacks) -> (a) -> {
+			for (RegistryRemapCallback callback : callbacks) {
 				//noinspection unchecked
-				callback.onPostRegister(a, b, c);
+				callback.remap(a);
 			}
 		}
 	);
@@ -83,35 +87,29 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	private BiMap<Identifier, T> fabric_prevEntries;
 
 	@Override
-	public Event<RegistryPreClearCallback<T>> getPreClearEvent() {
+	public Event<RegistryAddObjectCallback<T>> fabric_getAddObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryPreClearCallback<T>>) (Event) fabric_preClearEvent;
+		return (Event<RegistryAddObjectCallback<T>>) (Event) fabric_addObjectEvent;
 	}
 
 	@Override
-	public Event<RegistryPreRegisterCallback<T>> getPreRegisterEvent() {
+	public Event<RegistryRemoveObjectCallback<T>> fabric_getRemoveObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryPreRegisterCallback<T>>) (Event) fabric_preRegisterEvent;
+		return (Event<RegistryRemoveObjectCallback<T>>) (Event) fabric_removeObjectEvent;
 	}
 
 	@Override
-	public Event<RegistryPostRegisterCallback<T>> getPostRegisterEvent() {
+	public Event<RegistryRemapCallback<T>> fabric_getRemapEvent() {
 		//noinspection unchecked
-		return (Event<RegistryPostRegisterCallback<T>>) (Event) fabric_postRegisterEvent;
+		return (Event<RegistryRemapCallback<T>>) (Event) fabric_postRemapEvent;
 	}
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
-		boolean isNewToRegistry = !entries.containsKey(identifier);
-		fabric_preRegisterEvent.invoker().onPreRegister(id, identifier, object, isNewToRegistry);
-	}
-
-	@SuppressWarnings({"unchecked", "ConstantConditions"})
-	@Inject(method = "set", at = @At("RETURN"))
-	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
-		SimpleRegistry<Object> registry = (SimpleRegistry<Object>) (Object) this;
-		fabric_postRegisterEvent.invoker().onPostRegister(id, identifier, object);
+		if (!entries.containsKey(identifier)) {
+			fabric_addObjectEvent.invoker().onAddObject(id, identifier, object);
+		}
 	}
 
 	@Override
@@ -193,7 +191,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 			for (Identifier id : registry.getIds()) {
 				if (!remoteIndexedEntries.containsKey(id)) {
-					FABRIC_LOGGER.warn("Adding " + id + " to registry.");
+					FABRIC_LOGGER.warn("Adding " + id + " to saved/remote registry.");
 					remoteIndexedEntries.put(id, ++maxValue);
 				}
 			}
@@ -204,14 +202,22 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			for (Identifier id : registry.getIds()) {
 				if (!remoteIndexedEntries.containsKey(id)) {
 					droppedIds.add(id);
+					Object object = registry.get(id);
+
+					// Emit RemoveObject events for removed objects.
+					//noinspection unchecked
+					fabric_getRemoveObjectEvent().invoker().onRemoveObject(registry.getRawId(object), id, (T) object);
 				}
 			}
 
 			entries.keySet().removeAll(droppedIds);
 		}
 
-		// Inform about registry clearing.
-		fabric_preClearEvent.invoker().onPreClear();
+		Int2IntMap idMap = new Int2IntOpenHashMap();
+		for (Object o : indexedEntries) {
+			Identifier id = registry.getId(o);
+			idMap.put(registry.getRawId(o), remoteIndexedEntries.getInt(id));
+		}
 
 		// entries was handled above, if it was necessary.
 		indexedEntries.clear();
@@ -235,28 +241,39 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 				}
 				continue;
 			}
-			
-			//noinspection unchecked
-			fabric_preRegisterEvent.invoker().onPreRegister(id, identifier, object, false);
 
 			// Add the new object, increment nextId to match.
 			indexedEntries.put(object, id);
 			if (nextId <= id) {
 				nextId = id + 1;
 			}
-
-			//noinspection unchecked
-			fabric_postRegisterEvent.invoker().onPostRegister(id, identifier, object);
 		}
+
+		//noinspection unchecked
+		fabric_getRemapEvent().invoker().remap(new RemapStateImpl(registry, idMap));
 	}
 
 	@Override
 	public void unmap(String name) throws RemapException {
 		if (fabric_prevIndexedEntries != null) {
+			List<Identifier> addedIds = new ArrayList<>();
+
+			// Emit AddObject events for previously culled objects.
+			for (Identifier id : fabric_prevEntries.keySet()) {
+				if (!entries.containsKey(id)) {
+					assert fabric_prevIndexedEntries.containsKey(id);
+					addedIds.add(id);
+				}
+			}
+
 			entries.clear();
 			entries.putAll(fabric_prevEntries);
 
 			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
+
+			for (Identifier id : addedIds) {
+				fabric_getAddObjectEvent().invoker().onAddObject(indexedEntries.getId(entries.get(id)), id, entries.get(id));
+			}
 
 			fabric_prevIndexedEntries = null;
 			fabric_prevEntries = null;

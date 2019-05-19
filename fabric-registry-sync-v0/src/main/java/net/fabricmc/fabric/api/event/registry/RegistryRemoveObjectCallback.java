@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.trackers.vanilla;
+package net.fabricmc.fabric.api.event.registry;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public final class BlockInitTracker implements RegistryAddObjectCallback<Block> {
-	private BlockInitTracker() {
+@FunctionalInterface
+public interface RegistryRemoveObjectCallback<T> {
+	void onRemoveObject(int rawId, Identifier id, T object);
 
-	}
+	static <T> Event<RegistryRemoveObjectCallback<T>> event(Registry<T> registry) {
+		if (!(registry instanceof ListenableRegistry)) {
+			throw new IllegalArgumentException("Unsupported registry: " + registry.getClass().getName());
+		}
 
-	public static void register(Registry<Block> registry) {
-		BlockInitTracker tracker = new BlockInitTracker();
-		RegistryAddObjectCallback.event(registry).register(tracker);
-	}
-
-	@Override
-	public void onAddObject(int rawId, Identifier id, Block object) {
-		object.getStateFactory().getStates().forEach(BlockState::initShapeCache);
-		object.getDropTableId();
+		//noinspection unchecked
+		return (Event<RegistryRemoveObjectCallback<T>>) ((ListenableRegistry) registry).fabric_getRemoveObjectEvent();
 	}
 }

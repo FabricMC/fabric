@@ -16,39 +16,39 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
 import net.minecraft.util.IdList;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.util.registry.Registry;
 
 import java.util.Collection;
 import java.util.function.Function;
 
-public final class StateIdTracker<T, S> implements RegistryPreClearCallback<T>, RegistryPostRegisterCallback<T> {
+public final class StateIdTracker<T, S> implements RegistryRemapCallback<T> {
+	private final Registry<T> registry;
 	private final IdList<S> stateList;
 	private final Function<T, Collection<S>> stateGetter;
 
-	public static <T, S> void register(SimpleRegistry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
-		StateIdTracker<T, S> tracker = new StateIdTracker<>(stateList, stateGetter);
-		((ListenableRegistry<T>) registry).getPreClearEvent().register(tracker);
-		((ListenableRegistry<T>) registry).getPostRegisterEvent().register(tracker);
+	public static <T, S> void register(Registry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
+		RegistryRemapCallback.event(registry).register(new StateIdTracker<>(registry, stateList, stateGetter));
 	}
 
-	private StateIdTracker(IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
+	private StateIdTracker(Registry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
+		this.registry = registry;
 		this.stateList = stateList;
 		this.stateGetter = stateGetter;
 	}
 
 	@Override
-	public void onPreClear() {
-		((RemovableIdList) stateList).clear();
-	}
+	public void remap(RemapState<T> state) {
+		((RemovableIdList) stateList).fabric_clear();
 
-	@Override
-	public void onPostRegister(int rawId, Identifier id, T object) {
-		stateGetter.apply(object).forEach(stateList::add);
+		Int2ObjectMap<T> sortedBlocks = new Int2ObjectRBTreeMap<>();
+		registry.forEach((t) -> sortedBlocks.put(registry.getRawId(t), t));
+		for (T b : sortedBlocks.values()) {
+			stateGetter.apply(b).forEach(stateList::add);
+		}
 	}
 }

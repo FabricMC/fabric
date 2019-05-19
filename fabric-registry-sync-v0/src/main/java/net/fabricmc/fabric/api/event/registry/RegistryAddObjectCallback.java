@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.callbacks;
+package net.fabricmc.fabric.api.event.registry;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 @FunctionalInterface
-public interface RegistryPostRegisterCallback<T> extends RegistryCallback<T> {
-	void onPostRegister(int rawId, Identifier id, T object);
+public interface RegistryAddObjectCallback<T> {
+	void onAddObject(int rawId, Identifier id, T object);
+
+	static <T> Event<RegistryAddObjectCallback<T>> event(Registry<T> registry) {
+		if (!(registry instanceof ListenableRegistry)) {
+			throw new IllegalArgumentException("Unsupported registry: " + registry.getClass().getName());
+		}
+
+		//noinspection unchecked
+		return (Event<RegistryAddObjectCallback<T>>) ((ListenableRegistry) registry).fabric_getAddObjectEvent();
+	}
 }
