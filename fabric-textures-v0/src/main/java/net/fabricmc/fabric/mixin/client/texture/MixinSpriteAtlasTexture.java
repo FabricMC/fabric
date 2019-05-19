@@ -18,8 +18,12 @@ package net.fabricmc.fabric.mixin.client.texture;
 
 import com.google.common.base.Joiner;
 import net.fabricmc.fabric.api.client.texture.*;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.impl.client.texture.FabricSprite;
+import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
+import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -42,14 +46,25 @@ import java.io.IOException;
 import java.util.*;
 
 @Mixin(SpriteAtlasTexture.class)
-public abstract class MixinSpriteAtlasTexture {
+public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks {
 	@Shadow
 	private static Logger LOGGER;
 	@Shadow
 	private int mipLevel;
+	@Shadow
+	private String atlasPath;
 
 	@Shadow
 	public abstract Sprite getSprite(Identifier id);
+
+	// EVENT/HOOKS LOGIC
+
+	@Override
+	public String fabric_getAtlasPath() {
+		return atlasPath;
+	}
+
+	// INJECTION LOGIC
 
 	private Map<Identifier, Sprite> fabric_injectedSprites;
 
@@ -77,7 +92,8 @@ public abstract class MixinSpriteAtlasTexture {
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
 		//noinspection ConstantConditions
-		ClientSpriteRegistryCallback.EVENT.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
+		SpriteRegistryCallbackHolder.eventLocal(atlasPath).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
+		SpriteRegistryCallbackHolder.EVENT_GLOBAL.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
 		Set<DependentSprite> dependentSprites = new HashSet<>();
