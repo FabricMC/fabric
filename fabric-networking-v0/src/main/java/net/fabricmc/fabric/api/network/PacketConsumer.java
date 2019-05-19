@@ -25,13 +25,17 @@ import net.minecraft.util.PacketByteBuf;
 public interface PacketConsumer {
 	/**
 	 * Receive a CustomPayload-based packet.
-	 * <p>
+	 *
+	 * The PacketByteBuf received will be released as soon as the method exits,
+	 * meaning that you have to call .retain()/.release() on it if you want to
+	 * keep it around after that.
+	 *
 	 * Please keep in mind that this CAN be called OUTSIDE of the main thread!
 	 * Most game operations are not thread-safe, so you should look into using
 	 * the thread task queue ({@link PacketContext#getTaskQueue()}) to split
-	 * the "reading" (which should, but does not have to, happen off-thread)
+	 * the "reading" (which should happen within this method's execution)
 	 * and "applying" (which, unless you know what you're doing, should happen
-	 * on the main thread).
+	 * on the main thread, after this method exits).
 	 *
 	 * @param context The context (receiving player, side, etc.)
 	 * @param buffer  The byte buffer containing the received packet data.

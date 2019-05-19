@@ -109,9 +109,4 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
 		C2SPacketTypeCallback.UNREGISTERED.invoker().accept(context.getPlayer(), ids);
 	}
-
-	public final boolean accept(CustomPayloadC2SPacket packet, PacketContext context) {
-		CustomPayloadC2SPacketAccessor accessor = ((CustomPayloadC2SPacketAccessor) packet);
-		return accept(accessor.getChannel(), context, accessor.getData());
-	}
 }
