@@ -37,6 +37,6 @@ public class MixinCustomPayloadC2SPacket implements CustomPayloadC2SPacketAccess
 
 	@Override
 	public PacketByteBuf getData() {
-		return data;
+		return new PacketByteBuf(this.data.copy());
 	}
 }

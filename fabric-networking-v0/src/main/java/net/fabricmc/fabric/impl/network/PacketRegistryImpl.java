@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.function.Supplier;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
 	protected static final Logger LOGGER = LogManager.getLogger();
@@ -96,32 +97,35 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		return Optional.of(toPacket(id, buf));
 	}
 
-	private boolean acceptRegisterType(Identifier id, PacketContext context, PacketByteBuf buf) {
+	private boolean acceptRegisterType(Identifier id, PacketContext context, Supplier<PacketByteBuf> bufSupplier) {
 		Collection<Identifier> ids = new HashSet<>();
 
 		{
 			StringBuilder sb = new StringBuilder();
 			char c;
+			PacketByteBuf buf = bufSupplier.get();
 
-			int oldIndex = buf.readerIndex();
-			while (buf.readerIndex() < buf.writerIndex()) {
-				c = (char) buf.readByte();
-				if (c == 0) {
-					String s = sb.toString();
-					if (!s.isEmpty()) {
-						try {
-							ids.add(new Identifier(s));
-						} catch (InvalidIdentifierException e) {
-							LOGGER.warn("Received invalid identifier in " + id + ": " + s + " (" + e.getLocalizedMessage() + ")");
-							LOGGER.trace(e);
+			try {
+				while (buf.readerIndex() < buf.writerIndex()) {
+					c = (char) buf.readByte();
+					if (c == 0) {
+						String s = sb.toString();
+						if (!s.isEmpty()) {
+							try {
+								ids.add(new Identifier(s));
+							} catch (InvalidIdentifierException e) {
+								LOGGER.warn("Received invalid identifier in " + id + ": " + s + " (" + e.getLocalizedMessage() + ")");
+								LOGGER.trace(e);
+							}
 						}
+						sb = new StringBuilder();
+					} else {
+						sb.append(c);
 					}
-					sb = new StringBuilder();
-				} else {
-					sb.append(c);
 				}
+			} finally {
+				buf.release();
 			}
-			buf.readerIndex(oldIndex);
 
 			String s = sb.toString();
 			if (!s.isEmpty()) {
@@ -148,22 +152,31 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	/**
 	 * Hook for accepting packets used in Fabric mixins.
 	 *
+	 * As PacketByteBuf getters in vanilla create a copy (to allow releasing the original packet buffer without
+	 * breaking other, potentially delayed accesses), we use a Supplier to generate those copies and release them
+	 * when needed.
+	 *
 	 * @param id      The packet Identifier received.
 	 * @param context The packet context provided.
-	 * @param buf     The packet data buffer received.
+	 * @param bufSupplier A supplier creating a new PacketByteBuf.
 	 * @return Whether or not the packet was handled by this packet registry.
 	 */
-	public boolean accept(Identifier id, PacketContext context, PacketByteBuf buf) {
+	public boolean accept(Identifier id, PacketContext context, Supplier<PacketByteBuf> bufSupplier) {
 		if (id.equals(PacketTypes.REGISTER) || id.equals(PacketTypes.UNREGISTER)) {
-			return acceptRegisterType(id, context, buf);
+			return acceptRegisterType(id, context, bufSupplier);
 		}
 
 		PacketConsumer consumer = consumerMap.get(id);
 		if (consumer != null) {
+			PacketByteBuf buf = bufSupplier.get();
 			try {
 				consumer.accept(context, buf);
 			} catch (Throwable t) {
 				LOGGER.warn("Failed to handle packet " + id + "!", t);
+			} finally {
+				if (buf.refCnt() > 0 && !PacketDebugOptions.DISABLE_BUFFER_RELEASES) {
+					buf.release();
+				}
 			}
 			return true;
 		} else {
