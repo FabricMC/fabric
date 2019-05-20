@@ -1,0 +1,19 @@
+
+{
+  "schemaVersion": 1,
+  "id": "fabric-biomes-v0",
+  "version": "${version}",
+
+  "name": "fabric-biomes-v0",
+  "license": "Apache-2.0",
+  
+  "environment": "*",
+  
+  "depends": {
+    "fabricloader": ">=0.4.0"
+  },
+  
+  "mixins": [
+    "fabric-biomes-v0.mixins.json"
+  ]
+}
