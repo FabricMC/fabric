@@ -23,6 +23,10 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
+/**
+ * Class which provides a weighted Biome picker
+ * using Minecraft's {@link LayerRandomnessSource} as a randomness source
+ */
 public class BiomeAssociate
 {
 	private int weightSum = 0;

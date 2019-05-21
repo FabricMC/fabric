@@ -36,12 +36,9 @@ public class BiomeLists
 	public static final Map<Biome, RiverAssociate> RIVER_MAP = new HashMap<>();
 	
 	public static final List<Pair<Integer, BiomeClimate>> INJECTED_BIOME_LIST = new ArrayList<>();
+	public static final Map<BiomeClimate, Map<Biome, Integer>> BIOME_WEIGHT_LOOKUP = new HashMap<>();
+	
 	public static final Set<Biome> CUSTOM_BIOMES = new HashSet<>();
 	
 	public static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
-	
-	public static void addCustomBiome(Biome biome)
-	{
-		CUSTOM_BIOMES.add(biome);
-	}
 }

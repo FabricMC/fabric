@@ -16,31 +16,40 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
+import static net.fabricmc.fabric.impl.biomes.BiomeLists.BIOME_WEIGHT_LOOKUP;
+import static net.fabricmc.fabric.impl.biomes.BiomeLists.CUSTOM_BIOMES;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.EDGE_MAP;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.HILLS_MAP;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.INJECTED_BIOME_LIST;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.RIVER_MAP;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.SHORE_MAP;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.fabricmc.fabric.impl.biomes.BiomeAssociate;
-import net.fabricmc.fabric.impl.biomes.BiomeLists;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class OverworldBiomeManager
+public class OverworldBiomeUtils
 {
 	/**
-	 * Adds the biome to the specified climate group
+	 * Adds the biome to the specified climate group, with the specified weight
 	 * 
 	 * @param biome
 	 * @param climate
+	 * @param weight
 	 */
-	public static void addBiomeToClimate(Biome biome, BiomeClimate climate)
+	public static void addBiomeToClimate(Biome biome, BiomeClimate climate, int weight)
 	{
-		INJECTED_BIOME_LIST.add(new Pair<Integer, BiomeClimate>(Registry.BIOME.getRawId(biome), climate));
+		Map<Biome, Integer> weightMap = BIOME_WEIGHT_LOOKUP.computeIfAbsent(climate, map -> new HashMap<>());
+		weightMap.put(biome, weight + weightMap.computeIfAbsent(biome, a -> Integer.valueOf(0)));
 		
-		BiomeLists.addCustomBiome(biome);
+		for (int i = 0; i < weight; ++i)
+			INJECTED_BIOME_LIST.add(new Pair<Integer, BiomeClimate>(Registry.BIOME.getRawId(biome), climate));
+		
+		CUSTOM_BIOMES.add(biome);
 	}
 	
 	/**
@@ -52,14 +61,11 @@ public class OverworldBiomeManager
 	 */
 	public static void addHillsBiome(Biome baseBiome, Biome hillsBiome, int weight)
 	{
-		if (!HILLS_MAP.containsKey(baseBiome))
-			HILLS_MAP.put(baseBiome, new BiomeAssociate());
-		
-		HILLS_MAP.get(baseBiome).addBiomeWithWeight(hillsBiome, weight);
-		
-		BiomeLists.addCustomBiome(hillsBiome);
+		HILLS_MAP.computeIfAbsent(baseBiome, associate -> new BiomeAssociate()).addBiomeWithWeight(hillsBiome, weight);
+
+		CUSTOM_BIOMES.add(hillsBiome);
 	}
-	
+
 	/**
 	 * Adds the biome shoreBiome as the beach biome for baseBiome, with the specified weight
 	 * 
@@ -69,14 +75,11 @@ public class OverworldBiomeManager
 	 */
 	public static void addShoreBiome(Biome baseBiome, Biome shoreBiome, int weight)
 	{
-		if (!SHORE_MAP.containsKey(baseBiome))
-			SHORE_MAP.put(baseBiome, new BiomeAssociate());
-		
-		SHORE_MAP.get(baseBiome).addBiomeWithWeight(shoreBiome, weight);
-		
-		BiomeLists.addCustomBiome(shoreBiome);
+		SHORE_MAP.computeIfAbsent(baseBiome, associate -> new BiomeAssociate()).addBiomeWithWeight(shoreBiome, weight);
+
+		CUSTOM_BIOMES.add(shoreBiome);
 	}
-	
+
 	/**
 	 * Adds the biome edgeBiome as the edge biome (excluding as a beach) of the biome baseBiome, with the specified weight
 	 * 
@@ -86,14 +89,11 @@ public class OverworldBiomeManager
 	 */
 	public static void addEdgeBiome(Biome baseBiome, Biome edgeBiome, int weight)
 	{
-		if (!EDGE_MAP.containsKey(baseBiome))
-			EDGE_MAP.put(baseBiome, new BiomeAssociate());
-		
-		EDGE_MAP.get(baseBiome).addBiomeWithWeight(edgeBiome, weight);
-		
-		BiomeLists.addCustomBiome(edgeBiome);
+		EDGE_MAP.computeIfAbsent(baseBiome, associate -> new BiomeAssociate()).addBiomeWithWeight(edgeBiome, weight);
+
+		CUSTOM_BIOMES.add(edgeBiome);
 	}
-	
+
 	/**
 	 * Sets the river type that will generate in the biome
 	 * 
@@ -103,7 +103,17 @@ public class OverworldBiomeManager
 	public static void setRiverBiome(Biome baseBiome, RiverAssociate riverType)
 	{
 		RIVER_MAP.put(baseBiome, riverType);
-		
-		BiomeLists.addCustomBiome(Registry.BIOME.get(riverType.getBiome()));
+
+		if (!(riverType == RiverAssociate.NONE)) CUSTOM_BIOMES.add(Registry.BIOME.get(riverType.getBiome()));
+	}
+	
+	/**
+	 * @param biome
+	 * @param climate
+	 * @return The weight of the biome in the specified climate
+	 */
+	public static int getWeightOfInClimate(Biome biome, BiomeClimate climate)
+	{
+		return BIOME_WEIGHT_LOOKUP.containsKey(climate) ? 0 : BIOME_WEIGHT_LOOKUP.get(climate).getOrDefault(biome, 0);
 	}
 }

@@ -33,15 +33,15 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public class VanillaLayeredBiomeSourceMixin
 {
 	@Inject(at = @At("HEAD"), method = "hasStructureFeature", cancellable = true)
-	private void hasStructureFeature(StructureFeature<?> structureFeature_1, CallbackInfoReturnable<Boolean> info)
+	private void hasStructureFeature(StructureFeature<?> structureFeature, CallbackInfoReturnable<Boolean> info)
 	{
-		Function<StructureFeature<?>, Boolean> b = (structureFeature_1x) -> {
+		Function<StructureFeature<?>, Boolean> b = (structure) -> {
 			
-			Set<Biome> var2 = BiomeLists.CUSTOM_BIOMES;
+			Set<Biome> customBiomeSet = BiomeLists.CUSTOM_BIOMES;
 			
-			for(Biome biome_1 : var2)
+			for(Biome biome : customBiomeSet)
 			{
-				if (biome_1.hasStructureFeature(structureFeature_1x))
+				if (biome.hasStructureFeature(structure))
 				{
 					return true;
 				}
@@ -50,7 +50,7 @@ public class VanillaLayeredBiomeSourceMixin
 			return false;
 		};
 		
-		if (b.apply(structureFeature_1).booleanValue())
+		if (b.apply(structureFeature).booleanValue())
 			info.setReturnValue(Boolean.TRUE);
 	}
 }

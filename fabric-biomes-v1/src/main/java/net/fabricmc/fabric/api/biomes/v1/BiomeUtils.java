@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.biomes.v1;
 import net.fabricmc.fabric.impl.biomes.BiomeLists;
 import net.minecraft.world.biome.Biome;
 
-public class BiomeManager
+public class BiomeUtils
 {
 	/**
 	 * Adds the biome to spawn biomes, so that the player may spawn in the biome

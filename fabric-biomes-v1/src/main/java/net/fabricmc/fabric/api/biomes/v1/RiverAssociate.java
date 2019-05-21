@@ -20,6 +20,12 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
+/**
+ * Class which contains an instance of a biome, for use specifying the river type. <br/> <br/>
+ * 
+ * This class functions mostly like a container for biomes, however
+ * the instance RiverAssociate.NONE has a special function.
+ */
 public class RiverAssociate
 {
 	/**
@@ -33,7 +39,7 @@ public class RiverAssociate
 	public static final RiverAssociate WATER = new RiverAssociate(Biomes.RIVER);
 	
 	/**
-	 * Frozen river biome
+	 *  Frozen river biome
 	 */
 	public static final RiverAssociate FROZEN = new RiverAssociate(Biomes.FROZEN_RIVER);
 	
