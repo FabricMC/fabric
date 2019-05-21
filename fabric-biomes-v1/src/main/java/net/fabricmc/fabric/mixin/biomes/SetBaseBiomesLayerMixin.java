@@ -69,7 +69,6 @@ public class SetBaseBiomesLayerMixin
 	{
 		for (; pointer < BiomeLists.INJECTED_BIOME_LIST.size(); ++pointer)
 		{
-			
 			Pair<Integer, BiomeClimate> pair = BiomeLists.INJECTED_BIOME_LIST.get(pointer);
 			
 			switch (pair.getRight())

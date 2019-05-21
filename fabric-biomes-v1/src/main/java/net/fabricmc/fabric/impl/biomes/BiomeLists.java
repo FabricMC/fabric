@@ -28,8 +28,10 @@ import net.fabricmc.fabric.api.biomes.v1.RiverAssociate;
 import net.minecraft.util.Pair;
 import net.minecraft.world.biome.Biome;
 
-public class BiomeLists
+public final class BiomeLists
 {
+	private BiomeLists() {}
+	
 	public static final Map<Biome, BiomeAssociate> HILLS_MAP = new HashMap<>();
 	public static final Map<Biome, BiomeAssociate> SHORE_MAP = new HashMap<>();
 	public static final Map<Biome, BiomeAssociate> EDGE_MAP = new HashMap<>();

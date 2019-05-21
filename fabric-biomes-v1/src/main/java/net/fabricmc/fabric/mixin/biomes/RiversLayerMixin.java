@@ -56,7 +56,7 @@ public class RiversLayerMixin
 			if (associate == RiverAssociate.NONE)
 				returnBiome = previousBiomeId;
 			else
-				returnBiome = associate.getBiome();
+				returnBiome = Registry.BIOME.getRawId(associate.getBiome());
 			
 			info.setReturnValue(returnBiome);
 		}

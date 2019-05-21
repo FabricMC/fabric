@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
@@ -43,14 +42,14 @@ public class RiverAssociate
 	 */
 	public static final RiverAssociate FROZEN = new RiverAssociate(Biomes.FROZEN_RIVER);
 	
-	private final int biome;
+	private final Biome biome;
 	
 	public RiverAssociate(Biome biome)
 	{
-		this.biome = Registry.BIOME.getRawId(biome);
+		this.biome = biome;
 	}
 	
-	public int getBiome()
+	public Biome getBiome()
 	{
 		return biome;
 	}

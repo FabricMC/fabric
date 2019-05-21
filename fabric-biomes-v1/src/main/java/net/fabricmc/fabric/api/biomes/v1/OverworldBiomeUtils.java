@@ -32,8 +32,10 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public class OverworldBiomeUtils
+public final class OverworldBiomeUtils
 {
+	private OverworldBiomeUtils() {}
+	
 	/**
 	 * Adds the biome to the specified climate group, with the specified weight
 	 * 
@@ -47,7 +49,7 @@ public class OverworldBiomeUtils
 		weightMap.put(biome, weight + weightMap.computeIfAbsent(biome, a -> Integer.valueOf(0)));
 		
 		for (int i = 0; i < weight; ++i)
-			INJECTED_BIOME_LIST.add(new Pair<Integer, BiomeClimate>(Registry.BIOME.getRawId(biome), climate));
+			INJECTED_BIOME_LIST.add(new Pair<>(Registry.BIOME.getRawId(biome), climate));
 		
 		CUSTOM_BIOMES.add(biome);
 	}
@@ -104,7 +106,7 @@ public class OverworldBiomeUtils
 	{
 		RIVER_MAP.put(baseBiome, riverType);
 
-		if (!(riverType == RiverAssociate.NONE)) CUSTOM_BIOMES.add(Registry.BIOME.get(riverType.getBiome()));
+		if (!(riverType == RiverAssociate.NONE)) CUSTOM_BIOMES.add(riverType.getBiome());
 	}
 	
 	/**
