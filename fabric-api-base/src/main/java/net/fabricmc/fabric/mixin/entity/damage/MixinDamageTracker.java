@@ -42,6 +42,9 @@ public abstract class MixinDamageTracker {
 
         final Block block = entity.world.getBlockState(new BlockPos(entity.x, entity.getBoundingBox().minY, entity.z)).getBlock();
         fallDeathSuffix = ((Climbable) block).getFallDeathSuffix();
-        ci.cancel();
+
+        if (!fallDeathSuffix.equals("generic")) {
+			ci.cancel();
+		}
     }
 }

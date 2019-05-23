@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "block.MixinBlock",
+    "entity.MixinLivingEntity",
+    "entity.damage.MixinDamageTracker"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
