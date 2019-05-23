@@ -33,4 +33,16 @@ public interface ModelProviderContext {
 	 * @return The UnbakedModel. Can return a missing model if it's not present!
 	 */
 	UnbakedModel loadModel(Identifier id);
+
+	/**
+	 * Load a model using a {@link Identifier}, {@link ModelIdentifier}, ...
+	 * <p>
+	 * If the model has already been loaded, it will be retrieved from the cache.
+	 * <p>
+	 * Please note that the game engine keeps track of circular model loading calls on its own.
+	 *
+	 * @param id The model identifier.
+	 * @return The UnbakedModel. Can return a missing model if it's not present!
+	 */
+	UnbakedModel getOrLoadModel(Identifier id);
 }

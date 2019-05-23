@@ -38,12 +38,22 @@ public class ModelModClient implements ClientModInitializer {
 		ModelLoadingRegistry.INSTANCE.registerAppender((manager, out) -> {
 			System.out.println("--- ModelAppender called! ---");
 			out.accept(new ModelIdentifier("fabric:model#custom"));
+			out.accept(new ModelIdentifier("fabric:model#custom_cached"))
 		});
 
 		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> ((modelId, context) -> {
 			if (modelId.getVariant().equals("custom") && modelId.getNamespace().equals("fabric")) {
 				System.out.println("--- ModelVariantProvider called! ---");
 				return context.loadModel(new Identifier("fabric:custom"));
+			} else {
+				return null;
+			}
+		}));
+
+		ModelLoadingRegistry.INSTANCE.registerVariantProvider(manager -> ((modelId, context) -> {
+			if (modelId.getVariant().equals("custom_cached") && modelId.getNamespace().equals("fabric")) {
+				System.out.println("--- Caching ModelVariantProvider called! ---");
+				return context.getOrLoadModel(new Identifier("fabric:custom"));
 			} else {
 				return null;
 			}

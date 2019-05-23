@@ -70,6 +70,15 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			return ((ModelLoaderHooks) loader).fabric_loadModel(id);
 		}
 
+		@Override
+		public UnbakedModel getOrLoadModel(Identifier id) {
+			if (loader == null) {
+				throw new RuntimeException("Called getOrLoadModel too late!");
+			}
+
+			return loader.getOrLoadModel(id);
+		}
+
 		public void onModelPopulation(Consumer<ModelIdentifier> addModel) {
 			for (ModelAppender appender : modelAppenders) {
 				appender.appendAll(manager, addModel);
