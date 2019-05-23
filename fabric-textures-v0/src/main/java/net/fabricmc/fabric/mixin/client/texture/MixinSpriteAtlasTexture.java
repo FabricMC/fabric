@@ -18,8 +18,6 @@ package net.fabricmc.fabric.mixin.client.texture;
 
 import com.google.common.base.Joiner;
 import net.fabricmc.fabric.api.client.texture.*;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.impl.client.texture.FabricSprite;
 import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
@@ -51,48 +49,41 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 	private static Logger LOGGER;
 	@Shadow
 	private int mipLevel;
-	@Shadow
-	private String atlasPath;
 
 	@Shadow
 	public abstract Sprite getSprite(Identifier id);
 
+	private final Set<Identifier> fabric_localIds = new HashSet<>();
+
 	// EVENT/HOOKS LOGIC
 
 	@Override
-	public String fabric_getAtlasPath() {
-		return atlasPath;
+	public void onRegisteredAs(Identifier id) {
+		fabric_localIds.add(id);
 	}
 
 	// INJECTION LOGIC
 
 	private Map<Identifier, Sprite> fabric_injectedSprites;
 
-	/**
-	 * The purpose of this patch is to allow injecting sprites at the stage of Sprite instantiation, such as
-	 * Sprites with CustomSpriteLoaders.
-	 * <p>
-	 * FabricSprite is a red herring. It's only use to go around Sprite's constructors being protected.
-	 * <p>
-	 * method_18160 is a lambda used in runAsync.
-	 */
-	@SuppressWarnings("JavaDoc")
-
-	@Redirect(method = "method_18160", at = @At(value = "NEW", target = "net/minecraft/client/texture/Sprite"))
-	public Sprite newSprite(Identifier id, PngFile pngFile, AnimationResourceMetadata animationMetadata) {
-		if (fabric_injectedSprites.containsKey(id)) {
-			return fabric_injectedSprites.get(id);
-		} else {
-			return new FabricSprite(id, pngFile, animationMetadata);
+	// Loads in custom sprite object injections.
+	@Inject(at = @At("RETURN"), method = "loadSprites")
+	private void afterLoadSprites(ResourceManager resourceManager_1, Set<Identifier> set_1, CallbackInfoReturnable<Collection<Sprite>> info) {
+		if (fabric_injectedSprites != null) {
+			info.getReturnValue().addAll(fabric_injectedSprites.values());
+			fabric_injectedSprites = null;
 		}
 	}
 
+	// Handles DependentSprite + custom sprite object injections.
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/SpriteAtlasTexture;loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;"), method = "stitch")
-	public Set<Identifier> setHook(Set<Identifier> set) {
-		fabric_injectedSprites = new HashMap<>();
+	public Set<Identifier> beforeSpriteLoad(Set<Identifier> set) {
+		fabric_injectedSprites = new LinkedHashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
 		//noinspection ConstantConditions
-		SpriteRegistryCallbackHolder.eventLocal(atlasPath).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
+		for (Identifier id : fabric_localIds) {
+			SpriteRegistryCallbackHolder.eventLocal(id).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
+		}
 		SpriteRegistryCallbackHolder.EVENT_GLOBAL.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
@@ -106,8 +97,14 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 			}
 		}
 
+		Set<Identifier> result = set;
+		boolean isResultNew = false;
+
 		if (!dependentSprites.isEmpty()) {
-			Set<Identifier> result = new LinkedHashSet<>();
+			if (!isResultNew) {
+				result = new LinkedHashSet<>();
+				isResultNew = true;
+			}
 
 			for (Identifier id : set) {
 				if (!dependentSpriteIds.contains(id)) {
@@ -139,13 +136,23 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 				}
 				throw new CrashException(report);
 			}
-
-			return result;
-		} else {
-			return set;
 		}
+
+		if (!fabric_injectedSprites.isEmpty()) {
+			if (!isResultNew) {
+				result = new LinkedHashSet<>(set);
+				isResultNew = true;
+			}
+
+			result.removeAll(fabric_injectedSprites.keySet());
+		}
+
+		return result;
 	}
 
+	/**
+	 * Handles CustomSpriteLoader.
+	 */
 	@Inject(at = @At("HEAD"), method = "loadSprite", cancellable = true)
 	public void loadSprite(ResourceManager manager, Sprite sprite, CallbackInfoReturnable<Boolean> info) {
 		// refer SpriteAtlasTexture.loadSprite
@@ -153,24 +160,20 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 			try {
 				if (!((CustomSpriteLoader) sprite).load(manager, mipLevel)) {
 					info.setReturnValue(false);
-					info.cancel();
 					return;
 				}
 			} catch (RuntimeException | IOException e) {
 				LOGGER.error("Unable to load custom sprite {}: {}", sprite.getId(), e);
 				info.setReturnValue(false);
-				info.cancel();
 				return;
 			}
 
 			try {
 				sprite.generateMipmaps(this.mipLevel);
 				info.setReturnValue(true);
-				info.cancel();
 			} catch (Throwable e) {
 				LOGGER.error("Unable to apply mipmap to custom sprite {}: {}", sprite.getId(), e);
 				info.setReturnValue(false);
-				info.cancel();
 			}
 		}
 	}

@@ -16,21 +16,19 @@
 
 package net.fabricmc.fabric.api.event.client;
 
-import net.fabricmc.fabric.api.client.texture.SpriteAtlasPaths;
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public interface ClientSpriteRegistryCallback {
 	/**
-	 * @deprecated Use the {@link ClientSpriteRegistryCallback#event(String)} registration method. Since 1.14
+	 * @deprecated Use the {@link ClientSpriteRegistryCallback#event(Identifier)} registration method. Since 1.14
 	 * started making use of multiple sprite atlases, it is unwise to register sprites to *all* of them.
 	 */
 	@Deprecated
@@ -41,22 +39,21 @@ public interface ClientSpriteRegistryCallback {
 	/**
 	 * Get an event instance for a given atlas path.
 	 *
-	 * @param atlasPath The atlas path you want to register to.
+	 * @param atlasId The atlas texture ID you want to register to.
 	 * @return The event for a given atlas path.
 	 *
 	 * @since 0.1.1
-	 * @see SpriteAtlasPaths
 	 */
-	static Event<ClientSpriteRegistryCallback> event(String atlasPath) {
-		return SpriteRegistryCallbackHolder.eventLocal(atlasPath);
+	static Event<ClientSpriteRegistryCallback> event(Identifier atlasId) {
+		return SpriteRegistryCallbackHolder.eventLocal(atlasId);
 	}
 
 	/**
-	 * @deprecated Use the {@link ClientSpriteRegistryCallback#event(String)} registration method.
+	 * @deprecated Use the {@link ClientSpriteRegistryCallback#event(Identifier)} registration method.
 	 */
 	@Deprecated
 	static void registerBlockAtlas(ClientSpriteRegistryCallback callback) {
-		event(SpriteAtlasPaths.BLOCK).register(callback);
+		event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(callback);
 	}
 
 	public static class Registry {
@@ -83,7 +80,7 @@ public interface ClientSpriteRegistryCallback {
 		 * @param sprite The sprite to be added.
 		 */
 		public void register(Sprite sprite) {
-			this.spriteMap.put(sprite.getId(), sprite);
+			spriteMap.put(sprite.getId(), sprite);
 		}
 	}
 }

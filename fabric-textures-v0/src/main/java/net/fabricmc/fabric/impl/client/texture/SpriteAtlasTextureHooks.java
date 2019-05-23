@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.client.texture;
 
+import net.minecraft.util.Identifier;
+
 public interface SpriteAtlasTextureHooks {
-	String fabric_getAtlasPath();
+	void onRegisteredAs(Identifier id);
 }

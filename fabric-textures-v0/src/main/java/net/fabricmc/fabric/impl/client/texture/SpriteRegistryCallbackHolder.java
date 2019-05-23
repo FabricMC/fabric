@@ -19,19 +19,20 @@ package net.fabricmc.fabric.impl.client.texture;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public final class SpriteRegistryCallbackHolder {
 	public static final Event<ClientSpriteRegistryCallback> EVENT_GLOBAL = createEvent();
-	private static final Map<String, Event<ClientSpriteRegistryCallback>> eventMap = new HashMap<>();
+	private static final Map<Identifier, Event<ClientSpriteRegistryCallback>> eventMap = new HashMap<>();
 
 	private SpriteRegistryCallbackHolder() {
 
 	}
 
-	public static Event<ClientSpriteRegistryCallback> eventLocal(String key) {
+	public static Event<ClientSpriteRegistryCallback> eventLocal(Identifier key) {
 		return eventMap.computeIfAbsent(key, (a) -> createEvent());
 	}
 
