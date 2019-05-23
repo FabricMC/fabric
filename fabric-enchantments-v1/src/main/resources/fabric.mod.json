@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-enchantents-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0"
+  },
+  "mixins": [
+    "fabric-enchantments-v1.mixins.json"
+  ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.EnchantmentMod"
+    ]
+  }
+}
