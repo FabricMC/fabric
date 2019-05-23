@@ -23,6 +23,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class Indigo implements ClientModInitializer {
+	// TODO: Add configuration option/system property/etc.
+	public static final boolean ALWAYS_TESSELATE_INDIGO = false;
 	private static final Logger LOGGER = LogManager.getLogger();
 
     @Override

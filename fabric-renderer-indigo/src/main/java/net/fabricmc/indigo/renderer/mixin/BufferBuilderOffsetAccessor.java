@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.indigo.renderer.accessor;
+package net.fabricmc.indigo.renderer.mixin;
 
-public interface AccessBufferBuilder {
-    void fabric_putVanillaData(int[] data, int start, boolean isItemFormat);
+import net.minecraft.client.render.BufferBuilder;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+@Mixin(BufferBuilder.class)
+public interface BufferBuilderOffsetAccessor {
+	@Accessor
+	double getOffsetX();
+	@Accessor
+	double getOffsetY();
+	@Accessor
+	double getOffsetZ();
 }

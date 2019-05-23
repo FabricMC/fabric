@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "plugin": "net.fabricmc.indigo.IndigoMixinConfigPlugin",
   "mixins": [
+    "BufferBuilderOffsetAccessor",
   	"MixinBlockModelRenderer",
     "MixinBufferBuilder",
 	"MixinChunkRenderer",
