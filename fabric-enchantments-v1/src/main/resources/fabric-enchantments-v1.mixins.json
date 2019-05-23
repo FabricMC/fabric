@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.enchantment",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MixinEnchantingTableContainer",
     "MixinEnchantmentHelper",
     "MixinEnchantmentTargetAll"
   ],
