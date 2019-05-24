@@ -18,18 +18,18 @@ package net.fabricmc.fabric.impl.registry.trackers;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Int2ObjectMapTracker<V, OV> implements RegistryAddObjectCallback<V>, RegistryRemapCallback<V>, RegistryRemoveObjectCallback<V> {
+public class Int2ObjectMapTracker<V, OV> implements RegistryAddEntryCallback<V>, RegistryRemapCallback<V>, RegistryRemoveEntryCallback<V> {
 	private final Int2ObjectMap<OV> mappers;
-	private Map<Identifier, OV> mapperCache = new HashMap<>();
+	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
 	private Int2ObjectMapTracker(Int2ObjectMap<OV> mappers) {
 		this.mappers = mappers;
@@ -37,22 +37,21 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryAddObjectCallback<V>
 
 	public static <V, OV> void register(Registry<V> registry, Int2ObjectMap<OV> mappers) {
 		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(mappers);
-		RegistryAddObjectCallback.event(registry).register(updater);
+		RegistryAddEntryCallback.event(registry).register(updater);
 		RegistryRemapCallback.event(registry).register(updater);
-		RegistryRemoveObjectCallback.event(registry).register(updater);
+		RegistryRemoveEntryCallback.event(registry).register(updater);
 	}
 
 	@Override
 	public void onAddObject(int rawId, Identifier id, V object) {
-		if (mapperCache.containsKey(id)) {
-			mappers.put(rawId, mapperCache.get(id));
+		if (removedMapperCache.containsKey(id)) {
+			mappers.put(rawId, removedMapperCache.get(id));
 		}
 	}
 
 	@Override
-	public void remap(RemapState<V> state) {
-		Int2ObjectMap<OV> oldMappers = new Int2ObjectOpenHashMap<>();
-		oldMappers.putAll(mappers);
+	public void onRemap(RemapState<V> state) {
+		Int2ObjectMap<OV> oldMappers = new Int2ObjectOpenHashMap<>(mappers);
 
 		mappers.clear();
 		for (int i : oldMappers.keySet()) {
@@ -68,7 +67,7 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryAddObjectCallback<V>
 	@Override
 	public void onRemoveObject(int rawId, Identifier id, V object) {
 		if (mappers.containsKey(rawId)) {
-			mapperCache.put(id, mappers.remove(rawId));
+			removedMapperCache.put(id, mappers.remove(rawId));
 		}
 	}
 }

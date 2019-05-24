@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -27,7 +27,7 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.Objects;
 
-public final class BiomeParentTracker implements RegistryAddObjectCallback<Biome>, RegistryRemoveObjectCallback<Biome>, RegistryRemapCallback<Biome> {
+public final class BiomeParentTracker implements RegistryAddEntryCallback<Biome>, RegistryRemoveEntryCallback<Biome>, RegistryRemapCallback<Biome> {
 	private final Registry<Biome> registry;
 
 	private BiomeParentTracker(Registry<Biome> registry) {
@@ -36,9 +36,9 @@ public final class BiomeParentTracker implements RegistryAddObjectCallback<Biome
 
 	public static void register(Registry<Biome> registry) {
 		BiomeParentTracker tracker = new BiomeParentTracker(registry);
-		RegistryAddObjectCallback.event(registry).register(tracker);
+		RegistryAddEntryCallback.event(registry).register(tracker);
 		RegistryRemapCallback.event(registry).register(tracker);
-		RegistryRemoveObjectCallback.event(registry).register(tracker);
+		RegistryRemoveEntryCallback.event(registry).register(tracker);
 	}
 
 	@Override
@@ -49,7 +49,7 @@ public final class BiomeParentTracker implements RegistryAddObjectCallback<Biome
 	}
 
 	@Override
-	public void remap(RemapState<Biome> state) {
+	public void onRemap(RemapState<Biome> state) {
 		for (Int2IntMap.Entry entry : state.getRawIdChangeMap().int2IntEntrySet()) {
 			if (Biome.PARENT_BIOME_ID_MAP.get(entry.getIntKey()) != null) {
 				//noinspection unchecked

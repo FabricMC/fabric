@@ -24,9 +24,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.RemapException;
@@ -56,18 +56,18 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Unique
 	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 
-	private final Event<RegistryAddObjectCallback> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryAddObjectCallback.class,
+	private final Event<RegistryAddEntryCallback> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryAddEntryCallback.class,
 		(callbacks) -> (rawId, id, object) -> {
-			for (RegistryAddObjectCallback callback : callbacks) {
+			for (RegistryAddEntryCallback callback : callbacks) {
 				//noinspection unchecked
 				callback.onAddObject(rawId, id, object);
 			}
 		}
 	);
 
-	private final Event<RegistryRemoveObjectCallback> fabric_removeObjectEvent = EventFactory.createArrayBacked(RegistryRemoveObjectCallback.class,
+	private final Event<RegistryRemoveEntryCallback> fabric_removeObjectEvent = EventFactory.createArrayBacked(RegistryRemoveEntryCallback.class,
 		(callbacks) -> (rawId, id, object) -> {
-			for (RegistryRemoveObjectCallback callback : callbacks) {
+			for (RegistryRemoveEntryCallback callback : callbacks) {
 				//noinspection unchecked
 				callback.onRemoveObject(rawId, id, object);
 			}
@@ -78,7 +78,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		(callbacks) -> (a) -> {
 			for (RegistryRemapCallback callback : callbacks) {
 				//noinspection unchecked
-				callback.remap(a);
+				callback.onRemap(a);
 			}
 		}
 	);
@@ -87,15 +87,15 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	private BiMap<Identifier, T> fabric_prevEntries;
 
 	@Override
-	public Event<RegistryAddObjectCallback<T>> fabric_getAddObjectEvent() {
+	public Event<RegistryAddEntryCallback<T>> fabric_getAddObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryAddObjectCallback<T>>) (Event) fabric_addObjectEvent;
+		return (Event<RegistryAddEntryCallback<T>>) (Event) fabric_addObjectEvent;
 	}
 
 	@Override
-	public Event<RegistryRemoveObjectCallback<T>> fabric_getRemoveObjectEvent() {
+	public Event<RegistryRemoveEntryCallback<T>> fabric_getRemoveObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryRemoveObjectCallback<T>>) (Event) fabric_removeObjectEvent;
+		return (Event<RegistryRemoveEntryCallback<T>>) (Event) fabric_removeObjectEvent;
 	}
 
 	@Override
@@ -257,7 +257,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 
 		//noinspection unchecked
-		fabric_getRemapEvent().invoker().remap(new RemapStateImpl(registry, idMap));
+		fabric_getRemapEvent().invoker().onRemap(new RemapStateImpl(registry, idMap));
 	}
 
 	@Override

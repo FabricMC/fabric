@@ -42,7 +42,7 @@ public final class StateIdTracker<T, S> implements RegistryRemapCallback<T> {
 	}
 
 	@Override
-	public void remap(RemapState<T> state) {
+	public void onRemap(RemapState<T> state) {
 		((RemovableIdList) stateList).fabric_clear();
 
 		Int2ObjectMap<T> sortedBlocks = new Int2ObjectRBTreeMap<>();

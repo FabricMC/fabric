@@ -29,8 +29,8 @@ import net.minecraft.util.registry.Registry;
  * - RegistryRemapCallback is emitted to allow remapping the IDs of objects still present.
  * - RegistryAddObjectCallbacks are called to add any objects added in the process, with the new numeric ID.
  *
- * RegistryRemapCallback is always called last, if you want to do your own processing in one swoop (say, rebuild the
- * ID map from scratch based on new values only).
+ * RegistryRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
+ * (say, rebuild the ID map from scratch).
  *
  * Generally speaking, a remap can only cause object *removals*; object *additions* are necessary to reverse remaps.
  *
@@ -44,7 +44,7 @@ public interface RegistryRemapCallback<T> {
 		Identifier getIdFromNew(int newRawId);
 	}
 
-	void remap(RemapState<T> state);
+	void onRemap(RemapState<T> state);
 
 	static <T> Event<RegistryRemapCallback<T>> event(Registry<T> registry) {
 		if (!(registry instanceof ListenableRegistry)) {

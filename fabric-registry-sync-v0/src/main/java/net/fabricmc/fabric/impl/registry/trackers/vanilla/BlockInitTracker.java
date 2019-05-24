@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public final class BlockInitTracker implements RegistryAddObjectCallback<Block> {
+public final class BlockInitTracker implements RegistryAddEntryCallback<Block> {
 	private BlockInitTracker() {
 
 	}
 
 	public static void register(Registry<Block> registry) {
 		BlockInitTracker tracker = new BlockInitTracker();
-		RegistryAddObjectCallback.event(registry).register(tracker);
+		RegistryAddEntryCallback.event(registry).register(tracker);
 	}
 
 	@Override

@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.event.registry.RegistryAddObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveObjectCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.IdList;
 import net.minecraft.util.Identifier;
@@ -30,9 +27,9 @@ import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IdListTracker<V, OV> implements RegistryAddObjectCallback<V>, RegistryRemapCallback<V>, RegistryRemoveObjectCallback<V> {
+public class IdListTracker<V, OV> implements RegistryAddEntryCallback<V>, RegistryRemapCallback<V>, RegistryRemoveEntryCallback<V> {
 	private final IdList<OV> mappers;
-	private Map<Identifier, OV> mapperCache = new HashMap<>();
+	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
 	private IdListTracker(IdList<OV> mappers) {
 		this.mappers = mappers;
@@ -40,28 +37,28 @@ public class IdListTracker<V, OV> implements RegistryAddObjectCallback<V>, Regis
 
 	public static <V, OV> void register(Registry<V> registry, IdList<OV> mappers) {
 		IdListTracker<V, OV> updater = new IdListTracker<>(mappers);
-		RegistryAddObjectCallback.event(registry).register(updater);
+		RegistryAddEntryCallback.event(registry).register(updater);
 		RegistryRemapCallback.event(registry).register(updater);
-		RegistryRemoveObjectCallback.event(registry).register(updater);
+		RegistryRemoveEntryCallback.event(registry).register(updater);
 	}
 
 	@Override
 	public void onAddObject(int rawId, Identifier id, V object) {
-		if (mapperCache.containsKey(id)) {
-			mappers.set(mapperCache.get(id), rawId);
+		if (removedMapperCache.containsKey(id)) {
+			mappers.set(removedMapperCache.get(id), rawId);
 		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void remap(RemapState<V> state) {
+	public void onRemap(RemapState<V> state) {
 		((RemovableIdList<OV>) mappers).fabric_remapIds(state.getRawIdChangeMap());
 	}
 
 	@Override
 	public void onRemoveObject(int rawId, Identifier id, V object) {
 		if (mappers.get(rawId) != null) {
-			mapperCache.put(id, mappers.get(rawId));
+			removedMapperCache.put(id, mappers.get(rawId));
 			//noinspection unchecked
 			((RemovableIdList<OV>) mappers).fabric_removeId(rawId);
 		}
