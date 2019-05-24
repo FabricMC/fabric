@@ -54,8 +54,13 @@ public abstract class MixinItemRenderer {
     private void hookRenderModel(BakedModel model, int color, ItemStack stack, CallbackInfo ci) {
         FabricBakedModel fabricModel = (FabricBakedModel)model;
         if(!fabricModel.isVanillaAdapter()) {
-            CONTEXTS.get().renderModel(fabricModel, color, stack, this::renderQuads);
+            CONTEXTS.get().renderModel(fabricModel, color, stack, (b, q, c, a) -> reliableRenderQuads(b, q, c, a));
             ci.cancel();
         }
+    }
+
+    // Workaround for #198
+    private void reliableRenderQuads(BufferBuilder bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack) {
+	    renderQuads(bufferBuilder, quads, color, stack);
     }
 }
