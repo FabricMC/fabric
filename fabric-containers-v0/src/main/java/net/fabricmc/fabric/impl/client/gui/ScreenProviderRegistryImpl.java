@@ -66,15 +66,21 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 		ClientSidePacketRegistry.INSTANCE.register(PacketTypes.OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
 			int syncId = packetByteBuf.readUnsignedByte();
+			packetByteBuf.retain();
+
 			MinecraftClient.getInstance().execute(() -> {
-				ContainerFactory<AbstractContainerScreen> factory = FACTORIES.get(identifier);
-				if (factory == null) {
-					LOGGER.error("No GUI factory found for {}!", identifier.toString());
-					return;
+				try {
+					ContainerFactory<AbstractContainerScreen> factory = FACTORIES.get(identifier);
+					if (factory == null) {
+						LOGGER.error("No GUI factory found for {}!", identifier.toString());
+						return;
+					}
+					AbstractContainerScreen gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
+					packetContext.getPlayer().container = gui.getContainer();
+					MinecraftClient.getInstance().openScreen(gui);
+				} finally {
+					packetByteBuf.release();
 				}
-				AbstractContainerScreen gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
-				packetContext.getPlayer().container = gui.getContainer();
-				MinecraftClient.getInstance().openScreen(gui);
 			});
 		});
 	}
