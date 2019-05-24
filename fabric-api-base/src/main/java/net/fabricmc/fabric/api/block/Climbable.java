@@ -32,15 +32,18 @@ public interface Climbable {
      * @param state The block state of the block being climbed.
      * @param pos The position of the block being climbed.
 	 *
-	 * @return Should either result ClimbBehavior.True or ClimbBehvaior.False to indicate
-	 * whether or not this block can be climbed. ClimbBehavior.Vanilla should only be
-	 * returned by vanilla blocks.
+	 * @return Should either result ClimbBehavior.True or ClimbBehavior.False to indicate
+	 * whether or not this block can be climbed. Returning ClimbBehavior.Vanilla is used
+	 * to indicate that the game should ignore the result of this method and instead
+	 * perform the usual checks.
      */
     ClimbBehavior canClimb(LivingEntity entity, BlockState state, BlockPos pos);
 
     /**
-     * @return The suffix of the death message when falling off this block and dying. Your translation file should include the
-     * translation key "death.fell.accident.suffix", where "suffix" is a string returned by this method.
+     * @return The suffix of the death message when falling off this block and dying. Your translation file should
+	 * include the translation key "death.fell.accident.suffix", where "suffix" is a string returned by this method.
+	 * By default, this returns "generic", which is a vanilla suffix, so you only need to override this if you have
+	 * a custom death message.
      */
     default String getFallDeathSuffix()
 	{
