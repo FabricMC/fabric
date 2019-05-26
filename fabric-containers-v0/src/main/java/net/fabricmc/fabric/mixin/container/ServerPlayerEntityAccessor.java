@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.container;
+package net.fabricmc.fabric.mixin.container;
 
-/**
- * This is a interface that is present on a ServerPlayerEntity, it allows access to the sync id.
- */
-public interface SyncIdProvider {
+import net.minecraft.server.network.ServerPlayerEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-	/**
-	 * gets and sets the new player sync id, and returns the new value
-	 *
-	 * @return the new sync id of the player
-	 */
-	int fabric_incrementSyncId();
-
+@Mixin(ServerPlayerEntity.class)
+public interface ServerPlayerEntityAccessor {
+	@Accessor
+	int getContainerSyncId();
+	@Accessor
+	void setContainerSyncId(int syncId);
 }

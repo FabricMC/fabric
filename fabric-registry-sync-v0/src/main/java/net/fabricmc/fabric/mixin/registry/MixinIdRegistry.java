@@ -31,9 +31,11 @@ import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Int2ObjectBiMap;
 import net.minecraft.util.registry.SimpleRegistry;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -43,13 +45,13 @@ import java.util.*;
 @Mixin(SimpleRegistry.class)
 public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry<T> {
 	@Shadow
-	protected static Logger LOGGER;
-	@Shadow
 	protected Int2ObjectBiMap<T> indexedEntries;
 	@Shadow
 	protected BiMap<Identifier, T> entries;
 	@Shadow
 	private int nextId;
+	@Unique
+	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 
 	private final Event<RegistryPreClearCallback> fabric_preClearEvent = EventFactory.createArrayBacked(RegistryPreClearCallback.class,
 		(callbacks) -> () -> {
@@ -191,7 +193,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 			for (Identifier id : registry.getIds()) {
 				if (!remoteIndexedEntries.containsKey(id)) {
-					LOGGER.warn("Adding " + id + " to registry.");
+					FABRIC_LOGGER.warn("Adding " + id + " to registry.");
 					remoteIndexedEntries.put(id, ++maxValue);
 				}
 			}
@@ -229,7 +231,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 				if (mode != RemapMode.AUTHORITATIVE) {
 					throw new RemapException(identifier + " missing from registry, but requested!");
 				} else {
-					LOGGER.warn(identifier + " missing from registry, but requested!");
+					FABRIC_LOGGER.warn(identifier + " missing from registry, but requested!");
 				}
 				continue;
 			}

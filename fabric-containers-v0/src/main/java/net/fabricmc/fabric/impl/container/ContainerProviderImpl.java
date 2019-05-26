@@ -20,6 +20,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.impl.network.PacketTypes;
+import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
@@ -62,10 +63,27 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		openContainer(identifier, (ServerPlayerEntity) player, writer);
 	}
 
+	private boolean emittedNoSyncHookWarning = false;
+
 	@Override
 	public void openContainer(Identifier identifier, ServerPlayerEntity player, Consumer<PacketByteBuf> writer) {
-		SyncIdProvider syncIDProvider = (SyncIdProvider) player;
-		int syncId = syncIDProvider.fabric_incrementSyncId();
+		int syncId;
+
+		if (player instanceof ServerPlayerEntitySyncHook) {
+			ServerPlayerEntitySyncHook serverPlayerEntitySyncHook = (ServerPlayerEntitySyncHook) player;
+			syncId = serverPlayerEntitySyncHook.fabric_incrementSyncId();
+		} else if (player instanceof ServerPlayerEntityAccessor) {
+			if (!emittedNoSyncHookWarning) {
+				LOGGER.warn("ServerPlayerEntitySyncHook could not be applied - fabric-containers is using a hack!");
+				emittedNoSyncHookWarning = true;
+			}
+
+			syncId = (((ServerPlayerEntityAccessor) player).getContainerSyncId() + 1) % 100;
+			((ServerPlayerEntityAccessor) player).setContainerSyncId(syncId);
+		} else {
+			throw new RuntimeException("Neither ServerPlayerEntitySyncHook nor Accessor present! This should not happen!");
+		}
+
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeIdentifier(identifier);
 		buf.writeByte(syncId);

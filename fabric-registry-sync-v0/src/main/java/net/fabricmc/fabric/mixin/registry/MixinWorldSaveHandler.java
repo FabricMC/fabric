@@ -23,9 +23,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.WorldSaveHandler;
 import net.minecraft.world.level.LevelProperties;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -38,8 +40,8 @@ import java.io.IOException;
 @Mixin(WorldSaveHandler.class)
 public class MixinWorldSaveHandler {
 	private static final int FABRIC_ID_REGISTRY_BACKUPS = 3;
-	@Shadow
-	private static Logger LOGGER;
+	@Unique
+	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 	@Shadow
 	public File worldDir;
 
@@ -68,7 +70,7 @@ public class MixinWorldSaveHandler {
 	public void readWorldProperties(CallbackInfoReturnable<LevelProperties> callbackInfo) {
 		// Load
 		for (int i = 0; i < FABRIC_ID_REGISTRY_BACKUPS; i++) {
-			LOGGER.info("Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");
+			FABRIC_LOGGER.info("Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");
 			try {
 				if (fabric_readIdMapFile(getWorldIdMapFile(i))) {
 					break;
@@ -77,7 +79,7 @@ public class MixinWorldSaveHandler {
 				if (i >= FABRIC_ID_REGISTRY_BACKUPS - 1) {
 					throw new RuntimeException(e);
 				} else {
-					LOGGER.warn("Reading registry file failed!", e);
+					FABRIC_LOGGER.warn("Reading registry file failed!", e);
 				}
 			} catch (RemapException e) {
 				throw new RuntimeException("Remapping world failed!", e);
@@ -103,7 +105,7 @@ public class MixinWorldSaveHandler {
 				NbtIo.writeCompressed(newIdMap, fileOutputStream);
 				fileOutputStream.close();
 			} catch (IOException e) {
-				LOGGER.warn("Failed to save registry file!", e);
+				FABRIC_LOGGER.warn("Failed to save registry file!", e);
 			}
 
 			fabric_lastSavedIdMap = newIdMap;

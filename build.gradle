@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 def baseVersion = "0.3.0-pre"
-def mcVersion = "1.14.2 Pre-Release 2"
-def yarnVersion = "+build.2"
+def mcVersion = "1.14.2 Pre-Release 4"
+def yarnVersion = "+build.1"
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -40,7 +40,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$mcVersion"
 		mappings "net.fabricmc:yarn:${mcVersion}${yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.4.6+build.144"
+		modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
 	}
 
 	configurations {
@@ -171,9 +171,6 @@ dependencies {
 			include project("${it.name}:")
 		}
 	}
-
-	// workaround linux segfault	
-	// compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
 }
 
 version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")

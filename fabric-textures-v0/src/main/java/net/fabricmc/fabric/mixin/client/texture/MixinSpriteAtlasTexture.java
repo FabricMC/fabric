@@ -31,9 +31,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -45,8 +47,8 @@ import java.util.*;
 
 @Mixin(SpriteAtlasTexture.class)
 public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks {
-	@Shadow
-	private static Logger LOGGER;
+	@Unique
+	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 	@Shadow
 	private int mipLevel;
 
@@ -163,7 +165,7 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 					return;
 				}
 			} catch (RuntimeException | IOException e) {
-				LOGGER.error("Unable to load custom sprite {}: {}", sprite.getId(), e);
+				FABRIC_LOGGER.error("Unable to load custom sprite {}: {}", sprite.getId(), e);
 				info.setReturnValue(false);
 				return;
 			}
@@ -172,7 +174,7 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 				sprite.generateMipmaps(this.mipLevel);
 				info.setReturnValue(true);
 			} catch (Throwable e) {
-				LOGGER.error("Unable to apply mipmap to custom sprite {}: {}", sprite.getId(), e);
+				FABRIC_LOGGER.error("Unable to apply mipmap to custom sprite {}: {}", sprite.getId(), e);
 				info.setReturnValue(false);
 			}
 		}

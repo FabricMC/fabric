@@ -3,8 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.registrycommands",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinMinecraftDedicatedServer",
-    "MixinServerCommandManager"
+    "MixinMinecraftDedicatedServer"
+  ],
+  "client": [
+    "MixinCommandManagerIntegrated"
   ],
   "injectors": {
     "defaultRequire": 1

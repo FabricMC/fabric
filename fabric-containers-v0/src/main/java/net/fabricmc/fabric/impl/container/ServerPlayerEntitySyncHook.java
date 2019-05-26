@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.container;
+package net.fabricmc.fabric.impl.container;
 
-import net.fabricmc.fabric.impl.container.ServerPlayerEntitySyncHook;
-import net.minecraft.server.network.ServerPlayerEntity;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+/**
+ * This is a interface that is present on a ServerPlayerEntity, it allows access to the sync id.
+ */
+public interface ServerPlayerEntitySyncHook {
 
-@Mixin(ServerPlayerEntity.class)
-public abstract class MixinServerPlayerEntity implements ServerPlayerEntitySyncHook {
-	@Shadow
-	private int containerSyncId;
+	/**
+	 * gets and sets the new player sync id, and returns the new value
+	 *
+	 * @return the new sync id of the player
+	 */
+	int fabric_incrementSyncId();
 
-	@Shadow
-	protected abstract void incrementContainerSyncId();
-
-	@Override
-	public int fabric_incrementSyncId() {
-		incrementContainerSyncId();
-		return containerSyncId;
-	}
 }

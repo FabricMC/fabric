@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.mixin.registry.client;
 
-import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {
-	@Shadow
-	private static Logger LOGGER;
+	@Unique
+	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 
 	// Unmap the registry before loading a new SP/MP setup.
 	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
@@ -39,7 +39,7 @@ public class MixinMinecraftClient {
 		try {
 			RegistrySyncManager.unmap();
 		} catch (RemapException e) {
-			LOGGER.warn("Failed to unmap Fabric registries!", e);
+			FABRIC_LOGGER.warn("Failed to unmap Fabric registries!", e);
 		}
 	}
 }
