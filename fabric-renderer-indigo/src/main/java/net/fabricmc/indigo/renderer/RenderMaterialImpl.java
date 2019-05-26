@@ -29,7 +29,9 @@ import net.minecraft.block.BlockRenderLayer;
  * easy/fast interning via int/object hashmap.
  */
 public abstract class RenderMaterialImpl {
-    private static final BlockRenderLayer[] BLEND_MODES = BlockRenderLayer.values();
+	/** zero position (default value) will be NULL */
+    private static final BlockRenderLayer[] BLEND_MODES = new BlockRenderLayer[5];
+
     
     /**
      * Indigo currently support up to 3 sprite layers but is configured to recognize only one.
@@ -47,6 +49,8 @@ public abstract class RenderMaterialImpl {
     private static final int[] AO_FLAGS = new int[3];
     
     static {
+	    System.arraycopy(BlockRenderLayer.values(), 0, BLEND_MODES, 1, 4);
+
         int shift = Integer.bitCount(TEXTURE_DEPTH_MASK);
         for(int i = 0; i < 3; i++) {
             BLEND_MODE_SHIFT[i] = shift;
@@ -135,7 +139,9 @@ public abstract class RenderMaterialImpl {
         @Override
         public MaterialFinder blendMode(int textureIndex, BlockRenderLayer blendMode) {
             final int shift = BLEND_MODE_SHIFT[textureIndex];
-            bits = (bits & ~(BLEND_MODE_MASK << shift)) | (blendMode.ordinal() << shift);
+            // zero position is null (default) value
+            final int ordinal = blendMode == null ? 0 : blendMode.ordinal() + 1;
+            bits = (bits & ~(BLEND_MODE_MASK << shift)) | (ordinal << shift);
             return this;
         }
 
