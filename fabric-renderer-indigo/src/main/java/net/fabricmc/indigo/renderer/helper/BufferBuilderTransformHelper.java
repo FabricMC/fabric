@@ -26,7 +26,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BufferBuilderTransformHelper {
 	/**
@@ -56,48 +58,63 @@ public class BufferBuilderTransformHelper {
 	 */
 	public static final int MODE_UNSUPPORTED = 3;
 
-	private static final Object2IntMap<VertexFormat> vertexFormatCache = new Object2IntOpenHashMap<>();
-	private static final Set<VertexFormat> errorEmittedFormats = Sets.newIdentityHashSet();
+	private static final Map<VertexFormat, Integer> vertexFormatCache = new ConcurrentHashMap<>();
+	private static final Set<VertexFormat> errorEmittedFormats = Sets.newConcurrentHashSet();
 	private static final Logger logger = LogManager.getLogger();
 
 	public static void emitUnsupportedError(VertexFormat format) {
+		// This can be slow, as it's only called on unsupported formats - which is already an error condition.
 		if (errorEmittedFormats.add(format)) {
 			logger.error("[Indigo] Unsupported vertex format! " + format);
 		}
 	}
 
-	public static int getProcessingMode(VertexFormat format) {
-		return vertexFormatCache.computeIntIfAbsent(format, (f) -> {
-			// Check for vanilla-compatible prefix
-
-			if (
-				f.getElementCount() >= 4 && f.getVertexSizeInteger() >= 7
+	private static int computeProcessingMode(VertexFormat f) {
+		if (
+			f.getElementCount() >= 4 && f.getVertexSizeInteger() >= 7
 				&& f.getElement(0).equals(VertexFormats.POSITION_ELEMENT)
 				&& f.getElement(1).equals(VertexFormats.COLOR_ELEMENT)
 				&& f.getElement(2).equals(VertexFormats.UV_ELEMENT)
+		) {
+			if (
+				f.getElement(3).equals(VertexFormats.LMAP_ELEMENT)
+					|| f.getElement(3).equals(VertexFormats.NORMAL_ELEMENT)
 			) {
 				if (
-					f.getElement(3).equals(VertexFormats.LMAP_ELEMENT)
-					|| f.getElement(3).equals(VertexFormats.NORMAL_ELEMENT)
+					f.getElementCount() >= 5
+						&& f.getElement(3).equals(VertexFormats.LMAP_ELEMENT)
+						&& f.getElement(4).equals(VertexFormats.NORMAL_ELEMENT)
 				) {
-					if (
-						f.getElementCount() >= 5
-							&& f.getElement(3).equals(VertexFormats.LMAP_ELEMENT)
-							&& f.getElement(4).equals(VertexFormats.NORMAL_ELEMENT)
-					) {
-						logger.debug("[Indigo] Classified format as ShadersMod-compatible: " + format);
-						return MODE_COPY_PADDED_SHADERSMOD;
-					} else if (f.getElementCount() == 4) {
-						logger.debug("[Indigo] Classified format as vanilla-like: " + format);
-						return MODE_COPY_FAST;
-					} else {
-						logger.debug("[Indigo] Unsupported but likely vanilla-compliant vertex format. " + format);
-						return MODE_COPY_PADDED;
-					}
+					logger.debug("[Indigo] Classified format as ShadersMod-compatible: " + f);
+					return MODE_COPY_PADDED_SHADERSMOD;
+				} else if (f.getElementCount() == 4) {
+					logger.debug("[Indigo] Classified format as vanilla-like: " + f);
+					return MODE_COPY_FAST;
+				} else {
+					logger.debug("[Indigo] Unsupported but likely vanilla-compliant vertex format. " + f);
+					return MODE_COPY_PADDED;
 				}
 			}
+		}
 
-			return MODE_UNSUPPORTED;
-		});
+		return MODE_UNSUPPORTED;
+	}
+
+	public static int getProcessingMode(VertexFormat format) {
+		// Fast passthrough for the most common vanilla block/item formats.
+		if (format == VertexFormats.POSITION_COLOR_UV_LMAP || format == VertexFormats.POSITION_COLOR_UV_NORMAL) {
+			return MODE_COPY_FAST;
+		} else {
+			Integer cached = vertexFormatCache.get(format);
+
+			if (cached == null) {
+				// VertexFormats are mutable, so we need to make an immutable copy.
+				format = new VertexFormat(format);
+				cached = computeProcessingMode(format);
+				vertexFormatCache.put(format, cached);
+			}
+
+			return cached;
+		}
 	}
 }
