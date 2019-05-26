@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.indigo.renderer.accessor;
+package net.fabricmc.indigo;
 
-public interface AccessBufferBuilder {
-    void fabric_putVanillaData(int[] data, int start, boolean isItemFormat);
+public class IndigoConfig {
+
 }

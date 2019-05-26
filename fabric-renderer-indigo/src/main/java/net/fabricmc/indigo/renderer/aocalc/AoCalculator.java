@@ -29,6 +29,7 @@ import static net.minecraft.util.math.Direction.WEST;
 
 import java.util.function.ToIntBiFunction;
 
+import net.fabricmc.indigo.Indigo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,6 +74,9 @@ public class AoCalculator {
     }
     
     private static final Logger LOGGER = LogManager.getLogger();
+	// TODO: make this actually configurable?
+    private static final boolean fixSmoothLighting = true;
+
     private final VanillaAoCalc vanillaCalc;
     private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
     private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
@@ -111,12 +115,8 @@ public class AoCalculator {
     /** Set true in dev env to confirm results match vanilla when they should */
     private static final boolean DEBUG = Boolean.valueOf(System.getProperty("fabric.debugAoLighting", "false"));
     
-    // TODO: make actually configurable
-    private static boolean fixSmoothLighting = true;
-    
     public void compute(MutableQuadViewImpl quad, boolean isVanilla) {
-        // TODO: make this actually configurable
-        final AoConfig config = AoConfig.ENHANCED;
+        final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
         
         boolean shouldMatch = false;
         
@@ -394,7 +394,7 @@ public class AoCalculator {
             searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);//.setOffset(lightFace);
             if(!fixSmoothLighting) searchPos.setOffset(lightFace);
             final boolean isClear3 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
-            
+
             // c = corner - values at corners of face
             int cLight0, cLight1, cLight2, cLight3;
             float cAo0, cAo1, cAo2, cAo3;
