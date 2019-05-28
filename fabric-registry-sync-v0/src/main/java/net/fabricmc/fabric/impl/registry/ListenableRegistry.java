@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.impl.registry;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 
 public interface ListenableRegistry<T> {
-	Event<RegistryPreClearCallback<T>> getPreClearEvent();
-	Event<RegistryPreRegisterCallback<T>> getPreRegisterEvent();
-	Event<RegistryPostRegisterCallback<T>> getPostRegisterEvent();
+	Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent();
+	Event<RegistryEntryRemovedCallback<T>> fabric_getRemoveObjectEvent();
+	Event<RegistryIdRemapCallback<T>> fabric_getRemapEvent();
 }

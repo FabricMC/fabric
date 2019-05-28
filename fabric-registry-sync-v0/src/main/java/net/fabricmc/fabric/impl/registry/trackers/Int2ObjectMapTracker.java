@@ -17,49 +17,57 @@
 package net.fabricmc.fabric.impl.registry.trackers;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Int2ObjectMapTracker<V, OV> implements RegistryPreClearCallback<V>, RegistryPreRegisterCallback<V> {
+public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
 	private final Int2ObjectMap<OV> mappers;
-	private final Registry<V> registry;
-	private Map<Identifier, OV> mapperCache = new HashMap<>();
+	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
-	private Int2ObjectMapTracker(Registry<V> registry, Int2ObjectMap<OV> mappers) {
-		this.registry = registry;
+	private Int2ObjectMapTracker(Int2ObjectMap<OV> mappers) {
 		this.mappers = mappers;
 	}
 
 	public static <V, OV> void register(Registry<V> registry, Int2ObjectMap<OV> mappers) {
-		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(registry, mappers);
-		((ListenableRegistry<V>) registry).getPreClearEvent().register(updater);
-		((ListenableRegistry<V>) registry).getPreRegisterEvent().register(updater);
+		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(mappers);
+		RegistryEntryAddedCallback.event(registry).register(updater);
+		RegistryIdRemapCallback.event(registry).register(updater);
+		RegistryEntryRemovedCallback.event(registry).register(updater);
 	}
 
 	@Override
-	public void onPreClear() {
-		mapperCache.clear();
-		for (Identifier id : registry.getIds()) {
-			int rawId = registry.getRawId(registry.get(id));
-			OV mapper = mappers.get(rawId);
-			if (mapper != null) {
-				mapperCache.put(id, mapper);
-			}
+	public void onEntryAdded(int rawId, Identifier id, V object) {
+		if (removedMapperCache.containsKey(id)) {
+			mappers.put(rawId, removedMapperCache.get(id));
 		}
+	}
+
+	@Override
+	public void onRemap(RemapState<V> state) {
+		Int2ObjectMap<OV> oldMappers = new Int2ObjectOpenHashMap<>(mappers);
 
 		mappers.clear();
+		for (int i : oldMappers.keySet()) {
+			int newI = state.getRawIdChangeMap().getOrDefault(i, i);
+			if (mappers.containsKey(newI)) {
+				throw new RuntimeException("Int2ObjectMap contained two equal IDs " + newI + " (" + state.getIdFromOld(i) + "/" + i + " -> " + state.getIdFromNew(newI) + "/" + newI + ")!");
+			}
+
+			mappers.put(newI, oldMappers.get(i));
+		}
 	}
 
 	@Override
-	public void onPreRegister(int id, Identifier identifier, V object, boolean isNewToRegistry) {
-		if (mapperCache.containsKey(identifier)) {
-			mappers.put(id, mapperCache.get(identifier));
+	public void onEntryRemoved(int rawId, Identifier id, V object) {
+		if (mappers.containsKey(rawId)) {
+			removedMapperCache.put(id, mappers.remove(rawId));
 		}
 	}
 }

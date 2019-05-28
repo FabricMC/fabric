@@ -39,12 +39,14 @@ import java.io.IOException;
 
 @Mixin(WorldSaveHandler.class)
 public class MixinWorldSaveHandler {
+	@Unique
 	private static final int FABRIC_ID_REGISTRY_BACKUPS = 3;
 	@Unique
 	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 	@Shadow
 	public File worldDir;
 
+	@Unique
 	private CompoundTag fabric_lastSavedIdMap = null;
 
 	private boolean fabric_readIdMapFile(File file) throws IOException, RemapException {
