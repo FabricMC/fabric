@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.registry.trackers;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
-import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.Registry;
@@ -26,13 +26,13 @@ import net.minecraft.util.registry.Registry;
 import java.util.Collection;
 import java.util.function.Function;
 
-public final class StateIdTracker<T, S> implements RegistryRemapCallback<T> {
+public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T> {
 	private final Registry<T> registry;
 	private final IdList<S> stateList;
 	private final Function<T, Collection<S>> stateGetter;
 
 	public static <T, S> void register(Registry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
-		RegistryRemapCallback.event(registry).register(new StateIdTracker<>(registry, stateList, stateGetter));
+		RegistryIdRemapCallback.event(registry).register(new StateIdTracker<>(registry, stateList, stateGetter));
 	}
 
 	private StateIdTracker(Registry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {

@@ -25,11 +25,11 @@ import net.minecraft.util.registry.Registry;
 /**
  * The remapping process functions as follows:
  *
- * - RegistryRemoveObjectCallbacks are called to remove any objects culled in the process, with the old numeric ID.
- * - RegistryRemapCallback is emitted to allow remapping the IDs of objects still present.
- * - RegistryAddObjectCallbacks are called to add any objects added in the process, with the new numeric ID.
+ * - RegistryRemoveEntryCallbacks are called to remove any objects culled in the process, with the old numeric ID.
+ * - RegistryIdRemapCallback is emitted to allow remapping the IDs of objects still present.
+ * - RegistryAddEntryCallbacks are called to add any objects added in the process, with the new numeric ID.
  *
- * RegistryRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
+ * RegistryIdRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
  * (say, rebuild the ID map from scratch).
  *
  * Generally speaking, a remap can only cause object *removals*; object *additions* are necessary to reverse remaps.
@@ -37,7 +37,7 @@ import net.minecraft.util.registry.Registry;
  * @param <T> The registry type.
  */
 @FunctionalInterface
-public interface RegistryRemapCallback<T> {
+public interface RegistryIdRemapCallback<T> {
 	interface RemapState<T> {
 		Int2IntMap getRawIdChangeMap();
 		Identifier getIdFromOld(int oldRawId);
@@ -46,12 +46,12 @@ public interface RegistryRemapCallback<T> {
 
 	void onRemap(RemapState<T> state);
 
-	static <T> Event<RegistryRemapCallback<T>> event(Registry<T> registry) {
+	static <T> Event<RegistryIdRemapCallback<T>> event(Registry<T> registry) {
 		if (!(registry instanceof ListenableRegistry)) {
 			throw new IllegalArgumentException("Unsupported registry: " + registry.getClass().getName());
 		}
 
 		//noinspection unchecked
-		return (Event<RegistryRemapCallback<T>>) ((ListenableRegistry) registry).fabric_getRemapEvent();
+		return (Event<RegistryIdRemapCallback<T>>) ((ListenableRegistry) registry).fabric_getRemapEvent();
 	}
 }

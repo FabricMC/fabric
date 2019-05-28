@@ -19,11 +19,11 @@ package net.fabricmc.fabric.impl.registry;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class RemapStateImpl<T> implements RegistryRemapCallback.RemapState<T> {
+public class RemapStateImpl<T> implements RegistryIdRemapCallback.RemapState<T> {
 	private final Int2IntMap rawIdChangeMap;
 	private final Int2ObjectMap<Identifier> newIdMap;
 

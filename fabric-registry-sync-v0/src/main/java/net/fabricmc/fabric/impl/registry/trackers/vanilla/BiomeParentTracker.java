@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.Identifier;
@@ -27,7 +27,7 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.Objects;
 
-public final class BiomeParentTracker implements RegistryAddEntryCallback<Biome>, RegistryRemoveEntryCallback<Biome>, RegistryRemapCallback<Biome> {
+public final class BiomeParentTracker implements RegistryAddEntryCallback<Biome>, RegistryRemoveEntryCallback<Biome>, RegistryIdRemapCallback<Biome> {
 	private final Registry<Biome> registry;
 
 	private BiomeParentTracker(Registry<Biome> registry) {
@@ -37,7 +37,7 @@ public final class BiomeParentTracker implements RegistryAddEntryCallback<Biome>
 	public static void register(Registry<Biome> registry) {
 		BiomeParentTracker tracker = new BiomeParentTracker(registry);
 		RegistryAddEntryCallback.event(registry).register(tracker);
-		RegistryRemapCallback.event(registry).register(tracker);
+		RegistryIdRemapCallback.event(registry).register(tracker);
 		RegistryRemoveEntryCallback.event(registry).register(tracker);
 	}
 

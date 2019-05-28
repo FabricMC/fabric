@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.registry.trackers;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -27,7 +27,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Int2ObjectMapTracker<V, OV> implements RegistryAddEntryCallback<V>, RegistryRemapCallback<V>, RegistryRemoveEntryCallback<V> {
+public class Int2ObjectMapTracker<V, OV> implements RegistryAddEntryCallback<V>, RegistryIdRemapCallback<V>, RegistryRemoveEntryCallback<V> {
 	private final Int2ObjectMap<OV> mappers;
 	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
@@ -38,7 +38,7 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryAddEntryCallback<V>,
 	public static <V, OV> void register(Registry<V> registry, Int2ObjectMap<OV> mappers) {
 		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(mappers);
 		RegistryAddEntryCallback.event(registry).register(updater);
-		RegistryRemapCallback.event(registry).register(updater);
+		RegistryIdRemapCallback.event(registry).register(updater);
 		RegistryRemoveEntryCallback.event(registry).register(updater);
 	}
 

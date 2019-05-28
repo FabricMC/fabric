@@ -25,7 +25,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.RemapStateImpl;
@@ -74,9 +74,9 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 	);
 
-	private final Event<RegistryRemapCallback> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryRemapCallback.class,
+	private final Event<RegistryIdRemapCallback> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
 		(callbacks) -> (a) -> {
-			for (RegistryRemapCallback callback : callbacks) {
+			for (RegistryIdRemapCallback callback : callbacks) {
 				//noinspection unchecked
 				callback.onRemap(a);
 			}
@@ -99,9 +99,9 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	}
 
 	@Override
-	public Event<RegistryRemapCallback<T>> fabric_getRemapEvent() {
+	public Event<RegistryIdRemapCallback<T>> fabric_getRemapEvent() {
 		//noinspection unchecked
-		return (Event<RegistryRemapCallback<T>>) (Event) fabric_postRemapEvent;
+		return (Event<RegistryIdRemapCallback<T>>) (Event) fabric_postRemapEvent;
 	}
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
