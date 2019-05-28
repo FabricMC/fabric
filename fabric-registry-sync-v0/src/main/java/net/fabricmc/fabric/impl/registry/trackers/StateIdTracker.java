@@ -18,37 +18,76 @@ package net.fabricmc.fabric.impl.registry.trackers;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.IdList;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.function.Function;
 
-public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T> {
+public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, RegistryEntryAddedCallback<T> {
+	private final Logger logger = LogManager.getLogger();
 	private final Registry<T> registry;
 	private final IdList<S> stateList;
 	private final Function<T, Collection<S>> stateGetter;
+	private int currentHighestId = 0;
 
 	public static <T, S> void register(Registry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
-		RegistryIdRemapCallback.event(registry).register(new StateIdTracker<>(registry, stateList, stateGetter));
+		StateIdTracker<T, S> tracker = new StateIdTracker<>(registry, stateList, stateGetter);
+		RegistryEntryAddedCallback.event(registry).register(tracker);
+		RegistryIdRemapCallback.event(registry).register(tracker);
 	}
 
 	private StateIdTracker(Registry<T> registry, IdList<S> stateList, Function<T, Collection<S>> stateGetter) {
 		this.registry = registry;
 		this.stateList = stateList;
 		this.stateGetter = stateGetter;
+
+		recalcHighestId();
+	}
+
+	@Override
+	public void onEntryAdded(int rawId, Identifier id, T object) {
+		if (rawId == currentHighestId + 1) {
+			stateGetter.apply(object).forEach(stateList::add);
+			currentHighestId = rawId;
+		} else {
+			logger.debug("[fabric-registry-sync] Non-sequential RegistryEntryAddedCallback for state ID tracker (at " + id + "), forcing state map recalculation...");
+			recalcStateMap();
+		}
 	}
 
 	@Override
 	public void onRemap(RemapState<T> state) {
+		recalcStateMap();
+	}
+
+	private void recalcStateMap() {
 		((RemovableIdList) stateList).fabric_clear();
 
 		Int2ObjectMap<T> sortedBlocks = new Int2ObjectRBTreeMap<>();
-		registry.forEach((t) -> sortedBlocks.put(registry.getRawId(t), t));
+
+		currentHighestId = 0;
+		registry.forEach((t) -> {
+			int rawId = registry.getRawId(t);
+			currentHighestId = Math.max(currentHighestId, rawId);
+			sortedBlocks.put(rawId, t);
+		});
+
 		for (T b : sortedBlocks.values()) {
 			stateGetter.apply(b).forEach(stateList::add);
+		}
+	}
+
+	private void recalcHighestId() {
+		currentHighestId = 0;
+		for (T object : registry) {
+			currentHighestId = Math.max(currentHighestId, registry.getRawId(object));
 		}
 	}
 }
