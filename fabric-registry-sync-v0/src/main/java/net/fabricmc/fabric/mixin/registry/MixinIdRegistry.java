@@ -24,9 +24,9 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.RemapException;
@@ -56,24 +56,27 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Unique
 	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 
-	private final Event<RegistryAddEntryCallback> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryAddEntryCallback.class,
+	@Unique
+	private final Event<RegistryEntryAddedCallback> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
 		(callbacks) -> (rawId, id, object) -> {
-			for (RegistryAddEntryCallback callback : callbacks) {
+			for (RegistryEntryAddedCallback callback : callbacks) {
 				//noinspection unchecked
-				callback.onAddObject(rawId, id, object);
+				callback.onEntryAdded(rawId, id, object);
 			}
 		}
 	);
 
-	private final Event<RegistryRemoveEntryCallback> fabric_removeObjectEvent = EventFactory.createArrayBacked(RegistryRemoveEntryCallback.class,
+	@Unique
+	private final Event<RegistryEntryRemovedCallback> fabric_removeObjectEvent = EventFactory.createArrayBacked(RegistryEntryRemovedCallback.class,
 		(callbacks) -> (rawId, id, object) -> {
-			for (RegistryRemoveEntryCallback callback : callbacks) {
+			for (RegistryEntryRemovedCallback callback : callbacks) {
 				//noinspection unchecked
-				callback.onRemoveObject(rawId, id, object);
+				callback.onEntryRemoved(rawId, id, object);
 			}
 		}
 	);
 
+	@Unique
 	private final Event<RegistryIdRemapCallback> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
 		(callbacks) -> (a) -> {
 			for (RegistryIdRemapCallback callback : callbacks) {
@@ -83,19 +86,21 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 	);
 
+	@Unique
 	private Object2IntMap<Identifier> fabric_prevIndexedEntries;
+	@Unique
 	private BiMap<Identifier, T> fabric_prevEntries;
 
 	@Override
-	public Event<RegistryAddEntryCallback<T>> fabric_getAddObjectEvent() {
+	public Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryAddEntryCallback<T>>) (Event) fabric_addObjectEvent;
+		return (Event<RegistryEntryAddedCallback<T>>) (Event) fabric_addObjectEvent;
 	}
 
 	@Override
-	public Event<RegistryRemoveEntryCallback<T>> fabric_getRemoveObjectEvent() {
+	public Event<RegistryEntryRemovedCallback<T>> fabric_getRemoveObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryRemoveEntryCallback<T>>) (Event) fabric_removeObjectEvent;
+		return (Event<RegistryEntryRemovedCallback<T>>) (Event) fabric_removeObjectEvent;
 	}
 
 	@Override
@@ -104,18 +109,32 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		return (Event<RegistryIdRemapCallback<T>>) (Event) fabric_postRemapEvent;
 	}
 
+	// The rest of the registry isn't thread-safe, so this one need not be either.
+	@Unique
+	private boolean fabric_isObjectNew = false;
+
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		if (!entries.containsKey(identifier)) {
-			fabric_addObjectEvent.invoker().onAddObject(id, identifier, object);
+			fabric_isObjectNew = true;
 		} else {
 			T oldObject = entries.get(identifier);
 			int oldId = indexedEntries.getId(oldObject);
 			if (oldObject != object || oldId != id) {
-				fabric_removeObjectEvent.invoker().onRemoveObject(oldId, identifier, oldObject);
-				fabric_addObjectEvent.invoker().onAddObject(id, identifier, object);
+				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, identifier, oldObject);
+				fabric_isObjectNew = true;
+			} else {
+				fabric_isObjectNew = false;
 			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Inject(method = "set", at = @At("RETURN"))
+	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
+		if (fabric_isObjectNew) {
+			fabric_addObjectEvent.invoker().onEntryAdded(id, identifier, object);
 		}
 	}
 
@@ -213,7 +232,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 					// Emit RemoveObject events for removed objects.
 					//noinspection unchecked
-					fabric_getRemoveObjectEvent().invoker().onRemoveObject(registry.getRawId(object), id, (T) object);
+					fabric_getRemoveObjectEvent().invoker().onEntryRemoved(registry.getRawId(object), id, (T) object);
 				}
 			}
 
@@ -279,7 +298,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
 
 			for (Identifier id : addedIds) {
-				fabric_getAddObjectEvent().invoker().onAddObject(indexedEntries.getId(entries.get(id)), id, entries.get(id));
+				fabric_getAddObjectEvent().invoker().onEntryAdded(indexedEntries.getId(entries.get(id)), id, entries.get(id));
 			}
 
 			fabric_prevIndexedEntries = null;

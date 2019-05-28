@@ -18,16 +18,16 @@ package net.fabricmc.fabric.impl.registry.trackers;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Int2ObjectMapTracker<V, OV> implements RegistryAddEntryCallback<V>, RegistryIdRemapCallback<V>, RegistryRemoveEntryCallback<V> {
+public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
 	private final Int2ObjectMap<OV> mappers;
 	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
@@ -37,13 +37,13 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryAddEntryCallback<V>,
 
 	public static <V, OV> void register(Registry<V> registry, Int2ObjectMap<OV> mappers) {
 		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(mappers);
-		RegistryAddEntryCallback.event(registry).register(updater);
+		RegistryEntryAddedCallback.event(registry).register(updater);
 		RegistryIdRemapCallback.event(registry).register(updater);
-		RegistryRemoveEntryCallback.event(registry).register(updater);
+		RegistryEntryRemovedCallback.event(registry).register(updater);
 	}
 
 	@Override
-	public void onAddObject(int rawId, Identifier id, V object) {
+	public void onEntryAdded(int rawId, Identifier id, V object) {
 		if (removedMapperCache.containsKey(id)) {
 			mappers.put(rawId, removedMapperCache.get(id));
 		}
@@ -65,7 +65,7 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryAddEntryCallback<V>,
 	}
 
 	@Override
-	public void onRemoveObject(int rawId, Identifier id, V object) {
+	public void onEntryRemoved(int rawId, Identifier id, V object) {
 		if (mappers.containsKey(rawId)) {
 			removedMapperCache.put(id, mappers.remove(rawId));
 		}

@@ -22,15 +22,15 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 @FunctionalInterface
-public interface RegistryRemoveEntryCallback<T> {
-	void onRemoveObject(int rawId, Identifier id, T object);
+public interface RegistryEntryAddedCallback<T> {
+	void onEntryAdded(int rawId, Identifier id, T object);
 
-	static <T> Event<RegistryRemoveEntryCallback<T>> event(Registry<T> registry) {
+	static <T> Event<RegistryEntryAddedCallback<T>> event(Registry<T> registry) {
 		if (!(registry instanceof ListenableRegistry)) {
 			throw new IllegalArgumentException("Unsupported registry: " + registry.getClass().getName());
 		}
 
 		//noinspection unchecked
-		return (Event<RegistryRemoveEntryCallback<T>>) ((ListenableRegistry) registry).fabric_getRemoveObjectEvent();
+		return (Event<RegistryEntryAddedCallback<T>>) ((ListenableRegistry) registry).fabric_getAddObjectEvent();
 	}
 }

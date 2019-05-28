@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -27,7 +27,7 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.Objects;
 
-public final class BiomeParentTracker implements RegistryAddEntryCallback<Biome>, RegistryRemoveEntryCallback<Biome>, RegistryIdRemapCallback<Biome> {
+public final class BiomeParentTracker implements RegistryEntryAddedCallback<Biome>, RegistryEntryRemovedCallback<Biome>, RegistryIdRemapCallback<Biome> {
 	private final Registry<Biome> registry;
 
 	private BiomeParentTracker(Registry<Biome> registry) {
@@ -36,13 +36,13 @@ public final class BiomeParentTracker implements RegistryAddEntryCallback<Biome>
 
 	public static void register(Registry<Biome> registry) {
 		BiomeParentTracker tracker = new BiomeParentTracker(registry);
-		RegistryAddEntryCallback.event(registry).register(tracker);
+		RegistryEntryAddedCallback.event(registry).register(tracker);
 		RegistryIdRemapCallback.event(registry).register(tracker);
-		RegistryRemoveEntryCallback.event(registry).register(tracker);
+		RegistryEntryRemovedCallback.event(registry).register(tracker);
 	}
 
 	@Override
-	public void onAddObject(int rawId, Identifier id, Biome object) {
+	public void onEntryAdded(int rawId, Identifier id, Biome object) {
 		if (object.hasParent()) {
 			Biome.PARENT_BIOME_ID_MAP.set(object, registry.getRawId(registry.get(new Identifier(Objects.requireNonNull(object.getParent())))));
 		}
@@ -60,7 +60,7 @@ public final class BiomeParentTracker implements RegistryAddEntryCallback<Biome>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void onRemoveObject(int rawId, Identifier id, Biome object) {
+	public void onEntryRemoved(int rawId, Identifier id, Biome object) {
 		((RemovableIdList<Biome>) Biome.PARENT_BIOME_ID_MAP).fabric_remove(object);
 		((RemovableIdList<Biome>) Biome.PARENT_BIOME_ID_MAP).fabric_removeId(rawId);
 	}

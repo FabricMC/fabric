@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryRemoveEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.IdList;
 import net.minecraft.util.Identifier;
@@ -27,7 +27,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IdListTracker<V, OV> implements RegistryAddEntryCallback<V>, RegistryIdRemapCallback<V>, RegistryRemoveEntryCallback<V> {
+public class IdListTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
 	private final IdList<OV> mappers;
 	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
@@ -37,13 +37,13 @@ public class IdListTracker<V, OV> implements RegistryAddEntryCallback<V>, Regist
 
 	public static <V, OV> void register(Registry<V> registry, IdList<OV> mappers) {
 		IdListTracker<V, OV> updater = new IdListTracker<>(mappers);
-		RegistryAddEntryCallback.event(registry).register(updater);
+		RegistryEntryAddedCallback.event(registry).register(updater);
 		RegistryIdRemapCallback.event(registry).register(updater);
-		RegistryRemoveEntryCallback.event(registry).register(updater);
+		RegistryEntryRemovedCallback.event(registry).register(updater);
 	}
 
 	@Override
-	public void onAddObject(int rawId, Identifier id, V object) {
+	public void onEntryAdded(int rawId, Identifier id, V object) {
 		if (removedMapperCache.containsKey(id)) {
 			mappers.set(removedMapperCache.get(id), rawId);
 		}
@@ -56,7 +56,7 @@ public class IdListTracker<V, OV> implements RegistryAddEntryCallback<V>, Regist
 	}
 
 	@Override
-	public void onRemoveObject(int rawId, Identifier id, V object) {
+	public void onEntryRemoved(int rawId, Identifier id, V object) {
 		if (mappers.get(rawId) != null) {
 			removedMapperCache.put(id, mappers.get(rawId));
 			//noinspection unchecked

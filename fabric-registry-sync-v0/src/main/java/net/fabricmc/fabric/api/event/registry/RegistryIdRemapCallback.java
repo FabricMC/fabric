@@ -25,9 +25,9 @@ import net.minecraft.util.registry.Registry;
 /**
  * The remapping process functions as follows:
  *
- * - RegistryRemoveEntryCallbacks are called to remove any objects culled in the process, with the old numeric ID.
+ * - RegistryEntryRemovedCallbacks are called to remove any objects culled in the process, with the old numeric ID.
  * - RegistryIdRemapCallback is emitted to allow remapping the IDs of objects still present.
- * - RegistryAddEntryCallbacks are called to add any objects added in the process, with the new numeric ID.
+ * - RegistryEntryAddedCallbacks are called to add any objects added in the process, with the new numeric ID.
  *
  * RegistryIdRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
  * (say, rebuild the ID map from scratch).
@@ -38,13 +38,13 @@ import net.minecraft.util.registry.Registry;
  */
 @FunctionalInterface
 public interface RegistryIdRemapCallback<T> {
+	void onRemap(RemapState<T> state);
+
 	interface RemapState<T> {
 		Int2IntMap getRawIdChangeMap();
 		Identifier getIdFromOld(int oldRawId);
 		Identifier getIdFromNew(int newRawId);
 	}
-
-	void onRemap(RemapState<T> state);
 
 	static <T> Event<RegistryIdRemapCallback<T>> event(Registry<T> registry) {
 		if (!(registry instanceof ListenableRegistry)) {

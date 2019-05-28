@@ -16,24 +16,24 @@
 
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAddEntryCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public final class BlockItemTracker implements RegistryAddEntryCallback<Item> {
+public final class BlockItemTracker implements RegistryEntryAddedCallback<Item> {
 	private BlockItemTracker() {
 
 	}
 
 	public static void register(Registry<Item> registry) {
 		BlockItemTracker tracker = new BlockItemTracker();
-		RegistryAddEntryCallback.event(registry).register(tracker);
+		RegistryEntryAddedCallback.event(registry).register(tracker);
 	}
 
 	@Override
-	public void onAddObject(int rawId, Identifier id, Item object) {
+	public void onEntryAdded(int rawId, Identifier id, Item object) {
 		if (object instanceof BlockItem) {
 			((BlockItem) object).registerBlockItemMap(Item.BLOCK_ITEM_MAP, object);
 		}
