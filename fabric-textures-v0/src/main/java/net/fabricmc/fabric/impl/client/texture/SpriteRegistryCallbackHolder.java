@@ -23,13 +23,14 @@ import net.minecraft.util.Identifier;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public final class SpriteRegistryCallbackHolder {
 	public static final Event<ClientSpriteRegistryCallback> EVENT_GLOBAL = createEvent();
-	private static final Map<Identifier, Event<ClientSpriteRegistryCallback>> eventMap = new HashMap<>();
+	private static final Map<Identifier, Event<ClientSpriteRegistryCallback>> eventMap = new ConcurrentHashMap<>();
 	private static final ReadWriteLock eventMapLock = new ReentrantReadWriteLock();
 	private static final Lock eventMapReadLock = eventMapLock.readLock();
 	private static final Lock eventMapWriteLock = eventMapLock.writeLock();
@@ -39,18 +40,7 @@ public final class SpriteRegistryCallbackHolder {
 	}
 
 	public static Event<ClientSpriteRegistryCallback> eventLocal(Identifier key) {
-		eventMapReadLock.lock();
-		Event<ClientSpriteRegistryCallback> event = eventMap.get(key);
-		eventMapReadLock.unlock();
-
-		if (event == null) {
-			eventMapWriteLock.lock();
-			event = createEvent();
-			eventMap.put(key, event);
-			eventMapWriteLock.unlock();
-		}
-
-		return event;
+		return eventMap.computeIfAbsent(key, (a) -> createEvent());
 	}
 
 	private static Event<ClientSpriteRegistryCallback> createEvent() {
