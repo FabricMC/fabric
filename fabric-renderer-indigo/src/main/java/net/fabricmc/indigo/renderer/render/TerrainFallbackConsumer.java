@@ -134,7 +134,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
             if(cullFace == null) {
                 editorQuad.geometryFlags(0);
             } else {
-                editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG | GeometryHelper.LIGHT_FACE_FLAG);
+                editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
                 editorQuad.lightFace(cullFace);
             }
             chunkInfo.applyOffsets(editorQuad);
