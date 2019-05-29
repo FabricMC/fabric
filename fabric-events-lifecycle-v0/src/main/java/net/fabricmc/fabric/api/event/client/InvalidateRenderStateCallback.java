@@ -20,21 +20,22 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Called before chunks are reloaded due to resource pack or video config
- * changes, or when the player types F3+A in the debug screen.<p>
+ * Called when the world renderer reloads, usually as result of changing resource pack
+ * or video configuration, or when the player types F3+A in the debug screen.
+ * Afterwards all render chunks will be reset and reloaded.<p>
  *     
  * Render chunks and other render-related object instances will be made null
- * or invalid after this event so do not use it to capture state.
- * Instead, use it to invalidate state as a signal to reinitialize lazily.
+ * or invalid after this event so do not use it to capture dependent state.
+ * Instead, use it to invalidate state and reinitialize lazily.
  */
-public interface RenderReloadCallback {
-	public static final Event<RenderReloadCallback> EVENT = EventFactory.createArrayBacked(RenderReloadCallback.class,
-		(listeners) -> () -> {
-			for (RenderReloadCallback event : listeners) {
-				event.reload();
-			}
-		}
-	);
+public interface InvalidateRenderStateCallback {
+    public static final Event<InvalidateRenderStateCallback> EVENT = EventFactory.createArrayBacked(InvalidateRenderStateCallback.class,
+        (listeners) -> () -> {
+            for (InvalidateRenderStateCallback event : listeners) {
+                event.onReload();
+            }
+        }
+    );
 
-	void reload();
+    void onReload();
 }

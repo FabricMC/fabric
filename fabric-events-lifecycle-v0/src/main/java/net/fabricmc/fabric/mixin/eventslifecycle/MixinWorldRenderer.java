@@ -21,13 +21,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.event.client.RenderReloadCallback;
+import net.fabricmc.fabric.api.event.client.InvalidateRenderStateCallback;
 import net.minecraft.client.render.WorldRenderer;
 
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer {
-	@Inject(method = "reload", at = @At("HEAD"))
-	private void onReload(CallbackInfo ci) {
-		RenderReloadCallback.EVENT.invoker().reload();
-	}
+    @Inject(method = "reload", at = @At("HEAD"))
+    private void onReload(CallbackInfo ci) {
+        InvalidateRenderStateCallback.EVENT.invoker().onReload();
+    }
 }
