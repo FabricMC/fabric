@@ -35,6 +35,10 @@ import java.util.Properties;
 public class Indigo implements ClientModInitializer {
 	public static final boolean ALWAYS_TESSELATE_INDIGO;
 	public static final AoConfig AMBIENT_OCCLUSION_MODE;
+	/** Set true in dev env to confirm results match vanilla when they should */
+	public static final boolean DEBUG_COMPARE_LIGHTING;
+	public static final boolean FIX_SMOOTH_LIGHTING_OFFSET;
+
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static boolean asBoolean(String property, boolean defValue) {
@@ -99,6 +103,8 @@ public class Indigo implements ClientModInitializer {
 
 		ALWAYS_TESSELATE_INDIGO = asBoolean((String) properties.computeIfAbsent("always-tesselate-blocks", (a) -> "auto"), true);
 		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", (a) -> "enhanced"), AoConfig.ENHANCED);
+		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", (a) -> "auto"), false);
+		FIX_SMOOTH_LIGHTING_OFFSET = asBoolean((String) properties.computeIfAbsent("fix-smooth-lighting-offset", (a) -> "auto"), true);
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Indigo properties file");
