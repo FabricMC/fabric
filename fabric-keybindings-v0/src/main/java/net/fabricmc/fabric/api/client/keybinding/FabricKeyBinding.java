@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.keybinding;
 
+import net.fabricmc.fabric.mixin.client.keybinding.MixinKeyBindingAccessor;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
@@ -29,6 +30,15 @@ import net.minecraft.util.Identifier;
 public class FabricKeyBinding extends KeyBinding {
 	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
 		super("key." + id.toString().replace(':', '.'), type, code, category);
+	}
+
+	/**
+	 * Returns the configured KeyCode assigned to the KeyBinding from the player's settings.
+	 * @return
+	 */
+	public InputUtil.KeyCode getConfiguredKeyCode()
+	{
+		return ((MixinKeyBindingAccessor) this).getConfiguredKeyCode();
 	}
 
 	public static class Builder {
