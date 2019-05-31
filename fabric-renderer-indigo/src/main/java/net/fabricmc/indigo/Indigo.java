@@ -38,6 +38,7 @@ public class Indigo implements ClientModInitializer {
 	/** Set true in dev env to confirm results match vanilla when they should */
 	public static final boolean DEBUG_COMPARE_LIGHTING;
 	public static final boolean FIX_SMOOTH_LIGHTING_OFFSET;
+	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -105,6 +106,7 @@ public class Indigo implements ClientModInitializer {
 		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", (a) -> "enhanced"), AoConfig.ENHANCED);
 		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", (a) -> "auto"), false);
 		FIX_SMOOTH_LIGHTING_OFFSET = asBoolean((String) properties.computeIfAbsent("fix-smooth-lighting-offset", (a) -> "auto"), true);
+		FIX_EXTERIOR_VERTEX_LIGHTING = asBoolean((String) properties.computeIfAbsent("fix-exterior-vertex-lighting", (a) -> "auto"), true);
 
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Indigo properties file");
