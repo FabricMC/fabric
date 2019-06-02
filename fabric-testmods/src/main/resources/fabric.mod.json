@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric_test",
+  "version": "1.1.0",
+
+  "name": "Fabric API Tests",
+  "description": "A series of test mods to check Fabric works.",
+
+  "license": "Apache-2.0",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.events.ServerEventMod",
+      "net.fabricmc.fabric.containers.ContainerMod",
+      "net.fabricmc.fabric.loot.LootEntryMod",
+      "net.fabricmc.fabric.block.FireMod",
+      "net.fabricmc.fabric.events.ServerEventMod",
+      "net.fabricmc.fabric.commands.CommandMod",
+      "net.fabricmc.fabric.item.FuelMod",
+      "net.fabricmc.fabric.itemgroup.ItemGroupMod"
+    ],
+    "client": [
+      "net.fabricmc.fabric.colormapper.ColorProviderMod",
+      "net.fabricmc.fabric.containers.ContainerModClient",
+      "net.fabricmc.fabric.events.PickBlockEventModClient",
+      "net.fabricmc.fabric.fluidrender.FluidRendererModClient",
+      "net.fabricmc.fabric.keybinding.KeyBindingModClient",
+      "net.fabricmc.fabric.resources.ResourceReloadModClient"
+    ]
+  },
+
+  "requires": {
+    "fabricloader": ">=0.4.0",
+    "fabric": "*"
+  },
+  "suggests": {
+    "flamingo": "*"
+  }
+}

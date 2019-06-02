@@ -31,7 +31,7 @@ public class ResourceReloadModClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		for (int i = 64; i >= 2; i--) {
 			final int _i = i;
-			ResourceManagerHelper.get(ResourceType.ASSETS).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+			ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 				@Override
 				public void apply(ResourceManager var1) {
 					System.out.println("Reloading (should run as #" + _i + ")");
@@ -49,7 +49,7 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			});
 		}
 
-		ResourceManagerHelper.get(ResourceType.ASSETS).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc1");
@@ -61,7 +61,7 @@ public class ResourceReloadModClient implements ClientModInitializer {
 			}
 		});
 
-		ResourceManagerHelper.get(ResourceType.ASSETS).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+		ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
 			@Override
 			public Identifier getFabricId() {
 				return new Identifier("fabric:rrmc_should_not_resolve");

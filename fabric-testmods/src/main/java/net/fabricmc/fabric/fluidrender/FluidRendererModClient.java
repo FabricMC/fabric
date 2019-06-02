@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.fluidrender;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.render.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.FluidRenderHandlerRegistry;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.fluid.Fluids;
@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 public class FluidRendererModClient implements ClientModInitializer, SimpleSynchronousResourceReloadListener {
     @Override
     public void onInitializeClient() {
-        ResourceManagerHelper.get(ResourceType.ASSETS).registerReloadListener(this);
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(this);
     }
 
     @Override

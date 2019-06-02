@@ -19,7 +19,7 @@ package net.fabricmc.fabric.colormapper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 import net.minecraft.block.Blocks;
-import net.minecraft.client.render.block.BlockColorMapper;
+import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.item.Items;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,7 +36,7 @@ public class ColorProviderMod implements ClientModInitializer {
 
 		// Redstone is now the same color as grass
 		ColorProviderRegistry.BLOCK.register((block, world, pos, layer) -> {
-			BlockColorMapper provider = ColorProviderRegistry.BLOCK.get(Blocks.GRASS);
+			BlockColorProvider provider = ColorProviderRegistry.BLOCK.get(Blocks.GRASS);
 			return provider == null ? -1 : provider.getColor(block, world, pos, layer);
 		}, Blocks.REDSTONE_WIRE);
 

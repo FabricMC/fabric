@@ -19,9 +19,9 @@ package net.fabricmc.fabric.containers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
-import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -43,12 +43,13 @@ public class ContainerModClient implements ClientModInitializer {
 	}
 
 	//A container gui that shows the block pos that was sent
-	public static class ExampleContainerScreen extends ContainerScreen<ContainerMod.ExampleContainer> {
+	public static class ExampleContainerScreen extends AbstractContainerScreen<ContainerMod.ExampleContainer>
+	{
 
 		BlockPos pos;
 
 		public ExampleContainerScreen(int syncId, BlockPos pos, PlayerEntity playerEntity) {
-			super(new ContainerMod.ExampleContainer(syncId, pos, playerEntity), playerEntity.inventory, new StringTextComponent("Example GUI"));
+			super(new ContainerMod.ExampleContainer(syncId, pos, playerEntity), playerEntity.inventory, new TextComponent("Example GUI"));
 			this.pos = pos;
 		}
 
@@ -60,12 +61,12 @@ public class ContainerModClient implements ClientModInitializer {
 
 
 	//A container gui that shows how you can take in a container provided by a ContainerScreenFactory
-	public static class ExampleContainerScreen2 extends ContainerScreen<ContainerMod.ExampleContainer> {
+	public static class ExampleContainerScreen2 extends AbstractContainerScreen<ContainerMod.ExampleContainer> {
 
 		BlockPos pos;
 
 		public ExampleContainerScreen2(ContainerMod.ExampleContainer container) {
-			super(container, container.playerInventory, new StringTextComponent("Example GUI 2"));
+			super(container, container.playerInventory, new TextComponent("Example GUI 2"));
 			this.pos = container.pos;
 		}
 
@@ -76,12 +77,12 @@ public class ContainerModClient implements ClientModInitializer {
 	}
 
 	//A container gui that has the player's inventory
-	public static class ExampleInventoryContainerScreen extends ContainerScreen<ContainerMod.ExampleInventoryContainer> {
+	public static class ExampleInventoryContainerScreen extends AbstractContainerScreen<ContainerMod.ExampleInventoryContainer> {
 
 		private static final Identifier BG_TEXTURE = new Identifier("textures/gui/container/horse.png");
 
 		public ExampleInventoryContainerScreen(ContainerMod.ExampleInventoryContainer container) {
-			super(container, container.playerInventory, new StringTextComponent("Example Inventory GUI"));
+			super(container, container.playerInventory, new TextComponent("Example Inventory GUI"));
 		}
 
 		@Override
