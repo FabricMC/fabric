@@ -11,5 +11,8 @@
     "irc": "irc://irc.esper.net:6667/fabric",
     "issues": "https://github.com/FabricMC/fabric/issues",
     "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true
   }
 }
