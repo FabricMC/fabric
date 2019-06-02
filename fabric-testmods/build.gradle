@@ -1,33 +1,6 @@
-plugins {
-	id 'fabric-loom' version '0.2.3-SNAPSHOT'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 archivesBaseName = "fabric-testmods"
-version = "1.2.0"
-
-def baseVersion = "0.3.0"
-def mcVersion = "1.14.2"
-def yarnVersion = "+build.1"
-
-minecraft {
-}
+version = getSubprojectVersion(project, "0.1.0")
 
 dependencies {
-	minecraft "com.mojang:minecraft:$mcVersion"
-	mappings "net.fabricmc:yarn:${mcVersion}${yarnVersion}"
-	modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
-
-	//Fabric api
-	modCompile "net.fabricmc.fabric-api:fabric-api:0.3.0+build.175"
-}
-
-// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-// if it is present.
-// If you remove this task, sources will not be generated.
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = 'sources'
-	from sourceSets.main.allSource
+	compile project(path: ':fabric-api-base', configuration: 'dev')
 }
