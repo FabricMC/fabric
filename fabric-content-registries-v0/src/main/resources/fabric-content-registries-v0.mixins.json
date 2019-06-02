@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinAbstractFurnaceBlockEntity",
-    "MixinFireBlock"
+    "MixinFireBlock",
+    "MixinBeaconBlockEntity"
   ],
   "injectors": {
     "defaultRequire": 1
