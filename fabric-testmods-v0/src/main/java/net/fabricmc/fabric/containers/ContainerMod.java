@@ -25,6 +25,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
 public class ContainerMod implements ModInitializer {
@@ -37,16 +38,22 @@ public class ContainerMod implements ModInitializer {
 	public void onInitialize() {
 		//Registers a basic server side command that shows that the openContainer works from the server side.
 		CommandRegistry.INSTANCE.register(false, serverCommandSourceCommandDispatcher ->
+		{
 			serverCommandSourceCommandDispatcher.register(CommandManager
 				.literal("container")
-				.executes(context -> {
+				.executes(context ->
+				{
 					BlockPos pos = new BlockPos(context.getSource().getEntity());
 
 					//Opens a container, sending the block pos
-					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_INVENTORY_CONTAINER, context.getSource().getPlayer(), buf -> buf.writeBlockPos(pos));
+					ContainerProviderRegistry.INSTANCE.openContainer(EXAMPLE_INVENTORY_CONTAINER, context.getSource().getPlayer(), (PacketByteBuf buf) ->
+					{
+						buf.writeBlockPos(pos);
+					});
 
 					return 1;
-				})));
+				}));
+		});
 
 		//Registers a container factory that opens our example Container, this reads the block pos from the buffer
 		ContainerProviderRegistry.INSTANCE.registerFactory(EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {

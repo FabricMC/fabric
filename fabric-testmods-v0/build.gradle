@@ -1,0 +1,28 @@
+archivesBaseName = "fabric-testmods-v0"
+version = getSubprojectVersion(project, "1.1.0")
+
+dependencies {
+	compile project(path: ':fabric-api-base', configuration: 'dev')
+	compile project(path: ':fabric-commands-v0', configuration: 'dev')
+	compile project(path: ':fabric-containers-v0', configuration: 'dev')
+	compile project(path: ':fabric-content-registries-v0', configuration: 'dev')
+	compile project(path: ':fabric-crash-report-info-v1', configuration: 'dev')
+	compile project(path: ':fabric-events-interaction-v0', configuration: 'dev')
+	compile project(path: ':fabric-events-lifecycle-v0', configuration: 'dev')
+	compile project(path: ':fabric-item-groups-v0', configuration: 'dev')
+	compile project(path: ':fabric-keybindings-v0', configuration: 'dev')
+	compile project(path: ':fabric-mining-levels-v0', configuration: 'dev')
+	compile project(path: ':fabric-models-v0', configuration: 'dev')
+	compile project(path: ':fabric-networking-v0', configuration: 'dev')
+	compile project(path: ':fabric-networking-blockentity-v0', configuration: 'dev')
+	compile project(path: ':fabric-object-builders-v0', configuration: 'dev')
+	compile project(path: ':fabric-registry-sync-v0', configuration: 'dev')
+	compile project(path: ':fabric-renderer-api-v1', configuration: 'dev')
+	compile project(path: ':fabric-renderer-indigo', configuration: 'dev')
+	compile project(path: ':fabric-rendering-v0', configuration: 'dev')
+	compile project(path: ':fabric-rendering-data-attachment-v1', configuration: 'dev')
+	compile project(path: ':fabric-rendering-fluids-v1', configuration: 'dev')
+	compile project(path: ':fabric-resource-loader-v0', configuration: 'dev')
+	compile project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
+	compile project(path: ':fabric-textures-v0', configuration: 'dev')
+}
