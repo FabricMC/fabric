@@ -25,6 +25,7 @@
     "sources": "https://github.com/FabricMC/fabric"
   },
   "custom": {
+    "modmenu:clientsideOnly": true,
     "modmenu:api": true,
     "modmenu:parent": "fabric"
   }

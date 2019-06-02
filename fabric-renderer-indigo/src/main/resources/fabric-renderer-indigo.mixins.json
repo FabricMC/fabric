@@ -3,8 +3,6 @@
   "package": "net.fabricmc.indigo.renderer.mixin",
   "compatibilityLevel": "JAVA_8",
   "plugin": "net.fabricmc.indigo.IndigoMixinConfigPlugin",
-  "mixins": [
-  ],
   "client": [
     "BufferBuilderOffsetAccessor",
   	"MixinBlockModelRenderer",
