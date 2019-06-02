@@ -10,5 +10,17 @@
   },
   "mixins": [
     "fabric-content-registries-v0.mixins.json"
-  ]
+  ],
+  "name": "Fabric Content Registries (v0)",
+  "description": "Adds registries for vanilla mechanics that are missing them.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

@@ -5,5 +5,17 @@
   "license": "Apache-2.0",
   "depends": {
     "fabricloader": ">=0.4.0"
+  },
+  "name": "Fabric API Base",
+  "description": "Contains the essentials for Fabric API modules.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
   }
 }

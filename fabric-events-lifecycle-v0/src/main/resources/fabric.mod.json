@@ -9,5 +9,17 @@
   },
   "mixins": [
     "fabric-events-lifecycle-v0.mixins.json"
-  ]
+  ],
+  "name": "Fabric Events - Lifecycle (v0)",
+  "description": "Events for the game's lifecycle.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

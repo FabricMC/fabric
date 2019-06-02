@@ -12,5 +12,17 @@
   },
   "mixins": [
     "fabric-rendering-fluids-v1.mixins.json"
-  ]
+  ],
+  "name": "Fabric Rendering - Fluids (v1)",
+  "description": "Hooks for registering fluid renders.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

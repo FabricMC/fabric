@@ -5,5 +5,17 @@
   "license": "Apache-2.0",
   "mixins": [
     "fabric-networking-v0.mixins.json"
-  ]
+  ],
+  "name": "Fabric Networking (v0)",
+  "description": "Networking packet hooks and registries.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

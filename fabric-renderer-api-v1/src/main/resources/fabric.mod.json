@@ -10,5 +10,17 @@
   "mixins": [
     "fabric-renderer-api-v1.mixins.json",
     "fabric-renderer-api-v1.debughud.mixins.json"
-  ]
+  ],
+  "name": "Fabric Renderer API (v1)",
+  "description": "Defines rendering extensions for dynamic/fancy block and item models.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

@@ -9,5 +9,17 @@
   },
   "mixins": [
     "fabric-networking-blockentity-v0.mixins.json"
-  ]
+  ],
+  "name": "Fabric Networking - Block Entity (v0)",
+  "description": "Networking hooks for block entities.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

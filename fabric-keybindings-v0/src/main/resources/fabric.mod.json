@@ -9,5 +9,17 @@
   },
   "mixins": [
     "fabric-keybindings-v0.mixins.json"
-  ]
+  ],
+  "name": "Fabric Keybindings (v0)",
+  "description": "Keybinding registry API.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

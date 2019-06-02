@@ -10,5 +10,17 @@
   },
   "mixins": [
     "fabric-models-v0.mixins.json"
-  ]
+  ],
+  "name": "Fabric Models (v0)",
+  "description": "Hooks for models and model loading.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
+  }
 }

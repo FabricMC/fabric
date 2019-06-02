@@ -16,5 +16,17 @@
     "client": [
       "net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl::init"
     ]
+  },
+  "name": "Fabric Containers (v0)",
+  "description": "Adds hooks for containers.",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "fabric"
   }
 }
