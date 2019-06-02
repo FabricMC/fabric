@@ -11,7 +11,7 @@
     "fabric-rendering-data-attachment-v1.mixins.json"
   ],
   "name": "Fabric Rendering - Data Attachment (v1)",
-  "description": "Hooks for dynamic model customization",
+  "description": "Thread-safe hooks for BlockEntity data use during terrain rendering.",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
