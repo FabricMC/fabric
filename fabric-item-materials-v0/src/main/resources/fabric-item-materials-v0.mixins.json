@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.itemmaterial",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinArmorMaterials"
+  ],
+  "client": [
+    "client.MixinArmorFeatureRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
