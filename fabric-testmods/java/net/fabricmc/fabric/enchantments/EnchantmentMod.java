@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.enchantment.FabricEnchantment;
 import net.fabricmc.fabric.api.enchantment.FabricEnchantmentTarget;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.BlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -47,7 +48,7 @@ public class EnchantmentMod implements ModInitializer {
 		}
 
 		@Override
-		public int getEnchantingPower(World world, BlockPos blockPos) {
+		public int getEnchantingPower(BlockState blockState, World world, BlockPos blockPos) {
 			return 3;
 		}
 	}
