@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.enchantment;
 
 import net.fabricmc.fabric.api.enchantment.EnchantingPowerProvider;
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.container.EnchantingTableContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -58,9 +58,9 @@ public abstract class MixinEnchantingTableContainer {
 	}
 
 	private int fabric_getEnchantingPower(BlockPos blockPos) {
-        Block block = fabric_world.getBlockState(blockPos).getBlock();
-        if(block instanceof EnchantingPowerProvider) {
-        	return ((EnchantingPowerProvider) block).getEnchantingPower(fabric_world, blockPos);
+		BlockState blockState = fabric_world.getBlockState(blockPos);
+        if(blockState.getBlock() instanceof EnchantingPowerProvider) {
+        	return ((EnchantingPowerProvider) blockState.getBlock()).getEnchantingPower(blockState, fabric_world, blockPos);
         }
         return 0;
 	}
