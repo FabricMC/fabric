@@ -27,23 +27,54 @@ import net.minecraft.util.Identifier;
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!
  */
 public class FabricKeyBinding extends KeyBinding {
-	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
-		super("key." + id.toString().replace(':', '.'), type, code, category);
+	protected FabricKeyBinding(String name, InputUtil.Type type, int code, String category) {
+		super(name, type, code, category);
 	}
 
 	public static class Builder {
-		protected final FabricKeyBinding binding;
 
-		protected Builder(FabricKeyBinding binding) {
-			this.binding = binding;
+	    private InputUtil.Type type = InputUtil.Type.KEYSYM;
+
+		private String keyName = "key.fabric.unnamed";
+
+		private int code;
+
+		private String category = KeyCategory.MISC;
+
+		private Builder() {
+
+		}
+
+		public Builder name(String keyName) {
+		    this.keyName = keyName;
+		    return this;
+		}
+
+		public Builder name(Identifier keyName) {
+		    return name("key." + keyName.toString().replace(':', '.').replace('/', '/'));
+		}
+
+		public Builder category(String category) {
+		    this.category = "key.categories." + category;
+		    return this;
+		}
+
+		public Builder code(int keyCode) {
+		    this.code = keyCode;
+		    return this;
+		}
+
+		public Builder type(InputUtil.Type type) {
+		    this.type = type;
+		    return this;
 		}
 
 		public FabricKeyBinding build() {
-			return binding;
+			return new FabricKeyBinding(keyName, type, code, category);
 		}
 
-		public static Builder create(Identifier id, InputUtil.Type type, int code, String category) {
-			return new Builder(new FabricKeyBinding(id, type, code, category));
+		public static Builder create() {
+			return new Builder();
 		}
 	}
 }
