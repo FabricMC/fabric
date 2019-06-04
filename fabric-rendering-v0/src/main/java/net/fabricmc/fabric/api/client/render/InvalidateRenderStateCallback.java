@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.client;
+package net.fabricmc.fabric.api.client.render;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -32,10 +32,10 @@ public interface InvalidateRenderStateCallback {
     public static final Event<InvalidateRenderStateCallback> EVENT = EventFactory.createArrayBacked(InvalidateRenderStateCallback.class,
         (listeners) -> () -> {
             for (InvalidateRenderStateCallback event : listeners) {
-                event.onReload();
+                event.onInvalidate();
             }
         }
     );
-
-    void onReload();
+    
+    void onInvalidate();
 }
