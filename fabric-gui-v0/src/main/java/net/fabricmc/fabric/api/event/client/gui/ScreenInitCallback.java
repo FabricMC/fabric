@@ -55,7 +55,7 @@ public interface ScreenInitCallback {
     interface ButtonList {
         /**
          * Adds a new button to the screen's own button list.
-         * This is the same as calling `adButton(button)` on the screen
+         * This is the same as calling `addButton(button)` on the screen
          * itself and likewise add the button to the screen's elements list.
          */
         <T extends AbstractButtonWidget> T add(T button);
