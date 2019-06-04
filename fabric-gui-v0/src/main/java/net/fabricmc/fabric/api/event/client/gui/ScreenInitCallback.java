@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *	 http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,8 +15,13 @@
  */
 package net.fabricmc.fabric.api.event.client.player;
 
+import java.util.List;
+
+import org.spongepowered.asm.mixin.Shadow;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
@@ -29,35 +34,56 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
  */
 @FunctionalInterface
 public interface ScreenInitCallback {
-    /**
-     * Event bus for mods to subscribe to this event.
-     *
-     * Usage:
-     *   ScreenInitCallback.EVENT.subscribe((screen, buttons) -> {...});
-     */
-    Event<ScreenInitCallback> EVENT = EventFactory.createArrayBacked(ScreenInitCallback.class, listeners -> (screen, buttons) -> {
-        for (ScreenInitCallback event : listeners) {
-            event.init(screen, buttons);
-        }
-    });
+	/**
+	 * Event bus for mods to subscribe to this event.
+	 *
+	 * Usage:
+	 *   ScreenInitCallback.EVENT.subscribe((screen, buttons) -> {...});
+	 */
+	Event<ScreenInitCallback> EVENT = EventFactory.createArrayBacked(ScreenInitCallback.class, listeners -> (screen, buttons) -> {
+		for (ScreenInitCallback event : listeners) {
+			event.init(screen, buttons);
+		}
+	});
 
-    /**
-     * Callback for when a screen is initialized.
-     *
-     * @param screen the current screen being displayed
-     * @param buttons a writeable view of the screen's button list.
-     */
-    void init(Screen screen, ButtonList buttons);
+	/**
+	 * Callback for when a screen is initialized.
+	 *
+	 * @param screen the current screen being displayed
+	 * @param buttons a writeable view of the screen's button list.
+	 */
+	void init(Screen screen, ButtonList buttons);
 
-    /**
-     * The list of buttons currently being added to the screen.
-     */
-    interface ButtonList {
-        /**
-         * Adds a new button to the screen's own button list.
-         * This is the same as calling `addButton(button)` on the screen
-         * itself and likewise add the button to the screen's elements list.
-         */
-        <T extends AbstractButtonWidget> T add(T button);
-    }
+	/**
+	 * A view of the screen's buttons.
+	 */
+	public static class ButtonList {
+
+		private final Screen screen;
+
+		public ButtonList(Screen screen) {
+			this.screen = screen;
+		}
+
+		/**
+		 * Gets all the buttons currently added to the screen.
+		 */
+		public List<AbstractButtonWidget> buttons() {
+			return ((MixinScreen)screen).buttons();
+		}
+
+		/**
+		 * Adds a new button to the screen's own button list.
+		 * This is the same as calling `addButton(button)` on the screen
+		 * itself and likewise add the button to the screen's elements list.
+		 */
+		public <T extends AbstractButtonWidget> T add(T button) {
+			return screen.addButton(button);
+		}
+
+		public void remove(T button) {
+			screen.children().remove(button);
+			buttons().remove(button);
+		}
+	}
 }
