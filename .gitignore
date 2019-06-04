@@ -5,6 +5,7 @@
 .classpath
 .settings
 .project
+*/bin
 
 # Subprojects
 !/fabric-*
