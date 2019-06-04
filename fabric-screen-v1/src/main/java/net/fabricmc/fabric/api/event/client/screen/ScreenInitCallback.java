@@ -15,15 +15,8 @@
  */
 package net.fabricmc.fabric.api.event.client.screen;
 
-import java.util.List;
-
-import org.spongepowered.asm.mixin.Shadow;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
 /**
  * This event is emitted on the client to initialize and redraw gui screens
