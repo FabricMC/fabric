@@ -31,6 +31,15 @@ public class FabricKeyBinding extends KeyBinding {
 		super("key." + id.toString().replace(':', '.'), type, code, category);
 	}
 
+	/**
+	 * Returns the configured KeyCode assigned to the KeyBinding from the player's settings.
+	 * @return
+	 */
+	public InputUtil.KeyCode getConfiguredKeyCode()
+	{
+		return ((MixinKeyBindingAccessor) this).getConfiguredKeyCode();
+	}
+
 	public static class Builder {
 		protected final FabricKeyBinding binding;
 
