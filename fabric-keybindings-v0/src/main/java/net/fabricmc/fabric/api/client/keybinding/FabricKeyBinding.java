@@ -33,7 +33,7 @@ public class FabricKeyBinding extends KeyBinding {
 
 	public static class Builder {
 
-	    private InputUtil.Type type = InputUtil.Type.KEYSYM;
+		private InputUtil.Type type = InputUtil.Type.KEYSYM;
 
 		private String keyName = "key.fabric.unnamed";
 
@@ -46,27 +46,27 @@ public class FabricKeyBinding extends KeyBinding {
 		}
 
 		public Builder name(String keyName) {
-		    this.keyName = keyName;
-		    return this;
+			this.keyName = keyName;
+			return this;
 		}
 
 		public Builder name(Identifier keyName) {
-		    return name("key." + keyName.toString().replace(':', '.').replace('/', '/'));
+			return name("key." + keyName.toString().replace(':', '.').replace('/', '/'));
 		}
 
 		public Builder category(String category) {
-		    this.category = "key.categories." + category;
-		    return this;
+			this.category = category.contains("key.categories.") ? category : "key.categories." + category;
+			return this;
 		}
 
 		public Builder code(int keyCode) {
-		    this.code = keyCode;
-		    return this;
+			this.code = keyCode;
+			return this;
 		}
 
 		public Builder type(InputUtil.Type type) {
-		    this.type = type;
-		    return this;
+			this.type = type;
+			return this;
 		}
 
 		public FabricKeyBinding build() {
@@ -75,6 +75,15 @@ public class FabricKeyBinding extends KeyBinding {
 
 		public static Builder create() {
 			return new Builder();
+		}
+
+		@Deprecated
+		public static Builder create(Identifier id, InputUtil.Type type, int code, String category) {
+			return new Builder()
+					.name(id)
+					.type(type)
+					.code(code)
+					.category(category);
 		}
 	}
 }
