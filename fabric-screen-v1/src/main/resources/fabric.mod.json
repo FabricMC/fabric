@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-gui-v0",
+  "id": "fabric-screen-v1",
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
@@ -9,6 +9,6 @@
   },
   "entrypoints": {},
   "mixins": [
-    "fabric-gui-v0.mixins.json"
+    "fabric-screen-v1.mixins.json"
   ]
 }
