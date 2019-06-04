@@ -25,31 +25,36 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
-/**
- * This event is emitted on the client to initialize and redraw gui screens
- * whenever opened. Mods consuming this event are allowed to interact with
- * the screen to add their own buttons and elements.
- *
- * Additional credit to Killjoy1121 for the initial implementation of this event.
- */
-@FunctionalInterface
-public interface ScreenInitCallback {
-	/**
-	 * Event bus for mods to subscribe to this event.
-	 *
-	 * Usage:
-	 *   ScreenInitCallback.EVENT.subscribe((screen, buttons) -> {...});
-	 */
-	Event<ScreenInitCallback> EVENT = EventFactory.createArrayBacked(ScreenInitCallback.class, listeners -> screenView -> {
-		for (ScreenInitCallback event : listeners) {
-			event.onInit(screenView);
-		}
-	});
+public interface ScreenView {
+
+	Screen getScreen();
 
 	/**
-	 * Callback for when a screen is initialized.
-	 *
-	 * @param screen the current screen being displayed
+	 * Gets all the buttons currently added to the screen.
 	 */
-	void onInit(ScreenView screen);
+	List<AbstractButtonWidget> getButtons();
+
+	/**
+	 * Adds a new button to the screen's own button list.
+	 * This is the same as calling `addButton(button)` on the screen
+	 * itself and likewise add the button to the screen's elements list.
+	 */
+	<T extends AbstractButtonWidget> T addButton(T button);
+
+	/**
+	 * Adds a new button to the screen's own button list.
+	 * This is the same as calling `addButton(button)` on the screen
+	 * itself and likewise add the button to the screen's elements list.
+	 */
+	default <T extends AbstractButtonWidget> T addButton(T button, int tabOrdinal) {
+		tabOrdinal = Math.min(Math.max(0, tabOrdinal), getButtons().size());
+
+		getButtons().add(ordinal, button);
+		return getScreen().children().add(ordinal, button);
+	}
+
+	default void removeButton(T button) {
+		getScreen().children().remove(button);
+		getButtons().remove(button);
+	}
 }

@@ -15,7 +15,8 @@
  */
 package net.fabricmc.fabric.mixin.eventsgui;
 
-import net.fabricmc.fabric.api.client.event.gui.ScreenInitCallback;
+import net.fabricmc.fabric.api.event.client.gui.ScreenInitCallback;
+import net.fabricmc.fabric.api.event.client.gui.ScreenView;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
@@ -36,19 +37,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.google.common.collect.Lists;
 
 @Mixin(Screen.class)
-public abstract class MixinScreen {
-	
-	@Accessor("buttons")
-	List<AbstractButtonWidget> buttons();
+public abstract class MixinScreen implements ScreenView {
 
-	@Shadow
-	protected final List<AbstractButtonWidget> buttons;
+	@Override
+	@Accessor
+	public abstract List<AbstractButtonWidget> getButtons();
 
-	@Shadow
-	protected abstract <T extends AbstractButtonWidget> T addButton(T abstractButtonWidget_1);
+	@Override
+	@Invoker
+	public abstract <T extends AbstractButtonWidget> T addButton(T button);
+
+	@Override
+	public Screen getScreen() {
+		return (Screen) (Object) this;
+	}
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("RETURN"))
-	private void onInit(MinecraftClient minecraftClient_1, int w, int h, CallbackInfo ci) {
-		ScreenInitCallback.EVENT.invoker().init((Screen) (Object) this, new ButtonList((Screen) (Object) this));
+	private void onInit(MinecraftClient client, int width, int height, CallbackInfo ci) {
+		ScreenInitCallback.EVENT.invoker().onInit(this);
 	}
 }
