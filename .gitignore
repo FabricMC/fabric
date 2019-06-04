@@ -1,6 +1,11 @@
 # Ignore everything
 /*
 
+# Ignore eclipse files
+.classpath
+.settings
+.project
+
 # Subprojects
 !/fabric-*
 /fabric-*/.gradle
