@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-gui-v0",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*"
+  },
+  "entrypoints": {},
+  "mixins": [
+    "fabric-gui-v0.mixins.json"
+  ]
+}
