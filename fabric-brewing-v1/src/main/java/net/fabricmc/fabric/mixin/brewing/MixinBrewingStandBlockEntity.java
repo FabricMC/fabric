@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.brewing;
 
 import net.fabricmc.fabric.impl.brewing.BrewingRecipe;
+import net.fabricmc.fabric.api.brewing.PotionTypeRegistry;
 import net.fabricmc.fabric.impl.brewing.FabricBrewingInit;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
@@ -63,7 +64,7 @@ public abstract class MixinBrewingStandBlockEntity extends LockableContainerBloc
                 ItemStack output = recipe.getOutput();
 
                 if(output.getItem() instanceof PotionItem) {
-                    output = new ItemStack(recipe.getOutputPotionType().item);
+                    output = new ItemStack(PotionTypeRegistry.INSTANCE.getItem(recipe.getOutputPotion().getPotionType()));
                     PotionUtil.setPotion(output, PotionUtil.getPotion(recipe.getOutput()));
                 }
 
