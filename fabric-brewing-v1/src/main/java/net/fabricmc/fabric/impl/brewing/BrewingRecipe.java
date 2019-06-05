@@ -88,19 +88,22 @@ public class BrewingRecipe implements Recipe<Inventory> {
             : FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT
                 ? MinecraftClient.getInstance().world
                 : null;
-        if(world == null)
-            throw new IllegalStateException("Tried to get custom brewing recipes with no available world");
-
-        Stream<BrewingRecipe> recipes = world.getRecipeManager().values().stream()
-            .filter(recipe -> recipe.getType() == FabricBrewingInit.BREWING_RECIPE_TYPE)
-            .map(recipe -> (BrewingRecipe)recipe);
-        Predicate<ItemStack> stacksMatch =
-            s -> stack.getItem() == s.getItem() && ItemStack.areTagsEqual(stack, s);
-        Stream<BrewingRecipe> cands =
-            slot == 3 ? recipes.filter(r -> Arrays.stream(r.getInput().asIngredient().getStackArray()).anyMatch(stacksMatch)) :
-            slot <  3 ? recipes.filter(r -> Arrays.stream(r.getBasePotion().asIngredient().getStackArray()).anyMatch(stacksMatch))
-                : Stream.empty();
-
-        return cands.collect(Collectors.toList());
+        return getRelevantRecipes(world, stack, slot);
     }
+
+    public static List<BrewingRecipe> getRelevantRecipes(World world, ItemStack stack, int slot) {
+		if(world == null) throw new IllegalStateException("Tried to get custom brewing recipes with no available world");
+
+		Stream<BrewingRecipe> recipes = world.getRecipeManager().values().stream()
+			.filter(recipe -> recipe.getType() == FabricBrewingInit.BREWING_RECIPE_TYPE)
+			.map(recipe -> (BrewingRecipe)recipe);
+		Predicate<ItemStack> stacksMatch =
+			s -> stack.getItem() == s.getItem() && ItemStack.areTagsEqual(stack, s);
+		Stream<BrewingRecipe> relevant =
+			slot == 3 ? recipes.filter(r -> Arrays.stream(r.getInput().asIngredient().getStackArray()).anyMatch(stacksMatch)) :
+			slot <  3 ? recipes.filter(r -> Arrays.stream(r.getBasePotion().asIngredient().getStackArray()).anyMatch(stacksMatch))
+				: Stream.empty();
+
+		return relevant.collect(Collectors.toList());
+	}
 }
