@@ -38,7 +38,7 @@ public class BrewingRecipeImpl implements BrewingRecipe {
     private final PotionIngredient output;
     private List<Integer> matchedSlots = new ArrayList<>();
 
-    public BrewingRecipeImpl(Identifier id, String group, PotionIngredient input, PotionIngredient basePotion, PotionIngredient output) {
+    BrewingRecipeImpl(Identifier id, String group, PotionIngredient input, PotionIngredient basePotion, PotionIngredient output) {
         this.id = id;
         this.group = group;
         this.input = input;

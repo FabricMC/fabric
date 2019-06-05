@@ -37,7 +37,7 @@ public class FabricBrewingInit implements ModInitializer {
 		public String toString() { return "fabric:brewing"; }
 	};
 
-	public static final RecipeSerializer<BrewingRecipe> BREWING_RECIPE_SERIALIZER = new RecipeSerializer<BrewingRecipe>() {
+	static final RecipeSerializer<BrewingRecipe> BREWING_RECIPE_SERIALIZER = new RecipeSerializer<BrewingRecipe>() {
 		public BrewingRecipe read(Identifier id, JsonObject obj) {
 			return new BrewingRecipeImpl(
 				id, JsonHelper.getString(obj, "group", ""),
