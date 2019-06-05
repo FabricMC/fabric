@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(KeyBinding.class)
-public interface MixinKeyBindingAccessor
+public interface KeyCodeAccessor
 {
 	@Accessor("keyCode")
 	InputUtil.KeyCode fabric_getConfiguredKeyCode();
