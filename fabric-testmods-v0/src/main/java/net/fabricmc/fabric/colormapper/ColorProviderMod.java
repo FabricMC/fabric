@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.colormapper;
 
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 import net.minecraft.block.Blocks;
@@ -24,7 +25,8 @@ import net.minecraft.item.Items;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ColorProviderMod implements ClientModInitializer {
+public class ColorProviderMod implements ClientModInitializer
+{
 	private static final boolean ENABLED = true;
 
 	private static final Logger LOGGER = LogManager.getLogger();

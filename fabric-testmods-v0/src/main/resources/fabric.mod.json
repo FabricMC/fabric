@@ -18,7 +18,8 @@
       "net.fabricmc.fabric.events.ServerEventMod",
       "net.fabricmc.fabric.commands.CommandMod",
       "net.fabricmc.fabric.item.FuelMod",
-      "net.fabricmc.fabric.itemgroup.ItemGroupMod"
+      "net.fabricmc.fabric.itemgroup.ItemGroupMod",
+      "net.fabricmc.fabric.events.DropItemEventMod"
     ],
     "client": [
       "net.fabricmc.fabric.colormapper.ColorProviderMod",
