@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.mixin.brewing;
 
-import net.fabricmc.fabric.impl.brewing.BrewingRecipe;
+import net.fabricmc.fabric.api.brewing.BrewingRecipe;
+import net.fabricmc.fabric.api.brewing.BrewingRecipes;
 import net.fabricmc.fabric.api.brewing.PotionTypeRegistry;
 import net.fabricmc.fabric.impl.brewing.FabricBrewingInit;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -90,6 +91,6 @@ public abstract class MixinBrewingStandBlockEntity extends LockableContainerBloc
 
     @Inject(method = "isValidInvStack", at = @At("HEAD"), cancellable = true)
     public void checkValidInvStack(int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cbi) {
-        if(!BrewingRecipe.getRelevantRecipes(this, stack, slot).isEmpty()) cbi.setReturnValue(true);
+        if(!BrewingRecipes.INSTANCE.getRelevantRecipes(this.world, stack, slot == 3).isEmpty()) cbi.setReturnValue(true);
     }
 }

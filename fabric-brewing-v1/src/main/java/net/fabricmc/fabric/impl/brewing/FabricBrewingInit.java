@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.brewing;
 
 import com.google.gson.JsonObject;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.brewing.BrewingRecipe;
+import net.fabricmc.fabric.api.brewing.PotionIngredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
@@ -37,7 +39,7 @@ public class FabricBrewingInit implements ModInitializer {
 
 	public static final RecipeSerializer<BrewingRecipe> BREWING_RECIPE_SERIALIZER = new RecipeSerializer<BrewingRecipe>() {
 		public BrewingRecipe read(Identifier id, JsonObject obj) {
-			return new BrewingRecipe(
+			return new BrewingRecipeImpl(
 				id, JsonHelper.getString(obj, "group", ""),
 				PotionIngredient.fromJson(JsonHelper.getObject(obj, "input")),
 				PotionIngredient.fromJson(JsonHelper.getObject(obj, "base")),
@@ -46,7 +48,7 @@ public class FabricBrewingInit implements ModInitializer {
 		}
 
 		public BrewingRecipe read(Identifier id, PacketByteBuf buf) {
-			return new BrewingRecipe(
+			return new BrewingRecipeImpl(
 				id, buf.readString(32767),
 				PotionIngredient.fromPacket(buf),
 				PotionIngredient.fromPacket(buf),
@@ -58,7 +60,7 @@ public class FabricBrewingInit implements ModInitializer {
 			buf.writeString(recipe.getGroup());
 			recipe.getInput().write(buf);
 			recipe.getBasePotion().write(buf);
-			recipe.getOutputPotionIngredient().write(buf);
+			recipe.getOutputPotion().write(buf);
 		}
 	};
 }

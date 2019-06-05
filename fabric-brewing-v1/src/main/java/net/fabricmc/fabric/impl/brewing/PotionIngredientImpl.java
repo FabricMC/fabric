@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.brewing;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
+import net.fabricmc.fabric.api.brewing.PotionIngredient;
 import net.fabricmc.fabric.api.brewing.PotionTypeRegistry;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -26,22 +24,21 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 
-public class PotionIngredient {
+public class PotionIngredientImpl implements PotionIngredient {
 	private final Potion potion;
 	private final Ingredient delegate;
 	private final Identifier type;
 
-	public PotionIngredient(Potion potion, Identifier type) {
+	public PotionIngredientImpl(Potion potion, Identifier type) {
 		this.potion = potion;
 		this.type = type;
 		this.delegate = null;
 	}
 
-	public PotionIngredient(Ingredient delegate) {
+	public PotionIngredientImpl(Ingredient delegate) {
 		this.potion = null;
 		this.type = null;
 		this.delegate = delegate;
@@ -60,30 +57,6 @@ public class PotionIngredient {
 		return this.isIngredient() ? delegate.test(stack) :
 			PotionUtil.getPotion(stack) == potion &&
 				stack.getItem() == PotionTypeRegistry.INSTANCE.getItem(getPotionType()); }
-
-	public static PotionIngredient fromJson(JsonElement json) { return fromJson(json, false); }
-	public static PotionIngredient fromJson(JsonElement json, boolean forceSingle) {
-		if(json != null && !json.isJsonNull()) {
-			if(json.isJsonObject()) {
-				JsonObject obj = json.getAsJsonObject();
-				if(forceSingle && JsonHelper.hasString(obj, "tag"))
-					throw new JsonSyntaxException("Cannot use a tag for recipe output");
-
-				return JsonHelper.hasString(obj, "potion")
-					? new PotionIngredient(Registry.POTION.get(new Identifier(JsonHelper.getString(obj, "potion"))),
-						new Identifier(JsonHelper.getString(obj, "type", "normal")))
-					: new PotionIngredient(Ingredient.fromJson(obj));
-			} else
-				throw new JsonSyntaxException("Expected item to be object");
-		} else
-			throw new JsonSyntaxException("Item cannot be null");
-	}
-
-	public static PotionIngredient fromPacket(PacketByteBuf buf) {
-		boolean isPotion = buf.readBoolean();
-		if(!isPotion) return new PotionIngredient(Ingredient.fromPacket(buf));
-		return new PotionIngredient(Registry.POTION.get(new Identifier(buf.readString())), new Identifier(buf.readString()));
-	}
 
 	public void write(PacketByteBuf buf) {
 		buf.writeBoolean(this.isPotion());

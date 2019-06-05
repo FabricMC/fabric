@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.mixin.brewing;
 
-import net.fabricmc.fabric.impl.brewing.BrewingRecipe;
+import net.fabricmc.fabric.api.brewing.BrewingRecipes;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.container.Slot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -34,6 +37,9 @@ public abstract class MixinBrewingStandSlot extends Slot {
 
     @Inject(method = "canInsert(Lnet/minecraft/item/ItemStack;)Z", at = @At("HEAD"), cancellable = true)
     private void checkCanInsert(ItemStack stack, CallbackInfoReturnable<Boolean> cbi) {
-        if(!BrewingRecipe.getRelevantRecipes(inventory, stack, id).isEmpty()) cbi.setReturnValue(true);
+    	World world = inventory instanceof BlockEntity
+			? ((BlockEntity)inventory).getWorld()
+			: MinecraftClient.getInstance().world;
+        if(!BrewingRecipes.INSTANCE.getRelevantRecipes(world, stack, id == 3).isEmpty()) cbi.setReturnValue(true);
     }
 }
