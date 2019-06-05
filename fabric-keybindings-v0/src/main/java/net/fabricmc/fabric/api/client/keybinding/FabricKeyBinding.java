@@ -38,7 +38,7 @@ public class FabricKeyBinding extends KeyBinding {
 	 */
 	public InputUtil.KeyCode getConfiguredKeyCode()
 	{
-		return ((KeyCodeAccessor) this).fabric_getConfiguredKeyCode();
+		return ((KeyCodeAccessor) this).getKeyCode();
 	}
 
 	public static class Builder {
