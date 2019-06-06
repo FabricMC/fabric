@@ -103,7 +103,7 @@ public class Indigo implements ClientModInitializer {
 		}
 
 		ALWAYS_TESSELATE_INDIGO = asBoolean((String) properties.computeIfAbsent("always-tesselate-blocks", (a) -> "auto"), true);
-		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", (a) -> "enhanced"), AoConfig.ENHANCED);
+		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", (a) -> "hybrid"), AoConfig.HYBRID);
 		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", (a) -> "auto"), false);
 		FIX_SMOOTH_LIGHTING_OFFSET = asBoolean((String) properties.computeIfAbsent("fix-smooth-lighting-offset", (a) -> "auto"), true);
 		FIX_EXTERIOR_VERTEX_LIGHTING = asBoolean((String) properties.computeIfAbsent("fix-exterior-vertex-lighting", (a) -> "auto"), true);
