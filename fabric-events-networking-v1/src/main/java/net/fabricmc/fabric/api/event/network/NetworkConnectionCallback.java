@@ -43,16 +43,25 @@ import net.minecraft.network.listener.ClientPlayPacketListener;
  * 	// joined on server
  * 	ServerPlayNetworkHandler handler = (ServerPlayNetworkHandler) listener.getPacketListener();
  * });
+ * NetworkConnectionCallback.SERVER_LOGIN.register(connection -> {
+ *	// login on server
+ *	// prevent anyone from joining
+ *	connection.disconnect(new TextComponent("lol banned"));
+ * }
  * </pre>
  */
 public interface NetworkConnectionCallback {
 
 	/**
-	 * Login event on the client. The packet listener will be {@link ClientLoginPacketListener}.
+	 * Async login event on the client. The packet listener will be {@link ClientLoginPacketListener}.
+	 * <p>The world is not yet available in this event. If you need the world, use
+	 * {@link #CLIENT_JOIN} instead.</p>
 	 */
 	Event<NetworkConnectionCallback> CLIENT_LOGIN = ConnectionEvents.getConnectionEvent(ConnectionType.CLIENT_LOGIN);
 	/**
-	 * Login event on the server. The packet listener will be {@link ClientLoginPacketListener}.
+	 * Async login event on the server. The packet listener will be {@link ClientLoginPacketListener}.
+	 * <p>The player entity is not yet available in this event. If you need the player, use
+	 * {@link #SERVER_JOIN} instead.</p>
 	 */
 	Event<NetworkConnectionCallback> SERVER_LOGIN = ConnectionEvents.getConnectionEvent(ConnectionType.SERVER_LOGIN);
 	/**

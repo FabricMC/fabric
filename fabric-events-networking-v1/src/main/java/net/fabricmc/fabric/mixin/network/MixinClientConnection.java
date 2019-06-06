@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import io.netty.channel.Channel;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.network.NetworkConnectionCallback;
 import net.fabricmc.fabric.impl.network.ConnectionEvents;
 import net.fabricmc.fabric.impl.network.ConnectionType;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.listener.PacketListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,17 +31,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientConnection.class)
 public abstract class MixinClientConnection {
 
-	@Shadow	private Channel channel;
-	@Shadow	private PacketListener packetListener;
+	@Shadow private PacketListener packetListener;
 
-	@Inject(method = "disconnect", at = @At("RETURN"))
-	private void onDisconnect(Component component_1, CallbackInfo ci) {
-		if (this.channel.isOpen()) {
-			ConnectionType type = ConnectionType.getLeaveFrom(this.packetListener);
-			Event<NetworkConnectionCallback> event = ConnectionEvents.getConnectionEvent(type);
-			if (event != null) {
-				event.invoker().onConnection((ClientConnection) (Object) this);
-			}
+	@Inject(method = "handleDisconnection", expect = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/network/chat/Component;)V"))
+	private void onDisconnect(CallbackInfo ci) {
+		ConnectionType type = ConnectionType.getLeaveFrom(this.packetListener);
+		Event<NetworkConnectionCallback> event = ConnectionEvents.getConnectionEvent(type);
+		if (event != null) {
+			event.invoker().onConnection((ClientConnection) (Object) this);
 		}
 	}
 
