@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-dimension-patches-v0",
+  "id": "fabric-dimension-patches-v1",
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
@@ -11,6 +11,6 @@
 
   },
   "mixins": [
-    "fabric-dimension-patches-v0.mixins.json"
+    "fabric-dimension-patches-v1.mixins.json"
   ]
 }
