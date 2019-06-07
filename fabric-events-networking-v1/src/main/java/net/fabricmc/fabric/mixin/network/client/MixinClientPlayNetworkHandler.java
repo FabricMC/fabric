@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.network.client;
 
-import net.fabricmc.fabric.api.event.network.NetworkConnectionCallback;
+import net.fabricmc.fabric.api.event.network.client.ServerJoinCallback;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.GameJoinS2CPacket;
 import net.minecraft.network.ClientConnection;
@@ -34,6 +34,6 @@ public class MixinClientPlayNetworkHandler {
 
 	@Inject(method = "onGameJoin", at = @At("RETURN"))
 	private void onJoin(GameJoinS2CPacket gameJoinS2CPacket_1, CallbackInfo ci){
-		NetworkConnectionCallback.CLIENT_JOIN.invoker().onConnection(this.connection);
+		ServerJoinCallback.EVENT.invoker().onJoin(this.connection);
 	}
 }

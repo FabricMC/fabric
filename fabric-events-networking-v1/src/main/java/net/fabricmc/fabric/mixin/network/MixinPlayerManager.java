@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import net.fabricmc.fabric.api.event.network.NetworkConnectionCallback;
+import net.fabricmc.fabric.api.event.network.server.ClientJoinCallback;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,6 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinPlayerManager {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-		NetworkConnectionCallback.SERVER_JOIN.invoker().onConnection(connection);
+		ClientJoinCallback.EVENT.invoker().onJoin(connection);
 	}
 }

@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.network;
+package net.fabricmc.fabric.api.event.network.client;
 
-import net.minecraft.network.listener.ClientPlayPacketListener;
-import net.minecraft.network.listener.PacketListener;
-import net.minecraft.network.listener.ServerPlayPacketListener;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.network.ClientConnection;
 
-public enum ConnectionType {
-	SERVER_LOGIN,
-	CLIENT_LOGIN,
-	SERVER_JOIN,
-	CLIENT_JOIN,
-	SERVER_LEAVE,
-	CLIENT_LEAVE;
+public interface ServerJoinCallback {
 
-	public static ConnectionType getLeaveFrom(PacketListener listener) {
-		if (listener instanceof ClientPlayPacketListener) {
-			return CLIENT_LEAVE;
+	Event<ServerJoinCallback> EVENT = EventFactory.createArrayBacked(ServerJoinCallback.class, listeners -> connection -> {
+		for (ServerJoinCallback event : listeners) {
+			event.onJoin(connection);
 		}
-		if (listener instanceof ServerPlayPacketListener) {
-			return SERVER_LEAVE;
-		}
-		return null;
-	}
+	});
+
+	void onJoin(ClientConnection connection);
 }

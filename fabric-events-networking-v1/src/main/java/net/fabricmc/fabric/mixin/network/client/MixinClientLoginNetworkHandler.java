@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.network.client;
 
-import net.fabricmc.fabric.api.event.network.NetworkConnectionCallback;
+import net.fabricmc.fabric.api.event.network.client.ServerLoginCallback;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.listener.PacketListener;
@@ -34,6 +34,6 @@ public abstract class MixinClientLoginNetworkHandler implements PacketListener {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void init(CallbackInfo ci) {
-		NetworkConnectionCallback.CLIENT_LOGIN.invoker().onConnection(this.connection);
+		ServerLoginCallback.EVENT.invoker().onLogin(this.connection);
 	}
 }
