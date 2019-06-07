@@ -22,10 +22,13 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class RemapStateImpl<T> implements RegistryIdRemapCallback.RemapState<T> {
 	private final Int2IntMap rawIdChangeMap;
 	private final Int2ObjectMap<Identifier> newIdMap;
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public RemapStateImpl(Registry<T> registry, Int2IntMap rawIdChangeMap) {
 		this.rawIdChangeMap = rawIdChangeMap;
@@ -33,6 +36,7 @@ public class RemapStateImpl<T> implements RegistryIdRemapCallback.RemapState<T> 
 
 		for (Int2IntMap.Entry entry : rawIdChangeMap.int2IntEntrySet()) {
 			Identifier id = registry.getId(registry.get(entry.getIntValue()));
+			if (newIdMap.containsKey(entry.getIntValue())) LOGGER.error("Two registry entries may be pointing to the same int value! This could cause issues!");
 			newIdMap.put(entry.getIntValue(), id);
 		}
 	}

@@ -28,15 +28,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
-	private final Int2ObjectMap<OV> mappers;
-	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
-	private Int2ObjectMapTracker(Int2ObjectMap<OV> mappers) {
+	private final Int2ObjectMap<OV> mappers;
+	private final Map<Integer, Identifier> mapIds = new HashMap<>();
+	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
+	private final String name;
+
+	private Int2ObjectMapTracker(Int2ObjectMap<OV> mappers, String name) {
 		this.mappers = mappers;
+		this.name = name;
 	}
 
-	public static <V, OV> void register(Registry<V> registry, Int2ObjectMap<OV> mappers) {
-		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(mappers);
+	public static <V, OV> void register(Registry<V> registry, String name, Int2ObjectMap<OV> mappers) {
+		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(mappers, name);
 		RegistryEntryAddedCallback.event(registry).register(updater);
 		RegistryIdRemapCallback.event(registry).register(updater);
 		RegistryEntryRemovedCallback.event(registry).register(updater);
@@ -54,13 +58,16 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V
 		Int2ObjectMap<OV> oldMappers = new Int2ObjectOpenHashMap<>(mappers);
 
 		mappers.clear();
+		mapIds.clear();
 		for (int i : oldMappers.keySet()) {
 			int newI = state.getRawIdChangeMap().getOrDefault(i, i);
+			Identifier id = state.getIdFromNew(i);
 			if (mappers.containsKey(newI)) {
-				throw new RuntimeException("Int2ObjectMap contained two equal IDs " + newI + " (" + state.getIdFromOld(i) + "/" + i + " -> " + state.getIdFromNew(newI) + "/" + newI + ")!");
+				if (!mapIds.get(newI).equals(id)) throw new RuntimeException("Int2ObjectMap " + name + " contained two objects with int ID " + newI + " (" + mapIds.get(newI) + "/" + newI + " vs " +id + "/" + newI + ")!");
+			} else {
+				mappers.put(newI, oldMappers.get(i));
+				mapIds.put(newI, id);
 			}
-
-			mappers.put(newI, oldMappers.get(i));
 		}
 	}
 

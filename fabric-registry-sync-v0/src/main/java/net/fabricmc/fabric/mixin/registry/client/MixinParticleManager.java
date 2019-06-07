@@ -36,6 +36,6 @@ public class MixinParticleManager {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onInit(World world, TextureManager textureManager, CallbackInfo info) {
-		Int2ObjectMapTracker.register(Registry.PARTICLE_TYPE, factories);
+		Int2ObjectMapTracker.register(Registry.PARTICLE_TYPE, "particle_factories", factories);
 	}
 }
