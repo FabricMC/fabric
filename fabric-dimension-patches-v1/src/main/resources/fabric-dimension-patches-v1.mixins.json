@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "DimensionRawIndexFix"
+    "MixinDimensionRawIndexFix"
   ],
   "injectors": {
     "defaultRequire": 1
