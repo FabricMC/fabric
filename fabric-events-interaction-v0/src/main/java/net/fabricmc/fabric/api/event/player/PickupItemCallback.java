@@ -3,6 +3,7 @@ package net.fabricmc.fabric.api.event.player;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
@@ -18,9 +19,9 @@ import net.minecraft.world.World;
  */
 public interface PickupItemCallback {
 	public static final Event<PickupItemCallback> EVENT = EventFactory.createArrayBacked(PickupItemCallback.class,
-		(listeners) -> (player, world, entity, amount) -> {
+		(listeners) -> (player, world, entity) -> {
 			for (PickupItemCallback event : listeners) {
-				ActionResult result = event.interact(player, world, entity, amount);
+				ActionResult result = event.interact(player, world, entity);
 				if (result != ActionResult.PASS) {
 					return result;
 				}
@@ -30,5 +31,5 @@ public interface PickupItemCallback {
 		}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Entity pickupEntity, int amount);
+	ActionResult interact(PlayerEntity player, World world, ItemEntity pickupEntity);
 }
