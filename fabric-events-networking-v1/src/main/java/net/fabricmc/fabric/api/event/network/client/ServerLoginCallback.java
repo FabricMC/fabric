@@ -21,6 +21,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
 import org.apache.logging.log4j.LogManager;
 
+/**
+ * Called on the client on the network thread when the client attempts to
+ * connect to the server.
+ */
 public interface ServerLoginCallback {
 
 	Event<ServerLoginCallback> EVENT = EventFactory.createArrayBacked(ServerLoginCallback.class, listeners -> connection -> {

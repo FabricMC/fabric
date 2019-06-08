@@ -21,6 +21,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
 import org.apache.logging.log4j.LogManager;
 
+/**
+ * Called on the client on the network thread when the client is disconnected
+ * from the server.
+ */
 public interface ServerLeaveCallback {
 
 	Event<ServerLeaveCallback> EVENT = EventFactory.createArrayBacked(ServerLeaveCallback.class, listeners -> connection -> {

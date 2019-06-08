@@ -21,6 +21,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
 import org.apache.logging.log4j.LogManager;
 
+/**
+ * Called on the server on the main thread after connecting to a server. The
+ * player will be available during this event.
+ */
 public interface ClientJoinCallback {
 
 	Event<ClientJoinCallback> EVENT = EventFactory.createArrayBacked(ClientJoinCallback.class, listeners -> connection -> {
