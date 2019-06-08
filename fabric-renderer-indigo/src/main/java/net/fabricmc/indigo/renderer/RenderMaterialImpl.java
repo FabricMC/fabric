@@ -41,7 +41,7 @@ public abstract class RenderMaterialImpl {
     private static final int TEXTURE_DEPTH_MASK = 3;
     private static final int TEXTURE_DEPTH_SHIFT = 0;
     
-    private static final int BLEND_MODE_MASK = 3;
+    private static final int BLEND_MODE_MASK = 7;
     private static final int[] BLEND_MODE_SHIFT = new int[3];
     private static final int[] COLOR_DISABLE_FLAGS = new int[3];
     private static final int[] EMISSIVE_FLAGS = new int[3];
