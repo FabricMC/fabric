@@ -12,10 +12,11 @@ public class MixinDimensionRawIndexFix
 {
 	@Inject(at = @At("HEAD"), method = "byRawId", cancellable = true)
 	private static void byRawId(final int id, final CallbackInfoReturnable<DimensionType> info) {
-		Registry.DIMENSION.forEach(dimension -> {
-			if(dimension.getRawId() == id) {
+		for (DimensionType dimension : Registry.DIMENSION) {
+			if (dimension.getRawId() == id) {
 				info.setReturnValue(dimension);
+				return;
 			}
-		});
+		}
 	}
 }
