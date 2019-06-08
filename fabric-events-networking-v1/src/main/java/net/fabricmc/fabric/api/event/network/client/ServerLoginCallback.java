@@ -19,12 +19,19 @@ package net.fabricmc.fabric.api.event.network.client;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
+import org.apache.logging.log4j.LogManager;
 
 public interface ServerLoginCallback {
 
 	Event<ServerLoginCallback> EVENT = EventFactory.createArrayBacked(ServerLoginCallback.class, listeners -> connection -> {
 		for (ServerLoginCallback event : listeners) {
-			event.onLogin(connection);
+			try {
+				event.onLogin(connection);
+			} catch (Throwable t) {
+				// netty swallows exceptions
+				String name = EventFactory.getHandlerName(event);
+				LogManager.getLogger(event).error("Exception caught while handling login event from {}.", name, t);
+			}
 		}
 	});
 

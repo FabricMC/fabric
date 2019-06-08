@@ -19,12 +19,19 @@ package net.fabricmc.fabric.api.event.network.client;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
+import org.apache.logging.log4j.LogManager;
 
 public interface ServerLeaveCallback {
 
 	Event<ServerLeaveCallback> EVENT = EventFactory.createArrayBacked(ServerLeaveCallback.class, listeners -> connection -> {
 		for (ServerLeaveCallback event : listeners) {
-			event.onLeave(connection);
+			try {
+				event.onLeave(connection);
+			} catch (Throwable t) {
+				// netty swallows exceptions
+				String name = EventFactory.getHandlerName(event);
+				LogManager.getLogger(event).error("Exception caught while handling leave event from {}.", name, t);
+			}
 		}
 	});
 

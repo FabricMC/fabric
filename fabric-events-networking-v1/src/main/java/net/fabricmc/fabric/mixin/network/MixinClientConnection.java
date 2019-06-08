@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import net.fabricmc.fabric.api.event.network.client.ServerLeaveCallback;
+import net.fabricmc.fabric.api.event.network.client.ServerLoginCallback;
 import net.fabricmc.fabric.api.event.network.server.ClientLeaveCallback;
+import net.fabricmc.fabric.api.event.network.server.ClientLoginCallback;
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.NetworkSide;
-import org.spongepowered.asm.mixin.Final;
+import net.minecraft.network.listener.ClientLoginPacketListener;
+import net.minecraft.network.listener.PacketListener;
+import net.minecraft.network.listener.ServerLoginPacketListener;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,15 +33,23 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ClientConnection.class)
 public abstract class MixinClientConnection {
 
-	@Shadow @Final private NetworkSide side;
+	@Shadow public abstract PacketListener getPacketListener();
 
 	@Inject(method = "handleDisconnection", expect = 2, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/listener/PacketListener;onDisconnected(Lnet/minecraft/network/chat/Component;)V"))
 	private void onDisconnect(CallbackInfo ci) {
 		ClientConnection self = (ClientConnection) (Object) this;
-		if (this.side == NetworkSide.SERVERBOUND) {
-			ServerLeaveCallback.EVENT.invoker().onLeave(self);
-		} else {
+		if (this.getPacketListener() instanceof ServerPlayPacketListener){
 			ClientLeaveCallback.EVENT.invoker().onLeave(self);
+		}
+	}
+
+	@Inject(method = "setPacketListener", at = @At("RETURN"))
+	private void onSetListener(PacketListener listener, CallbackInfo ci) {
+		ClientConnection self = (ClientConnection) (Object) this;
+		if (listener instanceof ClientLoginPacketListener) {
+			ServerLoginCallback.EVENT.invoker().onLogin(self);
+		} else if (listener instanceof ServerLoginPacketListener) {
+			ClientLoginCallback.EVENT.invoker().onLogin(self);
 		}
 	}
 }

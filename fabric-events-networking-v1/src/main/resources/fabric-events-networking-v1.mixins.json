@@ -4,12 +4,11 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinClientConnection",
-    "MixinPlayerManager",
-    "MixinServerLoginNetworkHandler"
+    "MixinPlayerManager"
   ],
   "client": [
-    "client.MixinClientLoginNetworkHandler",
-    "client.MixinClientPlayNetworkHandler"
+    "client.MixinClientPlayNetworkHandler",
+    "client.MixinMinecraftClient"
   ],
   "injectors": {
     "defaultRequire": 1
