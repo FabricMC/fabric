@@ -19,9 +19,9 @@ import net.minecraft.world.World;
  */
 public interface PickupItemCallback {
 	public static final Event<PickupItemCallback> EVENT = EventFactory.createArrayBacked(PickupItemCallback.class,
-		(listeners) -> (player, world, entity) -> {
+		(listeners) -> (player, entity) -> {
 			for (PickupItemCallback event : listeners) {
-				ActionResult result = event.interact(player, world, entity);
+				ActionResult result = event.interact(player, entity);
 				if (result != ActionResult.PASS) {
 					return result;
 				}
@@ -31,5 +31,5 @@ public interface PickupItemCallback {
 		}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, ItemEntity pickupEntity);
+	ActionResult interact(PlayerEntity player, ItemEntity pickupEntity);
 }
