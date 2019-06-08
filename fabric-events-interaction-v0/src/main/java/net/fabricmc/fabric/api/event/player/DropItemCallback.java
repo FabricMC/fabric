@@ -18,9 +18,9 @@ import net.minecraft.world.World;
  */
 public interface DropItemCallback {
 	public static final Event<DropItemCallback> EVENT = EventFactory.createArrayBacked(DropItemCallback.class,
-		(listeners) -> (player, world, stack) -> {
+		(listeners) -> (player, stack) -> {
 			for (DropItemCallback event : listeners) {
-				ActionResult result = event.interact(player, world, stack);
+				ActionResult result = event.interact(player, stack);
 				if (result != ActionResult.PASS) {
 					return result;
 				}
@@ -30,5 +30,5 @@ public interface DropItemCallback {
 		}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, ItemStack stack);
+	ActionResult interact(PlayerEntity player, ItemStack stack);
 }
