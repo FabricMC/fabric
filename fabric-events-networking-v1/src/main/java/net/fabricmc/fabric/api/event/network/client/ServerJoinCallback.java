@@ -34,7 +34,7 @@ public interface ServerJoinCallback {
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);
-				LogManager.getLogger(event).error("Exception caught while handling leave event from {}.", name, t);
+				LogManager.getLogger(event).error("Exception caught while handling join event from {}.", name, t);
 			}
 		}
 	});
