@@ -20,6 +20,6 @@
   },
   "description": "Contains the essentials for Fabric API modules.",
   "mixins": [
-    "fabric-api-base.mixins.json"
+
   ]
 }
