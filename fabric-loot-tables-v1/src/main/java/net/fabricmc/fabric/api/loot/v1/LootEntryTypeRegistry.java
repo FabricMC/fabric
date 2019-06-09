@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.api.loot.v1;
 
-import net.fabricmc.fabric.impl.registry.LootEntryTypeRegistryImpl;
+import net.fabricmc.fabric.impl.loot.LootEntryTypeRegistryImpl;
 import net.minecraft.world.loot.entry.LootEntry;
 
 /**
- * @deprecated Use {@link net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry}
+ * Fabric's extensions to {@code net.minecraft.world.loot.entry.LootEntries} for registering
+ * custom loot entry types.
+ *
+ * @see #register
  */
-@Deprecated
 public interface LootEntryTypeRegistry {
-	@Deprecated
 	final LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 
-	@Deprecated
+	/**
+	 * Registers a loot entry type by its serializer.
+	 *
+	 * @param serializer the loot entry serializer
+	 */
 	void register(LootEntry.Serializer<?> serializer);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ * Copyright (c) 2016, 2017, 2018 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.mixin.loot;
 
-import net.fabricmc.fabric.impl.registry.LootEntryTypeRegistryImpl;
-import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.world.loot.LootPool;
+import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.function.LootFunction;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-/**
- * @deprecated Use {@link net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry}
- */
-@Deprecated
-public interface LootEntryTypeRegistry {
-	@Deprecated
-	final LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
+import java.util.List;
 
-	@Deprecated
-	void register(LootEntry.Serializer<?> serializer);
+@Mixin(LootSupplier.Builder.class)
+public interface LootSupplierBuilderHooks {
+	@Accessor
+	List<LootPool> getPools();
+	@Accessor
+	List<LootFunction> getFunctions();
 }
