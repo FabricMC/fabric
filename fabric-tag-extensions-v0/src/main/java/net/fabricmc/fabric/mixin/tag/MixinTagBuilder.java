@@ -48,7 +48,7 @@ public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"), method = "fromJson")
-	public void onFromJsonClear(Predicate<Identifier> predicate_1, Function<Identifier, T> function_1, JsonObject jsonObject_1, CallbackInfoReturnable<Tag.Builder<T>> info) {
+	public void onFromJsonClear(Function<Identifier, T> function_1, JsonObject jsonObject_1, CallbackInfoReturnable<Tag.Builder<T>> info) {
 		fabric_clearCount++;
 	}
 
