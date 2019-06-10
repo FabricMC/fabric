@@ -17,7 +17,9 @@
 package net.fabricmc.fabric.mixin.biomes;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,16 +39,14 @@ public class SpawnBiomesMixin
 	@Final
 	private static List<Biome> SPAWN_BIOMES;
 	
-	@Inject(at = @At("HEAD"), cancellable = true, method = "getSpawnBiomes")
+	@Inject(at = @At("RETURN"), cancellable = true, method = "getSpawnBiomes")
 	private void getSpawnBiomes(CallbackInfoReturnable<List<Biome>> info)
 	{
-		List<Biome> toReturn = new ArrayList<>();
-		for (Biome biome : SPAWN_BIOMES)
-			toReturn.add(biome);
-		for (Biome biome : BiomeLists.SPAWN_BIOMES)
-			if (!toReturn.contains(biome))
-				toReturn.add(biome);
+		Set<Biome> biomes = new LinkedHashSet<>(info.getReturnValue());
 		
-		info.setReturnValue(toReturn);
+		if (biomes.addAll(BiomeLists.SPAWN_BIOMES))
+		{
+			info.setReturnValue(new ArrayList<>(biomes));
+		}
 	}
 }

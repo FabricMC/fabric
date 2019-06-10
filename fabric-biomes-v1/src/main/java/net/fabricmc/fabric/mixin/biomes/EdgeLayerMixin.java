@@ -31,8 +31,7 @@ import net.minecraft.world.biome.layer.LayerRandomnessSource;
 public class EdgeLayerMixin
 {
 	@Inject(at = @At(value = "HEAD"), method = "sample", cancellable = true)
-	private void sample(LayerRandomnessSource rand, int int_1, int int_2, int int_3, int int_4, int int_5,
-			CallbackInfoReturnable<Integer> info)
+	private void sample(LayerRandomnessSource rand, int int_1, int int_2, int int_3, int int_4, int int_5, CallbackInfoReturnable<Integer> info)
 	{
 		Biome prevBiome = Registry.BIOME.get(int_5);
 
@@ -48,9 +47,7 @@ public class EdgeLayerMixin
 	
 	private boolean isEdgeToGenerate(int int_1, int int_2, int int_3, int int_4, int biome)
 	{
-		boolean b = int_1 != biome || int_2 != biome || int_3 != biome || int_4 != biome;
-		
-		return b;
+		return int_1 != biome || int_2 != biome || int_3 != biome || int_4 != biome;
 	}
 
 	private boolean isShoreToGenerate(int int_1, int int_2, int int_3, int int_4)
@@ -61,9 +58,7 @@ public class EdgeLayerMixin
 	private boolean isOceanBiome(int int_1)
 	{
 		Biome biome = Registry.BIOME.get(int_1);
-		if (biome != null)
-			return biome.getCategory() == Biome.Category.OCEAN;
-		else
-			return false;
+		
+		return biome != null && biome.getCategory() == Biome.Category.OCEAN;
 	}
 }

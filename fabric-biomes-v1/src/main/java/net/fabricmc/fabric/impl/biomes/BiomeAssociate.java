@@ -43,8 +43,6 @@ public class BiomeAssociate
 	
 	public int pickRandomBiome(LayerRandomnessSource rand)
 	{
-		int b = biomes.get(rand.nextInt(weightSum));
-		
-		return b;
+		return biomes.get(rand.nextInt(weightSum));
 	}
 }

@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Set;
 
 import net.fabricmc.fabric.api.biomes.v1.BiomeClimate;
-import net.fabricmc.fabric.api.biomes.v1.RiverAssociate;
+import net.fabricmc.fabric.api.biomes.v1.RiverAssociates.RiverAssociate;
 import net.minecraft.util.Pair;
 import net.minecraft.world.biome.Biome;
 

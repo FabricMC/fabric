@@ -27,21 +27,22 @@ import static net.fabricmc.fabric.impl.biomes.BiomeLists.SHORE_MAP;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.biomes.v1.RiverAssociates.RiverAssociate;
 import net.fabricmc.fabric.impl.biomes.BiomeAssociate;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public final class OverworldBiomeUtils
+public final class OverworldBiomes
 {
-	private OverworldBiomeUtils() {}
+	private OverworldBiomes() {}
 	
 	/**
 	 * Adds the biome to the specified climate group, with the specified weight
 	 * 
-	 * @param biome
-	 * @param climate
-	 * @param weight
+	 * @param biome the biome to be added
+	 * @param climate the climate group whereto the biome is added
+	 * @param weight the weight of the entry
 	 */
 	public static void addBiomeToClimate(Biome biome, BiomeClimate climate, int weight)
 	{
@@ -57,13 +58,13 @@ public final class OverworldBiomeUtils
 	/**
 	 * Adds the biome hillsBiome as a hills variant of baseBiome, with the specified weight
 	 * 
-	 * @param baseBiome
-	 * @param hillsBiome
-	 * @param weight
+	 * @param baseBiome the biome whereto the hills variant is added
+	 * @param hillsBiome the biome to be set as a hills variant
+	 * @param weight the weight of the entry
 	 */
 	public static void addHillsBiome(Biome baseBiome, Biome hillsBiome, int weight)
 	{
-		HILLS_MAP.computeIfAbsent(baseBiome, associate -> new BiomeAssociate()).addBiomeWithWeight(hillsBiome, weight);
+		HILLS_MAP.computeIfAbsent(baseBiome, biome -> new BiomeAssociate()).addBiomeWithWeight(hillsBiome, weight);
 
 		CUSTOM_BIOMES.add(hillsBiome);
 	}
@@ -71,13 +72,13 @@ public final class OverworldBiomeUtils
 	/**
 	 * Adds the biome shoreBiome as the beach biome for baseBiome, with the specified weight
 	 * 
-	 * @param baseBiome
-	 * @param shoreBiome
-	 * @param weight
+	 * @param baseBiome the base biome whereto the shore biome is added
+	 * @param shoreBiome the biome to be added as a shore biome
+	 * @param weight the weight of this entry
 	 */
 	public static void addShoreBiome(Biome baseBiome, Biome shoreBiome, int weight)
 	{
-		SHORE_MAP.computeIfAbsent(baseBiome, associate -> new BiomeAssociate()).addBiomeWithWeight(shoreBiome, weight);
+		SHORE_MAP.computeIfAbsent(baseBiome, biome -> new BiomeAssociate()).addBiomeWithWeight(shoreBiome, weight);
 
 		CUSTOM_BIOMES.add(shoreBiome);
 	}
@@ -85,13 +86,13 @@ public final class OverworldBiomeUtils
 	/**
 	 * Adds the biome edgeBiome as the edge biome (excluding as a beach) of the biome baseBiome, with the specified weight
 	 * 
-	 * @param baseBiome
-	 * @param edgeBiome
-	 * @param weight
+	 * @param baseBiome the base biome whereto the edge biome is added
+	 * @param edgeBiome the biome to be added as an edge biome
+	 * @param weight the weight of this entry
 	 */
 	public static void addEdgeBiome(Biome baseBiome, Biome edgeBiome, int weight)
 	{
-		EDGE_MAP.computeIfAbsent(baseBiome, associate -> new BiomeAssociate()).addBiomeWithWeight(edgeBiome, weight);
+		EDGE_MAP.computeIfAbsent(baseBiome, biome -> new BiomeAssociate()).addBiomeWithWeight(edgeBiome, weight);
 
 		CUSTOM_BIOMES.add(edgeBiome);
 	}
@@ -99,19 +100,17 @@ public final class OverworldBiomeUtils
 	/**
 	 * Sets the river type that will generate in the biome
 	 * 
-	 * @param baseBiome
-	 * @param riverType
+	 * @param baseBiome the base biome wherein the river biome is to be set
+	 * @param riverAssociate the river associate representing the river biome
 	 */
-	public static void setRiverBiome(Biome baseBiome, RiverAssociate riverType)
+	public static void setRiverBiome(Biome baseBiome, RiverAssociate riverAssociate)
 	{
-		RIVER_MAP.put(baseBiome, riverType);
+		RIVER_MAP.put(baseBiome, riverAssociate);
 
-		if (!(riverType == RiverAssociate.NONE)) CUSTOM_BIOMES.add(riverType.getBiome());
+		if (!(riverAssociate == RiverAssociates.NONE)) CUSTOM_BIOMES.add(riverAssociate.getBiome());
 	}
 	
 	/**
-	 * @param biome
-	 * @param climate
 	 * @return The weight of the biome in the specified climate
 	 */
 	public static int getWeightOfInClimate(Biome biome, BiomeClimate climate)

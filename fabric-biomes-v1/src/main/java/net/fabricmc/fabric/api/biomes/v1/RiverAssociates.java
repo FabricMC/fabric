@@ -13,44 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package net.fabricmc.fabric.api.biomes.v1;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 
 /**
- * Class which contains an instance of a biome, for use specifying the river type. <br/> <br/>
- * 
- * This class functions mostly like a container for biomes, however
- * the instance RiverAssociate.NONE has a special function.
+ * Class that holds default RiverAssociate instances and provides methods for creating new RiverAssociate instances
  */
-public class RiverAssociate
+public final class RiverAssociates
 {
+	private RiverAssociates() {}
+	
 	/**
-	 *  RiverAssociate with special function. This specifies no river to generate.
+	 * RiverAssociate with special function. This specifies no river to generate.
 	 */
 	public static final RiverAssociate NONE = new RiverAssociate(null);
 	
 	/**
-	 *  Normal, default river biome
+	 * Normal, default river biome
 	 */
 	public static final RiverAssociate WATER = new RiverAssociate(Biomes.RIVER);
 	
 	/**
-	 *  Frozen river biome
+	 * Frozen river biome
 	 */
 	public static final RiverAssociate FROZEN = new RiverAssociate(Biomes.FROZEN_RIVER);
 	
-	private final Biome biome;
-	
-	public RiverAssociate(Biome biome)
+	public static RiverAssociate asRiverAssociate(Biome biome)
 	{
-		this.biome = biome;
+		return new RiverAssociate(biome);
 	}
 	
-	public Biome getBiome()
-	{
-		return biome;
+	/**
+	 * Class which contains an instance of a biome, for use specifying the river type. <br/> <br/>
+	 * 
+	 * This class functions mostly like a container for biomes, however
+	 * the instance RiverAssociate.NONE has a special function.
+	 */
+	public static final class RiverAssociate
+	{	
+		final Biome biome;
+		
+		RiverAssociate(Biome biome)
+		{
+			this.biome = biome;
+		}
+		
+		public Biome getBiome()
+		{
+			return biome;
+		}
 	}
+
 }
