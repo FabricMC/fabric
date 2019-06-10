@@ -1,0 +1,9 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.particles",
+  "compatibilityLevel": "JAVA_8",
+  "client": [ "MixinParticleManager" ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

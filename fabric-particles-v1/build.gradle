@@ -1,0 +1,7 @@
+archivesBaseName = "fabric-particles-v1"
+version = getSubprojectVersion(project, "0.1.0")
+
+dependencies {
+	compile project(path: ':fabric-api-base', configuration: 'dev')
+	compile project(path: ':fabric-textures-v0', configuration: 'dev')
+}
