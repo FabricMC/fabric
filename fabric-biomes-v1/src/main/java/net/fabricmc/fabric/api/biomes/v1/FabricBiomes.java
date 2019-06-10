@@ -19,9 +19,9 @@ package net.fabricmc.fabric.api.biomes.v1;
 import net.fabricmc.fabric.impl.biomes.BiomeLists;
 import net.minecraft.world.biome.Biome;
 
-public final class MoreBiomes
+public final class FabricBiomes
 {
-	private MoreBiomes() {}
+	private FabricBiomes() {}
 	
 	/**
 	 * Adds the biome to spawn biomes, so that the player may spawn in the biome

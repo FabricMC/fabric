@@ -23,12 +23,14 @@ import static net.fabricmc.fabric.impl.biomes.BiomeLists.HILLS_MAP;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.INJECTED_BIOME_LIST;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.RIVER_MAP;
 import static net.fabricmc.fabric.impl.biomes.BiomeLists.SHORE_MAP;
+import static net.fabricmc.fabric.impl.biomes.BiomeLists.VARIANTS_MAP;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.fabricmc.fabric.api.biomes.v1.RiverAssociates.RiverAssociate;
 import net.fabricmc.fabric.impl.biomes.BiomeAssociate;
+import net.fabricmc.fabric.impl.biomes.VariantAssociate;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -96,7 +98,20 @@ public final class OverworldBiomes
 
 		CUSTOM_BIOMES.add(edgeBiome);
 	}
-
+	
+	/**
+	 * 
+	 * @param baseBiome the base biome whereto the edge biome is added
+	 * @param variantBiome the biome to be added as a variant
+	 * @param rarity inverse of the chance of replacement (there is a one in rarity chance)
+	 */
+	public static void addBiomeVariant(Biome baseBiome, Biome variantBiome, int rarity)
+	{
+		VARIANTS_MAP.computeIfAbsent(baseBiome, biome -> new VariantAssociate()).addBiomeWithRarity(variantBiome, rarity);
+		
+		CUSTOM_BIOMES.add(variantBiome);
+	}
+	
 	/**
 	 * Sets the river type that will generate in the biome
 	 * 
@@ -113,7 +128,7 @@ public final class OverworldBiomes
 	/**
 	 * @return The weight of the biome in the specified climate
 	 */
-	public static int getWeightOfInClimate(Biome biome, BiomeClimate climate)
+	public static int getWeight(Biome biome, BiomeClimate climate)
 	{
 		return BIOME_WEIGHT_LOOKUP.containsKey(climate) ? 0 : BIOME_WEIGHT_LOOKUP.get(climate).getOrDefault(biome, 0);
 	}

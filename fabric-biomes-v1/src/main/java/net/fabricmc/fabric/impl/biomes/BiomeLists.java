@@ -36,6 +36,7 @@ public final class BiomeLists
 	public static final Map<Biome, BiomeAssociate> SHORE_MAP = new HashMap<>();
 	public static final Map<Biome, BiomeAssociate> EDGE_MAP = new HashMap<>();
 	public static final Map<Biome, RiverAssociate> RIVER_MAP = new HashMap<>();
+	public static final Map<Biome, VariantAssociate> VARIANTS_MAP = new HashMap<>();
 	
 	public static final List<Pair<Integer, BiomeClimate>> INJECTED_BIOME_LIST = new ArrayList<>();
 	public static final Map<BiomeClimate, Map<Biome, Integer>> BIOME_WEIGHT_LOOKUP = new HashMap<>();
