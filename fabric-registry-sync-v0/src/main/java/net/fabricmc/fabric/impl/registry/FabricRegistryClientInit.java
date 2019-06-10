@@ -31,7 +31,7 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientSidePacketRegistry.INSTANCE.register(RegistrySyncManager.ID, (ctx, buf) -> {
 			// if not hosting server, apply packet
-			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
+			RegistrySyncManager.receivePacket(ctx, buf, RegistrySyncManager.DEBUG || !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
 				LOGGER.error("Registry remapping failed!", e);
 				MinecraftClient.getInstance().execute(() -> {
 					((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getClientConnection().disconnect(

@@ -109,6 +109,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
     }
     
     private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
+        final MutableQuadViewImpl editorQuad = this.editorQuad;
         System.arraycopy(quad.getVertexData(), 0, editorBuffer, 0, 28);
         editorQuad.cullFace(cullFace);
         final Direction lightFace = quad.getFace();
@@ -129,13 +130,12 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
             tesselateSmooth(editorQuad, blockInfo.defaultLayerIndex, editorQuad.colorIndex());
         } else {
             // vanilla compatibility hack
-            // For flat lighting, if cull face is set always use neighbor light.
-            // Otherwise still need to ensure geometry is updated before offsets are applied
+			// For flat lighting, cull face drives everything and light face is ignored.
             if(cullFace == null) {
                 editorQuad.invalidateShape();
-                editorQuad.geometryFlags();
             } else {
-                editorQuad.geometryFlags(GeometryHelper.AXIS_ALIGNED_FLAG | GeometryHelper.LIGHT_FACE_FLAG);
+                editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
+                editorQuad.lightFace(cullFace);
             }
             chunkInfo.applyOffsets(editorQuad);
             tesselateFlat(editorQuad, blockInfo.defaultLayerIndex, editorQuad.colorIndex());

@@ -14,18 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.container;
+package net.fabricmc.indigo;
 
-/**
- * This is a interface that is present on a ServerPlayerEntity, it allows access to the sync id.
- */
-public interface SyncIdProvider {
-
-	/**
-	 * gets and sets the new player sync id, and returns the new value
-	 *
-	 * @return the new sync id of the player
-	 */
-	int fabric_incrementSyncId();
+public class IndigoConfig {
 
 }

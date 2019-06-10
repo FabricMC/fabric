@@ -7,5 +7,8 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
     "fabric-resource-loader-v0": "*"
-  }
+  },
+  "mixins": [
+    "fabric-tag-extensions-v0.mixins.json"
+  ]
 }

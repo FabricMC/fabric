@@ -14,9 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.callbacks;
+package net.fabricmc.fabric.mixin.container;
 
-@FunctionalInterface
-public interface RegistryPreClearCallback<T> extends RegistryCallback<T> {
-	void onPreClear();
+import net.minecraft.server.network.ServerPlayerEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+@Mixin(ServerPlayerEntity.class)
+public interface ServerPlayerEntityAccessor {
+	@Accessor
+	int getContainerSyncId();
+	@Accessor
+	void setContainerSyncId(int syncId);
 }

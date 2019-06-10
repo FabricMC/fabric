@@ -9,7 +9,8 @@
     "fabric-networking-v0": "*"
   },
   "mixins": [
-    "fabric-containers-v0.mixins.json"
+    "fabric-containers-v0.mixins.json",
+    "fabric-containers-v0.accurate.mixins.json"
   ],
   "entrypoints": {
     "client": [

@@ -57,9 +57,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
         // only used via RenderContext.getEmitter() 
         @Override
         public Maker emit() {
-            if(blockInfo.shouldDrawFace(this.cullFace())) {
-                renderQuad(this);
-            }
+            renderQuad(this);
             clear();
             return this;
         }
@@ -92,6 +90,10 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
         if(!transform.transform(editorQuad)) {
             return;
         }
+
+	    if(!blockInfo.shouldDrawFace(q.cullFace())) {
+		    return;
+	    }
         
         final RenderMaterialImpl.Value mat = q.material();
         final int textureCount = mat.spriteDepth();

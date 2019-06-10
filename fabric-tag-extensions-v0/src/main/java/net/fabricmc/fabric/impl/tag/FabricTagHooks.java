@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.callbacks;
+package net.fabricmc.fabric.impl.tag;
 
-import net.minecraft.util.Identifier;
-
-@FunctionalInterface
-public interface RegistryPreRegisterCallback<T> extends RegistryCallback<T> {
-	void onPreRegister(int rawId, Identifier id, T object, boolean isNewToRegistry);
+public interface FabricTagHooks {
+	void fabric_setExtraData(int clearCount);
 }

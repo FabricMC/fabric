@@ -14,11 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.callbacks;
+package net.fabricmc.fabric.api.tag;
 
-import net.minecraft.util.Identifier;
-
-@FunctionalInterface
-public interface RegistryPostRegisterCallback<T> extends RegistryCallback<T> {
-	void onPostRegister(int rawId, Identifier id, T object);
+/**
+ * Interface implemented by {@link net.minecraft.tag.Tag.Builder} instances when
+ * Fabric API is present.
+ *
+ * @param <T>
+ */
+public interface FabricTagBuilder<T> {
+	/**
+	 * Clear the contained entries and mark the tag as replaced.
+	 */
+	void clearTagEntries();
 }
