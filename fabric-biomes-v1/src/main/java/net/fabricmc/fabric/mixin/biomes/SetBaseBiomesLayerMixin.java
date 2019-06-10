@@ -28,6 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.fabricmc.fabric.api.biomes.v1.BiomeClimate;
 import net.fabricmc.fabric.impl.biomes.BiomeLists;
 import net.minecraft.util.Pair;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 
@@ -64,7 +66,17 @@ public class SetBaseBiomesLayerMixin
 			update();
 		}
 	}
-
+	
+	@Inject(at = @At("RETURN"), method = "sample", cancellable = true)
+	private void returnSample(LayerRandomnessSource rand, int value, CallbackInfoReturnable<Integer> info)
+	{
+		Biome biome = Registry.BIOME.get(value);
+		if (BiomeLists.VARIANTS_MAP.containsKey(biome))
+		{
+			info.setReturnValue(Registry.BIOME.getRawId(BiomeLists.VARIANTS_MAP.get(biome).transformBiome(biome, rand)));
+		}
+	}
+	
 	private void update()
 	{
 		for (; pointer < BiomeLists.INJECTED_BIOME_LIST.size(); ++pointer)
