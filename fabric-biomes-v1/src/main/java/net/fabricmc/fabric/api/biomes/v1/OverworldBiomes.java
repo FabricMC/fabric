@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.impl.biomes.ClimateBiomeEntry;
 import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import net.fabricmc.fabric.impl.biomes.ModdedClimateManager;
 import net.fabricmc.fabric.impl.biomes.VariantPicker;
 import net.fabricmc.fabric.impl.biomes.WeightedBiomePicker;
 import net.minecraft.world.biome.Biome;
@@ -37,10 +38,10 @@ public final class OverworldBiomes
 	 */
 	public static void addBiome(Biome biome, Climate climate, int weight)
 	{
-		
 		Object2IntMap<Biome> weightMap = InternalBiomeData.BIOME_WEIGHTS.computeIfAbsent(climate, map -> new Object2IntOpenHashMap<>());
 		weightMap.put(biome, weight + weightMap.computeIfAbsent(biome, a -> 0));
 		
+		ModdedClimateManager.setClimateModified(climate);
 		for (int i = 0; i < weight; ++i)
 			InternalBiomeData.INJECTED_BIOMES.add(new ClimateBiomeEntry(biome, climate));
 		
