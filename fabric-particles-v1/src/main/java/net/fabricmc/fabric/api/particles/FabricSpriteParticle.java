@@ -24,6 +24,11 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
+/**
+ * Base class for custom particles using Fabric's particle API.
+ * 
+ * @author swordglowsblue
+ */
 public abstract class FabricSpriteParticle extends SpriteBillboardParticle {
 	public FabricSpriteParticle(World world, double x, double y, double z, double vx, double vy, double vz) {
 		super(world, x, y, z, vx, vy, vz);
@@ -32,6 +37,13 @@ public abstract class FabricSpriteParticle extends SpriteBillboardParticle {
 		this.setSprite(sat.getSprite(this.getSprite()));
 	}
 
+	/**
+	 * Get the identifier of the sprite this particle should use.
+	 * This should be the same identifier used to register the sprite with
+	 * 	{@link net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback ClientSpriteRegistryCallback}.
+	 * 	The particle must be registered under the particle atlas ({@link SpriteAtlasTexture#PARTICLE_ATLAS_TEX}).
+	 */
 	protected abstract Identifier getSprite();
+
 	public ParticleTextureSheet getType() { return ParticleTextureSheet.PARTICLE_SHEET_OPAQUE; }
 }

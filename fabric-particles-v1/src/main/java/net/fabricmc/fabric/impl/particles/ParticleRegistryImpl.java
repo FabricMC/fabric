@@ -27,6 +27,11 @@ import net.minecraft.particle.ParticleType;
 
 import java.util.HashMap;
 
+/**
+ * Core methods for registering particles with the Fabric API.
+ *
+ * @author swordglowsblue
+ */
 public class ParticleRegistryImpl implements ParticleRegistry {
 	public DefaultParticleType createSimpleParticleType() { return createSimpleParticleType(false); }
 	public DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {
@@ -41,6 +46,11 @@ public class ParticleRegistryImpl implements ParticleRegistry {
 		return new FabricParticleType<>(shouldAlwaysSpawn, paramFactory);
 	}
 
+	/**
+	 * Cache of particle factories awaiting registration.
+	 * Used to allow for registering particles with the API before {@link MinecraftClient#particleManager} is ready.
+	 * Don't access this directly. Just don't.
+	 */
 	@Environment(EnvType.CLIENT)
 	public final HashMap<ParticleType<?>, ParticleFactory<?>> factoriesAwaitingRegistry = new HashMap<>();
 
@@ -51,6 +61,7 @@ public class ParticleRegistryImpl implements ParticleRegistry {
 		else factoriesAwaitingRegistry.put(type, factory);
 	}
 
+	/** Wrapper around {@link ParticleType} to bypass protected constructor. */
 	private static class FabricParticleType<T extends ParticleEffect> extends ParticleType<T> {
 		FabricParticleType(boolean shouldAlwaysSpawn, ParticleEffect.Factory<T> paramFactory) {
 			super(shouldAlwaysSpawn, paramFactory);

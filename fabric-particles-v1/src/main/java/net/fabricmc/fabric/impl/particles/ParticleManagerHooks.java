@@ -23,9 +23,18 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 
+/**
+ * Various hooks into {@link net.minecraft.client.particle.ParticleManager ParticleManager} for registering particles.
+ * You shouldn't generally need to use this directly, these methods are called by {@link net.fabricmc.fabric.api.particles.ParticleRegistry}
+ * 	and {@link net.fabricmc.fabric.api.particles.FabricSpriteParticle}.
+ *
+ * @author swordglowsblue
+ */
 public interface ParticleManagerHooks {
+	/** Get the sprite atlas texture used by {@link net.minecraft.client.particle.ParticleManager}. */
 	SpriteAtlasTexture fabric_getSpriteAtlasTexture();
 
+	/** Register a custom {@link ParticleFactory} for the given {@link ParticleType}. */
 	@Environment(EnvType.CLIENT)
 	<T extends ParticleEffect> void fabric_registerCustomFactory(ParticleType<T> pt, ParticleFactory<T> pf);
 }
