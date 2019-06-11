@@ -167,8 +167,10 @@ subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			compile project(path: ":${it.name}", configuration: "dev")
-			include project("${it.name}:")
+			if(it.name != "fabric-testmods-v0") {
+				compile project(path: ":${it.name}", configuration: "dev")
+				include project("${it.name}:")
+			}
 		}
 	}
 }
