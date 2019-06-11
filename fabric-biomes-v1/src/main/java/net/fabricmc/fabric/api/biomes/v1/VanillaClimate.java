@@ -16,19 +16,15 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
-import net.minecraft.world.biome.Biome;
-
-public final class FabricBiomes
+/**
+ * Enum representing the biome climates of Minecraft.
+ * There are four climates, which represent internal groups of biomes.
+ * 
+ */
+public enum VanillaClimate implements Climate
 {
-	private FabricBiomes() {}
-	
-	/**
-	 * Adds the biome to spawn biomes, so that the player may spawn in the biome
-	 */
-	public static void addSpawnBiome(Biome biome)
-	{
-		InternalBiomeData.SPAWN_BIOMES.add(biome);
-	}
-	
+	SNOWY,
+	COOL,
+	TEMPERATE,
+	DRY;
 }

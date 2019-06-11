@@ -21,8 +21,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.impl.biomes.BiomeAssociate;
-import net.fabricmc.fabric.impl.biomes.BiomeLists;
+import net.fabricmc.fabric.impl.biomes.WeightedBiomePicker;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddHillsLayer;
@@ -34,55 +34,55 @@ import net.minecraft.world.biome.layer.LayerSampler;
 public class HillsLayerMixin
 {
 	@Inject(at = @At(value = "HEAD"), method = "sample", cancellable = true)
-	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler layerSampler_2, int chunkX, int chunkZ,
+	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseLayerSampler, int chunkX, int chunkZ,
 			CallbackInfoReturnable<Integer> info)
 	{
-		final int previousBiome = biomeSampler.sample(chunkX, chunkZ);
+		final int fabric_biomeId = biomeSampler.sample(chunkX, chunkZ);
 		
-		int int_66 = layerSampler_2.sample(chunkX, chunkZ);
+		int fabric_noiseSample = noiseLayerSampler.sample(chunkX, chunkZ);
 
-		int int_42 = (int_66 - 2) % 29;
-
-		final Biome prevBiome = Registry.BIOME.get(previousBiome);
+		int fabric_processedNoiseSample = (fabric_noiseSample - 2) % 29;
 		
-		if (BiomeLists.HILLS_MAP.containsKey(prevBiome) && (rand.nextInt(3) == 0 || int_42 == 0))
+		final Biome fabric_biome = Registry.BIOME.get(fabric_biomeId);
+		
+		if (InternalBiomeData.HILLS_MAP.containsKey(fabric_biome) && (rand.nextInt(3) == 0 || fabric_processedNoiseSample == 0))
 		{
-			BiomeAssociate associate = BiomeLists.HILLS_MAP.get(prevBiome);
+			WeightedBiomePicker biomePicker = InternalBiomeData.HILLS_MAP.get(fabric_biome);
 
-			int biomeReturn = associate.pickRandomBiome(rand);
+			int biomeReturn = biomePicker.pickRandom(rand);
 
-			Biome biome_42;
+			Biome parent;
 			
-			if (int_42 == 0 && biomeReturn != previousBiome)
+			if (fabric_processedNoiseSample == 0 && biomeReturn != fabric_biomeId)
 			{
-				biome_42 = Biome.getParentBiome((Biome)Registry.BIOME.get(biomeReturn));
-				biomeReturn = biome_42 == null ? previousBiome : Registry.BIOME.getRawId(biome_42);
+				parent = Biome.getParentBiome((Biome)Registry.BIOME.get(biomeReturn));
+				biomeReturn = parent == null ? fabric_biomeId : Registry.BIOME.getRawId(parent);
 			}
 
-			if (biomeReturn != previousBiome)
+			if (biomeReturn != fabric_biomeId)
 			{
-				int int_43 = 0;
-				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX, chunkZ - 1), previousBiome))
+				int similarity = 0;
+				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX, chunkZ - 1), fabric_biomeId))
 				{
-					++int_43;
+					++similarity;
 				}
 
-				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX + 1, chunkZ), previousBiome))
+				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX + 1, chunkZ), fabric_biomeId))
 				{
-					++int_43;
+					++similarity;
 				}
 
-				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX - 1, chunkZ), previousBiome))
+				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX - 1, chunkZ), fabric_biomeId))
 				{
-					++int_43;
+					++similarity;
 				}
 
-				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX, chunkZ + 1), previousBiome))
+				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX, chunkZ + 1), fabric_biomeId))
 				{
-					++int_43;
+					++similarity;
 				}
 
-				if (int_43 >= 3)
+				if (similarity >= 3)
 				{
 					info.setReturnValue(biomeReturn);
 				}

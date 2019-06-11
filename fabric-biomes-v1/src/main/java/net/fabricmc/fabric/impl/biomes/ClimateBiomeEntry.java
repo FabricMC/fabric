@@ -16,28 +16,33 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.util.Pair;
+import net.fabricmc.fabric.api.biomes.v1.Climate;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-public final class VariantAssociate
+public class ClimateBiomeEntry
 {
-	private final List<Pair<Biome, Integer>> variants = new ArrayList<>();
+	private Biome biome;
+	private Climate climate;
 	
-	public void addBiomeWithRarity(Biome b, int rarity)
+	public ClimateBiomeEntry(final Biome biome, final Climate climate)
 	{
-		variants.add(new Pair<>(b, rarity));
+		this.biome = biome;
+		this.climate = climate;
 	}
 	
-	public Biome transformBiome(Biome biome, LayerRandomnessSource rand)
+	public Biome getBiome()
 	{
-		for(Pair<Biome, Integer> variant : variants)
-			if (rand.nextInt(variant.getRight()) == 0)
-				return variant.getLeft();
-		
 		return biome;
+	}
+	
+	public Climate getClimate()
+	{
+		return climate;
+	}
+	
+	public int getRawId()
+	{
+		return Registry.BIOME.getRawId(biome);
 	}
 }

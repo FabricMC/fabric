@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.biomes.v1;
+package net.fabricmc.fabric.impl.biomes;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-public final class FabricBiomes
+public final class VariantPicker
 {
-	private FabricBiomes() {}
+	private final List<BiomeVariant> variants = new ArrayList<>();
 	
-	/**
-	 * Adds the biome to spawn biomes, so that the player may spawn in the biome
-	 */
-	public static void addSpawnBiome(Biome biome)
+	public void addBiomeWithRarity(Biome b, int rarity)
 	{
-		InternalBiomeData.SPAWN_BIOMES.add(biome);
+		variants.add(new BiomeVariant(b, rarity));
 	}
 	
+	public Biome transformBiome(Biome biome, LayerRandomnessSource rand)
+	{
+		for(BiomeVariant variant : variants)
+			if (rand.nextInt(variant.getRarity()) == 0)
+				return variant.getVariant();
+		
+		return biome;
+	}
 }

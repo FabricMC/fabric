@@ -16,23 +16,12 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.BIOME_WEIGHT_LOOKUP;
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.CUSTOM_BIOMES;
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.EDGE_MAP;
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.HILLS_MAP;
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.INJECTED_BIOME_LIST;
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.RIVER_MAP;
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.SHORE_MAP;
-import static net.fabricmc.fabric.impl.biomes.BiomeLists.VARIANTS_MAP;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import net.fabricmc.fabric.api.biomes.v1.RiverAssociates.RiverAssociate;
-import net.fabricmc.fabric.impl.biomes.BiomeAssociate;
-import net.fabricmc.fabric.impl.biomes.VariantAssociate;
-import net.minecraft.util.Pair;
-import net.minecraft.util.registry.Registry;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.fabric.impl.biomes.ClimateBiomeEntry;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import net.fabricmc.fabric.impl.biomes.VariantPicker;
+import net.fabricmc.fabric.impl.biomes.WeightedBiomePicker;
 import net.minecraft.world.biome.Biome;
 
 public final class OverworldBiomes
@@ -46,15 +35,16 @@ public final class OverworldBiomes
 	 * @param climate the climate group whereto the biome is added
 	 * @param weight the weight of the entry
 	 */
-	public static void addBiomeToClimate(Biome biome, BiomeClimate climate, int weight)
+	public static void addBiome(Biome biome, Climate climate, int weight)
 	{
-		Map<Biome, Integer> weightMap = BIOME_WEIGHT_LOOKUP.computeIfAbsent(climate, map -> new HashMap<>());
-		weightMap.put(biome, weight + weightMap.computeIfAbsent(biome, a -> Integer.valueOf(0)));
+		
+		Object2IntMap<Biome> weightMap = InternalBiomeData.BIOME_WEIGHTS.computeIfAbsent(climate, map -> new Object2IntOpenHashMap<>());
+		weightMap.put(biome, weight + weightMap.computeIfAbsent(biome, a -> 0));
 		
 		for (int i = 0; i < weight; ++i)
-			INJECTED_BIOME_LIST.add(new Pair<>(Registry.BIOME.getRawId(biome), climate));
+			InternalBiomeData.INJECTED_BIOMES.add(new ClimateBiomeEntry(biome, climate));
 		
-		CUSTOM_BIOMES.add(biome);
+		InternalBiomeData.CUSTOM_BIOMES.add(biome);
 	}
 	
 	/**
@@ -66,9 +56,9 @@ public final class OverworldBiomes
 	 */
 	public static void addHillsBiome(Biome baseBiome, Biome hillsBiome, int weight)
 	{
-		HILLS_MAP.computeIfAbsent(baseBiome, biome -> new BiomeAssociate()).addBiomeWithWeight(hillsBiome, weight);
-
-		CUSTOM_BIOMES.add(hillsBiome);
+		InternalBiomeData.HILLS_MAP.computeIfAbsent(baseBiome, biome -> new WeightedBiomePicker()).addBiome(hillsBiome, weight);
+		
+		InternalBiomeData.CUSTOM_BIOMES.add(hillsBiome);
 	}
 
 	/**
@@ -80,9 +70,9 @@ public final class OverworldBiomes
 	 */
 	public static void addShoreBiome(Biome baseBiome, Biome shoreBiome, int weight)
 	{
-		SHORE_MAP.computeIfAbsent(baseBiome, biome -> new BiomeAssociate()).addBiomeWithWeight(shoreBiome, weight);
+		InternalBiomeData.SHORE_MAP.computeIfAbsent(baseBiome, biome -> new WeightedBiomePicker()).addBiome(shoreBiome, weight);
 
-		CUSTOM_BIOMES.add(shoreBiome);
+		InternalBiomeData.CUSTOM_BIOMES.add(shoreBiome);
 	}
 
 	/**
@@ -94,9 +84,9 @@ public final class OverworldBiomes
 	 */
 	public static void addEdgeBiome(Biome baseBiome, Biome edgeBiome, int weight)
 	{
-		EDGE_MAP.computeIfAbsent(baseBiome, biome -> new BiomeAssociate()).addBiomeWithWeight(edgeBiome, weight);
+		InternalBiomeData.EDGE_MAP.computeIfAbsent(baseBiome, biome -> new WeightedBiomePicker()).addBiome(edgeBiome, weight);
 
-		CUSTOM_BIOMES.add(edgeBiome);
+		InternalBiomeData.CUSTOM_BIOMES.add(edgeBiome);
 	}
 	
 	/**
@@ -107,29 +97,32 @@ public final class OverworldBiomes
 	 */
 	public static void addBiomeVariant(Biome baseBiome, Biome variantBiome, int rarity)
 	{
-		VARIANTS_MAP.computeIfAbsent(baseBiome, biome -> new VariantAssociate()).addBiomeWithRarity(variantBiome, rarity);
+		InternalBiomeData.VARIANTS_MAP.computeIfAbsent(baseBiome, biome -> new VariantPicker()).addBiomeWithRarity(variantBiome, rarity);
 		
-		CUSTOM_BIOMES.add(variantBiome);
+		InternalBiomeData.CUSTOM_BIOMES.add(variantBiome);
 	}
 	
 	/**
 	 * Sets the river type that will generate in the biome
 	 * 
 	 * @param baseBiome the base biome wherein the river biome is to be set
-	 * @param riverAssociate the river associate representing the river biome
+	 * @param riverBiome the river biome for this biome
 	 */
-	public static void setRiverBiome(Biome baseBiome, RiverAssociate riverAssociate)
+	public static void setRiverBiome(Biome baseBiome, Biome riverBiome)
 	{
-		RIVER_MAP.put(baseBiome, riverAssociate);
+		InternalBiomeData.RIVER_MAP.put(baseBiome, riverBiome);
 
-		if (!(riverAssociate == RiverAssociates.NONE)) CUSTOM_BIOMES.add(riverAssociate.getBiome());
+		if (riverBiome != null)
+		{
+			InternalBiomeData.CUSTOM_BIOMES.add(riverBiome);
+		}
 	}
 	
 	/**
 	 * @return The weight of the biome in the specified climate
 	 */
-	public static int getWeight(Biome biome, BiomeClimate climate)
+	public static int getWeight(Biome biome, VanillaClimate climate)
 	{
-		return BIOME_WEIGHT_LOOKUP.containsKey(climate) ? 0 : BIOME_WEIGHT_LOOKUP.get(climate).getOrDefault(biome, 0);
+		return InternalBiomeData.BIOME_WEIGHTS.containsKey(climate) ? 0 : InternalBiomeData.BIOME_WEIGHTS.get(climate).getOrDefault(biome, 0);
 	}
 }

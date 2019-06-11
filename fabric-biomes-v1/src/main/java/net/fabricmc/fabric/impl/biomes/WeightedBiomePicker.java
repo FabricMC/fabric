@@ -16,23 +16,21 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
- * Class which provides a weighted Biome picker
- * using Minecraft's {@link LayerRandomnessSource} as a randomness source
+ * Provides a weighted biome picker using Minecraft's {@link LayerRandomnessSource} as a randomness source
  */
-public final class BiomeAssociate
+public final class WeightedBiomePicker
 {
 	private int weightSum = 0;
-	private List<Integer> biomes = new ArrayList<>();
+	private IntList biomes = new IntArrayList();
 	
-	public void addBiomeWithWeight(Biome biome, int weight)
+	public void addBiome(Biome biome, int weight)
 	{
 		this.weightSum += weight;
 		int b = Registry.BIOME.getRawId(biome);
@@ -41,7 +39,8 @@ public final class BiomeAssociate
 			biomes.add(b);
 	}
 	
-	public int pickRandomBiome(LayerRandomnessSource rand)
+	@SuppressWarnings("deprecation")
+	public int pickRandom(LayerRandomnessSource rand)
 	{
 		return biomes.get(rand.nextInt(weightSum));
 	}
