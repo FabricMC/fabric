@@ -25,9 +25,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.api.biomes.v1.BiomeClimate;
-import net.fabricmc.fabric.impl.biomes.BiomeLists;
-import net.minecraft.util.Pair;
+import net.fabricmc.fabric.api.biomes.v1.VanillaClimate;
+import net.fabricmc.fabric.impl.biomes.ClimateBiomeEntry;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
@@ -56,14 +56,14 @@ public class SetBaseBiomesLayerMixin
 	@Mutable
 	private static int[] DRY_BIOMES;
 
-	private static int pointer = 0;
+	private static int fabric_injectionIndex = 0;
 
 	@Inject(at = @At("HEAD"), method = "sample")
 	private void sample(LayerRandomnessSource rand, int value, CallbackInfoReturnable<Integer> info)
 	{
-		if (pointer < BiomeLists.INJECTED_BIOME_LIST.size())
+		if (fabric_injectionIndex < InternalBiomeData.INJECTED_BIOMES.size())
 		{
-			update();
+			fabric_updateBiomeArrays();
 		}
 	}
 	
@@ -71,35 +71,40 @@ public class SetBaseBiomesLayerMixin
 	private void returnSample(LayerRandomnessSource rand, int value, CallbackInfoReturnable<Integer> info)
 	{
 		Biome biome = Registry.BIOME.get(value);
-		if (BiomeLists.VARIANTS_MAP.containsKey(biome))
+		if (InternalBiomeData.VARIANTS_MAP.containsKey(biome))
 		{
-			info.setReturnValue(Registry.BIOME.getRawId(BiomeLists.VARIANTS_MAP.get(biome).transformBiome(biome, rand)));
+			info.setReturnValue(Registry.BIOME.getRawId(InternalBiomeData.VARIANTS_MAP.get(biome).transformBiome(biome, rand)));
 		}
 	}
 	
-	private void update()
+	private void fabric_updateBiomeArrays()
 	{
-		for (; pointer < BiomeLists.INJECTED_BIOME_LIST.size(); ++pointer)
+		while (fabric_injectionIndex < InternalBiomeData.INJECTED_BIOMES.size())
 		{
-			Pair<Integer, BiomeClimate> pair = BiomeLists.INJECTED_BIOME_LIST.get(pointer);
-			
-			switch (pair.getRight())
+			ClimateBiomeEntry injectedBiome = InternalBiomeData.INJECTED_BIOMES.get(fabric_injectionIndex);
+			if (injectedBiome.getClimate() instanceof VanillaClimate)
 			{
-			case SNOWY:
-				SNOWY_BIOMES = ArrayUtils.addAll(SNOWY_BIOMES, pair.getLeft());
-				break;
-			case COOL:
-				COOL_BIOMES = ArrayUtils.addAll(COOL_BIOMES, pair.getLeft());
-				break;
-			case DRY:
-				DRY_BIOMES = ArrayUtils.addAll(DRY_BIOMES, pair.getLeft());
-				break;
-			case TEMPERATE:
-				TEMPERATE_BIOMES = ArrayUtils.addAll(TEMPERATE_BIOMES, pair.getLeft());
-				break;
-			default:
-				break;
+				switch ((VanillaClimate) injectedBiome.getClimate())
+				{
+					case SNOWY:
+						SNOWY_BIOMES = ArrayUtils.addAll(SNOWY_BIOMES, injectedBiome.getRawId());
+						break;
+					case COOL:
+						COOL_BIOMES = ArrayUtils.addAll(COOL_BIOMES, injectedBiome.getRawId());
+						break;
+					case DRY:
+						DRY_BIOMES = ArrayUtils.addAll(DRY_BIOMES, injectedBiome.getRawId());
+						break;
+					case TEMPERATE:
+						TEMPERATE_BIOMES = ArrayUtils.addAll(TEMPERATE_BIOMES, injectedBiome.getRawId());
+						break;
+					default:
+						break;
+				}
 			}
+			
+			++fabric_injectionIndex;
 		}
 	}
+
 }

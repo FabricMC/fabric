@@ -7,7 +7,7 @@
     "EdgeLayerMixin",
     "RiversLayerMixin",
     "SetBaseBiomesLayerMixin",
-    "SpawnBiomesMixin",
+    "BiomeSourceMixin",
     "VanillaLayeredBiomeSourceMixin"
   ],
   "injectors": {

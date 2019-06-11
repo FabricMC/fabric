@@ -16,14 +16,6 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-/**
- * Enum representing the biome climates of Minecraft.
- * There are four climates, which represent internal groups of biomes.
- */
-public enum BiomeClimate
+public interface Climate
 {
-	SNOWY,
-	COOL,
-	TEMPERATE,
-	DRY;
 }

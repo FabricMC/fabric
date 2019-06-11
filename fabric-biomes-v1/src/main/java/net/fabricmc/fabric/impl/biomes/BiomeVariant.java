@@ -14,21 +14,34 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.biomes.v1;
+package net.fabricmc.fabric.impl.biomes;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
 
-public final class FabricBiomes
+public class BiomeVariant
 {
-	private FabricBiomes() {}
-	
+
+	private Biome variant;
+	private int rarity;
+
 	/**
-	 * Adds the biome to spawn biomes, so that the player may spawn in the biome
+	 * @param variant the variant biome
+	 * @param rarity
 	 */
-	public static void addSpawnBiome(Biome biome)
+	public BiomeVariant(final Biome variant, final int rarity)
 	{
-		InternalBiomeData.SPAWN_BIOMES.add(biome);
+		this.variant = variant;
+		this.rarity = rarity;
 	}
-	
+
+	public Biome getVariant()
+	{
+		return variant;
+	}
+
+	public int getRarity()
+	{
+		return rarity;
+	}
+
 }

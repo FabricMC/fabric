@@ -28,12 +28,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.impl.biomes.BiomeLists;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.BiomeSource;
 
 @Mixin(BiomeSource.class)
-public class SpawnBiomesMixin 
+public class BiomeSourceMixin 
 {
 	@Shadow
 	@Final
@@ -42,11 +42,11 @@ public class SpawnBiomesMixin
 	@Inject(at = @At("RETURN"), cancellable = true, method = "getSpawnBiomes")
 	private void getSpawnBiomes(CallbackInfoReturnable<List<Biome>> info)
 	{
-		Set<Biome> biomes = new LinkedHashSet<>(info.getReturnValue());
+		Set<Biome> fabric_biomes = new LinkedHashSet<>(info.getReturnValue());
 		
-		if (biomes.addAll(BiomeLists.SPAWN_BIOMES))
+		if (fabric_biomes.addAll(InternalBiomeData.SPAWN_BIOMES))
 		{
-			info.setReturnValue(new ArrayList<>(biomes));
+			info.setReturnValue(new ArrayList<>(fabric_biomes));
 		}
 	}
 }

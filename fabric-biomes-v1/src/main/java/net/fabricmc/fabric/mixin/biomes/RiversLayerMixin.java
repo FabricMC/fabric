@@ -23,9 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.api.biomes.v1.RiverAssociates;
-import net.fabricmc.fabric.api.biomes.v1.RiverAssociates.RiverAssociate;
-import net.fabricmc.fabric.impl.biomes.BiomeLists;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddRiversLayer;
@@ -40,18 +38,18 @@ public class RiversLayerMixin
 	private static int RIVER_ID;
 	
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
-	private void sample(LayerRandomnessSource rand, LayerSampler prevBiomeSampler, LayerSampler sampler2, int x, int z, CallbackInfoReturnable<Integer> info)
+	private void sample(LayerRandomnessSource rand, LayerSampler landLayerSampler, LayerSampler riverLayerSampler, int x, int z, CallbackInfoReturnable<Integer> info)
 	{
-		int previousBiomeId = prevBiomeSampler.sample(x, z);
-		int biome_2 = sampler2.sample(x, z);
+		int fabric_landBiomeId = landLayerSampler.sample(x, z);
+		int fabric_riverBiomeId = riverLayerSampler.sample(x, z);
 		
-		Biome prevBiome = Registry.BIOME.get(previousBiomeId);
+		Biome fabric_landBiome = Registry.BIOME.get(fabric_landBiomeId);
 		
-		if (BiomeLists.RIVER_MAP.containsKey(prevBiome) && biome_2 == RIVER_ID)
+		if (InternalBiomeData.RIVER_MAP.containsKey(fabric_landBiome) && fabric_riverBiomeId == RIVER_ID)
 		{
-			RiverAssociate associate = BiomeLists.RIVER_MAP.get(prevBiome);
+			Biome river = InternalBiomeData.RIVER_MAP.get(fabric_landBiome);
 			
-			info.setReturnValue(associate == RiverAssociates.NONE ? previousBiomeId : Registry.BIOME.getRawId(associate.getBiome()));
+			info.setReturnValue(river == null ? fabric_landBiomeId : Registry.BIOME.getRawId(river));
 		}
 	}
 }

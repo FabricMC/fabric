@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.biomes;
 
-import java.util.Set;
 import java.util.function.Function;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.impl.biomes.BiomeLists;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -37,9 +36,7 @@ public class VanillaLayeredBiomeSourceMixin
 	{
 		Function<StructureFeature<?>, Boolean> b = (structure) -> {
 			
-			Set<Biome> customBiomeSet = BiomeLists.CUSTOM_BIOMES;
-			
-			for(Biome biome : customBiomeSet)
+			for(Biome biome : InternalBiomeData.CUSTOM_BIOMES)
 			{
 				if (biome.hasStructureFeature(structure))
 				{
@@ -50,7 +47,7 @@ public class VanillaLayeredBiomeSourceMixin
 			return false;
 		};
 		
-		if (b.apply(structureFeature).booleanValue())
+		if (b.apply(structureFeature))
 			info.setReturnValue(Boolean.TRUE);
 	}
 }

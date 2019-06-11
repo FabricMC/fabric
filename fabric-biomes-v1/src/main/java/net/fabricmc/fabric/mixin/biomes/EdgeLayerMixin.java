@@ -21,7 +21,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.impl.biomes.BiomeLists;
+import net.fabricmc.fabric.impl.biomes.BiomeSamplingUtils;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddEdgeBiomesLayer;
@@ -31,34 +32,17 @@ import net.minecraft.world.biome.layer.LayerRandomnessSource;
 public class EdgeLayerMixin
 {
 	@Inject(at = @At(value = "HEAD"), method = "sample", cancellable = true)
-	private void sample(LayerRandomnessSource rand, int int_1, int int_2, int int_3, int int_4, int int_5, CallbackInfoReturnable<Integer> info)
+	private void sample(LayerRandomnessSource rand, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info)
 	{
-		Biome prevBiome = Registry.BIOME.get(int_5);
+		Biome prevBiome = Registry.BIOME.get(center);
 
-		if (BiomeLists.SHORE_MAP.containsKey(prevBiome) && isShoreToGenerate(int_1, int_2, int_3, int_4))
+		if (InternalBiomeData.SHORE_MAP.containsKey(prevBiome) && BiomeSamplingUtils.isShore(north, east, south, west))
 		{
-			info.setReturnValue(BiomeLists.SHORE_MAP.get(prevBiome).pickRandomBiome(rand));
+			info.setReturnValue(InternalBiomeData.SHORE_MAP.get(prevBiome).pickRandom(rand));
 		}
-		else if (BiomeLists.EDGE_MAP.containsKey(prevBiome) && isEdgeToGenerate(int_1, int_2, int_3, int_4, int_5))
+		else if (InternalBiomeData.EDGE_MAP.containsKey(prevBiome) && BiomeSamplingUtils.isEdge(north, east, south, west, center))
 		{
-			info.setReturnValue(BiomeLists.EDGE_MAP.get(prevBiome).pickRandomBiome(rand));
+			info.setReturnValue(InternalBiomeData.EDGE_MAP.get(prevBiome).pickRandom(rand));
 		}
-	}
-	
-	private boolean isEdgeToGenerate(int int_1, int int_2, int int_3, int int_4, int biome)
-	{
-		return int_1 != biome || int_2 != biome || int_3 != biome || int_4 != biome;
-	}
-
-	private boolean isShoreToGenerate(int int_1, int int_2, int int_3, int int_4)
-	{
-		return isOceanBiome(int_1) || isOceanBiome(int_2) || isOceanBiome(int_3) || isOceanBiome(int_4);
-	}
-	
-	private boolean isOceanBiome(int int_1)
-	{
-		Biome biome = Registry.BIOME.get(int_1);
-		
-		return biome != null && biome.getCategory() == Biome.Category.OCEAN;
 	}
 }
