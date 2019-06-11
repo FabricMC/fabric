@@ -24,11 +24,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
-/**
- * Base class for custom particles using Fabric's particle API.
- * 
- * @author swordglowsblue
- */
+/** Base class for custom particles using Fabric's particle API. */
 public abstract class FabricSpriteParticle extends SpriteBillboardParticle {
 	public FabricSpriteParticle(World world, double x, double y, double z, double vx, double vy, double vz) {
 		super(world, x, y, z, vx, vy, vz);

@@ -27,8 +27,6 @@ import net.minecraft.particle.ParticleType;
  * Various hooks into {@link net.minecraft.client.particle.ParticleManager ParticleManager} for registering particles.
  * You shouldn't generally need to use this directly, these methods are called by {@link net.fabricmc.fabric.api.particles.ParticleRegistry}
  * 	and {@link net.fabricmc.fabric.api.particles.FabricSpriteParticle}.
- *
- * @author swordglowsblue
  */
 public interface ParticleManagerHooks {
 	/** Get the sprite atlas texture used by {@link net.minecraft.client.particle.ParticleManager}. */

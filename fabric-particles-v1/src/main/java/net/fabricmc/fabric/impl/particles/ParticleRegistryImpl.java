@@ -27,11 +27,7 @@ import net.minecraft.particle.ParticleType;
 
 import java.util.HashMap;
 
-/**
- * Core methods for registering particles with the Fabric API.
- *
- * @author swordglowsblue
- */
+/** Core methods for registering particles with the Fabric API. */
 public class ParticleRegistryImpl implements ParticleRegistry {
 	public DefaultParticleType createSimpleParticleType() { return createSimpleParticleType(false); }
 	public DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {

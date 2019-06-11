@@ -24,11 +24,7 @@ import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 
-/**
- * Core methods for registering particles with the Fabric API.
- *
- * @author swordglowsblue
- */
+/** Core methods for registering particles with the Fabric API. */
 public interface ParticleRegistry {
 	ParticleRegistry INSTANCE = new ParticleRegistryImpl();
 

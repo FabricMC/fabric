@@ -34,11 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 
-/**
- * Various hooks into {@link ParticleManager} for registering particles.
- *
- * @author swordglowsblue
- */
+/** Various hooks into {@link ParticleManager} for registering particles. */
 @Mixin(ParticleManager.class)
 abstract class MixinParticleManager implements ParticleManagerHooks {
 	@Shadow
