@@ -32,7 +32,7 @@ public interface ScreenInitCallback {
 	 * Event bus for mods to subscribe to this event.
 	 *
 	 * Usage:
-	 *   ScreenInitCallback.EVENT.subscribe((client, screen) -> {...});
+	 *   <pre><code>ScreenInitCallback.EVENT.register((client, screen) -> {...});</pre></code>
 	 */
 	Event<ScreenInitCallback> EVENT = EventFactory.createArrayBacked(ScreenInitCallback.class, listeners -> (client, screen) -> {
 		for (ScreenInitCallback event : listeners) {
