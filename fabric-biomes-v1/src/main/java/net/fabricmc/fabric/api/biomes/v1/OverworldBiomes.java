@@ -92,5 +92,14 @@ public final class OverworldBiomes {
 	public static void setRiverBiome(Biome parent, Biome river) {
 		InternalBiomeData.setOverworldRiverBiome(parent, river);
 	}
+	
+	/**
+	 * @param biome the biome to get the weight of
+	 * @param climate the climate for which to get the biome weight
+	 * @return the weight of the biome in the particular climate
+	 */
+	public static double getWeight(Biome biome, OverworldClimate climate) {
+		return InternalBiomeData.getOverworldBiomeWeight(climate, biome);
+	}
 
 }

@@ -17,8 +17,12 @@
 package net.fabricmc.fabric.impl.biomes;
 
 import com.google.common.base.Preconditions;
+
+import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
+import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -41,57 +45,62 @@ public final class InternalBiomeData {
 	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
 	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
 	private static final Map<Biome, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
-
+	
+	private static final Map<OverworldClimate, Object2DoubleMap<Biome>> OVERWORLD_BIOME_WEIGHT_TOTALS = new HashMap<>();
 	private static final Map<OverworldClimate, List<BiomeEntry>> OVERWORLD_BASE_BIOMES = new HashMap<>();
 	protected static final EnumMap<OverworldClimate, Double> OVERWORLD_MODDED_WEIGHT_TOTALS = new EnumMap<>(OverworldClimate.class);
 
 	private static final List<Biome> OVERWORLD_INJECTED_BIOMES = new ArrayList<>();
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
-
+	
 	public static void addOverworldBaseBiome(OverworldClimate climate, Biome biome, double weight) {
 		Preconditions.checkArgument(climate != null && biome != null, "One or both arguments are null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		OVERWORLD_BASE_BIOMES.computeIfAbsent(climate, k -> new ArrayList<>()).add(new BiomeEntry(biome, weight, climate));
 		OVERWORLD_INJECTED_BIOMES.add(biome);
+		
+		Object2DoubleMap<Biome> climateMap = OVERWORLD_BIOME_WEIGHT_TOTALS.get(climate);
+		double currentWeight = climateMap.computeIfAbsent(biome, (b) -> Double.valueOf(0));
+		climateMap.replace(biome, currentWeight + weight);
 	}
 
 	public static void addOverworldHillsBiome(Biome parent, Biome hills, int weight) {
 		Preconditions.checkArgument(parent != null && hills != null, "One or both arguments are null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
-		InternalBiomeData.OVERWORLD_HILLS_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(hills, weight);
-		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(hills);
+		OVERWORLD_HILLS_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(hills, weight);
+		OVERWORLD_INJECTED_BIOMES.add(hills);
 	}
 
 	public static void addOverworldShoreBiome(Biome parent, Biome shore, int weight) {
 		Preconditions.checkArgument(parent != null && shore != null, "One or both arguments are null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
-		InternalBiomeData.OVERWORLD_SHORE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(shore, weight);
-		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(shore);
+		OVERWORLD_SHORE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(shore, weight);
+		OVERWORLD_INJECTED_BIOMES.add(shore);
 	}
 
 	public static void addOverworldEdgeBiome(Biome parent, Biome edge, int weight) {
 		Preconditions.checkArgument(parent != null && edge != null, "One or both arguments are null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
-		InternalBiomeData.OVERWORLD_EDGE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(edge, weight);
-		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(edge);
+		OVERWORLD_EDGE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(edge, weight);
+		OVERWORLD_INJECTED_BIOMES.add(edge);
 	}
 
 	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, int rarity) {
 		Preconditions.checkArgument(replaced != null && variant != null, "One or both arguments are null");
 		Preconditions.checkArgument(rarity > 0, "Rarity is zero or negative (Must be positive)");
-		InternalBiomeData.OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, rarity);
-		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(variant);
+		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, rarity);
+		OVERWORLD_INJECTED_BIOMES.add(variant);
 	}
 
 	public static void setOverworldRiverBiome(Biome parent, Biome river) {
-		InternalBiomeData.OVERWORLD_RIVER_MAP.put(parent, river);
+		OVERWORLD_RIVER_MAP.put(parent, river);
 		if (river != null) {
-			InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(river);
+			OVERWORLD_INJECTED_BIOMES.add(river);
 		}
 	}
 
@@ -139,5 +148,37 @@ public final class InternalBiomeData {
 	public static Map<Biome, VariantTransformer> getOverworldVariantTransformers() {
 		return OVERWORLD_VARIANT_TRANSFORMERS;
 	}
-
+	
+	@SuppressWarnings("deprecation")
+	public static double getOverworldBiomeWeight(OverworldClimate climate, Biome biome) {
+		Object2DoubleMap<Biome> climateMap = OVERWORLD_BIOME_WEIGHT_TOTALS.get(climate);
+		return climateMap.containsKey(biome) ? climateMap.get(biome) : 0;
+	}
+	
+	static {
+		// Add Vanilla Weights
+		Object2DoubleMap<Biome> cool_weight_totals = OVERWORLD_BIOME_WEIGHT_TOTALS.computeIfAbsent(OverworldClimate.COOL, map -> new Object2DoubleOpenHashMap<>());
+		Object2DoubleMap<Biome> dry_weight_totals = OVERWORLD_BIOME_WEIGHT_TOTALS.computeIfAbsent(OverworldClimate.DRY, map -> new Object2DoubleOpenHashMap<>());
+		Object2DoubleMap<Biome> snowy_weight_totals = OVERWORLD_BIOME_WEIGHT_TOTALS.computeIfAbsent(OverworldClimate.SNOWY, map -> new Object2DoubleOpenHashMap<>());
+		Object2DoubleMap<Biome> temperate_weight_totals = OVERWORLD_BIOME_WEIGHT_TOTALS.computeIfAbsent(OverworldClimate.TEMPERATE, map -> new Object2DoubleOpenHashMap<>());
+		
+		cool_weight_totals.put(Biomes.FOREST, 1);
+		cool_weight_totals.put(Biomes.MOUNTAINS, 1);
+		cool_weight_totals.put(Biomes.PLAINS, 1);
+		cool_weight_totals.put(Biomes.TAIGA, 1);
+		
+		dry_weight_totals.put(Biomes.DESERT, 3);
+		dry_weight_totals.put(Biomes.SAVANNA, 2);
+		dry_weight_totals.put(Biomes.PLAINS, 1);
+		
+		snowy_weight_totals.put(Biomes.SNOWY_TUNDRA, 3);
+		snowy_weight_totals.put(Biomes.SNOWY_TAIGA, 1);
+		
+		temperate_weight_totals.put(Biomes.FOREST, 1);
+		temperate_weight_totals.put(Biomes.MOUNTAINS, 1);
+		temperate_weight_totals.put(Biomes.PLAINS, 1);
+		temperate_weight_totals.put(Biomes.DARK_FOREST, 1);
+		temperate_weight_totals.put(Biomes.BIRCH_FOREST, 1);
+		temperate_weight_totals.put(Biomes.SWAMP, 1);
+	}
 }
