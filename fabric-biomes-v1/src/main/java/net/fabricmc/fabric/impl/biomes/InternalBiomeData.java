@@ -52,26 +52,38 @@ public final class InternalBiomeData {
 	public static void addOverworldBaseBiome(OverworldClimate climate, Biome biome, double weight) {
 		Preconditions.checkArgument(climate != null && biome != null, "One or both arguments are null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		OVERWORLD_BASE_BIOMES.computeIfAbsent(climate, k -> new ArrayList<>()).add(new BiomeEntry(biome, weight, climate));
 		OVERWORLD_INJECTED_BIOMES.add(biome);
 	}
 
 	public static void addOverworldHillsBiome(Biome parent, Biome hills, int weight) {
+		Preconditions.checkArgument(parent != null && hills != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		InternalBiomeData.OVERWORLD_HILLS_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(hills, weight);
 		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(hills);
 	}
 
 	public static void addOverworldShoreBiome(Biome parent, Biome shore, int weight) {
+		Preconditions.checkArgument(parent != null && shore != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		InternalBiomeData.OVERWORLD_SHORE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(shore, weight);
 		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(shore);
 	}
 
 	public static void addOverworldEdgeBiome(Biome parent, Biome edge, int weight) {
+		Preconditions.checkArgument(parent != null && edge != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		InternalBiomeData.OVERWORLD_EDGE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(edge, weight);
 		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(edge);
 	}
 
 	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, int rarity) {
+		Preconditions.checkArgument(replaced != null && variant != null, "One or both arguments are null");
+		Preconditions.checkArgument(rarity > 0, "Rarity is zero or negative (Must be positive)");
 		InternalBiomeData.OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, rarity);
 		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(variant);
 	}
