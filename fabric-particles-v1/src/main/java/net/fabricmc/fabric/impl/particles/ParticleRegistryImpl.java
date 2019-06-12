@@ -39,7 +39,7 @@ public class ParticleRegistryImpl implements ParticleRegistry {
 	}
 
 	public <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory, boolean shouldAlwaysSpawn) {
-		return new FabricParticleType<>(shouldAlwaysSpawn, paramFactory);
+		return new ParticleType<T>(shouldAlwaysSpawn, paramFactory) {};
 	}
 
 	/**
@@ -55,12 +55,5 @@ public class ParticleRegistryImpl implements ParticleRegistry {
 		ParticleManagerHooks manager = (ParticleManagerHooks)MinecraftClient.getInstance().particleManager;
 		if(manager != null) manager.fabric_registerCustomFactory(type, factory);
 		else factoriesAwaitingRegistry.put(type, factory);
-	}
-
-	/** Wrapper around {@link ParticleType} to bypass protected constructor. */
-	private static class FabricParticleType<T extends ParticleEffect> extends ParticleType<T> {
-		FabricParticleType(boolean shouldAlwaysSpawn, ParticleEffect.Factory<T> paramFactory) {
-			super(shouldAlwaysSpawn, paramFactory);
-		}
 	}
 }
