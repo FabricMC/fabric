@@ -28,9 +28,9 @@ public final class FabricBiomes {
 	}
 
 	/**
-	 * Adds the biome to spawn biomes, so that the player may spawn in the biome
+	 * Allows players to naturally spawn in this biome
 	 *
-	 * @param biome the biome to be added to spawn biomes
+	 * @param biome a biome the player should be able to spawn in
 	 */
 	public static void addSpawnBiome(Biome biome) {
 		InternalBiomeData.addSpawnBiome(biome);

@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Provides a weighted biome picker using Minecraft's {@link LayerRandomnessSource} as a randomness source
@@ -28,22 +28,26 @@ import net.minecraft.world.biome.layer.LayerRandomnessSource;
 public final class WeightedBiomePicker {
 
 	private int weightSum = 0;
-	private IntList biomes = new IntArrayList();
+	private final List<Biome> biomes = new ArrayList<>();
 
 	/**
-	 * @param biome
-	 * @param weight
+	 * @param biome the biome
+	 * @param weight the amount of times a biome is added to the biome selection
 	 */
 	public void addBiome(Biome biome, int weight) {
 		this.weightSum += weight;
-		int b = Registry.BIOME.getRawId(biome);
 
-		for (int i = 0; i < weight; ++i)
-			biomes.add(b);
+		for (int i = 0; i < weight; ++i) {
+			biomes.add(biome);
+		}
 	}
 
-	public int pickRandom(LayerRandomnessSource rand) {
-		return biomes.getInt(rand.nextInt(weightSum));
+	/**
+	 * @param rand the randomness source from the layer
+	 * @return a random biome, based on the weight
+	 */
+	public Biome pickRandom(LayerRandomnessSource rand) {
+		return biomes.get(rand.nextInt(weightSum));
 	}
 
 }

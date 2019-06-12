@@ -45,7 +45,7 @@ public class MixinAddHillsLayer {
 
 		if (InternalBiomeData.getOverworldHills().containsKey(biome) && (rand.nextInt(3) == 0 || processedNoiseSample == 0)) {
 			WeightedBiomePicker biomePicker = InternalBiomeData.getOverworldHills().get(biome);
-			int biomeReturn = biomePicker.pickRandom(rand);
+			int biomeReturn = Registry.BIOME.getRawId(biomePicker.pickRandom(rand));
 			Biome parent;
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
 				parent = Biome.getParentBiome(Registry.BIOME.get(biomeReturn));

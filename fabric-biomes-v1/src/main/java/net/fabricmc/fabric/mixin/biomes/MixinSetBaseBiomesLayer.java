@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.biomes;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.fabricmc.fabric.impl.biomes.BiomeEntry;
+import net.fabricmc.fabric.impl.biomes.BaseBiomeEntry;
 import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.fabricmc.fabric.impl.biomes.InternalBiomeUtils;
 import net.fabricmc.fabric.impl.biomes.VariantTransformer;
@@ -66,7 +66,7 @@ public class MixinSetBaseBiomesLayer {
 	private void injectDryBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = DRY_BIOMES;
 		OverworldClimate climate = OverworldClimate.DRY;
-		Double mwt = InternalBiomeData.getOverworldModdedWeightTotals().get(climate);
+		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
 		if (mwt == null) {
 			return;
 		}
@@ -77,7 +77,7 @@ public class MixinSetBaseBiomesLayer {
 			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
 		}
 		else {
-			List<BiomeEntry> moddedBiomes = InternalBiomeData.getOverworldBaseBiomes().get(climate);
+			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
 			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
 		}
 	}
@@ -86,7 +86,7 @@ public class MixinSetBaseBiomesLayer {
 	private void injectTemperateBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = TEMPERATE_BIOMES;
 		OverworldClimate climate = OverworldClimate.TEMPERATE;
-		Double mwt = InternalBiomeData.getOverworldModdedWeightTotals().get(climate);
+		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
 		if (mwt == null) {
 			return;
 		}
@@ -97,7 +97,7 @@ public class MixinSetBaseBiomesLayer {
 			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
 		}
 		else {
-			List<BiomeEntry> moddedBiomes = InternalBiomeData.getOverworldBaseBiomes().get(climate);
+			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
 			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
 		}
 	}
@@ -106,7 +106,7 @@ public class MixinSetBaseBiomesLayer {
 	private void injectSnowyBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = SNOWY_BIOMES;
 		OverworldClimate climate = OverworldClimate.SNOWY;
-		Double mwt = InternalBiomeData.getOverworldModdedWeightTotals().get(climate);
+		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
 		if (mwt == null) {
 			return;
 		}
@@ -117,7 +117,7 @@ public class MixinSetBaseBiomesLayer {
 			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
 		}
 		else {
-			List<BiomeEntry> moddedBiomes = InternalBiomeData.getOverworldBaseBiomes().get(climate);
+			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
 			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
 		}
 	}
@@ -126,7 +126,7 @@ public class MixinSetBaseBiomesLayer {
 	private void injectCoolBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = COOL_BIOMES;
 		OverworldClimate climate = OverworldClimate.COOL;
-		Double mwt = InternalBiomeData.getOverworldModdedWeightTotals().get(climate);
+		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
 		if (mwt == null) {
 			return;
 		}
@@ -137,7 +137,7 @@ public class MixinSetBaseBiomesLayer {
 			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
 		}
 		else {
-			List<BiomeEntry> moddedBiomes = InternalBiomeData.getOverworldBaseBiomes().get(climate);
+			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
 			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
 		}
 	}
