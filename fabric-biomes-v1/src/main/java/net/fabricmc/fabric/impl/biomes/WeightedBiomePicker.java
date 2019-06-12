@@ -25,23 +25,25 @@ import net.minecraft.world.biome.layer.LayerRandomnessSource;
 /**
  * Provides a weighted biome picker using Minecraft's {@link LayerRandomnessSource} as a randomness source
  */
-public final class WeightedBiomePicker
-{
+public final class WeightedBiomePicker {
+
 	private int weightSum = 0;
 	private IntList biomes = new IntArrayList();
-	
-	public void addBiome(Biome biome, int weight)
-	{
+
+	/**
+	 * @param biome
+	 * @param weight
+	 */
+	public void addBiome(Biome biome, int weight) {
 		this.weightSum += weight;
 		int b = Registry.BIOME.getRawId(biome);
-		
+
 		for (int i = 0; i < weight; ++i)
 			biomes.add(b);
 	}
-	
-	@SuppressWarnings("deprecation")
-	public int pickRandom(LayerRandomnessSource rand)
-	{
-		return biomes.get(rand.nextInt(weightSum));
+
+	public int pickRandom(LayerRandomnessSource rand) {
+		return biomes.getInt(rand.nextInt(weightSum));
 	}
+
 }

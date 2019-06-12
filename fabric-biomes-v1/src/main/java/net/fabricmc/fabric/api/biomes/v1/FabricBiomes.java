@@ -19,16 +19,21 @@ package net.fabricmc.fabric.api.biomes.v1;
 import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
 
-public final class FabricBiomes
-{
-	private FabricBiomes() {}
-	
+/**
+ * General API that applies to all biome sources
+ */
+public final class FabricBiomes {
+
+	private FabricBiomes() {
+	}
+
 	/**
 	 * Adds the biome to spawn biomes, so that the player may spawn in the biome
+	 *
+	 * @param biome the biome to be added to spawn biomes
 	 */
-	public static void addSpawnBiome(Biome biome)
-	{
-		InternalBiomeData.SPAWN_BIOMES.add(biome);
+	public static void addSpawnBiome(Biome biome) {
+		InternalBiomeData.addSpawnBiome(biome);
 	}
-	
+
 }

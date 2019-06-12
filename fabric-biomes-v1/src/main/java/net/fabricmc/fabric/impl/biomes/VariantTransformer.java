@@ -16,27 +16,41 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-public final class VariantPicker
-{
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Deals with picking variants for you
+ */
+public final class VariantTransformer {
+
 	private final List<BiomeVariant> variants = new ArrayList<>();
-	
-	public void addBiomeWithRarity(Biome b, int rarity)
-	{
-		variants.add(new BiomeVariant(b, rarity));
+
+	/**
+	 * @param variant biome that
+	 * @param rarity the reciprocal of the chance of replacement (there is a 1/rarity chance)
+	 */
+	public void addBiome(Biome variant, int rarity) {
+		variants.add(new BiomeVariant(variant, rarity));
 	}
-	
-	public Biome transformBiome(Biome biome, LayerRandomnessSource rand)
-	{
-		for(BiomeVariant variant : variants)
-			if (rand.nextInt(variant.getRarity()) == 0)
+
+	/**
+	 * Transforms a biome into a variant randomly depening on rarity
+	 *
+	 * @param biome biome to transform
+	 * @param random the {@link LayerRandomnessSource} from the layer
+	 * @return the transformed biome
+	 */
+	public Biome transformBiome(Biome biome, LayerRandomnessSource random) {
+		for (BiomeVariant variant : variants) {
+			if (random.nextInt(variant.getRarity()) == 0) {
 				return variant.getVariant();
-		
+			}
+		}
 		return biome;
 	}
+
 }

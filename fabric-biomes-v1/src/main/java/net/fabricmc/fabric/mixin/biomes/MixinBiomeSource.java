@@ -16,11 +16,9 @@
 
 package net.fabricmc.fabric.mixin.biomes;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.BiomeSource;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,25 +26,27 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
+/**
+ * Adds spawn biomes to the base {@link BiomeSource} class.
+ */
 @Mixin(BiomeSource.class)
-public class BiomeSourceMixin 
-{
+public class MixinBiomeSource {
+
 	@Shadow
 	@Final
 	private static List<Biome> SPAWN_BIOMES;
-	
+
 	@Inject(at = @At("RETURN"), cancellable = true, method = "getSpawnBiomes")
-	private void getSpawnBiomes(CallbackInfoReturnable<List<Biome>> info)
-	{
-		Set<Biome> fabric_biomes = new LinkedHashSet<>(info.getReturnValue());
-		
-		if (fabric_biomes.addAll(InternalBiomeData.SPAWN_BIOMES))
-		{
-			info.setReturnValue(new ArrayList<>(fabric_biomes));
+	private void getSpawnBiomes(CallbackInfoReturnable<List<Biome>> info) {
+		Set<Biome> biomes = new LinkedHashSet<>(info.getReturnValue());
+		if (biomes.addAll(InternalBiomeData.getSpawnBiomes())) {
+			info.setReturnValue(new ArrayList<>(biomes));
 		}
 	}
+
 }

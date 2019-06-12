@@ -19,12 +19,26 @@ package net.fabricmc.fabric.api.biomes.v1;
 /**
  * Enum representing the biome climates of Minecraft.
  * There are four climates, which represent internal groups of biomes.
- * 
  */
-public enum VanillaClimate implements Climate
-{
+public enum OverworldClimate {
+
+	/**
+	 * In Vanilla, snowy biomes include Snowy Tundra (with a weight of 3) and Snowy Taiga (with a weight of 1)
+	 */
 	SNOWY,
+
+	/**
+	 * In Vanilla, cool biomes include Forest, Taiga, Mountains, and Plains (all with weights of 1)
+	 */
 	COOL,
+
+	/**
+	 * In Vanilla, snowy biomes include Forest, Dark Forest, Mountains, Plains, Birch Forest, and Swamp (all with weights of 1)
+	 */
 	TEMPERATE,
-	DRY;
+
+	/**
+	 * In Vanilla, snowy biomes include Deserts (with a weight of 3), Savannas (with a weight of 2), and Plains (with a weight of 1)
+	 */
+	DRY
 }
