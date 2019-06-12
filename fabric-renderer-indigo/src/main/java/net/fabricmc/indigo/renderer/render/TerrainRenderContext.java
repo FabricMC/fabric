@@ -70,9 +70,8 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
     }
     
     /** Called from chunk renderer hook. */
-    public boolean tesselateBlock(BlockState blockState, BlockPos blockPos) {
+    public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model) {
         try {
-            final BakedModel model = blockRenderManager.getModel(blockState);
             aoCalc.clear();
             blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
             chunkInfo.beginBlock();

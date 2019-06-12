@@ -18,6 +18,9 @@ package net.fabricmc.indigo.renderer.mixin;
 
 import java.util.Random;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.indigo.Indigo;
+import net.minecraft.client.render.model.BakedModel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -114,10 +117,13 @@ public abstract class MixinChunkRenderer implements AccessChunkRenderer{
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/ExtendedBlockView;Lnet/minecraft/client/render/BufferBuilder;Ljava/util/Random;)Z"))
     private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, ExtendedBlockView blockView, BufferBuilder bufferBuilder, Random random) {
         if(blockState.getRenderType() == BlockRenderType.MODEL) {
-            return ((AccessChunkRendererRegion)blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos);
-        } else {
-            return renderManager.tesselateBlock(blockState, blockPos, blockView, bufferBuilder, random);
+			final BakedModel model = renderManager.getModel(blockState);
+			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
+				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model);
+			}
         }
+
+		return renderManager.tesselateBlock(blockState, blockPos, blockView, bufferBuilder, random);
     }
     
     /**

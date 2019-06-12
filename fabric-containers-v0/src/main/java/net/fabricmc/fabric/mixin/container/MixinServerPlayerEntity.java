@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.mixin.container;
 
-import net.fabricmc.fabric.impl.container.SyncIdProvider;
+import net.fabricmc.fabric.impl.container.ServerPlayerEntitySyncHook;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class MixinServerPlayerEntity implements SyncIdProvider {
+public abstract class MixinServerPlayerEntity implements ServerPlayerEntitySyncHook {
 	@Shadow
 	private int containerSyncId;
 

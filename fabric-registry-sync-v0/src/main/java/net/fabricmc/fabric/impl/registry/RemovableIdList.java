@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.impl.registry;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+
 public interface RemovableIdList<T> {
-	void clear();
-	void remove(T o);
-	void removeId(int i);
+	void fabric_clear();
+	void fabric_remove(T o);
+	void fabric_removeId(int i);
+	void fabric_remapId(int from, int to);
+	void fabric_remapIds(Int2IntMap map);
 }

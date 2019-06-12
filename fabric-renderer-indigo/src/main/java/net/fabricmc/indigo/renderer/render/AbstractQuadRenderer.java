@@ -27,6 +27,7 @@ import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
@@ -68,7 +69,7 @@ public abstract class AbstractQuadRenderer {
     
     /** final output step, common to all renders */
     private void bufferQuad(MutableQuadViewImpl quad, int renderLayer) {
-        bufferFunc.get(renderLayer).fabric_putVanillaData(quad.data(), quad.vertexStart());
+        bufferFunc.get(renderLayer).fabric_putVanillaData(quad.data(), quad.vertexStart(), false);
     }
 
     // routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
@@ -140,7 +141,7 @@ public abstract class AbstractQuadRenderer {
      */
     int flatBrightness(MutableQuadViewImpl quad, BlockState blockState, BlockPos pos) {
         mpos.set(pos);
-        if((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0) {
+        if((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
             mpos.setOffset(quad.lightFace());
         }
         return brightnessFunc.applyAsInt(blockState, mpos);

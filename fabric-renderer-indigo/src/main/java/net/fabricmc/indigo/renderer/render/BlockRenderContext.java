@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.fabricmc.indigo.renderer.mixin.BufferBuilderOffsetAccessor;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
@@ -102,11 +103,11 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
     }
     
     private void setupOffsets() {
-        final AccessBufferBuilder buffer = fabricBuffer;
+        final BufferBuilderOffsetAccessor buffer = (BufferBuilderOffsetAccessor) fabricBuffer;
         final BlockPos pos = blockInfo.blockPos;
-        offsetX = buffer.fabric_offsetX() + pos.getX();
-        offsetY = buffer.fabric_offsetY() + pos.getY();
-        offsetZ = buffer.fabric_offsetZ() + pos.getZ();
+        offsetX = buffer.getOffsetX() + pos.getX();
+        offsetY = buffer.getOffsetY() + pos.getY();
+        offsetZ = buffer.getOffsetZ() + pos.getZ();
     }
     
     private class MeshConsumer extends AbstractMeshConsumer {

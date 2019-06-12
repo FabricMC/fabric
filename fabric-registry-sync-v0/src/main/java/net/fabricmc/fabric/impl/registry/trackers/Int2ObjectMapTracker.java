@@ -16,50 +16,83 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
+import com.google.common.base.Joiner;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Int2ObjectMapTracker<V, OV> implements RegistryPreClearCallback<V>, RegistryPreRegisterCallback<V> {
+public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
+	private static final Logger LOGGER = LogManager.getLogger();
+	private final String name;
 	private final Int2ObjectMap<OV> mappers;
-	private final Registry<V> registry;
-	private Map<Identifier, OV> mapperCache = new HashMap<>();
+	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
-	private Int2ObjectMapTracker(Registry<V> registry, Int2ObjectMap<OV> mappers) {
-		this.registry = registry;
+	private Int2ObjectMapTracker(String name, Int2ObjectMap<OV> mappers) {
+		this.name = name;
 		this.mappers = mappers;
 	}
 
-	public static <V, OV> void register(Registry<V> registry, Int2ObjectMap<OV> mappers) {
-		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(registry, mappers);
-		((ListenableRegistry<V>) registry).getPreClearEvent().register(updater);
-		((ListenableRegistry<V>) registry).getPreRegisterEvent().register(updater);
+	public static <V, OV> void register(Registry<V> registry, String name, Int2ObjectMap<OV> mappers) {
+		Int2ObjectMapTracker<V, OV> updater = new Int2ObjectMapTracker<>(name, mappers);
+		RegistryEntryAddedCallback.event(registry).register(updater);
+		RegistryIdRemapCallback.event(registry).register(updater);
+		RegistryEntryRemovedCallback.event(registry).register(updater);
 	}
 
 	@Override
-	public void onPreClear() {
-		mapperCache.clear();
-		for (Identifier id : registry.getIds()) {
-			int rawId = registry.getRawId(registry.get(id));
-			OV mapper = mappers.get(rawId);
-			if (mapper != null) {
-				mapperCache.put(id, mapper);
+	public void onEntryAdded(int rawId, Identifier id, V object) {
+		if (removedMapperCache.containsKey(id)) {
+			mappers.put(rawId, removedMapperCache.get(id));
+		}
+	}
+
+	@Override
+	public void onRemap(RemapState<V> state) {
+		Int2ObjectMap<OV> oldMappers = new Int2ObjectOpenHashMap<>(mappers);
+		Int2IntMap remapMap = state.getRawIdChangeMap();
+		List<String> errors = null;
+
+		mappers.clear();
+		for (int i : oldMappers.keySet()) {
+			int newI = remapMap.getOrDefault(i, Integer.MIN_VALUE);
+			if (newI >= 0) {
+				if (mappers.containsKey(newI)) {
+					if (errors == null) {
+						errors = new ArrayList<>();
+					}
+
+					errors.add(" - Map contained two equal IDs " + newI + " (" + state.getIdFromOld(i) + "/" + i + " -> " + state.getIdFromNew(newI) + "/" + newI + ")!");
+				} else {
+					mappers.put(newI, oldMappers.get(i));
+				}
+			} else {
+				LOGGER.warn("[fabric-registry-sync] Int2ObjectMap " + name + " is dropping mapping for integer ID " + i + " (" + state.getIdFromOld(i) + ") - should not happen!");
+				removedMapperCache.put(state.getIdFromOld(i), oldMappers.get(i));
 			}
 		}
 
-		mappers.clear();
+		if (errors != null) {
+			throw new RuntimeException("Errors while remapping Int2ObjectMap " + name + " found:\n" + Joiner.on('\n').join(errors));
+		}
 	}
 
 	@Override
-	public void onPreRegister(int id, Identifier identifier, V object, boolean isNewToRegistry) {
-		if (mapperCache.containsKey(identifier)) {
-			mappers.put(id, mapperCache.get(identifier));
+	public void onEntryRemoved(int rawId, Identifier id, V object) {
+		OV mapper = mappers.remove(rawId);
+		if (mapper != null) {
+			removedMapperCache.put(id, mapper);
 		}
 	}
 }

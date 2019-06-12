@@ -16,31 +16,128 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
+import com.google.common.base.Preconditions;
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.minecraft.world.biome.Biome;
+
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.fabricmc.fabric.api.biomes.v1.Climate;
-import net.minecraft.world.biome.Biome;
+/**
+ * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation
+ */
+public final class InternalBiomeData {
 
-public final class InternalBiomeData
-{
-	private InternalBiomeData() {}
-	
-	public static final Map<Biome, WeightedBiomePicker> HILLS_MAP = new HashMap<>();
-	public static final Map<Biome, WeightedBiomePicker> SHORE_MAP = new HashMap<>();
-	public static final Map<Biome, WeightedBiomePicker> EDGE_MAP = new HashMap<>();
-	public static final Map<Biome, Biome> RIVER_MAP = new HashMap<>();
-	public static final Map<Biome, VariantPicker> VARIANTS_MAP = new HashMap<>();
-	
-	public static final List<ClimateBiomeEntry> INJECTED_BIOMES = new ArrayList<>();
-	public static final Map<Climate, Object2IntMap<Biome>> BIOME_WEIGHTS = new HashMap<>();
-	
-	public static final Set<Biome> CUSTOM_BIOMES = new HashSet<>();
-	
-	public static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
+	private InternalBiomeData() {
+	}
+
+	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_HILLS_MAP = new HashMap<>();
+	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_SHORE_MAP = new HashMap<>();
+	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
+	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
+	private static final Map<Biome, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
+
+	private static final Map<OverworldClimate, List<BiomeEntry>> OVERWORLD_BASE_BIOMES = new HashMap<>();
+	protected static final EnumMap<OverworldClimate, Double> OVERWORLD_MODDED_WEIGHT_TOTALS = new EnumMap<>(OverworldClimate.class);
+
+	private static final List<Biome> OVERWORLD_INJECTED_BIOMES = new ArrayList<>();
+
+	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
+
+	public static void addOverworldBaseBiome(OverworldClimate climate, Biome biome, double weight) {
+		Preconditions.checkArgument(climate != null && biome != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
+		OVERWORLD_BASE_BIOMES.computeIfAbsent(climate, k -> new ArrayList<>()).add(new BiomeEntry(biome, weight, climate));
+		OVERWORLD_INJECTED_BIOMES.add(biome);
+	}
+
+	public static void addOverworldHillsBiome(Biome parent, Biome hills, int weight) {
+		Preconditions.checkArgument(parent != null && hills != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
+		InternalBiomeData.OVERWORLD_HILLS_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(hills, weight);
+		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(hills);
+	}
+
+	public static void addOverworldShoreBiome(Biome parent, Biome shore, int weight) {
+		Preconditions.checkArgument(parent != null && shore != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
+		InternalBiomeData.OVERWORLD_SHORE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(shore, weight);
+		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(shore);
+	}
+
+	public static void addOverworldEdgeBiome(Biome parent, Biome edge, int weight) {
+		Preconditions.checkArgument(parent != null && edge != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
+		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
+		InternalBiomeData.OVERWORLD_EDGE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(edge, weight);
+		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(edge);
+	}
+
+	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, int rarity) {
+		Preconditions.checkArgument(replaced != null && variant != null, "One or both arguments are null");
+		Preconditions.checkArgument(rarity > 0, "Rarity is zero or negative (Must be positive)");
+		InternalBiomeData.OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, rarity);
+		InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(variant);
+	}
+
+	public static void setOverworldRiverBiome(Biome parent, Biome river) {
+		InternalBiomeData.OVERWORLD_RIVER_MAP.put(parent, river);
+		if (river != null) {
+			InternalBiomeData.OVERWORLD_INJECTED_BIOMES.add(river);
+		}
+	}
+
+	/**
+	 * Allows players to naturally spawn in this biome
+	 *
+	 * @param biome
+	 */
+	public static void addSpawnBiome(Biome biome) {
+		SPAWN_BIOMES.add(biome);
+	}
+
+	public static Map<OverworldClimate, List<BiomeEntry>> getOverworldBaseBiomes() {
+		return OVERWORLD_BASE_BIOMES;
+	}
+
+	public static List<Biome> getOverworldInjectedBiomes() {
+		return OVERWORLD_INJECTED_BIOMES;
+	}
+
+	public static Set<Biome> getSpawnBiomes() {
+		return SPAWN_BIOMES;
+	}
+
+	public static Map<Biome, WeightedBiomePicker> getOverworldHills() {
+		return OVERWORLD_HILLS_MAP;
+	}
+
+	public static Map<Biome, WeightedBiomePicker> getOverworldShores() {
+		return OVERWORLD_SHORE_MAP;
+	}
+
+	public static Map<Biome, WeightedBiomePicker> getOverworldEdges() {
+		return OVERWORLD_EDGE_MAP;
+	}
+
+	public static Map<Biome, Biome> getOverworldRivers() {
+		return OVERWORLD_RIVER_MAP;
+	}
+
+	public static EnumMap<OverworldClimate, Double> getOverworldModdedWeightTotals() {
+		return OVERWORLD_MODDED_WEIGHT_TOTALS;
+	}
+
+	public static Map<Biome, VariantTransformer> getOverworldVariantTransformers() {
+		return OVERWORLD_VARIANT_TRANSFORMERS;
+	}
+
 }

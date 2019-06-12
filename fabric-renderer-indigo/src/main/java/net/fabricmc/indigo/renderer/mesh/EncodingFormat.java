@@ -39,6 +39,7 @@ public abstract class EncodingFormat {
     static final int VANILLA_STRIDE = 28;
     public static final int NORMALS_OFFSET = VERTEX_START_OFFSET + VANILLA_STRIDE;
     static final int NORMALS_STRIDE = 4;
+	public static final int NORMALS_OFFSET_VANILLA = VANILLA_STRIDE;
     // normals are followed by 0-2 sets of color/uv coordinates
     static final int TEXTURE_STRIDE = 12;
     /** is one tex stride less than the actual base, because when used tex index is >= 1 */

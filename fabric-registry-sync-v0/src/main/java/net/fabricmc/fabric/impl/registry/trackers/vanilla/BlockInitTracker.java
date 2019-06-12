@@ -16,32 +16,31 @@
 
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreRegisterCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.util.registry.Registry;
 
-public final class BlockInitTracker implements RegistryPreRegisterCallback<Block> {
-	private BlockInitTracker() {
+public final class BlockInitTracker implements RegistryEntryAddedCallback<Block> {
+	private final Registry<Block> registry;
 
+	private BlockInitTracker(Registry<Block> registry) {
+		this.registry = registry;
 	}
 
-	public static void register(SimpleRegistry<Block> registry) {
-		BlockInitTracker tracker = new BlockInitTracker();
-		((ListenableRegistry<Block>) registry).getPreRegisterEvent().register(tracker);
+	public static void register(Registry<Block> registry) {
+		BlockInitTracker tracker = new BlockInitTracker(registry);
+		RegistryEntryAddedCallback.event(registry).register(tracker);
 	}
 
 	@Override
-	public void onPreRegister(int rawId, Identifier id, Block object, boolean isNewToRegistry) {
-		if (isNewToRegistry) {
-			object.getStateFactory().getStates().forEach(BlockState::initShapeCache);
-			object.getDropTableId();
-		}
+	public void onEntryAdded(int rawId, Identifier id, Block object) {
+		object.getStateFactory().getStates().forEach(BlockState::initShapeCache);
+
+		// if false, getDropTableId() will generate an invalid drop table ID
+		assert id.equals(registry.getId(object));
+
+		object.getDropTableId();
 	}
 }

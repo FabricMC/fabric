@@ -23,9 +23,11 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -34,8 +36,8 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinClientPlayNetworkHandler {
-	@Shadow
-	private static Logger LOGGER;
+	@Unique
+	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/BlockEntityUpdateS2CPacket;getActionId()I", ordinal = 0), method = "onBlockEntityUpdate", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	public void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, CallbackInfo info, BlockEntity entity) {
@@ -47,7 +49,7 @@ public class MixinClientPlayNetworkHandler {
 					Identifier otherIdObj = BlockEntityType.getId(entity.getType());
 					;
 					if (otherIdObj == null) {
-						LOGGER.error(entity.getClass() + " is missing a mapping! This is a bug!");
+						FABRIC_LOGGER.error(entity.getClass() + " is missing a mapping! This is a bug!");
 						info.cancel();
 						return;
 					}
