@@ -31,15 +31,12 @@ import java.util.HashMap;
 public class ParticleRegistryImpl implements ParticleRegistry {
 	public DefaultParticleType createSimpleParticleType() { return createSimpleParticleType(false); }
 	public DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {
-		return new DefaultParticleType(shouldAlwaysSpawn) {};
+		return new DefaultParticleType(shouldAlwaysSpawn) {}; // Anonymous class to bypass protected constructor
 	}
 
-	public <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory) {
-		return createParticleType(paramFactory, false);
-	}
-
+	public <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory) { return createParticleType(paramFactory, false); }
 	public <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory, boolean shouldAlwaysSpawn) {
-		return new ParticleType<T>(shouldAlwaysSpawn, paramFactory) {};
+		return new ParticleType<T>(shouldAlwaysSpawn, paramFactory) {}; // Anonymous class to bypass protected constructor
 	}
 
 	/**
