@@ -30,7 +30,7 @@ public final class VariantTransformer {
 	private final List<BiomeVariant> variants = new ArrayList<>();
 
 	/**
-	 * @param variant biome that
+	 * @param variant the variant that the replaced biome is replaced with
 	 * @param rarity the reciprocal of the chance of replacement (there is a 1/rarity chance)
 	 */
 	public void addBiome(Biome variant, int rarity) {
@@ -40,17 +40,17 @@ public final class VariantTransformer {
 	/**
 	 * Transforms a biome into a variant randomly depening on rarity
 	 *
-	 * @param biome biome to transform
+	 * @param relaced biome to transform
 	 * @param random the {@link LayerRandomnessSource} from the layer
 	 * @return the transformed biome
 	 */
-	public Biome transformBiome(Biome biome, LayerRandomnessSource random) {
+	public Biome transformBiome(Biome relaced, LayerRandomnessSource random) {
 		for (BiomeVariant variant : variants) {
 			if (random.nextInt(variant.getRarity()) == 0) {
 				return variant.getVariant();
 			}
 		}
-		return biome;
+		return relaced;
 	}
 
 }

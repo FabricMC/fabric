@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.fabricmc.fabric.impl.biomes;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
@@ -20,25 +21,25 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 /**
- * A pojo for biome & weight
+ * Represents a biome and its corresponding weight
  */
-public class BiomeEntry {
+public class BaseBiomeEntry {
 
-	public Biome biome;
-	public double weight;
-	public double upperWeightBound;
+	private final Biome biome;
+	private final double weight;
+	private final double upperWeightBound;
 
 	/**
 	 * @param biome the biome
 	 * @param weight how often a biome will be chosen. Most vanilla biomes are a frequency of 1.
 	 * @param climate the climate of the biome entry, just used to store weights
 	 */
-	public BiomeEntry(final Biome biome, final double weight, OverworldClimate climate) {
+	public BaseBiomeEntry(final Biome biome, final double weight, OverworldClimate climate) {
 		this.biome = biome;
 		this.weight = weight;
-		InternalBiomeData.OVERWORLD_MODDED_WEIGHT_TOTALS.computeIfPresent(climate, (mapClimate, mapWeight) -> mapWeight + weight);
-		InternalBiomeData.OVERWORLD_MODDED_WEIGHT_TOTALS.putIfAbsent(climate, weight);
-		upperWeightBound = InternalBiomeData.OVERWORLD_MODDED_WEIGHT_TOTALS.get(climate);
+		InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.computeIfPresent(climate, (mapClimate, mapWeight) -> mapWeight + weight);
+		InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.putIfAbsent(climate, weight);
+		upperWeightBound = InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.get(climate);
 	}
 
 	/**

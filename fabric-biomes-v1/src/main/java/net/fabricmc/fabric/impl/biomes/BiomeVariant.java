@@ -19,16 +19,16 @@ package net.fabricmc.fabric.impl.biomes;
 import net.minecraft.world.biome.Biome;
 
 /**
- * A pojo for biome variants and their corrosponding rarities
+ * Represents a biome variant and its corresponding rarity
  */
 public class BiomeVariant {
 
-	private Biome variant;
-	private int rarity;
+	private final Biome variant;
+	private final int rarity;
 
 	/**
 	 * @param variant the variant biome
-	 * @param rarity the reciprocal of the chance of replacement (there is a 1/rarity chance)
+	 * @param rarity the rarity of the biome variant
 	 */
 	protected BiomeVariant(final Biome variant, final int rarity) {
 		this.variant = variant;
@@ -43,7 +43,7 @@ public class BiomeVariant {
 	}
 
 	/**
-	 * @return the reciprocal of the chance of replacement (there is a 1/rarity chance)
+	 * @return The rarity of the biome variant
 	 */
 	public int getRarity() {
 		return rarity;

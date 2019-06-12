@@ -36,13 +36,12 @@ public class MixinAddEdgeBiomesLayer {
 
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info) {
-		Biome prevBiome = Registry.BIOME.get(center);
-
-		if (InternalBiomeData.getOverworldShores().containsKey(prevBiome) && InternalBiomeUtils.neighborsOcean(north, east, south, west)) {
-			info.setReturnValue(InternalBiomeData.getOverworldShores().get(prevBiome).pickRandom(rand));
+		Biome centerBiome = Registry.BIOME.get(center);
+		if (InternalBiomeData.getOverworldShores().containsKey(centerBiome) && InternalBiomeUtils.neighborsOcean(north, east, south, west)) {
+			info.setReturnValue(Registry.BIOME.getRawId(InternalBiomeData.getOverworldShores().get(centerBiome).pickRandom(rand)));
 		}
-		else if (InternalBiomeData.getOverworldEdges().containsKey(prevBiome) && InternalBiomeUtils.isEdge(north, east, south, west, center)) {
-			info.setReturnValue(InternalBiomeData.getOverworldEdges().get(prevBiome).pickRandom(rand));
+		else if (InternalBiomeData.getOverworldEdges().containsKey(centerBiome) && InternalBiomeUtils.isEdge(north, east, south, west, center)) {
+			info.setReturnValue(Registry.BIOME.getRawId(InternalBiomeData.getOverworldEdges().get(centerBiome).pickRandom(rand)));
 		}
 	}
 

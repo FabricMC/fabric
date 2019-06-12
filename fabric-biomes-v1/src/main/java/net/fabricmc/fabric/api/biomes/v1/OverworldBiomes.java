@@ -34,7 +34,7 @@ public final class OverworldBiomes {
 	 * @param climate the climate group whereto the biome is added
 	 * @param weight the weight of the entry. Vanilla weights for each biome in each climate are listed in the {@link OverworldClimate} javadoc.
 	 */
-	public static void addBiome(Biome biome, OverworldClimate climate, int weight) {
+	public static void addBaseBiome(Biome biome, OverworldClimate climate, double weight) {
 		InternalBiomeData.addOverworldBaseBiome(climate, biome, weight);
 	}
 
@@ -43,7 +43,8 @@ public final class OverworldBiomes {
 	 *
 	 * @param parent the biome to where the hills variant is added
 	 * @param hills the biome to be set as a hills variant
-	 * @param weight the weight of the entry
+	 * @param weight the weight of the entry. The weight in this method corrosponds to the amount of times it is added
+	 * to the list that is randomly selected from when a hills biome is chosen.
 	 */
 	public static void addHillsBiome(Biome parent, Biome hills, int weight) {
 		InternalBiomeData.addOverworldHillsBiome(parent, hills, weight);
@@ -54,7 +55,8 @@ public final class OverworldBiomes {
 	 *
 	 * @param parent the base biome to where the shore biome is added
 	 * @param shore the biome to be added as a shore biome
-	 * @param weight the weight of this entry
+	 * @param weight the weight of this entry. The weight in this method corrosponds to the amount of times it is added
+	 * to the list that is randomly selected from when a shore biome is chosen.
 	 */
 	public static void addShoreBiome(Biome parent, Biome shore, int weight) {
 		InternalBiomeData.addOverworldShoreBiome(parent, shore, weight);
@@ -65,7 +67,8 @@ public final class OverworldBiomes {
 	 *
 	 * @param parent the base biome to where the edge biome is added
 	 * @param edge the biome to be added as an edge biome
-	 * @param weight the weight of this entry
+	 * @param weight the weight of this entry. The weight in this method corrosponds to the amount of times it is added
+	 * to the list that is randomly selected from when an edge biome is chosen.
 	 */
 	public static void addEdgeBiome(Biome parent, Biome edge, int weight) {
 		InternalBiomeData.addOverworldEdgeBiome(parent, edge, weight);
@@ -91,15 +94,6 @@ public final class OverworldBiomes {
 	 */
 	public static void setRiverBiome(Biome parent, Biome river) {
 		InternalBiomeData.setOverworldRiverBiome(parent, river);
-	}
-	
-	/**
-	 * @param biome the biome to get the weight of
-	 * @param climate the climate for which to get the biome weight
-	 * @return the weight of the biome in the particular climate
-	 */
-	public static double getWeight(Biome biome, OverworldClimate climate) {
-		return InternalBiomeData.getOverworldBiomeWeight(climate, biome);
 	}
 
 }
