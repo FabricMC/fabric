@@ -57,13 +57,13 @@ public final class InternalBiomeUtils {
 		return biome != null && biome.getCategory() == Biome.Category.OCEAN;
 	}
 
-	public static int searchForBiome(double reqWeightSum, int vanillaArrayWeight, double weightTotal, List<BaseBiomeEntry> moddedBiomes) {
+	public static int searchForBiome(double reqWeightSum, int vanillaArrayWeight, List<BaseBiomeEntry> moddedBiomes) {
 		reqWeightSum -= vanillaArrayWeight;
 		int low = 0;
 		int high = moddedBiomes.size() - 1;
 		while (low < high) {
 			int mid = (high + low) >>> 1;
-			if (reqWeightSum < weightTotal + moddedBiomes.get(mid).getWeight()) {
+			if (reqWeightSum < moddedBiomes.get(mid).getUpperWeightBound()) {
 				high = mid;
 			}
 			else {
