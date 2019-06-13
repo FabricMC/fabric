@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.gson.JsonObject;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.loot.LootManager;
 import net.minecraft.world.loot.LootSupplier;
 import org.spongepowered.asm.mixin.Final;
@@ -34,10 +37,10 @@ import java.util.Map;
 
 @Mixin(LootManager.class)
 public class MixinLootManager {
-	@Shadow @Final private Map<Identifier, LootSupplier> suppliers;
+	@Shadow private Map<Identifier, LootSupplier> suppliers;
 
-	@Inject(method = "apply", at = @At("RETURN"))
-	private void apply(ResourceManager manager, CallbackInfo info) {
+	@Inject(method = "method_20712", at = @At("RETURN"))
+	private void apply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
 		Map<Identifier, LootSupplier> newSuppliers = new HashMap<>();
 
 		suppliers.forEach((id, supplier) -> {
@@ -51,8 +54,6 @@ public class MixinLootManager {
 			newSuppliers.computeIfAbsent(id, (i) -> builder.create());
 		});
 
-		for (Identifier id : newSuppliers.keySet()) {
-			suppliers.put(id, newSuppliers.get(id));
-		}
+		suppliers = ImmutableMap.copyOf(newSuppliers);
 	}
 }
