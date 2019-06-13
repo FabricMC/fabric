@@ -24,13 +24,13 @@ import net.minecraft.world.biome.Biome;
 public class BiomeVariant {
 
 	private final Biome variant;
-	private final int rarity;
+	private final double rarity;
 
 	/**
 	 * @param variant the variant biome
 	 * @param rarity the rarity of the biome variant
 	 */
-	protected BiomeVariant(final Biome variant, final int rarity) {
+	protected BiomeVariant(final Biome variant, final double rarity) {
 		this.variant = variant;
 		this.rarity = rarity;
 	}
@@ -45,7 +45,7 @@ public class BiomeVariant {
 	/**
 	 * @return The rarity of the biome variant
 	 */
-	public int getRarity() {
+	public double getRarity() {
 		return rarity;
 	}
 

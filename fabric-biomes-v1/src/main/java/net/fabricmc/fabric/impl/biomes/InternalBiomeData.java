@@ -75,7 +75,7 @@ public final class InternalBiomeData {
 		OVERWORLD_INJECTED_BIOMES.add(edge);
 	}
 
-	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, int rarity) {
+	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, double rarity) {
 		Preconditions.checkArgument(replaced != null && variant != null, "One or both arguments are null");
 		Preconditions.checkArgument(rarity >= 1, "Rarity is less than 1 (Must be positive and greater or equal to 1)");
 		OVERWORLD_VARIANT_TRANSFORMERS.computeIfPresent(replaced, (biome, transformers) -> {
