@@ -33,12 +33,12 @@ public enum OverworldClimate {
 	COOL,
 
 	/**
-	 * In Vanilla, snowy biomes include Forest, Dark Forest, Mountains, Plains, Birch Forest, and Swamp (all with weights of 1)
+	 * In Vanilla, temperate biomes include Forest, Dark Forest, Mountains, Plains, Birch Forest, and Swamp (all with weights of 1)
 	 */
 	TEMPERATE,
 
 	/**
-	 * In Vanilla, snowy biomes include Deserts (with a weight of 3), Savannas (with a weight of 2), and Plains (with a weight of 1)
+	 * In Vanilla, dry biomes include Deserts (with a weight of 3), Savannas (with a weight of 2), and Plains (with a weight of 1)
 	 */
 	DRY
 }

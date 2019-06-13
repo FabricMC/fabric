@@ -31,7 +31,8 @@ public class BaseBiomeEntry {
 
 	/**
 	 * @param biome the biome
-	 * @param weight how often a biome will be chosen. Most vanilla biomes are a frequency of 1.
+	 * @param weight how often a biome will be chosen. Most vanilla biomes have a
+	 * weight of 1, but a full list of values can be seen in {@link OverworldClimate}.
 	 * @param climate the climate of the biome entry, just used to store weights
 	 */
 	public BaseBiomeEntry(final Biome biome, final double weight, OverworldClimate climate) {
