@@ -82,7 +82,7 @@ public final class OverworldBiomes {
 	 * @param variant the biome to be added as a variant
 	 * @param rarity the reciprocal of the chance of replacement (there is a 1/rarity chance)
 	 */
-	public static void addBiomeVariant(Biome replaced, Biome variant, int rarity) {
+	public static void addBiomeVariant(Biome replaced, Biome variant, double rarity) {
 		InternalBiomeData.addOverworldBiomeReplacement(replaced, variant, rarity);
 	}
 
