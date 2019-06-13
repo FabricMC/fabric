@@ -66,11 +66,10 @@ public class MixinSetBaseBiomesLayer {
 	private void injectDryBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = DRY_BIOMES;
 		OverworldClimate climate = OverworldClimate.DRY;
-		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (mwt == null) {
+		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
+		if (moddedWeightTotal == null) {
 			return;
 		}
-		double moddedWeightTotal = mwt;
 		int vanillaArrayWeight = vanillaArray.length;
 		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
 		if (reqWeightSum < vanillaArrayWeight) {
@@ -78,7 +77,7 @@ public class MixinSetBaseBiomesLayer {
 		}
 		else {
 			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
+			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
 		}
 	}
 
@@ -86,11 +85,10 @@ public class MixinSetBaseBiomesLayer {
 	private void injectTemperateBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = TEMPERATE_BIOMES;
 		OverworldClimate climate = OverworldClimate.TEMPERATE;
-		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (mwt == null) {
+		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
+		if (moddedWeightTotal == null) {
 			return;
 		}
-		double moddedWeightTotal = mwt;
 		int vanillaArrayWeight = vanillaArray.length;
 		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
 		if (reqWeightSum < vanillaArrayWeight) {
@@ -98,7 +96,7 @@ public class MixinSetBaseBiomesLayer {
 		}
 		else {
 			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
+			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
 		}
 	}
 
@@ -106,11 +104,10 @@ public class MixinSetBaseBiomesLayer {
 	private void injectSnowyBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = SNOWY_BIOMES;
 		OverworldClimate climate = OverworldClimate.SNOWY;
-		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (mwt == null) {
+		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
+		if (moddedWeightTotal == null) {
 			return;
 		}
-		double moddedWeightTotal = mwt;
 		int vanillaArrayWeight = vanillaArray.length;
 		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
 		if (reqWeightSum < vanillaArrayWeight) {
@@ -118,7 +115,7 @@ public class MixinSetBaseBiomesLayer {
 		}
 		else {
 			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
+			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
 		}
 	}
 
@@ -126,11 +123,10 @@ public class MixinSetBaseBiomesLayer {
 	private void injectCoolBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int[] vanillaArray = COOL_BIOMES;
 		OverworldClimate climate = OverworldClimate.COOL;
-		Double mwt = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (mwt == null) {
+		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
+		if (moddedWeightTotal == null) {
 			return;
 		}
-		double moddedWeightTotal = mwt;
 		int vanillaArrayWeight = vanillaArray.length;
 		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
 		if (reqWeightSum < vanillaArrayWeight) {
@@ -138,7 +134,7 @@ public class MixinSetBaseBiomesLayer {
 		}
 		else {
 			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedWeightTotal, moddedBiomes)).getRawId());
+			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
 		}
 	}
 

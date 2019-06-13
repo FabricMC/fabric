@@ -37,8 +37,7 @@ public class BaseBiomeEntry {
 	public BaseBiomeEntry(final Biome biome, final double weight, OverworldClimate climate) {
 		this.biome = biome;
 		this.weight = weight;
-		InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.computeIfPresent(climate, (mapClimate, mapWeight) -> mapWeight + weight);
-		InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.putIfAbsent(climate, weight);
+		InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.compute(climate, (c, w) -> w == null ? weight : weight + w);
 		upperWeightBound = InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.get(climate);
 	}
 
@@ -50,10 +49,17 @@ public class BaseBiomeEntry {
 	}
 
 	/**
-	 * @return the
+	 * @return the weight
 	 */
 	public double getWeight() {
 		return weight;
+	}
+
+	/**
+	 * @return the upper weight boundary for the search
+	 */
+	public double getUpperWeightBound() {
+		return upperWeightBound;
 	}
 
 	/**
