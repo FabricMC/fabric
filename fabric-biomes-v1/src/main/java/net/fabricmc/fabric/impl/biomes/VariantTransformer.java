@@ -31,14 +31,14 @@ public final class VariantTransformer {
 
 	/**
 	 * @param variant the variant that the replaced biome is replaced with
-	 * @param rarity the reciprocal of the chance of replacement (there is a 1/rarity chance)
+	 * @param chance the chance of replacement of the biome into the variant
 	 */
-	public void addBiome(Biome variant, double rarity) {
-		variants.add(new BiomeVariant(variant, rarity));
+	public void addBiome(Biome variant, double chance) {
+		variants.add(new BiomeVariant(variant, chance));
 	}
 
 	/**
-	 * Transforms a biome into a variant randomly depening on rarity
+	 * Transforms a biome into a variant randomly depening on its chance
 	 *
 	 * @param replaced biome to transform
 	 * @param random the {@link LayerRandomnessSource} from the layer
@@ -46,7 +46,7 @@ public final class VariantTransformer {
 	 */
 	public Biome transformBiome(Biome replaced, LayerRandomnessSource random) {
 		for (BiomeVariant variant : variants) {
-			if (random.nextInt(Integer.MAX_VALUE) < variant.getRarity() * Integer.MAX_VALUE) {
+			if (random.nextInt(Integer.MAX_VALUE) < variant.getChance() * Integer.MAX_VALUE) {
 				return variant.getVariant();
 			}
 		}

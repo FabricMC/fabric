@@ -19,34 +19,34 @@ package net.fabricmc.fabric.impl.biomes;
 import net.minecraft.world.biome.Biome;
 
 /**
- * Represents a biome variant and its corresponding rarity
+ * Represents a biome variant and its corresponding chance
  */
 public class BiomeVariant {
 
 	private final Biome variant;
-	private final double rarity;
+	private final double chance;
 
 	/**
 	 * @param variant the variant biome
-	 * @param rarity the rarity of the biome variant
+	 * @param chance the chance of replacement of the biome into the variant
 	 */
-	protected BiomeVariant(final Biome variant, final double rarity) {
+	protected BiomeVariant(final Biome variant, final double chance) {
 		this.variant = variant;
-		this.rarity = rarity;
+		this.chance = chance;
 	}
 
 	/**
-	 * @return The variant biome
+	 * @return the variant biome
 	 */
 	public Biome getVariant() {
 		return variant;
 	}
 
 	/**
-	 * @return The rarity of the biome variant
+	 * @return the chance of replacement of the biome into the variant
 	 */
-	public double getRarity() {
-		return rarity;
+	public double getChance() {
+		return chance;
 	}
 
 }

@@ -75,14 +75,14 @@ public final class InternalBiomeData {
 		OVERWORLD_INJECTED_BIOMES.add(edge);
 	}
 
-	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, double rarity) {
+	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, double chance) {
 		Preconditions.checkArgument(replaced != null && variant != null, "One or both arguments are null");
-		Preconditions.checkArgument(rarity >= 1, "Rarity is less than 1 (Must be positive and greater or equal to 1)");
+		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 or less than or equal to 1");
 		OVERWORLD_VARIANT_TRANSFORMERS.computeIfPresent(replaced, (biome, transformers) -> {
-			transformers.addBiome(variant, rarity);
+			transformers.addBiome(variant, chance);
 			return transformers;
 		});
-		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, rarity);
+		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, chance);
 		OVERWORLD_INJECTED_BIOMES.add(variant);
 	}
 

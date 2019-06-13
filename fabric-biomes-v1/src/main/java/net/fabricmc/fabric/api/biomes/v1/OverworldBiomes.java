@@ -76,14 +76,14 @@ public final class OverworldBiomes {
 
 	/**
 	 * Adds a 'variant' biome which replaces another biome on occasion.
-	 * For example, addBiomeVariant(Biomes.JUNGLE, Biomes.DESERT, 3) will replace 1/3 of jungles with deserts.
+	 * For example, addBiomeVariant(Biomes.JUNGLE, Biomes.DESERT, 0.2) will replace 20% of jungles with deserts.
 	 *
 	 * @param replaced the base biome that is replaced by a variant
 	 * @param variant the biome to be added as a variant
-	 * @param rarity the reciprocal of the chance of replacement (there is a 1/rarity chance)
+	 * @param chance the chance of replacement of the biome into the variant
 	 */
-	public static void addBiomeVariant(Biome replaced, Biome variant, double rarity) {
-		InternalBiomeData.addOverworldBiomeReplacement(replaced, variant, rarity);
+	public static void addBiomeVariant(Biome replaced, Biome variant, double chance) {
+		InternalBiomeData.addOverworldBiomeReplacement(replaced, variant, chance);
 	}
 
 	/**
