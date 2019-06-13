@@ -39,8 +39,7 @@ public class ButtonList<T extends AbstractButtonWidget> extends AbstractList<T> 
 
 	@Override
 	public T set(int index, T element) {
-		checkIndex(index); // verify index bounds
-		remove(element); // ensure no duplicates
+		remove(element); // verify / ensure no duplicates
 
 		final T existingButton = buttons.get(index);
 
@@ -54,7 +53,7 @@ public class ButtonList<T extends AbstractButtonWidget> extends AbstractList<T> 
 
 	@Override
 	public void add(int index, T element) {
-		checkIndex(index); // verify index bounds
+		rangeCheckForAdd(index); // verify index bounds
 		remove(element); // ensure no duplicates
 
 		buttons.add(index, element);
@@ -63,7 +62,7 @@ public class ButtonList<T extends AbstractButtonWidget> extends AbstractList<T> 
 
 	@Override
 	public T remove(int index) {
-		checkIndex(index); // verify index bounds
+		rangeCheck(index); // verify index bounds
 
 		final T removedButton = buttons.remove(index);
 		index = children.indexOf(removedButton);
@@ -80,12 +79,19 @@ public class ButtonList<T extends AbstractButtonWidget> extends AbstractList<T> 
 		return buttons.size();
 	}
 
-	private void checkIndex(int index) {
-		if (index < 0) {
-			throw new IndexOutOfBoundsException("index < 0");
+	private void rangeCheck(int index) {
+		if (index >= size()) {
+			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
-		if (index > size()) {
-			throw new IndexOutOfBoundsException("index > size()");
+	}
+
+	private void rangeCheckForAdd(int index) {
+		if (index > size() || index < 0) {
+			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
 		}
+	}
+
+	private String outOfBoundsMsg(int index) {
+		return "Index: " + index + ", Size: "+ size();
 	}
 }
