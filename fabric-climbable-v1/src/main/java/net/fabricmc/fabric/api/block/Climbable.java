@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.block;
 
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
@@ -32,28 +33,24 @@ public interface Climbable {
      * @param state The block state of the block being climbed.
      * @param pos The position of the block being climbed.
 	 *
-	 * @return Should either result ClimbBehavior.True or ClimbBehavior.False to indicate
-	 * whether or not this block can be climbed. Returning ClimbBehavior.Vanilla is used
+	 * @return Should either result TriState.True or TriState.False to indicate
+	 * whether or not this block can be climbed. Returning TriState.Default is used
 	 * to indicate that the game should ignore the result of this method and instead
-	 * perform the usual checks.
+	 * perform the hardcoded, vanilla checks. Only vanilla blocks should return
+	 * TriState.Default.
      */
-    ClimbBehavior canClimb(LivingEntity entity, BlockState state, BlockPos pos);
+    TriState canClimb(LivingEntity entity, BlockState state, BlockPos pos);
 
     /**
-     * @return The suffix of the death message when falling off this block and dying. Your translation file should
-	 * include the translation key "death.fell.accident.suffix", where "suffix" is a string returned by this method.
-	 * By default, this returns "generic", which is a vanilla suffix, so you only need to override this if you have
-	 * a custom death message.
+     * @return The suffix of the death message when falling off this block and dying.
+	 * Your translation file should include the translation key
+	 * "death.fell.accident.suffix", where "suffix" is the string returned by this
+	 * method By default, this returns "generic", which is the default suffix vanilla
+	 * suffix, so you only need to override this if your block has a custom fall death
+	 * message.
      */
-    default String getFallDeathSuffix()
-	{
+    default String getFallDeathSuffix() {
 		return "generic";
-	}
-
-    enum ClimbBehavior {
-    	True,
-		False,
-		Vanilla
 	}
 
 }

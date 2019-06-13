@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.block;
 
 import net.fabricmc.fabric.api.block.Climbable;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -27,8 +28,8 @@ import org.spongepowered.asm.mixin.Mixin;
 public abstract class MixinBlock implements Climbable {
 
     @Override
-    public ClimbBehavior canClimb(LivingEntity entity, BlockState state, BlockPos pos) {
-        return ClimbBehavior.Vanilla;
+    public TriState canClimb(LivingEntity entity, BlockState state, BlockPos pos) {
+        return TriState.DEFAULT;
     }
 
 }

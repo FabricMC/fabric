@@ -17,8 +17,12 @@
 package net.fabricmc.fabric.mixin.entity;
 
 import net.fabricmc.fabric.api.block.Climbable;
+import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,24 +30,21 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LivingEntity.class)
-public abstract class MixinLivingEntity {
+public abstract class MixinLivingEntity extends Entity {
 
-    @Inject(method = "isClimbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    public void isClimbing(CallbackInfoReturnable<Boolean> cir, final BlockState state) {
+	public MixinLivingEntity(EntityType<?> entityType_1, World world_1) {
+		super(entityType_1, world_1);
+	}
+
+	@Inject(method = "isClimbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	private void isClimbing(CallbackInfoReturnable<Boolean> cir, final BlockState state) {
 
         final Climbable climbable = (Climbable) state.getBlock();
-        final LivingEntity thisLivingEntity = (LivingEntity) (Object) this;
+        final LivingEntity self = (LivingEntity) (Object) this;
 
-        Climbable.ClimbBehavior behavior = climbable.canClimb(thisLivingEntity, state, thisLivingEntity.getBlockPos());
-        if (behavior != Climbable.ClimbBehavior.Vanilla) {
-
-			if (behavior == Climbable.ClimbBehavior.True) {
-				cir.setReturnValue(true);
-			}
-			else {
-				cir.setReturnValue(false);
-			}
-			cir.cancel();
+        TriState result = climbable.canClimb(self, state, getBlockPos());
+        if (result != TriState.DEFAULT) {
+			cir.setReturnValue(result.get());
 		}
     }
 }
