@@ -17,7 +17,7 @@
 package net.fabricmc.indigo.renderer.aocalc;
 
 import static net.minecraft.util.math.Direction.*;
-
+import static net.fabricmc.indigo.renderer.aocalc.AoVertexClampFunction.CLAMP_FUNC;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.SystemUtil;
@@ -30,55 +30,55 @@ import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
  */
 @Environment(EnvType.CLIENT) 
 enum AoFace {
-    AOF_DOWN(new Direction[]{WEST, EAST, NORTH, SOUTH}, (q, i) -> q.y(i),
+    AOF_DOWN(new Direction[]{WEST, EAST, NORTH, SOUTH}, (q, i) -> CLAMP_FUNC.clamp(q.y(i)),
             (q, i, w) -> {
-                final float u = q.x(i);
-                final float v = q.z(i);
+                final float u = CLAMP_FUNC.clamp(q.x(i));
+                final float v = CLAMP_FUNC.clamp(q.z(i));
                 w[0] = (1-u) * v; 
                 w[1] = (1-u) * (1-v);
                 w[2] = u * (1-v);
                 w[3] = u * v;
             }),
-    AOF_UP(new Direction[]{EAST, WEST, NORTH, SOUTH}, (q, i) -> 1 - q.y(i),
+    AOF_UP(new Direction[]{EAST, WEST, NORTH, SOUTH}, (q, i) -> 1 - CLAMP_FUNC.clamp(q.y(i)),
             (q, i, w) -> {
-                final float u = q.x(i);
-                final float v = q.z(i);
+                final float u = CLAMP_FUNC.clamp(q.x(i));
+                final float v = CLAMP_FUNC.clamp(q.z(i));
                 w[0] = u * v; 
                 w[1] = u * (1-v);
                 w[2] = (1-u) * (1-v);
                 w[3] = (1-u) * v;
             }), 
-    AOF_NORTH(new Direction[]{UP, DOWN, EAST, WEST}, (q, i) -> q.z(i),
+    AOF_NORTH(new Direction[]{UP, DOWN, EAST, WEST}, (q, i) -> CLAMP_FUNC.clamp(q.z(i)),
             (q, i, w) -> {
-                final float u = q.y(i);
-                final float v = q.x(i);
+                final float u = CLAMP_FUNC.clamp(q.y(i));
+                final float v = CLAMP_FUNC.clamp(q.x(i));
                 w[0] = u * (1-v);
                 w[1] = u * v; 
                 w[2] = (1-u) * v; 
                 w[3] = (1-u) * (1-v);
             }), 
-    AOF_SOUTH(new Direction[]{WEST, EAST, DOWN, UP}, (q, i) -> 1 - q.z(i),
+    AOF_SOUTH(new Direction[]{WEST, EAST, DOWN, UP}, (q, i) -> 1 - CLAMP_FUNC.clamp(q.z(i)),
             (q, i, w) -> {
-                final float u = q.y(i);
-                final float v = q.x(i);
+                final float u = CLAMP_FUNC.clamp(q.y(i));
+                final float v = CLAMP_FUNC.clamp(q.x(i));
                 w[0] = u * (1-v);
                 w[1] = (1-u) * (1-v);
                 w[2] = (1-u) * v;
                 w[3] = u * v; 
             }), 
-    AOF_WEST(new Direction[]{UP, DOWN, NORTH, SOUTH}, (q, i) -> q.x(i),
+    AOF_WEST(new Direction[]{UP, DOWN, NORTH, SOUTH}, (q, i) -> CLAMP_FUNC.clamp(q.x(i)),
             (q, i, w) -> {
-                final float u = q.y(i);
-                final float v = q.z(i);
+                final float u = CLAMP_FUNC.clamp(q.y(i));
+                final float v = CLAMP_FUNC.clamp(q.z(i));
                 w[0] = u * v; 
                 w[1] = u * (1-v);
                 w[2] = (1-u) * (1-v);
                 w[3] = (1-u) * v;
             }), 
-    AOF_EAST(new Direction[]{DOWN, UP, NORTH, SOUTH}, (q, i) -> 1 - q.x(i),
+    AOF_EAST(new Direction[]{DOWN, UP, NORTH, SOUTH}, (q, i) -> 1 - CLAMP_FUNC.clamp(q.x(i)),
             (q, i, w) -> {
-                final float u = q.y(i);
-                final float v = q.z(i);
+                final float u = CLAMP_FUNC.clamp(q.y(i));
+                final float v = CLAMP_FUNC.clamp(q.z(i));
                 w[0] = (1-u) * v; 
                 w[1] = (1-u) * (1-v);
                 w[2] = u * (1-v);

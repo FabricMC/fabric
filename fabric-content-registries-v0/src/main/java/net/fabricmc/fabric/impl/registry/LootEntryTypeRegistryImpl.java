@@ -21,10 +21,9 @@ import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
 
 import java.lang.reflect.Method;
-import java.util.function.Consumer;
 
+@Deprecated
 public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
-	private static Consumer<LootEntry.Serializer<?>> registerFunction;
 	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
 	private static final Method REGISTER_METHOD;
 

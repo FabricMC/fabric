@@ -132,7 +132,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
             // vanilla compatibility hack
 			// For flat lighting, cull face drives everything and light face is ignored.
             if(cullFace == null) {
-                editorQuad.geometryFlags(0);
+                editorQuad.invalidateShape();
             } else {
                 editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
                 editorQuad.lightFace(cullFace);

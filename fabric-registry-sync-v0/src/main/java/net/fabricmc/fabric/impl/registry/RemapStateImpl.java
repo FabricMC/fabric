@@ -25,10 +25,12 @@ import net.minecraft.util.registry.Registry;
 
 public class RemapStateImpl<T> implements RegistryIdRemapCallback.RemapState<T> {
 	private final Int2IntMap rawIdChangeMap;
+	private final Int2ObjectMap<Identifier> oldIdMap;
 	private final Int2ObjectMap<Identifier> newIdMap;
 
-	public RemapStateImpl(Registry<T> registry, Int2IntMap rawIdChangeMap) {
+	public RemapStateImpl(Registry<T> registry, Int2ObjectMap<Identifier> oldIdMap, Int2IntMap rawIdChangeMap) {
 		this.rawIdChangeMap = rawIdChangeMap;
+		this.oldIdMap = oldIdMap;
 		this.newIdMap = new Int2ObjectOpenHashMap<>();
 
 		for (Int2IntMap.Entry entry : rawIdChangeMap.int2IntEntrySet()) {
@@ -44,7 +46,7 @@ public class RemapStateImpl<T> implements RegistryIdRemapCallback.RemapState<T> 
 
 	@Override
 	public Identifier getIdFromOld(int oldRawId) {
-		return newIdMap.get(rawIdChangeMap.getOrDefault(oldRawId, -1));
+		return oldIdMap.get(oldRawId);
 	}
 
 	@Override

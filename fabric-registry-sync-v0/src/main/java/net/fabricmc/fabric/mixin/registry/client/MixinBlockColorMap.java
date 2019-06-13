@@ -34,6 +34,6 @@ public class MixinBlockColorMap {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void create(CallbackInfo info) {
-		IdListTracker.register(Registry.BLOCK, providers);
+		IdListTracker.register(Registry.BLOCK, "BlockColors.providers", providers);
 	}
 }
