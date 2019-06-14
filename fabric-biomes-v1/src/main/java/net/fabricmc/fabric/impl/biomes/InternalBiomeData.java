@@ -16,10 +16,6 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import com.google.common.base.Preconditions;
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.minecraft.world.biome.Biome;
-
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -27,6 +23,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.google.common.base.Preconditions;
+
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.minecraft.world.biome.Biome;
 
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation

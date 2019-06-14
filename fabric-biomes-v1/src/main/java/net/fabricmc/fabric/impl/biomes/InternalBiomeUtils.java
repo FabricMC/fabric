@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
+import java.util.List;
+
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-
-import java.util.List;
 
 /**
  * Internal utilities used for biome sampling
@@ -38,7 +39,27 @@ public final class InternalBiomeUtils {
 	 * @return whether the central biome is an edge of a biome
 	 */
 	public static boolean isEdge(int north, int east, int south, int west, int center) {
-		return north != center || east != center || south != center || west != center;
+		return areUnsimilar(center, north) || areUnsimilar(center, east) || areUnsimilar(center, south) || areUnsimilar(center, west);
+	}
+	
+	/**
+	 * 
+	 * @param mainBiomeId the main raw biome id in comparison
+	 * @param secondaryBiomeId the secondary raw biome id in comparison
+	 * @return whether the two biomes are unsimilar
+	 */
+	private static boolean areUnsimilar(int mainBiomeId, int secondaryBiomeId) {
+		if (mainBiomeId == secondaryBiomeId) { // for efficiency, determine if the ids are equal first
+			return false;
+		} else {
+			Biome secondaryBiome = Registry.BIOME.get(secondaryBiomeId);
+			Biome mainBiome = Registry.BIOME.get(mainBiomeId);
+			
+			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(secondaryBiome.getParent())))) : true;
+			isUnsimilar = isUnsimilar && ( mainBiome.hasParent() ? !(secondaryBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(mainBiome.getParent())))) : true );			
+			
+			return isUnsimilar;
+		}
 	}
 
 	/**
