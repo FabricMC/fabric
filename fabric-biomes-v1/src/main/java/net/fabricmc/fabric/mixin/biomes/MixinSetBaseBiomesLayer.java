@@ -64,87 +64,29 @@ public class MixinSetBaseBiomesLayer {
 
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;chosenGroup1:[I"), method = "sample", cancellable = true)
 	private void injectDryBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
-		int[] vanillaArray = DRY_BIOMES;
-		OverworldClimate climate = OverworldClimate.DRY;
-		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (moddedWeightTotal == null) {
-			return;
-		}
-		int vanillaArrayWeight = vanillaArray.length;
-		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
-		if (reqWeightSum < vanillaArrayWeight) {
-			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
-		}
-		else {
-			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
-		}
+		InternalBiomeUtils.injectBiomesIntoClimate(random, DRY_BIOMES, OverworldClimate.DRY, info::setReturnValue);
 	}
 
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;TEMPERATE_BIOMES:[I"), method = "sample", cancellable = true)
 	private void injectTemperateBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
-		int[] vanillaArray = TEMPERATE_BIOMES;
-		OverworldClimate climate = OverworldClimate.TEMPERATE;
-		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (moddedWeightTotal == null) {
-			return;
-		}
-		int vanillaArrayWeight = vanillaArray.length;
-		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
-		if (reqWeightSum < vanillaArrayWeight) {
-			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
-		}
-		else {
-			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
-		}
+		InternalBiomeUtils.injectBiomesIntoClimate(random, TEMPERATE_BIOMES, OverworldClimate.TEMPERATE, info::setReturnValue);
 	}
 
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;SNOWY_BIOMES:[I"), method = "sample", cancellable = true)
 	private void injectSnowyBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
-		int[] vanillaArray = SNOWY_BIOMES;
-		OverworldClimate climate = OverworldClimate.SNOWY;
-		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (moddedWeightTotal == null) {
-			return;
-		}
-		int vanillaArrayWeight = vanillaArray.length;
-		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
-		if (reqWeightSum < vanillaArrayWeight) {
-			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
-		}
-		else {
-			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
-		}
+		InternalBiomeUtils.injectBiomesIntoClimate(random, SNOWY_BIOMES, OverworldClimate.SNOWY, info::setReturnValue);
 	}
 
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;COOL_BIOMES:[I"), method = "sample", cancellable = true)
 	private void injectCoolBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
-		int[] vanillaArray = COOL_BIOMES;
-		OverworldClimate climate = OverworldClimate.COOL;
-		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (moddedWeightTotal == null) {
-			return;
-		}
-		int vanillaArrayWeight = vanillaArray.length;
-		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
-		if (reqWeightSum < vanillaArrayWeight) {
-			info.setReturnValue(vanillaArray[(int) reqWeightSum]);
-		}
-		else {
-			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
-			info.setReturnValue(moddedBiomes.get(InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes)).getRawId());
-		}
+		InternalBiomeUtils.injectBiomesIntoClimate(random, COOL_BIOMES, OverworldClimate.COOL, info::setReturnValue);
 	}
 
 	@Inject(at = @At("RETURN"), method = "sample", cancellable = true)
 	private void transformVariants(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
-		Biome biome = Registry.BIOME.get(value);
-		Map<Biome, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
-		if (overworldVariantTransformers.containsKey(biome)) {
-			info.setReturnValue(Registry.BIOME.getRawId(overworldVariantTransformers.get(biome).transformBiome(biome, random)));
-		}
+		Biome biome = Registry.BIOME.get(info.getReturnValueI());
+
+		info.setReturnValue(InternalBiomeUtils.transformBiome(random, biome));
 	}
 
 }
