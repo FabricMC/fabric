@@ -38,19 +38,28 @@ public class MixinAddHillsLayer {
 
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseSampler, int chunkX, int chunkZ, CallbackInfoReturnable<Integer> info) {
+		if(InternalBiomeData.getOverworldHills().isEmpty()) {
+			// No use doing anything if there are no hills registered. Fall through to vanilla logic.
+
+			return;
+		}
+
 		final int biomeId = biomeSampler.sample(chunkX, chunkZ);
 		int noiseSample = noiseSampler.sample(chunkX, chunkZ);
 		int processedNoiseSample = (noiseSample - 2) % 29;
 		final Biome biome = Registry.BIOME.get(biomeId);
 
-		if (InternalBiomeData.getOverworldHills().containsKey(biome) && (rand.nextInt(3) == 0 || processedNoiseSample == 0)) {
-			WeightedBiomePicker biomePicker = InternalBiomeData.getOverworldHills().get(biome);
-			int biomeReturn = Registry.BIOME.getRawId(biomePicker.pickRandom(rand));
+		WeightedBiomePicker hillPicker = InternalBiomeData.getOverworldHills().get(biome);
+
+		if (hillPicker != null && (rand.nextInt(3) == 0 || processedNoiseSample == 0)) {
+			int biomeReturn = Registry.BIOME.getRawId(hillPicker.pickRandom(rand));
 			Biome parent;
+
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
 				parent = Biome.getParentBiome(Registry.BIOME.get(biomeReturn));
 				biomeReturn = parent == null ? biomeId : Registry.BIOME.getRawId(parent);
 			}
+
 			if (biomeReturn != biomeId) {
 				int similarity = 0;
 				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX, chunkZ - 1), biomeId)) {
