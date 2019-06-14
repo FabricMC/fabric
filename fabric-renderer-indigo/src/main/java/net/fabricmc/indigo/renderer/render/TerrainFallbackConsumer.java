@@ -133,6 +133,8 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 			// For flat lighting, cull face drives everything and light face is ignored.
             if(cullFace == null) {
                 editorQuad.invalidateShape();
+                // Can't rely on lazy computation in tesselateFlat() because needs to happen before offsets are applied
+                editorQuad.geometryFlags();
             } else {
                 editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
                 editorQuad.lightFace(cullFace);
