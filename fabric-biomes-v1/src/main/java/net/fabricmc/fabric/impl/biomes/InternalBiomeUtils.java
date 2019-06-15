@@ -17,10 +17,14 @@
 package net.fabricmc.fabric.impl.biomes;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.IntConsumer;
 
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
  * Internal utilities used for biome sampling
@@ -94,4 +98,42 @@ public final class InternalBiomeUtils {
 		return low;
 	}
 
+	public static int transformBiome(LayerRandomnessSource random, Biome existing) {
+		Map<Biome, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
+		VariantTransformer transformer = overworldVariantTransformers.get(existing);
+
+		if (transformer != null) {
+			return Registry.BIOME.getRawId(transformer.transformBiome(existing, random));
+		}
+
+		return Registry.BIOME.getRawId(existing);
+	}
+
+	public static void injectBiomesIntoClimate(LayerRandomnessSource random, int[] vanillaArray, OverworldClimate climate, IntConsumer result) {
+		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
+		if (moddedWeightTotal == null || moddedWeightTotal <= 0.0) {
+			// Return early, there are no modded biomes.
+			// Since we don't pass any values to the IntConsumer, this falls through to vanilla logic.
+			// Thus, this prevents Fabric from changing vanilla biome selection behavior without biome mods in this case.
+
+			return;
+		}
+
+		int vanillaArrayWeight = vanillaArray.length;
+		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
+
+		if (reqWeightSum < vanillaArray.length) {
+			// Vanilla biome; look it up from the vanilla array and transform accordingly.
+
+			result.accept(transformBiome(random, Registry.BIOME.get(vanillaArray[(int) reqWeightSum])));
+		} else {
+			// Modded biome; use a binary search, and then transform accordingly.
+
+			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
+
+			int foundIndex = InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes);
+
+			result.accept(transformBiome(random, moddedBiomes.get(foundIndex).getBiome()));
+		}
+	}
 }
