@@ -20,6 +20,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.particles.ParticleRegistryImpl;
 import net.minecraft.client.particle.ParticleFactory;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
@@ -27,6 +28,9 @@ import net.minecraft.particle.ParticleType;
 /** Core methods for registering particles with the Fabric API. */
 public interface ParticleRegistry {
 	ParticleRegistry INSTANCE = new ParticleRegistryImpl();
+
+	/** Retrieve the appropriate sprite atlas for particle textures. */
+	SpriteAtlasTexture getParticleSpriteAtlas();
 
 	/** Create a basic particle type that requires no extra information on spawn. */
 	DefaultParticleType createSimpleParticleType();

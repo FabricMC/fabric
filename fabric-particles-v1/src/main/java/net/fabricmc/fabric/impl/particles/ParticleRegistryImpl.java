@@ -21,6 +21,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.particles.ParticleRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ParticleFactory;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
@@ -29,6 +30,10 @@ import java.util.HashMap;
 
 /** Core methods for registering particles with the Fabric API. */
 public class ParticleRegistryImpl implements ParticleRegistry {
+	public SpriteAtlasTexture getParticleSpriteAtlas() {
+		return ((ParticleManagerHooks)MinecraftClient.getInstance().particleManager).fabric_getSpriteAtlasTexture();
+	}
+
 	public DefaultParticleType createSimpleParticleType() { return createSimpleParticleType(false); }
 	public DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {
 		return new DefaultParticleType(shouldAlwaysSpawn) {}; // Anonymous class to bypass protected constructor
