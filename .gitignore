@@ -1,31 +1,32 @@
-# Ignore everything
-/*
+# Gradle
+.gradle
 
-# Ignore eclipse files
+# Eclipse
 .classpath
+.metadata
 .settings
 .project
-*/bin
+*.launch
 
-# Subprojects
-!/fabric-*
-/fabric-*/.gradle
-/fabric-*/build
+# Intellij/Idea
+.factorypath
+.idea
+*.iml
+*.ipr
+*.iws
 
-# Folders
-!/gradle
-!/src
+# Build artifacts
+bin/
+build/
+jars/
 
-# Files
-!/.gitattributes
-!/.gitignore
-!/.editorconfig
-!/build.gradle
-!/gradle.properties
-!/gradlew
-!/gradlew.bat
-!/HEADER
-!/Jenkinsfile
-!/LICENSE
-!/README.md
-!/settings.gradle
+# Debug artifacts
+run
+*.log
+
+# Windows
+*.db
+$RECYCLE.BIN/
+
+# Mac
+.DS_Store
