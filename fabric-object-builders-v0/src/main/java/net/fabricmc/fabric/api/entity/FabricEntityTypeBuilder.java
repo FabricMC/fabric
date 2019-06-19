@@ -83,11 +83,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#changingDimensions(float, float)}
+	 * @deprecated Use {@link FabricEntityTypeBuilder#dimensions(float, float)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		return changingDimensions(width, height);
+		return dimensions(width, height);
 	}
 
 	/**
@@ -103,11 +103,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> fixedDimensions(float width, float height) {
-		return dimensions(EntitySize.constant(width, height));
-	}
-
-	public FabricEntityTypeBuilder<T> changingDimensions(float width, float height) {
+	public FabricEntityTypeBuilder<T> dimensions(float width, float height) {
 		return dimensions(EntitySize.resizeable(width, height));
 	}
 
