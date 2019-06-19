@@ -87,7 +87,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		return this.size(EntitySize.resizeable(width, height));
+		return changingDimensions(width, height);
 	}
 
 	/**
