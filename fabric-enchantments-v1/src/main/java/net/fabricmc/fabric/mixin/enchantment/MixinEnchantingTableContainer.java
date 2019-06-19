@@ -40,7 +40,7 @@ public abstract class MixinEnchantingTableContainer {
 		fabric_blockPos = blockPos;
 	}
 
-	@ModifyVariable(method = "method_17411", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", ordinal = 0), ordinal = 0)
+	@ModifyVariable(method = "method_17411", at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V", shift = At.Shift.BEFORE), ordinal = 0)
 	private int changeEnchantingPower(int power) {
 		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for(int zOffset = -1; zOffset <= 1; ++zOffset) {
