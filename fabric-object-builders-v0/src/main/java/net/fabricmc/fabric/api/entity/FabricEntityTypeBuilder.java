@@ -44,7 +44,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private int updateIntervalTicks = -1;
 	private Boolean alwaysUpdateVelocity;
 	private boolean immuneToFire = false;
-	private EntitySize size = EntitySize.resizeable(-1.0f, -1.0f);
+	private EntitySize dimensions = EntitySize.resizeable(-1.0f, -1.0f);
 
 	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
 		this.category = category;
@@ -83,17 +83,32 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#size(EntitySize)}
+	 * @deprecated Use {@link FabricEntityTypeBuilder#changingDimensions(float, float)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		this.size = EntitySize.resizeable(width, height);
+		return this.size(EntitySize.resizeable(width, height));
+	}
+
+	/**
+	 * @deprecated Use {@link FabricEntityTypeBuilder#dimensions(EntitySize)}
+	 */
+	@Deprecated
+	public FabricEntityTypeBuilder<T> size(EntitySize size) {
+		return dimensions(size);
+	}
+
+	public FabricEntityTypeBuilder<T> dimensions(EntitySize dimensions) {
+		this.dimensions = dimensions;
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> size(EntitySize size) {
-		this.size = size;
-		return this;
+	public FabricEntityTypeBuilder<T> fixedDimensions(float width, float height) {
+		return dimensions(EntitySize.constant(width, height));
+	}
+
+	public FabricEntityTypeBuilder<T> changingDimensions(float width, float height) {
+		return dimensions(EntitySize.resizeable(width, height));
 	}
 
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
@@ -113,7 +128,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}
