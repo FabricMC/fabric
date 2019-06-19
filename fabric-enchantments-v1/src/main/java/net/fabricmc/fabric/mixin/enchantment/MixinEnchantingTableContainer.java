@@ -21,6 +21,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.container.EnchantingTableContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,17 +40,19 @@ public abstract class MixinEnchantingTableContainer {
 		fabric_blockPos = blockPos;
 	}
 
-	@ModifyVariable(method = "method_17411", at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V", shift = At.Shift.BEFORE), ordinal = 0)
+	@ModifyVariable(method = "method_17411", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", ordinal = 0), ordinal = 0)
 	private int changeEnchantingPower(int power) {
+		BlockPos.Mutable mutable = new BlockPos.Mutable();
 		for(int zOffset = -1; zOffset <= 1; ++zOffset) {
 			for(int xOffset = -1; xOffset <= 1; ++xOffset) {
-				if ((zOffset != 0 || xOffset != 0) && fabric_world.isAir(fabric_blockPos.add(xOffset, 0, zOffset)) && fabric_world.isAir(fabric_blockPos.add(xOffset, 1, zOffset))) {
-					power += fabric_getEnchantingPower(fabric_blockPos.add(xOffset * 2, 0, zOffset * 2));
-					power += fabric_getEnchantingPower(fabric_blockPos.add(xOffset * 2, 1, zOffset * 2));
+				if ((zOffset != 0 || xOffset != 0) && fabric_world.isAir(mutable.set(fabric_blockPos).add(xOffset, 0, zOffset)) && fabric_world.isAir(mutable.offset(Direction.UP))) {
+					power += fabric_getEnchantingPower(mutable.set(fabric_blockPos).add(xOffset * 2, 0, zOffset * 2));
+					power += fabric_getEnchantingPower(mutable.offset(Direction.UP));
 					if (xOffset != 0 && zOffset != 0) {
-						power += fabric_getEnchantingPower(fabric_blockPos.add(xOffset * 2, 0, zOffset));
-						power += fabric_getEnchantingPower(fabric_blockPos.add(xOffset * 2, 1, zOffset));
-						power += fabric_getEnchantingPower(fabric_blockPos.add(xOffset * 2, 1, zOffset * 2));
+						power += fabric_getEnchantingPower(mutable.set(fabric_blockPos).add(xOffset * 2, 0, zOffset));
+						power += fabric_getEnchantingPower(mutable.offset(Direction.UP));
+						power += fabric_getEnchantingPower(mutable.set(fabric_blockPos).add(xOffset, 0, zOffset * 2));
+						power += fabric_getEnchantingPower(mutable.offset(Direction.UP));
 					}
 				}
 			}
