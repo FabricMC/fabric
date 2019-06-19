@@ -98,11 +98,23 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return dimensions(size);
 	}
 
+	/**
+	 * Defines the default {@link EntitySize} for this entity type
+	 *
+	 * @param dimensions The default dimensions
+	 */
 	public FabricEntityTypeBuilder<T> dimensions(EntitySize dimensions) {
 		this.dimensions = dimensions;
 		return this;
 	}
 
+	/**
+	 * Defines the default {@link EntitySize} for this entity type,
+	 * constructed using {@link EntitySize#resizeable(float, float)}
+	 * 
+	 * @param width The default width
+	 * @param height The default height
+	 */
 	public FabricEntityTypeBuilder<T> dimensions(float width, float height) {
 		return dimensions(EntitySize.resizeable(width, height));
 	}
