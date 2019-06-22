@@ -14,30 +14,31 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.network.server;
+package net.fabricmc.fabric.api.event.network.client;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ClientLoginPacketListener;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Called on the server on the main thread after connecting to a server. The
- * player will be available during this event.
+ * Called on the client on the network thread when the client attempts to
+ * connect to the server.
  */
-public interface ClientJoinCallback {
+public interface S2CLoginConnectCallback {
 
-	Event<ClientJoinCallback> EVENT = EventFactory.createArrayBacked(ClientJoinCallback.class, listeners -> connection -> {
-		for (ClientJoinCallback event : listeners) {
+	Event<S2CLoginConnectCallback> EVENT = EventFactory.createArrayBacked(S2CLoginConnectCallback.class, listeners -> (connection, listener) -> {
+		for (S2CLoginConnectCallback event : listeners) {
 			try {
-				event.onJoin(connection);
+				event.onLogin(connection, listener);
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);
-				LogManager.getLogger(event).error("Exception caught while handling join event from {}.", name, t);
+				LogManager.getLogger(event).error("Exception caught while handling login event from {}.", name, t);
 			}
 		}
 	});
 
-	void onJoin(ClientConnection connection);
+	void onLogin(ClientConnection connection, ClientLoginPacketListener listener);
 }

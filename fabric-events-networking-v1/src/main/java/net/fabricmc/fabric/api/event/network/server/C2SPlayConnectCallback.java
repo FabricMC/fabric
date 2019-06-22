@@ -19,25 +19,26 @@ package net.fabricmc.fabric.api.event.network.server;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Called on the server on the network thread when the client attempts to
- * connect to the server.
+ * Called on the server on the main thread after connecting to a server. The
+ * player will be available during this event.
  */
-public interface ClientLoginCallback {
+public interface C2SPlayConnectCallback {
 
-	Event<ClientLoginCallback> EVENT = EventFactory.createArrayBacked(ClientLoginCallback.class, listeners -> connection -> {
-		for (ClientLoginCallback event : listeners) {
+	Event<C2SPlayConnectCallback> EVENT = EventFactory.createArrayBacked(C2SPlayConnectCallback.class, listeners -> (connection, player) -> {
+		for (C2SPlayConnectCallback event : listeners) {
 			try {
-				event.onLogin(connection);
+				event.onJoin(connection, player);
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);
-				LogManager.getLogger(event).error("Exception caught while handling login event from {}.", name, t);
+				LogManager.getLogger(event).error("Exception caught while handling join event from {}.", name, t);
 			}
 		}
 	});
 
-	void onLogin(ClientConnection connection);
+	void onJoin(ClientConnection connection, ServerPlayPacketListener packetListener);
 }

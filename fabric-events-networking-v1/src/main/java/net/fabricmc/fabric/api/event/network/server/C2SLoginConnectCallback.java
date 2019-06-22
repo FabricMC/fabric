@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.network.client;
+package net.fabricmc.fabric.api.event.network.server;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ServerLoginPacketListener;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Called on the client on the network thread when the client attempts to
+ * Called on the server on the network thread when the client attempts to
  * connect to the server.
  */
-public interface ServerLoginCallback {
+public interface C2SLoginConnectCallback {
 
-	Event<ServerLoginCallback> EVENT = EventFactory.createArrayBacked(ServerLoginCallback.class, listeners -> connection -> {
-		for (ServerLoginCallback event : listeners) {
+	Event<C2SLoginConnectCallback> EVENT = EventFactory.createArrayBacked(C2SLoginConnectCallback.class, listeners -> (connection, listener) -> {
+		for (C2SLoginConnectCallback event : listeners) {
 			try {
-				event.onLogin(connection);
+				event.onLogin(connection, listener);
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);
@@ -39,5 +40,5 @@ public interface ServerLoginCallback {
 		}
 	});
 
-	void onLogin(ClientConnection connection);
+	void onLogin(ClientConnection connection, ServerLoginPacketListener listener);
 }

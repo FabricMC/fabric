@@ -19,25 +19,26 @@ package net.fabricmc.fabric.api.event.network.client;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Called on the client on the network thread when the client is disconnected
- * from the server.
+ * Called on the client on the main thread after connecting to a server. The
+ * world and player will be available during this event.
  */
-public interface ServerLeaveCallback {
+public interface S2CPlayConnectCallback {
 
-	Event<ServerLeaveCallback> EVENT = EventFactory.createArrayBacked(ServerLeaveCallback.class, listeners -> connection -> {
-		for (ServerLeaveCallback event : listeners) {
+	Event<S2CPlayConnectCallback> EVENT = EventFactory.createArrayBacked(S2CPlayConnectCallback.class, listeners -> (connection, packetListener) -> {
+		for (S2CPlayConnectCallback event : listeners) {
 			try {
-				event.onLeave(connection);
+				event.onJoin(connection, packetListener);
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);
-				LogManager.getLogger(event).error("Exception caught while handling leave event from {}.", name, t);
+				LogManager.getLogger(event).error("Exception caught while handling join event from {}.", name, t);
 			}
 		}
 	});
 
-	void onLeave(ClientConnection connection);
+	void onJoin(ClientConnection connection, ClientPlayPacketListener packetListener);
 }

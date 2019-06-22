@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.mixin.network.client;
 
-import net.fabricmc.fabric.api.event.network.client.ServerJoinCallback;
+import net.fabricmc.fabric.api.event.network.client.S2CPlayConnectCallback;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.GameJoinS2CPacket;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,12 +29,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayNetworkHandler.class)
-public class MixinClientPlayNetworkHandler {
+public abstract class MixinClientPlayNetworkHandler implements ClientPlayPacketListener {
 
 	@Shadow @Final private ClientConnection connection;
 
 	@Inject(method = "onGameJoin", at = @At("RETURN"))
 	private void onJoin(GameJoinS2CPacket gameJoinS2CPacket_1, CallbackInfo ci){
-		ServerJoinCallback.EVENT.invoker().onJoin(this.connection);
+		S2CPlayConnectCallback.EVENT.invoker().onJoin(this.connection, this);
 	}
 }

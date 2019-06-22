@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.network.server;
+package net.fabricmc.fabric.api.event.network.client;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import org.apache.logging.log4j.LogManager;
 
 /**
- * Called on the server on the network thread when the client is disconnected
+ * Called on the client on the network thread when the client is disconnected
  * from the server.
  */
-public interface ClientLeaveCallback {
+public interface S2CPlayDisconnectCallback {
 
-	Event<ClientLeaveCallback> EVENT = EventFactory.createArrayBacked(ClientLeaveCallback.class, listeners -> connection -> {
-		for (ClientLeaveCallback event : listeners) {
+	Event<S2CPlayDisconnectCallback> EVENT = EventFactory.createArrayBacked(S2CPlayDisconnectCallback.class, listeners -> (connection, packetListener) -> {
+		for (S2CPlayDisconnectCallback event : listeners) {
 			try {
-				event.onLeave(connection);
+				event.onLeave(connection, packetListener);
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);
@@ -39,5 +40,5 @@ public interface ClientLeaveCallback {
 		}
 	});
 
-	void onLeave(ClientConnection connection);
+	void onLeave(ClientConnection connection, ClientPlayPacketListener packetListener);
 }

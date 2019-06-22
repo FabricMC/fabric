@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import net.fabricmc.fabric.api.event.network.server.ClientJoinCallback;
+import net.fabricmc.fabric.api.event.network.server.C2SPlayConnectCallback;
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,6 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinPlayerManager {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	private void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-		ClientJoinCallback.EVENT.invoker().onJoin(connection);
+		C2SPlayConnectCallback.EVENT.invoker().onJoin(connection, (ServerPlayPacketListener) connection.getPacketListener());
 	}
 }
