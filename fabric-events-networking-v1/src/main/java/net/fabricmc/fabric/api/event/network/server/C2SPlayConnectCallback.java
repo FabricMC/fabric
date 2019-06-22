@@ -28,10 +28,10 @@ import org.apache.logging.log4j.LogManager;
  */
 public interface C2SPlayConnectCallback {
 
-	Event<C2SPlayConnectCallback> EVENT = EventFactory.createArrayBacked(C2SPlayConnectCallback.class, listeners -> (connection, player) -> {
+	Event<C2SPlayConnectCallback> EVENT = EventFactory.createArrayBacked(C2SPlayConnectCallback.class, listeners -> (connection, packetListener) -> {
 		for (C2SPlayConnectCallback event : listeners) {
 			try {
-				event.onJoin(connection, player);
+				event.onJoin(connection, packetListener);
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);

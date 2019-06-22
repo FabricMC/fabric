@@ -28,10 +28,10 @@ import org.apache.logging.log4j.LogManager;
  */
 public interface S2CLoginConnectCallback {
 
-	Event<S2CLoginConnectCallback> EVENT = EventFactory.createArrayBacked(S2CLoginConnectCallback.class, listeners -> (connection, listener) -> {
+	Event<S2CLoginConnectCallback> EVENT = EventFactory.createArrayBacked(S2CLoginConnectCallback.class, listeners -> (connection, packetListener) -> {
 		for (S2CLoginConnectCallback event : listeners) {
 			try {
-				event.onLogin(connection, listener);
+				event.onLogin(connection, packetListener);
 			} catch (Throwable t) {
 				// netty swallows exceptions
 				String name = EventFactory.getHandlerName(event);
@@ -40,5 +40,5 @@ public interface S2CLoginConnectCallback {
 		}
 	});
 
-	void onLogin(ClientConnection connection, ClientLoginPacketListener listener);
+	void onLogin(ClientConnection connection, ClientLoginPacketListener packetListener);
 }
