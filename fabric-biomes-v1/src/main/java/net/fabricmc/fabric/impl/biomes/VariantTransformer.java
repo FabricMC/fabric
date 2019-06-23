@@ -35,10 +35,10 @@ public final class VariantTransformer {
 	/**
 	 * @param variant the variant that the replaced biome is replaced with
 	 * @param chance the chance of replacement of the biome into the variant
-	 * @param climates the climates that the variant can replace the base biome in, empty indicates all climates
+	 * @param climates the climates that the variant can replace the base biome in, empty/null indicates all climates
 	 */
 	public void addBiome(Biome variant, double chance, OverworldClimate[] climates) {
-		if(climates == null) {
+		if(climates == null || climates.length == 0) {
 			defaultTransformer.addBiome(variant, chance);
 			climates = OverworldClimate.values();
 		}
