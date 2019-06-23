@@ -51,7 +51,13 @@ public class MixinAddHillsLayer {
 
 		WeightedBiomePicker hillPicker = InternalBiomeData.getOverworldHills().get(biome);
 
-		if (hillPicker != null && (rand.nextInt(3) == 0 || processedNoiseSample == 0)) {
+		if(hillPicker == null) {
+			// No hills for this biome, fall through to vanilla logic.
+
+			return;
+		}
+
+		if (rand.nextInt(3) == 0 || processedNoiseSample == 0) {
 			int biomeReturn = Registry.BIOME.getRawId(hillPicker.pickRandom(rand));
 			Biome parent;
 
@@ -79,6 +85,9 @@ public class MixinAddHillsLayer {
 				}
 			}
 		}
+
+		// Cancel vanilla logic.
+		info.setReturnValue(biomeId);
 	}
 
 }
