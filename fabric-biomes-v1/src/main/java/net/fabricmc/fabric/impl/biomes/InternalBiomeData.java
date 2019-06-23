@@ -76,14 +76,10 @@ public final class InternalBiomeData {
 		OVERWORLD_INJECTED_BIOMES.add(edge);
 	}
 
-	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, double chance) {
+	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, double chance, OverworldClimate[] climates) {
 		Preconditions.checkArgument(replaced != null && variant != null, "One or both arguments are null");
 		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 or less than or equal to 1");
-		OVERWORLD_VARIANT_TRANSFORMERS.computeIfPresent(replaced, (biome, transformers) -> {
-			transformers.addBiome(variant, chance);
-			return transformers;
-		});
-		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, chance);
+		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, chance, climates);
 		OVERWORLD_INJECTED_BIOMES.add(variant);
 	}
 
