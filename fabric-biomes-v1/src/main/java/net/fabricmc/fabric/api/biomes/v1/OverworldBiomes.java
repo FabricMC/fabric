@@ -82,8 +82,8 @@ public final class OverworldBiomes {
 	 * @param variant the biome to be added as a variant
 	 * @param chance the chance of replacement of the biome into the variant
 	 */
-	public static void addBiomeVariant(Biome replaced, Biome variant, double chance) {
-		InternalBiomeData.addOverworldBiomeReplacement(replaced, variant, chance);
+	public static void addBiomeVariant(Biome replaced, Biome variant, double chance, OverworldClimate... climates) {
+		InternalBiomeData.addOverworldBiomeReplacement(replaced, variant, chance, climates);
 	}
 
 	/**

@@ -98,12 +98,19 @@ public final class InternalBiomeUtils {
 		return low;
 	}
 
-	public static int transformBiome(LayerRandomnessSource random, Biome existing) {
+	/**
+	 * Potentially transforms a biome into its variants based on the provided randomness source.
+	 * @param random The randomness source
+	 * @param existing The base biome
+	 * @param climate The climate in which the biome resides, or null to indicate an unknown climate
+	 * @return The potentially transformed biome
+	 */
+	public static int transformBiome(LayerRandomnessSource random, Biome existing, OverworldClimate climate) {
 		Map<Biome, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
 		VariantTransformer transformer = overworldVariantTransformers.get(existing);
 
 		if (transformer != null) {
-			return Registry.BIOME.getRawId(transformer.transformBiome(existing, random));
+			return Registry.BIOME.getRawId(transformer.transformBiome(existing, random, climate));
 		}
 
 		return Registry.BIOME.getRawId(existing);
@@ -125,7 +132,7 @@ public final class InternalBiomeUtils {
 		if (reqWeightSum < vanillaArray.length) {
 			// Vanilla biome; look it up from the vanilla array and transform accordingly.
 
-			result.accept(transformBiome(random, Registry.BIOME.get(vanillaArray[(int) reqWeightSum])));
+			result.accept(transformBiome(random, Registry.BIOME.get(vanillaArray[(int) reqWeightSum]), climate));
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 
@@ -133,7 +140,7 @@ public final class InternalBiomeUtils {
 
 			int foundIndex = InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes);
 
-			result.accept(transformBiome(random, moddedBiomes.get(foundIndex).getBiome()));
+			result.accept(transformBiome(random, moddedBiomes.get(foundIndex).getBiome(), climate));
 		}
 	}
 }
