@@ -34,7 +34,6 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
 
 /**
  * Implementation of {@link RenderContext} used during terrain rendering.

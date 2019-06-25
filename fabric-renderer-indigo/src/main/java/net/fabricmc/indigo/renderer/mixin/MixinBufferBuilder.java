@@ -18,7 +18,6 @@ package net.fabricmc.indigo.renderer.mixin;
 
 import java.nio.IntBuffer;
 
-import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.helper.BufferBuilderTransformHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.minecraft.client.render.VertexFormat;

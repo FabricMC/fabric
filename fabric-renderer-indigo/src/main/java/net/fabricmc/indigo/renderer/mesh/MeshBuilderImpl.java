@@ -25,7 +25,7 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 /**
  * Our implementation of {@link MeshBuilder}, used for static mesh creation and baking.
  * Not much to it - mainly it just needs to grow the int[] array as quads are appended
- * and maintain/provide a properly-configured {@link MutableQuadView} instance.
+ * and maintain/provide a properly-configured {@link net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView} instance.
  * All the encoding and other work is handled in the quad base classes.
  * The one interesting bit is in {@link Maker#emit()}. 
  */

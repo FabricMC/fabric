@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
 import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.PlayerManager;

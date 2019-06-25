@@ -75,7 +75,7 @@ public interface RenderContext {
     void pushTransform(QuadTransform transform);
     
     /**
-     * Removes the transformation added by the last call to {@link #pushTransform(Consumer)}.
+     * Removes the transformation added by the last call to {@link #pushTransform(QuadTransform)}.
      * MUST be called before exiting from {@link FabricBakedModel} .emit... methods.
      */
     void popTransform();

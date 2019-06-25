@@ -62,7 +62,7 @@ public final class EventFactory {
 	/**
 	 * Create an "array-backed" Event instance with a custom empty invoker.
 	 * <p>
-	 * Having a custom empty invoker (of type (...) -> {}) increases performance
+	 * Having a custom empty invoker (of type (...) -&gt; {}) increases performance
 	 * relative to iterating over an empty array; however, it only really matters
 	 * if the event is executed thousands of times a second.
 	 *

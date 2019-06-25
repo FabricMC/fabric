@@ -30,8 +30,8 @@ import net.minecraft.util.PacketByteBuf;
  * <p>
  * It is used for:
  * <p>
- * - registering server-side packet receivers (client -> server packets)
- * - sending packets to clients (server -> client packets).
+ * - registering server-side packet receivers (client -&gt; server packets)
+ * - sending packets to clients (server -&gt; client packets).
  * <p>
  * For iterating over clients in a server, see {@link PlayerStream}.
  */
