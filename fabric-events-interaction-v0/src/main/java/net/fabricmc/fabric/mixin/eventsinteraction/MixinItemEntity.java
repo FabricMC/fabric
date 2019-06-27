@@ -19,7 +19,7 @@ public abstract class MixinItemEntity
 	@Inject(at = @At("HEAD"), method = "onPlayerCollision", cancellable = true)
 	private void pickupItem(final PlayerEntity playerEntity, final CallbackInfo info) {
 		ActionResult result = PickupItemCallback.EVENT.invoker().interact(playerEntity, (ItemEntity) (Object) this);
-		if(result != ActionResult.PASS) {
+		if(result == ActionResult.FAIL) {
 			info.cancel();
 		}
 	}
