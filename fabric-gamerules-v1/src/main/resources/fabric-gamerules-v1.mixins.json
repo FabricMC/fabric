@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.gamerule",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinBooleanRule",
+    "MixinGameRules",
+    "MixinIntRule"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
