@@ -9,12 +9,14 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GameRuleUtilsImpl implements GameRuleUtils {
+	private Constructor<GameRules.RuleType> typeConstructor = null;
 
 	@Override
 	public <T extends GameRules.Rule<T>> GameRules.RuleKey<T> register(Identifier name, GameRules.RuleType<T> ruleType) {
@@ -35,10 +37,13 @@ public class GameRuleUtilsImpl implements GameRuleUtils {
 	@Override
 	public <T extends GameRules.Rule<T>> GameRules.RuleType<T> createCustomRule(Supplier<ArgumentType<?>> argumentType, Function<GameRules.RuleType<T>, T> factory, BiConsumer<MinecraftServer, T> notifier) {
 		try {
-			java.lang.reflect.Constructor<GameRules.RuleType> constructor = GameRules.RuleType.class.getDeclaredConstructor(Supplier.class, Function.class, BiConsumer.class);
-			constructor.setAccessible(true);
-			return constructor.newInstance(argumentType, factory, notifier);
-		} catch (IllegalAccessException | InstantiationException | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
+			if (typeConstructor == null) {
+				java.lang.reflect.Constructor<GameRules.RuleType> constructor = GameRules.RuleType.class.getDeclaredConstructor(Supplier.class, Function.class, BiConsumer.class);
+				constructor.setAccessible(true);
+				typeConstructor = constructor;
+			}
+			return typeConstructor.newInstance(argumentType, factory, notifier);
+		} catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
 	}
