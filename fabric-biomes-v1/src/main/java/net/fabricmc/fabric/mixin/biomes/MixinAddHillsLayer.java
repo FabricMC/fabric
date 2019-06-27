@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(Biome, Biome, int)}into the default hills layer
+ * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(Biome, Biome, double)}into the default hills layer
  */
 @Mixin(AddHillsLayer.class)
 public class MixinAddHillsLayer {

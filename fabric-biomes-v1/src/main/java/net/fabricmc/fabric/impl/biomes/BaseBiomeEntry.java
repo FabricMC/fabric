@@ -16,30 +16,25 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
 /**
  * Represents a biome and its corresponding weight
  */
 public class BaseBiomeEntry {
-
 	private final Biome biome;
 	private final double weight;
 	private final double upperWeightBound;
 
 	/**
 	 * @param biome the biome
-	 * @param weight how often a biome will be chosen. Most vanilla biomes have a
-	 * weight of 1, but a full list of values can be seen in {@link OverworldClimate}.
-	 * @param climate the climate of the biome entry, just used to store weights
+	 * @param weight how often a biome will be chosen in this picker.
+	 * @param upperWeightBound the upper weight bound within the context of the other biome entries, used for the binary search
 	 */
-	public BaseBiomeEntry(final Biome biome, final double weight, OverworldClimate climate) {
+	public BaseBiomeEntry(final Biome biome, final double weight, final double upperWeightBound) {
 		this.biome = biome;
 		this.weight = weight;
-		InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.compute(climate, (c, w) -> w == null ? weight : weight + w);
-		upperWeightBound = InternalBiomeData.OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS.get(climate);
+		this.upperWeightBound = upperWeightBound;
 	}
 
 	/**
@@ -62,12 +57,4 @@ public class BaseBiomeEntry {
 	public double getUpperWeightBound() {
 		return upperWeightBound;
 	}
-
-	/**
-	 * @return The raw id for the biome
-	 */
-	public int getRawId() {
-		return Registry.BIOME.getRawId(biome);
-	}
-
 }
