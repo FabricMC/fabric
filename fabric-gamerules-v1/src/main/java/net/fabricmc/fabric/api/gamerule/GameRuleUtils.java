@@ -1,11 +1,17 @@
 package net.fabricmc.fabric.api.gamerule;
 
-import net.fabricmc.fabric.impl.gamerule.GameRuleRegistryImpl;
+import com.mojang.brigadier.arguments.ArgumentType;
+import net.fabricmc.fabric.impl.gamerule.GameRuleUtilsImpl;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
 
-public interface GameRuleRegistry {
-	final GameRuleRegistry INSTANCE = new GameRuleRegistryImpl();
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+public interface GameRuleUtils {
+	final GameRuleUtils INSTANCE = new GameRuleUtilsImpl();
 
 	/**
 	 * Register a new game rule.
@@ -29,4 +35,16 @@ public interface GameRuleRegistry {
 	 * @return A RuleType to pass to register.
 	 */
 	GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue);
+
+	/**
+	 * Create a new game rule with a custom value. Call this from an extension of {@link GameRules.Rule<T>}
+	 * Used in place of the private {@link GameRules.RuleType<T>} constructor.
+	 * @param argumentType The argument type to pass to this game rule from the /gamerule command.
+	 * @param factory The factory for creating a new Rule with.
+	 * @param notifier Called whenever the game rule is set.
+	 * @param <T> The class to base the rule around. Must be parasable to/from a String.
+	 * @return The new RuleType to pass into register.
+	 */
+	<T extends GameRules.Rule<T>> GameRules.RuleType<T> createCustomRule(Supplier<ArgumentType<?>> argumentType, Function<GameRules.RuleType<T>, T> factory, BiConsumer<MinecraftServer, T> notifier);
+
 }
