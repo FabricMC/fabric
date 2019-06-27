@@ -37,6 +37,8 @@ allprojects {
 
 	group = "net.fabricmc.fabric-api"
 
+
+
 	dependencies {
 		minecraft "com.mojang:minecraft:$mcVersion"
 		mappings "net.fabricmc:yarn:${mcVersion}${yarnVersion}"
@@ -79,6 +81,14 @@ allprojects {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
+	
+}
+javadoc{
+	options.memberLevel = "PACKAGE"
+	allprojects.each{
+			source( it.sourceSets.main.allJava.srcDirs)
+		}
+	classpath = sourceSets.main.compileClasspath
 }
 
 subprojects {
@@ -115,6 +125,7 @@ subprojects {
 		}
 	}
 
+	javadoc.enabled = false
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
