@@ -38,7 +38,7 @@ public class GameRuleUtilsImpl implements GameRuleUtils {
 	public <T extends GameRules.Rule<T>> GameRules.RuleType<T> createCustomRule(Supplier<ArgumentType<?>> argumentType, Function<GameRules.RuleType<T>, T> factory, BiConsumer<MinecraftServer, T> notifier) {
 		try {
 			if (typeConstructor == null) {
-				java.lang.reflect.Constructor<GameRules.RuleType> constructor = GameRules.RuleType.class.getDeclaredConstructor(Supplier.class, Function.class, BiConsumer.class);
+				Constructor<GameRules.RuleType> constructor = GameRules.RuleType.class.getDeclaredConstructor(Supplier.class, Function.class, BiConsumer.class);
 				constructor.setAccessible(true);
 				typeConstructor = constructor;
 			}
