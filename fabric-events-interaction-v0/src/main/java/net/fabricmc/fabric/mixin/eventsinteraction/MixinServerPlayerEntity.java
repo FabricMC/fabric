@@ -45,7 +45,7 @@ public class MixinServerPlayerEntity {
 	public void onPlayerDropItem(final ItemStack stack, final boolean boolean_1, final boolean boolean_2, final CallbackInfoReturnable<ItemEntity> info) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 		ActionResult result = DropItemCallback.EVENT.invoker().interact(player, stack);
-		if(result != ActionResult.PASS) {
+		if(result == ActionResult.FAIL) {
 			info.cancel();
 		}
 	}
