@@ -21,11 +21,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
-import org.apache.commons.lang3.ArrayUtils;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -42,6 +38,7 @@ public class MixinVanillaLayeredBiomeSource {
 
 	@Shadow
 	@Final
+	@Mutable
 	private Biome[] biomes;
 
 	@Unique
@@ -63,7 +60,16 @@ public class MixinVanillaLayeredBiomeSource {
 		int currentSize = injectedBiomes.size();
 		if (this.injectionCount < currentSize) {
 			List<Biome> toInject = injectedBiomes.subList(injectionCount, currentSize - 1);
-			ArrayUtils.addAll(this.biomes, toInject.toArray());
+
+			Biome[] oldBiomes = this.biomes;
+			this.biomes = new Biome[oldBiomes.length + toInject.size()];
+			System.arraycopy(oldBiomes, 0, this.biomes, 0, oldBiomes.length);
+
+			int index = oldBiomes.length;
+			for(Biome injected: toInject) {
+				biomes[index++] = injected;
+			}
+
 			injectionCount += toInject.size();
 		}
 	}
