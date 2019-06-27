@@ -117,8 +117,9 @@ public final class InternalBiomeUtils {
 	}
 
 	public static void injectBiomesIntoClimate(LayerRandomnessSource random, int[] vanillaArray, OverworldClimate climate, IntConsumer result) {
-		Double moddedWeightTotal = InternalBiomeData.getOverworldModdedBaseBiomeWeightTotals().get(climate);
-		if (moddedWeightTotal == null || moddedWeightTotal <= 0.0) {
+		WeightedBiomePicker picker = InternalBiomeData.getOverworldBaseModdedBiomePickers().get(climate);
+
+		if (picker == null || picker.getCurrentWeightTotal() <= 0.0) {
 			// Return early, there are no modded biomes.
 			// Since we don't pass any values to the IntConsumer, this falls through to vanilla logic.
 			// Thus, this prevents Fabric from changing vanilla biome selection behavior without biome mods in this case.
@@ -127,7 +128,7 @@ public final class InternalBiomeUtils {
 		}
 
 		int vanillaArrayWeight = vanillaArray.length;
-		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + moddedWeightTotal) / Integer.MAX_VALUE;
+		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + picker.getCurrentWeightTotal()) / Integer.MAX_VALUE;
 
 		if (reqWeightSum < vanillaArray.length) {
 			// Vanilla biome; look it up from the vanilla array and transform accordingly.
@@ -136,11 +137,9 @@ public final class InternalBiomeUtils {
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 
-			List<BaseBiomeEntry> moddedBiomes = InternalBiomeData.getOverworldModdedBaseBiomes().get(climate);
+			BaseBiomeEntry found = picker.search(reqWeightSum - vanillaArrayWeight);
 
-			int foundIndex = InternalBiomeUtils.searchForBiome(reqWeightSum, vanillaArrayWeight, moddedBiomes);
-
-			result.accept(transformBiome(random, moddedBiomes.get(foundIndex).getBiome(), climate));
+			result.accept(transformBiome(random, found.getBiome(), climate));
 		}
 	}
 }

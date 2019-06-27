@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
- * Adds edges and shores specified in {@link OverworldBiomes#addEdgeBiome(Biome, Biome, int)} and {@link OverworldBiomes#addShoreBiome(Biome, Biome, int)} to the edges layer
+ * Adds edges and shores specified in {@link OverworldBiomes#addEdgeBiome(Biome, Biome, double)} and {@link OverworldBiomes#addShoreBiome(Biome, Biome, double)} to the edges layer
  */
 @Mixin(AddEdgeBiomesLayer.class)
 public class MixinAddEdgeBiomesLayer {

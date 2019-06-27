@@ -32,7 +32,9 @@ public final class OverworldBiomes {
 	 *
 	 * @param biome the biome to be added
 	 * @param climate the climate group whereto the biome is added
-	 * @param weight the weight of the entry. Vanilla weights for each biome in each climate are listed in the {@link OverworldClimate} javadoc.
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * 	             heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * 	             Vanilla weights for each biome in each climate are listed in the {@link OverworldClimate} javadoc.
 	 */
 	public static void addBaseBiome(Biome biome, OverworldClimate climate, double weight) {
 		InternalBiomeData.addOverworldBaseBiome(climate, biome, weight);
@@ -43,10 +45,11 @@ public final class OverworldBiomes {
 	 *
 	 * @param parent the biome to where the hills variant is added
 	 * @param hills the biome to be set as a hills variant
-	 * @param weight the weight of the entry. The weight in this method corrosponds to the amount of times it is added
-	 * to the list that is randomly selected from when a hills biome is chosen.
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 *               Mods should use 1.0 as the default/normal weight.
 	 */
-	public static void addHillsBiome(Biome parent, Biome hills, int weight) {
+	public static void addHillsBiome(Biome parent, Biome hills, double weight) {
 		InternalBiomeData.addOverworldHillsBiome(parent, hills, weight);
 	}
 
@@ -55,10 +58,11 @@ public final class OverworldBiomes {
 	 *
 	 * @param parent the base biome to where the shore biome is added
 	 * @param shore the biome to be added as a shore biome
-	 * @param weight the weight of this entry. The weight in this method corrosponds to the amount of times it is added
-	 * to the list that is randomly selected from when a shore biome is chosen.
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * 	             heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * 	             Mods should use 1.0 as the default/normal weight.
 	 */
-	public static void addShoreBiome(Biome parent, Biome shore, int weight) {
+	public static void addShoreBiome(Biome parent, Biome shore, double weight) {
 		InternalBiomeData.addOverworldShoreBiome(parent, shore, weight);
 	}
 
@@ -67,10 +71,11 @@ public final class OverworldBiomes {
 	 *
 	 * @param parent the base biome to where the edge biome is added
 	 * @param edge the biome to be added as an edge biome
-	 * @param weight the weight of this entry. The weight in this method corrosponds to the amount of times it is added
-	 * to the list that is randomly selected from when an edge biome is chosen.
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 *               Mods should use 1.0 as the default/normal weight.
 	 */
-	public static void addEdgeBiome(Biome parent, Biome edge, int weight) {
+	public static void addEdgeBiome(Biome parent, Biome edge, double weight) {
 		InternalBiomeData.addOverworldEdgeBiome(parent, edge, weight);
 	}
 

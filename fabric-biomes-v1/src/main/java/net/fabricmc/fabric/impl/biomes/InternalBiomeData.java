@@ -27,6 +27,7 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -40,13 +41,13 @@ public final class InternalBiomeData {
 	private InternalBiomeData() {
 	}
 
+	private static final EnumMap<OverworldClimate, WeightedBiomePicker> OVERWORLD_BASE_MODDED_BIOME_PICKERS = new EnumMap<>(OverworldClimate.class);
 	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_HILLS_MAP = new HashMap<>();
 	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_SHORE_MAP = new HashMap<>();
 	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
-	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
 	private static final Map<Biome, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
-	private static final EnumMap<OverworldClimate, List<BaseBiomeEntry>> OVERWORLD_MODDED_BASE_BIOMES = new EnumMap<>(OverworldClimate.class);
-	protected static final EnumMap<OverworldClimate, Double> OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS = new EnumMap<>(OverworldClimate.class);
+
+	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
 	private static final List<Biome> OVERWORLD_INJECTED_BIOMES = new ArrayList<>();
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
 
@@ -54,26 +55,29 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(climate != null && biome != null, "One or both arguments are null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
-		OVERWORLD_MODDED_BASE_BIOMES.computeIfAbsent(climate, k -> new ArrayList<>()).add(new BaseBiomeEntry(biome, weight, climate));
+		OVERWORLD_BASE_MODDED_BIOME_PICKERS.computeIfAbsent(climate, k -> new WeightedBiomePicker()).addBiome(biome, weight);
 		OVERWORLD_INJECTED_BIOMES.add(biome);
 	}
 
-	public static void addOverworldHillsBiome(Biome parent, Biome hills, int weight) {
+	public static void addOverworldHillsBiome(Biome parent, Biome hills, double weight) {
 		Preconditions.checkArgument(parent != null && hills != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		OVERWORLD_HILLS_MAP.computeIfAbsent(parent, biome -> DefaultHillsData.injectDefaultHills(parent, new WeightedBiomePicker())).addBiome(hills, weight);
 		OVERWORLD_INJECTED_BIOMES.add(hills);
 	}
 
-	public static void addOverworldShoreBiome(Biome parent, Biome shore, int weight) {
+	public static void addOverworldShoreBiome(Biome parent, Biome shore, double weight) {
 		Preconditions.checkArgument(parent != null && shore != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		OVERWORLD_SHORE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(shore, weight);
 		OVERWORLD_INJECTED_BIOMES.add(shore);
 	}
 
-	public static void addOverworldEdgeBiome(Biome parent, Biome edge, int weight) {
+	public static void addOverworldEdgeBiome(Biome parent, Biome edge, double weight) {
 		Preconditions.checkArgument(parent != null && edge != null, "One or both arguments are null");
+		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0, "Weight is zero or negative (must be positive)");
 		OVERWORLD_EDGE_MAP.computeIfAbsent(parent, biome -> new WeightedBiomePicker()).addBiome(edge, weight);
 		OVERWORLD_INJECTED_BIOMES.add(edge);
@@ -95,10 +99,6 @@ public final class InternalBiomeData {
 
 	public static void addSpawnBiome(Biome biome) {
 		SPAWN_BIOMES.add(biome);
-	}
-
-	public static Map<OverworldClimate, List<BaseBiomeEntry>> getOverworldModdedBaseBiomes() {
-		return OVERWORLD_MODDED_BASE_BIOMES;
 	}
 
 	public static List<Biome> getOverworldInjectedBiomes() {
@@ -125,8 +125,8 @@ public final class InternalBiomeData {
 		return OVERWORLD_RIVER_MAP;
 	}
 
-	public static EnumMap<OverworldClimate, Double> getOverworldModdedBaseBiomeWeightTotals() {
-		return OVERWORLD_MODDED_BASE_BIOME_WEIGHT_TOTALS;
+	public static EnumMap<OverworldClimate, WeightedBiomePicker> getOverworldBaseModdedBiomePickers() {
+		return OVERWORLD_BASE_MODDED_BIOME_PICKERS;
 	}
 
 	public static Map<Biome, VariantTransformer> getOverworldVariantTransformers() {
@@ -143,11 +143,16 @@ public final class InternalBiomeData {
 				picker.addBiome(defaultHill, 1);
 			} else if(BiomeLayers.areSimilar(Registry.BIOME.getRawId(base), Registry.BIOME.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
 				picker.addBiome(Biomes.BADLANDS, 1);
-			} else if(base == Biomes.DEEP_OCEAN || base == Biomes.DEEP_LUKEWARM_OCEAN || base == Biomes.DEEP_COLD_OCEAN || base == Biomes.DEEP_FROZEN_OCEAN) {
-				// Note: Vanilla Deep Frozen Oceans only have a 1/3 chance of having hills, but this shouldn't matter too much.
-
+			} else if(base == Biomes.DEEP_OCEAN || base == Biomes.DEEP_LUKEWARM_OCEAN || base == Biomes.DEEP_COLD_OCEAN) {
 				picker.addBiome(Biomes.PLAINS, 1);
 				picker.addBiome(Biomes.FOREST, 1);
+			} else if(base == Biomes.DEEP_FROZEN_OCEAN) {
+				// Note: Vanilla Deep Frozen Oceans only have a 1/3 chance of having default hills.
+				// This is a clever trick that ensures that when a mod adds hills with a weight of 1, the 1/3 chance is fulfilled.
+				// 0.5 + 1.0 = 1.5, and 0.5 / 1.5 = 1/3.
+
+				picker.addBiome(Biomes.PLAINS, 0.25);
+				picker.addBiome(Biomes.FOREST, 0.25);
 			} else if(base == Biomes.PLAINS) {
 				picker.addBiome(Biomes.WOODED_HILLS, 1);
 				picker.addBiome(Biomes.FOREST, 2);
