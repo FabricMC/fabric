@@ -14,7 +14,7 @@ import net.minecraft.world.World;
  * <p>
  * Upon return:
  * - SUCCESS cancels further processing and picks up the item.
- * - PASS falls back to further processing.
+ * - PASS falls back to further processing. If all listeners return PASS, the item is picked up.
  * - FAIL cancels further processing and does not pick up the item.
  */
 public interface PickupItemCallback {
