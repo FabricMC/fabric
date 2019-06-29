@@ -38,7 +38,7 @@ public class MixinAddHillsLayer {
 
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseSampler, int chunkX, int chunkZ, CallbackInfoReturnable<Integer> info) {
-		if(InternalBiomeData.getOverworldHills().isEmpty()) {
+		if (InternalBiomeData.getOverworldHills().isEmpty()) {
 			// No use doing anything if there are no hills registered. Fall through to vanilla logic.
 
 			return;
@@ -51,7 +51,7 @@ public class MixinAddHillsLayer {
 
 		WeightedBiomePicker hillPicker = InternalBiomeData.getOverworldHills().get(biome);
 
-		if(hillPicker == null) {
+		if (hillPicker == null) {
 			// No hills for this biome, fall through to vanilla logic.
 
 			return;
@@ -82,6 +82,7 @@ public class MixinAddHillsLayer {
 				}
 				if (similarity >= 3) {
 					info.setReturnValue(biomeReturn);
+					return;
 				}
 			}
 		}
