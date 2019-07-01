@@ -82,6 +82,11 @@ public final class OverworldBiomes {
 	/**
 	 * Adds a 'variant' biome which replaces another biome on occasion.
 	 * For example, addBiomeVariant(Biomes.JUNGLE, Biomes.DESERT, 0.2) will replace 20% of jungles with deserts.
+	 * This method is rather useful for replacing biomes not generated through standard methods, such as oceans,
+	 * deep oceans, jungles, mushroom islands, etc. When replacing ocean and deep ocean biomes, one must specify
+	 * the biome without temperature (Biomes.OCEAN / Biomes.DEEP_OCEAN) only, as ocean temperatures have not been
+	 * assigned; additionally, one must not specify climates for oceans, deep oceans, or mushroom islands, as they do not have
+	 * any climate assigned at this point in the generation.
 	 *
 	 * @param replaced the base biome that is replaced by a variant
 	 * @param variant the biome to be added as a variant
@@ -92,7 +97,8 @@ public final class OverworldBiomes {
 	}
 
 	/**
-	 * Sets the river type that will generate in the biome
+	 * Sets the river type that will generate in the biome. If null is passed as the river biome, then rivers will not
+	 * generate in this biome.
 	 *
 	 * @param parent the base biome in which the river biome is to be set
 	 * @param river the river biome for this biome
