@@ -39,8 +39,7 @@ public class MixinAddEdgeBiomesLayer {
 		Biome centerBiome = Registry.BIOME.get(center);
 		if (InternalBiomeData.getOverworldShores().containsKey(centerBiome) && InternalBiomeUtils.neighborsOcean(north, east, south, west)) {
 			info.setReturnValue(Registry.BIOME.getRawId(InternalBiomeData.getOverworldShores().get(centerBiome).pickRandom(rand)));
-		}
-		else if (InternalBiomeData.getOverworldEdges().containsKey(centerBiome) && InternalBiomeUtils.isEdge(north, east, south, west, center)) {
+		} else if (InternalBiomeData.getOverworldEdges().containsKey(centerBiome) && InternalBiomeUtils.isEdge(north, east, south, west, center)) {
 			info.setReturnValue(Registry.BIOME.getRawId(InternalBiomeData.getOverworldEdges().get(centerBiome).pickRandom(rand)));
 		}
 	}

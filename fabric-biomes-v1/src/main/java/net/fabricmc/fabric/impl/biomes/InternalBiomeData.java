@@ -16,22 +16,15 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
-
+import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
+
+import java.util.*;
 
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation
@@ -134,26 +127,26 @@ public final class InternalBiomeData {
 	}
 
 	private static class DefaultHillsData {
-		private static final HashMap<Biome, Biome> DEFAULT_HILLS = new HashMap<>();
+		private static final ImmutableMap<Biome, Biome> DEFAULT_HILLS;
 
 		static WeightedBiomePicker injectDefaultHills(Biome base, WeightedBiomePicker picker) {
 			Biome defaultHill = DEFAULT_HILLS.get(base);
 
-			if(defaultHill != null) {
+			if (defaultHill != null) {
 				picker.addBiome(defaultHill, 1);
-			} else if(BiomeLayers.areSimilar(Registry.BIOME.getRawId(base), Registry.BIOME.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
+			} else if (BiomeLayers.areSimilar(Registry.BIOME.getRawId(base), Registry.BIOME.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
 				picker.addBiome(Biomes.BADLANDS, 1);
-			} else if(base == Biomes.DEEP_OCEAN || base == Biomes.DEEP_LUKEWARM_OCEAN || base == Biomes.DEEP_COLD_OCEAN) {
+			} else if (base == Biomes.DEEP_OCEAN || base == Biomes.DEEP_LUKEWARM_OCEAN || base == Biomes.DEEP_COLD_OCEAN) {
 				picker.addBiome(Biomes.PLAINS, 1);
 				picker.addBiome(Biomes.FOREST, 1);
-			} else if(base == Biomes.DEEP_FROZEN_OCEAN) {
+			} else if (base == Biomes.DEEP_FROZEN_OCEAN) {
 				// Note: Vanilla Deep Frozen Oceans only have a 1/3 chance of having default hills.
 				// This is a clever trick that ensures that when a mod adds hills with a weight of 1, the 1/3 chance is fulfilled.
 				// 0.5 + 1.0 = 1.5, and 0.5 / 1.5 = 1/3.
 
 				picker.addBiome(Biomes.PLAINS, 0.25);
 				picker.addBiome(Biomes.FOREST, 0.25);
-			} else if(base == Biomes.PLAINS) {
+			} else if (base == Biomes.PLAINS) {
 				picker.addBiome(Biomes.WOODED_HILLS, 1);
 				picker.addBiome(Biomes.FOREST, 2);
 			}
@@ -162,22 +155,24 @@ public final class InternalBiomeData {
 		}
 
 		static {
-			DEFAULT_HILLS.put(Biomes.DESERT, Biomes.DESERT_HILLS);
-			DEFAULT_HILLS.put(Biomes.FOREST, Biomes.WOODED_HILLS);
-			DEFAULT_HILLS.put(Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS);
-			DEFAULT_HILLS.put(Biomes.DARK_FOREST, Biomes.PLAINS);
-			DEFAULT_HILLS.put(Biomes.TAIGA, Biomes.TAIGA_HILLS);
-			DEFAULT_HILLS.put(Biomes.GIANT_TREE_TAIGA, Biomes.GIANT_TREE_TAIGA_HILLS);
-			DEFAULT_HILLS.put(Biomes.SNOWY_TAIGA, Biomes.SNOWY_TAIGA_HILLS);
-			DEFAULT_HILLS.put(Biomes.SNOWY_TUNDRA, Biomes.SNOWY_MOUNTAINS);
-			DEFAULT_HILLS.put(Biomes.JUNGLE, Biomes.JUNGLE_HILLS);
-			DEFAULT_HILLS.put(Biomes.BAMBOO_JUNGLE, Biomes.BAMBOO_JUNGLE_HILLS);
-			DEFAULT_HILLS.put(Biomes.OCEAN, Biomes.DEEP_OCEAN);
-			DEFAULT_HILLS.put(Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN);
-			DEFAULT_HILLS.put(Biomes.COLD_OCEAN, Biomes.DEEP_COLD_OCEAN);
-			DEFAULT_HILLS.put(Biomes.FROZEN_OCEAN, Biomes.DEEP_FROZEN_OCEAN);
-			DEFAULT_HILLS.put(Biomes.MOUNTAINS, Biomes.WOODED_MOUNTAINS);
-			DEFAULT_HILLS.put(Biomes.SAVANNA, Biomes.SAVANNA_PLATEAU);
+			ImmutableMap.Builder<Biome, Biome> builder = ImmutableMap.builder();
+			builder.put(Biomes.DESERT, Biomes.DESERT_HILLS);
+			builder.put(Biomes.FOREST, Biomes.WOODED_HILLS);
+			builder.put(Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS);
+			builder.put(Biomes.DARK_FOREST, Biomes.PLAINS);
+			builder.put(Biomes.TAIGA, Biomes.TAIGA_HILLS);
+			builder.put(Biomes.GIANT_TREE_TAIGA, Biomes.GIANT_TREE_TAIGA_HILLS);
+			builder.put(Biomes.SNOWY_TAIGA, Biomes.SNOWY_TAIGA_HILLS);
+			builder.put(Biomes.SNOWY_TUNDRA, Biomes.SNOWY_MOUNTAINS);
+			builder.put(Biomes.JUNGLE, Biomes.JUNGLE_HILLS);
+			builder.put(Biomes.BAMBOO_JUNGLE, Biomes.BAMBOO_JUNGLE_HILLS);
+			builder.put(Biomes.OCEAN, Biomes.DEEP_OCEAN);
+			builder.put(Biomes.LUKEWARM_OCEAN, Biomes.DEEP_LUKEWARM_OCEAN);
+			builder.put(Biomes.COLD_OCEAN, Biomes.DEEP_COLD_OCEAN);
+			builder.put(Biomes.FROZEN_OCEAN, Biomes.DEEP_FROZEN_OCEAN);
+			builder.put(Biomes.MOUNTAINS, Biomes.WOODED_MOUNTAINS);
+			builder.put(Biomes.SAVANNA, Biomes.SAVANNA_PLATEAU);
+			DEFAULT_HILLS = builder.build();
 		}
 	}
 }

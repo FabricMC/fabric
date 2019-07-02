@@ -40,7 +40,6 @@ public class MixinAddHillsLayer {
 	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseSampler, int chunkX, int chunkZ, CallbackInfoReturnable<Integer> info) {
 		if (InternalBiomeData.getOverworldHills().isEmpty()) {
 			// No use doing anything if there are no hills registered. Fall through to vanilla logic.
-
 			return;
 		}
 

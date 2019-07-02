@@ -28,15 +28,15 @@ public final class OverworldBiomes {
 	}
 
 	/**
-	 * Adds the biome to the specified climate group, with the specified weight
+	 * Adds the biome to the specified climate group, with the specified weight. This is only for the biomes that make up the initial continents in generation.
 	 *
 	 * @param biome the biome to be added
 	 * @param climate the climate group whereto the biome is added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * 	             heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * 	             Vanilla weights for each biome in each climate are listed in the {@link OverworldClimate} javadoc.
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * @see OverworldClimate for a list of vanilla biome weights
 	 */
-	public static void addBaseBiome(Biome biome, OverworldClimate climate, double weight) {
+	public static void addContinentalBiome(Biome biome, OverworldClimate climate, double weight) {
 		InternalBiomeData.addOverworldBaseBiome(climate, biome, weight);
 	}
 
@@ -46,8 +46,8 @@ public final class OverworldBiomes {
 	 * @param parent the biome to where the hills variant is added
 	 * @param hills the biome to be set as a hills variant
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 *               Mods should use 1.0 as the default/normal weight.
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Mods should use 1.0 as the default/normal weight.
 	 */
 	public static void addHillsBiome(Biome parent, Biome hills, double weight) {
 		InternalBiomeData.addOverworldHillsBiome(parent, hills, weight);
@@ -59,8 +59,8 @@ public final class OverworldBiomes {
 	 * @param parent the base biome to where the shore biome is added
 	 * @param shore the biome to be added as a shore biome
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * 	             heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * 	             Mods should use 1.0 as the default/normal weight.
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Mods should use 1.0 as the default/normal weight.
 	 */
 	public static void addShoreBiome(Biome parent, Biome shore, double weight) {
 		InternalBiomeData.addOverworldShoreBiome(parent, shore, weight);
@@ -72,8 +72,8 @@ public final class OverworldBiomes {
 	 * @param parent the base biome to where the edge biome is added
 	 * @param edge the biome to be added as an edge biome
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 *               heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 *               Mods should use 1.0 as the default/normal weight.
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Mods should use 1.0 as the default/normal weight.
 	 */
 	public static void addEdgeBiome(Biome parent, Biome edge, double weight) {
 		InternalBiomeData.addOverworldEdgeBiome(parent, edge, weight);
@@ -91,6 +91,7 @@ public final class OverworldBiomes {
 	 * @param replaced the base biome that is replaced by a variant
 	 * @param variant the biome to be added as a variant
 	 * @param chance the chance of replacement of the biome into the variant
+	 * @param climates the climates in which the variants will occur in (none listed = add variant to all climates)
 	 */
 	public static void addBiomeVariant(Biome replaced, Biome variant, double chance, OverworldClimate... climates) {
 		InternalBiomeData.addOverworldBiomeReplacement(replaced, variant, chance, climates);

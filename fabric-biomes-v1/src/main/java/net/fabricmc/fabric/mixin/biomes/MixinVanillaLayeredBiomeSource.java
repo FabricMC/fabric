@@ -66,7 +66,7 @@ public class MixinVanillaLayeredBiomeSource {
 			System.arraycopy(oldBiomes, 0, this.biomes, 0, oldBiomes.length);
 
 			int index = oldBiomes.length;
-			for(Biome injected: toInject) {
+			for (Biome injected : toInject) {
 				biomes[index++] = injected;
 			}
 

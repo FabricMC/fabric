@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class WeightedBiomePicker {
 	private double currentTotal;
-	private List<BaseBiomeEntry> entries;
+	private List<ContinentalBiomeEntry> entries;
 
 	public WeightedBiomePicker() {
 		currentTotal = 0;
@@ -38,7 +38,7 @@ public class WeightedBiomePicker {
 	public void addBiome(final Biome biome, final double weight) {
 		currentTotal += weight;
 
-		entries.add(new BaseBiomeEntry(biome, weight, currentTotal));
+		entries.add(new ContinentalBiomeEntry(biome, weight, currentTotal));
 	}
 
 	public double getCurrentWeightTotal() {
@@ -53,10 +53,11 @@ public class WeightedBiomePicker {
 
 	/**
 	 * Searches with the specified target value
+	 *
 	 * @param target The target value, must satisfy the constraint 0 <= target <= currentTotal
 	 * @return The result of the search
 	 */
-	public BaseBiomeEntry search(final double target) {
+	public ContinentalBiomeEntry search(final double target) {
 		// Sanity checks, fail fast if stuff is going wrong.
 		Preconditions.checkArgument(target <= currentTotal, "The provided target value for biome selection must be less than or equal to the weight total");
 		Preconditions.checkArgument(target >= 0, "The provided target value for biome selection cannot be negative");
@@ -68,8 +69,7 @@ public class WeightedBiomePicker {
 			int mid = (high + low) >>> 1;
 			if (target < entries.get(mid).getUpperWeightBound()) {
 				high = mid;
-			}
-			else {
+			} else {
 				low = mid + 1;
 			}
 		}
