@@ -26,22 +26,22 @@ import java.util.List;
 /**
  * Picks biomes with arbitrary double weights using a binary search.
  */
-public class WeightedBiomePicker {
+public final class WeightedBiomePicker {
 	private double currentTotal;
 	private List<ContinentalBiomeEntry> entries;
 
-	public WeightedBiomePicker() {
+	WeightedBiomePicker() {
 		currentTotal = 0;
 		entries = new ArrayList<>();
 	}
 
-	public void addBiome(final Biome biome, final double weight) {
+	void addBiome(final Biome biome, final double weight) {
 		currentTotal += weight;
 
 		entries.add(new ContinentalBiomeEntry(biome, weight, currentTotal));
 	}
 
-	public double getCurrentWeightTotal() {
+	double getCurrentWeightTotal() {
 		return currentTotal;
 	}
 
@@ -57,7 +57,7 @@ public class WeightedBiomePicker {
 	 * @param target The target value, must satisfy the constraint 0 <= target <= currentTotal
 	 * @return The result of the search
 	 */
-	public ContinentalBiomeEntry search(final double target) {
+	ContinentalBiomeEntry search(final double target) {
 		// Sanity checks, fail fast if stuff is going wrong.
 		Preconditions.checkArgument(target <= currentTotal, "The provided target value for biome selection must be less than or equal to the weight total");
 		Preconditions.checkArgument(target >= 0, "The provided target value for biome selection cannot be negative");

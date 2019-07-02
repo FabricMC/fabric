@@ -37,7 +37,7 @@ public final class OverworldBiomes {
 	 * @see OverworldClimate for a list of vanilla biome weights
 	 */
 	public static void addContinentalBiome(Biome biome, OverworldClimate climate, double weight) {
-		InternalBiomeData.addOverworldBaseBiome(climate, biome, weight);
+		InternalBiomeData.addOverworldContinentalBiome(climate, biome, weight);
 	}
 
 	/**

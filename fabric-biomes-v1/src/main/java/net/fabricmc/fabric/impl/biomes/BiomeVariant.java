@@ -21,7 +21,7 @@ import net.minecraft.world.biome.Biome;
 /**
  * Represents a biome variant and its corresponding chance
  */
-public class BiomeVariant {
+final class BiomeVariant {
 
 	private final Biome variant;
 	private final double chance;
@@ -30,7 +30,7 @@ public class BiomeVariant {
 	 * @param variant the variant biome
 	 * @param chance the chance of replacement of the biome into the variant
 	 */
-	protected BiomeVariant(final Biome variant, final double chance) {
+	BiomeVariant(final Biome variant, final double chance) {
 		this.variant = variant;
 		this.chance = chance;
 	}
@@ -38,14 +38,14 @@ public class BiomeVariant {
 	/**
 	 * @return the variant biome
 	 */
-	public Biome getVariant() {
+	Biome getVariant() {
 		return variant;
 	}
 
 	/**
 	 * @return the chance of replacement of the biome into the variant
 	 */
-	public double getChance() {
+	double getChance() {
 		return chance;
 	}
 
