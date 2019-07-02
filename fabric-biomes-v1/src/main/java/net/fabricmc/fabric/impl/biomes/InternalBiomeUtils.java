@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.IntConsumer;
-
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
+
+import java.util.List;
+import java.util.Map;
+import java.util.function.IntConsumer;
 
 /**
  * Internal utilities used for biome sampling
@@ -45,9 +45,8 @@ public final class InternalBiomeUtils {
 	public static boolean isEdge(int north, int east, int south, int west, int center) {
 		return areUnsimilar(center, north) || areUnsimilar(center, east) || areUnsimilar(center, south) || areUnsimilar(center, west);
 	}
-	
+
 	/**
-	 * 
 	 * @param mainBiomeId the main raw biome id in comparison
 	 * @param secondaryBiomeId the secondary raw biome id in comparison
 	 * @return whether the two biomes are unsimilar
@@ -58,10 +57,10 @@ public final class InternalBiomeUtils {
 		} else {
 			Biome secondaryBiome = Registry.BIOME.get(secondaryBiomeId);
 			Biome mainBiome = Registry.BIOME.get(mainBiomeId);
-			
+
 			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(secondaryBiome.getParent())))) : true;
-			isUnsimilar = isUnsimilar && ( mainBiome.hasParent() ? !(secondaryBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(mainBiome.getParent())))) : true );			
-			
+			isUnsimilar = isUnsimilar && (mainBiome.hasParent() ? !(secondaryBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(mainBiome.getParent())))) : true);
+
 			return isUnsimilar;
 		}
 	}
@@ -82,7 +81,7 @@ public final class InternalBiomeUtils {
 		return biome != null && biome.getCategory() == Biome.Category.OCEAN;
 	}
 
-	public static int searchForBiome(double reqWeightSum, int vanillaArrayWeight, List<BaseBiomeEntry> moddedBiomes) {
+	public static int searchForBiome(double reqWeightSum, int vanillaArrayWeight, List<ContinentalBiomeEntry> moddedBiomes) {
 		reqWeightSum -= vanillaArrayWeight;
 		int low = 0;
 		int high = moddedBiomes.size() - 1;
@@ -90,8 +89,7 @@ public final class InternalBiomeUtils {
 			int mid = (high + low) >>> 1;
 			if (reqWeightSum < moddedBiomes.get(mid).getUpperWeightBound()) {
 				high = mid;
-			}
-			else {
+			} else {
 				low = mid + 1;
 			}
 		}
@@ -100,6 +98,7 @@ public final class InternalBiomeUtils {
 
 	/**
 	 * Potentially transforms a biome into its variants based on the provided randomness source.
+	 *
 	 * @param random The randomness source
 	 * @param existing The base biome
 	 * @param climate The climate in which the biome resides, or null to indicate an unknown climate
@@ -137,7 +136,7 @@ public final class InternalBiomeUtils {
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 
-			BaseBiomeEntry found = picker.search(reqWeightSum - vanillaArrayWeight);
+			ContinentalBiomeEntry found = picker.search(reqWeightSum - vanillaArrayWeight);
 
 			result.accept(transformBiome(random, found.getBiome(), climate));
 		}

@@ -38,12 +38,12 @@ public final class VariantTransformer {
 	 * @param climates the climates that the variant can replace the base biome in, empty/null indicates all climates
 	 */
 	public void addBiome(Biome variant, double chance, OverworldClimate[] climates) {
-		if(climates == null || climates.length == 0) {
+		if (climates == null || climates.length == 0) {
 			defaultTransformer.addBiome(variant, chance);
 			climates = OverworldClimate.values();
 		}
 
-		for(OverworldClimate climate: climates) {
+		for (OverworldClimate climate : climates) {
 			transformers.computeIfAbsent(climate, c -> new SubTransformer()).addBiome(variant, chance);
 		}
 	}
@@ -56,13 +56,13 @@ public final class VariantTransformer {
 	 * @return the transformed biome
 	 */
 	public Biome transformBiome(Biome replaced, LayerRandomnessSource random, OverworldClimate climate) {
-		if(climate==null) {
+		if (climate == null) {
 			return defaultTransformer.transformBiome(replaced, random);
 		}
 
 		SubTransformer transformer = transformers.get(climate);
 
-		if(transformer != null) {
+		if (transformer != null) {
 			return transformer.transformBiome(replaced, random);
 		} else {
 			return replaced;

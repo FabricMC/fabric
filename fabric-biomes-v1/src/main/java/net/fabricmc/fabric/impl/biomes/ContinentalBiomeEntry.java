@@ -21,32 +21,26 @@ import net.minecraft.world.biome.Biome;
 /**
  * Represents a biome and its corresponding weight
  */
-public class BaseBiomeEntry {
+public class ContinentalBiomeEntry {
 	private final Biome biome;
 	private final double weight;
 	private final double upperWeightBound;
 
 	/**
 	 * @param biome the biome
-	 * @param weight how often a biome will be chosen in this picker.
-	 * @param upperWeightBound the upper weight bound within the context of the other biome entries, used for the binary search
+	 * @param weight how often a biome will be chosen
+	 * @param upperWeightBound the upper weight bound within the context of the other entries, used for the binary search
 	 */
-	public BaseBiomeEntry(final Biome biome, final double weight, final double upperWeightBound) {
+	public ContinentalBiomeEntry(final Biome biome, final double weight, final double upperWeightBound) {
 		this.biome = biome;
 		this.weight = weight;
 		this.upperWeightBound = upperWeightBound;
 	}
 
-	/**
-	 * @return the biome
-	 */
 	public Biome getBiome() {
 		return biome;
 	}
 
-	/**
-	 * @return the weight
-	 */
 	public double getWeight() {
 		return weight;
 	}

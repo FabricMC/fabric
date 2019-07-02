@@ -17,10 +17,7 @@
 package net.fabricmc.fabric.mixin.biomes;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.fabricmc.fabric.impl.biomes.BaseBiomeEntry;
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.fabricmc.fabric.impl.biomes.InternalBiomeUtils;
-import net.fabricmc.fabric.impl.biomes.VariantTransformer;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
@@ -33,9 +30,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Injects biomes into the arrays of biomes in the {@link SetBaseBiomesLayer}
@@ -96,11 +90,11 @@ public class MixinSetBaseBiomesLayer {
 		// Determine what special case this is...
 		OverworldClimate climate;
 
-		if(biomeId == BADLANDS_PLATEAU_ID || biomeId == WOODED_BADLANDS_PLATEAU_ID) {
+		if (biomeId == BADLANDS_PLATEAU_ID || biomeId == WOODED_BADLANDS_PLATEAU_ID) {
 			climate = OverworldClimate.DRY;
-		} else if(biomeId == JUNGLE_ID) {
+		} else if (biomeId == JUNGLE_ID) {
 			climate = OverworldClimate.TEMPERATE;
-		} else if(biomeId == GIANT_TREE_TAIGA_ID) {
+		} else if (biomeId == GIANT_TREE_TAIGA_ID) {
 			climate = OverworldClimate.TEMPERATE;
 		} else {
 			climate = null;
