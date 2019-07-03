@@ -12,7 +12,7 @@ plugins {
 def ENV = System.getenv()
 
 def baseVersion = "0.3.0"
-def mcVersion = "1.14.3"
+def mcVersion = "1.14.4-pre1"
 def yarnVersion = "+build.1"
 
 def getSubprojectVersion(project, version) {

@@ -113,7 +113,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		boolean figureMeOut1 = this.category == EntityCategory.CREATURE || this.category == EntityCategory.MISC; // TODO
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, figureMeOut1, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}
