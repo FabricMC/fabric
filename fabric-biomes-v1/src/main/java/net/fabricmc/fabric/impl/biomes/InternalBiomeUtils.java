@@ -116,7 +116,7 @@ public final class InternalBiomeUtils {
 	}
 
 	public static void injectBiomesIntoClimate(LayerRandomnessSource random, int[] vanillaArray, OverworldClimate climate, IntConsumer result) {
-		WeightedBiomePicker picker = InternalBiomeData.getOverworldBaseModdedBiomePickers().get(climate);
+		WeightedBiomePicker picker = InternalBiomeData.getOverworldModdedContinentalBiomePickers().get(climate);
 
 		if (picker == null || picker.getCurrentWeightTotal() <= 0.0) {
 			// Return early, there are no modded biomes.

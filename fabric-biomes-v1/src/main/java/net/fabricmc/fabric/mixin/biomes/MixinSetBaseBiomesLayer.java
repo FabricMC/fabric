@@ -20,7 +20,6 @@ import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 import net.fabricmc.fabric.impl.biomes.InternalBiomeUtils;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 import org.spongepowered.asm.mixin.Final;
@@ -57,10 +56,21 @@ public class MixinSetBaseBiomesLayer {
 	@Mutable
 	private static int[] DRY_BIOMES;
 
-	private static final int BADLANDS_PLATEAU_ID = Registry.BIOME.getRawId(Biomes.BADLANDS_PLATEAU);
-	private static final int WOODED_BADLANDS_PLATEAU_ID = Registry.BIOME.getRawId(Biomes.WOODED_BADLANDS_PLATEAU);
-	private static final int JUNGLE_ID = Registry.BIOME.getRawId(Biomes.JUNGLE);
-	private static final int GIANT_TREE_TAIGA_ID = Registry.BIOME.getRawId(Biomes.GIANT_TREE_TAIGA);
+	@Shadow
+	@Final
+	private static int WOODED_BADLANDS_PLATEAU_ID;
+
+	@Shadow
+	@Final
+	private static int BADLANDS_PLATEAU_ID;
+
+	@Shadow
+	@Final
+	private static int JUNGLE_ID;
+
+	@Shadow
+	@Final
+	private static int GIANT_TREE_TAIGA_ID;
 
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;chosenGroup1:[I"), method = "sample", cancellable = true)
 	private void injectDryBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {

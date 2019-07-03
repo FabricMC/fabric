@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Deals with picking variants for you
  */
-public final class VariantTransformer {
+final class VariantTransformer {
 	private final SubTransformer defaultTransformer = new SubTransformer();
 	private final Map<OverworldClimate, SubTransformer> transformers = new HashMap<>();
 
@@ -37,7 +37,7 @@ public final class VariantTransformer {
 	 * @param chance the chance of replacement of the biome into the variant
 	 * @param climates the climates that the variant can replace the base biome in, empty/null indicates all climates
 	 */
-	public void addBiome(Biome variant, double chance, OverworldClimate[] climates) {
+	void addBiome(Biome variant, double chance, OverworldClimate[] climates) {
 		if (climates == null || climates.length == 0) {
 			defaultTransformer.addBiome(variant, chance);
 			climates = OverworldClimate.values();
@@ -55,7 +55,7 @@ public final class VariantTransformer {
 	 * @param random the {@link LayerRandomnessSource} from the layer
 	 * @return the transformed biome
 	 */
-	public Biome transformBiome(Biome replaced, LayerRandomnessSource random, OverworldClimate climate) {
+	Biome transformBiome(Biome replaced, LayerRandomnessSource random, OverworldClimate climate) {
 		if (climate == null) {
 			return defaultTransformer.transformBiome(replaced, random);
 		}
@@ -69,14 +69,14 @@ public final class VariantTransformer {
 		}
 	}
 
-	public static final class SubTransformer {
+	static final class SubTransformer {
 		private final List<BiomeVariant> variants = new ArrayList<>();
 
 		/**
 		 * @param variant the variant that the replaced biome is replaced with
 		 * @param chance the chance of replacement of the biome into the variant
 		 */
-		public void addBiome(Biome variant, double chance) {
+		private void addBiome(Biome variant, double chance) {
 			variants.add(new BiomeVariant(variant, chance));
 		}
 
@@ -87,7 +87,7 @@ public final class VariantTransformer {
 		 * @param random the {@link LayerRandomnessSource} from the layer
 		 * @return the transformed biome
 		 */
-		public Biome transformBiome(Biome replaced, LayerRandomnessSource random) {
+		private Biome transformBiome(Biome replaced, LayerRandomnessSource random) {
 			for (BiomeVariant variant : variants) {
 				if (random.nextInt(Integer.MAX_VALUE) < variant.getChance() * Integer.MAX_VALUE) {
 					return variant.getVariant();
