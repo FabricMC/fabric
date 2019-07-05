@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -127,6 +128,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         
         @Override
         public Maker emit() {
+            lightFace = GeometryHelper.lightFace(this);
+            ColorHelper.applyDiffuseShading(this, false);
             renderQuad();
             clear();
             return this;
