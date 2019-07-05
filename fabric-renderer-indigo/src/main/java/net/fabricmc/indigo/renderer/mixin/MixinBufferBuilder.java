@@ -18,7 +18,6 @@ package net.fabricmc.indigo.renderer.mixin;
 
 import java.nio.IntBuffer;
 
-import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.helper.BufferBuilderTransformHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.minecraft.client.render.VertexFormat;
@@ -40,7 +39,6 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
     @Shadow public abstract VertexFormat getVertexFormat();
 
 	private static final int VERTEX_STRIDE_INTS = 7;
-	private static final int VERTEX_STRIDE_BYTES = VERTEX_STRIDE_INTS * 4;
     private static final int QUAD_STRIDE_INTS = VERTEX_STRIDE_INTS * 4;
     private static final int QUAD_STRIDE_BYTES = QUAD_STRIDE_INTS * 4;
 

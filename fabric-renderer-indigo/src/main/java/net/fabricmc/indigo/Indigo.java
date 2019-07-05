@@ -53,7 +53,8 @@ public class Indigo implements ClientModInitializer {
 		}
 	}
 
-	private static <T extends Enum> T asEnum(String property, T defValue) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+    private static <T extends Enum> T asEnum(String property, T defValue) {
 		if (property == null || property.isEmpty()) {
 			return defValue;
 		} else {
