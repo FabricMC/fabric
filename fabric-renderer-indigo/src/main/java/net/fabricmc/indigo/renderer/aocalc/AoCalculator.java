@@ -283,12 +283,15 @@ public class AoCalculator {
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
                 final float n = x * x;
-                ao += n * fd.weigtedAo(w);
-                sky += n * fd.weigtedSkyLight(w);
-                block += n * fd.weigtedBlockLight(w);
-                maxAo = fd.maxAo(maxAo);
-                maxSky = fd.maxSkyLight(maxSky);
-                maxBlock = fd.maxBlockLight(maxBlock);
+                final float a = fd.weigtedAo(w);
+                final int s = fd.weigtedSkyLight(w);
+                final int b = fd.weigtedBlockLight(w);
+                ao += n * a;
+                sky += n * s;
+                block += n * b;
+                maxAo = a;
+                maxSky = s;
+                maxBlock = b;
             }
             
             final float y = normal.y();
@@ -297,12 +300,15 @@ public class AoCalculator {
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
                 final float n = y * y;
-                ao += n * fd.weigtedAo(w);
-                sky += n * fd.weigtedSkyLight(w);
-                block += n * fd.weigtedBlockLight(w);
-                maxAo = fd.maxAo(maxAo);
-                maxSky = fd.maxSkyLight(maxSky);
-                maxBlock = fd.maxBlockLight(maxBlock);
+                final float a = fd.weigtedAo(w);
+                final int s = fd.weigtedSkyLight(w);
+                final int b = fd.weigtedBlockLight(w);
+                ao += n * a;
+                sky += n * s;
+                block += n * b;
+                maxAo = Math.max(maxAo, a);
+                maxSky = Math.max(maxSky, s);
+                maxBlock = Math.max(maxBlock, b);
             }
             
             final float z = normal.z();
@@ -311,12 +317,15 @@ public class AoCalculator {
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
                 final float n = z * z;
-                ao += n * fd.weigtedAo(w);
-                sky += n * fd.weigtedSkyLight(w);
-                block += n * fd.weigtedBlockLight(w);
-                maxAo = fd.maxAo(maxAo);
-                maxSky = fd.maxSkyLight(maxSky);
-                maxBlock = fd.maxBlockLight(maxBlock);
+                final float a = fd.weigtedAo(w);
+                final int s = fd.weigtedSkyLight(w);
+                final int b = fd.weigtedBlockLight(w);
+                ao += n * a;
+                sky += n * s;
+                block += n * b;
+                maxAo = Math.max(maxAo, a);
+                maxSky = Math.max(maxSky, s);
+                maxBlock = Math.max(maxBlock, b);
             }
             
             aoResult[i] = (ao + maxAo) * 0.5f;
