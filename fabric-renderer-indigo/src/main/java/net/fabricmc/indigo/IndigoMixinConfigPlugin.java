@@ -38,7 +38,7 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	private static boolean indigoApplicable = true;
 	private static boolean forceCompatibility = false;
 
-	private static void loadIfNeeed() {
+	private static void loadIfNeeded() {
 	    if(needsLoad) {
 	        for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
 	            final ModMetadata meta = container.getMetadata();
@@ -52,12 +52,12 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	    }
 	}
 	static boolean shouldApplyIndigo() {
-	    loadIfNeeed();
+	    loadIfNeeded();
 		return indigoApplicable;
 	}
 
    static boolean shouldForceCompatibility() {
-        loadIfNeeed();
+        loadIfNeeded();
         return forceCompatibility;
     }
 	   
