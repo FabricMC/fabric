@@ -100,17 +100,25 @@ public interface QuadEmitter extends MutableQuadView {
     
     @Override
     QuadEmitter spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
-
+    
+    /**
+     * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)} 
+     * is effectively zero - meaning the face is a cull face.
+     */
+    final float CULL_FACE_EPSILON = 0.00001f;
+    
     /**
      * Helper method to assign vertex coordinates for a square aligned with the given face.
      * Ensures that vertex order is consistent with vanilla convention. (Incorrect order can
      * lead to bad AO lighting unless enhanced lighting logic is available/enabled.)<p>
      * 
-     * Square will be parallel to the given face and coplanar with the face if depth == 0.
-     * All coordinates are normalized (0-1).
+     * Square will be parallel to the given face and coplanar with the face (and culled if the
+     * face is occluded) if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.<p>
+     * 
+     * All coordinates should be normalized (0-1).
      */
     default QuadEmitter square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
-        if(MathHelper.equalsApproximate(0, depth)) {
+        if(Math.abs(depth) < CULL_FACE_EPSILON) {
             cullFace(nominalFace);
             depth = 0; // avoid any inconsistency for face quads
         } else {
