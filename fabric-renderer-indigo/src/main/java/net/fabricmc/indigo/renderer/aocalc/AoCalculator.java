@@ -128,10 +128,11 @@ public class AoCalculator {
             
         default:
         case HYBRID:
-            shouldCompare = isVanilla;
             if(isVanilla) {
+                shouldCompare = Indigo.DEBUG_COMPARE_LIGHTING;
                 calcFastVanilla(quad);
             } else {
+                shouldCompare = false;
                 calcEnhanced(quad);
             }
             break;
