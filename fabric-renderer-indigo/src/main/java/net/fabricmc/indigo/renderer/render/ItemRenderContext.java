@@ -185,7 +185,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
             c = ColorHelper.multiplyColor(quadColor, c);
             q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(c));
         }
-        fabricBuffer.fabric_putVanillaData(quadData, EncodingFormat.VERTEX_START_OFFSET, true);
+        fabricBuffer.fabric_putQuad(q);
     }
     
     private void renderQuad() {
