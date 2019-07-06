@@ -20,6 +20,7 @@ import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
+import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.Block.OffsetType;
 import net.minecraft.block.BlockRenderLayer;
@@ -190,7 +191,7 @@ public class ChunkRenderInfo {
         long key = pos.asLong();
         float result = aoLevelCache.get(key);
         if (result == Float.MAX_VALUE) {
-            result = blockView.getBlockState(pos).getAmbientOcclusionLightLevel(blockView, pos);
+            result = AoLuminanceFix.INSTANCE.apply(blockView, pos);
             aoLevelCache.put(key, result);
         }
         return result;

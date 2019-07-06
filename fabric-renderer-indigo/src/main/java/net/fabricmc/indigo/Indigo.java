@@ -39,7 +39,8 @@ public class Indigo implements ClientModInitializer {
 	public static final boolean DEBUG_COMPARE_LIGHTING;
 	public static final boolean FIX_SMOOTH_LIGHTING_OFFSET;
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
-
+	public static final boolean FIX_LUMINOUS_AO_SHADE;
+	
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private static boolean asBoolean(String property, boolean defValue) {
@@ -108,7 +109,8 @@ public class Indigo implements ClientModInitializer {
 		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", (a) -> "auto"), false);
 		FIX_SMOOTH_LIGHTING_OFFSET = asBoolean((String) properties.computeIfAbsent("fix-smooth-lighting-offset", (a) -> "auto"), true);
 		FIX_EXTERIOR_VERTEX_LIGHTING = asBoolean((String) properties.computeIfAbsent("fix-exterior-vertex-lighting", (a) -> "auto"), true);
-
+		FIX_LUMINOUS_AO_SHADE = asBoolean((String) properties.computeIfAbsent("fix-luminous-block-ambient-occlusion", (a) -> "auto"), false);
+		
 		try (FileOutputStream stream = new FileOutputStream(configFile)) {
 			properties.store(stream, "Indigo properties file");
 		} catch (IOException e) {
