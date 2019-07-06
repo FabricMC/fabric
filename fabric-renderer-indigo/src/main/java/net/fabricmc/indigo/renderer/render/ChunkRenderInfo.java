@@ -67,6 +67,7 @@ public class ChunkRenderInfo {
     private final Long2FloatOpenHashMap aoLevelCache;
     
     private final BlockRenderInfo blockInfo;
+    private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
     ChunkRenderTask chunkTask; 
     ChunkRenderData chunkData;
     ChunkRenderer chunkRenderer;
@@ -102,6 +103,7 @@ public class ChunkRenderInfo {
     }
     
     void prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean [] resultFlags) {
+        this.chunkOrigin.set(chunkOrigin);
         this.chunkData = chunkTask.getRenderData();
         this.chunkRenderer = chunkRenderer;
         this.resultFlags = resultFlags;
@@ -153,7 +155,7 @@ public class ChunkRenderInfo {
             BlockRenderLayer layer = LAYERS[layerIndex];
             if (!chunkData.isBufferInitialized(layer)) {
                 chunkData.markBufferInitialized(layer); // start buffer
-                ((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, blockInfo.blockPos);
+                ((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, chunkOrigin);
             }
             result = (AccessBufferBuilder) builder;
         }
