@@ -65,7 +65,7 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
                 switch(e.getType()) {
                 case COLOR:
                     final int c = quad.spriteColor(i, 0);
-                    ((BufferBuilder)(Object)this).color((c >>> 16) & 0xFF, (c >>> 8) & 0xFF, c & 0xFF, (c >>> 24) & 0xFF);
+                    ((BufferBuilder)(Object)this).color(c & 0xFF, (c >>> 8) & 0xFF, (c >>> 16) & 0xFF, (c >>> 24) & 0xFF);
                     break;
                 case NORMAL:
                     ((BufferBuilder)(Object)this).normal(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
