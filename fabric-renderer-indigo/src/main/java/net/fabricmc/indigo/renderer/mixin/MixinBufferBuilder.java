@@ -56,6 +56,16 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
         vertexCount += 4;
     }
 
+    /**
+     * Uses buffer vertex format to drive buffer population.
+     * Relies on logic elsewhere to ensure coordinates don't include chunk offset
+     * (because buffer builder will handle that.)<p>
+     * 
+     * Calling putVertexData() would likely be a little faster but this approach
+     * gives us a chance to pass vertex normals to shaders, which isn't possible
+     * with the standard block format. It also doesn't require us to encode a specific
+     * custom format directly, which would be prone to breakage outside our control. 
+     */
     private void bufferCompatibly(QuadViewImpl quad) {
         final VertexFormat format = getVertexFormat();;
         final int elementCount = format.getElementCount();

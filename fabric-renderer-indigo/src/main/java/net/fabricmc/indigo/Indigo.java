@@ -42,7 +42,7 @@ public class Indigo implements ClientModInitializer {
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
 	public static final boolean FIX_LUMINOUS_AO_SHADE;
 	
-	private static final Logger LOGGER = LogManager.getLogger();
+	public static final Logger LOGGER = LogManager.getLogger();
 
 	private static boolean asBoolean(String property, boolean defValue) {
 		switch (asTriState(property)) {
@@ -107,6 +107,7 @@ public class Indigo implements ClientModInitializer {
 
 		final boolean forceCompatibility = IndigoMixinConfigPlugin.shouldForceCompatibility();
 		ENSURE_VERTEX_FORMAT_COMPATIBILITY = forceCompatibility;
+		// necessary because OF alters the BakedModel vertex format and will confuse the fallback model consumer
 		ALWAYS_TESSELATE_INDIGO = !forceCompatibility && asBoolean((String) properties.computeIfAbsent("always-tesselate-blocks", (a) -> "auto"), true);
 		AMBIENT_OCCLUSION_MODE = asEnum((String) properties.computeIfAbsent("ambient-occlusion-mode", (a) -> "hybrid"), AoConfig.HYBRID);
 		DEBUG_COMPARE_LIGHTING = asBoolean((String) properties.computeIfAbsent("debug-compare-lighting", (a) -> "auto"), false);
