@@ -171,7 +171,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     private int quadColor() {
         final int colorIndex = editorQuad.colorIndex();
         int quadColor = color;
-        if (!enchantment && quadColor == -1 && colorIndex != 1) {
+        if (!enchantment && quadColor == -1 && colorIndex != -1) {
             quadColor = colorMap.getColorMultiplier(itemStack, colorIndex);
             quadColor |= -16777216;
          }
