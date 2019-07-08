@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.entity;
 
 import net.fabricmc.fabric.api.block.Climbable;
+import net.fabricmc.fabric.api.event.block.ClimbableCallback;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -42,9 +43,16 @@ public abstract class MixinLivingEntity extends Entity {
         final Climbable climbable = (Climbable) state.getBlock();
         final LivingEntity self = (LivingEntity) (Object) this;
 
+        TriState result = ClimbableCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
+        if (result != TriState.DEFAULT) {
+			cir.setReturnValue(result.get());
+		}
+
+        /*
         TriState result = climbable.canClimb(self, state, getBlockPos());
         if (result != TriState.DEFAULT) {
 			cir.setReturnValue(result.get());
 		}
+		*/
     }
 }
