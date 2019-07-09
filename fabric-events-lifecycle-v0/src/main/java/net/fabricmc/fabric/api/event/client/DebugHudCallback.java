@@ -23,6 +23,7 @@ import java.util.List;
 
 public interface DebugHudCallback {
 
+    /** Used to add debug lines to the right side of the screen */
 	Event<DebugHudCallback> EVENT_RIGHT = EventFactory.createArrayBacked(DebugHudCallback.class, (listeners) ->
 		(list) -> {
 			for(DebugHudCallback callback : listeners){
@@ -31,6 +32,7 @@ public interface DebugHudCallback {
 		}
 	);
 
+    /** Used to add debug lines to the left side of the screen */
 	Event<DebugHudCallback> EVENT_LEFT = EventFactory.createArrayBacked(DebugHudCallback.class, (listeners) ->
 		(list) -> {
 			for(DebugHudCallback callback : listeners){
@@ -39,6 +41,11 @@ public interface DebugHudCallback {
 		}
 	);
 
-	void debugHudText(List<String> list);
+    /**
+     * Called when the debug HUD is rendered. Strings added to {@code lines} will be
+     * rendered on the corresponding side of the screen.
+     * @param lines the list containing the lines of text displayed on the debug HUD
+     */
+    void debugHudText(List<String> lines);
 
 }
