@@ -7,7 +7,9 @@
     "MixinWorld"
   ],
   "client": [
-    "MixinMinecraftClient"
+    "MixinMinecraftClient",
+    "MixinItemStack",
+    "MixinDebugHud"
   ],
   "injectors": {
     "defaultRequire": 1
