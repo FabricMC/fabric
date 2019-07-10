@@ -165,7 +165,7 @@ public interface MutableQuadView extends QuadView {
      * Same as {@link #pos(float, float, float)} but accepts vector type.
      */
     default MutableQuadView pos(int vertexIndex, Vector3f vec) {
-        return pos(vertexIndex, vec.x(), vec.y(), vec.z());
+        return pos(vertexIndex, vec.getX(), vec.getY(), vec.getZ());
     }
     
     /**
@@ -183,7 +183,7 @@ public interface MutableQuadView extends QuadView {
      * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
      */
     default MutableQuadView normal(int vertexIndex, Vector3f vec) {
-        return normal(vertexIndex, vec.x(), vec.y(), vec.z());
+        return normal(vertexIndex, vec.getX(), vec.getY(), vec.getZ());
     }
     
     /**

@@ -53,7 +53,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 				// stay closer to the vanilla codepath
 				handler.sendPacket(packet);
 			} else {
-				handler.getClientConnection().send(packet, completionListener);
+				handler.getConnection().send(packet, completionListener);
 			}
 		} else {
 			LOGGER.warn("Sending packet " + packet + " to server failed, not connected!");

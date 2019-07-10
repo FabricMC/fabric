@@ -34,7 +34,7 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 			RegistrySyncManager.receivePacket(ctx, buf, RegistrySyncManager.DEBUG || !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
 				LOGGER.error("Registry remapping failed!", e);
 				MinecraftClient.getInstance().execute(() -> {
-					((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getClientConnection().disconnect(
+					((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getConnection().disconnect(
 						new LiteralText("Registry remapping failed: " + e.getMessage())
 					);
 				});

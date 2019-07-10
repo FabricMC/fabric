@@ -51,7 +51,7 @@ public abstract class NormalHelper {
      * Version of {@link #packNormal(float, float, float, float)} that accepts a vector type.
      */
     public static int packNormal(Vector3f normal, float w) {
-        return packNormal(normal.x(), normal.y(), normal.z(), w);
+        return packNormal(normal.getX(), normal.getY(), normal.getZ(), w);
     }
 
     /**

@@ -277,7 +277,7 @@ public class AoCalculator {
             float ao = 0, sky = 0, block = 0, maxAo = 0;
             int maxSky = 0, maxBlock = 0;
             
-            final float x = normal.x();
+            final float x = normal.getX();
             if(!MathHelper.equalsApproximate(0f, x)) {
                 final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -291,7 +291,7 @@ public class AoCalculator {
                 maxBlock = fd.maxBlockLight(maxBlock);
             }
             
-            final float y = normal.y();
+            final float y = normal.getY();
             if(!MathHelper.equalsApproximate(0f, y)) {
                 final Direction face = y > 0 ? Direction.UP: Direction.DOWN;
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -305,7 +305,7 @@ public class AoCalculator {
                 maxBlock = fd.maxBlockLight(maxBlock);
             }
             
-            final float z = normal.z();
+            final float z = normal.getZ();
             if(!MathHelper.equalsApproximate(0f, z)) {
                 final Direction face = z > 0 ? Direction.SOUTH: Direction.NORTH;
                 final AoFaceData fd = gatherInsetFace(quad, i, face);

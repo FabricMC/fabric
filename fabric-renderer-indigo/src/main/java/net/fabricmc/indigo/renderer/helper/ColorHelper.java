@@ -97,7 +97,7 @@ public abstract class ColorHelper {
     }
     
     public static float normalShade(Vector3f normal) {
-        return normalShade(normal.x(), normal.y(), normal.z());
+        return normalShade(normal.getX(), normal.getY(), normal.getZ());
     }
 
     /**

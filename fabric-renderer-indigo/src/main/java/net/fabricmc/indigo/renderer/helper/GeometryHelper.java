@@ -186,13 +186,13 @@ public abstract class GeometryHelper {
         final Vector3f normal = quad.faceNormal();
         switch(GeometryHelper.longestAxis(normal)) {
             case X:
-                return normal.x() > 0 ? Direction.EAST : Direction.WEST;
+                return normal.getX() > 0 ? Direction.EAST : Direction.WEST;
                 
             case Y:
-                return normal.y() > 0 ? Direction.UP : Direction.DOWN;
+                return normal.getY() > 0 ? Direction.UP : Direction.DOWN;
                 
             case Z:
-                return normal.z() > 0 ? Direction.SOUTH : Direction.NORTH;
+                return normal.getZ() > 0 ? Direction.SOUTH : Direction.NORTH;
             
             default:
                 // handle WTF case
@@ -222,7 +222,7 @@ public abstract class GeometryHelper {
      * See {@link #longestAxis(float, float, float)}
      */
     public static Axis longestAxis(Vector3f vec) {
-        return longestAxis(vec.x(), vec.y(), vec.z());
+        return longestAxis(vec.getX(), vec.getY(), vec.getZ());
     }
     
     /**
