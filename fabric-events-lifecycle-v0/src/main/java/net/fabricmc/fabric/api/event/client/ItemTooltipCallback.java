@@ -26,15 +26,20 @@ import java.util.List;
 
 public interface ItemTooltipCallback {
 
+	/** Fired after the game has appended all base tooltip lines to the list */
 	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, (listeners) ->
-		(stack, tooltipContext, components) -> {
+		(stack, tooltipContext, lines) -> {
 			for(ItemTooltipCallback callback : listeners){
-				callback.getTooltip(stack, tooltipContext, components);
+				callback.getTooltip(stack, tooltipContext, lines);
 			}
 		}
 	);
 
-
-	void getTooltip(ItemStack stack, TooltipContext tooltipContext, List<Text> components);
+	/**
+	 * Called when an item stack's tooltip is rendered. Strings added to {@code lines} will be
+	 * rendered with the tooltip.
+	 * @param lines the list containing the lines of text displayed on the stack's tooltip
+	 */
+	void getTooltip(ItemStack stack, TooltipContext tooltipContext, List<Text> lines);
 
 }

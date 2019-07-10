@@ -21,16 +21,19 @@ import net.minecraft.client.gui.hud.DebugHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
 @Mixin(DebugHud.class)
 public class MixinDebugHud {
 
-	@Inject(at = @At("RETURN"), method = "getLeftText")
-	private void getLeftText(CallbackInfoReturnable<List<String>> info) {
-		DebugHudCallback.EVENT_LEFT.invoker().debugHudText(info.getReturnValue());
+	//This injects after the the keybinds has been drawn
+	@Inject(at = @At(value = "INVOKE_ASSIGN", target = "java/util/List.add(Ljava/lang/Object;)Z", ordinal = 2), method = "drawLeftText", locals = LocalCapture.CAPTURE_FAILHARD)
+	private void drawLeftText(CallbackInfo info, List<String> list) {
+		DebugHudCallback.EVENT_LEFT.invoker().debugHudText(list);
 	}
 
 	@Inject(at = @At("RETURN"), method = "getRightText")

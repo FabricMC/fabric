@@ -44,6 +44,9 @@ public interface DebugHudCallback {
     /**
      * Called when the debug HUD is rendered. Strings added to {@code lines} will be
      * rendered on the corresponding side of the screen.
+     *
+     * Keep in mind not to hard code index values as other mods may remove/shift around the list of strings.
+     *
      * @param lines the list containing the lines of text displayed on the debug HUD
      */
     void debugHudText(List<String> lines);
