@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.eventslifecycle;
+package net.fabricmc.fabric.mixin.renderer.client;
 
-import net.fabricmc.fabric.api.event.client.DebugHudCallback;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.minecraft.client.gui.hud.DebugHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
 @Mixin(DebugHud.class)
 public class MixinDebugHud {
-
-	//This injects after the the keybinds has been drawn
-	@Inject(at = @At(value = "INVOKE_ASSIGN", target = "java/util/List.add(Ljava/lang/Object;)Z", ordinal = 2), method = "drawLeftText", locals = LocalCapture.CAPTURE_FAILHARD)
-	private void drawLeftText(CallbackInfo info, List<String> list) {
-		DebugHudCallback.EVENT_LEFT.invoker().debugHudText(list);
+	@Inject(at = @At("RETURN"), method = "getLeftText")
+	protected void getLeftText(CallbackInfoReturnable<List<String>> info) {
+		if (RendererAccess.INSTANCE.hasRenderer()) {
+			info.getReturnValue().add("[Fabric] Active renderer: " + RendererAccess.INSTANCE.getRenderer().getClass().getSimpleName());
+		} else {
+			info.getReturnValue().add("[Fabric] Active renderer: none (vanilla)");
+		}
 	}
-
-	@Inject(at = @At("RETURN"), method = "getRightText")
-	private void getRightText(CallbackInfoReturnable<List<String>> info) {
-		DebugHudCallback.EVENT_RIGHT.invoker().debugHudText(info.getReturnValue());
-	}
-
 }

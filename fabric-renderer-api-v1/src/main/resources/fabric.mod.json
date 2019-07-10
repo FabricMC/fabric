@@ -8,11 +8,7 @@
     "fabric-api-base": "*"
   },
   "mixins": [
-    "fabric-renderer-api-v1.mixins.json"
-  ],
-  "entrypoints": {
-    "client": [
-      "net.fabricmc.fabric.api.renderer.v1.RenderingAPIClient"
-    ]
-  }
+    "fabric-renderer-api-v1.mixins.json",
+    "fabric-renderer-api-v1.debughud.mixins.json"
+  ]
 }
