@@ -88,7 +88,7 @@ public final class ToolManager {
 
 	private static int getMiningLevel(ItemStack stack) {
 		if (stack.getItem() instanceof ToolItem) {
-			return ((ToolItem) stack.getItem()).getType().getMiningLevel();
+			return ((ToolItem) stack.getItem()).getMaterial().getMiningLevel();
 		} else {
 			return 0;
 		}
@@ -102,7 +102,7 @@ public final class ToolManager {
 		if (entry != null) {
 			Item item = stack.getItem();
 			for (int i = 0; i < entry.tags.length; i++) {
-				if (item.matches(entry.tags[i])) {
+				if (item.isIn(entry.tags[i])) {
 					return TriState.of(getMiningLevel(stack) >= entry.tagLevels[i]);
 				}
 			}

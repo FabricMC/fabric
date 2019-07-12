@@ -14,11 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.callbacks;
+package net.fabricmc.fabric.mixin.loot;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.world.loot.LootPool;
+import net.minecraft.world.loot.condition.LootCondition;
+import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.world.loot.function.LootFunction;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-@FunctionalInterface
-public interface RegistryPreRegisterCallback<T> extends RegistryCallback<T> {
-	void onPreRegister(int rawId, Identifier id, T object, boolean isNewToRegistry);
+import java.util.List;
+
+@Mixin(LootPool.Builder.class)
+public interface LootPoolBuilderHooks {
+	@Accessor
+	List<LootEntry> getEntries();
+	@Accessor
+	List<LootCondition> getConditions();
+	@Accessor
+	List<LootFunction> getFunctions();
 }

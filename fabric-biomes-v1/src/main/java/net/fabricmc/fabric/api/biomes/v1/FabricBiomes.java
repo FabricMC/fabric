@@ -14,7 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.callbacks;
+package net.fabricmc.fabric.api.biomes.v1;
 
-public interface RegistryCallback<T> {
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import net.minecraft.world.biome.Biome;
+
+/**
+ * General API that applies to all biome sources
+ */
+public final class FabricBiomes {
+
+	private FabricBiomes() {
+	}
+
+	/**
+	 * Allows players to naturally spawn in this biome
+	 *
+	 * @param biome a biome the player should be able to spawn in
+	 */
+	public static void addSpawnBiome(Biome biome) {
+		InternalBiomeData.addSpawnBiome(biome);
+	}
+
 }

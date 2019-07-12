@@ -27,6 +27,7 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
+import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.indigo.renderer.mixin.BufferBuilderOffsetAccessor;
 import net.minecraft.block.BlockState;
@@ -67,10 +68,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 
     private float aoLevel(BlockPos pos) {
         final ExtendedBlockView blockView = blockInfo.blockView;
-        if(blockView == null) {
-            return 1f;
-        }
-        return blockView.getBlockState(pos).getAmbientOcclusionLightLevel(blockView, pos);
+        return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
     }
     
     private AccessBufferBuilder outputBuffer(int renderLayer) {

@@ -16,14 +16,19 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntMaps;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.util.IdList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 
 @Mixin(IdList.class)
 public class MixinIdList implements RemovableIdList<Object> {
@@ -35,7 +40,7 @@ public class MixinIdList implements RemovableIdList<Object> {
 	private List<Object> list;
 
 	@Override
-	public void clear() {
+	public void fabric_clear() {
 		nextId = 0;
 		idMap.clear();
 		list.clear();
@@ -51,17 +56,55 @@ public class MixinIdList implements RemovableIdList<Object> {
 	}
 
 	@Override
-	public void remove(Object o) {
+	public void fabric_remove(Object o) {
 		if (idMap.containsKey(o)) {
 			fabric_removeInner(o);
 		}
 	}
 
 	@Override
-	public void removeId(int i) {
-		Object obj = list.get(i);
-		if (obj != null) {
-			fabric_removeInner(obj);
+	public void fabric_removeId(int i) {
+		List<Object> removals = new ArrayList<>();
+
+		for (Object o : idMap.keySet()) {
+			int j = idMap.get(o);
+			if (i == j) {
+				removals.add(o);
+			}
+		}
+
+		removals.forEach(this::fabric_removeInner);
+	}
+
+	@Override
+	public void fabric_remapId(int from, int to) {
+		fabric_remapIds(Int2IntMaps.singleton(from, to));
+	}
+
+	@Override
+	public void fabric_remapIds(Int2IntMap map) {
+		// remap idMap
+		idMap.replaceAll((a, b) -> map.get(b));
+
+		// remap list
+		nextId = 0;
+		List<Object> oldList = new ArrayList<>(list);
+		list.clear();
+
+		for (int k = 0; k < oldList.size(); k++) {
+			Object o = oldList.get(k);
+			if (o != null) {
+				int i = map.getOrDefault(k, k);
+
+				while (list.size() <= i) {
+					list.add(null);
+				}
+
+				list.set(i, o);
+				if (nextId <= i) {
+					nextId = i + 1;
+				}
+			}
 		}
 	}
 }

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.callbacks;
+package net.fabricmc.fabric.impl.tag;
 
-@FunctionalInterface
-public interface RegistryPreClearCallback<T> extends RegistryCallback<T> {
-	void onPreClear();
+public interface FabricTagHooks {
+	void fabric_setExtraData(int clearCount);
 }

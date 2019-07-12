@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -127,6 +128,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         
         @Override
         public Maker emit() {
+            lightFace = GeometryHelper.lightFace(this);
+            ColorHelper.applyDiffuseShading(this, false);
             renderQuad();
             clear();
             return this;
@@ -168,7 +171,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     private int quadColor() {
         final int colorIndex = editorQuad.colorIndex();
         int quadColor = color;
-        if (!enchantment && quadColor == -1 && colorIndex != 1) {
+        if (!enchantment && quadColor == -1 && colorIndex != -1) {
             quadColor = colorMap.getColorMultiplier(itemStack, colorIndex);
             quadColor |= -16777216;
          }
@@ -182,7 +185,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
             c = ColorHelper.multiplyColor(quadColor, c);
             q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(c));
         }
-        fabricBuffer.fabric_putVanillaData(quadData, EncodingFormat.VERTEX_START_OFFSET, true);
+        fabricBuffer.fabric_putQuad(q);
     }
     
     private void renderQuad() {

@@ -74,8 +74,6 @@ public class AoCalculator {
     }
     
     private static final Logger LOGGER = LogManager.getLogger();
-	// TODO: make this actually configurable?
-    private static final boolean fixSmoothLighting = true;
 
     private final VanillaAoCalc vanillaCalc;
     private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
@@ -112,37 +110,39 @@ public class AoCalculator {
         completionFlags = 0;
     }
     
-    /** Set true in dev env to confirm results match vanilla when they should */
-    private static final boolean DEBUG = Boolean.valueOf(System.getProperty("fabric.debugAoLighting", "false"));
-    
     public void compute(MutableQuadViewImpl quad, boolean isVanilla) {
         final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
-        
-        boolean shouldMatch = false;
+        final boolean shouldCompare;
         
         switch(config) {
         case VANILLA:
             calcVanilla(quad);
+            // no point in comparing vanilla with itself
+            shouldCompare = false;
             break;
             
         case EMULATE:
             calcFastVanilla(quad);
-            shouldMatch = DEBUG && isVanilla;
+            shouldCompare = Indigo.DEBUG_COMPARE_LIGHTING && isVanilla;
             break;
             
+        default:
         case HYBRID:
             if(isVanilla) {
+                shouldCompare = Indigo.DEBUG_COMPARE_LIGHTING;
                 calcFastVanilla(quad);
-                break;
+            } else {
+                shouldCompare = false;
+                calcEnhanced(quad);
             }
-            // else fall through to enhanced
+            break;
         
-        default:
         case ENHANCED:
-            shouldMatch = calcEnhanced(quad);
+            shouldCompare = false;
+            calcEnhanced(quad);
         }
         
-        if (shouldMatch) {
+        if (shouldCompare) {
             float[] vanillaAo = new float[4];
             int[] vanillaLight = new int[4];
             
@@ -164,7 +164,7 @@ public class AoCalculator {
             }
         }
     }
-    
+
     private void calcVanilla(MutableQuadViewImpl quad) {
         vanillaCalc.compute(blockInfo, quad, ao, light);
     }
@@ -173,61 +173,41 @@ public class AoCalculator {
         int flags = quad.geometryFlags();
         
         // force to block face if shape is full cube - matches vanilla logic
-        if(((flags & LIGHT_FACE_FLAG) == 0) && Block.isShapeFullCube(blockInfo.blockState.getCollisionShape(blockInfo.blockView, blockInfo.blockPos))) {
+        if((flags & LIGHT_FACE_FLAG) == 0 && (flags & AXIS_ALIGNED_FLAG) == AXIS_ALIGNED_FLAG && Block.isShapeFullCube(blockInfo.blockState.getCollisionShape(blockInfo.blockView, blockInfo.blockPos))) {
             flags |= LIGHT_FACE_FLAG;
         }
-        
-        switch(flags) {
-        case AXIS_ALIGNED_FLAG | CUBIC_FLAG | LIGHT_FACE_FLAG:
-            vanillaFullFace(quad, true);
-            break;
-            
-        case AXIS_ALIGNED_FLAG | LIGHT_FACE_FLAG:
-            vanillaPartialFace(quad, true);
-            break;
-            
-        case AXIS_ALIGNED_FLAG | CUBIC_FLAG:
-            vanillaFullFace(quad, false);
-            break;
-            
-        default:
-        case AXIS_ALIGNED_FLAG:
-            vanillaPartialFace(quad, false);
-            break;
-        }
+
+        if((flags & CUBIC_FLAG) == 0) {
+			vanillaPartialFace(quad, (flags & LIGHT_FACE_FLAG) != 0);
+		} else {
+			vanillaFullFace(quad, (flags & LIGHT_FACE_FLAG) != 0);
+		}
     }
     
-    /** returns true if should match vanilla results */
-    private boolean calcEnhanced(MutableQuadViewImpl quad) {
+    private void calcEnhanced(MutableQuadViewImpl quad) {
         switch(quad.geometryFlags()) {
             case AXIS_ALIGNED_FLAG | CUBIC_FLAG | LIGHT_FACE_FLAG:
-                vanillaFullFace(quad, true);
-                return DEBUG;
-                
             case AXIS_ALIGNED_FLAG | LIGHT_FACE_FLAG:
                 vanillaPartialFace(quad, true);
-                return DEBUG;
+                break;
                 
             case AXIS_ALIGNED_FLAG | CUBIC_FLAG:
-                blendedFullFace(quad);
-                return false;
-                
             case AXIS_ALIGNED_FLAG:
                 blendedPartialFace(quad);
-                return false;
+                break;
                 
             default:
                 irregularFace(quad);
-                return false;
+                break;
         }
     }
     
-    private void vanillaFullFace(MutableQuadViewImpl quad, boolean isOnLightFace) {
+    private void vanillaFullFace(QuadViewImpl quad, boolean isOnLightFace) {
         final Direction lightFace = quad.lightFace();
         computeFace(lightFace, isOnLightFace).toArray(ao, light, VERTEX_MAP[lightFace.getId()]);
     }
     
-    private void vanillaPartialFace(MutableQuadViewImpl quad, boolean isOnLightFace) {
+    private void vanillaPartialFace(QuadViewImpl quad, boolean isOnLightFace) {
         final Direction lightFace = quad.lightFace();
         AoFaceData faceData = computeFace(lightFace, isOnLightFace);
         final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
@@ -239,7 +219,7 @@ public class AoCalculator {
         }
     }
 
-    /** used in {@link #blendedInsetFace(VertexEditorImpl, Direction)} as return variable to avoid new allocation */
+    /** used in {@link #blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace)} as return variable to avoid new allocation */
     AoFaceData tmpFace = new AoFaceData();
     
     /** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face */
@@ -250,7 +230,7 @@ public class AoCalculator {
     }
     
     /** 
-     * Like {@link #blendedInsetFace(VertexEditorImpl, Direction)} but optimizes if depth is 0 or 1.
+     * Like {@link #blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace)} but optimizes if depth is 0 or 1.
      * Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
      */
     private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace) {
@@ -265,12 +245,7 @@ public class AoCalculator {
         }
     }
     
-    private void blendedFullFace(MutableQuadViewImpl quad) {
-        final Direction lightFace = quad.lightFace();
-        blendedInsetFace(quad, 0, lightFace).toArray(ao, light, VERTEX_MAP[lightFace.getId()]);
-    }
-    
-    private void blendedPartialFace(MutableQuadViewImpl quad) {
+    private void blendedPartialFace(QuadViewImpl quad) {
         final Direction lightFace = quad.lightFace();
         AoFaceData faceData = blendedInsetFace(quad, 0, lightFace);
         final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
@@ -302,12 +277,15 @@ public class AoCalculator {
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
                 final float n = x * x;
-                ao += n * fd.weigtedAo(w);
-                sky += n * fd.weigtedSkyLight(w);
-                block += n * fd.weigtedBlockLight(w);
-                maxAo = fd.maxAo(maxAo);
-                maxSky = fd.maxSkyLight(maxSky);
-                maxBlock = fd.maxBlockLight(maxBlock);
+                final float a = fd.weigtedAo(w);
+                final int s = fd.weigtedSkyLight(w);
+                final int b = fd.weigtedBlockLight(w);
+                ao += n * a;
+                sky += n * s;
+                block += n * b;
+                maxAo = a;
+                maxSky = s;
+                maxBlock = b;
             }
             
             final float y = normal.y();
@@ -316,12 +294,15 @@ public class AoCalculator {
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
                 final float n = y * y;
-                ao += n * fd.weigtedAo(w);
-                sky += n * fd.weigtedSkyLight(w);
-                block += n * fd.weigtedBlockLight(w);
-                maxAo = fd.maxAo(maxAo);
-                maxSky = fd.maxSkyLight(maxSky);
-                maxBlock = fd.maxBlockLight(maxBlock);
+                final float a = fd.weigtedAo(w);
+                final int s = fd.weigtedSkyLight(w);
+                final int b = fd.weigtedBlockLight(w);
+                ao += n * a;
+                sky += n * s;
+                block += n * b;
+                maxAo = Math.max(maxAo, a);
+                maxSky = Math.max(maxSky, s);
+                maxBlock = Math.max(maxBlock, b);
             }
             
             final float z = normal.z();
@@ -330,12 +311,15 @@ public class AoCalculator {
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
                 final float n = z * z;
-                ao += n * fd.weigtedAo(w);
-                sky += n * fd.weigtedSkyLight(w);
-                block += n * fd.weigtedBlockLight(w);
-                maxAo = fd.maxAo(maxAo);
-                maxSky = fd.maxSkyLight(maxSky);
-                maxBlock = fd.maxBlockLight(maxBlock);
+                final float a = fd.weigtedAo(w);
+                final int s = fd.weigtedSkyLight(w);
+                final int b = fd.weigtedBlockLight(w);
+                ao += n * a;
+                sky += n * s;
+                block += n * b;
+                maxAo = Math.max(maxAo, a);
+                maxSky = Math.max(maxSky, s);
+                maxBlock = Math.max(maxBlock, b);
             }
             
             aoResult[i] = (ao + maxAo) * 0.5f;
@@ -383,16 +367,16 @@ public class AoCalculator {
             // vanilla was further offsetting these in the direction of the light face
             // but it was actually mis-sampling and causing visible artifacts in certain situation
             searchPos.set(lightPos).setOffset(aoFace.neighbors[0]);//.setOffset(lightFace);
-            if(!fixSmoothLighting) searchPos.setOffset(lightFace);
+            if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
             final boolean isClear0 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
             searchPos.set(lightPos).setOffset(aoFace.neighbors[1]);//.setOffset(lightFace);
-            if(!fixSmoothLighting) searchPos.setOffset(lightFace);
+            if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
             final boolean isClear1 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
             searchPos.set(lightPos).setOffset(aoFace.neighbors[2]);//.setOffset(lightFace);
-            if(!fixSmoothLighting) searchPos.setOffset(lightFace);
+            if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
             final boolean isClear2 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
             searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);//.setOffset(lightFace);
-            if(!fixSmoothLighting) searchPos.setOffset(lightFace);
+            if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
             final boolean isClear3 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
 
             // c = corner - values at corners of face
@@ -469,7 +453,7 @@ public class AoCalculator {
      * value from all four samples.
      */
     private static int meanBrightness(int a, int b, int c, int d) {
-        if(fixSmoothLighting) {
+        if(Indigo.FIX_SMOOTH_LIGHTING_OFFSET) {
             return a == 0 || b == 0 || c == 0 || d == 0 ? meanEdgeBrightness(a, b, c, d) : meanInnerBrightness(a, b, c, d);
         } else {
             return vanillaMeanBrightness(a, b, c, d);

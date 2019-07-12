@@ -20,7 +20,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.text.LiteralText;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,11 +31,11 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientSidePacketRegistry.INSTANCE.register(RegistrySyncManager.ID, (ctx, buf) -> {
 			// if not hosting server, apply packet
-			RegistrySyncManager.receivePacket(ctx, buf, !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
+			RegistrySyncManager.receivePacket(ctx, buf, RegistrySyncManager.DEBUG || !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
 				LOGGER.error("Registry remapping failed!", e);
 				MinecraftClient.getInstance().execute(() -> {
 					((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getClientConnection().disconnect(
-						new TextComponent("Registry remapping failed: " + e.getMessage())
+						new LiteralText("Registry remapping failed: " + e.getMessage())
 					);
 				});
 			});
