@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.impl;
+package net.fabricmc.fabric.api.world;
 
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;

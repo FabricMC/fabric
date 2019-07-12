@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.impl;
+package net.fabricmc.fabric.api.world;
 
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -8,7 +8,7 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 /**
  * Responsible for creating the FabricChunkGeneratorType's ChunkGenerator instance.
  * Called when a new instance of a ChunkGenerator is requested in the ChunkGeneratorType.
- * @param <C> ChunkGenerator config
+ * @param <C> ChunkGeneratorConfig
  * @param <T> ChunkGenerator
  */
 @FunctionalInterface

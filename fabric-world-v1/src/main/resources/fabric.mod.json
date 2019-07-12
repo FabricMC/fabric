@@ -1,16 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-dimensions-v1",
+  "id": "fabric-world-v1",
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
-  },
-  "entrypoints": {
-
-  },
-  "mixins": [
-    "fabric-dimensions-v1.mixins.json"
-  ]
+  }
 }
