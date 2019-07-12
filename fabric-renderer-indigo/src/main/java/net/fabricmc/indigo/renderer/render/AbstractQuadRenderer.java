@@ -69,7 +69,7 @@ public abstract class AbstractQuadRenderer {
     
     /** final output step, common to all renders */
     private void bufferQuad(MutableQuadViewImpl quad, int renderLayer) {
-        bufferFunc.get(renderLayer).fabric_putVanillaData(quad.data(), quad.vertexStart(), false);
+        bufferFunc.get(renderLayer).fabric_putQuad(quad);
     }
 
     // routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
