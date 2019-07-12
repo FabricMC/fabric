@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 def baseVersion = "0.3.0"
-def mcVersion = "1.14.4-pre4"
-def yarnVersion = "+build.1"
+def mcVersion = "1.14.4-pre5"
+def yarnVersion = "+build.3"
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
