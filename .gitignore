@@ -19,6 +19,7 @@
 bin/
 build/
 jars/
+out/
 
 # Debug artifacts
 run
