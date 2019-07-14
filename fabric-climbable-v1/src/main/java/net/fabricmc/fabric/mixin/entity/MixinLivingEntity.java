@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.api.block.Climbable;
 import net.fabricmc.fabric.api.event.block.ClimbableCallback;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
@@ -40,19 +39,11 @@ public abstract class MixinLivingEntity extends Entity {
 	@Inject(method = "isClimbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void isClimbing(CallbackInfoReturnable<Boolean> cir, final BlockState state) {
 
-        final Climbable climbable = (Climbable) state.getBlock();
         final LivingEntity self = (LivingEntity) (Object) this;
 
         TriState result = ClimbableCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
         if (result != TriState.DEFAULT) {
 			cir.setReturnValue(result.get());
 		}
-
-        /*
-        TriState result = climbable.canClimb(self, state, getBlockPos());
-        if (result != TriState.DEFAULT) {
-			cir.setReturnValue(result.get());
-		}
-		*/
     }
 }

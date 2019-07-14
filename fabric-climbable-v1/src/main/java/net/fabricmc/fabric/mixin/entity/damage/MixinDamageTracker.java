@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.entity.damage;
 
-import net.fabricmc.fabric.api.block.Climbable;
-import net.minecraft.block.Block;
+import net.fabricmc.fabric.api.event.block.FallDeathSuffixCallback;
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.util.math.BlockPos;
@@ -40,8 +40,8 @@ public abstract class MixinDamageTracker {
     @Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     public void setFallDeathSuffix(CallbackInfo ci) {
 
-        final Block block = entity.world.getBlockState(new BlockPos(entity.x, entity.getBoundingBox().minY, entity.z)).getBlock();
-        fallDeathSuffix = ((Climbable) block).getFallDeathSuffix();
+        final BlockState block = entity.world.getBlockState(new BlockPos(entity.x, entity.getBoundingBox().minY, entity.z));
+		fallDeathSuffix = FallDeathSuffixCallback.event.invoker().getFallDeathSuffix(entity, block).getLeft();
 
         if (!fallDeathSuffix.equals("generic")) {
 			ci.cancel();
