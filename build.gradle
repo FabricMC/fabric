@@ -11,9 +11,13 @@ plugins {
 
 def ENV = System.getenv()
 
-def baseVersion = "0.3.0"
-def mcVersion = "1.14.4-pre5"
-def yarnVersion = "+build.3"
+class Globals {
+	static def baseVersion = "0.3.0"
+	static def mcVersion = "1.14.4-pre5"
+	static def yarnVersion = "+build.3"
+}
+
+import org.apache.commons.codec.digest.DigestUtils
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -23,7 +27,7 @@ def getSubprojectVersion(project, version) {
 	if (latestCommits.isEmpty()) {
 		return version + "+uncommited"
 	} else {
-		return version + "+" + latestCommits.get(0).id.substring(0, 8)
+		return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
 	}
 }
 
@@ -38,8 +42,8 @@ allprojects {
 	group = "net.fabricmc.fabric-api"
 
 	dependencies {
-		minecraft "com.mojang:minecraft:$mcVersion"
-		mappings "net.fabricmc:yarn:${mcVersion}${yarnVersion}"
+		minecraft "com.mojang:minecraft:$Globals.mcVersion"
+		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
 		modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
 	}
 
@@ -173,7 +177,7 @@ dependencies {
 	}
 }
 
-version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){
@@ -185,7 +189,7 @@ curseforge {
 		releaseType = 'alpha'
 		addGameVersion '1.14-Snapshot'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
+			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")
