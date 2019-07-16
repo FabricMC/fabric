@@ -14,41 +14,41 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.containers;
+package net.fabric.test;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
-import net.minecraft.client.gui.ContainerScreen;
+import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.text.StringTextComponent;
+import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-public class ContainerModClient implements ClientModInitializer {
+public class FabricContainersTestClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
 		//Registers a gui factory that opens our example gui, this reads the block pos from the buffer
-		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {
+		ScreenProviderRegistry.INSTANCE.registerFactory(FabricContainersTest.EXAMPLE_CONTAINER, (syncId, identifier, player, buf) -> {
 			BlockPos pos = buf.readBlockPos();
 			return new ExampleContainerScreen(syncId, pos, player);
 		});
 
 		//Registers a gui factory that opens our example gui, this uses the container created by ContainerProviderRegistry
-		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_CONTAINER_2, ExampleContainerScreen2::new);
+		ScreenProviderRegistry.INSTANCE.registerFactory(FabricContainersTest.EXAMPLE_CONTAINER_2, ExampleContainerScreen2::new);
 
 		//Registers a gui factory that opens our example inventory gui
-		ScreenProviderRegistry.INSTANCE.registerFactory(ContainerMod.EXAMPLE_INVENTORY_CONTAINER, ExampleInventoryContainerScreen::new);
+		ScreenProviderRegistry.INSTANCE.registerFactory(FabricContainersTest.EXAMPLE_INVENTORY_CONTAINER, ExampleInventoryContainerScreen::new);
 	}
 
 	//A container gui that shows the block pos that was sent
-	public static class ExampleContainerScreen extends ContainerScreen<ContainerMod.ExampleContainer> {
+	public static class ExampleContainerScreen extends AbstractContainerScreen<FabricContainersTest.ExampleContainer> {
 
 		BlockPos pos;
 
 		public ExampleContainerScreen(int syncId, BlockPos pos, PlayerEntity playerEntity) {
-			super(new ContainerMod.ExampleContainer(syncId, pos, playerEntity), playerEntity.inventory, new StringTextComponent("Example GUI"));
+			super(new FabricContainersTest.ExampleContainer(syncId, pos, playerEntity), playerEntity.inventory, new LiteralText("Example GUI"));
 			this.pos = pos;
 		}
 
@@ -60,35 +60,35 @@ public class ContainerModClient implements ClientModInitializer {
 
 
 	//A container gui that shows how you can take in a container provided by a ContainerScreenFactory
-	public static class ExampleContainerScreen2 extends ContainerScreen<ContainerMod.ExampleContainer> {
+	public static class ExampleContainerScreen2 extends AbstractContainerScreen<FabricContainersTest.ExampleContainer> {
 
 		BlockPos pos;
 
-		public ExampleContainerScreen2(ContainerMod.ExampleContainer container) {
-			super(container, container.playerInventory, new StringTextComponent("Example GUI 2"));
+		public ExampleContainerScreen2(FabricContainersTest.ExampleContainer container) {
+			super(container, container.playerInventory, new LiteralText("Example GUI 2"));
 			this.pos = container.pos;
 		}
 
 		@Override
 		protected void drawBackground(float v, int i, int i1) {
-			font.draw(pos.toString(), width / 2, height / 2, 0);
+			font.draw(pos.toString(), containerWidth / 2, containerHeight / 2, 0);
 		}
 	}
 
 	//A container gui that has the player's inventory
-	public static class ExampleInventoryContainerScreen extends ContainerScreen<ContainerMod.ExampleInventoryContainer> {
+	public static class ExampleInventoryContainerScreen extends AbstractContainerScreen<FabricContainersTest.ExampleInventoryContainer> {
 
 		private static final Identifier BG_TEXTURE = new Identifier("textures/gui/container/horse.png");
 
-		public ExampleInventoryContainerScreen(ContainerMod.ExampleInventoryContainer container) {
-			super(container, container.playerInventory, new StringTextComponent("Example Inventory GUI"));
+		public ExampleInventoryContainerScreen(FabricContainersTest.ExampleInventoryContainer container) {
+			super(container, container.playerInventory, new LiteralText("Example Inventory GUI"));
 		}
 
 		@Override
 		protected void drawBackground(float v, int i, int i1) {
 			GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
 			minecraft.getTextureManager().bindTexture(BG_TEXTURE);
-			this.blit(left, top, 0, 0, width, height);
+			this.blit(left, top, 0, 0, containerWidth, containerHeight);
 		}
 	}
 

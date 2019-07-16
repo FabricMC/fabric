@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-rendering-v0-test",
+  "version": "0.0.0",
+  "name": "fabric-rendering-v0-test",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "net.fabric.test.FabricRenderingTests"
+    ]
+  }
+}

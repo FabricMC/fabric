@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.containers;
+package net.fabric.test;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
@@ -27,7 +27,7 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
-public class ContainerMod implements ModInitializer {
+public class FabricContainersTest implements ModInitializer {
 
 	public static final Identifier EXAMPLE_CONTAINER = new Identifier("fabric_container", "example_container");
 	public static final Identifier EXAMPLE_CONTAINER_2 = new Identifier("fabric_container", "example_container_2");

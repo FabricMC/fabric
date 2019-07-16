@@ -86,6 +86,17 @@ allprojects {
 }
 
 subprojects {
+	sourceSets {
+		testmod {
+			compileClasspath += main.compileClasspath
+			runtimeClasspath += main.runtimeClasspath
+		}
+	}
+
+	dependencies {
+		testmodCompile sourceSets.main.output
+	}
+	
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
 		afterEvaluate {
 			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
