@@ -5,7 +5,8 @@
   "mixins": [
     "MixinKeyedResourceReloadListener$Server",
     "MixinMinecraftServer",
-    "MixinReloadableResourceManagerImpl"
+    "MixinReloadableResourceManagerImpl",
+    "MixinDefaultResourcePack"
   ],
   "client": [
     "MixinKeyedResourceReloadListener$Client",
