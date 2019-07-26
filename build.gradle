@@ -23,18 +23,18 @@ import groovy.json.JsonOutput
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
-		return version + ".9999+nogit"
+		return version + "+nogit"
 	}
 	if(!System.getenv().BUILD_NUMBER){
-		return version + ".9999+local"
+		return version + "+local"
 	}
 	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
 	if (latestCommits.isEmpty()) {
-		return version + ".0+uncommited"
+		return version + "+uncommited"
 	} else {
 		def commitHash = latestCommits.get(0).id
 		def buildGradleHash = DigestUtils.sha256Hex(file("build.gradle").text)
-		return version + "." + getOrIncrementBuildNumber(project, commitHash + buildGradleHash)
+		return version + "+build." + getOrIncrementBuildNumber(project, commitHash + buildGradleHash)
 	}
 }
 
