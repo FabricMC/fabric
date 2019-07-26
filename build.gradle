@@ -58,8 +58,12 @@ def getOrIncrementBuildNumber(project, hash) {
 	if(info[hash] != null){
 		buildNumber = info[hash].build
 	} else {
-		//Not seen this version before, so we increment the build number by one based off all the recorded hashes, so multibranch should work just fine.
-		buildNumber = info.size() + 1
+		info.each {
+			if (it.value.build > buildNumber){
+				buildNumber = it.value.build
+			}
+		}
+		buildNumber++
 		info[hash] = [
 		    build: buildNumber
 		]
