@@ -18,17 +18,58 @@ class Globals {
 }
 
 import org.apache.commons.codec.digest.DigestUtils
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
-		return version + "+nogit"
+		return version + ".9999+nogit"
+	}
+	if(!System.getenv().BUILD_NUMBER){
+		return version + ".9999+local"
 	}
 	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
 	if (latestCommits.isEmpty()) {
-		return version + "+uncommited"
+		return version + ".0+uncommited"
 	} else {
-		return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
+		def commitHash = latestCommits.get(0).id
+		def buildGradleHash = DigestUtils.sha256Hex(file("build.gradle").text)
+		return version + "." + getOrIncrementBuildNumber(project, commitHash + buildGradleHash)
 	}
+}
+
+def getOrIncrementBuildNumber(project, hash) {
+	def jsonSlurper = new JsonSlurper()
+	def jsonFile = new File(project.gradle.gradleUserHomeDir, "fabric_build_numbers.json")
+	def json = [:]
+	if(jsonFile.exists()){
+		json = jsonSlurper.parseText(jsonFile.text)
+	}
+
+	//Gets the project info from the main json
+	def info = json[project.name]
+	if(info == null){
+		info = [:]
+	}
+
+	int buildNumber
+
+	//If the hash exists, we returns its build number
+	if(info[hash] != null){
+		buildNumber = info[hash].build
+	} else {
+		//Not seen this version before, so we increment the build number by one based off all the recorded hashes, so multibranch should work just fine.
+		buildNumber = info.size() + 1
+		info[hash] = [
+		    build: buildNumber
+		]
+	}
+
+	//write out the updated json file
+	json[project.name] = info
+	jsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(json)))
+
+	return buildNumber
 }
 
 allprojects {
