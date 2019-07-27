@@ -47,7 +47,7 @@ public class MixinServerPlayerInteractionManager {
 	public ServerPlayerEntity player;
 
 	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
-	public void startBlockBreak(BlockPos pos, PlayerActionC2SPacket.Action playerAction, Direction direction, int i, CallbackInfo info) {
+	public void startBlockBreak(BlockPos pos, Direction direction, CallbackInfo info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(player, world, Hand.MAIN_HAND, pos, direction);
 		if (result != ActionResult.PASS) {
 			// The client might have broken the block on its side, so make sure to let it know.
