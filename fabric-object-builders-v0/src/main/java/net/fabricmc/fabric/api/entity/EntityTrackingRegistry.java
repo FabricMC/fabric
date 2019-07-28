@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Registry for server->client entity tracking values.
+ * Registry for server-&gt;client entity tracking values.
  *
  * @deprecated Use FabricEntityTypeBuilder methods
  */

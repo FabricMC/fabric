@@ -29,7 +29,7 @@ import java.util.function.Function;
 
 /**
  * Extended version of {@link EntityType.Builder} with added registration for
- * server->client entity tracking values.
+ * server-&gt;client entity tracking values.
  *
  * @param <T> Entity class.
  */

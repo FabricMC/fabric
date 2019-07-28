@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.api.registry;
 
 import net.fabricmc.fabric.impl.registry.LootEntryTypeRegistryImpl;
-import net.minecraft.world.loot.entry.LootEntry;
 
+import net.minecraft.world.loot.entry.LootEntry;
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry}
  */

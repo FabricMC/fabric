@@ -21,7 +21,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ExtendedBlockView;
 
 /**
- * BlockView-extending interface to be used by {@link FabricBakedModel} for dynamic model
+ * BlockView-extending interface to be used by {@link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel} for dynamic model
  * customization. It ensures thread safety and exploits data cached in render 
  * chunks for performance and data consistency.<p>
  * 
@@ -29,7 +29,7 @@ import net.minecraft.world.ExtendedBlockView;
  * 
  * BlockEntity implementations that provide data for model customization should implement 
  * {@link RenderAttachmentBlockEntity} which will be queried on the main thread when a render
- * chunk is enqueued for rebuild. The model should retrieve the results via {@link #getCachedRenderData()}.
+ * chunk is enqueued for rebuild. The model should retrieve the results via {@link #getBlockEntityRenderAttachment(BlockPos)}.
  * While {@link #getBlockEntity(net.minecraft.util.math.BlockPos)} is not disabled, it
  * is not thread-safe for use on render threads.  Models that violate this guidance are
  * responsible for any necessary synchronization or collision detection.<p>
@@ -37,7 +37,7 @@ import net.minecraft.world.ExtendedBlockView;
  * {@link #getBlockState(net.minecraft.util.math.BlockPos)} and {@link #getFluidState(net.minecraft.util.math.BlockPos)}
  * will always reflect the state cached with the render chunk.  Block and fluid states
  * can thus be different from main-thread world state due to lag between block update
- * application from network packets and render chunk rebuilds. Use of {@link #getCachedRenderData()}
+ * application from network packets and render chunk rebuilds. Use of {link #getCachedRenderData()}
  * will ensure consistency of model state with the rest of the chunk being rendered.<p>
  *
  * Models should avoid using {@link ExtendedBlockView#getBlockEntity(BlockPos)}
@@ -48,6 +48,7 @@ import net.minecraft.world.ExtendedBlockView;
  * 
  * This interface is only guaranteed to be present in the client environment.
  */
+// XXX can not link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
 public interface RenderAttachedBlockView extends ExtendedBlockView {
     /**
      * For models associated with Block Entities that implement {@link RenderAttachmentBlockEntity}

@@ -45,7 +45,7 @@ public interface FabricBakedModel {
 
      * Fabric overrides to true for vanilla baked models.  
      * Enhanced models that use this API should return false,
-     * otherwise the API will not recognize the model.<p>
+     * otherwise the API will not recognize the model. <p>
      */
     boolean isVanillaAdapter(); 
     
@@ -79,12 +79,12 @@ public interface FabricBakedModel {
      * parameter is normally initialized with the same seed prior to each face layer.
      * Model authors should note this method is called only once per block, and call the provided
      * Random supplier multiple times if re-seeding is necessary. For wrapped vanilla baked models, 
-     * it will probably be easier to use {@link RenderContext#fallbackModelConsumer()} which handles
+     * it will probably be easier to use {@link RenderContext#fallbackConsumer} which handles
      * re-seeding per face automatically.<p>
      * 
-     * @param Access to world state. Using {@link TerrainBlockView#getCachedRenderData(BlockPos)} to
+     * @param blockView Access to world state. Using {@link net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView#getBlockEntityRenderAttachment(BlockPos)} to
      * retrieve block entity state unless thread safety can be guaranteed.
-     * @param safeBlockEntityAccessor Thread-safe access to block entity data 
+     * param safeBlockEntityAccessor Thread-safe access to block entity data 
      * @param state Block state for model being rendered.
      * @param pos Position of block for model being rendered.
      * @param randomSupplier  Random object seeded per vanilla conventions. Call multiple times to re-seed.
@@ -92,7 +92,7 @@ public interface FabricBakedModel {
      * @param context Accepts model output.
      */
     void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
-    
+
     /**
      * This method will be called during item rendering to generate both the static and
      * dynamic portions of an item model when the model implements this interface and
@@ -111,13 +111,13 @@ public interface FabricBakedModel {
      * 
      * Implementing this method does NOT mitigate the need to implement a functional 
      * {@link BakedModel#getItemPropertyOverrides()} method, because this method will be called 
-     * on the <em>result</em> of  {@link #getItemPropertyOverrides()}.  However, that 
+     * on the <em>result</em> of  {@link BakedModel#getItemPropertyOverrides}.  However, that 
      * method can simply return the base model because the output from this method will
      * be used for rendering.<p>
      * 
      * Renderer implementations should also use this method to obtain the quads used
      * for item enchantment glint rendering.  This means models can put geometric variation
-     * logic here, instead of returning every possible shape from {@link #getItemPropertyOverrides()}
+     * logic here, instead of returning every possible shape from {@link BakedModel#getItemPropertyOverrides}
      * as vanilla baked models.
      */
     void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);

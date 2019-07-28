@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.renderer.v1.Renderer;
  * A bundle of one or more {@link QuadView} instances encoded by the renderer,
  * typically via {@link Renderer#meshBuilder()}.<p>
  * 
- * Similar in purpose to the List<BakedQuad> instances returned by BakedModel, but 
+ * Similar in purpose to the {@code List<BakedQuad>} instances returned by BakedModel, but 
  * affords the renderer the ability to optimize the format for performance
  * and memory allocation.<p>
  * 
