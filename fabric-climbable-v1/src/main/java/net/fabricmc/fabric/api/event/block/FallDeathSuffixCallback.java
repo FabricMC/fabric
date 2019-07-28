@@ -27,39 +27,56 @@ public interface FallDeathSuffixCallback {
 
 	Event<FallDeathSuffixCallback> event = EventFactory.createArrayBacked(FallDeathSuffixCallback.class,
 		(fallDeathCallbacks -> (entity, state) -> {
-			String result = "generic";
+			String suffix = null;
 			int currentPriority = 0;
 
 			for (FallDeathSuffixCallback fallDeathCallback : fallDeathCallbacks) {
-				Pair<String, Integer> pair = fallDeathCallback.getFallDeathSuffix(entity, state);
+				Result result = fallDeathCallback.getFallDeathSuffix(entity, state);
 
-				if (pair.getRight() >= currentPriority) {
-					result = pair.getLeft();
-					currentPriority = pair.getRight();
+				if (result != null) {
+					if (result.priority >= currentPriority) {
+						suffix = result.suffix;
+					}
 				}
 			}
 
-			return new Pair<>(result, 0);
+			return new Result(suffix, 0);
 		}));
 
 	/**
 	 * Provides a custom fall death suffix for non-vanilla situation.
 	 *
-	 * @param entity The entity that is being tracked.
-	 * @param state the block state that is being climbed.
-	 *
-	 * @return a pair containing the suffix for the fall death and the priority number.
-	 *
-	 * In order to use this, your translation file should have the translation key
+	 * <p>In order to use this, your translation file should have the translation key
 	 * "death.fell.accident.suffix", where "suffix" is the string returned by this method.
-	 * It is possible to return a null string; if all callbacks do this, the vanilla suffix
-	 * for that situation will be used instead.
+	 * It is possible to return null; if all callbacks do this, the vanilla suffix
+	 * for that situation will be used instead.</p>
 	 *
 	 * The priority number allows for the suffix to take priority over over other suffixes.
 	 * i.e. if you return a priority of 2 and everything after it returns a priority of 1,
 	 * your suffix will be used. In the event that multiple callbacks return the same priority
 	 * number, the suffix of the last callback will be used. This number should be greater than
-	 * 0 or it will be ignored.
+	 * 0 or it will be ignored. </p>
+	 *
+	 * @param entity The entity that is being tracked.
+	 * @param state the block state that is being climbed.
+	 *
+	 * @return a result containing the suffix for the fall death and the priority number. Can be
+	 * null.
+	 *
 	 */
-	Pair<String, Integer> getFallDeathSuffix(LivingEntity entity, BlockState state);
+	Result getFallDeathSuffix(LivingEntity entity, BlockState state);
+
+
+	/**
+	 * Result class for callback containing string and priority.
+	 */
+	class Result {
+		public String suffix;
+		public int priority = 0;
+
+		public Result(String suffix, int priority) {
+			this.suffix = suffix;
+			this.priority = priority;
+		}
+	}
 }
