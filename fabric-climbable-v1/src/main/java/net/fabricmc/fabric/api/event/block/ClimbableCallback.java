@@ -57,7 +57,8 @@ public interface ClimbableCallback {
 	 * @param state The BlockState of the block that the climber is attempting to climb.
 	 * @param pos The BlockPos of the BlockState.
 	 *
-	 * @return The TriState result.
+	 * @return The TriState result that determines whether or not the climber can climb
+	 * the block (or if vanilla checks should be run).
 	 */
 	TriState canClimb(LivingEntity climber, BlockState state, BlockPos pos);
 }
