@@ -117,7 +117,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 		int xpos = left + 170;
 		int ypos = top + 4;
 
-		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
+		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 11, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
 
 	}
