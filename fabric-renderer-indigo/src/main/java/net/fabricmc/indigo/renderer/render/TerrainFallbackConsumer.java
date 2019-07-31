@@ -24,9 +24,8 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
-import net.fabricmc.indigo.renderer.RenderMaterialImpl.Value;
-import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.IndigoRenderer;
+import net.fabricmc.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
@@ -58,20 +57,6 @@ import net.minecraft.util.math.Direction;
 public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel> {
     private static Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
     private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
-    
-    /**
-     * Controls 1x warning for vanilla quad vertex format when running in compatibility mode.
-     */
-    private static boolean logCompatibilityWarning = true;
-    
-    private static boolean isCompatible(int[] vertexData) {
-    	final boolean result = vertexData.length == 28;
-    	if(!result && logCompatibilityWarning) {
-    		logCompatibilityWarning = false;
-			Indigo.LOGGER.warn("[Indigo] Encountered baked quad with non-standard vertex format. Some blocks will not be rendered");
-    	}
-    	return result;
-    }
     
     private final int[] editorBuffer = new int[28];
     private final ChunkRenderInfo chunkInfo;
@@ -125,7 +110,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
     
     private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
         final int[] vertexData = quad.getVertexData();
-        if(Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY && !isCompatible(vertexData)) {
+        if(!CompatibilityHelper.canRender(vertexData)) {
         	return;
         }
         

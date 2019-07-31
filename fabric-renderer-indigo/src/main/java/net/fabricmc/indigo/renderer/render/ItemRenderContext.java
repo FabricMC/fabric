@@ -45,6 +45,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
 
 /**
  * The render context used for item rendering. 
@@ -224,16 +225,41 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         return meshConsumer;
     }
 
-    private final Consumer<BakedModel> fallbackConsumer = model -> {
-        for(int i = 0; i < 7; i++) {
-            random.setSeed(42L);
-            vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack);
-         }
+    private void fallbackConsumer(BakedModel model) {
+        
+        if(hasTransform()) {
+            
+        } else {
+            for(int i = 0; i < 7; i++) {
+                random.setSeed(42L);
+                renderFallbackQuadList(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack, i);
+             }
+        }
     };
+    
+    private void renderFallbackQuadList(BufferBuilder bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, int cullFaceIndex) {
+        if(quads.isEmpty()) {
+            return;
+        }
+        // if there's a transform in effect, convert to mesh-based quad so that we can apply it
+        if(hasTransform() && CompatibilityHelper.canRender(quads.get(0).getVertexData())) {
+            Maker editorQuad = this.editorQuad;
+            for(BakedQuad q : quads) {
+                editorQuad.fromVanilla(q.getVertexData(), 0, false);
+                editorQuad.cullFace(ModelHelper.faceFromIndex(cullFaceIndex));
+                final Direction lightFace = q.getFace();
+                editorQuad.lightFace(lightFace);
+                editorQuad.nominalFace(lightFace);
+                editorQuad.colorIndex(q.getColorIndex());
+            }
+        } else {
+            vanillaHandler.accept(bufferBuilder, quads, color, stack);
+        }
+    }
     
     @Override
     public Consumer<BakedModel> fallbackConsumer() {
-        return fallbackConsumer;
+        return this::fallbackConsumer;
     }
 
     @Override
