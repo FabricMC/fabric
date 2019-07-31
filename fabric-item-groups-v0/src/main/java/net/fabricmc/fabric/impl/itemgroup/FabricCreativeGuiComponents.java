@@ -68,11 +68,11 @@ public class FabricCreativeGuiComponents {
 				GlStateManager.disableLighting();
 				GlStateManager.color4f(1F, 1F, 1F, 1F);
 				this.blit(this.x, this.y, 0, (active ? (isHovered() ? 24 : 0) : 12), 11, 11);
-				int textColor = 14737632;
+				int textColor = 0xffe0e0e0;
 				if (!this.active) {
-					textColor = 10526880;
+					textColor = 0xffa0a0a0;
 				} else if (this.isHovered()) {
-					textColor = 16777120;
+					textColor = 0xffffffa0;
 				}
 				// Manually pre-mirrors the arrow because the text renderer will mirror it back if it is right to left
 				this.drawCenteredString(textRenderer, textRenderer.isRightToLeft() ? textRenderer.mirror(getMessage()) : getMessage(), this.x + this.width / 2, this.y + (this.height - 6) / 2, textColor | MathHelper.ceil(this.alpha * 255.0F) << 24);
