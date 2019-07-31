@@ -36,7 +36,7 @@ public interface ItemTooltipCallback {
 	);
 
 	/**
-	 * Called when an item stack's tooltip is rendered. Strings added to {@code lines} will be
+	 * Called when an item stack's tooltip is rendered. Text added to {@code lines} will be
 	 * rendered with the tooltip.
 	 * @param lines the list containing the lines of text displayed on the stack's tooltip
 	 */
