@@ -32,9 +32,9 @@ import java.util.List;
 @Mixin(ItemStack.class)
 public class MixinItemStack {
 
-	@Inject(method = "getTooltip", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext, CallbackInfoReturnable<List<Text>> info, List<Text> lines){
-		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object)this, tooltipContext, lines);
+	@Inject(method = "getTooltip", at = @At("RETURN"))
+	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext, CallbackInfoReturnable<List<Text>> info){
+		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object)this, tooltipContext, info.getReturnValue());
 	}
 
 }
