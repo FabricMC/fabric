@@ -37,7 +37,7 @@ public interface ParticleRegistry {
 	}
 
 	/** Create a basic particle type that requires no extra information on spawn. */
-	default DefaultParticleType createSimpleParticleType() {
+	default ParticleType<?> createSimpleParticleType() {
 		return createSimpleParticleType(false);
 	}
 
@@ -46,7 +46,7 @@ public interface ParticleRegistry {
 	 *
 	 * @param shouldAlwaysSpawn Whether this particle should spawn regardless of distance or client settings (a la barrier particles).
 	 */
-	default DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {
+	default ParticleType<?> createSimpleParticleType(boolean shouldAlwaysSpawn) {
 		return new DefaultParticleType(shouldAlwaysSpawn) {}; // Anonymous class to bypass protected constructor
 	}
 
