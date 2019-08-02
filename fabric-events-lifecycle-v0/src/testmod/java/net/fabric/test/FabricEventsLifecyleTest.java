@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.events;
+package net.fabric.test;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ServerEventMod implements ModInitializer {
+public class FabricEventsLifecyleTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	@Override

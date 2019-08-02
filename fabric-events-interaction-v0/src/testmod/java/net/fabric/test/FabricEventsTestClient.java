@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.events;
+package net.fabric.test;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
@@ -27,7 +27,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
-public class PickBlockEventModClient implements ClientModInitializer {
+public class FabricEventsTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientPickBlockGatherCallback.EVENT.register((player, result) -> {
@@ -45,7 +45,7 @@ public class PickBlockEventModClient implements ClientModInitializer {
 		});
 
 		ClientPickBlockApplyCallback.EVENT.register((player, result, stack) -> {
-			if (stack.getItem() == Item.getItemFromBlock(Blocks.OAK_WOOD)) {
+			if (stack.getItem() == Item.fromBlock(Blocks.OAK_WOOD)) {
 				return new ItemStack(Blocks.ACACIA_WOOD);
 			} else {
 				return stack;

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.fluidrender;
+package net.fabric.test;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.render.FluidRenderHandler;
-import net.fabricmc.fabric.api.client.render.FluidRenderHandlerRegistry;
+
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.minecraft.fluid.Fluids;
@@ -26,10 +27,10 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
-public class FluidRendererModClient implements ClientModInitializer, SimpleSynchronousResourceReloadListener {
+public class FluidRendererTestModClient implements ClientModInitializer, SimpleSynchronousResourceReloadListener {
     @Override
     public void onInitializeClient() {
-        ResourceManagerHelper.get(ResourceType.ASSETS).registerReloadListener(this);
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(this);
     }
 
     @Override
