@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-item-groups-v0-test",
+  "version": "0.0.0",
+  "name": "fabric-item-groups-v0-test",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.fabric.test.ItemGroupTestMod"
+    ]
+  }
+}

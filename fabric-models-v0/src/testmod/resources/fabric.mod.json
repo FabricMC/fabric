@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-models-v0-test",
+  "version": "0.0.0",
+  "name": "fabric-models-v0-test",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "net.fabric.test.ModelTestModClient"
+    ]
+  }
+}
