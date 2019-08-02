@@ -18,7 +18,9 @@ package net.fabricmc.fabric.api.particles;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.particles.ParticleManagerHooks;
 import net.fabricmc.fabric.impl.particles.ParticleRegistryImpl;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.particle.DefaultParticleType;
@@ -30,17 +32,23 @@ public interface ParticleRegistry {
 	ParticleRegistry INSTANCE = new ParticleRegistryImpl();
 
 	/** Retrieve the appropriate sprite atlas for particle textures. */
-	SpriteAtlasTexture getParticleSpriteAtlas();
+	default SpriteAtlasTexture getParticleSpriteAtlas() {
+		return ((ParticleManagerHooks)MinecraftClient.getInstance().particleManager).fabric_getSpriteAtlasTexture();
+	}
 
 	/** Create a basic particle type that requires no extra information on spawn. */
-	DefaultParticleType createSimpleParticleType();
+	default DefaultParticleType createSimpleParticleType() {
+		return createSimpleParticleType(false);
+	}
 
 	/**
 	 * Create a basic particle type that requires no extra information on spawn.
 	 *
 	 * @param shouldAlwaysSpawn Whether this particle should spawn regardless of distance or client settings (a la barrier particles).
 	 */
-	DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn);
+	default DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {
+		return new DefaultParticleType(shouldAlwaysSpawn) {}; // Anonymous class to bypass protected constructor
+	}
 
 	/**
 	 * Create a particle type for a custom {@link ParticleEffect}. Use this if you need to pass extra data to your particle
@@ -51,7 +59,9 @@ public interface ParticleRegistry {
 	 * @param paramFactory The parameter factory for the {@link ParticleEffect}.
 	 * @see net.minecraft.particle.DustParticleEffect DustParticleEffect
 	 */
-	<T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory);
+	default <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory) {
+		return createParticleType(paramFactory, false);
+	}
 
 	/**
 	 * Create a particle type for a custom {@link ParticleEffect}. Use this if you need to pass extra data to your particle
@@ -63,7 +73,9 @@ public interface ParticleRegistry {
 	 * @param shouldAlwaysSpawn Whether this particle should spawn regardless of distance or client settings (a la barrier particles).
 	 * @see net.minecraft.particle.DustParticleEffect DustParticleEffect
 	 */
-	<T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory, boolean shouldAlwaysSpawn);
+	default <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory, boolean shouldAlwaysSpawn) {
+		return new ParticleType<T>(shouldAlwaysSpawn, paramFactory) {}; // Anonymous class to bypass protected constructor
+	}
 
 	/**
 	 * Register a {@link ParticleFactory} for the given {@link ParticleType}.
