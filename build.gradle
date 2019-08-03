@@ -7,6 +7,7 @@ plugins {
 	id 'net.minecrell.licenser' version '0.4.1'	
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
+	id "io.github.http-builder-ng.http-plugin" version "0.1.1"
 }
 
 def ENV = System.getenv()
@@ -17,6 +18,7 @@ class Globals {
 	static def yarnVersion = "+build.1"
 }
 
+import io.github.httpbuilderng.http.HttpTask
 import org.apache.commons.codec.digest.DigestUtils
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
@@ -106,6 +108,31 @@ def getPatch(gradleProject, hash, b) {
 	jsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(json)))
 
 	return patchNumber
+}
+
+http {
+	library = 'apache' //Required to use the PATCH method
+}
+
+//A task that backup's the patch numbers json to https://gist.github.com/modmuss50/d60beaf80678bd10524add2920b9736e
+task backupJson(type: HttpTask){
+	config {
+		request.contentType = 'application/json'
+	}
+	patch {
+		request.uri = 'https://api.github.com/gists/d60beaf80678bd10524add2920b9736e'
+		request.headers << ['Authorization' : "Basic ${("${project.getProperty('github_username')}:${project.getProperty('github_token')}").bytes.encodeBase64().toString()}"]
+
+		request.body = JsonOutput.toJson([
+			description : "Fabric's patch versions",
+			files : [
+				fabric_patch : [
+					filename : "fabric_patch.json",
+					content : new File(project.gradle.gradleUserHomeDir, "fabric_patch_numbers.json").text
+				]
+			]
+		])
+	}
 }
 
 def cloneJson(input) {
