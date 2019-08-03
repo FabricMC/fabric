@@ -11,19 +11,25 @@ plugins {
 
 def ENV = System.getenv()
 
-def baseVersion = "0.3.0-pre"
-def mcVersion = "1.14.2 Pre-Release 2"
-def yarnVersion = "+build.2"
+class Globals {
+	static def baseVersion = "0.3.0"
+	static def mcVersion = "1.14.4"
+	static def yarnVersion = "+build.1"
+}
 
-def getSubprojectVersion(project, version) {
+import org.apache.commons.codec.digest.DigestUtils
+
+def getSubprojectVersion(project, version, subtractCommits=0) {
+	def (major, minor, patch) = version.split(/\./)
+	version = major + "." + minor + "."
 	if (grgit == null) {
-		return version + "+nogit"
+		return version + "9999+nogit"
 	}
-	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
+	def latestCommits = grgit.log(paths: [project.name, "build.gradle"])
 	if (latestCommits.isEmpty()) {
-		return version + "+uncommited"
+		return version + "0+uncommited"
 	} else {
-		return version + "+" + latestCommits.get(0).id.substring(0, 8)
+		return version + (latestCommits.size() - subtractCommits)
 	}
 }
 
@@ -38,9 +44,9 @@ allprojects {
 	group = "net.fabricmc.fabric-api"
 
 	dependencies {
-		minecraft "com.mojang:minecraft:$mcVersion"
-		mappings "net.fabricmc:yarn:${mcVersion}${yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.4.6+build.144"
+		minecraft "com.mojang:minecraft:$Globals.mcVersion"
+		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
+		modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
 	}
 
 	configurations {
@@ -171,12 +177,9 @@ dependencies {
 			include project("${it.name}:")
 		}
 	}
-
-	// workaround linux segfault	
-	// compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
 }
 
-version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){
@@ -188,7 +191,7 @@ curseforge {
 		releaseType = 'alpha'
 		addGameVersion '1.14-Snapshot'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
+			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")

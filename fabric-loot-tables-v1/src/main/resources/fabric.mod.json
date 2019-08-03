@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-loot-tables-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*"
+  },
+  "mixins": [
+    "fabric-loot-tables-v1.mixins.json"
+  ]
+}

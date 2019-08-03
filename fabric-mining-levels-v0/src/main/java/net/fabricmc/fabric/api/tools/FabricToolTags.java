@@ -24,7 +24,6 @@ import net.minecraft.util.Identifier;
 /**
  * Tool item tags provided by Fabric.
  */
-@Deprecated
 public class FabricToolTags {
 	public static final Tag<Item> AXES = register("axes");
 	public static final Tag<Item> HOES = register("hoes");

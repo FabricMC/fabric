@@ -16,15 +16,18 @@
 
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPostRegisterCallback;
-import net.fabricmc.fabric.impl.registry.callbacks.RegistryPreClearCallback;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-public final class BiomeParentTracker implements RegistryPreClearCallback<Biome>, RegistryPostRegisterCallback<Biome> {
+import java.util.Objects;
+
+public final class BiomeParentTracker implements RegistryEntryAddedCallback<Biome>, RegistryEntryRemovedCallback<Biome>, RegistryIdRemapCallback<Biome> {
 	private final Registry<Biome> registry;
 
 	private BiomeParentTracker(Registry<Biome> registry) {
@@ -33,19 +36,32 @@ public final class BiomeParentTracker implements RegistryPreClearCallback<Biome>
 
 	public static void register(Registry<Biome> registry) {
 		BiomeParentTracker tracker = new BiomeParentTracker(registry);
-		((ListenableRegistry<Biome>) registry).getPreClearEvent().register(tracker);
-		((ListenableRegistry<Biome>) registry).getPostRegisterEvent().register(tracker);
+		RegistryEntryAddedCallback.event(registry).register(tracker);
+		RegistryIdRemapCallback.event(registry).register(tracker);
+		RegistryEntryRemovedCallback.event(registry).register(tracker);
 	}
 
 	@Override
-	public void onPostRegister(int rawId, Identifier id, Biome object) {
+	public void onEntryAdded(int rawId, Identifier id, Biome object) {
 		if (object.hasParent()) {
-			Biome.PARENT_BIOME_ID_MAP.set(object, registry.getRawId(registry.get(new Identifier(object.getParent()))));
+			Biome.PARENT_BIOME_ID_MAP.set(object, registry.getRawId(registry.get(new Identifier(Objects.requireNonNull(object.getParent())))));
 		}
 	}
 
 	@Override
-	public void onPreClear() {
-		((RemovableIdList) Biome.PARENT_BIOME_ID_MAP).clear();
+	public void onRemap(RemapState<Biome> state) {
+		for (Int2IntMap.Entry entry : state.getRawIdChangeMap().int2IntEntrySet()) {
+			if (Biome.PARENT_BIOME_ID_MAP.get(entry.getIntKey()) != null) {
+				//noinspection unchecked
+				((RemovableIdList<Biome>) Biome.PARENT_BIOME_ID_MAP).fabric_remapId(entry.getIntKey(), entry.getIntValue());
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void onEntryRemoved(int rawId, Identifier id, Biome object) {
+		((RemovableIdList<Biome>) Biome.PARENT_BIOME_ID_MAP).fabric_remove(object);
+		((RemovableIdList<Biome>) Biome.PARENT_BIOME_ID_MAP).fabric_removeId(rawId);
 	}
 }

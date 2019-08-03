@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.entity;
 import net.fabricmc.fabric.impl.entity.FabricEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
-import net.minecraft.entity.EntitySize;
+import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -44,7 +44,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private int updateIntervalTicks = -1;
 	private Boolean alwaysUpdateVelocity;
 	private boolean immuneToFire = false;
-	private EntitySize size = EntitySize.resizeable(-1.0f, -1.0f);
+	private EntityDimensions size = EntityDimensions.changing(-1.0f, -1.0f);
 
 	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
 		this.category = category;
@@ -83,15 +83,15 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#size(EntitySize)}
+	 * @deprecated Use {@link FabricEntityTypeBuilder#size(EntityDimensions)}
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		this.size = EntitySize.resizeable(width, height);
+		this.size = EntityDimensions.changing(width, height);
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> size(EntitySize size) {
+	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
 		this.size = size;
 		return this;
 	}
@@ -113,7 +113,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, null, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		boolean figureMeOut1 = this.category == EntityCategory.CREATURE || this.category == EntityCategory.MISC; // TODO
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, figureMeOut1, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}

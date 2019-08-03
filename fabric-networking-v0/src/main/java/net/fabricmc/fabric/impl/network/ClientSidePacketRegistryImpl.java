@@ -53,7 +53,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 				// stay closer to the vanilla codepath
 				handler.sendPacket(packet);
 			} else {
-				handler.getClientConnection().send(packet, completionListener);
+				handler.getConnection().send(packet, completionListener);
 			}
 		} else {
 			LOGGER.warn("Sending packet " + packet + " to server failed, not connected!");
@@ -94,9 +94,5 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
 		S2CPacketTypeCallback.UNREGISTERED.invoker().accept(ids);
-	}
-
-	public final boolean accept(CustomPayloadS2CPacket packet, PacketContext context) {
-		return accept(packet.getChannel(), context, packet.getData());
 	}
 }
