@@ -114,7 +114,7 @@ http {
 	library = 'apache' //Required to use the PATCH method
 }
 
-//A task that backup's the patch numbers json to https://gist.github.com/modmuss50/d60beaf80678bd10524add2920b9736e
+//A task that backs up the patch numbers json to https://gist.github.com/modmuss50/d60beaf80678bd10524add2920b9736e
 task backupJson(type: HttpTask){
 	onlyIf { project.hasProperty('github_token') }
 	config {
