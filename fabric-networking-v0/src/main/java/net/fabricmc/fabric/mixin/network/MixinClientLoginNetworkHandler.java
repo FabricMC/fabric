@@ -16,26 +16,27 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import net.fabricmc.fabric.impl.network.login.ClientLoginQueryResponseRegistry;
-import net.minecraft.client.network.ClientLoginNetworkHandler;
-import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
+import java.util.Optional;
+import java.util.function.Consumer;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Optional;
-import java.util.function.Consumer;
+import net.fabricmc.fabric.impl.network.login.ClientLoginQueryResponseRegistry;
+import net.minecraft.client.network.ClientLoginNetworkHandler;
+import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 @Mixin(ClientLoginNetworkHandler.class)
 public class MixinClientLoginNetworkHandler {
 	@Shadow
-	private Consumer<Component> statusConsumer;
+	private Consumer<Text> statusConsumer;
 	@Shadow
 	private ClientConnection connection;
 
@@ -45,7 +46,7 @@ public class MixinClientLoginNetworkHandler {
 		ClientLoginNetworkHandler self = (ClientLoginNetworkHandler) (Object) this;
 		Optional<LoginQueryResponseC2SPacket> responseOptional = ClientLoginQueryResponseRegistry.INSTANCE.respond(self, connection, packet);
 		responseOptional.ifPresent((response) -> {
-			this.statusConsumer.accept(new TranslatableComponent("connect.negotiating"));
+			this.statusConsumer.accept(new TranslatableText("connect.negotiating"));
 			this.connection.send(response);
 			info.cancel();
 		});

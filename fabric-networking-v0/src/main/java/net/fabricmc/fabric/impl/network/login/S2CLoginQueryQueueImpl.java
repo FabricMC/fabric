@@ -59,7 +59,7 @@ public class S2CLoginQueryQueueImpl implements S2CLoginQueryQueue {
 		LoginQueryResponseC2SPacketAccessor packetAccessor = (LoginQueryResponseC2SPacketAccessor) packet;
 		Entry entry = awaitees.remove(packetAccessor.getQueryId());
 		if (entry != null) {
-			entry.receiver.onResponse(handler, handler.client, entry.id, packetAccessor.getResponse());
+			entry.receiver.onResponse(handler, handler.client, entry.id, (PacketByteBuf) packetAccessor.getResponse());
 			return true;
 		} else {
 			return false;

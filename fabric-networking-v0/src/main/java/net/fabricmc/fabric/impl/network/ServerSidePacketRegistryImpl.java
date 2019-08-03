@@ -16,6 +16,15 @@
 
 package net.fabricmc.fabric.impl.network;
 
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.function.Consumer;
+
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
@@ -32,15 +41,11 @@ import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.function.Consumer;
-
 public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
 	private final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
 	private final Set<WeakReference<ServerPlayNetworkHandler>> handlers = new HashSet<>();
 
-	public void onQueryResponse(LoginQueryResponseC2SPacket packet) {
+	public void onQueryResponse(LoginQueryResponseC2SPacket packet) { // TODO move logic here?
 	}
 
 	public void addNetworkHandler(ServerPlayNetworkHandler handler) {
@@ -109,4 +114,14 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
 		C2SPacketTypeCallback.UNREGISTERED.invoker().accept(context.getPlayer(), ids);
 	}
+	// Added here to compensate for weird accessor issue in ide
+	public final boolean accept(CustomPayloadC2SPacket packet, PacketContext context) {
+	    System.out.println("Accepting");
+        CustomPayloadC2SPacketAccessor accessor = ((CustomPayloadC2SPacketAccessor) packet);
+        
+        PacketByteBuf data = accessor.getData();
+        data.retain();
+        
+        return accept(accessor.getChannel(), context, () -> data);
+    }
 }

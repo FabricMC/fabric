@@ -34,7 +34,7 @@ public class MixinServerLoginNetworkHandler {
 	@Shadow
 	public ClientConnection client;
 
-	@Inject(at = @At("HEAD"), method = "method_14384()V", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "acceptPlayer()V", cancellable = true)
 	private void cancelAcceptIfAwaitingResponse(CallbackInfo info) {
 		if (loginQueue == null) {
 			//noinspection ConstantConditions

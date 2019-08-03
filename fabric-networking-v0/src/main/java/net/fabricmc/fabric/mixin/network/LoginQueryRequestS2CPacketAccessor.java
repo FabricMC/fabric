@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-<<<<<<< HEAD:fabric-networking-v0/src/main/java/net/fabricmc/fabric/mixin/network/LoginQueryRequestS2CPacketAccessor.java
+import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
+import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
+
 @Mixin(LoginQueryRequestS2CPacket.class)
 public interface LoginQueryRequestS2CPacketAccessor {
 	@Accessor
@@ -37,22 +39,4 @@ public interface LoginQueryRequestS2CPacketAccessor {
 	void setChannel(Identifier channel);
 	@Accessor
 	void setPayload(PacketByteBuf payload);
-=======
-@Mixin(CustomPayloadC2SPacket.class)
-public class MixinCustomPayloadC2SPacket implements CustomPayloadC2SPacketAccessor {
-	@Shadow
-	private Identifier channel;
-	@Shadow
-	private PacketByteBuf data;
-
-	@Override
-	public Identifier getChannel() {
-		return channel;
-	}
-
-	@Override
-	public PacketByteBuf getData() {
-		return new PacketByteBuf(this.data.copy());
-	}
->>>>>>> origin/commit_patch_ver:fabric-networking-v0/src/main/java/net/fabricmc/fabric/mixin/network/MixinCustomPayloadC2SPacket.java
 }

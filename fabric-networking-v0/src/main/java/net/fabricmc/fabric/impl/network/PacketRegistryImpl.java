@@ -38,7 +38,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	PacketRegistryImpl() {
 		consumerMap = new LinkedHashMap<>();
 	}
-
+	
 	public static Optional<Packet<?>> createInitialRegisterPacket(PacketRegistry registry) {
 		PacketRegistryImpl impl = (PacketRegistryImpl) registry;
 		return impl.createRegisterTypePacket(PacketTypes.REGISTER, impl.consumerMap.keySet());
@@ -165,7 +165,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		if (id.equals(PacketTypes.REGISTER) || id.equals(PacketTypes.UNREGISTER)) {
 			return acceptRegisterType(id, context, bufSupplier);
 		}
-
+		
 		PacketConsumer consumer = consumerMap.get(id);
 		if (consumer != null) {
 			PacketByteBuf buf = bufSupplier.get();

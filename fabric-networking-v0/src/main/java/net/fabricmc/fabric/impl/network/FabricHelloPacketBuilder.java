@@ -26,11 +26,13 @@ import net.minecraft.util.PacketByteBuf;
 
 class FabricHelloPacketBuilder {
 	static final Identifier ID = new Identifier("fabric:hello");
+    public static final int VERSION_MAJOR = 1;
+    public static final int VERSION_MINOR = 0;
 
 	static PacketByteBuf buildHelloPacket() {
 		CompoundTag tag = new CompoundTag();
-		tag.putInt("versionMajor", 1);
-		tag.putInt("versionMinor", 0);
+		tag.putInt("versionMajor", VERSION_MAJOR);
+		tag.putInt("versionMinor", VERSION_MINOR);
 
 		CompoundTag modsTag = new CompoundTag();
 		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
