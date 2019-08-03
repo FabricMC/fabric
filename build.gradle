@@ -21,12 +21,13 @@ import org.apache.commons.codec.digest.DigestUtils
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 
+@SuppressWarnings("unused")
 def getSubprojectVersion(project, version) {
+	if (version.count(".") != 1) {
+		throw new Exception("${project.name}'s version must only be major.minor")
+	}
 	if (grgit == null) {
 		return version + "+nogit"
-	}
-	if(!System.getenv().BUILD_NUMBER){
-		return version + "+local"
 	}
 	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
 	if (latestCommits.isEmpty()) {
@@ -34,46 +35,82 @@ def getSubprojectVersion(project, version) {
 	} else {
 		def commitHash = latestCommits.get(0).id
 		def buildGradleHash = DigestUtils.sha256Hex(file("build.gradle").text)
-		return version + "." + getOrIncrementBuildNumber(project, commitHash + buildGradleHash)
+
+		//TODO once we branch out to 1.15 we need to talk about the last parameter
+		def patch = getPatch(project, commitHash + buildGradleHash, Globals.mcVersion)
+
+		return "${version}.${patch}-${Globals.mcVersion}"
 	}
 }
 
-def getOrIncrementBuildNumber(project, hash) {
+def getPatch(gradleProject, hash, b) {
 	def jsonSlurper = new JsonSlurper()
-	def jsonFile = new File(project.gradle.gradleUserHomeDir, "fabric_build_numbers.json")
+	def jsonFile = new File(gradleProject.gradle.gradleUserHomeDir, "fabric_patch_numbers.json")
 	def json = [:]
 	if(jsonFile.exists()){
 		json = jsonSlurper.parseText(jsonFile.text)
 	}
 
-	//Gets the project info from the main json
-	def info = json[project.name]
-	if(info == null){
-		info = [:]
+	def project = json[gradleProject.name]
+	if(project == null){
+		project = [:]
 	}
 
-	int buildNumber
+	def branch = project[b]
+	if(!branch){
+		if(project.size() == 0){
+			//No existing branches found we start from fresh
+			branch = [:]
+		} else {
+			int patchNumber
 
-	//If the hash exists, we returns its build number
-	if(info[hash] != null){
-		buildNumber = info[hash].build
-	} else {
-		info.each {
-			if (it.value.build > buildNumber){
-				buildNumber = it.value.build
+			//Finds the branch with the largest patch number to "fork" from
+			project.each {branches ->
+				branches.value.each {pb ->
+					if(pb.value.patch > patchNumber){
+						branch = cloneJson(branches.value)
+						patchNumber = pb.value.patch
+					}
+				}
 			}
 		}
-		buildNumber++
-		info[hash] = [
-		    build: buildNumber
+
+		if(branch == null){
+			throw new Exception("failed to find branch, something bad happened.")
+		}
+
+		project[b] = branch
+	}
+
+	int patchNumber
+
+	if(branch[hash]){
+		//Returns the existing patch number
+		println(branch[hash])
+		patchNumber = branch[hash].patch
+	} else {
+		//Finds the next patch number, and stores it along with the input hash
+		branch.each {
+			if (it.value.patch > patchNumber){
+				patchNumber = it.value.patch
+			}
+		}
+		patchNumber++
+		branch[hash] = [
+		    patch: patchNumber
 		]
 	}
 
 	//write out the updated json file
-	json[project.name] = info
+	json[gradleProject.name] = project
 	jsonFile.write(JsonOutput.prettyPrint(JsonOutput.toJson(json)))
 
-	return buildNumber
+	return patchNumber
+}
+
+def cloneJson(input) {
+	//Awful code but seemed the easiest way to do this
+	return new JsonSlurper().parseText(JsonOutput.toJson(input))
 }
 
 allprojects {
