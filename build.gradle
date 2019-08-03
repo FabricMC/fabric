@@ -28,6 +28,9 @@ def getSubprojectVersion(project, version) {
 	if (version.count(".") != 1) {
 		throw new Exception("${project.name}'s version must only be major.minor")
 	}
+	if(!System.getenv().BUILD_NUMBER){
+		return version + "+local"
+	}
 	if (grgit == null) {
 		return version + "+nogit"
 	}
