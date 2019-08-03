@@ -39,7 +39,7 @@ def getSubprojectVersion(project, version) {
 		//TODO once we branch out to 1.15 we need to talk about the last parameter
 		def patch = getPatch(project, commitHash + buildGradleHash, Globals.mcVersion)
 
-		return "${version}.${patch}-${Globals.mcVersion}"
+		return "${version}.${patch}+${Globals.mcVersion}"
 	}
 }
 
