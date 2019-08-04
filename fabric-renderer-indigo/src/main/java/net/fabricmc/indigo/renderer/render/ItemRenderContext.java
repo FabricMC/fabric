@@ -226,31 +226,36 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     }
 
     private void fallbackConsumer(BakedModel model) {
-        
         if(hasTransform()) {
-            
+            // if there's a transform in effect, convert to mesh-based quads so that we can apply it
+            for(int i = 0; i < 7; i++) {
+                random.setSeed(42L);
+                final Direction cullFace = ModelHelper.faceFromIndex(i);
+                renderFallbackWithTransform(bufferBuilder, model.getQuads((BlockState)null, cullFace, random), color, itemStack, cullFace);
+             }
         } else {
             for(int i = 0; i < 7; i++) {
                 random.setSeed(42L);
-                renderFallbackQuadList(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack, i);
+                vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack);
              }
         }
     };
     
-    private void renderFallbackQuadList(BufferBuilder bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, int cullFaceIndex) {
+    private void renderFallbackWithTransform(BufferBuilder bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, Direction cullFace) {
         if(quads.isEmpty()) {
             return;
         }
-        // if there's a transform in effect, convert to mesh-based quad so that we can apply it
-        if(hasTransform() && CompatibilityHelper.canRender(quads.get(0).getVertexData())) {
+        if(CompatibilityHelper.canRender(quads.get(0).getVertexData())) {
             Maker editorQuad = this.editorQuad;
             for(BakedQuad q : quads) {
+                editorQuad.clear();
                 editorQuad.fromVanilla(q.getVertexData(), 0, false);
-                editorQuad.cullFace(ModelHelper.faceFromIndex(cullFaceIndex));
+                editorQuad.cullFace(cullFace);
                 final Direction lightFace = q.getFace();
                 editorQuad.lightFace(lightFace);
                 editorQuad.nominalFace(lightFace);
                 editorQuad.colorIndex(q.getColorIndex());
+                renderQuad();
             }
         } else {
             vanillaHandler.accept(bufferBuilder, quads, color, stack);
