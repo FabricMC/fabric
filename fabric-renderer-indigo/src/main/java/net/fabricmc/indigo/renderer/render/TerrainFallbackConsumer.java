@@ -62,7 +62,6 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
     private final ChunkRenderInfo chunkInfo;
     
     TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
-        // Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
         super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
         this.chunkInfo = chunkInfo;
     }
