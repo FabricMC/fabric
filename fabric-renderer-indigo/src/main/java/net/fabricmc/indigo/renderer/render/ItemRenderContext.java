@@ -61,6 +61,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 
     private final ItemColors colorMap;
     private final Random random = new Random();
+    private final Consumer<BakedModel> fallbackConsumer;
     BufferBuilder bufferBuilder;
     AccessBufferBuilder fabricBuffer;
     private int color;
@@ -86,6 +87,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     
     public ItemRenderContext(ItemColors colorMap) {
         this.colorMap = colorMap;
+        this.fallbackConsumer = this::fallbackConsumer;
     }
     
     public void renderModel(FabricBakedModel model, int color, ItemStack stack, VanillaQuadHandler vanillaHandler) {
@@ -264,7 +266,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     
     @Override
     public Consumer<BakedModel> fallbackConsumer() {
-        return this::fallbackConsumer;
+        return fallbackConsumer;
     }
 
     @Override
