@@ -120,7 +120,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
         CustomPayloadC2SPacketAccessor accessor = ((CustomPayloadC2SPacketAccessor) packet);
         
         PacketByteBuf data = accessor.getData();
-        data.retain();
+        data.retain(); // Retain so fabric clients don't get kicked when register packets are sent.
         
         return accept(accessor.getChannel(), context, () -> data);
     }
