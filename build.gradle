@@ -42,7 +42,7 @@ def getSubprojectVersion(project, version) {
 		def buildGradleHash = DigestUtils.sha256Hex(file("build.gradle").text)
 
 		//TODO once we branch out to 1.15 we need to talk about the last parameter
-		def patch = getPatch(project, commitHash + buildGradleHash, "1.15")
+		def patch = getPatch(project, commitHash + buildGradleHash, Globals.mcVersion)
 
 		return "${version}.${patch}+${Globals.mcVersion}"
 	}
