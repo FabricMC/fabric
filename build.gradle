@@ -42,7 +42,7 @@ def getSubprojectVersion(project, version) {
 		def buildGradleHash = DigestUtils.sha256Hex(file("build.gradle").text)
 
 		//TODO once we branch out to 1.15 we need to talk about the last parameter
-		def patch = getPatch(project, commitHash + buildGradleHash, Globals.mcVersion)
+		def patch = getPatch(project, commitHash + buildGradleHash, "1.15")
 
 		return "${version}.${patch}+${Globals.mcVersion}"
 	}
@@ -62,42 +62,42 @@ def getPatch(gradleProject, hash, b) {
 	}
 
 	def branch = project[b]
-	if(!branch){
-		if(project.size() == 0){
-			//No existing branches found we start from fresh
-			branch = [:]
-		} else {
-			int patchNumber
+	int patchNumber = -1
 
-			//Finds the branch with the largest patch number to "fork" from
+	if(!branch){
+
+		if(project.size() > 0){
+			//Finds the branch with the largest patch number to start with
 			project.each {branches ->
 				branches.value.each {pb ->
 					if(pb.value.patch > patchNumber){
-						branch = cloneJson(branches.value)
 						patchNumber = pb.value.patch
 					}
 				}
 			}
+
+			if(patchNumber < 0){
+				throw new Exception("failed to find branch, something bad happened.")
+			}
+		} else {
+			//No existing branches found, so start from 0
+			patchNumber = 0
 		}
 
-		if(branch == null){
-			throw new Exception("failed to find branch, something bad happened.")
-		}
-
+		branch = [:]
 		project[b] = branch
 	}
 
-	int patchNumber
-
 	if(branch[hash]){
 		//Returns the existing patch number
-		println(branch[hash])
 		patchNumber = branch[hash].patch
 	} else {
-		//Finds the next patch number, and stores it along with the input hash
-		branch.each {
-			if (it.value.patch > patchNumber){
-				patchNumber = it.value.patch
+		if(patchNumber < 0){
+			//Finds the next patch number, and stores it along with the input hash
+			branch.each {
+				if (it.value.patch > patchNumber){
+					patchNumber = it.value.patch
+				}
 			}
 		}
 		patchNumber++
@@ -137,11 +137,6 @@ task backupJson(type: HttpTask){
 			]
 		])
 	}
-}
-
-def cloneJson(input) {
-	//Awful code but seemed the easiest way to do this
-	return new JsonSlurper().parseText(JsonOutput.toJson(input))
 }
 
 allprojects {
