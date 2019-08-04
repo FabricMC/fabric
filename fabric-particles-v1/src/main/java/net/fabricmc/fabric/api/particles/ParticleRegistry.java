@@ -32,12 +32,12 @@ public interface ParticleRegistry {
 	ParticleRegistry INSTANCE = new ParticleRegistryImpl();
 
 	/** Retrieve the appropriate sprite atlas for particle textures. */
-	default SpriteAtlasTexture getParticleSpriteAtlas() {
+	static SpriteAtlasTexture getParticleSpriteAtlas() {
 		return ((ParticleManagerHooks)MinecraftClient.getInstance().particleManager).fabric_getSpriteAtlasTexture();
 	}
 
 	/** Create a basic particle type that requires no extra information on spawn. */
-	default DefaultParticleType createSimpleParticleType() {
+	static DefaultParticleType createSimpleParticleType() {
 		return createSimpleParticleType(false);
 	}
 
@@ -46,7 +46,7 @@ public interface ParticleRegistry {
 	 *
 	 * @param shouldAlwaysSpawn Whether this particle should spawn regardless of distance or client settings (a la barrier particles).
 	 */
-	default DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {
+	static DefaultParticleType createSimpleParticleType(boolean shouldAlwaysSpawn) {
 		return new DefaultParticleType(shouldAlwaysSpawn) {}; // Anonymous class to bypass protected constructor
 	}
 
@@ -59,7 +59,7 @@ public interface ParticleRegistry {
 	 * @param paramFactory The parameter factory for the {@link ParticleEffect}.
 	 * @see net.minecraft.particle.DustParticleEffect DustParticleEffect
 	 */
-	default <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory) {
+	static <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory) {
 		return createParticleType(paramFactory, false);
 	}
 
@@ -73,7 +73,7 @@ public interface ParticleRegistry {
 	 * @param shouldAlwaysSpawn Whether this particle should spawn regardless of distance or client settings (a la barrier particles).
 	 * @see net.minecraft.particle.DustParticleEffect DustParticleEffect
 	 */
-	default <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory, boolean shouldAlwaysSpawn) {
+	static <T extends ParticleEffect> ParticleType<T> createParticleType(ParticleEffect.Factory<T> paramFactory, boolean shouldAlwaysSpawn) {
 		return new ParticleType<T>(shouldAlwaysSpawn, paramFactory) {}; // Anonymous class to bypass protected constructor
 	}
 
