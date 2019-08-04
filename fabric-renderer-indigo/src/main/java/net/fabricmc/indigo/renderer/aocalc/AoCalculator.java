@@ -27,20 +27,19 @@ import static net.minecraft.util.math.Direction.SOUTH;
 import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.WEST;
 
-import java.util.function.ToIntBiFunction;
+import java.util.function.ToIntFunction;
 
-import net.fabricmc.indigo.Indigo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
+import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.aocalc.AoFace.WeightFunction;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.indigo.renderer.render.BlockRenderInfo;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -79,7 +78,7 @@ public class AoCalculator {
     private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
     private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
     private final BlockRenderInfo blockInfo;
-    private final ToIntBiFunction<BlockState, BlockPos> brightnessFunc;
+    private final ToIntFunction<BlockPos> brightnessFunc;
     private final AoFunc aoFunc;
     
     /** caches results of {@link #computeFace(Direction, boolean)} for the current block */
@@ -95,7 +94,7 @@ public class AoCalculator {
     public final float[] ao = new float[4];
     public final int[] light = new int[4];
     
-    public AoCalculator(BlockRenderInfo blockInfo, ToIntBiFunction<BlockState, BlockPos> brightnessFunc, AoFunc aoFunc) {
+    public AoCalculator(BlockRenderInfo blockInfo, ToIntFunction<BlockPos> brightnessFunc, AoFunc aoFunc) {
         this.blockInfo = blockInfo;
         this.brightnessFunc = brightnessFunc;
         this.aoFunc = aoFunc;
@@ -343,7 +342,6 @@ public class AoCalculator {
             completionFlags |= mask;
             
             final ExtendedBlockView world = blockInfo.blockView;
-            final BlockState blockState = blockInfo.blockState;
             final BlockPos pos = blockInfo.blockPos;
             final BlockPos.Mutable lightPos = this.lightPos;
             final BlockPos.Mutable searchPos = this.searchPos;
@@ -352,16 +350,16 @@ public class AoCalculator {
             AoFace aoFace = AoFace.get(lightFace);
             
             searchPos.set(lightPos).setOffset(aoFace.neighbors[0]);
-            final int light0 = brightnessFunc.applyAsInt(blockState, searchPos);
+            final int light0 = brightnessFunc.applyAsInt(searchPos);
             final float ao0 = aoFunc.apply(searchPos);
             searchPos.set(lightPos).setOffset(aoFace.neighbors[1]);
-            final int light1 = brightnessFunc.applyAsInt(blockState, searchPos);
+            final int light1 = brightnessFunc.applyAsInt(searchPos);
             final float ao1 = aoFunc.apply(searchPos);
             searchPos.set(lightPos).setOffset(aoFace.neighbors[2]);
-            final int light2 = brightnessFunc.applyAsInt(blockState, searchPos);
+            final int light2 = brightnessFunc.applyAsInt(searchPos);
             final float ao2 = aoFunc.apply(searchPos);
             searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);
-            final int light3 = brightnessFunc.applyAsInt(blockState, searchPos);
+            final int light3 = brightnessFunc.applyAsInt(searchPos);
             final float ao3 = aoFunc.apply(searchPos);
             
             // vanilla was further offsetting these in the direction of the light face
@@ -392,7 +390,7 @@ public class AoCalculator {
             } else {
                 searchPos.set(lightPos).setOffset(aoFace.neighbors[0]).setOffset(aoFace.neighbors[2]);
                 cAo0 = aoFunc.apply(searchPos);
-                cLight0 = brightnessFunc.applyAsInt(blockState, searchPos);
+                cLight0 = brightnessFunc.applyAsInt(searchPos);
             }
     
             if (!isClear3 && !isClear0) {
@@ -401,7 +399,7 @@ public class AoCalculator {
             } else {
                 searchPos.set(lightPos).setOffset(aoFace.neighbors[0]).setOffset(aoFace.neighbors[3]);
                 cAo1 = aoFunc.apply(searchPos);
-                cLight1 = brightnessFunc.applyAsInt(blockState, searchPos);
+                cLight1 = brightnessFunc.applyAsInt(searchPos);
             }
     
             if (!isClear2 && !isClear1) {
@@ -410,7 +408,7 @@ public class AoCalculator {
             } else {
                 searchPos.set(lightPos).setOffset(aoFace.neighbors[1]).setOffset(aoFace.neighbors[2]);
                 cAo2 = aoFunc.apply(searchPos);
-                cLight2 = brightnessFunc.applyAsInt(blockState, searchPos);
+                cLight2 = brightnessFunc.applyAsInt(searchPos);
             }
     
             if (!isClear3 && !isClear1) {
@@ -419,7 +417,7 @@ public class AoCalculator {
             } else {
                 searchPos.set(lightPos).setOffset(aoFace.neighbors[1]).setOffset(aoFace.neighbors[3]);
                 cAo3 = aoFunc.apply(searchPos);
-                cLight3 = brightnessFunc.applyAsInt(blockState, searchPos);
+                cLight3 = brightnessFunc.applyAsInt(searchPos);
             }
     
             // If on block face or neighbor isn't occluding, "center" will be neighbor brightness
@@ -427,9 +425,9 @@ public class AoCalculator {
             int lightCenter;
             searchPos.set((Vec3i)pos).setOffset(lightFace);
             if (isOnBlockFace || !world.getBlockState(searchPos).isFullOpaque(world, searchPos)) {
-                lightCenter = brightnessFunc.applyAsInt(blockState, searchPos);
+                lightCenter = brightnessFunc.applyAsInt(searchPos);
             } else {
-                lightCenter = brightnessFunc.applyAsInt(blockState, pos);
+                lightCenter = brightnessFunc.applyAsInt(pos);
             }
     
             float aoCenter = aoFunc.apply(isOnBlockFace ? lightPos : pos);

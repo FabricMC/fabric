@@ -17,7 +17,7 @@
 package net.fabricmc.indigo.renderer.aocalc;
 
 import java.util.BitSet;
-import java.util.function.ToIntBiFunction;
+import java.util.function.ToIntFunction;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -40,10 +40,10 @@ import net.minecraft.world.ExtendedBlockView;
 public class VanillaAoCalc {
     private int[] vertexData = new int[28];
     private float[] aoBounds = new float[12];
-    private final ToIntBiFunction<BlockState, BlockPos> brightnessFunc;
+    private final ToIntFunction<BlockPos> brightnessFunc;
     private final AoFunc aoFunc;
     
-    public VanillaAoCalc(ToIntBiFunction<BlockState, BlockPos> brightnessFunc, AoFunc aoFunc) {
+    public VanillaAoCalc(ToIntFunction<BlockPos> brightnessFunc, AoFunc aoFunc) {
         this.brightnessFunc = brightnessFunc;
         this.aoFunc = aoFunc;
     }
@@ -61,16 +61,16 @@ public class VanillaAoCalc {
       NeighborData neighborData = NeighborData.getData(side);
       BlockPos.Mutable mpos = new BlockPos.Mutable();
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[0]);
-      int int_1 = brightnessFunc.applyAsInt(blockState, mpos);
+      int int_1 = brightnessFunc.applyAsInt(mpos);
       float float_1 = aoFunc.apply(mpos);
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[1]);
-      int int_2 = brightnessFunc.applyAsInt(blockState, mpos);
+      int int_2 = brightnessFunc.applyAsInt(mpos);
       float float_2 = aoFunc.apply(mpos);
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[2]);
-      int int_3 = brightnessFunc.applyAsInt(blockState, mpos);
+      int int_3 = brightnessFunc.applyAsInt(mpos);
       float float_3 = aoFunc.apply(mpos);
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[3]);
-      int int_4 = brightnessFunc.applyAsInt(blockState, mpos);
+      int int_4 = brightnessFunc.applyAsInt(mpos);
       float float_4 = aoFunc.apply(mpos);
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[0]).setOffset(side);
       boolean boolean_1 = blockView.getBlockState(mpos).getLightSubtracted(blockView, mpos) == 0;
@@ -88,7 +88,7 @@ public class VanillaAoCalc {
       } else {
          mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[0]).setOffset(neighborData.faces[2]);
          float_6 = aoFunc.apply(mpos);
-         int_6 = brightnessFunc.applyAsInt(blockState, mpos);
+         int_6 = brightnessFunc.applyAsInt(mpos);
       }
 
       float float_8;
@@ -99,7 +99,7 @@ public class VanillaAoCalc {
       } else {
          mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[0]).setOffset(neighborData.faces[3]);
          float_8 = aoFunc.apply(mpos);
-         int_8 = brightnessFunc.applyAsInt(blockState, mpos);
+         int_8 = brightnessFunc.applyAsInt(mpos);
       }
 
       float float_10;
@@ -110,7 +110,7 @@ public class VanillaAoCalc {
       } else {
          mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[1]).setOffset(neighborData.faces[2]);
          float_10 = aoFunc.apply(mpos);
-         int_10 = brightnessFunc.applyAsInt(blockState, mpos);
+         int_10 = brightnessFunc.applyAsInt(mpos);
       }
 
       float float_12;
@@ -121,13 +121,13 @@ public class VanillaAoCalc {
       } else {
          mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[1]).setOffset(neighborData.faces[3]);
          float_12 = aoFunc.apply(mpos);
-         int_12 = brightnessFunc.applyAsInt(blockState, mpos);
+         int_12 = brightnessFunc.applyAsInt(mpos);
       }
 
-      int int_13 = brightnessFunc.applyAsInt(blockState, blockPos);
+      int int_13 = brightnessFunc.applyAsInt(blockPos);
       mpos.set((Vec3i)blockPos).setOffset(side);
       if (bits.get(0) || !blockView.getBlockState(mpos).isFullOpaque(blockView, mpos)) {
-         int_13 = brightnessFunc.applyAsInt(blockState, mpos);
+         int_13 = brightnessFunc.applyAsInt(mpos);
       }
 
       float float_13 = bits.get(0) ? blockView.getBlockState(lightPos).getAmbientOcclusionLightLevel(blockView, lightPos) : blockView.getBlockState(blockPos).getAmbientOcclusionLightLevel(blockView, blockPos);
