@@ -23,6 +23,7 @@ import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
 import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.block.Block;
 import net.minecraft.block.Block.OffsetType;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
@@ -76,6 +77,9 @@ public class ChunkRenderInfo {
     ExtendedBlockView blockView;
     boolean [] resultFlags;
     
+    /** Used to check need to cache brightness cache */
+    private Block lastBlock = null;
+    
     private final AccessBufferBuilder[] buffers = new AccessBufferBuilder[4];
     private final BlockRenderLayer[] LAYERS = BlockRenderLayer.values();
     
@@ -116,8 +120,8 @@ public class ChunkRenderInfo {
         chunkOffsetX = -chunkOrigin.getX();
         chunkOffsetY = -chunkOrigin.getY();
         chunkOffsetZ = -chunkOrigin.getZ();
-        brightnessCache.clear();
         aoLevelCache.clear();
+        lastBlock = null;
     }
     
     void release() {
@@ -133,6 +137,15 @@ public class ChunkRenderInfo {
     void beginBlock() {
         final BlockState blockState = blockInfo.blockState;
         final BlockPos blockPos = blockInfo.blockPos;
+        
+        // Unfortunately is necessary to clear the brightness cache for each block 
+        // because results can vary based on requesting block state and not just
+        // position. In vanilla this happens in exactly one case: magma blocks.
+        final Block newBlock = blockState.getBlock();
+        if(lastBlock != newBlock) {
+            lastBlock = newBlock;
+            brightnessCache.clear();
+        }
         
         // When we are using the BufferBuilder input methods, the builder will
         // add the chunk offset for us, so we should only apply the block offset.
