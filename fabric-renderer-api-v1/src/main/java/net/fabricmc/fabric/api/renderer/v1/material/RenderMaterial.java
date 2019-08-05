@@ -75,7 +75,7 @@ public interface RenderMaterial {
     
     /**
      * How many sprite color/uv coordinates are in the material. 
-     * Behavior for values > 1 is currently undefined.
+     * Behavior for values &gt; 1 is currently undefined.
      * See {@link MaterialFinder#spriteDepth(int)}
      */
     int spriteDepth();

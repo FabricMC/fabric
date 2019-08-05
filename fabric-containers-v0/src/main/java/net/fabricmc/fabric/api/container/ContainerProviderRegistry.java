@@ -31,7 +31,7 @@ public interface ContainerProviderRegistry {
 	ContainerProviderRegistry INSTANCE = ContainerProviderImpl.INSTANCE;
 
 	/**
-	 * Register a "packet buffer -> container" factory. This is used both on the client and server side.
+	 * Register a "packet buffer -&gt; container" factory. This is used both on the client and server side.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ScreenProviderRegistry}
 	 * @param factory    the ContainerFactory that should return a new {@link Container}
