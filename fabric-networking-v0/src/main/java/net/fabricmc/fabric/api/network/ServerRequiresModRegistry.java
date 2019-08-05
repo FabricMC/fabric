@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.network.login;
+package net.fabricmc.fabric.api.network;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.impl.network.ServerRequiresModRegistryImpl;
 
-public interface S2CLoginHandshakeCallback {
-	static final Event<S2CLoginHandshakeCallback> EVENT = EventFactory.createArrayBacked(
-		S2CLoginHandshakeCallback.class,
-		(callbacks) -> (queue) -> {
-			for (S2CLoginHandshakeCallback callback : callbacks) {
-				callback.accept(queue);
-			}
-		}
-	);
-
-	void accept(S2CLoginQueryQueue queue);
+public interface ServerRequiresModRegistry {
+    public static final ServerRequiresModRegistry INSTANCE = ServerRequiresModRegistryImpl.INSTANCE;
+    
+    public void requireModOfVersion(String modid, String version);
 }

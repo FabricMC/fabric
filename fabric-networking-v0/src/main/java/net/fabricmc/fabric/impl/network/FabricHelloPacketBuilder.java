@@ -25,22 +25,18 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 class FabricHelloPacketBuilder {
-	static final Identifier ID = new Identifier("fabric:hello");
-    public static final int VERSION_MAJOR = 1;
-    public static final int VERSION_MINOR = 0;
+	static final Identifier ID = new Identifier("fabric", "hello");
+    public static final int MAJOR_VERSION = 1;
+    public static final int MINOR_VERSION = 0;
 
 	static PacketByteBuf buildHelloPacket() {
 		CompoundTag tag = new CompoundTag();
-		tag.putInt("versionMajor", VERSION_MAJOR);
-		tag.putInt("versionMinor", VERSION_MINOR);
+		tag.putInt("majorVersion", MAJOR_VERSION);
+		tag.putInt("minorVersion", MINOR_VERSION);
 
 		CompoundTag modsTag = new CompoundTag();
 		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-			CompoundTag modTag = new CompoundTag();
-			modTag.putString("name", container.getMetadata().getName());
-			modTag.putString("version", container.getMetadata().getVersion().getFriendlyString());
-
-			modsTag.put(container.getMetadata().getId(), modTag);
+			modsTag.putString(container.getMetadata().getId(), container.getMetadata().getVersion().getFriendlyString());
 		}
 
 		tag.put("mods", modsTag);

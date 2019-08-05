@@ -31,11 +31,12 @@ import net.minecraft.client.network.packet.LoginDisconnectS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 public class FabricNetworkInitializer implements ModInitializer {
 	protected static final Logger LOGGER = LogManager.getLogger();
     
-    public static final LiteralText MISMATCH_VERSION_TEXT = new LiteralText("Mismatched hello packet version, expected version: " + FabricHelloPacketBuilder.VERSION_MAJOR + "." + FabricHelloPacketBuilder.VERSION_MINOR);
+    public static final TranslatableText MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
     
     @Override
     public void onInitialize() {
@@ -50,24 +51,21 @@ public class FabricNetworkInitializer implements ModInitializer {
                 
                 boolean shouldKick = !ServerRequiresModRegistryImpl.INSTANCE.REQUIRED_MODS.isEmpty();
 
-                if (response != null && response.containsKey("versionMajor", NbtType.NUMBER) && response.containsKey("versionMinor", NbtType.NUMBER)) {
+                if (response != null && response.containsKey("majorVersion", NbtType.NUMBER) && response.containsKey("minorVersion", NbtType.NUMBER)) {
                     LOGGER.debug("Read compound tag - connected to a Fabric client!");
                     
                     if(!shouldKick) {
                         return; // No mods installed don't go on.
                     }
                     
-                    int versionMajor = response.getInt("versionMajor");
-                    int versionMinor = response.getInt("versionMinor");
+                    int versionMajor = response.getInt("majorVersion");
+                    int versionMinor = response.getInt("minorVersion");
                     
-                    if((versionMajor != FabricHelloPacketBuilder.VERSION_MAJOR || versionMinor != FabricHelloPacketBuilder.VERSION_MINOR)) {
-                        LOGGER.warn("Kicked client because of mismatched fabric:hello version, expected major version: " + FabricHelloPacketBuilder.VERSION_MAJOR + " and minor version: " + FabricHelloPacketBuilder.VERSION_MINOR);
+                    if((versionMajor != FabricHelloPacketBuilder.MAJOR_VERSION || versionMinor != FabricHelloPacketBuilder.MINOR_VERSION)) {
+                        LOGGER.warn("Kicked client because of mismatched fabric:hello version, expected major version: " + FabricHelloPacketBuilder.MAJOR_VERSION + " and minor version: " + FabricHelloPacketBuilder.MINOR_VERSION);
                         connection.send(new LoginDisconnectS2CPacket(MISMATCH_VERSION_TEXT));
                         return;
                     }
-
-                    boolean canJoin = true;
-                    int missingCounter = 0;
 
                     Map<String, String> mismatchedVersion = new HashMap<String, String>();
                     Map<String, String> missingMod = new HashMap<String, String>();
@@ -87,17 +85,15 @@ public class FabricNetworkInitializer implements ModInitializer {
                             
                             if(!modsTag.containsKey(modid, NbtType.STRING)) { // Missing mod from client
                                 missingMod.put(modid, version);
-                                missingCounter++;
-                                canJoin=false;
                                 continue; // No need for extra logic if it's already missing.
-                            } else if ((modsTag.getString("version") != ServerRequiresModRegistryImpl.INSTANCE.REQUIRED_MODS.get(modid)) && modsTag.containsKey(modid, NbtType.STRING)) {
+                            } else if ((modsTag.getString(modid) != ServerRequiresModRegistryImpl.INSTANCE.REQUIRED_MODS.get(modid)) && modsTag.containsKey(modid, NbtType.STRING)) {
                                 mismatchedVersion.put(modid, ServerRequiresModRegistryImpl.INSTANCE.REQUIRED_MODS.get(modid)); // We add the version to the map that the server requires.
                             }
                         }
                     }
                     
-                    if(!canJoin) {
-                        connection.send(new LoginDisconnectS2CPacket(buildDisconnectTextMissing(missingCounter, mismatchedVersion, missingMod)));
+                    if(!missingMod.isEmpty() || !mismatchedVersion.isEmpty()) {
+                        connection.send(new LoginDisconnectS2CPacket(buildDisconnectText(mismatchedVersion, missingMod)));
                     }
                     
                 } else {
@@ -105,7 +101,7 @@ public class FabricNetworkInitializer implements ModInitializer {
                        if(shouldKick) {
                             LOGGER.debug("Client is missing " + ServerRequiresModRegistryImpl.INSTANCE.REQUIRED_MODS.size() + " mod(s)");
                             LOGGER.warn("Client is missing mods, disconnecting");
-                            connection.send(new LoginDisconnectS2CPacket(buildDisconnectTextMissingVanilla()));
+                            connection.send(new LoginDisconnectS2CPacket(buildDisconnectTextVanilla()));
                        } else {
                            LOGGER.debug("Client is vanilla, however nothing on the server requires a client mod so letting them in anyways.");
                        }
@@ -114,12 +110,12 @@ public class FabricNetworkInitializer implements ModInitializer {
         });
     }
     
-    private Text buildDisconnectTextMissing(int missingCounter, Map<String, String> missingMod, Map<String, String> mismatchVersions) {
+    private Text buildDisconnectText(Map<String, String> missingMod, Map<String, String> mismatchVersions) {
         Text message = new LiteralText("");
         
         if(!missingMod.isEmpty()) {
-            message.append("You are missing " + missingCounter + " mod(s). ");
-            message.append("This server requires you install the following mod(s): ");
+            message.append(new TranslatableText("fabric-networking-v0.missing.amount", missingMod.size()));
+            message.append(new TranslatableText("fabric-networking-v0.missing.requires"));
             
             Iterator<Entry<String, String>> missingIterator = missingMod.entrySet().iterator();
                     
@@ -141,7 +137,7 @@ public class FabricNetworkInitializer implements ModInitializer {
         }
         
         if(!mismatchVersions.isEmpty()) {
-            message.append(" These mod(s) have a version mismatch: ");
+            message.append(new TranslatableText("fabric-networking-v0.mismatch_spaced"));
             
             Iterator<Entry<String, String>> mismatchIterator = mismatchVersions.entrySet().iterator();
             
@@ -160,7 +156,7 @@ public class FabricNetworkInitializer implements ModInitializer {
         return message;
     }
     
-    private Text buildDisconnectTextMissingVanilla() { // TODO: When config API comes by, possibly add an option for server owners to specify a link they can grab the mods running on the server.
+    private Text buildDisconnectTextVanilla() { // TODO: When config API comes by, possibly add an option for server owners to specify a link they can grab the mods running on the server.
         
         Text message = new LiteralText("");
         
