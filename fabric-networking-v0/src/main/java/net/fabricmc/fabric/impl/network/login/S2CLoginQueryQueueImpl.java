@@ -16,19 +16,18 @@
 
 package net.fabricmc.fabric.impl.network.login;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.mixin.network.LoginQueryRequestS2CPacketAccessor;
 import net.fabricmc.fabric.mixin.network.LoginQueryResponseC2SPacketAccessor;
 import net.minecraft.client.network.packet.LoginQueryRequestS2CPacket;
-import net.minecraft.network.ClientConnection;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
-
-import java.util.LinkedList;
-import java.util.Queue;
 
 public class S2CLoginQueryQueueImpl implements S2CLoginQueryQueue {
 	private static final class Entry {

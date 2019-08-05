@@ -116,7 +116,6 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	}
 	// Added here to compensate for weird accessor issue in ide
 	public final boolean accept(CustomPayloadC2SPacket packet, PacketContext context) {
-	    System.out.println("Accepting");
         CustomPayloadC2SPacketAccessor accessor = ((CustomPayloadC2SPacketAccessor) packet);
         
         PacketByteBuf data = accessor.getData();

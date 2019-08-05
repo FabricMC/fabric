@@ -20,6 +20,6 @@ import net.fabricmc.fabric.impl.network.ServerRequiresModRegistryImpl;
 
 public interface ServerRequiresModRegistry {
     public static final ServerRequiresModRegistry INSTANCE = ServerRequiresModRegistryImpl.INSTANCE;
-    
+
     public void requireModOfVersion(String modid, String version);
 }

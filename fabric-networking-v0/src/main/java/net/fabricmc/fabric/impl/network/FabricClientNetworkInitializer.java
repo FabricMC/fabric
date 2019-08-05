@@ -16,16 +16,13 @@
 
 package net.fabricmc.fabric.impl.network;
 
-import io.netty.buffer.Unpooled;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.impl.network.login.ClientLoginQueryResponseRegistry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Optional;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.impl.network.login.ClientLoginQueryResponseRegistry;
 
 public class FabricClientNetworkInitializer implements ClientModInitializer {
 	protected static final Logger LOGGER = LogManager.getLogger();
