@@ -19,15 +19,13 @@ class Globals {
 
 import org.apache.commons.codec.digest.DigestUtils
 
-def getSubprojectVersion(project, version, subtractCommits=0) {
-	def (major, minor, patch) = version.split(/\./)
-	version = major + "." + minor + "."
+def getSubprojectVersion(project, version) {
 	if (grgit == null) {
-		return version + "9999+nogit"
+		return version + "+nogit"
 	}
-	def latestCommits = grgit.log(paths: [project.name, "build.gradle"])
+	def latestCommits = grgit.log(paths: [project.name, maxCommits: 1])
 	if (latestCommits.isEmpty()) {
-		return version + "0+uncommited"
+		return version + "+uncommited"
 	} else {
 		return version + (latestCommits.size() - subtractCommits)
 	}
