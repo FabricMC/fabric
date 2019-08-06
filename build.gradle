@@ -3,7 +3,7 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'fabric-loom' version '0.2.3-SNAPSHOT' apply false
+	id 'fabric-loom' version '0.2.5-SNAPSHOT' apply false
 	id 'net.minecrell.licenser' version '0.4.1'	
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
@@ -41,6 +41,8 @@ allprojects {
 
 	group = "net.fabricmc.fabric-api"
 
+
+
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
@@ -55,7 +57,16 @@ allprojects {
 		mavenLocal()
 	}
 
+	jar {
+		classifier = "dev"
+	}
+
 	afterEvaluate {
+		remapJar {
+			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
+			archiveName = "${archivesBaseName}-${version}.jar"
+		}
+
 		artifacts {
 			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
 		}
@@ -83,6 +94,14 @@ allprojects {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
+	
+}
+javadoc{
+	options.memberLevel = "PACKAGE"
+	allprojects.each{
+			source( it.sourceSets.main.allJava.srcDirs)
+		}
+	classpath = sourceSets.main.compileClasspath
 }
 
 subprojects {
@@ -104,7 +123,7 @@ subprojects {
 					builtBy remapSourcesJar
 				}
 			}
-		}	
+		}
 
 		repositories {
 			maven {
@@ -119,12 +138,13 @@ subprojects {
 		}
 	}
 
+	javadoc.enabled = false
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
 	afterEvaluate {
 		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-		output = file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")
+		archiveName = "${archivesBaseName}-${version}-maven.jar"
 		addNestedDependencies = false
 	}
 }

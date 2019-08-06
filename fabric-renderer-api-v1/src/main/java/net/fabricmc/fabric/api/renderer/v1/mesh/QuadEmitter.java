@@ -27,7 +27,7 @@ import net.minecraft.util.math.MathHelper;
  * Specialized {@link MutableQuadView} obtained via {@link MeshBuilder#getEmitter()}
  * to append quads during mesh building.<p>
  * 
- * Also obtained from {@link RenderContext#getEmitter(RenderMaterial)} to submit
+ * Also obtained from {@link RenderContext#getEmitter()} to submit
  * dynamic quads one-by-one at render time.<p>
  * 
  * Instances of {@link QuadEmitter} will practically always be

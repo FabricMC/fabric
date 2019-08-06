@@ -17,24 +17,11 @@
 package net.fabricmc.fabric.api.loot.v1;
 
 import com.google.gson.Gson;
-import net.minecraft.resource.Resource;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.Lazy;
 import net.minecraft.world.loot.*;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.entry.LootEntry;
-import net.minecraft.world.loot.function.LootFunction;
-import org.apache.commons.io.IOUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Field;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public final class LootJsonParser {

@@ -162,7 +162,7 @@ public interface MutableQuadView extends QuadView {
     MutableQuadView pos(int vertexIndex, float x, float y, float z);
     
     /**
-     * Same as {@link #pos(float, float, float)} but accepts vector type.
+     * Same as {@link #pos(int, float, float, float)} but accepts vector type.
      */
     default MutableQuadView pos(int vertexIndex, Vector3f vec) {
         return pos(vertexIndex, vec.getX(), vec.getY(), vec.getZ());
@@ -180,7 +180,7 @@ public interface MutableQuadView extends QuadView {
     MutableQuadView normal(int vertexIndex, float x, float y, float z);
     
     /**
-     * Same as {@link #normal(float, float, float, extra)} but accepts vector type.
+     * Same as {@link #normal(int, float, float, float)} but accepts vector type.
      */
     default MutableQuadView normal(int vertexIndex, Vector3f vec) {
         return normal(vertexIndex, vec.getX(), vec.getY(), vec.getZ());
@@ -210,12 +210,12 @@ public interface MutableQuadView extends QuadView {
     }
     
     /**
-     * Set sprite color. Behavior for spriteIndex values > 0 is currently undefined.
+     * Set sprite color. Behavior for {@code spriteIndex > 0} is currently undefined.
      */
     MutableQuadView spriteColor(int vertexIndex, int spriteIndex, int color);
     
     /** 
-     * Convenience: set sprite color for all vertices at once. Behavior for spriteIndex values > 0 is currently undefined.
+     * Convenience: set sprite color for all vertices at once. Behavior for {@code spriteIndex > 0} is currently undefined.
      */
     default MutableQuadView spriteColor(int spriteIndex, int c0, int c1, int c2, int c3) {
         spriteColor(0, spriteIndex, c0);
@@ -226,7 +226,7 @@ public interface MutableQuadView extends QuadView {
     }
     
     /**
-     * Set sprite atlas coordinates. Behavior for spriteIndex values > 0 is currently undefined.
+     * Set sprite atlas coordinates. Behavior for {@code spriteIndex > 0} is currently undefined.
      */
     MutableQuadView sprite(int vertexIndex, int spriteIndex, float u, float v);
     
@@ -234,7 +234,7 @@ public interface MutableQuadView extends QuadView {
      * Assigns sprite atlas u,v coordinates to this quad for the given sprite.
      * Can handle UV locking, rotation, interpolation, etc. Control this behavior
      * by passing additive combinations of the BAKE_ flags defined in this interface.  
-     * Behavior for spriteIndex values > 0 is currently undefined.
+     * Behavior for {@code spriteIndex > 0} is currently undefined.
      */
     MutableQuadView spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
 }

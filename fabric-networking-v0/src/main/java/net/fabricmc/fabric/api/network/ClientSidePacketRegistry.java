@@ -28,8 +28,8 @@ import net.minecraft.util.PacketByteBuf;
  * <p>
  * It is used for:
  * <p>
- * - registering client-side packet receivers (server -> client packets)
- * - sending packets to the server (client -> server packets).
+ * - registering client-side packet receivers (server -&gt; client packets)
+ * - sending packets to the server (client -&gt; server packets).
  */
 public interface ClientSidePacketRegistry extends PacketRegistry {
 	static final ClientSidePacketRegistry INSTANCE = new ClientSidePacketRegistryImpl();

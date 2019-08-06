@@ -35,7 +35,7 @@ public interface QuadView {
      * vertex data in the given array and location.<p>
      * 
      * @param spriteIndex The sprite to be used for the quad.
-     * Behavior for values > 0 is currently undefined.
+     * Behavior for values &gt; 0 is currently undefined.
      * 
      * @param target Target array for the baked quad data.
      * 
@@ -49,9 +49,9 @@ public interface QuadView {
     
     /**
      * Extracts all quad properties except material to the given {@link MutableQuadView} instance.
-     * Must be used before calling {@link MutableQuadView#emit()} on the target instance.
+     * Must be used before calling {link QuadEmitter#emit()} on the target instance.
      * Meant for re-texturing, analysis and static transformation use cases.
-     */
+     */   
     void copyTo(MutableQuadView target);
     
     /**
@@ -98,12 +98,12 @@ public interface QuadView {
      * Generates a new BakedQuad instance with texture
      * coordinates and colors from the given sprite.<p>
      * 
-     * @param source Data previously packed by {@link MeshBuilder}.
+     * param source Data previously packed by {@link MeshBuilder}.
      * 
-     * @param sourceIndex Index where packed data starts.
+     * param sourceIndex Index where packed data starts.
      * 
      * @param spriteIndex The sprite to be used for the quad.
-     * Behavior for values > 0 is currently undefined.
+     * Behavior for {@code spriteIndex > 0} is currently undefined.
      * 
      * @param sprite  {@link MutableQuadView} does not serialize sprites
      * so the sprite must be provided by the caller.
@@ -130,7 +130,6 @@ public interface QuadView {
     /**
      * Pass a non-null target to avoid allocation - will be returned with values.
      * Otherwise returns a new instance.
-     * See {@link VertexEditor#pos(float, float, float)}
      */
     Vector3f copyPos(int vertexIndex, Vector3f target);
     
@@ -157,7 +156,6 @@ public interface QuadView {
     /**
      * If false, no vertex normal was provided.
      * Lighting should use face normal in that case.
-     * See {@link VertexEditor#normal(float, float, float, float)}
      */
     boolean hasNormal(int vertexIndex);
     

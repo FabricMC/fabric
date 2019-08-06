@@ -51,7 +51,7 @@ public abstract class ModelHelper {
      * Use to decode a result from {@link #toFaceIndex(Direction)}. 
      * Return value will be null if encoded value was null.
      * Can also be used for no-allocation iteration of {@link Direction#values()},
-     * optionally including the null face. (Use < or <= {@link #NULL_FACE_ID}
+     * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
      * to exclude or include the null value, respectively.)
      */
     public static Direction faceFromIndex(int faceIndex) {
