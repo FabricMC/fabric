@@ -23,11 +23,11 @@ def getSubprojectVersion(project, version) {
 	if (grgit == null) {
 		return version + "+nogit"
 	}
-	def latestCommits = grgit.log(paths: [project.name, maxCommits: 1])
+	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
 	if (latestCommits.isEmpty()) {
 		return version + "+uncommited"
 	} else {
-		return version + (latestCommits.size() - subtractCommits)
+		return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
 	}
 }
 
