@@ -186,11 +186,11 @@ public class ChunkRenderInfo {
      * Cached values for {@link BlockState#getBlockBrightness(ExtendedBlockView, BlockPos)}.
      * See also the comments for {@link #brightnessCache}.
      */
-    int cachedBrightness(BlockState blockState, BlockPos pos) {
+    int cachedBrightness(BlockPos pos) {
         long key = pos.asLong();
         int result = brightnessCache.get(key);
         if (result == Integer.MAX_VALUE) {
-            result = blockState.getBlockBrightness(blockView, pos);
+            result = blockView.getBlockState(pos).getBlockBrightness(blockView, pos);
             brightnessCache.put(key, result);
         }
         return result;
