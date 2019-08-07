@@ -31,7 +31,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private final List<IdentifiableResourceReloadListener> addedListeners = new ArrayList<>();
+	private final Set<Identifier> addedListenerIds = new HashSet<>();
+	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();
 
 	public static ResourceManagerHelper get(ResourceType type) {
 		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
@@ -83,6 +84,13 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 	@Override
 	public void registerReloadListener(IdentifiableResourceReloadListener listener) {
-		addedListeners.add(listener);
+		if (!addedListenerIds.add(listener.getFabricId())) {
+			LOGGER.warn("Tried to register resource reload listener " + listener.getFabricId() + " twice!");
+			return;
+		}
+
+		if (!addedListeners.add(listener)) {
+			throw new RuntimeException("Listener with previously unknown ID " + listener.getFabricId() + " already in listener set!");
+		}
 	}
 }
