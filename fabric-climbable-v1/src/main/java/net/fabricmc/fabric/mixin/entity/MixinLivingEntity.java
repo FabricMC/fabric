@@ -32,7 +32,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
 
-	public MixinLivingEntity(EntityType<?> entityType_1, World world_1) {
+	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(entityType_1, world_1);
 	}
 
