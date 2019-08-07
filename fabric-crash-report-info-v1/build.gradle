@@ -1,2 +1,2 @@
 archivesBaseName = "fabric-crash-report-info-v1"
-version = getSubprojectVersion(project, "0.1.0")
+version = getSubprojectVersion(project, "0.1.1")
