@@ -37,7 +37,7 @@ public abstract class MixinDamageTracker {
 
     @Shadow @Final private LivingEntity entity;
 
-    @Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), cancellable = true)
     public void setFallDeathSuffix(CallbackInfo ci) {
 
         final BlockState block = entity.world.getBlockState(new BlockPos(entity.x, entity.getBoundingBox().minY, entity.z));
