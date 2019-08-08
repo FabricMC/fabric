@@ -23,7 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-class FabricHelloPacketBuilder {
+public class FabricHelloPacketBuilder {
 	static final Identifier ID = new Identifier("fabric", "hello");
     public static final int MAJOR_VERSION = 1;
     public static final int MINOR_VERSION = 0;

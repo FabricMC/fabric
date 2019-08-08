@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.util.NbtType;
+import net.fabricmc.fabric.impl.network.handshake.HandshakeModHandlerImpl;
 import net.fabricmc.fabric.impl.network.login.S2CLoginHandshakeCallback;
 import net.minecraft.client.network.packet.LoginDisconnectS2CPacket;
 import net.minecraft.nbt.CompoundTag;
@@ -34,12 +35,13 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 public class FabricNetworkInitializer implements ModInitializer {
-	protected static final Logger LOGGER = LogManager.getLogger();
     
     public static final TranslatableText MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
     
-    @Override
-    public void onInitialize() {
+    /*
+    
+    @Deprecated
+    public void toRemove() {
         S2CLoginHandshakeCallback.EVENT.register(queue -> {
             queue.sendPacket(FabricHelloPacketBuilder.ID, FabricHelloPacketBuilder.buildHelloPacket(), (handler, connection, id, responseBuf) -> {
                 CompoundTag response;
@@ -109,7 +111,18 @@ public class FabricNetworkInitializer implements ModInitializer {
             });
         });
     }
+    */
     
+    @Override
+    public void onInitialize() {
+        S2CLoginHandshakeCallback.EVENT.register(queue -> {
+            queue.sendPacket(FabricHelloPacketBuilder.ID, FabricHelloPacketBuilder.buildHelloPacket(), (handler, connection, id, responseBuf) -> {
+                HandshakeModHandlerImpl.handlePacket(connection, id, responseBuf);
+            });
+        });
+    }
+    
+    @Deprecated // To be removed and replaced
     private Text buildDisconnectText(Map<String, String> missingMod, Map<String, String> mismatchVersions) {
         Text message = new LiteralText("");
         
@@ -153,34 +166,6 @@ public class FabricNetworkInitializer implements ModInitializer {
                 }
             }
         }
-        return message;
-    }
-    
-    private Text buildDisconnectTextVanilla() { // TODO: When config API comes by, possibly add an option for server owners to specify a link they can grab the mods running on the server.
-        
-        Text message = new LiteralText("");
-        
-        Map<String, String> required = ServerRequiresModRegistryImpl.INSTANCE.REQUIRED_MODS;
-        
-        message.append("This server requires you install Fabric to join. ");
-        message.append("You are missing " + required.size() + " mod(s). ");
-        
-        Iterator<Entry<String, String>> missingIterator = required.entrySet().iterator();
-        
-        while(missingIterator.hasNext()) {
-            Entry<String, String> missingEntry = missingIterator.next();
-            
-            message.append(missingEntry.getKey());
-            
-            message.append(" Version: " + missingEntry.getValue());
-            
-            if(missingIterator.hasNext()) {
-                message.append(", ");
-            } else {
-                message.append(".");
-            } 
-        }
-        
         return message;
     }
 }

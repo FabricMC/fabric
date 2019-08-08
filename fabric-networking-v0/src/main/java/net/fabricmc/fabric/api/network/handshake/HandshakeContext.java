@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.fabricmc.fabric.api.network.handshake;
 
-package net.fabricmc.fabric.impl.network;
+import java.util.Collection;
+import java.util.List;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.fabricmc.loader.api.FabricLoader;
 
-import net.fabricmc.fabric.api.network.ServerRequiresModRegistry;
-
-public class ServerRequiresModRegistryImpl implements ServerRequiresModRegistry {
+public interface HandshakeContext {
+    public FabricLoader getLoader();
     
-    public static final ServerRequiresModRegistryImpl INSTANCE = new ServerRequiresModRegistryImpl();
+    public Collection<String> getClientModIDs();
     
-    private ServerRequiresModRegistryImpl() {}
+    public void fail(FailureReason reason);
     
-    public Map<String, String> REQUIRED_MODS = new HashMap<String, String>();
-    
-    public void requireModOfVersion(String modid, String version) {
-        REQUIRED_MODS.put(modid, version);
-    }
+    public Collection<FailureReason> getFailureReasons();
 }
