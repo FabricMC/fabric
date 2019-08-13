@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.particles;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.particles.ParticleRegistry;
 import net.fabricmc.fabric.impl.particles.ParticleManagerHooks;
 import net.fabricmc.fabric.impl.particles.ParticleRegistryImpl;
@@ -42,9 +40,8 @@ abstract class MixinParticleManager implements ParticleManagerHooks {
 	private SpriteAtlasTexture particleAtlasTexture;
 	public SpriteAtlasTexture fabric_getSpriteAtlasTexture() { return particleAtlasTexture; }
 
-	@Shadow	@Environment(EnvType.CLIENT)
+	@Shadow
 	private <T extends ParticleEffect> void registerFactory(ParticleType<T> pt, ParticleFactory<T> pf) {}
-	@Environment(EnvType.CLIENT)
 	public <T extends ParticleEffect> void fabric_registerCustomFactory(ParticleType<T> pt, ParticleFactory<T> pf) { registerFactory(pt,pf); }
 
 	@Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))

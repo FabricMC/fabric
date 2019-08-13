@@ -32,6 +32,7 @@ public interface ParticleRegistry {
 	ParticleRegistry INSTANCE = new ParticleRegistryImpl();
 
 	/** Retrieve the appropriate sprite atlas for particle textures. */
+	@Environment(EnvType.CLIENT)
 	static SpriteAtlasTexture getParticleSpriteAtlas() {
 		return ((ParticleManagerHooks)MinecraftClient.getInstance().particleManager).fabric_getSpriteAtlasTexture();
 	}
