@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.mixin.particles;
 
-import net.fabricmc.fabric.api.particles.ParticleRegistry;
+import net.fabricmc.fabric.api.particles.client.FabricParticles;
 import net.fabricmc.fabric.impl.particles.ParticleManagerHooks;
-import net.fabricmc.fabric.impl.particles.ParticleRegistryImpl;
+import net.fabricmc.fabric.impl.particles.FabricParticlesImpl;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -33,7 +33,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.HashMap;
 
-/** Various hooks into {@link ParticleManager} for registering particles. */
+/**
+ * Various hooks into {@link ParticleManager} for registering particles.
+ */
 @Mixin(ParticleManager.class)
 abstract class MixinParticleManager implements ParticleManagerHooks {
 	@Shadow @Final
@@ -46,7 +48,7 @@ abstract class MixinParticleManager implements ParticleManagerHooks {
 
 	@Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
 	private void registerCustomFactories(CallbackInfo cbi) {
-		HashMap<ParticleType<?>, ParticleFactory<?>> factories = ((ParticleRegistryImpl)ParticleRegistry.INSTANCE).factoriesAwaitingRegistry;
+		HashMap<ParticleType<?>, ParticleFactory<?>> factories = ((FabricParticlesImpl) FabricParticles.INSTANCE).factoriesAwaitingRegistry;
 		if(!factories.isEmpty()) {
 			factories.forEach((type, factory) -> this.registerFactory((ParticleType)type, factory));
 			factories.clear();

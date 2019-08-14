@@ -16,8 +16,7 @@
 
 package net.fabricmc.fabric.impl.particles;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.particles.client.FabricParticles;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.particle.ParticleEffect;
@@ -25,9 +24,8 @@ import net.minecraft.particle.ParticleType;
 
 /**
  * Various hooks into {@link net.minecraft.client.particle.ParticleManager ParticleManager} for registering particles.
- * You shouldn't generally need to use this directly, these methods are called by {@link net.fabricmc.fabric.api.particles.ParticleRegistry}.
+ * You shouldn't generally need to use this directly, these methods are called by {@link FabricParticles}.
  */
-@Environment(EnvType.CLIENT)
 public interface ParticleManagerHooks {
 	/** Get the sprite atlas texture used by {@link net.minecraft.client.particle.ParticleManager}. */
 	SpriteAtlasTexture fabric_getSpriteAtlasTexture();

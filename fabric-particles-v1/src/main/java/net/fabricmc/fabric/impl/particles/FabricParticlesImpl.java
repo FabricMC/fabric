@@ -16,9 +16,7 @@
 
 package net.fabricmc.fabric.impl.particles;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.particles.ParticleRegistry;
+import net.fabricmc.fabric.api.particles.client.FabricParticles;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.particle.ParticleEffect;
@@ -26,17 +24,17 @@ import net.minecraft.particle.ParticleType;
 
 import java.util.HashMap;
 
-/** Core methods for registering particles with the Fabric API. */
-public class ParticleRegistryImpl implements ParticleRegistry {
+/**
+ * Core methods for registering particles with the Fabric API.
+ */
+public class FabricParticlesImpl implements FabricParticles {
 	/**
 	 * Cache of particle factories awaiting registration.
 	 * Used to allow for registering particles with the API before {@link MinecraftClient#particleManager} is ready.
 	 * Don't access this directly. Just don't.
 	 */
-	@Environment(EnvType.CLIENT)
 	public final HashMap<ParticleType<?>, ParticleFactory<?>> factoriesAwaitingRegistry = new HashMap<>();
 
-	@Environment(EnvType.CLIENT)
 	public <T extends ParticleEffect> void registerParticleFactory(ParticleType<T> type, ParticleFactory<T> factory) {
 		ParticleManagerHooks manager = (ParticleManagerHooks)MinecraftClient.getInstance().particleManager;
 		if(manager != null) manager.fabric_registerCustomFactory(type, factory);
