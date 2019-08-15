@@ -90,7 +90,6 @@ public class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
             } catch (ReflectiveOperationException e) {
                 throw new IllegalStateException("net.minecraft.client.particle.ParticleManager.SimpleSpriteProvider.<init>() is gone!", e);
             }
-            throw new IllegalStateException("net.minecraft.client.particle.ParticleManager.SimpleSpriteProvider.<init>() is gone!");
         }
     }
 }
