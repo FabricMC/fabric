@@ -16,28 +16,23 @@
 
 package net.fabricmc.fabric.api.particles;
 
-import net.fabricmc.fabric.impl.particles.ParticleTypeRegistryImpl;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.util.Identifier;
+import net.minecraft.particle.ParticleEffect.Factory;
 
 /**
- * Registry for adding new particle types to the game.
+ * Methods for creating particle types, both simple and using an existing attribute factory.
  */
-public interface ParticleTypeRegistry {
-
-    static ParticleTypeRegistry getTnstance() {
-        return ParticleTypeRegistryImpl.INSTANCE;
-    }
+public final class FabricParticleTypes {
 
     /**
      * Creates a new, default particle type for the given id.
      *
      * @param id The particle id.
      */
-    default DefaultParticleType register(Identifier id) {
-        return register(id, false);
+    public static DefaultParticleType simple() {
+        return simple(false);
     }
 
     /**
@@ -46,7 +41,9 @@ public interface ParticleTypeRegistry {
      * @param id The particle id.
      * @param alwaysSpawn True to always spawn the particle regardless of distance.
      */
-    DefaultParticleType register(Identifier id, boolean alwaysSpawn);
+    public static DefaultParticleType simple(boolean alwaysSpawn) {
+        return new Simple(alwaysSpawn);
+    }
 
     /**
      * Creates a new particle type with a custom factory for packet/data serialization.
@@ -54,8 +51,8 @@ public interface ParticleTypeRegistry {
      * @param id The particle id.
      * @param factory     A factory for serializing packet data and string command parameters into a particle effect.
      */
-    default <T extends ParticleEffect> ParticleType<T> register(Identifier id, ParticleEffect.Factory<T> factory) {
-        return register(id, false, factory);
+    public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory) {
+        return complex(false, factory);
     }
 
     /**
@@ -65,5 +62,21 @@ public interface ParticleTypeRegistry {
      * @param alwaysSpawn True to always spawn the particle regardless of distance.
      * @param factory     A factory for serializing packet data and string command parameters into a particle effect.
      */
-    <T extends ParticleEffect> ParticleType<T> register(Identifier id, boolean alwaysSpawn, ParticleEffect.Factory<T> factory);
+    public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
+        return new Complex<>(alwaysSpawn, factory);
+    }
+
+    // Constructor is (gasp!) protected
+    public static class Simple extends DefaultParticleType {
+        public Simple(boolean alwaysSpawn) {
+            super(alwaysSpawn);
+        }
+    }
+
+    // Same for this
+    public static class Complex<T extends ParticleEffect> extends ParticleType<T> {
+        public Complex(boolean alwaysSpawn, Factory<T> factory) {
+            super(alwaysSpawn, factory);
+        }
+    }
 }

@@ -19,8 +19,9 @@ package net.fabricmc.fabric.particles;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.particles.ParticleFactoryRegistry;
-import net.fabricmc.fabric.api.particles.ParticleTypeRegistry;
+import net.fabricmc.fabric.api.particles.FabricParticleTypes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.AnimatedParticle;
 import net.minecraft.client.particle.Particle;
@@ -32,12 +33,19 @@ import net.minecraft.item.Items;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class ParticleModClient implements ClientModInitializer {
+public class ParticleModClient implements ClientModInitializer, ModInitializer {
 
-	public static final DefaultParticleType SIMPLE_TEST_PARTICLE = ParticleTypeRegistry.getTnstance().register(new Identifier("testmod", "simple"));
-	public static final DefaultParticleType CUSTOM_TEST_PARTICLE = ParticleTypeRegistry.getTnstance().register(new Identifier("testmod", "custom"));
+	public static final DefaultParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
+	public static final DefaultParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
+
+    @Override
+    public void onInitialize() {
+        Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "simple"), SIMPLE_TEST_PARTICLE);
+        Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "custom"), CUSTOM_TEST_PARTICLE);
+    }
 
 	@Override
 	public void onInitializeClient() {
