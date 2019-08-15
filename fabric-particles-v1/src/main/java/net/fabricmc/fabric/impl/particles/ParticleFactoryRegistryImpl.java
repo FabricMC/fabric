@@ -88,7 +88,7 @@ public class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
             try {
                 return (SpriteProvider)getConstructor().newInstance(MinecraftClient.getInstance().particleManager);
             } catch (ReflectiveOperationException e) {
-                e.printStackTrace();
+                throw new IllegalStateException("net.minecraft.client.particle.ParticleManager.SimpleSpriteProvider.<init>() is gone!", e);
             }
             throw new IllegalStateException("net.minecraft.client.particle.ParticleManager.SimpleSpriteProvider.<init>() is gone!");
         }
