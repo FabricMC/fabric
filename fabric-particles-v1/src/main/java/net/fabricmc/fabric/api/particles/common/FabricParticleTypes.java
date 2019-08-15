@@ -6,6 +6,7 @@ import net.minecraft.particle.ParticleType;
 
 /**
  * Utility methods for creating {@link ParticleType}s.
+ * @see net.fabricmc.fabric.api.particles.client.FabricParticles FabricParticles
  */
 public final class FabricParticleTypes {
 	private FabricParticleTypes() {}
