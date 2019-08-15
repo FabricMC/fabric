@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.impl.particles.ParticleFactoryRegistryImpl;
@@ -40,7 +41,7 @@ public abstract class MixinParticleManager {
     private Int2ObjectMap<ParticleFactory<?>> factories;
 
     @Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
-    private void onRegisterDefaultFactories() {
+    private void onRegisterDefaultFactories(CallbackInfo info) {
         ParticleFactoryRegistryImpl.INSTANCE.injectValues(factories, field_18300);
     }
 }
