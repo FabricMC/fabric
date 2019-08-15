@@ -21,12 +21,14 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.particles.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particles.ParticleTypeRegistry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.AnimatedParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.item.Items;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.Identifier;
@@ -48,6 +50,8 @@ public class ParticleModClient implements ClientModInitializer {
 
 		public SimpleTestParticle(ParticleEffect effect, World world, double x, double y, double z, double velX, double velY, double velZ) {
 			super(world, x, y, z, velX, velY, velZ);
+
+			setSprite(MinecraftClient.getInstance().getItemRenderer().getModels().getSprite(Items.BARRIER));
 		}
 
 		@Override
@@ -61,6 +65,8 @@ public class ParticleModClient implements ClientModInitializer {
 
 		protected CustomTestParticle(World world, double x, double y, double z, SpriteProvider sprites) {
 			super(world, x, y, z, sprites, 1);
+
+			setSprite(sprites.getSprite(world.random));
 		}
 
 		@Environment(EnvType.CLIENT)
