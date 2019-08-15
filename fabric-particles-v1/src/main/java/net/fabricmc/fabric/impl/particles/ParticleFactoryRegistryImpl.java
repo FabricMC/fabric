@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.impl.particles;
 
+import java.lang.reflect.Constructor;
 import java.util.Map;
-
-import com.google.gson.Gson;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.particles.ParticleFactoryRegistry;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.particle.SpriteProvider;
@@ -65,25 +65,32 @@ public class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
      * Uses reflection to obtain new instances of the private inner class `ParticleManager.SimpleSpriteProvider`.
      */
     static final class AccessHack {
-        private static final Object dummy = new Object();
-        private static final Gson gson = new Gson();
+        private static Constructor<?> constr;
 
-        private static Class<?> cachedResponse;
-        private static Class<?> getSimpleSpriteProviderClass() {
-            if (cachedResponse != null) {
-                return cachedResponse;
+        private static Constructor<?> getConstructor() throws ReflectiveOperationException {
+            if (constr != null) {
+                return constr;
             }
+
             for (Class<?> cls : ParticleManager.class.getDeclaredClasses()) {
-                if (SpriteProvider.class.isAssignableFrom(cls)) {
-                    return cachedResponse = cls;
+                if (!cls.isInterface() && SpriteProvider.class.isAssignableFrom(cls)) {
+                    constr = cls.getDeclaredConstructor(ParticleManager.class);
+                    constr.setAccessible(true);
+
+                    return constr;
                 }
             }
+
             throw new IllegalStateException("net.minecraft.client.particle.ParticleManager.SimpleSpriteProvider is gone!");
         }
 
-        // Gson makes for a crude, yet effective and convenient reflective instantiator.
         static SpriteProvider createSimpleSpriteProvider() {
-            return (SpriteProvider)gson.fromJson(gson.toJson(dummy), getSimpleSpriteProviderClass());
+            try {
+                return (SpriteProvider)getConstructor().newInstance(MinecraftClient.getInstance().particleManager);
+            } catch (ReflectiveOperationException e) {
+                e.printStackTrace();
+            }
+            throw new IllegalStateException("net.minecraft.client.particle.ParticleManager.SimpleSpriteProvider.<init>() is gone!");
         }
     }
 }
