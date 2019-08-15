@@ -22,6 +22,7 @@ import java.util.Map;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.particles.ParticleFactoryRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
@@ -72,16 +73,14 @@ public class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
                 return constr;
             }
 
-            for (Class<?> cls : ParticleManager.class.getDeclaredClasses()) {
-                if (!cls.isInterface() && SpriteProvider.class.isAssignableFrom(cls)) {
-                    constr = cls.getDeclaredConstructor(ParticleManager.class);
-                    constr.setAccessible(true);
+            String className = FabricLoader.getInstance().getMappingResolver().mapClassName("intermediary", "net.minecraft.class_702$class_4090");
 
-                    return constr;
-                }
-            }
+            Class<?> cls = Class.forName(className);
 
-            throw new IllegalStateException("net.minecraft.client.particle.ParticleManager.SimpleSpriteProvider is gone!");
+            constr = cls.getDeclaredConstructor(ParticleManager.class);
+            constr.setAccessible(true);
+
+            return constr;
         }
 
         static SpriteProvider createSimpleSpriteProvider() {
