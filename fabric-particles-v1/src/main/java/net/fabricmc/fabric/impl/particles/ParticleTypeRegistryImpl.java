@@ -37,7 +37,7 @@ public class ParticleTypeRegistryImpl implements ParticleTypeRegistry {
 
     @Override
     public <T extends ParticleEffect> ParticleType<T> register(Identifier id, boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
-        return Registry.register(Registry.PARTICLE_TYPE, id.toString(), new Complex<>(alwaysSpawn, factory));
+        return Registry.register(Registry.PARTICLE_TYPE, id, new Complex<>(alwaysSpawn, factory));
     }
 
     // Constructor is (gasp!) protected
