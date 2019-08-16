@@ -22,6 +22,9 @@ public final class FabricDimensions {
      * is a {@link FabricDimensionType}, that logic is {@link FabricDimensionType#getDefaultPlacement()}.
      * If {@code destination} is the nether or the overworld, the default logic is the vanilla path.
      * For any other dimension, the default placement behaviour is undefined.
+     * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
+     * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated 
+     * before calling this method.
      *
      * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
      * the returned entity for any further manipulation.
