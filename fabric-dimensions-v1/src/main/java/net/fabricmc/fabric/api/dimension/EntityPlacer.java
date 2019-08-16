@@ -21,7 +21,7 @@ public interface EntityPlacer {
      * <p> This method may have side effects such as the creation of a portal in the target dimension,
      * or the creation of a chunk loading ticket.
      *
-     * @param portalDir the direction the portal is facing, may be {@code null} if no portal was used
+     * @param portalDir the direction the portal is facing, meaningless if no portal was used
      * @param portalX   the x coordinate of the corner of the portal, 0 if no portal was used
      * @param portalY   the y coordinate of the corner of the portal, 0 if no portal was used
      * @return a teleportation target, or {@code null} to fall back to further handling
