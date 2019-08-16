@@ -28,5 +28,5 @@ public interface EntityPlacer {
      * @apiNote When this method is called, the entity's world is its source dimension.
      */
     /* @Nullable */
-    BlockPattern.TeleportTarget placeEntity(Entity teleported, ServerWorld destination, Direction portalDir, double portalX, double portalY);
+    BlockPattern.TeleportTarget placeEntity(Entity teleported, ServerWorld destination, Direction portalDir, double horizontalOffset, double verticalOffset);
 }
