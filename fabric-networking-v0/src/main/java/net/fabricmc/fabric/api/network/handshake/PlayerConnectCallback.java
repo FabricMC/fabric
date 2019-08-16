@@ -71,6 +71,6 @@ public interface PlayerConnectCallback {
         return !modMap.isEmpty();
     }
 
-    ActionResult onHandshake(HandshakeContext context);
+    ActionResult onHandshake(String clientProvidedVersion);
 
 }
