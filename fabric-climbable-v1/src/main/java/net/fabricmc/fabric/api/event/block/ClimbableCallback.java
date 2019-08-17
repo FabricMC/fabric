@@ -46,12 +46,12 @@ public interface ClimbableCallback {
 		}));
 
 	/**
-	 * Determines if the passed LivingEntity can or cannot climb the block or if the
+	 * <p>Determines if the passed LivingEntity can or cannot climb the block or if the
 	 * vanilla checks should be run. Returning TriState.Default will run
 	 * the vanilla climbing checks if no other callback returns TriState.True or
 	 * TriState.False; Returning TriState.True allows the climber to climb the block if no
 	 * other callbacks return TriState.False; Returning TriState.False will prevent the
-	 * climber from climbing the block regardless of the result of any other callbacks.
+	 * climber from climbing the block regardless of the result of any other callbacks.</p>
 	 *
 	 * @param climber The LivingEntity attempting to climb the block.
 	 * @param state The BlockState of the block that the climber is attempting to climb.
