@@ -21,7 +21,9 @@ import java.util.Optional;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.TypedActionResult;
 
 public interface PlayerConnectCallback {
 
@@ -54,19 +56,25 @@ public interface PlayerConnectCallback {
     static Event<PlayerConnectCallback> createEvent() {
         return EventFactory.createArrayBacked(PlayerConnectCallback.class, (callbacks) -> (ctx) -> {
             for (PlayerConnectCallback callback : callbacks) {
-                ActionResult result = callback.onHandshake(ctx);
-                if(result==ActionResult.FAIL) {
-                    return ActionResult.FAIL;
+                
+                TypedActionResult<Text> result = callback.onHandshake(ctx);
+                if(result.getResult()==ActionResult.FAIL) {
+                    return result;
                 }
             }
-            return ActionResult.SUCCESS;
+            return new TypedActionResult<Text>(ActionResult.SUCCESS, null);
         });
     }
     
     static boolean hasRegisteredAny() {
         return !modMap.isEmpty();
     }
-
-    ActionResult onHandshake(String clientProvidedVersion);
+    
+    /**
+     * This may be nullable
+     * @param clientProvidedVersion
+     * @return Text if the handshake failed.
+     */
+    TypedActionResult<Text> onHandshake(String clientProvidedVersion);
 
 }

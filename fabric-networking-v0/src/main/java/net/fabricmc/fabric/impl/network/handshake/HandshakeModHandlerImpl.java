@@ -40,10 +40,12 @@ import net.minecraft.client.network.packet.LoginDisconnectS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
+import net.minecraft.util.TypedActionResult;
 
 public class HandshakeModHandlerImpl {
 
@@ -197,19 +199,31 @@ public class HandshakeModHandlerImpl {
 
             if (clientMods.containsKey(modid)) {
                 if (entry.getValue().booleanValue()) { // If true, this mod has a handler otherwise check version literally.
-                    ActionResult result = PlayerConnectCallback.getEvent(modid).get().invoker().onHandshake(clientMods.get(modid));
+                    TypedActionResult<Text> result = PlayerConnectCallback.getEvent(modid).get().invoker().onHandshake(clientMods.get(modid));
                     
-                    if(result == ActionResult.FAIL) {
-                        // TODO failed check, invalid version. Add a version mismatch map.
+                    if(result.getResult() == ActionResult.FAIL) {
+                        
+                        if(result.getValue() != null) {
+                            // TODO add result to failure list
+                        } else {
+                            // TODO add default result to failure list.
+                        }
                         continue;
                     }
                     
                 } else {
-                    ActionResult result = defaultVersionCheck(modid, clientMods.get(modid));
                     
-                    if(result == ActionResult.FAIL) {
-                        // TODO failed check, invalid version. Add a version mismatch map.
-                        continue;
+                    
+                    String version = clientMods.get(modid);
+                    
+                    Optional<ModContainer> op = FabricLoader.getInstance().getModContainer(modid);
+                    
+                    if (op.isPresent()) {
+                        if (op.get().getMetadata().getVersion().getFriendlyString() == version) {
+                            continue;
+                        } else {
+                            // Failed, add a version mismatch map.
+                        }
                     }
                 }
             } else {
@@ -218,8 +232,10 @@ public class HandshakeModHandlerImpl {
         }
     }
 
-    private static ActionResult defaultVersionCheck(String modid, String string) {
-        // TODO Auto-generated method stub
+    private static ActionResult defaultVersionCheck(String modid, String version) {
+        
+        
+        
         return null;
     }
 
