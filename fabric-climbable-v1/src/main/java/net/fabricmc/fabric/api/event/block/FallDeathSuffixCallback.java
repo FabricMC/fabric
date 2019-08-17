@@ -47,13 +47,13 @@ public interface FallDeathSuffixCallback {
 	 *
 	 * <p>In order to use this, your translation file should have the translation key
 	 * "death.fell.accident.suffix", where "suffix" is the string returned by this method.
-	 * It is possible to return null if you do not wish to handle a specific situation.
+	 * It is possible to return null if you do not wish to handle a specific situation. </p>
 	 *
 	 * <p>The priority number allows for the suffix to take priority over over other suffixes.
 	 * i.e. if you return a priority of 2 and everything after it returns a priority of 1,
 	 * your suffix will be used. In the event that multiple callbacks return the same priority
 	 * number, the suffix returned by the last callback will be used. All priority numbers
-	 * should be non-negative or they will be ignored.
+	 * should be non-negative or they will be ignored. </p>
 	 *
 	 * @param entity The entity that is being tracked.
 	 * @param state the block state that is being climbed.
