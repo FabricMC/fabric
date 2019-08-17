@@ -64,11 +64,6 @@ public interface FallDeathSuffixCallback {
 	 */
 	Result getFallDeathSuffix(LivingEntity entity, BlockState state);
 
-
-	public default void test() {
-
-	}
-
 	/**
 	 * Result class for callback containing string and priority.
 	 */
