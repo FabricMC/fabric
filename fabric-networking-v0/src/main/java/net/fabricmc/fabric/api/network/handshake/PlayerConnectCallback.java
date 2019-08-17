@@ -35,11 +35,7 @@ public interface PlayerConnectCallback {
      * @return The event from the modid
      */
     static Event<PlayerConnectCallback> getEventOrCreate(String modid) {
-        if (!modMap.containsKey(modid)) {
-            modMap.put(modid, createEvent());
-        }
-        
-        return modMap.get(modid);
+        return modMap.computeIfAbsent(modid, (key) -> createEvent());
     }
     
     /**
