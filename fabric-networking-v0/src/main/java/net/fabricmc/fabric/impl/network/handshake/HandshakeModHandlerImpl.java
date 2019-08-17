@@ -232,13 +232,6 @@ public class HandshakeModHandlerImpl {
         }
     }
 
-    private static ActionResult defaultVersionCheck(String modid, String version) {
-        
-        
-        
-        return null;
-    }
-
     private static LiteralText buildDisconnectTextVanilla() { // TODO: When config API comes by, possibly add an option for server owners to specify a link they can grab the mods running on the server.
         return new LiteralText("This server requires you install Fabric to join.");
     }
