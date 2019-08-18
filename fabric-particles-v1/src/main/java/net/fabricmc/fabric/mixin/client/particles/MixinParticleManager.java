@@ -16,32 +16,50 @@
 
 package net.fabricmc.fabric.mixin.client.particles;
 
+import java.util.List;
 import java.util.Map;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.impl.particles.ParticleFactoryRegistryImpl;
+import net.fabricmc.fabric.impl.particles.FabricParticleManager;
+import net.fabricmc.fabric.impl.particles.VanillaParticleManager;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.client.particle.ParticleTextureData;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
 @Mixin(ParticleManager.class)
-public abstract class MixinParticleManager {
+public abstract class MixinParticleManager implements VanillaParticleManager {
 
-    @Shadow @Final
-    private Map field_18300;
+    private final FabricParticleManager fabricParticleManager = new FabricParticleManager(this);
 
-    @Shadow @Final
-    private Int2ObjectMap<ParticleFactory<?>> factories;
+    @Override
+    @Accessor("particleAtlasTexture")
+    public abstract SpriteAtlasTexture getAtlas();
+
+    @Override
+    @Accessor("factories")
+    public abstract Int2ObjectMap<ParticleFactory<?>> getFactories();
 
     @Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
     private void onRegisterDefaultFactories(CallbackInfo info) {
-        ParticleFactoryRegistryImpl.INSTANCE.injectValues(factories, field_18300);
+        fabricParticleManager.injectValues();
+    }
+
+    @Redirect(method = "method_18836(Lnet/minecraft/client/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/particle/ParticleTextureData;getTextureList()Ljava/util/List;"
+        ))
+    private List<Identifier> onMethod_18836(ParticleTextureData sender, ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> output) {
+        return fabricParticleManager.uploadTexturePicks(id, sender.getTextureList());
     }
 }

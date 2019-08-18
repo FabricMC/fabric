@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.particles;
 
 import net.fabricmc.fabric.impl.particles.ParticleFactoryRegistryImpl;
 import net.minecraft.client.particle.ParticleFactory;
-import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 
@@ -61,6 +60,6 @@ public interface ParticleFactoryRegistry {
          *
          * @return A new particle factory.
          */
-        ParticleFactory<T> create(SpriteProvider provider);
+        ParticleFactory<T> create(FabricSpriteProvider provider);
     }
 }

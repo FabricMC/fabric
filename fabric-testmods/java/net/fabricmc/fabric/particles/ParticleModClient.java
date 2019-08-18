@@ -22,6 +22,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.particles.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particles.FabricParticleTypes;
+import net.fabricmc.fabric.api.particles.FabricSpriteProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.AnimatedParticle;
 import net.minecraft.client.particle.Particle;
@@ -49,6 +50,7 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		onInitialize();
 		ParticleFactoryRegistry.getInstance().register(SIMPLE_TEST_PARTICLE, SimpleTestParticle::new);
 		ParticleFactoryRegistry.getInstance().register(CUSTOM_TEST_PARTICLE, CustomTestParticle.Factory::new);
 	}
@@ -80,9 +82,9 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 		@Environment(EnvType.CLIENT)
 		public static class Factory implements ParticleFactory<DefaultParticleType> {
 
-			private final SpriteProvider sprites;
+			private final FabricSpriteProvider sprites;
 
-			public Factory(SpriteProvider sprites) {
+			public Factory(FabricSpriteProvider sprites) {
 				this.sprites = sprites;
 			}
 
