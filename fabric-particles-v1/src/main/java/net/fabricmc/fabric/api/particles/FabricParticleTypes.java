@@ -26,6 +26,8 @@ import net.minecraft.particle.ParticleEffect.Factory;
  */
 public final class FabricParticleTypes {
 
+    private FabricParticleTypes() { }
+
     /**
      * Creates a new, default particle type for the given id.
      *
