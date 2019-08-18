@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.particles;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
-import net.minecraft.particle.ParticleEffect.Factory;
 
 /**
  * Methods for creating particle types, both simple and using an existing attribute factory.
@@ -44,7 +43,7 @@ public final class FabricParticleTypes {
      * @param alwaysSpawn True to always spawn the particle regardless of distance.
      */
     public static DefaultParticleType simple(boolean alwaysSpawn) {
-        return new Simple(alwaysSpawn);
+        return new DefaultParticleType(alwaysSpawn) {};
     }
 
     /**
@@ -65,20 +64,6 @@ public final class FabricParticleTypes {
      * @param factory     A factory for serializing packet data and string command parameters into a particle effect.
      */
     public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
-        return new Complex<>(alwaysSpawn, factory);
-    }
-
-    // Constructor is (gasp!) protected
-    public static class Simple extends DefaultParticleType {
-        public Simple(boolean alwaysSpawn) {
-            super(alwaysSpawn);
-        }
-    }
-
-    // Same for this
-    public static class Complex<T extends ParticleEffect> extends ParticleType<T> {
-        public Complex(boolean alwaysSpawn, Factory<T> factory) {
-            super(alwaysSpawn, factory);
-        }
+        return new ParticleType<T>(alwaysSpawn, factory) {};
     }
 }
