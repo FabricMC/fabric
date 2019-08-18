@@ -31,7 +31,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
-public class FabricParticleManager {
+public final class FabricParticleManager {
 
     private final VanillaParticleManager manager;
 
@@ -52,7 +52,7 @@ public class FabricParticleManager {
         });
     }
 
-    FabricSpriteProviderImpl getProvider(Identifier id) {
+    private FabricSpriteProviderImpl getProvider(Identifier id) {
         if (!ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.containsKey(id)) {
             return null;
         }
@@ -80,7 +80,7 @@ public class FabricParticleManager {
         return picks;
     }
 
-    class FabricSpriteProviderImpl implements FabricSpriteProvider {
+    private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
 
         private List<Identifier> picks;
 

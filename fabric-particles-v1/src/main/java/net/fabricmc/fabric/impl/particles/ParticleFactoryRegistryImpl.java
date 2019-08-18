@@ -28,7 +28,7 @@ import net.minecraft.particle.ParticleType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
+public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
 
     public static final ParticleFactoryRegistryImpl INSTANCE = new ParticleFactoryRegistryImpl();
 
