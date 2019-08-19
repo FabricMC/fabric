@@ -29,8 +29,6 @@ public interface PlayerConnectCallback {
 
     static final Map<String, Event<PlayerConnectCallback>> modMap = new HashMap<String, Event<PlayerConnectCallback>>();
     
-    
-    
     /**
      * Gets the PlayerConnectCallback for the modid or creates an event for it.
      * @param modid The Modid of the mod to get the event of
@@ -66,14 +64,18 @@ public interface PlayerConnectCallback {
         });
     }
     
+    /**
+     * Checks if any mods have Handshake Handler's registered. Do not use, for implementation only.
+     * @return
+     */
     static boolean hasRegisteredAny() {
         return !modMap.isEmpty();
     }
     
     /**
-     * This may be nullable
-     * @param clientProvidedVersion
-     * @return Text if the handshake failed.
+     * Returns a result from a Handshake handler. This may return a null value but will always return a not-null ActionResult inside.
+     * @param clientProvidedVersion The version of the mod installed that is provided by the client.
+     * @return Text if the handshake failed. Recommended to make this {@link LiteralText} so fabric clients that are missing your mod don't receive untranslated text. 
      */
     TypedActionResult<Text> onHandshake(String clientProvidedVersion);
 

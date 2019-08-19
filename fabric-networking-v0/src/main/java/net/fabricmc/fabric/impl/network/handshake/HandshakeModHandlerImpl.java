@@ -51,6 +51,8 @@ public class HandshakeModHandlerImpl {
 
     private static Map<String, Boolean> shouldHandshake = new HashMap<String, Boolean>();
 
+    protected static final Logger LOGGER = LogManager.getLogger();
+
     private static final Predicate<ModContainer> SHOULD_HANDSHAKE = (mod) -> {
         Optional<ModContainer> cont = FabricLoader.getInstance().getModContainer(mod.getMetadata().getId()); // Just
                                                                                                              // verify
@@ -72,28 +74,18 @@ public class HandshakeModHandlerImpl {
                 }
                 if (!shouldHandshakeB) {
                     return false;
-                    // handshakeList.put(mod.getMetadata().getId(), false); // Return false to
-                    // remove from filter.
                 } else {
                     return true;
-                    // shouldHandshake.put(mod.getMetadata().getId(), true);
-
-                    /*
-                     * Optional<Event<PlayerConnectCallback>> events =
-                     * PlayerConnectCallback.getEvent(mod.getMetadata().getId());
-                     * 
-                     * if(events.isPresent()) { ActionResult result =
-                     * events.get().invoker().onHandshake(mod.getMetadata().getVersion().
-                     * getFriendlyString()); }
-                     */
                 }
-            } catch (Throwable t) { // Fails to do this then go ahead and make it require anyways.
+            } catch (Throwable t) { // Fails to do this then go ahead and make it require anyways. This could be because of invalid syntax.
+                LOGGER.throwing(t);
                 return true;
-                // shouldHandshake.put(mod.getMetadata().getId(), true);
             }
         }
         return true;
     };
+
+    public static final TranslatableText MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
 
     static {
         // This whole mess just tells HandshakeHandler which mods have handlers and which should do literal version checking.
@@ -124,10 +116,6 @@ public class HandshakeModHandlerImpl {
          * getFriendlyString()); }
          */
     }
-
-    public static final TranslatableText MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
-    
-    protected static final Logger LOGGER = LogManager.getLogger();
 
     public static void handlePacket(ClientConnection connection, Identifier id, PacketByteBuf responseBuf) {
 
