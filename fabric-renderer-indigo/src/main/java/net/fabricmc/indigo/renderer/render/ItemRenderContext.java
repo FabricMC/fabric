@@ -21,9 +21,8 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
-
-import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -112,7 +111,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         tessellator.draw();
         
         if(smoothShading) {
-            GlStateManager.shadeModel(GL11.GL_FLAT);
+            RenderSystem.shadeModel(GL11.GL_FLAT);
             smoothShading = false;
         }
         
@@ -167,7 +166,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     private void handleShading() {
         if(!smoothShading && editorQuad.hasVertexNormals()) {
             smoothShading = true;
-            GlStateManager.shadeModel(GL11.GL_SMOOTH);
+            RenderSystem.shadeModel(GL11.GL_SMOOTH);
         }
     }
     
