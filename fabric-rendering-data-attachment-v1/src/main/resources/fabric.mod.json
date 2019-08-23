@@ -9,5 +9,8 @@
   },
   "mixins": [
     "fabric-rendering-data-attachment-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-networking.shouldHandshake": false
+  }
 }

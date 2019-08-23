@@ -14,5 +14,8 @@
   "mixins": [
     "fabric-networking-v0.mixins.json",
     "fabric-networking-v0.tracker.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-networking.shouldHandshake": false
+  }
 }

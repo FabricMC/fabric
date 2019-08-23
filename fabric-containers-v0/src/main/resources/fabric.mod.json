@@ -16,5 +16,8 @@
     "client": [
       "net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl::init"
     ]
+  },
+  "custom": {
+    "fabric-networking.shouldHandshake": false
   }
 }

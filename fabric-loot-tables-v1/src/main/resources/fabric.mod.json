@@ -9,5 +9,8 @@
   },
   "mixins": [
     "fabric-loot-tables-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-networking.shouldHandshake": false
+  }
 }

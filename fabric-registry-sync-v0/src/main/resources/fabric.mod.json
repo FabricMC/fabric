@@ -15,5 +15,8 @@
     "client": [
       "net.fabricmc.fabric.impl.registry.FabricRegistryClientInit"
     ]
+  },
+  "custom": {
+    "fabric-networking.shouldHandshake": false
   }
 }

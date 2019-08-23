@@ -3,5 +3,7 @@
   "fabric-networking-v0.hello.mismatch": "Mismatched hello packet version, expected version: %d.%d",
   "fabric-networking-v0.missing.amount": "You are missing %d mods. ",
   "fabric-networking-v0.missing.requires": "This server requires you install the following mod(s): ",
-  "fabric-networking-v0.mismatch_spaced": " These mod(s) have a version mismatch: "
+  "fabric-networking-v0.mismatch_spaced": " These mod(s) have a version mismatch: ",
+  "fabric-networking-v0.defaults.mismatch": "Mismatched version in %d. Expected %d "
+  
 }

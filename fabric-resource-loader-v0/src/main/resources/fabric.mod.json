@@ -8,5 +8,8 @@
   },
   "mixins": [
     "fabric-resource-loader-v0.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-networking.shouldHandshake": false
+  }
 }

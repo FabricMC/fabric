@@ -15,5 +15,8 @@
     "client": [
       "net.fabricmc.indigo.Indigo"
     ]
+  },
+  "custom": {
+    "fabric-networking.shouldHandshake": false
   }
 }
