@@ -71,7 +71,7 @@ public final class FabricParticleManager {
                 throw new IllegalStateException("(Fabric) Missing texture list for particle " + id);
             }
 
-            provider.setPicks(picks);
+            provider.setSprites(picks);
 
             return null;
         }
@@ -82,7 +82,7 @@ public final class FabricParticleManager {
 
     private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
 
-        private List<Identifier> picks;
+        private List<Identifier> spriteIds;
 
         @Nullable
         private List<Sprite> sprites;
@@ -105,14 +105,14 @@ public final class FabricParticleManager {
         @Override
         public List<Sprite> getSprites() {
             if (sprites == null) {
-                sprites = picks.stream().map(getAtlas()::getSprite).collect(Collectors.toList());
+                sprites = spriteIds.stream().map(getAtlas()::getSprite).collect(Collectors.toList());
             }
             return sprites;
         }
 
-        public void setPicks(List<Identifier> sprites) {
+        public void setSprites(List<Identifier> sprites) {
             this.sprites = null;
-            this.picks = ImmutableList.copyOf(sprites);
+            this.spriteIds = ImmutableList.copyOf(sprites);
         }
     }
 }
