@@ -52,12 +52,14 @@ import net.minecraft.util.TypedActionResult;
 
 public class HandshakeModHandlerImpl {
 
-    private static Map<String, Boolean> shouldHandshake = new HashMap<String, Boolean>();
+    public static final TranslatableText MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
 
     protected static final Logger LOGGER = LogManager.getLogger();
 
+    private static Map<String, Boolean> shouldHandshake = new HashMap<String, Boolean>();
+
     private static final Predicate<ModContainer> SHOULD_HANDSHAKE = (mod) -> {
-        Optional<ModContainer> cont = FabricLoader.getInstance().getModContainer(mod.getMetadata().getId()); // Verify incase
+        Optional<ModContainer> cont = FabricLoader.getInstance().getModContainer(mod.getMetadata().getId()); // Verify just in case
 
         if (cont.isPresent()) {
             try {
@@ -65,15 +67,15 @@ public class HandshakeModHandlerImpl {
                 boolean shouldHandshakeB = true;
 
                 if (meta.getCustomElement("fabric-networking.shouldHandshake") != null && meta.getCustomElement("fabric-networking.shouldHandshake").isJsonPrimitive()) {
-
                     shouldHandshakeB = meta.getCustomElement("fabric-networking.shouldHandshake").getAsBoolean();
                 }
+                
                 if (!shouldHandshakeB) {
                     return false;
                 } else {
-                    shouldHandshake.put(mod.getMetadata().getId(), true);
                     return true;
                 }
+                
             } catch (Throwable t) { // Fails to do this then go ahead and make it require anyways. This could be because of invalid syntax.
                 LOGGER.throwing(t);
                 return true;
@@ -82,15 +84,13 @@ public class HandshakeModHandlerImpl {
         return true;
     };
 
-    public static final TranslatableText MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
-
     static {
         // This whole mess just tells HandshakeHandler which mods have handlers and which should do literal version checking.
         FabricLoader.getInstance().getAllMods().stream().filter(SHOULD_HANDSHAKE).forEach(mod -> {
             
             Optional<ModContainer> cont = FabricLoader.getInstance().getModContainer(mod.getMetadata().getId());
 
-            if (cont.isPresent()) { // Still gotta check incase.
+            if (cont.isPresent()) { // check again.
                 ModMetadata meta = cont.get().getMetadata();
                 String modid = meta.getId();
                 
@@ -103,14 +103,6 @@ public class HandshakeModHandlerImpl {
                 }
             }
         });
-        /*
-         * Optional<Event<PlayerConnectCallback>> events =
-         * PlayerConnectCallback.getEvent(mod.getMetadata().getId());
-         * 
-         * if(events.isPresent()) { ActionResult result =
-         * events.get().invoker().onHandshake(mod.getMetadata().getVersion().
-         * getFriendlyString()); }
-         */
     }
 
     public static void handlePacket(ClientConnection connection, Identifier id, PacketByteBuf responseBuf) {
@@ -120,11 +112,9 @@ public class HandshakeModHandlerImpl {
             return;
         }
 
-        if (shouldHandshake.isEmpty()) { // Empty so no mods require a handshake.
+        if (shouldHandshake.isEmpty()) { // Empty, so no mods require a handshake.
             return;
         }
-
-        // start
 
         CompoundTag response;
         try {
@@ -148,9 +138,7 @@ public class HandshakeModHandlerImpl {
         int versionMinor = response.getInt("minorVersion");
 
         if ((versionMajor != FabricHelloPacketBuilder.MAJOR_VERSION || versionMinor != FabricHelloPacketBuilder.MINOR_VERSION)) {
-            LOGGER.warn("Kicked client because of mismatched fabric:hello version, expected major version: "
-                    + FabricHelloPacketBuilder.MAJOR_VERSION + " and minor version: "
-                    + FabricHelloPacketBuilder.MINOR_VERSION);
+            LOGGER.warn("Kicked client because of mismatched fabric:hello version, expected major version: " + FabricHelloPacketBuilder.MAJOR_VERSION + " and minor version: " + FabricHelloPacketBuilder.MINOR_VERSION);
             connection.send(new LoginDisconnectS2CPacket(MISMATCH_VERSION_TEXT)); // End here
             return;
         }
@@ -208,16 +196,15 @@ public class HandshakeModHandlerImpl {
         }
 
         if(failedMods.isEmpty()) {
-            return; // Everything is dandy
+            return; // Success
         }
-        
-        // TODO time to pipe in hot text to disconnect client with.
         
         Text finalText = new LiteralText("");
         
         failedMods.asMap().forEach((mod, msgs) -> {
             msgs.stream().forEach(text -> finalText.append(text));
         });
+        
         connection.send(new LoginDisconnectS2CPacket(finalText));
     }
 

@@ -37,16 +37,12 @@ import net.minecraft.network.Packet;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
-import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
 	private final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
 	private final Set<WeakReference<ServerPlayNetworkHandler>> handlers = new HashSet<>();
-
-	public void onQueryResponse(LoginQueryResponseC2SPacket packet) { // TODO move logic here?
-	}
 
 	public void addNetworkHandler(ServerPlayNetworkHandler handler) {
 		handlers.add(new WeakReference<>(handler));
