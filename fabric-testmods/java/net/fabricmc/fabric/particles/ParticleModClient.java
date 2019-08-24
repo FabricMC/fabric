@@ -23,6 +23,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.particles.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particles.FabricParticleTypes;
 import net.fabricmc.fabric.api.particles.FabricSpriteProvider;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.AnimatedParticle;
 import net.minecraft.client.particle.Particle;
@@ -30,7 +31,6 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.particle.SpriteProvider;
-import net.minecraft.item.Items;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.Identifier;
@@ -61,7 +61,7 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 		public SimpleTestParticle(ParticleEffect effect, World world, double x, double y, double z, double velX, double velY, double velZ) {
 			super(world, x, y, z, velX, velY, velZ);
 
-			setSprite(MinecraftClient.getInstance().getItemRenderer().getModels().getSprite(Items.BARRIER));
+			setSprite(MinecraftClient.getInstance().getItemRenderer().getModels().getSprite(Blocks.BARRIER.asItem()));
 		}
 
 		@Override
