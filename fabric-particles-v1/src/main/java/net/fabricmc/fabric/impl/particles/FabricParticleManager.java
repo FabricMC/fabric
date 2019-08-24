@@ -16,20 +16,27 @@
 
 package net.fabricmc.fabric.impl.particles;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
+import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.fabricmc.fabric.api.particles.FabricSpriteProvider;
+import net.minecraft.client.particle.ParticleTextureData;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonHelper;
 
 public final class FabricParticleManager {
 
@@ -60,24 +67,30 @@ public final class FabricParticleManager {
         return providers.get((int)ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
     }
 
-    public List<Identifier> uploadTexturePicks(Identifier id, List<Identifier> picks) {
+    public boolean loadParticle(ResourceManager manager, Identifier id) {
 
         FabricSpriteProviderImpl provider = getProvider(id);
 
-        if (provider != null) {
+        if (provider == null) {
+            return false; // preserve vanilla behaviour (i don't got dis)
+        }
 
-            if (picks == null) {
+        Identifier file = new Identifier(id.getNamespace(), "particles/" + id.getPath() + ".json");
+
+        try (Reader reader = new InputStreamReader(manager.getResource(file).getInputStream(), Charsets.UTF_8)) {
+            List<Identifier> spriteIds = ParticleTextureData.load(JsonHelper.deserialize(reader)).getTextureList();
+
+            if (spriteIds == null) {
                 // Particles should have a list of picks, even if it's just empty.
                 throw new IllegalStateException("(Fabric) Missing texture list for particle " + id);
             }
 
-            provider.setSprites(picks);
-
-            return null;
+            provider.setSprites(spriteIds);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to load description for particle " + id, e);
         }
 
-        // preserve vanilla behaviour
-        return picks;
+        return true; // i got dis
     }
 
     private final class FabricSpriteProviderImpl implements FabricSpriteProvider {

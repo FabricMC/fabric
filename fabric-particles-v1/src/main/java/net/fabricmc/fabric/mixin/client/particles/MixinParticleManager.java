@@ -23,7 +23,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -31,7 +30,6 @@ import net.fabricmc.fabric.impl.particles.FabricParticleManager;
 import net.fabricmc.fabric.impl.particles.VanillaParticleManager;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.particle.ParticleTextureData;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -54,12 +52,12 @@ public abstract class MixinParticleManager implements VanillaParticleManager {
         fabricParticleManager.injectValues();
     }
 
-    @Redirect(method = "method_18836(Lnet/minecraft/client/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/particle/ParticleTextureData;getTextureList()Ljava/util/List;"
-        ))
-    private List<Identifier> onMethod_18836(ParticleTextureData sender, ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> output) {
-        return fabricParticleManager.uploadTexturePicks(id, sender.getTextureList());
+    @Inject(method = "method_18836(Lnet/minecraft/client/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
+            at = @At("HEAD"),
+            cancellable = true)
+    private void onMethod_18836(ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> output, CallbackInfo info) {
+        if (fabricParticleManager.loadParticle(manager, id)) {
+            info.cancel();
+        }
     }
 }
