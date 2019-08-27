@@ -31,6 +31,13 @@ def getSubprojectVersion(project, version) {
 	}
 }
 
+def getBranch(){
+	if (grgit == null) {
+		return "unknown"
+	}
+	return grgit.branch.current().name
+}
+
 allprojects {
 	apply plugin: 'maven-publish'
 	apply plugin: 'fabric-loom'
@@ -197,7 +204,7 @@ dependencies {
 	}
 }
 
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){
@@ -207,7 +214,7 @@ curseforge {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
 		releaseType = 'alpha'
-		addGameVersion '1.14-Snapshot'
+		addGameVersion '1.15-Snapshot'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
