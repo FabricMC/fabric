@@ -32,6 +32,9 @@ def getSubprojectVersion(project, version) {
 }
 
 def getBranch(){
+	if(System.getenv().GIT_BRANCH){
+		return System.getenv().GIT_BRANCH
+	}
 	if (grgit == null) {
 		return "unknown"
 	}
@@ -205,6 +208,8 @@ dependencies {
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+
+logger.lifecycle("Building Fabric: " + version)
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){
