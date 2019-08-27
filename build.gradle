@@ -33,7 +33,8 @@ def getSubprojectVersion(project, version) {
 
 def getBranch(){
 	if(System.getenv().GIT_BRANCH){
-		return System.getenv().GIT_BRANCH
+		def branch = System.getenv().GIT_BRANCH
+		return branch.substring(branch.lastIndexOf("/") + 1)
 	}
 	if (grgit == null) {
 		return "unknown"
