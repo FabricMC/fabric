@@ -4,7 +4,8 @@
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
-    "fabricloader": ">=0.4.0",
+    "fabricloader": ">=0.6.0",
+    "minecraft": ">=1.15-",
     "fabric-api-base": "*",
     "fabric-renderer-api-v1": "*"
   },
