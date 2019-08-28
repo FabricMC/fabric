@@ -11,5 +11,9 @@
     "irc": "irc://irc.esper.net:6667/fabric",
     "issues": "https://github.com/FabricMC/fabric/issues",
     "sources": "https://github.com/FabricMC/fabric"
+  },
+  "depends": {
+    "fabricloader": ">=0.6.0",
+    "minecraft": "1.14.x"
   }
 }
