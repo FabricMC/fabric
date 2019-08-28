@@ -141,6 +141,6 @@ public abstract class AbstractQuadRenderer {
             mpos.setOffset(quad.lightFace());
         }
         // Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
-        return blockState.getBlockBrightness(blockInfo.blockView, mpos);
+	    return blockInfo.blockView.getLightmapIndex(blockState, mpos);
     }
 }

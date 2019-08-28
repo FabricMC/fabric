@@ -61,7 +61,7 @@ public class MixinClientPlayerInteractionManager {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "method_2902", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "updateBlockBreakingProgress", cancellable = true)
 	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		if (!gameMode.isCreative()) {
 			return;

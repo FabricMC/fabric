@@ -190,7 +190,7 @@ public class ChunkRenderInfo {
         long key = pos.asLong();
         int result = brightnessCache.get(key);
         if (result == Integer.MAX_VALUE) {
-            result = blockView.getBlockState(pos).getBlockBrightness(blockView, pos);
+        	result = blockView.getLightmapIndex(blockView.getBlockState(pos), pos);
             brightnessCache.put(key, result);
         }
         return result;

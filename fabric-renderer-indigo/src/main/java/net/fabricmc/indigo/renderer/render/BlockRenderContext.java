@@ -62,7 +62,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
         if(blockInfo.blockView == null) {
             return 15 << 20 | 15 << 4;
         }
-        return blockInfo.blockView.getBlockState(pos).getBlockBrightness(blockInfo.blockView, pos);
+        return blockInfo.blockView.getLightmapIndex(blockInfo.blockView.getBlockState(pos), pos);
     }
 
     private float aoLevel(BlockPos pos) {
