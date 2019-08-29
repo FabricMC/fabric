@@ -25,7 +25,8 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 /**
- * Handles fixing raw dimension ids between saves and servers
+ * Handles fixing raw dimension ids between saves and servers,
+ * and synchronizes said ids.
  */
 public class DimensionIdsFixer {
 	private static final Field FABRIC_DIMENSION_TYPE$RAW_ID;
