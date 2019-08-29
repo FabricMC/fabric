@@ -8,35 +8,61 @@ import net.minecraft.world.dimension.DimensionType;
  * This class consists exclusively of static methods that operate on world dimensions.
  */
 public final class FabricDimensions {
-    private FabricDimensions() {
-        throw new AssertionError();
-    }
+	private FabricDimensions() { throw new AssertionError(); }
 
-    /**
-     * Teleports an entity to a different dimension, using custom placement logic.
-     *
-     * <p> If {@code customPlacement} is {@code null}, this method behaves as if:
-     * <pre>{@code teleported.changeDimension(destination)}</pre>
-     * The {@code customPlacement} may itself return {@code null}, in which case
-     * the default placement logic for that dimension will be run. If {@code destination}
-     * is a {@link FabricDimensionType}, that logic is {@link FabricDimensionType#getDefaultPlacement()}.
-     * If {@code destination} is the nether or the overworld, the default logic is the vanilla path.
-     * For any other dimension, the default placement behaviour is undefined.
-     * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
-     * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
-     * before calling this method.
-     *
-     * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
-     * the returned entity for any further manipulation.
-     *
-     * @param teleported      the entity to teleport
-     * @param destination     the dimension the entity will be teleported to
-     * @param customPlacement custom placement logic that will run before the default one,
-     *                        or {@code null} to use the dimension's default behavior (see {@link FabricDimensionType#getDefaultPlacement()}).
-     * @param <E>             the type of the teleported entity
-     * @return the teleported entity, or a clone of it
-     */
-    public static <E extends Entity> E teleport(E teleported, DimensionType destination, /*Nullable*/ EntityPlacer customPlacement) {
-        return FabricDimensionInternals.changeDimension(teleported, destination, customPlacement);
-    }
+	/**
+	 * Teleports an entity to a different dimension, using custom placement logic.
+	 *
+	 * <p> This method behaves as if:
+	 * <pre>{@code teleported.changeDimension(destination)}</pre>
+	 *
+	 * <p> If {@code destination} is a {@link FabricDimensionType}, the placement logic used
+	 * is {@link FabricDimensionType#getDefaultPlacement()}. If {@code destination} is
+	 * the nether or the overworld, the default logic is the vanilla path.
+	 * For any other dimension, the default placement behaviour is undefined.
+	 * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
+	 * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
+	 * before calling this method.
+	 *
+	 * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
+	 * the returned entity for any further manipulation.
+	 *
+	 * @param teleported  the entity to teleport
+	 * @param destination the dimension the entity will be teleported to
+	 * @return the teleported entity, or a clone of it
+	 * @see #teleport(Entity, DimensionType, EntityPlacer)
+	 */
+	public static <E extends Entity> E teleport(E teleported, DimensionType destination) {
+		return teleport(teleported, destination, null);
+	}
+
+	/**
+	 * Teleports an entity to a different dimension, using custom placement logic.
+	 *
+	 * <p> If {@code customPlacement} is {@code null}, this method behaves as if:
+	 * <pre>{@code teleported.changeDimension(destination)}</pre>
+	 * The {@code customPlacement} may itself return {@code null}, in which case
+	 * the default placement logic for that dimension will be run.
+	 *
+	 * <p> If {@code destination} is a {@link FabricDimensionType}, the default placement logic
+	 * is {@link FabricDimensionType#getDefaultPlacement()}. If {@code destination} is the nether
+	 * or the overworld, the default logic is the vanilla path.
+	 * For any other dimension, the default placement behaviour is undefined.
+	 * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
+	 * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
+	 * before calling this method.
+	 *
+	 * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
+	 * the returned entity for any further manipulation.
+	 *
+	 * @param teleported      the entity to teleport
+	 * @param destination     the dimension the entity will be teleported to
+	 * @param customPlacement custom placement logic that will run before the default one,
+	 *                        or {@code null} to use the dimension's default behavior (see {@link FabricDimensionType#getDefaultPlacement()}).
+	 * @param <E>             the type of the teleported entity
+	 * @return the teleported entity, or a clone of it
+	 */
+	public static <E extends Entity> E teleport(E teleported, DimensionType destination, /*Nullable*/ EntityPlacer customPlacement) {
+		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacement);
+	}
 }
