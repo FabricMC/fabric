@@ -50,8 +50,7 @@ public abstract class MixinItemStack {
 				float miningSpeed;
 				if (this.getItem() instanceof DynamicTool) {
 					miningSpeed = ((DynamicTool) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
-				}
-				else {
+				} else {
 					miningSpeed = ((MiningToolItemAccessor) this.getItem()).getMiningSpeed();
 				}
 				info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
