@@ -85,12 +85,14 @@ public final class FabricDimensionInternals {
 
     @SuppressWarnings("unchecked")
     public static <E extends Entity> E changeDimension(E teleported, DimensionType dimension, EntityPlacer placement) {
-        try {
-            CUSTOM_PLACEMENT.set(placement);
-            return (E) teleported.changeDimension(dimension);
-        } finally {
-            CUSTOM_PLACEMENT.set(null);
-        }
-    }
+    	assert !teleported.world.isClient : "Entities can only be teleported on the server side";
+		assert Thread.currentThread() == ((ServerWorld)teleported.world).getServer().getThread() : "Entities must be teleported from the main server thread";
+		try {
+			CUSTOM_PLACEMENT.set(placement);
+			return (E) teleported.changeDimension(dimension);
+		} finally {
+			CUSTOM_PLACEMENT.set(null);
+		}
+	}
 
 }

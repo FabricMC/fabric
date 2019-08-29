@@ -1,5 +1,6 @@
 package net.fabricmc.fabric.api.dimension;
 
+import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
@@ -57,12 +58,15 @@ public final class FabricDimensions {
 	 *
 	 * @param teleported      the entity to teleport
 	 * @param destination     the dimension the entity will be teleported to
-	 * @param customPlacement custom placement logic that will run before the default one,
+	 * @param customPlacer custom placement logic that will run before the default one,
 	 *                        or {@code null} to use the dimension's default behavior (see {@link FabricDimensionType#getDefaultPlacement()}).
 	 * @param <E>             the type of the teleported entity
 	 * @return the teleported entity, or a clone of it
+	 * @throws IllegalStateException if this method is called on a client entity
+	 * @apiNote this method must be called from the main server thread
 	 */
-	public static <E extends Entity> E teleport(E teleported, DimensionType destination, /*Nullable*/ EntityPlacer customPlacement) {
-		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacement);
+	public static <E extends Entity> E teleport(E teleported, DimensionType destination, /*Nullable*/ EntityPlacer customPlacer) {
+		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");
+		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacer);
 	}
 }
