@@ -15,6 +15,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.LevelProperties;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,6 +28,7 @@ import java.util.function.Consumer;
  * Handles fixing raw dimension ids between saves and servers
  */
 public class DimensionIdsFixer {
+	private static final Field FABRIC_DIMENSION_TYPE$RAW_ID;
     static final Identifier ID = new Identifier("fabric", "dimension/sync");
 
     /**
@@ -49,7 +51,10 @@ public class DimensionIdsFixer {
         for (Identifier id : Registry.DIMENSION.getIds()) {
             DimensionType dimensionType = Objects.requireNonNull(DimensionType.byId(id));
             if (dimensionType instanceof FabricDimensionType) {
-                fabricDimensions.add((FabricDimensionType) dimensionType);
+				FabricDimensionType fabricDimension = (FabricDimensionType) dimensionType;
+				fabricDimensions.add(fabricDimension);
+				// reset the fixed raw id to the preferred raw id
+                setFixedRawId(fabricDimension, fabricDimension.getDesiredRawId());
             } else {
                 Identifier existing = fixedIds.put(dimensionType.getRawId(), id);
                 if (existing != null) {
@@ -67,7 +72,7 @@ public class DimensionIdsFixer {
             }
             DimensionType dim = DimensionType.byId(dimId);
             if (dim instanceof FabricDimensionType) {
-                ((FabricDimensionType) dim).setFixedId(savedRawId);
+            	setFixedRawId((FabricDimensionType) dim, savedRawId);
             } else {
                 FabricDimensionInternals.LOGGER.warn("A saved dimension has {}: {}", dim == null ? "been removed" : "stopped using the dimensions API", dimId);
                 // Preserve saved ids in case the mod is eventually added back
@@ -81,7 +86,7 @@ public class DimensionIdsFixer {
             Identifier dimId = Objects.requireNonNull(DimensionType.getId(fabricDimension));
             if (fixedIds.containsKey(rawDimId) && !fixedIds.get(rawDimId).equals(dimId)) {
                 while (fixedIds.containsKey(nextFreeId)) ++nextFreeId;
-                fabricDimension.setFixedId(nextFreeId);
+                setFixedRawId(fabricDimension, nextFreeId);
                 rawDimId = nextFreeId;
             }
             fixedIds.put(rawDimId, dimId);
@@ -90,8 +95,19 @@ public class DimensionIdsFixer {
         return fabricDimensionIds;
     }
 
+	/**
+	 * Reflectively set the fixed raw id on a {@link FabricDimensionType}.
+	 * @see FabricDimensionType#getRawId()
+	 */
+	private static void setFixedRawId(FabricDimensionType fabricDimension, int rawId) {
+		try {
+			FABRIC_DIMENSION_TYPE$RAW_ID.setInt(fabricDimension, rawId);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException("Failed to fix a raw id on a FabricDimensionType", e);
+		}
+	}
 
-    public static Packet<?> createPacket(LevelProperties levelProperties) {
+	public static Packet<?> createPacket(LevelProperties levelProperties) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeCompoundTag(((DimensionIdsHolder) levelProperties).fabric_getDimensionIds());
         return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
@@ -116,4 +132,12 @@ public class DimensionIdsFixer {
             errorHandler.accept(e);
         }
     }
+
+    static {
+		try {
+			FABRIC_DIMENSION_TYPE$RAW_ID = FabricDimensionType.class.getDeclaredField("fixedRawId");
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
+	}
 }
