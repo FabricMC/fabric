@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.api.tools.DynamicTool;
+import net.fabricmc.fabric.api.tools.DynamicMiningStats;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
@@ -44,18 +44,21 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
 	public void getBlockBreakingSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-		if (this.getItem() instanceof MiningToolItemAccessor) {
-			TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
-			if (triState != TriState.DEFAULT) {
-				float miningSpeed;
-				if (this.getItem() instanceof DynamicTool) {
-					miningSpeed = ((DynamicTool) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
-				} else {
-					miningSpeed = ((MiningToolItemAccessor) this.getItem()).getMiningSpeed();
-				}
-				info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
-				info.cancel();
+		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
+		if (triState != TriState.DEFAULT) {
+			Item item = this.getItem();
+			float miningSpeed;
+			//first check if it's got dynamic tool stats
+			if (item instanceof DynamicMiningStats) {
+				miningSpeed = ((DynamicMiningStats) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
+				//then check if it's a mining tool
+			} else if (item instanceof MiningToolItemAccessor) {
+				miningSpeed = ((MiningToolItemAccessor) this.getItem()).getMiningSpeed();
+				//if neither, let vanilla do its work
+			} else {
+				return;
 			}
+			info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
 		}
 	}
 

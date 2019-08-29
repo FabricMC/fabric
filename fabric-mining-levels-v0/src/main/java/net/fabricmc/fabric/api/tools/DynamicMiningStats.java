@@ -19,18 +19,20 @@ package net.fabricmc.fabric.api.tools;
 import net.minecraft.item.ItemStack;
 
 /**
- * Interface for tools whose properties are affected by NBT. Goes on the item.
+ * Interface for items which are capable of mining or breaking blocks. Supports dynamic mining levels/speeds.
+ * Does not need to extend {@link net.minecraft.item.MiningToolItem}, but should be in any {@link FabricToolTags}.
+ * If your item extends MiningToolItem, but does not have dynamic stats, you do not need to implement this.
  */
-public interface DynamicTool {
+public interface DynamicMiningStats {
 	/**
 	 * @param stack The stack to check on.
-	 * @return The mining level of the tool. 3 is equal to a diamond pick.
+	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
 	int getMiningLevel(ItemStack stack);
 
 	/**
 	 * @param stack The stack to check on.
-	 * @return The mining speed of the tool. 8.0 is equal to a diamond pick.
+	 * @return The mining speed of the item. 8.0 is equal to a diamond pick.
 	 */
 	float getMiningSpeed(ItemStack stack);
 }
