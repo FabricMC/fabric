@@ -3,6 +3,7 @@ package net.fabricmc.fabric.mixin.idremap;
 import com.mojang.datafixers.DataFixer;
 import net.fabricmc.fabric.impl.dimension.DimensionIdsFixer;
 import net.fabricmc.fabric.impl.dimension.DimensionIdsHolder;
+import net.fabricmc.fabric.impl.dimension.DimensionRemapException;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.LevelProperties;
@@ -28,7 +29,7 @@ public abstract class MixinLevelProperties implements DimensionIdsHolder {
         try {
             this.fabricDimensionIds = DimensionIdsFixer.apply(savedIds);
         } catch (RemapException e) {
-            throw new RuntimeException("Failed to assign unique dimension ids!", e);
+            throw new DimensionRemapException("Failed to assign unique dimension ids!", e);
         }
     }
 
