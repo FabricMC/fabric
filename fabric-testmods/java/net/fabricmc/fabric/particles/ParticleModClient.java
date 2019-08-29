@@ -42,11 +42,11 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 	public static final DefaultParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
 	public static final DefaultParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
 
-    @Override
-    public void onInitialize() {
-        Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "simple"), SIMPLE_TEST_PARTICLE);
-        Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "custom"), CUSTOM_TEST_PARTICLE);
-    }
+	@Override
+	public void onInitialize() {
+		Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "simple"), SIMPLE_TEST_PARTICLE);
+		Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "custom"), CUSTOM_TEST_PARTICLE);
+	}
 
 	@Override
 	public void onInitializeClient() {

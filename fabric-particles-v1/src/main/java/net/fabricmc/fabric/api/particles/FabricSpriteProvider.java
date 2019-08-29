@@ -24,14 +24,14 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
 
 public interface FabricSpriteProvider extends SpriteProvider {
 
-    /**
-     * Returns the entire particles texture atlas.
-     */
-    SpriteAtlasTexture getAtlas();
+	/**
+	 * Returns the entire particles texture atlas.
+	 */
+	SpriteAtlasTexture getAtlas();
 
-    /**
-     * Gets the list of all sprites available for this particle to use.
-     * This is defined in your resourcepack.
-     */
-    List<Sprite> getSprites();
+	/**
+	 * Gets the list of all sprites available for this particle to use.
+	 * This is defined in your resourcepack.
+	 */
+	List<Sprite> getSprites();
 }

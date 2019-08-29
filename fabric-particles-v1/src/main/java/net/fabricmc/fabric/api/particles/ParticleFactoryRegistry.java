@@ -26,40 +26,40 @@ import net.minecraft.particle.ParticleType;
  */
 public interface ParticleFactoryRegistry {
 
-    static ParticleFactoryRegistry getInstance() {
-        return ParticleFactoryRegistryImpl.INSTANCE;
-    }
+	static ParticleFactoryRegistry getInstance() {
+		return ParticleFactoryRegistryImpl.INSTANCE;
+	}
 
-    /**
-     * Registers a factory for constructing particles of the given type.
-     */
-    <T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory);
+	/**
+	 * Registers a factory for constructing particles of the given type.
+	 */
+	<T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory);
 
-    /**
-     * Registers a delayed factory for constructing particles of the given type.
-     *
-     * The factory method will be called with a sprite provider to use for that particle when it comes time.
-     *
-     * Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
-     */
-    <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor);
+	/**
+	 * Registers a delayed factory for constructing particles of the given type.
+	 *
+	 * The factory method will be called with a sprite provider to use for that particle when it comes time.
+	 *
+	 * Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
+	 */
+	<T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor);
 
-    /**
-     * A pending particle factory.
-     *
-     * @param <T> The type of particle effects this factory deals with.
-     */
-    @FunctionalInterface
-    public interface PendingParticleFactory<T extends ParticleEffect> {
-        /**
-         * Called to create a new particle factory.
-         *
-         * Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
-         *
-         * @param provider The sprite provider used to supply sprite textures when drawing the mod's particle.
-         *
-         * @return A new particle factory.
-         */
-        ParticleFactory<T> create(FabricSpriteProvider provider);
-    }
+	/**
+	 * A pending particle factory.
+	 *
+	 * @param <T> The type of particle effects this factory deals with.
+	 */
+	@FunctionalInterface
+	public interface PendingParticleFactory<T extends ParticleEffect> {
+		/**
+		 * Called to create a new particle factory.
+		 *
+		 * Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
+		 *
+		 * @param provider The sprite provider used to supply sprite textures when drawing the mod's particle.
+		 *
+		 * @return A new particle factory.
+		 */
+		ParticleFactory<T> create(FabricSpriteProvider provider);
+	}
 }
