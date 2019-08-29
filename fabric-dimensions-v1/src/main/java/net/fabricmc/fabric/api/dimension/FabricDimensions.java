@@ -25,7 +25,9 @@ import net.minecraft.world.dimension.DimensionType;
  * This class consists exclusively of static methods that operate on world dimensions.
  */
 public final class FabricDimensions {
-	private FabricDimensions() { throw new AssertionError(); }
+	private FabricDimensions() {
+		throw new AssertionError();
+	}
 
 	/**
 	 * Teleports an entity to a different dimension, using custom placement logic.
@@ -72,11 +74,11 @@ public final class FabricDimensions {
 	 * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
 	 * the returned entity for any further manipulation.
 	 *
-	 * @param teleported      the entity to teleport
-	 * @param destination     the dimension the entity will be teleported to
+	 * @param teleported   the entity to teleport
+	 * @param destination  the dimension the entity will be teleported to
 	 * @param customPlacer custom placement logic that will run before the default one,
-	 *                        or {@code null} to use the dimension's default behavior (see {@link FabricDimensionType#getDefaultPlacement()}).
-	 * @param <E>             the type of the teleported entity
+	 *                     or {@code null} to use the dimension's default behavior (see {@link FabricDimensionType#getDefaultPlacement()}).
+	 * @param <E>          the type of the teleported entity
 	 * @return the teleported entity, or a clone of it
 	 * @throws IllegalStateException if this method is called on a client entity
 	 * @apiNote this method must be called from the main server thread

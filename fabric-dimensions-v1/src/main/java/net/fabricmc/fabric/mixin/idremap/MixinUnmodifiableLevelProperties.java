@@ -26,13 +26,15 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(UnmodifiableLevelProperties.class)
 public abstract class MixinUnmodifiableLevelProperties implements DimensionIdsHolder {
-    @Shadow @Final private LevelProperties properties;
+	@Shadow
+	@Final
+	private LevelProperties properties;
 
-    /**
-     * Delegates to the main level properties
-     */
-    @Override
-    public CompoundTag fabric_getDimensionIds() {
-        return ((DimensionIdsHolder) this.properties).fabric_getDimensionIds();
-    }
+	/**
+	 * Delegates to the main level properties
+	 */
+	@Override
+	public CompoundTag fabric_getDimensionIds() {
+		return ((DimensionIdsHolder) this.properties).fabric_getDimensionIds();
+	}
 }

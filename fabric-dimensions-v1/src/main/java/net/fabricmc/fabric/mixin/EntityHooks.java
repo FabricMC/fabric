@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(Entity.class)
 public interface EntityHooks {
-    @Accessor
-    void setLastPortalDirectionVector(Vec3d vec);
+	@Accessor
+	void setLastPortalDirectionVector(Vec3d vec);
 
-    @Accessor
-    void setLastPortalDirection(Direction dir);
+	@Accessor
+	void setLastPortalDirection(Direction dir);
 
 }

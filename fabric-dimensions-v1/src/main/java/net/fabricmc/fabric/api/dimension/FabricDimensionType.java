@@ -37,7 +37,9 @@ import java.util.function.BiFunction;
 public final class FabricDimensionType extends DimensionType {
 	private final EntityPlacer defaultPlacement;
 	private int desiredRawId;
-	/** The fixed raw id for this dimension type, set through reflection */
+	/**
+	 * The fixed raw id for this dimension type, set through reflection
+	 */
 	private int fixedRawId;
 
 	/**
@@ -119,7 +121,8 @@ public final class FabricDimensionType extends DimensionType {
 		private int desiredRawId = 0;
 		private boolean skyLight = true;
 
-		private Builder() { }
+		private Builder() {
+		}
 
 		/**
 		 * Set the default placer used when teleporting entities to dimensions of the built type.
@@ -158,7 +161,7 @@ public final class FabricDimensionType extends DimensionType {
 		 * If this method is not called, the value defaults to {@code true}.
 		 *
 		 * @param skyLight {@code true} if the dimension of the built type should use skylight,
-		 * 		{@code false} otherwise
+		 *                 {@code false} otherwise
 		 * @return this {@code Builder} object
 		 */
 		public Builder skyLight(boolean skyLight) {

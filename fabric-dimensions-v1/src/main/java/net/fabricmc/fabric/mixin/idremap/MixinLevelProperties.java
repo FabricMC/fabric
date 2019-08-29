@@ -31,26 +31,26 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LevelProperties.class)
 public abstract class MixinLevelProperties implements DimensionIdsHolder {
-    @Unique
-    private CompoundTag fabricDimensionIds = new CompoundTag();
+	@Unique
+	private CompoundTag fabricDimensionIds = new CompoundTag();
 
-    @Override
-    public CompoundTag fabric_getDimensionIds() {
-        return fabricDimensionIds;
-    }
+	@Override
+	public CompoundTag fabric_getDimensionIds() {
+		return fabricDimensionIds;
+	}
 
-    @Inject(method = "<init>(Lnet/minecraft/nbt/CompoundTag;Lcom/mojang/datafixers/DataFixer;ILnet/minecraft/nbt/CompoundTag;)V", at = @At("RETURN"))
-    private void readDimensionIds(CompoundTag data, DataFixer fixer, int version, CompoundTag player, CallbackInfo ci) {
-        CompoundTag savedIds = data.getCompound("fabric_DimensionIds");
-        try {
-            this.fabricDimensionIds = DimensionIdsFixer.apply(savedIds);
-        } catch (RemapException e) {
-            throw new DimensionRemapException("Failed to assign unique dimension ids!", e);
-        }
-    }
+	@Inject(method = "<init>(Lnet/minecraft/nbt/CompoundTag;Lcom/mojang/datafixers/DataFixer;ILnet/minecraft/nbt/CompoundTag;)V", at = @At("RETURN"))
+	private void readDimensionIds(CompoundTag data, DataFixer fixer, int version, CompoundTag player, CallbackInfo ci) {
+		CompoundTag savedIds = data.getCompound("fabric_DimensionIds");
+		try {
+			this.fabricDimensionIds = DimensionIdsFixer.apply(savedIds);
+		} catch (RemapException e) {
+			throw new DimensionRemapException("Failed to assign unique dimension ids!", e);
+		}
+	}
 
-    @Inject(method = "updateProperties", at = @At("RETURN"))
-    private void writeDimensionIds(CompoundTag data, CompoundTag player, CallbackInfo ci) {
-        data.put("fabric_DimensionIds", fabricDimensionIds);
-    }
+	@Inject(method = "updateProperties", at = @At("RETURN"))
+	private void writeDimensionIds(CompoundTag data, CompoundTag player, CallbackInfo ci) {
+		data.put("fabric_DimensionIds", fabricDimensionIds);
+	}
 }

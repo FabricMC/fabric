@@ -33,18 +33,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PortalForcer.class)
 public abstract class MixinPortalForcer {
-    @Shadow @Final private ServerWorld world;
+	@Shadow
+	@Final
+	private ServerWorld world;
 
-    @Inject(method = "usePortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
-    private void onUsePortal(Entity teleported, float yaw, CallbackInfoReturnable<Boolean> cir) {
-        FabricDimensionInternals.prepareDimensionalTeleportation(teleported);
-    }
+	@Inject(method = "usePortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
+	private void onUsePortal(Entity teleported, float yaw, CallbackInfoReturnable<Boolean> cir) {
+		FabricDimensionInternals.prepareDimensionalTeleportation(teleported);
+	}
 
-    @Inject(method = "getPortal", at = @At("HEAD"), cancellable = true)
-    private void findEntityPlacement(BlockPos pos, Vec3d velocity, Direction portalDir, double portalX, double portalY, boolean player, CallbackInfoReturnable<BlockPattern.TeleportTarget> cir) {
-        BlockPattern.TeleportTarget ret = FabricDimensionInternals.tryFindPlacement(this.world, portalDir, portalX, portalY);
-        if (ret != null) {
-            cir.setReturnValue(ret);
-        }
-    }
+	@Inject(method = "getPortal", at = @At("HEAD"), cancellable = true)
+	private void findEntityPlacement(BlockPos pos, Vec3d velocity, Direction portalDir, double portalX, double portalY, boolean player, CallbackInfoReturnable<BlockPattern.TeleportTarget> cir) {
+		BlockPattern.TeleportTarget ret = FabricDimensionInternals.tryFindPlacement(this.world, portalDir, portalX, portalY);
+		if (ret != null) {
+			cir.setReturnValue(ret);
+		}
+	}
 }
