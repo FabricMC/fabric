@@ -38,7 +38,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class ParticleModClient implements ClientModInitializer, ModInitializer {
-
 	public static final DefaultParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
 	public static final DefaultParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
 
@@ -56,10 +55,8 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 
 	@Environment(EnvType.CLIENT)
 	static class SimpleTestParticle extends SpriteBillboardParticle {
-
 		public SimpleTestParticle(ParticleEffect effect, World world, double x, double y, double z, double velX, double velY, double velZ) {
 			super(world, x, y, z, velX, velY, velZ);
-
 			setSprite(MinecraftClient.getInstance().getItemRenderer().getModels().getSprite(Blocks.BARRIER.asItem()));
 		}
 
@@ -71,16 +68,13 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 
 	@Environment(EnvType.CLIENT)
 	static class CustomTestParticle extends AnimatedParticle {
-
 		protected CustomTestParticle(World world, double x, double y, double z, SpriteProvider sprites) {
 			super(world, x, y, z, sprites, 1);
-
 			setSprite(sprites.getSprite(world.random));
 		}
 
 		@Environment(EnvType.CLIENT)
 		public static class Factory implements ParticleFactory<DefaultParticleType> {
-
 			private final FabricSpriteProvider sprites;
 
 			public Factory(FabricSpriteProvider sprites) {

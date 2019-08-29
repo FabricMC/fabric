@@ -23,7 +23,6 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 
 public interface FabricSpriteProvider extends SpriteProvider {
-
 	/**
 	 * Returns the entire particles texture atlas.
 	 */

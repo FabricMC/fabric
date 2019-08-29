@@ -29,7 +29,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
-
 	public static final ParticleFactoryRegistryImpl INSTANCE = new ParticleFactoryRegistryImpl();
 
 	final Int2ObjectMap<ParticleFactory<?>> factories = new Int2ObjectOpenHashMap<>();
