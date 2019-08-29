@@ -30,6 +30,7 @@ public class FabricToolTags {
 	public static final Tag<Item> PICKAXES = register("pickaxes");
 	public static final Tag<Item> SHOVELS = register("shovels");
 	public static final Tag<Item> SWORDS = register("swords");
+	public static final Tag<Item> SHEARS = register("shears");
 
 	private FabricToolTags() {
 

@@ -48,8 +48,12 @@ public abstract class MixinItemStack {
 			TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
 			if (triState != TriState.DEFAULT) {
 				float miningSpeed;
-				if (this.getItem() instanceof DynamicTool) miningSpeed = ((DynamicTool) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
-				else miningSpeed = ((MiningToolItemAccessor) this.getItem()).getMiningSpeed();
+				if (this.getItem() instanceof DynamicTool) {
+					miningSpeed = ((DynamicTool) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
+				}
+				else {
+					miningSpeed = ((MiningToolItemAccessor) this.getItem()).getMiningSpeed();
+				}
 				info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
 				info.cancel();
 			}
