@@ -87,7 +87,7 @@ public final class ToolManager {
 	}
 
 	private static int getMiningLevel(ItemStack stack) {
-		if (stack.getItem() instanceof ToolItem) {
+		if (stack.getItem() instanceof ToolItem || stack.getItem() instanceof DynamicTool) {
 			return ((ToolItem) stack.getItem()).getMaterial().getMiningLevel();
 		} else {
 			return 0;
