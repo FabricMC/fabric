@@ -30,22 +30,22 @@ import net.minecraft.util.registry.Registry;
 
 public final class ParticleFactoryRegistryImpl implements ParticleFactoryRegistry {
 
-    public static final ParticleFactoryRegistryImpl INSTANCE = new ParticleFactoryRegistryImpl();
+	public static final ParticleFactoryRegistryImpl INSTANCE = new ParticleFactoryRegistryImpl();
 
-    final Int2ObjectMap<ParticleFactory<?>> factories = new Int2ObjectOpenHashMap<>();
-    final Int2ObjectMap<PendingParticleFactory<?>> constructors = new Int2ObjectOpenHashMap<>();
-    final Map<Identifier, Integer> constructorsIdsMap = new HashMap<>();
+	final Int2ObjectMap<ParticleFactory<?>> factories = new Int2ObjectOpenHashMap<>();
+	final Int2ObjectMap<PendingParticleFactory<?>> constructors = new Int2ObjectOpenHashMap<>();
+	final Map<Identifier, Integer> constructorsIdsMap = new HashMap<>();
 
-    private ParticleFactoryRegistryImpl() { }
+	private ParticleFactoryRegistryImpl() { }
 
-    @Override
-    public <T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory) {
-        factories.put(Registry.PARTICLE_TYPE.getRawId(type), factory);
-    }
+	@Override
+	public <T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory) {
+		factories.put(Registry.PARTICLE_TYPE.getRawId(type), factory);
+	}
 
-    @Override
-    public <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> factory) {
-        constructors.put(Registry.PARTICLE_TYPE.getRawId(type), factory);
-        constructorsIdsMap.put(Registry.PARTICLE_TYPE.getId(type), Registry.PARTICLE_TYPE.getRawId(type));
-    }
+	@Override
+	public <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> factory) {
+		constructors.put(Registry.PARTICLE_TYPE.getRawId(type), factory);
+		constructorsIdsMap.put(Registry.PARTICLE_TYPE.getId(type), Registry.PARTICLE_TYPE.getRawId(type));
+	}
 }

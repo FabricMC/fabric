@@ -40,92 +40,92 @@ import net.minecraft.util.JsonHelper;
 
 public final class FabricParticleManager {
 
-    private final VanillaParticleManager manager;
+	private final VanillaParticleManager manager;
 
-    private final Int2ObjectMap<FabricSpriteProviderImpl> providers = new Int2ObjectOpenHashMap<>();
+	private final Int2ObjectMap<FabricSpriteProviderImpl> providers = new Int2ObjectOpenHashMap<>();
 
-    public FabricParticleManager(VanillaParticleManager manager) {
-        this.manager = manager;
-    }
+	public FabricParticleManager(VanillaParticleManager manager) {
+		this.manager = manager;
+	}
 
-    public void injectValues() {
-        manager.getFactories().putAll(ParticleFactoryRegistryImpl.INSTANCE.factories);
+	public void injectValues() {
+		manager.getFactories().putAll(ParticleFactoryRegistryImpl.INSTANCE.factories);
 
-        ParticleFactoryRegistryImpl.INSTANCE.constructors.forEach((id, factory) -> {
-            FabricSpriteProviderImpl provider = new FabricSpriteProviderImpl();
+		ParticleFactoryRegistryImpl.INSTANCE.constructors.forEach((id, factory) -> {
+			FabricSpriteProviderImpl provider = new FabricSpriteProviderImpl();
 
-            providers.put((int)id, provider);
-            manager.getFactories().put((int)id, factory.create(provider));
-        });
-    }
+			providers.put((int)id, provider);
+			manager.getFactories().put((int)id, factory.create(provider));
+		});
+	}
 
-    private FabricSpriteProviderImpl getProvider(Identifier id) {
-        if (!ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.containsKey(id)) {
-            return null;
-        }
+	private FabricSpriteProviderImpl getProvider(Identifier id) {
+		if (!ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.containsKey(id)) {
+			return null;
+		}
 
-        return providers.get((int)ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
-    }
+		return providers.get((int)ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
+	}
 
-    public boolean loadParticle(ResourceManager manager, Identifier id) {
+	public boolean loadParticle(ResourceManager manager, Identifier id) {
 
-        FabricSpriteProviderImpl provider = getProvider(id);
+		FabricSpriteProviderImpl provider = getProvider(id);
 
-        if (provider == null) {
-            return false; // preserve vanilla behaviour (i don't got dis)
-        }
+		if (provider == null) {
+			return false; // preserve vanilla behaviour (i don't got dis)
+		}
 
-        Identifier file = new Identifier(id.getNamespace(), "particles/" + id.getPath() + ".json");
+		Identifier file = new Identifier(id.getNamespace(), "particles/" + id.getPath() + ".json");
 
-        try (Reader reader = new InputStreamReader(manager.getResource(file).getInputStream(), Charsets.UTF_8)) {
-            List<Identifier> spriteIds = ParticleTextureData.load(JsonHelper.deserialize(reader)).getTextureList();
+		try (Reader reader = new InputStreamReader(manager.getResource(file).getInputStream(), Charsets.UTF_8)) {
+			List<Identifier> spriteIds = ParticleTextureData.load(JsonHelper.deserialize(reader)).getTextureList();
 
-            if (spriteIds == null) {
-                // Particles should have a list of picks, even if it's just empty.
-                throw new IllegalStateException("(Fabric) Missing texture list for particle " + id);
-            }
+			if (spriteIds == null) {
+				// Particles should have a list of picks, even if it's just empty.
+				throw new IllegalStateException("(Fabric) Missing texture list for particle " + id);
+			}
 
-            provider.setSprites(spriteIds);
-        } catch (IOException e) {
-            throw new IllegalStateException("Failed to load description for particle " + id, e);
-        }
+			provider.setSprites(spriteIds);
+		} catch (IOException e) {
+			throw new IllegalStateException("Failed to load description for particle " + id, e);
+		}
 
-        return true; // i got dis
-    }
+		return true; // i got dis
+	}
 
-    private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
+	private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
 
-        private List<Identifier> spriteIds;
+		private List<Identifier> spriteIds;
 
-        @Nullable
-        private List<Sprite> sprites;
+		@Nullable
+		private List<Sprite> sprites;
 
-        @Override
-        public Sprite getSprite(int min, int max) {
-            return getSprites().get(min * (getSprites().size() - 1) / max);
-        }
+		@Override
+		public Sprite getSprite(int min, int max) {
+			return getSprites().get(min * (getSprites().size() - 1) / max);
+		}
 
-        @Override
-        public Sprite getSprite(Random random_1) {
-            return getSprites().get(random_1.nextInt(getSprites().size()));
-        }
+		@Override
+		public Sprite getSprite(Random random_1) {
+			return getSprites().get(random_1.nextInt(getSprites().size()));
+		}
 
-        @Override
-        public SpriteAtlasTexture getAtlas() {
-            return manager.getAtlas();
-        }
+		@Override
+		public SpriteAtlasTexture getAtlas() {
+			return manager.getAtlas();
+		}
 
-        @Override
-        public List<Sprite> getSprites() {
-            if (sprites == null) {
-                sprites = spriteIds.stream().map(getAtlas()::getSprite).collect(Collectors.toList());
-            }
-            return sprites;
-        }
+		@Override
+		public List<Sprite> getSprites() {
+			if (sprites == null) {
+				sprites = spriteIds.stream().map(getAtlas()::getSprite).collect(Collectors.toList());
+			}
+			return sprites;
+		}
 
-        public void setSprites(List<Identifier> sprites) {
-            this.sprites = null;
-            this.spriteIds = ImmutableList.copyOf(sprites);
-        }
-    }
+		public void setSprites(List<Identifier> sprites) {
+			this.sprites = null;
+			this.spriteIds = ImmutableList.copyOf(sprites);
+		}
+	}
 }

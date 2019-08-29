@@ -37,27 +37,27 @@ import net.minecraft.util.Identifier;
 @Mixin(ParticleManager.class)
 public abstract class MixinParticleManager implements VanillaParticleManager {
 
-    private final FabricParticleManager fabricParticleManager = new FabricParticleManager(this);
+	private final FabricParticleManager fabricParticleManager = new FabricParticleManager(this);
 
-    @Override
-    @Accessor("particleAtlasTexture")
-    public abstract SpriteAtlasTexture getAtlas();
+	@Override
+	@Accessor("particleAtlasTexture")
+	public abstract SpriteAtlasTexture getAtlas();
 
-    @Override
-    @Accessor("factories")
-    public abstract Int2ObjectMap<ParticleFactory<?>> getFactories();
+	@Override
+	@Accessor("factories")
+	public abstract Int2ObjectMap<ParticleFactory<?>> getFactories();
 
-    @Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
-    private void onRegisterDefaultFactories(CallbackInfo info) {
-        fabricParticleManager.injectValues();
-    }
+	@Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
+	private void onRegisterDefaultFactories(CallbackInfo info) {
+		fabricParticleManager.injectValues();
+	}
 
-    @Inject(method = "method_18836(Lnet/minecraft/client/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
-            at = @At("HEAD"),
-            cancellable = true)
-    private void onMethod_18836(ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> output, CallbackInfo info) {
-        if (fabricParticleManager.loadParticle(manager, id)) {
-            info.cancel();
-        }
-    }
+	@Inject(method = "method_18836(Lnet/minecraft/client/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
+			at = @At("HEAD"),
+			cancellable = true)
+	private void onMethod_18836(ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> output, CallbackInfo info) {
+		if (fabricParticleManager.loadParticle(manager, id)) {
+			info.cancel();
+		}
+	}
 }
