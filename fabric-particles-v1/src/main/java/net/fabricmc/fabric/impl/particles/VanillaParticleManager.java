@@ -27,7 +27,6 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
  *  SpriteAtlasTexture atlas = ((VanillaParticleManager)MinecraftClient.getInstance().particleManager).getAtlas()
  */
 public interface VanillaParticleManager {
-
 	SpriteAtlasTexture getAtlas();
 
 	Int2ObjectMap<ParticleFactory<?>> getFactories();

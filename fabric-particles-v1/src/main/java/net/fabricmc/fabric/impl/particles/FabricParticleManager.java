@@ -39,7 +39,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
 public final class FabricParticleManager {
-
 	private final VanillaParticleManager manager;
 
 	private final Int2ObjectMap<FabricSpriteProviderImpl> providers = new Int2ObjectOpenHashMap<>();
@@ -50,7 +49,6 @@ public final class FabricParticleManager {
 
 	public void injectValues() {
 		manager.getFactories().putAll(ParticleFactoryRegistryImpl.INSTANCE.factories);
-
 		ParticleFactoryRegistryImpl.INSTANCE.constructors.forEach((id, factory) -> {
 			FabricSpriteProviderImpl provider = new FabricSpriteProviderImpl();
 
@@ -68,7 +66,6 @@ public final class FabricParticleManager {
 	}
 
 	public boolean loadParticle(ResourceManager manager, Identifier id) {
-
 		FabricSpriteProviderImpl provider = getProvider(id);
 
 		if (provider == null) {
@@ -94,7 +91,6 @@ public final class FabricParticleManager {
 	}
 
 	private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
-
 		private List<Identifier> spriteIds;
 
 		@Nullable

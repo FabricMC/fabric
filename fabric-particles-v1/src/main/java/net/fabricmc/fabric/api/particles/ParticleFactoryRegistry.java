@@ -25,7 +25,6 @@ import net.minecraft.particle.ParticleType;
  * Registry for adding particle factories on the client.
  */
 public interface ParticleFactoryRegistry {
-
 	static ParticleFactoryRegistry getInstance() {
 		return ParticleFactoryRegistryImpl.INSTANCE;
 	}

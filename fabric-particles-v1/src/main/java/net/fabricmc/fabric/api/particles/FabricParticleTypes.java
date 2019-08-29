@@ -24,7 +24,6 @@ import net.minecraft.particle.ParticleType;
  * Methods for creating particle types, both simple and using an existing attribute factory.
  */
 public final class FabricParticleTypes {
-
 	private FabricParticleTypes() { }
 
 	/**
