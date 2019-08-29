@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.tools;
 import net.minecraft.item.ItemStack;
 
 /**
- * Interface for tools whose properties are affected by NBT.
+ * Interface for tools whose properties are affected by NBT. Goes on the item.
  */
 public interface DynamicTool {
 	/**
