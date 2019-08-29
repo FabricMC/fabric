@@ -50,7 +50,6 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		onInitialize();
 		ParticleFactoryRegistry.getInstance().register(SIMPLE_TEST_PARTICLE, SimpleTestParticle::new);
 		ParticleFactoryRegistry.getInstance().register(CUSTOM_TEST_PARTICLE, CustomTestParticle.Factory::new);
 	}
