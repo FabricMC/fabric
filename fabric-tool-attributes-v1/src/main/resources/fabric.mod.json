@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-mining-levels-v0",
+  "id": "fabric-tool-attributes-v1",
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
@@ -9,6 +9,6 @@
     "fabric-tag-extensions-v0": "*"
   },
   "mixins": [
-    "fabric-mining-levels-v0.mixins.json"
+    "fabric-tool-attributes-v1.mixins.json"
   ]
 }

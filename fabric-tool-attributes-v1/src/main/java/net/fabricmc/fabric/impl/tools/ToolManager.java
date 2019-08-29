@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.tools;
 
-import net.fabricmc.fabric.api.tools.DynamicMiningStats;
+import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -88,8 +88,8 @@ public final class ToolManager {
 	}
 
 	private static int getMiningLevel(ItemStack stack) {
-		if (stack.getItem() instanceof DynamicMiningStats) {
-			return ((DynamicMiningStats) stack.getItem()).getMiningLevel(stack);
+		if (stack.getItem() instanceof ToolAttributeHolder) {
+			return ((ToolAttributeHolder) stack.getItem()).getMiningLevel(stack);
 		} else if (stack.getItem() instanceof ToolItem) {
 			return ((ToolItem) stack.getItem()).getMaterial().getMiningLevel();
 		} else {

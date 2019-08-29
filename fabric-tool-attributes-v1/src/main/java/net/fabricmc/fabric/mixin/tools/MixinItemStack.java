@@ -16,10 +16,14 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.api.tools.DynamicMiningStats;
+import com.google.common.collect.Multimap;
+import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.tools.AttributeManager;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,11 +31,15 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
 	@Shadow
 	public abstract Item getItem();
+
+	@Shadow
+	public abstract boolean hasTag();
 
 	@Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
@@ -43,22 +51,28 @@ public abstract class MixinItemStack {
 	}
 
 	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
-	public void getBlockBreakingSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
+	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
 		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
 		if (triState != TriState.DEFAULT) {
 			Item item = this.getItem();
 			float miningSpeed;
-			//first check if it's got dynamic tool stats
-			if (item instanceof DynamicMiningStats) {
-				miningSpeed = ((DynamicMiningStats) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
-				//then check if it's a mining tool
-			} else if (item instanceof MiningToolItemAccessor) {
-				miningSpeed = ((MiningToolItemAccessor) this.getItem()).getMiningSpeed();
-				//if neither, let vanilla do its work
+			if (item instanceof ToolAttributeHolder) {
+				miningSpeed = ((ToolAttributeHolder) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
 			} else {
 				return;
 			}
 			info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
+		}
+	}
+
+	@Inject(at = @At("RETURN"), method = "getAttributeModifiers", cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> info, Multimap<String, EntityAttributeModifier> multimap) {
+		ItemStack stack = (ItemStack) (Object) this;
+		if (stack.getItem() instanceof ToolAttributeHolder) {
+			if (!stack.hasTag() || !stack.getTag().containsKey("fabric_IgnoreDynamicModifiers")) {
+				Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, ((ToolAttributeHolder) stack.getItem()).getDynamicModifiers(slot, stack));
+				info.setReturnValue(ret);
+			}
 		}
 	}
 

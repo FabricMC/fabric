@@ -16,12 +16,27 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
+import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.MiningToolItem;
+import net.minecraft.item.ToolItem;
+import net.minecraft.item.ToolMaterial;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(MiningToolItem.class)
-public interface MiningToolItemAccessor {
-	@Accessor
-	float getMiningSpeed();
+public abstract class MixinMiningToolItem extends ToolItem implements ToolAttributeHolder {
+
+	public MixinMiningToolItem(ToolMaterial material, Settings settings) {
+		super(material, settings);
+	}
+
+	@Override
+	public int getMiningLevel(ItemStack stack) {
+		return this.getMaterial().getMiningLevel();
+	}
+
+	@Override
+	public float getMiningSpeed(ItemStack stack) {
+		return this.getMaterial().getMiningSpeed();
+	}
 }
