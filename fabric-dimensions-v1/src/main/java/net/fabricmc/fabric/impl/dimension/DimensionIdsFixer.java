@@ -114,27 +114,7 @@ public class DimensionIdsFixer {
         return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
     }
 
-    static void receivePacket(PacketContext context, PacketByteBuf buf, Consumer<Exception> errorHandler) {
-        CompoundTag compound = buf.readCompoundTag();
-        try {
-            context.getTaskQueue().executeFuture(() -> {
-                if (compound == null) {
-                    errorHandler.accept(new RemapException("Received null compound tag in dimension sync packet!"));
-                    return null;
-                }
-                try {
-                    apply(compound);
-                } catch (RemapException e) {
-                    errorHandler.accept(e);
-                }
-                return null;
-            }).get(30, TimeUnit.SECONDS);
-        } catch (ExecutionException | InterruptedException | TimeoutException e) {
-            errorHandler.accept(e);
-        }
-    }
-
-    static {
+	static {
 		try {
 			FABRIC_DIMENSION_TYPE$RAW_ID = FabricDimensionType.class.getDeclaredField("fixedRawId");
 		} catch (NoSuchFieldException e) {
