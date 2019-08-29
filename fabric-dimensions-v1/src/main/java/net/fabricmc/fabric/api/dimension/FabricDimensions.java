@@ -23,7 +23,7 @@ public final class FabricDimensions {
      * If {@code destination} is the nether or the overworld, the default logic is the vanilla path.
      * For any other dimension, the default placement behaviour is undefined.
      * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
-     * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated 
+     * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
      * before calling this method.
      *
      * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
@@ -32,7 +32,7 @@ public final class FabricDimensions {
      * @param teleported      the entity to teleport
      * @param destination     the dimension the entity will be teleported to
      * @param customPlacement custom placement logic that will run before the default one,
-     *                        or {@code null} for no custom placement.
+     *                        or {@code null} to use the dimension's default behavior (see {@link FabricDimensionType#getDefaultPlacement()}).
      * @param <E>             the type of the teleported entity
      * @return the teleported entity, or a clone of it
      */
