@@ -29,17 +29,17 @@ import net.minecraft.world.dimension.DimensionType;
 import java.util.function.BiFunction;
 
 /**
- * Fabric version of {@link DimensionType}.
- * DimensionType is a registry wrapper for Dimension.
- * Stores a default {@link EntityPlacer} which is used to place entities in the world when they join.
- * Instances of this class get their raw ids automatically assigned.
+ * An extended version of {@link DimensionType} with automatic raw id management and default placement settings.
+ * {@code FabricDimensionType} instances are constructed and registered through a {@link Builder}.
+ *
+ * @see #builder()
+ * @see #getDefaultPlacement()
+ * @see #getDesiredRawId()
  */
 public final class FabricDimensionType extends DimensionType {
 	private final EntityPlacer defaultPlacement;
 	private int desiredRawId;
-	/**
-	 * The fixed raw id for this dimension type, set through reflection
-	 */
+	/** The fixed raw id for this dimension type, set through reflection */
 	private int fixedRawId;
 
 	/**
@@ -114,6 +114,8 @@ public final class FabricDimensionType extends DimensionType {
 	 * <p>Builder instances can be reused; it is safe to call {@link #buildAndRegister(Identifier)} multiple
 	 * times (with different identifiers) to build and register multiple dimension types in series.
 	 * Each new dimension type uses the settings of the builder at the time it is built.
+	 *
+	 * @see FabricDimensionType#builder()
 	 */
 	public static final class Builder {
 		private EntityPlacer defaultPlacer;
