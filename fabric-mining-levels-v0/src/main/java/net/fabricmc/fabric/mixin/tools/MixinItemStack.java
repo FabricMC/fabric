@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
+import net.fabricmc.fabric.api.tools.DynamicTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
@@ -46,7 +47,10 @@ public abstract class MixinItemStack {
 		if (this.getItem() instanceof MiningToolItemAccessor) {
 			TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
 			if (triState != TriState.DEFAULT) {
-				info.setReturnValue(triState.get() ? ((MiningToolItemAccessor) this.getItem()).getMiningSpeed() : 1.0F);
+				float miningSpeed;
+				if (this.getItem() instanceof DynamicTool) miningSpeed = ((DynamicTool) this.getItem()).getMiningSpeed((ItemStack)(Object)this);
+				else  miningSpeed = ((MiningToolItemAccessor) this.getItem()).getMiningSpeed();
+				info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
 				info.cancel();
 			}
 		}
