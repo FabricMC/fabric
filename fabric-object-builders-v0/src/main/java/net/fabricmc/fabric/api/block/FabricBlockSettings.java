@@ -81,7 +81,7 @@ public class FabricBlockSettings {
     }
 
 	private static void onBuild(Block.Settings settings, Block block) {
-		// TODO: Load only if fabric-mining-levels present
+		// TODO: Load only if fabric-tool-attributes present
 		ExtraData data = EXTRA_DATA.get(settings);
 		if (data != null) {
 			if (data.breakByHand != null) {
