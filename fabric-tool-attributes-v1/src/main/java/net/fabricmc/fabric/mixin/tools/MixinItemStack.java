@@ -69,8 +69,9 @@ public abstract class MixinItemStack {
 	public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> info, Multimap<String, EntityAttributeModifier> multimap) {
 		ItemStack stack = (ItemStack) (Object) this;
 		if (stack.getItem() instanceof ToolAttributeHolder) {
-			if (!stack.hasTag() || !stack.getTag().containsKey("fabric_IgnoreDynamicModifiers")) {
-				Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, ((ToolAttributeHolder) stack.getItem()).getDynamicModifiers(slot, stack));
+			ToolAttributeHolder holder = (ToolAttributeHolder) stack.getItem();
+			if (holder.useDynamicModifiers(slot, stack)) {
+				Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack));
 				info.setReturnValue(ret);
 			}
 		}

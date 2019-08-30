@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.tools;
 
-import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
@@ -26,6 +26,8 @@ import net.minecraft.item.ItemStack;
  * Interface for adding various tool attributes to items.
  */
 public interface ToolAttributeHolder {
+	Multimap<String, EntityAttributeModifier> EMPTY = ImmutableSetMultimap.of();
+
 	/**
 	 * @param stack The stack to check on.
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
@@ -44,9 +46,18 @@ public interface ToolAttributeHolder {
 	 * If you do not want to append on a given item stack, add an NBT tag with the key "fabric_IgnoreDynamicModifiers".
 	 * @param slot The equipment slot this item is equipped in.
 	 * @param stack The stack that's equipped.
-	 * @return The dynamic modifiers to add on top of other modifiers on this stack.
+	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.
 	 */
 	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack) {
-		return HashMultimap.create();
+		return EMPTY;
+	}
+
+	/**
+	 * @param slot The equipment slot this item is equipped in.
+	 * @param stack The stack that's equipped.
+	 * @return Whether the tool's dynamic modifiers should be appended.
+	 */
+	default boolean useDynamicModifiers(EquipmentSlot slot, ItemStack stack) {
+		return !stack.hasTag() || !stack.getTag().containsKey("fabric_IgnoreDynamicModifiers");
 	}
 }
