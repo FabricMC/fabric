@@ -44,7 +44,7 @@ public final class FabricDimensionInternals {
 	/**
 	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)}
 	 */
-	private static final ThreadLocal<EntityPlacer> CUSTOM_PLACEMENT = new ThreadLocal<>();
+	private static EntityPlacer customPlacement;
 
 	/*
 	 * The dimension change hooks consist of two steps:
@@ -83,7 +83,7 @@ public final class FabricDimensionInternals {
 		}
 
 		// Custom placement logic, falls back to default dimension placement if no placement or target found
-		EntityPlacer customPlacement = CUSTOM_PLACEMENT.get();
+		EntityPlacer customPlacement = FabricDimensionInternals.customPlacement;
 		if (customPlacement != null) {
 			BlockPattern.TeleportTarget customTarget = customPlacement.placeEntity(teleported, destination, portalDir, portalX, portalY);
 			if (customTarget != null) {
@@ -110,10 +110,10 @@ public final class FabricDimensionInternals {
 		assert !teleported.world.isClient : "Entities can only be teleported on the server side";
 		assert Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread() : "Entities must be teleported from the main server thread";
 		try {
-			CUSTOM_PLACEMENT.set(placement);
+			customPlacement = placement;
 			return (E) teleported.changeDimension(dimension);
 		} finally {
-			CUSTOM_PLACEMENT.set(null);
+			customPlacement = null;
 		}
 	}
 
