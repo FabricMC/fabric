@@ -19,7 +19,7 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "description": "Thread-safe hooks for BlockEntity data use during terrain rendering.",
+  "description": "Thread-safe hooks for block entity data use during terrain rendering.",
   "mixins": [
     "fabric-rendering-data-attachment-v1.mixins.json"
   ],
