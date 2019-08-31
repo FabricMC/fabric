@@ -25,14 +25,14 @@ import net.minecraft.particle.ParticleType;
  * Registry for adding particle factories on the client.
  */
 public interface ParticleFactoryRegistry {
-	static ParticleFactoryRegistry getInstance() {
+	public static ParticleFactoryRegistry getInstance() {
 		return ParticleFactoryRegistryImpl.INSTANCE;
 	}
 
 	/**
 	 * Registers a factory for constructing particles of the given type.
 	 */
-	<T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory);
+	public <T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory);
 
 	/**
 	 * Registers a delayed factory for constructing particles of the given type.
@@ -41,7 +41,7 @@ public interface ParticleFactoryRegistry {
 	 *
 	 * Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
 	 */
-	<T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor);
+	public <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor);
 
 	/**
 	 * A pending particle factory.
@@ -59,6 +59,6 @@ public interface ParticleFactoryRegistry {
 		 *
 		 * @return A new particle factory.
 		 */
-		ParticleFactory<T> create(FabricSpriteProvider provider);
+		public ParticleFactory<T> create(FabricSpriteProvider provider);
 	}
 }
