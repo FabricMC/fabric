@@ -1,8 +1,20 @@
 {
   "schemaVersion": 1,
   "id": "fabric-rendering-fluids-v1",
+  "name": "Fabric Rendering Fluids (v1)",
   "version": "${version}",
+  "environment": "client",
   "license": "Apache-2.0",
+  "icon": "assets/fabric-rendering-fluids-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
@@ -10,7 +22,11 @@
   "recommends": {
     "fabric-textures-v0": "*"
   },
+  "description": "Hooks for registering fluid renders.",
   "mixins": [
     "fabric-rendering-fluids-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric:fabricApiModule": true
+  }
 }
