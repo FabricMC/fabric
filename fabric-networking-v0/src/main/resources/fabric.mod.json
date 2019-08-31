@@ -16,7 +16,8 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0"
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*"
   },
   "description": "Networking packet hooks and registries.",
   "mixins": [
