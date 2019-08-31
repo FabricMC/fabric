@@ -19,13 +19,13 @@ package net.fabricmc.fabric.impl.particles;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -74,7 +74,7 @@ public final class FabricParticleManager {
 
 		Identifier file = new Identifier(id.getNamespace(), "particles/" + id.getPath() + ".json");
 
-		try (Reader reader = new InputStreamReader(manager.getResource(file).getInputStream(), Charsets.UTF_8)) {
+		try (Reader reader = new InputStreamReader(manager.getResource(file).getInputStream(), StandardCharsets.UTF_8)) {
 			List<Identifier> spriteIds = ParticleTextureData.load(JsonHelper.deserialize(reader)).getTextureList();
 
 			if (spriteIds == null) {
