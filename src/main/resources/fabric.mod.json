@@ -14,5 +14,9 @@
   },
   "custom": {
     "fabric-networking.shouldHandshake": false
+  },
+  "depends": {
+    "fabricloader": ">=0.6.1",
+    "minecraft": "1.14.x"
   }
 }

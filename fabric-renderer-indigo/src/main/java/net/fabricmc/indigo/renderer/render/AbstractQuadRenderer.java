@@ -18,8 +18,6 @@ package net.fabricmc.indigo.renderer.render;
 
 import static net.fabricmc.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
-import java.util.function.ToIntBiFunction;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
@@ -38,15 +36,13 @@ import net.minecraft.util.math.BlockPos;
 public abstract class AbstractQuadRenderer {
     private static final int FULL_BRIGHTNESS = 15 << 20 | 15 << 4;
     
-    protected final ToIntBiFunction<BlockState, BlockPos> brightnessFunc;
     protected final Int2ObjectFunction<AccessBufferBuilder> bufferFunc;
     protected final BlockRenderInfo blockInfo;
     protected final AoCalculator aoCalc;
     protected final QuadTransform transform;
     
-    AbstractQuadRenderer(BlockRenderInfo blockInfo, ToIntBiFunction<BlockState, BlockPos> brightnessFunc, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+    AbstractQuadRenderer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
         this.blockInfo = blockInfo;
-        this.brightnessFunc = brightnessFunc;
         this.bufferFunc = bufferFunc;
         this.aoCalc = aoCalc;
         this.transform = transform;
@@ -144,6 +140,7 @@ public abstract class AbstractQuadRenderer {
         if((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
             mpos.setOffset(quad.lightFace());
         }
-        return brightnessFunc.applyAsInt(blockState, mpos);
+        // Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
+        return blockState.getBlockBrightness(blockInfo.blockView, mpos);
     }
 }

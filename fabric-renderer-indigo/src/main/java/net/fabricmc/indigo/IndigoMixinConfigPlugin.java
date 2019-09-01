@@ -42,9 +42,9 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	    if(needsLoad) {
 	        for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
 	            final ModMetadata meta = container.getMetadata();
-	            if (meta.containsCustomElement(JSON_KEY_DISABLE_INDIGO)) {
+	            if (meta.containsCustomValue(JSON_KEY_DISABLE_INDIGO)) {
 	                indigoApplicable = false;
-	            } else if (meta.containsCustomElement(JSON_KEY_FORCE_COMPATIBILITY)) {
+	            } else if (meta.containsCustomValue(JSON_KEY_FORCE_COMPATIBILITY)) {
 	                forceCompatibility = true;
 	            }
 	        }

@@ -40,6 +40,10 @@ abstract class AbstractRenderContext implements RenderContext {
         return activeTransform.transform(q);
     }
     
+    protected boolean hasTransform() {
+        return activeTransform != NO_TRANSFORM;
+    }
+    
     @Override
     public void pushTransform(QuadTransform transform) {
         if(transform == null) {

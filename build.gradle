@@ -12,7 +12,7 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.3.0"
+	static def baseVersion = "0.3.2"
 	static def mcVersion = "1.14.4"
 	static def yarnVersion = "+build.1"
 }
@@ -31,6 +31,17 @@ def getSubprojectVersion(project, version) {
 	}
 }
 
+def getBranch(){
+	if(System.getenv().GIT_BRANCH){
+		def branch = System.getenv().GIT_BRANCH
+		return branch.substring(branch.lastIndexOf("/") + 1)
+	}
+	if (grgit == null) {
+		return "unknown"
+	}
+	return grgit.branch.current().name
+}
+
 allprojects {
 	apply plugin: 'maven-publish'
 	apply plugin: 'fabric-loom'
@@ -46,7 +57,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
+		modCompile "net.fabricmc:fabric-loader:0.6.1+build.164"
 	}
 
 	configurations {
@@ -197,7 +208,9 @@ dependencies {
 	}
 }
 
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+
+logger.lifecycle("Building Fabric: " + version)
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){

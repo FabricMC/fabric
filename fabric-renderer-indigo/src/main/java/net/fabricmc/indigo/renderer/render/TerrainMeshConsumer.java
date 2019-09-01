@@ -23,7 +23,7 @@ import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 public class TerrainMeshConsumer extends AbstractMeshConsumer {
     private final ChunkRenderInfo chunkInfo;
     TerrainMeshConsumer(TerrainBlockRenderInfo blockInfo,  ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
-        super(blockInfo, chunkInfo::cachedBrightness, chunkInfo::getInitializedBuffer, aoCalc, transform);
+        super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
         this.chunkInfo = chunkInfo;
     }
     

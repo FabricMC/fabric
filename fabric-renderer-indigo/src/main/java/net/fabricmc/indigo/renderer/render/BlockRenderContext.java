@@ -18,7 +18,6 @@ package net.fabricmc.indigo.renderer.render;
 
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.ToIntBiFunction;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -43,7 +42,7 @@ import net.minecraft.world.ExtendedBlockView;
 public class BlockRenderContext extends AbstractRenderContext implements RenderContext {
     private final BlockRenderInfo blockInfo = new BlockRenderInfo();
     private final AoCalculator aoCalc = new AoCalculator(blockInfo, this::brightness, this::aoLevel);
-    private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::brightness, this::outputBuffer, aoCalc, this::transform);
+    private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform);
     private final Random random = new Random();
     private BlockModelRenderer vanillaRenderer;
     private AccessBufferBuilder fabricBuffer;
@@ -59,11 +58,11 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
         return isCallingVanilla;
     }
     
-    private int brightness(BlockState blockState, BlockPos pos) {
+    private int brightness(BlockPos pos) {
         if(blockInfo.blockView == null) {
             return 15 << 20 | 15 << 4;
         }
-        return blockState.getBlockBrightness(blockInfo.blockView, pos);
+        return blockInfo.blockView.getBlockState(pos).getBlockBrightness(blockInfo.blockView, pos);
     }
 
     private float aoLevel(BlockPos pos) {
@@ -109,8 +108,8 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
     }
     
     private class MeshConsumer extends AbstractMeshConsumer {
-        MeshConsumer(BlockRenderInfo blockInfo, ToIntBiFunction<BlockState, BlockPos> brightnessFunc, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
-            super(blockInfo, brightnessFunc, bufferFunc, aoCalc, transform);
+        MeshConsumer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+            super(blockInfo, bufferFunc, aoCalc, transform);
         }
 
         @Override

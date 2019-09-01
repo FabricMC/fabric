@@ -52,41 +52,47 @@ import net.minecraft.util.TypedActionResult;
 
 public class HandshakeModHandlerImpl {
 
-    public static final TranslatableText MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
-
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    private static Map<String, Boolean> shouldHandshake = new HashMap<String, Boolean>();
+    public static final Text MISMATCH_VERSION_TEXT = new TranslatableText("fabric-networking-v0.hello.mismatch", FabricHelloPacketBuilder.MAJOR_VERSION, FabricHelloPacketBuilder.MINOR_VERSION);
 
-    private static final Predicate<ModContainer> SHOULD_HANDSHAKE = (mod) -> {
+    public static final Text MISSING_VERSION_COMPOUNDTAG_TEXT = new TranslatableText("fabric-networking-v0.hello.missing.version");
+    
+    public static final Text NULL_COMPOUND_TAG_MODS = new TranslatableText("fabric-networking-v0.hello.missing.nullmods");
+
+    private static final String HANDSHAKE_CUSTOM_KEY = "fabric-networking.shouldHandshake";
+
+    private static Map<String, Boolean> shouldHandshakeMods = new HashMap<String, Boolean>();
+
+    private static final Predicate<ModContainer> DOES_MOD_HANDSHAKE = (mod) -> {
         Optional<ModContainer> cont = FabricLoader.getInstance().getModContainer(mod.getMetadata().getId()); // Verify just in case
 
         if (cont.isPresent()) {
             try {
                 ModMetadata meta = cont.get().getMetadata();
                 boolean shouldHandshakeB = true;
-
-                if (meta.getCustomElement("fabric-networking.shouldHandshake") != null && meta.getCustomElement("fabric-networking.shouldHandshake").isJsonPrimitive()) {
-                    shouldHandshakeB = meta.getCustomElement("fabric-networking.shouldHandshake").getAsBoolean();
-                }
                 
-                if (!shouldHandshakeB) {
-                    return false;
-                } else {
-                    return true;
+                if (meta.getCustomValue(HANDSHAKE_CUSTOM_KEY) != null) {
+                    try {
+                        shouldHandshakeB = meta.getCustomValue(HANDSHAKE_CUSTOM_KEY).getAsBoolean();
+                        return shouldHandshakeB;
+                    } catch (ClassCastException e) {
+                        LOGGER.error("Tried to access the key " + HANDSHAKE_CUSTOM_KEY + " but it was not a boolean value");
+                        LOGGER.catching(e);
+                    }
                 }
                 
             } catch (Throwable t) { // Fails to do this then go ahead and make it require anyways. This could be because of invalid syntax.
                 LOGGER.throwing(t);
-                return true;
             }
         }
+        
         return true;
     };
 
     static {
         // This whole mess just tells HandshakeHandler which mods have handlers and which should do literal version checking.
-        FabricLoader.getInstance().getAllMods().stream().filter(SHOULD_HANDSHAKE).forEach(mod -> {
+        FabricLoader.getInstance().getAllMods().stream().filter(DOES_MOD_HANDSHAKE).forEach(mod -> {
             
             Optional<ModContainer> cont = FabricLoader.getInstance().getModContainer(mod.getMetadata().getId());
 
@@ -97,22 +103,21 @@ public class HandshakeModHandlerImpl {
                 Optional<Event<PlayerConnectCallback>> eventOp = PlayerConnectCallback.getEvent(modid);
                 
                 if(eventOp.isPresent()) {
-                    shouldHandshake.put(mod.getMetadata().getId(), true);
+                    shouldHandshakeMods.put(mod.getMetadata().getId(), true);
                 } else {
-                    shouldHandshake.put(mod.getMetadata().getId(), false); // False value means no handlers, check version literally.
+                    shouldHandshakeMods.put(mod.getMetadata().getId(), false); // False value means no handlers, check version literally.
                 }
             }
         });
     }
 
     public static void handlePacket(ClientConnection connection, Identifier id, PacketByteBuf responseBuf) {
+        if (shouldHandshakeMods.isEmpty()) { // Empty, so no mods require a handshake.
+            return;
+        }
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && connection.isLocal()) {
             // Don't do this on the client's own IntegratedServer, thats why we have a isn't local flag to detect singleplayer clients.
-            return;
-        }
-
-        if (shouldHandshake.isEmpty()) { // Empty, so no mods require a handshake.
             return;
         }
 
@@ -130,7 +135,7 @@ public class HandshakeModHandlerImpl {
             LOGGER.debug("Read compound tag - connected to a Fabric client!");
         } else {
             LOGGER.warn("Recived a fabric:hello packet with no version tag");
-            connection.send(new LoginDisconnectS2CPacket(new TranslatableText("fabric-networking-v0.hello.missing.version")));
+            connection.send(new LoginDisconnectS2CPacket(MISSING_VERSION_COMPOUNDTAG_TEXT)); // fabric-networking-v0.hello.missing.version
             return;
         }
 
@@ -146,7 +151,7 @@ public class HandshakeModHandlerImpl {
         CompoundTag modTag = response.getCompound("mods");
 
         if (modTag == null) { // Packet can have empty mods compound but never null
-            connection.send(new LoginDisconnectS2CPacket(new TranslatableText("fabric-networking-v0.hello.missing.nullmods")));
+            connection.send(new LoginDisconnectS2CPacket(NULL_COMPOUND_TAG_MODS)); // fabric-networking-v0.hello.missing.nullmods
             return;
         }
 
@@ -159,7 +164,7 @@ public class HandshakeModHandlerImpl {
                     map.put(compoundKeys.get(keyPos), modTag.getString(compoundKeys.get(keyPos)));
                 }, HashMap::putAll);
 
-        Iterator<Entry<String, Boolean>> it = shouldHandshake.entrySet().iterator();
+        Iterator<Entry<String, Boolean>> it = shouldHandshakeMods.entrySet().iterator();
 
         while (it.hasNext()) {
             Entry<String, Boolean> entry = it.next();
@@ -212,15 +217,15 @@ public class HandshakeModHandlerImpl {
         return new TranslatableText("fabric-networking-v0.defaults.missing", modid, version);
     }
 
+    private static Text buildDisconnectTextVanilla() { // TODO: When config API comes by, possibly add an option for server owners to specify a link they can grab the mods running on the server.
+        return new LiteralText("This server requires you install Fabric to join.");
+    }
+
     private static Text defaultFailVersion(String modid, String version) {
         return new TranslatableText("fabric-networking-v0.defaults.mismatch", modid, version);
     }
 
     private static Text defaultFail(String modid, String version) {
         return new TranslatableText("fabric-networking-v0.defaults.failedNoHandler", modid, version);
-    }
-
-    private static LiteralText buildDisconnectTextVanilla() { // TODO: When config API comes by, possibly add an option for server owners to specify a link they can grab the mods running on the server.
-        return new LiteralText("This server requires you install Fabric to join.");
     }
 }
