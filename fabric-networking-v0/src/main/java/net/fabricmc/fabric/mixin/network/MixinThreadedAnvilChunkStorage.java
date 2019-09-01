@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.network.tracker;
+package net.fabricmc.fabric.mixin.network;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.fabricmc.fabric.impl.server.EntityTrackerStorageAccessor;

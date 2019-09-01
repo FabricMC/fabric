@@ -75,7 +75,7 @@ public interface PlayerConnectCallback {
     /**
      * Returns a result from a Handshake handler. This may return a null value but will always return a not-null ActionResult inside.
      * @param clientProvidedVersion The version of the mod installed that is provided by the client.
-     * @return Text if the handshake failed. Recommended to make this {@link LiteralText} so fabric clients that are missing your mod don't receive untranslated text. 
+     * @return Text if the handshake failed. Recommended to make this {@link LiteralText} so fabric clients that are missing your mod don't receive untranslated text. The typed action result will return a result of {@link ActionResult#FAIL} if it has failed. 
      */
     TypedActionResult<Text> onHandshake(String clientProvidedVersion);
 

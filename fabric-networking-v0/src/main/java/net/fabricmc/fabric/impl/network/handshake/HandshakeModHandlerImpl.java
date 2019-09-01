@@ -91,6 +91,7 @@ public class HandshakeModHandlerImpl {
     };
 
     static {
+        LOGGER.trace("[fabric-networking-handshake] Initalized Handshake handlers");
         // This whole mess just tells HandshakeHandler which mods have handlers and which should do literal version checking.
         FabricLoader.getInstance().getAllMods().stream().filter(DOES_MOD_HANDSHAKE).forEach(mod -> {
             
@@ -117,7 +118,7 @@ public class HandshakeModHandlerImpl {
         }
         
         if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && connection.isLocal()) {
-            // Don't do this on the client's own IntegratedServer, thats why we have a isn't local flag to detect singleplayer clients.
+            // Don't do this on the client's own IntegratedServer.
             return;
         }
 
@@ -201,6 +202,7 @@ public class HandshakeModHandlerImpl {
         }
 
         if(failedMods.isEmpty()) {
+            LOGGER.info("[fabric-networking-handshake] User has all required mods");
             return; // Success
         }
         

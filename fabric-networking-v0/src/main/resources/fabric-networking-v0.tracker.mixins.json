@@ -4,8 +4,8 @@
   "package": "net.fabricmc.fabric.mixin.network",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "tracker.MixinEntityTracker",
-    "tracker.MixinThreadedAnvilChunkStorage"
+    "MixinEntityTracker",
+    "MixinThreadedAnvilChunkStorage"
   ],
   "injectors": {
     "defaultRequire": 1

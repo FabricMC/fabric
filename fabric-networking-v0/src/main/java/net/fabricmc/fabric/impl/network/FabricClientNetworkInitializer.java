@@ -29,6 +29,7 @@ public class FabricClientNetworkInitializer implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+	    LOGGER.info("[fabric-networking-handshake] Initalized Client Mod");
 		ClientLoginQueryResponseRegistry.INSTANCE.register(FabricHelloPacketBuilder.ID, (handler, connection, id, buffer) -> {
 			LOGGER.debug("fabric:hello received - connected to Fabric server!");
 

@@ -16,14 +16,20 @@
 
 package net.fabricmc.fabric.impl.network;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.impl.network.handshake.HandshakeModHandlerImpl;
 import net.fabricmc.fabric.impl.network.login.S2CLoginHandshakeCallback;
 
 public class FabricNetworkInitializer implements ModInitializer {
     
+    private static final Logger LOGGER  = LogManager.getLogger();
+    
     @Override
     public void onInitialize() {
+        LOGGER.info("[fabric-networking-handshake] Initalized server side mod");
         S2CLoginHandshakeCallback.EVENT.register(queue -> {
             queue.sendPacket(FabricHelloPacketBuilder.ID, FabricHelloPacketBuilder.buildHelloPacket(), (handler, connection, id, responseBuf) -> {
                 HandshakeModHandlerImpl.handlePacket(connection, id, responseBuf);
