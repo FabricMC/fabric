@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.fabricmc.fabric.impl.network.handshake;
 
 import java.util.ArrayList;
@@ -130,7 +131,8 @@ public class HandshakeModHandlerImpl {
             return;
         }
         
-        Multimap<String, Text> failedMods = HashMultimap.create();
+        Multimap<String, Text> failedModsVersion = HashMultimap.create();
+        Multimap<String, Text> failedModsMissing = HashMultimap.create();
 
         if (response != null && response.containsKey("majorVersion", NbtType.NUMBER) && response.containsKey("minorVersion", NbtType.NUMBER)) {
             LOGGER.debug("Read compound tag - connected to a Fabric client!");
@@ -178,9 +180,9 @@ public class HandshakeModHandlerImpl {
                     if(result.getResult() == ActionResult.FAIL) {
                         
                         if(result.getValue() != null) {
-                            failedMods.put(modid, result.getValue());
+                            failedModsVersion.put(modid, result.getValue());
                         } else {
-                            failedMods.put(modid, defaultFail(modid, clientMods.get(modid)));
+                            failedModsVersion.put(modid, defaultFail(modid, clientMods.get(modid)));
                         }
                         continue;
                     }
@@ -192,23 +194,33 @@ public class HandshakeModHandlerImpl {
                         if (op.get().getMetadata().getVersion().getFriendlyString().equals(version)) {
                             continue;
                         } else {
-                            failedMods.put(modid, defaultFailVersion(modid, op.get().getMetadata().getVersion().getFriendlyString()));
+                            failedModsVersion.put(modid, defaultFailVersion(modid, op.get().getMetadata().getVersion().getFriendlyString()));
                         }
                     }
                 }
             } else {
-                failedMods.put(modid, defaultMissing(modid, clientMods.get(modid)));
+                failedModsMissing.put(modid, defaultMissing(modid, clientMods.get(modid)));
             }
         }
 
-        if(failedMods.isEmpty()) {
+        if(failedModsVersion.isEmpty() && failedModsMissing.isEmpty()) {
             LOGGER.info("[fabric-networking-handshake] User has all required mods");
             return; // Success
         }
         
         Text finalText = new LiteralText("");
+        if(!failedModsVersion.isEmpty()) {
+            finalText.append(new TranslatableText("fabric-networking-v0.mismatch_spaced"));
+        }
+        failedModsVersion.asMap().forEach((mod, msgs) -> {
+            msgs.stream().forEach(text -> finalText.append(text));
+        });
         
-        failedMods.asMap().forEach((mod, msgs) -> {
+        if(!failedModsMissing.isEmpty()) {
+            finalText.append(new TranslatableText("fabric-networking-v0.missing.amount", failedModsMissing.size()));
+        }
+        
+        failedModsMissing.asMap().forEach((mod, msgs) -> {
             msgs.stream().forEach(text -> finalText.append(text));
         });
         
