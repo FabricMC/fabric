@@ -12,6 +12,6 @@
     "fabric-renderer-api-v1.debughud.mixins.json"
   ],
   "custom": {
-    "fabric-networking.shouldHandshake": false
+    "fabric-networking:shouldHandshake": false
   }
 }

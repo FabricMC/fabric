@@ -13,7 +13,7 @@
     "sources": "https://github.com/FabricMC/fabric"
   },
   "custom": {
-    "fabric-networking.shouldHandshake": false
+    "fabric-networking:shouldHandshake": false
   },
   "depends": {
     "fabricloader": ">=0.6.1",

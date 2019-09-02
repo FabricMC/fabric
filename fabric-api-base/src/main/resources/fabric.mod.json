@@ -7,6 +7,6 @@
     "fabricloader": ">=0.4.0"
   },
   "custom": {
-    "fabric-networking.shouldHandshake": false
+    "fabric-networking:shouldHandshake": false
   }
 }

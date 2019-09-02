@@ -14,6 +14,6 @@
     "fabric-rendering-fluids-v1.mixins.json"
   ],
   "custom": {
-    "fabric-networking.shouldHandshake": false
+    "fabric-networking:shouldHandshake": false
   }
 }

@@ -17,6 +17,6 @@
     ]
   },
   "custom": {
-    "fabric-networking.shouldHandshake": false
+    "fabric-networking:shouldHandshake": false
   }
 }

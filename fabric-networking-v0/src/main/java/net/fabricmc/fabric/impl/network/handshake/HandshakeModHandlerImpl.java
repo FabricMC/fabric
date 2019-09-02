@@ -61,7 +61,7 @@ public class HandshakeModHandlerImpl {
     
     public static final Text NULL_COMPOUND_TAG_MODS = new TranslatableText("fabric-networking-v0.hello.missing.nullmods");
 
-    private static final String HANDSHAKE_CUSTOM_KEY = "fabric-networking.shouldHandshake";
+    private static final String HANDSHAKE_CUSTOM_KEY = "fabric-networking:shouldHandshake";
 
     private static Map<String, Boolean> shouldHandshakeMods = new HashMap<String, Boolean>();
 

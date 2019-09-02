@@ -16,6 +16,6 @@
     "fabric-biomes-v1.mixins.json"
   ],
   "custom": {
-    "fabric-networking.shouldHandshake": false
+    "fabric-networking:shouldHandshake": false
   }
 }
