@@ -18,8 +18,5 @@
   "depends": {
     "fabricloader": ">=0.4.0"
   },
-  "description": "Contains the essentials for Fabric API modules.",
-  "custom": {
-    "fabric:fabricApiModule": true
-  }
+  "description": "Contains the essentials for Fabric API modules."
 }

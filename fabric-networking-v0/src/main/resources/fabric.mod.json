@@ -21,8 +21,5 @@
   "description": "Networking packet hooks and registries.",
   "mixins": [
     "fabric-networking-v0.mixins.json"
-  ],
-  "custom": {
-    "fabric:fabricApiModule": true
-  }
+  ]
 }

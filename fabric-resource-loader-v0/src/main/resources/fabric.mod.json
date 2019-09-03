@@ -21,8 +21,5 @@
   "description": "Asset and data resource loading.",
   "mixins": [
     "fabric-resource-loader-v0.mixins.json"
-  ],
-  "custom": {
-    "fabric:fabricApiModule": true
-  }
+  ]
 }

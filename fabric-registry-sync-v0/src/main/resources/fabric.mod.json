@@ -28,8 +28,5 @@
     "client": [
       "net.fabricmc.fabric.impl.registry.FabricRegistryClientInit"
     ]
-  },
-  "custom": {
-    "fabric:fabricApiModule": true
   }
 }

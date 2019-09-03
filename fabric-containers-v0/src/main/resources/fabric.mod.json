@@ -29,8 +29,5 @@
     "client": [
       "net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl::init"
     ]
-  },
-  "custom": {
-    "fabric:fabricApiModule": true
   }
 }

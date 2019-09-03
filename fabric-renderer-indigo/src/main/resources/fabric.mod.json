@@ -29,8 +29,5 @@
     "client": [
       "net.fabricmc.indigo.Indigo"
     ]
-  },
-  "custom": {
-    "fabric:fabricApiModule": true
   }
 }
