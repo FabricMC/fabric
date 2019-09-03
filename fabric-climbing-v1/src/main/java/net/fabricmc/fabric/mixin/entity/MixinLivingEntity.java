@@ -16,8 +16,7 @@
 
 package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.api.event.block.ClimbableCallback;
-import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.api.event.block.ClimbingCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -26,11 +25,14 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
+
+	ClimbingCallback.Result climbingCallBackResult = null;
 
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);
@@ -41,9 +43,25 @@ public abstract class MixinLivingEntity extends Entity {
 
         final LivingEntity self = (LivingEntity) (Object) this;
 
-        TriState result = ClimbableCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
-        if (result != TriState.DEFAULT) {
-			cir.setReturnValue(result.get());
+		climbingCallBackResult = ClimbingCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
+        if (climbingCallBackResult != null) {
+			if (climbingCallBackResult.climbSpeed <= 0.0D) {
+				cir.setReturnValue(false);
+			}
+			else {
+				cir.setReturnValue(true);
+			}
+			cir.cancel();
 		}
     }
+
+    @ModifyVariable(method = "travel", name = "double_13", at = @At(value = "INVOKE_ASSIGN"))
+	private double modifyClimbSpeed(double double_13) {
+		ClimbingCallback.Result result = climbingCallBackResult;
+		climbingCallBackResult = null;
+		if (result != null) {
+			return result.climbSpeed;
+		}
+		return double_13;
+	}
 }
