@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-climbable-v1",
+  "id": "fabric-climbing-v1",
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
     "fabricloader": ">=0.4.0"
   },
   "mixins": [
-    "fabric-climbable-v1.mixins.json"
+    "fabric-climbing-v1.mixins.json"
   ]
 }

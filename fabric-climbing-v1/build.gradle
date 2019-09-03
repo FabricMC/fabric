@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-climbable-v1"
+archivesBaseName = "fabric-climbing-v1"
 version = getSubprojectVersion(project, "0.1.0")
 
 dependencies {
