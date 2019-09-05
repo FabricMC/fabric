@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.particles;
+package net.fabricmc.fabric.api.client.particles;
 
-import net.fabricmc.fabric.impl.particles.ParticleFactoryRegistryImpl;
+import net.fabricmc.fabric.impl.client.particles.ParticleFactoryRegistryImpl;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;

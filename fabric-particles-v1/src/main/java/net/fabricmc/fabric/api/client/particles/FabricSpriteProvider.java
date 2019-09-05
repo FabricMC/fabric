@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.particles;
+package net.fabricmc.fabric.api.client.particles;
 
 import java.util.List;
 

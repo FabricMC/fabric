@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.particles;
+package net.fabricmc.fabric.impl.client.particles;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.particles.ParticleFactoryRegistry;
+import net.fabricmc.fabric.api.client.particles.ParticleFactoryRegistry;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
