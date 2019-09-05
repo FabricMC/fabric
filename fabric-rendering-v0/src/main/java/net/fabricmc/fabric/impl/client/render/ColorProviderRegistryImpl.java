@@ -31,7 +31,7 @@ public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> impleme
 	public static final ColorProviderRegistryImpl<Block, BlockColorProvider, BlockColors> BLOCK = new ColorProviderRegistryImpl<Block, BlockColorProvider, BlockColors>() {
 		@Override
 		void registerUnderlying(BlockColors map, BlockColorProvider mapper, Block block) {
-			map.register(mapper, block);
+			map.registerColorProvider(mapper, block);
 		}
 	};
 

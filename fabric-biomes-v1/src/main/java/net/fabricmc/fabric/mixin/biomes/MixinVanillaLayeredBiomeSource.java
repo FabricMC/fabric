@@ -16,17 +16,18 @@
 
 package net.fabricmc.fabric.mixin.biomes;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
-import net.minecraft.block.BlockState;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
-import org.spongepowered.asm.mixin.*;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -39,39 +40,16 @@ public class MixinVanillaLayeredBiomeSource {
 	@Shadow
 	@Final
 	@Mutable
-	private Biome[] biomes;
+	private static Set<Biome> biomes;
 
-	@Unique
-	private int injectionCount;
-
-	@Inject(at = @At("HEAD"), method = "hasStructureFeature")
-	private void hasStructureFeature(CallbackInfoReturnable<Boolean> info) {
-		updateInjections();
+	@Inject(method = "<clinit>", at = @At("RETURN"))
+	private static void cinit(CallbackInfo info){
+		biomes = new HashSet<>(biomes);
 	}
 
-	@Inject(at = @At("HEAD"), method = "getTopMaterials")
-	private void getTopMaterials(CallbackInfoReturnable<Set<BlockState>> info) {
-		updateInjections();
-	}
-
-	@Unique
-	private void updateInjections() {
-		List<Biome> injectedBiomes = InternalBiomeData.getOverworldInjectedBiomes();
-		int currentSize = injectedBiomes.size();
-		if (this.injectionCount < currentSize) {
-			List<Biome> toInject = injectedBiomes.subList(injectionCount, currentSize - 1);
-
-			Biome[] oldBiomes = this.biomes;
-			this.biomes = new Biome[oldBiomes.length + toInject.size()];
-			System.arraycopy(oldBiomes, 0, this.biomes, 0, oldBiomes.length);
-
-			int index = oldBiomes.length;
-			for (Biome injected : toInject) {
-				biomes[index++] = injected;
-			}
-
-			injectionCount += toInject.size();
-		}
+	//Called via reflection
+	private static void fabric_injectBiome(Biome biome) {
+		biomes.add(biome);
 	}
 
 }
