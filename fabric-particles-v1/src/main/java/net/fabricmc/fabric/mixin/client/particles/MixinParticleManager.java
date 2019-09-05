@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.impl.particles.FabricParticleManager;
-import net.fabricmc.fabric.impl.particles.VanillaParticleManager;
+import net.fabricmc.fabric.impl.client.particles.FabricParticleManager;
+import net.fabricmc.fabric.impl.client.particles.VanillaParticleManager;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.texture.SpriteAtlasTexture;
