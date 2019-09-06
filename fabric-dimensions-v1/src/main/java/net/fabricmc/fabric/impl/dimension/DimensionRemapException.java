@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin;
+package net.fabricmc.fabric.impl.dimension;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.fabricmc.fabric.impl.registry.RemapException;
 
-@Mixin(Entity.class)
-public interface EntityHooks {
-	@Accessor
-	void setLastPortalDirectionVector(Vec3d vec);
-
-	@Accessor
-	void setLastPortalDirection(Direction dir);
-
+public class DimensionRemapException extends RuntimeException {
+	public DimensionRemapException(String message, RemapException cause) {
+		super(message, cause);
+	}
 }

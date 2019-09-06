@@ -8,6 +8,7 @@
     "MixinPortalForcer",
     "idremap.MixinDimensionRawIndexFix",
     "idremap.MixinLevelProperties",
+    "idremap.MixinLevelStorage",
     "idremap.MixinPlayerManager",
     "idremap.MixinUnmodifiableLevelProperties"
   ],
