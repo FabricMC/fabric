@@ -204,7 +204,7 @@ public final class FabricDimensionType extends DimensionType {
 		 *                                  have been set
 		 */
 		public FabricDimensionType buildAndRegister(Identifier dimensionId) {
-			Preconditions.checkArgument(!Registry.DIMENSION.containsId(dimensionId));
+			Preconditions.checkArgument(Registry.DIMENSION.get(dimensionId) == null);
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
 			Preconditions.checkState(this.factory != null, "No dimension factory has been specified!");
 			String suffix = dimensionId.getNamespace() + "_" + dimensionId.getPath();
