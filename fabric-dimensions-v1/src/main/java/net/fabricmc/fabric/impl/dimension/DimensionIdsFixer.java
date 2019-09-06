@@ -130,6 +130,7 @@ public class DimensionIdsFixer {
 	static {
 		try {
 			FABRIC_DIMENSION_TYPE$RAW_ID = FabricDimensionType.class.getDeclaredField("fixedRawId");
+			FABRIC_DIMENSION_TYPE$RAW_ID.setAccessible(true);
 		} catch (NoSuchFieldException e) {
 			throw new RuntimeException(e);
 		}
