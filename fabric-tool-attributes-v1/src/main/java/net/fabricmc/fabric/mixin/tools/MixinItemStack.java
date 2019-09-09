@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.tools;
 
 import com.google.common.collect.Multimap;
+import net.fabricmc.fabric.api.tools.ToolActor;
 import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.AttributeManager;
@@ -40,7 +41,7 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
+		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, ToolActor.NO_ACTOR);
 		if (triState != TriState.DEFAULT) {
 			info.setReturnValue(triState.get());
 			info.cancel();
@@ -49,7 +50,7 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
+		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, ToolActor.NO_ACTOR);
 		if (triState != TriState.DEFAULT) {
 			Item item = this.getItem();
 			float miningSpeed;

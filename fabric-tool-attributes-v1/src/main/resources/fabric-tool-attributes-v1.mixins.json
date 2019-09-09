@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinItemStack",
+    "MixinLivingEntity",
+    "MixinPlayerInventory",
     "MixinToolItem"
   ],
   "injectors": {

@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.impl.tools;
 
+import net.fabricmc.fabric.api.tools.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tools.ToolActor;
 import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
 import net.minecraft.tag.Tag;
 
 import java.util.HashMap;
@@ -87,8 +88,10 @@ public final class ToolManager {
 		entry(block).putBreakByTool(tag, miningLevel);
 	}
 
-	private static int getMiningLevel(ItemStack stack) {
-		if (stack.getItem() instanceof ToolAttributeHolder) {
+	private static int getMiningLevel(ItemStack stack, ToolActor actor) {
+		if (stack.getItem() instanceof ActableAttributeHolder && !actor.equals(ToolActor.NO_ACTOR)) {
+			return ((ActableAttributeHolder)stack.getItem()).getMiningLevel(stack, actor);
+		} else if (stack.getItem() instanceof ToolAttributeHolder) {
 			return ((ToolAttributeHolder) stack.getItem()).getMiningLevel(stack);
 		} else {
 			return 0;
@@ -97,14 +100,15 @@ public final class ToolManager {
 
 	/**
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
+	 * Use {@link ToolActor#NO_ACTOR} if there's not an applicable actor for this scenario (i.e, you only have the item stack)
 	 */
-	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state) {
+	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state, ToolActor actor) {
 		EntryImpl entry = entries.get(state.getBlock());
 		if (entry != null) {
 			Item item = stack.getItem();
 			for (int i = 0; i < entry.tags.length; i++) {
 				if (item.isIn(entry.tags[i])) {
-					return TriState.of(getMiningLevel(stack) >= entry.tagLevels[i]);
+					return TriState.of(getMiningLevel(stack, actor) >= entry.tagLevels[i]);
 				}
 			}
 			return entry.defaultValue;
