@@ -3,7 +3,7 @@
   "id": "fabric-api-base",
   "name": "Fabric API Base",
   "version": "${version}",
-  "environment": "client",
+  "environment": "*",
   "license": "Apache-2.0",
   "icon": "assets/fabric-api-base/icon.png",
   "contact": {
