@@ -58,6 +58,6 @@ public interface ToolAttributeHolder {
 	 * @return Whether the tool's dynamic modifiers should be appended.
 	 */
 	default boolean useDynamicModifiers(EquipmentSlot slot, ItemStack stack) {
-		return !stack.hasTag() || !stack.getTag().containsKey("fabric_IgnoreDynamicModifiers");
+		return true;
 	}
 }

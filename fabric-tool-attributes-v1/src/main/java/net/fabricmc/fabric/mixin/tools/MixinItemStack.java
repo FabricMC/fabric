@@ -38,9 +38,6 @@ public abstract class MixinItemStack {
 	@Shadow
 	public abstract Item getItem();
 
-	@Shadow
-	public abstract boolean hasTag();
-
 	@Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
