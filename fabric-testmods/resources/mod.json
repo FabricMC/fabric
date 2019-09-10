@@ -7,6 +7,7 @@
   "license": "Apache-2.0",
   "initializers": [
     "net.fabricmc.fabric.colormapper.ColorProviderMod",
+    "net.fabricmc.fabric.events.EntityTickEventMod",
     "net.fabricmc.fabric.events.ServerEventMod",
     "net.fabricmc.fabric.containers.ContainerMod",
     "net.fabricmc.fabric.containers.ContainerModClient",
