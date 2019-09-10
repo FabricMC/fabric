@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.tools;
 
-import net.fabricmc.fabric.api.tools.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.ToolActor;
-import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
+import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -104,14 +104,18 @@ public final class ToolManager {
 	 */
 	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state, ToolActor actor) {
 		EntryImpl entry = entries.get(state.getBlock());
+
 		if (entry != null) {
 			Item item = stack.getItem();
+
 			for (int i = 0; i < entry.tags.length; i++) {
 				if (item.isIn(entry.tags[i])) {
 					return TriState.of(getMiningLevel(stack, actor) >= entry.tagLevels[i]);
 				}
 			}
+
 			return entry.defaultValue;
+
 		} else {
 			return TriState.DEFAULT;
 		}

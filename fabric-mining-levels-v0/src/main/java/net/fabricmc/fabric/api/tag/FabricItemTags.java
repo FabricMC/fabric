@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.tag;
 
-import net.fabricmc.fabric.api.tools.FabricToolTags;
+import net.fabricmc.fabric.api.tools.v1.FabricToolTags;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
 /**
  * Item tags provided by Fabric.
  *
- * @deprecated Use dedicated classes, such as {@link net.fabricmc.fabric.api.tools.FabricToolTags}
+ * @deprecated Use dedicated classes, such as {@link net.fabricmc.fabric.api.tools.v1.FabricToolTags}
  */
 @Deprecated
 public class FabricItemTags {
@@ -36,9 +36,5 @@ public class FabricItemTags {
 
 	private FabricItemTags() {
 
-	}
-
-	private static Tag<Item> register(String id) {
-		return TagRegistry.item(new Identifier("fabric", id));
 	}
 }

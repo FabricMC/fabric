@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.mixin.tools;
 
 import com.google.common.collect.Multimap;
-import net.fabricmc.fabric.api.tools.ToolActor;
-import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
+import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.AttributeManager;
 import net.fabricmc.fabric.impl.tools.ToolManager;
@@ -51,28 +51,36 @@ public abstract class MixinItemStack {
 	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
 		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, ToolActor.NO_ACTOR);
+
 		if (triState != TriState.DEFAULT) {
 			Item item = this.getItem();
 			float miningSpeed;
+
 			if (item instanceof ToolAttributeHolder) {
 				miningSpeed = ((ToolAttributeHolder) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
 			} else {
 				return;
 			}
+
 			info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
 		}
+
 	}
 
 	@Inject(at = @At("RETURN"), method = "getAttributeModifiers", cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> info, Multimap<String, EntityAttributeModifier> multimap) {
 		ItemStack stack = (ItemStack) (Object) this;
+
 		if (stack.getItem() instanceof ToolAttributeHolder) {
 			ToolAttributeHolder holder = (ToolAttributeHolder) stack.getItem();
+
 			if (holder.useDynamicModifiers(slot, stack)) {
 				Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack));
 				info.setReturnValue(ret);
 			}
+
 		}
+		
 	}
 
 }

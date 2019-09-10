@@ -1,7 +1,7 @@
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.api.tools.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.ToolActor;
+import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tools.EntityToolActor;
 import net.fabricmc.fabric.impl.tools.ToolManager;
@@ -9,7 +9,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterials;
 import net.minecraft.util.DefaultedList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,17 +38,25 @@ public abstract class MixinPlayerInventory {
 	@Inject(method = "isUsingEffectiveTool", at = @At("HEAD"))
 	public void actMiningLevel(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		ItemStack stack = this.getInvStack(this.selectedSlot);
+
 		if (stack.getItem() instanceof ActableAttributeHolder) {
 			TriState ret = ToolManager.handleIsEffectiveOn(stack, state, actor);
-			if (ret != TriState.DEFAULT) info.setReturnValue(ret.get());
+
+			if (ret != TriState.DEFAULT) {
+				info.setReturnValue(ret.get());
+			}
+
 		}
+
 	}
 
 	@Inject(method = "getBlockBreakingSpeed", at = @At("HEAD"))
 	public void actMiningSleed(BlockState state, CallbackInfoReturnable<Float> info) {
 		ItemStack stack = this.main.get(this.selectedSlot);
+
 		if (stack.getItem() instanceof ActableAttributeHolder) {
 			info.setReturnValue(((ActableAttributeHolder)stack.getItem()).getMiningSpeed(stack, actor));
 		}
+
 	}
 }

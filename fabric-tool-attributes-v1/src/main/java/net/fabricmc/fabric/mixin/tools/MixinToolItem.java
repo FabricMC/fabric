@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.api.tools.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
 import net.minecraft.item.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

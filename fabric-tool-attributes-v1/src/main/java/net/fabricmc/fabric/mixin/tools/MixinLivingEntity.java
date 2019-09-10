@@ -1,8 +1,8 @@
 package net.fabricmc.fabric.mixin.tools;
 
 import com.google.common.collect.Multimap;
-import net.fabricmc.fabric.api.tools.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.ToolActor;
+import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
 import net.fabricmc.fabric.impl.tools.AttributeManager;
 import net.fabricmc.fabric.impl.tools.EntityToolActor;
 import net.minecraft.entity.Entity;
@@ -13,7 +13,6 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -46,10 +45,16 @@ public abstract class MixinLivingEntity extends Entity {
 
 	private static Multimap<String, EntityAttributeModifier> actModifiers(ItemStack stack, EquipmentSlot slot, ToolActor actor) {
 		Multimap<String, EntityAttributeModifier> original = stack.getAttributeModifiers(slot);
+
 		if (stack.getItem() instanceof ActableAttributeHolder) {
 			ActableAttributeHolder holder = (ActableAttributeHolder)stack.getItem();
-			if (holder.useDynamicModifiers(slot, stack, actor)) return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, actor)));
+
+			if (holder.useDynamicModifiers(slot, stack, actor)) {
+				return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, actor)));
+			}
+
 		}
+
 		return original;
 	}
 }

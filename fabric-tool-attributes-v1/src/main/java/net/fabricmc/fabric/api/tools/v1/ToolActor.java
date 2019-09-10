@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.tools;
+package net.fabricmc.fabric.api.tools.v1;
 
 import com.sun.istack.internal.Nullable;
 

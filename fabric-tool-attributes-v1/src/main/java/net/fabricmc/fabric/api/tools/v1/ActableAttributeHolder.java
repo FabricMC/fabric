@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.tools;
+package net.fabricmc.fabric.api.tools.v1;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.entity.EquipmentSlot;
