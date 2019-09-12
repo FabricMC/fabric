@@ -28,6 +28,7 @@ import net.minecraft.server.network.packet.PlayerActionC2SPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -68,9 +69,9 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At("HEAD"), method = "interactItem", cancellable = true)
 	public void interactItem(PlayerEntity player, World world, ItemStack stack, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		ActionResult result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
-		if (result != ActionResult.PASS) {
-			info.setReturnValue(result);
+		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
+		if (result.getResult() != ActionResult.PASS) {
+			info.setReturnValue(result.getResult());
 			info.cancel();
 			return;
 		}
