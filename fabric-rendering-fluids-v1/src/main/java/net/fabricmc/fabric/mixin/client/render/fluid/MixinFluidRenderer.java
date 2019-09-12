@@ -52,20 +52,21 @@ public class MixinFluidRenderer {
     public void tesselate(ExtendedBlockView view, BlockPos pos, BufferBuilder bufferBuilder, FluidState state, CallbackInfoReturnable<Boolean> info) {
         FluidRendererHookContainer ctr = fabric_renderHandler.get();
         FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
-        if (handler == null) {
-            return;
-        }
-
-        /* ActionResult hResult = handler.tesselate(view, pos, bufferBuilder, state);
-        if (hResult != ActionResult.PASS) {
-            info.setReturnValue(hResult == ActionResult.SUCCESS);
-            return;
-        } */
 
         ctr.view = view;
         ctr.pos = pos;
         ctr.state = state;
         ctr.handler = handler;
+
+        /* if (handler == null) {
+            return;
+        }
+
+        ActionResult hResult = handler.tesselate(view, pos, bufferBuilder, state);
+        if (hResult != ActionResult.PASS) {
+            info.setReturnValue(hResult == ActionResult.SUCCESS);
+            return;
+        } */
     }
 
     @Inject(at = @At("RETURN"), method = "tesselate")
@@ -81,7 +82,7 @@ public class MixinFluidRenderer {
         
         // Has other uses but those have already happened by the time the hook is called.
         final FluidRendererHookContainer ctr = fabric_renderHandler.get();
-        return chk || (ctr != null && !ctr.state.matches(FluidTags.WATER));
+        return chk || !ctr.state.matches(FluidTags.WATER);
     }
 
     @ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "tesselate", ordinal = 0)
