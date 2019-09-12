@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(World.class)
 public class MixinWorld {
-	// TODO split into ClientWorld/ServerWorld ticks? mmm need more mappings
+
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	public void tickBlockEntitiesAfter(CallbackInfo info) {
 		WorldTickCallback.EVENT.invoker().tick((World) (Object) this);
