@@ -62,6 +62,7 @@ public final class FabricDimensionInternals {
 	public static void prepareDimensionalTeleportation(Entity entity) {
 		Preconditions.checkNotNull(entity);
 		PORTAL_ENTITY.set(entity);
+
 		// Set values used by `PortalForcer#changeDimension` to prevent a NPE crash.
 		EntityHooks access = ((EntityHooks) entity);
 		if (entity.getLastPortalDirectionVector() == null) {
@@ -77,6 +78,7 @@ public final class FabricDimensionInternals {
 		Preconditions.checkNotNull(destination);
 		Entity teleported = PORTAL_ENTITY.get();
 		PORTAL_ENTITY.set(null);
+
 		// If the entity is null, the call does not come from a vanilla context
 		if (teleported == null) {
 			return null;
@@ -86,6 +88,7 @@ public final class FabricDimensionInternals {
 		EntityPlacer customPlacement = FabricDimensionInternals.customPlacement;
 		if (customPlacement != null) {
 			BlockPattern.TeleportTarget customTarget = customPlacement.placeEntity(teleported, destination, portalDir, portalX, portalY);
+
 			if (customTarget != null) {
 				return customTarget;
 			}
@@ -95,6 +98,7 @@ public final class FabricDimensionInternals {
 		DimensionType dimType = destination.getDimension().getType();
 		if (dimType instanceof FabricDimensionType) {
 			BlockPattern.TeleportTarget defaultTarget = ((FabricDimensionType) dimType).getDefaultPlacement().placeEntity(teleported, destination, portalDir, portalX, portalY);
+
 			if (defaultTarget == null) {
 				throw new IllegalStateException("Mod dimension " + DimensionType.getId(dimType) + " returned an invalid teleport target");
 			}
@@ -109,6 +113,7 @@ public final class FabricDimensionInternals {
 	public static <E extends Entity> E changeDimension(E teleported, DimensionType dimension, EntityPlacer placement) {
 		assert !teleported.world.isClient : "Entities can only be teleported on the server side";
 		assert Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread() : "Entities must be teleported from the main server thread";
+
 		try {
 			customPlacement = placement;
 			return (E) teleported.changeDimension(dimension);

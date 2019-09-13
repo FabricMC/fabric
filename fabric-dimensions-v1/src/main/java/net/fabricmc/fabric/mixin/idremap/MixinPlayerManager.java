@@ -34,6 +34,7 @@ public abstract class MixinPlayerManager {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	private void onPlayerConnect(ClientConnection conn, ServerPlayerEntity player, CallbackInfo info) {
 		// TODO: Refactor out into network + move dimension hook to event
+
 		// No need to send the packet if the player is using the same game instance (dimension types are static)
 		if (!player.server.isSinglePlayer() || !conn.isLocal() || FabricDimensionInternals.DEBUG) {
 			player.networkHandler.sendPacket(DimensionIdsFixer.createPacket(player.world.getLevelProperties()));

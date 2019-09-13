@@ -45,6 +45,7 @@ public abstract class MixinPortalForcer {
 	@Inject(method = "getPortal", at = @At("HEAD"), cancellable = true)
 	private void findEntityPlacement(BlockPos pos, Vec3d velocity, Direction portalDir, double portalX, double portalY, boolean player, CallbackInfoReturnable<BlockPattern.TeleportTarget> cir) {
 		BlockPattern.TeleportTarget ret = FabricDimensionInternals.tryFindPlacement(this.world, portalDir, portalX, portalY);
+
 		if (ret != null) {
 			cir.setReturnValue(ret);
 		}

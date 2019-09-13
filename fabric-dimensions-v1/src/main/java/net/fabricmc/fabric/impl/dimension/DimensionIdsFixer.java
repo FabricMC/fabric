@@ -60,9 +60,11 @@ public class DimensionIdsFixer {
 		Int2ObjectMap<Identifier> fixedIds = new Int2ObjectOpenHashMap<>();
 		List<FabricDimensionType> fabricDimensions = new ArrayList<>();
 		CompoundTag fabricDimensionIds = new CompoundTag();
+
 		// step 1: detect all fabric and non-fabric dimensions
 		for (Identifier id : Registry.DIMENSION.getIds()) {
 			DimensionType dimensionType = Objects.requireNonNull(DimensionType.byId(id));
+
 			if (dimensionType instanceof FabricDimensionType) {
 				FabricDimensionType fabricDimension = (FabricDimensionType) dimensionType;
 				fabricDimensions.add(fabricDimension);
@@ -75,14 +77,17 @@ public class DimensionIdsFixer {
 				}
 			}
 		}
+
 		// step 2: read saved ids
 		for (String key : savedIds.getKeys()) {
 			int savedRawId = savedIds.getInt(key);
 			Identifier dimId = new Identifier(key);
 			Identifier existing = fixedIds.putIfAbsent(savedRawId, dimId);
+
 			if (existing != null && !existing.equals(dimId)) {
 				throw new RemapException("Saved fabric dimension got replaced with a non-fabric one! " + dimId + " replaced with " + existing + " (raw id: " + savedRawId + ")");
 			}
+
 			DimensionType dim = DimensionType.byId(dimId);
 			if (dim instanceof FabricDimensionType) {
 				setFixedRawId((FabricDimensionType) dim, savedRawId);
@@ -92,19 +97,23 @@ public class DimensionIdsFixer {
 				fabricDimensionIds.putInt(dimId.toString(), savedRawId);
 			}
 		}
+
 		// step 3: de-duplicate raw ids for dimensions which ids are not fixed yet
 		int nextFreeId = 0;
 		for (FabricDimensionType fabricDimension : fabricDimensions) {
 			int rawDimId = fabricDimension.getRawId();
 			Identifier dimId = Objects.requireNonNull(DimensionType.getId(fabricDimension));
+
 			if (fixedIds.containsKey(rawDimId) && !fixedIds.get(rawDimId).equals(dimId)) {
 				while (fixedIds.containsKey(nextFreeId)) ++nextFreeId;
 				setFixedRawId(fabricDimension, nextFreeId);
 				rawDimId = nextFreeId;
 			}
+
 			fixedIds.put(rawDimId, dimId);
 			fabricDimensionIds.putInt(dimId.toString(), rawDimId);
 		}
+
 		return fabricDimensionIds;
 	}
 

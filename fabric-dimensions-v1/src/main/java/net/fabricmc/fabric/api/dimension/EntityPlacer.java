@@ -31,7 +31,6 @@ import net.minecraft.world.dimension.DimensionType;
  */
 @FunctionalInterface
 public interface EntityPlacer {
-
 	/**
 	 * Handles the placement of an entity going to a dimension.
 	 * Utilized by {@link FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)} to specify placement logic when needed.

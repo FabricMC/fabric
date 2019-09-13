@@ -29,6 +29,7 @@ public abstract class MixinLevelStorage {
 		if (e instanceof DimensionRemapException) {
 			throw (DimensionRemapException) e;
 		}
+
 		return e;
 	}
 }

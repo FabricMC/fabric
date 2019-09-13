@@ -85,6 +85,7 @@ public final class FabricDimensions {
 	 */
 	public static <E extends Entity> E teleport(E teleported, DimensionType destination, /*Nullable*/ EntityPlacer customPlacer) {
 		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");
+
 		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacer);
 	}
 }

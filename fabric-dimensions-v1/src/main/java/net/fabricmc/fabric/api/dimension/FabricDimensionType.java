@@ -140,6 +140,7 @@ public final class FabricDimensionType extends DimensionType {
 		 */
 		public Builder defaultPlacer(EntityPlacer defaultPlacer) {
 			Preconditions.checkNotNull(defaultPlacer);
+
 			this.defaultPlacer = defaultPlacer;
 			return this;
 		}
@@ -154,6 +155,7 @@ public final class FabricDimensionType extends DimensionType {
 		 */
 		public Builder factory(BiFunction<World, DimensionType, ? extends Dimension> factory) {
 			Preconditions.checkNotNull(factory);
+
 			this.factory = factory;
 			return this;
 		}
@@ -207,15 +209,18 @@ public final class FabricDimensionType extends DimensionType {
 			Preconditions.checkArgument(Registry.DIMENSION.get(dimensionId) == null);
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
 			Preconditions.checkState(this.factory != null, "No dimension factory has been specified!");
+
 			String suffix = dimensionId.getNamespace() + "_" + dimensionId.getPath();
 			String saveDir = "DIM_" + dimensionId.getNamespace() + "_" + dimensionId.getPath();
 			FabricDimensionType built = new FabricDimensionType(suffix, saveDir, this.factory, this.defaultPlacer, this.skyLight);
 			Registry.register(Registry.DIMENSION, dimensionId, built);
+
 			if (this.desiredRawId != 0) {
 				built.desiredRawId = this.desiredRawId;
 			} else {
 				built.desiredRawId = Registry.DIMENSION.getRawId(built) - 1;
 			}
+
 			built.fixedRawId = built.desiredRawId;
 			return built;
 		}
