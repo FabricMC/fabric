@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.dimension;
+package net.fabricmc.fabric.api.dimension.v1;
 
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;

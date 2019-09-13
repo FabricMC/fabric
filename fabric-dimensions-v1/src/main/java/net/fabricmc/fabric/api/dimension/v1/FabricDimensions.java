@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.dimension;
+package net.fabricmc.fabric.api.dimension.v1;
 
 import com.google.common.base.Preconditions;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.dimension;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.dimension.FabricDimensionType;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.impl.registry.RemapException;
 import net.minecraft.nbt.CompoundTag;

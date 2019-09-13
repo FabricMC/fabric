@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import com.google.common.base.Preconditions;
-import net.fabricmc.fabric.api.dimension.EntityPlacer;
-import net.fabricmc.fabric.api.dimension.FabricDimensionType;
-import net.fabricmc.fabric.api.dimension.FabricDimensions;
+import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.mixin.EntityHooks;
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
