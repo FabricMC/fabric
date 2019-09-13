@@ -20,6 +20,7 @@ import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.dimension.DimensionType;
 
 /**
  * Responsible for placing an Entity once they have entered a dimension.
@@ -33,6 +34,7 @@ public interface EntityPlacer {
 
 	/**
 	 * Handles the placement of an entity going to a dimension.
+	 * Utilized by {@link FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)} to specify placement logic when needed.
 	 *
 	 * <p> This method may have side effects such as the creation of a portal in the target dimension,
 	 * or the creation of a chunk loading ticket.
