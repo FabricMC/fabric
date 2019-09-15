@@ -51,13 +51,4 @@ public interface ToolAttributeHolder {
 	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack) {
 		return EMPTY;
 	}
-
-	/**
-	 * @param slot The equipment slot this item is equipped in.
-	 * @param stack The stack that's equipped.
-	 * @return Whether the tool's dynamic modifiers should be appended.
-	 */
-	default boolean useDynamicModifiers(EquipmentSlot slot, ItemStack stack) {
-		return true;
-	}
 }

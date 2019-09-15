@@ -3,7 +3,6 @@ package net.fabricmc.fabric.mixin.tools;
 import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
 import net.fabricmc.fabric.api.tools.v1.ToolActor;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.tools.EntityToolActor;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerInventory.class)
 public abstract class MixinPlayerInventory {
-	private final ToolActor actor = new EntityToolActor(this.player);
+	private final ToolActor actor = ToolActor.of(this.player);
 
 	@Shadow
 	@Final

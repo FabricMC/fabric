@@ -38,15 +38,4 @@ public interface ActableAttributeHolder extends ToolAttributeHolder {
 	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, ToolActor actor) {
 		return EMPTY;
 	}
-
-	/**
-	 * Separate from {@link ToolAttributeHolder#useDynamicModifiers(EquipmentSlot, ItemStack)}.
-	 * @param slot The equipment slot this item is equipped in.
-	 * @param stack The stack that's equipped.
-	 * @param actor The actor equipping this stack.
-	 * @return Whether the tool's actor-based dynamic modifiers should be appended.
-	 */
-	default boolean useDynamicModifiers(EquipmentSlot slot, ItemStack stack, ToolActor actor) {
-		return true;
-	}
 }

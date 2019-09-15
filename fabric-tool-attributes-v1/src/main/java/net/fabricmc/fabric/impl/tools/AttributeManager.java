@@ -24,7 +24,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AttributeManager {
+public final class AttributeManager {
+
+	private AttributeManager() {}
 
 	/**
 	 * Merge two multimaps of EntityAttributeModifiers, combining their modifiers to prevent duplicate entries in a tooltip.

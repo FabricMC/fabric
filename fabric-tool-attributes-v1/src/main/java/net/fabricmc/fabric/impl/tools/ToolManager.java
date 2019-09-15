@@ -88,8 +88,8 @@ public final class ToolManager {
 		entry(block).putBreakByTool(tag, miningLevel);
 	}
 
-	private static int getMiningLevel(ItemStack stack, ToolActor actor) {
-		if (stack.getItem() instanceof ActableAttributeHolder && !actor.equals(ToolActor.NO_ACTOR)) {
+	private static int getMiningLevel(ItemStack stack, ToolActor<?> actor) {
+		if (stack.getItem() instanceof ActableAttributeHolder && actor.get() != null) {
 			return ((ActableAttributeHolder)stack.getItem()).getMiningLevel(stack, actor);
 		} else if (stack.getItem() instanceof ToolAttributeHolder) {
 			return ((ToolAttributeHolder) stack.getItem()).getMiningLevel(stack);
@@ -102,7 +102,7 @@ public final class ToolManager {
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 * Use {@link ToolActor#NO_ACTOR} if there's not an applicable actor for this scenario (i.e, you only have the item stack)
 	 */
-	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state, ToolActor actor) {
+	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state, ToolActor<?> actor) {
 		EntryImpl entry = entries.get(state.getBlock());
 
 		if (entry != null) {

@@ -4,7 +4,6 @@ import com.google.common.collect.Multimap;
 import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
 import net.fabricmc.fabric.api.tools.v1.ToolActor;
 import net.fabricmc.fabric.impl.tools.AttributeManager;
-import net.fabricmc.fabric.impl.tools.EntityToolActor;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -19,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
 
-	private ToolActor actor = new EntityToolActor((LivingEntity)(Object)this);
+	private ToolActor actor = ToolActor.of((LivingEntity)(Object)this);
 
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);
@@ -48,11 +47,7 @@ public abstract class MixinLivingEntity extends Entity {
 
 		if (stack.getItem() instanceof ActableAttributeHolder) {
 			ActableAttributeHolder holder = (ActableAttributeHolder)stack.getItem();
-
-			if (holder.useDynamicModifiers(slot, stack, actor)) {
-				return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, actor)));
-			}
-
+			return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, actor)));
 		}
 
 		return original;

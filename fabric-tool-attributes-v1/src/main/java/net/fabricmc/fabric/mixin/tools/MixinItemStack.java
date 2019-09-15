@@ -73,12 +73,8 @@ public abstract class MixinItemStack {
 
 		if (stack.getItem() instanceof ToolAttributeHolder) {
 			ToolAttributeHolder holder = (ToolAttributeHolder) stack.getItem();
-
-			if (holder.useDynamicModifiers(slot, stack)) {
-				Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack));
-				info.setReturnValue(ret);
-			}
-
+			Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack));
+			info.setReturnValue(ret);
 		}
 		
 	}
