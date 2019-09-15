@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerInventory.class)
 public abstract class MixinPlayerInventory {
-	private final ToolActor actor = ToolActor.of(this.player);
+	private final ToolActor<PlayerEntity> actor = ToolActor.of(this.player);
 
 	@Shadow
 	@Final

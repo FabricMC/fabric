@@ -35,6 +35,8 @@ public final class AttributeManager {
 	 * @return The merged form of the two.
 	 */
 	public static Multimap<String, EntityAttributeModifier> mergeAttributes(Multimap<String, EntityAttributeModifier> left, Multimap<String, EntityAttributeModifier> right) {
+		if (left.isEmpty()) return right;
+		if (right.isEmpty()) return left;
 		Multimap<String, EntityAttributeModifier> ret = HashMultimap.create();
 		Set<String> allKeys = new HashSet<>();
 		allKeys.addAll(left.keySet());

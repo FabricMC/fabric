@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
 
-	private ToolActor actor = ToolActor.of((LivingEntity)(Object)this);
+	private ToolActor<LivingEntity> actor = ToolActor.of((LivingEntity)(Object)this);
 
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);

@@ -15,7 +15,7 @@ public interface ActableAttributeHolder extends ToolAttributeHolder {
 	 * @param actor The actor attempting to mine.
 	 * @return The mining level for this stack and actor.
 	 */
-	default int getMiningLevel(ItemStack stack, ToolActor actor) {
+	default int getMiningLevel(ItemStack stack, ToolActor<?> actor) {
 		return getMiningLevel(stack);
 	}
 
@@ -24,7 +24,7 @@ public interface ActableAttributeHolder extends ToolAttributeHolder {
 	 * @param actor The actor attempting to mine.
 	 * @return The mining speed for this stack and actor.
 	 */
-	default float getMiningSpeed(ItemStack stack, ToolActor actor) {
+	default float getMiningSpeed(ItemStack stack, ToolActor<?> actor) {
 		return getMiningSpeed(stack);
 	}
 
@@ -35,7 +35,7 @@ public interface ActableAttributeHolder extends ToolAttributeHolder {
 	 * @param actor The actor equipping this stack.
 	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.
 	 */
-	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, ToolActor actor) {
+	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, ToolActor<?> actor) {
 		return EMPTY;
 	}
 }
