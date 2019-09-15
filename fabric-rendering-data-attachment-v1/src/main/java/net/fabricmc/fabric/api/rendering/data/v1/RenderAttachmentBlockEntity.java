@@ -16,19 +16,24 @@
 
 package net.fabricmc.fabric.api.rendering.data.v1;
 
+import net.minecraft.block.entity.BlockEntity;
+
 /**
- * Do not use.<p>
- * 
- * See {@link RenderAttachedBlockView} for explanation and recommended alternative.<p>
+ * Interface for {@link BlockEntity}s which provide dynamic model state data.<p>
+ *
+ * Dynamic model state data is separate from BlockState, and will be
+ * cached during render chunk building on the main thread (safely) and accessible
+ * during chunk rendering on non-main threads.<p>
+ *
+ * For this reason, please ensure that all accesses to the passed model data are
+ * thread-safe. This can be achieved by, for example, passing a pre-generated
+ * immutable object, or ensuring all gets performed on the passed object are atomic
+ * and well-checked for unusual states.<p>
  */
 @FunctionalInterface
-@Deprecated
 public interface RenderAttachmentBlockEntity {
-	/**
-	 * Do not use.<p>
-	 * 
-	 * See {@link RenderAttachedBlockView} for explanation and recommended alternative.<p>
-	 */
-	@Deprecated
+    /**
+     * @return The model state data provided by this block entity. Can be null.
+     */
     Object getRenderAttachmentData();
 }
