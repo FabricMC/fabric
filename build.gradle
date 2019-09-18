@@ -57,7 +57,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.6.1+build.164"
+		modCompile "net.fabricmc:fabric-loader:0.6.2+build.166"
 	}
 
 	configurations {
