@@ -31,7 +31,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Base class for specialized model implementations that need to wrap other baked models.
@@ -42,7 +42,7 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
     protected BakedModel wrapped;
     
     @Override
-    public void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
         ((FabricBakedModel)wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
     }
 

@@ -45,7 +45,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Adaptation of inner, non-static class in BlockModelRenderer that serves same purpose.
@@ -147,7 +147,7 @@ public class AoCalculator {
             
             vanillaCalc.compute(blockInfo, quad, vanillaAo, vanillaLight);
             for (int i = 0; i < 4; i++) {
-                if (light[i] != vanillaLight[i] || !MathHelper.equalsApproximate(ao[i], vanillaAo[i])) {
+                if (light[i] != vanillaLight[i] || !MathHelper.approximatelyEquals(ao[i], vanillaAo[i])) {
                     LOGGER.info(String.format("Mismatch for %s @ %s", blockInfo.blockState.toString(), blockInfo.blockPos.toString()));
                     LOGGER.info(String.format("Flags = %d, LightFace = %s", quad.geometryFlags(), quad.lightFace().toString()));
                     LOGGER.info(String.format("    Old Multiplier: %.2f, %.2f, %.2f, %.2f",
@@ -234,9 +234,9 @@ public class AoCalculator {
      */
     private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace) {
         final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
-        if(MathHelper.equalsApproximate(w1, 0)) {
+        if(MathHelper.approximatelyEquals(w1, 0)) {
             return computeFace(lightFace, true);
-        } else if(MathHelper.equalsApproximate(w1, 1)) {
+        } else if(MathHelper.approximatelyEquals(w1, 1)) {
             return computeFace(lightFace, false);
         } else {
             final float w0 = 1 - w1;
@@ -271,7 +271,7 @@ public class AoCalculator {
             int maxSky = 0, maxBlock = 0;
             
             final float x = normal.getX();
-            if(!MathHelper.equalsApproximate(0f, x)) {
+            if(!MathHelper.approximatelyEquals(0f, x)) {
                 final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
@@ -288,7 +288,7 @@ public class AoCalculator {
             }
             
             final float y = normal.getY();
-            if(!MathHelper.equalsApproximate(0f, y)) {
+            if(!MathHelper.approximatelyEquals(0f, y)) {
                 final Direction face = y > 0 ? Direction.UP: Direction.DOWN;
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
@@ -305,7 +305,7 @@ public class AoCalculator {
             }
             
             final float z = normal.getZ();
-            if(!MathHelper.equalsApproximate(0f, z)) {
+            if(!MathHelper.approximatelyEquals(0f, z)) {
                 final Direction face = z > 0 ? Direction.SOUTH: Direction.NORTH;
                 final AoFaceData fd = gatherInsetFace(quad, i, face);
                 AoFace.get(face).weightFunc.apply(quad, i, w);
@@ -341,7 +341,7 @@ public class AoCalculator {
         if((completionFlags & mask) == 0) {
             completionFlags |= mask;
             
-            final ExtendedBlockView world = blockInfo.blockView;
+            final BlockRenderView world = blockInfo.blockView;
             final BlockPos pos = blockInfo.blockPos;
             final BlockPos.Mutable lightPos = this.lightPos;
             final BlockPos.Mutable searchPos = this.searchPos;
@@ -366,16 +366,16 @@ public class AoCalculator {
             // but it was actually mis-sampling and causing visible artifacts in certain situation
             searchPos.set(lightPos).setOffset(aoFace.neighbors[0]);//.setOffset(lightFace);
             if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
-            final boolean isClear0 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
+            final boolean isClear0 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
             searchPos.set(lightPos).setOffset(aoFace.neighbors[1]);//.setOffset(lightFace);
             if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
-            final boolean isClear1 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
+            final boolean isClear1 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
             searchPos.set(lightPos).setOffset(aoFace.neighbors[2]);//.setOffset(lightFace);
             if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
-            final boolean isClear2 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
+            final boolean isClear2 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
             searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);//.setOffset(lightFace);
             if(!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
-            final boolean isClear3 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
+            final boolean isClear3 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
 
             // c = corner - values at corners of face
             int cLight0, cLight1, cLight2, cLight3;

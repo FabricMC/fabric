@@ -30,7 +30,7 @@ import net.minecraft.util.SystemUtil;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Copy of vanilla AoCalculator modified to output to use parameterized 
@@ -55,7 +55,7 @@ public class VanillaAoCalc {
         apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), aoBounds, bits, ao, brightness);
     }
 
-   private void apply(ExtendedBlockView blockView, BlockState blockState, BlockPos blockPos, Direction side, 
+   private void apply(BlockRenderView blockView, BlockState blockState, BlockPos blockPos, Direction side,
            float[] aoBounds, BitSet bits, float[] ao, int brightness[]) {
       BlockPos lightPos = bits.get(0) ? blockPos.offset(side) : blockPos;
       NeighborData neighborData = NeighborData.getData(side);
@@ -73,13 +73,13 @@ public class VanillaAoCalc {
       int int_4 = brightnessFunc.applyAsInt(mpos);
       float float_4 = aoFunc.apply(mpos);
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[0]).setOffset(side);
-      boolean boolean_1 = blockView.getBlockState(mpos).getLightSubtracted(blockView, mpos) == 0;
+      boolean boolean_1 = blockView.getBlockState(mpos).getOpacity(blockView, mpos) == 0;
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[1]).setOffset(side);
-      boolean boolean_2 = blockView.getBlockState(mpos).getLightSubtracted(blockView, mpos) == 0;
+      boolean boolean_2 = blockView.getBlockState(mpos).getOpacity(blockView, mpos) == 0;
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[2]).setOffset(side);
-      boolean boolean_3 = blockView.getBlockState(mpos).getLightSubtracted(blockView, mpos) == 0;
+      boolean boolean_3 = blockView.getBlockState(mpos).getOpacity(blockView, mpos) == 0;
       mpos.set((Vec3i)lightPos).setOffset(neighborData.faces[3]).setOffset(side);
-      boolean boolean_4 = blockView.getBlockState(mpos).getLightSubtracted(blockView, mpos) == 0;
+      boolean boolean_4 = blockView.getBlockState(mpos).getOpacity(blockView, mpos) == 0;
       float float_6;
       int int_6;
       if (!boolean_3 && !boolean_1) {
@@ -303,7 +303,7 @@ public class VanillaAoCalc {
        }
     }
     
-    public static void updateShape(ExtendedBlockView extendedBlockView_1, BlockState blockState_1, BlockPos blockPos_1, int[] ints_1, Direction direction_1, float[] floats_1, BitSet bitSet_1) {
+    public static void updateShape(BlockRenderView extendedBlockView_1, BlockState blockState_1, BlockPos blockPos_1, int[] ints_1, Direction direction_1, float[] floats_1, BitSet bitSet_1) {
         float float_1 = 32.0F;
         float float_2 = 32.0F;
         float float_3 = 32.0F;

@@ -25,7 +25,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Holds, manages and provides access to the block/world related state
@@ -37,7 +37,7 @@ import net.minecraft.world.ExtendedBlockView;
 public class BlockRenderInfo {
     private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColorMap();
     public final Random random = new Random();
-    public ExtendedBlockView blockView;
+    public BlockRenderView blockView;
     public BlockPos blockPos;
     public BlockState blockState; 
     public long seed;
@@ -55,7 +55,7 @@ public class BlockRenderInfo {
         return result;
     };
     
-    public void setBlockView(ExtendedBlockView blockView) {
+    public void setBlockView(BlockRenderView blockView) {
         this.blockView = blockView;
     }
     

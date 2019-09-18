@@ -35,7 +35,7 @@ import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Implements hook for block-breaking render.
@@ -63,7 +63,7 @@ public abstract class MixinBlockRenderManager {
      */
     @Inject(method = "tesselateDamage", cancellable = true, 
             at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/block/BlockModels;getModel(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/render/model/BakedModel;"))
-    private void hookTesselateDamage(BlockState blockState, BlockPos blockPos, Sprite sprite, ExtendedBlockView blockView, CallbackInfo ci) {
+    private void hookTesselateDamage(BlockState blockState, BlockPos blockPos, Sprite sprite, BlockRenderView blockView, CallbackInfo ci) {
         MutablePair<DamageModel, BakedModel> damageState = DAMAGE_STATE.get();
         if(damageState.right != null && !((FabricBakedModel)damageState.right).isVanillaAdapter()) {
             damageState.left.prepare(damageState.right, sprite, blockState, blockPos);

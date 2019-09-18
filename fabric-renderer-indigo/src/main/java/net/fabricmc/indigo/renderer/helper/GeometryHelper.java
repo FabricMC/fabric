@@ -16,7 +16,7 @@
 
 package net.fabricmc.indigo.renderer.helper;
 
-import static net.minecraft.util.math.MathHelper.equalsApproximate;
+import static net.minecraft.util.math.MathHelper.approximatelyEquals;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.render.model.BakedQuad;
@@ -77,9 +77,9 @@ public abstract class GeometryHelper {
         }
         int i = face.getAxis().ordinal();
         final float val = quad.posByIndex(0, i);
-        return equalsApproximate(val, quad.posByIndex(1, i))
-                && equalsApproximate(val, quad.posByIndex(2, i))
-                && equalsApproximate(val, quad.posByIndex(3, i));
+        return approximatelyEquals(val, quad.posByIndex(1, i))
+                && approximatelyEquals(val, quad.posByIndex(2, i))
+                && approximatelyEquals(val, quad.posByIndex(3, i));
     }
     
     /**

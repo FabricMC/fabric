@@ -41,7 +41,7 @@ import net.minecraft.client.render.chunk.ChunkRenderData;
 import net.minecraft.client.render.chunk.ChunkRenderTask;
 import net.minecraft.client.render.chunk.ChunkRenderer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Implements the main hooks for terrain rendering. Attempts to tread
@@ -101,21 +101,21 @@ public abstract class MixinChunkRenderer implements AccessChunkRenderer{
      * This is the hook that actually implements the rendering API for terrain rendering.<p>
      * 
      * It's unusual to have a @Redirect in a Fabric library, but in this case
-     * it is our explicit intention that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, ExtendedBlockView, BufferBuilder, Random)}
+     * it is our explicit intention that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, Random)}
      * does not execute for models that will be rendered by our renderer.<p>
      * 
      * Any mod that wants to redirect this specific call is likely also a renderer, in which case this
      * renderer should not be present, or the mod should probably instead be relying on the renderer API
      * which was specifically created to provide for enhanced terrain rendering.<p>
      * 
-     * Note also that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, ExtendedBlockView, BufferBuilder, Random)}
+     * Note also that {@link BlockRenderManager#tesselateBlock(BlockState, BlockPos, BlockRenderView, BufferBuilder, Random)}
      * IS called if the block render type is something other than {@link BlockRenderType#MODEL}.
      * Normally this does nothing but will allow mods to create rendering hooks that are
      * driven off of render type. (Not recommended or encouraged, but also not prevented.)
      */
     @Redirect(method = "rebuildChunk", require = 1,
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/ExtendedBlockView;Lnet/minecraft/client/render/BufferBuilder;Ljava/util/Random;)Z"))
-    private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, ExtendedBlockView blockView, BufferBuilder bufferBuilder, Random random) {
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/BufferBuilder;Ljava/util/Random;)Z"))
+    private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, BufferBuilder bufferBuilder, Random random) {
         if(blockState.getRenderType() == BlockRenderType.MODEL) {
 			final BakedModel model = renderManager.getModel(blockState);
 			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {

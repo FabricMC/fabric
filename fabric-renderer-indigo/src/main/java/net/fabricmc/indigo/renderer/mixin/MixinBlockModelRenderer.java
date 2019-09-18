@@ -32,7 +32,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 @Mixin(BlockModelRenderer.class)
 public abstract class MixinBlockModelRenderer {
@@ -40,7 +40,7 @@ public abstract class MixinBlockModelRenderer {
     private final ThreadLocal<BlockRenderContext> CONTEXTS = ThreadLocal.withInitial(BlockRenderContext::new);
     
     @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
-    private void hookTesselate(ExtendedBlockView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, boolean checkSides, Random rand, long seed, CallbackInfoReturnable<Boolean> ci) {
+    private void hookTesselate(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, boolean checkSides, Random rand, long seed, CallbackInfoReturnable<Boolean> ci) {
         if(!((FabricBakedModel)model).isVanillaAdapter()) {
             BlockRenderContext context = CONTEXTS.get();
             if(!context.isCallingVanilla()) {

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.rendering.data.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * BlockView-extending interface to be used by {@link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel} for dynamic model
@@ -49,7 +49,7 @@ import net.minecraft.world.ExtendedBlockView;
  * This interface is only guaranteed to be present in the client environment.
  */
 // XXX can not link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
-public interface RenderAttachedBlockView extends ExtendedBlockView {
+public interface RenderAttachedBlockView extends BlockRenderView {
     /**
      * For models associated with Block Entities that implement {@link RenderAttachmentBlockEntity}
      * this will be the most recent value provided by that implementation for the given block position.<p>

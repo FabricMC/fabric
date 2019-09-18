@@ -69,7 +69,7 @@ public final class RegistrySyncManager {
 
 		if (accept) {
 			try {
-				context.getTaskQueue().executeFuture(() -> {
+				context.getTaskQueue().supply(() -> {
 					if (compound == null) {
 						errorHandler.accept(new RemapException("Received null compound tag in sync packet!"));
 						return null;

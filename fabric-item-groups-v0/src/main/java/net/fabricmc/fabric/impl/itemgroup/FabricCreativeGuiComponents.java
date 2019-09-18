@@ -60,7 +60,7 @@ public class FabricCreativeGuiComponents {
 
 			if (this.visible) {
 				MinecraftClient minecraftClient = MinecraftClient.getInstance();
-				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
+				minecraftClient.getTextureManager().method_22813(BUTTON_TEX);
 				RenderSystem.disableLighting();
 				RenderSystem.color4f(1F, 1F, 1F, 1F);
 				this.blit(this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);

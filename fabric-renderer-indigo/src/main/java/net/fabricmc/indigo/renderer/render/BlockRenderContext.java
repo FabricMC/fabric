@@ -34,7 +34,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Context for non-terrain block rendering.
@@ -66,7 +66,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
     }
 
     private float aoLevel(BlockPos pos) {
-        final ExtendedBlockView blockView = blockInfo.blockView;
+        final BlockRenderView blockView = blockInfo.blockView;
         return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
     }
     
@@ -75,7 +75,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
         return fabricBuffer;
     }
     
-    public boolean tesselate(BlockModelRenderer vanillaRenderer, ExtendedBlockView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, long seed) {
+    public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, long seed) {
         this.vanillaRenderer = vanillaRenderer;
         this.fabricBuffer = (AccessBufferBuilder) buffer;
         this.seed = seed;

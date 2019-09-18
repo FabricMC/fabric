@@ -19,10 +19,10 @@ package net.fabricmc.fabric.impl.client.render.fluid;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 public class FluidRendererHookContainer {
-    public ExtendedBlockView view;
+    public BlockRenderView view;
     public BlockPos pos;
     public FluidState state;
     public FluidRenderHandler handler;

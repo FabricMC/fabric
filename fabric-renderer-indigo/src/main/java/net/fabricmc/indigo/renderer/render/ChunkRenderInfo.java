@@ -33,7 +33,7 @@ import net.minecraft.client.render.chunk.ChunkRenderer;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Holds, manages and provides access to the chunk-related state
@@ -73,7 +73,7 @@ public class ChunkRenderInfo {
     ChunkRenderTask chunkTask; 
     ChunkRenderData chunkData;
     ChunkRenderer chunkRenderer;
-    ExtendedBlockView blockView;
+    BlockRenderView blockView;
     boolean [] resultFlags;
     
     private final AccessBufferBuilder[] buffers = new AccessBufferBuilder[4];
@@ -183,7 +183,7 @@ public class ChunkRenderInfo {
     }
     
     /**
-     * Cached values for {@link BlockState#getBlockBrightness(ExtendedBlockView, BlockPos)}.
+     * Cached values for {@link BlockState#getBlockBrightness(BlockRenderView, BlockPos)}.
      * See also the comments for {@link #brightnessCache}.
      */
     int cachedBrightness(BlockPos pos) {

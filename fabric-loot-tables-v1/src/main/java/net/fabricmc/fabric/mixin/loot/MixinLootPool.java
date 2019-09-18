@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.mixin.loot;
 
 import net.fabricmc.fabric.api.loot.v1.FabricLootPool;
+import net.minecraft.class_4570;
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.LootTableRange;
-import net.minecraft.world.loot.condition.LootCondition;
 import net.minecraft.world.loot.entry.LootEntry;
 import net.minecraft.world.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Final;
@@ -34,7 +34,7 @@ import java.util.List;
 public abstract class MixinLootPool implements FabricLootPool {
 	@Shadow @Final private LootEntry[] entries;
 
-	@Shadow @Final private LootCondition[] conditions;
+	@Shadow @Final private class_4570[] conditions;
 
 	@Shadow @Final private LootFunction[] functions;
 
@@ -44,7 +44,7 @@ public abstract class MixinLootPool implements FabricLootPool {
 	}
 
 	@Override
-	public List<LootCondition> getConditions() {
+	public List<class_4570> getConditions() {
 		return Arrays.asList(conditions);
 	}
 

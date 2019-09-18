@@ -25,7 +25,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -49,7 +49,7 @@ public class MixinFluidRenderer {
     }
 
     @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
-    public void tesselate(ExtendedBlockView view, BlockPos pos, BufferBuilder bufferBuilder, FluidState state, CallbackInfoReturnable<Boolean> info) {
+    public void tesselate(BlockRenderView view, BlockPos pos, BufferBuilder bufferBuilder, FluidState state, CallbackInfoReturnable<Boolean> info) {
         FluidRendererHookContainer ctr = fabric_renderHandler.get();
         FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
         if (handler == null) {
@@ -69,7 +69,7 @@ public class MixinFluidRenderer {
     }
 
     @Inject(at = @At("RETURN"), method = "tesselate")
-    public void tesselateReturn(ExtendedBlockView view, BlockPos pos, BufferBuilder bufferBuilder, FluidState state, CallbackInfoReturnable<Boolean> info) {
+    public void tesselateReturn(BlockRenderView view, BlockPos pos, BufferBuilder bufferBuilder, FluidState state, CallbackInfoReturnable<Boolean> info) {
         fabric_renderHandler.get().clear();
     }
 
