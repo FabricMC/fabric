@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import net.minecraft.class_4570;
 import net.minecraft.world.loot.LootPool;
+import net.minecraft.world.loot.condition.LootCondition;
 import net.minecraft.world.loot.entry.LootEntry;
 import net.minecraft.world.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,7 @@ public interface LootPoolBuilderHooks {
 	@Accessor
 	List<LootEntry> getEntries();
 	@Accessor
-	List<class_4570> getConditions();
+	List<LootCondition> getConditions();
 	@Accessor
 	List<LootFunction> getFunctions();
 }

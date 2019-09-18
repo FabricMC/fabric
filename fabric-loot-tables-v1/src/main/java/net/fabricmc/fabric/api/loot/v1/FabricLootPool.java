@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import net.minecraft.class_4570;
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.LootTableRange;
+import net.minecraft.world.loot.condition.LootCondition;
 import net.minecraft.world.loot.entry.LootEntry;
 import net.minecraft.world.loot.function.LootFunction;
 
@@ -33,7 +33,7 @@ public interface FabricLootPool {
 		return (LootPool) this;
 	}
 	List<LootEntry> getEntries();
-	List<class_4570> getConditions();
+	List<LootCondition> getConditions();
 	List<LootFunction> getFunctions();
 	LootTableRange getRollsRange();
 }

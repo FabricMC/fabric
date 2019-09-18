@@ -14,7 +14,7 @@ def ENV = System.getenv()
 class Globals {
 	static def baseVersion = "0.3.2"
 	static def mcVersion = "19w38b"
-	static def yarnVersion = "+build.3"
+	static def yarnVersion = "+build.4"
 }
 
 import org.apache.commons.codec.digest.DigestUtils
