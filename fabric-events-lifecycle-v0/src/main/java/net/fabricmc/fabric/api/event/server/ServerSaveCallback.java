@@ -19,20 +19,23 @@ package net.fabricmc.fabric.api.event.server;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.LevelProperties;
 
 /**
- * A callback for server/game saving.
+ * A callback for server/game saving. This is called when all worlds have been saved and the level properties
+ * have been initialized but not yet written to file.
  */
 public interface ServerSaveCallback {
 	/**
-	 * This event is triggered when the server finished saving all its worlds and {@code level.dat} file.
+	 * This event is triggered when the server finished saving all its worlds and preparing level properties
+	 * before writing it to file.
 	 *
 	 * @see MinecraftServer#save(boolean, boolean, boolean)
 	 */
 	Event<ServerSaveCallback> EVENT = EventFactory.createArrayBacked(ServerSaveCallback.class,
-		listeners -> (server, silent, flush, enforced) -> {
+		listeners -> (server, properties) -> {
 			for (ServerSaveCallback event : listeners) {
-				event.onSave(server, silent, flush, enforced);
+				event.onSave(server, properties);
 			}
 		}
 	);
@@ -40,10 +43,10 @@ public interface ServerSaveCallback {
 	/**
 	 * Perform a custom saving logic.
 	 *
+	 * <p>The level properties is provided in case mods need to tweak it.
+	 *
 	 * @param server the server
-	 * @param silent true if the saving produces visible log messages
-	 * @param flush true if the anvil chunk storage should flush its output
-	 * @param enforced false if the saving should respect save-on/save-off command's settings
+	 * @param properties the level properties
 	 */
-	void onSave(MinecraftServer server, boolean silent, boolean flush, boolean enforced);
+	void onSave(MinecraftServer server, LevelProperties properties);
 }

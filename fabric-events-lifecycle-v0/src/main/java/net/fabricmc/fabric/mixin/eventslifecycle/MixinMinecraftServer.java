@@ -50,9 +50,12 @@ public class MixinMinecraftServer {
 		ServerReloadCallback.POST_EVENT.invoker().onReload((MinecraftServer) (Object) this);
 	}
 
-	@Inject(method = "save(ZZZ)Z", at = @At("RETURN"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void onSave(CallbackInfoReturnable<Boolean> info, boolean silent, boolean flush, boolean enforced, boolean iteratedWorlds, ServerWorld overworld, LevelProperties mainLevelProperties) {
-		ServerSaveCallback.EVENT.invoker().onSave((MinecraftServer) (Object) this, silent, flush, enforced);
+	@Inject(method = "save(ZZZ)Z",
+		at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/world/WorldSaveHandler;saveWorld(Lnet/minecraft/world/level/LevelProperties;Lnet/minecraft/nbt/CompoundTag;)V"
+		), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void onSave(boolean silent, boolean flush, boolean enforced, CallbackInfoReturnable<Boolean> info, boolean iteratedWorlds, ServerWorld overworld, LevelProperties mainLevelProperties) {
+		ServerSaveCallback.EVENT.invoker().onSave((MinecraftServer) (Object) this, mainLevelProperties);
 	}
 
 	@Inject(at = @At("HEAD"), method = "shutdown")
