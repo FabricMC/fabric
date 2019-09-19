@@ -62,9 +62,27 @@ public interface MaterialFinder {
      * CAN be null and is null by default. A null value means the renderer
      * will use {@link Block#getRenderLayer()} for the associate block, or
      * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
+     * 
+     * @reason Use {@code BlendMode} version instead.
      */
-    MaterialFinder blendMode(int spriteIndex, BlockRenderLayer blendMode);
-
+    @Deprecated
+    default MaterialFinder blendMode(int spriteIndex, BlockRenderLayer renderLayer) {
+    	return blendMode(spriteIndex, BlendMode.fromRenderLayer(renderLayer));
+    }
+    
+    /**
+     * Defines how sprite pixels will be blended with the scene.
+     * Accepts {link @BlockRenderLayer} values and blending behavior
+     * will emulate the way that Minecraft renders each pass. But this does 
+     * NOT mean the sprite will be rendered in a specific render pass - some
+     * implementations may not use the standard Minecraft render passes.<p>
+     * 
+     * CAN be null and is null by default. A null value means the renderer
+     * will use {@link Block#getRenderLayer()} for the associate block, or
+     * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
+     */
+    MaterialFinder blendMode(int spriteIndex, BlendMode blendMode);
+    
     /**
      * Vertex color(s) will be modified for quad color index unless disabled.<p>
      */

@@ -24,8 +24,9 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.chunk.ChunkRenderTask;
-import net.minecraft.client.render.chunk.ChunkRenderer;
+import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
+import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
+import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.crash.CrashException;
@@ -46,17 +47,14 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
     private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
     private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
     
-    public void setBlockView(ChunkRendererRegion blockView) {
-        blockInfo.setBlockView(blockView);
-        chunkInfo.setBlockView(blockView);
-    }
-    
-    public void setChunkTask(ChunkRenderTask chunkTask) {
-        chunkInfo.setChunkTask(chunkTask);
-    }
-    
-    public TerrainRenderContext prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean [] resultFlags) {
-        chunkInfo.prepare(chunkRenderer, chunkOrigin, resultFlags);
+    public TerrainRenderContext prepare(
+    		ChunkRendererRegion blockView,
+    		ChunkRenderer chunkRenderer, 
+    		ChunkRenderData chunkData, 
+    		BlockLayeredBufferBuilder builders) 
+    {
+    	blockInfo.setBlockView(blockView);
+    	chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
         return this;
     }
     
@@ -78,7 +76,8 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
            CrashReportSection.addBlockInfo(crashReportElement_1, blockPos, blockState);
            throw new CrashException(crashReport_1);
         }
-        return chunkInfo.resultFlags[blockInfo.defaultLayerIndex];
+        // false because we've already marked the chunk as populated - caller doesn't need to
+        return false;
      }
 
     @Override

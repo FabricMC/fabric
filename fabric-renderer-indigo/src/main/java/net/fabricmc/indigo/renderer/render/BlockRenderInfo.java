@@ -19,6 +19,7 @@ package net.fabricmc.indigo.renderer.render;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
@@ -65,7 +66,10 @@ public class BlockRenderInfo {
         // in the unlikely case seed actually matches this, we'll simply retrieve it more than one
         seed = -1L; 
         defaultAo = modelAO && MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0;
-        defaultLayerIndex = blockState.getBlock().getRenderLayer().ordinal();
+        
+        // TODO: probably best to use BRL directly somehow vs reverse lookup each time
+        BlockRenderLayer defaultLayer = BlockRenderLayer.method_22715(blockState);
+        defaultLayerIndex = BlendMode.fromRenderLayer(defaultLayer).ordinal();
     }
     
     public void release() {
@@ -81,7 +85,7 @@ public class BlockRenderInfo {
         return true;
     }
     
-    int layerIndexOrDefault(BlockRenderLayer layer) {
-        return layer == null ? this.defaultLayerIndex : layer.ordinal();
+    int effectiveBlendMode(BlendMode blendMode) {
+        return blendMode == BlendMode.DEFAULT ? this.defaultLayerIndex : blendMode.ordinal();
     }
 }

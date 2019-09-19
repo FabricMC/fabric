@@ -93,9 +93,8 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
                     break;
 
                 // these types should never occur and/or require no action
-                case MATRIX:
-                case BLEND_WEIGHT:
                 case PADDING:
+                case GENERIC:
                 default:
                     break;
 

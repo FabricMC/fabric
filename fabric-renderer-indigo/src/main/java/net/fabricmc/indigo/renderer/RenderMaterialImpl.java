@@ -18,9 +18,9 @@ package net.fabricmc.indigo.renderer;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.minecraft.block.BlockRenderLayer;
 
 /**
  * Default implementation of the standard render materials.
@@ -29,9 +29,7 @@ import net.minecraft.block.BlockRenderLayer;
  * easy/fast interning via int/object hashmap.
  */
 public abstract class RenderMaterialImpl {
-	/** zero position (default value) will be NULL */
-    private static final BlockRenderLayer[] BLEND_MODES = new BlockRenderLayer[5];
-
+    private static final BlendMode[] BLEND_MODES = BlendMode.values();
     
     /**
      * Indigo currently support up to 3 sprite layers but is configured to recognize only one.
@@ -49,8 +47,6 @@ public abstract class RenderMaterialImpl {
     private static final int[] AO_FLAGS = new int[3];
     
     static {
-	    System.arraycopy(BlockRenderLayer.values(), 0, BLEND_MODES, 1, 4);
-
         int shift = Integer.bitCount(TEXTURE_DEPTH_MASK);
         for(int i = 0; i < 3; i++) {
             BLEND_MODE_SHIFT[i] = shift;
@@ -71,7 +67,7 @@ public abstract class RenderMaterialImpl {
     
     protected int bits;
     
-    public BlockRenderLayer blendMode(int textureIndex) {
+    public BlendMode blendMode(int textureIndex) {
         return BLEND_MODES[(bits >> BLEND_MODE_SHIFT[textureIndex]) & BLEND_MODE_MASK];
     }
     
@@ -137,7 +133,7 @@ public abstract class RenderMaterialImpl {
         }
         
         @Override
-        public MaterialFinder blendMode(int textureIndex, BlockRenderLayer blendMode) {
+        public MaterialFinder blendMode(int textureIndex, BlendMode blendMode) {
             final int shift = BLEND_MODE_SHIFT[textureIndex];
             // zero position is null (default) value
             final int ordinal = blendMode == null ? 0 : blendMode.ordinal() + 1;

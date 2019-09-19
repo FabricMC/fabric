@@ -49,7 +49,7 @@ import net.minecraft.world.BlockRenderView;
  * This interface is only guaranteed to be present in the client environment.
  */
 // XXX can not link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
-public interface RenderAttachedBlockView extends BlockRenderView {
+public interface RenderAttachedBlockView {
     /**
      * For models associated with Block Entities that implement {@link RenderAttachmentBlockEntity}
      * this will be the most recent value provided by that implementation for the given block position.<p>
@@ -59,7 +59,7 @@ public interface RenderAttachedBlockView extends BlockRenderView {
      * @param pos Position of the block for the block model.
      */
     default Object getBlockEntityRenderAttachment(BlockPos pos) {
-        BlockEntity be = this.getBlockEntity(pos);
+        BlockEntity be = ((BlockRenderView)this).getBlockEntity(pos);
         return be == null ? null : ((RenderAttachmentBlockEntity) be).getRenderAttachmentData();
     }
 }
