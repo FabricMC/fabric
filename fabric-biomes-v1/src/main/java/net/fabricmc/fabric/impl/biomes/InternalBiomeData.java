@@ -23,6 +23,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
+import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 import java.util.*;
 
@@ -40,6 +41,8 @@ public final class InternalBiomeData {
 	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
 	private static final Map<Biome, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
 	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
+	private static final Map<Biome, PredicatedTransformer> OVERWORLD_LARGE_EDGES = new HashMap<>();
+	private static final Map<Biome, VariantTransformer> OVERWORLD_SUB_BIOME_TRANSFORMERS = new HashMap<>();
 	private static final List<Biome> OVERWORLD_INJECTED_BIOMES = new ArrayList<>();
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
@@ -95,6 +98,22 @@ public final class InternalBiomeData {
 			OVERWORLD_INJECTED_BIOMES.add(river);
 		}
 	}
+	
+	public static void addOverworldLargeEdge(Biome primary, Biome edge, BiPredicate<Biome, LayerRandomnessSource> predicate) {
+		Preconditions.checkArgument(primary != null, "Primary biome is null");
+		Preconditions.checkArgument(edge != null, "Edge biome is null");
+		Preconditions.checkArgument(predicate != null, "Predicate is null");
+		OVERWORLD_LARGE_EDGES.computeIfAbsent(primary, biome -> new PredicatedTransformer()).addPredicatedBiome(edge, predicate);
+		OVERWORLD_INJECTED_BIOMES.add(edge);
+	}
+	
+	public static void addOverworldSubBiome(Biome primary, Biome subBiome, double chance) {
+		Preconditions.checkArgument(primary != null, "Primary biome is null");
+		Preconditions.checkArgument(subBiome != null, "Sub biome is null");
+		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 or less than or equal to 1");
+		OVERWORLD_SUB_BIOME_TRANSFORMERS.computeIfAbsent(primary, biome -> new VariantTransformer()).addBiome(subBiome, chance, null);
+		OVERWORLD_INJECTED_BIOMES.add(subBiome);
+	}
 
 	public static void addSpawnBiome(Biome biome) {
 		Preconditions.checkArgument(biome != null, "Biome is null");
@@ -131,6 +150,14 @@ public final class InternalBiomeData {
 
 	public static Map<Biome, VariantTransformer> getOverworldVariantTransformers() {
 		return OVERWORLD_VARIANT_TRANSFORMERS;
+	}
+	
+	public static Map<Biome, PredicatedTransformer> getOverworldLargeEdges() {
+		return OVERWORLD_LARGE_EDGES;
+	}
+	
+	public static Map<Biome, VariantTransformer> getOverworldSubBiomeTransformers() {
+		return OVERWORLD_SUB_BIOME_TRANSFORMERS;
 	}
 
 	private static class DefaultHillsData {

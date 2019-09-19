@@ -6,7 +6,9 @@
     "MixinAddEdgeBiomesLayer",
     "MixinAddHillsLayer",
     "MixinAddRiversLayer",
+	"MixinAddSunflowerPlainsLayer",
     "MixinBiomeSource",
+	"MixinEaseBiomeEdgeLayer",
     "MixinSetBaseBiomesLayer",
     "MixinVanillaLayeredBiomeSource"
   ],

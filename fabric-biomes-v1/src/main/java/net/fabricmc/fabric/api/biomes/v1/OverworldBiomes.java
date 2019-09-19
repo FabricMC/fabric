@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.biomes.v1;
 
 import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
  * API that exposes some internals of the minecraft default biome source for the overworld
@@ -106,6 +107,14 @@ public final class OverworldBiomes {
 	 */
 	public static void setRiverBiome(Biome parent, Biome river) {
 		InternalBiomeData.setOverworldRiverBiome(parent, river);
+	}
+	
+	public static void addLargeEdgeBiome(Biome parent, Biome edge, BiPredicate<Biome, LayerRandomnessSource> predicate) {
+		InternalBiomeData.addOverworldLargeEdge(parent, edge, predicate);
+	}
+	
+	public static void addSubBiome(Biome parent, Biome subBiome, double chance) {
+		InternalBiomeData.addOverworldSubBiome(parent, subBiome, chance);
 	}
 
 }
