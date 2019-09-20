@@ -36,17 +36,14 @@ public abstract class EncodingFormat {
     
     // our internal format always include packed normals
     public static final int VERTEX_START_OFFSET = HEADER_STRIDE;
-    static final int VANILLA_STRIDE = 28;
-    public static final int NORMALS_OFFSET = VERTEX_START_OFFSET + VANILLA_STRIDE;
-    static final int NORMALS_STRIDE = 4;
-	public static final int NORMALS_OFFSET_VANILLA = VANILLA_STRIDE;
+    static final int VANILLA_STRIDE = 32;
     // normals are followed by 0-2 sets of color/uv coordinates
     static final int TEXTURE_STRIDE = 12;
     /** is one tex stride less than the actual base, because when used tex index is &gt;= 1 */
-    static final int TEXTURE_OFFSET_MINUS = NORMALS_OFFSET + NORMALS_STRIDE - TEXTURE_STRIDE;
-    static final int SECOND_TEXTURE_OFFSET = NORMALS_OFFSET + NORMALS_STRIDE;
+    static final int TEXTURE_OFFSET_MINUS = HEADER_STRIDE + VANILLA_STRIDE - TEXTURE_STRIDE;
+    static final int SECOND_TEXTURE_OFFSET = TEXTURE_OFFSET_MINUS + TEXTURE_STRIDE;
     static final int THIRD_TEXTURE_OFFSET = SECOND_TEXTURE_OFFSET + TEXTURE_STRIDE;
-    public static final int MAX_STRIDE = HEADER_STRIDE + VANILLA_STRIDE + NORMALS_STRIDE 
+    public static final int MAX_STRIDE = HEADER_STRIDE + VANILLA_STRIDE 
             + TEXTURE_STRIDE * (RenderMaterialImpl.MAX_SPRITE_DEPTH - 1);
     
     /** used for quick clearing of quad buffers */

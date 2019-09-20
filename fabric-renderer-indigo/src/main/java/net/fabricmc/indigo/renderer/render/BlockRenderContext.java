@@ -18,8 +18,8 @@ package net.fabricmc.indigo.renderer.render;
 
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -29,6 +29,7 @@ import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.indigo.renderer.mixin.BufferBuilderOffsetAccessor;
+import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
@@ -70,7 +71,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
         return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
     }
     
-    private AccessBufferBuilder outputBuffer(int renderLayer) {
+    private AccessBufferBuilder outputBuffer(BlockRenderLayer renderLayer) {
         didOutput = true;
         return fabricBuffer;
     }
@@ -108,7 +109,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
     }
     
     private class MeshConsumer extends AbstractMeshConsumer {
-        MeshConsumer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+        MeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
             super(blockInfo, bufferFunc, aoCalc, transform);
         }
 

@@ -18,7 +18,7 @@ package net.fabricmc.indigo.renderer.render;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
@@ -77,7 +77,7 @@ public class ChunkRenderInfo {
     BlockLayeredBufferBuilder builders;
     BlockRenderView blockView;
     
-    private final AccessBufferBuilder[] buffers = new AccessBufferBuilder[4];
+    private final Object2ObjectOpenHashMap<BlockRenderLayer, AccessBufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
     
     private double chunkOffsetX;
     private double chunkOffsetY;
@@ -106,10 +106,7 @@ public class ChunkRenderInfo {
         this.chunkData = (AccessChunkRendererData) chunkData;
         this.chunkRenderer = chunkRenderer;
         this.builders = builders;
-        buffers[0] = null;
-        buffers[1] = null;
-        buffers[2] = null;
-        buffers[3] = null;
+        buffers.clear();
         chunkOffsetX = -chunkOrigin.getX();
         chunkOffsetY = -chunkOrigin.getY();
         chunkOffsetZ = -chunkOrigin.getZ();
@@ -120,10 +117,7 @@ public class ChunkRenderInfo {
     void release() {
         chunkData = null;
         chunkRenderer = null;
-        buffers[0] = null;
-        buffers[1] = null;
-        buffers[2] = null;
-        buffers[3] = null;
+        buffers.clear();
     }
     
     void beginBlock() {
@@ -150,22 +144,18 @@ public class ChunkRenderInfo {
         }
     }
     
-    private static final BlendMode[] BLEND_MODES = BlendMode.values();
     
     /** Lazily retrieves output buffer for given layer, initializing as needed. */
-    public AccessBufferBuilder getInitializedBuffer(int layerIndex) {
-        AccessBufferBuilder result = buffers[layerIndex];
+    public AccessBufferBuilder getInitializedBuffer(BlockRenderLayer renderLayer) {
+        AccessBufferBuilder result = buffers.get(renderLayer);
         if (result == null) {
-        	final BlockRenderLayer renderLayer = BLEND_MODES[layerIndex].blockRenderLayer;
-
-        	chunkData.fabric_markPopulated(renderLayer);
-            
         	BufferBuilder builder = builders.get(renderLayer);
-            buffers[layerIndex] = (AccessBufferBuilder) builder;
+        	result = (AccessBufferBuilder) builder;
+        	chunkData.fabric_markPopulated(renderLayer);
+            buffers.put(renderLayer, result);
             if (chunkData.fabric_markInitialized(renderLayer)) {
                 ((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, chunkOrigin);
             }
-            result = (AccessBufferBuilder) builder;
         }
         return result;
     }

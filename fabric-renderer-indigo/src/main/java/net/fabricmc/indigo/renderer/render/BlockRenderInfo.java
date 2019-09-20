@@ -43,7 +43,7 @@ public class BlockRenderInfo {
     public BlockState blockState; 
     public long seed;
     boolean defaultAo;
-    int defaultLayerIndex;
+    BlockRenderLayer defaultLayer;
     
     public final Supplier<Random> randomSupplier = () -> {
         final Random result = random;
@@ -67,9 +67,7 @@ public class BlockRenderInfo {
         seed = -1L; 
         defaultAo = modelAO && MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0;
         
-        // TODO: probably best to use BRL directly somehow vs reverse lookup each time
-        BlockRenderLayer defaultLayer = BlockRenderLayer.method_22715(blockState);
-        defaultLayerIndex = BlendMode.fromRenderLayer(defaultLayer).ordinal();
+        defaultLayer = BlockRenderLayer.method_22715(blockState);
     }
     
     public void release() {
@@ -85,7 +83,7 @@ public class BlockRenderInfo {
         return true;
     }
     
-    int effectiveBlendMode(BlendMode blendMode) {
-        return blendMode == BlendMode.DEFAULT ? this.defaultLayerIndex : blendMode.ordinal();
+    BlockRenderLayer effectiveRenderLayer(BlendMode blendMode) {
+        return blendMode == BlendMode.DEFAULT ? this.defaultLayer : blendMode.blockRenderLayer;
     }
 }

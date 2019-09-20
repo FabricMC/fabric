@@ -24,7 +24,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -39,10 +38,10 @@ import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
 import net.minecraft.client.render.chunk.ChunkBatcher;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
+import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
-import net.minecraft.client.render.chunk.ChunkRendererRegion;
 
 /**
  * Implements the main hooks for terrain rendering. Attempts to tread
@@ -63,7 +62,7 @@ import net.minecraft.client.render.chunk.ChunkRendererRegion;
 @Mixin(targets = "net.minecraft.client.render.chunk.ChunkBatcher$ChunkRenderer$class_4578")
 public class MixinChunkBuilderThingy {
 	@Shadow protected ChunkRendererRegion field_20838;
-	@Shadow protected ChunkRenderer this$0;
+	@Shadow protected ChunkRenderer field_20839;
 	
 	@Inject(at = @At("HEAD"), method = "method_22785")
 	private void hookChunkBuild(
@@ -76,7 +75,7 @@ public class MixinChunkBuilderThingy {
 		
 		if (field_20838 != null) {
 			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
-			renderer.prepare(field_20838, this$0, renderData, builder);
+			renderer.prepare(field_20838, field_20839, renderData, builder);
 			((AccessChunkRendererRegion)field_20838).fabric_setRenderer(renderer);
 		}
 	}
@@ -114,7 +113,7 @@ public class MixinChunkBuilderThingy {
      * Release all references. Probably not necessary but would be $#%! to debug if it is.
      */
     @Inject(at = @At("RETURN"), method = "method_22785")
-    private void hookRebuildChunkReturn(CallbackInfo info) {
+    private void hookRebuildChunkReturn(CallbackInfoReturnable<Set<BlockEntity>> ci) {
         TerrainRenderContext.POOL.get().release();
     }
 }

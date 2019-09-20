@@ -134,10 +134,10 @@ public abstract class RenderMaterialImpl {
         
         @Override
         public MaterialFinder blendMode(int textureIndex, BlendMode blendMode) {
+        	if (blendMode == null) blendMode = BlendMode.DEFAULT;
             final int shift = BLEND_MODE_SHIFT[textureIndex];
             // zero position is null (default) value
-            final int ordinal = blendMode == null ? 0 : blendMode.ordinal() + 1;
-            bits = (bits & ~(BLEND_MODE_MASK << shift)) | (ordinal << shift);
+            bits = (bits & ~(BLEND_MODE_MASK << shift)) | (blendMode.ordinal() << shift);
             return this;
         }
 
