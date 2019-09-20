@@ -60,7 +60,7 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	// warnings in case something goes wrong.
 	
 	private static BiConsumer<Block, BlockRenderLayer> blockHandler = (b, l) -> {
-		log.warn("Unable to map Block " + b.toString() + " to BlockRenderLayer. Mapping handler not ready.");
+		log.warn("Unable to map Block {} to BlockRenderLayer. Mapping handler not ready.", b);
 	};
 
 	private static BiConsumer<Fluid, BlockRenderLayer> fluidHandler = (f, b) -> {
