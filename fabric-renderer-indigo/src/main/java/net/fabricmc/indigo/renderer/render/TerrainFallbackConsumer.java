@@ -58,7 +58,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
     private static Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
     private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
     
-    private final int[] editorBuffer = new int[28];
+    private final int[] editorBuffer = new int[32];
     private final ChunkRenderInfo chunkInfo;
     
     TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
@@ -90,7 +90,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
             Direction face = ModelHelper.faceFromIndex(i);
             List<BakedQuad> quads = model.getQuads(blockState, face, random.get());
             final int count = quads.size();
-            if(count != 0 && blockInfo.shouldDrawFace(face)) {
+            if (count != 0 && blockInfo.shouldDrawFace(face)) {
                 for(int j = 0; j < count; j++) {
                     BakedQuad q = quads.get(j);
                     renderQuad(q, face, defaultMaterial);
@@ -100,7 +100,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 
         List<BakedQuad> quads = model.getQuads(blockState, null, random.get());
         final int count = quads.size();
-        if(count != 0) {
+        if (count != 0) {
             for(int j = 0; j < count; j++) {
                 BakedQuad q = quads.get(j);
                 renderQuad(q, null, defaultMaterial);
@@ -110,12 +110,12 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
     
     private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
         final int[] vertexData = quad.getVertexData();
-        if(!CompatibilityHelper.canRender(vertexData)) {
+        if (!CompatibilityHelper.canRender(vertexData)) {
         	return;
         }
         
         final MutableQuadViewImpl editorQuad = this.editorQuad;
-        System.arraycopy(vertexData, 0, editorBuffer, 0, 28);
+        System.arraycopy(vertexData, 0, editorBuffer, 0, 32);
         editorQuad.cullFace(cullFace);
         final Direction lightFace = quad.getFace();
         editorQuad.lightFace(lightFace);
@@ -123,7 +123,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
         editorQuad.colorIndex(quad.getColorIndex());
         editorQuad.material(defaultMaterial);
         
-        if(!transform.transform(editorQuad)) {
+        if (!transform.transform(editorQuad)) {
             return;
         }
         
@@ -132,7 +132,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
             editorQuad.invalidateShape();
             aoCalc.compute(editorQuad, true);
             chunkInfo.applyOffsets(editorQuad);
-            tesselateSmooth(editorQuad, blockInfo.defaultLayerIndex, editorQuad.colorIndex());
+            tesselateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
         } else {
             // vanilla compatibility hack
 			// For flat lighting, cull face drives everything and light face is ignored.
@@ -145,7 +145,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
                 editorQuad.lightFace(cullFace);
             }
             chunkInfo.applyOffsets(editorQuad);
-            tesselateFlat(editorQuad, blockInfo.defaultLayerIndex, editorQuad.colorIndex());
+            tesselateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
         }
     }
 }

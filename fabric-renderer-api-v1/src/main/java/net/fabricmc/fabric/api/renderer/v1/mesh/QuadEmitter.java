@@ -21,7 +21,6 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * Specialized {@link MutableQuadView} obtained via {@link MeshBuilder#getEmitter()}

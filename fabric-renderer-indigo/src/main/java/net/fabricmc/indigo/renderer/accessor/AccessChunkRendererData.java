@@ -14,15 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.rendering.data;
+package net.fabricmc.indigo.renderer.accessor;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.class_4538;
-import net.minecraft.world.BlockRenderView;
-import org.spongepowered.asm.mixin.Mixin;
+import net.minecraft.block.BlockRenderLayer;
 
-/** Make {@link BlockRenderView} implement {@link RenderAttachedBlockView}. */
-@Mixin(class_4538.class)
-public interface MixinViewableWorld extends RenderAttachedBlockView {
+public interface AccessChunkRendererData {
+	/**
+	 * Mark internal tracking set that buffer has been initialized.
+	 * 
+	 * @param renderLayer  Layer to be initialized.
+	 * @return {@code true} if layer was not already initialized.
+	 */
+	boolean fabric_markInitialized(BlockRenderLayer renderLayer);
 
+	/**
+	 * Mark internal tracking set that buffer has content.
+	 * 
+	 * @param renderLayer  Layer with content.
+	 */
+	void fabric_markPopulated(BlockRenderLayer renderLayer);
 }

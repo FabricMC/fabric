@@ -9,9 +9,10 @@
     "BufferBuilderOffsetAccessor",
   	"MixinBlockModelRenderer",
     "MixinBufferBuilder",
+    "MixinChunkRebuildTask",
+    "MixinChunkRenderData",
 	"MixinChunkRenderer",
     "MixinChunkRendererRegion",
-	"MixinChunkRenderTask",
 	"MixinItemRenderer"
   ],
   "injectors": {

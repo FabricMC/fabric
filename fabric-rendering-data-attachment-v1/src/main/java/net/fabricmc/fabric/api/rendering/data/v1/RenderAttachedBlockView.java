@@ -40,7 +40,7 @@ import net.minecraft.world.BlockRenderView;
  * application from network packets and render chunk rebuilds. Use of {link #getCachedRenderData()}
  * will ensure consistency of model state with the rest of the chunk being rendered.<p>
  *
- * Models should avoid using {@link ExtendedBlockView#getBlockEntity(BlockPos)}
+ * Models should avoid using {@link BlockRenderView#getBlockEntity(BlockPos)}
  * to ensure thread safety because this view may be accessed outside the main client thread.
  * Models that require Block Entity data should implement {@link RenderAttachmentBlockEntity}
  * and then use {@link #getBlockEntityRenderAttachment(BlockPos)} to retrieve it.  When called from the
@@ -59,7 +59,7 @@ public interface RenderAttachedBlockView extends BlockRenderView {
      * @param pos Position of the block for the block model.
      */
     default Object getBlockEntityRenderAttachment(BlockPos pos) {
-        BlockEntity be = this.getBlockEntity(pos);
+        BlockEntity be = ((BlockRenderView) this).getBlockEntity(pos);
         return be == null ? null : ((RenderAttachmentBlockEntity) be).getRenderAttachmentData();
     }
 }

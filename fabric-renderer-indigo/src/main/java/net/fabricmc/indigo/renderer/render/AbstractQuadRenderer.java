@@ -18,7 +18,8 @@ package net.fabricmc.indigo.renderer.render;
 
 import static net.fabricmc.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import java.util.function.Function;
+
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
@@ -26,6 +27,7 @@ import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
@@ -36,12 +38,12 @@ import net.minecraft.util.math.BlockPos;
 public abstract class AbstractQuadRenderer {
     private static final int FULL_BRIGHTNESS = 15 << 20 | 15 << 4;
     
-    protected final Int2ObjectFunction<AccessBufferBuilder> bufferFunc;
+    protected final Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc;
     protected final BlockRenderInfo blockInfo;
     protected final AoCalculator aoCalc;
     protected final QuadTransform transform;
     
-    AbstractQuadRenderer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+    AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
         this.blockInfo = blockInfo;
         this.bufferFunc = bufferFunc;
         this.aoCalc = aoCalc;
@@ -64,14 +66,14 @@ public abstract class AbstractQuadRenderer {
     }
     
     /** final output step, common to all renders */
-    private void bufferQuad(MutableQuadViewImpl quad, int renderLayer) {
-        bufferFunc.get(renderLayer).fabric_putQuad(quad);
+    private void bufferQuad(MutableQuadViewImpl quad, BlockRenderLayer renderLayer) {
+        bufferFunc.apply(renderLayer).fabric_putQuad(quad);
     }
 
     // routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
     
     /** for non-emissive mesh quads and all fallback quads with smooth lighting*/
-    protected void tesselateSmooth(MutableQuadViewImpl q, int renderLayer, int blockColorIndex) {
+    protected void tesselateSmooth(MutableQuadViewImpl q, BlockRenderLayer renderLayer, int blockColorIndex) {
         colorizeQuad(q, blockColorIndex);
         for(int i = 0; i < 4; i++) {
             q.spriteColor(i, 0, ColorHelper.multiplyRGB(q.spriteColor(i, 0), aoCalc.ao[i]));
@@ -81,7 +83,7 @@ public abstract class AbstractQuadRenderer {
     }
     
     /** for emissive mesh quads with smooth lighting*/
-    protected void tesselateSmoothEmissive(MutableQuadViewImpl q, int renderLayer, int blockColorIndex) {
+    protected void tesselateSmoothEmissive(MutableQuadViewImpl q, BlockRenderLayer renderLayer, int blockColorIndex) {
         colorizeQuad(q, blockColorIndex);
         for(int i = 0; i < 4; i++) {
             q.spriteColor(i, 0, ColorHelper.multiplyRGB(q.spriteColor(i, 0), aoCalc.ao[i]));
@@ -91,7 +93,7 @@ public abstract class AbstractQuadRenderer {
     }
     
     /** for non-emissive mesh quads and all fallback quads with flat lighting*/
-    protected void tesselateFlat(MutableQuadViewImpl quad, int renderLayer, int blockColorIndex) {
+    protected void tesselateFlat(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex) {
         colorizeQuad(quad, blockColorIndex);
         final int brightness = flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos);
         for(int i = 0; i < 4; i++) {
@@ -101,7 +103,7 @@ public abstract class AbstractQuadRenderer {
     }
     
     /** for emissive mesh quads with flat lighting*/
-    protected void tesselateFlatEmissive(MutableQuadViewImpl quad, int renderLayer, int blockColorIndex, int[] lightmaps) {
+    protected void tesselateFlatEmissive(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex, int[] lightmaps) {
         colorizeQuad(quad, blockColorIndex);
         for(int i = 0; i < 4; i++) {
             quad.lightmap(i, FULL_BRIGHTNESS);
@@ -115,18 +117,18 @@ public abstract class AbstractQuadRenderer {
         final int[] data = q.data();
         final int[] lightmaps = this.lightmaps;
         lightmaps[0] = data[EncodingFormat.VERTEX_START_OFFSET + 6];
-        lightmaps[1] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 7];
-        lightmaps[2] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 14];
-        lightmaps[3] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 21];
+        lightmaps[1] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 8];
+        lightmaps[2] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 16];
+        lightmaps[3] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 24];
     }
     
     protected void restoreLightmaps(MutableQuadViewImpl q) {
         final int[] data = q.data();
         final int[] lightmaps = this.lightmaps;
         data[EncodingFormat.VERTEX_START_OFFSET + 6] = lightmaps[0];
-        data[EncodingFormat.VERTEX_START_OFFSET + 6 + 7] = lightmaps[1];
-        data[EncodingFormat.VERTEX_START_OFFSET + 6 + 14] = lightmaps[2];
-        data[EncodingFormat.VERTEX_START_OFFSET + 6 + 21] = lightmaps[3];
+        data[EncodingFormat.VERTEX_START_OFFSET + 6 + 8] = lightmaps[1];
+        data[EncodingFormat.VERTEX_START_OFFSET + 6 + 16] = lightmaps[2];
+        data[EncodingFormat.VERTEX_START_OFFSET + 6 + 24] = lightmaps[3];
     }
     
     private final BlockPos.Mutable mpos = new BlockPos.Mutable();

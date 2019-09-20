@@ -36,13 +36,13 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
     @Shadow abstract int getCurrentSize();
     @Shadow public abstract VertexFormat getVertexFormat();
 
-	private static final int VERTEX_STRIDE_INTS = 7;
+    private static final int VERTEX_STRIDE_INTS = 8;
     private static final int QUAD_STRIDE_INTS = VERTEX_STRIDE_INTS * 4;
     private static final int QUAD_STRIDE_BYTES = QUAD_STRIDE_INTS * 4;
 
     @Override
     public void fabric_putQuad(QuadViewImpl quad) {
-        if(Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY) {
+        if (Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY) {
             bufferCompatibly(quad);
         } else {
             bufferFast(quad);
@@ -50,7 +50,8 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
     }
 
     private void bufferFast(QuadViewImpl quad) {
-        grow(QUAD_STRIDE_BYTES);
+        grow(QUAD_STRIDE_BYTES + getVertexFormat().getVertexSize());
+        bufInt.limit(bufInt.capacity());
         bufInt.position(getCurrentSize());
         bufInt.put(quad.data(), quad.vertexStart(), QUAD_STRIDE_INTS);
         vertexCount += 4;
@@ -93,9 +94,8 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
                     break;
 
                 // these types should never occur and/or require no action
-                case MATRIX:
-                case BLEND_WEIGHT:
                 case PADDING:
+                case GENERIC:
                 default:
                     break;
 

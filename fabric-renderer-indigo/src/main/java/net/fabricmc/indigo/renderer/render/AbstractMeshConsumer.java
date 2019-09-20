@@ -17,8 +17,8 @@
 package net.fabricmc.indigo.renderer.render;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
@@ -32,6 +32,7 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.client.MinecraftClient;
 
 /**
@@ -39,7 +40,7 @@ import net.minecraft.client.MinecraftClient;
  * "editor" quad held in the instance, where all transformations are applied before buffering.
  */
 public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implements Consumer<Mesh> {
-    protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+    protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
         super(blockInfo, bufferFunc, aoCalc, transform);
     }
     
@@ -136,7 +137,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
      */
     private void tesselateQuad(MutableQuadViewImpl quad, RenderMaterialImpl.Value mat, int textureIndex) {
         final int colorIndex = mat.disableColorIndex(textureIndex) ? -1 : quad.colorIndex();
-        final int renderLayer = blockInfo.layerIndexOrDefault(mat.blendMode(textureIndex));
+        final BlockRenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode(textureIndex));
         
         if(blockInfo.defaultAo && !mat.disableAo(textureIndex)) {
             if(mat.emissive(textureIndex)) {

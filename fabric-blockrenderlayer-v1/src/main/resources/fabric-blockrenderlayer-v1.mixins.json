@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.blockrenderlayer",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "MixinBlockRenderLayer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

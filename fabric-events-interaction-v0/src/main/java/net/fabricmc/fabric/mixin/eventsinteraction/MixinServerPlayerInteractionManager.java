@@ -46,7 +46,7 @@ public class MixinServerPlayerInteractionManager {
 	@Shadow
 	public ServerPlayerEntity player;
 
-	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "processBlockBreakingAction", cancellable = true)
 	public void startBlockBreak(BlockPos pos, PlayerActionC2SPacket.Action playerAction, Direction direction, int i, CallbackInfo info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(player, world, Hand.MAIN_HAND, pos, direction);
 		if (result != ActionResult.PASS) {

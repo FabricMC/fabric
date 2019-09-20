@@ -92,7 +92,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     public void renderModel(FabricBakedModel model, int color, ItemStack stack, VanillaQuadHandler vanillaHandler) {
         this.color = color;
         
-        if(stack.isEmpty() && enchantmentStack != null) {
+        if (stack.isEmpty() && enchantmentStack != null) {
             enchantment = true;
             this.itemStack = enchantmentStack;
             enchantmentStack = null;
@@ -110,7 +110,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         model.emitItemQuads(stack, randomSupplier, this);
         tessellator.draw();
         
-        if(smoothShading) {
+        if (smoothShading) {
             RenderSystem.shadeModel(GL11.GL_FLAT);
             smoothShading = false;
         }
@@ -145,7 +145,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         final int[] data = m.data();
         final int limit = data.length;
         int index = 0;
-        while(index < limit) {
+        while (index < limit) {
             RenderMaterialImpl.Value mat = RenderMaterialImpl.byIndex(data[index]);
             final int stride = EncodingFormat.stride(mat.spriteDepth());
             System.arraycopy(data, index, editorQuad.data(), 0, stride);
@@ -164,7 +164,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
      * for every item, every frame.
      */
     private void handleShading() {
-        if(!smoothShading && editorQuad.hasVertexNormals()) {
+        if (!smoothShading && editorQuad.hasVertexNormals()) {
             smoothShading = true;
             RenderSystem.shadeModel(GL11.GL_SMOOTH);
         }
@@ -182,7 +182,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     
     private void colorizeAndOutput(int quadColor) {
         final MutableQuadViewImpl q = editorQuad;
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             int c = q.spriteColor(i, 0);
             c = ColorHelper.multiplyColor(quadColor, c);
             q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(c));
@@ -192,7 +192,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     
     private void renderQuad() {
         final MutableQuadViewImpl quad = editorQuad;
-        if(!transform(editorQuad)) {
+        if (!transform(editorQuad)) {
             return;
         }
         
@@ -202,19 +202,17 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         
         handleShading();
         
-        // A bit of a hack - copy packed normals on top of lightmaps.
-        // Violates normal encoding format but the editor content will be discarded
-        // and this avoids the step of copying to a separate array.
-        quad.copyNormals(quadData, EncodingFormat.VERTEX_START_OFFSET);
+        quad.populateMissingNormals();
+        quad.lightmap(0xF000F0, 0xF000F0, 0xF000F0, 0xF000F0);
         
         colorizeAndOutput(!enchantment && mat.disableColorIndex(0) ? -1 : quadColor);
         
         // no need to render additional textures for enchantment overlay
-        if(!enchantment && textureCount > 1) {
+        if (!enchantment && textureCount > 1) {
             quad.copyColorUV(1, quadData, EncodingFormat.VERTEX_START_OFFSET);
             colorizeAndOutput(mat.disableColorIndex(1) ? -1 : quadColor);
             
-            if(textureCount == 3) {
+            if (textureCount == 3) {
                 quad.copyColorUV(2, quadData, EncodingFormat.VERTEX_START_OFFSET);
                 colorizeAndOutput(mat.disableColorIndex(2) ? -1 : quadColor);
             }
@@ -227,15 +225,15 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     }
 
     private void fallbackConsumer(BakedModel model) {
-        if(hasTransform()) {
+        if (hasTransform()) {
             // if there's a transform in effect, convert to mesh-based quads so that we can apply it
-            for(int i = 0; i < 7; i++) {
+            for (int i = 0; i < 7; i++) {
                 random.setSeed(42L);
                 final Direction cullFace = ModelHelper.faceFromIndex(i);
                 renderFallbackWithTransform(bufferBuilder, model.getQuads((BlockState)null, cullFace, random), color, itemStack, cullFace);
              }
         } else {
-            for(int i = 0; i < 7; i++) {
+            for (int i = 0; i < 7; i++) {
                 random.setSeed(42L);
                 vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack);
              }
@@ -243,12 +241,12 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     };
     
     private void renderFallbackWithTransform(BufferBuilder bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, Direction cullFace) {
-        if(quads.isEmpty()) {
+        if (quads.isEmpty()) {
             return;
         }
-        if(CompatibilityHelper.canRender(quads.get(0).getVertexData())) {
+        if (CompatibilityHelper.canRender(quads.get(0).getVertexData())) {
             Maker editorQuad = this.editorQuad;
-            for(BakedQuad q : quads) {
+            for (BakedQuad q : quads) {
                 editorQuad.clear();
                 editorQuad.fromVanilla(q.getVertexData(), 0, false);
                 editorQuad.cullFace(cullFace);
