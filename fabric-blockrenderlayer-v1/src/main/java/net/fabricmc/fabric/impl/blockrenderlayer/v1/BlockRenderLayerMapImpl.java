@@ -32,9 +32,9 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putBlock(Block block, BlockRenderLayer renderLayer) {
 		if (block == null) {
-			log.warn("Ignoring request to map null block to BlockRenderLayer");
+			LOG.warn("Ignoring request to map null block to BlockRenderLayer");
 		} else if (renderLayer == null) {
-			log.warn("Ignoring request to map block " + block.toString() + " to null BlockRenderLayer");
+			LOG.warn("Ignoring request to map block " + block.toString() + " to null BlockRenderLayer");
 		} else {
 			blockHandler.accept(block, renderLayer);
 		}
@@ -43,28 +43,28 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putFluid(Fluid fluid, BlockRenderLayer renderLayer) {
 		if (fluid == null) {
-			log.warn("Ignoring request to map null fluid to BlockRenderLayer");
+			LOG.warn("Ignoring request to map null fluid to BlockRenderLayer");
 		} else if (renderLayer == null) {
-			log.warn("Ignoring request to map fluid " + fluid.toString() + " to null BlockRenderLayer");	
+			LOG.warn("Ignoring request to map fluid " + fluid.toString() + " to null BlockRenderLayer");	
 		} else {
 			fluidHandler.accept(fluid, renderLayer);
 		}
 	}
 	
-	public static BlockRenderLayerMap INSTANCE = new BlockRenderLayerMapImpl();
+	public static final BlockRenderLayerMap INSTANCE = new BlockRenderLayerMapImpl();
 	
-	private static final Logger log = LogManager.getLogger();
+	private static final Logger LOG = LogManager.getLogger();
 	
 	// These should never be used before our Mixin populates them because a non-null BRL instance is 
 	// a required parameter of our methods. They are given dummy consumers that log
 	// warnings in case something goes wrong.
 	
 	private static BiConsumer<Block, BlockRenderLayer> blockHandler = (b, l) -> {
-		log.warn("Unable to map Block {} to BlockRenderLayer. Mapping handler not ready.", b);
+		LOG.warn("Unable to map Block {} to BlockRenderLayer. Mapping handler not ready.", b);
 	};
 
 	private static BiConsumer<Fluid, BlockRenderLayer> fluidHandler = (f, b) -> {
-		log.warn("Unable to map Fluid {} to BlockRenderLayer. Mapping handler not ready.", f);
+		LOG.warn("Unable to map Fluid {} to BlockRenderLayer. Mapping handler not ready.", f);
 	};
 
 	public static void initialize(BiConsumer<Block, BlockRenderLayer> blockHandlerIn, BiConsumer<Fluid, BlockRenderLayer> fluidHandlerIn) {
