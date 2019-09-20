@@ -40,7 +40,7 @@ import net.minecraft.world.BlockRenderView;
  * application from network packets and render chunk rebuilds. Use of {link #getCachedRenderData()}
  * will ensure consistency of model state with the rest of the chunk being rendered.<p>
  *
- * Models should avoid using {@link ExtendedBlockView#getBlockEntity(BlockPos)}
+ * Models should avoid using {@link BlockRenderView#getBlockEntity(BlockPos)}
  * to ensure thread safety because this view may be accessed outside the main client thread.
  * Models that require Block Entity data should implement {@link RenderAttachmentBlockEntity}
  * and then use {@link #getBlockEntityRenderAttachment(BlockPos)} to retrieve it.  When called from the
@@ -49,7 +49,7 @@ import net.minecraft.world.BlockRenderView;
  * This interface is only guaranteed to be present in the client environment.
  */
 // XXX can not link net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel
-public interface RenderAttachedBlockView {
+public interface RenderAttachedBlockView extends BlockRenderView {
     /**
      * For models associated with Block Entities that implement {@link RenderAttachmentBlockEntity}
      * this will be the most recent value provided by that implementation for the given block position.<p>
