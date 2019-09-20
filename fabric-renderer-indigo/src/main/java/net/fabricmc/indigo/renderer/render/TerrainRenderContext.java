@@ -51,8 +51,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
     		ChunkRendererRegion blockView,
     		ChunkRenderer chunkRenderer, 
     		ChunkRenderData chunkData, 
-    		BlockLayeredBufferBuilder builders) 
-    {
+    		BlockLayeredBufferBuilder builders) {
     	blockInfo.setBlockView(blockView);
     	chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
         return this;

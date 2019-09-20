@@ -59,7 +59,7 @@ public interface RenderAttachedBlockView extends BlockRenderView {
      * @param pos Position of the block for the block model.
      */
     default Object getBlockEntityRenderAttachment(BlockPos pos) {
-        BlockEntity be = ((BlockRenderView)this).getBlockEntity(pos);
+        BlockEntity be = ((BlockRenderView) this).getBlockEntity(pos);
         return be == null ? null : ((RenderAttachmentBlockEntity) be).getRenderAttachmentData();
     }
 }

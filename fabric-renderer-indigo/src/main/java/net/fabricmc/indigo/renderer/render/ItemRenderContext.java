@@ -203,7 +203,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         handleShading();
         
         quad.populateMissingNormals();
-        quad.lightmap(15728880, 15728880, 15728880, 15728880);
+        quad.lightmap(0xF000F0, 0xF000F0, 0xF000F0, 0xF000F0);
         
         colorizeAndOutput(!enchantment && mat.disableColorIndex(0) ? -1 : quadColor);
         

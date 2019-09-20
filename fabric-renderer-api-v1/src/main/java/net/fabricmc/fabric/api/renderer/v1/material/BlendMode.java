@@ -18,15 +18,40 @@ package net.fabricmc.fabric.api.renderer.v1.material;
 
 import net.minecraft.block.BlockRenderLayer;
 
+/**
+ * Defines how sprite pixels will be blended with the scene.
+ */
 public enum BlendMode {
+	/**
+	 * Emulate blending behavior of {@code BlockRenderLayer} associated with the block.
+	 */
 	DEFAULT(null),
+
+	/**
+	 * Fully opaque with depth test, no blending. Used for most normal blocks.
+	 */
 	SOLID(BlockRenderLayer.field_9178),
+
+	/**
+	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
+	 * Texture mip-map enabled.  Used for leaves.
+	 */
 	CUTOUT_MIPPED(BlockRenderLayer.CUTOUT_MIPPED),
+
+	/**
+	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
+	 * Texture mip-map disabled.  Used for iron bars, glass and other cutout sprites with hard edges.
+	 */
 	CUTOUT(BlockRenderLayer.field_9174),
+
+	/**
+	 * Pixels are blended with the background according to alpha color values. Some performance cost,
+	 * use in moderation. Texture mip-map enabled.  Used for stained glass.
+	 */
 	TRANSLUCENT(BlockRenderLayer.field_9179);
-	
+
 	public final BlockRenderLayer blockRenderLayer;
-	
+
 	private BlendMode(BlockRenderLayer blockRenderLayer) {
 		this.blockRenderLayer = blockRenderLayer;
 	}

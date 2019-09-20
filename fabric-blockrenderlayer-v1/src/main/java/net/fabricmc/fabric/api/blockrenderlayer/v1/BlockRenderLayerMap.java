@@ -25,6 +25,12 @@ import net.minecraft.fluid.Fluid;
  * Use to associate blocks or fluids with block render layer other than default.  
  * Replaces the {@code renderLayer} property previously on {@code Block}.<p>
  * 
+ * {@code BlockRenderLayer} controls how sprite pixels for fluids and blocks are blended
+ * with the scene. Consult the vanilla {@code BlockRenderLayer} implementation for examples.<p>
+ * 
+ * The Fabric Renderer API can be used to control this at a per-quad level at the code
+ * via {@code BlendMode}.<p>
+ * 
  * Client-side only.
  */
 public interface BlockRenderLayerMap {

@@ -16,10 +16,9 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.minecraft.block.Block;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockRenderLayer;
 
 /**
@@ -55,15 +54,15 @@ public interface MaterialFinder {
     /**
      * Defines how sprite pixels will be blended with the scene.
      * Accepts {link @BlockRenderLayer} values and blending behavior
-     * will emulate the way that Minecraft renders each pass. But this does 
+     * will emulate the way that Minecraft renders those instances. This does 
      * NOT mean the sprite will be rendered in a specific render pass - some
-     * implementations may not use the standard Minecraft render passes.<p>
+     * implementations may not use the standard vanilla render passes.<p>
      * 
      * CAN be null and is null by default. A null value means the renderer
-     * will use {@link Block#getRenderLayer()} for the associate block, or
-     * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
+     * will use the value normally associated with the block being rendered, or
+     * {@code TRANSLUCENT} for item renders. (Normal Minecraft rendering)
      * 
-     * @reason Use {@code BlendMode} version instead.
+     * @deprecated Use {@code BlendMode} version instead.
      */
     @Deprecated
     default MaterialFinder blendMode(int spriteIndex, BlockRenderLayer renderLayer) {
@@ -71,15 +70,9 @@ public interface MaterialFinder {
     }
     
     /**
-     * Defines how sprite pixels will be blended with the scene.
-     * Accepts {link @BlockRenderLayer} values and blending behavior
-     * will emulate the way that Minecraft renders each pass. But this does 
-     * NOT mean the sprite will be rendered in a specific render pass - some
-     * implementations may not use the standard Minecraft render passes.<p>
+     * Defines how sprite pixels will be blended with the scene.<p>
      * 
-     * CAN be null and is null by default. A null value means the renderer
-     * will use {@link Block#getRenderLayer()} for the associate block, or
-     * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
+     * See {@link BlendMode} for more information.
      */
     MaterialFinder blendMode(int spriteIndex, BlendMode blendMode);
     

@@ -72,7 +72,6 @@ public class MixinChunkRebuildTask {
 			ChunkBatcher.ChunkRenderData renderData, 
 			BlockLayeredBufferBuilder builder,
 			CallbackInfoReturnable<Set<BlockEntity>> ci) {
-		
 		if (field_20838 != null) {
 			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 			renderer.prepare(field_20838, field_20839, renderData, builder);
@@ -99,8 +98,9 @@ public class MixinChunkRebuildTask {
 	@Redirect(method = "method_22785", require = 1,
 		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/BufferBuilder;Ljava/util/Random;)Z"))
 	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, BufferBuilder bufferBuilder, Random random) {
-		if(blockState.getRenderType() == BlockRenderType.MODEL) {
+		if (blockState.getRenderType() == BlockRenderType.MODEL) {
 			final BakedModel model = renderManager.getModel(blockState);
+
 			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
 				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model);
 			}
