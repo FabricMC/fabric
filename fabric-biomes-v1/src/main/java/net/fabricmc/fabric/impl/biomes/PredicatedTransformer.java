@@ -46,14 +46,14 @@ final class PredicatedTransformer {
 		List<PredicatedBiomeEntry> truePredicates = new ArrayList<>();
 		double currentTotal = 0.0D;
 		
-		for (PredicatedBiomeEntry predicate : predicates) {
+		predicateLoop: for (PredicatedBiomeEntry predicate : predicates) {
 			for (Biome border : borders) {
 				if (predicate.test(border, random)) {
 					truePredicates.add(predicate);
 					
 					currentTotal += predicate.getWeight();
 					predicate.setUpperWeightBound(currentTotal);
-					continue;
+					continue predicateLoop;
 				}
 			}
 		}
