@@ -25,12 +25,12 @@ public interface AccessChunkRendererData {
 	 * @param renderLayer  Layer to be initialized.
 	 * @return {@code true} if layer was not already initialized.
 	 */
-    boolean fabric_markInitialized(BlockRenderLayer renderLayer);
-    
+	boolean fabric_markInitialized(BlockRenderLayer renderLayer);
+
 	/**
 	 * Mark internal tracking set that buffer has content.
 	 * 
 	 * @param renderLayer  Layer with content.
 	 */
-    void fabric_markPopulated(BlockRenderLayer renderLayer);
+	void fabric_markPopulated(BlockRenderLayer renderLayer);
 }

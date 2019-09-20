@@ -28,9 +28,9 @@ import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
 @Mixin(ChunkRenderData.class)
 public class MixinChunkRenderData implements AccessChunkRendererData {
 	@Shadow private Set<BlockRenderLayer> initialized;
-    @Shadow private Set<BlockRenderLayer> nonEmpty;
-    @Shadow private boolean empty;
-    
+	@Shadow private Set<BlockRenderLayer> nonEmpty;
+	@Shadow private boolean empty;
+
 	@Override
 	public boolean fabric_markInitialized(BlockRenderLayer renderLayer) {
 		return initialized.add(renderLayer);

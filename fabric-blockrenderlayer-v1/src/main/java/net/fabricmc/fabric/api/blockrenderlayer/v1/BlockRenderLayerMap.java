@@ -47,5 +47,4 @@ public interface BlockRenderLayerMap {
 	 * @param renderLayer Render layer.  Should be one of the layers used for terrain rendering.
 	 */
 	void putFluid(Fluid fluid, BlockRenderLayer renderLayer);
-
 }

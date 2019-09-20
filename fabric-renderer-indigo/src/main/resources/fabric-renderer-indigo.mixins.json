@@ -9,7 +9,7 @@
     "BufferBuilderOffsetAccessor",
   	"MixinBlockModelRenderer",
     "MixinBufferBuilder",
-    "MixinChunkBuilderThingy",
+    "MixinChunkRebuildTask",
     "MixinChunkRenderData",
 	"MixinChunkRenderer",
     "MixinChunkRendererRegion",

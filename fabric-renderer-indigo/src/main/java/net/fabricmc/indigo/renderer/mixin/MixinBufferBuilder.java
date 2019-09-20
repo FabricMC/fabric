@@ -36,7 +36,7 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
     @Shadow abstract int getCurrentSize();
     @Shadow public abstract VertexFormat getVertexFormat();
 
-	private static final int VERTEX_STRIDE_INTS = 8;
+    private static final int VERTEX_STRIDE_INTS = 8;
     private static final int QUAD_STRIDE_INTS = VERTEX_STRIDE_INTS * 4;
     private static final int QUAD_STRIDE_BYTES = QUAD_STRIDE_INTS * 4;
 
