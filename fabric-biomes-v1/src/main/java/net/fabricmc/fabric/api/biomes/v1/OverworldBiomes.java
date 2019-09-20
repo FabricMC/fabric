@@ -109,8 +109,8 @@ public final class OverworldBiomes {
 		InternalBiomeData.setOverworldRiverBiome(parent, river);
 	}
 	
-	public static void addLargeEdgeBiome(Biome parent, Biome edge, BiPredicate<Biome, LayerRandomnessSource> predicate) {
-		InternalBiomeData.addOverworldLargeEdge(parent, edge, predicate);
+	public static void addLargeEdgeBiome(Biome parent, Biome edge, double weight, BiPredicate<Biome, LayerRandomnessSource> predicate) {
+		InternalBiomeData.addOverworldLargeEdge(parent, edge, weight, predicate);
 	}
 	
 	public static void addSubBiome(Biome parent, Biome subBiome, double chance) {

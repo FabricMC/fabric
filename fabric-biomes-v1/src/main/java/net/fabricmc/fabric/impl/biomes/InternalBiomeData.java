@@ -99,18 +99,21 @@ public final class InternalBiomeData {
 		}
 	}
 	
-	public static void addOverworldLargeEdge(Biome primary, Biome edge, BiPredicate<Biome, LayerRandomnessSource> predicate) {
+	public static void addOverworldLargeEdge(Biome primary, Biome edge, double weight, BiPredicate<Biome, LayerRandomnessSource> predicate) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(edge != null, "Edge biome is null");
 		Preconditions.checkArgument(predicate != null, "Predicate is null");
-		OVERWORLD_LARGE_EDGES.computeIfAbsent(primary, biome -> new PredicatedTransformer()).addPredicatedBiome(edge, predicate);
+		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
+		
+		OVERWORLD_LARGE_EDGES.computeIfAbsent(primary, biome -> new PredicatedTransformer()).addPredicatedBiome(edge, predicate, weight);
 		OVERWORLD_INJECTED_BIOMES.add(edge);
 	}
 	
 	public static void addOverworldSubBiome(Biome primary, Biome subBiome, double chance) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(subBiome != null, "Sub biome is null");
-		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 or less than or equal to 1");
+		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 nor less than or equal to 1");
+		
 		OVERWORLD_SUB_BIOME_TRANSFORMERS.computeIfAbsent(primary, biome -> new VariantTransformer()).addBiome(subBiome, chance, null);
 		OVERWORLD_INJECTED_BIOMES.add(subBiome);
 	}

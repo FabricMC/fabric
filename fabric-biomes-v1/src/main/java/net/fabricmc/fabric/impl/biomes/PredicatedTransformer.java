@@ -26,19 +26,61 @@ import net.minecraft.world.biome.layer.LayerRandomnessSource;
 final class PredicatedTransformer {
 	private final List<PredicatedBiomeEntry> predicates = new ArrayList<>();
 
-	void addPredicatedBiome(Biome biome, BiPredicate<Biome, LayerRandomnessSource> predicate) {
-		predicates.add(new PredicatedBiomeEntry(biome, predicate));
+	void addPredicatedBiome(Biome biome, BiPredicate<Biome, LayerRandomnessSource> predicate, double chance) {
+		predicates.add(new PredicatedBiomeEntry(biome, predicate, chance));
 	}
 
 	Biome transform(Biome biome, LayerRandomnessSource random, Biome[] borders) {
-		for (PredicatedBiomeEntry predicate : predicates) {
+		if (predicates.isEmpty()) {
+			return biome;
+		} else if (predicates.size() == 1) {
+			PredicatedBiomeEntry predicate = predicates.get(0);
 			for (Biome border : borders) {
 				if (predicate.test(border, random)) {
 					return predicate.getBiome();
 				}
 			}
+			return biome;
 		}
+		
+		List<PredicatedBiomeEntry> truePredicates = new ArrayList<>();
+		double currentTotal = 0.0D;
+		
+		for (PredicatedBiomeEntry predicate : predicates) {
+			for (Biome border : borders) {
+				if (predicate.test(border, random)) {
+					truePredicates.add(predicate);
+					
+					currentTotal += predicate.getWeight();
+					predicate.setUpperWeightBound(currentTotal);
+					continue;
+				}
+			}
+		}
+		
+		int size = truePredicates.size();
+		
+		if (size == 0) {
+			return biome;
+		} else if (size == 1) {
+			return truePredicates.get(0).getBiome();
+		} else {
+			double target = (double) random.nextInt(Integer.MAX_VALUE) * currentTotal / Integer.MAX_VALUE;
+			
+			int low = 0;
+			int high = truePredicates.size() - 1;
 
-		return biome;
+			while (low < high) {
+				int mid = (high + low) >>> 1;
+				if (target < truePredicates.get(mid).getUpperWeightBound()) {
+					high = mid;
+				} else {
+					low = mid + 1;
+				}
+			}
+
+			return truePredicates.get(low).getBiome();
+		}
+		
 	}
 }
