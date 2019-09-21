@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.mojang.datafixers.DataFixer;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerInvoker;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.TagHelper;
@@ -18,7 +18,7 @@ public class MixinTagHelper {
     private static void updateModFixers(DataFixer dataFixer_1, DataFixTypes dataFixTypes_1, CompoundTag compoundTag_1, int dynamicDataVersion, int runtimeDataVersion, CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag normal = cir.getReturnValue(); // We do our fixes after vanilla.
         
-        CompoundTag finalTag = FabricDataFixerInvoker.updateWithAllFixers(dataFixer_1, dataFixTypes_1, normal, dynamicDataVersion, runtimeDataVersion);
+        CompoundTag finalTag = FabricDataFixerImpl.updateWithAllFixers(dataFixer_1, dataFixTypes_1, normal, dynamicDataVersion, runtimeDataVersion);
         cir.setReturnValue(finalTag);
     }
 }

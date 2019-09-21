@@ -1,24 +1,17 @@
 package net.fabricmc.fabric.api.datafixer;
 
-import java.util.Objects;
-
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.DSL;
-import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.Dynamic;
-import com.mojang.datafixers.TypeRewriteRule;
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.datafixers.TypeReferences;
-import net.minecraft.datafixers.fixes.BlockNameFix;
-import net.minecraft.datafixers.fixes.EntityRenameFix;
+import net.fabricmc.fabric.impl.datafixer.FabricSimpleFixesImpl;
 import net.minecraft.datafixers.fixes.EntitySimpleTransformFix;
-import net.minecraft.datafixers.fixes.FixItemName;
 
-public class SimpleFixes {
+public abstract class SimpleFixes {
+    
+    private static SimpleFixes INSTANCE = FabricSimpleFixesImpl.INSTANCE;
     
     /**
      * A basic skeleton DataFix for changing block names.
@@ -27,10 +20,8 @@ public class SimpleFixes {
      * @param changes A map of all changed values, where the key should be original and value is new value.
      * @param schema_1 The Schema to apply this fix to.
      */
-    public static void addDataFixRenameBlock(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
-        builder_1.addFixer(BlockNameFix.create(schema_1, name, (inputBlockName) -> {
-            return changes.getOrDefault(inputBlockName, inputBlockName);
-        }));
+    public static void addBlockRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
+        INSTANCE._addBlockRenameFix(builder_1, name, changes, schema_1);
     }
     
     /**
@@ -40,10 +31,8 @@ public class SimpleFixes {
      * @param changes A map of all changed values, where the key should be original and value is new value.
      * @param schema_1 The Schema to add this fix to.
      */
-    public static void addDataFixRenameItem(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
-        builder_1.addFixer(FixItemName.create(schema_1, name, (inputItemName) -> {
-            return changes.getOrDefault(inputItemName, inputItemName);
-        }));
+    public static void addItemRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
+        INSTANCE._addItemRenameFix(builder_1, name, changes, schema_1);
     }
     
     /**
@@ -53,46 +42,20 @@ public class SimpleFixes {
      * @param changes A map of all changed values, where the key should be original and value is new value.
      * @param schema_1 The Schema to add this fix to.
      */
-    public static void addDataFixRenameBiome(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
-        builder_1.addFixer(new DataFix(schema_1, false) {
-            @Override
-            protected TypeRewriteRule makeRule() {
-                Type<Pair<String, String>> type_1 = DSL.named(TypeReferences.BIOME.typeName(), DSL.namespacedString()); // 
-
-                if (!Objects.equals(type_1, this.getInputSchema().getType(TypeReferences.BIOME))) {
-                    throw new IllegalStateException("Biome type is not what was expected.");
-                } else {
-                    return this.fixTypeEverywhere(name, type_1, (dynamicOps_1x) -> { // Fix type_1 using NBTOps basically
-                        return (pair_1x) -> {
-                            return pair_1x.mapSecond((string_1x) -> {
-                                return changes.getOrDefault(string_1x, string_1x);
-                            });
-                        };
-                    });
-                }
-            }
-            
-        });
-        
+    public static void addBiomeRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
+        INSTANCE._addBiomeRenameFix(builder_1, name, changes, schema_1);
     }
     
     /**
      * A basic skeleton DataFix for changing entity names. 
-     * <p>Note this does not rename entity spawn eggs and you should use {@link #addDataFixRenameItem(DataFixerBuilder, String, ImmutableMap, Schema)} to rename the spawn egg item.</p>
+     * <p>Note this does not rename entity spawn eggs and you should use {@link #addItemRenameFix(DataFixerBuilder, String, ImmutableMap, Schema)} to rename the spawn egg item.</p>
      * @param builder_1 The builder to add this fix to.
      * @param name The name of the datafix (this has no effect on actual process)
      * @param changes A map of all changed values, where the key should be original and value is new value.
      * @param schema_1 The Schema to add this fix to.
      */
-    public static void addDataFixRenameEntity(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
-        builder_1.addFixer(new EntityRenameFix(name, schema_1, false) {
-
-            @Override
-            protected String rename(String inputName) {
-                return changes.getOrDefault(inputName, inputName);
-            }
-            
-        });
+    public static void addEntityRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
+        INSTANCE._addEntityRenameFix(builder_1, name, changes, schema_1);
     }
     
     /**
@@ -102,17 +65,20 @@ public class SimpleFixes {
      * @param transformation The transformation to apply to the input entity.
      * @param schema_1 The Schema to add this fix to.
      */
-    public static void addDataFixTransformEntity(DataFixerBuilder builder_1, String name, EntityTransformation transformation,  Schema schema_1) {
-        builder_1.addFixer(new EntitySimpleTransformFix(name, schema_1, false) {
-
-            @Override
-            protected Pair<String, Dynamic<?>> transform(String entityName, Dynamic<?> dynamic) {
-                return transformation.transform(entityName, dynamic);
-            }
-            
-        });
+    public static void addDataFixTransformEntity(DataFixerBuilder builder_1, String name, EntityTransformation transformation, Schema schema_1) {
+        INSTANCE._addTransformEntityFix(builder_1, name, transformation, schema_1);
     }
     
+    protected abstract void _addTransformEntityFix(DataFixerBuilder builder_1, String name, EntityTransformation transformation, Schema schema_1);
+
+    protected abstract void _addBiomeRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1);
+
+    protected abstract void _addBlockRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1);
+
+    protected abstract void _addEntityRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1);
+
+    protected abstract void _addItemRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1);
+
     /**
      * Represents an entity transformation function for a datafix.
      */
