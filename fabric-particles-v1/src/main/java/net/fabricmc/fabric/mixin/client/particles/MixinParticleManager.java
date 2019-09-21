@@ -35,8 +35,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 @Mixin(ParticleManager.class)
-public abstract class MixinParticleManager implements VanillaParticleManager {
-
+public abstract class MixinParticleManager implements VanillaParticleManager {s
 	private final FabricParticleManager fabricParticleManager = new FabricParticleManager(this);
 
 	@Override
