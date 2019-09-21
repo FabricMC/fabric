@@ -22,6 +22,18 @@ import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 
+/*
+ * FabricSpriteProvider. It does the same thing as vanilla's SpriteProvider,
+ * but in a way that's accessible to mods, and that exposes the atlas as well.
+ *
+ * Custom sprites registered using ParticleFactoryRegistry have the options
+ * to supply a particle factory which will recieve an instance of this
+ * interface containing the sprites set loaded for their particle from the
+ * active resourcepacks.
+ *
+ * @see ParticleFactoryRegistry.register(type, constructor)
+ * @see ParticleFactoryRegistry.PendingParticleFactory<T>
+ */
 public interface FabricSpriteProvider extends SpriteProvider {
 	/**
 	 * Returns the entire particles texture atlas.
