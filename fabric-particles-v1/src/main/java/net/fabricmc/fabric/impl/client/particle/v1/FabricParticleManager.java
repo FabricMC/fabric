@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.particles;
+package net.fabricmc.fabric.impl.client.particle.v1;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.particles.FabricSpriteProvider;
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.minecraft.client.particle.ParticleTextureData;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;

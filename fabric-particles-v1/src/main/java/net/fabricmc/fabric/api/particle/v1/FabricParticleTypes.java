@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.particles;
+package net.fabricmc.fabric.api.particle.v1;
 
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
