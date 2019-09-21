@@ -22,7 +22,10 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
 
 /**
- * Registry for adding particle factories on the client.
+ * Registry for adding particle factories on the client for
+ * particle types created using FabricParticleTypes (or otherwise).
+ *
+ * @see FabricParticleTypes
  */
 public interface ParticleFactoryRegistry {
 	public static ParticleFactoryRegistry getInstance() {
