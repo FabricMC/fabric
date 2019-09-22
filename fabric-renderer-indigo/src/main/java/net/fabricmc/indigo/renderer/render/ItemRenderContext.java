@@ -16,6 +16,8 @@
 
 package net.fabricmc.indigo.renderer.render;
 
+import static net.fabricmc.indigo.renderer.render.AbstractQuadRenderer.FULL_BRIGHTNESS;
+
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
@@ -82,7 +84,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	 */
 	public ItemStack enchantmentStack;
 
-	private final int[] quadData = new int[EncodingFormat.MAX_STRIDE];;
+	private final int[] quadData = new int[EncodingFormat.TOTAL_STRIDE];;
 
 	public ItemRenderContext(ItemColors colorMap) {
 		this.colorMap = colorMap;
@@ -146,11 +148,9 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		final int limit = data.length;
 		int index = 0;
 		while (index < limit) {
-			RenderMaterialImpl.Value mat = RenderMaterialImpl.byIndex(data[index]);
-			final int stride = EncodingFormat.stride(mat.spriteDepth());
-			System.arraycopy(data, index, editorQuad.data(), 0, stride);
+			System.arraycopy(data, index, editorQuad.data(), 0, EncodingFormat.TOTAL_STRIDE);
 			editorQuad.load();
-			index += stride;
+			index += EncodingFormat.TOTAL_STRIDE;
 			renderQuad();
 		}
 	};
@@ -198,25 +198,13 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 
 		RenderMaterialImpl.Value mat = quad.material();
 		final int quadColor = quadColor();
-		final int textureCount = mat.spriteDepth();
 
 		handleShading();
 
 		quad.populateMissingNormals();
-		quad.lightmap(0xF000F0, 0xF000F0, 0xF000F0, 0xF000F0);
+		quad.lightmap(FULL_BRIGHTNESS, FULL_BRIGHTNESS, FULL_BRIGHTNESS, FULL_BRIGHTNESS);
 
 		colorizeAndOutput(!enchantment && mat.disableColorIndex(0) ? -1 : quadColor);
-
-		// no need to render additional textures for enchantment overlay
-		if (!enchantment && textureCount > 1) {
-			quad.copyColorUV(1, quadData, EncodingFormat.VERTEX_START_OFFSET);
-			colorizeAndOutput(mat.disableColorIndex(1) ? -1 : quadColor);
-
-			if (textureCount == 3) {
-				quad.copyColorUV(2, quadData, EncodingFormat.VERTEX_START_OFFSET);
-				colorizeAndOutput(mat.disableColorIndex(2) ? -1 : quadColor);
-			}
-		}
 	}
 
 	@Override

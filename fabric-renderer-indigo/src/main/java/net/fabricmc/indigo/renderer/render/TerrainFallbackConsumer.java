@@ -58,7 +58,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 	private static Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
 	private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
-	private final int[] editorBuffer = new int[32];
+	private final int[] editorBuffer = new int[EncodingFormat.QUAD_STRIDE];
 	private final ChunkRenderInfo chunkInfo;
 
 	TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
@@ -114,7 +114,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 		}
 
 		final MutableQuadViewImpl editorQuad = this.editorQuad;
-		System.arraycopy(vertexData, 0, editorBuffer, 0, 32);
+		System.arraycopy(vertexData, 0, editorBuffer, 0, EncodingFormat.QUAD_STRIDE);
 		editorQuad.cullFace(cullFace);
 		final Direction lightFace = quad.getFace();
 		editorQuad.lightFace(lightFace);
@@ -126,7 +126,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 			return;
 		}
 
-		if (editorQuad.material().hasAo) {
+		if (!editorQuad.material().disableAo(0)) {
 			// needs to happen before offsets are applied
 			editorQuad.invalidateShape();
 			aoCalc.compute(editorQuad, true);

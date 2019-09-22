@@ -17,7 +17,14 @@
 package net.fabricmc.indigo.renderer.mesh;
 
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.EMPTY;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_START_OFFSET;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_STRIDE;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -42,7 +49,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	public void clear() {
-		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.MAX_STRIDE);
+		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isFaceNormalInvalid = true;
 		isGeometryInvalid = true;
 		normalFlags = 0;
@@ -95,8 +102,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-		final int vertexStart = vertexStart();
-		System.arraycopy(quadData, startIndex, data, vertexStart, 32);
+		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
 		this.invalidateShape();
 		return this;
 	}
@@ -113,7 +119,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
-		final int index = vertexStart() + vertexIndex * 8;
+		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
 		data[index] = Float.floatToRawIntBits(x);
 		data[index + 1] = Float.floatToRawIntBits(y);
 		data[index + 2] = Float.floatToRawIntBits(z);
@@ -124,7 +130,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	@Override
 	public MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
 		normalFlags |= (1 << vertexIndex);
-		data[baseIndex + vertexIndex * 8 + 7 + VERTEX_START_OFFSET] = NormalHelper.packNormal(x, y, z, 0);
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL] = NormalHelper.packNormal(x, y, z, 0);
 		return this;
 	}
 
@@ -138,26 +144,26 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		final int packedFaceNormal = NormalHelper.packNormal(faceNormal(), 0);
 		for (int v = 0; v < 4; v++) {
 			if ((normalFlags & (1 << v)) == 0) {
-				data[baseIndex + v * 8 + 7 + VERTEX_START_OFFSET] = packedFaceNormal;
+				data[baseIndex + v * VERTEX_STRIDE + VERTEX_NORMAL] = packedFaceNormal;
 			}
 		}
 	}
 
 	@Override
 	public MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
-		data[baseIndex + vertexIndex * 8 + 6 + VERTEX_START_OFFSET] = lightmap;
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = lightmap;
 		return this;
 	}
 
 	@Override
 	public MutableQuadViewImpl spriteColor(int vertexIndex, int textureIndex, int color) {
-		data[baseIndex + colorIndex(vertexIndex, textureIndex)] = color;
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR] = color;
 		return this;
 	}
 
 	@Override
 	public MutableQuadViewImpl sprite(int vertexIndex, int textureIndex, float u, float v) {
-		final int i = baseIndex + colorIndex(vertexIndex, textureIndex) + 1;
+		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
 		data[i] = Float.floatToRawIntBits(u);
 		data[i + 1] = Float.floatToRawIntBits(v);
 		return this;

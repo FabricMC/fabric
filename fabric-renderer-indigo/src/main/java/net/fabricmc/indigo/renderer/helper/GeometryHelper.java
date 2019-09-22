@@ -40,6 +40,9 @@ public abstract class GeometryHelper {
 	/** set when a quad is coplanar with its light face. Implies {@link #AXIS_ALIGNED_FLAG} */
 	public static final int LIGHT_FACE_FLAG = AXIS_ALIGNED_FLAG << 1;
 
+	/** how many bits quad header encoding should reserve for encoding geometry flags */
+	public static final int FLAG_BIT_COUNT = 3;
+	
 	private static final float EPS_MIN = 0.0001f;
 	private static final float EPS_MAX = 1.0f - EPS_MIN;
 

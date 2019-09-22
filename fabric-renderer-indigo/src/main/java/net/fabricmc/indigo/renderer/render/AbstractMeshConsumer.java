@@ -50,8 +50,8 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 	 */
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
 		{
-			data = new int[EncodingFormat.MAX_STRIDE];
-			material = (Value) IndigoRenderer.INSTANCE.materialFinder().spriteDepth(RenderMaterialImpl.MAX_SPRITE_DEPTH).find();
+			data = new int[EncodingFormat.TOTAL_STRIDE];
+			material = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 		}
 
 		// only used via RenderContext.getEmitter() 
@@ -74,11 +74,9 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		final int limit = data.length;
 		int index = 0;
 		while (index < limit) {
-			RenderMaterialImpl.Value mat = RenderMaterialImpl.byIndex(data[index]);
-			final int stride = EncodingFormat.stride(mat.spriteDepth());
-			System.arraycopy(data, index, editorQuad.data(), 0, stride);
+			System.arraycopy(data, index, editorQuad.data(), 0, EncodingFormat.TOTAL_STRIDE);
 			editorQuad.load();
-			index += stride;
+			index += EncodingFormat.TOTAL_STRIDE;
 			renderQuad(editorQuad);
 		}
 	}
@@ -98,34 +96,15 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		}
 
 		final RenderMaterialImpl.Value mat = q.material();
-		final int textureCount = mat.spriteDepth();
 
-		if (mat.hasAo && MinecraftClient.isAmbientOcclusionEnabled()) {
+		if (!mat.disableAo(0) && MinecraftClient.isAmbientOcclusionEnabled()) {
 			// needs to happen before offsets are applied
 			aoCalc.compute(q, false);
 		}
 
 		applyOffsets(q);
 
-		// if maybe mix of emissive / non-emissive layers then
-		// need to save lightmaps in case they are overwritten by emissive
-		if (mat.hasEmissive && textureCount > 1) {
-			captureLightmaps(q);
-		}
-
 		tesselateQuad(q, mat, 0);
-
-		for (int t = 1; t < textureCount; t++) {
-			if (!mat.emissive(t)) {
-				restoreLightmaps(q);
-			}
-
-			for (int i = 0; i < 4; i++) {
-				q.spriteColor(i, 0, q.spriteColor(i, t));
-				q.sprite(i, 0, q.spriteU(i, t), q.spriteV(i, t));
-			}
-			tesselateQuad(q, mat, t);
-		}
 	}
 
 	protected abstract void applyOffsets(MutableQuadViewImpl quad);
@@ -146,7 +125,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 			}
 		} else {
 			if (mat.emissive(textureIndex)) {
-				tesselateFlatEmissive(quad, renderLayer, colorIndex, lightmaps);
+				tesselateFlatEmissive(quad, renderLayer, colorIndex);
 			} else {
 				tesselateFlat(quad, renderLayer, colorIndex);
 			}

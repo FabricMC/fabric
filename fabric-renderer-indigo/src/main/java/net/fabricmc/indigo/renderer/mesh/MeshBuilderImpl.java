@@ -56,7 +56,7 @@ public class MeshBuilderImpl implements MeshBuilder {
 
 	@Override
 	public QuadEmitter getEmitter() {
-		ensureCapacity(EncodingFormat.MAX_STRIDE);
+		ensureCapacity(EncodingFormat.TOTAL_STRIDE);
 		maker.begin(data, index);
 		return maker;
 	}
@@ -74,8 +74,8 @@ public class MeshBuilderImpl implements MeshBuilder {
 			geometryFlags = GeometryHelper.computeShapeFlags(this);
 			ColorHelper.applyDiffuseShading(this, false);
 			encodeHeader();
-			index += maker.stride();
-			ensureCapacity(EncodingFormat.MAX_STRIDE);
+			index += EncodingFormat.TOTAL_STRIDE;
+			ensureCapacity(EncodingFormat.TOTAL_STRIDE);
 			baseIndex = index;
 			clear();
 			return this;

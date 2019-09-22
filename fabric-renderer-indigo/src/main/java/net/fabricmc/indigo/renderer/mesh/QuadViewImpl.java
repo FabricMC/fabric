@@ -19,12 +19,18 @@ package net.fabricmc.indigo.renderer.mesh;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_MATERIAL;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.SECOND_TEXTURE_OFFSET;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.TEXTURE_OFFSET_MINUS;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.TEXTURE_STRIDE;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.THIRD_TEXTURE_OFFSET;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_START_OFFSET;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_STRIDE;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_V;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
@@ -98,16 +104,6 @@ public class QuadViewImpl implements QuadView {
 		return normalFlags != 0;
 	}
 
-	/** Index after header where vertex data starts (first 28 will be vanilla format. */
-	public int vertexStart() {
-		return baseIndex + VERTEX_START_OFFSET;
-	}
-
-	/** Length of encoded quad in array, including header. */
-	final int stride() {
-		return EncodingFormat.stride(material.spriteDepth());
-	}
-
 	/** reads state from header - vertex attributes are saved directly */
 	protected void decodeHeader() {
 		material = RenderMaterialImpl.byIndex(data[baseIndex + HEADER_MATERIAL]);
@@ -152,28 +148,7 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public final void toVanilla(int textureIndex, int[] target, int targetIndex, boolean isItem) {
-		System.arraycopy(data, vertexStart(), target, targetIndex, 32);
-	}
-
-	/**
-	 * Internal helper method. Copies color and UV for the given texture to target, assuming vanilla format.
-	 */
-	public final void copyColorUV(int textureIndex, int[] target, int targetIndex) {
-		int indexTo = targetIndex + 3;
-		int indexFrom;
-		int strideFrom;
-		if (textureIndex == 0) {
-			indexFrom = baseIndex + VERTEX_START_OFFSET + 3;
-			strideFrom = 8;
-		} else {
-			indexFrom = baseIndex + (textureIndex == 1 ? SECOND_TEXTURE_OFFSET : THIRD_TEXTURE_OFFSET);
-			strideFrom = 3;
-		}
-		for (int i = 0; i < 4; i++) {
-			System.arraycopy(data, indexFrom, target, indexTo, 3);
-			indexTo += 8;
-			indexFrom += strideFrom;
-		}
+		System.arraycopy(data, baseIndex + VERTEX_X, target, targetIndex, QUAD_STRIDE);
 	}
 
 	@Override
@@ -218,11 +193,8 @@ public class QuadViewImpl implements QuadView {
 	@Override
 	public void copyTo(MutableQuadView target) {
 		MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
-
-		int len = Math.min(this.stride(), quad.stride());
-
 		// copy everything except the header/material
-		System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, len - 1);
+		System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, EncodingFormat.TOTAL_STRIDE - 1);
 		quad.isFaceNormalInvalid = this.isFaceNormalInvalid;
 		if (!this.isFaceNormalInvalid) {
 			quad.faceNormal.set(this.faceNormal.getX(), this.faceNormal.getY(), this.faceNormal.getZ());
@@ -240,29 +212,29 @@ public class QuadViewImpl implements QuadView {
 		if (target == null) {
 			target = new Vector3f();
 		}
-		final int index = vertexStart() + vertexIndex * 8;
+		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
 		target.set(Float.intBitsToFloat(data[index]), Float.intBitsToFloat(data[index + 1]), Float.intBitsToFloat(data[index + 2]));
 		return target;
 	}
 
 	@Override
 	public float posByIndex(int vertexIndex, int coordinateIndex) {
-		return Float.intBitsToFloat(data[vertexStart() + vertexIndex * 8 + coordinateIndex]);
+		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X + coordinateIndex]);
 	}
 
 	@Override
 	public float x(int vertexIndex) {
-		return Float.intBitsToFloat(data[vertexStart() + vertexIndex * 8]);
+		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X]);
 	}
 
 	@Override
 	public float y(int vertexIndex) {
-		return Float.intBitsToFloat(data[vertexStart() + vertexIndex * 8 + 1]);
+		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_Y]);
 	}
 
 	@Override
 	public float z(int vertexIndex) {
-		return Float.intBitsToFloat(data[vertexStart() + vertexIndex * 8 + 2]);
+		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_Z]);
 	}
 
 	@Override
@@ -270,13 +242,17 @@ public class QuadViewImpl implements QuadView {
 		return (normalFlags & (1 << vertexIndex)) != 0;
 	}
 
+	protected final int normalIndex(int vertexIndex) {
+		return baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL;
+	}
+	
 	@Override
 	public Vector3f copyNormal(int vertexIndex, Vector3f target) {
 		if (hasNormal(vertexIndex)) {
 			if (target == null) {
 				target = new Vector3f();
 			}
-			final int normal = data[vertexStart() + vertexIndex * 8 + 7];
+			final int normal = data[normalIndex(vertexIndex)];
 			target.set(NormalHelper.getPackedNormalComponent(normal, 0), NormalHelper.getPackedNormalComponent(normal, 1), NormalHelper.getPackedNormalComponent(normal, 2));
 			return target;
 		} else {
@@ -286,40 +262,40 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public float normalX(int vertexIndex) {
-		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[vertexStart() + vertexIndex * 8 + 7], 0) : Float.NaN;
+		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 0) : Float.NaN;
 	}
 
 	@Override
 	public float normalY(int vertexIndex) {
-		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[vertexStart() + vertexIndex * 8 + 7], 1) : Float.NaN;
+		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 1) : Float.NaN;
 	}
 
 	@Override
 	public float normalZ(int vertexIndex) {
-		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[vertexStart() + vertexIndex * 8 + 7], 2) : Float.NaN;
+		return hasNormal(vertexIndex) ? NormalHelper.getPackedNormalComponent(data[normalIndex(vertexIndex)], 2) : Float.NaN;
 	}
 
 	@Override
 	public int lightmap(int vertexIndex) {
-		return data[baseIndex + vertexIndex * 8 + 6 + VERTEX_START_OFFSET];
-	}
-
-	protected int colorIndex(int vertexIndex, int textureIndex) {
-		return textureIndex == 0 ? vertexIndex * 8 + 3 + VERTEX_START_OFFSET : TEXTURE_OFFSET_MINUS + textureIndex * TEXTURE_STRIDE + vertexIndex * 3;
+		return data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP];
 	}
 
 	@Override
 	public int spriteColor(int vertexIndex, int textureIndex) {
-		return data[baseIndex + colorIndex(vertexIndex, textureIndex)];
+		return data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR];
 	}
 
 	@Override
 	public float spriteU(int vertexIndex, int textureIndex) {
-		return Float.intBitsToFloat(data[baseIndex + colorIndex(vertexIndex, textureIndex) + 1]);
+		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U]);
 	}
 
 	@Override
 	public float spriteV(int vertexIndex, int textureIndex) {
-		return Float.intBitsToFloat(data[baseIndex + colorIndex(vertexIndex, textureIndex) + 2]);
+		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_V]);
+	}
+
+	public int vertexStart() {
+		return baseIndex + HEADER_STRIDE;
 	}
 }

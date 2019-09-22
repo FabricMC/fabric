@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
-import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
@@ -36,7 +35,7 @@ import net.minecraft.util.math.BlockPos;
  * Has most of the actual buffer-time lighting and coloring logic.
  */
 public abstract class AbstractQuadRenderer {
-	private static final int FULL_BRIGHTNESS = 15 << 20 | 15 << 4;
+	static final int FULL_BRIGHTNESS = 0xF000F0;
 
 	protected final Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc;
 	protected final BlockRenderInfo blockInfo;
@@ -102,32 +101,12 @@ public abstract class AbstractQuadRenderer {
 	}
 
 	/** for emissive mesh quads with flat lighting*/
-	protected void tesselateFlatEmissive(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex, int[] lightmaps) {
+	protected void tesselateFlatEmissive(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
 		for (int i = 0; i < 4; i++) {
 			quad.lightmap(i, FULL_BRIGHTNESS);
 		}
 		bufferQuad(quad, renderLayer);
-	}
-
-	protected int[] lightmaps = new int[4];
-
-	protected void captureLightmaps(MutableQuadViewImpl q) {
-		final int[] data = q.data();
-		final int[] lightmaps = this.lightmaps;
-		lightmaps[0] = data[EncodingFormat.VERTEX_START_OFFSET + 6];
-		lightmaps[1] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 8];
-		lightmaps[2] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 16];
-		lightmaps[3] = data[EncodingFormat.VERTEX_START_OFFSET + 6 + 24];
-	}
-
-	protected void restoreLightmaps(MutableQuadViewImpl q) {
-		final int[] data = q.data();
-		final int[] lightmaps = this.lightmaps;
-		data[EncodingFormat.VERTEX_START_OFFSET + 6] = lightmaps[0];
-		data[EncodingFormat.VERTEX_START_OFFSET + 6 + 8] = lightmaps[1];
-		data[EncodingFormat.VERTEX_START_OFFSET + 6 + 16] = lightmaps[2];
-		data[EncodingFormat.VERTEX_START_OFFSET + 6 + 24] = lightmaps[3];
 	}
 
 	private final BlockPos.Mutable mpos = new BlockPos.Mutable();

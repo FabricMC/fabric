@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
+import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.VertexFormat;
@@ -44,10 +45,6 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
 	@Shadow
 	public abstract VertexFormat getVertexFormat();
 
-	private static final int VERTEX_STRIDE_INTS = 8;
-	private static final int QUAD_STRIDE_INTS = VERTEX_STRIDE_INTS * 4;
-	private static final int QUAD_STRIDE_BYTES = QUAD_STRIDE_INTS * 4;
-
 	@Override
 	public void fabric_putQuad(QuadViewImpl quad) {
 		if (Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY) {
@@ -58,10 +55,10 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
 	}
 
 	private void bufferFast(QuadViewImpl quad) {
-		grow(QUAD_STRIDE_BYTES + getVertexFormat().getVertexSize());
+		grow(EncodingFormat.QUAD_STRIDE_BYTES + getVertexFormat().getVertexSize());
 		bufInt.limit(bufInt.capacity());
 		bufInt.position(getCurrentSize());
-		bufInt.put(quad.data(), quad.vertexStart(), QUAD_STRIDE_INTS);
+		bufInt.put(quad.data(), quad.vertexStart(), EncodingFormat.QUAD_STRIDE);
 		vertexCount += 4;
 	}
 
