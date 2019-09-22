@@ -28,7 +28,7 @@ public interface DataFixerUtils {
      * @param modid The modid of the mod registering this DataFixer
      * @param runtimeDataVersion the current dataversion of the mod being ran.
      * @param datafixer The DataFixer to register
-     * @throws CrashException if a DataFixer is registered while the Dedicated/Integrated Server is running.
+     * @throws CrashException if a DataFixer is registered while the Client or Dedicated/Integrated Server is running.
      * @return The inputted DataFixer
      */
     public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer);
