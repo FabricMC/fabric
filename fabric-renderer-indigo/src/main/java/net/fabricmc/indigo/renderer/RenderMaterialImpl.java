@@ -29,153 +29,152 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
  * easy/fast interning via int/object hashmap.
  */
 public abstract class RenderMaterialImpl {
-    private static final BlendMode[] BLEND_MODES = BlendMode.values();
-    
-    /**
-     * Indigo currently support up to 3 sprite layers but is configured to recognize only one.
-     */
-    public static final int MAX_SPRITE_DEPTH = 1;
-    
-    private static final int TEXTURE_DEPTH_MASK = 3;
-    private static final int TEXTURE_DEPTH_SHIFT = 0;
-    
-    private static final int BLEND_MODE_MASK = 7;
-    private static final int[] BLEND_MODE_SHIFT = new int[3];
-    private static final int[] COLOR_DISABLE_FLAGS = new int[3];
-    private static final int[] EMISSIVE_FLAGS = new int[3];
-    private static final int[] DIFFUSE_FLAGS = new int[3];
-    private static final int[] AO_FLAGS = new int[3];
-    
-    static {
-        int shift = Integer.bitCount(TEXTURE_DEPTH_MASK);
-        for(int i = 0; i < 3; i++) {
-            BLEND_MODE_SHIFT[i] = shift;
-            shift += Integer.bitCount(BLEND_MODE_MASK);
-            COLOR_DISABLE_FLAGS[i] = 1 << shift++;
-            EMISSIVE_FLAGS[i] = 1 << shift++;
-            DIFFUSE_FLAGS[i] = 1 << shift++;
-            AO_FLAGS[i] = 1 << shift++;
-        }
-    }
-    
-    static private final ObjectArrayList<Value> LIST = new ObjectArrayList<>();
-    static private final Int2ObjectOpenHashMap<Value> MAP = new Int2ObjectOpenHashMap<>();
-    
-    public static RenderMaterialImpl.Value byIndex(int index) {
-        return LIST.get(index);
-    }
-    
-    protected int bits;
-    
-    public BlendMode blendMode(int textureIndex) {
-        return BLEND_MODES[(bits >> BLEND_MODE_SHIFT[textureIndex]) & BLEND_MODE_MASK];
-    }
-    
-    public boolean disableColorIndex(int textureIndex) {
-        return (bits & COLOR_DISABLE_FLAGS[textureIndex]) != 0;
-    }
-    
-    public int spriteDepth() {
-        return 1 + ((bits >> TEXTURE_DEPTH_SHIFT) & TEXTURE_DEPTH_MASK);
-    }
-    
-    public boolean emissive(int textureIndex) {
-        return (bits & EMISSIVE_FLAGS[textureIndex]) != 0;
-    }
-    
-    public boolean disableDiffuse(int textureIndex) {
-        return (bits & DIFFUSE_FLAGS[textureIndex]) != 0;
-    }
+	private static final BlendMode[] BLEND_MODES = BlendMode.values();
 
-    public boolean disableAo(int textureIndex) {
-        return (bits & AO_FLAGS[textureIndex]) != 0;
-    }
-    
-    public static class Value extends RenderMaterialImpl implements RenderMaterial {
-        private final int index;
-        
-        /** True if any texture wants AO shading.  Simplifies check made by renderer at buffer-time. */
-        public final boolean hasAo;
-        
-        /** True if any texture wants emissive lighting.  Simplifies check made by renderer at buffer-time. */
-        public final boolean hasEmissive;
-        
-        private Value(int index, int bits) {
-            this.index = index;
-            this.bits = bits;
-            hasAo = !disableAo(0) 
-                    || (spriteDepth() > 1 && !disableAo(1))
-                    || (spriteDepth() == 3 && !disableAo(2));
-            hasEmissive = emissive(0) || emissive(1) || emissive(2);
-        }   
-        
-        public int index() {
-            return index;
-        }
-    }
-    
-    public static class Finder extends RenderMaterialImpl implements MaterialFinder {
-        @Override
-        public synchronized RenderMaterial find() {
-            Value result = MAP.get(bits);
-            if(result == null) {
-                result = new Value(LIST.size(), bits);
-                LIST.add(result);
-                MAP.put(bits, result);
-            }
-            return result;
-        }
+	/**
+	 * Indigo currently support up to 3 sprite layers but is configured to recognize only one.
+	 */
+	public static final int MAX_SPRITE_DEPTH = 1;
 
-        @Override
-        public MaterialFinder clear() {
-            bits = 0;
-            return this;
-        }
-        
-        @Override
-        public MaterialFinder blendMode(int textureIndex, BlendMode blendMode) {
-        	if (blendMode == null) blendMode = BlendMode.DEFAULT;
-            final int shift = BLEND_MODE_SHIFT[textureIndex];
-            // zero position is null (default) value
-            bits = (bits & ~(BLEND_MODE_MASK << shift)) | (blendMode.ordinal() << shift);
-            return this;
-        }
+	private static final int TEXTURE_DEPTH_MASK = 3;
+	private static final int TEXTURE_DEPTH_SHIFT = 0;
 
-        @Override
-        public MaterialFinder disableColorIndex(int textureIndex, boolean disable) {
-            final int flag = COLOR_DISABLE_FLAGS[textureIndex];
-            bits = disable ? (bits | flag) : (bits & ~flag);
-            return this;
-        }
+	private static final int BLEND_MODE_MASK = 7;
+	private static final int[] BLEND_MODE_SHIFT = new int[3];
+	private static final int[] COLOR_DISABLE_FLAGS = new int[3];
+	private static final int[] EMISSIVE_FLAGS = new int[3];
+	private static final int[] DIFFUSE_FLAGS = new int[3];
+	private static final int[] AO_FLAGS = new int[3];
 
-        @Override
-        public MaterialFinder spriteDepth(int depth) {
-            if(depth < 1 || depth > MAX_SPRITE_DEPTH) {
-                throw new IndexOutOfBoundsException("Invalid sprite depth: " + depth);
-            }
-            bits = (bits & ~(TEXTURE_DEPTH_MASK << TEXTURE_DEPTH_SHIFT)) | (--depth << TEXTURE_DEPTH_SHIFT);
-            return this;
-        }
+	static {
+		int shift = Integer.bitCount(TEXTURE_DEPTH_MASK);
+		for (int i = 0; i < 3; i++) {
+			BLEND_MODE_SHIFT[i] = shift;
+			shift += Integer.bitCount(BLEND_MODE_MASK);
+			COLOR_DISABLE_FLAGS[i] = 1 << shift++;
+			EMISSIVE_FLAGS[i] = 1 << shift++;
+			DIFFUSE_FLAGS[i] = 1 << shift++;
+			AO_FLAGS[i] = 1 << shift++;
+		}
+	}
 
-        @Override
-        public MaterialFinder emissive(int textureIndex, boolean isEmissive) {
-            final int flag = EMISSIVE_FLAGS[textureIndex];
-            bits = isEmissive ? (bits | flag) : (bits & ~flag);
-            return this;
-        }
+	static private final ObjectArrayList<Value> LIST = new ObjectArrayList<>();
+	static private final Int2ObjectOpenHashMap<Value> MAP = new Int2ObjectOpenHashMap<>();
 
-        @Override
-        public MaterialFinder disableDiffuse(int textureIndex, boolean disable) {
-            final int flag = DIFFUSE_FLAGS[textureIndex];
-            bits = disable ? (bits | flag) : (bits & ~flag);
-            return this;
-        }
+	public static RenderMaterialImpl.Value byIndex(int index) {
+		return LIST.get(index);
+	}
 
-        @Override
-        public MaterialFinder disableAo(int textureIndex, boolean disable) {
-            final int flag = AO_FLAGS[textureIndex];
-            bits = disable ? (bits | flag) : (bits & ~flag);
-            return this;
-        }
-    }
+	protected int bits;
+
+	public BlendMode blendMode(int textureIndex) {
+		return BLEND_MODES[(bits >> BLEND_MODE_SHIFT[textureIndex]) & BLEND_MODE_MASK];
+	}
+
+	public boolean disableColorIndex(int textureIndex) {
+		return (bits & COLOR_DISABLE_FLAGS[textureIndex]) != 0;
+	}
+
+	public int spriteDepth() {
+		return 1 + ((bits >> TEXTURE_DEPTH_SHIFT) & TEXTURE_DEPTH_MASK);
+	}
+
+	public boolean emissive(int textureIndex) {
+		return (bits & EMISSIVE_FLAGS[textureIndex]) != 0;
+	}
+
+	public boolean disableDiffuse(int textureIndex) {
+		return (bits & DIFFUSE_FLAGS[textureIndex]) != 0;
+	}
+
+	public boolean disableAo(int textureIndex) {
+		return (bits & AO_FLAGS[textureIndex]) != 0;
+	}
+
+	public static class Value extends RenderMaterialImpl implements RenderMaterial {
+		private final int index;
+
+		/** True if any texture wants AO shading.  Simplifies check made by renderer at buffer-time. */
+		public final boolean hasAo;
+
+		/** True if any texture wants emissive lighting.  Simplifies check made by renderer at buffer-time. */
+		public final boolean hasEmissive;
+
+		private Value(int index, int bits) {
+			this.index = index;
+			this.bits = bits;
+			hasAo = !disableAo(0) || (spriteDepth() > 1 && !disableAo(1)) || (spriteDepth() == 3 && !disableAo(2));
+			hasEmissive = emissive(0) || emissive(1) || emissive(2);
+		}
+
+		public int index() {
+			return index;
+		}
+	}
+
+	public static class Finder extends RenderMaterialImpl implements MaterialFinder {
+		@Override
+		public synchronized RenderMaterial find() {
+			Value result = MAP.get(bits);
+			if (result == null) {
+				result = new Value(LIST.size(), bits);
+				LIST.add(result);
+				MAP.put(bits, result);
+			}
+			return result;
+		}
+
+		@Override
+		public MaterialFinder clear() {
+			bits = 0;
+			return this;
+		}
+
+		@Override
+		public MaterialFinder blendMode(int textureIndex, BlendMode blendMode) {
+			if (blendMode == null)
+				blendMode = BlendMode.DEFAULT;
+			final int shift = BLEND_MODE_SHIFT[textureIndex];
+			// zero position is null (default) value
+			bits = (bits & ~(BLEND_MODE_MASK << shift)) | (blendMode.ordinal() << shift);
+			return this;
+		}
+
+		@Override
+		public MaterialFinder disableColorIndex(int textureIndex, boolean disable) {
+			final int flag = COLOR_DISABLE_FLAGS[textureIndex];
+			bits = disable ? (bits | flag) : (bits & ~flag);
+			return this;
+		}
+
+		@Override
+		public MaterialFinder spriteDepth(int depth) {
+			if (depth < 1 || depth > MAX_SPRITE_DEPTH) {
+				throw new IndexOutOfBoundsException("Invalid sprite depth: " + depth);
+			}
+			bits = (bits & ~(TEXTURE_DEPTH_MASK << TEXTURE_DEPTH_SHIFT)) | (--depth << TEXTURE_DEPTH_SHIFT);
+			return this;
+		}
+
+		@Override
+		public MaterialFinder emissive(int textureIndex, boolean isEmissive) {
+			final int flag = EMISSIVE_FLAGS[textureIndex];
+			bits = isEmissive ? (bits | flag) : (bits & ~flag);
+			return this;
+		}
+
+		@Override
+		public MaterialFinder disableDiffuse(int textureIndex, boolean disable) {
+			final int flag = DIFFUSE_FLAGS[textureIndex];
+			bits = disable ? (bits | flag) : (bits & ~flag);
+			return this;
+		}
+
+		@Override
+		public MaterialFinder disableAo(int textureIndex, boolean disable) {
+			final int flag = AO_FLAGS[textureIndex];
+			bits = disable ? (bits | flag) : (bits & ~flag);
+			return this;
+		}
+	}
 }

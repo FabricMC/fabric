@@ -35,136 +35,137 @@ import net.minecraft.util.math.Direction;
  * because that depends on where/how it is used. (Mesh encoding vs. render-time transformation).
  */
 public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter, ShadeableQuad {
-    public final void begin(int[] data, int baseIndex) {
-        this.data = data;
-        this.baseIndex = baseIndex;
-        clear();
-    }
+	public final void begin(int[] data, int baseIndex) {
+		this.data = data;
+		this.baseIndex = baseIndex;
+		clear();
+	}
 
-    public void clear() {
-        System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.MAX_STRIDE);
-        isFaceNormalInvalid = true;
-        isGeometryInvalid = true;
-        normalFlags = 0;
-        tag = 0;
-        colorIndex = -1;
-        cullFace = null;
-        lightFace = null;
-        nominalFace = null;
-        material = IndigoRenderer.MATERIAL_STANDARD;
-    }
-    
-    @Override
-    public final MutableQuadViewImpl material(RenderMaterial material) {
-        if(material == null || material.spriteDepth() > this.material.spriteDepth()) {
-            throw new UnsupportedOperationException("Material texture depth must be the same or less than original material.");
-        }
-        this.material = (Value)material;
-        return this;
-    }
+	public void clear() {
+		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.MAX_STRIDE);
+		isFaceNormalInvalid = true;
+		isGeometryInvalid = true;
+		normalFlags = 0;
+		tag = 0;
+		colorIndex = -1;
+		cullFace = null;
+		lightFace = null;
+		nominalFace = null;
+		material = IndigoRenderer.MATERIAL_STANDARD;
+	}
 
-    @Override
-    public final MutableQuadViewImpl cullFace(Direction face) {
-        cullFace = face;
-        nominalFace = face;
-        return this;
-    }
-    
-    public final MutableQuadViewImpl lightFace(Direction face) {
-        lightFace = face;
-        return this;
-    }
+	@Override
+	public final MutableQuadViewImpl material(RenderMaterial material) {
+		if (material == null || material.spriteDepth() > this.material.spriteDepth()) {
+			throw new UnsupportedOperationException("Material texture depth must be the same or less than original material.");
+		}
+		this.material = (Value) material;
+		return this;
+	}
 
-    @Override
-    public final MutableQuadViewImpl nominalFace(Direction face) {
-        nominalFace = face;
-        return this;
-    }
-    
-    @Override
-    public final MutableQuadViewImpl colorIndex(int colorIndex) {
-        this.colorIndex = colorIndex;
-        return this;
-    }
+	@Override
+	public final MutableQuadViewImpl cullFace(Direction face) {
+		cullFace = face;
+		nominalFace = face;
+		return this;
+	}
 
-    @Override
-    public final MutableQuadViewImpl tag(int tag) {
-        this.tag = tag;
-        return this;
-    }
-    
-    @Override
-    public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-        final int vertexStart = vertexStart();
-        System.arraycopy(quadData, startIndex, data, vertexStart, 32);
-        this.invalidateShape();
-        return this;
-    }
-    
-    @Override
-    public boolean isFaceAligned() {
-        return (geometryFlags() & GeometryHelper.AXIS_ALIGNED_FLAG) != 0;
-    }
-    
-    @Override
-    public boolean needsDiffuseShading(int textureIndex) {
-        return textureIndex < material.spriteDepth() && !material.disableDiffuse(textureIndex);
-    }
-    
-    @Override
-    public MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
-        final int index = vertexStart() + vertexIndex * 8;
-        data[index] = Float.floatToRawIntBits(x);
-        data[index + 1] = Float.floatToRawIntBits(y);
-        data[index + 2] = Float.floatToRawIntBits(z);
-        isFaceNormalInvalid = true;
-        return this;
-    }
+	public final MutableQuadViewImpl lightFace(Direction face) {
+		lightFace = face;
+		return this;
+	}
 
-    @Override
-    public MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
-        normalFlags |= (1 << vertexIndex);
-        data[baseIndex + vertexIndex * 8 + 7 + VERTEX_START_OFFSET] = NormalHelper.packNormal(x, y, z, 0);
-        return this;
-    }
+	@Override
+	public final MutableQuadViewImpl nominalFace(Direction face) {
+		nominalFace = face;
+		return this;
+	}
 
-    /**
-     * Internal helper method. Copies face normals to vertex normals lacking one.
-     */
-    public final void populateMissingNormals() {
-        final int normalFlags = this.normalFlags;
-        if (normalFlags == 0b1111) return;
-        final int packedFaceNormal = NormalHelper.packNormal(faceNormal(), 0);
-        for (int v = 0; v < 4; v++) {
-            if ((normalFlags & (1 << v)) == 0) {
-            	data[baseIndex + v * 8 + 7 + VERTEX_START_OFFSET] = packedFaceNormal;
-            }
-        }
-    }
-    
-    @Override
-    public MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
-        data[baseIndex + vertexIndex * 8 + 6 + VERTEX_START_OFFSET] = lightmap;
-        return this;
-    }
+	@Override
+	public final MutableQuadViewImpl colorIndex(int colorIndex) {
+		this.colorIndex = colorIndex;
+		return this;
+	}
 
-    @Override
-    public MutableQuadViewImpl spriteColor(int vertexIndex, int textureIndex, int color) {
-        data[baseIndex + colorIndex(vertexIndex, textureIndex)] = color;
-        return this;
-    }
+	@Override
+	public final MutableQuadViewImpl tag(int tag) {
+		this.tag = tag;
+		return this;
+	}
 
-    @Override
-    public MutableQuadViewImpl sprite(int vertexIndex, int textureIndex, float u, float v) {
-        final int i = baseIndex + colorIndex(vertexIndex, textureIndex) + 1;
-        data[i] = Float.floatToRawIntBits(u);
-        data[i + 1] = Float.floatToRawIntBits(v);
-        return this;
-    }
-    
-    @Override
-    public MutableQuadViewImpl spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
-        TextureHelper.bakeSprite(this, spriteIndex, sprite, bakeFlags);
-        return this;
-    }
+	@Override
+	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
+		final int vertexStart = vertexStart();
+		System.arraycopy(quadData, startIndex, data, vertexStart, 32);
+		this.invalidateShape();
+		return this;
+	}
+
+	@Override
+	public boolean isFaceAligned() {
+		return (geometryFlags() & GeometryHelper.AXIS_ALIGNED_FLAG) != 0;
+	}
+
+	@Override
+	public boolean needsDiffuseShading(int textureIndex) {
+		return textureIndex < material.spriteDepth() && !material.disableDiffuse(textureIndex);
+	}
+
+	@Override
+	public MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
+		final int index = vertexStart() + vertexIndex * 8;
+		data[index] = Float.floatToRawIntBits(x);
+		data[index + 1] = Float.floatToRawIntBits(y);
+		data[index + 2] = Float.floatToRawIntBits(z);
+		isFaceNormalInvalid = true;
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
+		normalFlags |= (1 << vertexIndex);
+		data[baseIndex + vertexIndex * 8 + 7 + VERTEX_START_OFFSET] = NormalHelper.packNormal(x, y, z, 0);
+		return this;
+	}
+
+	/**
+	 * Internal helper method. Copies face normals to vertex normals lacking one.
+	 */
+	public final void populateMissingNormals() {
+		final int normalFlags = this.normalFlags;
+		if (normalFlags == 0b1111)
+			return;
+		final int packedFaceNormal = NormalHelper.packNormal(faceNormal(), 0);
+		for (int v = 0; v < 4; v++) {
+			if ((normalFlags & (1 << v)) == 0) {
+				data[baseIndex + v * 8 + 7 + VERTEX_START_OFFSET] = packedFaceNormal;
+			}
+		}
+	}
+
+	@Override
+	public MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
+		data[baseIndex + vertexIndex * 8 + 6 + VERTEX_START_OFFSET] = lightmap;
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl spriteColor(int vertexIndex, int textureIndex, int color) {
+		data[baseIndex + colorIndex(vertexIndex, textureIndex)] = color;
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl sprite(int vertexIndex, int textureIndex, float u, float v) {
+		final int i = baseIndex + colorIndex(vertexIndex, textureIndex) + 1;
+		data[i] = Float.floatToRawIntBits(u);
+		data[i + 1] = Float.floatToRawIntBits(v);
+		return this;
+	}
+
+	@Override
+	public MutableQuadViewImpl spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
+		TextureHelper.bakeSprite(this, spriteIndex, sprite, bakeFlags);
+		return this;
+	}
 }

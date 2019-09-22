@@ -40,57 +40,53 @@ import net.minecraft.util.math.BlockPos;
  * and holds/manages all of the state needed by them.
  */
 public class TerrainRenderContext extends AbstractRenderContext implements RenderContext {
-    public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
-    private final TerrainBlockRenderInfo blockInfo = new TerrainBlockRenderInfo();
-    private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo(blockInfo);
-    private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
-    private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
-    private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
-    
-    public TerrainRenderContext prepare(
-    		ChunkRendererRegion blockView,
-    		ChunkRenderer chunkRenderer, 
-    		ChunkRenderData chunkData, 
-    		BlockLayeredBufferBuilder builders) {
-    	blockInfo.setBlockView(blockView);
-    	chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
-        return this;
-    }
-    
-    public void release() {
-        chunkInfo.release();
-        blockInfo.release();
-    }
-    
-    /** Called from chunk renderer hook. */
-    public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model) {
-        try {
-            aoCalc.clear();
-            blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
-            chunkInfo.beginBlock();
-            ((FabricBakedModel)model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
-        } catch (Throwable var9) {
-           CrashReport crashReport_1 = CrashReport.create(var9, "Tesselating block in world - Indigo Renderer");
-           CrashReportSection crashReportElement_1 = crashReport_1.addElement("Block being tesselated");
-           CrashReportSection.addBlockInfo(crashReportElement_1, blockPos, blockState);
-           throw new CrashException(crashReport_1);
-        }
-        // false because we've already marked the chunk as populated - caller doesn't need to
-        return false;
-     }
+	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
+	private final TerrainBlockRenderInfo blockInfo = new TerrainBlockRenderInfo();
+	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo(blockInfo);
+	private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
+	private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
+	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
 
-    @Override
-    public Consumer<Mesh> meshConsumer() {
-        return meshConsumer;
-    }
+	public TerrainRenderContext prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilder builders) {
+		blockInfo.setBlockView(blockView);
+		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
+		return this;
+	}
 
-    @Override
-    public Consumer<BakedModel> fallbackConsumer() {
-        return fallbackConsumer;
-    }
+	public void release() {
+		chunkInfo.release();
+		blockInfo.release();
+	}
 
-    @Override
-    public QuadEmitter getEmitter() {
-        return meshConsumer.getEmitter();
-    }
+	/** Called from chunk renderer hook. */
+	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model) {
+		try {
+			aoCalc.clear();
+			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
+			chunkInfo.beginBlock();
+			((FabricBakedModel) model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
+		} catch (Throwable var9) {
+			CrashReport crashReport_1 = CrashReport.create(var9, "Tesselating block in world - Indigo Renderer");
+			CrashReportSection crashReportElement_1 = crashReport_1.addElement("Block being tesselated");
+			CrashReportSection.addBlockInfo(crashReportElement_1, blockPos, blockState);
+			throw new CrashException(crashReport_1);
+		}
+		// false because we've already marked the chunk as populated - caller doesn't need to
+		return false;
+	}
+
+	@Override
+	public Consumer<Mesh> meshConsumer() {
+		return meshConsumer;
+	}
+
+	@Override
+	public Consumer<BakedModel> fallbackConsumer() {
+		return fallbackConsumer;
+	}
+
+	@Override
+	public QuadEmitter getEmitter() {
+		return meshConsumer.getEmitter();
+	}
 }

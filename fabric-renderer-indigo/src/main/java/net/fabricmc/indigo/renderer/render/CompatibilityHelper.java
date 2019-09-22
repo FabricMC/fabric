@@ -22,20 +22,21 @@ import net.fabricmc.indigo.Indigo;
  * Controls 1x warning for vanilla quad vertex format when running in compatibility mode.
  */
 public abstract class CompatibilityHelper {
-    private CompatibilityHelper() {}
+	private CompatibilityHelper() {
+	}
 
-    private static boolean logCompatibilityWarning = true;
-    
-    private static boolean isCompatible(int[] vertexData) {
-        final boolean result = vertexData.length == 28;
-        if(!result && logCompatibilityWarning) {
-            logCompatibilityWarning = false;
-            Indigo.LOGGER.warn("[Indigo] Encountered baked quad with non-standard vertex format. Some blocks will not be rendered");
-        }
-        return result;
-    }
-    
-    public static boolean canRender(int[] vertexData) {
-        return !Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY || isCompatible(vertexData);
-    }
+	private static boolean logCompatibilityWarning = true;
+
+	private static boolean isCompatible(int[] vertexData) {
+		final boolean result = vertexData.length == 28;
+		if (!result && logCompatibilityWarning) {
+			logCompatibilityWarning = false;
+			Indigo.LOGGER.warn("[Indigo] Encountered baked quad with non-standard vertex format. Some blocks will not be rendered");
+		}
+		return result;
+	}
+
+	public static boolean canRender(int[] vertexData) {
+		return !Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY || isCompatible(vertexData);
+	}
 }

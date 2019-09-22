@@ -27,16 +27,16 @@ import net.minecraft.world.BlockView;
  */
 @FunctionalInterface
 public interface AoLuminanceFix {
-    float apply(BlockView view, BlockPos pos);
-    
-    AoLuminanceFix INSTANCE = Indigo.FIX_LUMINOUS_AO_SHADE ? AoLuminanceFix::fixed : AoLuminanceFix::vanilla;
-    
-    static float vanilla(BlockView view, BlockPos pos) {
-        return view.getBlockState(pos).getAmbientOcclusionLightLevel(view, pos);
-    }
-    
-    static float fixed(BlockView view, BlockPos pos) {
-        final BlockState state = view.getBlockState(pos);
-        return state.getLuminance() == 0 ? state.getAmbientOcclusionLightLevel(view, pos) : 1f;
-    }
+	float apply(BlockView view, BlockPos pos);
+
+	AoLuminanceFix INSTANCE = Indigo.FIX_LUMINOUS_AO_SHADE ? AoLuminanceFix::fixed : AoLuminanceFix::vanilla;
+
+	static float vanilla(BlockView view, BlockPos pos) {
+		return view.getBlockState(pos).getAmbientOcclusionLightLevel(view, pos);
+	}
+
+	static float fixed(BlockView view, BlockPos pos) {
+		final BlockState state = view.getBlockState(pos);
+		return state.getLuminance() == 0 ? state.getAmbientOcclusionLightLevel(view, pos) : 1f;
+	}
 }

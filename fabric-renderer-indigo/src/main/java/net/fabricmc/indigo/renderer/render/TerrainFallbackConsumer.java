@@ -55,97 +55,96 @@ import net.minecraft.util.math.Direction;
  *  manipulating the data via NIO.
  */
 public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel> {
-    private static Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
-    private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
-    
-    private final int[] editorBuffer = new int[32];
-    private final ChunkRenderInfo chunkInfo;
-    
-    TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
-        super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
-        this.chunkInfo = chunkInfo;
-    }
-    
-    private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
-        {
-            data = editorBuffer;
-            material = MATERIAL_SHADED;
-            baseIndex = -EncodingFormat.HEADER_STRIDE;
-        }
+	private static Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
+	private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
-        @Override
-        public QuadEmitter emit() {
-            // should not be called
-            throw new UnsupportedOperationException("Fallback consumer does not support .emit()");
-        }
-    };
-    
-    @Override
-    public void accept(BakedModel model) {
-        final Supplier<Random> random = blockInfo.randomSupplier;
-        final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion()
-                ? MATERIAL_SHADED : MATERIAL_FLAT;
-        final BlockState blockState = blockInfo.blockState;
-        for(int i = 0; i < 6; i++) {
-            Direction face = ModelHelper.faceFromIndex(i);
-            List<BakedQuad> quads = model.getQuads(blockState, face, random.get());
-            final int count = quads.size();
-            if (count != 0 && blockInfo.shouldDrawFace(face)) {
-                for(int j = 0; j < count; j++) {
-                    BakedQuad q = quads.get(j);
-                    renderQuad(q, face, defaultMaterial);
-                }
-            }
-        }
+	private final int[] editorBuffer = new int[32];
+	private final ChunkRenderInfo chunkInfo;
 
-        List<BakedQuad> quads = model.getQuads(blockState, null, random.get());
-        final int count = quads.size();
-        if (count != 0) {
-            for(int j = 0; j < count; j++) {
-                BakedQuad q = quads.get(j);
-                renderQuad(q, null, defaultMaterial);
-            }
-        }
-    }
-    
-    private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
-        final int[] vertexData = quad.getVertexData();
-        if (!CompatibilityHelper.canRender(vertexData)) {
-        	return;
-        }
-        
-        final MutableQuadViewImpl editorQuad = this.editorQuad;
-        System.arraycopy(vertexData, 0, editorBuffer, 0, 32);
-        editorQuad.cullFace(cullFace);
-        final Direction lightFace = quad.getFace();
-        editorQuad.lightFace(lightFace);
-        editorQuad.nominalFace(lightFace);
-        editorQuad.colorIndex(quad.getColorIndex());
-        editorQuad.material(defaultMaterial);
-        
-        if (!transform.transform(editorQuad)) {
-            return;
-        }
-        
-        if (editorQuad.material().hasAo) {
-            // needs to happen before offsets are applied
-            editorQuad.invalidateShape();
-            aoCalc.compute(editorQuad, true);
-            chunkInfo.applyOffsets(editorQuad);
-            tesselateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
-        } else {
-            // vanilla compatibility hack
+	TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
+		super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
+		this.chunkInfo = chunkInfo;
+	}
+
+	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
+		{
+			data = editorBuffer;
+			material = MATERIAL_SHADED;
+			baseIndex = -EncodingFormat.HEADER_STRIDE;
+		}
+
+		@Override
+		public QuadEmitter emit() {
+			// should not be called
+			throw new UnsupportedOperationException("Fallback consumer does not support .emit()");
+		}
+	};
+
+	@Override
+	public void accept(BakedModel model) {
+		final Supplier<Random> random = blockInfo.randomSupplier;
+		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
+		final BlockState blockState = blockInfo.blockState;
+		for (int i = 0; i < 6; i++) {
+			Direction face = ModelHelper.faceFromIndex(i);
+			List<BakedQuad> quads = model.getQuads(blockState, face, random.get());
+			final int count = quads.size();
+			if (count != 0 && blockInfo.shouldDrawFace(face)) {
+				for (int j = 0; j < count; j++) {
+					BakedQuad q = quads.get(j);
+					renderQuad(q, face, defaultMaterial);
+				}
+			}
+		}
+
+		List<BakedQuad> quads = model.getQuads(blockState, null, random.get());
+		final int count = quads.size();
+		if (count != 0) {
+			for (int j = 0; j < count; j++) {
+				BakedQuad q = quads.get(j);
+				renderQuad(q, null, defaultMaterial);
+			}
+		}
+	}
+
+	private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
+		final int[] vertexData = quad.getVertexData();
+		if (!CompatibilityHelper.canRender(vertexData)) {
+			return;
+		}
+
+		final MutableQuadViewImpl editorQuad = this.editorQuad;
+		System.arraycopy(vertexData, 0, editorBuffer, 0, 32);
+		editorQuad.cullFace(cullFace);
+		final Direction lightFace = quad.getFace();
+		editorQuad.lightFace(lightFace);
+		editorQuad.nominalFace(lightFace);
+		editorQuad.colorIndex(quad.getColorIndex());
+		editorQuad.material(defaultMaterial);
+
+		if (!transform.transform(editorQuad)) {
+			return;
+		}
+
+		if (editorQuad.material().hasAo) {
+			// needs to happen before offsets are applied
+			editorQuad.invalidateShape();
+			aoCalc.compute(editorQuad, true);
+			chunkInfo.applyOffsets(editorQuad);
+			tesselateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
+		} else {
+			// vanilla compatibility hack
 			// For flat lighting, cull face drives everything and light face is ignored.
-            if(cullFace == null) {
-                editorQuad.invalidateShape();
-                // Can't rely on lazy computation in tesselateFlat() because needs to happen before offsets are applied
-                editorQuad.geometryFlags();
-            } else {
-                editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
-                editorQuad.lightFace(cullFace);
-            }
-            chunkInfo.applyOffsets(editorQuad);
-            tesselateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
-        }
-    }
+			if (cullFace == null) {
+				editorQuad.invalidateShape();
+				// Can't rely on lazy computation in tesselateFlat() because needs to happen before offsets are applied
+				editorQuad.geometryFlags();
+			} else {
+				editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
+				editorQuad.lightFace(cullFace);
+			}
+			chunkInfo.applyOffsets(editorQuad);
+			tesselateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
+		}
+	}
 }

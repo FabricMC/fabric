@@ -22,34 +22,33 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
 public class TerrainBlockRenderInfo extends BlockRenderInfo {
-    private int cullCompletionFlags;
-    private int cullResultFlags;
-    
-    
-    @Override
-    public void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAO) {
-        super.prepareForBlock(blockState, blockPos, modelAO);
-        cullCompletionFlags = 0;
-        cullResultFlags = 0;
-    }
-    
-    @Override
-    boolean shouldDrawFace(Direction face) {
-        if(face == null) {
-            return true;
-        }
-        final int mask = 1 << face.getId();
-        
-        if((cullCompletionFlags & mask) == 0) {
-            cullCompletionFlags |= mask;
-            if(Block.shouldDrawSide(blockState, blockView, blockPos, face)) {
-                cullResultFlags |= mask;
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return (cullResultFlags & mask) != 0;
-        }
-    }
+	private int cullCompletionFlags;
+	private int cullResultFlags;
+
+	@Override
+	public void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAO) {
+		super.prepareForBlock(blockState, blockPos, modelAO);
+		cullCompletionFlags = 0;
+		cullResultFlags = 0;
+	}
+
+	@Override
+	boolean shouldDrawFace(Direction face) {
+		if (face == null) {
+			return true;
+		}
+		final int mask = 1 << face.getId();
+
+		if ((cullCompletionFlags & mask) == 0) {
+			cullCompletionFlags |= mask;
+			if (Block.shouldDrawSide(blockState, blockView, blockPos, face)) {
+				cullResultFlags |= mask;
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			return (cullResultFlags & mask) != 0;
+		}
+	}
 }

@@ -25,14 +25,15 @@ import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
 import net.minecraft.util.math.BlockPos;
 
 @Mixin(ChunkRenderer.class)
-public abstract class MixinChunkRenderer implements AccessChunkRenderer{
-    @Shadow abstract void beginBufferBuilding(BufferBuilder builder, BlockPos pos);
+public abstract class MixinChunkRenderer implements AccessChunkRenderer {
+	@Shadow
+	abstract void beginBufferBuilding(BufferBuilder builder, BlockPos pos);
 
-    /** 
-     * Access method for renderer.
-     */
-    @Override
-    public void fabric_beginBufferBuilding(BufferBuilder builder, BlockPos pos) {
-        beginBufferBuilding(builder, pos);
-    }
+	/** 
+	 * Access method for renderer.
+	 */
+	@Override
+	public void fabric_beginBufferBuilding(BufferBuilder builder, BlockPos pos) {
+		beginBufferBuilding(builder, pos);
+	}
 }
