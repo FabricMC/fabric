@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.world;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -43,13 +44,13 @@ public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends 
 
 	/**
 	 * Called to register and create new instance of the ChunkGeneratorType.
-	 * @param name name of the ChunkGeneratorType
+	 * @param id registry ID of the ChunkGeneratorType
 	 * @param factory factory instance to provide a ChunkGenerator
 	 * @param settingsSupplier config supplier
 	 * @param buffetScreenOption whether or not the ChunkGeneratorType should appear in the buffet screen options page
 	 */
-	public static <C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> FabricChunkGeneratorType<C, T> register(String name, FabricChunkGeneratorFactory<C, T> factory, Supplier<C> settingsSupplier, boolean buffetScreenOption) {
-		return Registry.register(Registry.CHUNK_GENERATOR_TYPE, name, new FabricChunkGeneratorType<>(factory, buffetScreenOption, settingsSupplier));
+	public static <C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> FabricChunkGeneratorType<C, T> register(Identifier id, FabricChunkGeneratorFactory<C, T> factory, Supplier<C> settingsSupplier, boolean buffetScreenOption) {
+		return Registry.register(Registry.CHUNK_GENERATOR_TYPE, id, new FabricChunkGeneratorType<>(factory, buffetScreenOption, settingsSupplier));
 	}
 
 	/**
