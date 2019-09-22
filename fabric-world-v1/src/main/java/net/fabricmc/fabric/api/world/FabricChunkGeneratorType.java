@@ -1,5 +1,22 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.api.world;
 
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -18,15 +35,21 @@ public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends 
 {
 	private FabricChunkGeneratorFactory<C, T> factory;
 
-	/**
-	 * @param factory factory instance to provide a ChunkGenerator
-	 * @param buffetScreenOption whether or not the ChunkGeneratorType should appear in the buffet screen options page
-	 * @param settingsSupplier config supplier
-	 */
-	public FabricChunkGeneratorType(FabricChunkGeneratorFactory<C, T> factory, boolean buffetScreenOption, Supplier<C> settingsSupplier)
+	private FabricChunkGeneratorType(FabricChunkGeneratorFactory<C, T> factory, boolean buffetScreenOption, Supplier<C> settingsSupplier)
 	{
 		super(null, buffetScreenOption, settingsSupplier);
 		this.factory = factory;
+	}
+
+	/**
+	 * Called to register and create new instance of the ChunkGeneratorType.
+	 * @param name name of the ChunkGeneratorType
+	 * @param factory factory instance to provide a ChunkGenerator
+	 * @param settingsSupplier config supplier
+	 * @param buffetScreenOption whether or not the ChunkGeneratorType should appear in the buffet screen options page
+	 */
+	public static <C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> FabricChunkGeneratorType<C, T> register(String name, FabricChunkGeneratorFactory<C, T> factory, Supplier<C> settingsSupplier, boolean buffetScreenOption) {
+		return Registry.register(Registry.CHUNK_GENERATOR_TYPE, name, new FabricChunkGeneratorType<>(factory, buffetScreenOption, settingsSupplier));
 	}
 
 	/**
@@ -34,7 +57,6 @@ public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends 
 	 * @param world DimensionType's world instance
 	 * @param biomeSource BiomeSource to use while generating the world
 	 * @param config ChunkGenerator config instance
-	 * @return returns an instance of the ChunkGeneratorType's ChunkGenerator.
 	 */
 	@Override
 	public T create(World world, BiomeSource biomeSource, C config) {
