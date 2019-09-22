@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -44,6 +45,7 @@ import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
 
 /**
  * The render context used for item rendering. 
@@ -59,6 +61,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 
     private final ItemColors colorMap;
     private final Random random = new Random();
+    private final Consumer<BakedModel> fallbackConsumer;
     BufferBuilder bufferBuilder;
     AccessBufferBuilder fabricBuffer;
     private int color;
@@ -84,6 +87,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     
     public ItemRenderContext(ItemColors colorMap) {
         this.colorMap = colorMap;
+        this.fallbackConsumer = this::fallbackConsumer;
     }
     
     public void renderModel(FabricBakedModel model, int color, ItemStack stack, VanillaQuadHandler vanillaHandler) {
@@ -127,6 +131,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         
         @Override
         public Maker emit() {
+            lightFace = GeometryHelper.lightFace(this);
+            ColorHelper.applyDiffuseShading(this, false);
             renderQuad();
             clear();
             return this;
@@ -168,7 +174,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
     private int quadColor() {
         final int colorIndex = editorQuad.colorIndex();
         int quadColor = color;
-        if (!enchantment && quadColor == -1 && colorIndex != 1) {
+        if (!enchantment && quadColor == -1 && colorIndex != -1) {
             quadColor = colorMap.getColorMultiplier(itemStack, colorIndex);
             quadColor |= -16777216;
          }
@@ -182,7 +188,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
             c = ColorHelper.multiplyColor(quadColor, c);
             q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(c));
         }
-        fabricBuffer.fabric_putVanillaData(quadData, EncodingFormat.VERTEX_START_OFFSET, true);
+        fabricBuffer.fabric_putQuad(q);
     }
     
     private void renderQuad() {
@@ -221,12 +227,42 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
         return meshConsumer;
     }
 
-    private final Consumer<BakedModel> fallbackConsumer = model -> {
-        for(int i = 0; i < 7; i++) {
-            random.setSeed(42L);
-            vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack);
-         }
+    private void fallbackConsumer(BakedModel model) {
+        if(hasTransform()) {
+            // if there's a transform in effect, convert to mesh-based quads so that we can apply it
+            for(int i = 0; i < 7; i++) {
+                random.setSeed(42L);
+                final Direction cullFace = ModelHelper.faceFromIndex(i);
+                renderFallbackWithTransform(bufferBuilder, model.getQuads((BlockState)null, cullFace, random), color, itemStack, cullFace);
+             }
+        } else {
+            for(int i = 0; i < 7; i++) {
+                random.setSeed(42L);
+                vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack);
+             }
+        }
     };
+    
+    private void renderFallbackWithTransform(BufferBuilder bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, Direction cullFace) {
+        if(quads.isEmpty()) {
+            return;
+        }
+        if(CompatibilityHelper.canRender(quads.get(0).getVertexData())) {
+            Maker editorQuad = this.editorQuad;
+            for(BakedQuad q : quads) {
+                editorQuad.clear();
+                editorQuad.fromVanilla(q.getVertexData(), 0, false);
+                editorQuad.cullFace(cullFace);
+                final Direction lightFace = q.getFace();
+                editorQuad.lightFace(lightFace);
+                editorQuad.nominalFace(lightFace);
+                editorQuad.colorIndex(q.getColorIndex());
+                renderQuad();
+            }
+        } else {
+            vanillaHandler.accept(bufferBuilder, quads, color, stack);
+        }
+    }
     
     @Override
     public Consumer<BakedModel> fallbackConsumer() {

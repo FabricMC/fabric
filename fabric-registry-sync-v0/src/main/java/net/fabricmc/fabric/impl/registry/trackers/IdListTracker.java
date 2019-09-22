@@ -28,15 +28,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class IdListTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
+	private final String name;
 	private final IdList<OV> mappers;
 	private Map<Identifier, OV> removedMapperCache = new HashMap<>();
 
-	private IdListTracker(IdList<OV> mappers) {
+	private IdListTracker(String name, IdList<OV> mappers) {
+		this.name = name;
 		this.mappers = mappers;
 	}
 
-	public static <V, OV> void register(Registry<V> registry, IdList<OV> mappers) {
-		IdListTracker<V, OV> updater = new IdListTracker<>(mappers);
+	public static <V, OV> void register(Registry<V> registry, String name, IdList<OV> mappers) {
+		IdListTracker<V, OV> updater = new IdListTracker<>(name, mappers);
 		RegistryEntryAddedCallback.event(registry).register(updater);
 		RegistryIdRemapCallback.event(registry).register(updater);
 		RegistryEntryRemovedCallback.event(registry).register(updater);

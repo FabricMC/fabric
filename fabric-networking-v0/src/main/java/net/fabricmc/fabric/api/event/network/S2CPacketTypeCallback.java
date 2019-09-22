@@ -25,7 +25,7 @@ import java.util.Collection;
 /**
  * Event for listening to packet type registrations and unregistrations
  * (also known as "minecraft:register" and "minecraft:unregister")
- * in the server -> client direction.
+ * in the server -&gt; client direction.
  */
 public interface S2CPacketTypeCallback {
 	static final Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(

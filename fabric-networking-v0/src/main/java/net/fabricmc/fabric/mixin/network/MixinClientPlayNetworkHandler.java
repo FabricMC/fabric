@@ -20,7 +20,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
-import net.fabricmc.fabric.impl.network.PacketDebugOptions;
 import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
 import net.fabricmc.fabric.impl.network.PacketTypes;
 import net.minecraft.client.MinecraftClient;

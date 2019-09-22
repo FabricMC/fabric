@@ -24,8 +24,8 @@ import java.util.function.Supplier;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
-import net.fabricmc.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.indigo.renderer.IndigoRenderer;
+import net.fabricmc.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
@@ -62,7 +62,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
     private final ChunkRenderInfo chunkInfo;
     
     TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
-        super(blockInfo, chunkInfo::cachedBrightness, chunkInfo::getInitializedBuffer, aoCalc, transform);
+        super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
         this.chunkInfo = chunkInfo;
     }
     
@@ -109,8 +109,13 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
     }
     
     private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
+        final int[] vertexData = quad.getVertexData();
+        if(!CompatibilityHelper.canRender(vertexData)) {
+        	return;
+        }
+        
         final MutableQuadViewImpl editorQuad = this.editorQuad;
-        System.arraycopy(quad.getVertexData(), 0, editorBuffer, 0, 28);
+        System.arraycopy(vertexData, 0, editorBuffer, 0, 28);
         editorQuad.cullFace(cullFace);
         final Direction lightFace = quad.getFace();
         editorQuad.lightFace(lightFace);
@@ -132,7 +137,9 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
             // vanilla compatibility hack
 			// For flat lighting, cull face drives everything and light face is ignored.
             if(cullFace == null) {
-                editorQuad.geometryFlags(0);
+                editorQuad.invalidateShape();
+                // Can't rely on lazy computation in tesselateFlat() because needs to happen before offsets are applied
+                editorQuad.geometryFlags();
             } else {
                 editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
                 editorQuad.lightFace(cullFace);

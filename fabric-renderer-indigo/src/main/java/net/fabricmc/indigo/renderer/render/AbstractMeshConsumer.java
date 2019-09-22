@@ -17,31 +17,30 @@
 package net.fabricmc.indigo.renderer.render;
 
 import java.util.function.Consumer;
-import java.util.function.ToIntBiFunction;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
+import net.fabricmc.indigo.renderer.IndigoRenderer;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl.Value;
-import net.fabricmc.indigo.renderer.IndigoRenderer;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
+import net.fabricmc.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.math.BlockPos;
 
 /**
  * Consumer for pre-baked meshes.  Works by copying the mesh data to a
  * "editor" quad held in the instance, where all transformations are applied before buffering.
  */
 public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implements Consumer<Mesh> {
-    protected AbstractMeshConsumer(BlockRenderInfo blockInfo, ToIntBiFunction<BlockState, BlockPos> brightnessFunc, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
-        super(blockInfo, brightnessFunc, bufferFunc, aoCalc, transform);
+    protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+        super(blockInfo, bufferFunc, aoCalc, transform);
     }
     
     /** 
@@ -57,6 +56,8 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
         // only used via RenderContext.getEmitter() 
         @Override
         public Maker emit() {
+            lightFace = GeometryHelper.lightFace(this);
+            ColorHelper.applyDiffuseShading(this, false);
             renderQuad(this);
             clear();
             return this;

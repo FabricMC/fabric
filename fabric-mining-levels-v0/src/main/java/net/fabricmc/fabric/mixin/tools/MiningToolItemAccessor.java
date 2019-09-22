@@ -23,5 +23,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(MiningToolItem.class)
 public interface MiningToolItemAccessor {
 	@Accessor
-	float getBlockBreakingSpeed();
+	float getMiningSpeed();
 }

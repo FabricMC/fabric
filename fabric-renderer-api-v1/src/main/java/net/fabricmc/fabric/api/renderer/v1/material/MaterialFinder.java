@@ -48,7 +48,7 @@ public interface MaterialFinder {
     
     /**
      * 
-     * Reserved for future use.  Behavior for values > 1 is currently undefined.
+     * Reserved for future use.  Behavior for values &gt; 1 is currently undefined.
      */
     MaterialFinder spriteDepth(int depth);
 

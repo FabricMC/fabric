@@ -41,12 +41,12 @@ public abstract class MixinItemStack {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "getBlockBreakingSpeed", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
 	public void getBlockBreakingSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
 		if (this.getItem() instanceof MiningToolItemAccessor) {
 			TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);
 			if (triState != TriState.DEFAULT) {
-				info.setReturnValue(triState.get() ? ((MiningToolItemAccessor) this.getItem()).getBlockBreakingSpeed() : 1.0F);
+				info.setReturnValue(triState.get() ? ((MiningToolItemAccessor) this.getItem()).getMiningSpeed() : 1.0F);
 				info.cancel();
 			}
 		}

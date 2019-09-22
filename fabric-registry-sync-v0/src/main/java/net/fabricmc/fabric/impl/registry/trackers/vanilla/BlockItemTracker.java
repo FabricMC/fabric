@@ -35,7 +35,7 @@ public final class BlockItemTracker implements RegistryEntryAddedCallback<Item> 
 	@Override
 	public void onEntryAdded(int rawId, Identifier id, Item object) {
 		if (object instanceof BlockItem) {
-			((BlockItem) object).registerBlockItemMap(Item.BLOCK_ITEM_MAP, object);
+			((BlockItem) object).appendBlocks(Item.BLOCK_ITEMS, object);
 		}
 	}
 }

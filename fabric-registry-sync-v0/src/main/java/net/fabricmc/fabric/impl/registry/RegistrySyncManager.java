@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.impl.registry;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
 import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.fabric.api.network.PacketContext;
@@ -28,8 +32,13 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -37,7 +46,10 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 public final class RegistrySyncManager {
-	public static final Identifier ID = new Identifier("fabric", "registry/sync");
+	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
+	static final Identifier ID = new Identifier("fabric", "registry/sync");
+	private static final Logger LOGGER = LogManager.getLogger();
+	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
 	private static final Set<Identifier> REGISTRY_BLACKLIST = ImmutableSet.of();
 	private static final Set<Identifier> REGISTRY_BLACKLIST_NETWORK = ImmutableSet.of();
 
@@ -80,6 +92,39 @@ public final class RegistrySyncManager {
 		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
+			if (DEBUG_WRITE_REGISTRY_DATA) {
+				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
+				boolean c = true;
+				if (!location.exists()) {
+					if (!location.mkdirs()) {
+						LOGGER.warn("[fabric-registry-sync debug] Could not create " + location.getAbsolutePath() + " directory!");
+						c = false;
+					}
+				}
+
+				MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+				if (c && registry != null) {
+					File file = new File(location, registryId.toString().replace(':', '.').replace('/', '.') + ".csv");
+					try (FileOutputStream stream = new FileOutputStream(file)) {
+						StringBuilder builder = new StringBuilder("Raw ID,String ID,Class Type\n");
+						for (Object o : registry) {
+							String classType = (o == null) ? "null" : o.getClass().getName();
+							//noinspection unchecked
+							Identifier id = registry.getId(o);
+							if (id == null) continue;
+
+							//noinspection unchecked
+							int rawId = registry.getRawId(o);
+							String stringId = id.toString();
+							builder.append("\"").append(rawId).append("\",\"").append(stringId).append("\",\"").append(classType).append("\"\n");
+						}
+						stream.write(builder.toString().getBytes(StandardCharsets.UTF_8));
+					} catch (IOException e) {
+						LOGGER.warn("[fabric-registry-sync debug] Could not write to " + file.getAbsolutePath() + "!", e);
+					}
+				}
+			}
+
 			if (REGISTRY_BLACKLIST.contains(registryId)) {
 				continue;
 			} else if (isClientSync && REGISTRY_BLACKLIST_NETWORK.contains(registryId)) {
@@ -87,12 +132,35 @@ public final class RegistrySyncManager {
 			}
 
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
-			if (registry instanceof SimpleRegistry && registry instanceof RemappableRegistry) {
+			if (registry instanceof RemappableRegistry) {
 				CompoundTag registryTag = new CompoundTag();
-				//noinspection unchecked
-				for (Identifier identifier : (Set<Identifier>) registry.getIds()) {
-					registryTag.putInt(identifier.toString(), registry.getRawId(registry.get(identifier)));
+				IntSet rawIdsFound = DEBUG ? new IntOpenHashSet() : null;
+
+				for (Object o : registry) {
+					//noinspection unchecked
+					Identifier id = registry.getId(o);
+					if (id == null) continue;
+
+					//noinspection unchecked
+					int rawId = registry.getRawId(o);
+
+					if (DEBUG) {
+						if (registry.get(id) != o) {
+							LOGGER.error("[fabric-registry-sync] Inconsistency detected in " + registryId + ": object " + o + " -> string ID " + id + " -> object " + registry.get(id) + "!");
+						}
+
+						if (registry.get(rawId) != o) {
+							LOGGER.error("[fabric-registry-sync] Inconsistency detected in " + registryId + ": object " + o + " -> integer ID " + rawId + " -> object " + registry.get(rawId) + "!");
+						}
+
+						if (!rawIdsFound.add(rawId)) {
+							LOGGER.error("[fabric-registry-sync] Inconsistency detected in " + registryId + ": multiple objects hold the raw ID " + rawId + " (this one is " + id + ")");
+						}
+					}
+
+					registryTag.putInt(id.toString(), rawId);
 				}
+
 				mainTag.put(registryId.toString(), registryTag);
 			}
 		}
@@ -106,21 +174,28 @@ public final class RegistrySyncManager {
 
 	public static void apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
 		CompoundTag mainTag = tag.getCompound("registries");
+		Set<String> containedRegistries = Sets.newHashSet(mainTag.getKeys());
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			if (!mainTag.containsKey(registryId.toString())) {
+			if (!containedRegistries.remove(registryId.toString())) {
 				continue;
 			}
 
 			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
-			if (registry instanceof SimpleRegistry && registry instanceof RemappableRegistry) {
+
+			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
 				for (String key : registryTag.getKeys()) {
 					idMap.put(new Identifier(key), registryTag.getInt(key));
 				}
+
 				((RemappableRegistry) registry).remap(registryId.toString(), idMap, mode);
 			}
+		}
+
+		if (!containedRegistries.isEmpty()) {
+			LOGGER.warn("[fabric-registry-sync] Could not find the following registries: " + Joiner.on(", ").join(containedRegistries));
 		}
 	}
 

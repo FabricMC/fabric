@@ -16,14 +16,12 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.trackers.*;
 import net.fabricmc.fabric.impl.registry.trackers.vanilla.BiomeParentTracker;
 import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockItemTracker;
 import net.minecraft.Bootstrap;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;

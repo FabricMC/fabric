@@ -38,7 +38,7 @@ public class MixinItemModelMap {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void onInit(BakedModelManager bakedModelManager, CallbackInfo info) {
-		Int2ObjectMapTracker.register(Registry.ITEM, modelIds);
-		Int2ObjectMapTracker.register(Registry.ITEM, models);
+		Int2ObjectMapTracker.register(Registry.ITEM, "ItemModels.modelIds", modelIds);
+		Int2ObjectMapTracker.register(Registry.ITEM, "ItemModels.models", models);
 	}
 }

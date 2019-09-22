@@ -58,20 +58,8 @@ class AoFaceData {
         return (int) (b0 * w[0] + b1 * w[1] + b2 * w[2] + b3 * w[3]) & 0xFF;
     }
     
-    int maxBlockLight(int oldMax) {
-        final int i = b0 > b1 ? b0 : b1;
-        final int j = b2 > b3 ? b2 : b3;
-        return Math.max(oldMax, i > j ? i : j);
-    }
-    
     int weigtedSkyLight(float[] w) {
         return (int) (s0 * w[0] + s1 * w[1] + s2 * w[2] + s3 * w[3]) & 0xFF;
-    }
-    
-    int maxSkyLight(int oldMax) {
-        final int i = s0 > s1 ? s0 : s1;
-        final int j = s2 > s3 ? s2 : s3;
-        return Math.max(oldMax, i > j ? i : j);
     }
     
     int weightedCombinedLight(float[] w) {
@@ -80,13 +68,6 @@ class AoFaceData {
     
     float weigtedAo(float[] w) {
         return a0 * w[0] + a1 * w[1] + a2 * w[2] + a3 * w[3];
-    }
-    
-    float maxAo(float oldMax) {
-        final float x = a0 > a1 ? a0 : a1;
-        final float y = a2 > a3 ? a2 : a3;
-        final float z =  x > y ? x : y;
-        return oldMax > z ? oldMax : z;
     }
     
     void toArray(float[] aOut, int[] bOut, int[] vertexMap) {

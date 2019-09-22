@@ -105,12 +105,12 @@ public final class FabricItemGroupBuilder {
 			}
 
 			@Override
-			public void appendItems(DefaultedList<ItemStack> stacks) {
+			public void appendStacks(DefaultedList<ItemStack> stacks) {
 				if (stacksForDisplay != null) {
 					stacksForDisplay.accept(stacks);
 					return;
 				}
-				super.appendItems(stacks);
+				super.appendStacks(stacks);
 			}
 		};
 	}

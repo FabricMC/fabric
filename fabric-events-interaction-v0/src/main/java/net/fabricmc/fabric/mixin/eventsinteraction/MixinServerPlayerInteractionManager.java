@@ -24,6 +24,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
+import net.minecraft.server.network.packet.PlayerActionC2SPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -46,7 +47,7 @@ public class MixinServerPlayerInteractionManager {
 	public ServerPlayerEntity player;
 
 	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
-	public void startBlockBreak(BlockPos pos, Direction direction, CallbackInfo info) {
+	public void startBlockBreak(BlockPos pos, PlayerActionC2SPacket.Action playerAction, Direction direction, int i, CallbackInfo info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(player, world, Hand.MAIN_HAND, pos, direction);
 		if (result != ActionResult.PASS) {
 			// The client might have broken the block on its side, so make sure to let it know.

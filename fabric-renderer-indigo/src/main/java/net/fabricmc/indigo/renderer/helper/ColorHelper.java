@@ -82,7 +82,7 @@ public abstract class ColorHelper {
     }
 
     /**
-     * Same results as {@link BakedQuadFactory#method_3456()}
+     * Same results as {@link BakedQuadFactory#method_3456(Direction)}
      */
     public static float diffuseShade(Direction direction) {
         return FACE_SHADE_FACTORS[direction.getId()];
@@ -97,7 +97,7 @@ public abstract class ColorHelper {
     }
     
     public static float normalShade(Vector3f normal) {
-        return normalShade(normal.x(), normal.y(), normal.z());
+        return normalShade(normal.getX(), normal.getY(), normal.getZ());
     }
 
     /**
@@ -110,7 +110,7 @@ public abstract class ColorHelper {
 
     /**
      * Returns {@link #diffuseShade(Direction)} if quad is aligned to light face,
-     * otherwise uses face normal and {@link #normalShade()}
+     * otherwise uses face normal and {@link #normalShade}
      */
     public static float faceShade(ShadeableQuad quad) {
         return quad.isFaceAligned() ? diffuseShade(quad.lightFace()) : normalShade(quad.faceNormal());
