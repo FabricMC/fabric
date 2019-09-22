@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.particle.v1;
+package net.fabricmc.fabric.impl.client.particle;
 
 import java.util.HashMap;
 import java.util.Map;

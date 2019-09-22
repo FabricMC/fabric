@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.particle.v1;
 
-import net.fabricmc.fabric.impl.client.particle.v1.ParticleFactoryRegistryImpl;
+import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;

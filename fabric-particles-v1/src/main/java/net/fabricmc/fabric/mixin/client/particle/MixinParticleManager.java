@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.particle.v1;
+package net.fabricmc.fabric.mixin.client.particle;
 
 import java.util.List;
 import java.util.Map;
@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.impl.client.particle.v1.FabricParticleManager;
-import net.fabricmc.fabric.impl.client.particle.v1.VanillaParticleManager;
+import net.fabricmc.fabric.impl.client.particle.FabricParticleManager;
+import net.fabricmc.fabric.impl.client.particle.VanillaParticleManager;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.texture.SpriteAtlasTexture;
