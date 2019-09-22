@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
-import java.util.function.BiFunction;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.class_4545;
@@ -30,6 +28,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
+
+import java.util.function.BiFunction;
 
 /**
  * An extended version of {@link DimensionType} with automatic raw id management and default placement settings.
@@ -141,7 +141,7 @@ public final class FabricDimensionType extends DimensionType {
 		 */
 		public Builder defaultPlacer(EntityPlacer defaultPlacer) {
 			Preconditions.checkNotNull(defaultPlacer);
-			
+
 			this.defaultPlacer = defaultPlacer;
 			return this;
 		}
@@ -173,7 +173,7 @@ public final class FabricDimensionType extends DimensionType {
 			this.skyLight = skyLight;
 			return this;
 		}
-		
+
 		/**
 		 * Governs how biome information is retrieved from random seed and world coordinates.
 		 * If this method is not called, value defaults to the three-dimensional strategy
@@ -184,7 +184,7 @@ public final class FabricDimensionType extends DimensionType {
 		 */
 		public Builder biomeAccessStrategy(class_4545 biomeAccessStrategy) {
 			Preconditions.checkNotNull(biomeAccessStrategy);
-			
+
 			this.biomeAccessStrategy = biomeAccessStrategy;
 			return this;
 		}
