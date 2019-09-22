@@ -11,7 +11,7 @@ import net.minecraft.datafixers.Schemas;
 
 @Mixin(Schemas.class)
 public class SchemasAccessor {
-    
+    // TODO make this an actual Accessor Mixin
     @SuppressWarnings("rawtypes")
     @Shadow
     static BiFunction empty;

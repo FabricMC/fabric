@@ -6,5 +6,7 @@ import net.minecraft.stat.ServerStatHandler;
 
 @Mixin(ServerStatHandler.class)
 public class MixinServerStatHandler {
-    // Another fix point.
+    // Handled in TagHelper.
+    
+    // Add ModFixers to asString method
 }

@@ -6,5 +6,5 @@ import net.minecraft.world.VersionedChunkStorage;
 
 @Mixin(VersionedChunkStorage.class)
 public class MixinVersionedChunkStorage {
-    // Maybe required?
+    // Add ModDataVersion to updateChunkTag if needed.
 }

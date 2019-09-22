@@ -22,14 +22,19 @@ public class FabricDataFixerUtils {
     
     public static final BiFunction<Integer,Schema,Schema> IDENTIFIER_NORMALIZE = SchemasAccessor.getIdentNormalize();
     public static final BiFunction<Integer,Schema,Schema> EMPTY = SchemasAccessor.getEmpty();
-
+    
+    public static boolean isLocked() {
+        return LOCKED;
+    }
+    
     /**
      * 
      * @param modid The modid of the mod registering this DataFixer
-     * @param builder_1 The DataFixer to register
+     * @param runtimeDataVersion the current dataversion of the mod being ran.
+     * @param datafixer The DataFixer to register
      * @throws CrashException if a DataFixer is registered while the Dedicated/Integrated Server is running.
      */
-    public static DataFixer registerFixer(final String modid, final int runtimeDataVersion, final DataFixer datafixer_1) {
-        return FabricDataFixerImpl.INSTANCE.registerFixer(modid, runtimeDataVersion, datafixer_1);
+    public static DataFixer registerFixer(final String modid, final int runtimeDataVersion, final DataFixer datafixer) {
+        return FabricDataFixerImpl.INSTANCE.registerFixer(modid, runtimeDataVersion, datafixer);
     }
 }

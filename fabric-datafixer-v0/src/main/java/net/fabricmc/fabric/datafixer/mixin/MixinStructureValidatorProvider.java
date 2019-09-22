@@ -6,5 +6,5 @@ import net.minecraft.data.validate.StructureValidatorProvider;
 
 @Mixin(StructureValidatorProvider.class)
 public class MixinStructureValidatorProvider {
-    // Another fix point
+    // Check if needed to add Mod DataVersions to method_16880
 }
