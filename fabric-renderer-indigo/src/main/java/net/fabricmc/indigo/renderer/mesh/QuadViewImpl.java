@@ -248,7 +248,7 @@ public class QuadViewImpl implements QuadView {
         System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, len - 1);
         quad.isFaceNormalInvalid = this.isFaceNormalInvalid;
         if(!this.isFaceNormalInvalid) {
-            quad.faceNormal.set(this.faceNormal.x(), this.faceNormal.y(), this.faceNormal.z());
+            quad.faceNormal.set(this.faceNormal.getX(), this.faceNormal.getY(), this.faceNormal.getZ());
         }
         quad.lightFace = this.lightFace;
         quad.colorIndex = this.colorIndex;

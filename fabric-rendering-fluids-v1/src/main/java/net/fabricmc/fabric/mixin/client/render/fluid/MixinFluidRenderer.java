@@ -23,6 +23,7 @@ import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ExtendedBlockView;
 import org.spongepowered.asm.mixin.Mixin;
@@ -51,20 +52,21 @@ public class MixinFluidRenderer {
     public void tesselate(ExtendedBlockView view, BlockPos pos, BufferBuilder bufferBuilder, FluidState state, CallbackInfoReturnable<Boolean> info) {
         FluidRendererHookContainer ctr = fabric_renderHandler.get();
         FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
-        if (handler == null) {
-            return;
-        }
-
-        /* ActionResult hResult = handler.tesselate(view, pos, bufferBuilder, state);
-        if (hResult != ActionResult.PASS) {
-            info.setReturnValue(hResult == ActionResult.SUCCESS);
-            return;
-        } */
 
         ctr.view = view;
         ctr.pos = pos;
         ctr.state = state;
         ctr.handler = handler;
+
+        /* if (handler == null) {
+            return;
+        }
+
+        ActionResult hResult = handler.tesselate(view, pos, bufferBuilder, state);
+        if (hResult != ActionResult.PASS) {
+            info.setReturnValue(hResult == ActionResult.SUCCESS);
+            return;
+        } */
     }
 
     @Inject(at = @At("RETURN"), method = "tesselate")
@@ -74,7 +76,13 @@ public class MixinFluidRenderer {
 
     @ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "tesselate", ordinal = 0)
     public boolean modLavaCheck(boolean chk) {
-        return fabric_renderHandler.get().handler != null || chk;
+        // First boolean local is set by vanilla according to 'matches lava'
+        // but uses the negation consistent with 'matches water'
+        // for determining if special water sprite should be used behind glass.
+        
+        // Has other uses but those have already happened by the time the hook is called.
+        final FluidRendererHookContainer ctr = fabric_renderHandler.get();
+        return chk || !ctr.state.matches(FluidTags.WATER);
     }
 
     @ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "tesselate", ordinal = 0)

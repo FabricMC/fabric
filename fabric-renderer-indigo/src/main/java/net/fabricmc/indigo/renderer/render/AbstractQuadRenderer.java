@@ -18,8 +18,6 @@ package net.fabricmc.indigo.renderer.render;
 
 import static net.fabricmc.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG;
 
-import java.util.function.ToIntBiFunction;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
@@ -27,6 +25,7 @@ import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
@@ -37,15 +36,13 @@ import net.minecraft.util.math.BlockPos;
 public abstract class AbstractQuadRenderer {
     private static final int FULL_BRIGHTNESS = 15 << 20 | 15 << 4;
     
-    protected final ToIntBiFunction<BlockState, BlockPos> brightnessFunc;
     protected final Int2ObjectFunction<AccessBufferBuilder> bufferFunc;
     protected final BlockRenderInfo blockInfo;
     protected final AoCalculator aoCalc;
     protected final QuadTransform transform;
     
-    AbstractQuadRenderer(BlockRenderInfo blockInfo, ToIntBiFunction<BlockState, BlockPos> brightnessFunc, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+    AbstractQuadRenderer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
         this.blockInfo = blockInfo;
-        this.brightnessFunc = brightnessFunc;
         this.bufferFunc = bufferFunc;
         this.aoCalc = aoCalc;
         this.transform = transform;
@@ -68,7 +65,7 @@ public abstract class AbstractQuadRenderer {
     
     /** final output step, common to all renders */
     private void bufferQuad(MutableQuadViewImpl quad, int renderLayer) {
-        bufferFunc.get(renderLayer).fabric_putVanillaData(quad.data(), quad.vertexStart(), false);
+        bufferFunc.get(renderLayer).fabric_putQuad(quad);
     }
 
     // routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
@@ -140,9 +137,10 @@ public abstract class AbstractQuadRenderer {
      */
     int flatBrightness(MutableQuadViewImpl quad, BlockState blockState, BlockPos pos) {
         mpos.set(pos);
-        if((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0) {
+        if((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
             mpos.setOffset(quad.lightFace());
         }
-        return brightnessFunc.applyAsInt(blockState, mpos);
+        // Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
+        return blockState.getBlockBrightness(blockInfo.blockView, mpos);
     }
 }

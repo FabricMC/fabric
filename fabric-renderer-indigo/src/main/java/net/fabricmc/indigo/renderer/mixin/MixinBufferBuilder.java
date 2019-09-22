@@ -18,18 +18,15 @@ package net.fabricmc.indigo.renderer.mixin;
 
 import java.nio.IntBuffer;
 
-import net.fabricmc.indigo.Indigo;
-import net.fabricmc.indigo.renderer.helper.BufferBuilderTransformHelper;
-import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
-import net.minecraft.client.render.VertexFormat;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
+import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
 import net.minecraft.client.render.BufferBuilder;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormatElement;
 
 @Mixin(BufferBuilder.class)
 public abstract class MixinBufferBuilder implements AccessBufferBuilder {
@@ -40,73 +37,71 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
     @Shadow public abstract VertexFormat getVertexFormat();
 
 	private static final int VERTEX_STRIDE_INTS = 7;
-	private static final int VERTEX_STRIDE_BYTES = VERTEX_STRIDE_INTS * 4;
     private static final int QUAD_STRIDE_INTS = VERTEX_STRIDE_INTS * 4;
     private static final int QUAD_STRIDE_BYTES = QUAD_STRIDE_INTS * 4;
 
-    private int fabric_processingMode;
+    @Override
+    public void fabric_putQuad(QuadViewImpl quad) {
+        if(Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY) {
+            bufferCompatibly(quad);
+        } else {
+            bufferFast(quad);
+        }
+    }
 
-    @Inject(at = @At("RETURN"), method = "begin")
-	private void afterBegin(int mode, VertexFormat passedFormat, CallbackInfo info) {
-    	fabric_processingMode = BufferBuilderTransformHelper.getProcessingMode(getVertexFormat());
-	}
+    private void bufferFast(QuadViewImpl quad) {
+        grow(QUAD_STRIDE_BYTES);
+        bufInt.position(getCurrentSize());
+        bufInt.put(quad.data(), quad.vertexStart(), QUAD_STRIDE_INTS);
+        vertexCount += 4;
+    }
 
     /**
-     * Similar to {@link BufferBuilder#putVertexData(int[])} but
-     * accepts an array index so that arrays containing more than one
-     * quad don't have to be copied to a transfer array before the call.
-	 *
-	 * It also always assumes the vanilla data format and is capable of
-	 * transforming data from it to a different, non-vanilla data format.
+     * Uses buffer vertex format to drive buffer population.
+     * Relies on logic elsewhere to ensure coordinates don't include chunk offset
+     * (because buffer builder will handle that.)<p>
+     * 
+     * Calling putVertexData() would likely be a little faster but this approach
+     * gives us a chance to pass vertex normals to shaders, which isn't possible
+     * with the standard block format. It also doesn't require us to encode a specific
+     * custom format directly, which would be prone to breakage outside our control. 
      */
-    @Override
-    public void fabric_putVanillaData(int[] data, int start, boolean isItemFormat) {
-    	switch (fabric_processingMode) {
-			case BufferBuilderTransformHelper.MODE_COPY_FAST: {
-				this.grow(QUAD_STRIDE_BYTES);
-				this.bufInt.position(this.getCurrentSize());
-				this.bufInt.put(data, start, QUAD_STRIDE_INTS);
-			} break;
-			case BufferBuilderTransformHelper.MODE_COPY_PADDED: {
-				int currSize = this.getCurrentSize();
-				int formatSizeBytes = getVertexFormat().getVertexSize();
-				int formatSizeInts = formatSizeBytes / 4;
-				this.grow(formatSizeBytes * 4);
+    private void bufferCompatibly(QuadViewImpl quad) {
+        final VertexFormat format = getVertexFormat();;
+        final int elementCount = format.getElementCount();
+        for(int i = 0; i < 4; i++) {
+            for(int j = 0; j < elementCount; j++) {
+                VertexFormatElement e = format.getElement(j);
+                switch(e.getType()) {
+                case COLOR:
+                    final int c = quad.spriteColor(i, 0);
+                    ((BufferBuilder)(Object)this).color(c & 0xFF, (c >>> 8) & 0xFF, (c >>> 16) & 0xFF, (c >>> 24) & 0xFF);
+                    break;
+                case NORMAL:
+                    ((BufferBuilder)(Object)this).normal(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
+                    break;
+                case POSITION:
+                    ((BufferBuilder)(Object)this).vertex(quad.x(i), quad.y(i), quad.z(i));
+                    break;
+                case UV:
+                    if(e.getIndex() == 0) {
+                        ((BufferBuilder)(Object)this).texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
+                    } else {
+                        final int b = quad.lightmap(i);
+                        ((BufferBuilder)(Object)this).texture((b >> 16) & 0xFFFF, b & 0xFFFF);
+                    }
+                    break;
 
-				this.bufInt.position(currSize);
-				this.bufInt.put(data, start, VERTEX_STRIDE_INTS);
-				this.bufInt.position(currSize + formatSizeInts);
-				this.bufInt.put(data, start + 7, VERTEX_STRIDE_INTS);
-				this.bufInt.position(currSize + formatSizeInts * 2);
-				this.bufInt.put(data, start + 14, VERTEX_STRIDE_INTS);
-				this.bufInt.position(currSize + formatSizeInts * 3);
-				this.bufInt.put(data, start + 21, VERTEX_STRIDE_INTS);
-			} break;
-    		case BufferBuilderTransformHelper.MODE_COPY_PADDED_SHADERSMOD: {
-				int currSize = this.getCurrentSize();
-				int formatSizeBytes = getVertexFormat().getVertexSize();
-				int formatSizeInts = formatSizeBytes / 4;
-				this.grow(formatSizeBytes * 4);
+                // these types should never occur and/or require no action
+                case MATRIX:
+                case BLEND_WEIGHT:
+                case PADDING:
+                default:
+                    break;
 
-				this.bufInt.position(currSize);
-				this.bufInt.put(data, start, VERTEX_STRIDE_INTS);
-				this.bufInt.put(data[start + EncodingFormat.NORMALS_OFFSET_VANILLA]);
-				this.bufInt.position(currSize + formatSizeInts);
-				this.bufInt.put(data, start + 7, VERTEX_STRIDE_INTS);
-				this.bufInt.put(data[start + EncodingFormat.NORMALS_OFFSET_VANILLA + 1]);
-				this.bufInt.position(currSize + formatSizeInts * 2);
-				this.bufInt.put(data, start + 14, VERTEX_STRIDE_INTS);
-				this.bufInt.put(data[start + EncodingFormat.NORMALS_OFFSET_VANILLA + 2]);
-				this.bufInt.position(currSize + formatSizeInts * 3);
-				this.bufInt.put(data, start + 21, VERTEX_STRIDE_INTS);
-				this.bufInt.put(data[start + EncodingFormat.NORMALS_OFFSET_VANILLA + 3]);
-			} break;
-    		case BufferBuilderTransformHelper.MODE_UNSUPPORTED:
-    			// Don't emit any quads.
-				BufferBuilderTransformHelper.emitUnsupportedError(getVertexFormat());
-    			return;
-		}
-
-		this.vertexCount += 4;
+                }
+            }
+            ((BufferBuilder)(Object)this).next();
+        }
     }
 }

@@ -57,7 +57,7 @@ public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, R
 			stateGetter.apply(object).forEach(stateList::add);
 			currentHighestId = rawId;
 		} else {
-			logger.debug("[fabric-registry-sync] Non-sequential RegistryEntryAddedCallback for state ID tracker (at " + id + "), forcing state map recalculation...");
+			logger.debug("[fabric-registry-sync] Non-sequential RegistryEntryAddedCallback for " + object.getClass().getSimpleName() + " ID tracker (at " + id + "), forcing state map recalculation...");
 			recalcStateMap();
 		}
 	}

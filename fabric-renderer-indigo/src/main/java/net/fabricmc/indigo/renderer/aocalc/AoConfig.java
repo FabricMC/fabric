@@ -36,8 +36,7 @@ public enum AoConfig {
      * aligned quads not on the block face will have interpolated brightness based
      * on depth instead of the all-or-nothing brightness of vanilla.<p>
      * 
-     * Unit (full face) quads must still have the vanilla fixed winding order but smaller
-     * quads can have vertices in any (counter-clockwise) order.<p>
+     * Non-vanilla quads can have vertices in any (counter-clockwise) order.<p>
      */
     ENHANCED,
     

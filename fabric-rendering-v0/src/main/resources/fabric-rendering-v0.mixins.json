@@ -6,7 +6,8 @@
     "MixinBlockColorMap",
     "MixinBlockEntityRenderManager",
     "MixinEntityRenderManager",
-    "MixinItemColorMap"
+    "MixinItemColorMap",
+    "MixinWorldRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

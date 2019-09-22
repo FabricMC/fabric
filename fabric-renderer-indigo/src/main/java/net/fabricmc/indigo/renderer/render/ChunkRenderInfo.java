@@ -18,8 +18,10 @@ package net.fabricmc.indigo.renderer.render;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
+import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.Block.OffsetType;
 import net.minecraft.block.BlockRenderLayer;
@@ -67,6 +69,7 @@ public class ChunkRenderInfo {
     private final Long2FloatOpenHashMap aoLevelCache;
     
     private final BlockRenderInfo blockInfo;
+    private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
     ChunkRenderTask chunkTask; 
     ChunkRenderData chunkData;
     ChunkRenderer chunkRenderer;
@@ -102,6 +105,7 @@ public class ChunkRenderInfo {
     }
     
     void prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean [] resultFlags) {
+        this.chunkOrigin.set(chunkOrigin);
         this.chunkData = chunkTask.getRenderData();
         this.chunkRenderer = chunkRenderer;
         this.resultFlags = resultFlags;
@@ -129,10 +133,19 @@ public class ChunkRenderInfo {
     void beginBlock() {
         final BlockState blockState = blockInfo.blockState;
         final BlockPos blockPos = blockInfo.blockPos;
-        offsetX = (float) (chunkOffsetX + blockPos.getX());
-        offsetY = (float) (chunkOffsetY + blockPos.getY());
-        offsetZ = (float) (chunkOffsetZ + blockPos.getZ());
-
+        
+        // When we are using the BufferBuilder input methods, the builder will
+        // add the chunk offset for us, so we should only apply the block offset.
+        if(Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY) {
+            offsetX = (float) (blockPos.getX());
+            offsetY = (float) (blockPos.getY());
+            offsetZ = (float) (blockPos.getZ());
+        } else {
+            offsetX = (float) (chunkOffsetX + blockPos.getX());
+            offsetY = (float) (chunkOffsetY + blockPos.getY());
+            offsetZ = (float) (chunkOffsetZ + blockPos.getZ());
+        }
+        
         if(blockState.getBlock().getOffsetType() != OffsetType.NONE) {
             Vec3d offset = blockState.getOffsetPos(blockInfo.blockView, blockPos);
             offsetX += (float)offset.x;
@@ -153,7 +166,7 @@ public class ChunkRenderInfo {
             BlockRenderLayer layer = LAYERS[layerIndex];
             if (!chunkData.isBufferInitialized(layer)) {
                 chunkData.markBufferInitialized(layer); // start buffer
-                ((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, blockInfo.blockPos);
+                ((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, chunkOrigin);
             }
             result = (AccessBufferBuilder) builder;
         }
@@ -173,11 +186,11 @@ public class ChunkRenderInfo {
      * Cached values for {@link BlockState#getBlockBrightness(ExtendedBlockView, BlockPos)}.
      * See also the comments for {@link #brightnessCache}.
      */
-    int cachedBrightness(BlockState blockState, BlockPos pos) {
+    int cachedBrightness(BlockPos pos) {
         long key = pos.asLong();
         int result = brightnessCache.get(key);
         if (result == Integer.MAX_VALUE) {
-            result = blockState.getBlockBrightness(blockView, pos);
+            result = blockView.getBlockState(pos).getBlockBrightness(blockView, pos);
             brightnessCache.put(key, result);
         }
         return result;
@@ -188,7 +201,7 @@ public class ChunkRenderInfo {
         long key = pos.asLong();
         float result = aoLevelCache.get(key);
         if (result == Float.MAX_VALUE) {
-            result = blockView.getBlockState(pos).getAmbientOcclusionLightLevel(blockView, pos);
+            result = AoLuminanceFix.INSTANCE.apply(blockView, pos);
             aoLevelCache.put(key, result);
         }
         return result;

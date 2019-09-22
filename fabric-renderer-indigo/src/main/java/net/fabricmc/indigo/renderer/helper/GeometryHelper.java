@@ -39,7 +39,10 @@ public abstract class GeometryHelper {
     
     /** set when a quad is coplanar with its light face. Implies {@link #AXIS_ALIGNED_FLAG} */
     public static final int LIGHT_FACE_FLAG = AXIS_ALIGNED_FLAG << 1;
-    
+
+	private static final float EPS_MIN = 0.0001f;
+	private static final float EPS_MAX = 1.0f - EPS_MIN;
+
     private GeometryHelper() {}
 
     /**
@@ -56,10 +59,10 @@ public abstract class GeometryHelper {
             if(isParallelQuadOnFace(lightFace, quad)) {
                 bits |= LIGHT_FACE_FLAG;
             }
-            if(isQuadCubic(lightFace, quad)) {
-                bits |= CUBIC_FLAG;
-            }
         }
+		if(isQuadCubic(lightFace, quad)) {
+			bits |= CUBIC_FLAG;
+		}
         return bits;
     }
     
@@ -80,17 +83,17 @@ public abstract class GeometryHelper {
     }
     
     /**
-     * True if quad - already known to be parallel to a face - is actually coplanar with it.<p>
+     * True if quad - already known to be parallel to a face - is actually coplanar with it.
+	 * For compatibility with vanilla resource packs, also true if quad is outside the face.<p>
      * 
-     * Test will be unreliable if not already parallel, use {@link #isQuadParallel(Direction, QuadView)}
+     * Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)}
      * for that purpose. Expects convex quads with all points co-planar.<p>
      */
     public static boolean isParallelQuadOnFace(Direction lightFace, QuadView quad) {
         if(lightFace == null)
             return false;
-        final int coordinateIndex = lightFace.getAxis().ordinal();
-        final float expectedValue = lightFace.getDirection() == AxisDirection.POSITIVE ? 1 : 0;
-        return equalsApproximate(quad.posByIndex(0, coordinateIndex), expectedValue);
+        final float x = quad.posByIndex(0, lightFace.getAxis().ordinal());
+        return lightFace.getDirection() == AxisDirection.POSITIVE ? x >= EPS_MAX : x <= EPS_MIN;
     }
     
     /**
@@ -101,7 +104,7 @@ public abstract class GeometryHelper {
      * quad vertices are coplanar with each other. <p>
      * 
      * Expects convex quads with all points co-planar.<p>
-     * 
+     *
      * @param lightFace MUST be non-null.
      */
     public static boolean isQuadCubic(Direction lightFace, QuadView quad) {
@@ -134,10 +137,13 @@ public abstract class GeometryHelper {
        
         return confirmSquareCorners(a, b, quad);
     }
-    
+
     /**
-     * Used by {@link #isQuadCubic(Direction, int[], int, QuadSerializer)}.
-     * True if quad touches all four corners of unit square.
+     * Used by {@link #isQuadCubic(Direction, QuadView)}.
+     * True if quad touches all four corners of unit square.<p>
+	 *
+	 * For compatibility with resource packs that contain models with quads exceeding
+	 * block boundaries, considers corners outside the block to be at the corners.
      */
     private static boolean confirmSquareCorners(int aCoordinate, int bCoordinate, QuadView quad) {
         int flags = 0;
@@ -146,18 +152,18 @@ public abstract class GeometryHelper {
             final float a = quad.posByIndex(i, aCoordinate);
             final float b = quad.posByIndex(i, bCoordinate);
             
-            if(equalsApproximate(a, 0)) {
-                if(equalsApproximate(b, 0)) {
+            if(a <= EPS_MIN) {
+                if(b <= EPS_MIN) {
                     flags |= 1;
-                } else if(equalsApproximate(b, 1)) {
+                } else if(b >= EPS_MAX) {
                     flags |= 2;
                 } else {
                     return false;
                 }
-            } else if(equalsApproximate(a, 1)) {
-                if(equalsApproximate(b, 0)) {
+            } else if(a >= EPS_MAX) {
+                if(b <= EPS_MIN) {
                     flags |= 4;
-                } else if(equalsApproximate(b, 1)) {
+                } else if(b >= EPS_MAX) {
                     flags |= 8;
                 } else {
                     return false;
@@ -180,13 +186,13 @@ public abstract class GeometryHelper {
         final Vector3f normal = quad.faceNormal();
         switch(GeometryHelper.longestAxis(normal)) {
             case X:
-                return normal.x() > 0 ? Direction.EAST : Direction.WEST;
+                return normal.getX() > 0 ? Direction.EAST : Direction.WEST;
                 
             case Y:
-                return normal.y() > 0 ? Direction.UP : Direction.DOWN;
+                return normal.getY() > 0 ? Direction.UP : Direction.DOWN;
                 
             case Z:
-                return normal.z() > 0 ? Direction.SOUTH : Direction.NORTH;
+                return normal.getZ() > 0 ? Direction.SOUTH : Direction.NORTH;
             
             default:
                 // handle WTF case
@@ -216,7 +222,7 @@ public abstract class GeometryHelper {
      * See {@link #longestAxis(float, float, float)}
      */
     public static Axis longestAxis(Vector3f vec) {
-        return longestAxis(vec.x(), vec.y(), vec.z());
+        return longestAxis(vec.getX(), vec.getY(), vec.getZ());
     }
     
     /**

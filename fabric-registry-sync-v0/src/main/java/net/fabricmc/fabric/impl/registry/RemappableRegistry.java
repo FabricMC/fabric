@@ -25,7 +25,7 @@ public interface RemappableRegistry {
 	 */
 	enum RemapMode {
 		/**
-		 * Any differences (local->remote, remote->local) are allowed. This should
+		 * Any differences (local-&gt;remote, remote-&gt;local) are allowed. This should
 		 * be used when a side is authoritative (f.e. loading a world on the server).
 		 */
 		AUTHORITATIVE,

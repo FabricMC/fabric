@@ -34,6 +34,6 @@ public class MixinItemColorMap {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void create(CallbackInfo info) {
-		IdListTracker.register(Registry.ITEM, providers);
+		IdListTracker.register(Registry.ITEM, "ItemColors.providers", providers);
 	}
 }

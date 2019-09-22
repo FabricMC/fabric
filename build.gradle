@@ -3,7 +3,7 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'fabric-loom' version '0.2.3-SNAPSHOT' apply false
+	id 'fabric-loom' version '0.2.5-SNAPSHOT' apply false
 	id 'net.minecrell.licenser' version '0.4.1'	
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
@@ -11,9 +11,13 @@ plugins {
 
 def ENV = System.getenv()
 
-def baseVersion = "0.3.0"
-def mcVersion = "1.14.2"
-def yarnVersion = "+build.1"
+class Globals {
+	static def baseVersion = "0.3.3"
+	static def mcVersion = "1.14.4"
+	static def yarnVersion = "+build.1"
+}
+
+import org.apache.commons.codec.digest.DigestUtils
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -23,8 +27,19 @@ def getSubprojectVersion(project, version) {
 	if (latestCommits.isEmpty()) {
 		return version + "+uncommited"
 	} else {
-		return version + "+" + latestCommits.get(0).id.substring(0, 8)
+		return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
 	}
+}
+
+def getBranch(){
+	if(System.getenv().GIT_BRANCH){
+		def branch = System.getenv().GIT_BRANCH
+		return branch.substring(branch.lastIndexOf("/") + 1)
+	}
+	if (grgit == null) {
+		return "unknown"
+	}
+	return grgit.branch.current().name
 }
 
 allprojects {
@@ -37,10 +52,12 @@ allprojects {
 
 	group = "net.fabricmc.fabric-api"
 
+
+
 	dependencies {
-		minecraft "com.mojang:minecraft:$mcVersion"
-		mappings "net.fabricmc:yarn:${mcVersion}${yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
+		minecraft "com.mojang:minecraft:$Globals.mcVersion"
+		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
+		modCompile "net.fabricmc:fabric-loader:0.6.1+build.164"
 	}
 
 	configurations {
@@ -51,7 +68,16 @@ allprojects {
 		mavenLocal()
 	}
 
+	jar {
+		classifier = "dev"
+	}
+
 	afterEvaluate {
+		remapJar {
+			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
+			archiveName = "${archivesBaseName}-${version}.jar"
+		}
+
 		artifacts {
 			dev file: file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar"), type: "jar", builtBy: jar
 		}
@@ -79,6 +105,14 @@ allprojects {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
+	
+}
+javadoc{
+	options.memberLevel = "PACKAGE"
+	allprojects.each{
+			source( it.sourceSets.main.allJava.srcDirs)
+		}
+	classpath = sourceSets.main.compileClasspath
 }
 
 subprojects {
@@ -100,7 +134,7 @@ subprojects {
 					builtBy remapSourcesJar
 				}
 			}
-		}	
+		}
 
 		repositories {
 			maven {
@@ -115,12 +149,13 @@ subprojects {
 		}
 	}
 
+	javadoc.enabled = false
 }
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
 	afterEvaluate {
 		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-		output = file("${project.buildDir}/libs/${archivesBaseName}-${version}-maven.jar")
+		archiveName = "${archivesBaseName}-${version}-maven.jar"
 		addNestedDependencies = false
 	}
 }
@@ -173,7 +208,9 @@ dependencies {
 	}
 }
 
-version = baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+
+logger.lifecycle("Building Fabric: " + version)
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){
@@ -182,10 +219,10 @@ curseforge {
 	project {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
-		releaseType = 'beta'
-		addGameVersion '1.14-Snapshot'
+		releaseType = 'alpha'
+		addGameVersion '1.14.4'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[$mcVersion] Fabric API $baseVersion build $ENV.BUILD_NUMBER"
+			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")
