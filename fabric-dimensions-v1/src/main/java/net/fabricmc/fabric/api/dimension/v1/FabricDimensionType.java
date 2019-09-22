@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
+import java.util.function.BiFunction;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.class_4545;
-import net.minecraft.class_4547;
+import net.minecraft.class_4546;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -28,8 +30,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
-
-import java.util.function.BiFunction;
 
 /**
  * An extended version of {@link DimensionType} with automatic raw id management and default placement settings.
@@ -55,17 +55,13 @@ public final class FabricDimensionType extends DimensionType {
 	/**
 	 * @param suffix        the string suffix unique to the dimension type
 	 * @param saveDir       the name of the save directory for the dimension type
-	 * @param factory       a function creating new {@code Dimension} instances
-	 * @param defaultPlacer a default {@code EntityPlacer} for the dimension
-	 * @param hasSkyLight   {@code true} if the dimension type should have skylight like the overworld,
-	 *                      {@code false} otherwise
+	 * @param builder   	builder instance containing other parameters
 	 * @see #builder()
 	 */
 	private FabricDimensionType(String suffix, String saveDir, Builder builder) {
-//			BiFunction<World, DimensionType, ? extends Dimension> factory, EntityPlacer defaultPlacer, boolean hasSkyLight) {
 		// Pass an arbitrary raw id that does not map to any vanilla dimension. That id should never get used.
-		super(3, suffix, saveDir, builder.factory, builder.skyLight, builder.biomeFunction);
-		this.defaultPlacement =builder.defaultPlacer;
+		super(3, suffix, saveDir, builder.factory, builder.skyLight, builder.biomeAccessStrategy);
+		this.defaultPlacement = builder.defaultPlacer;
 	}
 
 	/**
@@ -126,7 +122,7 @@ public final class FabricDimensionType extends DimensionType {
 		private BiFunction<World, DimensionType, ? extends Dimension> factory;
 		private int desiredRawId = 0;
 		private boolean skyLight = true;
-		private class_4545 biomeFunction = class_4547.INSTANCE;
+		private class_4545 biomeAccessStrategy = class_4546.INSTANCE;
 
 		private Builder() {
 		}
@@ -145,7 +141,7 @@ public final class FabricDimensionType extends DimensionType {
 		 */
 		public Builder defaultPlacer(EntityPlacer defaultPlacer) {
 			Preconditions.checkNotNull(defaultPlacer);
-
+			
 			this.defaultPlacer = defaultPlacer;
 			return this;
 		}
@@ -179,14 +175,17 @@ public final class FabricDimensionType extends DimensionType {
 		}
 		
 		/**
-		 * Set biome function associated with the dimension.
-		 * If this method is not called, value defaults to function used for Overworld.
+		 * Governs how biome information is retrieved from random seed and world coordinates.
+		 * If this method is not called, value defaults to the three-dimensional strategy
+		 * used by the End and Nether dimensions.
 		 *
 		 * @param biomeFunction Function to be used for biome generation.
 		 * @return this {@code Builder} object
 		 */
-		public Builder biomeFunction(class_4545 biomeFunction) {
-			this.biomeFunction = biomeFunction;
+		public Builder biomeAccessStrategy(class_4545 biomeAccessStrategy) {
+			Preconditions.checkNotNull(biomeAccessStrategy);
+			
+			this.biomeAccessStrategy = biomeAccessStrategy;
 			return this;
 		}
 
@@ -226,7 +225,6 @@ public final class FabricDimensionType extends DimensionType {
 			Preconditions.checkArgument(Registry.DIMENSION.get(dimensionId) == null);
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
 			Preconditions.checkState(this.factory != null, "No dimension factory has been specified!");
-			Preconditions.checkState(this.biomeFunction != null, "No biome function has been specified!");
 			
 			String suffix = dimensionId.getNamespace() + "_" + dimensionId.getPath();
 			String saveDir = "DIM_" + dimensionId.getNamespace() + "_" + dimensionId.getPath();
