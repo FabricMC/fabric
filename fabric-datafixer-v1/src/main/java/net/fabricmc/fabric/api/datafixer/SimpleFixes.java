@@ -6,14 +6,14 @@ import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 
-import net.fabricmc.fabric.impl.datafixer.FabricSimpleFixesImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricSimpleFixes;
 
 /**
  * This class file contains several common datafixes most modders would use.
  */
-public abstract class SimpleFixes {
+public interface SimpleFixes {
     
-    public static final SimpleFixes INSTANCE = FabricSimpleFixesImpl.INSTANCE;
+    public static final SimpleFixes INSTANCE = FabricSimpleFixes.INSTANCE;
 
     /**
      * A basic DataFix for transforming an entity.
@@ -23,7 +23,6 @@ public abstract class SimpleFixes {
      * @param schema The Schema to add this fix to.
      */
     public abstract void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema);
-    
     
     /**
      * A basic DataFix for changing biome names.

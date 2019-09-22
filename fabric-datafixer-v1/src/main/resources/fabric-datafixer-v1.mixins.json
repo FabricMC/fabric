@@ -3,7 +3,10 @@
   "package": "net.fabricmc.fabric.datafixer.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinChunkSerializer"
+    "MixinChunkSerializer",
+    "MixinTagHelper"
+  ],
+  "client": [
   ],
   "injectors": {
     "defaultRequire": 1

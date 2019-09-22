@@ -14,11 +14,11 @@ import net.minecraft.util.TagHelper;
 
 @Mixin(TagHelper.class)
 public class MixinTagHelper {
-    @Inject(at = @At("RETURN"), method = "update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/datafixers/DataFixTypes;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;")
+    @Inject(at = @At("RETURN"), method = "update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/datafixers/DataFixTypes;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;", cancellable = true)
     private static void updateModFixers(DataFixer dataFixer_1, DataFixTypes dataFixTypes_1, CompoundTag compoundTag_1, int dynamicDataVersion, int runtimeDataVersion, CallbackInfoReturnable<CompoundTag> cir) {
         CompoundTag normal = cir.getReturnValue(); // We do our fixes after vanilla.
         
-        CompoundTag finalTag = FabricDataFixerImpl.updateWithAllFixers(dataFixer_1, dataFixTypes_1, normal, dynamicDataVersion, runtimeDataVersion);
+        CompoundTag finalTag = FabricDataFixerImpl.INSTANCE.updateWithAllFixers(dataFixer_1, dataFixTypes_1, normal, dynamicDataVersion, runtimeDataVersion);
         cir.setReturnValue(finalTag);
     }
 }

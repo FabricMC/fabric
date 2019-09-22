@@ -1,13 +1,14 @@
 package net.fabricmc.fabric.impl.datafixer;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Maps;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.Dynamic;
 
+import net.fabricmc.fabric.api.datafixer.DataFixerUtils;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
@@ -17,28 +18,30 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 
-public final class FabricDataFixerImpl {
+public final class FabricDataFixerImpl implements DataFixerUtils {
     
-    Map<String, DataFixerEntry> MOD_FIXERS = Maps.newHashMap();
+    private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
+    private boolean locked;
     
     private FabricDataFixerImpl() {}
     
     public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();;
     
+    @Override
     public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer) {
         
         Preconditions.checkNotNull(modid, "modid cannot be null");
         Preconditions.checkArgument(runtimeDataVersion > -1, "dataVersion must be finite");
         
-        MOD_FIXERS.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
+        modFixers.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
         
         return datafixer;
     }
     
-    public static CompoundTag updateWithAllFixers(DataFixer dataFixer_1, DataFixTypes dataFixTypes_1, CompoundTag compoundTag_1, int dyanamicDataVersion, int runtimeDataVersion) {
+    public CompoundTag updateWithAllFixers(DataFixer dataFixer_1, DataFixTypes dataFixTypes_1, CompoundTag compoundTag_1, int dyanamicDataVersion, int runtimeDataVersion) {
         CompoundTag currentTag = compoundTag_1;
         
-        for(Entry<String, DataFixerEntry> entry : INSTANCE.MOD_FIXERS.entrySet()) {
+        for(Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
             try {
                 
                 String currentModid = entry.getKey();
@@ -64,8 +67,8 @@ public final class FabricDataFixerImpl {
         return currentTag;
     }
 
-    public static void addFixerVersions(CompoundTag compoundTag_1) {        
-        for (Entry<String, DataFixerEntry> entry : INSTANCE.MOD_FIXERS.entrySet()) {
+    public void addFixerVersions(CompoundTag compoundTag_1) {        
+        for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
             compoundTag_1.putInt(entry.getKey() + "_DataVersion", entry.getValue().runtimeDataVersion);
         };
     }
@@ -78,5 +81,17 @@ public final class FabricDataFixerImpl {
             this.modFixer = fix;
             this.runtimeDataVersion = runtimeDataVersion;
         }
+    }
+
+    @Override
+    public boolean isLocked() {
+        return locked;
+    }
+    
+    /**
+     * @deprecated for implementation only.
+     */
+    public void lock(boolean toggle) {
+        this.locked = toggle;
     }
 }

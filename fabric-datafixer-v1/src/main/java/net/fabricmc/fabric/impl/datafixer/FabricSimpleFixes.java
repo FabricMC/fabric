@@ -8,7 +8,6 @@ import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.TypeRewriteRule;
-import com.mojang.datafixers.Typed;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.util.Pair;
@@ -16,16 +15,15 @@ import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.datafixer.SimpleFixes;
 import net.minecraft.datafixers.TypeReferences;
 import net.minecraft.datafixers.fixes.BlockNameFix;
-import net.minecraft.datafixers.fixes.ChoiceFix;
 import net.minecraft.datafixers.fixes.EntityRenameFix;
 import net.minecraft.datafixers.fixes.EntitySimpleTransformFix;
 import net.minecraft.datafixers.fixes.FixItemName;
 
-public class FabricSimpleFixesImpl extends SimpleFixes {
+public class FabricSimpleFixes implements SimpleFixes {
 
-    public static final SimpleFixes INSTANCE = new FabricSimpleFixesImpl();
+    public static final SimpleFixes INSTANCE = new FabricSimpleFixes();
 
-    private FabricSimpleFixesImpl() {
+    private FabricSimpleFixes() {
     }
 
     @Override
