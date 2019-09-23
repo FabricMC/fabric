@@ -70,10 +70,11 @@ public class MeshBuilderImpl implements MeshBuilder {
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
 		@Override
 		public Maker emit() {
-			lightFace = GeometryHelper.lightFace(this);
-			geometryFlags = GeometryHelper.computeShapeFlags(this);
+			lightFace(GeometryHelper.lightFace(this));
+			if (isGeometryInvalid) {
+				geometryFlags(GeometryHelper.computeShapeFlags(this));
+			}
 			ColorHelper.applyDiffuseShading(this, false);
-			encodeHeader();
 			index += EncodingFormat.TOTAL_STRIDE;
 			ensureCapacity(EncodingFormat.TOTAL_STRIDE);
 			baseIndex = index;

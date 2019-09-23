@@ -16,7 +16,10 @@
 
 package net.fabricmc.indigo.renderer.mesh;
 
+import com.google.common.base.Preconditions;
+
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
@@ -32,11 +35,10 @@ public abstract class EncodingFormat {
 	private EncodingFormat() {
 	}
 
-	static final int HEADER_MATERIAL = 0;
+	static final int HEADER_BITS = 0;
 	static final int HEADER_COLOR_INDEX = 1;
-	static final int HEADER_BITS = 2;
-	static final int HEADER_TAG = 3;
-	public static final int HEADER_STRIDE = 4;
+	static final int HEADER_TAG = 2;
+	public static final int HEADER_STRIDE = 3;
 
 	static final int VERTEX_X;
 	static final int VERTEX_Y;
@@ -84,6 +86,14 @@ public abstract class EncodingFormat {
 	private static final int GEOMETRY_SHIFT = NORMALS_SHIFT + NORMALS_COUNT;
 	private static final int GEOMETRY_MASK = (1 << GeometryHelper.FLAG_BIT_COUNT) - 1;
 	private static final int GEOMETRY_INVERSE_MASK = ~(GEOMETRY_MASK << GEOMETRY_SHIFT);
+	private static final int MATERIAL_SHIFT = GEOMETRY_SHIFT + GeometryHelper.FLAG_BIT_COUNT;
+	private static final int MATERIAL_MASK = MathHelper.smallestEncompassingPowerOfTwo(RenderMaterialImpl.VALUE_COUNT) - 1;
+	private static final int MATERIAL_BIT_COUNT = Integer.bitCount(MATERIAL_MASK);
+	private static final int MATERIAL_INVERSE_MASK = ~(MATERIAL_MASK << MATERIAL_SHIFT);
+
+	static {
+		Preconditions.checkArgument(MATERIAL_SHIFT + MATERIAL_BIT_COUNT <= 32, "Indigo header encoding bit count (%s) exceeds integer bit length)", TOTAL_STRIDE);
+	}
 
 	static Direction cullFace(int bits) {
 		return ModelHelper.faceFromIndex((bits >> CULL_SHIFT) & DIRECTION_MASK);
@@ -101,6 +111,7 @@ public abstract class EncodingFormat {
 		return (bits & LIGHT_INVERSE_MASK) | (ModelHelper.toFaceIndex(face) << LIGHT_SHIFT);
 	}
 
+	/** indicate if vertex normal has been set - bits correspond to vertex ordinals */
 	static int normalFlags(int bits) {
 		return (bits >> NORMALS_SHIFT) & NORMALS_MASK;
 	}
@@ -110,10 +121,18 @@ public abstract class EncodingFormat {
 	}
 
 	static int geometryFlags(int bits) {
-		return bits >> GEOMETRY_SHIFT;
+		return (bits >> GEOMETRY_SHIFT) & GEOMETRY_MASK;
 	}
 
 	static int geometryFlags(int bits, int geometryFlags) {
 		return (bits & GEOMETRY_INVERSE_MASK) | ((geometryFlags & GEOMETRY_MASK) << GEOMETRY_SHIFT);
+	}
+	
+	static RenderMaterialImpl.Value material(int bits) {
+		return RenderMaterialImpl.byIndex((bits >> MATERIAL_SHIFT) & MATERIAL_MASK);
+	}
+
+	static int material(int bits, RenderMaterialImpl.Value material) {
+		return (bits & MATERIAL_INVERSE_MASK) | (material.index() << MATERIAL_SHIFT);
 	}
 }

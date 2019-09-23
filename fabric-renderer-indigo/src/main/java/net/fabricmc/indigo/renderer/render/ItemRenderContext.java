@@ -54,6 +54,9 @@ import net.minecraft.util.math.Direction;
  * of simplicity in the default renderer. 
  */
 public class ItemRenderContext extends AbstractRenderContext implements RenderContext {
+	/** Value vanilla uses for item rendering.  The only sensible choice, of course.  */
+	private static final long ITEM_RANDOM_SEED = 42L;
+	
 	/** used to accept a method reference from the ItemRenderer */
 	@FunctionalInterface
 	public static interface VanillaQuadHandler {
@@ -73,7 +76,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 
 	private final Supplier<Random> randomSupplier = () -> {
 		Random result = random;
-		result.setSeed(42L);
+		result.setSeed(ITEM_RANDOM_SEED);
 		return random;
 	};
 
@@ -132,7 +135,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 
 		@Override
 		public Maker emit() {
-			lightFace = GeometryHelper.lightFace(this);
+			lightFace(GeometryHelper.lightFace(this));
 			ColorHelper.applyDiffuseShading(this, false);
 			renderQuad();
 			clear();
@@ -175,7 +178,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		int quadColor = color;
 		if (!enchantment && quadColor == -1 && colorIndex != -1) {
 			quadColor = colorMap.getColorMultiplier(itemStack, colorIndex);
-			quadColor |= -16777216;
+			quadColor |= 0xFF000000;
 		}
 		return quadColor;
 	}
@@ -215,14 +218,14 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private void fallbackConsumer(BakedModel model) {
 		if (hasTransform()) {
 			// if there's a transform in effect, convert to mesh-based quads so that we can apply it
-			for (int i = 0; i < 7; i++) {
-				random.setSeed(42L);
+			for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
+				random.setSeed(ITEM_RANDOM_SEED);
 				final Direction cullFace = ModelHelper.faceFromIndex(i);
 				renderFallbackWithTransform(bufferBuilder, model.getQuads((BlockState) null, cullFace, random), color, itemStack, cullFace);
 			}
 		} else {
-			for (int i = 0; i < 7; i++) {
-				random.setSeed(42L);
+			for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
+				random.setSeed(ITEM_RANDOM_SEED);
 				vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState) null, ModelHelper.faceFromIndex(i), random), color, itemStack);
 			}
 		}

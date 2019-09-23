@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.IndigoRenderer;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
-import net.fabricmc.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
@@ -51,13 +50,13 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
 		{
 			data = new int[EncodingFormat.TOTAL_STRIDE];
-			material = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
+			material(IndigoRenderer.MATERIAL_STANDARD);
 		}
 
 		// only used via RenderContext.getEmitter() 
 		@Override
 		public Maker emit() {
-			lightFace = GeometryHelper.lightFace(this);
+			lightFace(GeometryHelper.lightFace(this));
 			ColorHelper.applyDiffuseShading(this, false);
 			renderQuad(this);
 			clear();

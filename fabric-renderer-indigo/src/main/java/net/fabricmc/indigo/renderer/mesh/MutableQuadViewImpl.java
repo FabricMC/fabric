@@ -17,7 +17,10 @@
 package net.fabricmc.indigo.renderer.mesh;
 
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.EMPTY;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
@@ -25,6 +28,8 @@ import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_STRIDE;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
+
+import com.google.common.base.Preconditions;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -52,33 +57,34 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isFaceNormalInvalid = true;
 		isGeometryInvalid = true;
-		normalFlags = 0;
-		tag = 0;
-		colorIndex = -1;
-		cullFace = null;
-		lightFace = null;
 		nominalFace = null;
-		material = IndigoRenderer.MATERIAL_STANDARD;
+		normalFlags(0);
+		tag(0);
+		colorIndex(-1);
+		cullFace(null);
+		material(IndigoRenderer.MATERIAL_STANDARD);
 	}
 
 	@Override
 	public final MutableQuadViewImpl material(RenderMaterial material) {
-		if (material == null || material.spriteDepth() > this.material.spriteDepth()) {
-			throw new UnsupportedOperationException("Material texture depth must be the same or less than original material.");
+		if (material == null) {
+			material = IndigoRenderer.MATERIAL_STANDARD;
 		}
-		this.material = (Value) material;
+		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (Value) material);
 		return this;
 	}
 
 	@Override
 	public final MutableQuadViewImpl cullFace(Direction face) {
-		cullFace = face;
-		nominalFace = face;
+		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(data[baseIndex + HEADER_BITS], face);
+		nominalFace(face);
 		return this;
 	}
 
 	public final MutableQuadViewImpl lightFace(Direction face) {
-		lightFace = face;
+		Preconditions.checkNotNull(face);
+		
+		data[baseIndex + HEADER_BITS] = EncodingFormat.lightFace(data[baseIndex + HEADER_BITS], face);
 		return this;
 	}
 
@@ -90,13 +96,13 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl colorIndex(int colorIndex) {
-		this.colorIndex = colorIndex;
+		data[baseIndex + HEADER_COLOR_INDEX] = colorIndex;
 		return this;
 	}
 
 	@Override
 	public final MutableQuadViewImpl tag(int tag) {
-		this.tag = tag;
+		data[baseIndex + HEADER_TAG] = tag;
 		return this;
 	}
 
@@ -114,7 +120,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public boolean needsDiffuseShading(int textureIndex) {
-		return textureIndex < material.spriteDepth() && !material.disableDiffuse(textureIndex);
+		return material().disableDiffuse(textureIndex);
 	}
 
 	@Override
@@ -127,18 +133,23 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
+	public void normalFlags(int flags) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS], flags);
+	}
+	
 	@Override
 	public MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
-		normalFlags |= (1 << vertexIndex);
+		normalFlags(normalFlags() | (1 << vertexIndex));
 		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL] = NormalHelper.packNormal(x, y, z, 0);
 		return this;
 	}
 
 	/**
 	 * Internal helper method. Copies face normals to vertex normals lacking one.
+	 * Does not set flags that indicate a vertex normal was input.
 	 */
 	public final void populateMissingNormals() {
-		final int normalFlags = this.normalFlags;
+		final int normalFlags = this.normalFlags();
 		if (normalFlags == 0b1111)
 			return;
 		final int packedFaceNormal = NormalHelper.packNormal(faceNormal(), 0);

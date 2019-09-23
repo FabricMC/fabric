@@ -18,7 +18,6 @@ package net.fabricmc.indigo.renderer.mesh;
 
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_MATERIAL;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
@@ -45,15 +44,7 @@ import net.minecraft.util.math.Direction;
  * of maintaining and encoding the quad state.
  */
 public class QuadViewImpl implements QuadView {
-	protected RenderMaterialImpl.Value material;
-	protected Direction cullFace;
 	protected Direction nominalFace;
-	protected Direction lightFace;
-	protected int colorIndex = -1;
-	protected int tag = 0;
-	/** indicate if vertex normal has been set - bits correspond to vertex ordinals */
-	protected int normalFlags;
-	protected int geometryFlags;
 	protected boolean isGeometryInvalid = true;
 	protected final Vector3f faceNormal = new Vector3f();
 	protected boolean isFaceNormalInvalid = true;
@@ -91,7 +82,7 @@ public class QuadViewImpl implements QuadView {
 		// face normal isn't encoded but geometry flags are
 		isFaceNormalInvalid = true;
 		isGeometryInvalid = false;
-		decodeHeader();
+		nominalFace = lightFace();
 	}
 
 	/** Reference to underlying array. Use with caution. Meant for fast renderer access */
@@ -99,43 +90,25 @@ public class QuadViewImpl implements QuadView {
 		return data;
 	}
 
+	public int normalFlags() {
+		return EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS]);
+	}
+	
 	/** True if any vertex normal has been set. */
 	public boolean hasVertexNormals() {
-		return normalFlags != 0;
-	}
-
-	/** reads state from header - vertex attributes are saved directly */
-	protected void decodeHeader() {
-		material = RenderMaterialImpl.byIndex(data[baseIndex + HEADER_MATERIAL]);
-		final int bits = data[baseIndex + HEADER_BITS];
-		colorIndex = data[baseIndex + HEADER_COLOR_INDEX];
-		tag = data[baseIndex + HEADER_TAG];
-		geometryFlags = EncodingFormat.geometryFlags(bits);
-		cullFace = EncodingFormat.cullFace(bits);
-		lightFace = EncodingFormat.lightFace(bits);
-		nominalFace = lightFace;
-		normalFlags = EncodingFormat.normalFlags(bits);
-	}
-
-	/** writes state to header - vertex attributes are saved directly */
-	protected void encodeHeader() {
-		data[baseIndex + HEADER_MATERIAL] = material.index();
-		data[baseIndex + HEADER_COLOR_INDEX] = colorIndex;
-		data[baseIndex + HEADER_TAG] = tag;
-		int bits = EncodingFormat.geometryFlags(0, geometryFlags);
-		bits = EncodingFormat.normalFlags(bits, normalFlags);
-		bits = EncodingFormat.cullFace(bits, cullFace);
-		bits = EncodingFormat.lightFace(bits, lightFace);
-		data[baseIndex + HEADER_BITS] = bits;
+		return normalFlags() != 0;
 	}
 
 	/** gets flags used for lighting - lazily computed via {@link GeometryHelper#computeShapeFlags(QuadView)} */
 	public int geometryFlags() {
 		if (isGeometryInvalid) {
 			isGeometryInvalid = false;
-			geometryFlags = GeometryHelper.computeShapeFlags(this);
+			final int result = GeometryHelper.computeShapeFlags(this);
+			data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], result);
+			return result;
+		} else {
+			return EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS]);
 		}
-		return geometryFlags;
 	}
 
 	/**
@@ -143,7 +116,7 @@ public class QuadViewImpl implements QuadView {
 	 */
 	public void geometryFlags(int flags) {
 		isGeometryInvalid = false;
-		geometryFlags = flags;
+		data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], flags);
 	}
 
 	@Override
@@ -153,27 +126,27 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public final RenderMaterialImpl.Value material() {
-		return material;
+		return EncodingFormat.material(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
 	public final int colorIndex() {
-		return colorIndex;
+		return data[baseIndex + HEADER_COLOR_INDEX];
 	}
 
 	@Override
 	public final int tag() {
-		return tag;
+		return data[baseIndex + HEADER_TAG];
 	}
 
 	@Override
 	public final Direction lightFace() {
-		return lightFace;
+		return EncodingFormat.lightFace(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
 	public final Direction cullFace() {
-		return cullFace;
+		return EncodingFormat.cullFace(data[baseIndex + HEADER_BITS]);
 	}
 
 	@Override
@@ -197,14 +170,14 @@ public class QuadViewImpl implements QuadView {
 		System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, EncodingFormat.TOTAL_STRIDE - 1);
 		quad.isFaceNormalInvalid = this.isFaceNormalInvalid;
 		if (!this.isFaceNormalInvalid) {
-			quad.faceNormal.set(this.faceNormal.getX(), this.faceNormal.getY(), this.faceNormal.getZ());
+			quad.faceNormal.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
 		}
-		quad.lightFace = this.lightFace;
-		quad.colorIndex = this.colorIndex;
-		quad.tag = this.tag;
-		quad.cullFace = this.cullFace;
+		quad.lightFace(lightFace());
+		quad.colorIndex(colorIndex());
+		quad.tag(tag());
+		quad.cullFace(cullFace());
 		quad.nominalFace = this.nominalFace;
-		quad.normalFlags = this.normalFlags;
+		quad.normalFlags(normalFlags());
 	}
 
 	@Override
@@ -239,7 +212,7 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public boolean hasNormal(int vertexIndex) {
-		return (normalFlags & (1 << vertexIndex)) != 0;
+		return (normalFlags() & (1 << vertexIndex)) != 0;
 	}
 
 	protected final int normalIndex(int vertexIndex) {
