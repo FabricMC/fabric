@@ -31,6 +31,8 @@ import net.minecraft.util.math.Direction.AxisDirection;
  * designed to be usable without the default renderer.
  */
 public abstract class GeometryHelper {
+	private GeometryHelper() { }
+	
 	/** set when a quad touches all four corners of a unit cube */
 	public static final int CUBIC_FLAG = 1;
 
@@ -42,12 +44,9 @@ public abstract class GeometryHelper {
 
 	/** how many bits quad header encoding should reserve for encoding geometry flags */
 	public static final int FLAG_BIT_COUNT = 3;
-	
+
 	private static final float EPS_MIN = 0.0001f;
 	private static final float EPS_MAX = 1.0f - EPS_MIN;
-
-	private GeometryHelper() {
-	}
 
 	/**
 	 * Analyzes the quad and returns a value with some combination 
@@ -58,15 +57,19 @@ public abstract class GeometryHelper {
 	public static int computeShapeFlags(QuadView quad) {
 		Direction lightFace = quad.lightFace();
 		int bits = 0;
+		
 		if (isQuadParallelToFace(lightFace, quad)) {
 			bits |= AXIS_ALIGNED_FLAG;
+			
 			if (isParallelQuadOnFace(lightFace, quad)) {
 				bits |= LIGHT_FACE_FLAG;
 			}
 		}
+		
 		if (isQuadCubic(lightFace, quad)) {
 			bits |= CUBIC_FLAG;
 		}
+		
 		return bits;
 	}
 
@@ -79,6 +82,7 @@ public abstract class GeometryHelper {
 		if (face == null) {
 			return false;
 		}
+		
 		int i = face.getAxis().ordinal();
 		final float val = quad.posByIndex(0, i);
 		return approximatelyEquals(val, quad.posByIndex(1, i)) && approximatelyEquals(val, quad.posByIndex(2, i)) && approximatelyEquals(val, quad.posByIndex(3, i));
@@ -92,8 +96,8 @@ public abstract class GeometryHelper {
 	 * for that purpose. Expects convex quads with all points co-planar.<p>
 	 */
 	public static boolean isParallelQuadOnFace(Direction lightFace, QuadView quad) {
-		if (lightFace == null)
-			return false;
+		if (lightFace == null) return false;
+		
 		final float x = quad.posByIndex(0, lightFace.getAxis().ordinal());
 		return lightFace.getDirection() == AxisDirection.POSITIVE ? x >= EPS_MAX : x <= EPS_MIN;
 	}
@@ -174,6 +178,7 @@ public abstract class GeometryHelper {
 				return false;
 			}
 		}
+
 		return flags == 15;
 	}
 
@@ -233,8 +238,8 @@ public abstract class GeometryHelper {
 	public static Axis longestAxis(float normalX, float normalY, float normalZ) {
 		Axis result = Axis.Y;
 		float longest = Math.abs(normalY);
-
 		float a = Math.abs(normalX);
+
 		if (a > longest) {
 			result = Axis.X;
 			longest = a;

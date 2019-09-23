@@ -48,10 +48,12 @@ public class BlockRenderInfo {
 	public final Supplier<Random> randomSupplier = () -> {
 		final Random result = random;
 		long seed = this.seed;
+
 		if (seed == -1L) {
 			seed = blockState.getRenderingSeed(blockPos);
 			this.seed = seed;
 		}
+
 		result.setSeed(seed);
 		return result;
 	};

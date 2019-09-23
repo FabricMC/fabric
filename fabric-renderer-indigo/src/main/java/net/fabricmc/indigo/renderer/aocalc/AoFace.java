@@ -36,36 +36,36 @@ enum AoFace {
 		w[0] = (1 - u) * v;
 		w[1] = (1 - u) * (1 - v);
 		w[2] = u * (1 - v);
-		w[3] = u * v;
-	}), AOF_UP(new Direction[] { EAST, WEST, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.y(i)), (q, i, w) -> {
+		w[3] = u * v;}), 
+	AOF_UP(new Direction[] { EAST, WEST, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.y(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.x(i));
 		final float v = CLAMP_FUNC.clamp(q.z(i));
 		w[0] = u * v;
 		w[1] = u * (1 - v);
 		w[2] = (1 - u) * (1 - v);
-		w[3] = (1 - u) * v;
-	}), AOF_NORTH(new Direction[] { UP, DOWN, EAST, WEST }, (q, i) -> CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
+		w[3] = (1 - u) * v;}),
+	AOF_NORTH(new Direction[] { UP, DOWN, EAST, WEST }, (q, i) -> CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.x(i));
 		w[0] = u * (1 - v);
 		w[1] = u * v;
 		w[2] = (1 - u) * v;
-		w[3] = (1 - u) * (1 - v);
-	}), AOF_SOUTH(new Direction[] { WEST, EAST, DOWN, UP }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
+		w[3] = (1 - u) * (1 - v);}),
+	AOF_SOUTH(new Direction[] { WEST, EAST, DOWN, UP }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.x(i));
 		w[0] = u * (1 - v);
 		w[1] = (1 - u) * (1 - v);
 		w[2] = (1 - u) * v;
-		w[3] = u * v;
-	}), AOF_WEST(new Direction[] { UP, DOWN, NORTH, SOUTH }, (q, i) -> CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
+		w[3] = u * v;}), 
+	AOF_WEST(new Direction[] { UP, DOWN, NORTH, SOUTH }, (q, i) -> CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.z(i));
 		w[0] = u * v;
 		w[1] = u * (1 - v);
 		w[2] = (1 - u) * (1 - v);
-		w[3] = (1 - u) * v;
-	}), AOF_EAST(new Direction[] { DOWN, UP, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
+		w[3] = (1 - u) * v;}), 
+	AOF_EAST(new Direction[] { DOWN, UP, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.z(i));
 		w[0] = (1 - u) * v;

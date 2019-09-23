@@ -71,9 +71,11 @@ public class MeshBuilderImpl implements MeshBuilder {
 		@Override
 		public Maker emit() {
 			lightFace(GeometryHelper.lightFace(this));
+			
 			if (isGeometryInvalid) {
 				geometryFlags(GeometryHelper.computeShapeFlags(this));
 			}
+			
 			ColorHelper.applyDiffuseShading(this, false);
 			index += EncodingFormat.TOTAL_STRIDE;
 			ensureCapacity(EncodingFormat.TOTAL_STRIDE);

@@ -44,6 +44,7 @@ public abstract class MixinBlockModelRenderer {
 	private void hookTesselate(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, boolean checkSides, Random rand, long seed, CallbackInfoReturnable<Boolean> ci) {
 		if (!((FabricBakedModel) model).isVanillaAdapter()) {
 			BlockRenderContext context = CONTEXTS.get();
+
 			if (!context.isCallingVanilla()) {
 				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer) (Object) this, blockView, model, state, pos, buffer, seed));
 			}

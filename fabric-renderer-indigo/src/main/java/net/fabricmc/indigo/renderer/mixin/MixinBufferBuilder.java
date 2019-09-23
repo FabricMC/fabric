@@ -74,11 +74,12 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
 	 */
 	private void bufferCompatibly(QuadViewImpl quad) {
 		final VertexFormat format = getVertexFormat();
-		;
 		final int elementCount = format.getElementCount();
+		
 		for (int i = 0; i < 4; i++) {
 			for (int j = 0; j < elementCount; j++) {
 				VertexFormatElement e = format.getElement(j);
+				
 				switch (e.getType()) {
 				case COLOR:
 					final int c = quad.spriteColor(i, 0);
@@ -107,6 +108,7 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
 
 				}
 			}
+			
 			((BufferBuilder) (Object) this).next();
 		}
 	}

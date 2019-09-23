@@ -55,7 +55,8 @@ public abstract class MixinItemRenderer {
 
 	@Inject(at = @At("HEAD"), method = "renderModel", cancellable = true)
 	private void hookRenderModel(BakedModel model, int color, ItemStack stack, CallbackInfo ci) {
-		FabricBakedModel fabricModel = (FabricBakedModel) model;
+		final FabricBakedModel fabricModel = (FabricBakedModel) model;
+
 		if (!fabricModel.isVanillaAdapter()) {
 			CONTEXTS.get().renderModel(fabricModel, color, stack, this::renderQuads);
 			ci.cancel();

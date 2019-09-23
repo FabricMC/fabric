@@ -44,6 +44,7 @@ public class MixinSpriteAtlasTexture implements SpriteFinderImpl.SpriteFinderAcc
 	@Override
 	public SpriteFinderImpl fabric_spriteFinder() {
 		SpriteFinderImpl result = fabric_spriteFinder;
+
 		if (result == null) {
 			result = new SpriteFinderImpl(sprites);
 			fabric_spriteFinder = result;

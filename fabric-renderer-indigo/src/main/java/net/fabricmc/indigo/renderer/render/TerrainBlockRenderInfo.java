@@ -37,10 +37,12 @@ public class TerrainBlockRenderInfo extends BlockRenderInfo {
 		if (face == null) {
 			return true;
 		}
+
 		final int mask = 1 << face.getId();
 
 		if ((cullCompletionFlags & mask) == 0) {
 			cullCompletionFlags |= mask;
+
 			if (Block.shouldDrawSide(blockState, blockView, blockPos, face)) {
 				cullResultFlags |= mask;
 				return true;

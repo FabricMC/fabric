@@ -84,10 +84,12 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 		final Supplier<Random> random = blockInfo.randomSupplier;
 		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
 		final BlockState blockState = blockInfo.blockState;
+
 		for (int i = 0; i < 6; i++) {
 			Direction face = ModelHelper.faceFromIndex(i);
 			List<BakedQuad> quads = model.getQuads(blockState, face, random.get());
 			final int count = quads.size();
+
 			if (count != 0 && blockInfo.shouldDrawFace(face)) {
 				for (int j = 0; j < count; j++) {
 					BakedQuad q = quads.get(j);
@@ -98,6 +100,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 
 		List<BakedQuad> quads = model.getQuads(blockState, null, random.get());
 		final int count = quads.size();
+
 		if (count != 0) {
 			for (int j = 0; j < count; j++) {
 				BakedQuad q = quads.get(j);
@@ -108,6 +111,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 
 	private void renderQuad(BakedQuad quad, Direction cullFace, Value defaultMaterial) {
 		final int[] vertexData = quad.getVertexData();
+
 		if (!CompatibilityHelper.canRender(vertexData)) {
 			return;
 		}

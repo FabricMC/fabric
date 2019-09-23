@@ -28,8 +28,7 @@ import net.minecraft.util.math.Vec3i;
  * designed to be usable without the default renderer.
  */
 public abstract class NormalHelper {
-	private NormalHelper() {
-	}
+	private NormalHelper() { }
 
 	/**
 	 * Stores a normal plus an extra value as a quartet of signed bytes.
@@ -70,6 +69,7 @@ public abstract class NormalHelper {
 	 */
 	public static void computeFaceNormal(Vector3f saveTo, QuadView q) {
 		final Direction nominalFace = q.nominalFace();
+		
 		if (GeometryHelper.isQuadParallelToFace(nominalFace, q)) {
 			Vec3i vec = nominalFace.getVector();
 			saveTo.set(vec.getX(), vec.getY(), vec.getZ());
@@ -99,8 +99,8 @@ public abstract class NormalHelper {
 		float normX = dy0 * dz1 - dz0 * dy1;
 		float normY = dz0 * dx1 - dx0 * dz1;
 		float normZ = dx0 * dy1 - dy0 * dx1;
-
 		float l = (float) Math.sqrt(normX * normX + normY * normY + normZ * normZ);
+
 		if (l != 0) {
 			normX /= l;
 			normY /= l;

@@ -63,6 +63,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		if (blockInfo.blockView == null) {
 			return 15 << 20 | 15 << 4;
 		}
+
 		return blockInfo.blockView.getLightmapIndex(blockInfo.blockView.getBlockState(pos), pos);
 	}
 
@@ -118,6 +119,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 			final double x = offsetX;
 			final double y = offsetY;
 			final double z = offsetZ;
+	
 			for (int i = 0; i < 4; i++) {
 				q.pos(i, (float) (q.x(i) + x), (float) (q.y(i) + y), (float) (q.z(i) + z));
 			}

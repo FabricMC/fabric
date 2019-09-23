@@ -47,10 +47,12 @@ public class SpriteFinderImpl implements SpriteFinder {
 	public Sprite find(QuadView quad, int textureIndex) {
 		float u = 0;
 		float v = 0;
+
 		for (int i = 0; i < 4; i++) {
 			u += quad.spriteU(i, textureIndex);
 			v += quad.spriteV(i, textureIndex);
 		}
+
 		return find(u * 0.25f, v * 0.25f);
 	}
 
@@ -81,15 +83,19 @@ public class SpriteFinderImpl implements SpriteFinder {
 			final boolean highU = sprite.getMaxU() > midU + EPS;
 			final boolean lowV = sprite.getMinV() < midV - EPS;
 			final boolean highV = sprite.getMaxV() > midV + EPS;
+
 			if (lowU && lowV) {
 				addInner(sprite, lowLow, -1, -1, q -> lowLow = q);
 			}
+
 			if (lowU && highV) {
 				addInner(sprite, lowHigh, -1, 1, q -> lowHigh = q);
 			}
+
 			if (highU && lowV) {
 				addInner(sprite, highLow, 1, -1, q -> highLow = q);
 			}
+
 			if (highU && highV) {
 				addInner(sprite, highHigh, 1, 1, q -> highHigh = q);
 			}
@@ -102,9 +108,11 @@ public class SpriteFinderImpl implements SpriteFinder {
 				((Node) quadrant).add(sprite);
 			} else {
 				Node n = new Node(midU + cellRadius * uStep, midV + cellRadius * vStep, cellRadius * 0.5f);
+
 				if (quadrant instanceof Sprite) {
 					n.add((Sprite) quadrant);
 				}
+
 				n.add(sprite);
 				setter.accept(n);
 			}

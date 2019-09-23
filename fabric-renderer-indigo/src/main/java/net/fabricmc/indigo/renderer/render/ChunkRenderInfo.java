@@ -143,11 +143,13 @@ public class ChunkRenderInfo {
 	/** Lazily retrieves output buffer for given layer, initializing as needed. */
 	public AccessBufferBuilder getInitializedBuffer(BlockRenderLayer renderLayer) {
 		AccessBufferBuilder result = buffers.get(renderLayer);
+
 		if (result == null) {
 			BufferBuilder builder = builders.get(renderLayer);
 			result = (AccessBufferBuilder) builder;
 			chunkData.fabric_markPopulated(renderLayer);
 			buffers.put(renderLayer, result);
+
 			if (chunkData.fabric_markInitialized(renderLayer)) {
 				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, chunkOrigin);
 			}
@@ -171,20 +173,24 @@ public class ChunkRenderInfo {
 	int cachedBrightness(BlockPos pos) {
 		long key = pos.asLong();
 		int result = brightnessCache.get(key);
+
 		if (result == Integer.MAX_VALUE) {
 			result = blockView.getLightmapIndex(blockView.getBlockState(pos), pos);
 			brightnessCache.put(key, result);
 		}
+
 		return result;
 	}
 
 	float cachedAoLevel(BlockPos pos) {
 		long key = pos.asLong();
 		float result = aoLevelCache.get(key);
+
 		if (result == Float.MAX_VALUE) {
 			result = AoLuminanceFix.INSTANCE.apply(blockView, pos);
 			aoLevelCache.put(key, result);
 		}
+
 		return result;
 	}
 }

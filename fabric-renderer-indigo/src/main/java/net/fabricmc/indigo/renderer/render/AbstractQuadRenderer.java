@@ -73,20 +73,24 @@ public abstract class AbstractQuadRenderer {
 	/** for non-emissive mesh quads and all fallback quads with smooth lighting*/
 	protected void tesselateSmooth(MutableQuadViewImpl q, BlockRenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(q, blockColorIndex);
+
 		for (int i = 0; i < 4; i++) {
 			q.spriteColor(i, 0, ColorHelper.multiplyRGB(q.spriteColor(i, 0), aoCalc.ao[i]));
 			q.lightmap(i, ColorHelper.maxBrightness(q.lightmap(i), aoCalc.light[i]));
 		}
+
 		bufferQuad(q, renderLayer);
 	}
 
 	/** for emissive mesh quads with smooth lighting*/
 	protected void tesselateSmoothEmissive(MutableQuadViewImpl q, BlockRenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(q, blockColorIndex);
+
 		for (int i = 0; i < 4; i++) {
 			q.spriteColor(i, 0, ColorHelper.multiplyRGB(q.spriteColor(i, 0), aoCalc.ao[i]));
 			q.lightmap(i, FULL_BRIGHTNESS);
 		}
+
 		bufferQuad(q, renderLayer);
 	}
 
@@ -94,18 +98,22 @@ public abstract class AbstractQuadRenderer {
 	protected void tesselateFlat(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
 		final int brightness = flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos);
+
 		for (int i = 0; i < 4; i++) {
 			quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), brightness));
 		}
+
 		bufferQuad(quad, renderLayer);
 	}
 
 	/** for emissive mesh quads with flat lighting*/
 	protected void tesselateFlatEmissive(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
+
 		for (int i = 0; i < 4; i++) {
 			quad.lightmap(i, FULL_BRIGHTNESS);
 		}
+
 		bufferQuad(quad, renderLayer);
 	}
 
@@ -117,9 +125,11 @@ public abstract class AbstractQuadRenderer {
 	 */
 	int flatBrightness(MutableQuadViewImpl quad, BlockState blockState, BlockPos pos) {
 		mpos.set(pos);
+
 		if ((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
 			mpos.setOffset(quad.lightFace());
 		}
+
 		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
 		return blockInfo.blockView.getLightmapIndex(blockState, mpos);
 	}

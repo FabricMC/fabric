@@ -56,7 +56,7 @@ import net.minecraft.util.math.Direction;
 public class ItemRenderContext extends AbstractRenderContext implements RenderContext {
 	/** Value vanilla uses for item rendering.  The only sensible choice, of course.  */
 	private static final long ITEM_RANDOM_SEED = 42L;
-	
+
 	/** used to accept a method reference from the ItemRenderer */
 	@FunctionalInterface
 	public static interface VanillaQuadHandler {
@@ -150,6 +150,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		final int[] data = m.data();
 		final int limit = data.length;
 		int index = 0;
+
 		while (index < limit) {
 			System.arraycopy(data, index, editorQuad.data(), 0, EncodingFormat.TOTAL_STRIDE);
 			editorQuad.load();
@@ -176,6 +177,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private int quadColor() {
 		final int colorIndex = editorQuad.colorIndex();
 		int quadColor = color;
+
 		if (!enchantment && quadColor == -1 && colorIndex != -1) {
 			quadColor = colorMap.getColorMultiplier(itemStack, colorIndex);
 			quadColor |= 0xFF000000;
@@ -185,16 +187,19 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 
 	private void colorizeAndOutput(int quadColor) {
 		final MutableQuadViewImpl q = editorQuad;
+
 		for (int i = 0; i < 4; i++) {
 			int c = q.spriteColor(i, 0);
 			c = ColorHelper.multiplyColor(quadColor, c);
 			q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(c));
 		}
+
 		fabricBuffer.fabric_putQuad(q);
 	}
 
 	private void renderQuad() {
 		final MutableQuadViewImpl quad = editorQuad;
+
 		if (!transform(editorQuad)) {
 			return;
 		}
@@ -235,8 +240,10 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		if (quads.isEmpty()) {
 			return;
 		}
+
 		if (CompatibilityHelper.canRender(quads.get(0).getVertexData())) {
 			Maker editorQuad = this.editorQuad;
+
 			for (BakedQuad q : quads) {
 				editorQuad.clear();
 				editorQuad.fromVanilla(q.getVertexData(), 0, false);

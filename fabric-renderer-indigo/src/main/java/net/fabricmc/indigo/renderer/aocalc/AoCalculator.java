@@ -144,8 +144,8 @@ public class AoCalculator {
 		if (shouldCompare) {
 			float[] vanillaAo = new float[4];
 			int[] vanillaLight = new int[4];
-
 			vanillaCalc.compute(blockInfo, quad, vanillaAo, vanillaLight);
+
 			for (int i = 0; i < 4; i++) {
 				if (light[i] != vanillaLight[i] || !MathHelper.approximatelyEquals(ao[i], vanillaAo[i])) {
 					LOGGER.info(String.format("Mismatch for %s @ %s", blockInfo.blockState.toString(), blockInfo.blockPos.toString()));
@@ -207,6 +207,7 @@ public class AoCalculator {
 		AoFaceData faceData = computeFace(lightFace, isOnLightFace);
 		final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
 		final float[] w = this.w;
+		
 		for (int i = 0; i < 4; i++) {
 			wFunc.apply(quad, i, w);
 			light[i] = faceData.weightedCombinedLight(w);
@@ -230,6 +231,7 @@ public class AoCalculator {
 	 */
 	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace) {
 		final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
+		
 		if (MathHelper.approximatelyEquals(w1, 0)) {
 			return computeFace(lightFace, true);
 		} else if (MathHelper.approximatelyEquals(w1, 1)) {
@@ -244,6 +246,7 @@ public class AoCalculator {
 		final Direction lightFace = quad.lightFace();
 		AoFaceData faceData = blendedInsetFace(quad, 0, lightFace);
 		final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
+		
 		for (int i = 0; i < 4; i++) {
 			wFunc.apply(quad, i, w);
 			light[i] = faceData.weightedCombinedLight(w);
@@ -267,6 +270,7 @@ public class AoCalculator {
 			int maxSky = 0, maxBlock = 0;
 
 			final float x = normal.getX();
+			
 			if (!MathHelper.approximatelyEquals(0f, x)) {
 				final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
 				final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -284,6 +288,7 @@ public class AoCalculator {
 			}
 
 			final float y = normal.getY();
+			
 			if (!MathHelper.approximatelyEquals(0f, y)) {
 				final Direction face = y > 0 ? Direction.UP : Direction.DOWN;
 				final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -301,6 +306,7 @@ public class AoCalculator {
 			}
 
 			final float z = normal.getZ();
+			
 			if (!MathHelper.approximatelyEquals(0f, z)) {
 				final Direction face = z > 0 ? Direction.SOUTH : Direction.NORTH;
 				final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -334,6 +340,7 @@ public class AoCalculator {
 		final int faceDataIndex = isOnBlockFace ? lightFace.getId() : lightFace.getId() + 6;
 		final int mask = 1 << faceDataIndex;
 		final AoFaceData result = faceData[faceDataIndex];
+		
 		if ((completionFlags & mask) == 0) {
 			completionFlags |= mask;
 
@@ -361,20 +368,16 @@ public class AoCalculator {
 			// vanilla was further offsetting these in the direction of the light face
 			// but it was actually mis-sampling and causing visible artifacts in certain situation
 			searchPos.set(lightPos).setOffset(aoFace.neighbors[0]);//.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET)
-				searchPos.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear0 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
 			searchPos.set(lightPos).setOffset(aoFace.neighbors[1]);//.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET)
-				searchPos.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear1 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
 			searchPos.set(lightPos).setOffset(aoFace.neighbors[2]);//.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET)
-				searchPos.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear2 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
 			searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);//.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET)
-				searchPos.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear3 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
 
 			// c = corner - values at corners of face
@@ -424,6 +427,7 @@ public class AoCalculator {
 			// Doesn't use light pos because logic not based solely on this block's geometry
 			int lightCenter;
 			searchPos.set((Vec3i) pos).setOffset(lightFace);
+			
 			if (isOnBlockFace || !world.getBlockState(searchPos).isFullOpaque(world, searchPos)) {
 				lightCenter = brightnessFunc.applyAsInt(searchPos);
 			} else {
@@ -460,12 +464,9 @@ public class AoCalculator {
 
 	/** vanilla logic - excludes missing light values from mean and has anisotropy defect mentioned above */
 	private static int vanillaMeanBrightness(int a, int b, int c, int d) {
-		if (a == 0)
-			a = d;
-		if (b == 0)
-			b = d;
-		if (c == 0)
-			c = d;
+		if (a == 0) a = d;
+		if (b == 0) b = d;
+		if (c == 0) c = d;
 		// bitwise divide by 4, clamp to expected (positive) range
 		return a + b + c + d >> 2 & 16711935;
 	}
@@ -476,10 +477,8 @@ public class AoCalculator {
 	}
 
 	private static int nonZeroMin(int a, int b) {
-		if (a == 0)
-			return b;
-		if (b == 0)
-			return a;
+		if (a == 0) return b;
+		if (b == 0) return a;
 		return Math.min(a, b);
 	}
 

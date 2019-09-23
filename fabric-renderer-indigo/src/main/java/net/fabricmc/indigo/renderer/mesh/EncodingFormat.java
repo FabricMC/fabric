@@ -33,8 +33,7 @@ import net.minecraft.util.math.MathHelper;
  * All of this is implementation-specific - that's why it isn't a "helper" class.
  */
 public abstract class EncodingFormat {
-	private EncodingFormat() {
-	}
+	private EncodingFormat() { }
 
 	static final int HEADER_BITS = 0;
 	static final int HEADER_COLOR_INDEX = 1;
@@ -69,7 +68,7 @@ public abstract class EncodingFormat {
 		QUAD_STRIDE = VERTEX_STRIDE * 4;
 		QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
 		TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;
-		
+
 		Preconditions.checkState(VERTEX_STRIDE == QuadView.VANILLA_VERTEX_STRIDE, "Indigo vertex stride (%s) mismatched with rendering API (%s)", VERTEX_STRIDE, QuadView.VANILLA_VERTEX_STRIDE);
 		Preconditions.checkState(QUAD_STRIDE == QuadView.VANILLA_QUAD_STRIDE, "Indigo quad stride (%s) mismatched with rendering API (%s)", QUAD_STRIDE, QuadView.VANILLA_QUAD_STRIDE);
 	}
@@ -131,7 +130,7 @@ public abstract class EncodingFormat {
 	static int geometryFlags(int bits, int geometryFlags) {
 		return (bits & GEOMETRY_INVERSE_MASK) | ((geometryFlags & GEOMETRY_MASK) << GEOMETRY_SHIFT);
 	}
-	
+
 	static RenderMaterialImpl.Value material(int bits) {
 		return RenderMaterialImpl.byIndex((bits >> MATERIAL_SHIFT) & MATERIAL_MASK);
 	}

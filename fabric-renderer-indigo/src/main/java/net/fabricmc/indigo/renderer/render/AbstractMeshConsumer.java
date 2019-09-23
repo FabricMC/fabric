@@ -72,6 +72,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		final int[] data = m.data();
 		final int limit = data.length;
 		int index = 0;
+
 		while (index < limit) {
 			System.arraycopy(data, index, editorQuad.data(), 0, EncodingFormat.TOTAL_STRIDE);
 			editorQuad.load();

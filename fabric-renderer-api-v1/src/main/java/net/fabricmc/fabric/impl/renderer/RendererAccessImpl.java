@@ -23,8 +23,7 @@ public final class RendererAccessImpl implements RendererAccess {
 	public static final RendererAccessImpl INSTANCE = new RendererAccessImpl();
 
 	// private constructor
-	private RendererAccessImpl() {
-	};
+	private RendererAccessImpl() { }
 
 	@Override
 	public final void registerRenderer(Renderer renderer) {

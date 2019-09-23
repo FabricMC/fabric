@@ -26,6 +26,8 @@ import net.minecraft.util.math.Direction;
  * itself to implement automatic block-breaking models for enhanced models.
  */
 public class TextureHelper {
+	private TextureHelper() { }
+	
 	private static final float NORMALIZER = 1f / 16f;
 
 	/**
@@ -42,6 +44,7 @@ public class TextureHelper {
 		}
 
 		final int rotation = bakeFlags & 3;
+		
 		if (rotation != 0) {
 			// Rotates texture around the center of sprite.
 			// Assumes normalized coordinates.
@@ -70,6 +73,7 @@ public class TextureHelper {
 		final float uSpan = sprite.getMaxU() - uMin;
 		final float vMin = sprite.getMinV();
 		final float vSpan = sprite.getMaxV() - vMin;
+		
 		for (int i = 0; i < 4; i++) {
 			q.sprite(i, spriteIndex, uMin + q.spriteU(i, spriteIndex) * uSpan, vMin + q.spriteV(i, spriteIndex) * vSpan);
 		}

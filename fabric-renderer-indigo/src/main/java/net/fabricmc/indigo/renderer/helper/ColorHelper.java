@@ -30,6 +30,8 @@ import net.minecraft.util.math.Direction;
  * designed to be usable without the default renderer.
  */
 public abstract class ColorHelper {
+	private ColorHelper() { }
+	
 	/**
 	 * Implement on quads to use methods that require it.
 	 * Allows for much cleaner method signatures.
@@ -38,9 +40,6 @@ public abstract class ColorHelper {
 		boolean isFaceAligned();
 
 		boolean needsDiffuseShading(int textureIndex);
-	}
-
-	private ColorHelper() {
 	}
 
 	/** Same as vanilla values */
@@ -146,17 +145,21 @@ public abstract class ColorHelper {
 	public static void applyDiffuseShading(ShadeableQuad quad, boolean undo) {
 		final float faceShade = faceShade(quad);
 		int i = quad.needsDiffuseShading(0) ? 1 : 0;
+		
 		if (quad.needsDiffuseShading(1)) {
 			i |= 2;
 		}
+		
 		if (quad.needsDiffuseShading(2)) {
 			i |= 4;
 		}
+		
 		if (i == 0) {
 			return;
 		}
 
 		final VertexLighter shader = VERTEX_LIGHTERS[i];
+		
 		for (int j = 0; j < 4; j++) {
 			final float vertexShade = vertexShade(quad, j, faceShade);
 			shader.shade(quad, j, undo ? 1f / vertexShade : vertexShade);

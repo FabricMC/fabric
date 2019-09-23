@@ -95,7 +95,7 @@ public class QuadViewImpl implements QuadView {
 	public int normalFlags() {
 		return EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS]);
 	}
-	
+
 	/** True if any vertex normal has been set. */
 	public boolean hasVertexNormals() {
 		return normalFlags() != 0;
@@ -162,6 +162,7 @@ public class QuadViewImpl implements QuadView {
 			NormalHelper.computeFaceNormal(faceNormal, this);
 			isFaceNormalInvalid = false;
 		}
+		
 		return faceNormal;
 	}
 
@@ -171,9 +172,11 @@ public class QuadViewImpl implements QuadView {
 		// copy everything except the header/material
 		System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, EncodingFormat.TOTAL_STRIDE - 1);
 		quad.isFaceNormalInvalid = this.isFaceNormalInvalid;
+
 		if (!this.isFaceNormalInvalid) {
 			quad.faceNormal.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
 		}
+
 		quad.lightFace(lightFace());
 		quad.colorIndex(colorIndex());
 		quad.tag(tag());
@@ -187,6 +190,7 @@ public class QuadViewImpl implements QuadView {
 		if (target == null) {
 			target = new Vector3f();
 		}
+
 		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
 		target.set(Float.intBitsToFloat(data[index]), Float.intBitsToFloat(data[index + 1]), Float.intBitsToFloat(data[index + 2]));
 		return target;
@@ -220,7 +224,7 @@ public class QuadViewImpl implements QuadView {
 	protected final int normalIndex(int vertexIndex) {
 		return baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL;
 	}
-	
+
 	@Override
 	public Vector3f copyNormal(int vertexIndex, Vector3f target) {
 		if (hasNormal(vertexIndex)) {

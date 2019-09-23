@@ -61,8 +61,8 @@ public class IndigoRenderer implements Renderer {
 
 	@Override
 	public boolean registerMaterial(Identifier id, RenderMaterial material) {
-		if (materialMap.containsKey(id))
-			return false;
+		if (materialMap.containsKey(id)) return false;
+		
 		// cast to prevent acceptance of impostor implementations
 		materialMap.put(id, material);
 		return true;

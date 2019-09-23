@@ -66,6 +66,7 @@ public abstract class MixinBlockRenderManager {
 	@Inject(method = "tesselateDamage", cancellable = true, at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/client/render/block/BlockModels;getModel(Lnet/minecraft/block/BlockState;)Lnet/minecraft/client/render/model/BakedModel;"))
 	private void hookTesselateDamage(BufferBuilder bufferBuilder, BlockState blockState, BlockPos blockPos, Sprite sprite, BlockRenderView blockView, CallbackInfo ci) {
 		MutablePair<DamageModel, BakedModel> damageState = DAMAGE_STATE.get();
+
 		if (damageState.right != null && !((FabricBakedModel) damageState.right).isVanillaAdapter()) {
 			damageState.left.prepare(damageState.right, sprite, blockState, blockPos);
 			this.renderer.tesselate(blockView, damageState.left, blockState, blockPos, bufferBuilder, true, this.random, blockState.getRenderingSeed(blockPos));
