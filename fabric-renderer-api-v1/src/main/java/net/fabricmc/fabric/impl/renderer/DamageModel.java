@@ -39,31 +39,31 @@ import net.minecraft.world.BlockRenderView;
  * quads that are baked with single-layer, UV-locked damage texture.
  */
 public class DamageModel extends ForwardingBakedModel {
-    static final RenderMaterial DAMAGE_MATERIAL = RendererAccess.INSTANCE.hasRenderer() ? RendererAccess.INSTANCE.getRenderer().materialFinder().find() : null;
-    
-    private DamageTransform damageTransform = new DamageTransform();
-    
-    public void prepare(BakedModel wrappedModel, Sprite sprite, BlockState blockState, BlockPos blockPos) {
-        this.damageTransform.damageSprite = sprite;
-        this.wrapped = wrappedModel;
-    }
-    
-    @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        context.pushTransform(damageTransform);
-        ((FabricBakedModel)wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
-        context.popTransform();
-    }
-    
-    private static class DamageTransform implements RenderContext.QuadTransform {
-        private Sprite damageSprite;
-        
-        @Override
-        public boolean transform(MutableQuadView quad) {
-            quad.material(DAMAGE_MATERIAL);
-            quad.spriteBake(0, damageSprite, MutableQuadView.BAKE_LOCK_UV);
-            quad.colorIndex(-1);
-            return true;
-        }
-    }
+	static final RenderMaterial DAMAGE_MATERIAL = RendererAccess.INSTANCE.hasRenderer() ? RendererAccess.INSTANCE.getRenderer().materialFinder().find() : null;
+
+	private DamageTransform damageTransform = new DamageTransform();
+
+	public void prepare(BakedModel wrappedModel, Sprite sprite, BlockState blockState, BlockPos blockPos) {
+		this.damageTransform.damageSprite = sprite;
+		this.wrapped = wrappedModel;
+	}
+
+	@Override
+	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		context.pushTransform(damageTransform);
+		((FabricBakedModel) wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+		context.popTransform();
+	}
+
+	private static class DamageTransform implements RenderContext.QuadTransform {
+		private Sprite damageSprite;
+
+		@Override
+		public boolean transform(MutableQuadView quad) {
+			quad.material(DAMAGE_MATERIAL);
+			quad.spriteBake(0, damageSprite, MutableQuadView.BAKE_LOCK_UV);
+			quad.colorIndex(-1);
+			return true;
+		}
+	}
 }
