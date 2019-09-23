@@ -83,7 +83,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	public final MutableQuadViewImpl lightFace(Direction face) {
 		Preconditions.checkNotNull(face);
-		
+
 		data[baseIndex + HEADER_BITS] = EncodingFormat.lightFace(data[baseIndex + HEADER_BITS], face);
 		return this;
 	}
@@ -120,7 +120,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public boolean needsDiffuseShading(int textureIndex) {
-		return material().disableDiffuse(textureIndex);
+		return textureIndex == 0 && !material().disableDiffuse(textureIndex);
 	}
 
 	@Override
@@ -167,13 +167,17 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public MutableQuadViewImpl spriteColor(int vertexIndex, int textureIndex, int color) {
+	public MutableQuadViewImpl spriteColor(int vertexIndex, int spriteIndex, int color) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
 		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR] = color;
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl sprite(int vertexIndex, int textureIndex, float u, float v) {
+	public MutableQuadViewImpl sprite(int vertexIndex, int spriteIndex, float u, float v) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
 		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
 		data[i] = Float.floatToRawIntBits(u);
 		data[i + 1] = Float.floatToRawIntBits(v);
@@ -182,6 +186,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
 		TextureHelper.bakeSprite(this, spriteIndex, sprite, bakeFlags);
 		return this;
 	}

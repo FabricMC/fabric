@@ -31,6 +31,8 @@ import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_Y;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
+import com.google.common.base.Preconditions;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
@@ -254,17 +256,23 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	@Override
-	public int spriteColor(int vertexIndex, int textureIndex) {
+	public int spriteColor(int vertexIndex, int spriteIndex) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
 		return data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR];
 	}
 
 	@Override
-	public float spriteU(int vertexIndex, int textureIndex) {
+	public float spriteU(int vertexIndex, int spriteIndex) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
 		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U]);
 	}
 
 	@Override
-	public float spriteV(int vertexIndex, int textureIndex) {
+	public float spriteV(int vertexIndex, int spriteIndex) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
 		return Float.intBitsToFloat(data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_V]);
 	}
 

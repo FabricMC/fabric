@@ -37,7 +37,7 @@ public abstract class RenderMaterialImpl {
 	private static final int EMISSIVE_FLAG = COLOR_DISABLE_FLAG << 1;
 	private static final int DIFFUSE_FLAG = EMISSIVE_FLAG << 1;
 	private static final int AO_FLAG = DIFFUSE_FLAG << 1;
-	public static final int VALUE_COUNT = (AO_FLAG << 1) - 1;
+	public static final int VALUE_COUNT = (AO_FLAG << 1);
 
 	static private final Value[] VALUES = new Value[VALUE_COUNT];
 
