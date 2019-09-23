@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
@@ -30,6 +31,12 @@ import net.minecraft.util.math.Direction;
  * Only the renderer should implement or extend this interface.
  */
 public interface QuadView {
+	/** Count of integers in a conventional (un-modded) block or item vertex */
+	int VANILLA_VERTEX_STRIDE = VertexFormats.POSITION_COLOR_UV_NORMAL.getVertexSizeInteger();
+	
+	/** Count of integers in a conventional (un-modded) block or item quad */
+	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
+	
     /**
      * Reads baked vertex data and outputs standard baked quad 
      * vertex data in the given array and location.<p>
@@ -116,7 +123,7 @@ public interface QuadView {
      * but the standard Minecraft renderer will not use them.
      */
     default BakedQuad toBakedQuad(int spriteIndex, Sprite sprite, boolean isItem) {
-        int vertexData[] = new int[28];
+        int vertexData[] = new int[VANILLA_QUAD_STRIDE];
         toVanilla(spriteIndex, vertexData, 0, isItem);
         return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite);
     }

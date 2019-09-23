@@ -18,6 +18,7 @@ package net.fabricmc.indigo.renderer.mesh;
 
 import com.google.common.base.Preconditions;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
@@ -68,6 +69,9 @@ public abstract class EncodingFormat {
 		QUAD_STRIDE = VERTEX_STRIDE * 4;
 		QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
 		TOTAL_STRIDE = HEADER_STRIDE + QUAD_STRIDE;
+		
+		Preconditions.checkState(VERTEX_STRIDE == QuadView.VANILLA_VERTEX_STRIDE, "Indigo vertex stride (%s) mismatched with rendering API (%s)", VERTEX_STRIDE, QuadView.VANILLA_VERTEX_STRIDE);
+		Preconditions.checkState(QUAD_STRIDE == QuadView.VANILLA_QUAD_STRIDE, "Indigo quad stride (%s) mismatched with rendering API (%s)", QUAD_STRIDE, QuadView.VANILLA_QUAD_STRIDE);
 	}
 
 	/** used for quick clearing of quad buffers */
