@@ -29,11 +29,11 @@ import net.minecraft.world.BlockRenderView;
 
 @Mixin(targets = "net.minecraft.client.render.block.BlockModelRenderer$AmbientOcclusionCalculator")
 public abstract class MixinAmbientOcclusionCalculator implements AccessAmbientOcclusionCalculator {
-    @Shadow private float[] colorMultiplier;
-    @Shadow private int[] brightness;
+	@Shadow private float[] colorMultiplier;
+	@Shadow private int[] brightness;
 
-    @Shadow 
-    public abstract void apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits);
+	@Shadow 
+	public abstract void apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits);
 
 	@Override
 	public float[] fabric_colorMultiplier() {

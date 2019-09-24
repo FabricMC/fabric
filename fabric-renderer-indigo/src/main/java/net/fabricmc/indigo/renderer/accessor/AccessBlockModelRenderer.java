@@ -24,5 +24,5 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
 public interface AccessBlockModelRenderer {
-    void fabric_updateShape(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits);
+	void fabric_updateShape(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits);
 }

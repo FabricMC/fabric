@@ -26,7 +26,7 @@ import net.minecraft.world.BlockRenderView;
 public interface AccessAmbientOcclusionCalculator {
 	float[] fabric_colorMultiplier();
 
-    int[] fabric_brightness();
+	int[] fabric_brightness();
 
-    void fabric_apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits);
+	void fabric_apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits);
 }
