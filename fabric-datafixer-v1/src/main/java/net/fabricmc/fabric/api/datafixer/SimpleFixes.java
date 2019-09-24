@@ -40,7 +40,7 @@ public interface SimpleFixes {
      * @param changes A map of all changed values, where the key should be original and value is new value.
      * @param schema The Schema to apply this fix to.
      */
-    public abstract void addBlockRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
+    public abstract void addBlockRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1);
     
     /**
      * A basic DataFix for changing entity names. 
@@ -59,7 +59,7 @@ public interface SimpleFixes {
      * @param changes A map of all changed values, where the key should be original and value is new value.
      * @param schema The Schema to add this fix to.
      */
-    public abstract void addItemRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
+    public abstract void addItemRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1);
     
     /**
      * A basic DataFix for changing blockentity names

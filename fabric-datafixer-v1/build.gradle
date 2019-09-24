@@ -4,4 +4,5 @@ version = getSubprojectVersion(project, "0.1.0")
 dependencies {
 	compile project(path: ':fabric-api-base', configuration: 'dev')
 	compile project(path: ':fabric-events-lifecycle-v0', configuration: 'dev')
+	compile project(path: ':fabric-object-builders-v0', configuration: 'dev')
 }

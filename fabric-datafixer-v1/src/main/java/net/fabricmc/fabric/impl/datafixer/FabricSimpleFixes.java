@@ -18,6 +18,7 @@ import net.minecraft.datafixers.fixes.BlockNameFix;
 import net.minecraft.datafixers.fixes.EntityRenameFix;
 import net.minecraft.datafixers.fixes.EntitySimpleTransformFix;
 import net.minecraft.datafixers.fixes.FixItemName;
+import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 
 public class FabricSimpleFixes implements SimpleFixes {
 
@@ -27,17 +28,17 @@ public class FabricSimpleFixes implements SimpleFixes {
     }
 
     @Override
-    public void addBlockRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
+    public void addBlockRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
         builder_1.addFixer(BlockNameFix.create(schema_1, name, (inputBlockName) -> {
-            return changes.getOrDefault(inputBlockName, inputBlockName);
+            return Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName;
         }));
 
     }
 
     @Override
-    public void addItemRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
+    public void addItemRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
         builder_1.addFixer(FixItemName.create(schema_1, name, (inputItemName) -> {
-            return changes.getOrDefault(inputItemName, inputItemName);
+            return Objects.equals(oldId, inputItemName) ? newId : inputItemName;
         }));
     }
 

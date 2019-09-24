@@ -1,12 +1,16 @@
 package net.fabricmc.fabric.api.datafixer;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.schemas.Schema;
 
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.minecraft.SharedConstants;
+import net.minecraft.datafixers.Schemas;
 import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.crash.CrashException;
 
 /**
@@ -20,9 +24,6 @@ public interface DataFixerUtils {
     
     public static final DataFixerUtils INSTANCE = FabricDataFixerImpl.INSTANCE;
     
-    public static final BiFunction<Integer,Schema,Schema> SCHEMA_IDENTIFIER_NORMALIZE = SchemaIdentifierNormalize::new;
-    public static final BiFunction<Integer,Schema,Schema> SCHEMA_EMPTY = Schema::new;
-    
     /**
      * 
      * @param modid The modid of the mod registering this DataFixer
@@ -32,6 +33,16 @@ public interface DataFixerUtils {
      * @return The inputted DataFixer
      */
     public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer);
+    
+    public Optional<DataFixer> getDataFixer(String modid);
+    
+    /**
+     * Retrieves the DataVersion registered under a modid.
+     * @param compoundTag The CompoundTag to check
+     * @param modid The modid to check.
+     * @return The DataVersion stored for the mod or -1 if no DataVersion is present
+     */
+    public int getModDataVersion(CompoundTag compoundTag, String modid);
     
     public boolean isLocked();
 }

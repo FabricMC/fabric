@@ -3,10 +3,14 @@
   "package": "net.fabricmc.fabric.datafixer.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+  	"Schema99Access",
+  	"Schema704Access",
+  	"Schema705Access",
     "MixinChunkSerializer",
     "MixinTagHelper"
   ],
   "client": [
+  	"client.MixinHotbarStorage"
   ],
   "injectors": {
     "defaultRequire": 1
