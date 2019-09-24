@@ -27,6 +27,7 @@ import static net.minecraft.util.math.Direction.SOUTH;
 import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.WEST;
 
+import java.util.BitSet;
 import java.util.function.ToIntFunction;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +36,9 @@ import org.apache.logging.log4j.Logger;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.indigo.Indigo;
+import net.fabricmc.indigo.renderer.accessor.AccessAmbientOcclusionCalculator;
 import net.fabricmc.indigo.renderer.aocalc.AoFace.WeightFunction;
+import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.indigo.renderer.render.BlockRenderInfo;
@@ -74,7 +77,7 @@ public class AoCalculator {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private final VanillaAoCalc vanillaCalc;
+	private final AccessAmbientOcclusionCalculator vanillaCalc;
 	private final BlockPos.Mutable lightPos = new BlockPos.Mutable();
 	private final BlockPos.Mutable searchPos = new BlockPos.Mutable();
 	private final BlockRenderInfo blockInfo;
@@ -98,7 +101,8 @@ public class AoCalculator {
 		this.blockInfo = blockInfo;
 		this.brightnessFunc = brightnessFunc;
 		this.aoFunc = aoFunc;
-		this.vanillaCalc = new VanillaAoCalc(brightnessFunc, aoFunc);
+		this.vanillaCalc = VanillaAoHelper.get();
+
 		for (int i = 0; i < 12; i++) {
 			faceData[i] = new AoFaceData();
 		}
@@ -112,10 +116,16 @@ public class AoCalculator {
 	public void compute(MutableQuadViewImpl quad, boolean isVanilla) {
 		final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
 		final boolean shouldCompare;
-
+		
 		switch (config) {
 		case VANILLA:
-			calcVanilla(quad);
+			// prevent NPE in error case of failed reflection for vanilla calculator access
+			if (vanillaCalc == null) {
+				calcFastVanilla(quad);
+			} else {
+				calcVanilla(quad);
+			}
+
 			// no point in comparing vanilla with itself
 			shouldCompare = false;
 			break;
@@ -141,10 +151,10 @@ public class AoCalculator {
 			calcEnhanced(quad);
 		}
 
-		if (shouldCompare) {
+		if (shouldCompare && vanillaCalc != null) {
 			float[] vanillaAo = new float[4];
 			int[] vanillaLight = new int[4];
-			vanillaCalc.compute(blockInfo, quad, vanillaAo, vanillaLight);
+			calcVanilla(quad, vanillaAo, vanillaLight);
 
 			for (int i = 0; i < 4; i++) {
 				if (light[i] != vanillaLight[i] || !MathHelper.approximatelyEquals(ao[i], vanillaAo[i])) {
@@ -161,7 +171,26 @@ public class AoCalculator {
 	}
 
 	private void calcVanilla(MutableQuadViewImpl quad) {
-		vanillaCalc.compute(blockInfo, quad, ao, light);
+		calcVanilla(quad, ao, light);
+	}
+
+	// These are what vanilla AO calc wants, per its usage in vanilla code
+	// Because this instance is effectively thread-local, we preserve instances
+	// to avoid making a new allocation each call.
+    private final float[] vanillaAoData = new float[Direction.values().length * 2];
+    private final BitSet vanillaAoControlBits = new BitSet(3);
+    private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
+    
+	private void calcVanilla(MutableQuadViewImpl quad, float[] aoDest, int[] lightDest) {
+		vanillaAoControlBits.clear();
+		final Direction face = quad.lightFace();
+		quad.toVanilla(0, vertexData, 0, false);
+
+		VanillaAoHelper.updateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, face, vanillaAoData, vanillaAoControlBits);
+		vanillaCalc.fabric_apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), vanillaAoData, vanillaAoControlBits);
+
+		System.arraycopy(vanillaCalc.fabric_colorMultiplier(), 0, aoDest, 0, 4);
+		System.arraycopy(vanillaCalc.fabric_brightness(), 0, lightDest, 0, 4);
 	}
 
 	private void calcFastVanilla(MutableQuadViewImpl quad) {
