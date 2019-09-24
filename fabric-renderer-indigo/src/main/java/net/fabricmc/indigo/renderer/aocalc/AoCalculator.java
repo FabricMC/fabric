@@ -116,7 +116,7 @@ public class AoCalculator {
 	public void compute(MutableQuadViewImpl quad, boolean isVanilla) {
 		final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
 		final boolean shouldCompare;
-		
+
 		switch (config) {
 		case VANILLA:
 			// prevent NPE in error case of failed reflection for vanilla calculator access
@@ -177,10 +177,10 @@ public class AoCalculator {
 	// These are what vanilla AO calc wants, per its usage in vanilla code
 	// Because this instance is effectively thread-local, we preserve instances
 	// to avoid making a new allocation each call.
-    private final float[] vanillaAoData = new float[Direction.values().length * 2];
-    private final BitSet vanillaAoControlBits = new BitSet(3);
-    private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
-    
+	private final float[] vanillaAoData = new float[Direction.values().length * 2];
+	private final BitSet vanillaAoControlBits = new BitSet(3);
+	private final int[] vertexData = new int[EncodingFormat.QUAD_STRIDE];
+
 	private void calcVanilla(MutableQuadViewImpl quad, float[] aoDest, int[] lightDest) {
 		vanillaAoControlBits.clear();
 		final Direction face = quad.lightFace();
@@ -236,7 +236,7 @@ public class AoCalculator {
 		AoFaceData faceData = computeFace(lightFace, isOnLightFace);
 		final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
 		final float[] w = this.w;
-		
+
 		for (int i = 0; i < 4; i++) {
 			wFunc.apply(quad, i, w);
 			light[i] = faceData.weightedCombinedLight(w);
@@ -260,7 +260,7 @@ public class AoCalculator {
 	 */
 	private AoFaceData gatherInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace) {
 		final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
-		
+
 		if (MathHelper.approximatelyEquals(w1, 0)) {
 			return computeFace(lightFace, true);
 		} else if (MathHelper.approximatelyEquals(w1, 1)) {
@@ -275,7 +275,7 @@ public class AoCalculator {
 		final Direction lightFace = quad.lightFace();
 		AoFaceData faceData = blendedInsetFace(quad, 0, lightFace);
 		final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
-		
+
 		for (int i = 0; i < 4; i++) {
 			wFunc.apply(quad, i, w);
 			light[i] = faceData.weightedCombinedLight(w);
@@ -299,7 +299,7 @@ public class AoCalculator {
 			int maxSky = 0, maxBlock = 0;
 
 			final float x = normal.getX();
-			
+
 			if (!MathHelper.approximatelyEquals(0f, x)) {
 				final Direction face = x > 0 ? Direction.EAST : Direction.WEST;
 				final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -317,7 +317,7 @@ public class AoCalculator {
 			}
 
 			final float y = normal.getY();
-			
+
 			if (!MathHelper.approximatelyEquals(0f, y)) {
 				final Direction face = y > 0 ? Direction.UP : Direction.DOWN;
 				final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -335,7 +335,7 @@ public class AoCalculator {
 			}
 
 			final float z = normal.getZ();
-			
+
 			if (!MathHelper.approximatelyEquals(0f, z)) {
 				final Direction face = z > 0 ? Direction.SOUTH : Direction.NORTH;
 				final AoFaceData fd = gatherInsetFace(quad, i, face);
@@ -369,7 +369,7 @@ public class AoCalculator {
 		final int faceDataIndex = isOnBlockFace ? lightFace.getId() : lightFace.getId() + 6;
 		final int mask = 1 << faceDataIndex;
 		final AoFaceData result = faceData[faceDataIndex];
-		
+
 		if ((completionFlags & mask) == 0) {
 			completionFlags |= mask;
 
@@ -456,7 +456,7 @@ public class AoCalculator {
 			// Doesn't use light pos because logic not based solely on this block's geometry
 			int lightCenter;
 			searchPos.set((Vec3i) pos).setOffset(lightFace);
-			
+
 			if (isOnBlockFace || !world.getBlockState(searchPos).isFullOpaque(world, searchPos)) {
 				lightCenter = brightnessFunc.applyAsInt(searchPos);
 			} else {
