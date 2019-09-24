@@ -28,39 +28,43 @@ import java.util.List;
 import java.util.Set;
 
 public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
-    /** Set by other renderers to disable loading of Indigo */
+	/** Set by other renderers to disable loading of Indigo */
 	private static final String JSON_KEY_DISABLE_INDIGO = "fabric-renderer-api-v1:contains_renderer";
-	/** Disables vanilla block tesselation and ensures vertex format compatibility */
+	/**
+	 * Disables vanilla block tesselation and ensures vertex format compatibility
+	 */
 	private static final String JSON_KEY_FORCE_COMPATIBILITY = "fabric-renderer-indigo:force_compatibility";
-	
+
 	private static boolean needsLoad = true;
-	
+
 	private static boolean indigoApplicable = true;
 	private static boolean forceCompatibility = false;
 
 	private static void loadIfNeeded() {
-	    if(needsLoad) {
-	        for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-	            final ModMetadata meta = container.getMetadata();
-	            if (meta.containsCustomValue(JSON_KEY_DISABLE_INDIGO)) {
-	                indigoApplicable = false;
-	            } else if (meta.containsCustomValue(JSON_KEY_FORCE_COMPATIBILITY)) {
-	                forceCompatibility = true;
-	            }
-	        }
-	        needsLoad = false;
-	    }
+		if (needsLoad) {
+			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
+				final ModMetadata meta = container.getMetadata();
+				
+				if (meta.containsCustomValue(JSON_KEY_DISABLE_INDIGO)) {
+					indigoApplicable = false;
+				} else if (meta.containsCustomValue(JSON_KEY_FORCE_COMPATIBILITY)) {
+					forceCompatibility = true;
+				}
+			}
+			needsLoad = false;
+		}
 	}
+
 	static boolean shouldApplyIndigo() {
-	    loadIfNeeded();
+		loadIfNeeded();
 		return indigoApplicable;
 	}
 
-   static boolean shouldForceCompatibility() {
-        loadIfNeeded();
-        return forceCompatibility;
-    }
-	   
+	static boolean shouldForceCompatibility() {
+		loadIfNeeded();
+		return forceCompatibility;
+	}
+
 	@Override
 	public void onLoad(String mixinPackage) {
 

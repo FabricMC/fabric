@@ -31,22 +31,24 @@ import net.minecraft.util.Identifier;
 
 @Mixin(SpriteAtlasTexture.class)
 public class MixinSpriteAtlasTexture implements SpriteFinderImpl.SpriteFinderAccess {
-    @Shadow private Map<Identifier, Sprite> sprites;
-    
-    private SpriteFinderImpl fabric_spriteFinder = null;
-    
-    @Inject(at = @At("RETURN"), method = "upload")
-    private void uploadHook(SpriteAtlasTexture.Data input, CallbackInfo info) {
-        fabric_spriteFinder = null;
-    }
+	@Shadow
+	private Map<Identifier, Sprite> sprites;
 
-    @Override
-    public SpriteFinderImpl fabric_spriteFinder() {
-        SpriteFinderImpl result = fabric_spriteFinder;
-        if(result == null) {
-            result = new SpriteFinderImpl(sprites);
-            fabric_spriteFinder = result;
-        }
-        return result;
-    }
+	private SpriteFinderImpl fabric_spriteFinder = null;
+
+	@Inject(at = @At("RETURN"), method = "upload")
+	private void uploadHook(SpriteAtlasTexture.Data input, CallbackInfo info) {
+		fabric_spriteFinder = null;
+	}
+
+	@Override
+	public SpriteFinderImpl fabric_spriteFinder() {
+		SpriteFinderImpl result = fabric_spriteFinder;
+
+		if (result == null) {
+			result = new SpriteFinderImpl(sprites);
+			fabric_spriteFinder = result;
+		}
+		return result;
+	}
 }

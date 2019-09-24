@@ -36,54 +36,56 @@ import net.minecraft.world.BlockRenderView;
  * so they can be applied together with chunk offsets.
  */
 public class BlockRenderInfo {
-    private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColorMap();
-    public final Random random = new Random();
-    public BlockRenderView blockView;
-    public BlockPos blockPos;
-    public BlockState blockState; 
-    public long seed;
-    boolean defaultAo;
-    BlockRenderLayer defaultLayer;
-    
-    public final Supplier<Random> randomSupplier = () -> {
-        final Random result = random;
-        long seed = this.seed;
-        if(seed == -1L) {
-            seed = blockState.getRenderingSeed(blockPos);
-            this.seed = seed;
-        }
-        result.setSeed(seed);
-        return result;
-    };
-    
-    public void setBlockView(BlockRenderView blockView) {
-        this.blockView = blockView;
-    }
-    
-    public void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAO) {
-        this.blockPos = blockPos;
-        this.blockState = blockState;
-        // in the unlikely case seed actually matches this, we'll simply retrieve it more than one
-        seed = -1L; 
-        defaultAo = modelAO && MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0;
-        
-        defaultLayer = BlockRenderLayer.method_22715(blockState);
-    }
-    
-    public void release() {
-        blockPos = null;
-        blockState = null; 
-    }
-    
-    int blockColor(int colorIndex) {
-        return 0xFF000000 | blockColorMap.getColorMultiplier(blockState, blockView, blockPos, colorIndex);
-    }
-    
-    boolean shouldDrawFace(Direction face) {
-        return true;
-    }
-    
-    BlockRenderLayer effectiveRenderLayer(BlendMode blendMode) {
-        return blendMode == BlendMode.DEFAULT ? this.defaultLayer : blendMode.blockRenderLayer;
-    }
+	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColorMap();
+	public final Random random = new Random();
+	public BlockRenderView blockView;
+	public BlockPos blockPos;
+	public BlockState blockState;
+	public long seed;
+	boolean defaultAo;
+	BlockRenderLayer defaultLayer;
+
+	public final Supplier<Random> randomSupplier = () -> {
+		final Random result = random;
+		long seed = this.seed;
+
+		if (seed == -1L) {
+			seed = blockState.getRenderingSeed(blockPos);
+			this.seed = seed;
+		}
+
+		result.setSeed(seed);
+		return result;
+	};
+
+	public void setBlockView(BlockRenderView blockView) {
+		this.blockView = blockView;
+	}
+
+	public void prepareForBlock(BlockState blockState, BlockPos blockPos, boolean modelAO) {
+		this.blockPos = blockPos;
+		this.blockState = blockState;
+		// in the unlikely case seed actually matches this, we'll simply retrieve it more than one
+		seed = -1L;
+		defaultAo = modelAO && MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0;
+
+		defaultLayer = BlockRenderLayer.method_22715(blockState);
+	}
+
+	public void release() {
+		blockPos = null;
+		blockState = null;
+	}
+
+	int blockColor(int colorIndex) {
+		return 0xFF000000 | blockColorMap.getColorMultiplier(blockState, blockView, blockPos, colorIndex);
+	}
+
+	boolean shouldDrawFace(Direction face) {
+		return true;
+	}
+
+	BlockRenderLayer effectiveRenderLayer(BlendMode blendMode) {
+		return blendMode == BlendMode.DEFAULT ? this.defaultLayer : blendMode.blockRenderLayer;
+	}
 }

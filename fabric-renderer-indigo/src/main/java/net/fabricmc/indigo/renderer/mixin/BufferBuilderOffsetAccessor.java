@@ -24,8 +24,10 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface BufferBuilderOffsetAccessor {
 	@Accessor
 	double getOffsetX();
+
 	@Accessor
 	double getOffsetY();
+
 	@Accessor
 	double getOffsetZ();
 }

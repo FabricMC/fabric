@@ -61,24 +61,20 @@ import net.minecraft.world.BlockRenderView;
  */
 @Mixin(targets = "net.minecraft.client.render.chunk.ChunkBatcher$ChunkRenderer$class_4578")
 public class MixinChunkRebuildTask {
-	@Shadow protected ChunkRendererRegion field_20838;
-	@Shadow protected ChunkRenderer field_20839;
-	
+	@Shadow
+	protected ChunkRendererRegion field_20838;
+	@Shadow
+	protected ChunkRenderer field_20839;
+
 	@Inject(at = @At("HEAD"), method = "method_22785")
-	private void hookChunkBuild(
-			float float_1, 
-			float float_2, 
-			float float_3, 
-			ChunkBatcher.ChunkRenderData renderData, 
-			BlockLayeredBufferBuilder builder,
-			CallbackInfoReturnable<Set<BlockEntity>> ci) {
+	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBatcher.ChunkRenderData renderData, BlockLayeredBufferBuilder builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
 		if (field_20838 != null) {
 			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 			renderer.prepare(field_20838, field_20839, renderData, builder);
-			((AccessChunkRendererRegion)field_20838).fabric_setRenderer(renderer);
+			((AccessChunkRendererRegion) field_20838).fabric_setRenderer(renderer);
 		}
 	}
-	
+
 	/**
 	 * This is the hook that actually implements the rendering API for terrain rendering.<p>
 	 * 
@@ -95,8 +91,7 @@ public class MixinChunkRebuildTask {
 	 * Normally this does nothing but will allow mods to create rendering hooks that are
 	 * driven off of render type. (Not recommended or encouraged, but also not prevented.)
 	 */
-	@Redirect(method = "method_22785", require = 1,
-		at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/BufferBuilder;Ljava/util/Random;)Z"))
+	@Redirect(method = "method_22785", require = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/BufferBuilder;Ljava/util/Random;)Z"))
 	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, BufferBuilder bufferBuilder, Random random) {
 		if (blockState.getRenderType() == BlockRenderType.MODEL) {
 			final BakedModel model = renderManager.getModel(blockState);

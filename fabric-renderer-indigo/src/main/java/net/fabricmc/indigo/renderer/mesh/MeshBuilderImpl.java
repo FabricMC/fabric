@@ -30,55 +30,58 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
  * The one interesting bit is in {@link Maker#emit()}. 
  */
 public class MeshBuilderImpl implements MeshBuilder {
-    int[] data = new int[256];
-    private final Maker maker = new Maker();
-    int index = 0;
-    int limit = data.length;
-    
-    protected void ensureCapacity(int stride) {
-        if(stride > limit - index) {
-            limit *= 2;
-            int[] bigger = new int[limit];
-            System.arraycopy(data, 0, bigger, 0, index);
-            data = bigger;
-            maker.data = bigger;
-        }
-    }
+	int[] data = new int[256];
+	private final Maker maker = new Maker();
+	int index = 0;
+	int limit = data.length;
 
-    @Override
-    public Mesh build() {
-        int[] packed = new int[index];
-        System.arraycopy(data, 0, packed, 0, index);
-        index = 0;
-        maker.begin(data, index);
-        return new MeshImpl(packed);
-    }
+	protected void ensureCapacity(int stride) {
+		if (stride > limit - index) {
+			limit *= 2;
+			int[] bigger = new int[limit];
+			System.arraycopy(data, 0, bigger, 0, index);
+			data = bigger;
+			maker.data = bigger;
+		}
+	}
 
-    @Override
-    public QuadEmitter getEmitter() {
-        ensureCapacity(EncodingFormat.MAX_STRIDE);
-        maker.begin(data, index);
-        return maker;
-    }
+	@Override
+	public Mesh build() {
+		int[] packed = new int[index];
+		System.arraycopy(data, 0, packed, 0, index);
+		index = 0;
+		maker.begin(data, index);
+		return new MeshImpl(packed);
+	}
 
-    /**
-     * Our base classes are used differently so we define final
-     * encoding steps in subtypes. This will be a static mesh used
-     * at render time so we want to capture all geometry now and
-     * apply non-location-dependent lighting. 
-     */
-    private class Maker extends MutableQuadViewImpl implements QuadEmitter {
-        @Override
-        public Maker emit() {
-            lightFace = GeometryHelper.lightFace(this);
-            geometryFlags = GeometryHelper.computeShapeFlags(this);
-            ColorHelper.applyDiffuseShading(this, false);
-            encodeHeader();
-            index += maker.stride();   
-            ensureCapacity(EncodingFormat.MAX_STRIDE);
-            baseIndex = index;
-            clear();
-            return this;
-        }
-    }
+	@Override
+	public QuadEmitter getEmitter() {
+		ensureCapacity(EncodingFormat.TOTAL_STRIDE);
+		maker.begin(data, index);
+		return maker;
+	}
+
+	/**
+	 * Our base classes are used differently so we define final
+	 * encoding steps in subtypes. This will be a static mesh used
+	 * at render time so we want to capture all geometry now and
+	 * apply non-location-dependent lighting. 
+	 */
+	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
+		@Override
+		public Maker emit() {
+			lightFace(GeometryHelper.lightFace(this));
+			
+			if (isGeometryInvalid) {
+				geometryFlags(GeometryHelper.computeShapeFlags(this));
+			}
+			
+			ColorHelper.applyDiffuseShading(this, false);
+			index += EncodingFormat.TOTAL_STRIDE;
+			ensureCapacity(EncodingFormat.TOTAL_STRIDE);
+			baseIndex = index;
+			clear();
+			return this;
+		}
+	}
 }

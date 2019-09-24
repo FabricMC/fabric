@@ -19,36 +19,36 @@ package net.fabricmc.fabric.impl.renderer;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 
-public final class RendererAccessImpl implements RendererAccess{
-    public static final RendererAccessImpl INSTANCE = new RendererAccessImpl();
+public final class RendererAccessImpl implements RendererAccess {
+	public static final RendererAccessImpl INSTANCE = new RendererAccessImpl();
 
-    // private constructor
-    private RendererAccessImpl() { };
+	// private constructor
+	private RendererAccessImpl() { }
 
-    @Override
-    public final void registerRenderer(Renderer renderer) {
-        if(renderer == null) {
-            throw new NullPointerException("Attempt to register a NULL rendering plug-in.");
-        } else if(activeRenderer != null) {
-            throw new UnsupportedOperationException("A second rendering plug-in attempted to register. Multiple rendering plug-ins are not supported.");
-        } else {
-            activeRenderer = renderer;
-            hasActiveRenderer = true;
-        }
-    }
+	@Override
+	public final void registerRenderer(Renderer renderer) {
+		if (renderer == null) {
+			throw new NullPointerException("Attempt to register a NULL rendering plug-in.");
+		} else if (activeRenderer != null) {
+			throw new UnsupportedOperationException("A second rendering plug-in attempted to register. Multiple rendering plug-ins are not supported.");
+		} else {
+			activeRenderer = renderer;
+			hasActiveRenderer = true;
+		}
+	}
 
-    private Renderer activeRenderer = null;
+	private Renderer activeRenderer = null;
 
-    /** avoids null test every call to {@link #hasRenderer()} */
-    private boolean hasActiveRenderer = false;
+	/** avoids null test every call to {@link #hasRenderer()} */
+	private boolean hasActiveRenderer = false;
 
-    @Override
-    public final Renderer getRenderer() {
-        return activeRenderer;
-    }
+	@Override
+	public final Renderer getRenderer() {
+		return activeRenderer;
+	}
 
-    @Override
-    public final boolean hasRenderer() {
-        return hasActiveRenderer;
-    }
+	@Override
+	public final boolean hasRenderer() {
+		return hasActiveRenderer;
+	}
 }

@@ -7,13 +7,14 @@
   ],
   "client": [
     "BufferBuilderOffsetAccessor",
-  	"MixinBlockModelRenderer",
+    "MixinAmbientOcclusionCalculator",
+    "MixinBlockModelRenderer",
     "MixinBufferBuilder",
     "MixinChunkRebuildTask",
     "MixinChunkRenderData",
-	"MixinChunkRenderer",
+    "MixinChunkRenderer",
     "MixinChunkRendererRegion",
-	"MixinItemRenderer"
+    "MixinItemRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

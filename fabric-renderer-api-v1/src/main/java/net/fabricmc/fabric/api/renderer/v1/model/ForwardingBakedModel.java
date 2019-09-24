@@ -38,56 +38,56 @@ import net.minecraft.world.BlockRenderView;
  * Avoids boilerplate code for pass-through methods. For example usage see {@link DamageModel}.
  */
 public abstract class ForwardingBakedModel implements BakedModel, FabricBakedModel {
-    /** implementations must set this somehow */
-    protected BakedModel wrapped;
-    
-    @Override
-    public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-        ((FabricBakedModel)wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
-    }
+	/** implementations must set this somehow */
+	protected BakedModel wrapped;
 
-    @Override
-    public boolean isVanillaAdapter() {
-        return ((FabricBakedModel)wrapped).isVanillaAdapter();
-    }
+	@Override
+	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+		((FabricBakedModel) wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
+	}
 
-    @Override
-    public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-        ((FabricBakedModel)wrapped).emitItemQuads(stack, randomSupplier, context);
-    }
+	@Override
+	public boolean isVanillaAdapter() {
+		return ((FabricBakedModel) wrapped).isVanillaAdapter();
+	}
 
-    @Override
-    public List<BakedQuad> getQuads(BlockState blockState, Direction face, Random rand) {
-        return wrapped.getQuads(blockState, face, rand);
-    }
+	@Override
+	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
+		((FabricBakedModel) wrapped).emitItemQuads(stack, randomSupplier, context);
+	}
 
-    @Override
-    public boolean useAmbientOcclusion() {
-        return wrapped.useAmbientOcclusion();
-    }
+	@Override
+	public List<BakedQuad> getQuads(BlockState blockState, Direction face, Random rand) {
+		return wrapped.getQuads(blockState, face, rand);
+	}
 
-    @Override
-    public boolean hasDepthInGui() {
-        return wrapped.hasDepthInGui();
-    }
+	@Override
+	public boolean useAmbientOcclusion() {
+		return wrapped.useAmbientOcclusion();
+	}
 
-    @Override
-    public boolean isBuiltin() {
-        return wrapped.isBuiltin();
-    }
+	@Override
+	public boolean hasDepthInGui() {
+		return wrapped.hasDepthInGui();
+	}
 
-    @Override
-    public Sprite getSprite() {
-        return wrapped.getSprite();
-    }
+	@Override
+	public boolean isBuiltin() {
+		return wrapped.isBuiltin();
+	}
 
-    @Override
-    public ModelTransformation getTransformation() {
-        return wrapped.getTransformation();
-    }
+	@Override
+	public Sprite getSprite() {
+		return wrapped.getSprite();
+	}
 
-    @Override
-    public ModelItemPropertyOverrideList getItemPropertyOverrides() {
-        return wrapped.getItemPropertyOverrides();
-    }
+	@Override
+	public ModelTransformation getTransformation() {
+		return wrapped.getTransformation();
+	}
+
+	@Override
+	public ModelItemPropertyOverrideList getItemPropertyOverrides() {
+		return wrapped.getItemPropertyOverrides();
+	}
 }

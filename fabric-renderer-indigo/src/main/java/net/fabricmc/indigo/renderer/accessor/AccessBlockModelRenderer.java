@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.indigo.renderer.aocalc;
+package net.fabricmc.indigo.renderer.accessor;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.indigo.Indigo;
+import java.util.BitSet;
 
-@Environment(EnvType.CLIENT)
-@FunctionalInterface
-interface AoVertexClampFunction {
-	float clamp(float x);
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockRenderView;
 
-	AoVertexClampFunction CLAMP_FUNC = Indigo.FIX_EXTERIOR_VERTEX_LIGHTING ? x -> x < 0f ? 0f : (x > 1f ? 1f : x) : x -> x;
+public interface AccessBlockModelRenderer {
+	void fabric_updateShape(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits);
 }
