@@ -44,24 +44,24 @@ public class VanillaAoHelper {
 				.mapClassName("intermediary", "net.minecraft.class_778$class_780");
 
 		for (Class<?> innerClass : BlockModelRenderer.class.getDeclaredClasses()) {
-	    	if (innerClass.getName().equals(target)) {
-	    		Constructor<?> constructor = innerClass.getDeclaredConstructors()[0];
-	    		constructor.setAccessible(true);
+			if (innerClass.getName().equals(target)) {
+				Constructor<?> constructor = innerClass.getDeclaredConstructors()[0];
+				constructor.setAccessible(true);
 
-	    		factory = new Supplier<AccessAmbientOcclusionCalculator>() {
+				factory = new Supplier<AccessAmbientOcclusionCalculator>() {
 					@Override
 					public AccessAmbientOcclusionCalculator get() {
 						try {
 							return (AccessAmbientOcclusionCalculator) constructor.newInstance(instance);
-		    			} catch (Exception e) {
-		    				Indigo.LOGGER.warn("[Indigo] Exception accessing vanilla smooth lighter",  e);
-		    				return null;
-		    			}
+						} catch (Exception e) {
+							Indigo.LOGGER.warn("[Indigo] Exception accessing vanilla smooth lighter",  e);
+							return null;
+						}
 					}
-	    		};
-	    		break;
-	    	}
-	    }
+				};
+				break;
+			}
+		}
 
 		if (factory != null && factory.get() == null) {
 			factory = null;
