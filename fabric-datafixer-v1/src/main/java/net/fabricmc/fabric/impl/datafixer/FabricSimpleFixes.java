@@ -30,7 +30,8 @@ public class FabricSimpleFixes implements SimpleFixes {
     @Override
     public void addBlockRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
         builder_1.addFixer(BlockNameFix.create(schema_1, name, (inputBlockName) -> {
-            return Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName;
+            throw new IllegalArgumentException("Test");
+            //return Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName;
         }));
 
     }
@@ -66,7 +67,6 @@ public class FabricSimpleFixes implements SimpleFixes {
                     throw new IllegalStateException("Biome type is not what was expected.");
                 } else {
                     return this.fixTypeEverywhere(name, type_1, (dynamicOps_1x) -> { // Fix type_1 using NBTOps
-                                                                                     // basically
                         return (pair_1x) -> {
                             return pair_1x.mapSecond((string_1x) -> {
                                 return changes.getOrDefault(string_1x, string_1x);
@@ -95,7 +95,7 @@ public class FabricSimpleFixes implements SimpleFixes {
      */
     @Override
     public void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String originalBEName, String newBEName, Schema schema) {
-        // TODO figure out how it works before implemting
+        // TODO figure out how it works before implementing
 
         throw new UnsupportedOperationException("Not implemented yet"); // TODO implement soon
     }

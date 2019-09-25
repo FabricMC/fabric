@@ -22,23 +22,7 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
     
     @Override
     public void onInitialize() {
-        /**
-         * 
-         * Replace this as the Client Registers one injection for DataFixers so a client and common initalizer are needed.
-         * 
-         * There has to be a better way to lock registration of datafixers.
-         * 
-         
-        ServerStartCallback.EVENT.register((server) -> { // Run this when server starts so DataFixers can't be registered while server is running. This is to prevent world corruption from incompletely fixed chunks.
-            if(!DataFixerUtils.INSTANCE.isLocked()) {
-                FabricDataFixerImpl.INSTANCE.lock(true);
-            }
-        });
-        
-        ServerStopCallback.EVENT.register((server) -> { // Unlock on server shutdown so if a client starts another world, the datafixers will still initalize.
-            FabricDataFixerImpl.INSTANCE.lock(false);
-        });
-        */
+        // TODO Add logic in both Common and Client Initializer to lock DataFixer registration once Client loads or Server starts. Maybe after FabricLoader Entrypoint finishes.
         
         // Ignore test blocks for logic:
         
@@ -46,35 +30,41 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
         
         Registry.register(Registry.BLOCK, new Identifier("test:test_block"), new Block(FabricBlockSettings.of(Material.CLAY).build())); // For data version 2
         
-        // Test DataFixer will move later
+        // Test DataFixer, will remove later
         DataFixerBuilder builder = new DataFixerBuilder(TEST_DATA_VERSION);
-        //Schemas.getFixer().getSchema(SharedConstants.getGameVersion().getWorldVersion());
+        
         builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
         
         Schema v1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
         SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename testp to test_block", "test:testo", "test:test_block", v1);
-        //
         
-        // TODO: I am a debugging hack, please end my suffering when you solve the issue
-        Field field;
-        try {
-            field = builder.getClass().getDeclaredField("fixerVersions");
+        // Remove Reflection Debug hack for release
+        DebugHacks.getFixerVersions(builder);
         
-        
-        field.setAccessible(true);
-        IntSortedSet fixerVersions = (IntSortedSet) field.get(builder);
-        
-        
-        Gson gson = new Gson();
-        
-        System.out.println(gson.toJson(fixerVersions));
-        } catch (ReflectiveOperationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
         DataFixerUtils.INSTANCE.registerFixer("fabric_test", TEST_DATA_VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
     }
 
     public static int TEST_DATA_VERSION = 1;
-
+    
+    public static class DebugHacks {
+        public static void getFixerVersions(DataFixerBuilder builder) {
+            Field field;
+            try {
+                field = builder.getClass().getDeclaredField("fixerVersions");
+            
+            
+            field.setAccessible(true);
+            IntSortedSet fixerVersions = (IntSortedSet) field.get(builder);
+            
+            
+            Gson gson = new Gson();
+            
+            System.out.println(gson.toJson(fixerVersions));
+            } catch (ReflectiveOperationException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+    }
+    
 }

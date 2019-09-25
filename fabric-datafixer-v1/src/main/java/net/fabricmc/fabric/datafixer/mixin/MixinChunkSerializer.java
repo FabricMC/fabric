@@ -13,7 +13,6 @@ public class MixinChunkSerializer {
     
     @ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/nbt/CompoundTag.putInt(Ljava/lang/String;I)V", ordinal = 0), method = "serialize(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/Chunk;)Lnet/minecraft/nbt/CompoundTag;", name = "compoundTag_1")
     private static CompoundTag addModDataVersions(CompoundTag input) {
-        // Add the tags.
         FabricDataFixerImpl.INSTANCE.addFixerVersions(input);
         return input;
     }

@@ -56,7 +56,7 @@ public final class FabricDataFixerImpl implements DataFixerUtils {
         return datafixer;
     }
 
-    public CompoundTag updateWithAllFixers(DataFixer dataFixer, DataFixTypes dataFixTypes, CompoundTag compoundTag) {
+    public CompoundTag updateWithAllFixers(DataFixTypes dataFixTypes, CompoundTag compoundTag) {
         
         CompoundTag currentTag = compoundTag;
 
@@ -66,9 +66,7 @@ public final class FabricDataFixerImpl implements DataFixerUtils {
             DataFixerEntry dataFixerEntry = entry.getValue();
             
             try {
-                System.out.println(dataFixTypes.getTypeReference().typeName() + " " + modidCurrentDynamicVersion + " " + dataFixerEntry.runtimeDataVersion);
                 currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
-
             } catch (Throwable t) {
                 // Something went horribly wrong, kill the game to prevent any/further corruption
                 CrashReport report = CrashReport.create(t, "Exception while DataFixing");

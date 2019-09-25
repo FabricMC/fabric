@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.datafixer.mixin;
+package net.fabricmc.fabric.datafixer.mixin.accessor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -11,5 +11,7 @@ import net.minecraft.datafixers.schemas.Schema99;
 public interface Schema99Access {
     
     @Accessor
-    static HookFunction getField_5747() { throw new UnsupportedOperationException(); }
+    static HookFunction getField_5747() { 
+        throw new UnsupportedOperationException("Mixin dummy");
+    }
 }

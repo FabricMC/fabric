@@ -3,11 +3,12 @@
   "package": "net.fabricmc.fabric.datafixer.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-  	"Schema99Access",
-  	"Schema704Access",
-  	"Schema705Access",
+  	"accessor.Schema99Access",
+  	"accessor.Schema704Access",
+  	"accessor.Schema705Access",
     "MixinChunkSerializer",
-    "MixinTagHelper"
+    "MixinTagHelper",
+    "MixinDataFixerUpper"
   ],
   "client": [
   	"client.MixinHotbarStorage"
