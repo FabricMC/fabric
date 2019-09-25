@@ -33,13 +33,16 @@ public interface BlockEntityClientSerializable {
 	/**
 	 * Call this method on the server to schedule a BlockEntity sync to client. This will call
 	 * {@link #toClientTag(CompoundTag)} on the server to generate the packet data, and then
-	 * {@link #fromClientTag(CompoundTag)} on the client to decode that data.
+	 * {@link #fromClientTag(CompoundTag)} on the client to decode that data. This is preferable
+	 * to {@link World#updateListeners(net.minecraft.util.math.BlockPos, net.minecraft.block.BlockState, net.minecraft.block.BlockState, int)}
+	 * because it does not cause entities to update their pathing as a side effect.
 	 */
 	default void sync() {
 		if (this instanceof BlockEntity) {
-			World world = ((BlockEntity)this).getWorld();
+			World world = ((BlockEntity) this).getWorld();
+
 			if (world instanceof ServerWorld) {
-				((ServerWorld)world).method_14178().markForUpdate(((BlockEntity)this).getPos());
+				((ServerWorld) world).method_14178().markForUpdate(((BlockEntity) this).getPos());
 			}
 		}
 	}
