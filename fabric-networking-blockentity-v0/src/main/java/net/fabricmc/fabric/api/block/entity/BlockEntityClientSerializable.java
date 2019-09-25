@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.api.block.entity;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
  * Implement this interace on a BlockEntity which you would like to be
@@ -26,4 +29,19 @@ public interface BlockEntityClientSerializable {
 	void fromClientTag(CompoundTag tag);
 
 	CompoundTag toClientTag(CompoundTag tag);
+	
+	/**
+	 * Call this method on the server to schedule a BlockEntity sync to client. This will call
+	 * {@link #toClientTag(CompoundTag)} on the server to generate the packet data, and then
+	 * {@link #fromClientTag(CompoundTag)} on the client to decode that data.
+	 */
+	default void sync() {
+		World world = getWorld();
+		if (world instanceof ServerWorld) {
+			((ServerWorld)world).method_14178().markForUpdate(getPos());
+		}
+	}
+
+	public World getWorld();
+	public BlockPos getPos();
 }
