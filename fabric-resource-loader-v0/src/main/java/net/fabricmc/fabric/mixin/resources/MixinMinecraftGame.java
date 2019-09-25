@@ -21,14 +21,13 @@ import net.fabricmc.fabric.impl.resources.ModResourcePackCreator;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.ClientResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainerManager;
+import net.minecraft.resource.ResourcePackCreator;
 import net.minecraft.resource.ResourceType;
-import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftGame {
@@ -36,9 +35,10 @@ public class MixinMinecraftGame {
 	@Final
 	private ResourcePackContainerManager<ClientResourcePackContainer> resourcePackContainerManager;
 
-	@Inject(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;netProxy:Ljava/net/Proxy;", opcode = Opcodes.PUTFIELD))
-	public void initResources(CallbackInfo ci) {
-		resourcePackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES));
-		PackScannerRegistrationCallback.RESOURCE.invoker().registerTo(resourcePackContainerManager);
+	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
+	public void initResources(ResourcePackContainerManager<ClientResourcePackContainer> manager, ResourcePackCreator creator) {
+		manager.addCreator(creator);
+		manager.addCreator(new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES));
+		PackScannerRegistrationCallback.RESOURCE.invoker().registerTo(manager);
 	}
 }
