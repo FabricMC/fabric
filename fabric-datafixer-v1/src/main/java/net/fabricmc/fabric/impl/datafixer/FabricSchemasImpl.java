@@ -6,6 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import com.mojang.datafixers.DSL;
+import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.Hook.HookFunction;
 import com.mojang.datafixers.types.templates.TypeTemplate;
@@ -15,6 +16,7 @@ import net.fabricmc.fabric.datafixer.mixin.Schema705Access;
 import net.fabricmc.fabric.datafixer.mixin.Schema99Access;
 import net.minecraft.datafixers.TypeReferences;
 
+@SuppressWarnings("unused")
 public class FabricSchemasImpl {
     public static final BiFunction<Integer, Schema, Schema> FABRIC_TYPEREF_SCHEMA = FabricSchema::new;
     
@@ -35,7 +37,7 @@ public class FabricSchemasImpl {
         public void registerTypes(final Schema schema_1, final Map<String, Supplier<TypeTemplate>> entityTypes, final Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
             //super.registerTypes(schema_1, entityTypes, blockEntityTypes);
             // Schema 99 Types
-            
+            System.out.println("Beginning type references");
             schema_1.registerType(false, TypeReferences.LEVEL, DSL::remainder);
             
             schema_1.registerType(false, TypeReferences.PLAYER, () -> {
@@ -291,6 +293,8 @@ public class FabricSchemasImpl {
             schema_1.registerType(false, TypeReferences.STRUCTURE_FEATURE, () -> {
                 return DSL.optionalFields("Children", DSL.list(DSL.optionalFields("CA", TypeReferences.BLOCK_STATE.in(schema_1), "CB", TypeReferences.BLOCK_STATE.in(schema_1), "CC", TypeReferences.BLOCK_STATE.in(schema_1), "CD", TypeReferences.BLOCK_STATE.in(schema_1))), "biome", TypeReferences.BIOME.in(schema_1));
             });
+            
+            System.out.println("Ended type references");
         }
     }
 }

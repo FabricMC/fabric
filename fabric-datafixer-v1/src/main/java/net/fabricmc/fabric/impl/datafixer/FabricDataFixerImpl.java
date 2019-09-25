@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
+import com.google.gson.Gson;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.Dynamic;
 
@@ -37,7 +38,7 @@ public final class FabricDataFixerImpl implements DataFixerUtils {
 
     @Override
     public int getModDataVersion(CompoundTag compoundTag, String modid) {
-        return compoundTag.containsKey(modid + "_DataVersion", NbtType.NUMBER) ? compoundTag.getInt(modid + "_DataVersion") : -1;
+        return compoundTag.containsKey(modid + "_DataVersion", NbtType.NUMBER) ? compoundTag.getInt(modid + "_DataVersion") : 0;
     }
 
     @Override
@@ -65,11 +66,7 @@ public final class FabricDataFixerImpl implements DataFixerUtils {
             DataFixerEntry dataFixerEntry = entry.getValue();
             
             try {
-                
-                
-                /*if(dataFixTypes == DataFixTypes.STRUCTURE) {
-                    continue;
-                }*/
+                System.out.println(dataFixTypes.getTypeReference().typeName() + " " + modidCurrentDynamicVersion + " " + dataFixerEntry.runtimeDataVersion);
                 currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
 
             } catch (Throwable t) {
