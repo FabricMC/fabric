@@ -25,7 +25,7 @@ import net.minecraft.client.options.KeyBinding;
  * @see KeyBinding
  */
 public interface KeyBindingRegistry {
-	static KeyBindingRegistry INSTANCE = KeyBindingRegistryImpl.INSTANCE;
+	KeyBindingRegistry INSTANCE = KeyBindingRegistryImpl.INSTANCE;
 
 	/**
 	 * Add a new key binding category.

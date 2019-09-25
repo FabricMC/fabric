@@ -28,6 +28,10 @@ import java.util.List;
  * Fabric API is present. Contains accessors for various fields.
  */
 public interface FabricLootSupplier {
+	static FabricLootSupplier from(LootSupplier vanilla) {
+		return (FabricLootSupplier) vanilla;
+	}
+
 	default LootSupplier asVanilla() {
 		return (LootSupplier) this;
 	}

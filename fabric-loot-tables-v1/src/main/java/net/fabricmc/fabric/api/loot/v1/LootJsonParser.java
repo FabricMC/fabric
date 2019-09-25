@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.loot.v1;
 
 import com.google.gson.Gson;
+import net.fabricmc.fabric.mixin.loot.LootManagerAccess;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.Lazy;
 import net.minecraft.world.loot.*;
@@ -26,28 +27,16 @@ import java.util.stream.Stream;
 
 public final class LootJsonParser {
 	/* Reading this from LootManager to access all serializers from vanilla. */
-	private static final Lazy<Gson> GSON = new Lazy<>(() -> {
-		try {
-			Field gsonField = Stream.of(LootManager.class.getDeclaredFields())
-					.filter(field -> field.getType() == Gson.class)
-					.findFirst()
-					.orElseThrow(() -> new RuntimeException("Gson not found in LootManager!"));
-			gsonField.setAccessible(true);
-			return (Gson) gsonField.get(null);
-		} catch (Exception e) {
-			throw new RuntimeException("Exception while getting Gson instance from LootManager", e);
-		}
-	});
+	private static final Gson GSON = LootManagerAccess.getGson();
 
 	private LootJsonParser() {
-
 	}
 
 	public static <T> T read(Reader json, Class<T> c) {
-		return JsonHelper.deserialize(GSON.get(), json, c);
+		return JsonHelper.deserialize(GSON, json, c);
 	}
 
 	public static <T> T read(String json, Class<T> c) {
-		return JsonHelper.deserialize(GSON.get(), json, c);
+		return JsonHelper.deserialize(GSON, json, c);
 	}
 }

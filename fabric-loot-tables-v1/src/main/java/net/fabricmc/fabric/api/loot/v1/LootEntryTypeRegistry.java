@@ -26,7 +26,7 @@ import net.minecraft.world.loot.entry.LootEntry;
  * @see #register
  */
 public interface LootEntryTypeRegistry {
-	final LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
+	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 
 	/**
 	 * Registers a loot entry type by its serializer.

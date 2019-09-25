@@ -18,62 +18,40 @@ package net.fabricmc.fabric.impl.client.keybinding;
 
 import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
 import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccess;
 import net.minecraft.client.options.KeyBinding;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class KeyBindingRegistryImpl implements KeyBindingRegistry {
+public final class KeyBindingRegistryImpl implements KeyBindingRegistry {
 	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private Map<String, Integer> cachedCategoryMap;
-	private List<FabricKeyBinding> fabricKeyBindingList;
+	private final Map<String, Integer> categoryMap = KeyBindingAccess.getCategoryOrderMap();
+	private final List<FabricKeyBinding> fabricKeyBindingList;
 
 	private KeyBindingRegistryImpl() {
 		fabricKeyBindingList = new ArrayList<>();
 	}
 
-	private Map<String, Integer> getCategoryMap() {
-		if (cachedCategoryMap == null) {
-			try {
-				//noinspection JavaReflectionMemberAccess
-				Method m = KeyBinding.class.getDeclaredMethod("fabric_getCategoryMap");
-				m.setAccessible(true);
-
-				//noinspection unchecked
-				cachedCategoryMap = (Map<String, Integer>) m.invoke(null);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-			if (cachedCategoryMap == null) {
-				throw new RuntimeException("Cached key binding category map missing!");
-			}
-		}
-
-		return cachedCategoryMap;
-	}
-
 	private boolean hasCategory(String categoryName) {
-		return getCategoryMap().containsKey(categoryName);
+		return categoryMap.containsKey(categoryName);
 	}
 
 	@Override
 	public boolean addCategory(String categoryName) {
-		Map<String, Integer> map = getCategoryMap();
-		if (map.containsKey(categoryName)) {
+		if (categoryMap.containsKey(categoryName)) {
 			return false;
 		}
 
-		Optional<Integer> largest = map.values().stream().max(Integer::compareTo);
+		Optional<Integer> largest = categoryMap.values().stream().max(Integer::compareTo);
 		int largestInt = largest.orElse(0);
-		map.put(categoryName, largestInt + 1);
+		categoryMap.put(categoryName, largestInt + 1);
 		return true;
 	}
 

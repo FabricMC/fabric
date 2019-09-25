@@ -46,10 +46,4 @@ public class MixinVanillaLayeredBiomeSource {
 	private static void cinit(CallbackInfo info){
 		biomes = new HashSet<>(biomes);
 	}
-
-	//Called via reflection
-	private static void fabric_injectBiome(Biome biome) {
-		biomes.add(biome);
-	}
-
 }

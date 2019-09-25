@@ -21,8 +21,15 @@ import net.minecraft.client.util.InputUtil;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import java.util.Map;
+
 @Mixin(KeyBinding.class)
-public interface KeyCodeAccessor {
+public interface KeyBindingAccess {
+	@Accessor
+	static Map<String, Integer> getCategoryOrderMap() {
+		throw new AssertionError("Mixin dummy");
+	}
+
 	@Accessor
 	InputUtil.KeyCode getKeyCode();
 }

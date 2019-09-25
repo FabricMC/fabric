@@ -19,15 +19,17 @@ package net.fabricmc.fabric.impl.biomes;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biomes.VanillaLayeredBiomeSourceAccess;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation
@@ -45,8 +47,6 @@ public final class InternalBiomeData {
 	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
-
-	private static Method injectBiomeMethod = null;
 
 	public static void addOverworldContinentalBiome(OverworldClimate climate, Biome biome, double weight) {
 		Preconditions.checkArgument(climate != null, "Climate is null");
@@ -106,16 +106,7 @@ public final class InternalBiomeData {
 	}
 
 	private static void injectOverworldBiome(Biome biome) {
-		try {
-			if (injectBiomeMethod == null) {
-				injectBiomeMethod = VanillaLayeredBiomeSource.class.getDeclaredMethod("fabric_injectBiome", Biome.class);
-				injectBiomeMethod.setAccessible(true);
-			}
-
-			injectBiomeMethod.invoke(null, biome);
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e){
-			throw new RuntimeException(e);
-		}
+		VanillaLayeredBiomeSourceAccess.getBiomes().add(biome);
 	}
 
 	public static Set<Biome> getSpawnBiomes() {

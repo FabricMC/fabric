@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.keybinding;
 
-import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
+import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccess;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
@@ -28,7 +28,7 @@ import net.minecraft.util.Identifier;
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!
  */
 public class FabricKeyBinding extends KeyBinding {
-	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
+	public FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
 		super("key." + id.toString().replace(':', '.'), type, code, category);
 	}
 
@@ -37,9 +37,10 @@ public class FabricKeyBinding extends KeyBinding {
 	 * @return configured KeyCode
 	 */
 	public InputUtil.KeyCode getBoundKey() {
-		return ((KeyCodeAccessor) this).getKeyCode();
+		return ((KeyBindingAccess) this).getKeyCode();
 	}
 
+	@Deprecated // No reason to use
 	public static class Builder {
 		protected final FabricKeyBinding binding;
 
