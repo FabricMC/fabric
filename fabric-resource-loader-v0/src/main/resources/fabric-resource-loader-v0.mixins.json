@@ -9,8 +9,10 @@
     "MixinDefaultResourcePack"
   ],
   "client": [
+    "ClientResourcePackContainerMixin",
     "MixinKeyedResourceReloadListener$Client",
-    "MixinMinecraftGame"
+    "MixinMinecraftGame",
+    "MixinReloadableResourceManagerImplClient"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -36,15 +36,16 @@ public class ModResourcePackCreator implements ResourcePackCreator {
 	@Override
 	public <T extends ResourcePackContainer> void registerContainer(Map<String, T> map, ResourcePackContainer.Factory<T> factory) {
 		// TODO: "vanilla" does not emit a message; neither should a modded datapack
-		List<ResourcePack> packs = new ArrayList<>();
+		List<ModResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
-		for (ResourcePack pack : packs) {
-			if (!(pack instanceof ModResourcePack)) {
-				throw new RuntimeException("Not a ModResourcePack!");
-			}
-
-			T var3 = ResourcePackContainer.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
+		for (ModResourcePack pack : packs) {
+			T var3 = ResourcePackContainer.of("fabric/" + pack.getFabricModMetadata().getId(),
 				false, () -> pack, factory, ResourcePackContainer.InsertionPosition.TOP);
+
+			if (var3 instanceof CustomImageResourcePackInfo) {
+				// Set image for client mod resource pack
+				((CustomImageResourcePackInfo) var3).setImage(pack, ModResourcePackUtil.getModIconForPack(pack.getFabricModMetadata()));
+			}
 
 			if (var3 != null) {
 				map.put(var3.getName(), var3);

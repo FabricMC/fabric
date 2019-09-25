@@ -17,10 +17,10 @@
 package net.fabricmc.fabric.impl.resources;
 
 import com.google.common.base.Charsets;
+import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import org.apache.commons.io.IOUtils;
 
@@ -38,13 +38,13 @@ public final class ModResourcePackUtil {
 
 	}
 
-	public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
+	public static void appendModResourcePacks(List<? super ModResourcePack> packList, ResourceType type) {
 		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
 			if(container.getMetadata().getType().equals("builtin")){
 				continue;
 			}
 			Path path = container.getRootPath();
-			ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
+			ModResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
 			if (!pack.getNamespaces(type).isEmpty()) {
 				packList.add(pack);
 			}
@@ -77,5 +77,9 @@ public final class ModResourcePackUtil {
 		} else {
 			return "Fabric Mod \"" + info.getId() + "\"";
 		}
+	}
+
+	public static String getModIconForPack(ModMetadata meta) {
+		return meta.getIconPath(64).orElse(null);
 	}
 }

@@ -28,7 +28,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.*;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
-	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
+	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new EnumMap<>(ResourceType.class);
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
