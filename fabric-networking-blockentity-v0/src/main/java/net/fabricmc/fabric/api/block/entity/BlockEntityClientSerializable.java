@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.block.entity;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -36,12 +36,11 @@ public interface BlockEntityClientSerializable {
 	 * {@link #fromClientTag(CompoundTag)} on the client to decode that data.
 	 */
 	default void sync() {
-		World world = getWorld();
-		if (world instanceof ServerWorld) {
-			((ServerWorld)world).method_14178().markForUpdate(getPos());
+		if (this instanceof BlockEntity) {
+			World world = ((BlockEntity)this).getWorld();
+			if (world instanceof ServerWorld) {
+				((ServerWorld)world).method_14178().markForUpdate(((BlockEntity)this).getPos());
+			}
 		}
 	}
-
-	World getWorld();
-	BlockPos getPos();
 }
