@@ -42,6 +42,6 @@ public interface BlockEntityClientSerializable {
 		}
 	}
 
-	public World getWorld();
-	public BlockPos getPos();
+	World getWorld();
+	BlockPos getPos();
 }
