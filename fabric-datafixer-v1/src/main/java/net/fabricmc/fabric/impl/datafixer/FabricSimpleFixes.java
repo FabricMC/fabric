@@ -30,8 +30,7 @@ public class FabricSimpleFixes implements SimpleFixes {
     @Override
     public void addBlockRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
         builder_1.addFixer(BlockNameFix.create(schema_1, name, (inputBlockName) -> {
-            throw new IllegalArgumentException("Test");
-            //return Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName;
+            return Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName;
         }));
 
     }

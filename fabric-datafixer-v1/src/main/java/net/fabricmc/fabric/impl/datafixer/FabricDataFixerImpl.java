@@ -65,21 +65,7 @@ public final class FabricDataFixerImpl implements DataFixerUtils {
             int modidCurrentDynamicVersion = getModDataVersion(compoundTag, currentModid);
             DataFixerEntry dataFixerEntry = entry.getValue();
             
-            try {
-                currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
-            } catch (Throwable t) {
-                // Something went horribly wrong, kill the game to prevent any/further corruption
-                CrashReport report = CrashReport.create(t, "Exception while DataFixing");
-
-                CrashReportSection section1 = report.addElement("Current DataFixer");
-                section1.add("Mod which registered selected DataFixer", entry.getKey());
-
-                CrashReportSection section2 = report.addElement("CompoundTag being fixed");
-                section2.add("Original CompoundTag before fix", compoundTag.asString());
-                section2.add("CompoundTag state before exception", currentTag.asString());
-
-                throw new CrashException(report);
-            }
+            currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
         }
         return currentTag;
     }
