@@ -6,7 +6,6 @@ import com.mojang.datafixers.DataFixer;
 
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.crash.CrashException;
 
 /**
  * This registers and creates DataFixers for the game.
@@ -20,22 +19,26 @@ public interface DataFixerUtils {
     public static final DataFixerUtils INSTANCE = FabricDataFixerImpl.INSTANCE;
     
     /**
-     * 
+     * Registers a DataFixer
      * @param modid The modid of the mod registering this DataFixer
      * @param runtimeDataVersion the current dataversion of the mod being ran.
      * @param datafixer The DataFixer to register
-     * @throws CrashException if a DataFixer is registered while the Client or Dedicated/Integrated Server is running.
      * @return The inputted DataFixer
      */
     public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer);
     
+    /**
+     * Gets the DataFixer registered under a mod.
+     * @param modid The Modid which the DataFixer was registered under.
+     * @return An optional, which may contain a DataFixer if a mod has registered a DataFixer.
+     */
     public Optional<DataFixer> getDataFixer(String modid);
     
     /**
      * Retrieves the DataVersion registered under a modid.
      * @param compoundTag The CompoundTag to check
      * @param modid The modid to check.
-     * @return The DataVersion stored for the mod or -1 if no DataVersion is present
+     * @return The DataVersion stored for the mod or 0 if no DataVersion or mod is present. 
      */
     public int getModDataVersion(CompoundTag compoundTag, String modid);
     

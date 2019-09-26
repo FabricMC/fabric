@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import com.google.gson.Gson;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.util.Pair;
 
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.fabricmc.api.ModInitializer;
@@ -37,6 +38,11 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
         
         Schema v1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
         SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename testp to test_block", "test:testo", "test:test_block", v1);
+        
+        SimpleFixes.INSTANCE.addEntityTransformFix(builder, "addRandomAttribute", (name, dynamic) -> {
+            return Pair.of(name, dynamic.set("rna", dynamic.createInt(509)));
+        }, v1);
+        
         
         // Remove Reflection Debug hack for release
         DebugHacks.getFixerVersions(builder);

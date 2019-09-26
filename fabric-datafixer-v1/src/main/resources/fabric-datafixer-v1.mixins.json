@@ -3,9 +3,6 @@
   "package": "net.fabricmc.fabric.datafixer.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-  	"accessor.Schema99Access",
-  	"accessor.Schema704Access",
-  	"accessor.Schema705Access",
     "MixinChunkSerializer",
     "MixinTagHelper"
   ],

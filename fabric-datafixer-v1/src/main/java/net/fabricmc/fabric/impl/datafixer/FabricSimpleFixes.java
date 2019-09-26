@@ -16,6 +16,7 @@ import net.minecraft.datafixers.fixes.EntityRenameFix;
 import net.minecraft.datafixers.fixes.EntitySimpleTransformFix;
 import net.minecraft.datafixers.fixes.FixItemName;
 import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
 public class FabricSimpleFixes implements SimpleFixes {
