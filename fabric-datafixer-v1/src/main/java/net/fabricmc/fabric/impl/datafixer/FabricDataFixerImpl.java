@@ -6,7 +6,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 
 import com.google.common.base.Preconditions;
-import com.google.gson.Gson;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.Dynamic;
 
@@ -16,9 +15,6 @@ import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
 
 public final class FabricDataFixerImpl implements DataFixerUtils {
 

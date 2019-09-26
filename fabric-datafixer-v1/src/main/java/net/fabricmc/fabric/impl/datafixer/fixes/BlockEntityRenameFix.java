@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.impl.datafixer;
+package net.fabricmc.fabric.impl.datafixer.fixes;
 
 import java.util.Objects;
 

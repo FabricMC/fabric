@@ -7,6 +7,7 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 
 import net.fabricmc.fabric.impl.datafixer.FabricSimpleFixes;
+import net.minecraft.nbt.Tag;
 
 /**
  * This class contains several common datafixes modders would use.
@@ -83,7 +84,7 @@ public interface SimpleFixes {
          * @param dynamic The Dynamic object representing the entity.
          * @return A Pair which contains the entity's new name and the dynamic representing the entity. 
          */
-        public Pair<String, Dynamic<?>> transform(String inputEntityName, Dynamic<?> dynamic);
+        public Pair<String, Dynamic<?>> transform(String inputEntityName, Dynamic<Tag> dynamic);
     }
 
 }

@@ -184,7 +184,7 @@ public class FabricSchema extends Schema {
 
         // Schema 1451v6 types
 
-        Supplier supplier_1 = () -> {
+        Supplier<TypeTemplate> supplier_1 = () -> {
             return DSL.compoundList(TypeReferences.ITEM_NAME.in(schema_1), DSL.constType(DSL.intType()));
         };
 

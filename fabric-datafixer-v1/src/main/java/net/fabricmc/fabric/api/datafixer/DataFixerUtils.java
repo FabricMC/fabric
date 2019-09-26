@@ -1,15 +1,10 @@
 package net.fabricmc.fabric.api.datafixer;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import com.mojang.datafixers.DataFixer;
-import com.mojang.datafixers.schemas.Schema;
 
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
-import net.minecraft.SharedConstants;
-import net.minecraft.datafixers.Schemas;
-import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.crash.CrashException;
 
