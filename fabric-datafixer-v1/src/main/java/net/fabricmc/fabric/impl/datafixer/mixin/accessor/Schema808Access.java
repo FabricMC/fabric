@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datafixer;
+package net.fabricmc.fabric.impl.datafixer.mixin.accessor;
 
-import net.fabricmc.api.ClientModInitializer;
+import java.util.Map;
 
-public class FabricDataFixerInitalizerClient implements ClientModInitializer {
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-	@Override
-	public void onInitializeClient() {
-		// TODO Auto-generated method stub
+import com.mojang.datafixers.schemas.Schema;
 
+import net.minecraft.datafixers.schemas.Schema808;
+
+@Mixin(Schema808.class)
+public interface Schema808Access {
+
+	@Invoker
+	static void callMethod_5309(Schema schema_1, Map map_1, String string) {
 	}
 
 }

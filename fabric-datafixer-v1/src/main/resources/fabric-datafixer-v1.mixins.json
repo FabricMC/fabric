@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.datafixer.mixin",
+  "package": "net.fabricmc.fabric.impl.datafixer.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinChunkSerializer",

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.datafixer.mixin.accessor",
+  "package": "net.fabricmc.fabric.impl.datafixer.mixin.accessor",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
   	"Schema99Access",

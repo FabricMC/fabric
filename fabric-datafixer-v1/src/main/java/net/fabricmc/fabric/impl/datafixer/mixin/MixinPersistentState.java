@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datafixer;
+package net.fabricmc.fabric.impl.datafixer.mixin;
 
-import net.fabricmc.api.ClientModInitializer;
+import org.spongepowered.asm.mixin.Mixin;
 
-public class FabricDataFixerInitalizerClient implements ClientModInitializer {
+import net.minecraft.world.PersistentState;
 
-	@Override
-	public void onInitializeClient() {
-		// TODO Auto-generated method stub
+@Mixin(PersistentState.class)
+public class MixinPersistentState {
+	// Add our mod's data versions to method_17919
 
-	}
-
+	// method_17919 makes sense as writeStateToFile(File)
 }

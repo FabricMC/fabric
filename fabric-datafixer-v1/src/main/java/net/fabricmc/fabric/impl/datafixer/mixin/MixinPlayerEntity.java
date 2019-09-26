@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datafixer;
+package net.fabricmc.fabric.impl.datafixer.mixin;
 
-import net.fabricmc.api.ClientModInitializer;
+import org.spongepowered.asm.mixin.Mixin;
 
-public class FabricDataFixerInitalizerClient implements ClientModInitializer {
+import net.minecraft.entity.player.PlayerEntity;
 
-	@Override
-	public void onInitializeClient() {
-		// TODO Auto-generated method stub
-
-	}
+@Mixin(PlayerEntity.class)
+public class MixinPlayerEntity {
+	// Add Mod DataVersions to writeCustomDataToTag
 
 }

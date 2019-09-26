@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.datafixer;
+package net.fabricmc.fabric.impl.datafixer.mixin;
 
-import net.fabricmc.api.ClientModInitializer;
+import org.spongepowered.asm.mixin.Mixin;
 
-public class FabricDataFixerInitalizerClient implements ClientModInitializer {
+import net.minecraft.world.VersionedChunkStorage;
 
-	@Override
-	public void onInitializeClient() {
-		// TODO Auto-generated method stub
+@Mixin(VersionedChunkStorage.class)
+public class MixinVersionedChunkStorage {
+	// Most input logic in this is handled by the TagHelper already.
 
-	}
-
+	/**
+	 * This needs discussion if needed elsewhere
+	 */
 }

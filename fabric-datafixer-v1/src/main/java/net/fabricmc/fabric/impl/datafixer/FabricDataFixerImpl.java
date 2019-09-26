@@ -25,7 +25,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.Dynamic;
 
-import net.fabricmc.fabric.api.datafixer.DataFixerUtils;
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerUtils;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
@@ -34,73 +34,73 @@ import net.minecraft.nbt.Tag;
 
 public final class FabricDataFixerImpl implements DataFixerUtils {
 
-    private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
-    private boolean locked;
+	private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
+	private boolean locked;
 
-    private FabricDataFixerImpl() {
-    }
+	private FabricDataFixerImpl() {
+	}
 
-    public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
+	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
 
-    public void addFixerVersions(CompoundTag compoundTag) {
-        for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
-            compoundTag.putInt(entry.getKey() + "_DataVersion", entry.getValue().runtimeDataVersion);
-        }
-    }
+	public void addFixerVersions(CompoundTag compoundTag) {
+		for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
+			compoundTag.putInt(entry.getKey() + "_DataVersion", entry.getValue().runtimeDataVersion);
+		}
+	}
 
-    @Override
-    public int getModDataVersion(CompoundTag compoundTag, String modid) {
-        return compoundTag.containsKey(modid + "_DataVersion", NbtType.NUMBER) ? compoundTag.getInt(modid + "_DataVersion") : 0;
-    }
+	@Override
+	public int getModDataVersion(CompoundTag compoundTag, String modid) {
+		return compoundTag.containsKey(modid + "_DataVersion", NbtType.NUMBER) ? compoundTag.getInt(modid + "_DataVersion") : 0;
+	}
 
-    @Override
-    public Optional<DataFixer> getDataFixer(String modid) {
-        return Optional.ofNullable(modFixers.get(modid).modFixer);
-    }
+	@Override
+	public Optional<DataFixer> getDataFixer(String modid) {
+		return Optional.ofNullable(modFixers.get(modid).modFixer);
+	}
 
-    @Override
-    public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer) {
-        Preconditions.checkNotNull(modid, "modid cannot be null");
-        Preconditions.checkArgument(runtimeDataVersion > -1, "dataVersion must be finite");
+	@Override
+	public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer) {
+		Preconditions.checkNotNull(modid, "modid cannot be null");
+		Preconditions.checkArgument(runtimeDataVersion > -1, "dataVersion must be finite");
 
-        modFixers.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
+		modFixers.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
 
-        return datafixer;
-    }
+		return datafixer;
+	}
 
-    public CompoundTag updateWithAllFixers(DataFixTypes dataFixTypes, CompoundTag compoundTag) {
-        
-        CompoundTag currentTag = compoundTag;
+	public CompoundTag updateWithAllFixers(DataFixTypes dataFixTypes, CompoundTag compoundTag) {
 
-        for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
-            String currentModid = entry.getKey();
-            int modidCurrentDynamicVersion = getModDataVersion(compoundTag, currentModid);
-            DataFixerEntry dataFixerEntry = entry.getValue();
-            
-            currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
-        }
-        return currentTag;
-    }
+		CompoundTag currentTag = compoundTag;
 
-    @Override
-    public boolean isLocked() {
-        return locked;
-    }
+		for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
+			String currentModid = entry.getKey();
+			int modidCurrentDynamicVersion = getModDataVersion(compoundTag, currentModid);
+			DataFixerEntry dataFixerEntry = entry.getValue();
 
-    /**
-     * @deprecated for implementation only.
-     */
-    public void lock() {
-        this.locked = true;
-    }
+			currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
+		}
+		return currentTag;
+	}
 
-    final class DataFixerEntry {
-        private DataFixer modFixer;
-        private int runtimeDataVersion;
+	@Override
+	public boolean isLocked() {
+		return locked;
+	}
 
-        DataFixerEntry(DataFixer fix, int runtimeDataVersion) {
-            this.modFixer = fix;
-            this.runtimeDataVersion = runtimeDataVersion;
-        }
-    }
+	/**
+	 * @deprecated for implementation only.
+	 */
+	public void lock() {
+		this.locked = true;
+	}
+
+	final class DataFixerEntry {
+		private DataFixer modFixer;
+		private int runtimeDataVersion;
+
+		DataFixerEntry(DataFixer fix, int runtimeDataVersion) {
+			this.modFixer = fix;
+			this.runtimeDataVersion = runtimeDataVersion;
+		}
+	}
 }
