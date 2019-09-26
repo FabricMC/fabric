@@ -1,13 +1,25 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.impl.datafixer;
 
-import java.lang.reflect.Field;
-
-import com.google.gson.Gson;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 
-import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.datafixer.DataFixerUtils;
@@ -43,34 +55,9 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
             return Pair.of(name, dynamic.set("rna", dynamic.createInt(509)));
         }, v1);
         
-        
-        // Remove Reflection Debug hack for release
-        DebugHacks.getFixerVersions(builder);
-        
         DataFixerUtils.INSTANCE.registerFixer("fabric_test", TEST_DATA_VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
     }
 
     public static int TEST_DATA_VERSION = 1;
-    
-    public static class DebugHacks {
-        public static void getFixerVersions(DataFixerBuilder builder) {
-            Field field;
-            try {
-                field = builder.getClass().getDeclaredField("fixerVersions");
-            
-            
-            field.setAccessible(true);
-            IntSortedSet fixerVersions = (IntSortedSet) field.get(builder);
-            
-            
-            Gson gson = new Gson();
-            
-            System.out.println(gson.toJson(fixerVersions));
-            } catch (ReflectiveOperationException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-    }
     
 }
