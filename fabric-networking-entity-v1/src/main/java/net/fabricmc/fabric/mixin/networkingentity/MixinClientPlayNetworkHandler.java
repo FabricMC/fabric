@@ -45,14 +45,12 @@ public class MixinClientPlayNetworkHandler {
     @ModifyVariable(
         method = {"onEntitySpawn"},
         at = @At(value = "STORE"),
-        ordinal = 0
+        name = "entity_40"
     )
     public Entity onEntitySpawn(Entity prevEntity) {
-        Entity entity = prevEntity;
-        if (prevEntity == null) {
-            entity = packet.getEntityTypeId().create(((ClientPlayNetworkHandler) (Object) this).getWorld());
-            entity.setPosition(packet.getX(), packet.getY(), packet.getZ());
-        }
+        Entity entity = packet.getEntityTypeId().create(((ClientPlayNetworkHandler) (Object) this).getWorld());
+		entity.setPosition(packet.getX(), packet.getY(), packet.getZ());
+
         return entity;
     }
 }
