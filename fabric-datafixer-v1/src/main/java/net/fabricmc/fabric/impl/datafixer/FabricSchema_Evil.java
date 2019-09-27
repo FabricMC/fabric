@@ -21,6 +21,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import com.google.common.collect.Maps;
+import com.google.gson.GsonBuilder;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.Hook.HookFunction;
@@ -51,13 +52,14 @@ import net.minecraft.datafixers.TypeReferences;
  * <p>
  * Please note when updating the API when a new Schema is added, any new registeredTypes in {@link #registerTypes(Schema, Map, Map)} should be added with a comment above it specifying the Schema Version name.
  * </p>
+ * @warning Try to Replace this version dependant class soon with a nice and less long alternative.
  */
-public class FabricSchema extends Schema {
+public class FabricSchema_Evil extends Schema {
 
-	public static final BiFunction<Integer, Schema, Schema> FABRIC_TYPEREF_SCHEMA = FabricSchema::new;
+	public static final BiFunction<Integer, Schema, Schema> FABRIC_TYPEREF_SCHEMA = FabricSchema_Evil::new;
 
-	public FabricSchema(int versionKey, Schema parent) {
-		super(versionKey, parent);
+	public FabricSchema_Evil(int versionKey, Schema parent) {
+		super(inV(versionKey), inS(parent));
 	}
 
 	public Map<String, Supplier<TypeTemplate>> registerEntities(final Schema schema) {
@@ -1071,5 +1073,15 @@ public class FabricSchema extends Schema {
 		schema.registerType(false, TypeReferences.STRUCTURE_FEATURE, () -> {
 			return DSL.optionalFields("Children", DSL.list(DSL.optionalFields("CA", TypeReferences.BLOCK_STATE.in(schema), "CB", TypeReferences.BLOCK_STATE.in(schema), "CC", TypeReferences.BLOCK_STATE.in(schema), "CD", TypeReferences.BLOCK_STATE.in(schema))), "biome", TypeReferences.BIOME.in(schema));
 		});
+	}
+	
+	private static Schema inS(Schema parent) {
+		System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(parent));
+		return parent;
+	}
+
+	private static int inV(int versionKey) {
+		System.out.println(versionKey);
+		return versionKey;
 	}
 }

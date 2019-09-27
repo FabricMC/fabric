@@ -28,10 +28,6 @@ import net.minecraft.nbt.CompoundTag;
  * <p>
  * <b>Please take extreme caution when using these tools as DataFixers directly interface with the world saves and may corrupt world saves.</b>
  * </p>
- * 
- * @disclaimer <b>I, i509VCB and the Fabric Team do not take an responsibility for any worlds that are altered, destroyed, corrupted or damaged through the use of the {@link DataFixerUtils} because of improper configuration, mispellings, incorrect syntax, etc.</b>
- * @author i509
- *
  */
 public interface DataFixerUtils {
 
@@ -63,6 +59,10 @@ public interface DataFixerUtils {
 	 * @return The DataVersion stored for the mod or 0 if no DataVersion or mod is present.
 	 */
 	public int getModDataVersion(CompoundTag compoundTag, String modid);
-
+	
+	/**
+	 * Checks if Fabric is allowing any more DataFixers to be registered.
+	 * @return true if registration is locked.
+	 */
 	public boolean isLocked();
 }

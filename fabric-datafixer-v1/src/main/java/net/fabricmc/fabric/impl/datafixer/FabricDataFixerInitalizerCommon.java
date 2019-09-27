@@ -44,9 +44,12 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
 		Registry.register(Registry.BLOCK, new Identifier("test:test_block"), new Block(FabricBlockSettings.of(Material.CLAY).build())); // For data version 2
 
 		// Test DataFixer, will remove later
-		DataFixerBuilder builder = new DataFixerBuilder(TEST_DATA_VERSION);
 
-		builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
+		DataFixerBuilder builder = new DataFixerBuilder(TEST_DATA_VERSION);
+		
+		System.out.println("Test");
+		builder.addSchema(0, FabricSchema_Test.FABRIC_TYPEREF_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
+		//builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
 
 		Schema v1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
 		SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename testp to test_block", "test:testo", "test:test_block", v1);

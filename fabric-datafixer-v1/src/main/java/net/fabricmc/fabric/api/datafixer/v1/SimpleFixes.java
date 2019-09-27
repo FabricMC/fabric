@@ -37,20 +37,21 @@ public interface SimpleFixes {
 	 * 
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param changes A map of all changed values, where the key should be original and value is new value.
+	 * @param oldId The old name of the block to fix
+	 * @param newId The name to change the block to if fixed.
 	 * @param schema The Schema to apply this fix to.
 	 */
-	public abstract void addBlockRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1);
+	public abstract void addBlockRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for changing item names.
-	 * 
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param changes A map of all changed values, where the key should be original and value is new value.
-	 * @param schema The Schema to add this fix to.
+	 * @param oldId The old name of the item to fix
+	 * @param newId The name to change the item to if fixed.
+	 * @param schema The Schema to apply this fix to.
 	 */
-	public abstract void addItemRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1);
+	public abstract void addItemRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for changing entity names.
@@ -80,7 +81,7 @@ public interface SimpleFixes {
 	 * 
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param changes A map of all changed values, where the key should be original and value is new value.
+	 * @param transformation The transformation to apply to the entity being fixed. Note you must check if the inputted enity matches your target or it will fix the wrong entity.
 	 * @param schema The Schema to add this fix to.
 	 */
 	public abstract void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
