@@ -45,7 +45,7 @@ public interface BlockEntityClientSerializable {
 	default void sync() {
 		World world = ((BlockEntity) this).getWorld();
 		Preconditions.checkNotNull(world); //Maintain distinct failure case from below
-		if (!(world instanceof ServerWorld)) throw new UnsupportedOperationException("Cannot call sync() on the logical client! Did you check world.isClient first?");
+		if (!(world instanceof ServerWorld)) throw new IllegalStateException("Cannot call sync() on the logical client! Did you check world.isClient first?");
 		
 		((ServerWorld) world).method_14178().markForUpdate(((BlockEntity) this).getPos());
 	}
