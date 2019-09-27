@@ -22,8 +22,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import java.util.function.Function;
-
 /**
  * Helper class for registering BlockEntityRenderers.
  */
@@ -34,8 +32,8 @@ public class BlockEntityRendererRegistry {
 
 	}
 
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<E>> function) {
-		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).method_23078(blockEntityType, function.apply(BlockEntityRenderDispatcher.INSTANCE));
+	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer) {
+		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).method_23078(blockEntityType, blockEntityRenderer);
 	}
 
 }
