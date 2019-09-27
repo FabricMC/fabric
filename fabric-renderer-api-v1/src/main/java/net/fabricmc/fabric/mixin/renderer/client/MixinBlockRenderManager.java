@@ -59,7 +59,7 @@ public abstract class MixinBlockRenderManager {
 	}
 
 	/**
-	 * If the model we just captured is a fabric model, render it using a specialized 
+	 * If the model we just captured is a fabric model, render it using a specialized
 	 * damage render context and cancel rest of the logic. Avoids creating a bunch of
 	 * vanilla quads for complex meshes and honors dynamic model geometry.
 	 */

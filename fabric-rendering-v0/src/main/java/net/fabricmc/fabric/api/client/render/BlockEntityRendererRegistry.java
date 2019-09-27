@@ -16,49 +16,26 @@
 
 package net.fabricmc.fabric.api.client.render;
 
+import net.fabricmc.fabric.mixin.client.render.MixinBlockEntityRenderDispatcher;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Helper class for registering BlockEntityRenderers.
  */
 public class BlockEntityRendererRegistry {
 	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
-	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers = null;
-	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderersTmp = new HashMap<>();
 
 	private BlockEntityRendererRegistry() {
 
 	}
 
-	public void initialize(BlockEntityRenderDispatcher instance, Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> map) {
-		if (renderers != null && renderers != map) {
-			throw new RuntimeException("Tried to set renderers twice!");
-		}
-
-		if (renderers == map) {
-			return;
-		}
-
-		renderers = map;
-		for (BlockEntityRenderer renderer : renderersTmp.values()) {
-			renderer.setRenderManager(instance);
-		}
-		renderers.putAll(renderersTmp);
-		renderersTmp = null;
+	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<E>> function) {
+		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).method_23078(blockEntityType, function.apply(BlockEntityRenderDispatcher.INSTANCE));
 	}
 
-	public void register(Class<? extends BlockEntity> blockEntityClass, BlockEntityRenderer<? extends BlockEntity> blockEntityRenderer) {
-		// TODO: warn on duplicate
-		if (renderers != null) {
-			renderers.put(blockEntityClass, blockEntityRenderer);
-			blockEntityRenderer.setRenderManager(BlockEntityRenderDispatcher.INSTANCE);
-		} else {
-			renderersTmp.put(blockEntityClass, blockEntityRenderer);
-		}
-	}
 }

@@ -16,25 +16,17 @@
 
 package net.fabricmc.fabric.mixin.client.render;
 
-import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import java.util.Map;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(BlockEntityRenderDispatcher.class)
-public class MixinBlockEntityRenderManager {
-	@Shadow
-	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers;
+public interface MixinBlockEntityRenderDispatcher {
 
-	@Inject(method = "<init>()V", at = @At("RETURN"))
-	public void init(CallbackInfo info) {
-		BlockEntityRendererRegistry.INSTANCE.initialize((BlockEntityRenderDispatcher) (Object) this, renderers);
-	}
+	@Invoker
+	<E extends BlockEntity> void method_23078(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer);
+
 }

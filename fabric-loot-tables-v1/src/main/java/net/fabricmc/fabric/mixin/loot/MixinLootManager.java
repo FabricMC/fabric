@@ -24,7 +24,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.loot.LootManager;
-import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.LootTable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -36,11 +36,11 @@ import java.util.Map;
 
 @Mixin(LootManager.class)
 public class MixinLootManager {
-	@Shadow private Map<Identifier, LootSupplier> suppliers;
+	@Shadow private Map<Identifier, LootTable> suppliers;
 
 	@Inject(method = "method_20712", at = @At("RETURN"))
 	private void apply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
-		Map<Identifier, LootSupplier> newSuppliers = new HashMap<>();
+		Map<Identifier, LootTable> newSuppliers = new HashMap<>();
 
 		suppliers.forEach((id, supplier) -> {
 			FabricLootSupplierBuilder builder = FabricLootSupplierBuilder.of(supplier);
