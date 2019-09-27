@@ -25,6 +25,7 @@ import net.minecraft.resource.ResourceType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class ModResourcePackCreator implements ResourcePackCreator {
 	private final ResourceType type;
@@ -36,20 +37,27 @@ public class ModResourcePackCreator implements ResourcePackCreator {
 	@Override
 	public <T extends ResourcePackContainer> void registerContainer(Map<String, T> map, ResourcePackContainer.Factory<T> factory) {
 		// TODO: "vanilla" does not emit a message; neither should a modded datapack
-		List<ModResourcePack> packs = new ArrayList<>();
+		List<ModNioResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
-		for (ModResourcePack pack : packs) {
-			T var3 = ResourcePackContainer.of("fabric/" + pack.getFabricModMetadata().getId(),
-				false, () -> pack, factory, ResourcePackContainer.InsertionPosition.TOP);
 
-			if (var3 instanceof CustomImageResourcePackInfo) {
-				// Set image for client mod resource pack
-				((CustomImageResourcePackInfo) var3).setImage(pack, ModResourcePackUtil.getModIconForPack(pack.getFabricModMetadata()));
-			}
+		T vanillaContainer = map.get("vanilla");
+		if (vanillaContainer == null)
+			throw new IllegalStateException("This creator registerd too early, before vanilla");
 
-			if (var3 != null) {
-				map.put(var3.getName(), var3);
-			}
+		List<Supplier<? extends ResourcePack>> higherPriorityPacks = EnhancedResourcePackProfile.from(vanillaContainer).getHigherPriorityPacks();
+
+		for (ModNioResourcePack pack : packs) {
+			higherPriorityPacks.add(() -> pack);
+//			T var3 = ResourcePackContainer.of("fabric/" + pack.getFabricModMetadata().getId(),
+//				true, () -> pack, factory, ResourcePackContainer.InsertionPosition.BOTTOM);
+//
+//			if (var3 instanceof CustomImageResourcePackInfo) {
+//				ModResourcePackUtil.setPackIcon(pack.getMod(), (CustomImageResourcePackInfo) var3);
+//			}
+//
+//			if (var3 != null) {
+//				map.put(var3.getName(), var3);
+//			}
 		}
 	}
 }

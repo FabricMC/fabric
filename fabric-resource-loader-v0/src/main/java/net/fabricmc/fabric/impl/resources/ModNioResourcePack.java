@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.resources;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
@@ -38,15 +39,17 @@ import java.util.regex.Pattern;
 public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_]+");
+	private final ModContainer mod;
 	private final ModMetadata modInfo;
 	private final Path basePath;
 	private final boolean cacheable;
 	private final AutoCloseable closer;
 	private final String separator;
 
-	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer) {
+	public ModNioResourcePack(ModContainer mod, Path path, AutoCloseable closer) {
 		super(null);
-		this.modInfo = modInfo;
+		this.mod = mod;
+		this.modInfo = mod.getMetadata();
 		this.basePath = path.toAbsolutePath().normalize();
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
@@ -218,5 +221,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	public String getName() {
 		return ModResourcePackUtil.getName(modInfo);
+	}
+
+	ModContainer getMod() {
+		return mod;
 	}
 }

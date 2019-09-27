@@ -18,8 +18,10 @@ package net.fabricmc.fabric.mixin.resources;
 
 import net.fabricmc.fabric.api.event.resource.PackScannerRegistrationCallback;
 import net.fabricmc.fabric.impl.resources.ModResourcePackCreator;
+import net.minecraft.resource.DefaultResourcePackCreator;
 import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainerManager;
+import net.minecraft.resource.ResourcePackCreator;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.LevelProperties;
@@ -28,9 +30,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.File;
+import java.util.function.Consumer;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
@@ -42,5 +48,13 @@ public class MixinMinecraftServer {
 	public void appendFabricDataPacks(File file, LevelProperties properties, CallbackInfo info) {
 		dataPackContainerManager.addCreator(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 		PackScannerRegistrationCallback.DATA.invoker().registerTo(dataPackContainerManager);
+	}
+
+	@Redirect(method = "reloadDataPacks", at = @At(value = "INVOKE",
+		target = "Ljava/util/Collection;forEach(Ljava/util/function/Consumer;)V", remap = false),
+	slice = @Slice(from = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList()Ljava/util/ArrayList;", remap = false),
+	to = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;beginReload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/List;Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;")))
+	public void replaceForEach(Consumer<? super ResourcePackContainer> consumer) {
+
 	}
 }

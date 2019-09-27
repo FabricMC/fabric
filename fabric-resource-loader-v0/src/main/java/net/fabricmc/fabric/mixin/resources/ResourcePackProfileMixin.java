@@ -17,28 +17,34 @@
 package net.fabricmc.fabric.mixin.resources;
 
 import net.fabricmc.fabric.impl.resources.CustomImageResourcePackInfo;
+import net.fabricmc.fabric.impl.resources.EnhancedResourcePackProfile;
 import net.minecraft.client.resource.ClientResourcePackContainer;
 import net.minecraft.client.texture.NativeImage;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackContainer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
 
-@Mixin(ClientResourcePackContainer.class)
-public abstract class ClientResourcePackContainerMixin implements CustomImageResourcePackInfo {
-	@Shadow
-	private NativeImage icon;
+@Mixin(ResourcePackContainer.class)
+public abstract class ResourcePackProfileMixin implements EnhancedResourcePackProfile {
+	private List<Supplier<? extends ResourcePack>> lowerPacks = new ArrayList<>();
+	private List<Supplier<? extends ResourcePack>> higherPacks = new ArrayList<>();
 
 	@Override
-	public void setImage(ResourcePack pack, String imagePath) {
-		if (this.icon != null)
-			return;
+	public List<Supplier<? extends ResourcePack>> getLowerPriorityPacks() {
+		return lowerPacks;
+	}
 
-		try (InputStream inputStream_1 = pack.openRoot(imagePath)) {
-			this.icon = NativeImage.read(inputStream_1);
-		} catch (IllegalArgumentException | IOException ignored) {
-		}
+	@Override
+	public List<Supplier<? extends ResourcePack>> getHigherPriorityPacks() {
+		return higherPacks;
 	}
 }

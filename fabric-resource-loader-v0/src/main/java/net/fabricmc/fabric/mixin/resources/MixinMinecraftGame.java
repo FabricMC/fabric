@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.event.resource.PackScannerRegistrationCallback;
 import net.fabricmc.fabric.impl.resources.ModResourcePackCreator;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.ClientResourcePackContainer;
+import net.minecraft.client.resource.ClientResourcePackCreator;
 import net.minecraft.resource.ResourcePackContainerManager;
 import net.minecraft.resource.ResourcePackCreator;
 import net.minecraft.resource.ResourceType;
@@ -34,6 +35,10 @@ public class MixinMinecraftGame {
 	@Shadow
 	@Final
 	private ResourcePackContainerManager<ClientResourcePackContainer> resourcePackContainerManager;
+
+	@Shadow
+	@Final
+	private ClientResourcePackCreator resourcePackCreator;
 
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
 	public void initResources(ResourcePackContainerManager<ClientResourcePackContainer> manager, ResourcePackCreator creator) {

@@ -38,13 +38,13 @@ public final class ModResourcePackUtil {
 
 	}
 
-	public static void appendModResourcePacks(List<? super ModResourcePack> packList, ResourceType type) {
+	public static void appendModResourcePacks(List<? super ModNioResourcePack> packList, ResourceType type) {
 		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
 			if(container.getMetadata().getType().equals("builtin")){
 				continue;
 			}
 			Path path = container.getRootPath();
-			ModResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
+			ModNioResourcePack pack = new ModNioResourcePack(container, path, null);
 			if (!pack.getNamespaces(type).isEmpty()) {
 				packList.add(pack);
 			}
@@ -79,7 +79,10 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	public static String getModIconForPack(ModMetadata meta) {
-		return meta.getIconPath(64).orElse(null);
+	static void setPackIcon(ModContainer mod, CustomImageResourcePackInfo info) {
+		String file = mod.getMetadata().getIconPath(64).orElse(null);
+		if (file == null)
+			return;
+		info.setImage(mod.getPath(file));
 	}
 }

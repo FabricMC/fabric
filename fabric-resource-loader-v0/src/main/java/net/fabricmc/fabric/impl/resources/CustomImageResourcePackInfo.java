@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import net.minecraft.resource.ResourcePack;
+import java.nio.file.Path;
 
 public interface CustomImageResourcePackInfo {
 
 	/**
 	 * Sets the mod resource pack icon.
 	 */
-	void setImage(ResourcePack pack, String imagePath);
+	void setImage(Path imagePath);
 }
