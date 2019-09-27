@@ -20,14 +20,14 @@ import java.util.function.BiFunction;
 
 import com.mojang.datafixers.schemas.Schema;
 
-import net.fabricmc.fabric.impl.datafixer.FabricSchema_Evil;
+import net.fabricmc.fabric.impl.datafixer.FabricSchema;
 import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 
 public class FabricSchemas {
 	/**
 	 * Fabric Schema Type. This is required for all custom DataFixers or fixing will fail.
 	 */
-	public static final BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = FabricSchema_Evil::new;
+	public static final BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = FabricSchema.MC;
 	/**
 	 * Identifier Normalize Schema.
 	 */

@@ -39,7 +39,7 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
 
 		// Ignore test blocks for logic:
 
-		// Registry.register(Registry.BLOCK, new Identifier("test:testo"), new Block(FabricBlockSettings.of(Material.CLAY).build())); // For data version 1 // Undefined
+		//Registry.register(Registry.BLOCK, new Identifier("test:testo"), new Block(FabricBlockSettings.of(Material.CLAY).build())); // For data version 1 // Undefined
 
 		Registry.register(Registry.BLOCK, new Identifier("test:test_block"), new Block(FabricBlockSettings.of(Material.CLAY).build())); // For data version 2
 
@@ -47,14 +47,13 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
 
 		DataFixerBuilder builder = new DataFixerBuilder(TEST_DATA_VERSION);
 		
-		System.out.println("Test");
-		builder.addSchema(0, FabricSchema_Test.FABRIC_TYPEREF_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
-		//builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
+		builder.addSchema(0, FabricSchema.MC); // This is here to register all the TypeReferences into the DataFixer
 
 		Schema v1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
+
 		SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename testp to test_block", "test:testo", "test:test_block", v1);
 
-		SimpleFixes.INSTANCE.addEntityTransformFix(builder, "addRandomAttribute", (name, dynamic) -> {
+		SimpleFixes.INSTANCE.addEntityTransformFix(builder, "addRandomAttribute", (name, dynamic) -> { // Doesn't actually show up in NBT data
 			return Pair.of(name, dynamic.set("rna", dynamic.createInt(509)));
 		}, v1);
 
