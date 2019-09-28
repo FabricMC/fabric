@@ -16,12 +16,17 @@
 
 package net.fabricmc.fabric.impl.datafixer;
 
+import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
 
+import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.datafixers.Schemas;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
 
 /**
  * This is the Schema that all custom DataFixers use or fixing will fail because the TypeReferences would have not been registered to the fixer.
@@ -30,5 +35,25 @@ import net.minecraft.datafixers.Schemas;
  * </p>
  */
 public class FabricSchema {
-	public static final BiFunction<Integer, Schema, Schema> MC_TYPE_REFS = (version, parent) -> Schemas.getFixer().getSchema(19610); // Add logic to automatically grab version // TODO Magic Number Schema version
+	
+	private static final int LATEST_SCHEMA_VERSION;
+	
+	static {
+		// Logic to automatically resolve the Latest schema version
+		DataFixerUpper mcDFU = (DataFixerUpper) Schemas.getFixer();
+		
+		try {
+			final Field fixerVersions = DataFixerUpper.class.getDeclaredField("fixerVersions");
+			fixerVersions.setAccessible(true);
+			IntSortedSet fixerVersionsReflected = (IntSortedSet) fixerVersions.get(mcDFU);
+			LATEST_SCHEMA_VERSION = fixerVersionsReflected.lastInt();
+		} catch (ReflectiveOperationException e) {
+			CrashReport report = CrashReport.create(e, "Exception while grabbing Vanilla Schema");
+			throw new CrashException(report);
+		}
+		
+		System.out.println(LATEST_SCHEMA_VERSION);
+	}
+	
+	public static final BiFunction<Integer, Schema, Schema> MC_TYPE_REFS = (version, parent) -> Schemas.getFixer().getSchema(LATEST_SCHEMA_VERSION);
 }

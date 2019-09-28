@@ -39,7 +39,7 @@ import net.minecraft.nbt.Tag;
  * So when Mod A fixes it's own item and it doesn't know it's item exists within mod B's BE (Because mod B's type reference is non-existent to mod A)
  * So either I need to register every single entity/blockEntity underneath the root V0 Schema or find another way.
  *
- * method_5346 (registerWithItemRefs) within Schema99 would add the typeReference to the base schema
+ * method_5346 (registerWithItemRefs) within Schema99 would add the typeReference to the base schema. 
  *
  */
 public final class FabricDataFixerImpl implements DataFixerHelper {
