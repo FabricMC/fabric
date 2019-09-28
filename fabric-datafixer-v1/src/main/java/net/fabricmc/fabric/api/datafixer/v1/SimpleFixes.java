@@ -54,6 +54,27 @@ public interface SimpleFixes {
 	public abstract void addItemRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
+	 * A basic DataFix for changing biome names.
+	 * 
+	 * @param builder The builder to add this fix to.
+	 * @param name The name of the datafix (this has no effect on actual process)
+	 * @param transformation The transformation to apply to the entity being fixed. Note you must check if the inputted enity matches your target or it will fix the wrong entity.
+	 * @param schema The Schema to add this fix to.
+	 */
+	public abstract void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
+
+	/**
+	 * A basic DataFix for changing blockentity names
+	 * 
+	 * @param builder The builder to add this fix to.
+	 * @param name The name of the datafix (this has no effect on actual process)
+	 * @param originalBEName the original name of the BlockEntity
+	 * @param newBEName the new desired name of the BlockEntity being renamed.
+	 * @param schema The Schema to add this fix to.
+	 */
+	public abstract void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String originalBEName, String newBEName, Schema schema);
+
+	/**
 	 * A basic DataFix for changing entity names.
 	 * <p>
 	 * Note this does not rename entity spawn eggs and you should use {@link #addItemRenameFix(DataFixerBuilder, String, ImmutableMap, Schema)} to rename the spawn egg item.
@@ -77,28 +98,7 @@ public interface SimpleFixes {
 	public abstract void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema);
 
 	/**
-	 * A basic DataFix for changing biome names.
-	 * 
-	 * @param builder The builder to add this fix to.
-	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param transformation The transformation to apply to the entity being fixed. Note you must check if the inputted enity matches your target or it will fix the wrong entity.
-	 * @param schema The Schema to add this fix to.
-	 */
-	public abstract void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
-
-	/**
-	 * A basic DataFix for changing blockentity names
-	 * 
-	 * @param builder The builder to add this fix to.
-	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param originalBEName the original name of the BlockEntity
-	 * @param newBEName the new desired name of the BlockEntity being renamed.
-	 * @param schema The Schema to add this fix to.
-	 */
-	public abstract void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String originalBEName, String newBEName, Schema schema);
-
-	/**
-	 * Represents an entity transformation function for a datafix.
+	 * Represents an entity transformation function for a DataFix.
 	 */
 	@FunctionalInterface
 	public interface EntityTransformation {
@@ -110,7 +110,7 @@ public interface SimpleFixes {
 		 * @param dynamic The Dynamic object representing the entity.
 		 * @return A Pair which contains the entity's new name and the dynamic representing the entity.
 		 */
-		public Pair<String, Dynamic<?>> transform(String inputEntityName, Dynamic<Tag> dynamic);
+		Pair<String, Dynamic<Tag>> transform(String entityName, Dynamic<Tag> dynamic);
 	}
 
 }

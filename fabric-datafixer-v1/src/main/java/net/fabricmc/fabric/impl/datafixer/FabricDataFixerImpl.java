@@ -25,15 +25,25 @@ import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.Dynamic;
 
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerUtils;
-import net.fabricmc.fabric.api.util.NbtType;
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 
-public final class FabricDataFixerImpl implements DataFixerUtils {
 
+/**
+ * 
+ * Assume I have two mods that both register DataFixers.
+ * And mod A's item is being fixed but is inside mod B's BE
+ * So when Mod A fixes it's own item and it doesn't know it's item exists within mod B's BE (Because mod B's type reference is non-existent to mod A)
+ * So either I need to register every single entity/blockEntity underneath the root V0 Schema or find another way.
+ *
+ * method_5346 (registerWithItemRefs) within Schema99 would add the typeReference to the base schema
+ *
+ */
+public final class FabricDataFixerImpl implements DataFixerHelper {
+	
 	private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
 	private boolean locked;
 
@@ -50,18 +60,21 @@ public final class FabricDataFixerImpl implements DataFixerUtils {
 
 	@Override
 	public int getModDataVersion(CompoundTag compoundTag, String modid) {
-		return compoundTag.containsKey(modid + "_DataVersion", NbtType.NUMBER) ? compoundTag.getInt(modid + "_DataVersion") : 0;
+		return compoundTag.getInt(modid + "_DataVersion");
 	}
 
 	@Override
 	public Optional<DataFixer> getDataFixer(String modid) {
 		return Optional.ofNullable(modFixers.get(modid).modFixer);
 	}
-
+	
+	/**
+	 * Registers a DataFixer to be used to automatically fix types when CompoundTags are loaded.
+	 */
 	@Override
 	public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer) {
 		Preconditions.checkNotNull(modid, "modid cannot be null");
-		Preconditions.checkArgument(runtimeDataVersion > -1, "dataVersion must be finite");
+		Preconditions.checkArgument(runtimeDataVersion >= 0, "dataVersion cannot be lower than 0");
 
 		modFixers.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
 
@@ -95,8 +108,8 @@ public final class FabricDataFixerImpl implements DataFixerUtils {
 	}
 
 	final class DataFixerEntry {
-		private DataFixer modFixer;
-		private int runtimeDataVersion;
+		private final DataFixer modFixer;
+		private final int runtimeDataVersion;
 
 		DataFixerEntry(DataFixer fix, int runtimeDataVersion) {
 			this.modFixer = fix;

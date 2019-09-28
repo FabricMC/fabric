@@ -27,6 +27,7 @@ import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
 import net.fabricmc.fabric.impl.datafixer.fixes.BiomeRenameFix;
 import net.fabricmc.fabric.impl.datafixer.fixes.BlockEntityRenameFix;
+import net.fabricmc.fabric.impl.datafixer.fixes.EntityTransformationFixWrapper;
 import net.minecraft.datafixers.fixes.BlockNameFix;
 import net.minecraft.datafixers.fixes.EntityRenameFix;
 import net.minecraft.datafixers.fixes.EntitySimpleTransformFix;
@@ -75,16 +76,8 @@ public class FabricSimpleFixes implements SimpleFixes {
 	}
 
 	@Override
-	public void addEntityTransformFix(DataFixerBuilder builder_1, String name, EntityTransformation transformation, Schema schema_1) {
-		builder_1.addFixer(new EntitySimpleTransformFix(name, schema_1, false) {
-
-			@SuppressWarnings("unchecked")
-			@Override
-			protected Pair<String, Dynamic<?>> transform(String entityName, Dynamic<?> dynamic) {
-				return transformation.transform(entityName, (Dynamic<Tag>) dynamic);
-			}
-
-		});
+	public void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema_1) {
+		builder.addFixer(new EntityTransformationFixWrapper(name, schema_1, false, transformation));
 	}
 
 	/**

@@ -24,14 +24,14 @@ import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.nbt.CompoundTag;
 
 /**
- * This registers and creates DataFixers for the game.
+ * This registers and creates DataFixers for the game, along with some other util methods.
  * <p>
  * <b>Please take extreme caution when using these tools as DataFixers directly interface with the world saves and may corrupt world saves.</b>
  * </p>
  */
-public interface DataFixerUtils {
+public interface DataFixerHelper {
 
-	public static final DataFixerUtils INSTANCE = FabricDataFixerImpl.INSTANCE;
+	public static final DataFixerHelper INSTANCE = FabricDataFixerImpl.INSTANCE;
 
 	/**
 	 * Registers a DataFixer
@@ -42,7 +42,7 @@ public interface DataFixerUtils {
 	 * @return The inputted DataFixer
 	 */
 	public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer);
-
+	
 	/**
 	 * Gets the DataFixer registered under a mod.
 	 * 
@@ -50,7 +50,7 @@ public interface DataFixerUtils {
 	 * @return An optional, which may contain a DataFixer if a mod has registered a DataFixer.
 	 */
 	public Optional<DataFixer> getDataFixer(String modid);
-
+	
 	/**
 	 * Retrieves the DataVersion registered under a modid.
 	 * 

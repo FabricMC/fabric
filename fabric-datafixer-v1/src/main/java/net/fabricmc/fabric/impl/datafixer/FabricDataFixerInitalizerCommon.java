@@ -22,7 +22,7 @@ import com.mojang.datafixers.util.Pair;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerUtils;
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
 import net.fabricmc.fabric.api.datafixer.v1.FabricSchemas;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
 import net.minecraft.block.Block;
@@ -47,17 +47,21 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
 
 		DataFixerBuilder builder = new DataFixerBuilder(TEST_DATA_VERSION);
 		
-		builder.addSchema(0, FabricSchema.MC); // This is here to register all the TypeReferences into the DataFixer
+		builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
 
 		Schema v1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
 
 		SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename testp to test_block", "test:testo", "test:test_block", v1);
 
-		SimpleFixes.INSTANCE.addEntityTransformFix(builder, "addRandomAttribute", (name, dynamic) -> { // Doesn't actually show up in NBT data
+		SimpleFixes.INSTANCE.addEntityTransformFix(builder, "addRandomAttribute", (name, dynamic) -> { // Doesn't actually show up in NBT data unless you mixin to entities.
 			return Pair.of(name, dynamic.set("rna", dynamic.createInt(509)));
 		}, v1);
 
-		DataFixerUtils.INSTANCE.registerFixer("fabric_test", TEST_DATA_VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
+		
+		
+		DataFixerHelper.INSTANCE.registerFixer("fabric_test", TEST_DATA_VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
+		
+		// End of testing logic
 	}
 
 	public static int TEST_DATA_VERSION = 1;

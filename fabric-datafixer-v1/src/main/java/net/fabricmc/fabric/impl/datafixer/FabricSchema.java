@@ -30,5 +30,5 @@ import net.minecraft.datafixers.Schemas;
  * </p>
  */
 public class FabricSchema {
-	public static final BiFunction<Integer, Schema, Schema> MC = (version, parent) -> Schemas.getFixer().getSchema(19610); // Add logic to automatically grab version
+	public static final BiFunction<Integer, Schema, Schema> MC_TYPE_REFS = (version, parent) -> Schemas.getFixer().getSchema(19610); // Add logic to automatically grab version // TODO Magic Number Schema version
 }
