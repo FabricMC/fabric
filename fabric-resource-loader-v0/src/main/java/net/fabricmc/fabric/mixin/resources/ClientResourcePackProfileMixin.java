@@ -16,31 +16,28 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.impl.resources.CustomImageResourcePackInfo;
+import net.fabricmc.fabric.impl.resources.CustomImageResourcePackProfile;
 import net.minecraft.client.resource.ClientResourcePackContainer;
 import net.minecraft.client.texture.NativeImage;
-import net.minecraft.resource.ResourcePack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 @Mixin(ClientResourcePackContainer.class)
-public abstract class ClientResourcePackProfileMixin implements CustomImageResourcePackInfo {
+public abstract class ClientResourcePackProfileMixin implements CustomImageResourcePackProfile {
 	@Shadow
 	private NativeImage icon;
 
 	@Override
-	public void setImage(Path imagePath) {
+	public void setImage(InputStream stream) {
 		if (this.icon != null)
 			return;
 
-		try (InputStream inputStream_1 = Files.newInputStream(imagePath)) {
-			this.icon = NativeImage.read(inputStream_1);
-		} catch (IllegalArgumentException | IOException ignored) {
+		try {
+			this.icon = NativeImage.read(stream);
+		} catch (IOException ignored) {
 		}
 	}
 }

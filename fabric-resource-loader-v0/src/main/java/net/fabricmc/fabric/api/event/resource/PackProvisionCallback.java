@@ -23,36 +23,36 @@ import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainerManager;
 
 /**
- * Callback for registering custom resource pack scanners.
+ * Callback for registering custom resource pack providers.
  *
  * @param <T> the resource pack container type
  */
-public interface PackScannerRegistrationCallback<T extends ResourcePackContainer> {
+public interface PackProvisionCallback<T extends ResourcePackContainer> {
 
 	/**
-	 * The event for registering custom scanners for client resource packs.
+	 * The event for registering custom resource pack providers.
 	 */
-	Event<PackScannerRegistrationCallback<ClientResourcePackContainer>> RESOURCE = EventFactory.createArrayBacked(PackScannerRegistrationCallback.class,
+	Event<PackProvisionCallback<ClientResourcePackContainer>> RESOURCE = EventFactory.createArrayBacked(PackProvisionCallback.class,
 		listeners -> manager -> {
-			for (PackScannerRegistrationCallback<ClientResourcePackContainer> each : listeners) {
+			for (PackProvisionCallback<ClientResourcePackContainer> each : listeners) {
 				each.registerTo(manager);
 			}
 		}
 	);
 
 	/**
-	 * The event for registering custom scanners for data packs.
+	 * The event for registering custom data pack providers.
 	 */
-	Event<PackScannerRegistrationCallback<ResourcePackContainer>> DATA = EventFactory.createArrayBacked(PackScannerRegistrationCallback.class,
+	Event<PackProvisionCallback<ResourcePackContainer>> DATA = EventFactory.createArrayBacked(PackProvisionCallback.class,
 		listeners -> manager -> {
-			for (PackScannerRegistrationCallback<ResourcePackContainer> each : listeners) {
+			for (PackProvisionCallback<ResourcePackContainer> each : listeners) {
 				each.registerTo(manager);
 			}
 		}
 	);
 
 	/**
-	 * Register the creators to the pack container manager.
+	 * Register the provider to the pack container manager.
 	 *
 	 * @param manager the manager
 	 */

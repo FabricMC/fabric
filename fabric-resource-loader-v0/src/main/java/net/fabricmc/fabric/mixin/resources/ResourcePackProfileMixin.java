@@ -16,35 +16,10 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.impl.resources.CustomImageResourcePackInfo;
-import net.fabricmc.fabric.impl.resources.EnhancedResourcePackProfile;
-import net.minecraft.client.resource.ClientResourcePackContainer;
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.resource.ResourcePack;
+import net.fabricmc.fabric.impl.resources.CustomInjectionResourcePackProfile;
 import net.minecraft.resource.ResourcePackContainer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
 
 @Mixin(ResourcePackContainer.class)
-public abstract class ResourcePackProfileMixin implements EnhancedResourcePackProfile {
-	private List<Supplier<? extends ResourcePack>> lowerPacks = new ArrayList<>();
-	private List<Supplier<? extends ResourcePack>> higherPacks = new ArrayList<>();
-
-	@Override
-	public List<Supplier<? extends ResourcePack>> getLowerPriorityPacks() {
-		return lowerPacks;
-	}
-
-	@Override
-	public List<Supplier<? extends ResourcePack>> getHigherPriorityPacks() {
-		return higherPacks;
-	}
+public abstract class ResourcePackProfileMixin implements CustomInjectionResourcePackProfile {
 }

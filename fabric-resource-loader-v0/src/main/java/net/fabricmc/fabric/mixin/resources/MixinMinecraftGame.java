@@ -16,11 +16,14 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.api.event.resource.PackScannerRegistrationCallback;
-import net.fabricmc.fabric.impl.resources.ModResourcePackCreator;
+import net.fabricmc.fabric.api.event.resource.PackProvisionCallback;
+import net.fabricmc.fabric.impl.resources.CustomInjectionResourcePackProfile;
+import net.fabricmc.fabric.impl.resources.ModResourcePackProvider;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.resource.ClientResourcePackContainer;
 import net.minecraft.client.resource.ClientResourcePackCreator;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackContainerManager;
 import net.minecraft.resource.ResourcePackCreator;
 import net.minecraft.resource.ResourceType;
@@ -29,6 +32,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
+
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftGame {
@@ -43,7 +50,22 @@ public class MixinMinecraftGame {
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;addCreator(Lnet/minecraft/resource/ResourcePackCreator;)V", ordinal = 1))
 	public void initResources(ResourcePackContainerManager<ClientResourcePackContainer> manager, ResourcePackCreator creator) {
 		manager.addCreator(creator);
-		manager.addCreator(new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES));
-		PackScannerRegistrationCallback.RESOURCE.invoker().registerTo(manager);
+		manager.addCreator(new ModResourcePackProvider(ResourceType.CLIENT_RESOURCES));
+		PackProvisionCallback.RESOURCE.invoker().registerTo(manager);
 	}
+
+	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;map(Ljava/util/function/Function;)Ljava/util/stream/Stream;"),
+		slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;callCreators()V"),
+			to = @At(value = "INVOKE", target = "Ljava/util/stream/Collectors;toList()Ljava/util/stream/Collector;")))
+	public Stream<ResourcePack> onFillPackListOnInit(Stream<ResourcePackContainer> profileStream, Function<?, ?> oldMappingFunction) {
+		return profileStream.flatMap(profile -> CustomInjectionResourcePackProfile.from(profile).injectPacks());
+	}
+
+	@Redirect(method = "reloadResources", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;map(Ljava/util/function/Function;)Ljava/util/stream/Stream;"),
+		slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackContainerManager;callCreators()V"),
+			to = @At(value = "INVOKE", target = "Ljava/util/stream/Collectors;toList()Ljava/util/stream/Collector;")))
+	public Stream<ResourcePack> onFillPackListInReload(Stream<ResourcePackContainer> profileStream, Function<?, ?> oldMappingFunction) {
+		return profileStream.flatMap(profile -> CustomInjectionResourcePackProfile.from(profile).injectPacks());
+	}
+
 }

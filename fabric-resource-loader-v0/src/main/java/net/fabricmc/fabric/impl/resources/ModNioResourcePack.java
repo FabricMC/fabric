@@ -39,21 +39,21 @@ import java.util.regex.Pattern;
 public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_]+");
-	private final ModContainer mod;
 	private final ModMetadata modInfo;
 	private final Path basePath;
 	private final boolean cacheable;
 	private final AutoCloseable closer;
 	private final String separator;
+	private final boolean requestStandaloneProfile;
 
-	public ModNioResourcePack(ModContainer mod, Path path, AutoCloseable closer) {
+	public ModNioResourcePack(ModContainer mod, AutoCloseable closer) {
 		super(null);
-		this.mod = mod;
 		this.modInfo = mod.getMetadata();
-		this.basePath = path.toAbsolutePath().normalize();
+		this.basePath = mod.getRootPath().toAbsolutePath().normalize();
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
+		this.requestStandaloneProfile = mod.getMetadata().getCustomValue("fabric-resource-loader:requestStandaloneProfile").getAsBoolean();
 	}
 
 	private Path getPath(String filename) {
@@ -67,11 +67,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	}
 
 	@Override
-	protected InputStream openFile(String filename) throws IOException {
-		InputStream stream;
-
+	public InputStream openFile(String filename) throws IOException {
 		if (DeferredNioExecutionHandler.shouldDefer()) {
-			stream = DeferredNioExecutionHandler.submit(() -> {
+			InputStream stream = DeferredNioExecutionHandler.submit(() -> {
 				Path path = getPath(filename);
 				if (path != null && Files.isRegularFile(path)) {
 					return new DeferredInputStream(Files.newInputStream(path));
@@ -89,21 +87,12 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 			}
 		}
 
-		stream = ModResourcePackUtil.openDefault(modInfo, filename);
-		if (stream != null) {
-			return stream;
-		}
-
 		// ReloadableResourceManagerImpl gets away with FileNotFoundException.
 		throw new FileNotFoundException("\"" + filename + "\" in Fabric mod \"" + modInfo.getId() + "\"");
 	}
 
 	@Override
 	protected boolean containsFile(String filename) {
-		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
-			return true;
-		}
-
 		if (DeferredNioExecutionHandler.shouldDefer()) {
 			try {
 				return DeferredNioExecutionHandler.submit(() -> {
@@ -223,7 +212,8 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		return ModResourcePackUtil.getName(modInfo);
 	}
 
-	ModContainer getMod() {
-		return mod;
+	@Override
+	public boolean requestsStandaloneProfile() {
+		return requestStandaloneProfile;
 	}
 }

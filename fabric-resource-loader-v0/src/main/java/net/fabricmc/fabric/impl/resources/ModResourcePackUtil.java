@@ -16,16 +16,14 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import com.google.common.base.Charsets;
-import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.ResourceType;
-import org.apache.commons.io.IOUtils;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
+import java.nio.file.Files;
 import java.util.List;
 
 /**
@@ -35,39 +33,17 @@ public final class ModResourcePackUtil {
 	public static final int PACK_FORMAT_VERSION = 4;
 
 	private ModResourcePackUtil() {
-
 	}
 
 	public static void appendModResourcePacks(List<? super ModNioResourcePack> packList, ResourceType type) {
 		for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-			if(container.getMetadata().getType().equals("builtin")){
+			if (container.getMetadata().getType().equals("builtin")) {
 				continue;
 			}
-			Path path = container.getRootPath();
-			ModNioResourcePack pack = new ModNioResourcePack(container, path, null);
+			ModNioResourcePack pack = new ModNioResourcePack(container, null);
 			if (!pack.getNamespaces(type).isEmpty()) {
 				packList.add(pack);
 			}
-		}
-	}
-
-	public static boolean containsDefault(ModMetadata info, String filename) {
-		return "pack.mcmeta".equals(filename);
-	}
-
-	public static InputStream openDefault(ModMetadata info, String filename) {
-		switch (filename) {
-			case "pack.mcmeta":
-				String description = info.getName();
-				if (description == null) {
-					description = "";
-				} else {
-					description = description.replaceAll("\"", "\\\"");
-				}
-				String pack = String.format("{\"pack\":{\"pack_format\":" + PACK_FORMAT_VERSION + ",\"description\":\"%s\"}}", description);
-				return IOUtils.toInputStream(pack, Charsets.UTF_8);
-			default:
-				return null;
 		}
 	}
 
@@ -79,10 +55,23 @@ public final class ModResourcePackUtil {
 		}
 	}
 
-	static void setPackIcon(ModContainer mod, CustomImageResourcePackInfo info) {
+	static void setPackIcon(ModContainer mod, CustomImageResourcePackProfile info) {
 		String file = mod.getMetadata().getIconPath(64).orElse(null);
 		if (file == null)
 			return;
-		info.setImage(mod.getPath(file));
+		try (InputStream stream = Files.newInputStream(mod.getPath(file))) {
+			info.setImage(stream);
+		} catch (IOException ignored) {
+		}
+	}
+
+	static void setPackIcon(ModNioResourcePack pack, CustomImageResourcePackProfile info) {
+		String file = pack.getFabricModMetadata().getIconPath(64).orElse(null);
+		if (file == null)
+			return;
+		try (InputStream stream = pack.openFile(file)) {
+			info.setImage(stream);
+		} catch (IOException ignored) {
+		}
 	}
 }

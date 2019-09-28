@@ -28,4 +28,6 @@ public interface ModResourcePack extends ResourcePack {
 	 * resource pack.
 	 */
 	ModMetadata getFabricModMetadata();
+	
+	boolean requestsStandaloneProfile();
 }
