@@ -18,7 +18,10 @@ package net.fabricmc.fabric.mixin.rendering.data.client;
 
 import java.util.ConcurrentModificationException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +34,6 @@ import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -45,6 +47,9 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 	@Shadow
 	protected abstract int getIndex(int x, int y, int z);
 
+	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	@Inject(at = @At("RETURN"), method = "<init>")
 	public void init(World world, int cxOff, int czOff, WorldChunk[][] chunks, BlockPos posFrom, BlockPos posTo, CallbackInfo info) {
 		// instantiated lazily - avoids allocation for chunks without any data objects - which is most of them!
@@ -57,13 +62,22 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 				// CMEs when we iterate the map.  (Vanilla does not iterate these maps when it builds
 				// the chunk cache and does not suffer from this problem.)
 				// 
-				// We handle this by trying to iterating the block entity map first, because that 
-				// usually works and is most efficient.  If we encounter a CME, we retry, querying the 
-				// map by iterating block positions. This method is a little slower but will not cause a CME.
-				try {
-					map = mapChunkFast(chunk, posFrom, posTo, map);
-				} catch (ConcurrentModificationException e) {
-					map = mapChunkSafely(chunk, posFrom, posTo, map);
+				// We handle this simply by retrying until it works.  Ugly but effective.
+				for (;;) {
+					try {
+						map = mapChunk(chunk, posFrom, posTo, map);
+						break;
+					} catch (ConcurrentModificationException e) {
+						final int count = ERROR_COUNTER.incrementAndGet();
+
+						if (count <= 5) {
+							LOGGER.warn("[Render Data Attachment] Encountered CME during render region build. A mod is accessing or changing chunk data outside the main thread. Retrying.", e);
+
+							if (count == 5) {
+								LOGGER.info("[Render Data Attachment] Subsequent exceptions will be suppressed.");
+							}
+						}
+					}
 				}
 			}
 		}
@@ -71,7 +85,7 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 		this.fabric_renderDataObjects = map;
 	}
 
-	private Int2ObjectOpenHashMap<Object> mapChunkFast(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Int2ObjectOpenHashMap<Object> map) {
+	private Int2ObjectOpenHashMap<Object> mapChunk(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Int2ObjectOpenHashMap<Object> map) {
 		final int xMin = posFrom.getX();
 		final int xMax = posTo.getX();
 		final int zMin = posFrom.getZ();
@@ -81,7 +95,7 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 
 		for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
 			final BlockPos entPos = entry.getKey();
-			
+
 			if (entPos.getX() >= xMin && entPos.getX() <= xMax 
 					&& entPos.getY() >= yMin && entPos.getY() <= yMax
 					&& entPos.getZ() >= zMin && entPos.getZ() <= zMax) {
@@ -95,48 +109,6 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 				}
 			}
 		}
-		return map;
-	}
-
-	private Int2ObjectOpenHashMap<Object> mapChunkSafely(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Int2ObjectOpenHashMap<Object> map) {
-		final Map<BlockPos, BlockEntity> blockEntities = chunk.getBlockEntities();
-		
-		int beCount = blockEntities.size();
-		if (beCount == 0) {
-			return map;
-		}
-
-		final ChunkPos chunkPos = chunk.getPos();
-		final int xMin = Math.max(posFrom.getX(), chunkPos.getStartX());
-		final int xMax = Math.min(posTo.getX(), chunkPos.getStartX() + 16);
-		final int zMin = Math.max(posFrom.getZ(), chunkPos.getStartZ());
-		final int zMax = Math.min(posTo.getZ(), chunkPos.getStartZ() + 16);
-		final int yMax = posTo.getY();
-		final BlockPos.PooledMutable searchPos = BlockPos.PooledMutable.get();
-
-		for (int x = xMin; x < xMax; x++) {
-			for (int y = posFrom.getY(); y < yMax; y++) {
-				for (int z = zMin; z < zMax; z++) {
-					final BlockEntity be = blockEntities.get(searchPos.set(x, y, z));
-					if (be != null) {
-						final Object o = ((RenderAttachmentBlockEntity) be).getRenderAttachmentData();
-						if (o != null) {
-							if (map == null) {
-								map = new Int2ObjectOpenHashMap<>();
-							}
-							map.put(getIndex(x, y, z), o);
-						}
-
-						if (--beCount == 0) {
-							return map;
-						}
-					}
-				}
-			}
-		}
-
-		searchPos.close();
-
 		return map;
 	}
 
