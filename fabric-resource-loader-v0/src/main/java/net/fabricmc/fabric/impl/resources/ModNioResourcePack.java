@@ -21,6 +21,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import org.apache.logging.log4j.LogManager;
@@ -53,7 +54,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
-		this.requestStandaloneProfile = mod.getMetadata().getCustomValue("fabric-resource-loader:requestStandaloneProfile").getAsBoolean();
+		this.requestStandaloneProfile = ModResourcePackUtil.requestsStandalonePackProfile(this.modInfo);
 	}
 
 	private Path getPath(String filename) {
@@ -187,6 +188,13 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 			LOGGER.warn("getNamespaces in mod " + modInfo.getId() + " failed!", e);
 			return Collections.emptySet();
 		}
+	}
+
+	@Override
+	public <T> T parseMetadata(ResourceMetadataReader<T> resourceMetadataReader_1) throws IOException {
+		if (!requestStandaloneProfile && !this.containsFile("pack.mcmeta"))
+			return null; // Don't throw IOE if it's a subsidiary
+		return super.parseMetadata(resourceMetadataReader_1);
 	}
 
 	@Override

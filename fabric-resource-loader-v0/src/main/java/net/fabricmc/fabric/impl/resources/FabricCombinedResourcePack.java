@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.resources;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
+import net.minecraft.resource.ResourceNotFoundException;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.PackResourceMetadata;
@@ -51,12 +52,12 @@ public class FabricCombinedResourcePack implements CustomInjectionResourcePack {
 
 	@Override
 	public InputStream openRoot(String var1) throws IOException {
-		return null;
+		throw new IOException("No file " + var1);
 	}
 
 	@Override
 	public InputStream open(ResourceType type, Identifier path) throws IOException {
-		return null;
+		throw new IOException("No resource " + path);
 	}
 
 	@Override

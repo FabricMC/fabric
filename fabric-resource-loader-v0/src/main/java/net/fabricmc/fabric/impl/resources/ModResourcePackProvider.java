@@ -51,6 +51,8 @@ public class ModResourcePackProvider implements ResourcePackCreator {
 				if (modProfile instanceof CustomImageResourcePackProfile) {
 					ModResourcePackUtil.setPackIcon(pack, (CustomImageResourcePackProfile) modProfile);
 				}
+
+				map.put(modProfile.getName(), modProfile);
 			}
 		}
 		

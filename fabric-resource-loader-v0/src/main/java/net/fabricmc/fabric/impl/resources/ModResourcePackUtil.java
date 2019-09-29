@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.resources;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.ResourceType;
 
@@ -53,6 +54,11 @@ public final class ModResourcePackUtil {
 		} else {
 			return "Fabric Mod \"" + info.getId() + "\"";
 		}
+	}
+	
+	static boolean requestsStandalonePackProfile(ModMetadata meta) {
+		CustomValue value = meta.getCustomValue("fabric-resource-loader:requestStandaloneProfile");
+		return value != null && value.getAsBoolean();
 	}
 
 	static void setPackIcon(ModContainer mod, CustomImageResourcePackProfile info) {
