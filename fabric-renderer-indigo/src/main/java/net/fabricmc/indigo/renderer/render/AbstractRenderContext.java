@@ -19,11 +19,27 @@ package net.fabricmc.indigo.renderer.render;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.minecraft.class_4587;
+import net.minecraft.block.BlockState;
+import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.BlockRenderView;
 
 abstract class AbstractRenderContext implements RenderContext {
 	private final ObjectArrayList<QuadTransform> transformStack = new ObjectArrayList<>();
 	private static final QuadTransform NO_TRANSFORM = (q) -> true;
-
+	protected class_4587 matrixStack;
+	protected Matrix4f matrix;
+	
+	protected void prepareMatrix(BlockState blockState, BlockPos blockPos, BlockRenderView blockView, class_4587 matrixStack) {
+		this.matrixStack = matrixStack;
+		Vec3d vec = blockState.getOffsetPos(blockView, blockPos);
+		matrixStack.method_22903();
+		matrixStack.method_22904((double)(blockPos.getX() & 15) + vec.x, (double)(blockPos.getY() & 15) + vec.y, (double)(blockPos.getZ() & 15) + vec.z);
+		matrix = matrixStack.method_22910();
+	}
+	
 	private final QuadTransform stackTransform = (q) -> {
 		int i = transformStack.size() - 1;
 

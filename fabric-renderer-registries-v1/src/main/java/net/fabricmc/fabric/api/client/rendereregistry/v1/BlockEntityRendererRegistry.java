@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.render;
+package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import net.fabricmc.fabric.mixin.client.render.MixinBlockEntityRenderDispatcher;
+import net.fabricmc.fabric.mixin.client.rendereregistry.MixinBlockEntityRenderDispatcher;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
@@ -33,7 +33,6 @@ public class BlockEntityRendererRegistry {
 	}
 
 	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer) {
-		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).method_23078(blockEntityType, blockEntityRenderer);
+		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).invoke_method_23078(blockEntityType, blockEntityRenderer);
 	}
-
 }

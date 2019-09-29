@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.render;
+package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.resource.ReloadableResourceManager;
 
 import java.util.HashMap;
@@ -40,9 +41,9 @@ public class EntityRendererRegistry {
 		private final TextureManager textureManager;
 		private final ReloadableResourceManager resourceManager;
 		private final ItemRenderer itemRenderer;
-		private final Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> rendererMap;
+		private final Map<EntityType<?>, EntityRenderer<?>> rendererMap;
 
-		private Context(TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> rendererMap) {
+		private Context(TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer,Map<EntityType<?>, EntityRenderer<?>> rendererMap) {
 			this.textureManager = textureManager;
 			this.resourceManager = resourceManager;
 			this.itemRenderer = itemRenderer;
@@ -64,32 +65,34 @@ public class EntityRendererRegistry {
 
 	public static final EntityRendererRegistry INSTANCE = new EntityRendererRegistry();
 	private final Map<EntityRenderDispatcher, Context> renderManagerMap = new WeakHashMap<>();
-	private final Map<Class<? extends Entity>, EntityRendererRegistry.Factory> renderSupplierMap = new HashMap<>();
+	private final Map<EntityType<?>, EntityRendererRegistry.Factory> renderSupplierMap = new HashMap<>();
 
 	private EntityRendererRegistry() {
 
 	}
 
-	public void initialize(EntityRenderDispatcher manager, TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> map) {
+	public void initialize(EntityRenderDispatcher manager, TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<EntityType<?>, EntityRenderer<?>> renderers) {
 		synchronized (renderSupplierMap) {
 			if (renderManagerMap.containsKey(manager)) {
 				return;
 			}
 
-			Context context = new Context(textureManager, resourceManager, itemRenderer, map);
+			Context context = new Context(textureManager, resourceManager, itemRenderer, renderers);
 			renderManagerMap.put(manager, context);
-			for (Class<? extends Entity> c : renderSupplierMap.keySet()) {
-				map.put(c, renderSupplierMap.get(c).create(manager, context));
+
+			for (EntityType<?> c : renderSupplierMap.keySet()) {
+				renderers.put(c, renderSupplierMap.get(c).create(manager, context));
 			}
 		}
 	}
 
-	public void register(Class<? extends Entity> entityClass, EntityRendererRegistry.Factory factory) {
+	public void register(EntityType<?> entityType, EntityRendererRegistry.Factory factory) {
 		synchronized (renderSupplierMap) {
 			// TODO: warn on duplicate
-			renderSupplierMap.put(entityClass, factory);
+			renderSupplierMap.put(entityType, factory);
+
 			for (EntityRenderDispatcher manager : renderManagerMap.keySet()) {
-				renderManagerMap.get(manager).rendererMap.put(entityClass, factory.create(manager, renderManagerMap.get(manager)));
+				renderManagerMap.get(manager).rendererMap.put(entityType, factory.create(manager, renderManagerMap.get(manager)));
 			}
 		}
 	}

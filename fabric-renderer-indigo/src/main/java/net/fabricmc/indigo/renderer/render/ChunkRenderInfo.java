@@ -20,7 +20,6 @@ import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.indigo.Indigo;
-import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererData;
 import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
@@ -77,7 +76,7 @@ public class ChunkRenderInfo {
 	BlockLayeredBufferBuilder builders;
 	BlockRenderView blockView;
 
-	private final Object2ObjectOpenHashMap<BlockRenderLayer, AccessBufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectOpenHashMap<BlockRenderLayer, BufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
 
 	private double chunkOffsetX;
 	private double chunkOffsetY;
@@ -141,17 +140,17 @@ public class ChunkRenderInfo {
 	}
 
 	/** Lazily retrieves output buffer for given layer, initializing as needed. */
-	public AccessBufferBuilder getInitializedBuffer(BlockRenderLayer renderLayer) {
-		AccessBufferBuilder result = buffers.get(renderLayer);
+	public BufferBuilder getInitializedBuffer(BlockRenderLayer renderLayer) {
+		BufferBuilder result = buffers.get(renderLayer);
 
 		if (result == null) {
 			BufferBuilder builder = builders.get(renderLayer);
-			result = (AccessBufferBuilder) builder;
+			result = (BufferBuilder) builder;
 			chunkData.fabric_markPopulated(renderLayer);
 			buffers.put(renderLayer, result);
 
 			if (chunkData.fabric_markInitialized(renderLayer)) {
-				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, chunkOrigin);
+				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder);
 			}
 		}
 		return result;

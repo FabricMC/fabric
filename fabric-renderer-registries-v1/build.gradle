@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-rendering-v0"
+archivesBaseName = "fabric-renderer-registries-v1"
 version = getSubprojectVersion(project, "1.0.0")
 
 dependencies {

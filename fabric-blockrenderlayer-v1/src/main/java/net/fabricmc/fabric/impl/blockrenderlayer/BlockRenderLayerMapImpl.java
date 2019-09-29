@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.blockrenderlayer.v1;
+package net.fabricmc.fabric.impl.blockrenderlayer;
 
 import java.util.function.BiConsumer;
 

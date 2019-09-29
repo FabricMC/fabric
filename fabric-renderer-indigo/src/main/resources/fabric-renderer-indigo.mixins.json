@@ -6,10 +6,8 @@
   "mixins": [
   ],
   "client": [
-    "BufferBuilderOffsetAccessor",
     "MixinAmbientOcclusionCalculator",
     "MixinBlockModelRenderer",
-    "MixinBufferBuilder",
     "MixinChunkRebuildTask",
     "MixinChunkRenderData",
     "MixinChunkRenderer",
