@@ -21,13 +21,14 @@ import static net.fabricmc.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG
 import java.util.function.Function;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
-import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -37,12 +38,14 @@ import net.minecraft.util.math.BlockPos;
 public abstract class AbstractQuadRenderer {
 	static final int FULL_BRIGHTNESS = 0xF000F0;
 
-	protected final Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc;
+	protected final Function<BlockRenderLayer, BufferBuilder> bufferFunc;
 	protected final BlockRenderInfo blockInfo;
 	protected final AoCalculator aoCalc;
 	protected final QuadTransform transform;
 
-	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+	protected abstract Matrix4f matrix();
+	
+	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, BufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		this.blockInfo = blockInfo;
 		this.bufferFunc = bufferFunc;
 		this.aoCalc = aoCalc;
@@ -65,9 +68,21 @@ public abstract class AbstractQuadRenderer {
 
 	/** final output step, common to all renders */
 	private void bufferQuad(MutableQuadViewImpl quad, BlockRenderLayer renderLayer) {
-		bufferFunc.apply(renderLayer).fabric_putQuad(quad);
+		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix());
 	}
 
+	public static void bufferQuad(BufferBuilder buff, MutableQuadViewImpl quad, Matrix4f matrix) {
+		for (int i = 0; i < 4; i++) {
+			buff.method_22918(matrix, quad.x(i), quad.y(i), quad.z(i));
+			final int color = quad.spriteColor(i, 0);
+			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
+			buff.method_22913(quad.spriteU(i, 0), quad.spriteV(i, 0));
+			buff.method_22916(quad.lightmap(i));
+	        buff.method_22914(quad.normalX(i),quad.normalY(i), quad.normalZ(i));
+	        buff.next();
+		}
+	}
+	
 	// routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
 
 	/** for non-emissive mesh quads and all fallback quads with smooth lighting*/

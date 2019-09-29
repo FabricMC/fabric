@@ -79,6 +79,10 @@ public abstract class ModelHelper {
 			builders[i] = ImmutableList.builder();
 		}
 
+		if(mesh == null) {
+			return null;
+		}
+
 		mesh.forEach(q -> {
 			final int limit = q.material().spriteDepth();
 			for (int l = 0; l < limit; l++) {

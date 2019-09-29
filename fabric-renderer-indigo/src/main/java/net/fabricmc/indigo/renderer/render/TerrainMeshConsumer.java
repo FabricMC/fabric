@@ -16,20 +16,22 @@
 
 package net.fabricmc.indigo.renderer.render;
 
+import java.util.function.Supplier;
+
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
-import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.client.util.math.Matrix4f;
 
 public class TerrainMeshConsumer extends AbstractMeshConsumer {
-	private final ChunkRenderInfo chunkInfo;
-
-	TerrainMeshConsumer(TerrainBlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
+	final Supplier<Matrix4f> matrixSupplier;
+	
+	TerrainMeshConsumer(TerrainBlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform, Supplier<Matrix4f> matrixSupplier) {
 		super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
-		this.chunkInfo = chunkInfo;
+		this.matrixSupplier = matrixSupplier;
 	}
 
 	@Override
-	protected void applyOffsets(MutableQuadViewImpl quad) {
-		chunkInfo.applyOffsets(quad);
+	protected Matrix4f matrix() {
+		return matrixSupplier.get();
 	}
 }

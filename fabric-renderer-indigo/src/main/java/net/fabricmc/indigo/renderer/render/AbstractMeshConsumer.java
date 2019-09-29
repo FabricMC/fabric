@@ -24,7 +24,6 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.IndigoRenderer;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
-import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
@@ -33,13 +32,14 @@ import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.BufferBuilder;
 
 /**
  * Consumer for pre-baked meshes.  Works by copying the mesh data to a
  * "editor" quad held in the instance, where all transformations are applied before buffering.
  */
 public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implements Consumer<Mesh> {
-	protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+	protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, BufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		super(blockInfo, bufferFunc, aoCalc, transform);
 	}
 
@@ -102,12 +102,8 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 			aoCalc.compute(q, false);
 		}
 
-		applyOffsets(q);
-
 		tesselateQuad(q, mat, 0);
 	}
-
-	protected abstract void applyOffsets(MutableQuadViewImpl quad);
 
 	/** 
 	 * Determines color index and render layer, then routes to appropriate 

@@ -59,11 +59,11 @@ public abstract class EncodingFormat {
 		VERTEX_X = HEADER_STRIDE + 0;
 		VERTEX_Y = HEADER_STRIDE + 1;
 		VERTEX_Z = HEADER_STRIDE + 2;
-		VERTEX_COLOR = HEADER_STRIDE + (format.getColorOffset() >> 2);
-		VERTEX_U = HEADER_STRIDE + (format.getUvOffset(0) >> 2);
+		VERTEX_COLOR = HEADER_STRIDE + 4;
+		VERTEX_U = HEADER_STRIDE + 5;
 		VERTEX_V = VERTEX_U + 1;
-		VERTEX_LIGHTMAP = HEADER_STRIDE + (format.getUvOffset(1) >> 2);
-		VERTEX_NORMAL = HEADER_STRIDE + (format.getNormalOffset() >> 2);
+		VERTEX_LIGHTMAP = HEADER_STRIDE + 6;
+		VERTEX_NORMAL = HEADER_STRIDE + 7;
 		VERTEX_STRIDE = format.getVertexSizeInteger();
 		QUAD_STRIDE = VERTEX_STRIDE * 4;
 		QUAD_STRIDE_BYTES = QUAD_STRIDE * 4;
