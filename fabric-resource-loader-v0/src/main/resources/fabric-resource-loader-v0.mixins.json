@@ -10,7 +10,7 @@
     "ResourcePackProfileMixin"
   ],
   "client": [
-    "ClientResourcePackContainerMixin",
+    "ClientResourcePackProfileMixin",
     "MixinKeyedResourceReloadListener$Client",
     "MixinMinecraftGame",
     "MixinReloadableResourceManagerImplClient"
