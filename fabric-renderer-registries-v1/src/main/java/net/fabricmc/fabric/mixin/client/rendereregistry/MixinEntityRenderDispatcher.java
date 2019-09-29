@@ -38,7 +38,7 @@ public class MixinEntityRenderDispatcher {
 	@Shadow
 	Map<EntityType<?>, EntityRenderer<?>> renderers;
 
-	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/client/options/GameOptions;)V", at = @At("RETURN"), require = 0)
+	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/client/options/GameOptions;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;method_23167(Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;)V", shift = At.Shift.AFTER), require = 0)
 	public void init(TextureManager textureManager, ItemRenderer itemRenderer, ReloadableResourceManager manager, TextRenderer textRenderer, GameOptions gameOptions, CallbackInfo info) {
 		EntityRendererRegistry.INSTANCE.initialize((EntityRenderDispatcher) (Object) this, textureManager, manager, itemRenderer, renderers);
 	}
