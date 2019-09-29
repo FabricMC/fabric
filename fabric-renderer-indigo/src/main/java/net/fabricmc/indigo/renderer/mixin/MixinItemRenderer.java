@@ -17,37 +17,40 @@
 package net.fabricmc.indigo.renderer.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.indigo.renderer.render.ItemRenderContext;
+import net.fabricmc.indigo.renderer.render.ItemRenderContext.VanillaQuadHandler;
+import net.minecraft.class_4587;
+import net.minecraft.class_4588;
+import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.item.ItemStack;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
-	// TODO: temporarily disabled
-	//	@Shadow
-	//	protected abstract void renderQuads(BufferBuilder bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack);
-	//
-	//	@Shadow
-	//	protected ItemColors colorMap;
-	//	private final ThreadLocal<ItemRenderContext> CONTEXTS = ThreadLocal.withInitial(() -> new ItemRenderContext(colorMap));
-	//
-	//	/**
-	//	 * Save stack for enchantment glint renders - we won't otherwise have access to it 
-	//	 * during the glint render because it receives an empty stack. 
-	//	 */
-	//	@Inject(at = @At("HEAD"), method = "renderItemAndGlow")
-	//	private void hookRenderItemAndGlow(ItemStack stack, BakedModel model, CallbackInfo ci) {
-	//		if (stack.hasEnchantmentGlint() && !((FabricBakedModel) model).isVanillaAdapter()) {
-	//			CONTEXTS.get().enchantmentStack = stack;
-	//		}
-	//	}
-	//
-	//	@Inject(at = @At("HEAD"), method = "renderModel", cancellable = true)
-	//	private void hookRenderModel(BakedModel model, int color, ItemStack stack, CallbackInfo ci) {
-	//		final FabricBakedModel fabricModel = (FabricBakedModel) model;
-	//
-	//		if (!fabricModel.isVanillaAdapter()) {
-	//			CONTEXTS.get().renderModel(fabricModel, color, stack, this::renderQuads);
-	//			ci.cancel();
-	//		}
-	//	}
+//	@Shadow
+//	protected abstract void method_23182(BakedModel model, ItemStack stack, int color, class_4587 matrixStack, class_4588 buffer);
+//
+//	@Shadow
+//	protected ItemColors colorMap;
+//
+//	private final VanillaQuadHandler vanillaHandler = this::method_23182;
+//
+//	private final ThreadLocal<ItemRenderContext> CONTEXTS = ThreadLocal.withInitial(() -> new ItemRenderContext(colorMap));
+//
+//	@Inject(at = @At("HEAD"), method = "method_23180", cancellable = true)
+//	private void hook_method_23182(BakedModel model, ItemStack stack, int color, class_4587 matrixStack, class_4588 buffer, CallbackInfo ci) {
+//		final FabricBakedModel fabricModel = (FabricBakedModel) model;
+//
+//		if (!fabricModel.isVanillaAdapter()) {
+//			CONTEXTS.get().renderModel(fabricModel, stack, color, matrixStack, buffer, vanillaHandler);
+//			ci.cancel();
+//		}
+//	}
 }
