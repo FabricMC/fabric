@@ -24,14 +24,14 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
 /**
- * Implement this interace on a BlockEntity which you would like to be
+ * Implement this interface on a BlockEntity which you would like to be
  * synchronized with the client side using the built-in engine methods.
  */
 public interface BlockEntityClientSerializable {
 	void fromClientTag(CompoundTag tag);
 
 	CompoundTag toClientTag(CompoundTag tag);
-	
+
 	/**
 	 * When called on the server, schedules a BlockEntity sync to client.
 	 * This will cause {@link #toClientTag(CompoundTag)} to be called on the
@@ -46,7 +46,7 @@ public interface BlockEntityClientSerializable {
 		World world = ((BlockEntity) this).getWorld();
 		Preconditions.checkNotNull(world); //Maintain distinct failure case from below
 		if (!(world instanceof ServerWorld)) throw new IllegalStateException("Cannot call sync() on the logical client! Did you check world.isClient first?");
-		
+
 		((ServerWorld) world).method_14178().markForUpdate(((BlockEntity) this).getPos());
 	}
 }
