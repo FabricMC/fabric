@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-particles-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0"
+  },
+  "mixins": [
+    "fabric-particles-v1.mixins.json"
+  ]
+}
