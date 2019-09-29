@@ -14,27 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.render;
+package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import net.fabricmc.fabric.api.client.render.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.mixin.client.rendereregistry.MixinBlockEntityRenderDispatcher;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
+/**
+ * Helper class for registering BlockEntityRenderers.
+ */
+public class BlockEntityRendererRegistry {
+	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
 
-@Mixin(BlockEntityRenderDispatcher.class)
-public class MixinBlockEntityRenderManager {
-	@Shadow
-	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers;
+	private BlockEntityRendererRegistry() {
 
-	@Inject(method = "<init>()V", at = @At("RETURN"))
-	public void init(CallbackInfo info) {
-		BlockEntityRendererRegistry.INSTANCE.initialize((BlockEntityRenderDispatcher) (Object) this, renderers);
+	}
+
+	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer) {
+		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).invoke_method_23078(blockEntityType, blockEntityRenderer);
 	}
 }

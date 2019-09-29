@@ -24,16 +24,16 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
-import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.fabricmc.indigo.renderer.mixin.BufferBuilderOffsetAccessor;
+import net.minecraft.class_4587;
+import net.minecraft.class_4588;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
@@ -46,14 +46,10 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform);
 	private final Random random = new Random();
 	private BlockModelRenderer vanillaRenderer;
-	private AccessBufferBuilder fabricBuffer;
+	private BufferBuilder bufferBuilder;
 	private long seed;
 	private boolean isCallingVanilla = false;
 	private boolean didOutput = false;
-
-	private double offsetX;
-	private double offsetY;
-	private double offsetZ;
 
 	public boolean isCallingVanilla() {
 		return isCallingVanilla;
@@ -72,57 +68,47 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
 	}
 
-	private AccessBufferBuilder outputBuffer(BlockRenderLayer renderLayer) {
+	private BufferBuilder outputBuffer(BlockRenderLayer renderLayer) {
 		didOutput = true;
-		return fabricBuffer;
+		return bufferBuilder;
 	}
 
-	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, long seed) {
+	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, class_4587 matrixStack, class_4588 buffer, boolean checkSides, long seed) {
 		this.vanillaRenderer = vanillaRenderer;
-		this.fabricBuffer = (AccessBufferBuilder) buffer;
+		this.bufferBuilder = (BufferBuilder) buffer;
+		this.prepareMatrix(state, pos, blockView, matrixStack);
+
 		this.seed = seed;
 		this.didOutput = false;
 		aoCalc.clear();
 		blockInfo.setBlockView(blockView);
 		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
-		setupOffsets();
 
 		((FabricBakedModel) model).emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
 
 		this.vanillaRenderer = null;
 		blockInfo.release();
-		this.fabricBuffer = null;
+		this.bufferBuilder = null;
+
+		matrixStack.method_22909();
+
 		return didOutput;
 	}
 
 	protected void acceptVanillaModel(BakedModel model) {
 		isCallingVanilla = true;
-		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, (BufferBuilder) fabricBuffer, false, random, seed);
+		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, (class_4588) bufferBuilder, false, random, seed);
 		isCallingVanilla = false;
 	}
 
-	private void setupOffsets() {
-		final BufferBuilderOffsetAccessor buffer = (BufferBuilderOffsetAccessor) fabricBuffer;
-		final BlockPos pos = blockInfo.blockPos;
-		offsetX = buffer.getOffsetX() + pos.getX();
-		offsetY = buffer.getOffsetY() + pos.getY();
-		offsetZ = buffer.getOffsetZ() + pos.getZ();
-	}
-
 	private class MeshConsumer extends AbstractMeshConsumer {
-		MeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+		MeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, BufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 			super(blockInfo, bufferFunc, aoCalc, transform);
 		}
 
 		@Override
-		protected void applyOffsets(MutableQuadViewImpl q) {
-			final double x = offsetX;
-			final double y = offsetY;
-			final double z = offsetZ;
-	
-			for (int i = 0; i < 4; i++) {
-				q.pos(i, (float) (q.x(i) + x), (float) (q.y(i) + y), (float) (q.z(i) + z));
-			}
+		protected Matrix4f matrix() {
+			return matrix;
 		}
 	}
 

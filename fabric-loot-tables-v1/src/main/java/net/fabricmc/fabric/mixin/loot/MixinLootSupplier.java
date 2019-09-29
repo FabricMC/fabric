@@ -18,7 +18,7 @@ package net.fabricmc.fabric.mixin.loot;
 
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplier;
 import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.LootTable;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 import org.spongepowered.asm.mixin.Final;
@@ -29,7 +29,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.Arrays;
 import java.util.List;
 
-@Mixin(LootSupplier.class)
+@Mixin(LootTable.class)
 public abstract class MixinLootSupplier implements FabricLootSupplier {
 	@Shadow @Final private LootPool[] pools;
 	@Shadow @Final private LootFunction[] functions;

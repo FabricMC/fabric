@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.client.texture;
 
 import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
-import net.minecraft.client.texture.Texture;
+import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(TextureManager.class)
 public class MixinTextureManager {
 	@Inject(at = @At("RETURN"), method = "registerTexture")
-	private void afterRegisterTexture(Identifier identifier, Texture texture, CallbackInfoReturnable<Boolean> info) {
+	private void afterRegisterTexture(Identifier identifier, AbstractTexture texture, CallbackInfoReturnable<Boolean> info) {
 		if (texture instanceof SpriteAtlasTextureHooks) {
 			((SpriteAtlasTextureHooks) texture).onRegisteredAs(identifier);
 		}

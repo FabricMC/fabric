@@ -18,18 +18,18 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import net.fabricmc.fabric.mixin.loot.LootSupplierBuilderHooks;
 import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.LootTable;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 
 import java.util.Collection;
 
-public class FabricLootSupplierBuilder extends LootSupplier.Builder {
+public class FabricLootSupplierBuilder extends LootTable.Builder {
 	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;
 
 	protected FabricLootSupplierBuilder() {}
 
-	private FabricLootSupplierBuilder(LootSupplier supplier) {
+	private FabricLootSupplierBuilder(LootTable supplier) {
 		copyFrom(supplier, true);
 	}
 
@@ -75,7 +75,7 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 	 * Copies the pools and functions of the {@code supplier} to this builder.
 	 * This is equal to {@code copyFrom(supplier, false)}.
 	 */
-	public FabricLootSupplierBuilder copyFrom(LootSupplier supplier) {
+	public FabricLootSupplierBuilder copyFrom(LootTable supplier) {
 		return copyFrom(supplier, false);
 	}
 
@@ -83,7 +83,7 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 	 * Copies the pools and functions of the {@code supplier} to this builder.
 	 * If {@code copyType} is true, the {@link FabricLootSupplier#getType type} of the supplier is also copied.
 	 */
-	public FabricLootSupplierBuilder copyFrom(LootSupplier supplier, boolean copyType) {
+	public FabricLootSupplierBuilder copyFrom(LootTable supplier, boolean copyType) {
 		FabricLootSupplier extendedSupplier = (FabricLootSupplier) supplier;
 		extended.getPools().addAll(extendedSupplier.getPools());
 		extended.getFunctions().addAll(extendedSupplier.getFunctions());
@@ -99,7 +99,7 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 		return new FabricLootSupplierBuilder();
 	}
 
-	public static FabricLootSupplierBuilder of(LootSupplier supplier) {
+	public static FabricLootSupplierBuilder of(LootTable supplier) {
 		return new FabricLootSupplierBuilder(supplier);
 	}
 }

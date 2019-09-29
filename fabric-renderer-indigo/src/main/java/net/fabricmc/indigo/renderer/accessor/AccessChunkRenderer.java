@@ -17,8 +17,7 @@
 package net.fabricmc.indigo.renderer.accessor;
 
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.util.math.BlockPos;
 
 public interface AccessChunkRenderer {
-	void fabric_beginBufferBuilding(BufferBuilder bufferBuilder_1, BlockPos blockPos_1);
+	void fabric_beginBufferBuilding(BufferBuilder bufferBuilder);
 }

@@ -30,7 +30,7 @@ public enum BlendMode {
 	/**
 	 * Fully opaque with depth test, no blending. Used for most normal blocks.
 	 */
-	SOLID(BlockRenderLayer.field_9178),
+	SOLID(BlockRenderLayer.SOLID),
 
 	/**
 	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
@@ -42,13 +42,13 @@ public enum BlendMode {
 	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
 	 * Texture mip-map disabled.  Used for iron bars, glass and other cutout sprites with hard edges.
 	 */
-	CUTOUT(BlockRenderLayer.field_9174),
+	CUTOUT(BlockRenderLayer.CUTOUT),
 
 	/**
 	 * Pixels are blended with the background according to alpha color values. Some performance cost,
 	 * use in moderation. Texture mip-map enabled.  Used for stained glass.
 	 */
-	TRANSLUCENT(BlockRenderLayer.field_9179);
+	TRANSLUCENT(BlockRenderLayer.TRANSLUCENT);
 
 	public final BlockRenderLayer blockRenderLayer;
 
@@ -57,13 +57,13 @@ public enum BlendMode {
 	}
 
 	public static BlendMode fromRenderLayer(BlockRenderLayer renderLayer) {
-		if (renderLayer == BlockRenderLayer.field_9178) {
+		if (renderLayer == BlockRenderLayer.SOLID) {
 			return SOLID;
 		} else if (renderLayer == BlockRenderLayer.CUTOUT_MIPPED) {
 			return CUTOUT_MIPPED;
-		} else if (renderLayer == BlockRenderLayer.field_9174) {
+		} else if (renderLayer == BlockRenderLayer.CUTOUT) {
 			return CUTOUT;
-		} else if (renderLayer == BlockRenderLayer.field_9179) {
+		} else if (renderLayer == BlockRenderLayer.TRANSLUCENT) {
 			return TRANSLUCENT;
 		} else {
 			return DEFAULT;

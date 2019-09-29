@@ -17,23 +17,23 @@
 package net.fabricmc.fabric.api.loot.v1;
 
 import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.LootTable;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 
 import java.util.List;
 
 /**
- * An interface implemented by all {@code net.minecraft.world.loot.LootSupplier} instances when
+ * An interface implemented by all {@code net.minecraft.world.loot.LootTable} instances when
  * Fabric API is present. Contains accessors for various fields.
  */
 public interface FabricLootSupplier {
-	static FabricLootSupplier from(LootSupplier vanilla) {
+	static FabricLootSupplier from(LootTable vanilla) {
 		return (FabricLootSupplier) vanilla;
 	}
 
-	default LootSupplier asVanilla() {
-		return (LootSupplier) this;
+	default LootTable asVanilla() {
+		return (LootTable) this;
 	}
 	List<LootPool> getPools();
 	List<LootFunction> getFunctions();

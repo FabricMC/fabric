@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinBlockColorMap",
-    "MixinBlockEntityRenderManager",
-    "MixinEntityRenderManager",
     "MixinItemColorMap",
     "MixinWorldRenderer"
   ],

@@ -32,7 +32,6 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
-import net.fabricmc.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
@@ -45,6 +44,7 @@ import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 
@@ -67,7 +67,6 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private final Random random = new Random();
 	private final Consumer<BakedModel> fallbackConsumer;
 	BufferBuilder bufferBuilder;
-	AccessBufferBuilder fabricBuffer;
 	private int color;
 	private ItemStack itemStack;
 	private VanillaQuadHandler vanillaHandler;
@@ -109,7 +108,6 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.vanillaHandler = vanillaHandler;
 		Tessellator tessellator = Tessellator.getInstance();
 		bufferBuilder = tessellator.getBufferBuilder();
-		fabricBuffer = (AccessBufferBuilder) this.bufferBuilder;
 
 		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_UV_NORMAL);
 		model.emitItemQuads(stack, randomSupplier, this);
@@ -121,7 +119,6 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		}
 
 		bufferBuilder = null;
-		fabricBuffer = null;
 		tessellator = null;
 		this.itemStack = null;
 		this.vanillaHandler = null;
@@ -137,7 +134,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		public Maker emit() {
 			lightFace(GeometryHelper.lightFace(this));
 			ColorHelper.applyDiffuseShading(this, false);
-			renderQuad();
+			//TODO: populate
+			renderQuad(null);
 			clear();
 			return this;
 		}
@@ -155,7 +153,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			System.arraycopy(data, index, editorQuad.data(), 0, EncodingFormat.TOTAL_STRIDE);
 			editorQuad.load();
 			index += EncodingFormat.TOTAL_STRIDE;
-			renderQuad();
+			//TODO: populate
+			renderQuad(null);
 		}
 	};
 
@@ -185,7 +184,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		return quadColor;
 	}
 
-	private void colorizeAndOutput(int quadColor) {
+	private void colorizeAndOutput(int quadColor, Matrix4f matrix) {
 		final MutableQuadViewImpl q = editorQuad;
 
 		for (int i = 0; i < 4; i++) {
@@ -194,10 +193,10 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(c));
 		}
 
-		fabricBuffer.fabric_putQuad(q);
+		AbstractQuadRenderer.bufferQuad(bufferBuilder, q, matrix);
 	}
 
-	private void renderQuad() {
+	private void renderQuad(Matrix4f matrix) {
 		final MutableQuadViewImpl quad = editorQuad;
 
 		if (!transform(editorQuad)) {
@@ -212,7 +211,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		quad.populateMissingNormals();
 		quad.lightmap(FULL_BRIGHTNESS, FULL_BRIGHTNESS, FULL_BRIGHTNESS, FULL_BRIGHTNESS);
 
-		colorizeAndOutput(!enchantment && mat.disableColorIndex(0) ? -1 : quadColor);
+		colorizeAndOutput(!enchantment && mat.disableColorIndex(0) ? -1 : quadColor, matrix);
 	}
 
 	@Override
@@ -252,7 +251,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 				editorQuad.lightFace(lightFace);
 				editorQuad.nominalFace(lightFace);
 				editorQuad.colorIndex(q.getColorIndex());
-				renderQuad();
+				//TODO: populate
+				renderQuad(null);
 			}
 		} else {
 			vanillaHandler.accept(bufferBuilder, quads, color, stack);

@@ -30,6 +30,8 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererRegion;
 import net.fabricmc.indigo.renderer.render.TerrainRenderContext;
+import net.minecraft.class_4587;
+import net.minecraft.class_4588;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -91,17 +93,19 @@ public class MixinChunkRebuildTask {
 	 * Normally this does nothing but will allow mods to create rendering hooks that are
 	 * driven off of render type. (Not recommended or encouraged, but also not prevented.)
 	 */
-	@Redirect(method = "method_22785", require = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/BufferBuilder;Ljava/util/Random;)Z"))
-	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, BufferBuilder bufferBuilder, Random random) {
-		if (blockState.getRenderType() == BlockRenderType.MODEL) {
-			final BakedModel model = renderManager.getModel(blockState);
+	@Redirect(method = "method_22785", require = 1, at = @At(value = "INVOKE", 
+			target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;ZLjava/util/Random;)Z"))
+	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, class_4587 matrix, class_4588 bufferBuilder, boolean checkSides, Random random) {
+		// TODO: temporarily disabled
+		//		if (blockState.getRenderType() == BlockRenderType.MODEL) {
+		//			final BakedModel model = renderManager.getModel(blockState);
+		//
+		//			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
+		//				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model, matrix);
+		//			}
+		//		}
 
-			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
-				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model);
-			}
-		}
-
-		return renderManager.tesselateBlock(blockState, blockPos, blockView, bufferBuilder, random);
+		return renderManager.tesselateBlock(blockState, blockPos, blockView, matrix, bufferBuilder, checkSides, random);
 	}
 
 	/**

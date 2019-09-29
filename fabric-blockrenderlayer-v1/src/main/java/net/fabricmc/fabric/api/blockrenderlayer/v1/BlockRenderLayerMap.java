@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.blockrenderlayer.v1;
 
-import net.fabricmc.fabric.impl.blockrenderlayer.v1.BlockRenderLayerMapImpl;
+import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.fluid.Fluid;
