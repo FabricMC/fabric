@@ -56,7 +56,7 @@ public final class ModResourcePackUtil {
 		}
 	}
 	
-	static boolean requestsStandalonePackProfile(ModMetadata meta) {
+	static boolean requestsStandaloneProfile(ModMetadata meta) {
 		CustomValue value = meta.getCustomValue("fabric-resource-loader:requestStandaloneProfile");
 		return value != null && value.getAsBoolean();
 	}

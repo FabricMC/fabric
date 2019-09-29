@@ -55,7 +55,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
-		this.requestStandaloneProfile = ModResourcePackUtil.requestsStandalonePackProfile(this.modInfo);
+		this.requestStandaloneProfile = ModResourcePackUtil.requestsStandaloneProfile(this.modInfo);
 		this.disableable = ModResourcePackUtil.canPackBeDisabled(this.modInfo);
 	}
 

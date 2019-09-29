@@ -27,6 +27,7 @@ import net.minecraft.resource.ResourcePackContainerManager;
  *
  * @param <T> the resource pack container type
  */
+@FunctionalInterface
 public interface PackProvisionCallback<T extends ResourcePackContainer> {
 
 	/**
