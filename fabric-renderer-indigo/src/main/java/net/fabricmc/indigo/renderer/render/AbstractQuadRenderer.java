@@ -60,6 +60,7 @@ public abstract class AbstractQuadRenderer {
 			}
 		} else {
 			final int blockColor = blockInfo.blockColor(blockColorIndex);
+
 			for (int i = 0; i < 4; i++) {
 				q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(ColorHelper.multiplyColor(blockColor, q.spriteColor(i, 0))));
 			}
@@ -78,7 +79,7 @@ public abstract class AbstractQuadRenderer {
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
 			buff.method_22913(quad.spriteU(i, 0), quad.spriteV(i, 0));
 			buff.method_22916(quad.lightmap(i));
-			buff.method_22914(quad.normalX(i),quad.normalY(i), quad.normalZ(i));
+			buff.method_22914(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 			buff.next();
 		}
 	}
