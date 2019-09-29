@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.loot.v1;
 
 import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.world.loot.LootTable;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 
@@ -28,8 +28,8 @@ import java.util.List;
  * Fabric API is present. Contains accessors for various fields.
  */
 public interface FabricLootSupplier {
-	default LootSupplier asVanilla() {
-		return (LootSupplier) this;
+	default LootTable asVanilla() {
+		return (LootTable) this;
 	}
 	List<LootPool> getPools();
 	List<LootFunction> getFunctions();

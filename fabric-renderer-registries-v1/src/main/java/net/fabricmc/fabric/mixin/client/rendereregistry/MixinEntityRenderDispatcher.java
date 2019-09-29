@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.render;
+package net.fabricmc.fabric.mixin.client.rendereregistry;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.resource.ReloadableResourceManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,12 +34,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.Map;
 
 @Mixin(EntityRenderDispatcher.class)
-public class MixinEntityRenderManager {
+public class MixinEntityRenderDispatcher {
 	@Shadow
-	private Map<Class<? extends Entity>, EntityRenderer<? extends Entity>> renderers;
+	Map<EntityType<?>, EntityRenderer<?>> renderers;
 
-	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;)V", at = @At("RETURN"), require = 0)
-	public void init(TextureManager textureManager, ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
+	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/client/options/GameOptions;)V", at = @At("RETURN"), require = 0)
+	public void init(TextureManager textureManager, ItemRenderer itemRenderer, ReloadableResourceManager manager, TextRenderer textRenderer, GameOptions gameOptions, CallbackInfo info) {
 		EntityRendererRegistry.INSTANCE.initialize((EntityRenderDispatcher) (Object) this, textureManager, manager, itemRenderer, renderers);
 	}
 }

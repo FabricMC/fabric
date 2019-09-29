@@ -42,7 +42,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 	protected abstract void setSelectedTab(ItemGroup itemGroup_1);
 
 	@Shadow
-	public abstract int method_2469(); /* XXX getSelectedTab XXX */
+	public abstract int getSelectedTab(); /* XXX getSelectedTab XXX */
 
 	// "static" matches selectedTab
 	private static int fabric_currentPage = 0;
@@ -103,7 +103,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 	private void fabric_updateSelection() {
 		int minPos = fabric_getPageOffset(fabric_currentPage);
 		int maxPos = fabric_getPageOffset(fabric_currentPage + 1) - 1;
-		int curPos = method_2469();
+		int curPos = getSelectedTab();
 
 		if (curPos < minPos || curPos > maxPos) {
 			setSelectedTab(ItemGroup.GROUPS[fabric_getPageOffset(fabric_currentPage)]);
@@ -129,7 +129,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 		}
 	}
 
-	@Inject(method = "method_2471", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "renderTabTooltipIfHovered", at = @At("HEAD"), cancellable = true)
 	private void method_2471(ItemGroup itemGroup, int mx, int my, CallbackInfoReturnable<Boolean> info) {
 		if (!fabric_isGroupVisible(itemGroup)) {
 			info.setReturnValue(false);
@@ -143,7 +143,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 		}
 	}
 
-	@Inject(method = "method_2468", at = @At("HEAD"), cancellable = true)
+	@Inject(method = "renderTabIcon", at = @At("HEAD"), cancellable = true)
 	private void method_2468(ItemGroup itemGroup, CallbackInfo info) {
 		if (!fabric_isGroupVisible(itemGroup)) {
 			info.cancel();

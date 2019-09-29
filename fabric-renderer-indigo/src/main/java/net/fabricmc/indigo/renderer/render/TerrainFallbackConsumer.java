@@ -33,6 +33,7 @@ import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -60,10 +61,17 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 
 	private final int[] editorBuffer = new int[EncodingFormat.TOTAL_STRIDE];
 	private final ChunkRenderInfo chunkInfo;
+	private final Supplier<Matrix4f> matrixSupplier;
 
-	TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
+	TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform, Supplier<Matrix4f> matrixSupplier) {
 		super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
 		this.chunkInfo = chunkInfo;
+		this.matrixSupplier = matrixSupplier;
+	}
+
+	@Override
+	protected Matrix4f matrix() {
+		return matrixSupplier.get();
 	}
 
 	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {

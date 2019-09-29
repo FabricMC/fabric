@@ -22,18 +22,17 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
-import net.minecraft.util.math.BlockPos;
 
 @Mixin(ChunkRenderer.class)
 public abstract class MixinChunkRenderer implements AccessChunkRenderer {
 	@Shadow
-	abstract void beginBufferBuilding(BufferBuilder builder, BlockPos pos);
+	abstract void beginBufferBuilding(BufferBuilder builder);
 
 	/** 
 	 * Access method for renderer.
 	 */
 	@Override
-	public void fabric_beginBufferBuilding(BufferBuilder builder, BlockPos pos) {
-		beginBufferBuilding(builder, pos);
+	public void fabric_beginBufferBuilding(BufferBuilder builder) {
+		beginBufferBuilding(builder);
 	}
 }

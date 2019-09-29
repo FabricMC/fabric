@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-renderer-api-v1",
-  "name": "Fabric Renderer API (v1)",
+  "id": "fabric-renderer-registries-v1",
+  "name": "Fabric Renderer Registries (v1)",
   "version": "${version}",
   "environment": "client",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-renderer-api-v1/icon.png",
+  "icon": "assets/renderer-registries-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -16,13 +16,12 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.6.2",
+    "fabricloader": ">=0.4.0",
     "minecraft": ">=1.15-alpha.19.39.a",
     "fabric-api-base": "*"
   },
-  "description": "Defines rendering extensions for dynamic/fancy block and item models.",
+  "description": "Registries for entity and block renderers.",
   "mixins": [
-    "fabric-renderer-api-v1.mixins.json",
-    "fabric-renderer-api-v1.debughud.mixins.json"
+    "fabric-renderer-registries-v1.mixins.json"
   ]
 }

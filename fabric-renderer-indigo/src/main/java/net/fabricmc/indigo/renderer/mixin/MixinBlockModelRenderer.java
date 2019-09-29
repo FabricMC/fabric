@@ -30,9 +30,10 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.indigo.renderer.accessor.AccessBlockModelRenderer;
 import net.fabricmc.indigo.renderer.aocalc.VanillaAoHelper;
 import net.fabricmc.indigo.renderer.render.BlockRenderContext;
+import net.minecraft.class_4587;
+import net.minecraft.class_4588;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
@@ -50,12 +51,12 @@ public abstract class MixinBlockModelRenderer implements AccessBlockModelRendere
 	private final ThreadLocal<BlockRenderContext> CONTEXTS = ThreadLocal.withInitial(BlockRenderContext::new);
 
 	@Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
-	private void hookTesselate(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, boolean checkSides, Random rand, long seed, CallbackInfoReturnable<Boolean> ci) {
+	private void hookTesselate(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, class_4587 matrix, class_4588 buffer, boolean checkSides, Random rand, long seed, CallbackInfoReturnable<Boolean> ci) {
 		if (!((FabricBakedModel) model).isVanillaAdapter()) {
 			BlockRenderContext context = CONTEXTS.get();
 
 			if (!context.isCallingVanilla()) {
-				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer) (Object) this, blockView, model, state, pos, buffer, seed));
+				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer)(Object) this, blockView, model, state, pos, matrix, buffer, checkSides, seed));
 			}
 		}
 	}

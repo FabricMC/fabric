@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.indigo.renderer.mixin;
+package net.fabricmc.fabric.mixin.client.rendereregistry;
 
-import net.minecraft.client.render.BufferBuilder;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(BufferBuilder.class)
-public interface BufferBuilderOffsetAccessor {
-	@Accessor
-	double getOffsetX();
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-	@Accessor
-	double getOffsetY();
-
-	@Accessor
-	double getOffsetZ();
+@Mixin(BlockEntityRenderDispatcher.class)
+public interface MixinBlockEntityRenderDispatcher {
+	@Invoker(value="method_23078")
+	@SuppressWarnings("rawtypes")
+	void invoke_method_23078(BlockEntityType blockEntityType, BlockEntityRenderer blockEntityRenderer);
 }
