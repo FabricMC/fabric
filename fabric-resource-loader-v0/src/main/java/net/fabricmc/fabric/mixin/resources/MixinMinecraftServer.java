@@ -67,7 +67,7 @@ public class MixinMinecraftServer {
 		slice = @Slice(from = @At(value = "INVOKE", target = "Lcom/google/common/collect/Lists;newArrayList()Ljava/util/ArrayList;", remap = false),
 			to = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;beginReload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/List;Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;")),
 		locals = LocalCapture.CAPTURE_FAILHARD)
-	public void beforeManagerReload(LevelProperties levelProperties, CallbackInfo ci, List<?> oldEnabledPacks, Iterator var3, List<ResourcePack> toReload) {
+	public void beforeManagerReload(LevelProperties levelProperties, CallbackInfo ci, List<?> oldEnabledPacks, List<ResourcePack> toReload) {
 		List<ResourcePack> packs = this.dataPackContainerManager.getEnabledContainers().stream().flatMap(profile -> CustomInjectionResourcePackProfile.from(profile).injectPacks()).collect(Collectors.toList());
 		toReload.addAll(packs);
 	}

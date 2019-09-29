@@ -90,7 +90,7 @@ public class FabricCombinedResourcePack implements CustomInjectionResourcePack {
 
 	@Override
 	public String getName() {
-		return "Fabric Combined";
+		return "Fabric";
 	}
 
 	@Override

@@ -46,6 +46,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final AutoCloseable closer;
 	private final String separator;
 	private final boolean requestStandaloneProfile;
+	private final boolean disableable;
 
 	public ModNioResourcePack(ModContainer mod, AutoCloseable closer) {
 		super(null);
@@ -55,6 +56,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
 		this.requestStandaloneProfile = ModResourcePackUtil.requestsStandalonePackProfile(this.modInfo);
+		this.disableable = ModResourcePackUtil.canPackBeDisabled(this.modInfo);
 	}
 
 	private Path getPath(String filename) {
@@ -223,5 +225,10 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	public boolean requestsStandaloneProfile() {
 		return requestStandaloneProfile;
+	}
+
+	@Override
+	public boolean canBeDisabled() {
+		return disableable;
 	}
 }

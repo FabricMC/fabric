@@ -30,4 +30,6 @@ public interface ModResourcePack extends ResourcePack {
 	ModMetadata getFabricModMetadata();
 	
 	boolean requestsStandaloneProfile();
+
+	boolean canBeDisabled();
 }

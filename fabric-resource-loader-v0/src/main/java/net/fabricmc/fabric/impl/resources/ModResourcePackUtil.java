@@ -61,6 +61,11 @@ public final class ModResourcePackUtil {
 		return value != null && value.getAsBoolean();
 	}
 
+	static boolean canPackBeDisabled(ModMetadata meta) {
+		CustomValue value = meta.getCustomValue("fabric-resource-loader:packDisableable");
+		return value != null && value.getAsBoolean();
+	}
+
 	static void setPackIcon(ModContainer mod, CustomImageResourcePackProfile info) {
 		String file = mod.getMetadata().getIconPath(64).orElse(null);
 		if (file == null)

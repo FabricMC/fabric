@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackContainer;
 import net.minecraft.resource.ResourcePackCreator;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ModResourcePackProvider implements ResourcePackCreator {
 		for (ModNioResourcePack pack : packs) {
 			if (pack.requestsStandaloneProfile()) {
 				String modId = pack.getFabricModMetadata().getId();
-				T modProfile = ResourcePackContainer.of("fabric/" + modId, true, () -> pack, factory, ResourcePackContainer.InsertionPosition.BOTTOM);
+				T modProfile = ResourcePackContainer.of("fabric/" + modId, !pack.canBeDisabled() && type == ResourceType.CLIENT_RESOURCES, () -> pack, factory, ResourcePackContainer.InsertionPosition.BOTTOM);
 				if (modProfile == null)
 					throw new IllegalStateException("Failed to load mod resource pack for \"" + modId + "\"!");
 
@@ -55,11 +54,11 @@ public class ModResourcePackProvider implements ResourcePackCreator {
 				map.put(modProfile.getName(), modProfile);
 			}
 		}
-		
-		packs.removeIf(ModResourcePack::requestsStandaloneProfile);
 
-		ResourcePack fabricGeneralPack = new FabricCombinedResourcePack(new LiteralText("Fabric pack"), packs);
-		T fabricProfile = ResourcePackContainer.of("fabric", true, () -> fabricGeneralPack, factory, ResourcePackContainer.InsertionPosition.BOTTOM);
+		packs.removeIf(pack -> pack.requestsStandaloneProfile() || pack.getNamespaces(type).isEmpty());
+
+		ResourcePack fabricGeneralPack = new FabricCombinedResourcePack(new TranslatableText("fabric.resource.loader.description"), packs);
+		T fabricProfile = ResourcePackContainer.of("fabric_combined", type == ResourceType.CLIENT_RESOURCES, () -> fabricGeneralPack, factory, ResourcePackContainer.InsertionPosition.BOTTOM);
 		if (fabricProfile == null)
 			throw new IllegalStateException("Failed to load Fabric resource pack!");
 
