@@ -96,14 +96,13 @@ public class MixinChunkRebuildTask {
 	@Redirect(method = "method_22785", require = 1, at = @At(value = "INVOKE", 
 			target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;ZLjava/util/Random;)Z"))
 	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, class_4587 matrix, class_4588 bufferBuilder, boolean checkSides, Random random) {
-		// TODO: temporarily disabled
-		//		if (blockState.getRenderType() == BlockRenderType.MODEL) {
-		//			final BakedModel model = renderManager.getModel(blockState);
-		//
-		//			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
-		//				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model, matrix);
-		//			}
-		//		}
+		if (blockState.getRenderType() == BlockRenderType.MODEL) {
+			final BakedModel model = renderManager.getModel(blockState);
+
+			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
+				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model, matrix);
+			}
+		}
 
 		return renderManager.tesselateBlock(blockState, blockPos, blockView, matrix, bufferBuilder, checkSides, random);
 	}

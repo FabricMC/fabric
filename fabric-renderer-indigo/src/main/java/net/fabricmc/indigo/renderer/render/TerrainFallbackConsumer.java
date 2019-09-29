@@ -60,12 +60,10 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 	private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
 	private final int[] editorBuffer = new int[EncodingFormat.TOTAL_STRIDE];
-	private final ChunkRenderInfo chunkInfo;
 	private final Supplier<Matrix4f> matrixSupplier;
 
 	TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform, Supplier<Matrix4f> matrixSupplier) {
 		super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
-		this.chunkInfo = chunkInfo;
 		this.matrixSupplier = matrixSupplier;
 	}
 
@@ -141,7 +139,6 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 			// needs to happen before offsets are applied
 			editorQuad.invalidateShape();
 			aoCalc.compute(editorQuad, true);
-			chunkInfo.applyOffsets(editorQuad);
 			tesselateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
 		} else {
 			// vanilla compatibility hack
@@ -154,7 +151,6 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 				editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
 				editorQuad.lightFace(cullFace);
 			}
-			chunkInfo.applyOffsets(editorQuad);
 			tesselateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
 		}
 	}
