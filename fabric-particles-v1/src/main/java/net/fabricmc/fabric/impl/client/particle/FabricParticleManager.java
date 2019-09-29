@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-import javax.annotation.Nullable;
-
 import com.google.common.collect.ImmutableList;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -93,7 +91,7 @@ public final class FabricParticleManager {
 	private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
 		private List<Identifier> spriteIds;
 
-		@Nullable
+		// @Nullable
 		private List<Sprite> sprites;
 
 		@Override
