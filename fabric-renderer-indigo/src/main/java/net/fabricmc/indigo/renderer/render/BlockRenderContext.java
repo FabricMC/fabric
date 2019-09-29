@@ -77,7 +77,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.vanillaRenderer = vanillaRenderer;
 		this.bufferBuilder = (BufferBuilder) buffer;
 		this.prepareMatrix(state, pos, blockView, matrixStack);
-		
+
 		this.seed = seed;
 		this.didOutput = false;
 		aoCalc.clear();
@@ -89,9 +89,9 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.vanillaRenderer = null;
 		blockInfo.release();
 		this.bufferBuilder = null;
-		
+
 		matrixStack.method_22909();
-		
+
 		return didOutput;
 	}
 

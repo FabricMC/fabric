@@ -73,7 +73,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 	protected Matrix4f matrix() {
 		return matrixSupplier.get();
 	}
-	
+
 	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
 		{
 			data = editorBuffer;

@@ -24,7 +24,7 @@ import net.minecraft.client.util.math.Matrix4f;
 
 public class TerrainMeshConsumer extends AbstractMeshConsumer {
 	final Supplier<Matrix4f> matrixSupplier;
-	
+
 	TerrainMeshConsumer(TerrainBlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform, Supplier<Matrix4f> matrixSupplier) {
 		super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
 		this.matrixSupplier = matrixSupplier;

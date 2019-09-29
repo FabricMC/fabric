@@ -59,7 +59,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 		chunkInfo.release();
 		blockInfo.release();
 	}
-	
+
 	protected Matrix4f matrix() {
 		return matrix;
 	}

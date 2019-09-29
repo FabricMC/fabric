@@ -44,7 +44,7 @@ public abstract class AbstractQuadRenderer {
 	protected final QuadTransform transform;
 
 	protected abstract Matrix4f matrix();
-	
+
 	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, BufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		this.blockInfo = blockInfo;
 		this.bufferFunc = bufferFunc;
@@ -78,11 +78,11 @@ public abstract class AbstractQuadRenderer {
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
 			buff.method_22913(quad.spriteU(i, 0), quad.spriteV(i, 0));
 			buff.method_22916(quad.lightmap(i));
-	        buff.method_22914(quad.normalX(i),quad.normalY(i), quad.normalZ(i));
-	        buff.next();
+			buff.method_22914(quad.normalX(i),quad.normalY(i), quad.normalZ(i));
+			buff.next();
 		}
 	}
-	
+
 	// routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
 
 	/** for non-emissive mesh quads and all fallback quads with smooth lighting*/

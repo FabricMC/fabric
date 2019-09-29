@@ -31,7 +31,7 @@ abstract class AbstractRenderContext implements RenderContext {
 	private static final QuadTransform NO_TRANSFORM = (q) -> true;
 	protected class_4587 matrixStack;
 	protected Matrix4f matrix;
-	
+
 	protected void prepareMatrix(BlockState blockState, BlockPos blockPos, BlockRenderView blockView, class_4587 matrixStack) {
 		this.matrixStack = matrixStack;
 		Vec3d vec = blockState.getOffsetPos(blockView, blockPos);
@@ -39,7 +39,7 @@ abstract class AbstractRenderContext implements RenderContext {
 		matrixStack.method_22904((double)(blockPos.getX() & 15) + vec.x, (double)(blockPos.getY() & 15) + vec.y, (double)(blockPos.getZ() & 15) + vec.z);
 		matrix = matrixStack.method_22910();
 	}
-	
+
 	private final QuadTransform stackTransform = (q) -> {
 		int i = transformStack.size() - 1;
 
