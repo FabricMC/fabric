@@ -44,7 +44,7 @@ import net.minecraft.util.math.BlockPos;
 public class TerrainRenderContext extends AbstractRenderContext implements RenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 	private final TerrainBlockRenderInfo blockInfo = new TerrainBlockRenderInfo();
-	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo(blockInfo);
+	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
 	private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
 	private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix);
 	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix);
@@ -70,7 +70,6 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 		try {
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
-			chunkInfo.beginBlock();
 			((FabricBakedModel) model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
 		} catch (Throwable var9) {
 			CrashReport crashReport_1 = CrashReport.create(var9, "Tesselating block in world - Indigo Renderer");
