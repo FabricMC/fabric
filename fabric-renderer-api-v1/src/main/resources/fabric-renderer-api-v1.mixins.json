@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "client.MixinBakedModel",
-    "client.MixinBlockRenderManager",
     "client.MixinSpriteAtlasTexture"
   ],
   "injectors": {

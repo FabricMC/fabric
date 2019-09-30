@@ -24,10 +24,10 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.class_4588;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.BlockPos;
 
@@ -38,14 +38,14 @@ import net.minecraft.util.math.BlockPos;
 public abstract class AbstractQuadRenderer {
 	static final int FULL_BRIGHTNESS = 0xF000F0;
 
-	protected final Function<BlockRenderLayer, BufferBuilder> bufferFunc;
+	protected final Function<BlockRenderLayer, class_4588> bufferFunc;
 	protected final BlockRenderInfo blockInfo;
 	protected final AoCalculator aoCalc;
 	protected final QuadTransform transform;
 
 	protected abstract Matrix4f matrix();
 
-	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, BufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, class_4588> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		this.blockInfo = blockInfo;
 		this.bufferFunc = bufferFunc;
 		this.aoCalc = aoCalc;
@@ -72,7 +72,7 @@ public abstract class AbstractQuadRenderer {
 		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix());
 	}
 
-	public static void bufferQuad(BufferBuilder buff, MutableQuadViewImpl quad, Matrix4f matrix) {
+	public static void bufferQuad(class_4588 buff, MutableQuadViewImpl quad, Matrix4f matrix) {
 		for (int i = 0; i < 4; i++) {
 			buff.method_22918(matrix, quad.x(i), quad.y(i), quad.z(i));
 			final int color = quad.spriteColor(i, 0);

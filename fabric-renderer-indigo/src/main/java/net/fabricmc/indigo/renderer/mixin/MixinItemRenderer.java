@@ -34,23 +34,23 @@ import net.minecraft.item.ItemStack;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
-//	@Shadow
-//	protected abstract void method_23182(BakedModel model, ItemStack stack, int color, class_4587 matrixStack, class_4588 buffer);
-//
-//	@Shadow
-//	protected ItemColors colorMap;
-//
-//	private final VanillaQuadHandler vanillaHandler = this::method_23182;
-//
-//	private final ThreadLocal<ItemRenderContext> CONTEXTS = ThreadLocal.withInitial(() -> new ItemRenderContext(colorMap));
-//
-//	@Inject(at = @At("HEAD"), method = "method_23180", cancellable = true)
-//	private void hook_method_23182(BakedModel model, ItemStack stack, int color, class_4587 matrixStack, class_4588 buffer, CallbackInfo ci) {
-//		final FabricBakedModel fabricModel = (FabricBakedModel) model;
-//
-//		if (!fabricModel.isVanillaAdapter()) {
-//			CONTEXTS.get().renderModel(fabricModel, stack, color, matrixStack, buffer, vanillaHandler);
-//			ci.cancel();
-//		}
-//	}
+	@Shadow
+	protected abstract void method_23182(BakedModel model, ItemStack stack, int color, class_4587 matrixStack, class_4588 buffer);
+
+	@Shadow
+	protected ItemColors colorMap;
+
+	private final VanillaQuadHandler vanillaHandler = this::method_23182;
+
+	private final ThreadLocal<ItemRenderContext> CONTEXTS = ThreadLocal.withInitial(() -> new ItemRenderContext(colorMap));
+
+	@Inject(at = @At("HEAD"), method = "method_23182", cancellable = true)
+	private void hook_method_23182(BakedModel model, ItemStack stack, int lightmap, class_4587 matrixStack, class_4588 buffer, CallbackInfo ci) {
+		final FabricBakedModel fabricModel = (FabricBakedModel) model;
+
+		if (!fabricModel.isVanillaAdapter()) {
+			CONTEXTS.get().renderModel(fabricModel, stack, lightmap, matrixStack, buffer, vanillaHandler);
+			ci.cancel();
+		}
+	}
 }
