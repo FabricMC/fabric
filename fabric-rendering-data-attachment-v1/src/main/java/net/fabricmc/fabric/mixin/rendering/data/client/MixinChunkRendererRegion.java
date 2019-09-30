@@ -16,52 +16,104 @@
 
 package net.fabricmc.fabric.mixin.rendering.data.client;
 
-import java.util.HashMap;
+import java.util.ConcurrentModificationException;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.client.render.chunk.ChunkRendererRegion;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
 
 @Mixin(ChunkRendererRegion.class)
 public abstract class MixinChunkRendererRegion implements RenderAttachedBlockView {
-    private HashMap<BlockPos, Object> fabric_renderDataObjects;
+	private Int2ObjectOpenHashMap<Object> fabric_renderDataObjects;
 
-    @Inject(at = @At("RETURN"), method = "<init>")
-    public void init(World world, int cxOff, int czOff, WorldChunk[][] chunks, BlockPos posFrom, BlockPos posTo, CallbackInfo info) {
-        HashMap<BlockPos, Object> map = new HashMap<>();
+	@Shadow
+	protected abstract int getIndex(BlockPos pos);
 
-        for (WorldChunk[] chunkA : chunks) {
-            for (WorldChunk chunkB : chunkA) {
-                for (Map.Entry<BlockPos, BlockEntity> entry: chunkB.getBlockEntities().entrySet()) {
-                    BlockPos entPos = entry.getKey();
-                    if (entPos.getX() >= posFrom.getX() && entPos.getX() <= posTo.getX()
-                            && entPos.getY() >= posFrom.getY() && entPos.getY() <= posTo.getY()
-                            && entPos.getZ() >= posFrom.getZ() && entPos.getZ() <= posTo.getZ()) {
+	@Shadow
+	protected abstract int getIndex(int x, int y, int z);
 
-                        Object o = ((RenderAttachmentBlockEntity) entry.getValue()).getRenderAttachmentData();
-                        if (o != null) {
-                            map.put(entPos, o);
-                        }
-                    }
-                }
-            }
-        }
+	private static final AtomicInteger ERROR_COUNTER = new AtomicInteger();
+	private static final Logger LOGGER = LogManager.getLogger();
 
-        this.fabric_renderDataObjects = map;
-    }
+	@Inject(at = @At("RETURN"), method = "<init>")
+	public void init(World world, int cxOff, int czOff, WorldChunk[][] chunks, BlockPos posFrom, BlockPos posTo, CallbackInfo info) {
+		// instantiated lazily - avoids allocation for chunks without any data objects - which is most of them!
+		Int2ObjectOpenHashMap<Object> map = null;
 
-    @Override
-    public Object getBlockEntityRenderAttachment(BlockPos pos) {
-        return fabric_renderDataObjects.get(pos);
-    }
+		for (WorldChunk[] chunkOuter : chunks) {
+			for (WorldChunk chunk : chunkOuter) {
+				// Hash maps in chunks should generally not be modified outside of client thread
+				// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing 
+				// CMEs when we iterate the map.  (Vanilla does not iterate these maps when it builds
+				// the chunk cache and does not suffer from this problem.)
+				// 
+				// We handle this simply by retrying until it works.  Ugly but effective.
+				for (;;) {
+					try {
+						map = mapChunk(chunk, posFrom, posTo, map);
+						break;
+					} catch (ConcurrentModificationException e) {
+						final int count = ERROR_COUNTER.incrementAndGet();
+
+						if (count <= 5) {
+							LOGGER.warn("[Render Data Attachment] Encountered CME during render region build. A mod is accessing or changing chunk data outside the main thread. Retrying.", e);
+
+							if (count == 5) {
+								LOGGER.info("[Render Data Attachment] Subsequent exceptions will be suppressed.");
+							}
+						}
+					}
+				}
+			}
+		}
+
+		this.fabric_renderDataObjects = map;
+	}
+
+	private Int2ObjectOpenHashMap<Object> mapChunk(WorldChunk chunk, BlockPos posFrom, BlockPos posTo, Int2ObjectOpenHashMap<Object> map) {
+		final int xMin = posFrom.getX();
+		final int xMax = posTo.getX();
+		final int zMin = posFrom.getZ();
+		final int zMax = posTo.getZ();
+		final int yMin = posFrom.getY();
+		final int yMax = posTo.getY();
+
+		for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
+			final BlockPos entPos = entry.getKey();
+
+			if (entPos.getX() >= xMin && entPos.getX() <= xMax 
+					&& entPos.getY() >= yMin && entPos.getY() <= yMax
+					&& entPos.getZ() >= zMin && entPos.getZ() <= zMax) {
+
+				final Object o = ((RenderAttachmentBlockEntity) entry.getValue()).getRenderAttachmentData();
+				if (o != null) {
+					if (map == null) {
+						map = new Int2ObjectOpenHashMap<>();
+					}
+					map.put(getIndex(entPos), o);
+				}
+			}
+		}
+		return map;
+	}
+
+	@Override
+	public Object getBlockEntityRenderAttachment(BlockPos pos) {
+		return fabric_renderDataObjects == null ? null : fabric_renderDataObjects.get(getIndex(pos));
+	}
 }

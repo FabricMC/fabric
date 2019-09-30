@@ -24,10 +24,10 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+import net.minecraft.class_4588;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.BlockPos;
 
@@ -38,14 +38,14 @@ import net.minecraft.util.math.BlockPos;
 public abstract class AbstractQuadRenderer {
 	static final int FULL_BRIGHTNESS = 0xF000F0;
 
-	protected final Function<BlockRenderLayer, BufferBuilder> bufferFunc;
+	protected final Function<BlockRenderLayer, class_4588> bufferFunc;
 	protected final BlockRenderInfo blockInfo;
 	protected final AoCalculator aoCalc;
 	protected final QuadTransform transform;
 
 	protected abstract Matrix4f matrix();
 
-	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, BufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, class_4588> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		this.blockInfo = blockInfo;
 		this.bufferFunc = bufferFunc;
 		this.aoCalc = aoCalc;
@@ -60,6 +60,7 @@ public abstract class AbstractQuadRenderer {
 			}
 		} else {
 			final int blockColor = blockInfo.blockColor(blockColorIndex);
+
 			for (int i = 0; i < 4; i++) {
 				q.spriteColor(i, 0, ColorHelper.swapRedBlueIfNeeded(ColorHelper.multiplyColor(blockColor, q.spriteColor(i, 0))));
 			}
@@ -71,14 +72,14 @@ public abstract class AbstractQuadRenderer {
 		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix());
 	}
 
-	public static void bufferQuad(BufferBuilder buff, MutableQuadViewImpl quad, Matrix4f matrix) {
+	public static void bufferQuad(class_4588 buff, MutableQuadViewImpl quad, Matrix4f matrix) {
 		for (int i = 0; i < 4; i++) {
 			buff.method_22918(matrix, quad.x(i), quad.y(i), quad.z(i));
 			final int color = quad.spriteColor(i, 0);
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
 			buff.method_22913(quad.spriteU(i, 0), quad.spriteV(i, 0));
 			buff.method_22916(quad.lightmap(i));
-			buff.method_22914(quad.normalX(i),quad.normalY(i), quad.normalZ(i));
+			buff.method_22914(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 			buff.next();
 		}
 	}

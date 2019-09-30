@@ -16,14 +16,37 @@
 
 package net.fabricmc.fabric.api.block.entity;
 
+import com.google.common.base.Preconditions;
+
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.World;
 
 /**
- * Implement this interace on a BlockEntity which you would like to be
+ * Implement this interface on a BlockEntity which you would like to be
  * synchronized with the client side using the built-in engine methods.
  */
 public interface BlockEntityClientSerializable {
 	void fromClientTag(CompoundTag tag);
 
 	CompoundTag toClientTag(CompoundTag tag);
+
+	/**
+	 * When called on the server, schedules a BlockEntity sync to client.
+	 * This will cause {@link #toClientTag(CompoundTag)} to be called on the
+	 * server to generate the packet data, and then
+	 * {@link #fromClientTag(CompoundTag)} on the client to decode that data.
+	 * 
+	 * <p>This is preferable to
+	 * {@link World#updateListeners(net.minecraft.util.math.BlockPos, net.minecraft.block.BlockState, net.minecraft.block.BlockState, int)}
+	 * because it does not cause entities to update their pathing as a side effect.
+	 */
+	default void sync() {
+		World world = ((BlockEntity) this).getWorld();
+		Preconditions.checkNotNull(world); //Maintain distinct failure case from below
+		if (!(world instanceof ServerWorld)) throw new IllegalStateException("Cannot call sync() on the logical client! Did you check world.isClient first?");
+
+		((ServerWorld) world).method_14178().markForUpdate(((BlockEntity) this).getPos());
+	}
 }

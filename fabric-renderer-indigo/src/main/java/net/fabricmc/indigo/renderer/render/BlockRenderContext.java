@@ -30,7 +30,6 @@ import net.minecraft.class_4587;
 import net.minecraft.class_4588;
 import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.Matrix4f;
@@ -46,7 +45,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform);
 	private final Random random = new Random();
 	private BlockModelRenderer vanillaRenderer;
-	private BufferBuilder bufferBuilder;
+	private class_4588 bufferBuilder;
 	private long seed;
 	private boolean isCallingVanilla = false;
 	private boolean didOutput = false;
@@ -68,14 +67,14 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
 	}
 
-	private BufferBuilder outputBuffer(BlockRenderLayer renderLayer) {
+	private class_4588 outputBuffer(BlockRenderLayer renderLayer) {
 		didOutput = true;
 		return bufferBuilder;
 	}
 
 	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, class_4587 matrixStack, class_4588 buffer, boolean checkSides, long seed) {
 		this.vanillaRenderer = vanillaRenderer;
-		this.bufferBuilder = (BufferBuilder) buffer;
+		this.bufferBuilder = buffer;
 		this.prepareMatrix(state, pos, blockView, matrixStack);
 
 		this.seed = seed;
@@ -97,12 +96,12 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 
 	protected void acceptVanillaModel(BakedModel model) {
 		isCallingVanilla = true;
-		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, (class_4588) bufferBuilder, false, random, seed);
+		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, bufferBuilder, false, random, seed);
 		isCallingVanilla = false;
 	}
 
 	private class MeshConsumer extends AbstractMeshConsumer {
-		MeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, BufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+		MeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, class_4588> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 			super(blockInfo, bufferFunc, aoCalc, transform);
 		}
 

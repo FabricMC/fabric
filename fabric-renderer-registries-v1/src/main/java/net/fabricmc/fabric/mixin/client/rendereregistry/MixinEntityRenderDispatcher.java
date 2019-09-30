@@ -16,30 +16,29 @@
 
 package net.fabricmc.fabric.mixin.client.rendereregistry;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.entity.EntityType;
-import net.minecraft.resource.ReloadableResourceManager;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.entity.EntityType;
+import net.minecraft.resource.ReloadableResourceManager;
 
 @Mixin(EntityRenderDispatcher.class)
 public class MixinEntityRenderDispatcher {
 	@Shadow
 	Map<EntityType<?>, EntityRenderer<?>> renderers;
 
-	@Inject(method = "<init>(Lnet/minecraft/client/texture/TextureManager;Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/client/options/GameOptions;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRenderDispatcher;method_23167(Lnet/minecraft/client/render/item/ItemRenderer;Lnet/minecraft/resource/ReloadableResourceManager;)V", shift = At.Shift.AFTER), require = 0)
-	public void init(TextureManager textureManager, ItemRenderer itemRenderer, ReloadableResourceManager manager, TextRenderer textRenderer, GameOptions gameOptions, CallbackInfo info) {
-		EntityRendererRegistry.INSTANCE.initialize((EntityRenderDispatcher) (Object) this, textureManager, manager, itemRenderer, renderers);
+	@Inject(method = "method_23167", at = @At(value = "RETURN"), require = 1)
+	public void on_method_23167(ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
+		final EntityRenderDispatcher me = (EntityRenderDispatcher) (Object) this;
+		EntityRendererRegistry.INSTANCE.initialize(me, me.textureManager, manager, itemRenderer, renderers);
 	}
 }

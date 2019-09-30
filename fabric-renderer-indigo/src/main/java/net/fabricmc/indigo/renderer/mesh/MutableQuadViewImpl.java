@@ -70,7 +70,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		if (material == null) {
 			material = IndigoRenderer.MATERIAL_STANDARD;
 		}
-		
+
 		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (Value) material);
 		return this;
 	}
@@ -147,20 +147,21 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	/**
 	 * Internal helper method. Copies face normals to vertex normals lacking one.
-	 * Does not set flags that indicate a vertex normal was input.
 	 */
 	public final void populateMissingNormals() {
 		final int normalFlags = this.normalFlags();
-		
+
 		if (normalFlags == 0b1111) return;
-		
+
 		final int packedFaceNormal = NormalHelper.packNormal(faceNormal(), 0);
-		
+
 		for (int v = 0; v < 4; v++) {
 			if ((normalFlags & (1 << v)) == 0) {
 				data[baseIndex + v * VERTEX_STRIDE + VERTEX_NORMAL] = packedFaceNormal;
 			}
 		}
+
+		normalFlags(0b1111);
 	}
 
 	@Override
