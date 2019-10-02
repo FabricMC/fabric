@@ -74,7 +74,7 @@ public interface ClimbingCallback {
 			this.climbSpeed = climbSpeed;
 		}
 
-		Result(int priority) {
+		public Result(int priority) {
 			this.priority = priority;
 			this.climbSpeed = 0.2D;
 		}
