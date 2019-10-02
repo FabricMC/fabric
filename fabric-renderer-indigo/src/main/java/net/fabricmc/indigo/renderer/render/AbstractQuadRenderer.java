@@ -77,7 +77,7 @@ public abstract class AbstractQuadRenderer {
 			buff.method_22918(matrix, quad.x(i), quad.y(i), quad.z(i));
 			final int color = quad.spriteColor(i, 0);
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
-			buff.method_22913(quad.spriteU(i, 0), quad.spriteV(i, 0));
+			buff.texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
 			buff.method_22916(quad.lightmap(i));
 			buff.method_22914(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 			buff.next();

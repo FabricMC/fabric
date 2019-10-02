@@ -44,7 +44,7 @@ public interface UseItemCallback {
 				}
 			}
 
-			return TypedActionResult.method_22430(ItemStack.EMPTY);
+			return TypedActionResult.pass(ItemStack.EMPTY);
 		}
 	);
 

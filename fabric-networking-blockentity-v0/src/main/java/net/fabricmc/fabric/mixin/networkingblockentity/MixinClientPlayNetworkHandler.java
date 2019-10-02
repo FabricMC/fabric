@@ -38,10 +38,10 @@ public class MixinClientPlayNetworkHandler {
 	@Unique
 	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/BlockEntityUpdateS2CPacket;getActionId()I", ordinal = 0), method = "onBlockEntityUpdate", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/BlockEntityUpdateS2CPacket;getBlockEntityType()I", ordinal = 0), method = "onBlockEntityUpdate", cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	public void onBlockEntityUpdate(BlockEntityUpdateS2CPacket packet, CallbackInfo info, BlockEntity entity) {
 		if (entity instanceof BlockEntityClientSerializable) {
-			if (packet.getActionId() == 127) {
+			if (packet.getBlockEntityType() == 127) {
 				BlockEntityClientSerializable serializable = (BlockEntityClientSerializable) entity;
 				String id = packet.getCompoundTag().getString("id");
 				if (id != null) {
