@@ -21,8 +21,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -32,7 +34,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
 
-	ClimbingCallback.Result climbingCallBackResult = null;
+	@Shadow
+	public abstract boolean isClimbing();
+
+	private ClimbingCallback.Result climbingCallBackResult = null;
 
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);
@@ -55,13 +60,15 @@ public abstract class MixinLivingEntity extends Entity {
 		}
     }
 
-    @ModifyVariable(method = "travel", name = "double_13", at = @At(value = "INVOKE_ASSIGN"))
-	private double modifyClimbSpeed(double double_13) {
-		ClimbingCallback.Result result = climbingCallBackResult;
-		climbingCallBackResult = null;
-		if (result != null) {
-			return result.climbSpeed;
+    @ModifyVariable(method = "travel", name = "vec3d_2", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V", shift = At.Shift.BEFORE))
+	private Vec3d modifyClimbVelocity(Vec3d vec3d_2) {
+		if (isClimbing() && horizontalCollision) {
+			ClimbingCallback.Result result = climbingCallBackResult;
+			climbingCallBackResult = null;
+			if (result != null) {
+				return new Vec3d(vec3d_2.x, result.climbSpeed, vec3d_2.z);
+			}
 		}
-		return double_13;
+		return vec3d_2;
 	}
 }
