@@ -69,7 +69,7 @@ public interface ClimbingCallback {
 		public final int priority;
 		public final double climbSpeed;
 
-		Result(int priority, double climbSpeed) {
+		public Result(int priority, double climbSpeed) {
 			this.priority = priority;
 			this.climbSpeed = climbSpeed;
 		}
