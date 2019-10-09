@@ -1,16 +1,16 @@
 package net.fabricmc.fabric.api.event.entity;
 
-import net.fabricmc.fabric.impl.event.EntityTypeCaller;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.event.EntityEventInternals;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 
 /**
  * Callback for ticking an entity.
  */
-public interface EntityTickCallback<T extends Entity> {
-	public static <T extends Entity> EntityTickCallback<T> event(EntityType<T> type) {
-		return ((EntityTypeCaller)type).getEntityEvent();
+public interface EntityTickCallback<E extends Entity> {
+	public static <E extends Entity> Event<EntityTickCallback<E>> event(Class<E> type) {
+		return EntityEventInternals.getOrCreateEntityEvent(type);
 	}
 
-	void tick(T entity);
+	void tick(E entity);
 }
