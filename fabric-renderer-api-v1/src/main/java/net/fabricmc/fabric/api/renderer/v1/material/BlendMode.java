@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
-import net.minecraft.block.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
 
 /**
  * Defines how sprite pixels will be blended with the scene.
@@ -30,40 +30,40 @@ public enum BlendMode {
 	/**
 	 * Fully opaque with depth test, no blending. Used for most normal blocks.
 	 */
-	SOLID(BlockRenderLayer.SOLID),
+	SOLID(RenderLayer.method_23577()),
 
 	/**
 	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
 	 * Texture mip-map enabled.  Used for leaves.
 	 */
-	CUTOUT_MIPPED(BlockRenderLayer.CUTOUT_MIPPED),
+	CUTOUT_MIPPED(RenderLayer.method_23579()),
 
 	/**
 	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
 	 * Texture mip-map disabled.  Used for iron bars, glass and other cutout sprites with hard edges.
 	 */
-	CUTOUT(BlockRenderLayer.CUTOUT),
+	CUTOUT(RenderLayer.method_23581()),
 
 	/**
 	 * Pixels are blended with the background according to alpha color values. Some performance cost,
 	 * use in moderation. Texture mip-map enabled.  Used for stained glass.
 	 */
-	TRANSLUCENT(BlockRenderLayer.TRANSLUCENT);
+	TRANSLUCENT(RenderLayer.method_23583());
 
-	public final BlockRenderLayer blockRenderLayer;
+	public final RenderLayer blockRenderLayer;
 
-	private BlendMode(BlockRenderLayer blockRenderLayer) {
+	private BlendMode(RenderLayer blockRenderLayer) {
 		this.blockRenderLayer = blockRenderLayer;
 	}
 
-	public static BlendMode fromRenderLayer(BlockRenderLayer renderLayer) {
-		if (renderLayer == BlockRenderLayer.SOLID) {
+	public static BlendMode fromRenderLayer(RenderLayer renderLayer) {
+		if (renderLayer == RenderLayer.method_23577()) {
 			return SOLID;
-		} else if (renderLayer == BlockRenderLayer.CUTOUT_MIPPED) {
+		} else if (renderLayer == RenderLayer.method_23579()) {
 			return CUTOUT_MIPPED;
-		} else if (renderLayer == BlockRenderLayer.CUTOUT) {
+		} else if (renderLayer == RenderLayer.method_23581()) {
 			return CUTOUT;
-		} else if (renderLayer == BlockRenderLayer.TRANSLUCENT) {
+		} else if (renderLayer == RenderLayer.method_23583()) {
 			return TRANSLUCENT;
 		} else {
 			return DEFAULT;

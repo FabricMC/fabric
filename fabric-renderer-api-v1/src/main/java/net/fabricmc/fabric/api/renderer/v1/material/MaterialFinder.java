@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.renderer.v1.material;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.block.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
 
 /**
  * Finds standard {@link RenderMaterial} instances used to communicate
@@ -65,7 +65,7 @@ public interface MaterialFinder {
 	 * @deprecated Use {@code BlendMode} version instead.
 	 */
 	@Deprecated
-	default MaterialFinder blendMode(int spriteIndex, BlockRenderLayer renderLayer) {
+	default MaterialFinder blendMode(int spriteIndex, RenderLayer renderLayer) {
 		return blendMode(spriteIndex, BlendMode.fromRenderLayer(renderLayer));
 	}
 

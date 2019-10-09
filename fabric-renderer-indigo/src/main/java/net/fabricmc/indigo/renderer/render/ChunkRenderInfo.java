@@ -22,10 +22,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererData;
 import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.chunk.BlockLayeredBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
@@ -68,10 +68,10 @@ public class ChunkRenderInfo {
 	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
 	AccessChunkRendererData chunkData;
 	ChunkRenderer chunkRenderer;
-	BlockLayeredBufferBuilder builders;
+	BlockLayeredBufferBuilderStorage builders;
 	BlockRenderView blockView;
 
-	private final Object2ObjectOpenHashMap<BlockRenderLayer, BufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
+	private final Object2ObjectOpenHashMap<RenderLayer, BufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
 
 	ChunkRenderInfo() {
 		brightnessCache = new Long2IntOpenHashMap();
@@ -80,7 +80,7 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilder builders) {
+	void prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilderStorage builders) {
 		this.blockView = blockView;
 		this.chunkOrigin.set(chunkRenderer.getOrigin());
 		this.chunkData = (AccessChunkRendererData) chunkData;
@@ -98,7 +98,7 @@ public class ChunkRenderInfo {
 	}
 
 	/** Lazily retrieves output buffer for given layer, initializing as needed. */
-	public BufferBuilder getInitializedBuffer(BlockRenderLayer renderLayer) {
+	public BufferBuilder getInitializedBuffer(RenderLayer renderLayer) {
 		BufferBuilder result = buffers.get(renderLayer);
 
 		if (result == null) {
@@ -123,7 +123,7 @@ public class ChunkRenderInfo {
 		int result = brightnessCache.get(key);
 
 		if (result == Integer.MAX_VALUE) {
-			result = blockView.getLightmapIndex(blockView.getBlockState(pos), pos);
+			result = blockView.getLightmapCoordinates(blockView.getBlockState(pos), pos);
 			brightnessCache.put(key, result);
 		}
 

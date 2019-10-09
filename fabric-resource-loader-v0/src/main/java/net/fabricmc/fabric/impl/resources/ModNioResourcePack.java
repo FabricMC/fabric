@@ -122,7 +122,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		String nioPath = path.replace("/", separator);
 
 		for (String namespace : getNamespaces(type)) {
-			Path namespacePath = getPath(type.getName() + "/" + namespace);
+			Path namespacePath = getPath(type.getDirectory() + "/" + namespace);
 			if (namespacePath != null) {
 				Path searchPath = namespacePath.resolve(nioPath).toAbsolutePath().normalize();
 
@@ -166,7 +166,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		}
 
 		try {
-			Path typePath = getPath(type.getName());
+			Path typePath = getPath(type.getDirectory());
 			if (typePath == null || !(Files.isDirectory(typePath))) {
 				return Collections.emptySet();
 			}

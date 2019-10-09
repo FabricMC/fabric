@@ -23,9 +23,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
-import net.minecraft.class_4587;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
+import net.minecraft.client.render.chunk.BlockLayeredBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
@@ -35,6 +34,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MatrixStack;
 
 /**
  * Implementation of {@link RenderContext} used during terrain rendering.
@@ -49,7 +49,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 	private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix);
 	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix);
 
-	public TerrainRenderContext prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilder builders) {
+	public TerrainRenderContext prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilderStorage builders) {
 		blockInfo.setBlockView(blockView);
 		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
 		return this;
@@ -65,7 +65,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 	}
 
 	/** Called from chunk renderer hook. */
-	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, class_4587 matrixStack) {
+	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
 		prepareMatrix(blockState, blockPos, blockInfo.blockView, matrixStack);
 		try {
 			aoCalc.clear();
@@ -77,7 +77,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 			CrashReportSection.addBlockInfo(crashReportElement_1, blockPos, blockState);
 			throw new CrashException(crashReport_1);
 		}
-		matrixStack.method_22909();
+		matrixStack.pop();
 		// false because we've already marked the chunk as populated - caller doesn't need to
 		return false;
 	}

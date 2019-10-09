@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.blockrenderlayer.v1;
 
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.fluid.Fluid;
 
 /**
@@ -43,7 +43,7 @@ public interface BlockRenderLayerMap {
 	 * @param block Identifies block to be mapped.
 	 * @param renderLayer Render layer.  Should be one of the layers used for terrain rendering.
 	 */
-	void putBlock(Block block, BlockRenderLayer renderLayer);
+	void putBlock(Block block, RenderLayer renderLayer);
 		
 	/**
 	 * Map (or re-map) a fluid state with a render layer.  Re-mapping is not recommended but if done, last one in wins.
@@ -52,5 +52,5 @@ public interface BlockRenderLayerMap {
 	 * @param fluid Identifies fluid to be mapped.
 	 * @param renderLayer Render layer.  Should be one of the layers used for terrain rendering.
 	 */
-	void putFluid(Fluid fluid, BlockRenderLayer renderLayer);
+	void putFluid(Fluid fluid, RenderLayer renderLayer);
 }

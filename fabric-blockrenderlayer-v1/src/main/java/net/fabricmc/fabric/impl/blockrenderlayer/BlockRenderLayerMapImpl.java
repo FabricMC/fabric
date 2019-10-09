@@ -18,19 +18,19 @@ package net.fabricmc.fabric.impl.blockrenderlayer;
 
 import java.util.function.BiConsumer;
 
+import net.minecraft.client.render.RenderLayer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.fluid.Fluid;
 
 public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	private BlockRenderLayerMapImpl() {}
 	
 	@Override
-	public void putBlock(Block block, BlockRenderLayer renderLayer) {
+	public void putBlock(Block block, RenderLayer renderLayer) {
 		if (block == null) {
 			LOG.warn("Ignoring request to map null block to BlockRenderLayer");
 		} else if (renderLayer == null) {
@@ -41,7 +41,7 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	}
 
 	@Override
-	public void putFluid(Fluid fluid, BlockRenderLayer renderLayer) {
+	public void putFluid(Fluid fluid, RenderLayer renderLayer) {
 		if (fluid == null) {
 			LOG.warn("Ignoring request to map null fluid to BlockRenderLayer");
 		} else if (renderLayer == null) {
@@ -59,15 +59,15 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	// a required parameter of our methods. They are given dummy consumers that log
 	// warnings in case something goes wrong.
 	
-	private static BiConsumer<Block, BlockRenderLayer> blockHandler = (b, l) -> {
+	private static BiConsumer<Block, RenderLayer> blockHandler = (b, l) -> {
 		LOG.warn("Unable to map Block {} to BlockRenderLayer. Mapping handler not ready.", b);
 	};
 
-	private static BiConsumer<Fluid, BlockRenderLayer> fluidHandler = (f, b) -> {
+	private static BiConsumer<Fluid, RenderLayer> fluidHandler = (f, b) -> {
 		LOG.warn("Unable to map Fluid {} to BlockRenderLayer. Mapping handler not ready.", f);
 	};
 
-	public static void initialize(BiConsumer<Block, BlockRenderLayer> blockHandlerIn, BiConsumer<Fluid, BlockRenderLayer> fluidHandlerIn) {
+	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
 		blockHandler = blockHandlerIn;
 		fluidHandler = fluidHandlerIn;
 	}

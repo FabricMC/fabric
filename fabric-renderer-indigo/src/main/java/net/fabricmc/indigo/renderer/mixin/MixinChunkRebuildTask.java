@@ -19,6 +19,9 @@ package net.fabricmc.indigo.renderer.mixin;
 import java.util.Random;
 import java.util.Set;
 
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.chunk.BlockLayeredBufferBuilderStorage;
+import net.minecraft.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,14 +33,11 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.indigo.Indigo;
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererRegion;
 import net.fabricmc.indigo.renderer.render.TerrainRenderContext;
-import net.minecraft.class_4587;
-import net.minecraft.class_4588;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.chunk.BlockLayeredBufferBuilder;
 import net.minecraft.client.render.chunk.ChunkBatcher;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
@@ -69,7 +69,7 @@ public class MixinChunkRebuildTask {
 	protected ChunkRenderer field_20839;
 
 	@Inject(at = @At("HEAD"), method = "method_22785")
-	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBatcher.ChunkRenderData renderData, BlockLayeredBufferBuilder builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
+	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBatcher.ChunkRenderData renderData, BlockLayeredBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
 		if (field_20838 != null) {
 			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 			renderer.prepare(field_20838, field_20839, renderData, builder);
@@ -94,8 +94,8 @@ public class MixinChunkRebuildTask {
 	 * driven off of render type. (Not recommended or encouraged, but also not prevented.)
 	 */
 	@Redirect(method = "method_22785", require = 1, at = @At(value = "INVOKE", 
-			target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/class_4587;Lnet/minecraft/class_4588;ZLjava/util/Random;)Z"))
-	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, class_4587 matrix, class_4588 bufferBuilder, boolean checkSides, Random random) {
+			target = "Lnet/minecraft/client/render/block/BlockRenderManager;tesselateBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLjava/util/Random;)Z"))
+	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, MatrixStack matrix, VertexConsumer bufferBuilder, boolean checkSides, Random random) {
 		if (blockState.getRenderType() == BlockRenderType.MODEL) {
 			final BakedModel model = renderManager.getModel(blockState);
 

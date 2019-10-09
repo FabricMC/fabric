@@ -19,8 +19,7 @@ package net.fabricmc.fabric.mixin.client.render.fluid;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.impl.client.render.fluid.FluidRendererHookContainer;
 import net.fabricmc.fabric.impl.client.render.fluid.FluidRenderHandlerRegistryImpl;
-import net.minecraft.class_4588;
-import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
@@ -50,7 +49,7 @@ public class MixinFluidRenderer {
     }
 
     @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
-    public void tesselate(BlockRenderView view, BlockPos pos, class_4588 class_4588, FluidState state, CallbackInfoReturnable<Boolean> info) {
+    public void tesselate(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
         FluidRendererHookContainer ctr = fabric_renderHandler.get();
         FluidRenderHandler handler = FluidRenderHandlerRegistryImpl.INSTANCE.getOverride(state.getFluid());
 
@@ -71,7 +70,7 @@ public class MixinFluidRenderer {
     }
 
     @Inject(at = @At("RETURN"), method = "tesselate")
-    public void tesselateReturn(BlockRenderView view, BlockPos pos, class_4588 class_4588, FluidState state, CallbackInfoReturnable<Boolean> info) {
+    public void tesselateReturn(BlockRenderView view, BlockPos pos, VertexConsumer vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> info) {
         fabric_renderHandler.get().clear();
     }
 

@@ -32,15 +32,15 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.minecraft.class_4587;
-import net.minecraft.class_4588;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MatrixStack;
 
 /**
  * The render context used for item rendering. 
@@ -54,16 +54,17 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	/** used to accept a method reference from the ItemRenderer */
 	@FunctionalInterface
 	public static interface VanillaQuadHandler {
-		void accept(BakedModel model, ItemStack stack, int color, class_4587 matrixStack, class_4588 buffer);
+		void accept(BakedModel model, ItemStack stack, int color, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
 	}
 
 	private final ItemColors colorMap;
 	private final Random random = new Random();
 	private final Consumer<BakedModel> fallbackConsumer;
-	class_4588 bufferBuilder;
-	class_4587 matrixStack;
+	VertexConsumer bufferBuilder;
+	MatrixStack matrixStack;
 	Matrix4f matrix;
 	private int lightmap;
+	private int overlay;
 	private ItemStack itemStack;
 	private VanillaQuadHandler vanillaHandler;
 
@@ -80,12 +81,13 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.fallbackConsumer = this::fallbackConsumer;
 	}
 
-	public void renderModel(FabricBakedModel model, ItemStack stack, int lightmap, class_4587 matrixStack, class_4588 buffer, VanillaQuadHandler vanillaHandler) {
+	public void renderModel(FabricBakedModel model, ItemStack stack, int lightmap, int overlay, MatrixStack matrixStack, VertexConsumer buffer, VanillaQuadHandler vanillaHandler) {
 		this.lightmap = lightmap;
+		this.overlay = overlay;
 		this.itemStack = stack;
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
-		this.matrix = matrixStack.method_22910();
+		this.matrix = matrixStack.peek();
 
 		this.vanillaHandler = vanillaHandler;
 		model.emitItemQuads(stack, randomSupplier, this);
@@ -171,12 +173,12 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			}
 		} else {
 			for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
-				vanillaHandler.accept(model, itemStack, lightmap, matrixStack, bufferBuilder);
+				vanillaHandler.accept(model, itemStack, lightmap, overlay, matrixStack, bufferBuilder);
 			}
 		}
 	};
 
-	private void renderFallbackWithTransform(class_4588 bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, Direction cullFace) {
+	private void renderFallbackWithTransform(VertexConsumer bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, Direction cullFace) {
 		if (quads.isEmpty()) {
 			return;
 		}

@@ -18,29 +18,29 @@ package net.fabricmc.indigo.renderer.mixin;
 
 import java.util.Set;
 
+import net.minecraft.client.render.RenderLayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererData;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
 
 @Mixin(ChunkRenderData.class)
 public class MixinChunkRenderData implements AccessChunkRendererData {
 	@Shadow
-	private Set<BlockRenderLayer> initialized;
+	private Set<RenderLayer> initialized;
 	@Shadow
-	private Set<BlockRenderLayer> nonEmpty;
+	private Set<RenderLayer> nonEmpty;
 	@Shadow
 	private boolean empty;
 
 	@Override
-	public boolean fabric_markInitialized(BlockRenderLayer renderLayer) {
+	public boolean fabric_markInitialized(RenderLayer renderLayer) {
 		return initialized.add(renderLayer);
 	}
 
 	@Override
-	public void fabric_markPopulated(BlockRenderLayer renderLayer) {
+	public void fabric_markPopulated(RenderLayer renderLayer) {
 		empty = false;
 		nonEmpty.add(renderLayer);
 	}

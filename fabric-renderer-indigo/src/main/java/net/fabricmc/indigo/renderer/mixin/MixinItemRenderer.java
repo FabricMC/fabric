@@ -16,6 +16,8 @@
 
 package net.fabricmc.indigo.renderer.mixin;
 
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,8 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.indigo.renderer.render.ItemRenderContext;
 import net.fabricmc.indigo.renderer.render.ItemRenderContext.VanillaQuadHandler;
-import net.minecraft.class_4587;
-import net.minecraft.class_4588;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
@@ -35,7 +35,7 @@ import net.minecraft.item.ItemStack;
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
 	@Shadow
-	protected abstract void method_23182(BakedModel model, ItemStack stack, int color, class_4587 matrixStack, class_4588 buffer);
+	protected abstract void method_23182(BakedModel model, ItemStack stack, int color, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
 
 	@Shadow
 	protected ItemColors colorMap;
@@ -45,11 +45,11 @@ public abstract class MixinItemRenderer {
 	private final ThreadLocal<ItemRenderContext> CONTEXTS = ThreadLocal.withInitial(() -> new ItemRenderContext(colorMap));
 
 	@Inject(at = @At("HEAD"), method = "method_23182", cancellable = true)
-	private void hook_method_23182(BakedModel model, ItemStack stack, int lightmap, class_4587 matrixStack, class_4588 buffer, CallbackInfo ci) {
+	private void hook_method_23182(BakedModel model, ItemStack stack, int lightmap, int overlay, MatrixStack matrixStack, VertexConsumer buffer, CallbackInfo ci) {
 		final FabricBakedModel fabricModel = (FabricBakedModel) model;
 
 		if (!fabricModel.isVanillaAdapter()) {
-			CONTEXTS.get().renderModel(fabricModel, stack, lightmap, matrixStack, buffer, vanillaHandler);
+			CONTEXTS.get().renderModel(fabricModel, stack, lightmap, overlay, matrixStack, buffer, vanillaHandler);
 			ci.cancel();
 		}
 	}

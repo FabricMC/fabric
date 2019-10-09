@@ -26,14 +26,14 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
-import net.minecraft.class_4587;
-import net.minecraft.class_4588;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MatrixStack;
 import net.minecraft.world.BlockRenderView;
 
 /**
@@ -45,8 +45,9 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform);
 	private final Random random = new Random();
 	private BlockModelRenderer vanillaRenderer;
-	private class_4588 bufferBuilder;
+	private VertexConsumer bufferBuilder;
 	private long seed;
+	private int overlay;
 	private boolean isCallingVanilla = false;
 	private boolean didOutput = false;
 
@@ -59,7 +60,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 			return 15 << 20 | 15 << 4;
 		}
 
-		return blockInfo.blockView.getLightmapIndex(blockInfo.blockView.getBlockState(pos), pos);
+		return blockInfo.blockView.getLightmapCoordinates(blockInfo.blockView.getBlockState(pos), pos);
 	}
 
 	private float aoLevel(BlockPos pos) {
@@ -67,17 +68,18 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
 	}
 
-	private class_4588 outputBuffer(BlockRenderLayer renderLayer) {
+	private VertexConsumer outputBuffer(RenderLayer renderLayer) {
 		didOutput = true;
 		return bufferBuilder;
 	}
 
-	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, class_4587 matrixStack, class_4588 buffer, boolean checkSides, long seed) {
+	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean checkSides, long seed, int overlay) {
 		this.vanillaRenderer = vanillaRenderer;
 		this.bufferBuilder = buffer;
 		this.prepareMatrix(state, pos, blockView, matrixStack);
 
 		this.seed = seed;
+		this.overlay = overlay;
 		this.didOutput = false;
 		aoCalc.clear();
 		blockInfo.setBlockView(blockView);
@@ -89,19 +91,19 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		blockInfo.release();
 		this.bufferBuilder = null;
 
-		matrixStack.method_22909();
+		matrixStack.pop();
 
 		return didOutput;
 	}
 
 	protected void acceptVanillaModel(BakedModel model) {
 		isCallingVanilla = true;
-		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, bufferBuilder, false, random, seed);
+		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, bufferBuilder, false, random, seed, overlay);
 		isCallingVanilla = false;
 	}
 
 	private class MeshConsumer extends AbstractMeshConsumer {
-		MeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, class_4588> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+		MeshConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 			super(blockInfo, bufferFunc, aoCalc, transform);
 		}
 

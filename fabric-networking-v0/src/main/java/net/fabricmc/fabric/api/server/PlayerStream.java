@@ -88,7 +88,7 @@ public final class PlayerStream {
 		}
 
 		// fallback
-		return watching(entity.getEntityWorld(), new ChunkPos((int) (entity.x / 16.0D), (int) (entity.z / 16.0D)));
+		return watching(entity.getEntityWorld(), new ChunkPos((int) (entity.method_23317() / 16.0D), (int) (entity.method_23318() / 16.0D)));
 	}
 
 	public static Stream<PlayerEntity> watching(BlockEntity entity) {

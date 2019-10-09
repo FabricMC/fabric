@@ -24,10 +24,10 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.minecraft.class_4588;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.BlockPos;
 
@@ -38,14 +38,14 @@ import net.minecraft.util.math.BlockPos;
 public abstract class AbstractQuadRenderer {
 	static final int FULL_BRIGHTNESS = 0xF000F0;
 
-	protected final Function<BlockRenderLayer, class_4588> bufferFunc;
+	protected final Function<RenderLayer, VertexConsumer> bufferFunc;
 	protected final BlockRenderInfo blockInfo;
 	protected final AoCalculator aoCalc;
 	protected final QuadTransform transform;
 
 	protected abstract Matrix4f matrix();
 
-	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, class_4588> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		this.blockInfo = blockInfo;
 		this.bufferFunc = bufferFunc;
 		this.aoCalc = aoCalc;
@@ -68,18 +68,18 @@ public abstract class AbstractQuadRenderer {
 	}
 
 	/** final output step, common to all renders */
-	private void bufferQuad(MutableQuadViewImpl quad, BlockRenderLayer renderLayer) {
+	private void bufferQuad(MutableQuadViewImpl quad, RenderLayer renderLayer) {
 		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix());
 	}
 
-	public static void bufferQuad(class_4588 buff, MutableQuadViewImpl quad, Matrix4f matrix) {
+	public static void bufferQuad(VertexConsumer buff, MutableQuadViewImpl quad, Matrix4f matrix) {
 		for (int i = 0; i < 4; i++) {
-			buff.method_22918(matrix, quad.x(i), quad.y(i), quad.z(i));
+			buff.vertex(matrix, quad.x(i), quad.y(i), quad.z(i));
 			final int color = quad.spriteColor(i, 0);
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
 			buff.texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
-			buff.method_22916(quad.lightmap(i));
-			buff.method_22914(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
+			buff.light(quad.lightmap(i));
+			buff.normal(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 			buff.next();
 		}
 	}
@@ -87,7 +87,7 @@ public abstract class AbstractQuadRenderer {
 	// routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
 
 	/** for non-emissive mesh quads and all fallback quads with smooth lighting*/
-	protected void tesselateSmooth(MutableQuadViewImpl q, BlockRenderLayer renderLayer, int blockColorIndex) {
+	protected void tesselateSmooth(MutableQuadViewImpl q, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(q, blockColorIndex);
 
 		for (int i = 0; i < 4; i++) {
@@ -99,7 +99,7 @@ public abstract class AbstractQuadRenderer {
 	}
 
 	/** for emissive mesh quads with smooth lighting*/
-	protected void tesselateSmoothEmissive(MutableQuadViewImpl q, BlockRenderLayer renderLayer, int blockColorIndex) {
+	protected void tesselateSmoothEmissive(MutableQuadViewImpl q, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(q, blockColorIndex);
 
 		for (int i = 0; i < 4; i++) {
@@ -111,7 +111,7 @@ public abstract class AbstractQuadRenderer {
 	}
 
 	/** for non-emissive mesh quads and all fallback quads with flat lighting*/
-	protected void tesselateFlat(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex) {
+	protected void tesselateFlat(MutableQuadViewImpl quad, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
 		final int brightness = flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos);
 
@@ -123,7 +123,7 @@ public abstract class AbstractQuadRenderer {
 	}
 
 	/** for emissive mesh quads with flat lighting*/
-	protected void tesselateFlatEmissive(MutableQuadViewImpl quad, BlockRenderLayer renderLayer, int blockColorIndex) {
+	protected void tesselateFlatEmissive(MutableQuadViewImpl quad, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
 
 		for (int i = 0; i < 4; i++) {
@@ -147,6 +147,6 @@ public abstract class AbstractQuadRenderer {
 		}
 
 		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
-		return blockInfo.blockView.getLightmapIndex(blockState, mpos);
+		return blockInfo.blockView.getLightmapCoordinates(blockState, mpos);
 	}
 }

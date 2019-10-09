@@ -30,16 +30,16 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.minecraft.class_4588;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 
 /**
  * Consumer for pre-baked meshes.  Works by copying the mesh data to a
  * "editor" quad held in the instance, where all transformations are applied before buffering.
  */
 public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implements Consumer<Mesh> {
-	protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Function<BlockRenderLayer, class_4588> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+	protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		super(blockInfo, bufferFunc, aoCalc, transform);
 	}
 
@@ -111,7 +111,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 	 */
 	private void tesselateQuad(MutableQuadViewImpl quad, RenderMaterialImpl.Value mat, int textureIndex) {
 		final int colorIndex = mat.disableColorIndex(textureIndex) ? -1 : quad.colorIndex();
-		final BlockRenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode(textureIndex));
+		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode(textureIndex));
 
 		if (blockInfo.defaultAo && !mat.disableAo(textureIndex)) {
 			if (mat.emissive(textureIndex)) {

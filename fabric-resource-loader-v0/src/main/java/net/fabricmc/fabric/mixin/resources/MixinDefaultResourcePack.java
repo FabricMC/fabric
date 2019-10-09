@@ -36,12 +36,12 @@ public class MixinDefaultResourcePack {
 
 	@Inject(method = "findInputStream", at = @At("HEAD"), cancellable = true)
 	protected void onFindInputStream(ResourceType resourceType, Identifier identifier, CallbackInfoReturnable<InputStream> callback) {
-		if(DefaultResourcePack.RESOURCE_PATH != null) {
+		if(DefaultResourcePack.resourcePath != null) {
 			// Fall through to Vanilla logic, they have a special case here.
 			return;
 		}
 
-		String path = resourceType.getName() + "/" + identifier.getNamespace() + "/" + identifier.getPath();
+		String path = resourceType.getDirectory() + "/" + identifier.getNamespace() + "/" + identifier.getPath();
 		URL found = null;
 
 		try {

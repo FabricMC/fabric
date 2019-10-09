@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.blockrenderlayer;
 
 import java.util.Map;
 
+import net.minecraft.client.render.RenderLayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,13 +27,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.fluid.Fluid;
 
-@Mixin(BlockRenderLayer.class)
+@Mixin(RenderLayer.class)
 public class MixinBlockRenderLayer {
-	@Shadow private static Map<Block, BlockRenderLayer> field_20803;
-	@Shadow private static Map<Fluid, BlockRenderLayer> field_20804;
+	@Shadow private static Map<Block, RenderLayer> field_20803;
+	@Shadow private static Map<Fluid, RenderLayer> field_20804;
 	
 	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onInitialize(CallbackInfo info) {

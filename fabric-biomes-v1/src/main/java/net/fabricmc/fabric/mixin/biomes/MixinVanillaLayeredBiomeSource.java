@@ -40,16 +40,16 @@ public class MixinVanillaLayeredBiomeSource {
 	@Shadow
 	@Final
 	@Mutable
-	private static Set<Biome> biomes;
+	private static Set<Biome> BIOMES;
 
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void cinit(CallbackInfo info){
-		biomes = new HashSet<>(biomes);
+		BIOMES = new HashSet<>(BIOMES);
 	}
 
 	//Called via reflection
 	private static void fabric_injectBiome(Biome biome) {
-		biomes.add(biome);
+		BIOMES.add(biome);
 	}
 
 }

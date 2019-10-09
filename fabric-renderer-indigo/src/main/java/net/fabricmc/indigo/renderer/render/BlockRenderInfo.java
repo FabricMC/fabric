@@ -20,10 +20,10 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
@@ -43,7 +43,7 @@ public class BlockRenderInfo {
 	public BlockState blockState;
 	public long seed;
 	boolean defaultAo;
-	BlockRenderLayer defaultLayer;
+	RenderLayer defaultLayer;
 
 	public final Supplier<Random> randomSupplier = () -> {
 		final Random result = random;
@@ -69,7 +69,7 @@ public class BlockRenderInfo {
 		seed = -1L;
 		defaultAo = modelAO && MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0;
 
-		defaultLayer = BlockRenderLayer.method_22715(blockState);
+		defaultLayer = RenderLayer.method_22715(blockState);
 	}
 
 	public void release() {
@@ -85,7 +85,7 @@ public class BlockRenderInfo {
 		return true;
 	}
 
-	BlockRenderLayer effectiveRenderLayer(BlendMode blendMode) {
+	RenderLayer effectiveRenderLayer(BlendMode blendMode) {
 		return blendMode == BlendMode.DEFAULT ? this.defaultLayer : blendMode.blockRenderLayer;
 	}
 }
