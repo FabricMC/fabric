@@ -8,19 +8,19 @@ import java.util.List;
 /**
  * An {@code Event} that cascades registrations to other events
  *
- * @param <E> the type of callback registered to this {@code Event}
+ * @param <T> the type of handler registered to this {@code Event}
  */
-public final class CascadingEvent<E> extends Event<E> {
-	private final Event<E> delegate;
-	private final List<Event<E>> descendants = new ArrayList<>();
-	private final List<E> callbacks = new ArrayList<>();
+public final class CascadingEvent<T> extends Event<T> {
+	private final Event<T> delegate;
+	private final List<Event<T>> descendants = new ArrayList<>();
+	private final List<T> handlers = new ArrayList<>();
 
 	/**
 	 * Creates a {@code CascadingEvent} that uses another event's {@link Event#invoker invoker}.
 	 *
 	 * @param delegate the event to decorate
 	 */
-	public CascadingEvent(Event<E> delegate) {
+	public CascadingEvent(Event<T> delegate) {
 		this.delegate = delegate;
 		this.invoker = this.delegate.invoker();
 	}
@@ -34,11 +34,11 @@ public final class CascadingEvent<E> extends Event<E> {
 	 * @see #registerDescendant(Event)
 	 */
 	@Override
-	public void register(E listener) {
+	public void register(T listener) {
 		this.delegate.register(listener);
 		this.invoker = this.delegate.invoker();
-		this.callbacks.add(listener);
-		for (Event<E> cascade : this.descendants) {
+		this.handlers.add(listener);
+		for (Event<T> cascade : this.descendants) {
 			cascade.register(listener);
 		}
 	}
@@ -47,16 +47,16 @@ public final class CascadingEvent<E> extends Event<E> {
 	 * Registers an event as descendant of this {@code CascadingEvent}.
 	 *
 	 * <p> The {@code descendant} is added to this event's inheritance tree with this event as the direct ancestor.
-	 * It will then receive any {@link #register(Object) callback registration} made to its ancestors.
-	 * This method also immediately registers any callback that has been previously registered to this event to
-	 * the {@code descendant}, allowing descendants to be registered after callback registrations have occurred.
+	 * It will then receive any {@link #register(Object) handler registration} made to its ancestors.
+	 * This method also immediately registers any handler that has been previously registered to this event to
+	 * the {@code descendant}, allowing descendants to be registered after handler registrations have occurred.
 	 *
 	 * @param descendant an event to register as descendant of this event
 	 */
-	public void registerDescendant(Event<E> descendant) {
+	public void registerDescendant(Event<T> descendant) {
 		this.descendants.add(descendant);
-		for (E callback : this.callbacks) {
-			descendant.register(callback);
+		for (T handler : this.handlers) {
+			descendant.register(handler);
 		}
 	}
 }
