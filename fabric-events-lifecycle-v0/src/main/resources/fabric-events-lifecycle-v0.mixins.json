@@ -5,8 +5,7 @@
   "mixins": [
     "MixinMinecraftServer",
     "MixinWorld",
-    "MixinEntity",
-    "MixinEntityType"
+    "MixinEntity"
   ],
   "client": [
     "MixinMinecraftClient"
