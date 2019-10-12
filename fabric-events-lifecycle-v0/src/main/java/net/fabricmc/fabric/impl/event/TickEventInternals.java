@@ -10,10 +10,10 @@ import net.minecraft.util.profiler.Profiler;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EntityEventInternals {
+public class TickEventInternals {
 
 	/** Cache of entity class to {@code Event} */
-	private static final Map<Class<?>, CascadingEvent> TICK_EVENTS = new HashMap<>();
+	private static final Map<Class<?>, CascadingEvent> ENTITY_TICK_EVENTS = new HashMap<>();
 
 	/**
 	 * Retrieves an entity tick event for a given class. If none exists, this method creates one and registers it
@@ -27,14 +27,14 @@ public class EntityEventInternals {
 	@SuppressWarnings("unchecked")
 	public static <E extends Entity> CascadingEvent<EntityTickCallback<E>> getOrCreateEntityEvent(Class<?> entityClass) {
 		Preconditions.checkArgument(Entity.class.isAssignableFrom(entityClass));
-		CascadingEvent<EntityTickCallback<E>> event = TICK_EVENTS.get(entityClass);
+		CascadingEvent<EntityTickCallback<E>> event = ENTITY_TICK_EVENTS.get(entityClass);
 		if (event == null) {
 			event = new CascadingEvent<>(createEntityEvent());    // decorator around the base Event
 			if (entityClass != Entity.class) {    // entities cannot inherit callbacks from anything
 				Class<?> superclass = entityClass.getSuperclass();
 				getOrCreateEntityEvent(superclass).registerDescendant((Event) event);    // recursive call to init every parent
 			}
-			TICK_EVENTS.put(entityClass, event);
+			ENTITY_TICK_EVENTS.put(entityClass, event);
 		}
 		return event;
 	}

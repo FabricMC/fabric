@@ -1,7 +1,7 @@
 package net.fabricmc.fabric.api.event.entity;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.event.EntityEventInternals;
+import net.fabricmc.fabric.impl.event.TickEventInternals;
 import net.minecraft.entity.Entity;
 
 /**
@@ -43,7 +43,7 @@ public interface EntityTickCallback<E extends Entity> {
 	 * @throws NullPointerException     if {@code type} is {@code null}
 	 */
 	public static <E extends Entity> Event<EntityTickCallback<E>> event(Class<E> type) {
-		return EntityEventInternals.getOrCreateEntityEvent(type);
+		return TickEventInternals.getOrCreateEntityEvent(type);
 	}
 
 	/**
