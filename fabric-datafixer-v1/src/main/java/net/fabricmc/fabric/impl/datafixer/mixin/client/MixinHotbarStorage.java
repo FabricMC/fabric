@@ -30,9 +30,11 @@ import net.minecraft.nbt.CompoundTag;
 
 @Environment(EnvType.CLIENT)
 @Mixin(HotbarStorage.class)
+/**
+ * Only DataFixer reference done exclusively by client. This is implemented because it stores itemstacks within HotbarStorageEntry.
+ * Fixing on load is covered by TagHelper
+ */
 public class MixinHotbarStorage {
-	// Only DataFixer reference done exclusively by client. This is implemented because it stores itemstacks within HotbarStorageEntry.
-	// Loading is covered by TagHelper
 	// Also add Mod DataVersions to save()
 	@Inject(at = @At(value = "INVOKE", target = "net/minecraft/nbt/CompoundTag.putInt(Ljava/lang/String;I)V"), method = "save()V", locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	public void onSave(CallbackInfo ci, CompoundTag compoundTag_1) {

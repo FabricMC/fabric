@@ -27,6 +27,10 @@ import net.minecraft.nbt.Tag;
 
 /**
  * This class contains several common datafixes modders would use.
+ *
+ * <p>
+ *
+ * </p>
  */
 public interface SimpleFixes {
 
@@ -34,7 +38,9 @@ public interface SimpleFixes {
 
 	/**
 	 * A basic DataFix for changing block names.
-	 * 
+	 *
+	 * To use this, first create a DataFixerBuilder and register a schema. Next you would invoke this method, and fill in the arguments to
+	 *
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
 	 * @param oldId The old name of the block to fix
@@ -58,13 +64,13 @@ public interface SimpleFixes {
 	 * 
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param transformation The transformation to apply to the entity being fixed. Note you must check if the inputted enity matches your target or it will fix the wrong entity.
+	 * @param changes A map containing all the changes in biome name, where the key is the old biome name and the value is the new biome name.
 	 * @param schema The Schema to add this fix to.
 	 */
 	public abstract void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
 
 	/**
-	 * A basic DataFix for changing blockentity names
+	 * A basic DataFix for changing blockentity names -- Untested as of now
 	 * 
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
@@ -77,12 +83,12 @@ public interface SimpleFixes {
 	/**
 	 * A basic DataFix for changing entity names.
 	 * <p>
-	 * Note this does not rename entity spawn eggs and you should use {@link #addItemRenameFix(DataFixerBuilder, String, ImmutableMap, Schema)} to rename the spawn egg item.
+	 * Note this does not rename entity spawn eggs and you should use {@link #addItemRenameFix(DataFixerBuilder, String, String, String, Schema)} to rename the spawn egg item.
 	 * </p>
 	 * 
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param changes A map of all changed values, where the key should be original and value is new value.
+	 * @param changes A map of all changed values, where the key should be original entity name and value is new entity name.
 	 * @param schema The Schema to add this fix to.
 	 */
 	public abstract void addEntityRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
@@ -106,7 +112,7 @@ public interface SimpleFixes {
 		/**
 		 * Transforms an entity.
 		 * 
-		 * @param inputEntityName The input entity's name.
+		 * @param entityName The input entity's name.
 		 * @param dynamic The Dynamic object representing the entity.
 		 * @return A Pair which contains the entity's new name and the dynamic representing the entity.
 		 */

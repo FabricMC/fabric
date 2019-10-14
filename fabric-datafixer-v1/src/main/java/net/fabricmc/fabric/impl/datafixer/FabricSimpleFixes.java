@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.datafixer;
 
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.Dynamic;
@@ -39,20 +40,22 @@ public class FabricSimpleFixes implements SimpleFixes {
 
 	public static final SimpleFixes INSTANCE = new FabricSimpleFixes();
 
-	private FabricSimpleFixes() {
-	}
+	private FabricSimpleFixes() {}
 
 	@Override
-	public void addBlockRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
-		builder_1.addFixer(BlockNameFix.create(schema_1, name, (inputBlockName) -> {
+	public void addBlockRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
+		validateFixArgs(builder, name, oldId, newId, schema);
+
+		builder.addFixer(BlockNameFix.create(schema, name, (inputBlockName) -> {
 			return Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName;
 		}));
-
 	}
 
 	@Override
-	public void addItemRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
-		builder_1.addFixer(FixItemName.create(schema_1, name, (inputItemName) -> {
+	public void addItemRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
+		validateFixArgs(builder, name, oldId, newId, schema);
+
+		builder.addFixer(FixItemName.create(schema, name, (inputItemName) -> {
 			return Objects.equals(oldId, inputItemName) ? newId : inputItemName;
 		}));
 	}
@@ -93,5 +96,13 @@ public class FabricSimpleFixes implements SimpleFixes {
 			}
 
 		});
+	}
+
+	private static void validateFixArgs(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
+		Preconditions.checkNotNull(schema, "Schema cannot be null");
+		Preconditions.checkNotNull(name, "Name cannot be null");
+		Preconditions.checkNotNull(oldId, "Old id cannot be null");
+		Preconditions.checkNotNull(newId, "New id cannot be null");
+		Preconditions.checkNotNull(builder, "DataFixerBuilder cannot be null");
 	}
 }

@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinChunkSerializer",
-    "MixinTagHelper"
+    "MixinTagHelper",
+    "MixinSchema99",
+    "Schema99Accessor"
   ],
   "client": [
   	"client.MixinHotbarStorage"

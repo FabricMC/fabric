@@ -27,15 +27,16 @@ import it.unimi.dsi.fastutil.ints.IntSortedSet;
 import net.minecraft.datafixers.Schemas;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
- * This is the Schema that all custom DataFixers use or fixing will fail because the TypeReferences would have not been registered to the fixer.
- * <p>
- * Please note when updating the API when a new Schema is added, any new registeredTypes in {@link #registerTypes(Schema, Map, Map)} should be added with a comment above it specifying the Schema Version name.
- * </p>
+ * Represents Minecraft's Built in DataFixer.
  */
-public class FabricSchema {
-	
+public class MCDFU {
+
+	private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
+
 	private static final int LATEST_SCHEMA_VERSION;
 	
 	static {
@@ -52,7 +53,7 @@ public class FabricSchema {
 			throw new CrashException(report);
 		}
 		
-		System.out.println(LATEST_SCHEMA_VERSION);
+		LOGGER.info("[Fabric-DataFixer] Started with MC-DFU version: " + LATEST_SCHEMA_VERSION);
 	}
 	
 	public static final BiFunction<Integer, Schema, Schema> MC_TYPE_REFS = (version, parent) -> Schemas.getFixer().getSchema(LATEST_SCHEMA_VERSION);

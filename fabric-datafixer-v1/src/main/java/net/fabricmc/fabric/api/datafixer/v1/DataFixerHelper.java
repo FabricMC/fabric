@@ -28,10 +28,11 @@ import net.minecraft.nbt.CompoundTag;
  * <p>
  * <b>Please take extreme caution when using these tools as DataFixers directly interface with the world saves and may corrupt world saves.</b>
  * </p>
+ * <p>If you need help, see the wiki article here: {@url https://fabricmc.net/wiki/datafixer_tutorial:start}</p>
  */
 public interface DataFixerHelper {
 
-	public static final DataFixerHelper INSTANCE = FabricDataFixerImpl.INSTANCE;
+	static final DataFixerHelper INSTANCE = FabricDataFixerImpl.INSTANCE;
 
 	/**
 	 * Registers a DataFixer
@@ -41,7 +42,7 @@ public interface DataFixerHelper {
 	 * @param datafixer The DataFixer to register
 	 * @return The inputted DataFixer
 	 */
-	public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer);
+	DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer);
 	
 	/**
 	 * Gets the DataFixer registered under a mod.
@@ -49,7 +50,7 @@ public interface DataFixerHelper {
 	 * @param modid The Modid which the DataFixer was registered under.
 	 * @return An optional, which may contain a DataFixer if a mod has registered a DataFixer.
 	 */
-	public Optional<DataFixer> getDataFixer(String modid);
+	Optional<DataFixer> getDataFixer(String modid);
 	
 	/**
 	 * Retrieves the DataVersion registered under a modid.
@@ -58,11 +59,11 @@ public interface DataFixerHelper {
 	 * @param modid The modid to check.
 	 * @return The DataVersion stored for the mod or 0 if no DataVersion or mod is present.
 	 */
-	public int getModDataVersion(CompoundTag compoundTag, String modid);
+	int getModDataVersion(CompoundTag compoundTag, String modid);
 	
 	/**
 	 * Checks if Fabric is allowing any more DataFixers to be registered.
 	 * @return true if registration is locked.
 	 */
-	public boolean isLocked();
+	boolean isLocked();
 }

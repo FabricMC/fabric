@@ -19,23 +19,28 @@ package net.fabricmc.fabric.impl.datafixer;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
-
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
 import net.fabricmc.fabric.api.datafixer.v1.FabricSchemas;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.SystemUtil;
 import net.minecraft.util.registry.Registry;
 
+import java.util.List;
+
 public class FabricDataFixerInitalizerCommon implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
 		// TODO Add logic in both Common and Client Initializer to lock DataFixer registration once Client loads or Server starts. Maybe after FabricLoader Entrypoint finishes.
+
+		List<DataFixerEntrypoint> entries = FabricLoader.getInstance().getEntrypoints("fabric:datafixer", DataFixerEntrypoint.class);
 
 		// Ignore test blocks for logic:
 
@@ -57,8 +62,6 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
 			return Pair.of(name, dynamic.set("rna", dynamic.createInt(509)));
 		}, v1);
 
-		
-		
 		DataFixerHelper.INSTANCE.registerFixer("fabric_test", TEST_DATA_VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
 		
 		// End of testing logic
