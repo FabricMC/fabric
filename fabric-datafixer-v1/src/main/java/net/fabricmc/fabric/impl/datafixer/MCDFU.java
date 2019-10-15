@@ -20,10 +20,12 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.function.BiFunction;
 
+import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixerUpper;
 import com.mojang.datafixers.schemas.Schema;
 
 import it.unimi.dsi.fastutil.ints.IntSortedSet;
+import net.minecraft.SharedConstants;
 import net.minecraft.datafixers.Schemas;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
@@ -37,22 +39,9 @@ public class MCDFU {
 
 	private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
 
-	private static final int LATEST_SCHEMA_VERSION;
+	private static final int LATEST_SCHEMA_VERSION = DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion()); // This does work, I just need to use DataFixUtils to make it right type.
 	
 	static {
-		// Logic to automatically resolve the Latest schema version
-		DataFixerUpper mcDFU = (DataFixerUpper) Schemas.getFixer();
-		
-		try {
-			final Field fixerVersions = DataFixerUpper.class.getDeclaredField("fixerVersions");
-			fixerVersions.setAccessible(true);
-			IntSortedSet fixerVersionsReflected = (IntSortedSet) fixerVersions.get(mcDFU);
-			LATEST_SCHEMA_VERSION = fixerVersionsReflected.lastInt();
-		} catch (ReflectiveOperationException e) {
-			CrashReport report = CrashReport.create(e, "Exception while grabbing Vanilla Schema");
-			throw new CrashException(report);
-		}
-		
 		LOGGER.info("[Fabric-DataFixer] Started with MC-DFU version: " + LATEST_SCHEMA_VERSION);
 	}
 	

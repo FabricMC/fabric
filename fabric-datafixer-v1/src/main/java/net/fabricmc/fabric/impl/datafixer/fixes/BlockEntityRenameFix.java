@@ -29,6 +29,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.datafixers.TypeReferences;
 
 /**
+ * @deprecated Untested
  * TODO: Untested
  */
 public abstract class BlockEntityRenameFix extends DataFix {

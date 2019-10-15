@@ -17,13 +17,15 @@
 package net.fabricmc.fabric.impl.datafixer;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 
+@Environment(EnvType.CLIENT)
 public class FabricDataFixerInitalizerClient implements ClientModInitializer {
-
 	@Override
 	public void onInitializeClient() {
-		// TODO Auto-generated method stub
-
+		// The second the client is loaded we need to stop registration of DataFixers.
+		ClientTickCallback.EVENT.register(client -> FabricDataFixerImpl.INSTANCE.lock());
 	}
-
 }

@@ -16,20 +16,27 @@
 
 package net.fabricmc.fabric.impl.datafixer;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.Dynamic;
-
+import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.TypeTemplate;
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 
 /**
@@ -43,14 +50,19 @@ import net.minecraft.nbt.Tag;
  *
  */
 public final class FabricDataFixerImpl implements DataFixerHelper {
-	
+
+	private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
+	public static final Schema FABRIC_SCHEMA;
+	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
+
+	static {
+		FABRIC_SCHEMA = createSchema();
+	}
+
 	private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
 	private boolean locked;
 
-	private FabricDataFixerImpl() {
-	}
-
-	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
+	private FabricDataFixerImpl() {}
 
 	public void addFixerVersions(CompoundTag compoundTag) {
 		for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
@@ -105,6 +117,41 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	 */
 	public void lock() {
 		this.locked = true;
+	}
+
+	private static Schema createSchema() {
+		List<DataFixerEntrypoint> entrypoints = FabricLoader.getInstance().getEntrypoints("fabric:datafixer", DataFixerEntrypoint.class);
+		Schema schema = new Schema(0, MCDFU.MC_TYPE_REFS.apply(-1, null)) {
+
+			@Override
+			public void registerTypes(Schema schema, Map<String, Supplier<TypeTemplate>> entityTypes, Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
+				super.registerTypes(schema, entityTypes, blockEntityTypes);
+				for (DataFixerEntrypoint entrypoint : entrypoints) {
+					entrypoint.registerTypes(schema, entityTypes, blockEntityTypes);
+				}
+			}
+
+			@Override
+			public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema) {
+				Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
+
+				for (DataFixerEntrypoint entrypoint : entrypoints) {
+					entrypoint.registerBlockEntities(schema, map);
+				}
+				return map;
+			}
+
+			@Override
+			public Map<String, Supplier<TypeTemplate>> registerEntities(Schema schema) {
+				Map<String, Supplier<TypeTemplate>> map = super.registerEntities(schema);
+
+				for (DataFixerEntrypoint entrypoint : entrypoints) {
+					entrypoint.registerEntities(schema, map);
+				}
+				return map;
+			}
+		};
+		return schema;
 	}
 
 	final class DataFixerEntry {

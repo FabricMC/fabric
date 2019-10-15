@@ -5,7 +5,6 @@
   "mixins": [
     "MixinChunkSerializer",
     "MixinTagHelper",
-    "MixinSchema99",
     "Schema99Accessor"
   ],
   "client": [
