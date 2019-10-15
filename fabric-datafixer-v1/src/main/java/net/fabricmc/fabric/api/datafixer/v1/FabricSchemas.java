@@ -21,7 +21,6 @@ import java.util.function.BiFunction;
 import com.mojang.datafixers.schemas.Schema;
 
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
-import net.fabricmc.fabric.impl.datafixer.MCDFU;
 import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 
 
@@ -35,7 +34,8 @@ public class FabricSchemas {
 	/**
 	 * Fabric Schema Type. This is required for all custom DataFixers or fixing will fail. This should be registered under version 0 within your DataFixer.
 	 */
-	public static final BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = (version, parent) -> FabricDataFixerImpl.FABRIC_SCHEMA;
+	public static final BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = (version, parent) -> FabricDataFixerImpl.INSTANCE.fabricSchema;
+
 	/**
 	 * Identifier Normalize Schema. 
 	 */

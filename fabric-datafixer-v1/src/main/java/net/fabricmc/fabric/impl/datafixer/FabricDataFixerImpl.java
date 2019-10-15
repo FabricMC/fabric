@@ -17,15 +17,20 @@
 package net.fabricmc.fabric.impl.datafixer;
 
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.DSL;
+import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TypeTemplate;
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
+import net.minecraft.datafixers.Schemas;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import org.apache.logging.log4j.LogManager;
@@ -35,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 
@@ -52,17 +57,15 @@ import java.util.function.Supplier;
 public final class FabricDataFixerImpl implements DataFixerHelper {
 
 	private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
-	public static final Schema FABRIC_SCHEMA;
 	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
-
-	static {
-		FABRIC_SCHEMA = createSchema();
-	}
+	public final Schema fabricSchema;
 
 	private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
 	private boolean locked;
 
-	private FabricDataFixerImpl() {}
+	private FabricDataFixerImpl() {
+		fabricSchema = createSchema();
+	}
 
 	public void addFixerVersions(CompoundTag compoundTag) {
 		for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
@@ -76,8 +79,28 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	}
 
 	@Override
-	public Optional<DataFixer> getDataFixer(String modid) {
-		return Optional.ofNullable(modFixers.get(modid).modFixer);
+	public Type<?> getChoiceType(DataFixer dataFixer, int schemaVersion, DSL.TypeReference typeReference, String identifier) {
+		Preconditions.checkNotNull(dataFixer, "DataFixer cannot be null");
+		Preconditions.checkNotNull(typeReference, "TypeReference cannot be null");
+		Preconditions.checkNotNull(identifier, "Identifier cannot be null");
+
+		Schema schema = dataFixer.getSchema(DataFixUtils.makeKey(schemaVersion));
+
+		if(schema == null){
+			throw new IllegalArgumentException("DataFixer does not contain a Schema with a version of " + schemaVersion);
+		}
+
+		return schema.getChoiceType(typeReference, identifier);
+	}
+
+	@Override
+	public DataFixer getDataFixer(String modid) {
+		DataFixerEntry entry = modFixers.get(modid);
+		if(entry != null) {
+			return entry.modFixer;
+		}
+
+		throw new IllegalArgumentException("No DataFixer is registered to " + modid);
 	}
 	
 	/**
@@ -94,7 +117,6 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	}
 
 	public CompoundTag updateWithAllFixers(DataFixTypes dataFixTypes, CompoundTag compoundTag) {
-
 		CompoundTag currentTag = compoundTag;
 
 		for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
@@ -154,6 +176,9 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 		return schema;
 	}
 
+	/**
+	 * An Entry which stores DataFixers for use by implementation.
+	 */
 	final class DataFixerEntry {
 		private final DataFixer modFixer;
 		private final int runtimeDataVersion;
@@ -162,5 +187,19 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 			this.modFixer = fix;
 			this.runtimeDataVersion = runtimeDataVersion;
 		}
+	}
+
+	/**
+	 * Represents Minecraft's Built in DataFixer.
+	 */
+	public static class MCDFU {
+		private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
+		private static final int LATEST_SCHEMA_VERSION = DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion());
+
+		static {
+			LOGGER.info("[Fabric-DataFixer] Started with MC-DFU version: " + LATEST_SCHEMA_VERSION);
+		}
+
+		public static final BiFunction<Integer, Schema, Schema> MC_TYPE_REFS = (version, parent) -> Schemas.getFixer().getSchema(LATEST_SCHEMA_VERSION);
 	}
 }

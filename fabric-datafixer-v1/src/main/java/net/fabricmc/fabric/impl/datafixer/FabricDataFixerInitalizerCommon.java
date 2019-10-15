@@ -16,59 +16,20 @@
 
 package net.fabricmc.fabric.impl.datafixer;
 
-import com.mojang.datafixers.DataFixerBuilder;
-import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.util.Pair;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
-import net.fabricmc.fabric.api.datafixer.v1.FabricSchemas;
-import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.Block;
-import net.minecraft.block.Material;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.SystemUtil;
-import net.minecraft.util.registry.Registry;
-
-import java.util.List;
+import net.fabricmc.fabric.impl.datafixer.test.TestUtil;
 
 public class FabricDataFixerInitalizerCommon implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// TODO Add logic in both Common and Client Initializer to lock DataFixer registration once Client loads or Server starts. Maybe after FabricLoader Entrypoint finishes.
-
-		// Ignore test blocks for logic:
-
-		//Registry.register(Registry.BLOCK, new Identifier("test:testo"), new Block(FabricBlockSettings.of(Material.CLAY).build())); // For data version 1 // Undefined
-
-		Registry.register(Registry.BLOCK, new Identifier("test:test_block"), new Block(FabricBlockSettings.of(Material.CLAY).build())); // For data version 2
-
-		// Test DataFixer, will remove later
-
-		DataFixerBuilder builder = new DataFixerBuilder(TEST_DATA_VERSION);
-		
-		builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA); // This is here to register all the TypeReferences into the DataFixer
-
-		Schema v1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
-
-		SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename testp to test_block", "test:testo", "test:test_block", v1);
-
-		SimpleFixes.INSTANCE.addEntityTransformFix(builder, "addRandomAttribute", (name, dynamic) -> { // Doesn't actually show up in NBT data unless you mixin to entities.
-			return Pair.of(name, dynamic.set("rna", dynamic.createInt(509)));
-		}, v1);
-
-		DataFixerHelper.INSTANCE.registerFixer("fabric_test", TEST_DATA_VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
-		
-		// End of testing logic
-
-		// Once the server has started, we need to stop registering DataFixers.
+		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers (Block)Entities now.
+		TestUtil.create(); // Remove before release, Tests are here for now.
+		// Once the server has started, we need to stop registering DataFixers. This is for world save safety purposes.
 		ServerStartCallback.EVENT.register(server -> FabricDataFixerImpl.INSTANCE.lock());
 	}
 
-	public static int TEST_DATA_VERSION = 1;
+
 
 }

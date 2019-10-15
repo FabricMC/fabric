@@ -61,14 +61,12 @@ public class FabricSimpleFixes implements SimpleFixes {
 	}
 
 	@Override
-	public void addEntityRenameFix(DataFixerBuilder builder_1, String name, ImmutableMap<String, String> changes, Schema schema_1) {
+	public void addEntityRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
 		builder_1.addFixer(new EntityRenameFix(name, schema_1, false) {
-
 			@Override
 			protected String rename(String inputName) {
-				return changes.getOrDefault(inputName, inputName);
+				return Objects.equals(oldId, inputName) ? newId : inputName;
 			}
-
 		});
 
 	}
@@ -87,12 +85,14 @@ public class FabricSimpleFixes implements SimpleFixes {
 	 * Needs testing before release.
 	 */
 	@Override
-	public void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String originalBEName, String newBEName, Schema schema) {
-		builder.addFixer(new BlockEntityRenameFix(schema, false, originalBEName) {
+	public void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
+		validateFixArgs(builder, name, oldId, newId, schema);
+
+		builder.addFixer(new BlockEntityRenameFix(schema, false, oldId) {
 
 			@Override
 			protected String rename(String inputString) {
-				return Objects.equals(inputString, originalBEName) ? newBEName : inputString;
+				return Objects.equals(inputString, oldId) ? newId : inputString;
 			}
 
 		});

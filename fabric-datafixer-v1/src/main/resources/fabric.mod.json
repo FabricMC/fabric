@@ -17,7 +17,7 @@
       "net.fabricmc.fabric.impl.datafixer.FabricDataFixerInitalizerClient"
     ],
     "fabric:datafixer": [
-      "net.fabricmc.fabric.impl.datafixer.TestDataFixerRegistry"
+      "net.fabricmc.fabric.impl.datafixer.test.TestDataFixerEntrypoint"
     ]
   }
 }

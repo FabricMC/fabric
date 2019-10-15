@@ -1,6 +1,5 @@
-package net.fabricmc.fabric.impl.datafixer;
+package net.fabricmc.fabric.impl.datafixer.test;
 
-import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.templates.TypeTemplate;
@@ -11,7 +10,7 @@ import net.minecraft.datafixers.TypeReferences;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class TestDataFixerRegistry implements DataFixerEntrypoint {
+public class TestDataFixerEntrypoint implements DataFixerEntrypoint {
 	@Override
 	public Map<String, Supplier<TypeTemplate>> registerEntities(Schema schema, Map<String, Supplier<TypeTemplate>> entityMap) {
 		TypeReferenceHelper.HELPER.registerSimpleType(schema, entityMap, "TestEntity");

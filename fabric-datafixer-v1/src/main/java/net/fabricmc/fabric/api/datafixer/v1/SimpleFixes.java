@@ -74,11 +74,11 @@ public interface SimpleFixes {
 	 * 
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param originalBEName the original name of the BlockEntity
-	 * @param newBEName the new desired name of the BlockEntity being renamed.
+	 * @param oldId the original name of the BlockEntity
+	 * @param newId the new desired name of the BlockEntity being renamed.
 	 * @param schema The Schema to add this fix to.
 	 */
-	public abstract void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String originalBEName, String newBEName, Schema schema);
+	public abstract void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for changing entity names.
@@ -87,11 +87,12 @@ public interface SimpleFixes {
 	 * </p>
 	 * 
 	 * @param builder The builder to add this fix to.
-	 * @param name The name of the datafix (this has no effect on actual process)
-	 * @param changes A map of all changed values, where the key should be original entity name and value is new entity name.
+	 * @param name The name of the datafix (this has no effect on actual process).
+	 * @param oldId the original name of the Entity.
+	 * @param newId the new desired name of the Entity being renamed.
 	 * @param schema The Schema to add this fix to.
 	 */
-	public abstract void addEntityRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
+	public abstract void addEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for transforming an entity.

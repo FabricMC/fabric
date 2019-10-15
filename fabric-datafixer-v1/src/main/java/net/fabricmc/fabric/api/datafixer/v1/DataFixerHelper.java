@@ -18,8 +18,12 @@ package net.fabricmc.fabric.api.datafixer.v1;
 
 import java.util.Optional;
 
+import com.mojang.datafixers.DSL;
+import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
 
+import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.Type;
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.nbt.CompoundTag;
 
@@ -49,8 +53,9 @@ public interface DataFixerHelper {
 	 * 
 	 * @param modid The Modid which the DataFixer was registered under.
 	 * @return An optional, which may contain a DataFixer if a mod has registered a DataFixer.
+	 * @throws IllegalArgumentException if the mod with the following modid does not have a DataFixer.
 	 */
-	Optional<DataFixer> getDataFixer(String modid);
+	DataFixer getDataFixer(String modid);
 	
 	/**
 	 * Retrieves the DataVersion registered under a modid.
@@ -60,7 +65,19 @@ public interface DataFixerHelper {
 	 * @return The DataVersion stored for the mod or 0 if no DataVersion or mod is present.
 	 */
 	int getModDataVersion(CompoundTag compoundTag, String modid);
-	
+
+	/**
+	 * Gets a Type for use in creating a BlockEntity.
+	 * @param dataFixer The DataFixer to get the Type from.
+	 * @param schemaVersion The Schema version where the type is registered
+	 * @param typeReference The TypeReference of the Type.
+	 * @param identifier The identifier of the Type.
+	 * @return The Type.
+	 * @throws IllegalArgumentException If the Type does not exist, or has not been registered.
+	 * @throws IllegalArgumentException If the Schema version does not exist.
+	 */
+	Type<?> getChoiceType(DataFixer dataFixer, int schemaVersion, DSL.TypeReference typeReference, String identifier);
+
 	/**
 	 * Checks if Fabric is allowing any more DataFixers to be registered.
 	 * @return true if registration is locked.
