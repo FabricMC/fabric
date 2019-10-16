@@ -46,13 +46,9 @@ public class BiomeRenameFix extends DataFix {
 		if (!Objects.equals(type_1, this.getInputSchema().getType(TypeReferences.BIOME))) {
 			throw new IllegalStateException("Biome type is not what was expected.");
 		} else {
-			return this.fixTypeEverywhere(name, type_1, (dynamicOps_1x) -> { // Fix type_1 using NBTOps
-				return (pair_1x) -> {
-					return pair_1x.mapSecond((string_1x) -> {
-						return changes.getOrDefault(string_1x, string_1x);
-					});
-				};
-			});
+			return this.fixTypeEverywhere(name, type_1, (dynamicOps_1x) -> (pair_1x) -> pair_1x.mapSecond((string_1x) -> {
+				return changes.getOrDefault(string_1x, string_1x);
+			}));
 		}
 	}
 }

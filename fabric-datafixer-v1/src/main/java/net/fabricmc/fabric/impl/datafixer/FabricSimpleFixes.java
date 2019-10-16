@@ -93,7 +93,6 @@ public final class FabricSimpleFixes implements SimpleFixes {
 			protected String rename(String inputString) {
 				return Objects.equals(inputString, oldId) ? newId : inputString;
 			}
-
 		});
 	}
 

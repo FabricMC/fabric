@@ -25,8 +25,13 @@ public final class FabricDataFixerInitalizerCommon implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers (Block)Entities now.
+		/** -- Testing -- **/
+
 		TestObjects.create(); // Test Objects, remove before release.
 		TestUtil.create(); // Remove before release, Tests are here for now.
+
+		/** -- Testing -- **/
+
 		// Once the server has started, we need to stop registering DataFixers. This is for world save safety purposes.
 		ServerStartCallback.EVENT.register(server -> FabricDataFixerImpl.INSTANCE.lock());
 	}

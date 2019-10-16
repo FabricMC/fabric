@@ -98,6 +98,11 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 		Preconditions.checkNotNull(modid, "modid cannot be null");
 		Preconditions.checkArgument(runtimeDataVersion >= 0, "dataVersion cannot be lower than 0");
 
+		if(isLocked()) {
+			throw new UnsupportedOperationException("Failed to register DataFixer for " + modid + ", registration is locked.");
+		}
+
+		LOGGER.info("[Fabric-DataFixer] Registered DataFixer for " + modid);
 		modFixers.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
 
 		return datafixer;
@@ -125,6 +130,9 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	 * @deprecated for implementation only.
 	 */
 	public void lock() {
+		if(!locked) {
+			LOGGER.info("[Fabric-DataFixer] Locked DataFixer registration");
+		}
 		this.locked = true;
 	}
 

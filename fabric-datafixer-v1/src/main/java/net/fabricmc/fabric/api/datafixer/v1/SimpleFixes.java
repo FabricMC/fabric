@@ -33,7 +33,7 @@ import net.minecraft.nbt.Tag;
  * </p>
  */
 public interface SimpleFixes {
-	public static final SimpleFixes INSTANCE = FabricSimpleFixes.INSTANCE;
+	static final SimpleFixes INSTANCE = FabricSimpleFixes.INSTANCE;
 
 	/**
 	 * A basic DataFix for changing block names.
@@ -46,7 +46,7 @@ public interface SimpleFixes {
 	 * @param newId The name to change the block to if fixed.
 	 * @param schema The Schema to apply this fix to.
 	 */
-	public abstract void addBlockRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
+	void addBlockRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for changing item names.
@@ -56,7 +56,7 @@ public interface SimpleFixes {
 	 * @param newId The name to change the item to if fixed.
 	 * @param schema The Schema to apply this fix to.
 	 */
-	public abstract void addItemRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
+	void addItemRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for changing biome names.
@@ -66,7 +66,7 @@ public interface SimpleFixes {
 	 * @param changes A map containing all the changes in biome name, where the key is the old biome name and the value is the new biome name.
 	 * @param schema The Schema to add this fix to.
 	 */
-	public abstract void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
+	void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
 
 	/**
 	 * A basic DataFix for changing blockentity names -- Untested as of now
@@ -77,7 +77,7 @@ public interface SimpleFixes {
 	 * @param newId the new desired name of the BlockEntity being renamed.
 	 * @param schema The Schema to add this fix to.
 	 */
-	public abstract void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
+	void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for changing entity names.
@@ -91,7 +91,7 @@ public interface SimpleFixes {
 	 * @param newId the new desired name of the Entity being renamed.
 	 * @param schema The Schema to add this fix to.
 	 */
-	public abstract void addEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
+	void addEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema);
 
 	/**
 	 * A basic DataFix for transforming an entity.
@@ -101,13 +101,13 @@ public interface SimpleFixes {
 	 * @param transformation The transformation to apply to the input entity.
 	 * @param schema The Schema to add this fix to.
 	 */
-	public abstract void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema);
+	void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema);
 
 	/**
 	 * Represents an entity transformation function for a DataFix.
 	 */
 	@FunctionalInterface
-	public interface EntityTransformation {
+	interface EntityTransformation {
 
 		/**
 		 * Transforms an entity.
