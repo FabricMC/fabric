@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.minecraft.block.BlockState;
+import net.minecraft.class_4696;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.RenderLayer;
@@ -69,7 +70,7 @@ public class BlockRenderInfo {
 		seed = -1L;
 		defaultAo = modelAO && MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0;
 
-		defaultLayer = RenderLayer.method_22715(blockState);
+		defaultLayer = class_4696.method_23679(blockState);
 	}
 
 	public void release() {

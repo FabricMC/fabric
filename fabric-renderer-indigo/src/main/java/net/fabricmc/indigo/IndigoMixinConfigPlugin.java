@@ -61,6 +61,14 @@ public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	}
 
 	static boolean shouldForceCompatibility() {
+		if(true){
+			/**
+			 * TODO: remove me, and fix indigo
+			 *
+			 * This has been done to work around some funky rendering issues as of 19w42a
+			 */
+			return true;
+		}
 		loadIfNeeded();
 		return forceCompatibility;
 	}

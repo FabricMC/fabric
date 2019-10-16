@@ -20,6 +20,7 @@ import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.item.Item;
 
 /**
  * Use to associate blocks or fluids with block render layer other than default.  
@@ -44,7 +45,16 @@ public interface BlockRenderLayerMap {
 	 * @param renderLayer Render layer.  Should be one of the layers used for terrain rendering.
 	 */
 	void putBlock(Block block, RenderLayer renderLayer);
-		
+
+	/**
+	 * Map (or re-map) a item with a render layer.  Re-mapping is not recommended but if done, last one in wins.
+	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
+	 *
+	 * @param item Identifies item to be mapped.
+	 * @param renderLayer Render layer.  Should be one of the layers used for entity rendering.
+	 */
+	void putItem(Item item, RenderLayer renderLayer);
+
 	/**
 	 * Map (or re-map) a fluid state with a render layer.  Re-mapping is not recommended but if done, last one in wins.
 	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.blockrenderlayer;
 import java.util.function.BiConsumer;
 
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.item.Item;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,6 +38,17 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 			LOG.warn("Ignoring request to map block " + block.toString() + " to null BlockRenderLayer");
 		} else {
 			blockHandler.accept(block, renderLayer);
+		}
+	}
+
+	@Override
+	public void putItem(Item item, RenderLayer renderLayer) {
+		if (item == null) {
+			LOG.warn("Ignoring request to map null item to BlockRenderLayer");
+		} else if (renderLayer == null) {
+			LOG.warn("Ignoring request to map item " + item.toString() + " to null BlockRenderLayer");
+		} else {
+			itemHandler.accept(item, renderLayer);
 		}
 	}
 
@@ -63,12 +75,17 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 		LOG.warn("Unable to map Block {} to BlockRenderLayer. Mapping handler not ready.", b);
 	};
 
+	private static BiConsumer<Item, RenderLayer> itemHandler = (b, l) -> {
+		LOG.warn("Unable to map Item {} to BlockRenderLayer. Mapping handler not ready.", b);
+	};
+
 	private static BiConsumer<Fluid, RenderLayer> fluidHandler = (f, b) -> {
 		LOG.warn("Unable to map Fluid {} to BlockRenderLayer. Mapping handler not ready.", f);
 	};
 
-	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
+	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Item, RenderLayer> itemHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
 		blockHandler = blockHandlerIn;
+		itemHandler = itemHandlerIn;
 		fluidHandler = fluidHandlerIn;
 	}
 }

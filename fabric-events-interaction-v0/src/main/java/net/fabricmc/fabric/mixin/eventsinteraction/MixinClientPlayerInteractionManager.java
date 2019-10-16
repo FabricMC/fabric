@@ -117,7 +117,7 @@ public class MixinClientPlayerInteractionManager {
 		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), hand, entity, hitResult);
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
-				Vec3d hitVec = hitResult.getPos().subtract(entity.method_23317(), entity.method_23318(), entity.method_23321());
+				Vec3d hitVec = hitResult.getPos().subtract(entity.getX(), entity.getY(), entity.getZ());
 				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, hand, hitVec));
 			}
 			info.setReturnValue(result);

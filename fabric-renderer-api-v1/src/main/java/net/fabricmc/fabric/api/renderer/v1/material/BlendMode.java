@@ -30,25 +30,25 @@ public enum BlendMode {
 	/**
 	 * Fully opaque with depth test, no blending. Used for most normal blocks.
 	 */
-	SOLID(RenderLayer.method_23577()),
+	SOLID(RenderLayer.getSolid()),
 
 	/**
 	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
 	 * Texture mip-map enabled.  Used for leaves.
 	 */
-	CUTOUT_MIPPED(RenderLayer.method_23579()),
+	CUTOUT_MIPPED(RenderLayer.getCutoutMipped()),
 
 	/**
 	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
 	 * Texture mip-map disabled.  Used for iron bars, glass and other cutout sprites with hard edges.
 	 */
-	CUTOUT(RenderLayer.method_23581()),
+	CUTOUT(RenderLayer.getCutout()),
 
 	/**
 	 * Pixels are blended with the background according to alpha color values. Some performance cost,
 	 * use in moderation. Texture mip-map enabled.  Used for stained glass.
 	 */
-	TRANSLUCENT(RenderLayer.method_23583());
+	TRANSLUCENT(RenderLayer.getTranslucent());
 
 	public final RenderLayer blockRenderLayer;
 
@@ -57,13 +57,13 @@ public enum BlendMode {
 	}
 
 	public static BlendMode fromRenderLayer(RenderLayer renderLayer) {
-		if (renderLayer == RenderLayer.method_23577()) {
+		if (renderLayer == RenderLayer.getSolid()) {
 			return SOLID;
-		} else if (renderLayer == RenderLayer.method_23579()) {
+		} else if (renderLayer == RenderLayer.getCutoutMipped()) {
 			return CUTOUT_MIPPED;
-		} else if (renderLayer == RenderLayer.method_23581()) {
+		} else if (renderLayer == RenderLayer.getCutout()) {
 			return CUTOUT;
-		} else if (renderLayer == RenderLayer.method_23583()) {
+		} else if (renderLayer == RenderLayer.getTranslucent()) {
 			return TRANSLUCENT;
 		} else {
 			return DEFAULT;
