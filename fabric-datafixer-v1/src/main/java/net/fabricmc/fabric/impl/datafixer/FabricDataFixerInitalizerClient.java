@@ -22,7 +22,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 
 @Environment(EnvType.CLIENT)
-public class FabricDataFixerInitalizerClient implements ClientModInitializer {
+public final class FabricDataFixerInitalizerClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers (Block)Entities now. On client this is earlier so we place it here.

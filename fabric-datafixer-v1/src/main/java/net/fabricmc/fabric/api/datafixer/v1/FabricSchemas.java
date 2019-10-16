@@ -26,9 +26,8 @@ import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 
 /**
  * This class allows quick access to common Schema types used in the game.
- * 
  */
-public class FabricSchemas {
+public final class FabricSchemas {
 	private FabricSchemas() {}
 
 	/**

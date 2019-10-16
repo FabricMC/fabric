@@ -9,7 +9,7 @@ import com.mojang.datafixers.types.templates.TypeTemplate;
 import net.fabricmc.fabric.api.datafixer.v1.TypeReferenceHelper;
 import net.fabricmc.fabric.impl.datafixer.mixin.Schema99Accessor;
 
-public class TypeRefHelperImpl implements TypeReferenceHelper {
+public final class TypeRefHelperImpl implements TypeReferenceHelper {
 
 	public static final TypeRefHelperImpl INSTANCE = new TypeRefHelperImpl();
 	

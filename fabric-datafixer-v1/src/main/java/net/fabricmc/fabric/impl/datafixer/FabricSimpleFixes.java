@@ -36,8 +36,7 @@ import net.minecraft.datafixers.fixes.FixItemName;
 import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 import net.minecraft.nbt.Tag;
 
-public class FabricSimpleFixes implements SimpleFixes {
-
+public final class FabricSimpleFixes implements SimpleFixes {
 	public static final SimpleFixes INSTANCE = new FabricSimpleFixes();
 
 	private FabricSimpleFixes() {}

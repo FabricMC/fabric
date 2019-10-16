@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.api.datafixer.v1;
 
 import java.util.Optional;
+import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixUtils;
@@ -26,13 +28,46 @@ import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.SystemUtil;
 
 /**
  * This registers and creates DataFixers for the game, along with some other util methods.
  * <p>
  * <b>Please take extreme caution when using these tools as DataFixers directly interface with the world saves and may corrupt world saves.</b>
  * </p>
- * <p>If you need help, see the wiki article here: {@url https://fabricmc.net/wiki/datafixer_tutorial:start}</p>
+ *
+ * <p>
+ *     <h2>How to make a DataFixer</h2>
+ *     You first need to create a DataFixerBuilder using {@link com.mojang.datafixers.DataFixerBuilder#DataFixerBuilder(int)}.
+ *     <p>
+ *         <code>
+ *         DataFixerBuilder builder = new DataFixerBuilder(DATAFIXER_VERSION); // This should be the latest Schema version of your DataFixer.
+ *     	   </code>
+ *     </p>
+ *
+ *     Then you would register the first Schema, this is required or all {@link net.minecraft.datafixers.TypeReferences} will fail when you attempt to fix any data.
+ *     Use {@link com.mojang.datafixers.DataFixerBuilder#addSchema(int, BiFunction)} to register {@link FabricSchemas#FABRIC_SCHEMA}.
+ *     <p>
+ *        <code>
+ *            builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA); // Reccomended to use version 0 for the base Schema.
+ *        </code>
+ *     </p>
+ *
+ *     Next you would register another Schema (version 1, 2, 60549) anything works, just make sure you keep it in sequential order.
+ *     <p>
+ *         <code>
+ *             Schema version1 = builder.addSchema(1, Schema::new);
+ *         </code>
+ *     </p>
+ *     Next your DataFixers would be registered onto the Schemas. It is advised to use {@link SimpleFixes} as that will cover most cases. Though you can create your own fixes which can be a complex process. How to use the fixes is shown in {@link SimpleFixes}
+ *     <p>
+ *         Finally you need to build and register your DataFixer for use.
+ *         First build the DataFixer using {@link com.mojang.datafixers.DataFixerBuilder#build(Executor)}. The executor should be {@link SystemUtil#getServerWorkerExecutor()}.
+ *         Finally register the DataFixer using {@link DataFixerHelper#INSTANCE#registerFixer(String, int, DataFixer)} so that the DataFixer is invoked when the game normally fixes any data.
+ *     </p>
+ * </p>
+ *
+ * <p>If you need more help, see the wiki article here: https://fabricmc.net/wiki/datafixer_tutorial:start or visit the Fabric Discord server.</p>
  */
 public interface DataFixerHelper {
 

@@ -20,8 +20,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.impl.datafixer.test.TestUtil;
 
-public class FabricDataFixerInitalizerCommon implements ModInitializer {
-
+public final class FabricDataFixerInitalizerCommon implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers (Block)Entities now.
@@ -29,7 +28,4 @@ public class FabricDataFixerInitalizerCommon implements ModInitializer {
 		// Once the server has started, we need to stop registering DataFixers. This is for world save safety purposes.
 		ServerStartCallback.EVENT.register(server -> FabricDataFixerImpl.INSTANCE.lock());
 	}
-
-
-
 }
