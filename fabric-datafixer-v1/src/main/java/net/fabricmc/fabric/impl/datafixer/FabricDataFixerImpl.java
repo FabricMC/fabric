@@ -43,23 +43,10 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-
-/**
- * 
- * Assume I have two mods that both register DataFixers.
- * And mod A's item is being fixed but is inside mod B's BE
- * So when Mod A fixes it's own item and it doesn't know it's item exists within mod B's BE (Because mod B's type reference is non-existent to mod A)
- * So either I need to register every single entity/blockEntity underneath the root V0 Schema or find another way.
- *
- * method_5346 (registerWithItemRefs) within Schema99 would add the typeReference to the base schema. 
- *
- */
 public final class FabricDataFixerImpl implements DataFixerHelper {
-
 	private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
 	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
 	public final Schema fabricSchema;
-
 	private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
 	private boolean locked;
 

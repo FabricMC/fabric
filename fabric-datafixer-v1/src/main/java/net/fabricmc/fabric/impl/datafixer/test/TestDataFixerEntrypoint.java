@@ -19,7 +19,7 @@ public class TestDataFixerEntrypoint implements DataFixerEntrypoint {
 
 	@Override
 	public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema, Map<String, Supplier<TypeTemplate>> blockEntityMap) {
-		TypeReferenceHelper.HELPER.registerSimpleType(schema, blockEntityMap, "TestBlockEntity");
+		TypeReferenceHelper.HELPER.registerSimpleType(schema, blockEntityMap, "test:testblockentity");
 
 		TypeReferenceHelper.HELPER.registerTypeWithTemplate(schema, blockEntityMap, () -> DSL.optionalFields(
 			"Left", DSL.list(TypeReferences.ITEM_STACK.in(schema)),

@@ -11,7 +11,6 @@ import net.minecraft.nbt.Tag;
  * <b>:thonkjang:</b> For some odd reason {@link #transform(String, Dynamic)} fails to accept Tag as the generic and now we have this class
  */
 public class EntityTransformationFixWrapper extends EntitySimpleTransformFix {
-
 	private EntityTransformation transformation;
 
 	public EntityTransformationFixWrapper(String name, Schema schema, boolean fixType, EntityTransformation transformation) {

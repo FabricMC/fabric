@@ -33,7 +33,6 @@ import net.minecraft.datafixers.TypeReferences;
  * TODO: Untested
  */
 public abstract class BlockEntityRenameFix extends DataFix {
-
 	private String name;
 
 	public BlockEntityRenameFix(Schema outputSchema, boolean changesType, String name) {

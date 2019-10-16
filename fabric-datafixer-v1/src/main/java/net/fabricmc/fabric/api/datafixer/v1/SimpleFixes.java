@@ -33,7 +33,6 @@ import net.minecraft.nbt.Tag;
  * </p>
  */
 public interface SimpleFixes {
-
 	public static final SimpleFixes INSTANCE = FabricSimpleFixes.INSTANCE;
 
 	/**

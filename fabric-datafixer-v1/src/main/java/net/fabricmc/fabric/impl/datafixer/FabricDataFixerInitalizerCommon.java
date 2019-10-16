@@ -18,12 +18,14 @@ package net.fabricmc.fabric.impl.datafixer;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
+import net.fabricmc.fabric.impl.datafixer.test.TestObjects;
 import net.fabricmc.fabric.impl.datafixer.test.TestUtil;
 
 public final class FabricDataFixerInitalizerCommon implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers (Block)Entities now.
+		TestObjects.create(); // Test Objects, remove before release.
 		TestUtil.create(); // Remove before release, Tests are here for now.
 		// Once the server has started, we need to stop registering DataFixers. This is for world save safety purposes.
 		ServerStartCallback.EVENT.register(server -> FabricDataFixerImpl.INSTANCE.lock());
