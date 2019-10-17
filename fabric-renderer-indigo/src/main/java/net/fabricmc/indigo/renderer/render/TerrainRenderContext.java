@@ -46,8 +46,20 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 	private final TerrainBlockRenderInfo blockInfo = new TerrainBlockRenderInfo();
 	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
 	private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
-	private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix);
-	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix);
+
+	private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix) {
+		@Override
+		protected int overlay() {
+			return overlay;
+		}
+	};
+
+	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix) {
+		@Override
+		protected int overlay() {
+			return overlay;
+		}
+	};
 
 	public TerrainRenderContext prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilderStorage builders) {
 		blockInfo.setBlockView(blockView);
@@ -66,7 +78,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 
 	/** Called from chunk renderer hook. */
 	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
-		prepareMatrix(blockState, blockPos, blockInfo.blockView, matrixStack);
+		this.matrix = matrixStack.peek();
 		try {
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
@@ -77,7 +89,6 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 			CrashReportSection.addBlockInfo(crashReportElement_1, blockPos, blockState);
 			throw new CrashException(crashReport_1);
 		}
-		matrixStack.pop();
 		// false because we've already marked the chunk as populated - caller doesn't need to
 		return false;
 	}

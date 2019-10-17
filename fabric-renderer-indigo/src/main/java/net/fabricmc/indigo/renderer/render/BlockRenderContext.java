@@ -47,9 +47,9 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private BlockModelRenderer vanillaRenderer;
 	private VertexConsumer bufferBuilder;
 	private long seed;
-	private int overlay;
 	private boolean isCallingVanilla = false;
 	private boolean didOutput = false;
+	private MatrixStack matrixStack;
 
 	public boolean isCallingVanilla() {
 		return isCallingVanilla;
@@ -76,7 +76,8 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean checkSides, long seed, int overlay) {
 		this.vanillaRenderer = vanillaRenderer;
 		this.bufferBuilder = buffer;
-		this.prepareMatrix(state, pos, blockView, matrixStack);
+		this.matrixStack = matrixStack;
+		this.matrix = matrixStack.peek();
 
 		this.seed = seed;
 		this.overlay = overlay;
@@ -90,8 +91,6 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.vanillaRenderer = null;
 		blockInfo.release();
 		this.bufferBuilder = null;
-
-		matrixStack.pop();
 
 		return didOutput;
 	}
@@ -110,6 +109,11 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		@Override
 		protected Matrix4f matrix() {
 			return matrix;
+		}
+
+		@Override
+		protected int overlay() {
+			return overlay;
 		}
 	}
 
