@@ -25,6 +25,7 @@ abstract class AbstractRenderContext implements RenderContext {
 	private final ObjectArrayList<QuadTransform> transformStack = new ObjectArrayList<>();
 	private static final QuadTransform NO_TRANSFORM = (q) -> true;
 	protected Matrix4f matrix;
+	protected int overlay;
 
 	private final QuadTransform stackTransform = (q) -> {
 		int i = transformStack.size() - 1;

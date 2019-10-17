@@ -88,6 +88,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
 		this.matrix = matrixStack.peek();
+		this.overlay = overlay;
 
 		this.vanillaHandler = vanillaHandler;
 		model.emitItemQuads(stack, randomSupplier, this);
@@ -155,7 +156,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), lightmap));
 		}
 
-		AbstractQuadRenderer.bufferQuad(bufferBuilder, quad, matrix);
+		AbstractQuadRenderer.bufferQuad(bufferBuilder, quad, matrix, overlay);
 	}
 
 	@Override

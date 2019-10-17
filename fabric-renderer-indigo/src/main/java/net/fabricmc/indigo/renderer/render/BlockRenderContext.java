@@ -47,7 +47,6 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private BlockModelRenderer vanillaRenderer;
 	private VertexConsumer bufferBuilder;
 	private long seed;
-	private int overlay;
 	private boolean isCallingVanilla = false;
 	private boolean didOutput = false;
 	private MatrixStack matrixStack;
@@ -110,6 +109,11 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		@Override
 		protected Matrix4f matrix() {
 			return matrix;
+		}
+
+		@Override
+		protected int overlay() {
+			return overlay;
 		}
 	}
 

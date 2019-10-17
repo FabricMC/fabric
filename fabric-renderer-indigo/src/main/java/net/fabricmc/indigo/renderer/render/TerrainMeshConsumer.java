@@ -22,7 +22,7 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.minecraft.client.util.math.Matrix4f;
 
-public class TerrainMeshConsumer extends AbstractMeshConsumer {
+public abstract class TerrainMeshConsumer extends AbstractMeshConsumer {
 	final Supplier<Matrix4f> matrixSupplier;
 
 	TerrainMeshConsumer(TerrainBlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform, Supplier<Matrix4f> matrixSupplier) {

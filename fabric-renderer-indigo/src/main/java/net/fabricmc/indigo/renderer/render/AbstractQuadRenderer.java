@@ -45,6 +45,8 @@ public abstract class AbstractQuadRenderer {
 
 	protected abstract Matrix4f matrix();
 
+	protected abstract int overlay();
+
 	AbstractQuadRenderer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		this.blockInfo = blockInfo;
 		this.bufferFunc = bufferFunc;
@@ -69,15 +71,16 @@ public abstract class AbstractQuadRenderer {
 
 	/** final output step, common to all renders */
 	private void bufferQuad(MutableQuadViewImpl quad, RenderLayer renderLayer) {
-		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix());
+		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix(), overlay());
 	}
 
-	public static void bufferQuad(VertexConsumer buff, MutableQuadViewImpl quad, Matrix4f matrix) {
+	public static void bufferQuad(VertexConsumer buff, MutableQuadViewImpl quad, Matrix4f matrix, int overlay) {
 		for (int i = 0; i < 4; i++) {
 			buff.vertex(matrix, quad.x(i), quad.y(i), quad.z(i));
 			final int color = quad.spriteColor(i, 0);
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
 			buff.texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
+			buff.defaultOverlay(overlay);
 			buff.light(quad.lightmap(i));
 			buff.normal(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 			buff.next();
