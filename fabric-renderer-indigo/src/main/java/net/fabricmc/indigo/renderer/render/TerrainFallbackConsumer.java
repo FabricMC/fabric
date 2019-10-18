@@ -19,6 +19,7 @@ package net.fabricmc.indigo.renderer.render;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -31,9 +32,10 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.Direction;
 
 /**
@@ -60,16 +62,9 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 	private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
 	private final int[] editorBuffer = new int[EncodingFormat.TOTAL_STRIDE];
-	private final Supplier<Matrix4f> matrixSupplier;
 
-	TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform, Supplier<Matrix4f> matrixSupplier) {
-		super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
-		this.matrixSupplier = matrixSupplier;
-	}
-
-	@Override
-	protected Matrix4f matrix() {
-		return matrixSupplier.get();
+	TerrainFallbackConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+		super(blockInfo, bufferFunc, aoCalc, transform);
 	}
 
 	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {

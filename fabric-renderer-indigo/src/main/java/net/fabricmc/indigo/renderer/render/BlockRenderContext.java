@@ -33,6 +33,7 @@ import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.MatrixStack;
 import net.minecraft.world.BlockRenderView;
 
@@ -78,6 +79,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
 		this.matrix = matrixStack.peek();
+		this.normalMatrix = matrixStack.method_23478();
 
 		this.seed = seed;
 		this.overlay = overlay;
@@ -109,6 +111,11 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		@Override
 		protected Matrix4f matrix() {
 			return matrix;
+		}
+
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
 		}
 
 		@Override
