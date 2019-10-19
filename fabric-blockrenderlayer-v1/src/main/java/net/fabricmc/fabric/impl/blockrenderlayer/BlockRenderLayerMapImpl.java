@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.blockrenderlayer;
 
-import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -34,10 +33,10 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putBlock(Block block, RenderLayer renderLayer) {
 		if (block == null) {
-			throw new InvalidParameterException("Request to map null block to BlockRenderLayer");
+			throw new IllegalArgumentException("Request to map null block to BlockRenderLayer");
 		}
 		if (renderLayer == null) {
-			throw new InvalidParameterException("Request to map block " + block.toString() + " to null BlockRenderLayer");
+			throw new IllegalArgumentException("Request to map block " + block.toString() + " to null BlockRenderLayer");
 		}
 		blockHandler.accept(block, renderLayer);
 	}
@@ -45,10 +44,10 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putItem(Item item, RenderLayer renderLayer) {
 		if (item == null) {
-			throw new InvalidParameterException("Request to map null item to BlockRenderLayer");
+			throw new IllegalArgumentException("Request to map null item to BlockRenderLayer");
 		}
 		if (renderLayer == null) {
-			throw new InvalidParameterException("Request to map item " + item.toString() + " to null BlockRenderLayer");
+			throw new IllegalArgumentException("Request to map item " + item.toString() + " to null BlockRenderLayer");
 		}
 		itemHandler.accept(item, renderLayer);
 	}
@@ -56,10 +55,10 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putFluid(Fluid fluid, RenderLayer renderLayer) {
 		if (fluid == null) {
-			throw new InvalidParameterException("Request to map null fluid to BlockRenderLayer");
+			throw new IllegalArgumentException("Request to map null fluid to BlockRenderLayer");
 		}
 		if (renderLayer == null) {
-			throw new InvalidParameterException("Request to map fluid " + fluid.toString() + " to null BlockRenderLayer");
+			throw new IllegalArgumentException("Request to map fluid " + fluid.toString() + " to null BlockRenderLayer");
 		}
 		fluidHandler.accept(fluid, renderLayer);
 	}
