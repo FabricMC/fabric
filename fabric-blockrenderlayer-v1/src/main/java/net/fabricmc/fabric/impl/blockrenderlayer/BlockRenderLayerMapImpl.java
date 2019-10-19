@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.impl.blockrenderlayer;
 
+import java.security.InvalidParameterException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.Item;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.minecraft.block.Block;
@@ -33,9 +34,9 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putBlock(Block block, RenderLayer renderLayer) {
 		if (block == null) {
-			LOG.warn("Ignoring request to map null block to BlockRenderLayer");
+			throw new InvalidParameterException("Request to map null block to BlockRenderLayer");
 		} else if (renderLayer == null) {
-			LOG.warn("Ignoring request to map block " + block.toString() + " to null BlockRenderLayer");
+			throw new InvalidParameterException("Request to map block " + block.toString() + " to null BlockRenderLayer");
 		} else {
 			blockHandler.accept(block, renderLayer);
 		}
@@ -44,9 +45,9 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putItem(Item item, RenderLayer renderLayer) {
 		if (item == null) {
-			LOG.warn("Ignoring request to map null item to BlockRenderLayer");
+			throw new InvalidParameterException("Request to map null item to BlockRenderLayer");
 		} else if (renderLayer == null) {
-			LOG.warn("Ignoring request to map item " + item.toString() + " to null BlockRenderLayer");
+			throw new InvalidParameterException("Request to map item " + item.toString() + " to null BlockRenderLayer");
 		} else {
 			itemHandler.accept(item, renderLayer);
 		}
@@ -55,35 +56,32 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	@Override
 	public void putFluid(Fluid fluid, RenderLayer renderLayer) {
 		if (fluid == null) {
-			LOG.warn("Ignoring request to map null fluid to BlockRenderLayer");
+			throw new InvalidParameterException("Request to map null fluid to BlockRenderLayer");
 		} else if (renderLayer == null) {
-			LOG.warn("Ignoring request to map fluid " + fluid.toString() + " to null BlockRenderLayer");	
+			throw new InvalidParameterException("Request to map fluid " + fluid.toString() + " to null BlockRenderLayer");
 		} else {
 			fluidHandler.accept(fluid, renderLayer);
 		}
 	}
 	
 	public static final BlockRenderLayerMap INSTANCE = new BlockRenderLayerMapImpl();
-	
-	private static final Logger LOG = LogManager.getLogger();
-	
-	// These should never be used before our Mixin populates them because a non-null BRL instance is 
-	// a required parameter of our methods. They are given dummy consumers that log
-	// warnings in case something goes wrong.
-	
-	private static BiConsumer<Block, RenderLayer> blockHandler = (b, l) -> {
-		LOG.warn("Unable to map Block {} to BlockRenderLayer. Mapping handler not ready.", b);
-	};
 
-	private static BiConsumer<Item, RenderLayer> itemHandler = (b, l) -> {
-		LOG.warn("Unable to map Item {} to BlockRenderLayer. Mapping handler not ready.", b);
-	};
+	private static Map<Block, RenderLayer> blockRenderLayerMap = new HashMap<>();
+	private static Map<Item, RenderLayer> itemRenderLayerMap = new HashMap<>();
+	private static Map<Fluid, RenderLayer> fluidRenderLayerMap = new HashMap<>();
 
-	private static BiConsumer<Fluid, RenderLayer> fluidHandler = (f, b) -> {
-		LOG.warn("Unable to map Fluid {} to BlockRenderLayer. Mapping handler not ready.", f);
-	};
+	//This consumers initially add to the maps above, and then are later set (when initialize is called) to insert straight into the target map.
+	private static BiConsumer<Block, RenderLayer> blockHandler = (b, l) -> blockRenderLayerMap.put(b, l);
+	private static BiConsumer<Item, RenderLayer> itemHandler = (i, l) -> itemRenderLayerMap.put(i, l);
+	private static BiConsumer<Fluid, RenderLayer> fluidHandler = (f, b) -> fluidRenderLayerMap.put(f, b);
 
 	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Item, RenderLayer> itemHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
+		//Add all the pre existing render layers
+		blockRenderLayerMap.forEach(blockHandlerIn);
+		itemRenderLayerMap.forEach(itemHandlerIn);
+		fluidRenderLayerMap.forEach(fluidHandlerIn);
+
+		//Set the handlers to directly accept later additions
 		blockHandler = blockHandlerIn;
 		itemHandler = itemHandlerIn;
 		fluidHandler = fluidHandlerIn;
