@@ -29,7 +29,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix3f;
 
 /**
  * Base quad-rendering class for fallback and mesh consumers.
@@ -42,8 +44,11 @@ public abstract class AbstractQuadRenderer {
 	protected final BlockRenderInfo blockInfo;
 	protected final AoCalculator aoCalc;
 	protected final QuadTransform transform;
+	protected final Vector3f normalVec = new Vector3f();
 
 	protected abstract Matrix4f matrix();
+
+	protected abstract Matrix3f normalMatrix();
 
 	protected abstract int overlay();
 
@@ -71,10 +76,20 @@ public abstract class AbstractQuadRenderer {
 
 	/** final output step, common to all renders */
 	private void bufferQuad(MutableQuadViewImpl quad, RenderLayer renderLayer) {
-		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix(), overlay());
+		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix(), overlay(), normalMatrix(), normalVec);
 	}
 
-	public static void bufferQuad(VertexConsumer buff, MutableQuadViewImpl quad, Matrix4f matrix, int overlay) {
+	public static void bufferQuad(VertexConsumer buff, MutableQuadViewImpl quad, Matrix4f matrix, int overlay, Matrix3f normalMatrix, Vector3f normalVec) {
+		final boolean useNormals = quad.hasVertexNormals();
+
+		if (useNormals) {
+			quad.populateMissingNormals();
+		} else {
+			final Vector3f faceNormal = quad.faceNormal();
+			normalVec.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
+			normalVec.multiply(normalMatrix);
+		}
+
 		for (int i = 0; i < 4; i++) {
 			buff.vertex(matrix, quad.x(i), quad.y(i), quad.z(i));
 			final int color = quad.spriteColor(i, 0);
@@ -82,7 +97,13 @@ public abstract class AbstractQuadRenderer {
 			buff.texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
 			buff.defaultOverlay(overlay);
 			buff.light(quad.lightmap(i));
-			buff.normal(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
+
+			if (useNormals) {
+				normalVec.set(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
+				normalVec.multiply(normalMatrix);
+			}
+
+			buff.normal(normalVec.getX(), normalVec.getY(), normalVec.getZ());
 			buff.next();
 		}
 	}

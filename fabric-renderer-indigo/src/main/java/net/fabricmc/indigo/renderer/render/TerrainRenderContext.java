@@ -34,6 +34,7 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.MatrixStack;
 
 /**
@@ -47,17 +48,37 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
 	private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
 
-	private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix) {
+	private final AbstractMeshConsumer meshConsumer = new AbstractMeshConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
 		@Override
 		protected int overlay() {
 			return overlay;
 		}
+
+		@Override
+		protected Matrix4f matrix() {
+			return matrix;
+		}
+
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
+		}
 	};
 
-	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform, this::matrix) {
+	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
 		@Override
 		protected int overlay() {
 			return overlay;
+		}
+
+		@Override
+		protected Matrix4f matrix() {
+			return matrix;
+		}
+
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
 		}
 	};
 
@@ -72,13 +93,11 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 		blockInfo.release();
 	}
 
-	protected Matrix4f matrix() {
-		return matrix;
-	}
-
 	/** Called from chunk renderer hook. */
 	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
 		this.matrix = matrixStack.peek();
+		this.normalMatrix = matrixStack.method_23478();
+
 		try {
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());

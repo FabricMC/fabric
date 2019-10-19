@@ -38,6 +38,7 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MatrixStack;
@@ -67,6 +68,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private int overlay;
 	private ItemStack itemStack;
 	private VanillaQuadHandler vanillaHandler;
+	protected final Vector3f normalVec = new Vector3f();
 
 	private final Supplier<Random> randomSupplier = () -> {
 		Random result = random;
@@ -88,6 +90,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
 		this.matrix = matrixStack.peek();
+		this.normalMatrix = matrixStack.method_23478();
 		this.overlay = overlay;
 
 		this.vanillaHandler = vanillaHandler;
@@ -147,8 +150,6 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		final int quadColor = mat.disableColorIndex(0) ? -1 : indexColor();
 		final int lightmap = mat.emissive(0) ? AbstractQuadRenderer.FULL_BRIGHTNESS : this.lightmap;
 
-		quad.populateMissingNormals();
-
 		for (int i = 0; i < 4; i++) {
 			int c = quad.spriteColor(i, 0);
 			c = ColorHelper.multiplyColor(quadColor, c);
@@ -156,7 +157,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), lightmap));
 		}
 
-		AbstractQuadRenderer.bufferQuad(bufferBuilder, quad, matrix, overlay);
+		AbstractQuadRenderer.bufferQuad(bufferBuilder, quad, matrix, overlay, normalMatrix, normalVec);
 	}
 
 	@Override
