@@ -29,23 +29,42 @@ import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixers.TypeReferences;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 
 public class TestUtil {
-	public static int TEST_DATA_VERSION = 1;
 	public static final Block TEST_B = Registry.register(Registry.BLOCK, new Identifier("test", "testblockentity"), new TestBEBlock(FabricBlockSettings.of(Material.EARTH).build()));
 	private static final String MODID = "fabric:datafixer";
 	private static final int MOD_DATAFIXER_VERSION = 1;
-	public static final BlockEntityType<TestBE> TEST = Registry.register(Registry.BLOCK_ENTITY,  new Identifier("test:testblockentity"), BlockEntityType.Builder.create(TestBE::new, TEST_B).build(getChoiceType(DataFixerHelper.INSTANCE.getDataFixer(MODID), MOD_DATAFIXER_VERSION, TypeReferences.BLOCK_ENTITY, "test:testblockentity")));
+	public static final BlockEntityType<TestBE> TEST = Registry.register(Registry.BLOCK_ENTITY,  new Identifier("test:testblockentity"),
+		BlockEntityType.Builder.create(
+			TestBE::new,
+			TEST_B)
+		.build(getChoiceType(DataFixerHelper.INSTANCE.getDataFixer(MODID), MOD_DATAFIXER_VERSION, TypeReferences.BLOCK_ENTITY, "test:testblockentity")));
 
 	public static void create() {
 	}
 
 	public static class TestBE extends BlockEntity {
+		private int beef = 0;
+
 		public TestBE() {
 			super(TEST);
+		}
+
+		@Override
+		public void fromTag(CompoundTag tag) {
+			super.fromTag(tag);
+			this.beef = tag.getInt("ground_beef");
+		}
+
+		@Override
+		public CompoundTag toTag(CompoundTag tag) {
+			CompoundTag tempTag = super.toTag(tag);
+			tempTag.putInt("ground_beef", beef);
+			return tempTag;
 		}
 	}
 

@@ -67,6 +67,14 @@ public interface TypeReferenceHelper {
 	void registerTypeWithItems(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name);
 
 	/**
+	 * Registers a type which can contain HandItems and ArmorSlots, such as a zombie, a skeleton and most living entities.
+	 * @param schema The Schema to register this type to.
+	 * @param typeMap The Map of all other TypeTemplates within the Schema.
+	 * @param name The name of the type being registered.
+	 */
+	void registerTypeWithArmorAndToolSlots(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name);
+
+	/**
 	 * Registers a type which uses a custom {@link TypeTemplate}.
 	 * @param schema The Schema to register this type to.
 	 * @param typeMap The Map of all other TypeTemplates within the Schema.

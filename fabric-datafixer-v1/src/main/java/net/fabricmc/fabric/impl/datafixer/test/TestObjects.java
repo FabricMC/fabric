@@ -23,15 +23,33 @@ import net.fabricmc.fabric.api.datafixer.v1.FabricSchemas;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
 import net.minecraft.util.SystemUtil;
 
+import java.util.Optional;
+
 public class TestObjects {
 
-	private static final int VERSION = 1;
+	private static final int VERSION = 2;
 
 	public static void create() {
 		DataFixerBuilder builder = new DataFixerBuilder(VERSION);
 		builder.addSchema(0, FabricSchemas.FABRIC_SCHEMA);
 		Schema schema_1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
 		SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename test", "test:oldblock", "test:newblock", schema_1);
+
+
+		Schema schema_2 = builder.addSchema(2, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
+
+		SimpleFixes.INSTANCE.addBlockEntityTransformFix(builder, "Ground beef", "test:testblockentity", (dynamic) -> {
+
+			Optional<Number> optional = dynamic.get("ground_beef").asNumber();
+
+			if(optional.isPresent()) {
+				if(optional.get().intValue() == 0) {
+					return dynamic.set("ground_beef", dynamic.createInt(509));
+				}
+			}
+
+			return dynamic;
+		}, schema_2);
 
 		DataFixerHelper.INSTANCE.registerFixer("fabric:datafixer", VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
 	}

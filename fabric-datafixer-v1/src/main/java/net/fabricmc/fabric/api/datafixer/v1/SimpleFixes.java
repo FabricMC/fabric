@@ -103,6 +103,8 @@ public interface SimpleFixes {
 	 */
 	void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema);
 
+	void addBlockEntityTransformFix(DataFixerBuilder builder, String name, String blockEntityName, BlockEntityTransformation transformation, Schema schema);
+
 	/**
 	 * Represents an entity transformation function for a DataFix.
 	 */
@@ -117,6 +119,20 @@ public interface SimpleFixes {
 		 * @return A Pair which contains the entity's new name and the dynamic representing the entity.
 		 */
 		Pair<String, Dynamic<Tag>> transform(String entityName, Dynamic<Tag> dynamic);
+	}
+
+	/**
+	 * Transforms an entity.
+	 */
+	@FunctionalInterface
+	interface BlockEntityTransformation {
+
+		/**
+		 * Transforms a BlockEntity.
+		 * @param dynamic The Dynamic object representing the BlockEntity.
+		 * @return A new dynamic to represent the BlockEntity.
+		 */
+		Dynamic<Tag> transform(Dynamic<Tag> dynamic);
 	}
 
 }

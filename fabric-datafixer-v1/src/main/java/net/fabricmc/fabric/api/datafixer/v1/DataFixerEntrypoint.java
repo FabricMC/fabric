@@ -30,7 +30,7 @@ public interface DataFixerEntrypoint {
 	 * Registers custom entities for use in DataFixers.
 	 * @param schema
 	 * @param entityMap
-	 * @return
+	 * @return The inputted entityMap.
 	 */
 	Map<String, Supplier<TypeTemplate>> registerEntities(final Schema schema, final Map<String, Supplier<TypeTemplate>> entityMap);
 
@@ -38,7 +38,7 @@ public interface DataFixerEntrypoint {
 	 * Registers custom block entities for use in DataFixers.
 	 * @param schema The schema to register the Block Entity in.
 	 * @param blockEntityMap The map of block entity type templates.
-	 * @return
+	 * @return The inputted blockEntityMap.
 	 */
 	Map<String, Supplier<TypeTemplate>> registerBlockEntities(final Schema schema, final Map<String, Supplier<TypeTemplate>> blockEntityMap);
 

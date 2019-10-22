@@ -16,25 +16,22 @@
 
 package net.fabricmc.fabric.impl.datafixer;
 
-import java.util.Objects;
-
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixerBuilder;
-import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.util.Pair;
-
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
 import net.fabricmc.fabric.impl.datafixer.fixes.BiomeRenameFix;
 import net.fabricmc.fabric.impl.datafixer.fixes.BlockEntityRenameFix;
+import net.fabricmc.fabric.impl.datafixer.fixes.BlockEntityTransformationFix;
 import net.fabricmc.fabric.impl.datafixer.fixes.EntityTransformationFixWrapper;
 import net.minecraft.datafixers.fixes.BlockNameFix;
 import net.minecraft.datafixers.fixes.EntityRenameFix;
-import net.minecraft.datafixers.fixes.EntitySimpleTransformFix;
 import net.minecraft.datafixers.fixes.FixItemName;
 import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
-import net.minecraft.nbt.Tag;
+
+import java.util.Objects;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public final class FabricSimpleFixes implements SimpleFixes {
 	public static final SimpleFixes INSTANCE = new FabricSimpleFixes();
@@ -45,18 +42,14 @@ public final class FabricSimpleFixes implements SimpleFixes {
 	public void addBlockRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
 		validateFixArgs(builder, name, oldId, newId, schema);
 
-		builder.addFixer(BlockNameFix.create(schema, name, (inputBlockName) -> {
-			return Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName;
-		}));
+		builder.addFixer(BlockNameFix.create(schema, name, (inputBlockName) -> Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName));
 	}
 
 	@Override
 	public void addItemRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
 		validateFixArgs(builder, name, oldId, newId, schema);
 
-		builder.addFixer(FixItemName.create(schema, name, (inputItemName) -> {
-			return Objects.equals(oldId, inputItemName) ? newId : inputItemName;
-		}));
+		builder.addFixer(FixItemName.create(schema, name, (inputItemName) -> Objects.equals(oldId, inputItemName) ? newId : inputItemName));
 	}
 
 	@Override
@@ -72,12 +65,30 @@ public final class FabricSimpleFixes implements SimpleFixes {
 
 	@Override
 	public void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema) {
+		checkNotNull(changes, "changes cannot be null");
+		checkNotNull(name, "name cannot be null");
+		checkNotNull(schema, "Schema cannot be null");
+		checkNotNull(builder, "DataFixerBuilder cannot be null");
 		builder.addFixer(new BiomeRenameFix(schema, false, name, changes));
 	}
 
 	@Override
-	public void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema_1) {
-		builder.addFixer(new EntityTransformationFixWrapper(name, schema_1, false, transformation));
+	public void addEntityTransformFix(DataFixerBuilder builder, String name, EntityTransformation transformation, Schema schema) {
+		checkNotNull(transformation, "BlockEntityTransformation cannot be null");
+		checkNotNull(name, "name cannot be null");
+		checkNotNull(schema, "Schema cannot be null");
+		checkNotNull(builder, "DataFixerBuilder cannot be null");
+		builder.addFixer(new EntityTransformationFixWrapper(name, schema, false, transformation));
+	}
+
+	@Override
+	public void addBlockEntityTransformFix(DataFixerBuilder builder, String name, String blockEntityName, BlockEntityTransformation transformation, Schema schema) {
+		checkNotNull(transformation, "BlockEntityTransformation cannot be null");
+		checkNotNull(name, "name cannot be null");
+		checkNotNull(blockEntityName, "BlockEntityName cannot be null");
+		checkNotNull(schema, "Schema cannot be null");
+		checkNotNull(builder, "DataFixerBuilder cannot be null");
+		builder.addFixer(new BlockEntityTransformationFix(schema, name, blockEntityName, transformation));
 	}
 
 	/**
@@ -97,10 +108,10 @@ public final class FabricSimpleFixes implements SimpleFixes {
 	}
 
 	private static void validateFixArgs(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
-		Preconditions.checkNotNull(schema, "Schema cannot be null");
-		Preconditions.checkNotNull(name, "Name cannot be null");
-		Preconditions.checkNotNull(oldId, "Old id cannot be null");
-		Preconditions.checkNotNull(newId, "New id cannot be null");
-		Preconditions.checkNotNull(builder, "DataFixerBuilder cannot be null");
+		checkNotNull(schema, "Schema cannot be null");
+		checkNotNull(name, "Name cannot be null");
+		checkNotNull(oldId, "Old id cannot be null");
+		checkNotNull(newId, "New id cannot be null");
+		checkNotNull(builder, "DataFixerBuilder cannot be null");
 	}
 }
