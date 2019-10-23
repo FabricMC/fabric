@@ -27,7 +27,7 @@ import java.util.Optional;
 
 public class TestObjects {
 
-	private static final int VERSION = 2;
+	public static final int VERSION = 3;
 
 	public static void create() {
 		DataFixerBuilder builder = new DataFixerBuilder(VERSION);
@@ -35,9 +35,7 @@ public class TestObjects {
 		Schema schema_1 = builder.addSchema(1, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
 		SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename test", "test:oldblock", "test:newblock", schema_1);
 
-
 		Schema schema_2 = builder.addSchema(2, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
-
 		SimpleFixes.INSTANCE.addBlockEntityTransformFix(builder, "Ground beef", "test:testblockentity", (dynamic) -> {
 
 			Optional<Number> optional = dynamic.get("ground_beef").asNumber();
@@ -50,6 +48,9 @@ public class TestObjects {
 
 			return dynamic;
 		}, schema_2);
+
+		Schema schema_3 = builder.addSchema(3, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
+		SimpleFixes.INSTANCE.addBlockEntityRenameFix(builder, "Rename test BE", "test:testblockentity", "test:testblockentity2", schema_3); // This works
 
 		DataFixerHelper.INSTANCE.registerFixer("fabric:datafixer", VERSION, builder.build(SystemUtil.getServerWorkerExecutor()));
 	}

@@ -22,7 +22,7 @@ import net.minecraft.world.PersistentState;
 
 @Mixin(PersistentState.class)
 public class MixinPersistentState {
-	// Add our mod's data versions to method_17919
+	// Add our mod's data versions to method_17919 (INJECT @ after putInt)
 
 	// method_17919 makes sense as writeStateToFile(File)
 }

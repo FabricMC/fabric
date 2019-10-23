@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.datafixer.fixes;
 
 import java.util.Objects;
 
+import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.TypeRewriteRule;
@@ -26,46 +27,49 @@ import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TaggedChoice.TaggedChoiceType;
 import com.mojang.datafixers.util.Pair;
 
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.datafixers.TypeReferences;
 
 /**
- * @deprecated Untested
- * TODO: Untested
+ * This works, although a few issues still exist. First the registry complains the original BlockEntity does not exist, this has no effect as block entity is still fixed.
+ * It works but very hacky looking, unless mojang adds their own method into game in the future, then it will be if it ain't broke don't fix it.
  */
-public abstract class BlockEntityRenameFix extends DataFix {
-	private String name;
+public class BlockEntityRenameFix extends DataFix {
+	private final String oldName;
+	private final String newName;
+	private final String fixName;
 
-	public BlockEntityRenameFix(Schema outputSchema, boolean changesType, String name) {
-		super(outputSchema, changesType);
-		this.name = name;
+	public BlockEntityRenameFix(Schema schema, String fixName, String oldName, String newName) {
+		super(schema, false);
+		this.oldName = oldName;
+		this.newName = newName;
+		this.fixName = fixName;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected TypeRewriteRule makeRule() {
-		TaggedChoiceType<String> inputTaggedChoiceType = (TaggedChoiceType<String>) this.getInputSchema().findChoiceType(TypeReferences.BLOCK_ENTITY);
-		TaggedChoiceType<String> outputTaggedChoiceType = (TaggedChoiceType<String>) this.getOutputSchema().findChoiceType(TypeReferences.BLOCK_ENTITY);
-		Type<Pair<String, String>> type_1 = DSL.named(TypeReferences.BLOCK_ENTITY.typeName(), DSL.namespacedString());
+	public TypeRewriteRule makeRule() {
+		TaggedChoiceType<String> originalTypeChoice = (TaggedChoiceType<String>) this.getInputSchema().findChoiceType(TypeReferences.BLOCK_ENTITY);
+		TaggedChoiceType<String> newTypeChoice = (TaggedChoiceType<String>) this.getOutputSchema().findChoiceType(TypeReferences.BLOCK_ENTITY);
+		Type<Pair<String, String>> blockEntityType = DSL.named(TypeReferences.ENTITY_NAME.typeName(), DSL.namespacedString()); // Why on earth does this work with ENTITY_NAME.
 
-		if (!Objects.equals(this.getOutputSchema().getType(TypeReferences.BLOCK_ENTITY), type_1)) {
+		if (!Objects.equals(this.getOutputSchema().getType(TypeReferences.ENTITY_NAME), blockEntityType)) { // I mean seriously I didn't change that field but it works. Then again ENTITY TypeReference does not refer to ENTITY_NAME in any instances I've seen in registerTypes.
 			throw new IllegalStateException("BlockEntity name type is not what was expected.");
 		} else {
-			return TypeRewriteRule.seq(this.fixTypeEverywhere(this.name, inputTaggedChoiceType, outputTaggedChoiceType, (dynamicOps) -> (pair) -> pair.mapFirst((originalValue) -> {
-				String newValue = this.rename(originalValue);
-				Type<?> originalType = inputTaggedChoiceType.types().get(originalValue);
-				Type<?> newType = outputTaggedChoiceType.types().get(newValue);
-
+			return TypeRewriteRule.seq(this.fixTypeEverywhere(this.fixName, originalTypeChoice, newTypeChoice, (ops) -> (pair) -> pair.mapFirst((originalName) -> {
+				String possiblyNamedString = this.rename(originalName);
+				Type<?> originalType = originalTypeChoice.types().get(originalName);
+				Type<?> newType = newTypeChoice.types().get(possiblyNamedString);
 				if (!newType.equals(originalType, true, true)) {
 					throw new IllegalStateException(String.format("Dynamic type check failed: %s not equal to %s", newType, originalType));
 				} else {
-					return newValue;
+					return possiblyNamedString;
 				}
-			})), this.fixTypeEverywhere(this.name + " for blockentity name", type_1, (dynamicOps) -> (pair) -> {
-				return pair.mapSecond(this::rename);
-			}));
-
+			})), this.fixTypeEverywhere(this.fixName, blockEntityType, (ops) -> (pair) -> pair.mapSecond(this::rename)));
 		}
 	}
 
-	protected abstract String rename(String inputString);
+	private String rename(String originalValue) {
+		return Objects.equals(originalValue, oldName) ? newName : originalValue;
+	}
 }

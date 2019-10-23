@@ -53,8 +53,9 @@ public final class FabricSimpleFixes implements SimpleFixes {
 	}
 
 	@Override
-	public void addEntityRenameFix(DataFixerBuilder builder_1, String name, String oldId, String newId, Schema schema_1) {
-		builder_1.addFixer(new EntityRenameFix(name, schema_1, false) {
+	public void addEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
+		validateFixArgs(builder, name, oldId, newId, schema);
+		builder.addFixer(new EntityRenameFix(name, schema, false) {
 			@Override
 			protected String rename(String inputName) {
 				return Objects.equals(oldId, inputName) ? newId : inputName;
@@ -98,13 +99,7 @@ public final class FabricSimpleFixes implements SimpleFixes {
 	public void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
 		validateFixArgs(builder, name, oldId, newId, schema);
 
-		builder.addFixer(new BlockEntityRenameFix(schema, false, oldId) {
-
-			@Override
-			protected String rename(String inputString) {
-				return Objects.equals(inputString, oldId) ? newId : inputString;
-			}
-		});
+		builder.addFixer(new BlockEntityRenameFix(schema, name, oldId, newId));
 	}
 
 	private static void validateFixArgs(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {

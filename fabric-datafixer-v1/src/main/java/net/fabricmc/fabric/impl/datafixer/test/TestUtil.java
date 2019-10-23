@@ -35,14 +35,14 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 
 public class TestUtil {
-	public static final Block TEST_B = Registry.register(Registry.BLOCK, new Identifier("test", "testblockentity"), new TestBEBlock(FabricBlockSettings.of(Material.EARTH).build()));
+	public static final Block TEST_B = Registry.register(Registry.BLOCK, new Identifier(/*"spookytime:tiny_pumpkin"*/"test:testblockentity"), new TestBEBlock(FabricBlockSettings.of(Material.EARTH).build()));
 	private static final String MODID = "fabric:datafixer";
 	private static final int MOD_DATAFIXER_VERSION = 1;
-	public static final BlockEntityType<TestBE> TEST = Registry.register(Registry.BLOCK_ENTITY,  new Identifier("test:testblockentity"),
+	public static final BlockEntityType<TestBE> TEST = Registry.register(Registry.BLOCK_ENTITY, new Identifier("test:testblockentity2"), // TODO changed
 		BlockEntityType.Builder.create(
 			TestBE::new,
 			TEST_B)
-		.build(getChoiceType(DataFixerHelper.INSTANCE.getDataFixer(MODID), MOD_DATAFIXER_VERSION, TypeReferences.BLOCK_ENTITY, "test:testblockentity")));
+		.build(getChoiceType(DataFixerHelper.INSTANCE.getDataFixer(MODID), TestObjects.VERSION, TypeReferences.BLOCK_ENTITY, "test:testblockentity2"/*"test:testblockentity"*/))); // TODO changed
 
 	public static void create() {
 	}

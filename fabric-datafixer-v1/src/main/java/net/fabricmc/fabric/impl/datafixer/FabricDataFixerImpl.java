@@ -44,7 +44,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public final class FabricDataFixerImpl implements DataFixerHelper {
-	private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
+	public static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
 	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
 	public final Schema fabricSchema;
 	private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
@@ -187,7 +187,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	/**
 	 * Represents Minecraft's Built in DataFixer.
 	 */
-	public static class MCDFU {
+	public static final class MCDFU {
 		private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
 		private static final int LATEST_SCHEMA_VERSION = DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion());
 
