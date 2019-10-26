@@ -17,17 +17,19 @@
 package net.fabricmc.fabric.mixin.idremap;
 
 import com.mojang.datafixers.DataFixer;
-import net.fabricmc.fabric.impl.dimension.DimensionIdsFixer;
-import net.fabricmc.fabric.impl.dimension.DimensionIdsHolder;
-import net.fabricmc.fabric.impl.dimension.DimensionRemapException;
-import net.fabricmc.fabric.impl.registry.RemapException;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.LevelProperties;
+
+import net.fabricmc.fabric.impl.dimension.DimensionIdsFixer;
+import net.fabricmc.fabric.impl.dimension.DimensionIdsHolder;
+import net.fabricmc.fabric.impl.dimension.DimensionRemapException;
+import net.fabricmc.fabric.impl.registry.RemapException;
 
 @Mixin(LevelProperties.class)
 public abstract class MixinLevelProperties implements DimensionIdsHolder {

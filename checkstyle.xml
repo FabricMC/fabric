@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Puppy Crawl//DTD Check Configuration 1.2//EN" "http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+<module name="Checker">
+	<property name="charset" value="UTF-8"/>
+	<property name="fileExtensions" value="java"/>
+
+	<module name="NewlineAtEndOfFile"/>
+
+	<!-- disallow trailing whitespace -->
+	<module name="RegexpSingleline">
+		<property name="format" value="\s+$"/>
+		<property name="message" value="trailing whitespace"/>
+	</module>
+
+	<!-- note: RegexpMultiline shows nicer messages than Regexp, but has to be outside TreeWalker -->
+	<!-- disallow multiple consecutive blank lines -->
+	<module name="RegexpMultiline">
+		<property name="format" value="\n[\r\t ]*\n[\r\t ]*\n"/>
+		<property name="message" value="adjacent blank lines"/>
+	</module>
+
+	<!-- disallow blank after { -->
+	<module name="RegexpMultiline">
+		<property name="format" value="\{[\r\t ]*\n[\r\t ]*\n"/>
+		<property name="message" value="blank line after '{'"/>
+	</module>
+
+	<!-- disallow blank before } -->
+	<module name="RegexpMultiline">
+		<property name="format" value="\n[\r\t ]*\n[\r\t ]*\}"/>
+		<property name="message" value="blank line before '}'"/>
+	</module>
+
+	<!-- require blank before { in the same indentation level -->
+	<module name="RegexpMultiline">
+		<!-- the regex works as follows:
+		It matches (=fails) for \n<indentation><something>\n<same indentation><control statement>[...]{\n
+		while <something> is a single line comment, it'll look for a blank line one line earlier
+		if <something> is a space, indicating a formatting error or ' */', it'll ignore the instance
+		if <something> is a tab, indicating a continued line, it'll ignore the instance
+		<control statement> is 'if', 'do', 'while', 'for' or nothing (instance initializer block)
+
+		- first \n: with positive lookbehind (?<=\n) to move the error marker to a more reasonable place
+		- capture tabs for <indentation>, later referenced via \1
+		- remaining preceding line as a non-comment (doesn't start with '/', '//', ' ' or '\t') or multiple lines where all but the first are a single line comment with the same indentation
+		- new line
+		- <indentation> as captured earlier
+		- <control statement> as specified above
+		- { before the next new line -->
+		<property name="format" value="(?&lt;=\n)([\t]+)(?:[^/\n \t][^\n]*|/[^/\n][^\n]*|[^/\n][^\n]*(\n\1//[^\n]*)+)\n\1(|(if|do|while|for)[^\n]+)\{[\r\t ]*\n"/>
+		<property name="message" value="missing blank line before block at same indentation level"/>
+	</module>
+
+	<!-- require blank after } in the same indentation level -->
+	<module name="RegexpMultiline">
+		<!-- \n<indentation>}\n<same indentation><whatever unless newline, '}' or starting with cas(e) or def(ault)> -->
+		<property name="format" value="(?&lt;=\n)([\t]+)\}\n\1(?:[^\r\n\}cd]|c[^\r\na]|ca[^\r\ns]|d[^\r\ne]|de[^\r\nf])"/>
+		<property name="message" value="missing blank line after block at same indentation level"/>
+	</module>
+
+	<module name="TreeWalker">
+		<!-- Ensure all imports are ship shape -->
+		<module name="AvoidStarImport"/>
+		<module name="IllegalImport"/>
+		<module name="RedundantImport"/>
+		<module name="UnusedImports"/>
+
+		<module name="ImportOrder">
+			<property name="groups" value="java,javax,*,net.minecraft,net.fabricmc"/>
+			<property name="ordered" value="false"/><!-- the plugin orders alphabetically without considering separators.. -->
+			<property name="separated" value="true"/>
+			<property name="option" value="top"/>
+			<property name="sortStaticImportsAlphabetically" value="true"/>
+		</module>
+
+		<!-- Ensures braces are at the end of a line -->
+		<module name="LeftCurly"/>
+		<module name="RightCurly"/>
+
+		<!-- single line statements on one line, -->
+		<module name="NeedBraces">
+			<property name="tokens" value="LITERAL_IF,LITERAL_FOR,LITERAL_WHILE"/>
+			<property name="allowSingleLineStatement" value="true"/>
+		</module>
+		<module name="NeedBraces">
+			<property name="tokens" value="LITERAL_ELSE,LITERAL_DO"/>
+			<property name="allowSingleLineStatement" value="false"/>
+		</module>
+
+		<module name="EmptyLineSeparator">
+			<property name="allowNoEmptyLineBetweenFields" value="true"/>
+			<property name="allowMultipleEmptyLines" value="false"/>
+			<!-- exclude  METHOD_DEF and VARIABLE_DEF -->
+			<property name="tokens" value="PACKAGE_DEF,IMPORT,STATIC_IMPORT,CLASS_DEF,INTERFACE_DEF,ENUM_DEF,STATIC_INIT,INSTANCE_INIT,CTOR_DEF"/>
+		</module>
+
+		<module name="Indentation">
+			<property name="basicOffset" value="8"/>
+			<property name="caseIndent" value="0"/>
+			<property name="throwsIndent" value="8"/>
+			<property name="arrayInitIndent" value="8"/>
+			<property name="lineWrappingIndentation" value="16"/>
+		</module>
+
+		<module name="WhitespaceAround">
+			<!-- Allow PLUS, MINUS, MUL, DIV as they may be more readable without spaces in some cases -->
+			<property name="tokens" value="ASSIGN,BAND,BAND_ASSIGN,BOR,BOR_ASSIGN,BSR,BSR_ASSIGN,BXOR,BXOR_ASSIGN,COLON,DIV_ASSIGN,DO_WHILE,EQUAL,GE,GT,LAMBDA,LAND,LCURLY,LE,LITERAL_CATCH,LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_FOR,LITERAL_IF,LITERAL_RETURN,LITERAL_SWITCH,LITERAL_SYNCHRONIZED,LITERAL_TRY,LITERAL_WHILE,LOR,LT,MINUS_ASSIGN,MOD,MOD_ASSIGN,NOT_EQUAL,PLUS_ASSIGN,QUESTION,RCURLY,SL,SLIST,SL_ASSIGN,SR,SR_ASSIGN,STAR,STAR_ASSIGN,LITERAL_ASSERT,TYPE_EXTENSION_AND"/>
+		</module>
+		<module name="SingleSpaceSeparator"/>
+		<module name="GenericWhitespace"/>
+		<module name="CommentsIndentation"/>
+
+		<module name="ArrayTypeStyle"/>
+		<module name="DefaultComesLast">
+			<property name="skipIfLastAndSharedWithCase" value="true"/>
+		</module>
+		<module name="SimplifyBooleanExpression"/>
+		<module name="SimplifyBooleanReturn"/>
+		<module name="StringLiteralEquality"/>
+
+		<module name="ModifierOrder"/>
+		<module name="RedundantModifier"/>
+
+		<module name="AnnotationLocation"/>
+		<module name="MissingOverride"/>
+
+		<!-- By default this allows catch blocks with only comments -->
+		<module name="EmptyCatchBlock"/>
+
+		<!-- Enforce tabs -->
+		<module name="RegexpSinglelineJava">
+			<property name="format" value="^\t* ([^*]|\*[^ /])"/>
+			<property name="message" value="non-tab indentation"/>
+		</module>
+
+		<module name="OuterTypeFilename"/>
+
+		<!--<module name="InvalidJavadocPosition"/>-->
+		<module name="JavadocParagraph"/>
+		<module name="JavadocStyle"/>
+		<module name="AtclauseOrder">
+			<property name="tagOrder" value="@param,@return,@throws,@deprecated"/>
+		</module>
+	</module>
+</module>

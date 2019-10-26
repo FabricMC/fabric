@@ -22,7 +22,6 @@ import net.minecraft.util.PacketByteBuf;
 
 @FunctionalInterface
 public interface ContainerFactory<T> {
-
 	/**
 	 * Creates the new object.
 	 *
@@ -33,5 +32,4 @@ public interface ContainerFactory<T> {
 	 * @return the new gui or container
 	 */
 	T create(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf);
-
 }

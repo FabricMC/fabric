@@ -17,17 +17,20 @@
 package net.fabricmc.fabric.impl.client.particle;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 
 /**
  * Accessors for some private members of ParticleManager.
  *
- * Usage:
- *  SpriteAtlasTexture atlas = ((VanillaParticleManager)MinecraftClient.getInstance().particleManager).getAtlas()
+ * <p>Usage:
+ * <pre> {@code
+ * SpriteAtlasTexture atlas = ((VanillaParticleManager)MinecraftClient.getInstance().particleManager).getAtlas()
+ * }</pre>
  */
 public interface VanillaParticleManager {
-	public SpriteAtlasTexture getAtlas();
+	SpriteAtlasTexture getAtlas();
 
-	public Int2ObjectMap<ParticleFactory<?>> getFactories();
+	Int2ObjectMap<ParticleFactory<?>> getFactories();
 }

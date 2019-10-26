@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.api.registry;
 
+import java.util.function.Consumer;
+
 import com.mojang.brigadier.CommandDispatcher;
-import net.fabricmc.fabric.impl.registry.CommandRegistryImpl;
+
 import net.minecraft.server.command.ServerCommandSource;
 
-import java.util.function.Consumer;
+import net.fabricmc.fabric.impl.registry.CommandRegistryImpl;
 
 /**
  * Registry for server-side command providers.

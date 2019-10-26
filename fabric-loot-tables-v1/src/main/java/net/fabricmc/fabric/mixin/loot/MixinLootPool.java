@@ -16,27 +16,35 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import net.fabricmc.fabric.api.loot.v1.FabricLootPool;
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootTableRange;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.entry.LootEntry;
-import net.minecraft.world.loot.function.LootFunction;
+import java.util.Arrays;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Arrays;
-import java.util.List;
+import net.minecraft.world.loot.LootPool;
+import net.minecraft.world.loot.LootTableRange;
+import net.minecraft.world.loot.condition.LootCondition;
+import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.world.loot.function.LootFunction;
+
+import net.fabricmc.fabric.api.loot.v1.FabricLootPool;
 
 @Mixin(LootPool.class)
 public abstract class MixinLootPool implements FabricLootPool {
-	@Shadow @Final private LootEntry[] entries;
+	@Shadow
+	@Final
+	private LootEntry[] entries;
 
-	@Shadow @Final private LootCondition[] conditions;
+	@Shadow
+	@Final
+	private LootCondition[] conditions;
 
-	@Shadow @Final private LootFunction[] functions;
+	@Shadow
+	@Final
+	private LootFunction[] functions;
 
 	@Override
 	public List<LootEntry> getEntries() {

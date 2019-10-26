@@ -16,31 +16,34 @@
 
 package net.fabricmc.fabric.api.event.world;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
 public interface WorldTickCallback {
-	public static final Event<WorldTickCallback> EVENT = EventFactory.createArrayBacked(WorldTickCallback.class,
-		(listeners) -> {
-			if (EventFactory.isProfilingEnabled()) {
-				return (world) -> {
-					world.getProfiler().push("fabricWorldTick");
-					for (WorldTickCallback event : listeners) {
-						world.getProfiler().push(EventFactory.getHandlerName(event));
-						event.tick(world);
+	Event<WorldTickCallback> EVENT = EventFactory.createArrayBacked(WorldTickCallback.class,
+			(listeners) -> {
+				if (EventFactory.isProfilingEnabled()) {
+					return (world) -> {
+						world.getProfiler().push("fabricWorldTick");
+
+						for (WorldTickCallback event : listeners) {
+							world.getProfiler().push(EventFactory.getHandlerName(event));
+							event.tick(world);
+							world.getProfiler().pop();
+						}
+
 						world.getProfiler().pop();
-					}
-					world.getProfiler().pop();
-				};
-			} else {
-				return (world) -> {
-					for (WorldTickCallback event : listeners) {
-						event.tick(world);
-					}
-				};
+					};
+				} else {
+					return (world) -> {
+						for (WorldTickCallback event : listeners) {
+							event.tick(world);
+						}
+					};
+				}
 			}
-		}
 	);
 
 	void tick(World world);

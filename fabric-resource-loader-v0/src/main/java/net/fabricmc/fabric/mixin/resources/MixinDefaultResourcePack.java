@@ -16,27 +16,27 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.minecraft.resource.DefaultResourcePack;
-import net.minecraft.resource.DirectoryResourcePack;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.resource.DefaultResourcePack;
+import net.minecraft.resource.DirectoryResourcePack;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
+
 @Mixin(DefaultResourcePack.class)
 public class MixinDefaultResourcePack {
-
 	@Inject(method = "findInputStream", at = @At("HEAD"), cancellable = true)
 	protected void onFindInputStream(ResourceType resourceType, Identifier identifier, CallbackInfoReturnable<InputStream> callback) {
-		if(DefaultResourcePack.RESOURCE_PATH != null) {
+		if (DefaultResourcePack.RESOURCE_PATH != null) {
 			// Fall through to Vanilla logic, they have a special case here.
 			return;
 		}
@@ -48,11 +48,11 @@ public class MixinDefaultResourcePack {
 			Enumeration<URL> candidates = DefaultResourcePack.class.getClassLoader().getResources(path);
 
 			// Get the last element
-			while(candidates.hasMoreElements()) {
+			while (candidates.hasMoreElements()) {
 				found = candidates.nextElement();
 			}
 
-			if(found == null || !DirectoryResourcePack.isValidPath(new File(found.getFile()), "/" + path)) {
+			if (found == null || !DirectoryResourcePack.isValidPath(new File(found.getFile()), "/" + path)) {
 				// Mimics vanilla behavior
 
 				callback.setReturnValue(null);
@@ -63,7 +63,7 @@ public class MixinDefaultResourcePack {
 		}
 
 		try {
-			if(found != null) {
+			if (found != null) {
 				callback.setReturnValue(found.openStream());
 			}
 		} catch (Exception e) {

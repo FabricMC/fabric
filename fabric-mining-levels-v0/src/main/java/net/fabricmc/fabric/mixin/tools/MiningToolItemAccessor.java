@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.minecraft.item.MiningToolItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.item.MiningToolItem;
 
 @Mixin(MiningToolItem.class)
 public interface MiningToolItemAccessor {

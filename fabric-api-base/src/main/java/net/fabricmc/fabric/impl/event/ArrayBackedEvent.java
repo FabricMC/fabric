@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.event;
 
-import net.fabricmc.fabric.api.event.Event;
-
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.function.Function;
+
+import net.fabricmc.fabric.api.event.Event;
 
 class ArrayBackedEvent<T> extends Event<T> {
 	private final Class<? super T> type;

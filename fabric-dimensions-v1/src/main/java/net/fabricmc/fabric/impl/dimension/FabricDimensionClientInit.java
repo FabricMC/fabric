@@ -16,18 +16,20 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.impl.registry.RemapException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.LiteralText;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.impl.registry.RemapException;
 
 /**
- * Client entry point for fabric-dimensions
+ * Client entry point for fabric-dimensions.
  */
 public final class FabricDimensionClientInit {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -55,8 +57,7 @@ public final class FabricDimensionClientInit {
 		LOGGER.error("Dimension id remapping failed!", e);
 
 		MinecraftClient.getInstance().execute(() -> ((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getConnection().disconnect(
-			new LiteralText("Dimension id remapping failed: " + e)
+				new LiteralText("Dimension id remapping failed: " + e)
 		));
 	}
-
 }

@@ -16,14 +16,15 @@
 
 package net.fabricmc.fabric.api.event.client;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
-import java.util.Map;
-import java.util.function.Consumer;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 public interface ClientSpriteRegistryCallback {
 	/**
@@ -31,7 +32,7 @@ public interface ClientSpriteRegistryCallback {
 	 * started making use of multiple sprite atlases, it is unwise to register sprites to *all* of them.
 	 */
 	@Deprecated
-	public static final Event<ClientSpriteRegistryCallback> EVENT = SpriteRegistryCallbackHolder.EVENT_GLOBAL;
+	Event<ClientSpriteRegistryCallback> EVENT = SpriteRegistryCallbackHolder.EVENT_GLOBAL;
 
 	void registerSprites(SpriteAtlasTexture atlasTexture, Registry registry);
 
@@ -55,7 +56,7 @@ public interface ClientSpriteRegistryCallback {
 		event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(callback);
 	}
 
-	public static class Registry {
+	class Registry {
 		private final Map<Identifier, Sprite> spriteMap;
 		private final Consumer<Identifier> defaultSpriteRegister;
 

@@ -16,20 +16,22 @@
 
 package net.fabricmc.fabric.mixin.idremap;
 
-import net.fabricmc.fabric.impl.dimension.DimensionIdsFixer;
-import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.ClientConnection;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayerEntity;
+
+import net.fabricmc.fabric.impl.dimension.DimensionIdsFixer;
+import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+
 @Mixin(PlayerManager.class)
 public abstract class MixinPlayerManager {
 	/**
-	 * Synchronizes raw dimension ids to connecting players
+	 * Synchronizes raw dimension ids to connecting players.
 	 */
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	private void onPlayerConnect(ClientConnection conn, ServerPlayerEntity player, CallbackInfo info) {

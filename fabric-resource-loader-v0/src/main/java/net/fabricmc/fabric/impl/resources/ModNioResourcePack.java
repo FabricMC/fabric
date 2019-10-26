@@ -16,24 +16,31 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import net.fabricmc.fabric.api.resource.ModResourcePack;
-import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.minecraft.resource.AbstractFileResourcePack;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.InvalidIdentifierException;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.resource.AbstractFileResourcePack;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.InvalidIdentifierException;
+
+import net.fabricmc.fabric.api.resource.ModResourcePack;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -70,23 +77,27 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		if (DeferredNioExecutionHandler.shouldDefer()) {
 			stream = DeferredNioExecutionHandler.submit(() -> {
 				Path path = getPath(filename);
+
 				if (path != null && Files.isRegularFile(path)) {
 					return new DeferredInputStream(Files.newInputStream(path));
 				} else {
 					return null;
 				}
 			});
+
 			if (stream != null) {
 				return stream;
 			}
 		} else {
 			Path path = getPath(filename);
+
 			if (path != null && Files.isRegularFile(path)) {
 				return Files.newInputStream(path);
 			}
 		}
 
 		stream = ModResourcePackUtil.openDefault(modInfo, filename);
+
 		if (stream != null) {
 			return stream;
 		}
@@ -123,26 +134,27 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 
 		for (String namespace : getNamespaces(type)) {
 			Path namespacePath = getPath(type.getName() + "/" + namespace);
+
 			if (namespacePath != null) {
 				Path searchPath = namespacePath.resolve(nioPath).toAbsolutePath().normalize();
 
 				if (Files.exists(searchPath)) {
 					try {
 						Files.walk(searchPath, depth)
-							.filter(Files::isRegularFile)
-							.filter((p) -> {
-								String filename = p.getFileName().toString();
-								return !filename.endsWith(".mcmeta") && predicate.test(filename);
-							})
-							.map(namespacePath::relativize)
-							.map((p) -> p.toString().replace(separator, "/"))
-							.forEach((s) -> {
-								try {
-									ids.add(new Identifier(namespace, s));
-								} catch (InvalidIdentifierException e) {
-									LOGGER.error(e.getMessage());
-								}
-							});
+								.filter(Files::isRegularFile)
+								.filter((p) -> {
+									String filename = p.getFileName().toString();
+									return !filename.endsWith(".mcmeta") && predicate.test(filename);
+								})
+								.map(namespacePath::relativize)
+								.map((p) -> p.toString().replace(separator, "/"))
+								.forEach((s) -> {
+									try {
+										ids.add(new Identifier(namespace, s));
+									} catch (InvalidIdentifierException e) {
+										LOGGER.error(e.getMessage());
+									}
+								});
 					} catch (IOException e) {
 						LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + modInfo.getId() + " failed!", e);
 					}
@@ -167,6 +179,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 
 		try {
 			Path typePath = getPath(type.getName());
+
 			if (typePath == null || !(Files.isDirectory(typePath))) {
 				return Collections.emptySet();
 			}

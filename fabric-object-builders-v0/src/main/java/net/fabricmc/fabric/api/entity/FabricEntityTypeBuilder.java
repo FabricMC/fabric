@@ -16,16 +16,18 @@
 
 package net.fabricmc.fabric.api.entity;
 
-import net.fabricmc.fabric.impl.entity.FabricEntityType;
+import java.util.function.Function;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.function.Function;
+import net.fabricmc.fabric.impl.entity.FabricEntityType;
 
 /**
  * Extended version of {@link EntityType.Builder} with added registration for

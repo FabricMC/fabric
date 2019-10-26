@@ -23,5 +23,5 @@ import net.fabricmc.fabric.impl.registry.FuelRegistryImpl;
  * Registry of items to 0-32767 fuel burn time values, in in-game ticks.
  */
 public interface FuelRegistry extends Item2ObjectMap<Integer> {
-	final FuelRegistry INSTANCE = FuelRegistryImpl.INSTANCE;
+	FuelRegistry INSTANCE = FuelRegistryImpl.INSTANCE;
 }

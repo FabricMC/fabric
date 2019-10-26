@@ -16,18 +16,20 @@
 
 package net.fabricmc.fabric.mixin.networkingblockentity;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 @Mixin(BlockEntity.class)
 public abstract class MixinBlockEntity {
@@ -39,7 +41,7 @@ public abstract class MixinBlockEntity {
 
 	@Inject(at = @At("HEAD"), method = "toUpdatePacket", cancellable = true)
 	public void toUpdatePacket(CallbackInfoReturnable<BlockEntityUpdateS2CPacket> info) {
-		Object self = (Object) this;
+		Object self = this;
 
 		if (self instanceof BlockEntityClientSerializable) {
 			// Mojang's serialization of x/y/z into the update packet is redundant,
@@ -50,6 +52,7 @@ public abstract class MixinBlockEntity {
 
 			CompoundTag tag = new CompoundTag();
 			Identifier entityId = BlockEntityType.getId(getType());
+
 			if (entityId == null) {
 				throw new RuntimeException(this.getClass() + " is missing a mapping! This is a bug!");
 			}
@@ -63,7 +66,7 @@ public abstract class MixinBlockEntity {
 
 	@Inject(at = @At("RETURN"), method = "toInitialChunkDataTag", cancellable = true)
 	public void toInitialChunkDataTag(CallbackInfoReturnable<CompoundTag> info) {
-		Object self = (Object) this;
+		Object self = this;
 
 		if (self instanceof BlockEntityClientSerializable && info.getReturnValue() != null) {
 			info.setReturnValue(((BlockEntityClientSerializable) self).toClientTag(info.getReturnValue()));

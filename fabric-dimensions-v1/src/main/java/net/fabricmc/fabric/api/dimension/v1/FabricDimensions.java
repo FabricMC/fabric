@@ -17,9 +17,11 @@
 package net.fabricmc.fabric.api.dimension.v1;
 
 import com.google.common.base.Preconditions;
-import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
+
+import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
  * This class consists exclusively of static methods that operate on world dimensions.
@@ -32,10 +34,10 @@ public final class FabricDimensions {
 	/**
 	 * Teleports an entity to a different dimension, using custom placement logic.
 	 *
-	 * <p> This method behaves as if:
+	 * <p>This method behaves as if:
 	 * <pre>{@code teleported.changeDimension(destination)}</pre>
 	 *
-	 * <p> If {@code destination} is a {@link FabricDimensionType}, the placement logic used
+	 * <p>If {@code destination} is a {@link FabricDimensionType}, the placement logic used
 	 * is {@link FabricDimensionType#getDefaultPlacement()}. If {@code destination} is
 	 * the nether or the overworld, the default logic is the vanilla path.
 	 * For any other dimension, the default placement behaviour is undefined.
@@ -43,7 +45,7 @@ public final class FabricDimensions {
 	 * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
 	 * before calling this method.
 	 *
-	 * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
+	 * <p>After calling this method, {@code teleported} may be invalidated. Callers should use
 	 * the returned entity for any further manipulation.
 	 *
 	 * @param teleported  the entity to teleport
@@ -58,12 +60,12 @@ public final class FabricDimensions {
 	/**
 	 * Teleports an entity to a different dimension, using custom placement logic.
 	 *
-	 * <p> If {@code customPlacement} is {@code null}, this method behaves as if:
+	 * <p>If {@code customPlacement} is {@code null}, this method behaves as if:
 	 * <pre>{@code teleported.changeDimension(destination)}</pre>
 	 * The {@code customPlacement} may itself return {@code null}, in which case
 	 * the default placement logic for that dimension will be run.
 	 *
-	 * <p> If {@code destination} is a {@link FabricDimensionType}, the default placement logic
+	 * <p>If {@code destination} is a {@link FabricDimensionType}, the default placement logic
 	 * is {@link FabricDimensionType#getDefaultPlacement()}. If {@code destination} is the nether
 	 * or the overworld, the default logic is the vanilla path.
 	 * For any other dimension, the default placement behaviour is undefined.
@@ -71,7 +73,7 @@ public final class FabricDimensions {
 	 * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
 	 * before calling this method.
 	 *
-	 * <p> After calling this method, {@code teleported} may be invalidated. Callers should use
+	 * <p>After calling this method, {@code teleported} may be invalidated. Callers should use
 	 * the returned entity for any further manipulation.
 	 *
 	 * @param teleported   the entity to teleport

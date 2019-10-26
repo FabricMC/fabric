@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.mixin.rendering.data;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
-import net.minecraft.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
+
+import net.minecraft.block.entity.BlockEntity;
+
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 
 @Mixin(BlockEntity.class)
 public class MixinBlockEntity implements RenderAttachmentBlockEntity {
-    @Override
-    public Object getRenderAttachmentData() {
-        return null;
-    }
+	@Override
+	public Object getRenderAttachmentData() {
+		return null;
+	}
 }

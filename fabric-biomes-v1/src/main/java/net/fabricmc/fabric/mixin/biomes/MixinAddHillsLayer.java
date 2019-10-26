@@ -16,26 +16,27 @@
 
 package net.fabricmc.fabric.mixin.biomes;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
-import net.fabricmc.fabric.impl.biomes.WeightedBiomePicker;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddHillsLayer;
 import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.LayerSampler;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import net.fabricmc.fabric.impl.biomes.WeightedBiomePicker;
 
 /**
- * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(Biome, Biome, double)}into the default hills layer
+ * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(Biome, Biome, double)}into the default hills layer.
  */
 @Mixin(AddHillsLayer.class)
 public class MixinAddHillsLayer {
-
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseSampler, int chunkX, int chunkZ, CallbackInfoReturnable<Integer> info) {
 		if (InternalBiomeData.getOverworldHills().isEmpty()) {
@@ -67,18 +68,23 @@ public class MixinAddHillsLayer {
 
 			if (biomeReturn != biomeId) {
 				int similarity = 0;
+
 				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX, chunkZ - 1), biomeId)) {
 					++similarity;
 				}
+
 				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX + 1, chunkZ), biomeId)) {
 					++similarity;
 				}
+
 				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX - 1, chunkZ), biomeId)) {
 					++similarity;
 				}
+
 				if (BiomeLayers.areSimilar(biomeSampler.sample(chunkX, chunkZ + 1), biomeId)) {
 					++similarity;
 				}
+
 				if (similarity >= 3) {
 					info.setReturnValue(biomeReturn);
 					return;
@@ -89,5 +95,4 @@ public class MixinAddHillsLayer {
 		// Cancel vanilla logic.
 		info.setReturnValue(biomeId);
 	}
-
 }

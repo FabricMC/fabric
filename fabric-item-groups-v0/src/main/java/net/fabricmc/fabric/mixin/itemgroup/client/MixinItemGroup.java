@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.mixin.itemgroup.client;
 
-import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
-import net.minecraft.item.ItemGroup;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.item.ItemGroup;
+
+import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
 
 @Mixin(ItemGroup.class)
 public abstract class MixinItemGroup {
@@ -47,7 +49,6 @@ public abstract class MixinItemGroup {
 			} else {
 				info.setReturnValue((getIndex() - 12) % (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) - 4);
 			}
-
 		}
 	}
 }

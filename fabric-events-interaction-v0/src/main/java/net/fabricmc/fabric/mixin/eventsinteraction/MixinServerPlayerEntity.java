@@ -16,15 +16,17 @@
 
 package net.fabricmc.fabric.mixin.eventsinteraction;
 
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+
+import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 
 @Mixin(ServerPlayerEntity.class)
 public class MixinServerPlayerEntity {
@@ -32,6 +34,7 @@ public class MixinServerPlayerEntity {
 	public void onPlayerInteractEntity(Entity target, CallbackInfo info) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
 		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN_HAND, target, null);
+
 		if (result != ActionResult.PASS) {
 			info.cancel();
 		}

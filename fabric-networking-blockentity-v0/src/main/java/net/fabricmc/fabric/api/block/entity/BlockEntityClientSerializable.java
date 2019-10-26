@@ -37,7 +37,7 @@ public interface BlockEntityClientSerializable {
 	 * This will cause {@link #toClientTag(CompoundTag)} to be called on the
 	 * server to generate the packet data, and then
 	 * {@link #fromClientTag(CompoundTag)} on the client to decode that data.
-	 * 
+	 *
 	 * <p>This is preferable to
 	 * {@link World#updateListeners(net.minecraft.util.math.BlockPos, net.minecraft.block.BlockState, net.minecraft.block.BlockState, int)}
 	 * because it does not cause entities to update their pathing as a side effect.

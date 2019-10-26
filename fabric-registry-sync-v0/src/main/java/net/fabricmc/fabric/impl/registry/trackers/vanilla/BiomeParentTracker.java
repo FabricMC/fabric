@@ -16,16 +16,18 @@
 
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
+import java.util.Objects;
+
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
-import net.fabricmc.fabric.impl.registry.RemovableIdList;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 
-import java.util.Objects;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.impl.registry.RemovableIdList;
 
 public final class BiomeParentTracker implements RegistryEntryAddedCallback<Biome>, RegistryEntryRemovedCallback<Biome>, RegistryIdRemapCallback<Biome> {
 	private final Registry<Biome> registry;

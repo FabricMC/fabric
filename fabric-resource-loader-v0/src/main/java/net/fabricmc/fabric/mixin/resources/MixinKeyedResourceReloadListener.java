@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
+
+import org.spongepowered.asm.mixin.Mixin;
+
 import net.minecraft.client.font.FontManager;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockRenderManager;
@@ -32,20 +36,18 @@ import net.minecraft.server.function.CommandFunctionManager;
 import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.loot.LootManager;
-import org.spongepowered.asm.mixin.Mixin;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 public class MixinKeyedResourceReloadListener {
 	@Mixin({
-		/* public */
-		SoundLoader.class, FontManager.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
-		/* private */
-		WorldRenderer.class, BlockRenderManager.class, ItemRenderer.class
+			/* public */
+			SoundLoader.class, FontManager.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
+			/* private */
+			WorldRenderer.class, BlockRenderManager.class, ItemRenderer.class
 	})
-	public static abstract class Client implements IdentifiableResourceReloadListener {
+	public abstract static class Client implements IdentifiableResourceReloadListener {
 		private Collection<Identifier> fabric_idDeps;
 		private Identifier fabric_id;
 
@@ -53,7 +55,8 @@ public class MixinKeyedResourceReloadListener {
 		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Collection<Identifier> getFabricDependencies() {
 			if (fabric_idDeps == null) {
-				Object self = (Object) this;
+				Object self = this;
+
 				if (self instanceof BakedModelManager || self instanceof WorldRenderer) {
 					fabric_idDeps = Collections.singletonList(ResourceReloadListenerKeys.TEXTURES);
 				} else if (self instanceof ItemRenderer || self instanceof BlockRenderManager) {
@@ -70,7 +73,7 @@ public class MixinKeyedResourceReloadListener {
 		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Identifier getFabricId() {
 			if (fabric_id == null) {
-				Object self = (Object) this;
+				Object self = this;
 
 				if (self instanceof SoundLoader) {
 					fabric_id = ResourceReloadListenerKeys.SOUNDS;
@@ -92,11 +95,11 @@ public class MixinKeyedResourceReloadListener {
 	}
 
 	@Mixin({
-		/* public */
-		RecipeManager.class, ServerAdvancementLoader.class, CommandFunctionManager.class, LootManager.class, RegistryTagManager.class
-		/* private */
+			/* public */
+			RecipeManager.class, ServerAdvancementLoader.class, CommandFunctionManager.class, LootManager.class, RegistryTagManager.class
+			/* private */
 	})
-	public static abstract class Server implements IdentifiableResourceReloadListener {
+	public abstract static class Server implements IdentifiableResourceReloadListener {
 		private Collection<Identifier> fabric_idDeps;
 		private Identifier fabric_id;
 
@@ -104,7 +107,7 @@ public class MixinKeyedResourceReloadListener {
 		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Collection<Identifier> getFabricDependencies() {
 			if (fabric_idDeps == null) {
-				Object self = (Object) this;
+				Object self = this;
 
 				if (self instanceof RegistryTagManager) {
 					fabric_idDeps = Collections.emptyList();
@@ -120,8 +123,8 @@ public class MixinKeyedResourceReloadListener {
 		@SuppressWarnings({"ConstantConditions", "RedundantCast"})
 		public Identifier getFabricId() {
 			if (fabric_id == null) {
-				Object self = (Object) this;
-				;
+				Object self = this;
+
 				if (self instanceof RecipeManager) {
 					fabric_id = ResourceReloadListenerKeys.RECIPES;
 				} else if (self instanceof ServerAdvancementLoader) {

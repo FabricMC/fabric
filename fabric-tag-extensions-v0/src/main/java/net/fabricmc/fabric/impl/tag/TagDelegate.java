@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.tag;
 
+import java.util.Collection;
+
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
-
-import java.util.Collection;
 
 public class TagDelegate<T> extends Tag<T> {
 	protected Tag<T> delegate;
@@ -29,9 +29,7 @@ public class TagDelegate<T> extends Tag<T> {
 		this.delegate = delegate;
 	}
 
-	protected void onAccess() {
-
-	}
+	protected void onAccess() { }
 
 	@Override
 	public boolean contains(T var1) {

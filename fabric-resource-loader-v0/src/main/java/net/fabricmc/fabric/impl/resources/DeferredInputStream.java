@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import net.minecraft.util.Unit;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
+
+import net.minecraft.util.Unit;
 
 /**
  * InputStream deferring to a separate I/O thread to work around
@@ -39,6 +39,7 @@ class DeferredInputStream extends InputStream {
 
 	DeferredInputStream(Callable<InputStream> streamSupplier) throws IOException {
 		stream = DeferredNioExecutionHandler.submit(streamSupplier);
+
 		if (stream == null) {
 			throw new IOException("Something happened while trying to create an InputStream!");
 		}
@@ -46,6 +47,7 @@ class DeferredInputStream extends InputStream {
 
 	DeferredInputStream(InputStream stream) throws IOException {
 		this.stream = stream;
+
 		if (this.stream == null) {
 			throw new IOException("Something happened while trying to create an InputStream!");
 		}
