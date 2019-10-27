@@ -16,16 +16,18 @@
 
 package net.fabricmc.fabric.mixin.eventslifecycle;
 
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
-import net.fabricmc.fabric.api.event.server.ServerStopCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
-import net.minecraft.server.MinecraftServer;
+import java.util.function.BooleanSupplier;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.function.BooleanSupplier;
+import net.minecraft.server.MinecraftServer;
+
+import net.fabricmc.fabric.api.event.server.ServerStartCallback;
+import net.fabricmc.fabric.api.event.server.ServerStopCallback;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {

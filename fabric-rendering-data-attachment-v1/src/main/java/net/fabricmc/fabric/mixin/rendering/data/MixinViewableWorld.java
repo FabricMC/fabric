@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.mixin.rendering.data;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.minecraft.world.ViewableWorld;
 import org.spongepowered.asm.mixin.Mixin;
+
+import net.minecraft.world.ViewableWorld;
+
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
 /** Make {@link ViewableWorld} implement {@link RenderAttachedBlockView}. */
 @Mixin(ViewableWorld.class)
-public interface MixinViewableWorld extends RenderAttachedBlockView {
-
-}
+public interface MixinViewableWorld extends RenderAttachedBlockView { }

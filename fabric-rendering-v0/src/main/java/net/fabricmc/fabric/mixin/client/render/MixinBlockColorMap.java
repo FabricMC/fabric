@@ -16,18 +16,20 @@
 
 package net.fabricmc.fabric.mixin.client.render;
 
-import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
-import net.minecraft.block.Block;
-import net.minecraft.client.color.block.BlockColorProvider;
-import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.util.IdList;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.block.Block;
+import net.minecraft.client.color.block.BlockColorProvider;
+import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.util.IdList;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 
 @Mixin(BlockColors.class)
 public class MixinBlockColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<Block, BlockColorProvider> {

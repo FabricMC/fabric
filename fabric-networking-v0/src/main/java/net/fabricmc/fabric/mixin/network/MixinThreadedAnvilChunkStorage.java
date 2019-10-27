@@ -16,17 +16,19 @@
 
 package net.fabricmc.fabric.mixin.network;
 
+import java.util.stream.Stream;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.impl.server.EntityTrackerStorageAccessor;
-import net.fabricmc.fabric.impl.server.EntityTrackerStreamAccessor;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import java.util.stream.Stream;
+import net.minecraft.entity.Entity;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
+
+import net.fabricmc.fabric.impl.server.EntityTrackerStorageAccessor;
+import net.fabricmc.fabric.impl.server.EntityTrackerStreamAccessor;
 
 @Mixin(ThreadedAnvilChunkStorage.class)
 public class MixinThreadedAnvilChunkStorage implements EntityTrackerStorageAccessor {

@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.event.client.player;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * This event handler has been deprecated due to not hooking nicely
@@ -32,7 +33,7 @@ import net.minecraft.util.hit.HitResult;
 @Deprecated
 public interface ClientPickBlockCallback {
 	@Deprecated
-	public static final class Container {
+	final class Container {
 		private ItemStack stack;
 
 		public Container(ItemStack stack) {
@@ -48,8 +49,7 @@ public interface ClientPickBlockCallback {
 		}
 	}
 
-	@Deprecated
-	public static final Event<ClientPickBlockCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockCallback.class,
+	@Deprecated Event<ClientPickBlockCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockCallback.class,
 		(listeners) -> (player, result, container) -> {
 			for (ClientPickBlockCallback event : listeners) {
 				if (!event.pick(player, result, container)) {

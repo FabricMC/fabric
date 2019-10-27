@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import com.google.gson.Gson;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.Lazy;
-import net.minecraft.world.loot.*;
 import java.io.Reader;
 import java.lang.reflect.Field;
 import java.util.stream.Stream;
+
+import com.google.gson.Gson;
+
+import net.minecraft.util.JsonHelper;
+import net.minecraft.util.Lazy;
+import net.minecraft.world.loot.LootManager;
 
 public final class LootJsonParser {
 	/* Reading this from LootManager to access all serializers from vanilla. */
@@ -39,9 +41,7 @@ public final class LootJsonParser {
 		}
 	});
 
-	private LootJsonParser() {
-
-	}
+	private LootJsonParser() { }
 
 	public static <T> T read(Reader json, Class<T> c) {
 		return JsonHelper.deserialize(GSON.get(), json, c);

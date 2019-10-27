@@ -16,13 +16,10 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
 import com.google.common.collect.Lists;
-import net.fabricmc.fabric.impl.resources.ModResourcePackUtil;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.DefaultClientResourcePack;
-import net.minecraft.resource.ReloadableResourceManager;
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourceType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,8 +28,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.resource.DefaultClientResourcePack;
+import net.minecraft.resource.ReloadableResourceManager;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
+
+import net.fabricmc.fabric.impl.resources.ModResourcePackUtil;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftGame {
@@ -44,6 +46,7 @@ public class MixinMinecraftGame {
 		list.clear();
 
 		boolean appended = false;
+
 		for (int i = 0; i < oldList.size(); i++) {
 			ResourcePack pack = oldList.get(i);
 			list.add(pack);
@@ -56,9 +59,11 @@ public class MixinMinecraftGame {
 
 		if (!appended) {
 			StringBuilder builder = new StringBuilder("Fabric could not find resource pack injection location!");
+
 			for (ResourcePack rp : oldList) {
 				builder.append("\n - ").append(rp.getName()).append(" (").append(rp.getClass().getName()).append(")");
 			}
+
 			throw new RuntimeException(builder.toString());
 		}
 	}

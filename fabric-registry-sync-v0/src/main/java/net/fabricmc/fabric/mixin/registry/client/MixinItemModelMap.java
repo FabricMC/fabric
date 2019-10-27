@@ -17,17 +17,19 @@
 package net.fabricmc.fabric.mixin.registry.client;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.impl.registry.trackers.Int2ObjectMapTracker;
-import net.minecraft.client.render.item.ItemModels;
-import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.render.item.ItemModels;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.render.model.BakedModelManager;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.impl.registry.trackers.Int2ObjectMapTracker;
 
 @Mixin(ItemModels.class)
 public class MixinItemModelMap {

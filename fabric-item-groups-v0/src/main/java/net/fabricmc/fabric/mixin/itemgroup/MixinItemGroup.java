@@ -16,16 +16,17 @@
 
 package net.fabricmc.fabric.mixin.itemgroup;
 
-import net.fabricmc.fabric.impl.itemgroup.ItemGroupExtensions;
-import net.minecraft.item.ItemGroup;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.item.ItemGroup;
+
+import net.fabricmc.fabric.impl.itemgroup.ItemGroupExtensions;
+
 @Mixin(ItemGroup.class)
 public abstract class MixinItemGroup implements ItemGroupExtensions {
-
 	@Shadow
 	@Final
 	@Mutable
@@ -35,9 +36,9 @@ public abstract class MixinItemGroup implements ItemGroupExtensions {
 	public void fabric_expandArray() {
 		ItemGroup[] tempGroups = GROUPS;
 		GROUPS = new ItemGroup[GROUPS.length + 1];
+
 		for (int i = 0; i < tempGroups.length; i++) {
 			GROUPS[i] = tempGroups[i];
 		}
 	}
-
 }

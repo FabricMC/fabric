@@ -16,10 +16,6 @@
 
 package net.fabricmc.fabric.mixin.registry.client;
 
-import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
-import net.fabricmc.fabric.impl.registry.RemapException;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,6 +23,12 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
+
+import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
+import net.fabricmc.fabric.impl.registry.RemapException;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {

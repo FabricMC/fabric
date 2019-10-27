@@ -16,21 +16,20 @@
 
 package net.fabricmc.fabric.impl.itemgroup;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import net.minecraft.client.MinecraftClient;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.function.Consumer;
-
 public class FabricCreativeGuiComponents {
-
 	private static final Identifier BUTTON_TEX = new Identifier("fabric", "textures/gui/creative_buttons.png");
 	public static final Set<ItemGroup> COMMON_GROUPS = new HashSet<>();
 
@@ -41,7 +40,6 @@ public class FabricCreativeGuiComponents {
 	}
 
 	public static class ItemGroupButtonWidget extends ButtonWidget {
-
 		CreativeGuiExtensions extensions;
 		CreativeInventoryScreen gui;
 		Type type;
@@ -73,7 +71,6 @@ public class FabricCreativeGuiComponents {
 	}
 
 	public enum Type {
-
 		NEXT(">", CreativeGuiExtensions::fabric_nextPage),
 		PREVIOUS("<", CreativeGuiExtensions::fabric_previousPage);
 
@@ -85,5 +82,4 @@ public class FabricCreativeGuiComponents {
 			this.clickConsumer = clickConsumer;
 		}
 	}
-
 }

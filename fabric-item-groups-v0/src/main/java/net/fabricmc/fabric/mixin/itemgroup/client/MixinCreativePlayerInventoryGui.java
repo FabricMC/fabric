@@ -16,14 +16,6 @@
 
 package net.fabricmc.fabric.mixin.itemgroup.client;
 
-import net.fabricmc.fabric.impl.itemgroup.CreativeGuiExtensions;
-import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
-import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.container.Container;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,9 +23,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
+import net.minecraft.container.Container;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.text.Text;
+
+import net.fabricmc.fabric.impl.itemgroup.CreativeGuiExtensions;
+import net.fabricmc.fabric.impl.itemgroup.FabricCreativeGuiComponents;
+
 @Mixin(CreativeInventoryScreen.class)
 public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryScreen implements CreativeGuiExtensions {
-
 	public MixinCreativePlayerInventoryGui(Container container_1, PlayerInventory playerInventory_1, Text textComponent_1) {
 		super(container_1, playerInventory_1, textComponent_1);
 	}
@@ -49,12 +50,12 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 
 	private int fabric_getPageOffset(int page) {
 		switch (page) {
-			case 0:
-				return 0;
-			case 1:
-				return 12;
-			default:
-				return 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (page - 1));
+		case 0:
+			return 0;
+		case 1:
+			return 12;
+		default:
+			return 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (page - 1));
 		}
 	}
 
@@ -71,6 +72,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 		if (fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroup.GROUPS.length) {
 			return;
 		}
+
 		fabric_currentPage++;
 		fabric_updateSelection();
 	}
@@ -80,6 +82,7 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 		if (fabric_currentPage == 0) {
 			return;
 		}
+
 		fabric_currentPage--;
 		fabric_updateSelection();
 	}
@@ -94,9 +97,11 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 		if (type == FabricCreativeGuiComponents.Type.NEXT) {
 			return !(fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroup.GROUPS.length);
 		}
+
 		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
 			return fabric_currentPage != 0;
 		}
+
 		return false;
 	}
 
@@ -119,7 +124,6 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
-
 	}
 
 	@Inject(method = "setSelectedTab", at = @At("HEAD"), cancellable = true)
@@ -154,8 +158,8 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
 			return true;
 		}
-		return fabric_currentPage == fabric_getOffsetPage(itemGroup.getIndex());
 
+		return fabric_currentPage == fabric_getOffsetPage(itemGroup.getIndex());
 	}
 
 	@Override

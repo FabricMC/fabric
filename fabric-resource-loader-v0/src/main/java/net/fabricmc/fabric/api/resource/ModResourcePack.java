@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.minecraft.resource.ResourcePack;
+
+import net.fabricmc.loader.api.metadata.ModMetadata;
 
 /**
  * Interface implemented by mod-provided resource packs.

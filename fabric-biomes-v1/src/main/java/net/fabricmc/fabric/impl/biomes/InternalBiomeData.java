@@ -16,23 +16,29 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
 
-import java.util.*;
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation
  */
 public final class InternalBiomeData {
-
-	private InternalBiomeData() {
-	}
+	private InternalBiomeData() { }
 
 	private static final EnumMap<OverworldClimate, WeightedBiomePicker> OVERWORLD_MODDED_CONTINENTAL_BIOME_PICKERS = new EnumMap<>(OverworldClimate.class);
 	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_HILLS_MAP = new HashMap<>();
@@ -91,6 +97,7 @@ public final class InternalBiomeData {
 	public static void setOverworldRiverBiome(Biome primary, Biome river) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		OVERWORLD_RIVER_MAP.put(primary, river);
+
 		if (river != null) {
 			OVERWORLD_INJECTED_BIOMES.add(river);
 		}

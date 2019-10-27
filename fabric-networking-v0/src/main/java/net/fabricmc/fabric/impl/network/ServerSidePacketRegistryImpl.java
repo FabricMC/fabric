@@ -16,11 +16,18 @@
 
 package net.fabricmc.fabric.impl.network;
 
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.function.Consumer;
+
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
@@ -30,9 +37,9 @@ import net.minecraft.server.network.packet.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.function.Consumer;
+import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 
 public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements ServerSidePacketRegistry {
 	private final WeakHashMap<PlayerEntity, Collection<Identifier>> playerPayloadIds = new WeakHashMap<>();
@@ -47,8 +54,10 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	protected void forEachHandler(Consumer<ServerPlayNetworkHandler> consumer) {
 		Iterator<WeakReference<ServerPlayNetworkHandler>> it = handlers.iterator();
+
 		while (it.hasNext()) {
 			ServerPlayNetworkHandler server = it.next().get();
+
 			if (server != null) {
 				consumer.accept(server);
 			} else {
@@ -60,6 +69,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
 		Collection<Identifier> ids = playerPayloadIds.get(player);
+
 		if (ids != null) {
 			return ids.contains(id);
 		} else {

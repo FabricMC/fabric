@@ -16,10 +16,14 @@
 
 package net.fabricmc.fabric.impl.resources;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
 import java.io.IOException;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 class DeferredNioExecutionHandler {
 	// private static final ThreadLocal<Boolean> DEFERRED_REQUIRED = new ThreadLocal<>();
@@ -29,10 +33,12 @@ class DeferredNioExecutionHandler {
 	public static boolean shouldDefer() {
 		return DEFER_REQUESTED;
 		/* Boolean deferRequired = DEFERRED_REQUIRED.get();
+
 		if (deferRequired == null) {
 			deferRequired = false;
 
 			StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+
 			for (int i = 0; i < elements.length; i++) {
 				if (elements[i].getClassName().startsWith("paulscode.sound.")) {
 					deferRequired = true;
@@ -75,6 +81,7 @@ class DeferredNioExecutionHandler {
 				return future.get();
 			} catch (ExecutionException e) {
 				Throwable t = e.getCause();
+
 				if (t instanceof IOException) {
 					throw (IOException) t;
 				} else {
@@ -85,6 +92,5 @@ class DeferredNioExecutionHandler {
 			}
 		}
 	}
-
 }
 

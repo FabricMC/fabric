@@ -17,7 +17,5 @@
 package net.fabricmc.fabric.impl.itemgroup;
 
 public interface ItemGroupExtensions {
-
 	void fabric_expandArray();
-
 }

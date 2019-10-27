@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
+import java.util.function.BiFunction;
+
 import com.google.common.base.Preconditions;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -25,8 +28,6 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
-
-import java.util.function.BiFunction;
 
 /**
  * An extended version of {@link DimensionType} with automatic raw id management and default placement settings.
@@ -39,7 +40,7 @@ import java.util.function.BiFunction;
 public final class FabricDimensionType extends DimensionType {
 	private final EntityPlacer defaultPlacement;
 	private int desiredRawId;
-	/** The fixed raw id for this dimension type, set through reflection */
+	/** The fixed raw id for this dimension type, set through reflection. */
 	private int fixedRawId;
 
 	/**
@@ -77,7 +78,7 @@ public final class FabricDimensionType extends DimensionType {
 	/**
 	 * Return the current raw id for this dimension type.
 	 *
-	 * <p> The returned id is guaranteed to be unique and persistent in a save,
+	 * <p>The returned id is guaranteed to be unique and persistent in a save,
 	 * as well as synchronized between a server and its connected clients.
 	 * It may change when connecting to a different server or opening a new save.
 	 *
@@ -130,7 +131,7 @@ public final class FabricDimensionType extends DimensionType {
 		 * Set the default placer used when teleporting entities to dimensions of the built type.
 		 * The default placer must be set before building a dimension type.
 		 *
-		 * <p> A dimension type's default placer must never return {@code null} when its
+		 * <p>A dimension type's default placer must never return {@code null} when its
 		 * {@link EntityPlacer#placeEntity(Entity, ServerWorld, Direction, double, double) placeEntity} method
 		 * is called.
 		 *
@@ -178,7 +179,7 @@ public final class FabricDimensionType extends DimensionType {
 		 * If this method is not called, the value defaults to the raw registry id
 		 * of the dimension type.
 		 *
-		 * <p> A Fabric Dimension's desired raw id is used as its actual raw id
+		 * <p>A Fabric Dimension's desired raw id is used as its actual raw id
 		 * when it does not conflict with any existing id, and the world
 		 * save does not map the dimension to a different raw id.
 		 *
@@ -196,7 +197,7 @@ public final class FabricDimensionType extends DimensionType {
 		/**
 		 * Build and register a {@code FabricDimensionType}.
 		 *
-		 * <p> The {@code dimensionId} is used as a registry ID, and as
+		 * <p>The {@code dimensionId} is used as a registry ID, and as
 		 * a unique name both for the dimension suffix and the save directory.
 		 *
 		 * @param dimensionId the id used to name and register the dimension

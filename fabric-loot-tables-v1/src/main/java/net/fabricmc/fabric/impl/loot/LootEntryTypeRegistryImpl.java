@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.loot;
 
+import java.lang.reflect.Method;
+
 import net.minecraft.world.loot.entry.LootEntries;
 import net.minecraft.world.loot.entry.LootEntry;
-
-import java.lang.reflect.Method;
 
 public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
 	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
@@ -27,6 +27,7 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 
 	static {
 		Method target = null;
+
 		for (Method m : LootEntries.class.getDeclaredMethods()) {
 			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootEntry.Serializer.class) {
 				if (target != null) {
@@ -45,8 +46,7 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 		}
 	}
 
-	private LootEntryTypeRegistryImpl() {
-	}
+	private LootEntryTypeRegistryImpl() { }
 
 	@Override
 	public void register(LootEntry.Serializer<?> serializer) {

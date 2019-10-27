@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.impl.server;
 
-import net.minecraft.server.network.ServerPlayerEntity;
-
 import java.util.stream.Stream;
+
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public interface EntityTrackerStreamAccessor {
 	Stream<ServerPlayerEntity> fabric_getTrackingPlayers();

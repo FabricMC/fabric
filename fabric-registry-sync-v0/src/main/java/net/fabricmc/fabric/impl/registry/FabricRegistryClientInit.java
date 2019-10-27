@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.impl.registry;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -35,7 +37,7 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 				LOGGER.error("Registry remapping failed!", e);
 				MinecraftClient.getInstance().execute(() -> {
 					((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getConnection().disconnect(
-						new LiteralText("Registry remapping failed: " + e.getMessage())
+							new LiteralText("Registry remapping failed: " + e.getMessage())
 					);
 				});
 			});

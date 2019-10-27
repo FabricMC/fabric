@@ -16,22 +16,24 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
-import com.google.common.base.Joiner;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.base.Joiner;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 
 public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V>, RegistryIdRemapCallback<V>, RegistryEntryRemovedCallback<V> {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -65,8 +67,10 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V
 		List<String> errors = null;
 
 		mappers.clear();
+
 		for (int i : oldMappers.keySet()) {
 			int newI = remapMap.getOrDefault(i, Integer.MIN_VALUE);
+
 			if (newI >= 0) {
 				if (mappers.containsKey(newI)) {
 					if (errors == null) {
@@ -91,6 +95,7 @@ public class Int2ObjectMapTracker<V, OV> implements RegistryEntryAddedCallback<V
 	@Override
 	public void onEntryRemoved(int rawId, Identifier id, V object) {
 		OV mapper = mappers.remove(rawId);
+
 		if (mapper != null) {
 			removedMapperCache.put(id, mapper);
 		}

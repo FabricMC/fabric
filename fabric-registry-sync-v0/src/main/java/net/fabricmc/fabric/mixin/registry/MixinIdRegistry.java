@@ -16,23 +16,20 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import it.unimi.dsi.fastutil.ints.*;
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.RemapStateImpl;
-import net.fabricmc.fabric.impl.registry.RemapException;
-import net.fabricmc.fabric.impl.registry.RemappableRegistry;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Int2ObjectBiMap;
-import net.minecraft.util.registry.SimpleRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,7 +39,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.*;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.Int2ObjectBiMap;
+import net.minecraft.util.registry.SimpleRegistry;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
+import net.fabricmc.fabric.impl.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.RemapStateImpl;
+import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
 public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry {
@@ -57,32 +66,32 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 	@Unique
 	private final Event<RegistryEntryAddedCallback> fabric_addObjectEvent = EventFactory.createArrayBacked(RegistryEntryAddedCallback.class,
-		(callbacks) -> (rawId, id, object) -> {
-			for (RegistryEntryAddedCallback callback : callbacks) {
-				//noinspection unchecked
-				callback.onEntryAdded(rawId, id, object);
+			(callbacks) -> (rawId, id, object) -> {
+				for (RegistryEntryAddedCallback callback : callbacks) {
+					//noinspection unchecked
+					callback.onEntryAdded(rawId, id, object);
+				}
 			}
-		}
 	);
 
 	@Unique
 	private final Event<RegistryEntryRemovedCallback> fabric_removeObjectEvent = EventFactory.createArrayBacked(RegistryEntryRemovedCallback.class,
-		(callbacks) -> (rawId, id, object) -> {
-			for (RegistryEntryRemovedCallback callback : callbacks) {
-				//noinspection unchecked
-				callback.onEntryRemoved(rawId, id, object);
+			(callbacks) -> (rawId, id, object) -> {
+				for (RegistryEntryRemovedCallback callback : callbacks) {
+					//noinspection unchecked
+					callback.onEntryRemoved(rawId, id, object);
+				}
 			}
-		}
 	);
 
 	@Unique
 	private final Event<RegistryIdRemapCallback> fabric_postRemapEvent = EventFactory.createArrayBacked(RegistryIdRemapCallback.class,
-		(callbacks) -> (a) -> {
-			for (RegistryIdRemapCallback callback : callbacks) {
-				//noinspection unchecked
-				callback.onRemap(a);
+			(callbacks) -> (a) -> {
+				for (RegistryIdRemapCallback callback : callbacks) {
+					//noinspection unchecked
+					callback.onRemap(a);
+				}
 			}
-		}
 	);
 
 	@Unique
@@ -93,19 +102,19 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Override
 	public Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryEntryAddedCallback<T>>) (Event) fabric_addObjectEvent;
+		return (Event) fabric_addObjectEvent;
 	}
 
 	@Override
 	public Event<RegistryEntryRemovedCallback<T>> fabric_getRemoveObjectEvent() {
 		//noinspection unchecked
-		return (Event<RegistryEntryRemovedCallback<T>>) (Event) fabric_removeObjectEvent;
+		return (Event) fabric_removeObjectEvent;
 	}
 
 	@Override
 	public Event<RegistryIdRemapCallback<T>> fabric_getRemapEvent() {
 		//noinspection unchecked
-		return (Event<RegistryIdRemapCallback<T>>) (Event) fabric_postRemapEvent;
+		return (Event) fabric_postRemapEvent;
 	}
 
 	// The rest of the registry isn't thread-safe, so this one need not be either.
@@ -116,6 +125,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
 		int indexedEntriesId = indexedEntries.getId((T) object);
+
 		if (indexedEntriesId >= 0) {
 			throw new RuntimeException("Attempted to register object " + object + " twice! (at raw IDs " + indexedEntriesId + " and " + id + " )");
 		}
@@ -124,8 +134,10 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			fabric_isObjectNew = true;
 		} else {
 			T oldObject = entries.get(identifier);
+
 			if (oldObject != null && oldObject != object) {
 				int oldId = indexedEntries.getId(oldObject);
+
 				if (oldId != id) {
 					throw new RuntimeException("Attempted to register ID " + identifier + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
 				}
@@ -153,50 +165,60 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 		// Throw on invalid conditions.
 		switch (mode) {
-			case AUTHORITATIVE:
-				break;
-			case REMOTE: {
-				List<String> strings = null;
+		case AUTHORITATIVE:
+			break;
+		case REMOTE: {
+			List<String> strings = null;
+
+			for (Identifier remoteId : remoteIndexedEntries.keySet()) {
+				if (!entries.keySet().contains(remoteId)) {
+					if (strings == null) {
+						strings = new ArrayList<>();
+					}
+
+					strings.add(" - " + remoteId);
+				}
+			}
+
+			if (strings != null) {
+				StringBuilder builder = new StringBuilder("Received ID map for " + name + " contains IDs unknown to the receiver!");
+
+				for (String s : strings) {
+					builder.append('\n').append(s);
+				}
+
+				throw new RemapException(builder.toString());
+			}
+
+			break;
+		}
+		case EXACT: {
+			if (!entries.keySet().equals(remoteIndexedEntries.keySet())) {
+				List<String> strings = new ArrayList<>();
+
 				for (Identifier remoteId : remoteIndexedEntries.keySet()) {
 					if (!entries.keySet().contains(remoteId)) {
-						if (strings == null) {
-							strings = new ArrayList<>();
-						}
-
-						strings.add(" - " + remoteId);
+						strings.add(" - " + remoteId + " (missing on local)");
 					}
 				}
 
-				if (strings != null) {
-					StringBuilder builder = new StringBuilder("Received ID map for " + name + " contains IDs unknown to the receiver!");
-					for (String s : strings) {
-						builder.append('\n').append(s);
+				for (Identifier localId : registry.getIds()) {
+					if (!remoteIndexedEntries.keySet().contains(localId)) {
+						strings.add(" - " + localId + " (missing on remote)");
 					}
-					throw new RemapException(builder.toString());
 				}
-			} break;
-			case EXACT: {
-				if (!entries.keySet().equals(remoteIndexedEntries.keySet())) {
-					List<String> strings = new ArrayList<>();
-					for (Identifier remoteId : remoteIndexedEntries.keySet()) {
-						if (!entries.keySet().contains(remoteId)) {
-							strings.add(" - " + remoteId + " (missing on local)");
-						}
-					}
 
-					for (Identifier localId : registry.getIds()) {
-						if (!remoteIndexedEntries.keySet().contains(localId)) {
-							strings.add(" - " + localId + " (missing on remote)");
-						}
-					}
+				StringBuilder builder = new StringBuilder("Local and remote ID sets for " + name + " do not match!");
 
-					StringBuilder builder = new StringBuilder("Local and remote ID sets for " + name + " do not match!");
-					for (String s : strings) {
-						builder.append('\n').append(s);
-					}
-					throw new RemapException(builder.toString());
+				for (String s : strings) {
+					builder.append('\n').append(s);
 				}
-			} break;
+
+				throw new RemapException(builder.toString());
+			}
+
+			break;
+		}
 		}
 
 		// Make a copy of the previous maps.
@@ -208,12 +230,14 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		if (fabric_prevIndexedEntries == null) {
 			fabric_prevIndexedEntries = new Object2IntOpenHashMap<>();
 			fabric_prevEntries = HashBiMap.create(entries);
+
 			for (Object o : registry) {
 				fabric_prevIndexedEntries.put(registry.getId(o), registry.getRawId(o));
 			}
 		}
 
 		Int2ObjectMap<Identifier> oldIdMap = new Int2ObjectOpenHashMap<>();
+
 		for (Object o : registry) {
 			oldIdMap.put(registry.getRawId(o), registry.getId(o));
 		}
@@ -221,47 +245,53 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		// If we're AUTHORITATIVE, we append entries which only exist on the
 		// local side to the new entry list. For REMOTE, we instead drop them.
 		switch (mode) {
-			case AUTHORITATIVE: {
-				int maxValue = 0;
+		case AUTHORITATIVE: {
+			int maxValue = 0;
 
-				Object2IntMap<Identifier> oldRemoteIndexedEntries = remoteIndexedEntries;
-				remoteIndexedEntries = new Object2IntOpenHashMap<>();
-				for (Identifier id : oldRemoteIndexedEntries.keySet()) {
-					int v = oldRemoteIndexedEntries.getInt(id);
-					remoteIndexedEntries.put(id, v);
-					if (v > maxValue) maxValue = v;
+			Object2IntMap<Identifier> oldRemoteIndexedEntries = remoteIndexedEntries;
+			remoteIndexedEntries = new Object2IntOpenHashMap<>();
+
+			for (Identifier id : oldRemoteIndexedEntries.keySet()) {
+				int v = oldRemoteIndexedEntries.getInt(id);
+				remoteIndexedEntries.put(id, v);
+				if (v > maxValue) maxValue = v;
+			}
+
+			for (Identifier id : registry.getIds()) {
+				if (!remoteIndexedEntries.containsKey(id)) {
+					FABRIC_LOGGER.warn("Adding " + id + " to saved/remote registry.");
+					remoteIndexedEntries.put(id, ++maxValue);
 				}
+			}
 
-				for (Identifier id : registry.getIds()) {
-					if (!remoteIndexedEntries.containsKey(id)) {
-						FABRIC_LOGGER.warn("Adding " + id + " to saved/remote registry.");
-						remoteIndexedEntries.put(id, ++maxValue);
-					}
+			break;
+		}
+		case REMOTE: {
+			// TODO: Is this what mods really want?
+			Set<Identifier> droppedIds = new HashSet<>();
+
+			for (Identifier id : registry.getIds()) {
+				if (!remoteIndexedEntries.containsKey(id)) {
+					Object object = registry.get(id);
+					int rid = registry.getRawId(object);
+
+					droppedIds.add(id);
+
+					// Emit RemoveObject events for removed objects.
+					//noinspection unchecked
+					fabric_getRemoveObjectEvent().invoker().onEntryRemoved(rid, id, (T) object);
 				}
-			} break;
-			case REMOTE: {
-				// TODO: Is this what mods really want?
-				Set<Identifier> droppedIds = new HashSet<>();
+			}
 
-				for (Identifier id : registry.getIds()) {
-					if (!remoteIndexedEntries.containsKey(id)) {
-						Object object = registry.get(id);
-						int rid = registry.getRawId(object);
+			// note: indexedEntries cannot be safely remove()d from
+			entries.keySet().removeAll(droppedIds);
 
-						droppedIds.add(id);
-
-						// Emit RemoveObject events for removed objects.
-						//noinspection unchecked
-						fabric_getRemoveObjectEvent().invoker().onEntryRemoved(rid, id, (T) object);
-					}
-				}
-
-				// note: indexedEntries cannot be safely remove()d from
-				entries.keySet().removeAll(droppedIds);
-			} break;
+			break;
+		}
 		}
 
 		Int2IntMap idMap = new Int2IntOpenHashMap();
+
 		for (Object o : indexedEntries) {
 			Identifier id = registry.getId(o);
 			int rid = registry.getRawId(o);
@@ -292,11 +322,13 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 				} else {
 					FABRIC_LOGGER.warn(identifier + " missing from registry, but requested!");
 				}
+
 				continue;
 			}
 
 			// Add the new object, increment nextId to match.
 			indexedEntries.put(object, id);
+
 			if (nextId <= id) {
 				nextId = id + 1;
 			}

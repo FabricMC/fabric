@@ -16,20 +16,21 @@
 
 package net.fabricmc.fabric.impl.registry;
 
-import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
-import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
 public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, SimpleSynchronousResourceReloadListener {
 	private static final FlammableBlockRegistry.Entry REMOVED = new FlammableBlockRegistry.Entry(0, 0);
@@ -59,13 +60,16 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 
 	private void reload() {
 		computedEntries.clear();
+
 		// tags take precedence before blocks
 		for (Tag<Block> tag : registeredEntriesTag.keySet()) {
 			FlammableBlockRegistry.Entry entry = registeredEntriesTag.get(tag);
+
 			for (Block block : tag.values()) {
 				computedEntries.put(block, entry);
 			}
 		}
+
 		computedEntries.putAll(registeredEntriesBlock);
 
 		/* computedBurnChances.clear();
@@ -82,6 +86,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	@Override
 	public Entry get(Block block) {
 		Entry entry = computedEntries.get(block);
+
 		if (entry != null) {
 			return entry;
 		} else {

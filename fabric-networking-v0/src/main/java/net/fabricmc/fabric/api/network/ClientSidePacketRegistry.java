@@ -18,21 +18,23 @@ package net.fabricmc.fabric.api.network;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
+
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
+import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
+
 /**
  * The client-side packet registry.
- * <p>
- * It is used for:
- * <p>
- * - registering client-side packet receivers (server -&gt; client packets)
- * - sending packets to the server (client -&gt; server packets).
+ *
+ * <p>It is used for:
+ *
+ * <ul><li>registering client-side packet receivers (server -&gt; client packets)
+ * <li>sending packets to the server (client -&gt; server packets).</ul>
  */
 public interface ClientSidePacketRegistry extends PacketRegistry {
-	static final ClientSidePacketRegistry INSTANCE = new ClientSidePacketRegistryImpl();
+	ClientSidePacketRegistry INSTANCE = new ClientSidePacketRegistryImpl();
 
 	/**
 	 * Check if the server declared the ability to receive a given packet ID

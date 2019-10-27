@@ -16,17 +16,18 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.LayerRandomnessSource;
+
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+
 /**
- * Deals with picking variants for you
+ * Deals with picking variants for you.
  */
 final class VariantTransformer {
 	private final SubTransformer defaultTransformer = new SubTransformer();
@@ -49,7 +50,7 @@ final class VariantTransformer {
 	}
 
 	/**
-	 * Transforms a biome into a variant randomly depending on its chance
+	 * Transforms a biome into a variant randomly depending on its chance.
 	 *
 	 * @param replaced biome to transform
 	 * @param random the {@link LayerRandomnessSource} from the layer
@@ -81,7 +82,7 @@ final class VariantTransformer {
 		}
 
 		/**
-		 * Transforms a biome into a variant randomly depending on its chance
+		 * Transforms a biome into a variant randomly depending on its chance.
 		 *
 		 * @param replaced biome to transform
 		 * @param random the {@link LayerRandomnessSource} from the layer
@@ -93,6 +94,7 @@ final class VariantTransformer {
 					return variant.getVariant();
 				}
 			}
+
 			return replaced;
 		}
 	}

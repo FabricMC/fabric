@@ -19,5 +19,5 @@ package net.fabricmc.indigo.renderer.accessor;
 import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
 
 public interface AccessBufferBuilder {
-    void fabric_putQuad(QuadViewImpl quad);
+	void fabric_putQuad(QuadViewImpl quad);
 }

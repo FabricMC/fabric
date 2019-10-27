@@ -16,19 +16,21 @@
 
 package net.fabricmc.fabric.impl.registry.trackers;
 
+import java.util.Collection;
+import java.util.function.Function;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
-import net.fabricmc.fabric.impl.registry.RemovableIdList;
-import net.minecraft.util.IdList;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collection;
-import java.util.function.Function;
+import net.minecraft.util.IdList;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
+import net.fabricmc.fabric.impl.registry.RemovableIdList;
 
 public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, RegistryEntryAddedCallback<T> {
 	private final Logger logger = LogManager.getLogger();
@@ -86,6 +88,7 @@ public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, R
 
 	private void recalcHighestId() {
 		currentHighestId = 0;
+
 		for (T object : registry) {
 			currentHighestId = Math.max(currentHighestId, registry.getRawId(object));
 		}

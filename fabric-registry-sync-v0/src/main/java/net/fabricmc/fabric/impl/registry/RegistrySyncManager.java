@@ -16,25 +16,6 @@
 
 package net.fabricmc.fabric.impl.registry;
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import io.netty.buffer.Unpooled;
-import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import it.unimi.dsi.fastutil.ints.IntSet;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +26,27 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import io.netty.buffer.Unpooled;
+import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Packet;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.PacketByteBuf;
+import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
 	static final Identifier ID = new Identifier("fabric", "registry/sync");
@@ -53,9 +55,7 @@ public final class RegistrySyncManager {
 	private static final Set<Identifier> REGISTRY_BLACKLIST = ImmutableSet.of();
 	private static final Set<Identifier> REGISTRY_BLACKLIST_NETWORK = ImmutableSet.of();
 
-	private RegistrySyncManager() {
-
-	}
+	private RegistrySyncManager() { }
 
 	public static Packet<?> createPacket() {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
@@ -80,6 +80,7 @@ public final class RegistrySyncManager {
 					} catch (RemapException e) {
 						errorHandler.accept(e);
 					}
+
 					return null;
 				}).get(30, TimeUnit.SECONDS);
 			} catch (ExecutionException | InterruptedException | TimeoutException e) {
@@ -95,6 +96,7 @@ public final class RegistrySyncManager {
 			if (DEBUG_WRITE_REGISTRY_DATA) {
 				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
 				boolean c = true;
+
 				if (!location.exists()) {
 					if (!location.mkdirs()) {
 						LOGGER.warn("[fabric-registry-sync debug] Could not create " + location.getAbsolutePath() + " directory!");
@@ -103,10 +105,13 @@ public final class RegistrySyncManager {
 				}
 
 				MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+
 				if (c && registry != null) {
 					File file = new File(location, registryId.toString().replace(':', '.').replace('/', '.') + ".csv");
+
 					try (FileOutputStream stream = new FileOutputStream(file)) {
 						StringBuilder builder = new StringBuilder("Raw ID,String ID,Class Type\n");
+
 						for (Object o : registry) {
 							String classType = (o == null) ? "null" : o.getClass().getName();
 							//noinspection unchecked
@@ -118,6 +123,7 @@ public final class RegistrySyncManager {
 							String stringId = id.toString();
 							builder.append("\"").append(rawId).append("\",\"").append(stringId).append("\",\"").append(classType).append("\"\n");
 						}
+
 						stream.write(builder.toString().getBytes(StandardCharsets.UTF_8));
 					} catch (IOException e) {
 						LOGGER.warn("[fabric-registry-sync debug] Could not write to " + file.getAbsolutePath() + "!", e);
@@ -132,6 +138,7 @@ public final class RegistrySyncManager {
 			}
 
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+
 			if (registry instanceof RemappableRegistry) {
 				CompoundTag registryTag = new CompoundTag();
 				IntSet rawIdsFound = DEBUG ? new IntOpenHashSet() : null;
@@ -186,6 +193,7 @@ public final class RegistrySyncManager {
 
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
+
 				for (String key : registryTag.getKeys()) {
 					idMap.put(new Identifier(key), registryTag.getInt(key));
 				}
@@ -202,6 +210,7 @@ public final class RegistrySyncManager {
 	public static void unmap() throws RemapException {
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+
 			if (registry instanceof RemappableRegistry) {
 				((RemappableRegistry) registry).unmap(registryId.toString());
 			}

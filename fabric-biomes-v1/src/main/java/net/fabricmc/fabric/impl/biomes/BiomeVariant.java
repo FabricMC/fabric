@@ -19,10 +19,9 @@ package net.fabricmc.fabric.impl.biomes;
 import net.minecraft.world.biome.Biome;
 
 /**
- * Represents a biome variant and its corresponding chance
+ * Represents a biome variant and its corresponding chance.
  */
 final class BiomeVariant {
-
 	private final Biome variant;
 	private final double chance;
 
@@ -48,5 +47,4 @@ final class BiomeVariant {
 	double getChance() {
 		return chance;
 	}
-
 }

@@ -16,14 +16,15 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
+import java.util.List;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.condition.LootCondition;
 import net.minecraft.world.loot.entry.LootEntry;
 import net.minecraft.world.loot.function.LootFunction;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-
-import java.util.List;
 
 @Mixin(LootPool.Builder.class)
 public interface LootPoolBuilderHooks {

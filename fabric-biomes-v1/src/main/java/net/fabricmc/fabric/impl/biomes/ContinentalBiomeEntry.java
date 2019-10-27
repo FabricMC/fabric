@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.biomes;
 import net.minecraft.world.biome.Biome;
 
 /**
- * Represents a biome and its corresponding weight
+ * Represents a biome and its corresponding weight.
  */
 final class ContinentalBiomeEntry {
 	private final Biome biome;

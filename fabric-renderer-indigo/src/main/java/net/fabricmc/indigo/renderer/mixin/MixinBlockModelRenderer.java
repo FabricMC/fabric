@@ -24,8 +24,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.indigo.renderer.render.BlockRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.BufferBuilder;
@@ -34,18 +32,23 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.ExtendedBlockView;
 
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.indigo.renderer.render.BlockRenderContext;
+
 @Mixin(BlockModelRenderer.class)
 public abstract class MixinBlockModelRenderer {
-    @Shadow protected BlockColors colorMap;
-    private final ThreadLocal<BlockRenderContext> CONTEXTS = ThreadLocal.withInitial(BlockRenderContext::new);
-    
-    @Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
-    private void hookTesselate(ExtendedBlockView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, boolean checkSides, Random rand, long seed, CallbackInfoReturnable<Boolean> ci) {
-        if(!((FabricBakedModel)model).isVanillaAdapter()) {
-            BlockRenderContext context = CONTEXTS.get();
-            if(!context.isCallingVanilla()) {
-                ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer)(Object)this, blockView, model, state, pos, buffer, seed));
-            }
-        }
-    }
+	@Shadow
+	protected BlockColors colorMap;
+	private final ThreadLocal<BlockRenderContext> CONTEXTS = ThreadLocal.withInitial(BlockRenderContext::new);
+
+	@Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
+	private void hookTesselate(ExtendedBlockView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, boolean checkSides, Random rand, long seed, CallbackInfoReturnable<Boolean> ci) {
+		if (!((FabricBakedModel) model).isVanillaAdapter()) {
+			BlockRenderContext context = CONTEXTS.get();
+
+			if (!context.isCallingVanilla()) {
+				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer) (Object) this, blockView, model, state, pos, buffer, seed));
+			}
+		}
+	}
 }
