@@ -44,6 +44,7 @@ public abstract class MixinLevelProperties implements DimensionIdsHolder {
 	@Inject(method = "<init>(Lnet/minecraft/nbt/CompoundTag;Lcom/mojang/datafixers/DataFixer;ILnet/minecraft/nbt/CompoundTag;)V", at = @At("RETURN"))
 	private void readDimensionIds(CompoundTag data, DataFixer fixer, int version, CompoundTag player, CallbackInfo ci) {
 		CompoundTag savedIds = data.getCompound("fabric_DimensionIds");
+
 		try {
 			this.fabricDimensionIds = DimensionIdsFixer.apply(savedIds);
 		} catch (RemapException e) {

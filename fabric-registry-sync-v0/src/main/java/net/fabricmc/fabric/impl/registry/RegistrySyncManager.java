@@ -108,6 +108,7 @@ public final class RegistrySyncManager {
 
 				if (c && registry != null) {
 					File file = new File(location, registryId.toString().replace(':', '.').replace('/', '.') + ".csv");
+
 					try (FileOutputStream stream = new FileOutputStream(file)) {
 						StringBuilder builder = new StringBuilder("Raw ID,String ID,Class Type\n");
 

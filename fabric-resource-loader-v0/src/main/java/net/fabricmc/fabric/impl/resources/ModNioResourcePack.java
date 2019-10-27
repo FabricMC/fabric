@@ -185,6 +185,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 			}
 
 			Set<String> namespaces = new HashSet<>();
+
 			try (DirectoryStream<Path> stream = Files.newDirectoryStream(typePath, Files::isDirectory)) {
 				for (Path path : stream) {
 					String s = path.getFileName().toString();

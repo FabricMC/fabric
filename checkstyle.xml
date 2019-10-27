@@ -38,7 +38,7 @@
 		while <something> is a single line comment, it'll look for a blank line one line earlier
 		if <something> is a space, indicating a formatting error or ' */', it'll ignore the instance
 		if <something> is a tab, indicating a continued line, it'll ignore the instance
-		<control statement> is 'if', 'do', 'while', 'for' or nothing (instance initializer block)
+		<control statement> is 'if', 'do', 'while', 'for', 'try' or nothing (instance initializer block)
 
 		- first \n: with positive lookbehind (?<=\n) to move the error marker to a more reasonable place
 		- capture tabs for <indentation>, later referenced via \1
@@ -47,7 +47,7 @@
 		- <indentation> as captured earlier
 		- <control statement> as specified above
 		- { before the next new line -->
-		<property name="format" value="(?&lt;=\n)([\t]+)(?:[^/\n \t][^\n]*|/[^/\n][^\n]*|[^/\n][^\n]*(\n\1//[^\n]*)+)\n\1(|(if|do|while|for)[^\n]+)\{[\r\t ]*\n"/>
+		<property name="format" value="(?&lt;=\n)([\t]+)(?:[^/\n \t][^\n]*|/[^/\n][^\n]*|[^/\n][^\n]*(\n\1//[^\n]*)+)\n\1(|(if|do|while|for|try)[^\n]+)\{[\r\t ]*\n"/>
 		<property name="message" value="missing blank line before block at same indentation level"/>
 	</module>
 

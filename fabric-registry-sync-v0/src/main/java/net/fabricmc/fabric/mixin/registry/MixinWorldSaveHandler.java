@@ -128,6 +128,7 @@ public class MixinWorldSaveHandler {
 		// Load
 		for (int i = 0; i < FABRIC_ID_REGISTRY_BACKUPS; i++) {
 			FABRIC_LOGGER.trace("[fabric-registry-sync] Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");
+
 			try {
 				if (fabric_readIdMapFile(fabric_getWorldIdMapFile(i))) {
 					FABRIC_LOGGER.info("[fabric-registry-sync] Loaded registry data [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");

@@ -187,6 +187,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 		if (consumer != null) {
 			PacketByteBuf buf = bufSupplier.get();
+
 			try {
 				consumer.accept(context, buf);
 			} catch (Throwable t) {
