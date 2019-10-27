@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.content.registry;
 
 import java.util.Map;
 
+import java.util.Map;
+
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.logging.log4j.LogManager;

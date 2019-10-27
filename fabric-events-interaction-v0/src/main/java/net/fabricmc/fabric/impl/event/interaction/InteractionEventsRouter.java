@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.event.interaction;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.ActionResult;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.util.ActionResult;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.BlockAttackInteractionAware;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.tag.extension;
 
 import java.util.Collection;
 
+import java.util.Collection;
+
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 

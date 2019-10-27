@@ -20,6 +20,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.sound.BlockSoundGroup;

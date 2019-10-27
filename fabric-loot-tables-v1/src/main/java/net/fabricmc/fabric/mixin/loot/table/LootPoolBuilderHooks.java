@@ -21,6 +21,11 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import java.util.List;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.condition.LootCondition;
 import net.minecraft.world.loot.entry.LootEntry;

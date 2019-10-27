@@ -19,6 +19,9 @@ package net.fabricmc.fabric.mixin.loot.table;
 import java.util.HashMap;
 import java.util.Map;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Mixin;

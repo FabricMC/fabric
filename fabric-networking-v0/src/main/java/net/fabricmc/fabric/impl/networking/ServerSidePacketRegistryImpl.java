@@ -25,6 +25,15 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.WeakHashMap;
+import java.util.function.Consumer;
+
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 

@@ -19,6 +19,9 @@ package net.fabricmc.fabric.impl.biome;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.biome.Biome;

@@ -20,6 +20,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+
 import com.mojang.blaze3d.platform.GlStateManager;
 
 import net.minecraft.client.MinecraftClient;

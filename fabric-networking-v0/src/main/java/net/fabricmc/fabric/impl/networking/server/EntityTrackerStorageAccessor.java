@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.stream.Stream;
 
+import java.util.stream.Stream;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 
