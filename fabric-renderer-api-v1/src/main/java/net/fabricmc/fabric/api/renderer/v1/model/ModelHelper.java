@@ -87,7 +87,7 @@ public abstract class ModelHelper {
 				Direction face = q.cullFace();
 				builders[face == null ? 6 : face.getId()].add(q.toBakedQuad(l, finder.find(q, l), false));
 			}
-		}) ;
+		});
 
 		@SuppressWarnings("unchecked")
 		List<BakedQuad>[] result = new List[7];

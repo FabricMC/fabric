@@ -34,6 +34,6 @@ import net.fabricmc.fabric.api.event.client.ItemTooltipCallback;
 public class MixinItemStack {
 	@Inject(method = "getTooltip", at = @At("RETURN"))
 	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext, CallbackInfoReturnable<List<Text>> info) {
-		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object)this, tooltipContext, info.getReturnValue());
+		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext, info.getReturnValue());
 	}
 }

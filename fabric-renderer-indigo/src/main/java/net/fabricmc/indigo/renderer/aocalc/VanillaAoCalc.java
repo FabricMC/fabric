@@ -210,8 +210,8 @@ public class VanillaAoCalc {
 	}
 
 	private int getBrightness(int int_1, int int_2, int int_3, int int_4, float float_1, float float_2, float float_3, float float_4) {
-		int int_5 = (int)((int_1 >> 16 & 255) * float_1 + (int_2 >> 16 & 255) * float_2 + (int_3 >> 16 & 255) * float_3 + (int_4 >> 16 & 255) * float_4) & 255;
-		int int_6 = (int)((int_1 & 255) * float_1 + (int_2 & 255) * float_2 + (int_3 & 255) * float_3 + (int_4 & 255) * float_4) & 255;
+		int int_5 = (int) ((int_1 >> 16 & 255) * float_1 + (int_2 >> 16 & 255) * float_2 + (int_3 >> 16 & 255) * float_3 + (int_4 >> 16 & 255) * float_4) & 255;
+		int int_6 = (int) ((int_1 & 255) * float_1 + (int_2 & 255) * float_2 + (int_3 & 255) * float_3 + (int_4 & 255) * float_4) & 255;
 		return int_5 << 16 | int_6;
 	}
 

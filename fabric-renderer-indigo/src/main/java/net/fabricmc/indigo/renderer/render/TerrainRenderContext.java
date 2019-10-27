@@ -56,7 +56,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 		chunkInfo.setChunkTask(chunkTask);
 	}
 
-	public TerrainRenderContext prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean [] resultFlags) {
+	public TerrainRenderContext prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean[] resultFlags) {
 		chunkInfo.prepare(chunkRenderer, chunkOrigin, resultFlags);
 		return this;
 	}
@@ -72,7 +72,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
 			chunkInfo.beginBlock();
-			((FabricBakedModel)model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
+			((FabricBakedModel) model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
 		} catch (Throwable var9) {
 			CrashReport crashReport_1 = CrashReport.create(var9, "Tesselating block in world - Indigo Renderer");
 			CrashReportSection crashReportElement_1 = crashReport_1.addElement("Block being tesselated");

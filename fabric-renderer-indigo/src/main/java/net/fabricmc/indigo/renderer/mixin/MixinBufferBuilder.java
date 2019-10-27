@@ -77,20 +77,20 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
 				switch (e.getType()) {
 				case COLOR:
 					final int c = quad.spriteColor(i, 0);
-					((BufferBuilder)(Object)this).color(c & 0xFF, (c >>> 8) & 0xFF, (c >>> 16) & 0xFF, (c >>> 24) & 0xFF);
+					((BufferBuilder) (Object) this).color(c & 0xFF, (c >>> 8) & 0xFF, (c >>> 16) & 0xFF, (c >>> 24) & 0xFF);
 					break;
 				case NORMAL:
-					((BufferBuilder)(Object)this).normal(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
+					((BufferBuilder) (Object) this).normal(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
 					break;
 				case POSITION:
-					((BufferBuilder)(Object)this).vertex(quad.x(i), quad.y(i), quad.z(i));
+					((BufferBuilder) (Object) this).vertex(quad.x(i), quad.y(i), quad.z(i));
 					break;
 				case UV:
 					if (e.getIndex() == 0) {
-						((BufferBuilder)(Object)this).texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
+						((BufferBuilder) (Object) this).texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
 					} else {
 						final int b = quad.lightmap(i);
-						((BufferBuilder)(Object)this).texture((b >> 16) & 0xFFFF, b & 0xFFFF);
+						((BufferBuilder) (Object) this).texture((b >> 16) & 0xFFFF, b & 0xFFFF);
 					}
 
 					break;
@@ -104,7 +104,7 @@ public abstract class MixinBufferBuilder implements AccessBufferBuilder {
 				}
 			}
 
-			((BufferBuilder)(Object)this).next();
+			((BufferBuilder) (Object) this).next();
 		}
 	}
 }

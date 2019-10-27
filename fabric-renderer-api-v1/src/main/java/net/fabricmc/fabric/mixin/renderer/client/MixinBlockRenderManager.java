@@ -67,7 +67,7 @@ public abstract class MixinBlockRenderManager {
 	private void hookTesselateDamage(BlockState blockState, BlockPos blockPos, Sprite sprite, ExtendedBlockView blockView, CallbackInfo ci) {
 		MutablePair<DamageModel, BakedModel> damageState = DAMAGE_STATE.get();
 
-		if (damageState.right != null && !((FabricBakedModel)damageState.right).isVanillaAdapter()) {
+		if (damageState.right != null && !((FabricBakedModel) damageState.right).isVanillaAdapter()) {
 			damageState.left.prepare(damageState.right, sprite, blockState, blockPos);
 			this.renderer.tesselate(blockView, damageState.left, blockState, blockPos, Tessellator.getInstance().getBufferBuilder(), true, this.random, blockState.getRenderingSeed(blockPos));
 			ci.cancel();

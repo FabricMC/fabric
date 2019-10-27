@@ -47,7 +47,7 @@ public abstract class MixinBlockModelRenderer {
 			BlockRenderContext context = CONTEXTS.get();
 
 			if (!context.isCallingVanilla()) {
-				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer)(Object)this, blockView, model, state, pos, buffer, seed));
+				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer) (Object) this, blockView, model, state, pos, buffer, seed));
 			}
 		}
 	}

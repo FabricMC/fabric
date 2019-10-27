@@ -97,7 +97,7 @@ public abstract class MixinChunkRenderer implements AccessChunkRenderer {
 	 */
 	@ModifyVariable(method = "rebuildChunk", at = @At(value = "STORE", ordinal = 0), allow = 1, require = 1)
 	private boolean[] hookResultFlagsAndPrepare(boolean[] flagsIn) {
-		TerrainRenderContext.POOL.get().prepare((ChunkRenderer)(Object)this, origin, flagsIn);
+		TerrainRenderContext.POOL.get().prepare((ChunkRenderer) (Object) this, origin, flagsIn);
 		return flagsIn;
 	}
 

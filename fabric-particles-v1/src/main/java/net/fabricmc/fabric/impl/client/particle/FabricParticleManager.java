@@ -51,8 +51,8 @@ public final class FabricParticleManager {
 		ParticleFactoryRegistryImpl.INSTANCE.constructors.forEach((id, factory) -> {
 			FabricSpriteProviderImpl provider = new FabricSpriteProviderImpl();
 
-			providers.put((int)id, provider);
-			manager.getFactories().put((int)id, factory.create(provider));
+			providers.put((int) id, provider);
+			manager.getFactories().put((int) id, factory.create(provider));
 		});
 	}
 
@@ -61,7 +61,7 @@ public final class FabricParticleManager {
 			return null;
 		}
 
-		return providers.get((int)ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
+		return providers.get((int) ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
 	}
 
 	public boolean loadParticle(ResourceManager manager, Identifier id) {

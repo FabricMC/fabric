@@ -88,7 +88,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
 		setupOffsets();
 
-		((FabricBakedModel)model).emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
+		((FabricBakedModel) model).emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
 
 		this.vanillaRenderer = null;
 		blockInfo.release();
@@ -122,7 +122,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 			final double z = offsetZ;
 
 			for (int i = 0; i < 4; i++) {
-				q.pos(i, (float)(q.x(i) + x), (float)(q.y(i) + y), (float)(q.z(i) + z));
+				q.pos(i, (float) (q.x(i) + x), (float) (q.y(i) + y), (float) (q.z(i) + z));
 			}
 		}
 	}

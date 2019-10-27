@@ -105,7 +105,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.vanillaHandler = vanillaHandler;
 		Tessellator tessellator = Tessellator.getInstance();
 		bufferBuilder = tessellator.getBufferBuilder();
-		fabricBuffer = (AccessBufferBuilder)this.bufferBuilder;
+		fabricBuffer = (AccessBufferBuilder) this.bufferBuilder;
 
 		bufferBuilder.begin(7, VertexFormats.POSITION_COLOR_UV_NORMAL);
 		model.emitItemQuads(stack, randomSupplier, this);
@@ -142,7 +142,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private final Maker editorQuad = new Maker();
 
 	private final Consumer<Mesh> meshConsumer = (mesh) -> {
-		MeshImpl m = (MeshImpl)mesh;
+		MeshImpl m = (MeshImpl) mesh;
 		final int[] data = m.data();
 		final int limit = data.length;
 		int index = 0;
@@ -239,12 +239,12 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			for (int i = 0; i < 7; i++) {
 				random.setSeed(42L);
 				final Direction cullFace = ModelHelper.faceFromIndex(i);
-				renderFallbackWithTransform(bufferBuilder, model.getQuads((BlockState)null, cullFace, random), color, itemStack, cullFace);
+				renderFallbackWithTransform(bufferBuilder, model.getQuads((BlockState) null, cullFace, random), color, itemStack, cullFace);
 			}
 		} else {
 			for (int i = 0; i < 7; i++) {
 				random.setSeed(42L);
-				vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState)null, ModelHelper.faceFromIndex(i), random), color, itemStack);
+				vanillaHandler.accept(bufferBuilder, model.getQuads((BlockState) null, ModelHelper.faceFromIndex(i), random), color, itemStack);
 			}
 		}
 	};

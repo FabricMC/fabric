@@ -42,10 +42,10 @@ public abstract class NormalHelper {
 		z = MathHelper.clamp(z, -1, 1);
 		w = MathHelper.clamp(w, -1, 1);
 
-		return ((int)(x * 127) & 255)
-				| (((int)(y * 127) & 255) << 8)
-				| (((int)(z * 127) & 255) << 16)
-				| (((int)(w * 127) & 255) << 24);
+		return ((int) (x * 127) & 255)
+				| (((int) (y * 127) & 255) << 8)
+				| (((int) (z * 127) & 255) << 16)
+				| (((int) (w * 127) & 255) << 24);
 	}
 
 	/**

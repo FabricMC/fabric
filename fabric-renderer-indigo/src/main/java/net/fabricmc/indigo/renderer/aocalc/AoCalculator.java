@@ -155,7 +155,7 @@ public class AoCalculator {
 					LOGGER.info(String.format("Mismatch for %s @ %s", blockInfo.blockState.toString(), blockInfo.blockPos.toString()));
 					LOGGER.info(String.format("Flags = %d, LightFace = %s", quad.geometryFlags(), quad.lightFace().toString()));
 					LOGGER.info(String.format("	Old Multiplier: %.2f, %.2f, %.2f, %.2f",
-							vanillaAo[0], vanillaAo[1], vanillaAo[2],vanillaAo[3]));
+							vanillaAo[0], vanillaAo[1], vanillaAo[2], vanillaAo[3]));
 					LOGGER.info(String.format("	New Multiplier: %.2f, %.2f, %.2f, %.2f", ao[0], ao[1], ao[2], ao[3]));
 					LOGGER.info(String.format("	Old Brightness: %s, %s, %s, %s",
 							Integer.toHexString(vanillaLight[0]), Integer.toHexString(vanillaLight[1]),
@@ -375,16 +375,16 @@ public class AoCalculator {
 
 			// vanilla was further offsetting these in the direction of the light face
 			// but it was actually mis-sampling and causing visible artifacts in certain situation
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[0]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[0]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear0 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[1]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[1]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear1 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[2]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[2]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear2 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[3]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear3 = world.getBlockState(searchPos).getLightSubtracted(world, searchPos) == 0;
 

@@ -63,7 +63,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 			throw new UnsupportedOperationException("Material texture depth must be the same or less than original material.");
 		}
 
-		this.material = (Value)material;
+		this.material = (Value) material;
 		return this;
 	}
 

@@ -246,7 +246,7 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public void copyTo(MutableQuadView target) {
-		MutableQuadViewImpl quad = (MutableQuadViewImpl)target;
+		MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
 
 		int len = Math.min(this.stride(), quad.stride());
 

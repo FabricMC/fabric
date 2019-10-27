@@ -76,7 +76,7 @@ public class ChunkRenderInfo {
 	ChunkRenderData chunkData;
 	ChunkRenderer chunkRenderer;
 	ExtendedBlockView blockView;
-	boolean [] resultFlags;
+	boolean[] resultFlags;
 
 	private final AccessBufferBuilder[] buffers = new AccessBufferBuilder[4];
 	private final BlockRenderLayer[] LAYERS = BlockRenderLayer.values();
@@ -106,7 +106,7 @@ public class ChunkRenderInfo {
 		this.chunkTask = chunkTask;
 	}
 
-	void prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean [] resultFlags) {
+	void prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean[] resultFlags) {
 		this.chunkOrigin.set(chunkOrigin);
 		this.chunkData = chunkTask.getRenderData();
 		this.chunkRenderer = chunkRenderer;
@@ -150,9 +150,9 @@ public class ChunkRenderInfo {
 
 		if (blockState.getBlock().getOffsetType() != OffsetType.NONE) {
 			Vec3d offset = blockState.getOffsetPos(blockInfo.blockView, blockPos);
-			offsetX += (float)offset.x;
-			offsetY += (float)offset.y;
-			offsetZ += (float)offset.z;
+			offsetX += (float) offset.x;
+			offsetY += (float) offset.y;
+			offsetZ += (float) offset.z;
 		}
 	}
 

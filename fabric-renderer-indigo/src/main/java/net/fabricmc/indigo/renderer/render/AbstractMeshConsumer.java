@@ -70,7 +70,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 
 	@Override
 	public void accept(Mesh mesh) {
-		MeshImpl m = (MeshImpl)mesh;
+		MeshImpl m = (MeshImpl) mesh;
 		final int[] data = m.data();
 		final int limit = data.length;
 		int index = 0;

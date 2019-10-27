@@ -46,7 +46,7 @@ public abstract class MixinChunkRenderTask {
 		if (blockView != null) {
 			final TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 			renderer.setBlockView(blockView);
-			((AccessChunkRendererRegion)blockView).fabric_setRenderer(renderer);
+			((AccessChunkRendererRegion) blockView).fabric_setRenderer(renderer);
 		}
 	}
 }
