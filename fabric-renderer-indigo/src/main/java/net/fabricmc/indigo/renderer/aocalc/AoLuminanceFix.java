@@ -16,10 +16,11 @@
 
 package net.fabricmc.indigo.renderer.aocalc;
 
-import net.fabricmc.indigo.Indigo;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
+
+import net.fabricmc.indigo.Indigo;
 
 /**
  * Implements a fix to prevent luminous blocks from casting AO shade.

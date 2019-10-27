@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -23,10 +27,6 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.resource.ReloadableResourceManager;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 /**
  * Helper class for registering EntityRenderers.
@@ -43,7 +43,7 @@ public class EntityRendererRegistry {
 		private final ItemRenderer itemRenderer;
 		private final Map<EntityType<?>, EntityRenderer<?>> rendererMap;
 
-		private Context(TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer,Map<EntityType<?>, EntityRenderer<?>> rendererMap) {
+		private Context(TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<EntityType<?>, EntityRenderer<?>> rendererMap) {
 			this.textureManager = textureManager;
 			this.resourceManager = resourceManager;
 			this.itemRenderer = itemRenderer;
@@ -67,9 +67,7 @@ public class EntityRendererRegistry {
 	private final Map<EntityRenderDispatcher, Context> renderManagerMap = new WeakHashMap<>();
 	private final Map<EntityType<?>, EntityRendererRegistry.Factory> renderSupplierMap = new HashMap<>();
 
-	private EntityRendererRegistry() {
-
-	}
+	private EntityRendererRegistry() { }
 
 	public void initialize(EntityRenderDispatcher manager, TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<EntityType<?>, EntityRenderer<?>> renderers) {
 		synchronized (renderSupplierMap) {

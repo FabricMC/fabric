@@ -19,9 +19,7 @@ package net.fabricmc.indigo.renderer.render;
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
-import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererData;
-import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
@@ -32,35 +30,39 @@ import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.indigo.renderer.accessor.AccessChunkRenderer;
+import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererData;
+import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
+
 /**
  * Holds, manages and provides access to the chunk-related state
- * needed by fallback and mesh consumers during terrain rendering.<p>
- * 
- * Exception: per-block position offsets are tracked here so they can
+ * needed by fallback and mesh consumers during terrain rendering.
+ *
+ * <p>Exception: per-block position offsets are tracked here so they can
  * be applied together with chunk offsets.
  */
 public class ChunkRenderInfo {
 	/**
 	 * Serves same function as brightness cache in Mojang's AO calculator,
-	 * with some differences as follows...<p>
-	 * 
-	 * 1) Mojang uses Object2Int.  This uses Long2Int for performance and to avoid
+	 * with some differences as follows...
+	 *
+	 * <ul><li>Mojang uses Object2Int.  This uses Long2Int for performance and to avoid
 	 * creating new immutable BlockPos references.  But will break if someone
 	 * wants to expand Y limit or world borders.  If we want to support that may
-	 * need to switch or make configurable.<p>
-	 * 
-	 * 2) Mojang overrides the map methods to limit the cache to 50 values.
+	 * need to switch or make configurable.
+	 *
+	 * <li>Mojang overrides the map methods to limit the cache to 50 values.
 	 * However, a render chunk only has 18^3 blocks in it, and the cache is cleared every chunk.
 	 * For performance and simplicity, we just let map grow to the size of the render chunk.
-	 * 
-	 * 3) Mojang only uses the cache for Ao.  Here it is used for all brightness
+	 *
+	 * <li>Mojang only uses the cache for Ao.  Here it is used for all brightness
 	 * lookups, including flat lighting.
-	 * 
-	 * 4) The Mojang cache is a separate threadlocal with a threadlocal boolean to 
-	 * enable disable. Cache clearing happens with the disable. There's no use case for 
+	 *
+	 * <li>The Mojang cache is a separate threadlocal with a threadlocal boolean to
+	 * enable disable. Cache clearing happens with the disable. There's no use case for
 	 * us when the cache needs to be disabled (and no apparent case in Mojang's code either)
 	 * so we simply clear the cache at the start of each new chunk. It is also
-	 * not a threadlocal because it's held within a threadlocal BlockRenderer.
+	 * not a threadlocal because it's held within a threadlocal BlockRenderer.</ul>
 	 */
 	private final Long2IntOpenHashMap brightnessCache;
 	private final Long2FloatOpenHashMap aoLevelCache;
@@ -103,7 +105,7 @@ public class ChunkRenderInfo {
 
 		if (result == null) {
 			BufferBuilder builder = builders.get(renderLayer);
-			result = (BufferBuilder) builder;
+			result = builder;
 			chunkData.fabric_markPopulated(renderLayer);
 			buffers.put(renderLayer, result);
 
@@ -111,6 +113,7 @@ public class ChunkRenderInfo {
 				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder);
 			}
 		}
+
 		return result;
 	}
 

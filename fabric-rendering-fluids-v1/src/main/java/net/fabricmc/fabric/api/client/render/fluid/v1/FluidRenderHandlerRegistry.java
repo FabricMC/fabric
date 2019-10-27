@@ -16,32 +16,33 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
-import net.fabricmc.fabric.impl.client.render.fluid.FluidRenderHandlerRegistryImpl;
 import net.minecraft.fluid.Fluid;
+
+import net.fabricmc.fabric.impl.client.render.fluid.FluidRenderHandlerRegistryImpl;
 
 /**
  * Registry for {@link FluidRenderHandler} instances.
  *
- * Notably, this supports querying, overriding and wrapping vanilla fluid
+ * <p>Notably, this supports querying, overriding and wrapping vanilla fluid
  * rendering.
  */
 public interface FluidRenderHandlerRegistry {
-    FluidRenderHandlerRegistry INSTANCE = FluidRenderHandlerRegistryImpl.INSTANCE;
+	FluidRenderHandlerRegistry INSTANCE = FluidRenderHandlerRegistryImpl.INSTANCE;
 
-    /**
-     * Get a {@link FluidRenderHandler} for a given Fluid.
-     * Supports vanilla and Fabric fluids.
-     *
-     * @param fluid The Fluid.
-     * @return The FluidRenderHandler.
-     */
-    FluidRenderHandler get(Fluid fluid);
+	/**
+	 * Get a {@link FluidRenderHandler} for a given Fluid.
+	 * Supports vanilla and Fabric fluids.
+	 *
+	 * @param fluid The Fluid.
+	 * @return The FluidRenderHandler.
+	 */
+	FluidRenderHandler get(Fluid fluid);
 
-    /**
-     * Register a {@link FluidRenderHandler} for a given Fluid.
-     *
-     * @param fluid The Fluid.
-     * @param renderer The FluidRenderHandler.
-     */
-    void register(Fluid fluid, FluidRenderHandler renderer);
+	/**
+	 * Register a {@link FluidRenderHandler} for a given Fluid.
+	 *
+	 * @param fluid The Fluid.
+	 * @param renderer The FluidRenderHandler.
+	 */
+	void register(Fluid fluid, FluidRenderHandler renderer);
 }

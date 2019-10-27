@@ -21,7 +21,6 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -29,19 +28,20 @@ import net.minecraft.client.render.model.json.Transformation;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+
 /**
  * Collection of utilities for model implementations.
  */
 public abstract class ModelHelper {
-	private ModelHelper() {
-	}
+	private ModelHelper() { }
 
 	/** Result from {@link #toFaceIndex(Direction)} for null values. */
 	public static final int NULL_FACE_ID = 6;
 
 	/**
 	 * Convenient way to encode faces that may be null.
-	 * Null is returned as {@link #NULL_FACE_ID}. 
+	 * Null is returned as {@link #NULL_FACE_ID}.
 	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
 	 */
 	public static int toFaceIndex(Direction face) {
@@ -49,7 +49,7 @@ public abstract class ModelHelper {
 	}
 
 	/**
-	 * Use to decode a result from {@link #toFaceIndex(Direction)}. 
+	 * Use to decode a result from {@link #toFaceIndex(Direction)}.
 	 * Return value will be null if encoded value was null.
 	 * Can also be used for no-allocation iteration of {@link Direction#values()},
 	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
@@ -59,16 +59,16 @@ public abstract class ModelHelper {
 		return FACES[faceIndex];
 	}
 
-	/** see {@link #faceFromIndex(int)} */
+	/** @see #faceFromIndex(int) */
 	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
 	/**
 	 * Converts a mesh into an array of lists of vanilla baked quads.
 	 * Useful for creating vanilla baked models when required for compatibility.
-	 * The array indexes correspond to {@link Direction#getId()} with the 
-	 * addition of {@link #NULL_FACE_ID}.<p>
-	 * 
-	 * Retrieves sprites from the block texture atlas via {@link SpriteFinder}. 
+	 * The array indexes correspond to {@link Direction#getId()} with the
+	 * addition of {@link #NULL_FACE_ID}.
+	 *
+	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
 	 */
 	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
 		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getSpriteAtlas());
@@ -93,16 +93,18 @@ public abstract class ModelHelper {
 
 		@SuppressWarnings("unchecked")
 		List<BakedQuad>[] result = new List[7];
+
 		for (int i = 0; i < 7; i++) {
 			result[i] = builders[i].build();
 		}
+
 		return result;
 	}
 
 	/**
 	 * The vanilla model transformation logic is closely coupled with model deserialization.
 	 * That does little good for modded model loaders and procedurally generated models.
-	 * This convenient construction method applies the same scaling factors used for vanilla models.  
+	 * This convenient construction method applies the same scaling factors used for vanilla models.
 	 * This means you can use values from a vanilla JSON file as inputs to this method.
 	 */
 	private static Transformation makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY, float translationZ, float scaleX, float scaleY, float scaleZ) {
@@ -121,7 +123,7 @@ public abstract class ModelHelper {
 
 	/**
 	 * Mimics the vanilla model transformation used for most vanilla blocks,
-	 * and should be suitable for most custom block-like models. 
+	 * and should be suitable for most custom block-like models.
 	 */
 	public static final ModelTransformation MODEL_TRANSFORM_BLOCK = new ModelTransformation(TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_1ST_PERSON_LEFT, TRANSFORM_BLOCK_1ST_PERSON_RIGHT, Transformation.NONE, TRANSFORM_BLOCK_GUI, TRANSFORM_BLOCK_GROUND, TRANSFORM_BLOCK_FIXED);
 }

@@ -19,6 +19,10 @@ package net.fabricmc.indigo.renderer.render;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
@@ -30,9 +34,6 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 
 /**
  * Consumer for pre-baked meshes.  Works by copying the mesh data to a
@@ -43,8 +44,8 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		super(blockInfo, bufferFunc, aoCalc, transform);
 	}
 
-	/** 
-	 * Where we handle all pre-buffer coloring, lighting, transformation, etc. 
+	/**
+	 * Where we handle all pre-buffer coloring, lighting, transformation, etc.
 	 * Reused for all mesh quads. Fixed baking array sized to hold largest possible mesh quad.
 	 */
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
@@ -53,7 +54,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 			material(IndigoRenderer.MATERIAL_STANDARD);
 		}
 
-		// only used via RenderContext.getEmitter() 
+		// only used via RenderContext.getEmitter()
 		@Override
 		public Maker emit() {
 			lightFace(GeometryHelper.lightFace(this));
@@ -62,7 +63,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 			clear();
 			return this;
 		}
-	};
+	}
 
 	private final Maker editorQuad = new Maker();
 
@@ -105,8 +106,8 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		tesselateQuad(q, mat, 0);
 	}
 
-	/** 
-	 * Determines color index and render layer, then routes to appropriate 
+	/**
+	 * Determines color index and render layer, then routes to appropriate
 	 * tesselate routine based on material properties.
 	 */
 	private void tesselateQuad(MutableQuadViewImpl quad, RenderMaterialImpl.Value mat, int textureIndex) {

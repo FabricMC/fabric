@@ -33,6 +33,13 @@ import java.util.function.ToIntFunction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.block.Block;
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.BlockRenderView;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.indigo.Indigo;
@@ -42,13 +49,6 @@ import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
 import net.fabricmc.indigo.renderer.render.BlockRenderInfo;
-import net.minecraft.block.Block;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.BlockRenderView;
 
 /**
  * Adaptation of inner, non-static class in BlockModelRenderer that serves same purpose.
@@ -57,11 +57,11 @@ import net.minecraft.world.BlockRenderView;
 public class AoCalculator {
 	/** Used to receive a method reference in constructor for ao value lookup. */
 	@FunctionalInterface
-	public static interface AoFunc {
+	public interface AoFunc {
 		float apply(BlockPos pos);
 	}
 
-	/** 
+	/**
 	 * Vanilla models with cubic quads have vertices in a certain order, which allows
 	 * us to map them using a lookup. Adapted from enum in vanilla AoCalculator.
 	 */
@@ -84,13 +84,13 @@ public class AoCalculator {
 	private final ToIntFunction<BlockPos> brightnessFunc;
 	private final AoFunc aoFunc;
 
-	/** caches results of {@link #computeFace(Direction, boolean)} for the current block */
+	/** caches results of {@link #computeFace(Direction, boolean)} for the current block. */
 	private final AoFaceData[] faceData = new AoFaceData[12];
 
-	/** indicates which elements of {@link #faceData} have been computed for the current block*/
+	/** indicates which elements of {@link #faceData} have been computed for the current block. */
 	private int completionFlags = 0;
 
-	/** holds per-corner weights - used locally to avoid new allocation */
+	/** holds per-corner weights - used locally to avoid new allocation. */
 	private final float[] w = new float[4];
 
 	// outputs
@@ -108,7 +108,7 @@ public class AoCalculator {
 		}
 	}
 
-	/** call at start of each new block */
+	/** call at start of each new block. */
 	public void clear() {
 		completionFlags = 0;
 	}
@@ -135,8 +135,8 @@ public class AoCalculator {
 			shouldCompare = Indigo.DEBUG_COMPARE_LIGHTING && isVanilla;
 			break;
 
-		default:
 		case HYBRID:
+		default:
 			if (isVanilla) {
 				shouldCompare = Indigo.DEBUG_COMPARE_LIGHTING;
 				calcFastVanilla(quad);
@@ -144,6 +144,7 @@ public class AoCalculator {
 				shouldCompare = false;
 				calcEnhanced(quad);
 			}
+
 			break;
 
 		case ENHANCED:
@@ -244,17 +245,17 @@ public class AoCalculator {
 		}
 	}
 
-	/** used in {@link #blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace)} as return variable to avoid new allocation */
+	/** used in {@link #blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace)} as return variable to avoid new allocation. */
 	AoFaceData tmpFace = new AoFaceData();
 
-	/** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face */
+	/** Returns linearly interpolated blend of outer and inner face based on depth of vertex in face. */
 	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace) {
 		final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
 		final float w0 = 1 - w1;
 		return AoFaceData.weightedMean(computeFace(lightFace, true), w0, computeFace(lightFace, false), w1, tmpFace);
 	}
 
-	/** 
+	/**
 	 * Like {@link #blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace)} but optimizes if depth is 0 or 1.
 	 * Used for irregular faces when depth varies by vertex to avoid unneeded interpolation.
 	 */
@@ -290,7 +291,7 @@ public class AoCalculator {
 		final Vector3f faceNorm = quad.faceNormal();
 		Vector3f normal;
 		final float[] w = this.w;
-		final float aoResult[] = this.ao;
+		final float[] aoResult = this.ao;
 		final int[] lightResult = this.light;
 
 		for (int i = 0; i < 4; i++) {
@@ -360,7 +361,7 @@ public class AoCalculator {
 	/**
 	 * Computes smoothed brightness and Ao shading for four corners of a block face.
 	 * Outer block face is what you normally see and what you get get when second
-	 * parameter is true. Inner is light *within* the block and usually darker. 
+	 * parameter is true. Inner is light *within* the block and usually darker.
 	 * It is blended with the outer face for inset surfaces, but is also used directly
 	 * in vanilla logic for some blocks that aren't full opaque cubes.
 	 * Except for parameterization, the logic itself is practically identical to vanilla.
@@ -396,16 +397,16 @@ public class AoCalculator {
 
 			// vanilla was further offsetting these in the direction of the light face
 			// but it was actually mis-sampling and causing visible artifacts in certain situation
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[0]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[0]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear0 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[1]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[1]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear1 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[2]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[2]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear2 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);//.setOffset(lightFace);
+			searchPos.set(lightPos).setOffset(aoFace.neighbors[3]); //.setOffset(lightFace);
 			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
 			final boolean isClear3 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
 
@@ -455,7 +456,7 @@ public class AoCalculator {
 			// If on block face or neighbor isn't occluding, "center" will be neighbor brightness
 			// Doesn't use light pos because logic not based solely on this block's geometry
 			int lightCenter;
-			searchPos.set((Vec3i) pos).setOffset(lightFace);
+			searchPos.set(pos).setOffset(lightFace);
 
 			if (isOnBlockFace || !world.getBlockState(searchPos).isFullOpaque(world, searchPos)) {
 				lightCenter = brightnessFunc.applyAsInt(searchPos);
@@ -475,12 +476,13 @@ public class AoCalculator {
 			result.l2(meanBrightness(light2, light1, cLight2, lightCenter));
 			result.l3(meanBrightness(light3, light1, cLight3, lightCenter));
 		}
+
 		return result;
 	}
 
-	/** 
+	/**
 	 * Vanilla code excluded missing light values from mean but was not isotropic.
-	 * Still need to substitute or edges are too dark but consistently use the min 
+	 * Still need to substitute or edges are too dark but consistently use the min
 	 * value from all four samples.
 	 */
 	private static int meanBrightness(int a, int b, int c, int d) {
@@ -491,7 +493,7 @@ public class AoCalculator {
 		}
 	}
 
-	/** vanilla logic - excludes missing light values from mean and has anisotropy defect mentioned above */
+	/** vanilla logic - excludes missing light values from mean and has anisotropy defect mentioned above. */
 	private static int vanillaMeanBrightness(int a, int b, int c, int d) {
 		if (a == 0) a = d;
 		if (b == 0) b = d;

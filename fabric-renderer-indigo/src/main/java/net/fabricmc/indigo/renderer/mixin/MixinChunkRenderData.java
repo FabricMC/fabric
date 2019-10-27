@@ -18,12 +18,13 @@ package net.fabricmc.indigo.renderer.mixin;
 
 import java.util.Set;
 
-import net.minecraft.client.render.RenderLayer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererData;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
+
+import net.fabricmc.indigo.renderer.accessor.AccessChunkRendererData;
 
 @Mixin(ChunkRenderData.class)
 public class MixinChunkRenderData implements AccessChunkRendererData {

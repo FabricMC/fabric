@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.event.client.player;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * This event is emitted during the block-picking process. It can be used to
@@ -28,19 +29,20 @@ import net.minecraft.util.hit.HitResult;
  * ItemStack will cause the event to leave, and no block to be picked.
  */
 public interface ClientPickBlockApplyCallback {
-	public static final Event<ClientPickBlockApplyCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockApplyCallback.class,
-		(listeners) -> (player, result, _stack) -> {
-			ItemStack stack = _stack;
+	Event<ClientPickBlockApplyCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockApplyCallback.class,
+			(listeners) -> (player, result, _stack) -> {
+				ItemStack stack = _stack;
 
-			for (ClientPickBlockApplyCallback event : listeners) {
-				stack = event.pick(player, result, stack);
-				if (stack.isEmpty()) {
-					return ItemStack.EMPTY;
+				for (ClientPickBlockApplyCallback event : listeners) {
+					stack = event.pick(player, result, stack);
+
+					if (stack.isEmpty()) {
+						return ItemStack.EMPTY;
+					}
 				}
-			}
 
-			return stack;
-		}
+				return stack;
+			}
 	);
 
 	ItemStack pick(PlayerEntity player, HitResult result, ItemStack stack);

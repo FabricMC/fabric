@@ -18,14 +18,15 @@ package net.fabricmc.indigo.renderer.mesh;
 
 import com.google.common.base.Preconditions;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.indigo.renderer.RenderMaterialImpl;
-import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.minecraft.client.render.VertexFormat;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
+
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.indigo.renderer.RenderMaterialImpl;
+import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 
 /**
  * Holds all the array offsets and bit-wise encoders/decoders for
@@ -73,7 +74,7 @@ public abstract class EncodingFormat {
 		Preconditions.checkState(QUAD_STRIDE == QuadView.VANILLA_QUAD_STRIDE, "Indigo quad stride (%s) mismatched with rendering API (%s)", QUAD_STRIDE, QuadView.VANILLA_QUAD_STRIDE);
 	}
 
-	/** used for quick clearing of quad buffers */
+	/** used for quick clearing of quad buffers. */
 	static final int[] EMPTY = new int[TOTAL_STRIDE];
 
 	private static final int DIRECTION_MASK = MathHelper.smallestEncompassingPowerOfTwo(ModelHelper.NULL_FACE_ID) - 1;
@@ -114,7 +115,7 @@ public abstract class EncodingFormat {
 		return (bits & LIGHT_INVERSE_MASK) | (ModelHelper.toFaceIndex(face) << LIGHT_SHIFT);
 	}
 
-	/** indicate if vertex normal has been set - bits correspond to vertex ordinals */
+	/** indicate if vertex normal has been set - bits correspond to vertex ordinals. */
 	static int normalFlags(int bits) {
 		return (bits >> NORMALS_SHIFT) & NORMALS_MASK;
 	}

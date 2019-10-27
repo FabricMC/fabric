@@ -20,20 +20,21 @@ import java.lang.reflect.Constructor;
 import java.util.BitSet;
 import java.util.function.Supplier;
 
-import net.fabricmc.indigo.Indigo;
-import net.fabricmc.indigo.renderer.accessor.AccessAmbientOcclusionCalculator;
-import net.fabricmc.indigo.renderer.accessor.AccessBlockModelRenderer;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.indigo.Indigo;
+import net.fabricmc.indigo.renderer.accessor.AccessAmbientOcclusionCalculator;
+import net.fabricmc.indigo.renderer.accessor.AccessBlockModelRenderer;
+import net.fabricmc.loader.api.FabricLoader;
+
 public class VanillaAoHelper {
 	private static Supplier<AccessAmbientOcclusionCalculator> factory;
 
-	// Renderer method we call isn't declared as static, but uses no 
+	// Renderer method we call isn't declared as static, but uses no
 	// instance data and is called from multiple threads in vanilla also.
 	private static AccessBlockModelRenderer blockRenderer;
 
@@ -54,7 +55,7 @@ public class VanillaAoHelper {
 						try {
 							return (AccessAmbientOcclusionCalculator) constructor.newInstance(instance);
 						} catch (Exception e) {
-							Indigo.LOGGER.warn("[Indigo] Exception accessing vanilla smooth lighter",  e);
+							Indigo.LOGGER.warn("[Indigo] Exception accessing vanilla smooth lighter", e);
 							return null;
 						}
 					}

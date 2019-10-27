@@ -19,16 +19,17 @@ package net.fabricmc.fabric.impl.renderer;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
+import net.fabricmc.fabric.api.renderer.v1.model.SpriteFinder;
+
 /**
  * Indexes an atlas sprite to allow fast lookup of Sprites from
- * baked vertex coordinates.  Implementation is a straightforward 
+ * baked vertex coordinates.  Implementation is a straightforward
  * quad tree. Other options that were considered were linear search
  * (slow) and direct indexing of fixed-size cells. Direct indexing
  * would be fastest but would be memory-intensive for large atlases
@@ -141,7 +142,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 		return ((SpriteFinderAccess) atlas).fabric_spriteFinder();
 	}
 
-	public static interface SpriteFinderAccess {
+	public interface SpriteFinderAccess {
 		SpriteFinderImpl fabric_spriteFinder();
 	}
 }

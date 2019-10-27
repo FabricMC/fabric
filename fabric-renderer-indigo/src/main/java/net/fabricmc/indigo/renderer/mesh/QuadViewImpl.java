@@ -33,13 +33,14 @@ import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Direction;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.helper.NormalHelper;
-import net.minecraft.client.util.math.Vector3f;
-import net.minecraft.util.math.Direction;
 
 /**
  * Base class for all quads / quad makers. Handles the ugly bits
@@ -101,7 +102,7 @@ public class QuadViewImpl implements QuadView {
 		return normalFlags() != 0;
 	}
 
-	/** gets flags used for lighting - lazily computed via {@link GeometryHelper#computeShapeFlags(QuadView)} */
+	/** gets flags used for lighting - lazily computed via {@link GeometryHelper#computeShapeFlags(QuadView)}. */
 	public int geometryFlags() {
 		if (isGeometryInvalid) {
 			isGeometryInvalid = false;
@@ -114,7 +115,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	/**
-	 * Used to override geometric analysis for compatibility edge case 
+	 * Used to override geometric analysis for compatibility edge case.
 	 */
 	public void geometryFlags(int flags) {
 		isGeometryInvalid = false;
@@ -162,7 +163,7 @@ public class QuadViewImpl implements QuadView {
 			NormalHelper.computeFaceNormal(faceNormal, this);
 			isFaceNormalInvalid = false;
 		}
-		
+
 		return faceNormal;
 	}
 
@@ -231,6 +232,7 @@ public class QuadViewImpl implements QuadView {
 			if (target == null) {
 				target = new Vector3f();
 			}
+
 			final int normal = data[normalIndex(vertexIndex)];
 			target.set(NormalHelper.getPackedNormalComponent(normal, 0), NormalHelper.getPackedNormalComponent(normal, 1), NormalHelper.getPackedNormalComponent(normal, 2));
 			return target;

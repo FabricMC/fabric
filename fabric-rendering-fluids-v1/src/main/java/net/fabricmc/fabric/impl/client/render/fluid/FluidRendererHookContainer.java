@@ -16,21 +16,22 @@
 
 package net.fabricmc.fabric.impl.client.render.fluid;
 
-import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
 
-public class FluidRendererHookContainer {
-    public BlockRenderView view;
-    public BlockPos pos;
-    public FluidState state;
-    public FluidRenderHandler handler;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 
-    public void clear() {
-        view = null;
-        pos = null;
-        state = null;
-        handler = null;
-    }
+public class FluidRendererHookContainer {
+	public BlockRenderView view;
+	public BlockPos pos;
+	public FluidState state;
+	public FluidRenderHandler handler;
+
+	public void clear() {
+		view = null;
+		pos = null;
+		state = null;
+		handler = null;
+	}
 }

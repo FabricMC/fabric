@@ -16,13 +16,19 @@
 
 package net.fabricmc.indigo.renderer.aocalc;
 
-import static net.minecraft.util.math.Direction.*;
 import static net.fabricmc.indigo.renderer.aocalc.AoVertexClampFunction.CLAMP_FUNC;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import static net.minecraft.util.math.Direction.DOWN;
+import static net.minecraft.util.math.Direction.EAST;
+import static net.minecraft.util.math.Direction.NORTH;
+import static net.minecraft.util.math.Direction.SOUTH;
+import static net.minecraft.util.math.Direction.UP;
+import static net.minecraft.util.math.Direction.WEST;
+
 import net.minecraft.util.SystemUtil;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.indigo.renderer.mesh.QuadViewImpl;
 
 /**
@@ -36,35 +42,40 @@ enum AoFace {
 		w[0] = (1 - u) * v;
 		w[1] = (1 - u) * (1 - v);
 		w[2] = u * (1 - v);
-		w[3] = u * v;}), 
+		w[3] = u * v;
+	}),
 	AOF_UP(new Direction[] { EAST, WEST, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.y(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.x(i));
 		final float v = CLAMP_FUNC.clamp(q.z(i));
 		w[0] = u * v;
 		w[1] = u * (1 - v);
 		w[2] = (1 - u) * (1 - v);
-		w[3] = (1 - u) * v;}),
+		w[3] = (1 - u) * v;
+	}),
 	AOF_NORTH(new Direction[] { UP, DOWN, EAST, WEST }, (q, i) -> CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.x(i));
 		w[0] = u * (1 - v);
 		w[1] = u * v;
 		w[2] = (1 - u) * v;
-		w[3] = (1 - u) * (1 - v);}),
+		w[3] = (1 - u) * (1 - v);
+	}),
 	AOF_SOUTH(new Direction[] { WEST, EAST, DOWN, UP }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.z(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.x(i));
 		w[0] = u * (1 - v);
 		w[1] = (1 - u) * (1 - v);
 		w[2] = (1 - u) * v;
-		w[3] = u * v;}), 
+		w[3] = u * v;
+	}),
 	AOF_WEST(new Direction[] { UP, DOWN, NORTH, SOUTH }, (q, i) -> CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.z(i));
 		w[0] = u * v;
 		w[1] = u * (1 - v);
 		w[2] = (1 - u) * (1 - v);
-		w[3] = (1 - u) * v;}), 
+		w[3] = (1 - u) * v;
+	}),
 	AOF_EAST(new Direction[] { DOWN, UP, NORTH, SOUTH }, (q, i) -> 1 - CLAMP_FUNC.clamp(q.x(i)), (q, i, w) -> {
 		final float u = CLAMP_FUNC.clamp(q.y(i));
 		final float v = CLAMP_FUNC.clamp(q.z(i));
@@ -78,13 +89,13 @@ enum AoFace {
 	final WeightFunction weightFunc;
 	final Vertex2Float depthFunc;
 
-	private AoFace(Direction[] faces, Vertex2Float depthFunc, WeightFunction weightFunc) {
+	AoFace(Direction[] faces, Vertex2Float depthFunc, WeightFunction weightFunc) {
 		this.neighbors = faces;
 		this.depthFunc = depthFunc;
 		this.weightFunc = weightFunc;
 	}
 
-	private static final AoFace[] values = (AoFace[]) SystemUtil.consume(new AoFace[6], (neighborData) -> {
+	private static final AoFace[] values = SystemUtil.consume(new AoFace[6], (neighborData) -> {
 		neighborData[DOWN.getId()] = AOF_DOWN;
 		neighborData[UP.getId()] = AOF_UP;
 		neighborData[NORTH.getId()] = AOF_NORTH;
@@ -99,19 +110,19 @@ enum AoFace {
 
 	/**
 	 * Implementations handle bilinear interpolation of a point on a light face
-	 * by computing weights for each corner of the light face. Relies on the fact 
+	 * by computing weights for each corner of the light face. Relies on the fact
 	 * that each face is a unit cube. Uses coordinates from axes orthogonal to face
-	 * as distance from the edge of the cube, flipping as needed. Multiplying distance 
-	 * coordinate pairs together gives sub-area that are the corner weights. 
+	 * as distance from the edge of the cube, flipping as needed. Multiplying distance
+	 * coordinate pairs together gives sub-area that are the corner weights.
 	 * Weights sum to 1 because it is a unit cube. Values are stored in the provided array.
 	 */
 	@FunctionalInterface
-	static interface WeightFunction {
+	interface WeightFunction {
 		void apply(QuadViewImpl q, int vertexIndex, float[] out);
 	}
 
 	@FunctionalInterface
-	static interface Vertex2Float {
+	interface Vertex2Float {
 		float apply(QuadViewImpl q, int vertexIndex);
 	}
 }

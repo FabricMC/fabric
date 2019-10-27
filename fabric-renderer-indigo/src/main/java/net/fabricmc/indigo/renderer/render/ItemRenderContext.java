@@ -21,17 +21,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.indigo.renderer.RenderMaterialImpl;
-import net.fabricmc.indigo.renderer.helper.ColorHelper;
-import net.fabricmc.indigo.renderer.helper.GeometryHelper;
-import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
-import net.fabricmc.indigo.renderer.mesh.MeshImpl;
-import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.VertexConsumer;
@@ -43,18 +32,30 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MatrixStack;
 
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.indigo.renderer.RenderMaterialImpl;
+import net.fabricmc.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.indigo.renderer.helper.GeometryHelper;
+import net.fabricmc.indigo.renderer.mesh.EncodingFormat;
+import net.fabricmc.indigo.renderer.mesh.MeshImpl;
+import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
+
 /**
- * The render context used for item rendering. 
+ * The render context used for item rendering.
  * Does not implement emissive lighting for sake
- * of simplicity in the default renderer. 
+ * of simplicity in the default renderer.
  */
 public class ItemRenderContext extends AbstractRenderContext implements RenderContext {
 	/** Value vanilla uses for item rendering.  The only sensible choice, of course.  */
 	private static final long ITEM_RANDOM_SEED = 42L;
 
-	/** used to accept a method reference from the ItemRenderer */
+	/** used to accept a method reference from the ItemRenderer. */
 	@FunctionalInterface
-	public static interface VanillaQuadHandler {
+	public interface VanillaQuadHandler {
 		void accept(BakedModel model, ItemStack stack, int color, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
 	}
 

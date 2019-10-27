@@ -16,21 +16,22 @@
 
 package net.fabricmc.indigo.renderer.mixin;
 
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.indigo.renderer.render.ItemRenderContext;
-import net.fabricmc.indigo.renderer.render.ItemRenderContext.VanillaQuadHandler;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MatrixStack;
+
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.indigo.renderer.render.ItemRenderContext;
+import net.fabricmc.indigo.renderer.render.ItemRenderContext.VanillaQuadHandler;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {

@@ -16,28 +16,29 @@
 
 package net.fabricmc.fabric.impl.container;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.container.ContainerFactory;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.impl.network.PacketTypes;
-import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
+import net.fabricmc.fabric.api.container.ContainerFactory;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.impl.network.PacketTypes;
+import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 
 public class ContainerProviderImpl implements ContainerProviderRegistry {
-
 	/**
-	 * Use the instance provided by ContainerProviderRegistry
+	 * Use the instance provided by ContainerProviderRegistry.
 	 */
 	public static final ContainerProviderImpl INSTANCE = new ContainerProviderImpl();
 
@@ -50,6 +51,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		if (FACTORIES.containsKey(identifier)) {
 			throw new RuntimeException("A factory has already been registered as " + identifier.toString());
 		}
+
 		FACTORIES.put(identifier, factory);
 	}
 
@@ -96,19 +98,23 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		clonedBuf.readUnsignedByte();
 
 		Container container = createContainer(syncId, identifier, player, clonedBuf);
+
 		if (container == null) {
 			return;
 		}
+
 		player.container = container;
 		player.container.addListener(player);
 	}
 
 	public <C extends Container> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf) {
 		ContainerFactory<Container> factory = FACTORIES.get(identifier);
+
 		if (factory == null) {
 			LOGGER.error("No container factory found for {}!", identifier.toString());
 			return null;
 		}
+
 		//noinspection unchecked
 		return (C) factory.create(syncId, identifier, player, buf);
 	}

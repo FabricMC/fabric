@@ -18,10 +18,11 @@ package net.fabricmc.indigo.renderer;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.util.math.MathHelper;
+
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.minecraft.util.math.MathHelper;
 
 /**
  * Default implementation of the standard render materials.
@@ -39,7 +40,7 @@ public abstract class RenderMaterialImpl {
 	private static final int AO_FLAG = DIFFUSE_FLAG << 1;
 	public static final int VALUE_COUNT = (AO_FLAG << 1);
 
-	static private final Value[] VALUES = new Value[VALUE_COUNT];
+	private static final Value[] VALUES = new Value[VALUE_COUNT];
 
 	static {
 		for (int i = 0; i < VALUE_COUNT; i++) {
@@ -104,6 +105,7 @@ public abstract class RenderMaterialImpl {
 			if (blendMode == null) {
 				blendMode = BlendMode.DEFAULT;
 			}
+
 			bits = (bits & ~BLEND_MODE_MASK) | blendMode.ordinal();
 			return this;
 		}

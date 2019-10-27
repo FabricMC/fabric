@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.mixin.builders;
 
-import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
-import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.item.Item;
+
+import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 
 @Mixin(Item.class)
 public class MixinItem {

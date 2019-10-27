@@ -20,6 +20,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,14 +29,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
+
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachmentBlockEntity;
 
 @Mixin(ChunkRendererRegion.class)
 public abstract class MixinChunkRendererRegion implements RenderAttachedBlockView {
@@ -58,10 +59,10 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 		for (WorldChunk[] chunkOuter : chunks) {
 			for (WorldChunk chunk : chunkOuter) {
 				// Hash maps in chunks should generally not be modified outside of client thread
-				// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing 
+				// but does happen in practice, due to mods or inconsistent vanilla behaviors, causing
 				// CMEs when we iterate the map.  (Vanilla does not iterate these maps when it builds
 				// the chunk cache and does not suffer from this problem.)
-				// 
+				//
 				// We handle this simply by retrying until it works.  Ugly but effective.
 				for (;;) {
 					try {
@@ -96,19 +97,21 @@ public abstract class MixinChunkRendererRegion implements RenderAttachedBlockVie
 		for (Map.Entry<BlockPos, BlockEntity> entry : chunk.getBlockEntities().entrySet()) {
 			final BlockPos entPos = entry.getKey();
 
-			if (entPos.getX() >= xMin && entPos.getX() <= xMax 
+			if (entPos.getX() >= xMin && entPos.getX() <= xMax
 					&& entPos.getY() >= yMin && entPos.getY() <= yMax
 					&& entPos.getZ() >= zMin && entPos.getZ() <= zMax) {
-
 				final Object o = ((RenderAttachmentBlockEntity) entry.getValue()).getRenderAttachmentData();
+
 				if (o != null) {
 					if (map == null) {
 						map = new Int2ObjectOpenHashMap<>();
 					}
+
 					map.put(getIndex(entPos), o);
 				}
 			}
 		}
+
 		return map;
 	}
 

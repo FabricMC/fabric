@@ -18,12 +18,13 @@ package net.fabricmc.indigo.renderer.helper;
 
 import static net.minecraft.util.math.MathHelper.approximatelyEquals;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Direction.Axis;
 import net.minecraft.util.math.Direction.AxisDirection;
+
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 
 /**
  * Static routines of general utility for renderer implementations.
@@ -32,24 +33,24 @@ import net.minecraft.util.math.Direction.AxisDirection;
  */
 public abstract class GeometryHelper {
 	private GeometryHelper() { }
-	
-	/** set when a quad touches all four corners of a unit cube */
+
+	/** set when a quad touches all four corners of a unit cube. */
 	public static final int CUBIC_FLAG = 1;
 
-	/** set when a quad is parallel to (but not necessarily on) a its light face */
+	/** set when a quad is parallel to (but not necessarily on) a its light face. */
 	public static final int AXIS_ALIGNED_FLAG = CUBIC_FLAG << 1;
 
 	/** set when a quad is coplanar with its light face. Implies {@link #AXIS_ALIGNED_FLAG} */
 	public static final int LIGHT_FACE_FLAG = AXIS_ALIGNED_FLAG << 1;
 
-	/** how many bits quad header encoding should reserve for encoding geometry flags */
+	/** how many bits quad header encoding should reserve for encoding geometry flags. */
 	public static final int FLAG_BIT_COUNT = 3;
 
 	private static final float EPS_MIN = 0.0001f;
 	private static final float EPS_MAX = 1.0f - EPS_MIN;
 
 	/**
-	 * Analyzes the quad and returns a value with some combination 
+	 * Analyzes the quad and returns a value with some combination
 	 * of {@link #AXIS_ALIGNED_FLAG}, {@link #LIGHT_FACE_FLAG} and {@link #CUBIC_FLAG}.
 	 * Intended use is to optimize lighting when the geometry is regular.
 	 * Expects convex quads with all points co-planar.
@@ -57,19 +58,19 @@ public abstract class GeometryHelper {
 	public static int computeShapeFlags(QuadView quad) {
 		Direction lightFace = quad.lightFace();
 		int bits = 0;
-		
+
 		if (isQuadParallelToFace(lightFace, quad)) {
 			bits |= AXIS_ALIGNED_FLAG;
-			
+
 			if (isParallelQuadOnFace(lightFace, quad)) {
 				bits |= LIGHT_FACE_FLAG;
 			}
 		}
-		
+
 		if (isQuadCubic(lightFace, quad)) {
 			bits |= CUBIC_FLAG;
 		}
-		
+
 		return bits;
 	}
 
@@ -82,7 +83,7 @@ public abstract class GeometryHelper {
 		if (face == null) {
 			return false;
 		}
-		
+
 		int i = face.getAxis().ordinal();
 		final float val = quad.posByIndex(0, i);
 		return approximatelyEquals(val, quad.posByIndex(1, i)) && approximatelyEquals(val, quad.posByIndex(2, i)) && approximatelyEquals(val, quad.posByIndex(3, i));
@@ -90,26 +91,26 @@ public abstract class GeometryHelper {
 
 	/**
 	 * True if quad - already known to be parallel to a face - is actually coplanar with it.
-	 * For compatibility with vanilla resource packs, also true if quad is outside the face.<p>
-	 * 
-	 * Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)}
-	 * for that purpose. Expects convex quads with all points co-planar.<p>
+	 * For compatibility with vanilla resource packs, also true if quad is outside the face.
+	 *
+	 * <p>Test will be unreliable if not already parallel, use {@link #isQuadParallelToFace(Direction, QuadView)}
+	 * for that purpose. Expects convex quads with all points co-planar.
 	 */
 	public static boolean isParallelQuadOnFace(Direction lightFace, QuadView quad) {
 		if (lightFace == null) return false;
-		
+
 		final float x = quad.posByIndex(0, lightFace.getAxis().ordinal());
 		return lightFace.getDirection() == AxisDirection.POSITIVE ? x >= EPS_MAX : x <= EPS_MIN;
 	}
 
 	/**
 	 * Returns true if quad is truly a quad (not a triangle) and fills a full block cross-section.
-	 * If known to be true, allows use of a simpler/faster AO lighting algorithm.<p>
-	 * 
-	 * Does not check if quad is actually coplanar with the light face, nor does it check that all
-	 * quad vertices are coplanar with each other. <p>
-	 * 
-	 * Expects convex quads with all points co-planar.<p>
+	 * If known to be true, allows use of a simpler/faster AO lighting algorithm.
+	 *
+	 * <p>Does not check if quad is actually coplanar with the light face, nor does it check that all
+	 * quad vertices are coplanar with each other.
+	 *
+	 * <p>Expects convex quads with all points co-planar.
 	 *
 	 * @param lightFace MUST be non-null.
 	 */
@@ -146,9 +147,9 @@ public abstract class GeometryHelper {
 
 	/**
 	 * Used by {@link #isQuadCubic(Direction, QuadView)}.
-	 * True if quad touches all four corners of unit square.<p>
+	 * True if quad touches all four corners of unit square.
 	 *
-	 * For compatibility with resource packs that contain models with quads exceeding
+	 * <p>For compatibility with resource packs that contain models with quads exceeding
 	 * block boundaries, considers corners outside the block to be at the corners.
 	 */
 	private static boolean confirmSquareCorners(int aCoordinate, int bCoordinate, QuadView quad) {
@@ -185,9 +186,9 @@ public abstract class GeometryHelper {
 	/**
 	 * Identifies the face to which the quad is most closely aligned.
 	 * This mimics the value that {@link BakedQuad#getFace()} returns, and is
-	 * used in the vanilla renderer for all diffuse lighting.<p>
-	 * 
-	 * Derived from the quad face normal and expects convex quads with all points co-planar.
+	 * used in the vanilla renderer for all diffuse lighting.
+	 *
+	 * <p>Derived from the quad face normal and expects convex quads with all points co-planar.
 	 */
 	public static Direction lightFace(QuadView quad) {
 		final Vector3f normal = quad.faceNormal();
@@ -226,7 +227,7 @@ public abstract class GeometryHelper {
 	}
 
 	/**
-	 * See {@link #longestAxis(float, float, float)}
+	 * @see #longestAxis(float, float, float)
 	 */
 	public static Axis longestAxis(Vector3f vec) {
 		return longestAxis(vec.getX(), vec.getY(), vec.getZ());
@@ -245,6 +246,7 @@ public abstract class GeometryHelper {
 			longest = a;
 		}
 
-		return Math.abs(normalZ) > longest ? Axis.Z : result;
+		return Math.abs(normalZ) > longest
+				? Axis.Z : result;
 	}
 }

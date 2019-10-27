@@ -16,31 +16,32 @@
 
 package net.fabricmc.fabric.api.renderer.v1;
 
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
-import net.minecraft.util.Identifier;
 
 /**
  * Interface for rendering plug-ins that provide enhanced capabilities
  * for model lighting, buffering and rendering. Such plug-ins implement the
- * enhanced model rendering interfaces specified by the Fabric API.<p>
+ * enhanced model rendering interfaces specified by the Fabric API.
  */
 public interface Renderer {
 	/**
-	 * Obtain a new {@link MeshBuilder} instance used to create 
-	 * baked models with enhanced features.<p>
-	 * 
-	 * Renderer does not retain a reference to returned instances and they should be re-used for 
+	 * Obtain a new {@link MeshBuilder} instance used to create
+	 * baked models with enhanced features.
+	 *
+	 * <p>Renderer does not retain a reference to returned instances and they should be re-used for
 	 * multiple models when possible to avoid memory allocation overhead.
 	 */
 	MeshBuilder meshBuilder();
 
 	/**
 	 * Obtain a new {@link MaterialFinder} instance used to retrieve
-	 * standard {@link RenderMaterial} instances.<p>
-	 * 
-	 * Renderer does not retain a reference to returned instances and they should be re-used for 
+	 * standard {@link RenderMaterial} instances.
+	 *
+	 * <p>Renderer does not retain a reference to returned instances and they should be re-used for
 	 * multiple materials when possible to avoid memory allocation overhead.
 	 */
 	MaterialFinder materialFinder();
@@ -53,10 +54,10 @@ public interface Renderer {
 
 	/**
 	 * Register a material for re-use by other mods or models within a mod.
-	 * The registry does not persist registrations - mods must create and register 
-	 * all materials at game initialization.<p>
-	 * 
-	 * Returns false if a material with the given identifier is already present,
+	 * The registry does not persist registrations - mods must create and register
+	 * all materials at game initialization.
+	 *
+	 * <p>Returns false if a material with the given identifier is already present,
 	 * leaving the existing material intact.
 	 */
 	boolean registerMaterial(Identifier id, RenderMaterial material);

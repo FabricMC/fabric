@@ -21,18 +21,19 @@ import java.util.BitSet;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
-import net.fabricmc.indigo.renderer.accessor.AccessAmbientOcclusionCalculator;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
+
+import net.fabricmc.indigo.renderer.accessor.AccessAmbientOcclusionCalculator;
 
 @Mixin(targets = "net.minecraft.client.render.block.BlockModelRenderer$AmbientOcclusionCalculator")
 public abstract class MixinAmbientOcclusionCalculator implements AccessAmbientOcclusionCalculator {
 	@Shadow private float[] colorMultiplier;
 	@Shadow private int[] brightness;
 
-	@Shadow 
+	@Shadow
 	public abstract void apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits);
 
 	@Override

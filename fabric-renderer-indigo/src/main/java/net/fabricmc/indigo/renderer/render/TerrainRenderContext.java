@@ -18,11 +18,6 @@ package net.fabricmc.indigo.renderer.render;
 
 import java.util.function.Consumer;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.chunk.BlockLayeredBufferBuilderStorage;
 import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
@@ -36,6 +31,12 @@ import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.MatrixStack;
+
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
 
 /**
  * Implementation of {@link RenderContext} used during terrain rendering.
@@ -108,6 +109,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 			CrashReportSection.addBlockInfo(crashReportElement_1, blockPos, blockState);
 			throw new CrashException(crashReport_1);
 		}
+
 		// false because we've already marked the chunk as populated - caller doesn't need to
 		return false;
 	}

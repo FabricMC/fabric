@@ -16,49 +16,50 @@
 
 package net.fabricmc.fabric.mixin.builders;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.MaterialColor;
-import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.MaterialColor;
+import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.Identifier;
+
 @Mixin(Block.Settings.class)
 public interface BlockSettingsHooks {
-    @Accessor
-    void setHardness(float hardness);
+	@Accessor
+	void setHardness(float hardness);
 
-    @Accessor
-    void setResistance(float resistance);
+	@Accessor
+	void setResistance(float resistance);
 
-    @Accessor
-    void setCollidable(boolean collidable);
+	@Accessor
+	void setCollidable(boolean collidable);
 
-    @Accessor
-    void setMaterialColor(MaterialColor materialColor);
+	@Accessor
+	void setMaterialColor(MaterialColor materialColor);
 
-    @Accessor
-    void setDropTableId(Identifier dropTableId);
+	@Accessor
+	void setDropTableId(Identifier dropTableId);
 
-    @Invoker
-    Block.Settings invokeSounds(BlockSoundGroup group);
+	@Invoker
+	Block.Settings invokeSounds(BlockSoundGroup group);
 
-    @Invoker
-    Block.Settings invokeLightLevel(int lightLevel);
+	@Invoker
+	Block.Settings invokeLightLevel(int lightLevel);
 
-    @Invoker
-    Block.Settings invokeBreakInstantly();
+	@Invoker
+	Block.Settings invokeBreakInstantly();
 
-    @Invoker
-    Block.Settings invokeStrength(float strength);
+	@Invoker
+	Block.Settings invokeStrength(float strength);
 
-    @Invoker
-    Block.Settings invokeTicksRandomly();
+	@Invoker
+	Block.Settings invokeTicksRandomly();
 
-    @Invoker
-    Block.Settings invokeHasDynamicBounds();
+	@Invoker
+	Block.Settings invokeHasDynamicBounds();
 
-    @Invoker
-    Block.Settings invokeDropsNothing();
+	@Invoker
+	Block.Settings invokeDropsNothing();
 }

@@ -17,8 +17,8 @@
 package net.fabricmc.indigo.renderer.mesh;
 
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.EMPTY;
-import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
+import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
 import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
@@ -31,6 +31,9 @@ import static net.fabricmc.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.util.math.Direction;
+
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.indigo.renderer.IndigoRenderer;
@@ -39,8 +42,6 @@ import net.fabricmc.indigo.renderer.helper.ColorHelper.ShadeableQuad;
 import net.fabricmc.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.indigo.renderer.helper.NormalHelper;
 import net.fabricmc.indigo.renderer.helper.TextureHelper;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.util.math.Direction;
 
 /**
  * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emit()},

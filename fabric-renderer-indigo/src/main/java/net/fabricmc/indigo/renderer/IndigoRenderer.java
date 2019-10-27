@@ -18,13 +18,14 @@ package net.fabricmc.indigo.renderer;
 
 import java.util.HashMap;
 
+import net.minecraft.util.Identifier;
+
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.indigo.renderer.mesh.MeshBuilderImpl;
-import net.minecraft.util.Identifier;
 
 /**
  * The Fabric default renderer implementation. Supports all
@@ -41,8 +42,7 @@ public class IndigoRenderer implements Renderer {
 
 	private final HashMap<Identifier, RenderMaterial> materialMap = new HashMap<>();
 
-	private IndigoRenderer() {
-	};
+	private IndigoRenderer() { }
 
 	@Override
 	public MeshBuilder meshBuilder() {
@@ -62,7 +62,7 @@ public class IndigoRenderer implements Renderer {
 	@Override
 	public boolean registerMaterial(Identifier id, RenderMaterial material) {
 		if (materialMap.containsKey(id)) return false;
-		
+
 		// cast to prevent acceptance of impostor implementations
 		materialMap.put(id, material);
 		return true;

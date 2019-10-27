@@ -20,10 +20,6 @@ import static net.fabricmc.indigo.renderer.helper.GeometryHelper.LIGHT_FACE_FLAG
 
 import java.util.function.Function;
 
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
-import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
-import net.fabricmc.indigo.renderer.helper.ColorHelper;
-import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
@@ -32,6 +28,11 @@ import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix3f;
+
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
+import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
+import net.fabricmc.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.indigo.renderer.mesh.MutableQuadViewImpl;
 
 /**
  * Base quad-rendering class for fallback and mesh consumers.
@@ -59,7 +60,7 @@ public abstract class AbstractQuadRenderer {
 		this.transform = transform;
 	}
 
-	/** handles block color and red-blue swizzle, common to all renders */
+	/** handles block color and red-blue swizzle, common to all renders. */
 	private void colorizeQuad(MutableQuadViewImpl q, int blockColorIndex) {
 		if (blockColorIndex == -1) {
 			for (int i = 0; i < 4; i++) {
@@ -74,7 +75,7 @@ public abstract class AbstractQuadRenderer {
 		}
 	}
 
-	/** final output step, common to all renders */
+	/** final output step, common to all renders. */
 	private void bufferQuad(MutableQuadViewImpl quad, RenderLayer renderLayer) {
 		bufferQuad(bufferFunc.apply(renderLayer), quad, matrix(), overlay(), normalMatrix(), normalVec);
 	}
@@ -110,7 +111,7 @@ public abstract class AbstractQuadRenderer {
 
 	// routines below have a bit of copy-paste code reuse to avoid conditional execution inside a hot loop
 
-	/** for non-emissive mesh quads and all fallback quads with smooth lighting*/
+	/** for non-emissive mesh quads and all fallback quads with smooth lighting. */
 	protected void tesselateSmooth(MutableQuadViewImpl q, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(q, blockColorIndex);
 
@@ -122,7 +123,7 @@ public abstract class AbstractQuadRenderer {
 		bufferQuad(q, renderLayer);
 	}
 
-	/** for emissive mesh quads with smooth lighting*/
+	/** for emissive mesh quads with smooth lighting. */
 	protected void tesselateSmoothEmissive(MutableQuadViewImpl q, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(q, blockColorIndex);
 
@@ -134,7 +135,7 @@ public abstract class AbstractQuadRenderer {
 		bufferQuad(q, renderLayer);
 	}
 
-	/** for non-emissive mesh quads and all fallback quads with flat lighting*/
+	/** for non-emissive mesh quads and all fallback quads with flat lighting. */
 	protected void tesselateFlat(MutableQuadViewImpl quad, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
 		final int brightness = flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos);
@@ -146,7 +147,7 @@ public abstract class AbstractQuadRenderer {
 		bufferQuad(quad, renderLayer);
 	}
 
-	/** for emissive mesh quads with flat lighting*/
+	/** for emissive mesh quads with flat lighting. */
 	protected void tesselateFlatEmissive(MutableQuadViewImpl quad, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
 
@@ -159,7 +160,7 @@ public abstract class AbstractQuadRenderer {
 
 	private final BlockPos.Mutable mpos = new BlockPos.Mutable();
 
-	/** 
+	/**
 	 * Handles geometry-based check for using self brightness or neighbor brightness.
 	 * That logic only applies in flat lighting.
 	 */

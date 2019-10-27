@@ -16,15 +16,6 @@
 
 package net.fabricmc.indigo;
 
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.indigo.renderer.IndigoRenderer;
-import net.fabricmc.indigo.renderer.aocalc.AoConfig;
-import net.fabricmc.loader.api.FabricLoader;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,11 +23,21 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
+import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.indigo.renderer.IndigoRenderer;
+import net.fabricmc.indigo.renderer.aocalc.AoConfig;
+import net.fabricmc.loader.api.FabricLoader;
+
 public class Indigo implements ClientModInitializer {
 	public static final boolean ALWAYS_TESSELATE_INDIGO;
 	public static final boolean ENSURE_VERTEX_FORMAT_COMPATIBILITY;
 	public static final AoConfig AMBIENT_OCCLUSION_MODE;
-	/** Set true in dev env to confirm results match vanilla when they should */
+	/** Set true in dev env to confirm results match vanilla when they should. */
 	public static final boolean DEBUG_COMPARE_LIGHTING;
 	public static final boolean FIX_SMOOTH_LIGHTING_OFFSET;
 	public static final boolean FIX_EXTERIOR_VERTEX_LIGHTING;
@@ -89,6 +90,7 @@ public class Indigo implements ClientModInitializer {
 
 	static {
 		File configDir = new File(FabricLoader.getInstance().getConfigDirectory(), "fabric");
+
 		if (!configDir.exists()) {
 			if (!configDir.mkdir()) {
 				LOGGER.warn("[Indigo] Could not create configuration directory: " + configDir.getAbsolutePath());
@@ -97,6 +99,7 @@ public class Indigo implements ClientModInitializer {
 
 		File configFile = new File(configDir, "indigo-renderer.properties");
 		Properties properties = new Properties();
+
 		if (configFile.exists()) {
 			try (FileInputStream stream = new FileInputStream(configFile)) {
 				properties.load(stream);
@@ -126,9 +129,11 @@ public class Indigo implements ClientModInitializer {
 	public void onInitializeClient() {
 		if (IndigoMixinConfigPlugin.shouldApplyIndigo()) {
 			LOGGER.info("[Indigo] Registering Indigo renderer!");
+
 			if (IndigoMixinConfigPlugin.shouldForceCompatibility()) {
 				LOGGER.info("[Indigo] Compatibility mode enabled.");
 			}
+
 			RendererAccess.INSTANCE.registerRenderer(IndigoRenderer.INSTANCE);
 		} else {
 			LOGGER.info("[Indigo] Different rendering plugin detected; not applying Indigo.");

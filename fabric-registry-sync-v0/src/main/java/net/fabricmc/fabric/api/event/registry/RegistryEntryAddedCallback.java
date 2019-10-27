@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 
 @FunctionalInterface
 public interface RegistryEntryAddedCallback<T> {

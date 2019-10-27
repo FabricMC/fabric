@@ -16,12 +16,15 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.impl.registry.RemapException;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
@@ -30,10 +33,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.LevelProperties;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
+import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.impl.registry.RemapException;
 
 /**
  * Handles fixing raw dimension ids between saves and servers,
@@ -72,6 +74,7 @@ public class DimensionIdsFixer {
 				setFixedRawId(fabricDimension, fabricDimension.getDesiredRawId());
 			} else {
 				Identifier existing = fixedIds.put(dimensionType.getRawId(), id);
+
 				if (existing != null) {
 					throw new RemapException("Two non-fabric dimensions have the same raw dim id (" + dimensionType.getRawId() + ") : " + existing + " and " + id);
 				}
@@ -89,6 +92,7 @@ public class DimensionIdsFixer {
 			}
 
 			DimensionType dim = DimensionType.byId(dimId);
+
 			if (dim instanceof FabricDimensionType) {
 				setFixedRawId((FabricDimensionType) dim, savedRawId);
 			} else {
@@ -100,6 +104,7 @@ public class DimensionIdsFixer {
 
 		// step 3: de-duplicate raw ids for dimensions which ids are not fixed yet
 		int nextFreeId = 0;
+
 		for (FabricDimensionType fabricDimension : fabricDimensions) {
 			int rawDimId = fabricDimension.getRawId();
 			Identifier dimId = Objects.requireNonNull(DimensionType.getId(fabricDimension));

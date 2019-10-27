@@ -52,7 +52,7 @@ public enum BlendMode {
 
 	public final RenderLayer blockRenderLayer;
 
-	private BlendMode(RenderLayer blockRenderLayer) {
+	BlendMode(RenderLayer blockRenderLayer) {
 		this.blockRenderLayer = blockRenderLayer;
 	}
 

@@ -26,7 +26,7 @@ public final class RendererAccessImpl implements RendererAccess {
 	private RendererAccessImpl() { }
 
 	@Override
-	public final void registerRenderer(Renderer renderer) {
+	public void registerRenderer(Renderer renderer) {
 		if (renderer == null) {
 			throw new NullPointerException("Attempt to register a NULL rendering plug-in.");
 		} else if (activeRenderer != null) {
@@ -39,16 +39,16 @@ public final class RendererAccessImpl implements RendererAccess {
 
 	private Renderer activeRenderer = null;
 
-	/** avoids null test every call to {@link #hasRenderer()} */
+	/** avoids null test every call to {@link #hasRenderer()}. */
 	private boolean hasActiveRenderer = false;
 
 	@Override
-	public final Renderer getRenderer() {
+	public Renderer getRenderer() {
 		return activeRenderer;
 	}
 
 	@Override
-	public final boolean hasRenderer() {
+	public boolean hasRenderer() {
 		return hasActiveRenderer;
 	}
 }

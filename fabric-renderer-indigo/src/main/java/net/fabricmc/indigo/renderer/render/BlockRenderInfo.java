@@ -19,9 +19,8 @@ package net.fabricmc.indigo.renderer.render;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
-import net.minecraft.block.BlockState;
 import net.minecraft.class_4696;
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.RenderLayer;
@@ -29,11 +28,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
 
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
+
 /**
  * Holds, manages and provides access to the block/world related state
- * needed by fallback and mesh consumers.<p>
- * 
- * Exception: per-block position offsets are tracked in {@link ChunkRenderInfo}
+ * needed by fallback and mesh consumers.
+ *
+ * <p>Exception: per-block position offsets are tracked in {@link ChunkRenderInfo}
  * so they can be applied together with chunk offsets.
  */
 public class BlockRenderInfo {

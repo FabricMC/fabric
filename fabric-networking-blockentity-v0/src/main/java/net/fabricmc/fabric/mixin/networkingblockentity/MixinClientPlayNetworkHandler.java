@@ -16,13 +16,6 @@
 
 package net.fabricmc.fabric.mixin.networkingblockentity;
 
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,6 +25,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.packet.BlockEntityUpdateS2CPacket;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class MixinClientPlayNetworkHandler {
@@ -44,14 +46,16 @@ public class MixinClientPlayNetworkHandler {
 			if (packet.getBlockEntityType() == 127) {
 				BlockEntityClientSerializable serializable = (BlockEntityClientSerializable) entity;
 				String id = packet.getCompoundTag().getString("id");
+
 				if (id != null) {
 					Identifier otherIdObj = BlockEntityType.getId(entity.getType());
-					;
+
 					if (otherIdObj == null) {
 						FABRIC_LOGGER.error(entity.getClass() + " is missing a mapping! This is a bug!");
 						info.cancel();
 						return;
 					}
+
 					String otherId = otherIdObj.toString();
 
 					if (otherId.equals(id)) {

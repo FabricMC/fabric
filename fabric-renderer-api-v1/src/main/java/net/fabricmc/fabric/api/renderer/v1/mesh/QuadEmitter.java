@@ -16,23 +16,24 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+
 /**
  * Specialized {@link MutableQuadView} obtained via {@link MeshBuilder#getEmitter()}
- * to append quads during mesh building.<p>
- * 
- * Also obtained from {@link RenderContext#getEmitter()} to submit
- * dynamic quads one-by-one at render time.<p>
- * 
- * Instances of {@link QuadEmitter} will practically always be
- * threadlocal and/or reused - do not retain references.<p>
- * 
- * Only the renderer should implement or extend this interface. 
+ * to append quads during mesh building.
+ *
+ * <p>Also obtained from {@link RenderContext#getEmitter()} to submit
+ * dynamic quads one-by-one at render time.
+ *
+ * <p>Instances of {@link QuadEmitter} will practically always be
+ * threadlocal and/or reused - do not retain references.
+ *
+ * <p>Only the renderer should implement or extend this interface.
  */
 public interface QuadEmitter extends MutableQuadView {
 	@Override
@@ -101,20 +102,20 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
 
 	/**
-	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)} 
+	 * Tolerance for determining if the depth parameter to {@link #square(Direction, float, float, float, float, float)}
 	 * is effectively zero - meaning the face is a cull face.
 	 */
-	final float CULL_FACE_EPSILON = 0.00001f;
+	float CULL_FACE_EPSILON = 0.00001f;
 
 	/**
 	 * Helper method to assign vertex coordinates for a square aligned with the given face.
 	 * Ensures that vertex order is consistent with vanilla convention. (Incorrect order can
-	 * lead to bad AO lighting unless enhanced lighting logic is available/enabled.)<p>
-	 * 
-	 * Square will be parallel to the given face and coplanar with the face (and culled if the
-	 * face is occluded) if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.<p>
-	 * 
-	 * All coordinates should be normalized (0-1).
+	 * lead to bad AO lighting unless enhanced lighting logic is available/enabled.)
+	 *
+	 * <p>Square will be parallel to the given face and coplanar with the face (and culled if the
+	 * face is occluded) if the depth parameter is approximately zero. See {@link #CULL_FACE_EPSILON}.
+	 *
+	 * <p>All coordinates should be normalized (0-1).
 	 */
 	default QuadEmitter square(Direction nominalFace, float left, float bottom, float right, float top, float depth) {
 		if (Math.abs(depth) < CULL_FACE_EPSILON) {
@@ -162,6 +163,7 @@ public interface QuadEmitter extends MutableQuadView {
 			pos(3, left, top, depth);
 			break;
 		}
+
 		return this;
 	}
 

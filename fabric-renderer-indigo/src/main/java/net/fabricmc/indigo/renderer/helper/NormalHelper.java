@@ -16,11 +16,12 @@
 
 package net.fabricmc.indigo.renderer.helper;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
+
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
 
 /**
  * Static routines of general utility for renderer implementations.
@@ -52,24 +53,25 @@ public abstract class NormalHelper {
 	}
 
 	/**
-	 * Retrieves values packed by {@link #packNormal(float, float, float, float)}
-	 * Components are x, y, z, w - zero based
+	 * Retrieves values packed by {@link #packNormal(float, float, float, float)}.
+	 *
+	 * <p>Components are x, y, z, w - zero based.
 	 */
 	public static float getPackedNormalComponent(int packedNormal, int component) {
-		return ((float) (byte) (packedNormal >> (8 * component))) / 127f;
+		return ((byte) (packedNormal >> (8 * component))) / 127f;
 	}
 
 	/**
 	 * Computes the face normal of the given quad and saves it in the provided non-null vector.
 	 * If {@link QuadView#nominalFace()} is set will optimize by confirming quad is parallel to that
-	 * face and, if so, use the standard normal for that face direction.<p>
-	 * 
-	 * Will work with triangles also. Assumes counter-clockwise winding order, which is the norm.
+	 * face and, if so, use the standard normal for that face direction.
+	 *
+	 * <p>Will work with triangles also. Assumes counter-clockwise winding order, which is the norm.
 	 * Expects convex quads with all points co-planar.
 	 */
 	public static void computeFaceNormal(Vector3f saveTo, QuadView q) {
 		final Direction nominalFace = q.nominalFace();
-		
+
 		if (GeometryHelper.isQuadParallelToFace(nominalFace, q)) {
 			Vec3i vec = nominalFace.getVector();
 			saveTo.set(vec.getX(), vec.getY(), vec.getZ());
@@ -99,6 +101,7 @@ public abstract class NormalHelper {
 		float normX = dy0 * dz1 - dz0 * dy1;
 		float normY = dz0 * dx1 - dx0 * dz1;
 		float normZ = dx0 * dy1 - dy0 * dx1;
+
 		float l = (float) Math.sqrt(normX * normX + normY * normY + normZ * normZ);
 
 		if (l != 0) {

@@ -19,8 +19,6 @@ package net.fabricmc.indigo.renderer.mixin;
 import java.util.BitSet;
 import java.util.Random;
 
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,17 +26,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.indigo.renderer.accessor.AccessBlockModelRenderer;
-import net.fabricmc.indigo.renderer.aocalc.VanillaAoHelper;
-import net.fabricmc.indigo.renderer.render.BlockRenderContext;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.MatrixStack;
 import net.minecraft.world.BlockRenderView;
+
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.indigo.renderer.accessor.AccessBlockModelRenderer;
+import net.fabricmc.indigo.renderer.aocalc.VanillaAoHelper;
+import net.fabricmc.indigo.renderer.render.BlockRenderContext;
 
 @Mixin(BlockModelRenderer.class)
 public abstract class MixinBlockModelRenderer implements AccessBlockModelRenderer {
@@ -51,19 +52,19 @@ public abstract class MixinBlockModelRenderer implements AccessBlockModelRendere
 	private final ThreadLocal<BlockRenderContext> CONTEXTS = ThreadLocal.withInitial(BlockRenderContext::new);
 
 	@Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
-	private void hookTesselate(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrix, VertexConsumer buffer, boolean checkSides, Random rand, long seed, int overlay,  CallbackInfoReturnable<Boolean> ci) {
+	private void hookTesselate(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrix, VertexConsumer buffer, boolean checkSides, Random rand, long seed, int overlay, CallbackInfoReturnable<Boolean> ci) {
 		if (!((FabricBakedModel) model).isVanillaAdapter()) {
 			BlockRenderContext context = CONTEXTS.get();
 
 			if (!context.isCallingVanilla()) {
-				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer)(Object) this, blockView, model, state, pos, matrix, buffer, checkSides, seed, overlay));
+				ci.setReturnValue(CONTEXTS.get().tesselate((BlockModelRenderer) (Object) this, blockView, model, state, pos, matrix, buffer, checkSides, seed, overlay));
 			}
 		}
 	}
 
 	@Inject(at = @At("RETURN"), method = "<init>*")
 	private void onInit(CallbackInfo ci) {
-		VanillaAoHelper.initialize((BlockModelRenderer)(Object) this);
+		VanillaAoHelper.initialize((BlockModelRenderer) (Object) this);
 	}
 
 	@Override

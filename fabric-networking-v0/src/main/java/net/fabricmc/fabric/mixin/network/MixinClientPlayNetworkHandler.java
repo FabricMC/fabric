@@ -16,12 +16,15 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
-import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
-import net.fabricmc.fabric.impl.network.PacketTypes;
+import java.util.Optional;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
@@ -31,14 +34,13 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.ThreadExecutor;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.Optional;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
+import net.fabricmc.fabric.impl.network.PacketRegistryImpl;
+import net.fabricmc.fabric.impl.network.PacketTypes;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class MixinClientPlayNetworkHandler implements PacketContext {
@@ -51,6 +53,7 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	@Inject(at = @At("RETURN"), method = "onGameJoin")
 	public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		Optional<Packet<?>> optionalPacket = PacketRegistryImpl.createInitialRegisterPacket(ClientSidePacketRegistry.INSTANCE);
+
 		//noinspection OptionalIsPresent
 		if (optionalPacket.isPresent()) {
 			sendPacket(optionalPacket.get());

@@ -16,20 +16,26 @@
 
 package net.fabricmc.fabric.impl.network;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.network.PacketConsumer;
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.PacketRegistry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.PacketByteBuf;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Supplier;
+import net.fabricmc.fabric.api.network.PacketConsumer;
+import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.PacketRegistry;
 
 public abstract class PacketRegistryImpl implements PacketRegistry {
 	protected static final Logger LOGGER = LogManager.getLogger();
@@ -47,6 +53,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 	@Override
 	public void register(Identifier id, PacketConsumer consumer) {
 		boolean isNew = true;
+
 		if (consumerMap.containsKey(id)) {
 			LOGGER.warn("Registered duplicate packet " + id + "!");
 			LOGGER.trace(new Throwable());
@@ -54,6 +61,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		}
 
 		consumerMap.put(id, consumer);
+
 		if (isNew) {
 			onRegister(id);
 		}
@@ -86,14 +94,17 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		boolean first = true;
+
 		for (Identifier a : ids) {
 			if (!first) {
 				buf.writeByte(0);
 			} else {
 				first = false;
 			}
+
 			buf.writeBytes(a.toString().getBytes(StandardCharsets.US_ASCII));
 		}
+
 		return Optional.of(toPacket(id, buf));
 	}
 
@@ -108,8 +119,10 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			try {
 				while (buf.readerIndex() < buf.writerIndex()) {
 					c = (char) buf.readByte();
+
 					if (c == 0) {
 						String s = sb.toString();
+
 						if (!s.isEmpty()) {
 							try {
 								ids.add(new Identifier(s));
@@ -118,6 +131,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 								LOGGER.trace(e);
 							}
 						}
+
 						sb = new StringBuilder();
 					} else {
 						sb.append(c);
@@ -128,6 +142,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			}
 
 			String s = sb.toString();
+
 			if (!s.isEmpty()) {
 				try {
 					ids.add(new Identifier(s));
@@ -139,6 +154,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		}
 
 		Collection<Identifier> target = getIdCollectionFor(context);
+
 		if (id.equals(PacketTypes.UNREGISTER)) {
 			target.removeAll(ids);
 			onReceivedUnregisterPacket(context, ids);
@@ -146,13 +162,14 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			target.addAll(ids);
 			onReceivedRegisterPacket(context, ids);
 		}
+
 		return false; // continue execution for other mods
 	}
 
 	/**
 	 * Hook for accepting packets used in Fabric mixins.
 	 *
-	 * As PacketByteBuf getters in vanilla create a copy (to allow releasing the original packet buffer without
+	 * <p>As PacketByteBuf getters in vanilla create a copy (to allow releasing the original packet buffer without
 	 * breaking other, potentially delayed accesses), we use a Supplier to generate those copies and release them
 	 * when needed.
 	 *
@@ -167,8 +184,10 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		}
 
 		PacketConsumer consumer = consumerMap.get(id);
+
 		if (consumer != null) {
 			PacketByteBuf buf = bufSupplier.get();
+
 			try {
 				consumer.accept(context, buf);
 			} catch (Throwable t) {
@@ -178,6 +197,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 					buf.release();
 				}
 			}
+
 			return true;
 		} else {
 			return false;

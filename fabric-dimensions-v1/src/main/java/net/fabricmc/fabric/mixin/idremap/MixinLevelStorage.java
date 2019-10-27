@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.mixin.idremap;
 
-import net.fabricmc.fabric.impl.dimension.DimensionRemapException;
-import net.minecraft.world.level.storage.LevelStorage;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+import net.minecraft.world.level.storage.LevelStorage;
+
+import net.fabricmc.fabric.impl.dimension.DimensionRemapException;
 
 @Mixin(LevelStorage.class)
 public abstract class MixinLevelStorage {

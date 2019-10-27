@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.mixin.network;
 
-import net.fabricmc.fabric.impl.network.CustomPayloadC2SPacketAccessor;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+
+import net.fabricmc.fabric.impl.network.CustomPayloadC2SPacketAccessor;
 
 @Mixin(CustomPayloadC2SPacket.class)
 public class MixinCustomPayloadC2SPacket implements CustomPayloadC2SPacketAccessor {

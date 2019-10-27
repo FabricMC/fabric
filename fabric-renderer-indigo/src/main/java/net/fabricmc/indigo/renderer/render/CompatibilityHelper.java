@@ -34,6 +34,7 @@ public abstract class CompatibilityHelper {
 			logCompatibilityWarning = false;
 			Indigo.LOGGER.warn("[Indigo] Encountered baked quad with non-standard vertex format. Some blocks will not be rendered");
 		}
+
 		return result;
 	}
 

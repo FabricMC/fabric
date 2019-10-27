@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.api.client.particle.v1;
 
-import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleType;
+
+import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
+import net.fabricmc.fabric.impl.client.particle.ParticleFactoryRegistryImpl;
 
 /**
  * Registry for adding particle factories on the client for
@@ -28,23 +30,23 @@ import net.minecraft.particle.ParticleType;
  * @see FabricParticleTypes
  */
 public interface ParticleFactoryRegistry {
-	public static ParticleFactoryRegistry getInstance() {
+	static ParticleFactoryRegistry getInstance() {
 		return ParticleFactoryRegistryImpl.INSTANCE;
 	}
 
 	/**
 	 * Registers a factory for constructing particles of the given type.
 	 */
-	public <T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory);
+	<T extends ParticleEffect> void register(ParticleType<T> type, ParticleFactory<T> factory);
 
 	/**
 	 * Registers a delayed factory for constructing particles of the given type.
 	 *
-	 * The factory method will be called with a sprite provider to use for that particle when it comes time.
+	 * <p>The factory method will be called with a sprite provider to use for that particle when it comes time.
 	 *
-	 * Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
+	 * <p>Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
 	 */
-	public <T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor);
+	<T extends ParticleEffect> void register(ParticleType<T> type, PendingParticleFactory<T> constructor);
 
 	/**
 	 * A pending particle factory.
@@ -56,12 +58,12 @@ public interface ParticleFactoryRegistry {
 		/**
 		 * Called to create a new particle factory.
 		 *
-		 * Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
+		 * <p>Particle sprites will be loaded from domain:/particles/particle_name.json as per vanilla minecraft behaviour.
 		 *
 		 * @param provider The sprite provider used to supply sprite textures when drawing the mod's particle.
 		 *
 		 * @return A new particle factory.
 		 */
-		public ParticleFactory<T> create(FabricSpriteProvider provider);
+		ParticleFactory<T> create(FabricSpriteProvider provider);
 	}
 }

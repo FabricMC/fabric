@@ -16,39 +16,40 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
+
 /**
  * Interface for reading quad data encoded by {@link MeshBuilder}.
  * Enables models to do analysis, re-texturing or translation without knowing the
- * renderer's vertex formats and without retaining redundant information.<p>
- * 
- * Only the renderer should implement or extend this interface.
+ * renderer's vertex formats and without retaining redundant information.
+ *
+ * <p>Only the renderer should implement or extend this interface.
  */
 public interface QuadView {
-	/** Count of integers in a conventional (un-modded) block or item vertex */
+	/** Count of integers in a conventional (un-modded) block or item vertex. */
 	int VANILLA_VERTEX_STRIDE = VertexFormats.POSITION_COLOR_UV_NORMAL.getVertexSizeInteger();
 
-	/** Count of integers in a conventional (un-modded) block or item quad */
+	/** Count of integers in a conventional (un-modded) block or item quad. */
 	int VANILLA_QUAD_STRIDE = VANILLA_VERTEX_STRIDE * 4;
 
 	/**
-	 * Reads baked vertex data and outputs standard baked quad 
-	 * vertex data in the given array and location.<p>
-	 * 
+	 * Reads baked vertex data and outputs standard baked quad
+	 * vertex data in the given array and location.
+	 *
 	 * @param spriteIndex The sprite to be used for the quad.
 	 * Behavior for values &gt; 0 is currently undefined.
-	 * 
+	 *
 	 * @param target Target array for the baked quad data.
-	 * 
+	 *
 	 * @param targetIndex Starting position in target array - array must have
 	 * at least 28 elements available at this index.
-	 * 
+	 *
 	 * @param isItem If true, will output vertex normals. Otherwise will output
 	 * lightmaps, per Minecraft vertex formats for baked models.
 	 */
@@ -74,15 +75,15 @@ public interface QuadView {
 	/**
 	 * Equivalent to {@link BakedQuad#getFace()}. This is the face used for vanilla lighting
 	 * calculations and will be the block face to which the quad is most closely aligned. Always
-	 * the same as cull face for quads that are on a block face, but never null.<p>
+	 * the same as cull face for quads that are on a block face, but never null.
 	 */
 	Direction lightFace();
 
 	/**
-	 * If non-null, quad should not be rendered in-world if the 
-	 * opposite face of a neighbor block occludes it.<p>
-	 * 
-	 * See {@link MutableQuadView#cullFace(Direction)}.
+	 * If non-null, quad should not be rendered in-world if the
+	 * opposite face of a neighbor block occludes it.
+	 *
+	 * @see MutableQuadView#cullFace(Direction)
 	 */
 	Direction cullFace();
 
@@ -94,36 +95,32 @@ public interface QuadView {
 	/**
 	 * Normal of the quad as implied by geometry. Will be invalid
 	 * if quad vertices are not co-planar.  Typically computed lazily
-	 * on demand and not encoded.<p>
-	 * 
-	 * Not typically needed by models. Exposed to enable standard lighting
+	 * on demand and not encoded.
+	 *
+	 * <p>Not typically needed by models. Exposed to enable standard lighting
 	 * utility functions for use by renderers.
 	 */
 	Vector3f faceNormal();
 
 	/**
 	 * Generates a new BakedQuad instance with texture
-	 * coordinates and colors from the given sprite.<p>
-	 * 
-	 * param source Data previously packed by {@link MeshBuilder}.
-	 * 
-	 * param sourceIndex Index where packed data starts.
-	 * 
+	 * coordinates and colors from the given sprite.
+	 *
 	 * @param spriteIndex The sprite to be used for the quad.
 	 * Behavior for {@code spriteIndex > 0} is currently undefined.
-	 * 
+	 *
 	 * @param sprite  {@link MutableQuadView} does not serialize sprites
 	 * so the sprite must be provided by the caller.
-	 * 
+	 *
 	 * @param isItem If true, will output vertex normals. Otherwise will output
 	 * lightmaps, per Minecraft vertex formats for baked models.
-	 * 
+	 *
 	 * @return A new baked quad instance with the closest-available appearance
 	 * supported by vanilla features. Will retain emissive light maps, for example,
 	 * but the standard Minecraft renderer will not use them.
 	 */
 	default BakedQuad toBakedQuad(int spriteIndex, Sprite sprite, boolean isItem) {
-		int vertexData[] = new int[VANILLA_QUAD_STRIDE];
+		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(spriteIndex, vertexData, 0, isItem);
 		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite);
 	}
@@ -141,7 +138,7 @@ public interface QuadView {
 	Vector3f copyPos(int vertexIndex, Vector3f target);
 
 	/**
-	 * Convenience: access x, y, z by index 0-2
+	 * Convenience: access x, y, z by index 0-2.
 	 */
 	float posByIndex(int vertexIndex, int coordinateIndex);
 
@@ -203,7 +200,7 @@ public interface QuadView {
 	float spriteU(int vertexIndex, int spriteIndex);
 
 	/**
-	 * Retrieve vertical sprite atlas coordinates
+	 * Retrieve vertical sprite atlas coordinates.
 	 */
 	float spriteV(int vertexIndex, int spriteIndex);
 }

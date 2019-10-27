@@ -18,7 +18,6 @@ package net.fabricmc.fabric.mixin.renderer.client;
 
 import java.util.Map;
 
-import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,6 +27,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.impl.renderer.SpriteFinderImpl;
 
 @Mixin(SpriteAtlasTexture.class)
 public class MixinSpriteAtlasTexture implements SpriteFinderImpl.SpriteFinderAccess {
@@ -49,6 +50,7 @@ public class MixinSpriteAtlasTexture implements SpriteFinderImpl.SpriteFinderAcc
 			result = new SpriteFinderImpl(sprites);
 			fabric_spriteFinder = result;
 		}
+
 		return result;
 	}
 }

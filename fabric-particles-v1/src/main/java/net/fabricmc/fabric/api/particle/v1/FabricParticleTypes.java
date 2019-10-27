@@ -23,16 +23,16 @@ import net.minecraft.particle.ParticleType;
 /**
  * Methods for creating particle types, both simple and using an existing attribute factory.
  *
- * Usage:
+ * <p>Usage:
+ * <pre> {@code
+ * public static final DefaultParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
+ * public static final DefaultParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
  *
- *	public static final DefaultParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
- *	public static final DefaultParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
- *
- *	@Override
- *	public void onInitialize() {
- *		Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "simple"), SIMPLE_TEST_PARTICLE);
- *		Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "custom"), CUSTOM_TEST_PARTICLE);
- *	}
+ * @Override
+ * public void onInitialize() {
+ *     Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "simple"), SIMPLE_TEST_PARTICLE);
+ *     Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "custom"), CUSTOM_TEST_PARTICLE);
+ * }}</pre>
  *
  * @see ParticleModClient in the fabric example mods for a more complete usage.
  */
@@ -55,7 +55,7 @@ public final class FabricParticleTypes {
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
 	 */
 	public static DefaultParticleType simple(boolean alwaysSpawn) {
-		return new DefaultParticleType(alwaysSpawn) {};
+		return new DefaultParticleType(alwaysSpawn) { };
 	}
 
 	/**
@@ -76,6 +76,6 @@ public final class FabricParticleTypes {
 	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
 	 */
 	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
-		return new ParticleType<T>(alwaysSpawn, factory) {};
+		return new ParticleType<T>(alwaysSpawn, factory) { };
 	}
 }

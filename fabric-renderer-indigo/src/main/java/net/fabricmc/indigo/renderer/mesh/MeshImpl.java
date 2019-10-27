@@ -31,7 +31,7 @@ public class MeshImpl implements Mesh {
 
 	final int[] data;
 
-	MeshImpl(int data[]) {
+	MeshImpl(int[] data) {
 		this.data = data;
 	}
 
@@ -52,7 +52,7 @@ public class MeshImpl implements Mesh {
 	void forEach(Consumer<QuadView> consumer, QuadViewImpl cursor) {
 		final int limit = data.length;
 		int index = 0;
-		
+
 		while (index < limit) {
 			cursor.load(data, index);
 			consumer.accept(cursor);

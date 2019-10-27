@@ -16,17 +16,19 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
+import java.util.ArrayList;
+import java.util.IdentityHashMap;
+import java.util.List;
+
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntMaps;
-import net.fabricmc.fabric.impl.registry.RemovableIdList;
-import net.minecraft.util.IdList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
+import net.minecraft.util.IdList;
+
+import net.fabricmc.fabric.impl.registry.RemovableIdList;
 
 @Mixin(IdList.class)
 public class MixinIdList implements RemovableIdList<Object> {
@@ -48,6 +50,7 @@ public class MixinIdList implements RemovableIdList<Object> {
 	private void fabric_removeInner(Object o) {
 		int value = idMap.remove(o);
 		list.set(value, null);
+
 		while (nextId > 1 && list.get(nextId - 1) == null) {
 			nextId--;
 		}
@@ -66,6 +69,7 @@ public class MixinIdList implements RemovableIdList<Object> {
 
 		for (Object o : idMap.keySet()) {
 			int j = idMap.get(o);
+
 			if (i == j) {
 				removals.add(o);
 			}
@@ -91,6 +95,7 @@ public class MixinIdList implements RemovableIdList<Object> {
 
 		for (int k = 0; k < oldList.size(); k++) {
 			Object o = oldList.get(k);
+
 			if (o != null) {
 				int i = map.getOrDefault(k, k);
 
@@ -99,6 +104,7 @@ public class MixinIdList implements RemovableIdList<Object> {
 				}
 
 				list.set(i, o);
+
 				if (nextId <= i) {
 					nextId = i + 1;
 				}

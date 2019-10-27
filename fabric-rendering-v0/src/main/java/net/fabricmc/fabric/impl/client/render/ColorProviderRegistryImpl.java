@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.render;
 
-import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
+import java.util.IdentityHashMap;
+import java.util.Map;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
@@ -24,8 +26,7 @@ import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.item.ItemConvertible;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
+import net.fabricmc.fabric.api.client.render.ColorProviderRegistry;
 
 public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> implements ColorProviderRegistry<T, Provider> {
 	public static final ColorProviderRegistryImpl<Block, BlockColorProvider, BlockColors> BLOCK = new ColorProviderRegistryImpl<Block, BlockColorProvider, BlockColors>() {
@@ -54,9 +55,11 @@ public abstract class ColorProviderRegistryImpl<T, Provider, Underlying> impleme
 		}
 
 		this.colorMap = colorMap;
+
 		for (Map.Entry<T, Provider> mappers : tempMappers.entrySet()) {
 			registerUnderlying(colorMap, mappers.getValue(), mappers.getKey());
 		}
+
 		tempMappers = null;
 	}
 

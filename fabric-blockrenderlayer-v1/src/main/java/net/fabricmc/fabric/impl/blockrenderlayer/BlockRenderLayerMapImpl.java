@@ -20,16 +20,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
-import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
 
 public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
-	private BlockRenderLayerMapImpl() {}
-	
+	private BlockRenderLayerMapImpl() { }
+
 	@Override
 	public void putBlock(Block block, RenderLayer renderLayer) {
 		if (block == null) throw new IllegalArgumentException("Request to map null block to BlockRenderLayer");
@@ -53,7 +53,7 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 
 		fluidHandler.accept(fluid, renderLayer);
 	}
-	
+
 	public static final BlockRenderLayerMap INSTANCE = new BlockRenderLayerMapImpl();
 
 	private static Map<Block, RenderLayer> blockRenderLayerMap = new HashMap<>();

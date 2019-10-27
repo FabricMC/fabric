@@ -16,9 +16,13 @@
 
 package net.fabricmc.fabric.mixin.eventsinteraction;
 
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
-import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -27,12 +31,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockApplyCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientPickBlockGatherCallback;
 
 @Mixin(MinecraftClient.class)
 public abstract class MixinMinecraftClient {
@@ -52,6 +54,7 @@ public abstract class MixinMinecraftClient {
 
 		// Do a "best effort" emulation of the old events.
 		ItemStack stack = ClientPickBlockGatherCallback.EVENT.invoker().pick(client.player, client.hitResult);
+
 		// TODO: Remove in 0.3.0
 		if (stack.isEmpty()) {
 			stack = fabric_emulateOldPick();
@@ -67,12 +70,14 @@ public abstract class MixinMinecraftClient {
 
 			if (client.player.abilities.creativeMode && Screen.hasControlDown() && client.hitResult.getType() == HitResult.Type.BLOCK) {
 				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.hitResult).getBlockPos());
+
 				if (be != null) {
 					stack = addBlockEntityNbt(stack, be);
 				}
 			}
 
 			stack = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.hitResult, stack);
+
 			if (stack.isEmpty()) {
 				return;
 			}
@@ -82,6 +87,7 @@ public abstract class MixinMinecraftClient {
 				client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
 			} else {
 				int slot = playerInventory.getSlotWithStack(stack);
+
 				if (slot >= 0) {
 					if (PlayerInventory.isValidHotbarIndex(slot)) {
 						playerInventory.selectedSlot = slot;

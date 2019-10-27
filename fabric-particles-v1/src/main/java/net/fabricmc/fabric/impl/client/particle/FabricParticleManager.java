@@ -25,16 +25,17 @@ import java.util.Random;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.ImmutableList;
-
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
+
 import net.minecraft.client.particle.ParticleTextureData;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+
+import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 
 public final class FabricParticleManager {
 	private final VanillaParticleManager manager;
@@ -50,8 +51,8 @@ public final class FabricParticleManager {
 		ParticleFactoryRegistryImpl.INSTANCE.constructors.forEach((id, factory) -> {
 			FabricSpriteProviderImpl provider = new FabricSpriteProviderImpl();
 
-			providers.put((int)id, provider);
-			manager.getFactories().put((int)id, factory.create(provider));
+			providers.put((int) id, provider);
+			manager.getFactories().put((int) id, factory.create(provider));
 		});
 	}
 
@@ -60,7 +61,7 @@ public final class FabricParticleManager {
 			return null;
 		}
 
-		return providers.get((int)ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
+		return providers.get((int) ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
 	}
 
 	public boolean loadParticle(ResourceManager manager, Identifier id) {
@@ -114,6 +115,7 @@ public final class FabricParticleManager {
 			if (sprites == null) {
 				sprites = spriteIds.stream().map(getAtlas()::getSprite).collect(Collectors.toList());
 			}
+
 			return sprites;
 		}
 

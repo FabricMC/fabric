@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import net.fabricmc.fabric.mixin.client.rendereregistry.MixinBlockEntityRenderDispatcher;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+
+import net.fabricmc.fabric.mixin.client.rendereregistry.MixinBlockEntityRenderDispatcher;
 
 /**
  * Helper class for registering BlockEntityRenderers.
@@ -28,9 +29,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 public class BlockEntityRendererRegistry {
 	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
 
-	private BlockEntityRendererRegistry() {
-
-	}
+	private BlockEntityRendererRegistry() { }
 
 	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer) {
 		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).invoke_method_23078(blockEntityType, blockEntityRenderer);

@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.impl.registry.trackers.*;
-import net.fabricmc.fabric.impl.registry.trackers.vanilla.BiomeParentTracker;
-import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockInitTracker;
-import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockItemTracker;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
 import net.minecraft.Bootstrap;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -28,10 +29,11 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biomes;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.fabricmc.fabric.impl.registry.trackers.StateIdTracker;
+import net.fabricmc.fabric.impl.registry.trackers.vanilla.BiomeParentTracker;
+import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockInitTracker;
+import net.fabricmc.fabric.impl.registry.trackers.vanilla.BlockItemTracker;
 
 @Mixin(Bootstrap.class)
 public class MixinBootstrap {

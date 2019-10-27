@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.mixin.client.texture;
 
-import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
-import net.minecraft.client.texture.AbstractTexture;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.client.texture.AbstractTexture;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
 
 @Mixin(TextureManager.class)
 public class MixinTextureManager {

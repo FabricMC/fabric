@@ -27,7 +27,7 @@ import net.fabricmc.indigo.renderer.helper.GeometryHelper;
  * Not much to it - mainly it just needs to grow the int[] array as quads are appended
  * and maintain/provide a properly-configured {@link net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView} instance.
  * All the encoding and other work is handled in the quad base classes.
- * The one interesting bit is in {@link Maker#emit()}. 
+ * The one interesting bit is in {@link Maker#emit()}.
  */
 public class MeshBuilderImpl implements MeshBuilder {
 	int[] data = new int[256];
@@ -65,17 +65,17 @@ public class MeshBuilderImpl implements MeshBuilder {
 	 * Our base classes are used differently so we define final
 	 * encoding steps in subtypes. This will be a static mesh used
 	 * at render time so we want to capture all geometry now and
-	 * apply non-location-dependent lighting. 
+	 * apply non-location-dependent lighting.
 	 */
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
 		@Override
 		public Maker emit() {
 			lightFace(GeometryHelper.lightFace(this));
-			
+
 			if (isGeometryInvalid) {
 				geometryFlags(GeometryHelper.computeShapeFlags(this));
 			}
-			
+
 			ColorHelper.applyDiffuseShading(this, false);
 			index += EncodingFormat.TOTAL_STRIDE;
 			ensureCapacity(EncodingFormat.TOTAL_STRIDE);

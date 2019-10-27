@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.mixin.biomes;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -27,8 +27,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.HashSet;
-import java.util.Set;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 /**
  * Adds the biomes in world gen to the array for the vanilla layered biome source.
@@ -36,14 +37,13 @@ import java.util.Set;
  */
 @Mixin(VanillaLayeredBiomeSource.class)
 public class MixinVanillaLayeredBiomeSource {
-
 	@Shadow
 	@Final
 	@Mutable
 	private static Set<Biome> BIOMES;
 
 	@Inject(method = "<clinit>", at = @At("RETURN"))
-	private static void cinit(CallbackInfo info){
+	private static void cinit(CallbackInfo info) {
 		BIOMES = new HashSet<>(BIOMES);
 	}
 
@@ -51,5 +51,4 @@ public class MixinVanillaLayeredBiomeSource {
 	private static void fabric_injectBiome(Biome biome) {
 		BIOMES.add(biome);
 	}
-
 }

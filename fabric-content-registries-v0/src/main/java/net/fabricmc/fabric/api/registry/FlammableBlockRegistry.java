@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import net.fabricmc.fabric.api.util.Block2ObjectMap;
-import net.fabricmc.fabric.impl.registry.FlammableBlockRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.tag.Tag;
+
+import net.fabricmc.fabric.api.util.Block2ObjectMap;
+import net.fabricmc.fabric.impl.registry.FlammableBlockRegistryImpl;
 
 public interface FlammableBlockRegistry extends Block2ObjectMap<FlammableBlockRegistry.Entry> {
 	static FlammableBlockRegistry getDefaultInstance() {
@@ -39,7 +40,7 @@ public interface FlammableBlockRegistry extends Block2ObjectMap<FlammableBlockRe
 		this.add(tag, new Entry(burn, spread));
 	}
 
-	public static final class Entry {
+	final class Entry {
 		private final int burn, spread;
 
 		public Entry(int burn, int spread) {

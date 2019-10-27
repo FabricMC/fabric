@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
+import java.util.List;
+
 import net.minecraft.world.loot.LootPool;
 import net.minecraft.world.loot.LootTable;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
-
-import java.util.List;
 
 /**
  * An interface implemented by all {@code net.minecraft.world.loot.LootSupplier} instances when
@@ -31,6 +31,7 @@ public interface FabricLootSupplier {
 	default LootTable asVanilla() {
 		return (LootTable) this;
 	}
+
 	List<LootPool> getPools();
 	List<LootFunction> getFunctions();
 	LootContextType getType();

@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.impl.network;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.Packet;
@@ -28,9 +30,9 @@ import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
+import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketContext;
 
 public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements ClientSidePacketRegistry {
 	private final Collection<Identifier> serverPayloadIds = new HashSet<>();
@@ -47,6 +49,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+
 		if (handler != null) {
 			if (completionListener == null) {
 				// stay closer to the vanilla codepath
@@ -67,6 +70,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	protected void onRegister(Identifier id) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+
 		if (handler != null) {
 			createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
 		}
@@ -75,6 +79,7 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	protected void onUnregister(Identifier id) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+
 		if (handler != null) {
 			createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
 		}

@@ -25,7 +25,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
 @Mixin(BlockEntityRenderDispatcher.class)
 public interface MixinBlockEntityRenderDispatcher {
-	@Invoker(value="method_23078")
+	@Invoker(value = "method_23078")
 	@SuppressWarnings("rawtypes")
 	void invoke_method_23078(BlockEntityType blockEntityType, BlockEntityRenderer blockEntityRenderer);
 }

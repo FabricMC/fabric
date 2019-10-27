@@ -2,6 +2,7 @@
 .gradle
 
 # Eclipse
+.checkstyle
 .classpath
 .metadata
 .settings

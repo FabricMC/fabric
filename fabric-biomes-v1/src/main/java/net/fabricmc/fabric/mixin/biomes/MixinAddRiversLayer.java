@@ -16,13 +16,8 @@
 
 package net.fabricmc.fabric.mixin.biomes;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.AddRiversLayer;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
-import net.minecraft.world.biome.layer.LayerSampler;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,14 +25,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Map;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.AddRiversLayer;
+import net.minecraft.world.biome.layer.LayerRandomnessSource;
+import net.minecraft.world.biome.layer.LayerSampler;
+
+import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 
 /**
- * Sets river biomes specified with {@link OverworldBiomes#setRiverBiome(Biome, Biome)}
+ * Sets river biomes specified with {@link OverworldBiomes#setRiverBiome(Biome, Biome)}.
  */
 @Mixin(AddRiversLayer.class)
 public class MixinAddRiversLayer {
-
 	@Shadow
 	@Final
 	private static int RIVER_ID;
@@ -49,10 +50,10 @@ public class MixinAddRiversLayer {
 
 		int riverBiomeId = riverSampler.sample(x, z);
 		Map<Biome, Biome> overworldRivers = InternalBiomeData.getOverworldRivers();
+
 		if (overworldRivers.containsKey(landBiome) && riverBiomeId == RIVER_ID) {
 			Biome riverBiome = overworldRivers.get(landBiome);
 			info.setReturnValue(riverBiome == null ? landBiomeId : Registry.BIOME.getRawId(riverBiome));
 		}
 	}
-
 }

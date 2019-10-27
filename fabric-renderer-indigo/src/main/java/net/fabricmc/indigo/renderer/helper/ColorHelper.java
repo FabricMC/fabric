@@ -19,10 +19,12 @@ package net.fabricmc.indigo.renderer.helper;
 import java.nio.ByteOrder;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
+
 import net.minecraft.client.render.model.BakedQuadFactory;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
+
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 
 /**
  * Static routines of general utility for renderer implementations.
@@ -31,18 +33,18 @@ import net.minecraft.util.math.Direction;
  */
 public abstract class ColorHelper {
 	private ColorHelper() { }
-	
+
 	/**
 	 * Implement on quads to use methods that require it.
 	 * Allows for much cleaner method signatures.
 	 */
-	public static interface ShadeableQuad extends MutableQuadView {
+	public interface ShadeableQuad extends MutableQuadView {
 		boolean isFaceAligned();
 
 		boolean needsDiffuseShading(int textureIndex);
 	}
 
-	/** Same as vanilla values */
+	/** Same as vanilla values. */
 	private static final float[] FACE_SHADE_FACTORS = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
 	private static final Int2IntFunction colorSwapper = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN ? color -> ((color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16)) : color -> color;
@@ -81,7 +83,7 @@ public abstract class ColorHelper {
 	}
 
 	/**
-	 * Same results as {@link BakedQuadFactory#method_3456(Direction)}
+	 * Same results as {@link BakedQuadFactory#method_3456(Direction)}.
 	 */
 	public static float diffuseShade(Direction direction) {
 		return FACE_SHADE_FACTORS[direction.getId()];
@@ -100,7 +102,7 @@ public abstract class ColorHelper {
 	}
 
 	/**
-	 * See {@link diffuseShade}
+	 * @see #diffuseShade
 	 */
 	public static float vertexShade(ShadeableQuad q, int vertexIndex, float faceShade) {
 		return q.hasNormal(vertexIndex) ? normalShade(q.normalX(vertexIndex), q.normalY(vertexIndex), q.normalZ(vertexIndex)) : faceShade;
@@ -108,22 +110,21 @@ public abstract class ColorHelper {
 
 	/**
 	 * Returns {@link #diffuseShade(Direction)} if quad is aligned to light face,
-	 * otherwise uses face normal and {@link #normalShade}
+	 * otherwise uses face normal and {@link #normalShade}.
 	 */
 	public static float faceShade(ShadeableQuad quad) {
 		return quad.isFaceAligned() ? diffuseShade(quad.lightFace()) : normalShade(quad.faceNormal());
 	}
 
 	@FunctionalInterface
-	private static interface VertexLighter {
+	private interface VertexLighter {
 		void shade(ShadeableQuad quad, int vertexIndex, float shade);
 	}
 
 	private static VertexLighter[] VERTEX_LIGHTERS = new VertexLighter[8];
 
 	static {
-		VERTEX_LIGHTERS[0b000] = (q, i, s) -> {
-		};
+		VERTEX_LIGHTERS[0b000] = (q, i, s) -> { };
 		VERTEX_LIGHTERS[0b001] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s));
 		VERTEX_LIGHTERS[0b010] = (q, i, s) -> q.spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s));
 		VERTEX_LIGHTERS[0b011] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s)).spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s));
@@ -135,9 +136,9 @@ public abstract class ColorHelper {
 
 	/**
 	 * Honors vertex normals and uses non-cubic face normals for non-cubic quads.
-	 * 
-	 * @param quad Quad to be shaded/unshaded.<p>
-	 * 
+	 *
+	 * @param quad Quad to be shaded/unshaded.
+	 *
 	 * @param undo If true, will reverse prior application.  Does not check that
 	 * prior application actually happened.  Use to "unbake" a quad.
 	 * Some drift of colors may occur due to floating-point precision error.
@@ -145,21 +146,21 @@ public abstract class ColorHelper {
 	public static void applyDiffuseShading(ShadeableQuad quad, boolean undo) {
 		final float faceShade = faceShade(quad);
 		int i = quad.needsDiffuseShading(0) ? 1 : 0;
-		
+
 		if (quad.needsDiffuseShading(1)) {
 			i |= 2;
 		}
-		
+
 		if (quad.needsDiffuseShading(2)) {
 			i |= 4;
 		}
-		
+
 		if (i == 0) {
 			return;
 		}
 
 		final VertexLighter shader = VERTEX_LIGHTERS[i];
-		
+
 		for (int j = 0; j < 4; j++) {
 			final float vertexShade = vertexShade(quad, j, faceShade);
 			shader.shade(quad, j, undo ? 1f / vertexShade : vertexShade);
@@ -167,13 +168,12 @@ public abstract class ColorHelper {
 	}
 
 	/**
-	 * Component-wise max
+	 * Component-wise max.
 	 */
 	public static int maxBrightness(int b0, int b1) {
-		if (b0 == 0)
-			return b1;
-		else if (b1 == 0)
-			return b0;
+		if (b0 == 0) return b1;
+		if (b1 == 0) return b0;
+
 		return Math.max(b0 & 0xFFFF, b1 & 0xFFFF) | Math.max(b0 & 0xFFFF0000, b1 & 0xFFFF0000);
 	}
 }

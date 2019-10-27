@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.impl.registry;
 
-import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.server.command.ServerCommandSource;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
+import com.mojang.brigadier.CommandDispatcher;
+
+import net.minecraft.server.command.ServerCommandSource;
 
 public class CommandRegistryImpl {
 	public static final CommandRegistryImpl INSTANCE = new CommandRegistryImpl();

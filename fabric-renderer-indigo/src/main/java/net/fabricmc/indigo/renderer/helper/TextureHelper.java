@@ -16,9 +16,10 @@
 
 package net.fabricmc.indigo.renderer.helper;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
+
+import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 
 /**
  * Handles most texture-baking use cases for model loaders and model libraries
@@ -27,12 +28,12 @@ import net.minecraft.util.math.Direction;
  */
 public class TextureHelper {
 	private TextureHelper() { }
-	
+
 	private static final float NORMALIZER = 1f / 16f;
 
 	/**
 	 * Bakes textures in the provided vertex data, handling UV locking,
-	 * rotation, interpolation, etc. Textures must not be already baked. 
+	 * rotation, interpolation, etc. Textures must not be already baked.
 	 */
 	public static void bakeSprite(MutableQuadView quad, int spriteIndex, Sprite sprite, int bakeFlags) {
 		if (quad.nominalFace() != null && (MutableQuadView.BAKE_LOCK_UV & bakeFlags) != 0) {
@@ -44,7 +45,7 @@ public class TextureHelper {
 		}
 
 		final int rotation = bakeFlags & 3;
-		
+
 		if (rotation != 0) {
 			// Rotates texture around the center of sprite.
 			// Assumes normalized coordinates.
@@ -65,7 +66,7 @@ public class TextureHelper {
 	}
 
 	/**
-	 * Faster than sprite method. Sprite computes span and normalizes inputs each call, 
+	 * Faster than sprite method. Sprite computes span and normalizes inputs each call,
 	 * so we'd have to denormalize before we called, only to have the sprite renormalize immediately.
 	 */
 	private static void interpolate(MutableQuadView q, int spriteIndex, Sprite sprite) {
@@ -73,14 +74,14 @@ public class TextureHelper {
 		final float uSpan = sprite.getMaxU() - uMin;
 		final float vMin = sprite.getMinV();
 		final float vSpan = sprite.getMaxV() - vMin;
-		
+
 		for (int i = 0; i < 4; i++) {
 			q.sprite(i, spriteIndex, uMin + q.spriteU(i, spriteIndex) * uSpan, vMin + q.spriteV(i, spriteIndex) * vSpan);
 		}
 	}
 
 	@FunctionalInterface
-	private static interface VertexModifier {
+	private interface VertexModifier {
 		void apply(MutableQuadView quad, int vertexIndex, int spriteIndex);
 	}
 

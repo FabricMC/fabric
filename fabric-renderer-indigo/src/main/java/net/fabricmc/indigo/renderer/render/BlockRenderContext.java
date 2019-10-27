@@ -20,12 +20,6 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
-import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
-import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
-import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -36,6 +30,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix3f;
 import net.minecraft.util.math.MatrixStack;
 import net.minecraft.world.BlockRenderView;
+
+import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
+import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
+import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
+import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.indigo.renderer.aocalc.AoCalculator;
+import net.fabricmc.indigo.renderer.aocalc.AoLuminanceFix;
 
 /**
  * Context for non-terrain block rendering.

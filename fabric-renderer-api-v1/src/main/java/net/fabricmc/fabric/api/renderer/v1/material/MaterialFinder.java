@@ -16,24 +16,25 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
+import net.minecraft.client.render.RenderLayer;
+
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.minecraft.client.render.RenderLayer;
 
 /**
  * Finds standard {@link RenderMaterial} instances used to communicate
- * quad rendering characteristics to a {@link RenderContext}.<p>
+ * quad rendering characteristics to a {@link RenderContext}.
  *
- * Must be obtained via {@link Renderer#materialFinder()}.
+ * <p>Must be obtained via {@link Renderer#materialFinder()}.
  */
 public interface MaterialFinder {
 	/**
 	 * Returns the standard material encoding all
 	 * of the current settings in this finder. The settings in
-	 * this finder are not changed.<p>
-	 * 
-	 * Resulting instances can and should be re-used to prevent
+	 * this finder are not changed.
+	 *
+	 * <p>Resulting instances can and should be re-used to prevent
 	 * needless memory allocation. {@link Renderer} implementations
 	 * may or may not cache standard material instances.
 	 */
@@ -46,7 +47,6 @@ public interface MaterialFinder {
 	MaterialFinder clear();
 
 	/**
-	 * 
 	 * Reserved for future use.  Behavior for values &gt; 1 is currently undefined.
 	 */
 	MaterialFinder spriteDepth(int depth);
@@ -54,14 +54,14 @@ public interface MaterialFinder {
 	/**
 	 * Defines how sprite pixels will be blended with the scene.
 	 * Accepts {link @BlockRenderLayer} values and blending behavior
-	 * will emulate the way that Minecraft renders those instances. This does 
+	 * will emulate the way that Minecraft renders those instances. This does
 	 * NOT mean the sprite will be rendered in a specific render pass - some
-	 * implementations may not use the standard vanilla render passes.<p>
-	 * 
-	 * CAN be null and is null by default. A null value means the renderer
+	 * implementations may not use the standard vanilla render passes.
+	 *
+	 * <p>CAN be null and is null by default. A null value means the renderer
 	 * will use the value normally associated with the block being rendered, or
 	 * {@code TRANSLUCENT} for item renders. (Normal Minecraft rendering)
-	 * 
+	 *
 	 * @deprecated Use {@code BlendMode} version instead.
 	 */
 	@Deprecated
@@ -70,14 +70,14 @@ public interface MaterialFinder {
 	}
 
 	/**
-	 * Defines how sprite pixels will be blended with the scene.<p>
-	 * 
-	 * See {@link BlendMode} for more information.
+	 * Defines how sprite pixels will be blended with the scene.
+	 *
+	 * <p>See {@link BlendMode} for more information.
 	 */
 	MaterialFinder blendMode(int spriteIndex, BlendMode blendMode);
 
 	/**
-	 * Vertex color(s) will be modified for quad color index unless disabled.<p>
+	 * Vertex color(s) will be modified for quad color index unless disabled.
 	 */
 	MaterialFinder disableColorIndex(int spriteIndex, boolean disable);
 
@@ -94,13 +94,13 @@ public interface MaterialFinder {
 	/**
 	 * When true, sprite texture and color will be rendered at full brightness.
 	 * Lightmap values provided via {@link QuadEmitter#lightmap(int)} will be ignored.
-	 * False by default<p>
-	 * 
-	 * This is the preferred method for emissive lighting effects.  Some renderers
+	 * False by default
+	 *
+	 * <p>This is the preferred method for emissive lighting effects.  Some renderers
 	 * with advanced lighting models may not use block lightmaps and this method will
-	 * allow per-sprite emissive lighting in future extensions that support overlay sprites.<p>
-	 * 
-	 * Note that color will still be modified by diffuse shading and ambient occlusion,
+	 * allow per-sprite emissive lighting in future extensions that support overlay sprites.
+	 *
+	 * <p>Note that color will still be modified by diffuse shading and ambient occlusion,
 	 * unless disabled via {@link #disableAo(int, boolean)} and {@link #disableDiffuse(int, boolean)}.
 	 */
 	MaterialFinder emissive(int spriteIndex, boolean isEmissive);
