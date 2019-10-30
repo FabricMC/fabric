@@ -42,19 +42,19 @@ public class MixinLootManager {
 
 	@Inject(method = "method_20712", at = @At("RETURN"))
 	private void apply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
-		Map<Identifier, LootTable> newSuppliers = new HashMap<>();
+		Map<Identifier, LootTable> newTables = new HashMap<>();
 
 		tables.forEach((id, table) -> {
 			FabricLootTableBuilder builder = FabricLootTableBuilder.of(table);
 
 			//noinspection ConstantConditions
 			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(
-					manager, (LootManager) (Object) this, id, builder, (s) -> newSuppliers.put(id, s)
+					manager, (LootManager) (Object) this, id, builder, (s) -> newTables.put(id, s)
 			);
 
-			newSuppliers.computeIfAbsent(id, (i) -> builder.create());
+			newTables.computeIfAbsent(id, (i) -> builder.create());
 		});
 
-		tables = ImmutableMap.copyOf(newSuppliers);
+		tables = ImmutableMap.copyOf(newTables);
 	}
 }
