@@ -23,7 +23,7 @@ import net.minecraft.world.loot.LootSupplier;
 import net.minecraft.world.loot.context.LootContextType;
 import net.minecraft.world.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.LootSupplierBuilderHooks;
+import net.fabricmc.fabric.mixin.loot.table.LootSupplierBuilderHooks;
 
 public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;

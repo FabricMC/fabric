@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.network",
+  "package": "net.fabricmc.fabric.mixin.networking",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinCustomPayloadC2SPacket",

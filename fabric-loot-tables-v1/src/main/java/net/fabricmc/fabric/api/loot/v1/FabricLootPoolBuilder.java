@@ -22,7 +22,7 @@ import net.minecraft.world.loot.condition.LootCondition;
 import net.minecraft.world.loot.entry.LootEntry;
 import net.minecraft.world.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.LootPoolBuilderHooks;
+import net.fabricmc.fabric.mixin.loot.table.LootPoolBuilderHooks;
 
 public class FabricLootPoolBuilder extends LootPool.Builder {
 	private final LootPoolBuilderHooks extended = (LootPoolBuilderHooks) this;

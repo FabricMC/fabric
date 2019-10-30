@@ -27,7 +27,7 @@
   ],
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl::init"
+      "net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl::init"
     ]
   }
 }

@@ -32,7 +32,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagContainer;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.tag.TagDelegate;
+import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
 
 /**
  * Helper methods for registering Tags.

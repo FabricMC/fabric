@@ -26,7 +26,7 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.impl.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.sync.RemapException;
 
 /**
  * Client entry point for fabric-dimensions.

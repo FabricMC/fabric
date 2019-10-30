@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.networkingblockentity",
+  "package": "net.fabricmc.fabric.mixin.networking.blockentity",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinBlockEntity"
