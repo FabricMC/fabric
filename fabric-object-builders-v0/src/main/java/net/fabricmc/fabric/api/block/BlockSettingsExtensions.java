@@ -23,7 +23,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.mixin.builders.BlockSettingsHooks;
+import net.fabricmc.fabric.mixin.object.builder.BlockSettingsHooks;
 
 public final class BlockSettingsExtensions {
 	private BlockSettingsExtensions() {

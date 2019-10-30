@@ -21,7 +21,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.util.Block2ObjectMap;
-import net.fabricmc.fabric.impl.registry.FlammableBlockRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
 
 public interface FlammableBlockRegistry extends Block2ObjectMap<FlammableBlockRegistry.Entry> {
 	static FlammableBlockRegistry getDefaultInstance() {

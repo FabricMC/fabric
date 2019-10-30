@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
+import net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl;
 
 public interface ScreenProviderRegistry {
 	ScreenProviderRegistry INSTANCE = ScreenProviderRegistryImpl.INSTANCE;

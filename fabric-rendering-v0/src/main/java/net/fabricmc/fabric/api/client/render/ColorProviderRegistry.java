@@ -21,7 +21,7 @@ import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.ItemConvertible;
 
-import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 
 public interface ColorProviderRegistry<T, Provider> {
 	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = ColorProviderRegistryImpl.ITEM;

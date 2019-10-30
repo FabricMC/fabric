@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.event;
 
 import java.util.function.Function;
 
-import net.fabricmc.fabric.impl.event.EventFactoryImpl;
+import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
 /**
  * Helper for creating {@link Event} classes.
