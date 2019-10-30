@@ -33,7 +33,7 @@ import net.minecraft.util.profiler.Profiler;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 
 @Mixin(LootManager.class)
@@ -45,7 +45,7 @@ public class MixinLootManager {
 		Map<Identifier, LootTable> newSuppliers = new HashMap<>();
 
 		suppliers.forEach((id, supplier) -> {
-			FabricLootSupplierBuilder builder = FabricLootSupplierBuilder.of(supplier);
+			FabricLootTableBuilder builder = FabricLootTableBuilder.of(supplier);
 
 			//noinspection ConstantConditions
 			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(

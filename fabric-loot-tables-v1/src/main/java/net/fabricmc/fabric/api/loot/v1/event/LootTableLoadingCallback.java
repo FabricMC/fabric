@@ -23,7 +23,7 @@ import net.minecraft.loot.LootTable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootTableBuilder;
 
 /**
  * An event handler that is called when loot tables are loaded.
@@ -45,5 +45,5 @@ public interface LootTableLoadingCallback {
 			}
 	);
 
-	void onLootTableLoading(ResourceManager resourceManager, LootManager manager, Identifier id, FabricLootSupplierBuilder supplier, LootTableSetter setter);
+	void onLootTableLoading(ResourceManager resourceManager, LootManager manager, Identifier id, FabricLootTableBuilder supplier, LootTableSetter setter);
 }

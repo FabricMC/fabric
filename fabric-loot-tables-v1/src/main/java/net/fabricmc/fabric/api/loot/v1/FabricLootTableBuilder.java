@@ -23,51 +23,51 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.LootSupplierBuilderHooks;
+import net.fabricmc.fabric.mixin.loot.LootTableBuilderHooks;
 
-public class FabricLootSupplierBuilder extends LootTable.Builder {
-	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;
+public class FabricLootTableBuilder extends LootTable.Builder {
+	private final LootTableBuilderHooks extended = (LootTableBuilderHooks) this;
 
-	protected FabricLootSupplierBuilder() { }
+	protected FabricLootTableBuilder() { }
 
-	private FabricLootSupplierBuilder(LootTable supplier) {
+	private FabricLootTableBuilder(LootTable supplier) {
 		copyFrom(supplier, true);
 	}
 
 	@Override
-	public FabricLootSupplierBuilder withPool(LootPool.Builder pool) {
+	public FabricLootTableBuilder withPool(LootPool.Builder pool) {
 		super.withPool(pool);
 		return this;
 	}
 
 	@Override
-	public FabricLootSupplierBuilder withType(LootContextType type) {
+	public FabricLootTableBuilder withType(LootContextType type) {
 		super.withType(type);
 		return this;
 	}
 
 	@Override
-	public FabricLootSupplierBuilder withFunction(LootFunction.Builder function) {
+	public FabricLootTableBuilder withFunction(LootFunction.Builder function) {
 		super.method_335(function);
 		return this;
 	}
 
-	public FabricLootSupplierBuilder withPool(LootPool pool) {
+	public FabricLootTableBuilder withPool(LootPool pool) {
 		extended.getPools().add(pool);
 		return this;
 	}
 
-	public FabricLootSupplierBuilder withFunction(LootFunction function) {
+	public FabricLootTableBuilder withFunction(LootFunction function) {
 		extended.getFunctions().add(function);
 		return this;
 	}
 
-	public FabricLootSupplierBuilder withPools(Collection<LootPool> pools) {
+	public FabricLootTableBuilder withPools(Collection<LootPool> pools) {
 		pools.forEach(this::withPool);
 		return this;
 	}
 
-	public FabricLootSupplierBuilder withFunctions(Collection<LootFunction> functions) {
+	public FabricLootTableBuilder withFunctions(Collection<LootFunction> functions) {
 		functions.forEach(this::withFunction);
 		return this;
 	}
@@ -76,16 +76,16 @@ public class FabricLootSupplierBuilder extends LootTable.Builder {
 	 * Copies the pools and functions of the {@code supplier} to this builder.
 	 * This is equal to {@code copyFrom(supplier, false)}.
 	 */
-	public FabricLootSupplierBuilder copyFrom(LootTable supplier) {
+	public FabricLootTableBuilder copyFrom(LootTable supplier) {
 		return copyFrom(supplier, false);
 	}
 
 	/**
 	 * Copies the pools and functions of the {@code supplier} to this builder.
-	 * If {@code copyType} is true, the {@link FabricLootSupplier#getType type} of the supplier is also copied.
+	 * If {@code copyType} is true, the {@link FabricLootTable#getType type} of the supplier is also copied.
 	 */
-	public FabricLootSupplierBuilder copyFrom(LootTable supplier, boolean copyType) {
-		FabricLootSupplier extendedSupplier = (FabricLootSupplier) supplier;
+	public FabricLootTableBuilder copyFrom(LootTable supplier, boolean copyType) {
+		FabricLootTable extendedSupplier = (FabricLootTable) supplier;
 		extended.getPools().addAll(extendedSupplier.getPools());
 		extended.getFunctions().addAll(extendedSupplier.getFunctions());
 
@@ -96,11 +96,11 @@ public class FabricLootSupplierBuilder extends LootTable.Builder {
 		return this;
 	}
 
-	public static FabricLootSupplierBuilder builder() {
-		return new FabricLootSupplierBuilder();
+	public static FabricLootTableBuilder builder() {
+		return new FabricLootTableBuilder();
 	}
 
-	public static FabricLootSupplierBuilder of(LootTable supplier) {
-		return new FabricLootSupplierBuilder(supplier);
+	public static FabricLootTableBuilder of(LootTable supplier) {
+		return new FabricLootTableBuilder(supplier);
 	}
 }
