@@ -37,7 +37,7 @@ public class MixinEntityRenderDispatcher {
 	@Shadow
 	Map<EntityType<?>, EntityRenderer<?>> renderers;
 
-	@Inject(method = "method_23167", at = @At(value = "RETURN"), require = 1)
+	@Inject(method = "registerRenderers", at = @At(value = "RETURN"), require = 1)
 	public void on_method_23167(ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
 		final EntityRenderDispatcher me = (EntityRenderDispatcher) (Object) this;
 		EntityRendererRegistry.INSTANCE.initialize(me, me.textureManager, manager, itemRenderer, renderers);

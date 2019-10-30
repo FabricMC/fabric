@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootTableRange;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.entry.LootEntry;
-import net.minecraft.world.loot.function.LootFunction;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTableRange;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.mixin.loot.LootPoolBuilderHooks;
 

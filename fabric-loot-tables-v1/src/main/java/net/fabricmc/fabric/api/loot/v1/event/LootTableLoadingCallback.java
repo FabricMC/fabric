@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.loot.v1.event;
 
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.loot.LootManager;
-import net.minecraft.world.loot.LootTable;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootTable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;

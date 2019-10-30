@@ -26,9 +26,9 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.Matrix3f;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.MatrixStack;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -80,7 +80,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
 		this.matrix = matrixStack.peek();
-		this.normalMatrix = matrixStack.method_23478();
+		this.normalMatrix = matrixStack.peekNormal();
 
 		this.seed = seed;
 		this.overlay = overlay;

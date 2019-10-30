@@ -19,11 +19,11 @@ package net.fabricmc.indigo.renderer.render;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import net.minecraft.class_4696;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockRenderView;
@@ -71,7 +71,7 @@ public class BlockRenderInfo {
 		seed = -1L;
 		defaultAo = modelAO && MinecraftClient.isAmbientOcclusionEnabled() && blockState.getLuminance() == 0;
 
-		defaultLayer = class_4696.method_23679(blockState);
+		defaultLayer = RenderLayers.getBlockLayer(blockState);
 	}
 
 	public void release() {

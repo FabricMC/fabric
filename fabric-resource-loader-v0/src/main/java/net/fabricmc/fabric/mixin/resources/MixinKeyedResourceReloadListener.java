@@ -35,7 +35,7 @@ import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.CommandFunctionManager;
 import net.minecraft.tag.RegistryTagManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.loot.LootManager;
+import net.minecraft.loot.LootManager;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;

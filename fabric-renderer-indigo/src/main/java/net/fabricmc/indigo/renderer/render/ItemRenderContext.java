@@ -28,9 +28,9 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -91,7 +91,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
 		this.matrix = matrixStack.peek();
-		this.normalMatrix = matrixStack.method_23478();
+		this.normalMatrix = matrixStack.peekNormal();
 		this.overlay = overlay;
 
 		this.vanillaHandler = vanillaHandler;

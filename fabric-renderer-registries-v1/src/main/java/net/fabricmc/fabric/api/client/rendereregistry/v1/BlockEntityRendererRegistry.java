@@ -32,6 +32,6 @@ public class BlockEntityRendererRegistry {
 	private BlockEntityRendererRegistry() { }
 
 	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer) {
-		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).invoke_method_23078(blockEntityType, blockEntityRenderer);
+		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).invoke_register(blockEntityType, blockEntityRenderer);
 	}
 }

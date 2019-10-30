@@ -19,7 +19,7 @@ package net.fabricmc.indigo.renderer.render;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import net.minecraft.client.util.math.Matrix4f;
-import net.minecraft.util.math.Matrix3f;
+import net.minecraft.client.util.math.Matrix3f;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;

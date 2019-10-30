@@ -29,8 +29,8 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Matrix3f;
-import net.minecraft.util.math.MatrixStack;
+import net.minecraft.client.util.math.Matrix3f;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -97,7 +97,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 	/** Called from chunk renderer hook. */
 	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
 		this.matrix = matrixStack.peek();
-		this.normalMatrix = matrixStack.method_23478();
+		this.normalMatrix = matrixStack.peekNormal();
 
 		try {
 			aoCalc.clear();

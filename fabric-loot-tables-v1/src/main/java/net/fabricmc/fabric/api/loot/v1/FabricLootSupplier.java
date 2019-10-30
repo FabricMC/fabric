@@ -18,13 +18,13 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import java.util.List;
 
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootTable;
-import net.minecraft.world.loot.context.LootContextType;
-import net.minecraft.world.loot.function.LootFunction;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextType;
+import net.minecraft.loot.function.LootFunction;
 
 /**
- * An interface implemented by all {@code net.minecraft.world.loot.LootSupplier} instances when
+ * An interface implemented by all {@code net.minecraft.loot.LootSupplier} instances when
  * Fabric API is present. Contains accessors for various fields.
  */
 public interface FabricLootSupplier {
