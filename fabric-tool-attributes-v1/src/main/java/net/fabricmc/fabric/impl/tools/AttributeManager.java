@@ -28,7 +28,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 public final class AttributeManager {
 	private AttributeManager() {
 	}
-	
+
 	/**
 	 * Merge two multimaps of EntityAttributeModifiers, combining their modifiers to prevent duplicate entries in a tooltip.
 	 *
