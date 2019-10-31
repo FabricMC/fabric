@@ -17,21 +17,6 @@
 package net.fabricmc.fabric.mixin.tools;
 
 import com.google.common.collect.Multimap;
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
-import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
-import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.tools.AttributeManager;
-import net.fabricmc.fabric.impl.tools.ToolManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.tools.ToolManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,10 +25,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
+import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.tools.AttributeManager;
 import net.fabricmc.fabric.impl.tools.ToolManager;
 
 @Mixin(ItemStack.class)
@@ -70,14 +60,13 @@ public abstract class MixinItemStack {
 			float miningSpeed;
 
 			if (item instanceof ToolAttributeHolder) {
-				miningSpeed = ((ToolAttributeHolder) this.getItem()).getMiningSpeed((ItemStack)(Object) this);
+				miningSpeed = ((ToolAttributeHolder) this.getItem()).getMiningSpeed((ItemStack) (Object) this);
 			} else {
 				return;
 			}
 
-			info.setReturnValue(triState.get() ?  miningSpeed : 1.0F);
+			info.setReturnValue(triState.get() ? miningSpeed : 1.0F);
 		}
-
 	}
 
 	@Inject(at = @At("RETURN"), method = "getAttributeModifiers", cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)
@@ -89,6 +78,5 @@ public abstract class MixinItemStack {
 			Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack));
 			info.setReturnValue(ret);
 		}
-
 	}
 }

@@ -17,9 +17,10 @@
 package net.fabricmc.fabric.mixin.tools;
 
 import com.google.common.collect.Multimap;
-import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
-import net.fabricmc.fabric.impl.tools.AttributeManager;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.EquipmentSlot;
@@ -27,14 +28,14 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+
+import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
+import net.fabricmc.fabric.impl.tools.AttributeManager;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
-
-	private ToolActor<LivingEntity> actor = ToolActor.of((LivingEntity)(Object)this);
+	private ToolActor<LivingEntity> actor = ToolActor.of((LivingEntity) (Object) this);
 
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);
@@ -62,7 +63,7 @@ public abstract class MixinLivingEntity extends Entity {
 		Multimap<String, EntityAttributeModifier> original = stack.getAttributeModifiers(slot);
 
 		if (stack.getItem() instanceof ActableAttributeHolder) {
-			ActableAttributeHolder holder = (ActableAttributeHolder)stack.getItem();
+			ActableAttributeHolder holder = (ActableAttributeHolder) stack.getItem();
 			return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, actor)));
 		}
 

@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.api.tag;
 
-import net.fabricmc.fabric.api.tools.v1.FabricToolTags;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
+
+import net.fabricmc.fabric.api.tools.v1.FabricToolTags;
 
 /**
  * Item tags provided by Fabric.
@@ -33,5 +34,6 @@ public class FabricItemTags {
 	public static final Tag<Item> SHOVELS = FabricToolTags.SHOVELS;
 	public static final Tag<Item> SWORDS = FabricToolTags.SWORDS;
 
-	private FabricItemTags() { }
+	private FabricItemTags() {
+	}
 }

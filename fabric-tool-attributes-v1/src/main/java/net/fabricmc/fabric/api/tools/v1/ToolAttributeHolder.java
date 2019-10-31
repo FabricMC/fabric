@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.tools.v1;
 
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
+
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
@@ -44,7 +45,8 @@ public interface ToolAttributeHolder {
 	 * Add modifiers for any {@link net.minecraft.entity.attribute.EntityAttributes} your item should give when equipped, based on the stack.
 	 * Appends to either attribute modifier NBT or the result from {@link net.minecraft.item.Item#getModifiers(EquipmentSlot)}.
 	 * If you do not want to append on a given item stack, add an NBT tag with the key "fabric_IgnoreDynamicModifiers".
-	 * @param slot The equipment slot this item is equipped in.
+	 *
+	 * @param slot  The equipment slot this item is equipped in.
 	 * @param stack The stack that's equipped.
 	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.
 	 */

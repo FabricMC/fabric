@@ -16,21 +16,23 @@
 
 package net.fabricmc.fabric.mixin.tools;
 
-import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
-import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.tools.ToolManager;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DefaultedList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.DefaultedList;
+
+import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
+import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.tools.ToolManager;
 
 @Mixin(PlayerInventory.class)
 public abstract class MixinPlayerInventory {
@@ -60,9 +62,7 @@ public abstract class MixinPlayerInventory {
 			if (ret != TriState.DEFAULT) {
 				info.setReturnValue(ret.get());
 			}
-
 		}
-
 	}
 
 	@Inject(method = "getBlockBreakingSpeed", at = @At("HEAD"))
@@ -70,8 +70,7 @@ public abstract class MixinPlayerInventory {
 		ItemStack stack = this.main.get(this.selectedSlot);
 
 		if (stack.getItem() instanceof ActableAttributeHolder) {
-			info.setReturnValue(((ActableAttributeHolder)stack.getItem()).getMiningSpeed(stack, actor));
+			info.setReturnValue(((ActableAttributeHolder) stack.getItem()).getMiningSpeed(stack, actor));
 		}
-
 	}
 }

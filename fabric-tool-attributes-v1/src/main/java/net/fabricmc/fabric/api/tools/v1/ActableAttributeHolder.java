@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.tools.v1;
 
 import com.google.common.collect.Multimap;
+
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
@@ -25,7 +26,6 @@ import net.minecraft.item.ItemStack;
  * A tool whose properties can vary based on its user.
  */
 public interface ActableAttributeHolder extends ToolAttributeHolder {
-
 	/**
 	 * @param stack The stack being used.
 	 * @param actor The actor attempting to mine.
@@ -46,7 +46,8 @@ public interface ActableAttributeHolder extends ToolAttributeHolder {
 
 	/**
 	 * Appended to {@link ToolAttributeHolder#getDynamicModifiers(EquipmentSlot, ItemStack)}. Do not call to it unless you want doubling.
-	 * @param slot The equipment slot this item is equipped in.
+	 *
+	 * @param slot  The equipment slot this item is equipped in.
 	 * @param stack The stack that's equipped.
 	 * @param actor The actor equipping this stack.
 	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.

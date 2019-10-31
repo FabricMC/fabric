@@ -16,10 +16,6 @@
 
 package net.fabricmc.fabric.impl.tools;
 
-import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
-import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
-import net.fabricmc.fabric.api.util.TriState;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +25,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tools.v1.ToolActor;
+import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManager {
@@ -72,7 +71,8 @@ public final class ToolManager {
 
 	private static final Map<Block, EntryImpl> entries = new HashMap<>();
 
-	private ToolManager() { }
+	private ToolManager() {
+	}
 
 	public static Entry entry(Block block) {
 		return entries.computeIfAbsent(block, (bb) -> new EntryImpl());
@@ -90,7 +90,7 @@ public final class ToolManager {
 
 	private static int getMiningLevel(ItemStack stack, ToolActor<?> actor) {
 		if (stack.getItem() instanceof ActableAttributeHolder && actor.get() != null) {
-			return ((ActableAttributeHolder)stack.getItem()).getMiningLevel(stack, actor);
+			return ((ActableAttributeHolder) stack.getItem()).getMiningLevel(stack, actor);
 		} else if (stack.getItem() instanceof ToolAttributeHolder) {
 			return ((ToolAttributeHolder) stack.getItem()).getMiningLevel(stack);
 		} else {
@@ -115,7 +115,6 @@ public final class ToolManager {
 			}
 
 			return entry.defaultValue;
-
 		} else {
 			return TriState.DEFAULT;
 		}
