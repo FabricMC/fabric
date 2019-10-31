@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.mixin.builders;
 
-import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
+
+import net.minecraft.block.Material;
+import net.minecraft.block.piston.PistonBehavior;
 
 @Mixin(Material.Builder.class)
 public interface MaterialBuilderHooks {

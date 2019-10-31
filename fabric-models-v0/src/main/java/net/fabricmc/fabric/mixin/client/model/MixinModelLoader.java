@@ -16,21 +16,23 @@
 
 package net.fabricmc.fabric.mixin.client.model;
 
-import net.fabricmc.fabric.impl.client.model.ModelLoaderHooks;
-import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
+import java.util.Map;
+import java.util.Set;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
-import java.util.Set;
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.impl.client.model.ModelLoaderHooks;
+import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 
 @Mixin(ModelLoader.class)
 public class MixinModelLoader implements ModelLoaderHooks {
@@ -47,23 +49,18 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	private ModelLoadingRegistryImpl.LoaderInstance fabric_mlrLoaderInstance;
 
 	@Shadow
-	private void addModel(ModelIdentifier id) {
-
-	}
+	private void addModel(ModelIdentifier id) { }
 
 	@Shadow
-	private void putModel(Identifier id, UnbakedModel unbakedModel) {
-
-	}
+	private void putModel(Identifier id, UnbakedModel unbakedModel) { }
 
 	@Shadow
-	private void loadModel(Identifier id) {
-
-	}
+	private void loadModel(Identifier id) { }
 
 	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
 	private void loadModelHook(Identifier id, CallbackInfo ci) {
 		UnbakedModel customModel = fabric_mlrLoaderInstance.loadModelFromVariant(id);
+
 		if (customModel != null) {
 			putModel(id, customModel);
 			ci.cancel();
@@ -74,7 +71,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 	private void addModelHook(ModelIdentifier id, CallbackInfo info) {
 		if (id == MISSING) {
 			//noinspection RedundantCast
-			ModelLoaderHooks hooks = (ModelLoaderHooks) (Object) this;
+			ModelLoaderHooks hooks = this;
 
 			fabric_mlrLoaderInstance = ModelLoadingRegistryImpl.begin((ModelLoader) (Object) this, resourceManager);
 			fabric_mlrLoaderInstance.onModelPopulation(hooks::fabric_addModel);
@@ -97,6 +94,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 		if (!modelsToLoad.add(id)) {
 			throw new IllegalStateException("Circular reference while loading " + id);
 		}
+
 		loadModel(id);
 		modelsToLoad.remove(id);
 		return unbakedModels.get(id);

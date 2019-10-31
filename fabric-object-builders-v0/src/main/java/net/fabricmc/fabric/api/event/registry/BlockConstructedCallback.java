@@ -16,17 +16,18 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.Block;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
 public interface BlockConstructedCallback {
-	public static Event<BlockConstructedCallback> EVENT = EventFactory.createArrayBacked(BlockConstructedCallback.class,
-		(listeners) -> (settings, builtBlock) -> {
-			for (BlockConstructedCallback callback : listeners) {
-				callback.building(settings, builtBlock);
+	Event<BlockConstructedCallback> EVENT = EventFactory.createArrayBacked(BlockConstructedCallback.class,
+			(listeners) -> (settings, builtBlock) -> {
+				for (BlockConstructedCallback callback : listeners) {
+					callback.building(settings, builtBlock);
+				}
 			}
-		}
 	);
 
 	void building(Block.Settings settings, Block builtBlock);

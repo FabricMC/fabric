@@ -16,12 +16,14 @@
 
 package net.fabricmc.fabric.mixin.eventslifecycle;
 
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
-import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.MinecraftClient;
+
+import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {

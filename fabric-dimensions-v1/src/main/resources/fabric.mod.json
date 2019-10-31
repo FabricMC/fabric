@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-dimensions-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-registry-sync-v0": "*",
+    "fabric-networking-v0": "*"
+  },
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.dimension.FabricDimensionClientInit::onClientInit"
+    ]
+  },
+  "mixins": [
+    "fabric-dimensions-v1.mixins.json"
+  ]
+}

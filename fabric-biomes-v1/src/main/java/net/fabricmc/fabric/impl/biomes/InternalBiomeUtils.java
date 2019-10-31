@@ -16,23 +16,22 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import java.util.List;
+import java.util.Map;
+import java.util.function.IntConsumer;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.IntConsumer;
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 
 /**
- * Internal utilities used for biome sampling
+ * Internal utilities used for biome sampling.
  */
 public final class InternalBiomeUtils {
-
-	private InternalBiomeUtils() {
-	}
+	private InternalBiomeUtils() { }
 
 	/**
 	 * @param north raw id of the biome to the north
@@ -85,14 +84,17 @@ public final class InternalBiomeUtils {
 		reqWeightSum -= vanillaArrayWeight;
 		int low = 0;
 		int high = moddedBiomes.size() - 1;
+
 		while (low < high) {
 			int mid = (high + low) >>> 1;
+
 			if (reqWeightSum < moddedBiomes.get(mid).getUpperWeightBound()) {
 				high = mid;
 			} else {
 				low = mid + 1;
 			}
 		}
+
 		return low;
 	}
 
@@ -127,7 +129,7 @@ public final class InternalBiomeUtils {
 		}
 
 		int vanillaArrayWeight = vanillaArray.length;
-		double reqWeightSum = (double) random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + picker.getCurrentWeightTotal()) / Integer.MAX_VALUE;
+		double reqWeightSum = random.nextInt(Integer.MAX_VALUE) * (vanillaArray.length + picker.getCurrentWeightTotal()) / Integer.MAX_VALUE;
 
 		if (reqWeightSum < vanillaArray.length) {
 			// Vanilla biome; look it up from the vanilla array and transform accordingly.

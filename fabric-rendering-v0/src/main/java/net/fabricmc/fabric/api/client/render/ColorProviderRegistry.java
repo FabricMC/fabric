@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.client.render;
 
-import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.ItemConvertible;
+
+import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 
 public interface ColorProviderRegistry<T, Provider> {
 	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = ColorProviderRegistryImpl.ITEM;
@@ -28,7 +29,7 @@ public interface ColorProviderRegistry<T, Provider> {
 	ColorProviderRegistry<Block, BlockColorProvider> BLOCK = ColorProviderRegistryImpl.BLOCK;
 
 	/**
-	 * Register a color provider for one or more objects
+	 * Register a color provider for one or more objects.
 	 *
 	 * @param provider The color provider to register.
 	 * @param objects  The objects which should be colored using this provider.
@@ -37,8 +38,8 @@ public interface ColorProviderRegistry<T, Provider> {
 
 	/**
 	 * Get a color provider for the given object.
-	 * <p>
-	 * Please note that the underlying registry may not be fully populated or stable until the game has started,
+	 *
+	 * <p>Please note that the underlying registry may not be fully populated or stable until the game has started,
 	 * as other mods may overwrite the registry.
 	 *
 	 * @param object The object to acquire the provide for.

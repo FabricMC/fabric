@@ -12,7 +12,7 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.3.2"
+	static def baseVersion = "0.4.1"
 	static def mcVersion = "1.14.4"
 	static def yarnVersion = "+build.1"
 }
@@ -43,6 +43,7 @@ def getBranch(){
 }
 
 allprojects {
+	apply plugin: 'checkstyle'
 	apply plugin: 'maven-publish'
 	apply plugin: 'fabric-loom'
 	apply plugin: 'net.minecrell.licenser'
@@ -51,8 +52,6 @@ allprojects {
 	targetCompatibility = 1.8
 
 	group = "net.fabricmc.fabric-api"
-
-
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
@@ -105,9 +104,14 @@ allprojects {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
-	
+
+	checkstyle {
+		configFile = rootProject.file("checkstyle.xml")
+		toolVersion = '8.25'
+	}
 }
-javadoc{
+
+javadoc {
 	options.memberLevel = "PACKAGE"
 	allprojects.each{
 			source( it.sourceSets.main.allJava.srcDirs)

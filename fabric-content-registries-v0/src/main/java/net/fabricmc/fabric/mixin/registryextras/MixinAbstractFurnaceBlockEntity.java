@@ -16,15 +16,17 @@
 
 package net.fabricmc.fabric.mixin.registryextras;
 
-import net.fabricmc.fabric.impl.registry.FuelRegistryImpl;
-import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraft.item.Item;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Map;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.item.Item;
+
+import net.fabricmc.fabric.impl.registry.FuelRegistryImpl;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
 public class MixinAbstractFurnaceBlockEntity {

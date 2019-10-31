@@ -16,18 +16,15 @@
 
 package net.fabricmc.fabric.mixin.client.texture;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Joiner;
-import net.fabricmc.fabric.api.client.texture.*;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
-import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,8 +35,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.IOException;
-import java.util.*;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.crash.CrashReportSection;
+
+import net.fabricmc.fabric.api.client.texture.CustomSpriteLoader;
+import net.fabricmc.fabric.api.client.texture.DependentSprite;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
+import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 @Mixin(SpriteAtlasTexture.class)
 public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks {
@@ -78,17 +86,21 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 	public Set<Identifier> beforeSpriteLoad(Set<Identifier> set) {
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
+
 		//noinspection ConstantConditions
 		for (Identifier id : fabric_localIds) {
 			SpriteRegistryCallbackHolder.eventLocal(id).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 		}
+
 		SpriteRegistryCallbackHolder.EVENT_GLOBAL.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
 		Set<DependentSprite> dependentSprites = new HashSet<>();
 		Set<Identifier> dependentSpriteIds = new HashSet<>();
+
 		for (Identifier id : set) {
 			Sprite sprite;
+
 			if ((sprite = fabric_injectedSprites.get(id)) instanceof DependentSprite) {
 				dependentSprites.add((DependentSprite) sprite);
 				dependentSpriteIds.add(id);
@@ -111,11 +123,13 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 			}
 
 			int lastSpriteSize = 0;
+
 			while (lastSpriteSize != result.size() && result.size() < set.size()) {
 				lastSpriteSize = result.size();
 
 				for (DependentSprite sprite : dependentSprites) {
 					Identifier id = ((Sprite) sprite).getId();
+
 					if (!result.contains(id) && result.containsAll(sprite.getDependencies())) {
 						result.add(id);
 					}
@@ -124,14 +138,17 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 
 			if (result.size() < set.size()) {
 				CrashReport report = CrashReport.create(new Throwable(), "Resolving sprite dependencies");
+
 				for (DependentSprite sprite : dependentSprites) {
 					Identifier id = ((Sprite) sprite).getId();
+
 					if (!result.contains(id)) {
 						CrashReportSection element = report.addElement("Unresolved sprite");
 						element.add("Sprite", id);
 						element.add("Dependencies", Joiner.on(',').join(sprite.getDependencies()));
 					}
 				}
+
 				throw new CrashException(report);
 			}
 		}

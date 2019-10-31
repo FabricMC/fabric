@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.mixin.tag;
 
-import net.fabricmc.fabric.api.tag.FabricTag;
-import net.fabricmc.fabric.impl.tag.FabricTagHooks;
-import net.minecraft.tag.Tag;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
+
+import net.minecraft.tag.Tag;
+
+import net.fabricmc.fabric.api.tag.FabricTag;
+import net.fabricmc.fabric.impl.tag.FabricTagHooks;
 
 @Mixin(Tag.class)
 public class MixinTag<T> implements FabricTag<T>, FabricTagHooks {

@@ -16,20 +16,22 @@
 
 package net.fabricmc.fabric.mixin.client.render;
 
-import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.entity.Entity;
-import net.minecraft.resource.ReloadableResourceManager;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Map;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.texture.TextureManager;
+import net.minecraft.entity.Entity;
+import net.minecraft.resource.ReloadableResourceManager;
+
+import net.fabricmc.fabric.api.client.render.EntityRendererRegistry;
 
 @Mixin(EntityRenderDispatcher.class)
 public class MixinEntityRenderManager {

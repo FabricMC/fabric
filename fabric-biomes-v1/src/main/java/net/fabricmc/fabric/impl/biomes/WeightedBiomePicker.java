@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.impl.biomes;
 
-import com.google.common.base.Preconditions;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.common.base.Preconditions;
+
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
  * Picks biomes with arbitrary double weights using a binary search.
@@ -46,13 +47,13 @@ public final class WeightedBiomePicker {
 	}
 
 	public Biome pickRandom(LayerRandomnessSource random) {
-		double target = (double) random.nextInt(Integer.MAX_VALUE) * getCurrentWeightTotal() / Integer.MAX_VALUE;
+		double target = random.nextInt(Integer.MAX_VALUE) * getCurrentWeightTotal() / Integer.MAX_VALUE;
 
 		return search(target).getBiome();
 	}
 
 	/**
-	 * Searches with the specified target value
+	 * Searches with the specified target value.
 	 *
 	 * @param target The target value, must satisfy the constraint 0 <= target <= currentTotal
 	 * @return The result of the search
@@ -67,6 +68,7 @@ public final class WeightedBiomePicker {
 
 		while (low < high) {
 			int mid = (high + low) >>> 1;
+
 			if (target < entries.get(mid).getUpperWeightBound()) {
 				high = mid;
 			} else {

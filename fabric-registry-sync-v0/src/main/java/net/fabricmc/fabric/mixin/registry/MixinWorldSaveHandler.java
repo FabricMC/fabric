@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
-import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
-import net.fabricmc.fabric.impl.registry.RemapException;
-import net.fabricmc.fabric.impl.registry.RemappableRegistry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
-import net.minecraft.world.WorldSaveHandler;
-import net.minecraft.world.level.LevelProperties;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -33,7 +32,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.*;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.world.WorldSaveHandler;
+import net.minecraft.world.level.LevelProperties;
+
+import net.fabricmc.fabric.impl.registry.RegistrySyncManager;
+import net.fabricmc.fabric.impl.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.RemappableRegistry;
 
 @Mixin(WorldSaveHandler.class)
 public class MixinWorldSaveHandler {
@@ -53,6 +59,7 @@ public class MixinWorldSaveHandler {
 			FileInputStream fileInputStream = new FileInputStream(file);
 			CompoundTag tag = NbtIo.readCompressed(fileInputStream);
 			fileInputStream.close();
+
 			if (tag != null) {
 				RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
 				return true;
@@ -70,9 +77,11 @@ public class MixinWorldSaveHandler {
 	@Unique
 	private void fabric_saveRegistryData() {
 		CompoundTag newIdMap = RegistrySyncManager.toTag(false);
+
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
 				File file = fabric_getWorldIdMapFile(i);
+
 				if (file.exists()) {
 					if (i == FABRIC_ID_REGISTRY_BACKUPS - 1) {
 						file.delete();
@@ -86,6 +95,7 @@ public class MixinWorldSaveHandler {
 			try {
 				File file = fabric_getWorldIdMapFile(0);
 				File parentFile = file.getParentFile();
+
 				if (!parentFile.exists()) {
 					if (!parentFile.mkdirs()) {
 						FABRIC_LOGGER.warn("[fabric-registry-sync] Could not create directory " + parentFile + "!");
@@ -118,6 +128,7 @@ public class MixinWorldSaveHandler {
 		// Load
 		for (int i = 0; i < FABRIC_ID_REGISTRY_BACKUPS; i++) {
 			FABRIC_LOGGER.trace("[fabric-registry-sync] Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");
+
 			try {
 				if (fabric_readIdMapFile(fabric_getWorldIdMapFile(i))) {
 					FABRIC_LOGGER.info("[fabric-registry-sync] Loaded registry data [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");

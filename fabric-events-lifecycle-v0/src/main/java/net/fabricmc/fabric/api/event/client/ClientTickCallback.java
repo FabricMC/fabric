@@ -16,31 +16,34 @@
 
 package net.fabricmc.fabric.api.event.client;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.client.MinecraftClient;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
 public interface ClientTickCallback {
-	public static final Event<ClientTickCallback> EVENT = EventFactory.createArrayBacked(ClientTickCallback.class,
-		(listeners) -> {
-			if (EventFactory.isProfilingEnabled()) {
-				return (client) -> {
-					client.getProfiler().push("fabricClientTick");
-					for (ClientTickCallback event : listeners) {
-						client.getProfiler().push(EventFactory.getHandlerName(event));
-						event.tick(client);
+	Event<ClientTickCallback> EVENT = EventFactory.createArrayBacked(ClientTickCallback.class,
+			(listeners) -> {
+				if (EventFactory.isProfilingEnabled()) {
+					return (client) -> {
+						client.getProfiler().push("fabricClientTick");
+
+						for (ClientTickCallback event : listeners) {
+							client.getProfiler().push(EventFactory.getHandlerName(event));
+							event.tick(client);
+							client.getProfiler().pop();
+						}
+
 						client.getProfiler().pop();
-					}
-					client.getProfiler().pop();
-				};
-			} else {
-				return (client) -> {
-					for (ClientTickCallback event : listeners) {
-						event.tick(client);
-					}
-				};
+					};
+				} else {
+					return (client) -> {
+						for (ClientTickCallback event : listeners) {
+							event.tick(client);
+						}
+					};
+				}
 			}
-		}
 	);
 
 	void tick(MinecraftClient client);

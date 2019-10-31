@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.api.tools.v1;
 
 import javax.annotation.Nullable;
+import net.minecraft.item.MiningToolItem;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
 /**
  * Interface for the user of a tool.

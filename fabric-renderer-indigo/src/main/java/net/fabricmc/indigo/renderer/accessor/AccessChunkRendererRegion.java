@@ -23,6 +23,6 @@ import net.fabricmc.indigo.renderer.render.TerrainRenderContext;
  * chunk rebuild, thus avoiding repeated thread-local lookups.
  */
 public interface AccessChunkRendererRegion {
-    TerrainRenderContext fabric_getRenderer();
-    void fabric_setRenderer(TerrainRenderContext renderer);
+	TerrainRenderContext fabric_getRenderer();
+	void fabric_setRenderer(TerrainRenderContext renderer);
 }

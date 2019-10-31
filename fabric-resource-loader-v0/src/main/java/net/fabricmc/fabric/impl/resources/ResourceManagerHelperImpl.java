@@ -16,16 +16,24 @@
 
 package net.fabricmc.fabric.impl.resources;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.collect.Lists;
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resource.ResourceReloadListener;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
@@ -40,6 +48,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 	public static void sort(ResourceType type, List<ResourceReloadListener> listeners) {
 		ResourceManagerHelperImpl instance = registryMap.get(type);
+
 		if (instance != null) {
 			instance.sort(listeners);
 		}
@@ -56,6 +65,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 		List<IdentifiableResourceReloadListener> listenersToAdd = Lists.newArrayList(addedListeners);
 		Set<Identifier> resolvedIds = new HashSet<>();
+
 		for (ResourceReloadListener listener : listeners) {
 			if (listener instanceof IdentifiableResourceReloadListener) {
 				resolvedIds.add(((IdentifiableResourceReloadListener) listener).getFabricId());
@@ -63,12 +73,15 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 
 		int lastSize = -1;
+
 		while (listeners.size() != lastSize) {
 			lastSize = listeners.size();
 
 			Iterator<IdentifiableResourceReloadListener> it = listenersToAdd.iterator();
+
 			while (it.hasNext()) {
 				IdentifiableResourceReloadListener listener = it.next();
+
 				if (resolvedIds.containsAll(listener.getFabricDependencies())) {
 					resolvedIds.add(listener.getFabricId());
 					listeners.add(listener);

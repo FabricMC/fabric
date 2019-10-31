@@ -16,6 +16,4 @@
 
 package net.fabricmc.indigo;
 
-public class IndigoConfig {
-
-}
+public class IndigoConfig { }

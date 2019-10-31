@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.minecraft.resource.ResourceReloadListener;
-import net.minecraft.util.Identifier;
-
 import java.util.Collection;
 import java.util.Collections;
 
+import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.util.Identifier;
+
 /**
  * Interface for "identifiable" resource reload listeners.
- * <p>
- * "Identifiable" listeners have an unique identifier, which can be depended on,
+ *
+ * <p>"Identifiable" listeners have an unique identifier, which can be depended on,
  * and can provide dependencies that they would like to see executed before
  * themselves.
- * <p>
- * {@link ResourceReloadListenerKeys}
+ *
+ * @see ResourceReloadListenerKeys
  */
 public interface IdentifiableResourceReloadListener extends ResourceReloadListener {
 	/**

@@ -16,16 +16,15 @@
 
 package net.fabricmc.fabric.impl.registry.trackers.vanilla;
 
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public final class BlockItemTracker implements RegistryEntryAddedCallback<Item> {
-	private BlockItemTracker() {
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
-	}
+public final class BlockItemTracker implements RegistryEntryAddedCallback<Item> {
+	private BlockItemTracker() { }
 
 	public static void register(Registry<Item> registry) {
 		BlockItemTracker tracker = new BlockItemTracker();

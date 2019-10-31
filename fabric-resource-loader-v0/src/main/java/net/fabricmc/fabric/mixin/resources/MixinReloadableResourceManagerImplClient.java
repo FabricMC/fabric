@@ -16,20 +16,22 @@
 
 package net.fabricmc.fabric.mixin.resources;
 
-import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
-import net.minecraft.resource.ReloadableResourceManagerImpl;
-import net.minecraft.resource.ResourceReloadListener;
-import net.minecraft.resource.ResourceReloadMonitor;
-import net.minecraft.resource.ResourceType;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import net.minecraft.resource.ReloadableResourceManagerImpl;
+import net.minecraft.resource.ResourceReloadListener;
+import net.minecraft.resource.ResourceReloadMonitor;
+import net.minecraft.resource.ResourceType;
+
+import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
 
 @Mixin(ReloadableResourceManagerImpl.class)
 public class MixinReloadableResourceManagerImplClient {

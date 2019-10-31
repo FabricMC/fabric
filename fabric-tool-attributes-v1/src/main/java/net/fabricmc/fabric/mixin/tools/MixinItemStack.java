@@ -27,12 +27,24 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.tools.ToolManager;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import net.fabricmc.fabric.api.util.TriState;
+import net.fabricmc.fabric.impl.tools.ToolManager;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
@@ -42,6 +54,7 @@ public abstract class MixinItemStack {
 	@Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, ToolActor.NO_ACTOR);
+
 		if (triState != TriState.DEFAULT) {
 			info.setReturnValue(triState.get());
 			info.cancel();
@@ -76,7 +89,6 @@ public abstract class MixinItemStack {
 			Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack));
 			info.setReturnValue(ret);
 		}
-		
-	}
 
+	}
 }

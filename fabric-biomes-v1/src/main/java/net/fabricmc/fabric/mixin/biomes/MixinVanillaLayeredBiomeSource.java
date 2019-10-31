@@ -16,18 +16,24 @@
 
 package net.fabricmc.fabric.mixin.biomes;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
-import net.minecraft.block.BlockState;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
-import net.minecraft.world.gen.feature.StructureFeature;
-import org.spongepowered.asm.mixin.*;
+import java.util.List;
+import java.util.Set;
+
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-import java.util.Set;
+import net.minecraft.block.BlockState;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
+import net.minecraft.world.gen.feature.StructureFeature;
+
+import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 
 /**
  * Adds the biomes in world gen to the array for the vanilla layered biome source.
@@ -35,7 +41,6 @@ import java.util.Set;
  */
 @Mixin(VanillaLayeredBiomeSource.class)
 public class MixinVanillaLayeredBiomeSource {
-
 	@Shadow
 	@Final
 	@Mutable
@@ -58,6 +63,7 @@ public class MixinVanillaLayeredBiomeSource {
 	private void updateInjections() {
 		List<Biome> injectedBiomes = InternalBiomeData.getOverworldInjectedBiomes();
 		int currentSize = injectedBiomes.size();
+
 		if (this.injectionCount < currentSize) {
 			List<Biome> toInject = injectedBiomes.subList(injectionCount, currentSize - 1);
 
@@ -66,6 +72,7 @@ public class MixinVanillaLayeredBiomeSource {
 			System.arraycopy(oldBiomes, 0, this.biomes, 0, oldBiomes.length);
 
 			int index = oldBiomes.length;
+
 			for (Biome injected : toInject) {
 				biomes[index++] = injected;
 			}
@@ -73,5 +80,4 @@ public class MixinVanillaLayeredBiomeSource {
 			injectionCount += toInject.size();
 		}
 	}
-
 }
