@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.loot.v1.event;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootTableBuilder;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.resource.ResourceManager;
@@ -44,5 +45,5 @@ public interface LootTableLoadingCallback {
 			}
 	);
 
-	void onLootTableLoading(ResourceManager resourceManager, LootManager manager, Identifier id, FabricLootSupplierBuilder supplier, LootTableSetter setter);
+	void onLootTableLoading(ResourceManager resourceManager, LootManager manager, Identifier id, FabricLootTableBuilder table, LootTableSetter setter);
 }
