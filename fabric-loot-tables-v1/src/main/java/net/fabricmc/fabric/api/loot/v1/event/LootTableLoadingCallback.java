@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.api.loot.v1.event;
 
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.loot.LootManager;
-import net.minecraft.loot.LootTable;
-
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootTable;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
 /**
  * An event handler that is called when loot tables are loaded.
@@ -33,14 +32,14 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 public interface LootTableLoadingCallback {
 	@FunctionalInterface
 	interface LootTableSetter {
-		void set(LootTable supplier);
+		void set(LootTable table);
 	}
 
 	Event<LootTableLoadingCallback> EVENT = EventFactory.createArrayBacked(
 			LootTableLoadingCallback.class,
-			(listeners) -> (resourceManager, manager, id, supplier, setter) -> {
+			(listeners) -> (resourceManager, manager, id, table, setter) -> {
 				for (LootTableLoadingCallback callback : listeners) {
-					callback.onLootTableLoading(resourceManager, manager, id, supplier, setter);
+					callback.onLootTableLoading(resourceManager, manager, id, table, setter);
 				}
 			}
 	);

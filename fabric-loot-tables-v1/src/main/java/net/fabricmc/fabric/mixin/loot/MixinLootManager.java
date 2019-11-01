@@ -21,40 +21,41 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v1.FabricLootTableBuilder;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootTable;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
-import net.minecraft.loot.LootManager;
-import net.minecraft.loot.LootTable;
-
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 
 @Mixin(LootManager.class)
 public class MixinLootManager {
-	@Shadow private Map<Identifier, LootTable> suppliers;
+	@Shadow private Map<Identifier, LootTable> tables;
 
 	@Inject(method = "method_20712", at = @At("RETURN"))
 	private void apply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
-		Map<Identifier, LootTable> newSuppliers = new HashMap<>();
+		Map<Identifier, LootTable> newTables = new HashMap<>();
 
-		suppliers.forEach((id, supplier) -> {
-			FabricLootSupplierBuilder builder = FabricLootSupplierBuilder.of(supplier);
+		tables.forEach((id, table) -> {
+			FabricLootTableBuilder builder = FabricLootTableBuilder.of(table);
 
 			//noinspection ConstantConditions
 			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(
-					manager, (LootManager) (Object) this, id, builder, (s) -> newSuppliers.put(id, s)
+					manager, (LootManager) (Object) this, id, (FabricLootSupplierBuilder) builder, (s) -> newTables.put(id, s)
 			);
 
-			newSuppliers.computeIfAbsent(id, (i) -> builder.create());
+			newTables.computeIfAbsent(id, (i) -> builder.create());
 		});
 
-		suppliers = ImmutableMap.copyOf(newSuppliers);
+		tables = ImmutableMap.copyOf(newTables);
 	}
 }

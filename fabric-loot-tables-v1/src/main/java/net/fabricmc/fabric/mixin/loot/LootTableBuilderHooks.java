@@ -16,33 +16,19 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplier;
+import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.function.LootFunction;
 
-@Mixin(LootTable.class)
-@Deprecated
-/** Deprecated */
-public abstract class MixinLootSupplier implements FabricLootSupplier {
-	// @Shadow
-	// @Final
-	// private LootPool[] pools;
-	// @Shadow
-	// @Final
-	// private LootFunction[] functions;
-
-	// @Override
-	// public List<LootPool> getPools() {
-	// 	return Arrays.asList(pools);
-	// }
-
-	// @Override
-	// public List<LootFunction> getFunctions() {
-	// 	return Arrays.asList(functions);
-	// }
-
-	// @Accessor
-	// @Override
-	// public abstract LootContextType getType();
+@Mixin(LootTable.Builder.class)
+public interface LootTableBuilderHooks {
+	@Accessor
+	List<LootPool> getPools();
+	@Accessor
+	List<LootFunction> getFunctions();
 }

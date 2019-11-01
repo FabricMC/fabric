@@ -4,10 +4,12 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "LootPoolBuilderHooks",
-    "LootSupplierBuilderHooks",
+    "LootTableBuilderHooks",
     "MixinLootManager",
     "MixinLootPool",
-    "MixinLootSupplier"
+    "MixinLootTable",
+    "MixinLootSupplier",
+    "LootSupplierBuilderHooks"
   ],
   "injectors": {
     "defaultRequire": 1
