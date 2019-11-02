@@ -8,7 +8,6 @@
     "MixinLootManager",
     "MixinLootPool",
     "MixinLootTable",
-    "MixinLootSupplier",
     "LootSupplierBuilderHooks"
   ],
   "injectors": {

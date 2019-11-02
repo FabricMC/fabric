@@ -45,5 +45,5 @@ public interface LootTableLoadingCallback {
 			}
 	);
 
-	void onLootTableLoading(ResourceManager resourceManager, LootManager manager, Identifier id, FabricLootTableBuilder table, LootTableSetter setter);
+	void onLootTableLoading(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootTableBuilder table, LootTableSetter setter);
 }

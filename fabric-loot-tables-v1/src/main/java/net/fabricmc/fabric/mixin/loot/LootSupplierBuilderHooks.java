@@ -16,16 +16,21 @@
 
 package net.fabricmc.fabric.mixin.loot;
 
-import org.spongepowered.asm.mixin.Mixin;
+import java.util.List;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.function.LootFunction;
 
 @Mixin(LootTable.Builder.class)
 @Deprecated
 /** Deprecated. Use {@link net.fabricmc.fabric.mixin.loot.LootTableBuilderHooks} instead */
-public interface LootSupplierBuilderHooks extends LootTableBuilderHooks {
-	// @Accessor
-	// List<LootPool> getPools();
-	// @Accessor
-	// List<LootFunction> getFunctions();
+public interface LootSupplierBuilderHooks {
+	@Accessor
+	List<LootPool> getPools();
+	@Accessor
+	List<LootFunction> getFunctions();
 }
