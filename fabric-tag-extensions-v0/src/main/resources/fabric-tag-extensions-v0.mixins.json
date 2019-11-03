@@ -4,7 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinTag",
-    "MixinTagBuilder"
+    "MixinTagBuilder",
+    "FluidTagsAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
