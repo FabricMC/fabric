@@ -23,7 +23,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import net.fabricmc.fabric.impl.network.ClientSidePacketRegistryImpl;
+import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
 
 /**
  * The client-side packet registry.

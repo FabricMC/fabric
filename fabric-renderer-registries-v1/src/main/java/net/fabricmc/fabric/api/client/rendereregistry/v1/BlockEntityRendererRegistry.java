@@ -21,7 +21,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import net.fabricmc.fabric.mixin.client.rendereregistry.MixinBlockEntityRenderDispatcher;
+import net.fabricmc.fabric.mixin.client.renderer.registry.MixinBlockEntityRenderDispatcher;
 
 /**
  * Helper class for registering BlockEntityRenderers.

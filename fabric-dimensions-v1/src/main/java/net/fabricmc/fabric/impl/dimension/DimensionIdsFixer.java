@@ -35,7 +35,7 @@ import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.impl.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.sync.RemapException;
 
 /**
  * Handles fixing raw dimension ids between saves and servers,

@@ -22,10 +22,10 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.event.InteractionEventsRouter"
+      "net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouter"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.event.InteractionEventsRouterClient"
+      "net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouterClient"
     ]
   },
   "description": "Events for player interaction with blocks and entities.",

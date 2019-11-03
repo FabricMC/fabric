@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import net.minecraft.fluid.Fluid;
 
-import net.fabricmc.fabric.impl.client.render.fluid.FluidRenderHandlerRegistryImpl;
+import net.fabricmc.fabric.impl.client.rendering.fluid.FluidRenderHandlerRegistryImpl;
 
 /**
  * Registry for {@link FluidRenderHandler} instances.

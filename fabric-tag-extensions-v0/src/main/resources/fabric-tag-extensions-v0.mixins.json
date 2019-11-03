@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.tag",
+  "package": "net.fabricmc.fabric.mixin.tag.extension",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinTag",

@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
+import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
 /**
  * The remapping process functions as follows:

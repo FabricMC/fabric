@@ -32,7 +32,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
 
-import net.fabricmc.fabric.impl.server.EntityTrackerStorageAccessor;
+import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
 
 /**
  * Helper streams for looking up players on a server.

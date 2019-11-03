@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.itemgroup.ItemGroupExtensions;
+import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 
 public final class FabricItemGroupBuilder {
 	private Identifier identifier;
