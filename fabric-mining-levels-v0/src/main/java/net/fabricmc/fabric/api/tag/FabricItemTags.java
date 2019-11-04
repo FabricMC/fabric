@@ -19,12 +19,12 @@ package net.fabricmc.fabric.api.tag;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.tools.v1.FabricToolTags;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 /**
  * Item tags provided by Fabric.
  *
- * @deprecated Use dedicated classes, such as {@link net.fabricmc.fabric.api.tools.v1.FabricToolTags}
+ * @deprecated Use dedicated classes, such as {@link net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags}
  */
 @Deprecated
 public class FabricItemTags {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tools;
+package net.fabricmc.fabric.mixin.tool.attribute;
 
 import com.google.common.collect.Multimap;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,11 +30,11 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
-import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolActor;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.tools.AttributeManager;
-import net.fabricmc.fabric.impl.tools.ToolManager;
+import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
+import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {

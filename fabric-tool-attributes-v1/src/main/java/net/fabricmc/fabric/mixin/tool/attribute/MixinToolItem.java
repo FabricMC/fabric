@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tools;
+package net.fabricmc.fabric.mixin.tool.attribute;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
 
-import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
 
 @Mixin(ToolItem.class)
 public abstract class MixinToolItem extends Item implements ToolAttributeHolder {

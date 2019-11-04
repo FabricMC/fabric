@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tools;
+package net.fabricmc.fabric.impl.tool.attribute;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +25,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
-import net.fabricmc.fabric.api.tools.v1.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolActor;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManager {

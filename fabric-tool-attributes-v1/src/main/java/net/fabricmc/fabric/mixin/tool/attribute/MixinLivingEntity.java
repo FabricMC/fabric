@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tools;
+package net.fabricmc.fabric.mixin.tool.attribute;
 
 import com.google.common.collect.Multimap;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,9 +29,9 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
-import net.fabricmc.fabric.impl.tools.AttributeManager;
+import net.fabricmc.fabric.api.tool.attribute.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolActor;
+import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {

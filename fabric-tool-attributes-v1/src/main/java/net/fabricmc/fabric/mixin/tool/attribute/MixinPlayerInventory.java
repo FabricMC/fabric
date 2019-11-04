@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tools;
+package net.fabricmc.fabric.mixin.tool.attribute;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,10 +29,10 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 
-import net.fabricmc.fabric.api.tools.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tools.v1.ToolActor;
+import net.fabricmc.fabric.api.tool.attribute.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolActor;
 import net.fabricmc.fabric.api.util.TriState;
-import net.fabricmc.fabric.impl.tools.ToolManager;
+import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
 
 @Mixin(PlayerInventory.class)
 public abstract class MixinPlayerInventory {

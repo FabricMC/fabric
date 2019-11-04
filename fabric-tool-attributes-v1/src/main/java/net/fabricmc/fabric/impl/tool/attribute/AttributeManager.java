@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tools;
+package net.fabricmc.fabric.impl.tool.attribute;
 
 import java.util.Collection;
 import java.util.HashSet;

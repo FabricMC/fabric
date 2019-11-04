@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tools.v1;
+package net.fabricmc.fabric.api.tool.attribute.v1;
 
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
