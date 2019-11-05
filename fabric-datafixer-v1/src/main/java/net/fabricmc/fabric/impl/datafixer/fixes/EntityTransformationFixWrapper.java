@@ -38,7 +38,7 @@ public class EntityTransformationFixWrapper extends EntitySimpleTransformFix {
 	@Override
 	protected Pair<String, Dynamic<?>> transform(String entityName, Dynamic<?> dynamic) {
 		Pair<String, Dynamic<Tag>> resultingEntity = transformation.transform(entityName, (Dynamic<Tag>) dynamic);
-		return (Pair<String, Dynamic<?>>)(Object) resultingEntity; // Least kosher cast possible but trust me, it does work.
+		return (Pair<String, Dynamic<?>>)(Object) resultingEntity; // Least kosher generic cast I've ever seen but trust me, it does work.
 	}
 
 }

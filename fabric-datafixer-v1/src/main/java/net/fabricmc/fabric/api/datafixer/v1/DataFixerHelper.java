@@ -16,19 +16,15 @@
 
 package net.fabricmc.fabric.api.datafixer.v1;
 
-import java.util.Optional;
-import java.util.concurrent.Executor;
-import java.util.function.BiFunction;
-
 import com.mojang.datafixers.DSL;
-import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.DataFixer;
-
-import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.SystemUtil;
+
+import java.util.concurrent.Executor;
+import java.util.function.BiFunction;
 
 /**
  * This registers and creates DataFixers for the game, along with some other util methods.

@@ -30,6 +30,8 @@ public class BlockEntityTransformationFix extends ChoiceFix {
 
 	public BlockEntityTransformationFix(Schema schema, String name, String blockEntityName, SimpleFixes.BlockEntityTransformation transformation) {
 		super(schema, false, name, TypeReferences.BLOCK_ENTITY, blockEntityName);
+		// Choice Fixes work differently.
+		// We specify a TypeReference and name, then it will find the type we are refering to and then invoke transform to update the type.
 		this.transformation = transformation;
 	}
 

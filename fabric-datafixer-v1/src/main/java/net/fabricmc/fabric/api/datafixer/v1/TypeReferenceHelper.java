@@ -25,7 +25,7 @@ import com.mojang.datafixers.types.templates.TypeTemplate;
 import net.fabricmc.fabric.impl.datafixer.TypeRefHelperImpl;
 
 /**
- * A helper which deals with registering Entities and BlockEntities along with registering their subTags to be fixed.
+ * A helper which deals with registering Entities and BlockEntities along with registering their custom elements to be fixed.
  *
  * <p>
  *     This should be used inside of a {@link DataFixerEntrypoint} when registering an (block)entity or TypeReferences, otherwise issues occur with other DataFixers having no access your (block)entities, causing some DataFixes to fail.

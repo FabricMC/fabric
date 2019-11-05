@@ -41,13 +41,17 @@ public class BiomeRenameFix extends DataFix {
 
 	@Override
 	protected TypeRewriteRule makeRule() {
+
+		// First we must get the type represented by the biome. We do this and get a NamedType in return
 		Type<Pair<String, String>> type_1 = DSL.named(TypeReferences.BIOME.typeName(), DSL.namespacedString());
 
+		// Next we must make sure the input type matches the biome or else data corruption could occur.
 		if (!Objects.equals(type_1, this.getInputSchema().getType(TypeReferences.BIOME))) {
 			throw new IllegalStateException("Biome type is not what was expected.");
 		} else {
-			return this.fixTypeEverywhere(name, type_1, (dynamicOps_1x) -> (pair_1x) -> pair_1x.mapSecond((string_1x) -> {
-				return changes.getOrDefault(string_1x, string_1x);
+			// Actual DataFixing stuff here. We go DynamicOps -> Pair -> Second element in pair. Then we check if the inputName is equal to any of the changed names. If it is, then we return the new name or return the old inputName.
+			return this.fixTypeEverywhere(name, type_1, (ops) -> (pair) -> pair.mapSecond((name) -> {
+				return changes.getOrDefault(name, name);
 			}));
 		}
 	}
