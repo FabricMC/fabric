@@ -18,16 +18,16 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import java.util.Collection;
 
+import net.fabricmc.fabric.mixin.loot.LootTableBuilderHooks;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.LootSupplierBuilderHooks;
-
+/**Deprecated to be replaced by {@link FabricLootTableBuilder} to match yarn mappings. Use {@link FabricLootTableBuilder} instead */
 @Deprecated
 public class FabricLootSupplierBuilder extends FabricLootTableBuilder {
-	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;
+	private final LootTableBuilderHooks extended = (LootTableBuilderHooks) this;
 
 	protected FabricLootSupplierBuilder() { }
 

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.loot.v1;
 /**
  * An interface implemented by all {@code net.minecraft.loot.LootTable}
  * instances when Fabric API is present. Contains accessors for various fields.
+ * Deprecated to be replaced by {@link FabricLootTable} for matching yarn naming.
  */
 
 @Deprecated()

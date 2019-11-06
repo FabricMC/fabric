@@ -18,12 +18,11 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import java.util.Collection;
 
+import net.fabricmc.fabric.mixin.loot.LootTableBuilderHooks;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
-
-import net.fabricmc.fabric.mixin.loot.LootTableBuilderHooks;
 
 public class FabricLootTableBuilder extends LootTable.Builder {
 	private final LootTableBuilderHooks extended = (LootTableBuilderHooks) this;

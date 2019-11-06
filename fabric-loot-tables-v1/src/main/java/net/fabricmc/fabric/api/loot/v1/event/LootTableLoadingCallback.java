@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.loot.v1.event;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootTableBuilder;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;

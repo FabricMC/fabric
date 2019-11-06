@@ -28,7 +28,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v1.FabricLootTableBuilder;
 import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 import net.minecraft.loot.LootManager;
@@ -50,7 +49,7 @@ public class MixinLootManager {
 
 			//noinspection ConstantConditions
 			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(
-					manager, (LootManager) (Object) this, id, (FabricLootSupplierBuilder) builder, (s) -> newTables.put(id, s)
+					manager, (LootManager) (Object) this, id, builder, (s) -> newTables.put(id, s)
 			);
 
 			newTables.computeIfAbsent(id, (i) -> builder.create());
