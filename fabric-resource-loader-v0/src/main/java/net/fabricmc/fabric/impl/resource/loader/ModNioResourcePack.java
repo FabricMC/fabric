@@ -140,20 +140,20 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 			if (Files.exists(searchPath)) {
 				try {
 					Files.walk(searchPath, depth)
-						.filter(Files::isRegularFile)
-						.filter((p) -> {
-							String filename = p.getFileName().toString();
-							return !filename.endsWith(".mcmeta") && predicate.test(filename);
-						})
-						.map(namespacePath::relativize)
-						.map((p) -> p.toString().replace(separator, "/"))
-						.forEach((s) -> {
-							try {
-								ids.add(new Identifier(namespace, s));
-							} catch (InvalidIdentifierException e) {
-								LOGGER.error(e.getMessage());
-							}
-						});
+							.filter(Files::isRegularFile)
+							.filter((p) -> {
+								String filename = p.getFileName().toString();
+								return !filename.endsWith(".mcmeta") && predicate.test(filename);
+							})
+							.map(namespacePath::relativize)
+							.map((p) -> p.toString().replace(separator, "/"))
+							.forEach((s) -> {
+								try {
+									ids.add(new Identifier(namespace, s));
+								} catch (InvalidIdentifierException e) {
+									LOGGER.error(e.getMessage());
+								}
+							});
 				} catch (IOException e) {
 					LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + modInfo.getId() + " failed!", e);
 				}
