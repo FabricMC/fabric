@@ -44,7 +44,7 @@ public abstract class MixinMinecraftClient {
 	private ItemStack fabric_emulateOldPick() {
 		MinecraftClient client = (MinecraftClient) (Object) this;
 		ClientPickBlockCallback.Container ctr = new ClientPickBlockCallback.Container(ItemStack.EMPTY);
-		ClientPickBlockCallback.EVENT.invoker().pick(client.player, client.hitResult, ctr);
+		ClientPickBlockCallback.EVENT.invoker().pick(client.player, client.crosshairTarget, ctr);
 		return ctr.getStack();
 	}
 
@@ -53,7 +53,7 @@ public abstract class MixinMinecraftClient {
 		MinecraftClient client = (MinecraftClient) (Object) this;
 
 		// Do a "best effort" emulation of the old events.
-		ItemStack stack = ClientPickBlockGatherCallback.EVENT.invoker().pick(client.player, client.hitResult);
+		ItemStack stack = ClientPickBlockGatherCallback.EVENT.invoker().pick(client.player, client.crosshairTarget);
 
 		// TODO: Remove in 0.3.0
 		if (stack.isEmpty()) {
@@ -68,15 +68,15 @@ public abstract class MixinMinecraftClient {
 			// I don't like that we clone vanilla logic here, but it's our best bet for now.
 			PlayerInventory playerInventory = client.player.inventory;
 
-			if (client.player.abilities.creativeMode && Screen.hasControlDown() && client.hitResult.getType() == HitResult.Type.BLOCK) {
-				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.hitResult).getBlockPos());
+			if (client.player.abilities.creativeMode && Screen.hasControlDown() && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.crosshairTarget).getBlockPos());
 
 				if (be != null) {
 					stack = addBlockEntityNbt(stack, be);
 				}
 			}
 
-			stack = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.hitResult, stack);
+			stack = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.crosshairTarget, stack);
 
 			if (stack.isEmpty()) {
 				return;
@@ -108,7 +108,7 @@ public abstract class MixinMinecraftClient {
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerInventory;getSlotWithStack(Lnet/minecraft/item/ItemStack;)I"), method = "doItemPick", ordinal = 0)
 	public ItemStack modifyItemPick(ItemStack stack) {
 		MinecraftClient client = (MinecraftClient) (Object) this;
-		ItemStack result = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.hitResult, stack);
+		ItemStack result = ClientPickBlockApplyCallback.EVENT.invoker().pick(client.player, client.crosshairTarget, stack);
 		fabric_itemPickCancelled = result.isEmpty();
 		return result;
 	}

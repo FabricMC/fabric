@@ -20,11 +20,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
+import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRenderer;
 
-@Mixin(ChunkRenderer.class)
+@Mixin(BuiltChunk.class)
 public abstract class MixinChunkRenderer implements AccessChunkRenderer {
 	@Shadow
 	abstract void beginBufferBuilding(BufferBuilder builder);

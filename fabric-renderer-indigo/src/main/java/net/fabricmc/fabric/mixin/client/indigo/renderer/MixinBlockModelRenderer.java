@@ -47,11 +47,11 @@ public abstract class MixinBlockModelRenderer implements AccessBlockModelRendere
 	protected BlockColors colorMap;
 
 	@Shadow
-	protected abstract void updateShape(BlockRenderView blockView, BlockState blockState, BlockPos blockPos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits);
+	protected abstract void getQuadDimensions(BlockRenderView blockView, BlockState blockState, BlockPos blockPos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits);
 
 	private final ThreadLocal<BlockRenderContext> CONTEXTS = ThreadLocal.withInitial(BlockRenderContext::new);
 
-	@Inject(at = @At("HEAD"), method = "tesselate", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "render(Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/render/model/BakedModel;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLjava/util/Random;JI)Z", cancellable = true)
 	private void hookTesselate(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrix, VertexConsumer buffer, boolean checkSides, Random rand, long seed, int overlay, CallbackInfoReturnable<Boolean> ci) {
 		if (!((FabricBakedModel) model).isVanillaAdapter()) {
 			BlockRenderContext context = CONTEXTS.get();
@@ -69,6 +69,6 @@ public abstract class MixinBlockModelRenderer implements AccessBlockModelRendere
 
 	@Override
 	public void fabric_updateShape(BlockRenderView blockView, BlockState blockState, BlockPos pos, int[] vertexData, Direction face, float[] aoData, BitSet controlBits) {
-		updateShape(blockView, blockState, pos, vertexData, face, aoData, controlBits);
+		getQuadDimensions(blockView, blockState, pos, vertexData, face, aoData, controlBits);
 	}
 }

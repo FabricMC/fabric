@@ -23,6 +23,7 @@ import java.util.function.Function;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.Matrix4f;
@@ -62,7 +63,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 			return 15 << 20 | 15 << 4;
 		}
 
-		return blockInfo.blockView.getLightmapCoordinates(blockInfo.blockView.getBlockState(pos), pos);
+		return WorldRenderer.method_23793(blockInfo.blockView, blockInfo.blockView.getBlockState(pos), pos);
 	}
 
 	private float aoLevel(BlockPos pos) {
@@ -79,8 +80,8 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.vanillaRenderer = vanillaRenderer;
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
-		this.matrix = matrixStack.peek();
-		this.normalMatrix = matrixStack.peekNormal();
+		this.matrix = matrixStack.method_23760().method_23761();
+		this.normalMatrix = matrixStack.method_23760().method_23762();
 
 		this.seed = seed;
 		this.overlay = overlay;
@@ -100,7 +101,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 
 	protected void acceptVanillaModel(BakedModel model) {
 		isCallingVanilla = true;
-		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, bufferBuilder, false, random, seed, overlay);
+		didOutput = didOutput && vanillaRenderer.render(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, bufferBuilder, false, random, seed, overlay);
 		isCallingVanilla = false;
 	}
 

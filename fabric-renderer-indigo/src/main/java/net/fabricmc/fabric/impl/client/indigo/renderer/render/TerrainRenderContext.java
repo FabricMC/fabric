@@ -19,9 +19,9 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.function.Consumer;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.chunk.BlockLayeredBufferBuilderStorage;
-import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
-import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
+import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
+import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
+import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.Matrix4f;
@@ -83,7 +83,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 		}
 	};
 
-	public TerrainRenderContext prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilderStorage builders) {
+	public TerrainRenderContext prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders) {
 		blockInfo.setBlockView(blockView);
 		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
 		return this;
@@ -96,8 +96,8 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 
 	/** Called from chunk renderer hook. */
 	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
-		this.matrix = matrixStack.peek();
-		this.normalMatrix = matrixStack.peekNormal();
+		this.matrix = matrixStack.method_23760().method_23761();
+		this.normalMatrix = matrixStack.method_23760().method_23762();
 
 		try {
 			aoCalc.clear();

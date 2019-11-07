@@ -32,9 +32,9 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.chunk.BlockLayeredBufferBuilderStorage;
-import net.minecraft.client.render.chunk.ChunkBatcher;
-import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
+import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
+import net.minecraft.client.render.chunk.ChunkBuilder;
+import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
@@ -67,10 +67,10 @@ public class MixinChunkRebuildTask {
 	@Shadow
 	protected ChunkRendererRegion field_20838;
 	@Shadow
-	protected ChunkRenderer field_20839;
+	protected BuiltChunk field_20839;
 
 	@Inject(at = @At("HEAD"), method = "method_22785")
-	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBatcher.ChunkRenderData renderData, BlockLayeredBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
+	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBuilder.ChunkData renderData, BlockBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
 		if (field_20838 != null) {
 			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 			renderer.prepare(field_20838, field_20839, renderData, builder);
@@ -105,7 +105,7 @@ public class MixinChunkRebuildTask {
 			}
 		}
 
-		return renderManager.tesselateBlock(blockState, blockPos, blockView, matrix, bufferBuilder, checkSides, random);
+		return renderManager.renderBlock(blockState, blockPos, blockView, matrix, bufferBuilder, checkSides, random);
 	}
 
 	/**

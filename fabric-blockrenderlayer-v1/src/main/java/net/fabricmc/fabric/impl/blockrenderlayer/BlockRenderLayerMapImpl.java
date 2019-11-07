@@ -65,7 +65,10 @@ public class BlockRenderLayerMapImpl implements BlockRenderLayerMap {
 	private static BiConsumer<Item, RenderLayer> itemHandler = (i, l) -> itemRenderLayerMap.put(i, l);
 	private static BiConsumer<Fluid, RenderLayer> fluidHandler = (f, b) -> fluidRenderLayerMap.put(f, b);
 
-	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Item, RenderLayer> itemHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
+	public static void initialize(BiConsumer<Block, RenderLayer> blockHandlerIn, BiConsumer<Fluid, RenderLayer> fluidHandlerIn) {
+		//Done to handle backwards compat, in previous snapshots Items had their own map for render layers, now the BlockItem is used.
+		BiConsumer<Item, RenderLayer> itemHandlerIn = (item, renderLayer) -> blockHandlerIn.accept(Block.getBlockFromItem(item), renderLayer);
+
 		//Add all the pre existing render layers
 		blockRenderLayerMap.forEach(blockHandlerIn);
 		itemRenderLayerMap.forEach(itemHandlerIn);

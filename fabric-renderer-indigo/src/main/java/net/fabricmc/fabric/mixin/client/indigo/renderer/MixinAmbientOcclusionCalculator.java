@@ -30,20 +30,20 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessAmbientOcc
 
 @Mixin(targets = "net.minecraft.client.render.block.BlockModelRenderer$AmbientOcclusionCalculator")
 public abstract class MixinAmbientOcclusionCalculator implements AccessAmbientOcclusionCalculator {
-	@Shadow private float[] colorMultiplier;
-	@Shadow private int[] brightness;
+	@Shadow private float[] brightness;
+	@Shadow private int[] light;
 
 	@Shadow
 	public abstract void apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits);
 
 	@Override
 	public float[] fabric_colorMultiplier() {
-		return colorMultiplier;
+		return brightness;
 	}
 
 	@Override
 	public int[] fabric_brightness() {
-		return brightness;
+		return light;
 	}
 
 	@Override

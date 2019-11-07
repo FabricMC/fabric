@@ -80,7 +80,7 @@ public class BlockRenderInfo {
 	}
 
 	int blockColor(int colorIndex) {
-		return 0xFF000000 | blockColorMap.getColorMultiplier(blockState, blockView, blockPos, colorIndex);
+		return 0xFF000000 | blockColorMap.getColor(blockState, blockView, blockPos, colorIndex);
 	}
 
 	boolean shouldDrawFace(Direction face) {

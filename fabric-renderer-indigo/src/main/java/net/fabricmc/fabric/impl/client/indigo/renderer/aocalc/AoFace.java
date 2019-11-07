@@ -24,7 +24,7 @@ import static net.minecraft.util.math.Direction.SOUTH;
 import static net.minecraft.util.math.Direction.UP;
 import static net.minecraft.util.math.Direction.WEST;
 
-import net.minecraft.util.SystemUtil;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.api.EnvType;
@@ -95,7 +95,7 @@ enum AoFace {
 		this.weightFunc = weightFunc;
 	}
 
-	private static final AoFace[] values = SystemUtil.consume(new AoFace[6], (neighborData) -> {
+	private static final AoFace[] values = Util.create(new AoFace[6], (neighborData) -> {
 		neighborData[DOWN.getId()] = AOF_DOWN;
 		neighborData[UP.getId()] = AOF_UP;
 		neighborData[NORTH.getId()] = AOF_NORTH;

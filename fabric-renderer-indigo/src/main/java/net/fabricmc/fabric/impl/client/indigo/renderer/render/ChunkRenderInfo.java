@@ -23,9 +23,10 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.chunk.BlockLayeredBufferBuilderStorage;
-import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderData;
-import net.minecraft.client.render.chunk.ChunkBatcher.ChunkRenderer;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
+import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
+import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -69,8 +70,8 @@ public class ChunkRenderInfo {
 
 	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
 	AccessChunkRendererData chunkData;
-	ChunkRenderer chunkRenderer;
-	BlockLayeredBufferBuilderStorage builders;
+	BuiltChunk chunkRenderer;
+	BlockBufferBuilderStorage builders;
 	BlockRenderView blockView;
 
 	private final Object2ObjectOpenHashMap<RenderLayer, BufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
@@ -82,7 +83,7 @@ public class ChunkRenderInfo {
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void prepare(ChunkRendererRegion blockView, ChunkRenderer chunkRenderer, ChunkRenderData chunkData, BlockLayeredBufferBuilderStorage builders) {
+	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders) {
 		this.blockView = blockView;
 		this.chunkOrigin.set(chunkRenderer.getOrigin());
 		this.chunkData = (AccessChunkRendererData) chunkData;
@@ -126,7 +127,7 @@ public class ChunkRenderInfo {
 		int result = brightnessCache.get(key);
 
 		if (result == Integer.MAX_VALUE) {
-			result = blockView.getLightmapCoordinates(blockView.getBlockState(pos), pos);
+			result = WorldRenderer.method_23793(blockView, blockView.getBlockState(pos), pos);
 			brightnessCache.put(key, result);
 		}
 

@@ -24,6 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
@@ -96,7 +97,7 @@ public abstract class AbstractQuadRenderer {
 			final int color = quad.spriteColor(i, 0);
 			buff.color(color & 0xFF, (color >> 8) & 0xFF, (color >> 16) & 0xFF, (color >> 24) & 0xFF);
 			buff.texture(quad.spriteU(i, 0), quad.spriteV(i, 0));
-			buff.defaultOverlay(overlay);
+			buff.overlay(overlay);
 			buff.light(quad.lightmap(i));
 
 			if (useNormals) {
@@ -172,6 +173,6 @@ public abstract class AbstractQuadRenderer {
 		}
 
 		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
-		return blockInfo.blockView.getLightmapCoordinates(blockState, mpos);
+		return WorldRenderer.method_23793(blockInfo.blockView, blockState, mpos);
 	}
 }
