@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.mixin.eventsinteraction;
 
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
-import net.fabricmc.fabric.api.event.player.DropItemCallback;
+import net.fabricmc.fabric.api.event.player.PlayerDropItemCallback;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
@@ -42,9 +42,9 @@ public class MixinServerPlayerEntity {
 	}
 
 	@Inject(method = "dropItem", at	= @At("HEAD"), cancellable = true)
-	public void onPlayerDropItem(final ItemStack stack, final boolean boolean_1, final boolean boolean_2, final CallbackInfoReturnable<ItemEntity> info) {
+	private void onPlayerDropItem(final ItemStack stack, final boolean dropAtFeet, final boolean saveThrower, final CallbackInfoReturnable<ItemEntity> info) {
 		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
-		ActionResult result = DropItemCallback.EVENT.invoker().interact(player, stack);
+		ActionResult result = PlayerDropItemCallback.EVENT.invoker().interact(player, stack);
 		if(result == ActionResult.FAIL) {
 			info.cancel();
 		}

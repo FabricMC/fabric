@@ -5,10 +5,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
-import net.minecraft.world.World;
 
 /**
- * Callback for dropping an item.
+ * Callback for the player dropping an item.
  * Is hooked in before the item is dropped.
  * <p>
  * Upon return:
@@ -16,10 +15,10 @@ import net.minecraft.world.World;
  * - PASS falls back to further processing.
  * - FAIL cancels further processing and does not drop the item.
  */
-public interface DropItemCallback {
-	public static final Event<DropItemCallback> EVENT = EventFactory.createArrayBacked(DropItemCallback.class,
+public interface PlayerDropItemCallback {
+	public static final Event<PlayerDropItemCallback> EVENT = EventFactory.createArrayBacked(PlayerDropItemCallback.class,
 		(listeners) -> (player, stack) -> {
-			for (DropItemCallback event : listeners) {
+			for (PlayerDropItemCallback event : listeners) {
 				ActionResult result = event.interact(player, stack);
 				if (result != ActionResult.PASS) {
 					return result;
