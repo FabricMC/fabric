@@ -32,21 +32,20 @@ import java.util.function.Supplier;
  * @param <C> ChunkGenerator config
  * @param <T> ChunkGenerator
  */
-public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> extends ChunkGeneratorType<C, T>
-{
+public final class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> extends ChunkGeneratorType<C, T> {
 	private FabricChunkGeneratorFactory<C, T> factory;
 
-	private FabricChunkGeneratorType(FabricChunkGeneratorFactory<C, T> factory, boolean buffetScreenOption, Supplier<C> settingsSupplier)
-	{
+	private FabricChunkGeneratorType(FabricChunkGeneratorFactory<C, T> factory, boolean buffetScreenOption, Supplier<C> settingsSupplier) {
 		super(null, buffetScreenOption, settingsSupplier);
 		this.factory = factory;
 	}
 
 	/**
 	 * Called to register and create new instance of the ChunkGeneratorType.
-	 * @param id registry ID of the ChunkGeneratorType
-	 * @param factory factory instance to provide a ChunkGenerator
-	 * @param settingsSupplier config supplier
+	 *
+	 * @param id                 registry ID of the ChunkGeneratorType
+	 * @param factory            factory instance to provide a ChunkGenerator
+	 * @param settingsSupplier   config supplier
 	 * @param buffetScreenOption whether or not the ChunkGeneratorType should appear in the buffet screen options page
 	 */
 	public static <C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> FabricChunkGeneratorType<C, T> register(Identifier id, FabricChunkGeneratorFactory<C, T> factory, Supplier<C> settingsSupplier, boolean buffetScreenOption) {
@@ -55,9 +54,10 @@ public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends 
 
 	/**
 	 * Called to get an instance of the ChunkGeneratorType's ChunkGenerator.
-	 * @param world DimensionType's world instance
+	 *
+	 * @param world       DimensionType's world instance
 	 * @param biomeSource BiomeSource to use while generating the world
-	 * @param config ChunkGenerator config instance
+	 * @param config      ChunkGenerator config instance
 	 */
 	@Override
 	public T create(World world, BiomeSource biomeSource, C config) {
@@ -67,6 +67,7 @@ public class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends 
 	/**
 	 * Responsible for creating the FabricChunkGeneratorType's ChunkGenerator instance.
 	 * Called when a new instance of a ChunkGenerator is requested in the ChunkGeneratorType.
+	 *
 	 * @param <C> ChunkGeneratorConfig
 	 * @param <T> ChunkGenerator
 	 */
