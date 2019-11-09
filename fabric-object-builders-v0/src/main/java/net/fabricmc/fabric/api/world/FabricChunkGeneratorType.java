@@ -27,8 +27,9 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import java.util.function.Supplier;
 
 /**
- * Fabric version of ChunkGeneratorType which utilizes the FabricChunkGeneratorFactory.
- * ChunkGeneratorType is a registry wrapper for ChunkGenerator, similar to BlockEntityType or EntityType.
+ * Fabric version of ChunkGeneratorType.
+ * Needed as the standard ChunkGeneratorFactory used by ChunkGeneratorType is private.
+ *
  * @param <C> ChunkGenerator config
  * @param <T> ChunkGenerator
  */
@@ -53,7 +54,7 @@ public final class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T ex
 	}
 
 	/**
-	 * Called to get an instance of the ChunkGeneratorType's ChunkGenerator.
+	 * Creates and returns an instance of the ChunkGeneratorType's ChunkGenerator.
 	 *
 	 * @param world       DimensionType's world instance
 	 * @param biomeSource BiomeSource to use while generating the world
@@ -66,7 +67,7 @@ public final class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T ex
 
 	/**
 	 * Responsible for creating the FabricChunkGeneratorType's ChunkGenerator instance.
-	 * Called when a new instance of a ChunkGenerator is requested in the ChunkGeneratorType.
+	 * Called when a new instance of a ChunkGenerator is requested in {@link FabricChunkGeneratorType#create(World, BiomeSource, ChunkGeneratorConfig)}.
 	 *
 	 * @param <C> ChunkGeneratorConfig
 	 * @param <T> ChunkGenerator
