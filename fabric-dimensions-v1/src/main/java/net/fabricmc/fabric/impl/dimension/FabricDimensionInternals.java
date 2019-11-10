@@ -17,17 +17,19 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import com.google.common.base.Preconditions;
-import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import net.fabricmc.fabric.mixin.EntityHooks;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.dimension.DimensionType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import net.fabricmc.fabric.mixin.dimension.EntityHooks;
 
 public final class FabricDimensionInternals {
 	private FabricDimensionInternals() {
@@ -38,11 +40,11 @@ public final class FabricDimensionInternals {
 	public static final Logger LOGGER = LogManager.getLogger();
 
 	/**
-	 * The entity currently being transported to another dimension
+	 * The entity currently being transported to another dimension.
 	 */
 	private static final ThreadLocal<Entity> PORTAL_ENTITY = new ThreadLocal<>();
 	/**
-	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)}
+	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)}.
 	 */
 	private static EntityPlacer customPlacement;
 
@@ -65,9 +67,11 @@ public final class FabricDimensionInternals {
 
 		// Set values used by `PortalForcer#changeDimension` to prevent a NPE crash.
 		EntityHooks access = ((EntityHooks) entity);
+
 		if (entity.getLastPortalDirectionVector() == null) {
 			access.setLastPortalDirectionVector(entity.getRotationVector());
 		}
+
 		if (entity.getLastPortalDirection() == null) {
 			access.setLastPortalDirection(entity.getHorizontalFacing());
 		}
@@ -86,6 +90,7 @@ public final class FabricDimensionInternals {
 
 		// Custom placement logic, falls back to default dimension placement if no placement or target found
 		EntityPlacer customPlacement = FabricDimensionInternals.customPlacement;
+
 		if (customPlacement != null) {
 			BlockPattern.TeleportTarget customTarget = customPlacement.placeEntity(teleported, destination, portalDir, portalX, portalY);
 
@@ -96,12 +101,14 @@ public final class FabricDimensionInternals {
 
 		// Default placement logic, falls back to vanilla if not a fabric dimension
 		DimensionType dimType = destination.getDimension().getType();
+
 		if (dimType instanceof FabricDimensionType) {
 			BlockPattern.TeleportTarget defaultTarget = ((FabricDimensionType) dimType).getDefaultPlacement().placeEntity(teleported, destination, portalDir, portalX, portalY);
 
 			if (defaultTarget == null) {
 				throw new IllegalStateException("Mod dimension " + DimensionType.getId(dimType) + " returned an invalid teleport target");
 			}
+
 			return defaultTarget;
 		}
 
@@ -121,5 +128,4 @@ public final class FabricDimensionInternals {
 			customPlacement = null;
 		}
 	}
-
 }

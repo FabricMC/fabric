@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.client.texture;
 
-import net.minecraft.util.Identifier;
-
 import java.util.Set;
+
+import net.minecraft.util.Identifier;
 
 /**
  * Implement this interface on a Sprite to declare additional dependencies
  * that should be processed prior to this sprite.
- * <p>
- * Best used in conjunction with {@link CustomSpriteLoader}.
+ *
+ * <p>Best used in conjunction with {@link CustomSpriteLoader}.
  */
 public interface DependentSprite {
 	/**

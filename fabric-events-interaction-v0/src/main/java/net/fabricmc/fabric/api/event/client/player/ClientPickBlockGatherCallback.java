@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.event.client.player;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * This event is emitted at the beginning of the block picking process in
@@ -28,17 +29,18 @@ import net.minecraft.util.hit.HitResult;
  * will be returned, overriding vanilla behaviour.
  */
 public interface ClientPickBlockGatherCallback {
-	public static final Event<ClientPickBlockGatherCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockGatherCallback.class,
-		(listeners) -> (player, result) -> {
-			for (ClientPickBlockGatherCallback event : listeners) {
-				ItemStack stack = event.pick(player, result);
-				if (stack != ItemStack.EMPTY && !stack.isEmpty()) {
-					return stack;
-				}
-			}
+	Event<ClientPickBlockGatherCallback> EVENT = EventFactory.createArrayBacked(ClientPickBlockGatherCallback.class,
+			(listeners) -> (player, result) -> {
+				for (ClientPickBlockGatherCallback event : listeners) {
+					ItemStack stack = event.pick(player, result);
 
-			return ItemStack.EMPTY;
-		}
+					if (stack != ItemStack.EMPTY && !stack.isEmpty()) {
+						return stack;
+					}
+				}
+
+				return ItemStack.EMPTY;
+			}
 	);
 
 	ItemStack pick(PlayerEntity player, HitResult result);

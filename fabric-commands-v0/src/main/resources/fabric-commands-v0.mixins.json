@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.registrycommands",
+  "package": "net.fabricmc.fabric.mixin.command",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinMinecraftDedicatedServer"

@@ -17,27 +17,26 @@
 package net.fabricmc.fabric.api.biomes.v1;
 
 /**
- * Represents the climates of biomes on the overworld continents
+ * Represents the climates of biomes on the overworld continents.
  */
 public enum OverworldClimate {
-
 	/**
-	 * Includes Snowy Tundra (with a weight of 3) and Snowy Taiga (with a weight of 1)
+	 * Includes Snowy Tundra (with a weight of 3) and Snowy Taiga (with a weight of 1).
 	 */
 	SNOWY,
 
 	/**
-	 * Includes Forest, Taiga, Mountains, and Plains (all with weights of 1)
+	 * Includes Forest, Taiga, Mountains, and Plains (all with weights of 1).
 	 */
 	COOL,
 
 	/**
-	 * Includes Forest, Dark Forest, Mountains, Plains, Birch Forest, and Swamp (all with weights of 1)
+	 * Includes Forest, Dark Forest, Mountains, Plains, Birch Forest, and Swamp (all with weights of 1).
 	 */
 	TEMPERATE,
 
 	/**
-	 * Includes Desert (with a weight of 3), Savanna (with a weight of 2), and Plains (with a weight of 1)
+	 * Includes Desert (with a weight of 3), Savanna (with a weight of 2), and Plains (with a weight of 1).
 	 */
 	DRY
 }

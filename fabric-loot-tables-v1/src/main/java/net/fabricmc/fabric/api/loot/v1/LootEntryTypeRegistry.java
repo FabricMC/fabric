@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import net.fabricmc.fabric.impl.loot.LootEntryTypeRegistryImpl;
 import net.minecraft.world.loot.entry.LootEntry;
+
+import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
 
 /**
  * Fabric's extensions to {@code net.minecraft.world.loot.entry.LootEntries} for registering
@@ -26,7 +27,7 @@ import net.minecraft.world.loot.entry.LootEntry;
  * @see #register
  */
 public interface LootEntryTypeRegistry {
-	final LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
+	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 
 	/**
 	 * Registers a loot entry type by its serializer.

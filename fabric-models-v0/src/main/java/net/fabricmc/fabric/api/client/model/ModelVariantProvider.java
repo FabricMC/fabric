@@ -21,24 +21,23 @@ import net.minecraft.client.util.ModelIdentifier;
 
 /**
  * Interface for model variant providers.
- * <p>
- * Model variant providers hook the resolution of ModelIdentifiers. In vanilla, this is
+ *
+ * <p>Model variant providers hook the resolution of ModelIdentifiers. In vanilla, this is
  * the part where a "minecraft:stone#normal" identifier triggers the loading of a
  * "minecraft:models/stone" model ({@link ModelResourceProvider} handles the later step).
- * <p>
- * The most common use of this is to cooperate with a {@link ModelAppender}, but it can
+ *
+ * <p>The most common use of this is to cooperate with a {@link ModelAppender}, but it can
  * also allow you to add your own block- or item-state formats. To trigger the loading
  * of another model, use the passed {@link ModelProviderContext}.
- * <p>
- * As every model loading is instantiated with a new provider, it is safe
+ *
+ * <p>As every model loading is instantiated with a new provider, it is safe
  * (and recommended!) to cache information.
- * <p>
- * Keep in mind that only *one* ModelVariantProvider may respond to a given model
+ *
+ * <p>Keep in mind that only *one* ModelVariantProvider may respond to a given model
  * at any time.
  */
 @FunctionalInterface
 public interface ModelVariantProvider {
-
 	/**
 	 * @param modelId The model identifier, complete with variant.
 	 * @return The loaded UnbakedModel, or null if this ModelVariantProvider doesn't handle a specific Identifier

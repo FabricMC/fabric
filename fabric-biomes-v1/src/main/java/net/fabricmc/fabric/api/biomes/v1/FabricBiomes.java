@@ -16,24 +16,22 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
 
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+
 /**
- * General API that applies to all biome sources
+ * General API that applies to all biome sources.
  */
 public final class FabricBiomes {
-
-	private FabricBiomes() {
-	}
+	private FabricBiomes() { }
 
 	/**
-	 * Allows players to naturally spawn in this biome
+	 * Allows players to naturally spawn in this biome.
 	 *
 	 * @param biome a biome the player should be able to spawn in
 	 */
 	public static void addSpawnBiome(Biome biome) {
 		InternalBiomeData.addSpawnBiome(biome);
 	}
-
 }

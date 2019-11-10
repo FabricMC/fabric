@@ -16,15 +16,15 @@
 
 package net.fabricmc.fabric.api.client.screen;
 
-import net.fabricmc.fabric.api.container.ContainerFactory;
-import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.impl.client.gui.ScreenProviderRegistryImpl;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
 import net.minecraft.container.Container;
 import net.minecraft.util.Identifier;
 
-public interface ScreenProviderRegistry {
+import net.fabricmc.fabric.api.container.ContainerFactory;
+import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
+import net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl;
 
+public interface ScreenProviderRegistry {
 	ScreenProviderRegistry INSTANCE = ScreenProviderRegistryImpl.INSTANCE;
 
 	/**
@@ -43,5 +43,4 @@ public interface ScreenProviderRegistry {
 	 * @param factory    the gui factory, this should return a new {@link AbstractContainerScreen}
 	 */
 	void registerFactory(Identifier identifier, ContainerFactory<AbstractContainerScreen> factory);
-
 }

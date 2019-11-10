@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.block;
 
-import net.fabricmc.fabric.mixin.builders.MaterialBuilderHooks;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.DyeColor;
+
+import net.fabricmc.fabric.mixin.object.builder.MaterialBuilderHooks;
 
 public class FabricMaterialBuilder extends Material.Builder {
 	public FabricMaterialBuilder(MaterialColor color) {

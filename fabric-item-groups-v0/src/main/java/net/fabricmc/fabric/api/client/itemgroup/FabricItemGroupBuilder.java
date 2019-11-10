@@ -16,18 +16,18 @@
 
 package net.fabricmc.fabric.api.client.itemgroup;
 
-import net.fabricmc.fabric.impl.itemgroup.ItemGroupExtensions;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Identifier;
 
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 
 public final class FabricItemGroupBuilder {
-
 	private Identifier identifier;
 	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
 	private Consumer<List<ItemStack>> stacksForDisplay;
@@ -37,7 +37,7 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * Create a new Item Group Builder
+	 * Create a new Item Group Builder.
 	 *
 	 * @param identifier the id will become the name of the ItemGroup and will be used for the translation key
 	 * @return a FabricItemGroupBuilder
@@ -47,7 +47,7 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * This is used to add an icon to to the item group
+	 * This is used to add an icon to to the item group.
 	 *
 	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
 	 * @return a reference to the FabricItemGroupBuilder
@@ -58,7 +58,7 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items
+	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items.
 	 *
 	 * @param appender Add ItemStack's to this list to show in the ItemGroup
 	 * @return a reference to the FabricItemGroupBuilder
@@ -70,7 +70,7 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items
+	 * This allows for a custom list of items to be displayed in a tab, this enabled tabs to be created with a custom set of items.
 	 *
 	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
 	 * @return a reference to the FabricItemGroupBuilder
@@ -81,7 +81,7 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * This is a single method that makes creating an ItemGroup with an icon one call
+	 * This is a single method that makes creating an ItemGroup with an icon one call.
 	 *
 	 * @param identifier    the id will become the name of the ItemGroup and will be used for the translation key
 	 * @param stackSupplier the supplier should return the item stack that you wish to show on the tab
@@ -92,7 +92,7 @@ public final class FabricItemGroupBuilder {
 	}
 
 	/**
-	 * Create an instance of the ItemGroup
+	 * Create an instance of the ItemGroup.
 	 *
 	 * @return An instance of the built ItemGroup
 	 */
@@ -110,9 +110,9 @@ public final class FabricItemGroupBuilder {
 					stacksForDisplay.accept(stacks);
 					return;
 				}
+
 				super.appendStacks(stacks);
 			}
 		};
 	}
-
 }
