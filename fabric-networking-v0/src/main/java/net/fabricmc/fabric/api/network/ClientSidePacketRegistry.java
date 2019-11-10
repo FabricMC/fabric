@@ -57,6 +57,9 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 	/**
 	 * Send an identifier/buffer-based packet to the server.
 	 *
+	 * <p>Note: This method does not check if the server can accept the packet with
+	 * this type of identifier.
+	 *
 	 * @param id                 The packet identifier.
 	 * @param buf                The packet byte buffer.
 	 * @param completionListener Completion listener. Can be used to check for
@@ -78,10 +81,41 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 	/**
 	 * Send an identifier/buffer-based packet to the server.
 	 *
+	 * <p>Note: This method does not check if the server can accept the packet with
+	 * this type of identifier.
+	 *
 	 * @param id  The packet identifier.
 	 * @param buf The packet byte buffer.
 	 */
 	default void sendToServer(Identifier id, PacketByteBuf buf) {
 		sendToServer(id, buf, null);
+	}
+
+	/**
+	 * Send an identifier/buffer-based packet to the server.
+	 *
+	 * <p>This packet won't be send if the server didn't declare it can receive
+	 * this type of packet.
+	 *
+	 * @param id                 The packet identifier.
+	 * @param buf                The packet byte buffer.
+	 * @param completionListener Completion listener. Can be used to check for
+	 *                           the success or failure of sending a given packet, among others.
+	 */
+	default void sendToServerIfAccepted(Identifier id, PacketByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
+		if (canServerReceive(id)) sendToServer(toPacket(id, buf), completionListener);
+	}
+
+	/**
+	 * Send an identifier/buffer-based packet to the server.
+	 *
+	 * <p>This packet won't be send if the server didn't declare it can receive
+	 * this type of packet.
+	 *
+	 * @param id  The packet identifier.
+	 * @param buf The packet byte buffer.
+	 */
+	default void sendToServerIfAccepted(Identifier id, PacketByteBuf buf) {
+		if (canServerReceive(id)) sendToServer(id, buf, null);
 	}
 }

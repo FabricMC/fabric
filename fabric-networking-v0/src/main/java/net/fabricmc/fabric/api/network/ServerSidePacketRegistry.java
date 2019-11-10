@@ -62,6 +62,9 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	/**
 	 * Send an identifier/buffer-based packet to a given client.
 	 *
+	 * <p>Note: This method does not check if the client can accept the packet with
+	 * this type of identifier.
+	 *
 	 * @param player             The given client.
 	 * @param id                 The packet identifier.
 	 * @param buf                The packet byte buffer.
@@ -85,11 +88,44 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	/**
 	 * Send an identifier/buffer-based packet to a given client.
 	 *
+	 * <p>Note: This method does not check if the client can accept the packet with
+	 * this type of identifier.
+	 *
 	 * @param player The given client.
 	 * @param id     The packet identifier.
 	 * @param buf    The packet byte buffer.
 	 */
 	default void sendToPlayer(PlayerEntity player, Identifier id, PacketByteBuf buf) {
 		sendToPlayer(player, id, buf, null);
+	}
+
+	/**
+	 * Send an identifier/buffer-based packet to a given client.
+	 *
+	 * <p>This packet won't be send if the client didn't declare it can receive
+	 * this type of packet.
+	 *
+	 * @param player             The given client.
+	 * @param id                 The packet identifier.
+	 * @param buf                The packet byte buffer.
+	 * @param completionListener Completion listener. Can be used to check for
+	 *                           the success or failure of sending a given packet, among others.
+	 */
+	default void sendToPlayerIfAccepted(PlayerEntity player, Identifier id, PacketByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
+		if (canPlayerReceive(player, id)) sendToPlayer(player, toPacket(id, buf), completionListener);
+	}
+
+	/**
+	 * Send an identifier/buffer-based packet to a given client.
+	 *
+	 * <p>This packet won't be send if the client didn't declare it can receive
+	 * this type of packet.
+	 *
+	 * @param player The given client.
+	 * @param id     The packet identifier.
+	 * @param buf    The packet byte buffer.
+	 */
+	default void sendToPlayerIfAccepted(PlayerEntity player, Identifier id, PacketByteBuf buf) {
+		if (canPlayerReceive(player, id)) sendToPlayer(player, id, buf, null);
 	}
 }
