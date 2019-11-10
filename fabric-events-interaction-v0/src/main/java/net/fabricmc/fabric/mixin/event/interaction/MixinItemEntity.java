@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.mixin.eventsinteraction;
+package net.fabricmc.fabric.mixin.event.interaction;
 
 import net.fabricmc.fabric.api.event.player.PlayerPickupItemCallback;
 import net.minecraft.entity.ItemEntity;
