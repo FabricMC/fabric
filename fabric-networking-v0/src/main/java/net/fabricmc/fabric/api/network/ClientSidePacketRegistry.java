@@ -94,7 +94,7 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 	/**
 	 * Send an identifier/buffer-based packet to the server.
 	 *
-	 * <p>This packet won't be send if the server didn't declare it can receive
+	 * <p>This packet won't be sent if the server didn't declare it can receive
 	 * this type of packet.
 	 *
 	 * @param id                 The packet identifier.
@@ -109,7 +109,7 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 	/**
 	 * Send an identifier/buffer-based packet to the server.
 	 *
-	 * <p>This packet won't be send if the server didn't declare it can receive
+	 * <p>This packet won't be sent if the server didn't declare it can receive
 	 * this type of packet.
 	 *
 	 * @param id  The packet identifier.
