@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.itemgroup",
+  "package": "net.fabricmc.fabric.mixin.item.group",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinItemGroup"

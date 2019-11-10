@@ -20,8 +20,8 @@ import net.minecraft.util.Identifier;
 
 /**
  * This class contains default keys for various Minecraft resource reload listeners.
- * <p>
- * {@link IdentifiableResourceReloadListener}
+ *
+ * @see IdentifiableResourceReloadListener
  */
 public final class ResourceReloadListenerKeys {
 	// client
@@ -38,7 +38,5 @@ public final class ResourceReloadListenerKeys {
 	public static final Identifier FUNCTIONS = new Identifier("minecraft:functions");
 	public static final Identifier LOOT_TABLES = new Identifier("minecraft:loot_tables");
 
-	private ResourceReloadListenerKeys() {
-
-	}
+	private ResourceReloadListenerKeys() { }
 }

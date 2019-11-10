@@ -16,34 +16,35 @@
 
 package net.fabricmc.fabric.api.event.network;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import java.util.Collection;
+
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Event for listening to packet type registrations and unregistrations
  * (also known as "minecraft:register" and "minecraft:unregister")
- * in the server -> client direction.
+ * in the server -&gt; client direction.
  */
 public interface S2CPacketTypeCallback {
-	static final Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
-		S2CPacketTypeCallback.class,
-		(callbacks) -> (types) -> {
-			for (S2CPacketTypeCallback callback : callbacks) {
-				callback.accept(types);
+	Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
+			S2CPacketTypeCallback.class,
+			(callbacks) -> (types) -> {
+				for (S2CPacketTypeCallback callback : callbacks) {
+					callback.accept(types);
+				}
 			}
-		}
 	);
 
-	static final Event<S2CPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(
-		S2CPacketTypeCallback.class,
-		(callbacks) -> (types) -> {
-			for (S2CPacketTypeCallback callback : callbacks) {
-				callback.accept(types);
+	Event<S2CPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(
+			S2CPacketTypeCallback.class,
+			(callbacks) -> (types) -> {
+				for (S2CPacketTypeCallback callback : callbacks) {
+					callback.accept(types);
+				}
 			}
-		}
 	);
 
 	/**
