@@ -22,10 +22,10 @@ import net.minecraft.nbt.Tag;
 /**
  * NBT type ID constants. Useful for filtering by value type in a few cases.
  *
+ * <p>For the current list of types, check with {@link Tag#TYPES}.
+ *
  * @see CompoundTag#containsKey(String, int)
  * @see Tag#idToString(int)
- * <p>
- * For the current list of types, check with {@link Tag#TYPES}.
  */
 public final class NbtType {
 	public static final int END = 0;
@@ -49,7 +49,5 @@ public final class NbtType {
 	 */
 	public static final int NUMBER = 99;
 
-	private NbtType() {
-
-	}
+	private NbtType() { }
 }

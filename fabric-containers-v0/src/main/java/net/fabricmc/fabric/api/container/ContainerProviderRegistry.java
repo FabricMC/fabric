@@ -16,22 +16,22 @@
 
 package net.fabricmc.fabric.api.container;
 
-import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
-import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
+import java.util.function.Consumer;
+
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import java.util.function.Consumer;
+import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
 
 public interface ContainerProviderRegistry {
-
 	ContainerProviderRegistry INSTANCE = ContainerProviderImpl.INSTANCE;
 
 	/**
-	 * Register a "packet buffer -> container" factory. This is used both on the client and server side.
+	 * Register a "packet buffer -&gt; container" factory. This is used both on the client and server side.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ScreenProviderRegistry}
 	 * @param factory    the ContainerFactory that should return a new {@link Container}

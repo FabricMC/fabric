@@ -16,35 +16,36 @@
 
 package net.fabricmc.fabric.api.event.network;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import java.util.Collection;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Event for listening to packet type registrations and unregistrations
  * (also known as "minecraft:register" and "minecraft:unregister")
- * in the client -> server direction.
+ * in the client -&gt; server direction.
  */
 public interface C2SPacketTypeCallback {
-	static final Event<C2SPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
-		C2SPacketTypeCallback.class,
-		(callbacks) -> (client, types) -> {
-			for (C2SPacketTypeCallback callback : callbacks) {
-				callback.accept(client, types);
+	Event<C2SPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
+			C2SPacketTypeCallback.class,
+			(callbacks) -> (client, types) -> {
+				for (C2SPacketTypeCallback callback : callbacks) {
+					callback.accept(client, types);
+				}
 			}
-		}
 	);
 
-	static final Event<C2SPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(
-		C2SPacketTypeCallback.class,
-		(callbacks) -> (client, types) -> {
-			for (C2SPacketTypeCallback callback : callbacks) {
-				callback.accept(client, types);
+	Event<C2SPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(
+			C2SPacketTypeCallback.class,
+			(callbacks) -> (client, types) -> {
+				for (C2SPacketTypeCallback callback : callbacks) {
+					callback.accept(client, types);
+				}
 			}
-		}
 	);
 
 	/**

@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.api.block;
 
-import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
-import net.fabricmc.fabric.impl.tools.ToolManager;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -27,17 +31,14 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
+import net.fabricmc.fabric.impl.mining.level.ToolManager;
 
 /**
  * Fabric's version of Block.Settings. Adds additional methods and hooks
  * not found in the original class.
- * <p>
- * To use it, simply replace Block.Settings.create() with
+ *
+ * <p>To use it, simply replace Block.Settings.create() with
  * FabricBlockSettings.create() and add .build() at the end to return the
  * vanilla Block.Settings instance beneath.
  */
@@ -46,47 +47,49 @@ public class FabricBlockSettings {
 		BlockConstructedCallback.EVENT.register(FabricBlockSettings::onBuild);
 	}
 
-    private static final Map<Block.Settings, ExtraData> EXTRA_DATA = new HashMap<>();
+	private static final Map<Block.Settings, ExtraData> EXTRA_DATA = new HashMap<>();
 
-    protected final Block.Settings delegate;
+	protected final Block.Settings delegate;
 
 	static final class ExtraData {
-        private final List<MiningLevel> miningLevels = new ArrayList<>();
-        /* @Nullable */ private Boolean breakByHand;
+		private final List<MiningLevel> miningLevels = new ArrayList<>();
+		/* @Nullable */ private Boolean breakByHand;
 
 		private ExtraData(Block.Settings settings) {
-        }
+		}
 
 		void breakByHand(boolean breakByHand) {
-		    this.breakByHand = breakByHand;
-        }
+			this.breakByHand = breakByHand;
+		}
 
 		void addMiningLevel(Tag<Item> tag, int level) {
-		    miningLevels.add(new MiningLevel(tag, level));
-        }
+			miningLevels.add(new MiningLevel(tag, level));
+		}
 	}
 
-    private static final class MiningLevel {
-        private final Tag<Item> tag;
-        private final int level;
+	private static final class MiningLevel {
+		private final Tag<Item> tag;
+		private final int level;
 
-        MiningLevel(Tag<Item> tag, int level) {
-            this.tag = tag;
-            this.level = level;
-        }
-    }
+		MiningLevel(Tag<Item> tag, int level) {
+			this.tag = tag;
+			this.level = level;
+		}
+	}
 
 	static ExtraData computeExtraData(Block.Settings settings) {
-	    return EXTRA_DATA.computeIfAbsent(settings, ExtraData::new);
-    }
+		return EXTRA_DATA.computeIfAbsent(settings, ExtraData::new);
+	}
 
 	private static void onBuild(Block.Settings settings, Block block) {
 		// TODO: Load only if fabric-mining-levels present
 		ExtraData data = EXTRA_DATA.get(settings);
+
 		if (data != null) {
 			if (data.breakByHand != null) {
 				ToolManager.entry(block).setBreakByHand(data.breakByHand);
 			}
+
 			for (MiningLevel tml : data.miningLevels) {
 				ToolManager.entry(block).putBreakByTool(tml.tag, tml.level);
 			}
@@ -121,9 +124,9 @@ public class FabricBlockSettings {
 		return new FabricBlockSettings(base);
 	}
 
-    public static FabricBlockSettings copyOf(Block.Settings settings) {
-        return new FabricBlockSettings(settings);
-    }
+	public static FabricBlockSettings copyOf(Block.Settings settings) {
+		return new FabricBlockSettings(settings);
+	}
 
 	/* FABRIC HELPERS */
 
@@ -137,9 +140,9 @@ public class FabricBlockSettings {
 		return this;
 	}
 
-    public FabricBlockSettings breakByTool(Tag<Item> tag) {
-        return breakByTool(tag, 0);
-    }
+	public FabricBlockSettings breakByTool(Tag<Item> tag) {
+		return breakByTool(tag, 0);
+	}
 
 	/* DELEGATE WRAPPERS */
 
@@ -214,7 +217,7 @@ public class FabricBlockSettings {
 
 	@Deprecated
 	public FabricBlockSettings friction(float friction) {
-	    delegate.slipperiness(friction);
+		delegate.slipperiness(friction);
 		return this;
 	}
 

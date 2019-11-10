@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -25,29 +23,33 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
 /**
  * Callback for left-clicking ("attacking") a block.
  * Is hooked in before the spectator check, so make sure to check for the player's game mode as well!
- * <p>
- * Upon return:
- * - SUCCESS cancels further processing and, on the client, sends a packet to the server.
- * - PASS falls back to further processing.
- * - FAIL cancels further processing and does not send a packet to the server.
- * <p>
- * ATTACK_BLOCK does not let you control the packet sending process yet.
+ *
+ * <p>Upon return:
+ * <ul><li>SUCCESS cancels further processing and, on the client, sends a packet to the server.
+ * <li>PASS falls back to further processing.
+ * <li>FAIL cancels further processing and does not send a packet to the server.</ul>
+ *
+ * <p>ATTACK_BLOCK does not let you control the packet sending process yet.
  */
 public interface AttackBlockCallback {
-	public static final Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
-		(listeners) -> (player, world, hand, pos, direction) -> {
-			for (AttackBlockCallback event : listeners) {
-				ActionResult result = event.interact(player, world, hand, pos, direction);
-				if (result != ActionResult.PASS) {
-					return result;
-				}
-			}
+	Event<AttackBlockCallback> EVENT = EventFactory.createArrayBacked(AttackBlockCallback.class,
+			(listeners) -> (player, world, hand, pos, direction) -> {
+				for (AttackBlockCallback event : listeners) {
+					ActionResult result = event.interact(player, world, hand, pos, direction);
 
-			return ActionResult.PASS;
-		}
+					if (result != ActionResult.PASS) {
+						return result;
+					}
+				}
+
+				return ActionResult.PASS;
+			}
 	);
 
 	ActionResult interact(PlayerEntity player, World world, Hand hand, BlockPos pos, Direction direction);

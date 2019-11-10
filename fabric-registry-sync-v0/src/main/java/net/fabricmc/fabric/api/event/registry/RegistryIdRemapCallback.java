@@ -17,22 +17,24 @@
 package net.fabricmc.fabric.api.event.registry;
 
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
 /**
  * The remapping process functions as follows:
  *
- * - RegistryEntryRemovedCallbacks are called to remove any objects culled in the process, with the old numeric ID.
- * - RegistryIdRemapCallback is emitted to allow remapping the IDs of objects still present.
- * - RegistryEntryAddedCallbacks are called to add any objects added in the process, with the new numeric ID.
+ * <ul><li>RegistryEntryRemovedCallbacks are called to remove any objects culled in the process, with the old numeric ID.
+ * <li>RegistryIdRemapCallback is emitted to allow remapping the IDs of objects still present.
+ * <li>RegistryEntryAddedCallbacks are called to add any objects added in the process, with the new numeric ID.</ul>
  *
- * RegistryIdRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
+ * <p>RegistryIdRemapCallback is called on every remapping operation, if you want to do your own processing in one swoop
  * (say, rebuild the ID map from scratch).
  *
- * Generally speaking, a remap can only cause object *removals*; object *additions* are necessary to reverse remaps.
+ * <p>Generally speaking, a remap can only cause object *removals*; object *additions* are necessary to reverse remaps.
  *
  * @param <T> The registry type.
  */
@@ -52,6 +54,6 @@ public interface RegistryIdRemapCallback<T> {
 		}
 
 		//noinspection unchecked
-		return (Event<RegistryIdRemapCallback<T>>) ((ListenableRegistry) registry).fabric_getRemapEvent();
+		return ((ListenableRegistry) registry).fabric_getRemapEvent();
 	}
 }
