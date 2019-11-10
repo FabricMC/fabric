@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.world;
 
+import java.util.function.Supplier;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -23,8 +25,6 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
-
-import java.util.function.Supplier;
 
 /**
  * Fabric version of ChunkGeneratorType.
