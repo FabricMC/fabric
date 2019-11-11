@@ -20,9 +20,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ChunkSerializer;
+
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 
 @Mixin(ChunkSerializer.class)
 public class MixinChunkSerializer {

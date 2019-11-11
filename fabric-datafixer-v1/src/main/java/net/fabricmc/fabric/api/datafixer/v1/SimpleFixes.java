@@ -22,8 +22,9 @@ import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.util.Pair;
 
-import net.fabricmc.fabric.impl.datafixer.FabricSimpleFixes;
 import net.minecraft.nbt.Tag;
+
+import net.fabricmc.fabric.impl.datafixer.FabricSimpleFixes;
 
 /**
  * This class contains several common datafixes mod would use to fix some simple data types.
@@ -34,14 +35,13 @@ import net.minecraft.nbt.Tag;
  */
 public interface SimpleFixes {
 	/**
-	 * Gets the instance of the {@link SimpleFixes}
+	 * Gets the instance of the {@link SimpleFixes}.
 	 */
-	static final SimpleFixes INSTANCE = FabricSimpleFixes.INSTANCE;
+	SimpleFixes INSTANCE = FabricSimpleFixes.INSTANCE;
 
 	/**
 	 * A basic DataFix for changing block names.
-	 *
-	 * To use this, first create a DataFixerBuilder and register a schema. Next you would invoke this method, and fill in the arguments to
+	 * To use this, first create a DataFixerBuilder and register a schema. Next you would invoke this method, and fill in the parameters below:
 	 *
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
@@ -63,7 +63,7 @@ public interface SimpleFixes {
 
 	/**
 	 * A basic DataFix for changing biome names.
-	 * 
+	 *
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
 	 * @param changes A map containing all the changes in biome name, where the key is the old biome name and the value is the new biome name.
@@ -72,8 +72,8 @@ public interface SimpleFixes {
 	void addBiomeRenameFix(DataFixerBuilder builder, String name, ImmutableMap<String, String> changes, Schema schema);
 
 	/**
-	 * A basic DataFix for changing blockentity names -- Untested as of now
-	 * 
+	 * A basic DataFix for changing blockentity names.
+	 *
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process)
 	 * @param oldId the original name of the BlockEntity
@@ -84,10 +84,9 @@ public interface SimpleFixes {
 
 	/**
 	 * A basic DataFix for changing entity names.
-	 * <p>
-	 * Note this does not rename entity spawn eggs and you should use {@link #addItemRenameFix(DataFixerBuilder, String, String, String, Schema)} to rename the spawn egg item.
-	 * </p>
-	 * 
+	 *
+	 * <p>Note this does not rename entity spawn eggs and you should use {@link #addItemRenameFix(DataFixerBuilder, String, String, String, Schema)} to rename the spawn egg item.
+	 *
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the datafix (this has no effect on actual process).
 	 * @param oldId the original name of the Entity.
@@ -98,7 +97,7 @@ public interface SimpleFixes {
 
 	/**
 	 * A basic DataFix for transforming an entity.
-	 * 
+	 *
 	 * @param builder The builder to add this fix to.
 	 * @param name The name of the DataFix (this has no effect on actual process)
 	 * @param transformation The transformation to apply to the input entity.
@@ -113,10 +112,9 @@ public interface SimpleFixes {
 	 */
 	@FunctionalInterface
 	interface EntityTransformation {
-
 		/**
 		 * Transforms an entity.
-		 * 
+		 *
 		 * @param entityName The input entity's name.
 		 * @param dynamic The Dynamic object representing the entity.
 		 * @return A Pair which contains the entity's new name and the dynamic representing the entity.
@@ -129,7 +127,6 @@ public interface SimpleFixes {
 	 */
 	@FunctionalInterface
 	interface BlockEntityTransformation {
-
 		/**
 		 * Transforms a BlockEntity.
 		 * @param dynamic The Dynamic object representing the BlockEntity.
@@ -137,5 +134,4 @@ public interface SimpleFixes {
 		 */
 		Dynamic<Tag> transform(Dynamic<Tag> dynamic);
 	}
-
 }

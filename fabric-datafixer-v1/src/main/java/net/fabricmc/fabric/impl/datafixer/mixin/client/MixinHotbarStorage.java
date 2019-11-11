@@ -22,11 +22,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.client.options.HotbarStorage;
+import net.minecraft.nbt.CompoundTag;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
-import net.minecraft.client.options.HotbarStorage;
-import net.minecraft.nbt.CompoundTag;
 
 @Environment(EnvType.CLIENT)
 @Mixin(HotbarStorage.class)

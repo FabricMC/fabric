@@ -20,10 +20,12 @@ import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.Typed;
 import com.mojang.datafixers.schemas.Schema;
-import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
+
 import net.minecraft.datafixers.TypeReferences;
 import net.minecraft.datafixers.fixes.ChoiceFix;
 import net.minecraft.nbt.Tag;
+
+import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
 
 public class BlockEntityTransformationFix extends ChoiceFix {
 	private SimpleFixes.BlockEntityTransformation transformation;

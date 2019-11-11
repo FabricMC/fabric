@@ -16,17 +16,18 @@
 
 package net.fabricmc.fabric.impl.datafixer.test;
 
+import java.util.Optional;
+
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
+
+import net.minecraft.util.SystemUtil;
+
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
 import net.fabricmc.fabric.api.datafixer.v1.FabricSchemas;
 import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
-import net.minecraft.util.SystemUtil;
-
-import java.util.Optional;
 
 public class TestObjects {
-
 	public static final int VERSION = 3;
 
 	public static void create() {
@@ -36,12 +37,12 @@ public class TestObjects {
 		SimpleFixes.INSTANCE.addBlockRenameFix(builder, "rename test", "test:oldblock", "test:newblock", schema_1);
 
 		Schema schema_2 = builder.addSchema(2, FabricSchemas.IDENTIFIER_NORMALIZE_SCHEMA);
-		SimpleFixes.INSTANCE.addBlockEntityTransformFix(builder, "Ground beef", "test:testblockentity", (dynamic) -> {
 
+		SimpleFixes.INSTANCE.addBlockEntityTransformFix(builder, "Ground beef", "test:testblockentity", (dynamic) -> {
 			Optional<Number> optional = dynamic.get("ground_beef").asNumber();
 
-			if(optional.isPresent()) {
-				if(optional.get().intValue() == 0) {
+			if (optional.isPresent()) {
+				if (optional.get().intValue() == 0) {
 					return dynamic.set("ground_beef", dynamic.createInt(509));
 				}
 			}

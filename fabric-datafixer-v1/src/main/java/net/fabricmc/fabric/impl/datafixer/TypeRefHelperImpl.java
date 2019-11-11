@@ -28,8 +28,9 @@ import net.fabricmc.fabric.impl.datafixer.mixin.Schema99Accessor;
 
 public final class TypeRefHelperImpl implements TypeReferenceHelper {
 	public static final TypeRefHelperImpl INSTANCE = new TypeRefHelperImpl();
-	
-	private TypeRefHelperImpl() {}
+
+	private TypeRefHelperImpl() {
+	}
 
 	@Override
 	public void registerTypeInTile(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {

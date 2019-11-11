@@ -16,27 +16,30 @@
 
 package net.fabricmc.fabric.impl.datafixer;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import java.util.Objects;
+
 import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DataFixerBuilder;
 import com.mojang.datafixers.schemas.Schema;
-import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
-import net.fabricmc.fabric.impl.datafixer.fixes.BiomeRenameFix;
-import net.fabricmc.fabric.impl.datafixer.fixes.BlockEntityRenameFix;
-import net.fabricmc.fabric.impl.datafixer.fixes.BlockEntityTransformationFix;
-import net.fabricmc.fabric.impl.datafixer.fixes.EntityTransformationFixWrapper;
+
 import net.minecraft.datafixers.fixes.BlockNameFix;
 import net.minecraft.datafixers.fixes.EntityRenameFix;
 import net.minecraft.datafixers.fixes.FixItemName;
 import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 
-import java.util.Objects;
-
-import static com.google.common.base.Preconditions.checkNotNull;
+import net.fabricmc.fabric.api.datafixer.v1.SimpleFixes;
+import net.fabricmc.fabric.impl.datafixer.fixes.BiomeRenameFix;
+import net.fabricmc.fabric.impl.datafixer.fixes.BlockEntityRenameFix;
+import net.fabricmc.fabric.impl.datafixer.fixes.BlockEntityTransformationFix;
+import net.fabricmc.fabric.impl.datafixer.fixes.EntityTransformationFixWrapper;
 
 public final class FabricSimpleFixes implements SimpleFixes {
 	public static final SimpleFixes INSTANCE = new FabricSimpleFixes();
 
-	private FabricSimpleFixes() {}
+	private FabricSimpleFixes() {
+	}
 
 	@Override
 	public void addBlockRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
@@ -61,7 +64,6 @@ public final class FabricSimpleFixes implements SimpleFixes {
 				return Objects.equals(oldId, inputName) ? newId : inputName;
 			}
 		});
-
 	}
 
 	@Override

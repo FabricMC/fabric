@@ -16,34 +16,33 @@
 
 package net.fabricmc.fabric.impl.datafixer.test;
 
-import com.mojang.datafixers.DSL;
-import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
-import net.fabricmc.fabric.api.datafixer.v1.TypeReferenceHelper;
-import net.minecraft.datafixers.TypeReferences;
-
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.mojang.datafixers.DSL;
+import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.TypeTemplate;
+
+import net.minecraft.datafixers.TypeReferences;
+
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
+import net.fabricmc.fabric.api.datafixer.v1.TypeReferenceHelper;
+
 public class TestDataFixerEntrypoint implements DataFixerEntrypoint {
 	@Override
-	public Map<String, Supplier<TypeTemplate>> registerEntities(Schema schema, Map<String, Supplier<TypeTemplate>> entityMap) {
+	public void registerEntities(Schema schema, Map<String, Supplier<TypeTemplate>> entityMap) {
 		TypeReferenceHelper.HELPER.registerSimpleType(schema, entityMap, "TestEntity");
-		return entityMap;
 	}
 
 	@Override
-	public Map<String, Supplier<TypeTemplate>> registerBlockEntities(Schema schema, Map<String, Supplier<TypeTemplate>> blockEntityMap) {
+	public void registerBlockEntities(Schema schema, Map<String, Supplier<TypeTemplate>> blockEntityMap) {
 		TypeReferenceHelper.HELPER.registerSimpleType(schema, blockEntityMap, "test:testblockentity"); // Changed later, kept for legacy mode
 
 		TypeReferenceHelper.HELPER.registerTypeWithTemplate(schema, blockEntityMap, () -> DSL.optionalFields(
-			"Left", DSL.list(TypeReferences.ITEM_STACK.in(schema)),
-			"Right", DSL.list(TypeReferences.ITEM_STACK.in(schema))), "spookytime:tiny_pumpkin");
+				"Left", DSL.list(TypeReferences.ITEM_STACK.in(schema)),
+				"Right", DSL.list(TypeReferences.ITEM_STACK.in(schema))), "spookytime:tiny_pumpkin");
 
 		TypeReferenceHelper.HELPER.registerSimpleType(schema, blockEntityMap, "test:testblockentity2"); // TODO changed
-
-		return blockEntityMap;
 	}
 
 	@Override

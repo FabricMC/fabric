@@ -16,19 +16,20 @@
 
 package net.fabricmc.fabric.impl.datafixer.mixin;
 
-import com.mojang.datafixers.schemas.Schema;
-import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.minecraft.datafixers.schemas.Schema99;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
-
 import java.util.Map;
 import java.util.function.Supplier;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
+import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.templates.TypeTemplate;
+
+import net.minecraft.datafixers.schemas.Schema99;
 
 @Mixin(Schema99.class)
 public interface Schema99Accessor {
 	/**
-	 * registerTypeWithEquipment
+	 * registerTypeWithEquipment.
 	 * @param schema
 	 * @param entityMap
 	 * @param name
@@ -39,7 +40,7 @@ public interface Schema99Accessor {
 	}
 
 	/**
-	 * registerTypeWithItems
+	 * registerTypeWithItems.
 	 * @param schema
 	 * @param typeMap
 	 * @param name
@@ -50,7 +51,7 @@ public interface Schema99Accessor {
 	}
 
 	/**
-	 * registerTypeInTile
+	 * registerTypeInTile.
 	 * @param schema
 	 * @param typeMap
 	 * @param name

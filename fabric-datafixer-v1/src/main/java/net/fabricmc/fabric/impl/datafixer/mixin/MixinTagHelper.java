@@ -20,13 +20,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 import com.mojang.datafixers.DataFixer;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.TagHelper;
+
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 
 @Mixin(TagHelper.class)
 public class MixinTagHelper {

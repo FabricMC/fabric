@@ -18,7 +18,6 @@ package net.fabricmc.fabric.impl.datafixer.fixes;
 
 import java.util.Objects;
 
-import com.google.common.collect.ImmutableMap;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFix;
 import com.mojang.datafixers.TypeRewriteRule;
@@ -27,7 +26,6 @@ import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TaggedChoice.TaggedChoiceType;
 import com.mojang.datafixers.util.Pair;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 import net.minecraft.datafixers.TypeReferences;
 
 /**
@@ -60,6 +58,7 @@ public class BlockEntityRenameFix extends DataFix {
 				String possiblyNamedString = this.rename(originalName);
 				Type<?> originalType = originalTypeChoice.types().get(originalName);
 				Type<?> newType = newTypeChoice.types().get(possiblyNamedString);
+
 				if (!newType.equals(originalType, true, true)) {
 					throw new IllegalStateException(String.format("Dynamic type check failed: %s not equal to %s", newType, originalType));
 				} else {

@@ -41,7 +41,6 @@ public class BiomeRenameFix extends DataFix {
 
 	@Override
 	protected TypeRewriteRule makeRule() {
-
 		// First we must get the type represented by the biome. We do this and get a NamedType in return
 		Type<Pair<String, String>> type_1 = DSL.named(TypeReferences.BIOME.typeName(), DSL.namespacedString());
 

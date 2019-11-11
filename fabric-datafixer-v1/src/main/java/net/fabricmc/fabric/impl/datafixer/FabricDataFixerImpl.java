@@ -16,6 +16,15 @@
 
 package net.fabricmc.fabric.impl.datafixer;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixUtils;
@@ -24,24 +33,17 @@ import com.mojang.datafixers.Dynamic;
 import com.mojang.datafixers.schemas.Schema;
 import com.mojang.datafixers.types.Type;
 import com.mojang.datafixers.types.templates.TypeTemplate;
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.SharedConstants;
+
 import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
 import net.minecraft.datafixers.Schemas;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import net.minecraft.SharedConstants;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
+import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
+import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricDataFixerImpl implements DataFixerHelper {
 	public static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
@@ -73,7 +75,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 
 		Schema schema = dataFixer.getSchema(DataFixUtils.makeKey(schemaVersion));
 
-		if(schema == null){
+		if (schema == null) {
 			throw new IllegalArgumentException("DataFixer does not contain a Schema with a version of " + schemaVersion);
 		}
 
@@ -83,13 +85,14 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	@Override
 	public DataFixer getDataFixer(String modid) {
 		DataFixerEntry entry = modFixers.get(modid);
-		if(entry != null) {
+
+		if (entry != null) {
 			return entry.modFixer;
 		}
 
 		throw new IllegalArgumentException("No DataFixer is registered to " + modid);
 	}
-	
+
 	/**
 	 * Registers a DataFixer to be used to automatically fix types when CompoundTags are loaded.
 	 */
@@ -98,7 +101,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 		Preconditions.checkNotNull(modid, "modid cannot be null");
 		Preconditions.checkArgument(runtimeDataVersion >= 0, "dataVersion cannot be lower than 0");
 
-		if(isLocked()) {
+		if (isLocked()) {
 			throw new UnsupportedOperationException("Failed to register DataFixer for " + modid + ", registration is locked.");
 		}
 
@@ -118,6 +121,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 
 			currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
 		}
+
 		return currentTag;
 	}
 
@@ -130,19 +134,20 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	 * @deprecated for implementation only.
 	 */
 	public void lock() {
-		if(!locked) {
+		if (!locked) {
 			LOGGER.info("[Fabric-DataFixer] Locked DataFixer registration");
 		}
+
 		this.locked = true;
 	}
 
 	private static Schema createSchema() {
 		List<DataFixerEntrypoint> entrypoints = FabricLoader.getInstance().getEntrypoints("fabric:datafixer", DataFixerEntrypoint.class);
 		Schema schema = new Schema(0, VanillaDataFixers.VANILLA_DATAFIXER_FUNCTION.apply(-1, null)) {
-
 			@Override
 			public void registerTypes(Schema schema, Map<String, Supplier<TypeTemplate>> entityTypes, Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
 				super.registerTypes(schema, entityTypes, blockEntityTypes);
+
 				for (DataFixerEntrypoint entrypoint : entrypoints) {
 					entrypoint.registerTypes(schema, entityTypes, blockEntityTypes);
 				}
@@ -155,6 +160,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 				for (DataFixerEntrypoint entrypoint : entrypoints) {
 					entrypoint.registerBlockEntities(schema, map);
 				}
+
 				return map;
 			}
 
@@ -165,6 +171,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 				for (DataFixerEntrypoint entrypoint : entrypoints) {
 					entrypoint.registerEntities(schema, map);
 				}
+
 				return map;
 			}
 		};

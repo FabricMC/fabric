@@ -28,20 +28,17 @@ import net.fabricmc.fabric.impl.datafixer.TypeRefHelperImpl;
 /**
  * A helper which deals with registering Entities and BlockEntities along with registering their custom elements to be fixed.
  *
- * <p>
- *     This should be used inside of a {@link DataFixerEntrypoint} when registering an (block)entity or TypeReferences, otherwise issues occur with other DataFixers having no access your (block)entities, causing some DataFixes to fail.
- * </p>
- *
+ * <p>This should be used inside of a {@link DataFixerEntrypoint} when registering an (block)entity or TypeReferences, otherwise issues occur with other DataFixers having no access your (block)entities, causing some DataFixes to fail.
  * These types only apply the singular transformation, so any custom elements will have to be added manually via {@link DSL#fields(String, TypeTemplate)} or {@link DSL#optionalFields(String, TypeTemplate)}
  */
 public interface TypeReferenceHelper {
 	/**
-	 * Gets the instance of the {@link TypeReferenceHelper}
+	 * Gets the instance of the {@link TypeReferenceHelper}.
 	 */
-	static final TypeReferenceHelper HELPER = TypeRefHelperImpl.INSTANCE;
+	TypeReferenceHelper HELPER = TypeRefHelperImpl.INSTANCE;
 
 	/**
-	 * Registers a type with a <quote>inTile</quote> element.
+	 * Registers a type with a inTile element.
 	 * @param schema The Schema to register this Type to.
 	 * @param typeMap The Map of all other TypeTemplates within the Schema.
 	 * @param name The name of the type being registered.
