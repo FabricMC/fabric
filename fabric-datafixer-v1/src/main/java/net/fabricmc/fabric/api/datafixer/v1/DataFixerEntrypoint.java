@@ -24,6 +24,9 @@ import java.util.function.Supplier;
 
 /**
  * Represents an Entrypoint used to register Entities, BlockEntities and TypeReferences for use in DataFixers.
+ *
+ * Why this instead of just registering the TypeReferences and (Block)Entities straight onto your Schemas? The main issues is one mod cannot access another mod's DataFixer's TypeReference.
+ * So you must register that reference to the DataFixers you wish to be able to fix that type.
  */
 public interface DataFixerEntrypoint {
 	/**

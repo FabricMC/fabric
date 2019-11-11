@@ -60,6 +60,9 @@ import java.util.function.BiFunction;
  * <p>If you need more help, see the wiki article here: https://fabricmc.net/wiki/datafixer_tutorial:start or visit the Fabric Discord server.
  */
 public interface DataFixerHelper {
+	/**
+	 * Gets the instance of the {@link DataFixerHelper}
+	 */
 	static final DataFixerHelper INSTANCE = FabricDataFixerImpl.INSTANCE;
 
 	/**
@@ -91,7 +94,7 @@ public interface DataFixerHelper {
 	int getModDataVersion(CompoundTag compoundTag, String modid);
 
 	/**
-	 * Gets a Type for use in creating a BlockEntity.
+	 * Gets a Type for use in creating a (Block)Entity.
 	 * @param dataFixer The DataFixer to get the Type from.
 	 * @param schemaVersion The Schema version where the type is registered
 	 * @param typeReference The TypeReference of the Type.
@@ -104,7 +107,7 @@ public interface DataFixerHelper {
 
 	/**
 	 * Checks if Fabric is allowing any more DataFixers to be registered.
-	 * @return true if registration is locked.
+	 * @return true if registration is locked, otherwise false.
 	 */
 	boolean isLocked();
 }

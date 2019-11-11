@@ -25,24 +25,22 @@ import net.minecraft.datafixers.schemas.SchemaIdentifierNormalize;
 
 
 /**
- * This class allows quick access to common Schema types used in the game.
+ * This allows quick access to common Schema types used in the game.
  */
-public final class FabricSchemas {
-	private FabricSchemas() {}
-
+public interface FabricSchemas {
 	/**
-	 * Fabric Schema Type. This is required for all custom DataFixers or fixing will fail. This should be registered under version 0 within your DataFixer.
+	 * Fabric Schema Type. This is required for all custom DataFixers or fixing any data registered under {@link net.minecraft.datafixers.TypeReferences} will fail. This should be registered under version 0 within your DataFixer.
 	 */
-	public static final BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = (version, parent) -> FabricDataFixerImpl.INSTANCE.fabricSchema;
+	static final BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = (version, parent) -> FabricDataFixerImpl.INSTANCE.fabricSchema;
 
 	/**
 	 * Identifier Normalize Schema. 
 	 */
-	public static final BiFunction<Integer, Schema, Schema> IDENTIFIER_NORMALIZE_SCHEMA = SchemaIdentifierNormalize::new;
+	static final BiFunction<Integer, Schema, Schema> IDENTIFIER_NORMALIZE_SCHEMA = SchemaIdentifierNormalize::new;
 
 	/**
 	 * Empty Schema. Nothing special just an empty Schema.
 	 * @see Schema
 	 */
-	public static final BiFunction<Integer, Schema, Schema> EMPTY_SCHEMA = Schema::new;
+	static final BiFunction<Integer, Schema, Schema> EMPTY_SCHEMA = Schema::new;
 }

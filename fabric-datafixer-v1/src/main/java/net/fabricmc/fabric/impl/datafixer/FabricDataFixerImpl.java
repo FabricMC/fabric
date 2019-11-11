@@ -138,7 +138,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 
 	private static Schema createSchema() {
 		List<DataFixerEntrypoint> entrypoints = FabricLoader.getInstance().getEntrypoints("fabric:datafixer", DataFixerEntrypoint.class);
-		Schema schema = new Schema(0, VanillaDataFixer.VANILLA_DATAFIXER_FUNCTION.apply(-1, null)) {
+		Schema schema = new Schema(0, VanillaDataFixers.VANILLA_DATAFIXER_FUNCTION.apply(-1, null)) {
 
 			@Override
 			public void registerTypes(Schema schema, Map<String, Supplier<TypeTemplate>> entityTypes, Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
@@ -187,7 +187,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	/**
 	 * Represents Minecraft's Built in DataFixer.
 	 */
-	public static final class VanillaDataFixer {
+	public static final class VanillaDataFixers {
 		private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
 		private static final int LATEST_VANILLA_SCHEMA_VERSION = DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion());
 

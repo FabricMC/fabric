@@ -26,13 +26,16 @@ import net.fabricmc.fabric.impl.datafixer.FabricSimpleFixes;
 import net.minecraft.nbt.Tag;
 
 /**
- * This class contains several common datafixes modders would use.
+ * This class contains several common datafixes mod would use to fix some simple data types.
  *
  * <p>
  *
  * </p>
  */
 public interface SimpleFixes {
+	/**
+	 * Gets the instance of the {@link SimpleFixes}
+	 */
 	static final SimpleFixes INSTANCE = FabricSimpleFixes.INSTANCE;
 
 	/**
