@@ -20,12 +20,10 @@ package net.fabricmc.fabric.impl.container;
  * This is a interface that is present on a ServerPlayerEntity, it allows access to the sync id.
  */
 public interface ServerPlayerEntitySyncHook {
-
 	/**
-	 * gets and sets the new player sync id, and returns the new value
+	 * Gets and sets the new player sync id, and returns the new value.
 	 *
 	 * @return the new sync id of the player
 	 */
 	int fabric_incrementSyncId();
-
 }

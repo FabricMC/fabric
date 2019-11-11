@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.registry",
+  "package": "net.fabricmc.fabric.mixin.registry.sync",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinBootstrap",

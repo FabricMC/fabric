@@ -16,25 +16,29 @@
 
 package net.fabricmc.fabric.api.tag;
 
-import net.fabricmc.fabric.impl.tag.TagDelegate;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.function.Supplier;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tag.*;
+import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.EntityTypeTags;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.tag.ItemTags;
+import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagContainer;
 import net.minecraft.util.Identifier;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.function.Supplier;
+import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
 
 /**
  * Helper methods for registering Tags.
  */
 public final class TagRegistry {
-	private TagRegistry() {
-
-	}
+	private TagRegistry() { }
 
 	public static <T> Tag<T> create(Identifier id, Supplier<TagContainer<T>> containerSupplier) {
 		return new TagDelegate<T>(id, null) {
@@ -43,6 +47,7 @@ public final class TagRegistry {
 			@Override
 			protected void onAccess() {
 				TagContainer<T> currContainer = containerSupplier.get();
+
 				if (container != currContainer) {
 					container = currContainer;
 					delegate = container.getOrCreate(this.getId());

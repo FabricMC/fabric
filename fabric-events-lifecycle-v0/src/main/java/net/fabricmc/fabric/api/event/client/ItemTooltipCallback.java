@@ -16,24 +16,23 @@
 
 package net.fabricmc.fabric.api.event.client;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import java.util.List;
+
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
-import java.util.List;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 public interface ItemTooltipCallback {
-
-	/** Fired after the game has appended all base tooltip lines to the list */
+	/** Fired after the game has appended all base tooltip lines to the list. */
 	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, (listeners) ->
-		(stack, tooltipContext, lines) -> {
-			for(ItemTooltipCallback callback : listeners){
-				callback.getTooltip(stack, tooltipContext, lines);
-			}
+			(stack, tooltipContext, lines) -> {
+		for (ItemTooltipCallback callback : listeners) {
+			callback.getTooltip(stack, tooltipContext, lines);
 		}
-	);
+	});
 
 	/**
 	 * Called when an item stack's tooltip is rendered. Text added to {@code lines} will be
@@ -41,5 +40,4 @@ public interface ItemTooltipCallback {
 	 * @param lines the list containing the lines of text displayed on the stack's tooltip
 	 */
 	void getTooltip(ItemStack stack, TooltipContext tooltipContext, List<Text> lines);
-
 }

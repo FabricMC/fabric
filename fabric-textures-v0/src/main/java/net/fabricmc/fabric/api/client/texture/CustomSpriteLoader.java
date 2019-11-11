@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.client.texture;
 
-import net.minecraft.resource.ResourceManager;
-
 import java.io.IOException;
+
+import net.minecraft.resource.ResourceManager;
 
 /**
  * Implement this interface on a Sprite to use a custom loading process instead

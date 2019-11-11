@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.api.tools;
 
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.tag.TagRegistry;
 
 /**
  * Tool item tags provided by Fabric.
@@ -31,9 +32,7 @@ public class FabricToolTags {
 	public static final Tag<Item> SHOVELS = register("shovels");
 	public static final Tag<Item> SWORDS = register("swords");
 
-	private FabricToolTags() {
-
-	}
+	private FabricToolTags() { }
 
 	private static Tag<Item> register(String id) {
 		return TagRegistry.item(new Identifier("fabric", id));

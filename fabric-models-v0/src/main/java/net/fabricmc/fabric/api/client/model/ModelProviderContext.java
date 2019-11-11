@@ -26,8 +26,8 @@ import net.minecraft.util.Identifier;
 public interface ModelProviderContext {
 	/**
 	 * Load a model using a {@link Identifier}, {@link ModelIdentifier}, ...
-	 * <p>
-	 * Please note that the game engine keeps track of circular model loading calls on its own.
+	 *
+	 * <p>Please note that the game engine keeps track of circular model loading calls on its own.
 	 *
 	 * @param id The model identifier.
 	 * @return The UnbakedModel. Can return a missing model if it's not present!

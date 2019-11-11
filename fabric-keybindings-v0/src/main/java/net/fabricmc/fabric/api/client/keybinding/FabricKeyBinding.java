@@ -16,15 +16,16 @@
 
 package net.fabricmc.fabric.api.client.keybinding;
 
-import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
+
 /**
  * Expanded version of {@link KeyBinding} for use by Fabric mods.
- * <p>
- * *ALL* instantiated FabricKeyBindings should be registered in
+ *
+ * <p>*ALL* instantiated FabricKeyBindings should be registered in
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!
  */
 public class FabricKeyBinding extends KeyBinding {

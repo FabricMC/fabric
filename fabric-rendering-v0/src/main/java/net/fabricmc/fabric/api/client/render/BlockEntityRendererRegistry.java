@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.client.render;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Helper class for registering BlockEntityRenderers.
@@ -31,9 +31,7 @@ public class BlockEntityRendererRegistry {
 	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderers = null;
 	private Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> renderersTmp = new HashMap<>();
 
-	private BlockEntityRendererRegistry() {
-
-	}
+	private BlockEntityRendererRegistry() { }
 
 	public void initialize(BlockEntityRenderDispatcher instance, Map<Class<? extends BlockEntity>, BlockEntityRenderer<? extends BlockEntity>> map) {
 		if (renderers != null && renderers != map) {
@@ -45,9 +43,11 @@ public class BlockEntityRendererRegistry {
 		}
 
 		renderers = map;
+
 		for (BlockEntityRenderer renderer : renderersTmp.values()) {
 			renderer.setRenderManager(instance);
 		}
+
 		renderers.putAll(renderersTmp);
 		renderersTmp = null;
 	}

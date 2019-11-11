@@ -21,27 +21,26 @@ import net.minecraft.util.Identifier;
 
 /**
  * Interface for model resource providers.
- * <p>
- * Model resource providers hook the loading of model *files* from the resource tree;
+ *
+ * <p>Model resource providers hook the loading of model *files* from the resource tree;
  * that is, in vanilla, it handles going from "minecraft:block/stone" to a
  * "assets/minecraft/models/block/stone.json" file.
- * <p>
- * This is where you want to add your own custom model formats.
- * <p>
- * As providers are instantiated with a new provider, it is safe
+ *
+ * <p>This is where you want to add your own custom model formats.
+ *
+ * <p>As providers are instantiated with a new provider, it is safe
  * (and recommended!) to cache information inside a loader.
- * <p>
- * Keep in mind that only *one* ModelResourceProvider may respond to a given model
+ *
+ * <p>Keep in mind that only *one* ModelResourceProvider may respond to a given model
  * at any time. If you're writing, say, an OBJ loader, this means you could
  * easily conflict with another OBJ loader unless you take some precautions,
  * for example:
- * <p>
- * a) Only load files with a mod-suffixed name, such as .architect.obj,
- * b) Only load files from an explicit list of namespaces, registered elsewhere.
+ *
+ * <ul><li>Only load files with a mod-suffixed name, such as .architect.obj,
+ * <li>Only load files from an explicit list of namespaces, registered elsewhere.</ul>
  */
 @FunctionalInterface
 public interface ModelResourceProvider {
-
 	/**
 	 * @param resourceId The resource identifier to be loaded.
 	 * @return The loaded UnbakedModel, or null if this ModelResourceProvider doesn't handle a specific Identifier

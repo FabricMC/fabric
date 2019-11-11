@@ -21,7 +21,5 @@ import net.minecraft.container.Container;
 
 @FunctionalInterface
 public interface ContainerScreenFactory<C extends Container> {
-
 	AbstractContainerScreen create(C container);
-
 }

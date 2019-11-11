@@ -2,6 +2,7 @@
 .gradle
 
 # Eclipse
+.checkstyle
 .classpath
 .metadata
 .settings
@@ -20,6 +21,7 @@ bin/
 build/
 jars/
 out/
+classes/
 
 # Debug artifacts
 run
