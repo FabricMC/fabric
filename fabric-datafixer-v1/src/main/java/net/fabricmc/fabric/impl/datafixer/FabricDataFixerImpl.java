@@ -25,6 +25,9 @@ import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.message.Message;
+import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.SimpleMessage;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DSL;
 import com.mojang.datafixers.DataFixUtils;
@@ -38,7 +41,6 @@ import net.minecraft.datafixers.DataFixTypes;
 import net.minecraft.datafixers.NbtOps;
 import net.minecraft.datafixers.Schemas;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.SharedConstants;
 
 import net.fabricmc.fabric.api.datafixer.v1.DataFixerEntrypoint;
@@ -46,7 +48,22 @@ import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricDataFixerImpl implements DataFixerHelper {
-	public static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
+	public static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer", new MessageFactory() {
+		@Override
+		public Message newMessage(Object message) {
+			return new SimpleMessage("[Fabric-DataFixer] " + message);
+		}
+
+		@Override
+		public Message newMessage(String message) {
+			return new SimpleMessage("[Fabric-DataFixer] ");
+		}
+
+		@Override
+		public Message newMessage(String message, Object... params) {
+			return new SimpleMessage("[Fabric-DataFixer] " + params);
+		}
+	});
 	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
 	public final Schema fabricSchema;
 	private final Map<String, DataFixerEntry> modFixers = new HashMap<>();
@@ -87,15 +104,12 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 		DataFixerEntry entry = modFixers.get(modid);
 
 		if (entry != null) {
-			return entry.modFixer;
+			return entry.dataFixer;
 		}
 
 		throw new IllegalArgumentException("No DataFixer is registered to " + modid);
 	}
 
-	/**
-	 * Registers a DataFixer to be used to automatically fix types when CompoundTags are loaded.
-	 */
 	@Override
 	public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer) {
 		Preconditions.checkNotNull(modid, "modid cannot be null");
@@ -105,21 +119,23 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 			throw new UnsupportedOperationException("Failed to register DataFixer for " + modid + ", registration is locked.");
 		}
 
-		LOGGER.info("[Fabric-DataFixer] Registered DataFixer for " + modid);
+		LOGGER.info("Registered DataFixer for " + modid);
 		modFixers.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
 
 		return datafixer;
 	}
 
 	public CompoundTag updateWithAllFixers(DataFixTypes dataFixTypes, CompoundTag compoundTag) {
+		LOGGER.debug("DataFixing a CompoundTag");
 		CompoundTag currentTag = compoundTag;
 
 		for (Entry<String, DataFixerEntry> entry : modFixers.entrySet()) {
 			String currentModid = entry.getKey();
+			LOGGER.debug("Fixing Data for " + currentModid);
 			int modidCurrentDynamicVersion = getModDataVersion(compoundTag, currentModid);
 			DataFixerEntry dataFixerEntry = entry.getValue();
 
-			currentTag = (CompoundTag) dataFixerEntry.modFixer.update(dataFixTypes.getTypeReference(), new Dynamic<Tag>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
+			currentTag = (CompoundTag) dataFixerEntry.dataFixer.update(dataFixTypes.getTypeReference(), new Dynamic<>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
 		}
 
 		return currentTag;
@@ -135,20 +151,23 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	 */
 	public void lock() {
 		if (!locked) {
-			LOGGER.info("[Fabric-DataFixer] Locked DataFixer registration");
+			LOGGER.info("Locked DataFixer registration");
 		}
 
 		this.locked = true;
 	}
 
 	private static Schema createSchema() {
+		LOGGER.debug("Creating Fabric Schema Type");
 		List<DataFixerEntrypoint> entrypoints = FabricLoader.getInstance().getEntrypoints("fabric:datafixer", DataFixerEntrypoint.class);
-		Schema schema = new Schema(0, VanillaDataFixers.VANILLA_DATAFIXER_FUNCTION.apply(-1, null)) {
+		LOGGER.debug("Found " + entrypoints.size() + " entrypoints.");
+		Schema schema = new Schema(0, VanillaDataFixers.VANILLA_DATAFIXER.apply(-1, null)) {
 			@Override
 			public void registerTypes(Schema schema, Map<String, Supplier<TypeTemplate>> entityTypes, Map<String, Supplier<TypeTemplate>> blockEntityTypes) {
 				super.registerTypes(schema, entityTypes, blockEntityTypes);
 
 				for (DataFixerEntrypoint entrypoint : entrypoints) {
+					LOGGER.debug("Registering types from " + entrypoint.getClass().getCanonicalName());
 					entrypoint.registerTypes(schema, entityTypes, blockEntityTypes);
 				}
 			}
@@ -158,6 +177,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 				Map<String, Supplier<TypeTemplate>> map = super.registerBlockEntities(schema);
 
 				for (DataFixerEntrypoint entrypoint : entrypoints) {
+					LOGGER.debug("Registering BlockEntities from " + entrypoint.getClass().getCanonicalName());
 					entrypoint.registerBlockEntities(schema, map);
 				}
 
@@ -169,6 +189,7 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 				Map<String, Supplier<TypeTemplate>> map = super.registerEntities(schema);
 
 				for (DataFixerEntrypoint entrypoint : entrypoints) {
+					LOGGER.debug("Registering Entities from " + entrypoint.getClass().getCanonicalName());
 					entrypoint.registerEntities(schema, map);
 				}
 
@@ -182,11 +203,11 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	 * An Entry which stores DataFixers for use by implementation.
 	 */
 	final class DataFixerEntry {
-		private final DataFixer modFixer;
+		private final DataFixer dataFixer;
 		private final int runtimeDataVersion;
 
 		DataFixerEntry(DataFixer fix, int runtimeDataVersion) {
-			this.modFixer = fix;
+			this.dataFixer = fix;
 			this.runtimeDataVersion = runtimeDataVersion;
 		}
 	}
@@ -195,13 +216,12 @@ public final class FabricDataFixerImpl implements DataFixerHelper {
 	 * Represents Minecraft's Built in DataFixer.
 	 */
 	public static final class VanillaDataFixers {
-		private static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer");
 		private static final int LATEST_VANILLA_SCHEMA_VERSION = DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion());
 
 		static {
-			LOGGER.info("[Fabric-DataFixer] Started with MC-DFU version: " + LATEST_VANILLA_SCHEMA_VERSION);
+			LOGGER.info("Started with Vanilla-DataFixer version: " + LATEST_VANILLA_SCHEMA_VERSION);
 		}
 
-		public static final BiFunction<Integer, Schema, Schema> VANILLA_DATAFIXER_FUNCTION = (version, parent) -> Schemas.getFixer().getSchema(LATEST_VANILLA_SCHEMA_VERSION);
+		public static final BiFunction<Integer, Schema, Schema> VANILLA_DATAFIXER = (version, parent) -> Schemas.getFixer().getSchema(LATEST_VANILLA_SCHEMA_VERSION);
 	}
 }

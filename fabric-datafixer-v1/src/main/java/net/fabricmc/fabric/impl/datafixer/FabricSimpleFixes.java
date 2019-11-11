@@ -44,20 +44,21 @@ public final class FabricSimpleFixes implements SimpleFixes {
 	@Override
 	public void addBlockRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
 		validateFixArgs(builder, name, oldId, newId, schema);
-
+		FabricDataFixerImpl.LOGGER.debug("Added BlockRenameFix: " + name);
 		builder.addFixer(BlockNameFix.create(schema, name, (inputBlockName) -> Objects.equals(SchemaIdentifierNormalize.normalize(inputBlockName), oldId) ? newId : inputBlockName));
 	}
 
 	@Override
 	public void addItemRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
 		validateFixArgs(builder, name, oldId, newId, schema);
-
+		FabricDataFixerImpl.LOGGER.debug("Added ItemRenameFix: " + name);
 		builder.addFixer(FixItemName.create(schema, name, (inputItemName) -> Objects.equals(oldId, inputItemName) ? newId : inputItemName));
 	}
 
 	@Override
 	public void addEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
 		validateFixArgs(builder, name, oldId, newId, schema);
+		FabricDataFixerImpl.LOGGER.debug("Added EntityRenameFix: " + name);
 		builder.addFixer(new EntityRenameFix(name, schema, false) {
 			@Override
 			protected String rename(String inputName) {
@@ -72,6 +73,7 @@ public final class FabricSimpleFixes implements SimpleFixes {
 		checkNotNull(name, "name cannot be null");
 		checkNotNull(schema, "Schema cannot be null");
 		checkNotNull(builder, "DataFixerBuilder cannot be null");
+		FabricDataFixerImpl.LOGGER.debug("Added BiomeRenameFix: " + name);
 		builder.addFixer(new BiomeRenameFix(schema, false, name, changes));
 	}
 
@@ -81,6 +83,7 @@ public final class FabricSimpleFixes implements SimpleFixes {
 		checkNotNull(name, "name cannot be null");
 		checkNotNull(schema, "Schema cannot be null");
 		checkNotNull(builder, "DataFixerBuilder cannot be null");
+		FabricDataFixerImpl.LOGGER.debug("Added EntityTransformationFix: " + name);
 		builder.addFixer(new EntityTransformationFixWrapper(name, schema, false, transformation));
 	}
 
@@ -91,6 +94,7 @@ public final class FabricSimpleFixes implements SimpleFixes {
 		checkNotNull(blockEntityName, "BlockEntityName cannot be null");
 		checkNotNull(schema, "Schema cannot be null");
 		checkNotNull(builder, "DataFixerBuilder cannot be null");
+		FabricDataFixerImpl.LOGGER.debug("Added BlockEntityTransformationFix: " + name);
 		builder.addFixer(new BlockEntityTransformationFix(schema, name, blockEntityName, transformation));
 	}
 
@@ -100,7 +104,7 @@ public final class FabricSimpleFixes implements SimpleFixes {
 	@Override
 	public void addBlockEntityRenameFix(DataFixerBuilder builder, String name, String oldId, String newId, Schema schema) {
 		validateFixArgs(builder, name, oldId, newId, schema);
-
+		FabricDataFixerImpl.LOGGER.debug("Added BlockEntityRenameFix: " + name);
 		builder.addFixer(new BlockEntityRenameFix(schema, name, oldId, newId));
 	}
 

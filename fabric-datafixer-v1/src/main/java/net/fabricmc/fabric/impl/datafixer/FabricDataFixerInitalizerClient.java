@@ -25,8 +25,14 @@ import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 public final class FabricDataFixerInitalizerClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers (Block)Entities now. On client this is earlier so we place it here.
+		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers and register (Block)Entities and TypeReferences now. On client this is earlier so we place it here.
 		// The second the client is loaded we need to stop registration of DataFixers.
-		ClientTickCallback.EVENT.register(client -> FabricDataFixerImpl.INSTANCE.lock());
+		ClientTickCallback.EVENT.register(client -> {
+			if (!FabricDataFixerImpl.INSTANCE.isLocked()) {
+				FabricDataFixerImpl.LOGGER.debug("Locked Registration from Client");
+			}
+
+			FabricDataFixerImpl.INSTANCE.lock();
+		});
 	}
 }

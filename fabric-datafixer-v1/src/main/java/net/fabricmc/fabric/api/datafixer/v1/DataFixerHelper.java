@@ -53,7 +53,7 @@ import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
  *         First build the DataFixer using {@link com.mojang.datafixers.DataFixerBuilder#build(Executor)}. The executor should be {@link SystemUtil#getServerWorkerExecutor()}.
  *         Finally register the DataFixer using {@link DataFixerHelper#registerFixer(String, int, DataFixer)} so that the DataFixer is invoked when the game normally fixes any data.
  *
- * <p>If you need more help, see the wiki article here: https://fabricmc.net/wiki/datafixer_tutorial:start or visit the Fabric Discord server.
+ * <p>If you need more help, see the wiki article here: https://fabricmc.net/wiki/tutorial:datafixer or visit the Fabric Discord server.
  */
 public interface DataFixerHelper {
 	/**

@@ -24,7 +24,7 @@ import net.fabricmc.fabric.impl.datafixer.test.TestUtil;
 public final class FabricDataFixerInitalizerCommon implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers (Block)Entities now.
+		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers and register (Block)Entities and TypeReferences now.
 		/** -- Testing -- **/
 
 		TestObjects.create(); // Test Objects, remove before release.
@@ -33,6 +33,12 @@ public final class FabricDataFixerInitalizerCommon implements ModInitializer {
 		/** -- Testing -- **/
 
 		// Once the server has started, we need to stop registering DataFixers. This is for world save safety purposes.
-		ServerStartCallback.EVENT.register(server -> FabricDataFixerImpl.INSTANCE.lock());
+		ServerStartCallback.EVENT.register(server -> {
+			if (!FabricDataFixerImpl.INSTANCE.isLocked()) {
+				FabricDataFixerImpl.LOGGER.debug("Locked Registration from Server");
+			}
+
+			FabricDataFixerImpl.INSTANCE.lock();
+		});
 	}
 }

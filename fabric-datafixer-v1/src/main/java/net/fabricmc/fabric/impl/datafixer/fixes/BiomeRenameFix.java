@@ -49,9 +49,7 @@ public class BiomeRenameFix extends DataFix {
 			throw new IllegalStateException("Biome type is not what was expected.");
 		} else {
 			// Actual DataFixing stuff here. We go DynamicOps -> Pair -> Second element in pair. Then we check if the inputName is equal to any of the changed names. If it is, then we return the new name or return the old inputName.
-			return this.fixTypeEverywhere(name, type_1, (ops) -> (pair) -> pair.mapSecond((name) -> {
-				return changes.getOrDefault(name, name);
-			}));
+			return this.fixTypeEverywhere(name, type_1, (ops) -> (pair) -> pair.mapSecond((name) -> changes.getOrDefault(name, name)));
 		}
 	}
 }

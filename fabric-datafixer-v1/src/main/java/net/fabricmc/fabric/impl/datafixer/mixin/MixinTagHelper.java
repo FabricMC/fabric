@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 @Mixin(TagHelper.class)
 public class MixinTagHelper {
 	@Inject(at = @At("RETURN"), method = "update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/datafixers/DataFixTypes;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;", cancellable = true)
-	private static void updateModFixers(DataFixer vanillaDataFixer$unusued, DataFixTypes dataFixTypes, CompoundTag inputTag$unusued, int dynamicDataVersion$unusued, int runtimeDataVersion$unusued, CallbackInfoReturnable<CompoundTag> cir) {
+	private static void updateModFixers(DataFixer vanillaDataFixer, DataFixTypes dataFixTypes, CompoundTag inputTag$unusued, int vanillaDynamicDataVersion, int vanillaRuntimeDataVersion, CallbackInfoReturnable<CompoundTag> cir) {
 		CompoundTag original = cir.getReturnValue(); // We do our fixes after vanilla.
 		CompoundTag finalTag = FabricDataFixerImpl.INSTANCE.updateWithAllFixers(dataFixTypes, original);
 		cir.setReturnValue(finalTag);
