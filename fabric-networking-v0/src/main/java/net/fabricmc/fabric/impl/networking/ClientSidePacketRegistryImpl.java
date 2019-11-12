@@ -48,6 +48,14 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
+		if (PacketDebugOptions.WARN_UNREGISTERED_PACKETS && packet instanceof CustomPayloadC2SPacket) {
+			Identifier channel = ((CustomPayloadC2SPacketAccessor) packet).getChannel();
+
+			if (!canServerReceive(channel)) {
+				LOGGER.warn("Unregistered packet {} is sent to server!", channel);
+			}
+		}
+
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
 
 		if (handler != null) {
