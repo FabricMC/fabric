@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.networking;
 
 public final class PacketDebugOptions {
 	public static final boolean DISABLE_BUFFER_RELEASES = System.getProperty("fabric.networking.broken.disableBufferReleases", "false").equalsIgnoreCase("true");
+	public static final boolean WARN_UNREGISTERED_PACKETS = System.getProperty("fabric.networking.warnUnregisteredPackets", "true").equalsIgnoreCase("true");
 
 	private PacketDebugOptions() { }
 }

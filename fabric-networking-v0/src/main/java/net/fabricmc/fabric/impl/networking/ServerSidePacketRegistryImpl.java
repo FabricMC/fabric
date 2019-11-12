@@ -81,9 +81,17 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (!(player instanceof ServerPlayerEntity)) {
 			throw new RuntimeException("Can only send to ServerPlayerEntities!");
-		} else {
-			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, completionListener);
 		}
+
+		if (PacketDebugOptions.WARN_UNREGISTERED_PACKETS && packet instanceof CustomPayloadS2CPacket) {
+			Identifier channel = ((CustomPayloadS2CPacket) packet).getChannel();
+
+			if (!canPlayerReceive(player, channel)) {
+				LOGGER.warn("Unregistered packet {} is sent to client!", channel);
+			}
+		}
+
+		((ServerPlayerEntity) player).networkHandler.sendPacket(packet, completionListener);
 	}
 
 	@Override
