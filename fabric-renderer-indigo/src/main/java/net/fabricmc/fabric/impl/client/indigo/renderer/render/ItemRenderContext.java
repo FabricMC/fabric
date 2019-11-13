@@ -90,8 +90,8 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.itemStack = stack;
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
-		this.matrix = matrixStack.method_23760().method_23761();
-		this.normalMatrix = matrixStack.method_23760().method_23762();
+		this.matrix = matrixStack.peek().getModel();
+		this.normalMatrix = matrixStack.peek().getNormal();
 		this.overlay = overlay;
 
 		this.vanillaHandler = vanillaHandler;

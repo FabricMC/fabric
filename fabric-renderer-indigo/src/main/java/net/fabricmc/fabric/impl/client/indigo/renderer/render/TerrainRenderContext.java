@@ -96,8 +96,8 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 
 	/** Called from chunk renderer hook. */
 	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
-		this.matrix = matrixStack.method_23760().method_23761();
-		this.normalMatrix = matrixStack.method_23760().method_23762();
+		this.matrix = matrixStack.peek().getModel();
+		this.normalMatrix = matrixStack.peek().getNormal();
 
 		try {
 			aoCalc.clear();

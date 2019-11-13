@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.4.11"
-	static def mcVersion = "19w45b"
+	static def baseVersion = "0.4.12"
+	static def mcVersion = "19w46a"
 	static def yarnVersion = "+build.1"
 }
 

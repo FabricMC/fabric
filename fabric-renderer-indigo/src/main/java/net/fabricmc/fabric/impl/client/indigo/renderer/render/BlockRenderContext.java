@@ -80,8 +80,8 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		this.vanillaRenderer = vanillaRenderer;
 		this.bufferBuilder = buffer;
 		this.matrixStack = matrixStack;
-		this.matrix = matrixStack.method_23760().method_23761();
-		this.normalMatrix = matrixStack.method_23760().method_23762();
+		this.matrix = matrixStack.peek().getModel();
+		this.normalMatrix = matrixStack.peek().getNormal();
 
 		this.seed = seed;
 		this.overlay = overlay;
