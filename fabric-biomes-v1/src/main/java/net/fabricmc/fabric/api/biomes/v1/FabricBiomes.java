@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.biomes.v1;
 
 import net.minecraft.world.biome.Biome;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * General API that applies to all biome sources.

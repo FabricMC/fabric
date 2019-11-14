@@ -22,7 +22,7 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.server.command.ServerCommandSource;
 
-import net.fabricmc.fabric.impl.registry.CommandRegistryImpl;
+import net.fabricmc.fabric.impl.command.CommandRegistryImpl;
 
 /**
  * Registry for server-side command providers.

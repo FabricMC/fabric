@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 import net.fabricmc.fabric.api.server.PlayerStream;
-import net.fabricmc.fabric.impl.network.ServerSidePacketRegistryImpl;
+import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 
 /**
  * The server-side packet registry.

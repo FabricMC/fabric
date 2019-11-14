@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 
-import net.fabricmc.fabric.impl.resources.ResourceManagerHelperImpl;
+import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 
 /**
  * Helper for working with {@link ResourceManager} instances.

@@ -27,7 +27,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.entity.FabricEntityType;
+import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 
 /**
  * Extended version of {@link EntityType.Builder} with added registration for

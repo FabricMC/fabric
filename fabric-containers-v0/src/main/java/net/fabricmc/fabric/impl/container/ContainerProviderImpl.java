@@ -33,7 +33,7 @@ import net.minecraft.util.PacketByteBuf;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.impl.network.PacketTypes;
+import net.fabricmc.fabric.impl.networking.PacketTypes;
 import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 
 public class ContainerProviderImpl implements ContainerProviderRegistry {

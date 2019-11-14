@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import net.minecraft.loot.entry.LootEntry;
 
-import net.fabricmc.fabric.impl.loot.LootEntryTypeRegistryImpl;
+import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
 
 /**
  * Fabric's extensions to {@code net.minecraft.loot.entry.LootEntries} for registering

@@ -29,7 +29,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import net.fabricmc.fabric.mixin.EntityHooks;
+import net.fabricmc.fabric.mixin.dimension.EntityHooks;
 
 public final class FabricDimensionInternals {
 	private FabricDimensionInternals() {

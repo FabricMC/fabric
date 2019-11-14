@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin",
+  "package": "net.fabricmc.fabric.mixin.dimension",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EntityHooks",

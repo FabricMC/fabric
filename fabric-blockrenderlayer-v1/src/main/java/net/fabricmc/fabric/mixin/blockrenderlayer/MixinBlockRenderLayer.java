@@ -28,18 +28,16 @@ import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 
 @Mixin(RenderLayers.class)
 public class MixinBlockRenderLayer {
 	@Shadow private static Map<Block, RenderLayer> BLOCKS;
-	@Shadow private static Map<Item, RenderLayer> ITEMS;
 	@Shadow private static Map<Fluid, RenderLayer> FLUIDS;
 
 	@Inject(method = "<clinit>*", at = @At("RETURN"))
 	private static void onInitialize(CallbackInfo info) {
-		BlockRenderLayerMapImpl.initialize(BLOCKS::put, ITEMS::put, FLUIDS::put);
+		BlockRenderLayerMapImpl.initialize(BLOCKS::put, FLUIDS::put);
 	}
 }

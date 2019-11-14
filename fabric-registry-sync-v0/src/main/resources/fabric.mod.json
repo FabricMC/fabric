@@ -26,7 +26,7 @@
   ],
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.impl.registry.FabricRegistryClientInit"
+      "net.fabricmc.fabric.impl.registry.sync.FabricRegistryClientInit"
     ]
   }
 }

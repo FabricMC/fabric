@@ -27,7 +27,7 @@
   ],
   "entrypoints": {
     "client": [
-      "net.fabricmc.indigo.Indigo"
+      "net.fabricmc.fabric.impl.client.indigo.Indigo"
     ]
   }
 }

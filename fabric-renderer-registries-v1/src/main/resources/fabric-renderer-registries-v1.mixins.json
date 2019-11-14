@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.client.rendereregistry",
+  "package": "net.fabricmc.fabric.mixin.client.renderer.registry",
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinBlockEntityRenderDispatcher",

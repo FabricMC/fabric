@@ -1,8 +1,8 @@
 {
   "required": true,
-  "package": "net.fabricmc.indigo.renderer.mixin",
+  "package": "net.fabricmc.fabric.mixin.client.indigo.renderer",
   "compatibilityLevel": "JAVA_8",
-  "plugin": "net.fabricmc.indigo.IndigoMixinConfigPlugin",
+  "plugin": "net.fabricmc.fabric.impl.client.indigo.IndigoMixinConfigPlugin",
   "mixins": [
   ],
   "client": [

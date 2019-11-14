@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
-import net.fabricmc.fabric.impl.registry.RemapException;
+import net.fabricmc.fabric.impl.registry.sync.RemapException;
 
 public class DimensionRemapException extends RuntimeException {
 	public DimensionRemapException(String message, RemapException cause) {

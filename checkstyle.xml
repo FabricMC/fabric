@@ -15,19 +15,19 @@
 	<!-- note: RegexpMultiline shows nicer messages than Regexp, but has to be outside TreeWalker -->
 	<!-- disallow multiple consecutive blank lines -->
 	<module name="RegexpMultiline">
-		<property name="format" value="\n[\r\t ]*\n[\r\t ]*\n"/>
+		<property name="format" value="\n[\t ]*\r?\n[\t ]*\r?\n"/>
 		<property name="message" value="adjacent blank lines"/>
 	</module>
 
 	<!-- disallow blank after { -->
 	<module name="RegexpMultiline">
-		<property name="format" value="\{[\r\t ]*\n[\r\t ]*\n"/>
+		<property name="format" value="\{[\t ]*\r?\n[\t ]*\r?\n"/>
 		<property name="message" value="blank line after '{'"/>
 	</module>
 
 	<!-- disallow blank before } -->
 	<module name="RegexpMultiline">
-		<property name="format" value="\n[\r\t ]*\n[\r\t ]*\}"/>
+		<property name="format" value="\n[\t ]*\r?\n[\t ]*\}"/>
 		<property name="message" value="blank line before '}'"/>
 	</module>
 
@@ -47,14 +47,14 @@
 		- <indentation> as captured earlier
 		- <control statement> as specified above
 		- { before the next new line -->
-		<property name="format" value="(?&lt;=\n)([\t]+)(?:[^/\n \t][^\n]*|/[^/\n][^\n]*|[^/\n][^\n]*(\n\1//[^\n]*)+)\n\1(|(if|do|while|for|try)[^\n]+)\{[\r\t ]*\n"/>
+		<property name="format" value="(?&lt;=\n)([\t]+)(?:[^/\r\n \t][^\r\n]*|/[^/\r\n][^\r\n]*|[^/\r\n][^\r\n]*(\r?\n\1//[^\r\n]*)+)\r?\n\1(|(if|do|while|for|try)[^\r\n]+)\{[\t ]*\r?\n"/>
 		<property name="message" value="missing blank line before block at same indentation level"/>
 	</module>
 
 	<!-- require blank after } in the same indentation level -->
 	<module name="RegexpMultiline">
 		<!-- \n<indentation>}\n<same indentation><whatever unless newline, '}' or starting with cas(e) or def(ault)> -->
-		<property name="format" value="(?&lt;=\n)([\t]+)\}\n\1(?:[^\r\n\}cd]|c[^\r\na]|ca[^\r\ns]|d[^\r\ne]|de[^\r\nf])"/>
+		<property name="format" value="(?&lt;=\n)([\t]+)\}\r?\n\1(?:[^\r\n\}cd]|c[^\r\na]|ca[^\r\ns]|d[^\r\ne]|de[^\r\nf])"/>
 		<property name="message" value="missing blank line after block at same indentation level"/>
 	</module>
 
@@ -151,6 +151,41 @@
 		</module>
 
 		<module name="OuterTypeFilename"/>
+		<module name="PackageDeclaration"/>
+		<module name="PackageName">
+			<!-- require a package following the following structure:
+			base package name: net.fabricmc.fabric
+			+ api/implementation/mixin subpackage: api/impl/mixin
+			+ client/dedicated server/common env subpackage: client/server/<nothing>
+			+ module name subpackage, singular, may contain multiple .-separated parts
+			+ api only: module major version with v prefix (e.g. v1)
+			+ other subpackages as needed, all singular
+
+			The regex works as follows:
+			It matches (=succeeds) for one of these cases:
+			- net.fabricmc.fabric.api.client.<module-name>.v<version>[.<extra packages...>]
+			- net.fabricmc.fabric.api.server.<module-name>.v<version>[.<extra packages...>]
+			- net.fabricmc.fabric.api.<module-name>.v<version>[.<extra packages...>]
+			- net.fabricmc.fabric.(impl|mixin).client.<module-name>[.<extra packages...>]
+			- net.fabricmc.fabric.(impl|mixin).server.<module-name>[.<extra packages...>]
+			- net.fabricmc.fabric.(impl|mixin).<module-name>[.<extra packages...>]
+			- <any legacy package>
+			where <module-name> is a set of '.'-separated words, all in singular (not ending with s)
+			and <version> is a positive integer (1, 2, 3, ...)
+			and <extra packages...> is a set of '.'-separated words with all the first potentially containing digits.
+			Negative lookahead ensures that client/server can't be replaced with common disguised as the module name.
+
+			The regex is implemented in 3 parts:
+			- the net.fabricmc.fabric. prefix
+			- patterns for
+				- api packages: api + <not common> + client/server/nothing + <module-name> + 'v' + <version>
+				- impl+mixin packages : impl/mixin + <not common> + client/server/nothing + <module-name>
+				- literal legacy packages (exceptions)
+			- largely unconstained trailing subpackages
+			-->
+			<property name="format"
+			value="^net\.fabricmc\.fabric\.(api(?!\.common\.)(\.client|\.server|)(\.[a-z]+[a-rt-z])+\.v[1-9][0-9]*|(impl|mixin)(?!\.common\.)(\.client|\.server|)(\.[a-z]+[a-rt-z])+|api\.(event|util|biomes\.v1|registry|client\.screen|container|block|entity|client\.itemgroup|client\.keybinding|tag|tools|client\.model|network|server|client\.render|resource|client\.texture))(|\.[a-z]+(\.[a-z0-9]+)*)$"/>
+		</module>
 
 		<!--<module name="InvalidJavadocPosition"/>-->
 		<module name="JavadocParagraph"/>
