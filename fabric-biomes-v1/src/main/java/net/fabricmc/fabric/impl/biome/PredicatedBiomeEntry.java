@@ -26,29 +26,29 @@ class PredicatedBiomeEntry {
 	private final BiPredicate<Biome, LayerRandomnessSource> predicate;
 	private final double weight;
 	private double upperWeightBound = 0D;
-	
+
 	PredicatedBiomeEntry(Biome biome, BiPredicate<Biome, LayerRandomnessSource> predicate, double weight) {
 		this.biome = biome;
 		this.predicate = predicate;
 		this.weight = weight;
 	}
-	
+
 	void setUpperWeightBound(double upperWeightBound) {
 		this.upperWeightBound = upperWeightBound;
 	}
-	
+
 	Biome getBiome() {
 		return biome;
 	}
-	
+
 	boolean test(Biome biome, LayerRandomnessSource random) {
 		return predicate.test(biome, random);
 	}
-	
+
 	double getWeight() {
 		return weight;
 	}
-	
+
 	double getUpperWeightBound() {
 		return upperWeightBound;
 	}

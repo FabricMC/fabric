@@ -18,9 +18,10 @@ package net.fabricmc.fabric.api.biomes.v1;
 
 import java.util.function.BiPredicate;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
+
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * API that exposes some internals of the minecraft default biome source for the overworld.
@@ -44,7 +45,7 @@ public final class OverworldBiomes {
 	/**
 	 * Adds the biome as a hills variant of the parent biome, with the specified weight.
 	 *
-	 * @param parent the biome to where the hills variant is added
+	 * @param parent the biome to which the hills variant is added
 	 * @param hills the biome to be set as a hills variant
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
@@ -55,9 +56,9 @@ public final class OverworldBiomes {
 	}
 
 	/**
-	 * Adds the biome as a shore/beach biome for the parent biome, with the specified weight.
+	 * Adds the biome as a shore/beach biome of the parent biome, with the specified weight.
 	 *
-	 * @param parent the base biome to where the shore biome is added
+	 * @param parent the base biome to which the shore biome is added
 	 * @param shore the biome to be added as a shore biome
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
@@ -70,7 +71,7 @@ public final class OverworldBiomes {
 	/**
 	 * Adds the biome as an an edge biome (excluding as a beach) of the parent biome, with the specified weight.
 	 *
-	 * @param parent the base biome to where the edge biome is added
+	 * @param parent the base biome to which the edge biome is added
 	 * @param edge the biome to be added as an edge biome
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
@@ -109,11 +110,20 @@ public final class OverworldBiomes {
 	public static void setRiverBiome(Biome parent, Biome river) {
 		InternalBiomeData.setOverworldRiverBiome(parent, river);
 	}
-	
+
+	/**
+	 * Adds the biome as a large edge biome of the parent biome, with the specified weight.
+	 *
+	 * @param parent the base biome to which the large edge biome is added
+	 * @param edge the biome do be added as a large edge biome
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * @param predicate a predicate of a neighbouring biome and an {@link LayerRandomnessSource} which returns whether the conditions are correct for the large edge biome to spawn. Note that the predicate is resolved for each neighbouring biome type.
+	 */
 	public static void addLargeEdgeBiome(Biome parent, Biome edge, double weight, BiPredicate<Biome, LayerRandomnessSource> predicate) {
 		InternalBiomeData.addOverworldLargeEdge(parent, edge, weight, predicate);
 	}
-	
+
 	public static void addSubBiome(Biome parent, Biome subBiome, double chance) {
 		InternalBiomeData.addOverworldSubBiome(parent, subBiome, chance);
 	}

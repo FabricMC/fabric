@@ -24,35 +24,27 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.EaseBiomeEdgeLayer;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
+import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
+
 @Mixin(EaseBiomeEdgeLayer.class)
 public class MixinEaseBiomeEdgeLayer {
-	
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource random, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info) {
 		Biome biome = Registry.BIOME.get(center);
-		
+
 		// not allowing duplicate borders, for efficiency
 		Set<Biome> borders = new HashSet<>();
-		
-		if (north != center) {
-			borders.add(Registry.BIOME.get(north));
-		}
-		if (east != center) {
-			borders.add(Registry.BIOME.get(east));
-		}
-		if (south != center) {
-			borders.add(Registry.BIOME.get(south));
-		}
-		if (west != center) {
-			borders.add(Registry.BIOME.get(west));
-		}
-		
+
+		if (north != center) borders.add(Registry.BIOME.get(north));
+		if (east != center) borders.add(Registry.BIOME.get(east));
+		if (south != center) borders.add(Registry.BIOME.get(south));
+		if (west != center) borders.add(Registry.BIOME.get(west));
+
 		if (!borders.isEmpty()) {
 			InternalBiomeUtils.transformLargeEdge(random, biome, borders.toArray(new Biome[0]), info::setReturnValue);
 		}

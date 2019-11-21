@@ -21,19 +21,19 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddSunflowerPlainsLayer;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
+import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
+
 @Mixin(AddSunflowerPlainsLayer.class)
 public class MixinAddSunflowerPlainsLayer {
-	
 	@Inject(at = @At("TAIL"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource random, int previous, CallbackInfoReturnable<Integer> info) {
 		Biome biome = Registry.BIOME.get(previous);
-		
+
 		InternalBiomeUtils.transformSubBiome(random, biome, info::setReturnValue);
 	}
 }

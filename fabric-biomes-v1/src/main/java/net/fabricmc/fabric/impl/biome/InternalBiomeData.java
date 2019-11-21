@@ -28,12 +28,13 @@ import java.util.function.BiPredicate;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
+
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation
@@ -105,22 +106,22 @@ public final class InternalBiomeData {
 			OVERWORLD_INJECTED_BIOMES.add(river);
 		}
 	}
-	
+
 	public static void addOverworldLargeEdge(Biome primary, Biome edge, double weight, BiPredicate<Biome, LayerRandomnessSource> predicate) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(edge != null, "Edge biome is null");
 		Preconditions.checkArgument(predicate != null, "Predicate is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
-		
+
 		OVERWORLD_LARGE_EDGES.computeIfAbsent(primary, biome -> new PredicatedTransformer()).addPredicatedBiome(edge, predicate, weight);
 		OVERWORLD_INJECTED_BIOMES.add(edge);
 	}
-	
+
 	public static void addOverworldSubBiome(Biome primary, Biome subBiome, double chance) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(subBiome != null, "Sub biome is null");
 		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 nor less than or equal to 1");
-		
+
 		OVERWORLD_SUB_BIOME_TRANSFORMERS.computeIfAbsent(primary, biome -> new VariantTransformer()).addBiome(subBiome, chance, null);
 		OVERWORLD_INJECTED_BIOMES.add(subBiome);
 	}
@@ -161,11 +162,11 @@ public final class InternalBiomeData {
 	public static Map<Biome, VariantTransformer> getOverworldVariantTransformers() {
 		return OVERWORLD_VARIANT_TRANSFORMERS;
 	}
-	
+
 	public static Map<Biome, PredicatedTransformer> getOverworldLargeEdges() {
 		return OVERWORLD_LARGE_EDGES;
 	}
-	
+
 	public static Map<Biome, VariantTransformer> getOverworldSubBiomeTransformers() {
 		return OVERWORLD_SUB_BIOME_TRANSFORMERS;
 	}

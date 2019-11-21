@@ -143,27 +143,27 @@ public final class InternalBiomeUtils {
 			result.accept(transformBiome(random, found.getBiome(), climate));
 		}
 	}
-	
+
 	public static void transformLargeEdge(LayerRandomnessSource random, Biome existing, Biome[] borders, IntConsumer result) {
 		Map<Biome, PredicatedTransformer> largeEdges = InternalBiomeData.getOverworldLargeEdges();
-		
+
 		if (largeEdges.containsKey(existing)) {
 			PredicatedTransformer transformer = largeEdges.get(existing);
 			Biome transformed = transformer.transform(existing, random, borders);
-			
+
 			if (transformed != existing) {
 				result.accept(Registry.BIOME.getRawId(transformed));
 			}
 		}
 	}
-	
+
 	public static void transformSubBiome(LayerRandomnessSource random, Biome existing, IntConsumer result) {
 		Map<Biome, VariantTransformer> overworldSubBiomeTransformers = InternalBiomeData.getOverworldSubBiomeTransformers();
 		VariantTransformer transformer = overworldSubBiomeTransformers.get(existing);
 
 		if (transformer != null) {
 			Biome transformed = transformer.transformBiome(existing, random, null);
-			
+
 			if (transformed != existing) {
 				result.accept(Registry.BIOME.getRawId(transformed));
 			}
