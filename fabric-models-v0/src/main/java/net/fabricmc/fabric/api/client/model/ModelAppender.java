@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.client.model;
 
+import java.util.function.Consumer;
+
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
-
-import java.util.function.Consumer;
 
 @FunctionalInterface
 public interface ModelAppender {

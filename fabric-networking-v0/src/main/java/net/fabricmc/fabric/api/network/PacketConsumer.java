@@ -26,11 +26,11 @@ public interface PacketConsumer {
 	/**
 	 * Receive a CustomPayload-based packet.
 	 *
-	 * The PacketByteBuf received will be released as soon as the method exits,
+	 * <p>The PacketByteBuf received will be released as soon as the method exits,
 	 * meaning that you have to call .retain()/.release() on it if you want to
 	 * keep it around after that.
 	 *
-	 * Please keep in mind that this CAN be called OUTSIDE of the main thread!
+	 * <p>Please keep in mind that this CAN be called OUTSIDE of the main thread!
 	 * Most game operations are not thread-safe, so you should look into using
 	 * the thread task queue ({@link PacketContext#getTaskQueue()}) to split
 	 * the "reading" (which should happen within this method's execution)

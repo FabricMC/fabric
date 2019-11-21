@@ -25,25 +25,25 @@ import net.minecraft.world.ExtendedBlockView;
  * Interface for handling the rendering of a FluidState.
  */
 public interface FluidRenderHandler {
-    /**
-     * Get the sprites for a fluid being rendered at a given position.
-     * For optimal performance, the sprites should be loaded as part of a
-     * resource reload and *not* looked up every time the method is called!
-     *
-     * The "fabric-textures" module contains sprite rendering facilities, which may come in handy here.
-     *
-     * @param view The world view pertaining to the fluid. May be null!
-     * @param pos The position of the fluid in the world. May be null!
-     * @param state The current state of the fluid.
-     * @return An array of size two: the first entry contains the "still" sprite,
-     * while the second entry contains the "flowing" sprite.
-     */
-    Sprite[] getFluidSprites(/* Nullable */ ExtendedBlockView view, /* Nullable */ BlockPos pos, FluidState state);
+	/**
+	 * Get the sprites for a fluid being rendered at a given position.
+	 * For optimal performance, the sprites should be loaded as part of a
+	 * resource reload and *not* looked up every time the method is called!
+	 *
+	 * <p>The "fabric-textures" module contains sprite rendering facilities, which may come in handy here.
+	 *
+	 * @param view The world view pertaining to the fluid. May be null!
+	 * @param pos The position of the fluid in the world. May be null!
+	 * @param state The current state of the fluid.
+	 * @return An array of size two: the first entry contains the "still" sprite,
+	 * while the second entry contains the "flowing" sprite.
+	 */
+	Sprite[] getFluidSprites(/* Nullable */ ExtendedBlockView view, /* Nullable */ BlockPos pos, FluidState state);
 
 	/**
 	 * Get the tint color for a fluid being rendered at a given position.
 	 *
-	 * NOTE: As of right now, our hook cannot handle setting a custom alpha
+	 * @note As of right now, our hook cannot handle setting a custom alpha
 	 * tint here - as such, it must be contained in the texture itself!
 	 *
 	 * @param view The world view pertaining to the fluid. May be null!
@@ -51,7 +51,7 @@ public interface FluidRenderHandler {
 	 * @param state The current state of the fluid.
 	 * @return The tint color of the fluid.
 	 */
-    default int getFluidColor(ExtendedBlockView view, BlockPos pos, FluidState state) {
-        return -1;
-    }
+	default int getFluidColor(ExtendedBlockView view, BlockPos pos, FluidState state) {
+		return -1;
+	}
 }

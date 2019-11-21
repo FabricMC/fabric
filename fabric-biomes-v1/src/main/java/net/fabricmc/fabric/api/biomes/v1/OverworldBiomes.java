@@ -16,17 +16,17 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import net.fabricmc.fabric.impl.biomes.InternalBiomeData;
+import java.util.function.BiPredicate;
+
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
- * API that exposes some internals of the minecraft default biome source for the overworld
+ * API that exposes some internals of the minecraft default biome source for the overworld.
  */
 public final class OverworldBiomes {
-
-	private OverworldBiomes() {
-	}
+	private OverworldBiomes() { }
 
 	/**
 	 * Adds the biome to the specified climate group, with the specified weight. This is only for the biomes that make up the initial continents in generation.
@@ -42,7 +42,7 @@ public final class OverworldBiomes {
 	}
 
 	/**
-	 * Adds the biome as a hills variant of the parent biome, with the specified weight
+	 * Adds the biome as a hills variant of the parent biome, with the specified weight.
 	 *
 	 * @param parent the biome to where the hills variant is added
 	 * @param hills the biome to be set as a hills variant
@@ -55,7 +55,7 @@ public final class OverworldBiomes {
 	}
 
 	/**
-	 * Adds the biome as a shore/beach biome for the parent biome, with the specified weight
+	 * Adds the biome as a shore/beach biome for the parent biome, with the specified weight.
 	 *
 	 * @param parent the base biome to where the shore biome is added
 	 * @param shore the biome to be added as a shore biome
@@ -68,7 +68,7 @@ public final class OverworldBiomes {
 	}
 
 	/**
-	 * Adds the biome as an an edge biome (excluding as a beach) of the parent biome, with the specified weight
+	 * Adds the biome as an an edge biome (excluding as a beach) of the parent biome, with the specified weight.
 	 *
 	 * @param parent the base biome to where the edge biome is added
 	 * @param edge the biome to be added as an edge biome
@@ -82,7 +82,8 @@ public final class OverworldBiomes {
 
 	/**
 	 * Adds a 'variant' biome which replaces another biome on occasion.
-	 * For example, addBiomeVariant(Biomes.JUNGLE, Biomes.DESERT, 0.2) will replace 20% of jungles with deserts.
+	 *
+	 * <p>For example, addBiomeVariant(Biomes.JUNGLE, Biomes.DESERT, 0.2) will replace 20% of jungles with deserts.
 	 * This method is rather useful for replacing biomes not generated through standard methods, such as oceans,
 	 * deep oceans, jungles, mushroom islands, etc. When replacing ocean and deep ocean biomes, one must specify
 	 * the biome without temperature (Biomes.OCEAN / Biomes.DEEP_OCEAN) only, as ocean temperatures have not been
@@ -116,5 +117,4 @@ public final class OverworldBiomes {
 	public static void addSubBiome(Biome parent, Biome subBiome, double chance) {
 		InternalBiomeData.addOverworldSubBiome(parent, subBiome, chance);
 	}
-
 }

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.builders",
+  "package": "net.fabricmc.fabric.mixin.object.builder",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BlockSettingsHooks",

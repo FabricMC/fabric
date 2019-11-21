@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.mixin.renderer.client;
 
-import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.minecraft.client.gui.hud.DebugHud;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
+import net.minecraft.client.gui.hud.DebugHud;
+
+import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 
 @Mixin(DebugHud.class)
 public class MixinDebugHud {

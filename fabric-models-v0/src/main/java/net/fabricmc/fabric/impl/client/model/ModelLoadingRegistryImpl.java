@@ -16,17 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.model;
 
-import com.google.common.collect.Lists;
-import net.fabricmc.fabric.api.client.model.*;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.render.model.ModelLoader;
-import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,9 +24,27 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.google.common.collect.Lists;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.client.render.model.ModelLoader;
+import net.minecraft.client.render.model.UnbakedModel;
+import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.client.model.ModelAppender;
+import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
+import net.fabricmc.fabric.api.client.model.ModelProviderContext;
+import net.fabricmc.fabric.api.client.model.ModelProviderException;
+import net.fabricmc.fabric.api.client.model.ModelResourceProvider;
+import net.fabricmc.fabric.api.client.model.ModelVariantProvider;
+import net.fabricmc.loader.api.FabricLoader;
+
 public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 	private static final boolean DEBUG_MODEL_LOADING = FabricLoader.getInstance().isDevelopmentEnvironment()
-		|| Boolean.valueOf(System.getProperty("fabric.debugModelLoading", "false"));
+			|| Boolean.valueOf(System.getProperty("fabric.debugModelLoading", "false"));
 
 	@FunctionalInterface
 	private interface CustomModelItf<T> {
@@ -81,6 +88,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 				for (T provider : loaders) {
 					try {
 						UnbakedModel model = function.load(provider);
+
 						if (model != null) {
 							return model;
 						}
@@ -100,6 +108,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			for (T provider : loaders) {
 				try {
 					UnbakedModel model = function.load(provider);
+
 					if (model != null) {
 						if (providersApplied != null) {
 							providersApplied.add(provider);
@@ -118,9 +127,11 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 			if (providersApplied != null) {
 				StringBuilder builder = new StringBuilder("Conflict - multiple " + debugName + "s claimed the same unbaked model:");
+
 				for (T loader : providersApplied) {
 					builder.append("\n\t - ").append(loader.getClass().getName());
 				}
+
 				logger.error(builder.toString());
 				return null;
 			} else {
@@ -140,6 +151,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			} else {
 				ModelIdentifier modelId = (ModelIdentifier) variantId;
 				UnbakedModel model = loadCustomModel((r) -> r.loadModelVariant((ModelIdentifier) variantId, this), modelVariantProviders, "resource provider");
+
 				if (model != null) {
 					return model;
 				}
@@ -148,6 +160,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 				if (Objects.equals(modelId.getVariant(), "inventory")) {
 					Identifier resourceId = new Identifier(modelId.getNamespace(), "item/" + modelId.getPath());
 					model = loadModelFromResource(resourceId);
+
 					if (model != null) {
 						return model;
 					}

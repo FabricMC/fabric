@@ -16,28 +16,28 @@
 
 package net.fabricmc.fabric.api.resource;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.resource.SynchronousResourceReloadListener;
 import net.minecraft.util.profiler.Profiler;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
 /**
  * A simplified version of the "resource reload listener" interface, hiding the
  * peculiarities of the API.
- * <p>
- * In essence, there are two stages:
- * <p>
- * - load: create an instance of your data object containing all loaded and
+ *
+ * <p>In essence, there are two stages:
+ *
+ * <ul><li>load: create an instance of your data object containing all loaded and
  * processed information,
- * - apply: apply the information from the data object to the game instance.
- * <p>
- * The load stage should be self-contained as it can run on any thread! However,
+ * <li>apply: apply the information from the data object to the game instance.</ul>
+ *
+ * <p>The load stage should be self-contained as it can run on any thread! However,
  * the apply stage is guaranteed to run on the game thread.
- * <p>
- * For a fully synchronous alternative, consider using
+ *
+ * <p>For a fully synchronous alternative, consider using
  * {@link SynchronousResourceReloadListener} in conjunction with
  * {@link IdentifiableResourceReloadListener}.
  *

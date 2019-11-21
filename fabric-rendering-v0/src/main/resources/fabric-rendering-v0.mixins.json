@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.client.render",
+  "package": "net.fabricmc.fabric.mixin.client.rendering",
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinBlockColorMap",
