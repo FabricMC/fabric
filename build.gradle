@@ -12,9 +12,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.4.12"
-	static def mcVersion = "19w46a"
-	static def yarnVersion = "+build.1"
+	static def baseVersion = "0.4.13"
+	static def mcVersion = "1.15-pre1"
+	static def yarnVersion = "+build.3"
 }
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -56,7 +56,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.6.2+build.166"
+		modCompile "net.fabricmc:fabric-loader:0.7.1+build.173"
 	}
 
 	configurations {

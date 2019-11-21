@@ -50,8 +50,8 @@ public class MixinBootstrap {
 		Object oItem = Items.AIR;
 
 		// state ID tracking
-		StateIdTracker.register(Registry.BLOCK, Block.STATE_IDS, (block) -> block.getStateFactory().getStates());
-		StateIdTracker.register(Registry.FLUID, Fluid.STATE_IDS, (fluid) -> fluid.getStateFactory().getStates());
+		StateIdTracker.register(Registry.BLOCK, Block.STATE_IDS, (block) -> block.getStateManager().getStates());
+		StateIdTracker.register(Registry.FLUID, Fluid.STATE_IDS, (fluid) -> fluid.getStateManager().getStates());
 
 		// map tracking
 		BiomeParentTracker.register(Registry.BIOME);

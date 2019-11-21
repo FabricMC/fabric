@@ -37,7 +37,7 @@ public final class BlockInitTracker implements RegistryEntryAddedCallback<Block>
 
 	@Override
 	public void onEntryAdded(int rawId, Identifier id, Block object) {
-		object.getStateFactory().getStates().forEach(BlockState::initShapeCache);
+		object.getStateManager().getStates().forEach(BlockState::initShapeCache);
 
 		// if false, getDropTableId() will generate an invalid drop table ID
 		assert id.equals(registry.getId(object));

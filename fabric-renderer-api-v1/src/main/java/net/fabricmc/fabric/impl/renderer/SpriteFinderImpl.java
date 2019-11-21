@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.renderer;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
@@ -133,7 +134,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 			} else if (quadrant instanceof Node) {
 				return ((Node) quadrant).find(u, v);
 			} else {
-				return MissingSprite.getMissingSprite();
+				return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX).apply(MissingSprite.getMissingSpriteId());
 			}
 		}
 	}

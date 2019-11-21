@@ -25,6 +25,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.Transformation;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 
@@ -71,7 +72,7 @@ public abstract class ModelHelper {
 	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
 	 */
 	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
-		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getSpriteAtlas());
+		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEX));
 
 		@SuppressWarnings("unchecked")
 		final ImmutableList.Builder<BakedQuad>[] builders = new ImmutableList.Builder[7];

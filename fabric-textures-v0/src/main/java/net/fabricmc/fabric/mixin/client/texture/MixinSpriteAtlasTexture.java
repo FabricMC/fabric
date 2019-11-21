@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.texture;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,7 +42,6 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 
-import net.fabricmc.fabric.api.client.texture.CustomSpriteLoader;
 import net.fabricmc.fabric.api.client.texture.DependentSprite;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
@@ -73,7 +71,7 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 	private Map<Identifier, Sprite> fabric_injectedSprites;
 
 	// Loads in custom sprite object injections.
-	@Inject(at = @At("RETURN"), method = "loadSprites")
+	@Inject(at = @At("RETURN"), method = "loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;")
 	private void afterLoadSprites(ResourceManager resourceManager_1, Set<Identifier> set_1, CallbackInfoReturnable<Collection<Sprite>> info) {
 		if (fabric_injectedSprites != null) {
 			info.getReturnValue().addAll(fabric_injectedSprites.values());
@@ -163,33 +161,5 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 		}
 
 		return result;
-	}
-
-	/**
-	 * Handles CustomSpriteLoader.
-	 */
-	@Inject(at = @At("HEAD"), method = "loadSprite", cancellable = true)
-	public void loadSprite(ResourceManager manager, Sprite sprite, CallbackInfoReturnable<Boolean> info) {
-		// refer SpriteAtlasTexture.loadSprite
-		if (sprite instanceof CustomSpriteLoader) {
-			try {
-				if (!((CustomSpriteLoader) sprite).load(manager, mipLevel)) {
-					info.setReturnValue(false);
-					return;
-				}
-			} catch (RuntimeException | IOException e) {
-				FABRIC_LOGGER.error("Unable to load custom sprite {}: {}", sprite.getId(), e);
-				info.setReturnValue(false);
-				return;
-			}
-
-			try {
-				sprite.generateMipmaps(this.mipLevel);
-				info.setReturnValue(true);
-			} catch (Throwable e) {
-				FABRIC_LOGGER.error("Unable to apply mipmap to custom sprite {}: {}", sprite.getId(), e);
-				info.setReturnValue(false);
-			}
-		}
 	}
 }
