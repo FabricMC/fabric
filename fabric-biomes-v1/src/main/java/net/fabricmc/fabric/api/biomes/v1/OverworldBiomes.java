@@ -115,7 +115,7 @@ public final class OverworldBiomes {
 	 * Adds the biome as a large edge biome of the parent biome, with the specified weight.
 	 *
 	 * @param parent the base biome to which the large edge biome is added
-	 * @param edge the biome do be added as a large edge biome
+	 * @param edge the biome to be added as a large edge biome
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * @param predicate a predicate of a neighbouring biome and an {@link LayerRandomnessSource} which returns whether the conditions are correct for the large edge biome to spawn. Note that the predicate is resolved for each neighbouring biome type.
@@ -124,6 +124,13 @@ public final class OverworldBiomes {
 		InternalBiomeData.addOverworldLargeEdge(parent, edge, weight, predicate);
 	}
 
+	/**
+	 * Adds a 'sub biome,' similar to minecraft's sunflower plains, that occasionally replaces a portion of the parent biome.
+	 *
+	 * @param parent the base biome which can have portions replaced by the sub biome
+	 * @param subBiome the biome to be added as a sub biome
+	 * @param chance the chance of replacing the biome with the sub biome
+	 */
 	public static void addSubBiome(Biome parent, Biome subBiome, double chance) {
 		InternalBiomeData.addOverworldSubBiome(parent, subBiome, chance);
 	}
