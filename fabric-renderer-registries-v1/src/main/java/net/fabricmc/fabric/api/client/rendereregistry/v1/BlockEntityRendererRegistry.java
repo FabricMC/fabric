@@ -16,22 +16,40 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
+import java.util.HashMap;
+import java.util.function.Function;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import net.fabricmc.fabric.mixin.client.renderer.registry.MixinBlockEntityRenderDispatcher;
+import net.fabricmc.fabric.mixin.client.renderer.registry.MixinBlockEntityRenderDispatcherInvoker;
 
 /**
  * Helper class for registering BlockEntityRenderers.
  */
 public class BlockEntityRendererRegistry {
 	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
+	private static final HashMap<BlockEntityType<?>, Function<BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> renderers = new HashMap<>();
+	private static boolean hasRegisteredBERs = false;
 
-	private BlockEntityRendererRegistry() { }
+	private BlockEntityRendererRegistry() {
+	}
 
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer) {
-		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).invoke_register(blockEntityType, blockEntityRenderer);
+	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<E>> blockEntityRenderer) {
+		if (!hasRegisteredBERs) {
+			renderers.put(blockEntityType, blockEntityRenderer);
+		} else {
+			((MixinBlockEntityRenderDispatcherInvoker) BlockEntityRenderDispatcher.INSTANCE).invoke_register(blockEntityType, blockEntityRenderer.apply(BlockEntityRenderDispatcher.INSTANCE));
+		}
+	}
+
+	public static void onBERRegistry() {
+		hasRegisteredBERs = true;
+	}
+
+	public static HashMap<BlockEntityType<?>, Function<BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> getRenderers() {
+		return renderers;
 	}
 }
