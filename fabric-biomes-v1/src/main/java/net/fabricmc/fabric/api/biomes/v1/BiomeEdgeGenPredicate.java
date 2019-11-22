@@ -43,6 +43,17 @@ public interface BiomeEdgeGenPredicate {
 		};
 	}
 
+	static BiomeEdgeGenPredicate bordersAnyWithCategories(Biome.Category category, Biome.Category...otherCategories) {
+		final Biome.Category[] categories = ArrayUtils.add(otherCategories, category);
+		return (biomes, rand) -> {
+			for (Biome neighbor : biomes) {
+				if (ArrayUtils.contains(categories, neighbor.getCategory())) return true;
+			}
+
+			return false;
+		};
+	}
+
 	static BiomeEdgeGenPredicate chance(double chance) {
 		return (biomes, rand) -> {
 			double randVal = (double) rand.nextInt(Integer.MAX_VALUE) / Integer.MAX_VALUE;
