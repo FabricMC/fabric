@@ -17,7 +17,9 @@
 package net.fabricmc.fabric.api.biomes.v1;
 
 import java.util.Collection;
+import java.util.List;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.world.biome.Biome;
@@ -52,10 +54,10 @@ public interface BiomeEdgeGenPredicate {
 	 * @return a {@link BiomeEdgeGenPredicate} which returns true if any of the biomes bordering the parent biome are of any of the given categories.
 	 */
 	static BiomeEdgeGenPredicate createBiomeCategoryPredicate(Biome.Category category, Biome.Category...otherCategories) {
-		final Biome.Category[] categories = ArrayUtils.add(otherCategories, category);
+		final List<Biome.Category> categories = Lists.asList(category, otherCategories);
 		return (biomes, rand) -> {
 			for (Biome neighbor : biomes) {
-				if (ArrayUtils.contains(categories, neighbor.getCategory())) return true;
+				if (categories.contains(neighbor.getCategory())) return true;
 			}
 
 			return false;
