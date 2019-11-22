@@ -40,8 +40,8 @@ public interface BiomeEdgeGenPredicate {
 	static BiomeEdgeGenPredicate createBiomePredicate(Biome biome, Biome...otherBiomes) {
 		final Collection<Biome> borderBiomes = Lists.asList(biome, otherBiomes);
 		return (biomes, rand) -> {
-			for (Biome neighbor : biomes) {
-				if (borderBiomes.contains(neighbor)) return true;
+			for (Biome neighbor : borderBiomes) {
+				if (biomes.contains(neighbor)) return true;
 			}
 
 			return false;
