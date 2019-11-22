@@ -44,11 +44,10 @@ import net.minecraft.util.crash.CrashReportSection;
 
 import net.fabricmc.fabric.api.client.texture.DependentSprite;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
 import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 @Mixin(SpriteAtlasTexture.class)
-public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks {
+public abstract class MixinSpriteAtlasTexture {
 	@Unique
 	private static Logger FABRIC_LOGGER = LogManager.getLogger();
 	@Shadow
@@ -57,14 +56,8 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 	@Shadow
 	public abstract Sprite getSprite(Identifier id);
 
-	private final Set<Identifier> fabric_localIds = new HashSet<>();
-
-	// EVENT/HOOKS LOGIC
-
-	@Override
-	public void onRegisteredAs(Identifier id) {
-		fabric_localIds.add(id);
-	}
+	@Shadow
+	public abstract Identifier method_24106();
 
 	// INJECTION LOGIC
 
@@ -85,11 +78,7 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
 
-		//noinspection ConstantConditions
-		for (Identifier id : fabric_localIds) {
-			SpriteRegistryCallbackHolder.eventLocal(id).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
-		}
-
+		SpriteRegistryCallbackHolder.eventLocal(method_24106()).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 		SpriteRegistryCallbackHolder.EVENT_GLOBAL.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
