@@ -22,12 +22,12 @@ import java.util.List;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-import net.fabricmc.fabric.api.biomes.v1.BiomeGenPredicate;
+import net.fabricmc.fabric.api.biomes.v1.BiomeEdgeGenPredicate;
 
 final class PredicatedTransformer {
 	private final List<PredicatedBiomeEntry> predicates = new ArrayList<>();
 
-	void addPredicatedBiome(Biome biome, BiomeGenPredicate predicate, double chance) {
+	void addPredicatedBiome(Biome biome, BiomeEdgeGenPredicate predicate, double chance) {
 		predicates.add(new PredicatedBiomeEntry(biome, predicate, chance));
 	}
 
@@ -37,10 +37,8 @@ final class PredicatedTransformer {
 		} else if (predicates.size() == 1) {
 			PredicatedBiomeEntry predicate = predicates.get(0);
 
-			for (Biome border : borders) {
-				if (predicate.test(border, random)) {
-					return predicate.getBiome();
-				}
+			if (predicate.test(borders, random)) {
+				return predicate.getBiome();
 			}
 
 			return biome;
@@ -49,15 +47,13 @@ final class PredicatedTransformer {
 		List<PredicatedBiomeEntry> truePredicates = new ArrayList<>();
 		double currentTotal = 0.0D;
 
-		predicateLoop: for (PredicatedBiomeEntry predicate : predicates) {
-			for (Biome border : borders) {
-				if (predicate.test(border, random)) {
-					truePredicates.add(predicate);
+		for (PredicatedBiomeEntry predicate : predicates) {
+			if (predicate.test(borders, random)) {
+				truePredicates.add(predicate);
 
-					currentTotal += predicate.getWeight();
-					predicate.setUpperWeightBound(currentTotal);
-					continue predicateLoop;
-				}
+				currentTotal += predicate.getWeight();
+				predicate.setUpperWeightBound(currentTotal);
+				continue;
 			}
 		}
 

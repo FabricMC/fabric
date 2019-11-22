@@ -19,15 +19,15 @@ package net.fabricmc.fabric.impl.biome;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-import net.fabricmc.fabric.api.biomes.v1.BiomeGenPredicate;
+import net.fabricmc.fabric.api.biomes.v1.BiomeEdgeGenPredicate;
 
 class PredicatedBiomeEntry {
 	private final Biome biome;
-	private final BiomeGenPredicate predicate;
+	private final BiomeEdgeGenPredicate predicate;
 	private final double weight;
 	private double upperWeightBound = 0D;
 
-	PredicatedBiomeEntry(Biome biome, BiomeGenPredicate predicate, double weight) {
+	PredicatedBiomeEntry(Biome biome, BiomeEdgeGenPredicate predicate, double weight) {
 		this.biome = biome;
 		this.predicate = predicate;
 		this.weight = weight;
@@ -41,8 +41,8 @@ class PredicatedBiomeEntry {
 		return biome;
 	}
 
-	boolean test(Biome biome, LayerRandomnessSource random) {
-		return predicate.test(biome, random);
+	boolean test(Biome[] biomes, LayerRandomnessSource random) {
+		return predicate.meetsGenerationConditions(biomes, random);
 	}
 
 	double getWeight() {

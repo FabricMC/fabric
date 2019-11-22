@@ -16,17 +16,37 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
- * A predicate of a biome and randomness source.
+ * A predicate of a biome array and randomness source.
  */
-public interface BiomeGenPredicate {
+public interface BiomeEdgeGenPredicate {
 	/**
-	 * @param biome the biome
+	 * @param biomes the biomes neighboring generation
 	 * @param rand the world gen randomness source
 	 * @return whether the conditions for generation are met
 	 */
-	boolean test(Biome biome, LayerRandomnessSource rand);
+	boolean meetsGenerationConditions(Biome[] biomes, LayerRandomnessSource rand);
+
+	static BiomeEdgeGenPredicate bordersAny(Biome biome, Biome...otherBiomes) {
+		final Biome[] borderBiomes = ArrayUtils.add(otherBiomes, biome);
+		return (biomes, rand) -> {
+			for (Biome neighbor : biomes) {
+				if (ArrayUtils.contains(borderBiomes, neighbor)) return true;
+			}
+
+			return false;
+		};
+	}
+
+	static BiomeEdgeGenPredicate chance(double chance) {
+		return (biomes, rand) -> {
+			double randVal = (double) rand.nextInt(Integer.MAX_VALUE) / Integer.MAX_VALUE;
+			return randVal < chance;
+		};
+	}
 }
