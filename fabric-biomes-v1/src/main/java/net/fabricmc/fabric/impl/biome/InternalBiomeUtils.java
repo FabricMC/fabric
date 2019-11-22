@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.biome;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
@@ -144,7 +145,7 @@ public final class InternalBiomeUtils {
 		}
 	}
 
-	public static void transformLargeEdge(LayerRandomnessSource random, Biome existing, Biome[] borders, IntConsumer result) {
+	public static void transformLargeEdge(LayerRandomnessSource random, Biome existing, Collection<Biome> borders, IntConsumer result) {
 		Map<Biome, PredicatedTransformer> largeEdges = InternalBiomeData.getOverworldLargeEdges();
 
 		if (largeEdges.containsKey(existing)) {

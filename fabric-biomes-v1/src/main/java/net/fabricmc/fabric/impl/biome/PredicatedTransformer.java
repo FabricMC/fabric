@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.biome;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.world.biome.Biome;
@@ -31,7 +32,7 @@ final class PredicatedTransformer {
 		predicates.add(new PredicatedBiomeEntry(biome, predicate, chance));
 	}
 
-	Biome transform(Biome biome, LayerRandomnessSource random, Biome[] borders) {
+	Biome transform(Biome biome, LayerRandomnessSource random, Collection<Biome> borders) {
 		if (predicates.isEmpty()) {
 			return biome;
 		} else if (predicates.size() == 1) {

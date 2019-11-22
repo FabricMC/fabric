@@ -46,7 +46,7 @@ public class MixinEaseBiomeEdgeLayer {
 		if (west != center) borders.add(Registry.BIOME.get(west));
 
 		if (!borders.isEmpty()) {
-			InternalBiomeUtils.transformLargeEdge(random, biome, borders.toArray(new Biome[0]), info::setReturnValue);
+			InternalBiomeUtils.transformLargeEdge(random, biome, borders, info::setReturnValue);
 		}
 	}
 }

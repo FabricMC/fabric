@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.biome;
 
+import java.util.Collection;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
@@ -41,7 +43,7 @@ class PredicatedBiomeEntry {
 		return biome;
 	}
 
-	boolean test(Biome[] biomes, LayerRandomnessSource random) {
+	boolean test(Collection<Biome> biomes, LayerRandomnessSource random) {
 		return predicate.isValidToGenerate(biomes, random);
 	}
 

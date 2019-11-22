@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
+import java.util.Collection;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 import net.minecraft.world.biome.Biome;
@@ -30,7 +32,7 @@ public interface BiomeEdgeGenPredicate {
 	 * @param rand the world gen randomness source
 	 * @return whether the conditions for generation are met
 	 */
-	boolean isValidToGenerate(Biome[] biomes, LayerRandomnessSource rand);
+	boolean isValidToGenerate(Collection<Biome> biomes, LayerRandomnessSource rand);
 
 	/**
 	 * @return a {@link BiomeEdgeGenPredicate} which returns true if any of the given biomes border the parent biome.
