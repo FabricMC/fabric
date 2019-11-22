@@ -30,12 +30,12 @@ public interface BiomeEdgeGenPredicate {
 	 * @param rand the world gen randomness source
 	 * @return whether the conditions for generation are met
 	 */
-	boolean meetsGenerationConditions(Biome[] biomes, LayerRandomnessSource rand);
+	boolean isValidToGenerate(Biome[] biomes, LayerRandomnessSource rand);
 
 	/**
 	 * @return a {@link BiomeEdgeGenPredicate} which returns true if any of the given biomes border the parent biome.
 	 */
-	static BiomeEdgeGenPredicate bordersAny(Biome biome, Biome...otherBiomes) {
+	static BiomeEdgeGenPredicate createBiomePredicate(Biome biome, Biome...otherBiomes) {
 		final Biome[] borderBiomes = ArrayUtils.add(otherBiomes, biome);
 		return (biomes, rand) -> {
 			for (Biome neighbor : biomes) {
@@ -49,7 +49,7 @@ public interface BiomeEdgeGenPredicate {
 	/**
 	 * @return a {@link BiomeEdgeGenPredicate} which returns true if any of the biomes bordering the parent biome are of any of the given categories.
 	 */
-	static BiomeEdgeGenPredicate bordersAnyWithCategories(Biome.Category category, Biome.Category...otherCategories) {
+	static BiomeEdgeGenPredicate createBiomeCategoryPredicate(Biome.Category category, Biome.Category...otherCategories) {
 		final Biome.Category[] categories = ArrayUtils.add(otherCategories, category);
 		return (biomes, rand) -> {
 			for (Biome neighbor : biomes) {
@@ -64,7 +64,7 @@ public interface BiomeEdgeGenPredicate {
 	 * @param chance the chance for this predicate to return true. 0.0 is no chance, and 1.0 means it will always return true
 	 * @return a {@link BiomeEdgeGenPredicate} which returns true based on a random chance expressed as a decimal.
 	 */
-	static BiomeEdgeGenPredicate chance(double chance) {
+	static BiomeEdgeGenPredicate createChancePredicate(double chance) {
 		return (biomes, rand) -> {
 			double randVal = (double) rand.nextInt(Integer.MAX_VALUE) / Integer.MAX_VALUE;
 			return randVal < chance;

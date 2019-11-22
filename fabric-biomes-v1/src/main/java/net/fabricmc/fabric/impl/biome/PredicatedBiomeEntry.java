@@ -42,7 +42,7 @@ class PredicatedBiomeEntry {
 	}
 
 	boolean test(Biome[] biomes, LayerRandomnessSource random) {
-		return predicate.meetsGenerationConditions(biomes, random);
+		return predicate.isValidToGenerate(biomes, random);
 	}
 
 	double getWeight() {
