@@ -23,7 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiPredicate;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -32,8 +31,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
+import net.fabricmc.fabric.api.biomes.v1.BiomeGenPredicate;
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 
 /**
@@ -107,7 +106,7 @@ public final class InternalBiomeData {
 		}
 	}
 
-	public static void addOverworldLargeEdge(Biome primary, Biome edge, double weight, BiPredicate<Biome, LayerRandomnessSource> predicate) {
+	public static void addOverworldLargeEdge(Biome primary, Biome edge, double weight, BiomeGenPredicate predicate) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(edge != null, "Edge biome is null");
 		Preconditions.checkArgument(predicate != null, "Predicate is null");

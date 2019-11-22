@@ -16,18 +16,18 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import java.util.function.BiPredicate;
-
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
+import net.fabricmc.fabric.api.biomes.v1.BiomeGenPredicate;
+
 class PredicatedBiomeEntry {
 	private final Biome biome;
-	private final BiPredicate<Biome, LayerRandomnessSource> predicate;
+	private final BiomeGenPredicate predicate;
 	private final double weight;
 	private double upperWeightBound = 0D;
 
-	PredicatedBiomeEntry(Biome biome, BiPredicate<Biome, LayerRandomnessSource> predicate, double weight) {
+	PredicatedBiomeEntry(Biome biome, BiomeGenPredicate predicate, double weight) {
 		this.biome = biome;
 		this.predicate = predicate;
 		this.weight = weight;

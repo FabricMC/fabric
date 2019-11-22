@@ -18,15 +18,16 @@ package net.fabricmc.fabric.impl.biome;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiPredicate;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
+import net.fabricmc.fabric.api.biomes.v1.BiomeGenPredicate;
+
 final class PredicatedTransformer {
 	private final List<PredicatedBiomeEntry> predicates = new ArrayList<>();
 
-	void addPredicatedBiome(Biome biome, BiPredicate<Biome, LayerRandomnessSource> predicate, double chance) {
+	void addPredicatedBiome(Biome biome, BiomeGenPredicate predicate, double chance) {
 		predicates.add(new PredicatedBiomeEntry(biome, predicate, chance));
 	}
 

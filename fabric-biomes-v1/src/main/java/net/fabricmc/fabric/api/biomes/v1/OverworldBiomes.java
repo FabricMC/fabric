@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import java.util.function.BiPredicate;
-
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
@@ -120,7 +118,7 @@ public final class OverworldBiomes {
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * @param predicate a predicate of a neighbouring biome and an {@link LayerRandomnessSource} which returns whether the conditions are correct for the large edge biome to spawn. Note that the predicate is resolved for each neighbouring biome type.
 	 */
-	public static void addLargeEdgeBiome(Biome parent, Biome edge, double weight, BiPredicate<Biome, LayerRandomnessSource> predicate) {
+	public static void addLargeEdgeBiome(Biome parent, Biome edge, double weight, BiomeGenPredicate predicate) {
 		InternalBiomeData.addOverworldLargeEdge(parent, edge, weight, predicate);
 	}
 
