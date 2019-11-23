@@ -13,7 +13,7 @@ def ENV = System.getenv()
 
 class Globals {
 	static def baseVersion = "0.4.1"
-	static def mcVersion = "1.14.4"
+	static def mcVersion = "1.14_combat-3"
 	static def yarnVersion = "+build.1"
 }
 
@@ -65,6 +65,10 @@ allprojects {
 
 	repositories {
 		mavenLocal()
+	}
+
+	minecraft {
+		customManifest = "https://gist.githubusercontent.com/modmuss50/65e4e44e6840e6b3c3db664e7e85249e/raw/6dabb2b0db1d44a25e8ce38c6d34bd895abc37d4/1.14_combat-3.json"
 	}
 
 	jar {
