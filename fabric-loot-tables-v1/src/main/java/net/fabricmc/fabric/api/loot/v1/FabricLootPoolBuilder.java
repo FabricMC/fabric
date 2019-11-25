@@ -47,13 +47,13 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 
 	@Override
 	public FabricLootPoolBuilder withCondition(LootCondition.Builder condition) {
-		super.method_356(condition);
+		super.withCondition(condition);
 		return this;
 	}
 
 	@Override
 	public FabricLootPoolBuilder withFunction(LootFunction.Builder function) {
-		super.method_353(function);
+		super.withFunction(function);
 		return this;
 	}
 

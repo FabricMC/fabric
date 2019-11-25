@@ -48,18 +48,9 @@ import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 @Mixin(SpriteAtlasTexture.class)
 public abstract class MixinSpriteAtlasTexture {
-	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger();
-	@Shadow
-	private int mipLevel;
-
-	@Shadow
-	public abstract Sprite getSprite(Identifier id);
 
 	@Shadow
 	public abstract Identifier method_24106();
-
-	// INJECTION LOGIC
 
 	private Map<Identifier, Sprite> fabric_injectedSprites;
 

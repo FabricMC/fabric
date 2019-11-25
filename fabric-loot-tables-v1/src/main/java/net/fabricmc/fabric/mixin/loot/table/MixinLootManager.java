@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 public class MixinLootManager {
 	@Shadow private Map<Identifier, LootTable> suppliers;
 
-	@Inject(method = "method_20712", at = @At("RETURN"))
+	@Inject(method = "apply", at = @At("RETURN"))
 	private void apply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
 		Map<Identifier, LootTable> newSuppliers = new HashMap<>();
 

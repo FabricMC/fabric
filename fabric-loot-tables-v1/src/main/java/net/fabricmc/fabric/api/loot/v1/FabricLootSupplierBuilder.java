@@ -48,7 +48,7 @@ public class FabricLootSupplierBuilder extends LootTable.Builder {
 
 	@Override
 	public FabricLootSupplierBuilder withFunction(LootFunction.Builder function) {
-		super.method_335(function);
+		super.withFunction(function);
 		return this;
 	}
 
