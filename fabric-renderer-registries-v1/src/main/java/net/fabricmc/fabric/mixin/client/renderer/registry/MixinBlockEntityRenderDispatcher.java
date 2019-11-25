@@ -47,6 +47,6 @@ public abstract class MixinBlockEntityRenderDispatcher {
 			this.renderers.put(blockEntityType, function.apply(INSTANCE));
 		}));
 
-		BlockEntityRendererRegistry.onBERRegistry();
+		BlockEntityRendererRegistry.onInitialRegistry();
 	}
 }

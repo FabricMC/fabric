@@ -32,21 +32,21 @@ import net.fabricmc.fabric.mixin.client.renderer.registry.MixinBlockEntityRender
 public class BlockEntityRendererRegistry {
 	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
 	private static final HashMap<BlockEntityType<?>, Function<BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> renderers = new HashMap<>();
-	private static boolean hasRegisteredBERs = false;
+	private static boolean hasRegistered = false;
 
 	private BlockEntityRendererRegistry() {
 	}
 
 	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<E>> blockEntityRenderer) {
-		if (!hasRegisteredBERs) {
+		if (!hasRegistered) {
 			renderers.put(blockEntityType, blockEntityRenderer);
 		} else {
 			((MixinBlockEntityRenderDispatcherInvoker) BlockEntityRenderDispatcher.INSTANCE).invoke_register(blockEntityType, blockEntityRenderer.apply(BlockEntityRenderDispatcher.INSTANCE));
 		}
 	}
 
-	public static void onBERRegistry() {
-		hasRegisteredBERs = true;
+	public static void onInitialRegistry() {
+		hasRegistered = true;
 	}
 
 	public static HashMap<BlockEntityType<?>, Function<BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> getRenderers() {

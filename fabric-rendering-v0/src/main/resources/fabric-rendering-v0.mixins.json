@@ -5,8 +5,7 @@
   "client": [
     "MixinBlockColorMap",
     "MixinItemColorMap",
-    "MixinWorldRenderer",
-    "MixinPistonBlockEntityRenderer"
+    "MixinWorldRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
