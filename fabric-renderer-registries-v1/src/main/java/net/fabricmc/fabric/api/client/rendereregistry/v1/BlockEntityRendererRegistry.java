@@ -16,22 +16,27 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
+import java.util.function.Function;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import net.fabricmc.fabric.mixin.client.renderer.registry.MixinBlockEntityRenderDispatcher;
+import net.fabricmc.fabric.impl.client.rendereregistry.v1.BlockEntityRendererRegistryImpl;
 
 /**
  * Helper class for registering BlockEntityRenderers.
  */
-public class BlockEntityRendererRegistry {
-	public static final BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistry();
+public interface BlockEntityRendererRegistry {
+	BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistryImpl();
 
-	private BlockEntityRendererRegistry() { }
-
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRenderer<E> blockEntityRenderer) {
-		((MixinBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).invoke_register(blockEntityType, blockEntityRenderer);
-	}
+	/**
+	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered
+	 *
+	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
+	 * @param blockEntityRenderer a function that returns a {@link BlockEntityRenderer}
+	 * @param <E> the {@link BlockEntity}
+	 */
+	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<E>> blockEntityRenderer);
 }

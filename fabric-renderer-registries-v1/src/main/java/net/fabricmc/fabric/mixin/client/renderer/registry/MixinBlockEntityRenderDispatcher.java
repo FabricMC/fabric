@@ -16,16 +16,32 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.registry;
 
+import java.util.Map;
+
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
+import net.fabricmc.fabric.impl.client.rendereregistry.v1.BlockEntityRendererRegistryImpl;
+
 @Mixin(BlockEntityRenderDispatcher.class)
-public interface MixinBlockEntityRenderDispatcher {
-	@Invoker(value = "register")
-	@SuppressWarnings("rawtypes")
-	void invoke_register(BlockEntityType blockEntityType, BlockEntityRenderer blockEntityRenderer);
+public abstract class MixinBlockEntityRenderDispatcher {
+	@Shadow
+	@Final
+	public static BlockEntityRenderDispatcher INSTANCE;
+	@Shadow
+	@Final
+	private Map<BlockEntityType<?>, BlockEntityRenderer<?>> renderers;
+
+	@Inject(at = @At("RETURN"), method = "<init>")
+	private void init(CallbackInfo ci) {
+		BlockEntityRendererRegistryImpl.setup(((t, function) -> renderers.put(t, function.apply(INSTANCE))));
+	}
 }

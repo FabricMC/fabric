@@ -24,11 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Joiner;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -48,7 +45,6 @@ import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 @Mixin(SpriteAtlasTexture.class)
 public abstract class MixinSpriteAtlasTexture {
-
 	@Shadow
 	public abstract Identifier method_24106();
 
