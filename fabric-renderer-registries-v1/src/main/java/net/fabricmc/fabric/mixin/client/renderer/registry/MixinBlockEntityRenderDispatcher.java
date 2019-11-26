@@ -35,13 +35,10 @@ import net.fabricmc.fabric.impl.client.rendereregistry.v1.BlockEntityRendererReg
 public abstract class MixinBlockEntityRenderDispatcher {
 	@Shadow
 	@Final
-	public static BlockEntityRenderDispatcher INSTANCE;
-	@Shadow
-	@Final
 	private Map<BlockEntityType<?>, BlockEntityRenderer<?>> renderers;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void init(CallbackInfo ci) {
-		BlockEntityRendererRegistryImpl.setup(((t, function) -> renderers.put(t, function.apply(INSTANCE))));
+		BlockEntityRendererRegistryImpl.setup(((t, function) -> renderers.put(t, function.apply((BlockEntityRenderDispatcher) (Object) this))));
 	}
 }
