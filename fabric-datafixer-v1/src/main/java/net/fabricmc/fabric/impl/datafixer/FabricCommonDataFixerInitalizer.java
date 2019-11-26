@@ -21,7 +21,7 @@ import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.impl.datafixer.test.TestObjects;
 import net.fabricmc.fabric.impl.datafixer.test.TestUtil;
 
-public final class FabricDataFixerInitalizerCommon implements ModInitializer {
+public final class FabricCommonDataFixerInitalizer implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		FabricDataFixerImpl.INSTANCE.isLocked(); // Load the DataFixers and register (Block)Entities and TypeReferences now.

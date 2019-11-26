@@ -13,8 +13,8 @@ import net.minecraft.datafixers.schemas.Schema100;
 @Mixin(Schema100.class)
 public interface Schema100Accessor {
 	// registerTypeWithArmorAndToolSlots
-	@Invoker
-	static void callMethod_5195(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
+	@Invoker("method_5195")
+	static void registerTypeWithArmorAndToolSlots(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
 		throw new AssertionError("Mixin dummy");
 	}
 }

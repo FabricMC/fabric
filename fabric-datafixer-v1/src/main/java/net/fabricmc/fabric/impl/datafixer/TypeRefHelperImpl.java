@@ -34,12 +34,12 @@ public final class TypeRefHelperImpl implements TypeReferenceHelper {
 
 	@Override
 	public void registerTypeInTile(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
-		Schema99Accessor.callMethod_5368(schema, typeMap, name); // registerTypeInTile
+		Schema99Accessor.registerTypeInTile(schema, typeMap, name); // registerTypeInTile
 	}
 
 	@Override
 	public void registerTypeWithEquipment(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
-		Schema99Accessor.callMethod_5339(schema, typeMap, name); // registerTypeWithEquipment
+		Schema99Accessor.registerTypeWithEquipment(schema, typeMap, name); // registerTypeWithEquipment
 	}
 
 	@Override
@@ -49,12 +49,12 @@ public final class TypeRefHelperImpl implements TypeReferenceHelper {
 
 	@Override
 	public void registerTypeWithItems(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
-		Schema99Accessor.callMethod_5346(schema, typeMap, name); // registerTypeWithItems
+		Schema99Accessor.registerTypeWithItems(schema, typeMap, name); // registerTypeWithItems
 	}
 
 	@Override
 	public void registerTypeWithArmorAndToolSlots(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
-		Schema100Accessor.callMethod_5195(schema, typeMap, name);
+		Schema100Accessor.registerTypeWithArmorAndToolSlots(schema, typeMap, name);
 	}
 
 	@Override

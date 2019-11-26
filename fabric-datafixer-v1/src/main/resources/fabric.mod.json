@@ -11,10 +11,10 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.datafixer.FabricDataFixerInitalizerCommon"
+      "net.fabricmc.fabric.impl.datafixer.FabricCommonDataFixerInitalizer"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.datafixer.FabricDataFixerInitalizerClient"
+      "net.fabricmc.fabric.impl.datafixer.FabricClientDataFixerInitalizer"
     ],
     "fabric:datafixer": [
       "net.fabricmc.fabric.impl.datafixer.test.TestDataFixerEntrypoint"

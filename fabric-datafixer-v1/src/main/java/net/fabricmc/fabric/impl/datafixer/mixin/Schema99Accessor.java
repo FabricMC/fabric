@@ -34,8 +34,8 @@ public interface Schema99Accessor {
 	 * @param entityMap
 	 * @param name
 	 */
-	@Invoker
-	static void callMethod_5339(Schema schema, Map<String, Supplier<TypeTemplate>> entityMap, String name) {
+	@Invoker("method_5339")
+	static void registerTypeWithEquipment(Schema schema, Map<String, Supplier<TypeTemplate>> entityMap, String name) {
 		throw new AssertionError("Mixin Dummy");
 	}
 
@@ -45,8 +45,8 @@ public interface Schema99Accessor {
 	 * @param typeMap
 	 * @param name
 	 */
-	@Invoker
-	static void callMethod_5346(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
+	@Invoker("method_5346")
+	static void registerTypeWithItems(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
 		throw new AssertionError("Mixin Dummy");
 	}
 
@@ -56,8 +56,8 @@ public interface Schema99Accessor {
 	 * @param typeMap
 	 * @param name
 	 */
-	@Invoker
-	static void callMethod_5368(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
+	@Invoker("method_5368")
+	static void registerTypeInTile(Schema schema, Map<String, Supplier<TypeTemplate>> typeMap, String name) {
 		throw new AssertionError("Mixin Dummy");
 	}
 }

@@ -39,6 +39,8 @@ public interface TypeReferenceHelper {
 
 	/**
 	 * Registers a type with a inTile element.
+	 *
+	 * <p>This has some relation to how arrows and tridents know what type of blockstate the entity is collided with.
 	 * @param schema The Schema to register this Type to.
 	 * @param typeMap The Map of all other TypeTemplates within the Schema.
 	 * @param name The name of the type being registered.

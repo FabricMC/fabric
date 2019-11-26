@@ -29,7 +29,7 @@ import net.minecraft.nbt.NbtHelper;
 import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
 
 @Mixin(NbtHelper.class)
-public class MixinTagHelper {
+public class MixinNbtHelper {
 	@Inject(at = @At("RETURN"), method = "update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/datafixers/DataFixTypes;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;", cancellable = true)
 	private static void updateModFixers(DataFixer vanillaDataFixer, DataFixTypes dataFixTypes, CompoundTag inputTag$unusued, int vanillaDynamicDataVersion, int vanillaRuntimeDataVersion, CallbackInfoReturnable<CompoundTag> cir) {
 		CompoundTag original = cir.getReturnValue(); // We do our fixes after vanilla.

@@ -26,7 +26,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.Message;
-import org.apache.logging.log4j.message.MessageFactory;
+import org.apache.logging.log4j.message.AbstractMessageFactory;
 import org.apache.logging.log4j.message.SimpleMessage;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.DSL;
@@ -48,20 +48,10 @@ import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
 public final class FabricDataFixerImpl implements DataFixerHelper {
-	public static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer", new MessageFactory() {
-		@Override
-		public Message newMessage(Object message) {
-			return new SimpleMessage("[Fabric-DataFixer] " + message);
-		}
-
-		@Override
-		public Message newMessage(String message) {
-			return new SimpleMessage("[Fabric-DataFixer] ");
-		}
-
+	public static final Logger LOGGER = LogManager.getLogger("Fabric-DataFixer", new AbstractMessageFactory() {
 		@Override
 		public Message newMessage(String message, Object... params) {
-			return new SimpleMessage("[Fabric-DataFixer] " + params);
+			return new SimpleMessage("[Fabric-DataFixer] " + message);
 		}
 	});
 	public static final FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();

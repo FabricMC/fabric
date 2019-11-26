@@ -53,19 +53,19 @@ public class BlockEntityRenameFix extends DataFix {
 
 		if (!Objects.equals(this.getOutputSchema().getType(TypeReferences.ENTITY_NAME), blockEntityType)) { // I mean seriously I didn't change that field but it works. Then again ENTITY TypeReference does not refer to ENTITY_NAME in any instances I've seen in registerTypes.
 			throw new IllegalStateException("BlockEntity name type is not what was expected.");
-		} else {
-			return TypeRewriteRule.seq(this.fixTypeEverywhere(this.fixName, originalTypeChoice, newTypeChoice, (ops) -> (pair) -> pair.mapFirst((originalName) -> {
-				String possiblyNamedString = this.rename(originalName);
-				Type<?> originalType = originalTypeChoice.types().get(originalName);
-				Type<?> newType = newTypeChoice.types().get(possiblyNamedString);
-
-				if (!newType.equals(originalType, true, true)) {
-					throw new IllegalStateException(String.format("Dynamic type check failed: %s not equal to %s", newType, originalType));
-				} else {
-					return possiblyNamedString;
-				}
-			})), this.fixTypeEverywhere(this.fixName, blockEntityType, (ops) -> (pair) -> pair.mapSecond(this::rename)));
 		}
+
+		return TypeRewriteRule.seq(this.fixTypeEverywhere(this.fixName, originalTypeChoice, newTypeChoice, (ops) -> (pair) -> pair.mapFirst((originalName) -> {
+			String possiblyNamedString = this.rename(originalName);
+			Type<?> originalType = originalTypeChoice.types().get(originalName);
+			Type<?> newType = newTypeChoice.types().get(possiblyNamedString);
+
+			if (!newType.equals(originalType, true, true)) {
+				throw new IllegalStateException(String.format("Dynamic type check failed: %s not equal to %s", newType, originalType));
+			}
+
+			return possiblyNamedString;
+		})), this.fixTypeEverywhere(this.fixName, blockEntityType, (ops) -> (pair) -> pair.mapSecond(this::rename)));
 	}
 
 	private String rename(String originalValue) {
