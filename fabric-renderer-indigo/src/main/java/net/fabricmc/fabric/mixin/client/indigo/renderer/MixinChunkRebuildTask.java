@@ -71,6 +71,8 @@ public class MixinChunkRebuildTask {
 
 	@Inject(at = @At("HEAD"), method = "method_22785")
 	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBuilder.ChunkData renderData, BlockBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
+		ChunkRendererRegion region = this.region;
+
 		if (region != null) {
 			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 			renderer.prepare(region, field_20839, renderData, builder);
