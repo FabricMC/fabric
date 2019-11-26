@@ -199,7 +199,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	 * in {@code RenderLayers.getEntityBlockLayer}. Layers other than
 	 * translucent are mapped to cutout.
 	 */
-	private VertexConsumer quadVertexConsumer(BlendMode  blendMode) {
+	private VertexConsumer quadVertexConsumer(BlendMode blendMode) {
 		if (blendMode == BlendMode.DEFAULT) {
 			return modelVertexConsumer;
 		}
@@ -208,7 +208,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			blendMode = BlendMode.CUTOUT;
 		}
 
-		if (blendMode == quadBlendMode)  {
+		if (blendMode == quadBlendMode) {
 			return quadVertexConsumer;
 		} else if (blendMode == BlendMode.TRANSLUCENT) {
 			quadVertexConsumer = selectVertexConsumer(class_4722.method_24075());
