@@ -98,7 +98,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		fallbackConsumer = this::fallbackConsumer;
 	}
 
-	public void renderModel(ItemStack itemStack, Type transformType, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int overlay, int lightmap, FabricBakedModel model, VanillaQuadHandler vanillaHandler) {
+	public void renderModel(ItemStack itemStack, Type transformType, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, FabricBakedModel model, VanillaQuadHandler vanillaHandler) {
 		this.lightmap = lightmap;
 		this.overlay = overlay;
 		this.itemStack = itemStack;
