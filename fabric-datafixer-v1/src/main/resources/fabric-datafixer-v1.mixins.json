@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.impl.datafixer.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinChunkSerializer",
+    "MixinTagHelper",
+    "Schema99Accessor",
+    "Schema100Accessor"
+  ],
+  "client": [
+  	"client.MixinHotbarStorage"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
