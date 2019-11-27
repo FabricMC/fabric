@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.rendereregistry.v1;
+package net.fabricmc.fabric.impl.client.renderer.registry;
 
 import java.util.HashMap;
 import java.util.function.BiConsumer;
