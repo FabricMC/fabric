@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-networking-entity-v1",
+  "name": "Fabric Entity Networking (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-networking-entity-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-networking-v0": ">=0.1.7"
+  },
+  "description": "Networking hooks for entities.",
+  "mixins": [
+    "fabric-networking-entity-v1.mixins.json"
+  ]
+}
