@@ -22,9 +22,15 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.level.LevelProperties;
 
+import net.fabricmc.fabric.api.event.server.ServerReloadCallback;
+import net.fabricmc.fabric.api.event.server.ServerSaveCallback;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import net.fabricmc.fabric.api.event.server.ServerTickCallback;
@@ -44,5 +50,25 @@ public class MixinMinecraftServer {
 	@Inject(at = @At("RETURN"), method = "tick")
 	protected void tick(BooleanSupplier var1, CallbackInfo info) {
 		ServerTickCallback.EVENT.invoker().tick((MinecraftServer) (Object) this);
+	}
+
+	@Inject(method = "reload()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;scanPacks()V"))
+	public void beforeReload(CallbackInfo info) {
+		ServerReloadCallback.PRE.invoker().onServerReload((MinecraftServer) (Object) this);
+	}
+
+	@Inject(method = "loadWorldDataPacks(Ljava/io/File;Lnet/minecraft/world/level/LevelProperties;)V", at = @At("TAIL"))
+	public void afterInitialLoad(CallbackInfo ci) {
+		ServerReloadCallback.POST.invoker().onServerReload((MinecraftServer) (Object) this);
+	}
+
+	@Inject(method = "reload()V", at = @At("TAIL"))
+	public void afterReload(CallbackInfo info) {
+		ServerReloadCallback.POST.invoker().onServerReload((MinecraftServer) (Object) this);
+	}
+
+	@Inject(method = "save(ZZZ)Z", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
+	public void onSave(boolean silent, boolean flush, boolean enforced, CallbackInfoReturnable<Boolean> info, boolean iteratedWorlds, ServerWorld overworld, LevelProperties mainLevelProperties) {
+		ServerSaveCallback.EVENT.invoker().onServerSave((MinecraftServer) (Object) this, mainLevelProperties);
 	}
 }
