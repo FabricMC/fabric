@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddHillsLayer;
-import net.minecraft.world.biome.layer.BiomeLayers;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
-import net.minecraft.world.biome.layer.LayerSampler;
+import net.minecraft.world.biome.layer.util.BiomeLayers;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.biome.layer.util.LayerSampler;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;

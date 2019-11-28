@@ -23,7 +23,7 @@ import java.util.function.IntConsumer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 

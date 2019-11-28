@@ -21,7 +21,7 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 
 public class FabricSprite extends Sprite {
-	public FabricSprite(SpriteAtlasTexture spriteAtlasTexture, Sprite.class_4727 class_4727, int mipmap, int u, int v, int x, int y, NativeImage nativeImage) {
-		super(spriteAtlasTexture, class_4727, mipmap, u, v, x, y, nativeImage);
+	public FabricSprite(SpriteAtlasTexture spriteAtlasTexture, Sprite.Info info, int mipmap, int u, int v, int x, int y, NativeImage nativeImage) {
+		super(spriteAtlasTexture, info, mipmap, u, v, x, y, nativeImage);
 	}
 }

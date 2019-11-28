@@ -22,11 +22,11 @@ import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import net.minecraft.class_4722;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
+import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -132,7 +132,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	 * support sprite layers, so this can't be helped in this implementation.
 	 */
 	private VertexConsumer selectVertexConsumer(RenderLayer layerIn) {
-		final RenderLayer layer = transformType == ModelTransformation.Type.GUI && Objects.equals(layerIn, class_4722.method_24075()) ? class_4722.method_24076() : layerIn;
+		final RenderLayer layer = transformType == ModelTransformation.Type.GUI && Objects.equals(layerIn, TexturedRenderLayers.getEntityTranslucent()) ? TexturedRenderLayers.getEntityTranslucentCull() : layerIn;
 		return ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, layer, true, itemStack.hasEnchantmentGlint());
 	}
 
@@ -211,10 +211,10 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		if (blendMode == quadBlendMode) {
 			return quadVertexConsumer;
 		} else if (blendMode == BlendMode.TRANSLUCENT) {
-			quadVertexConsumer = selectVertexConsumer(class_4722.method_24075());
+			quadVertexConsumer = selectVertexConsumer(TexturedRenderLayers.getEntityTranslucent());
 			quadBlendMode = BlendMode.TRANSLUCENT;
 		} else {
-			quadVertexConsumer = selectVertexConsumer(class_4722.method_24074());
+			quadVertexConsumer = selectVertexConsumer(TexturedRenderLayers.getEntityCutout());
 			quadBlendMode = BlendMode.CUTOUT;
 		}
 

@@ -127,7 +127,7 @@ public class ChunkRenderInfo {
 		int result = brightnessCache.get(key);
 
 		if (result == Integer.MAX_VALUE) {
-			result = WorldRenderer.method_23793(blockView, blockView.getBlockState(pos), pos);
+			result = WorldRenderer.getLightmapCoordinates(blockView, blockView.getBlockState(pos), pos);
 			brightnessCache.put(key, result);
 		}
 

@@ -22,7 +22,7 @@ import java.util.List;
 import com.google.common.base.Preconditions;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 /**
  * Picks biomes with arbitrary double weights using a binary search.

@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.class_4729;
+import net.minecraft.client.resource.Format4ResourcePack;
 import net.minecraft.resource.DefaultResourcePack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.ReloadableResourceManager;
@@ -57,9 +57,9 @@ public class MixinMinecraftGame {
 
 			boolean isDefaultResources = pack instanceof DefaultResourcePack;
 
-			if (!isDefaultResources && pack instanceof class_4729) {
-				MixinClass_4729 fixer = (MixinClass_4729) pack;
-				isDefaultResources = fixer.getField_21766() instanceof DefaultResourcePack;
+			if (!isDefaultResources && pack instanceof Format4ResourcePack) {
+				MixinFormat4ResourcePack fixer = (MixinFormat4ResourcePack) pack;
+				isDefaultResources = fixer.getParent() instanceof DefaultResourcePack;
 			}
 
 			if (isDefaultResources) {

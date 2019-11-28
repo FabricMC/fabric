@@ -19,11 +19,11 @@ package net.fabricmc.fabric.mixin.resource.loader;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.class_4729;
+import net.minecraft.client.resource.Format4ResourcePack;
 import net.minecraft.resource.ResourcePack;
 
-@Mixin(class_4729.class)
-public interface MixinClass_4729 {
+@Mixin(Format4ResourcePack.class)
+public interface MixinFormat4ResourcePack {
 	@Accessor
-	ResourcePack getField_21766();
+	ResourcePack getParent();
 }
