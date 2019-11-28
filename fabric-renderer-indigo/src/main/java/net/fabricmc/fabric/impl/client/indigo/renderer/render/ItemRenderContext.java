@@ -17,21 +17,30 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import net.minecraft.class_4722;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.RenderLayers;
 import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformation.Type;
 import net.minecraft.client.util.math.Matrix4f;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -62,45 +71,69 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private final ItemColors colorMap;
 	private final Random random = new Random();
 	private final Consumer<BakedModel> fallbackConsumer;
-	VertexConsumer bufferBuilder;
-	MatrixStack matrixStack;
-	Matrix4f matrix;
+	private final Vector3f normalVec = new Vector3f();
+
+	private MatrixStack matrixStack;
+	private Matrix4f matrix;
+	private VertexConsumerProvider vertexConsumerProvider;
+	private VertexConsumer modelVertexConsumer;
+	private BlendMode quadBlendMode;
+	private VertexConsumer quadVertexConsumer;
+	private Type transformType;
 	private int lightmap;
 	private int overlay;
 	private ItemStack itemStack;
 	private VanillaQuadHandler vanillaHandler;
-	protected final Vector3f normalVec = new Vector3f();
 
 	private final Supplier<Random> randomSupplier = () -> {
-		Random result = random;
+		final Random result = random;
 		result.setSeed(ITEM_RANDOM_SEED);
 		return random;
 	};
 
-	private final int[] quadData = new int[EncodingFormat.TOTAL_STRIDE];;
+	private final int[] quadData = new int[EncodingFormat.TOTAL_STRIDE];
 
 	public ItemRenderContext(ItemColors colorMap) {
 		this.colorMap = colorMap;
-		this.fallbackConsumer = this::fallbackConsumer;
+		fallbackConsumer = this::fallbackConsumer;
 	}
 
-	public void renderModel(FabricBakedModel model, ItemStack stack, int lightmap, int overlay, MatrixStack matrixStack, VertexConsumer buffer, VanillaQuadHandler vanillaHandler) {
+	public void renderModel(ItemStack itemStack, Type transformType, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, FabricBakedModel model, VanillaQuadHandler vanillaHandler) {
 		this.lightmap = lightmap;
 		this.overlay = overlay;
-		this.itemStack = stack;
-		this.bufferBuilder = buffer;
+		this.itemStack = itemStack;
+		this.vertexConsumerProvider = vertexConsumerProvider;
 		this.matrixStack = matrixStack;
-		this.matrix = matrixStack.peek().getModel();
-		this.normalMatrix = matrixStack.peek().getNormal();
-		this.overlay = overlay;
-
+		this.transformType = transformType;
 		this.vanillaHandler = vanillaHandler;
-		model.emitItemQuads(stack, randomSupplier, this);
+		quadBlendMode = BlendMode.DEFAULT;
+		modelVertexConsumer = selectVertexConsumer(RenderLayers.getItemLayer(itemStack));
 
-		this.bufferBuilder = null;
+		matrixStack.push();
+		((BakedModel) model).getTransformation().getTransformation(transformType).method_23075(invert, matrixStack);
+		matrixStack.translate(-0.5D, -0.5D, -0.5D);
+		matrix = matrixStack.peek().getModel();
+		normalMatrix = matrixStack.peek().getNormal();
+
+		model.emitItemQuads(itemStack, randomSupplier, this);
+
+		matrixStack.pop();
+
 		this.matrixStack = null;
 		this.itemStack = null;
 		this.vanillaHandler = null;
+		modelVertexConsumer = null;
+	}
+
+	/**
+	 * Use non-culling translucent material in GUI to match vanilla behavior. If the item
+	 * is enchanted then also select a dual-output vertex consumer. For models with layered
+	 * coplanar polygons this means we will render the glint more than once. Indigo doesn't
+	 * support sprite layers, so this can't be helped in this implementation.
+	 */
+	private VertexConsumer selectVertexConsumer(RenderLayer layerIn) {
+		final RenderLayer layer = transformType == ModelTransformation.Type.GUI && Objects.equals(layerIn, class_4722.method_24075()) ? class_4722.method_24076() : layerIn;
+		return ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, layer, true, itemStack.hasEnchantmentGlint());
 	}
 
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
@@ -122,7 +155,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private final Maker editorQuad = new Maker();
 
 	private final Consumer<Mesh> meshConsumer = (mesh) -> {
-		MeshImpl m = (MeshImpl) mesh;
+		final MeshImpl m = (MeshImpl) mesh;
 		final int[] data = m.data();
 		final int limit = data.length;
 		int index = 0;
@@ -147,7 +180,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			return;
 		}
 
-		RenderMaterialImpl.Value mat = quad.material();
+		final RenderMaterialImpl.Value mat = quad.material();
 		final int quadColor = mat.disableColorIndex(0) ? -1 : indexColor();
 		final int lightmap = mat.emissive(0) ? AbstractQuadRenderer.FULL_BRIGHTNESS : this.lightmap;
 
@@ -158,7 +191,34 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), lightmap));
 		}
 
-		AbstractQuadRenderer.bufferQuad(bufferBuilder, quad, matrix, overlay, normalMatrix, normalVec);
+		AbstractQuadRenderer.bufferQuad(quadVertexConsumer(mat.blendMode(0)), quad, matrix, overlay, normalMatrix, normalVec);
+	}
+
+	/**
+	 * Caches custom blend mode / vertex consumers and mimics the logic
+	 * in {@code RenderLayers.getEntityBlockLayer}. Layers other than
+	 * translucent are mapped to cutout.
+	 */
+	private VertexConsumer quadVertexConsumer(BlendMode blendMode) {
+		if (blendMode == BlendMode.DEFAULT) {
+			return modelVertexConsumer;
+		}
+
+		if (blendMode != BlendMode.TRANSLUCENT) {
+			blendMode = BlendMode.CUTOUT;
+		}
+
+		if (blendMode == quadBlendMode) {
+			return quadVertexConsumer;
+		} else if (blendMode == BlendMode.TRANSLUCENT) {
+			quadVertexConsumer = selectVertexConsumer(class_4722.method_24075());
+			quadBlendMode = BlendMode.TRANSLUCENT;
+		} else {
+			quadVertexConsumer = selectVertexConsumer(class_4722.method_24074());
+			quadBlendMode = BlendMode.CUTOUT;
+		}
+
+		return quadVertexConsumer;
 	}
 
 	@Override
@@ -172,23 +232,23 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
 				random.setSeed(ITEM_RANDOM_SEED);
 				final Direction cullFace = ModelHelper.faceFromIndex(i);
-				renderFallbackWithTransform(bufferBuilder, model.getQuads((BlockState) null, cullFace, random), lightmap, itemStack, cullFace);
+				renderFallbackWithTransform(model.getQuads((BlockState) null, cullFace, random), cullFace);
 			}
 		} else {
 			for (int i = 0; i <= ModelHelper.NULL_FACE_ID; i++) {
-				vanillaHandler.accept(model, itemStack, lightmap, overlay, matrixStack, bufferBuilder);
+				vanillaHandler.accept(model, itemStack, lightmap, overlay, matrixStack, modelVertexConsumer);
 			}
 		}
-	};
+	}
 
-	private void renderFallbackWithTransform(VertexConsumer bufferBuilder, List<BakedQuad> quads, int color, ItemStack stack, Direction cullFace) {
+	private void renderFallbackWithTransform(List<BakedQuad> quads, Direction cullFace) {
 		if (quads.isEmpty()) {
 			return;
 		}
 
-		Maker editorQuad = this.editorQuad;
+		final Maker editorQuad = this.editorQuad;
 
-		for (BakedQuad q : quads) {
+		for (final BakedQuad q : quads) {
 			editorQuad.clear();
 			editorQuad.fromVanilla(q.getVertexData(), 0, false);
 			editorQuad.cullFace(cullFace);

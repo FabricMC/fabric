@@ -4,7 +4,7 @@ plugins {
 	id 'idea'
 	id 'maven-publish'
 	id 'fabric-loom' version '0.2.5-SNAPSHOT' apply false
-	id 'net.minecrell.licenser' version '0.4.1'	
+	id 'net.minecrell.licenser' version '0.4.1'
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
@@ -183,7 +183,7 @@ publishing {
 					depNode.appendNode("scope", "compile")
 				}
 			}
-		}	
+		}
 	}
 
 	repositories {
