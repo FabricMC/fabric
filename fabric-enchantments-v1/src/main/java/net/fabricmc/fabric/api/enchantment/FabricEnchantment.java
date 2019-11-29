@@ -19,13 +19,13 @@ package net.fabricmc.fabric.api.enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 
 /**
- * Implement this interface on your enchantments if you like them to use a custom enchantment type.<br />
+ * Implement this interface on your enchantments if you want them to use a custom enchantment target.
  * Your enchantments should have a vanilla enchantment target of {@link EnchantmentTarget#ALL}.
  */
 public interface FabricEnchantment {
 	/**
-	 * Returns a custom enchantment type
-	 * @return your own enchantment type
+	 * Returns the {@link FabricEnchantmentTarget} for this enchantment.
+	 * @return a {@link FabricEnchantmentTarget} that specifies the the items that this enchantment can apply to
 	 */
 	FabricEnchantmentTarget getEnchantmentTarget();
 }
