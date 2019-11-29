@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.biomes.v1;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
@@ -124,6 +123,7 @@ public final class OverworldBiomes {
 
 	/**
 	 * Adds a 'sub biome,' similar to minecraft's sunflower plains, that occasionally replaces a portion of the parent biome.
+	 * The sub biome is around the same size as hill biomes.
 	 *
 	 * @param parent the base biome which can have portions replaced by the sub biome
 	 * @param subBiome the biome to be added as a sub biome

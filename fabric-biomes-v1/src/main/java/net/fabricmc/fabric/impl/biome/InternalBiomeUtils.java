@@ -147,9 +147,9 @@ public final class InternalBiomeUtils {
 
 	public static void transformLargeEdge(LayerRandomnessSource random, Biome existing, Collection<Biome> borders, IntConsumer result) {
 		Map<Biome, PredicatedTransformer> largeEdges = InternalBiomeData.getOverworldLargeEdges();
+		PredicatedTransformer transformer = largeEdges.get(existing);
 
-		if (largeEdges.containsKey(existing)) {
-			PredicatedTransformer transformer = largeEdges.get(existing);
+		if (transformer != null) {
 			Biome transformed = transformer.transform(existing, random, borders);
 
 			if (transformed != existing) {

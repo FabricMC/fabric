@@ -32,7 +32,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 public class MixinAddSunflowerPlainsLayer {
 	@Inject(at = @At("TAIL"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource random, int previous, CallbackInfoReturnable<Integer> info) {
-		Biome biome = Registry.BIOME.get(previous);
+		Biome biome = Registry.BIOME.get(info.getReturnValueI());
 
 		InternalBiomeUtils.transformSubBiome(random, biome, info::setReturnValue);
 	}
