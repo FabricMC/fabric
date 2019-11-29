@@ -28,7 +28,7 @@ public interface EnchantmentTargetRegistry {
 	EnchantmentTargetRegistry INSTANCE = EnchantmentTargetRegistryImpl.INSTANCE;
 
 	/**
-	 * Registers a new enchantment target
+	 * Registers a new {@link FabricEnchantmentTarget}
 	 * @param enchantmentTarget the custom target
 	 */
 	void register(FabricEnchantmentTarget enchantmentTarget);

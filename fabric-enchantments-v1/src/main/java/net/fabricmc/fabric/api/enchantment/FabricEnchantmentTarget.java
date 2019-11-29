@@ -19,13 +19,14 @@ package net.fabricmc.fabric.api.enchantment;
 import net.minecraft.item.Item;
 
 /**
- * Interface for an enchantment target
+ * Allows mods to define custom enchantment targets outside of Vanilla's {@link EnchantmentTarget} enum.
+ * Enchantment targets restrict what items a certain {@link FabricEnchantment} can be applied to.
  */
 public interface FabricEnchantmentTarget {
 	/**
 	 * Checks whether enchantments with this target can be applied to this item
-	 * @param item the item to be decided on
-	 * @return whether these enchantments are allowed to be applied to this item
+	 * @param item the item to be checked
+	 * @return <code>true</code> if the enchantment can be applied to this item
 	 */
 	boolean isAcceptableItem(Item item);
 }
