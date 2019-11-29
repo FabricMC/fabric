@@ -1,12 +1,13 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.eventslifecycle",
+  "package": "net.fabricmc.fabric.mixin.event.lifecycle",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinMinecraftServer",
     "MixinWorld"
   ],
   "client": [
+    "MixinItemStack",
     "MixinMinecraftClient"
   ],
   "injectors": {

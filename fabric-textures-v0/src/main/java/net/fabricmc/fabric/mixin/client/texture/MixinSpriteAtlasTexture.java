@@ -16,82 +16,79 @@
 
 package net.fabricmc.fabric.mixin.client.texture;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Joiner;
-import net.fabricmc.fabric.api.client.texture.*;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.impl.client.texture.FabricSprite;
-import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.PngFile;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.crash.CrashException;
-import net.minecraft.util.crash.CrashReport;
-import net.minecraft.util.crash.CrashReportSection;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.io.IOException;
-import java.util.*;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.crash.CrashException;
+import net.minecraft.util.crash.CrashReport;
+import net.minecraft.util.crash.CrashReportSection;
+
+import net.fabricmc.fabric.api.client.texture.DependentSprite;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
+import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 @Mixin(SpriteAtlasTexture.class)
 public abstract class MixinSpriteAtlasTexture {
 	@Shadow
-	private static Logger LOGGER;
-	@Shadow
-	private int mipLevel;
-
-	@Shadow
-	public abstract Sprite getSprite(Identifier id);
+	public abstract Identifier method_24106();
 
 	private Map<Identifier, Sprite> fabric_injectedSprites;
 
-	/**
-	 * The purpose of this patch is to allow injecting sprites at the stage of Sprite instantiation, such as
-	 * Sprites with CustomSpriteLoaders.
-	 * <p>
-	 * FabricSprite is a red herring. It's only use to go around Sprite's constructors being protected.
-	 * <p>
-	 * method_18160 is a lambda used in runAsync.
-	 */
-	@SuppressWarnings("JavaDoc")
-
-	@Redirect(method = "method_18160", at = @At(value = "NEW", target = "net/minecraft/client/texture/Sprite"))
-	public Sprite newSprite(Identifier id, PngFile pngFile, AnimationResourceMetadata animationMetadata) {
-		if (fabric_injectedSprites.containsKey(id)) {
-			return fabric_injectedSprites.get(id);
-		} else {
-			return new FabricSprite(id, pngFile, animationMetadata);
+	// Loads in custom sprite object injections.
+	@Inject(at = @At("RETURN"), method = "loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;")
+	private void afterLoadSprites(ResourceManager resourceManager_1, Set<Identifier> set_1, CallbackInfoReturnable<Collection<Sprite>> info) {
+		if (fabric_injectedSprites != null) {
+			info.getReturnValue().addAll(fabric_injectedSprites.values());
+			fabric_injectedSprites = null;
 		}
 	}
 
+	// Handles DependentSprite + custom sprite object injections.
 	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/SpriteAtlasTexture;loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;"), method = "stitch")
-	public Set<Identifier> setHook(Set<Identifier> set) {
+	public Set<Identifier> beforeSpriteLoad(Set<Identifier> set) {
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
-		//noinspection ConstantConditions
-		ClientSpriteRegistryCallback.EVENT.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
+
+		SpriteRegistryCallbackHolder.eventLocal(method_24106()).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
+		SpriteRegistryCallbackHolder.EVENT_GLOBAL.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
 		Set<DependentSprite> dependentSprites = new HashSet<>();
 		Set<Identifier> dependentSpriteIds = new HashSet<>();
+
 		for (Identifier id : set) {
 			Sprite sprite;
+
 			if ((sprite = fabric_injectedSprites.get(id)) instanceof DependentSprite) {
 				dependentSprites.add((DependentSprite) sprite);
 				dependentSpriteIds.add(id);
 			}
 		}
 
+		Set<Identifier> result = set;
+		boolean isResultNew = false;
+
 		if (!dependentSprites.isEmpty()) {
-			Set<Identifier> result = new LinkedHashSet<>();
+			if (!isResultNew) {
+				result = new LinkedHashSet<>();
+				isResultNew = true;
+			}
 
 			for (Identifier id : set) {
 				if (!dependentSpriteIds.contains(id)) {
@@ -100,11 +97,13 @@ public abstract class MixinSpriteAtlasTexture {
 			}
 
 			int lastSpriteSize = 0;
+
 			while (lastSpriteSize != result.size() && result.size() < set.size()) {
 				lastSpriteSize = result.size();
 
 				for (DependentSprite sprite : dependentSprites) {
 					Identifier id = ((Sprite) sprite).getId();
+
 					if (!result.contains(id) && result.containsAll(sprite.getDependencies())) {
 						result.add(id);
 					}
@@ -113,49 +112,30 @@ public abstract class MixinSpriteAtlasTexture {
 
 			if (result.size() < set.size()) {
 				CrashReport report = CrashReport.create(new Throwable(), "Resolving sprite dependencies");
+
 				for (DependentSprite sprite : dependentSprites) {
 					Identifier id = ((Sprite) sprite).getId();
+
 					if (!result.contains(id)) {
 						CrashReportSection element = report.addElement("Unresolved sprite");
 						element.add("Sprite", id);
 						element.add("Dependencies", Joiner.on(',').join(sprite.getDependencies()));
 					}
 				}
+
 				throw new CrashException(report);
 			}
-
-			return result;
-		} else {
-			return set;
 		}
-	}
 
-	@Inject(at = @At("HEAD"), method = "loadSprite", cancellable = true)
-	public void loadSprite(ResourceManager manager, Sprite sprite, CallbackInfoReturnable<Boolean> info) {
-		// refer SpriteAtlasTexture.loadSprite
-		if (sprite instanceof CustomSpriteLoader) {
-			try {
-				if (!((CustomSpriteLoader) sprite).load(manager, mipLevel)) {
-					info.setReturnValue(false);
-					info.cancel();
-					return;
-				}
-			} catch (RuntimeException | IOException e) {
-				LOGGER.error("Unable to load custom sprite {}: {}", sprite.getId(), e);
-				info.setReturnValue(false);
-				info.cancel();
-				return;
+		if (!fabric_injectedSprites.isEmpty()) {
+			if (!isResultNew) {
+				result = new LinkedHashSet<>(set);
+				isResultNew = true;
 			}
 
-			try {
-				sprite.generateMipmaps(this.mipLevel);
-				info.setReturnValue(true);
-				info.cancel();
-			} catch (Throwable e) {
-				LOGGER.error("Unable to apply mipmap to custom sprite {}: {}", sprite.getId(), e);
-				info.setReturnValue(false);
-				info.cancel();
-			}
+			result.removeAll(fabric_injectedSprites.keySet());
 		}
+
+		return result;
 	}
 }

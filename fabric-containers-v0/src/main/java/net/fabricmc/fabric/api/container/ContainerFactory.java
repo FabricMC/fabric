@@ -22,16 +22,14 @@ import net.minecraft.util.PacketByteBuf;
 
 @FunctionalInterface
 public interface ContainerFactory<T> {
-
 	/**
 	 * Creates the new object.
 	 *
 	 * @param syncId     The container synchronization ID.
 	 * @param identifier the Identifier is the name that was used when registering the factory
 	 * @param player     the player that is opening the gui/container
-	 * @param buf        the buffer contains the same data that was provided with {@Link ContainerProviderRegistry.openContainer}
+	 * @param buf        the buffer contains the same data that was provided with {@link net.fabricmc.fabric.api.container.ContainerProviderRegistry#openContainer}
 	 * @return the new gui or container
 	 */
 	T create(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf);
-
 }

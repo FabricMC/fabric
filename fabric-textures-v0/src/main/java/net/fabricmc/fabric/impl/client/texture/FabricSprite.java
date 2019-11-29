@@ -16,17 +16,12 @@
 
 package net.fabricmc.fabric.impl.client.texture;
 
-import net.minecraft.client.resource.metadata.AnimationResourceMetadata;
+import net.minecraft.client.texture.NativeImage;
 import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.util.PngFile;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 
 public class FabricSprite extends Sprite {
-	public FabricSprite(Identifier var1, int var2, int var3) {
-		super(var1, var2, var3);
-	}
-
-	public FabricSprite(Identifier identifier, PngFile pngFile, AnimationResourceMetadata animationResourceMetadata) {
-		super(identifier, pngFile, animationResourceMetadata);
+	public FabricSprite(SpriteAtlasTexture spriteAtlasTexture, Sprite.Info info, int mipmap, int u, int v, int x, int y, NativeImage nativeImage) {
+		super(spriteAtlasTexture, info, mipmap, u, v, x, y, nativeImage);
 	}
 }

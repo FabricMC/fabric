@@ -16,17 +16,19 @@
 
 package net.fabricmc.fabric.impl.client.keybinding;
 
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
-import net.minecraft.client.options.KeyBinding;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.client.options.KeyBinding;
+
+import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
 
 public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
@@ -67,6 +69,7 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 	@Override
 	public boolean addCategory(String categoryName) {
 		Map<String, Integer> map = getCategoryMap();
+
 		if (map.containsKey(categoryName)) {
 			return false;
 		}
@@ -98,6 +101,7 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 
 	public KeyBinding[] process(KeyBinding[] keysAll) {
 		List<KeyBinding> newKeysAll = new ArrayList<>();
+
 		for (KeyBinding binding : keysAll) {
 			if (!(binding instanceof FabricKeyBinding)) {
 				newKeysAll.add(binding);
