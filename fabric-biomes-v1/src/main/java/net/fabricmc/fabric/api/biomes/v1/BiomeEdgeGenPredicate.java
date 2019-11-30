@@ -72,4 +72,11 @@ public interface BiomeEdgeGenPredicate {
 			return randVal < chance;
 		};
 	}
+
+	/**
+	 * @return a {@link BiomeEdgeGenPredicate} which always returns true.
+	 */
+	static BiomeEdgeGenPredicate createAlwaysTruePredicate() {
+		return (biomes, rand) -> true;
+	}
 }

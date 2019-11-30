@@ -48,12 +48,16 @@ final class PredicatedTransformer {
 		List<PredicatedBiomeEntry> truePredicates = new ArrayList<>();
 		double currentTotal = 0.0D;
 
-		for (PredicatedBiomeEntry predicate : predicates) {
+		double[] upperWeightBounds = new double[predicates.size()];
+
+		for (int i = 0; i < predicates.size(); ++i) {
+			PredicatedBiomeEntry predicate = predicates.get(i);
+
 			if (predicate.test(borders, random)) {
 				truePredicates.add(predicate);
 
 				currentTotal += predicate.getWeight();
-				predicate.setUpperWeightBound(currentTotal);
+				upperWeightBounds[i] = currentTotal;
 				continue;
 			}
 		}
@@ -73,7 +77,7 @@ final class PredicatedTransformer {
 			while (low < high) {
 				int mid = (high + low) >>> 1;
 
-				if (target < truePredicates.get(mid).getUpperWeightBound()) {
+				if (target < upperWeightBounds[mid]) {
 					high = mid;
 				} else {
 					low = mid + 1;

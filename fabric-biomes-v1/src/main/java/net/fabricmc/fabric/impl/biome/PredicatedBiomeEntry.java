@@ -27,16 +27,11 @@ class PredicatedBiomeEntry {
 	private final Biome biome;
 	private final BiomeEdgeGenPredicate predicate;
 	private final double weight;
-	private double upperWeightBound = 0D;
 
 	PredicatedBiomeEntry(Biome biome, BiomeEdgeGenPredicate predicate, double weight) {
 		this.biome = biome;
 		this.predicate = predicate;
 		this.weight = weight;
-	}
-
-	void setUpperWeightBound(double upperWeightBound) {
-		this.upperWeightBound = upperWeightBound;
 	}
 
 	Biome getBiome() {
@@ -49,9 +44,5 @@ class PredicatedBiomeEntry {
 
 	double getWeight() {
 		return weight;
-	}
-
-	double getUpperWeightBound() {
-		return upperWeightBound;
 	}
 }
