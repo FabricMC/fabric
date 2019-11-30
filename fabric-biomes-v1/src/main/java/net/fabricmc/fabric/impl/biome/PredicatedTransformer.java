@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
+import it.unimi.dsi.fastutil.doubles.DoubleList;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
@@ -48,16 +51,14 @@ final class PredicatedTransformer {
 		List<PredicatedBiomeEntry> truePredicates = new ArrayList<>();
 		double currentTotal = 0.0D;
 
-		double[] upperWeightBounds = new double[predicates.size()];
+		DoubleList upperWeightBounds = new DoubleArrayList();
 
-		for (int i = 0; i < predicates.size(); ++i) {
-			PredicatedBiomeEntry predicate = predicates.get(i);
-
+		for (PredicatedBiomeEntry predicate : predicates) {
 			if (predicate.test(borders, random)) {
 				truePredicates.add(predicate);
 
 				currentTotal += predicate.getWeight();
-				upperWeightBounds[i] = currentTotal;
+				upperWeightBounds.add(currentTotal);
 				continue;
 			}
 		}
@@ -77,7 +78,7 @@ final class PredicatedTransformer {
 			while (low < high) {
 				int mid = (high + low) >>> 1;
 
-				if (target < upperWeightBounds[mid]) {
+				if (target < upperWeightBounds.getDouble(mid)) {
 					high = mid;
 				} else {
 					low = mid + 1;
