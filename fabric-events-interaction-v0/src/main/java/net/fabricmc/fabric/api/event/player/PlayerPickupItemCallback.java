@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Callback for the player picking up an item on the ground.
+ * Callback for the player picking up an item entity.
  * Is hooked in before the item is picked up.
  *
  * <p>Upon return:
