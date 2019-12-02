@@ -24,6 +24,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -31,28 +32,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(EnchantingTableContainer.class)
 public abstract class MixinEnchantingTableContainer {
-	private World fabric_world;
-	private BlockPos fabric_blockPos;
+	@Unique
+	private World world;
+	@Unique
+	private BlockPos blockPos;
 
+	@SuppressWarnings("UnresolvedMixinReference")
 	@Inject(method = "method_17411", at = @At("HEAD"))
 	private void onEnchantmentCalculation(ItemStack itemStack, World world, BlockPos blockPos, CallbackInfo callbackInfo) {
-		fabric_world = world;
-		fabric_blockPos = blockPos;
+		this.world = world;
+		this.blockPos = blockPos;
 	}
 
+	@SuppressWarnings("UnresolvedMixinReference")
 	@ModifyVariable(method = "method_17411", at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V", shift = At.Shift.BEFORE), ordinal = 0)
 	private int changeEnchantingPower(int power) {
-		BlockPos.Mutable mutable = new BlockPos.Mutable();
-		for(int zOffset = -1; zOffset <= 1; ++zOffset) {
-			for(int xOffset = -1; xOffset <= 1; ++xOffset) {
-				if ((zOffset != 0 || xOffset != 0) && fabric_world.isAir(mutable.set(fabric_blockPos).add(xOffset, 0, zOffset)) && fabric_world.isAir(mutable.offset(Direction.UP))) {
-					power += fabric_getEnchantingPower(mutable.set(fabric_blockPos).add(xOffset * 2, 0, zOffset * 2));
-					power += fabric_getEnchantingPower(mutable.offset(Direction.UP));
-					if (xOffset != 0 && zOffset != 0) {
-						power += fabric_getEnchantingPower(mutable.set(fabric_blockPos).add(xOffset * 2, 0, zOffset));
-						power += fabric_getEnchantingPower(mutable.offset(Direction.UP));
-						power += fabric_getEnchantingPower(mutable.set(fabric_blockPos).add(xOffset, 0, zOffset * 2));
-						power += fabric_getEnchantingPower(mutable.offset(Direction.UP));
+		BlockPos.Mutable position = new BlockPos.Mutable();
+		for(int offsetZ = -1; offsetZ <= 1; ++offsetZ) {
+			for(int offsetX = -1; offsetX <= 1; ++offsetX) {
+				if ((offsetZ != 0 || offsetX != 0) && world.isAir(position.set(blockPos).setOffset(offsetX, 0, offsetZ)) && world.isAir(position.setOffset(Direction.UP))) {
+					power += getEnchantingPower(position.set(blockPos).setOffset(offsetX * 2, 0, offsetZ * 2));
+					power += getEnchantingPower(position.setOffset(Direction.UP));
+					if (offsetX != 0 && offsetZ != 0) {
+						power += getEnchantingPower(position.set(blockPos).setOffset(offsetX * 2, 0, offsetZ));
+						power += getEnchantingPower(position.setOffset(Direction.UP));
+						power += getEnchantingPower(position.set(blockPos).setOffset(offsetX, 0, offsetZ * 2));
+						power += getEnchantingPower(position.setOffset(Direction.UP));
 					}
 				}
 			}
@@ -60,10 +65,11 @@ public abstract class MixinEnchantingTableContainer {
 		return power;
 	}
 
-	private int fabric_getEnchantingPower(BlockPos blockPos) {
-		BlockState blockState = fabric_world.getBlockState(blockPos);
+	@Unique
+	private int getEnchantingPower(BlockPos blockPos) {
+		BlockState blockState = world.getBlockState(blockPos);
         if(blockState.getBlock() instanceof EnchantingPowerProvider) {
-        	return ((EnchantingPowerProvider) blockState.getBlock()).getEnchantingPower(blockState, fabric_world, blockPos);
+        	return ((EnchantingPowerProvider) blockState.getBlock()).getEnchantingPower(blockState, world, blockPos);
         }
         return 0;
 	}

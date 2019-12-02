@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.enchantment;
 
 import net.fabricmc.fabric.impl.enchantment.EnchantmentTargetRegistryImpl;
 
+import java.util.Iterator;
+
 /**
  * Used to register custom enchantment targets.
  *
@@ -32,4 +34,10 @@ public interface EnchantmentTargetRegistry {
 	 * @param enchantmentTarget the custom target
 	 */
 	void register(FabricEnchantmentTarget enchantmentTarget);
+
+	/**
+	 * Gets an iterator over all registered enchantment targets
+	 * @return the iterator
+	 */
+	Iterator<FabricEnchantmentTarget> getIterator();
 }
