@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 public interface EnchantingPowerProvider {
 
 	/**
-	 * Returns the amount of how much to increase the enchanting power
+	 * Returns how much the enchanting power should be increased by
 	 *
 	 * @param blockState The blockstate
 	 * @param world The world of the block

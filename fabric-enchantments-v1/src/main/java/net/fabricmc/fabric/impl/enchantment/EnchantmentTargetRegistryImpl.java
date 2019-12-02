@@ -19,16 +19,22 @@ package net.fabricmc.fabric.impl.enchantment;
 import net.fabricmc.fabric.api.enchantment.EnchantmentTargetRegistry;
 import net.fabricmc.fabric.api.enchantment.FabricEnchantmentTarget;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Iterator;
 
 public class EnchantmentTargetRegistryImpl implements EnchantmentTargetRegistry {
 	public static final EnchantmentTargetRegistryImpl INSTANCE = new EnchantmentTargetRegistryImpl();
 
-    public final Set<FabricEnchantmentTarget> enchantmentTargets = new HashSet<>();
+	private final Collection<FabricEnchantmentTarget> enchantmentTargets = new HashSet<>();
 
 	@Override
 	public void register(FabricEnchantmentTarget enchantmentTarget) {
 		enchantmentTargets.add(enchantmentTarget);
+	}
+
+	@Override
+	public Iterator<FabricEnchantmentTarget> getIterator() {
+		return enchantmentTargets.iterator();
 	}
 }

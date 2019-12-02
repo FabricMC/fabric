@@ -24,12 +24,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Iterator;
+
 @Mixin(targets = "net/minecraft/enchantment/EnchantmentTarget$1")
 public class MixinEnchantmentTargetAll {
+	@SuppressWarnings({"UnresolvedMixinReference", "WeakerAccess"})
 	@Inject(method = "isAcceptableItem", at = @At("TAIL"), cancellable = true)
 	public void isAcceptableItem(Item item, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-		for(FabricEnchantmentTarget enchantmentTarget : EnchantmentTargetRegistryImpl.INSTANCE.enchantmentTargets) {
-			if(enchantmentTarget.isAcceptableItem(item)) {
+		for (Iterator<FabricEnchantmentTarget> it = EnchantmentTargetRegistryImpl.INSTANCE.getIterator(); it.hasNext(); ) {
+			if(it.next().isAcceptableItem(item)) {
 				callbackInfoReturnable.setReturnValue(true);
 				return;
 			}
