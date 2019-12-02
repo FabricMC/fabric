@@ -20,13 +20,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
+import net.fabricmc.fabric.api.event.player.PlayerDropItemCallback;
 
 @Mixin(ServerPlayerEntity.class)
 public class MixinServerPlayerEntity {
@@ -36,6 +40,16 @@ public class MixinServerPlayerEntity {
 		ActionResult result = AttackEntityCallback.EVENT.invoker().interact(player, player.getEntityWorld(), Hand.MAIN_HAND, target, null);
 
 		if (result != ActionResult.PASS) {
+			info.cancel();
+		}
+	}
+
+	@Inject(method = "dropItem", at = @At("HEAD"), cancellable = true)
+	private void onPlayerDropItem(final ItemStack stack, final boolean dropAtFeet, final boolean saveThrower, final CallbackInfoReturnable<ItemEntity> info) {
+		ServerPlayerEntity player = (ServerPlayerEntity) (Object) this;
+		ActionResult result = PlayerDropItemCallback.EVENT.invoker().interact(player, stack);
+
+		if (result == ActionResult.FAIL) {
 			info.cancel();
 		}
 	}
