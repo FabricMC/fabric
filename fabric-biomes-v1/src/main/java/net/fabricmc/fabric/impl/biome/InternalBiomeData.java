@@ -32,7 +32,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
 
-import net.fabricmc.fabric.api.biomes.v1.BiomeEdgeGenPredicate;
+import net.fabricmc.fabric.api.biomes.v1.BiomeNeighboursPredicate;
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 
 /**
@@ -106,7 +106,7 @@ public final class InternalBiomeData {
 		}
 	}
 
-	public static void addOverworldLargeEdge(Biome primary, Biome edge, double weight, BiomeEdgeGenPredicate predicate) {
+	public static void addOverworldLargeEdge(Biome primary, Biome edge, double weight, BiomeNeighboursPredicate predicate) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(edge != null, "Edge biome is null");
 		Preconditions.checkArgument(predicate != null, "Predicate is null");

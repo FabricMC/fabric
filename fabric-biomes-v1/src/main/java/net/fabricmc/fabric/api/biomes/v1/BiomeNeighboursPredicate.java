@@ -24,9 +24,9 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
- * A predicate of a biome array and randomness source.
+ * A predicate of a biome collection and randomness source.
  */
-public interface BiomeEdgeGenPredicate {
+public interface BiomeNeighboursPredicate {
 	/**
 	 * @param biomes the biomes neighboring generation
 	 * @param rand the world gen randomness source
@@ -35,9 +35,9 @@ public interface BiomeEdgeGenPredicate {
 	boolean isValidToGenerate(Collection<Biome> biomes, LayerRandomnessSource rand);
 
 	/**
-	 * @return a {@link BiomeEdgeGenPredicate} which returns true if any of the given biomes border the parent biome.
+	 * @return a {@link BiomeNeighboursPredicate} which returns true if any of the given biomes border the parent biome.
 	 */
-	static BiomeEdgeGenPredicate createBiomePredicate(Biome biome, Biome...otherBiomes) {
+	static BiomeNeighboursPredicate anyOf(Biome biome, Biome...otherBiomes) {
 		final Collection<Biome> borderBiomes = Lists.asList(biome, otherBiomes);
 		return (biomes, rand) -> {
 			for (Biome neighbor : borderBiomes) {
@@ -49,9 +49,9 @@ public interface BiomeEdgeGenPredicate {
 	}
 
 	/**
-	 * @return a {@link BiomeEdgeGenPredicate} which returns true if any of the biomes bordering the parent biome are of any of the given categories.
+	 * @return a {@link BiomeNeighboursPredicate} which returns true if any of the biomes bordering the parent biome are of any of the given categories.
 	 */
-	static BiomeEdgeGenPredicate createBiomeCategoryPredicate(Biome.Category category, Biome.Category...otherCategories) {
+	static BiomeNeighboursPredicate anyOf(Biome.Category category, Biome.Category...otherCategories) {
 		final Collection<Biome.Category> categories = Lists.asList(category, otherCategories);
 		return (biomes, rand) -> {
 			for (Biome neighbor : biomes) {
@@ -64,9 +64,9 @@ public interface BiomeEdgeGenPredicate {
 
 	/**
 	 * @param chance the chance for this predicate to return true. 0.0 is no chance, and 1.0 means it will always return true
-	 * @return a {@link BiomeEdgeGenPredicate} which returns true based on a random chance expressed as a decimal.
+	 * @return a {@link BiomeNeighboursPredicate} which returns true based on a random chance expressed as a decimal.
 	 */
-	static BiomeEdgeGenPredicate createChancePredicate(double chance) {
+	static BiomeNeighboursPredicate chance(double chance) {
 		return (biomes, rand) -> {
 			double randVal = (double) rand.nextInt(Integer.MAX_VALUE) / Integer.MAX_VALUE;
 			return randVal < chance;
@@ -74,9 +74,9 @@ public interface BiomeEdgeGenPredicate {
 	}
 
 	/**
-	 * @return a {@link BiomeEdgeGenPredicate} which always returns true.
+	 * @return a {@link BiomeNeighboursPredicate} which always returns true.
 	 */
-	static BiomeEdgeGenPredicate createAlwaysTruePredicate() {
+	static BiomeNeighboursPredicate alwaysTrue() {
 		return (biomes, rand) -> true;
 	}
 }

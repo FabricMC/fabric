@@ -29,6 +29,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.EaseBiomeEdgeLayer;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 
 @Mixin(EaseBiomeEdgeLayer.class)
@@ -37,16 +38,18 @@ public class MixinEaseBiomeEdgeLayer {
 	private void sample(LayerRandomnessSource random, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info) {
 		Biome biome = Registry.BIOME.get(center);
 
-		// not allowing duplicate borders, for efficiency
-		Set<Biome> borders = new HashSet<>();
+		if (InternalBiomeData.getOverworldLargeEdges().containsKey(biome)) {
+			// not allowing duplicate borders, for efficiency
+			Set<Biome> borders = new HashSet<>();
 
-		if (north != center) borders.add(Registry.BIOME.get(north));
-		if (east != center) borders.add(Registry.BIOME.get(east));
-		if (south != center) borders.add(Registry.BIOME.get(south));
-		if (west != center) borders.add(Registry.BIOME.get(west));
+			if (north != center) borders.add(Registry.BIOME.get(north));
+			if (east != center) borders.add(Registry.BIOME.get(east));
+			if (south != center) borders.add(Registry.BIOME.get(south));
+			if (west != center) borders.add(Registry.BIOME.get(west));
 
-		if (!borders.isEmpty()) {
-			InternalBiomeUtils.transformLargeEdge(random, biome, borders, info::setReturnValue);
+			if (!borders.isEmpty()) {
+				InternalBiomeUtils.transformLargeEdge(random, biome, borders, info::setReturnValue);
+			}
 		}
 	}
 }

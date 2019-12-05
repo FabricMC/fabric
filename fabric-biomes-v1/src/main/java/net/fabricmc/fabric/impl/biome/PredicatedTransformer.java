@@ -26,12 +26,12 @@ import it.unimi.dsi.fastutil.doubles.DoubleList;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-import net.fabricmc.fabric.api.biomes.v1.BiomeEdgeGenPredicate;
+import net.fabricmc.fabric.api.biomes.v1.BiomeNeighboursPredicate;
 
 final class PredicatedTransformer {
 	private final List<PredicatedBiomeEntry> predicates = new ArrayList<>();
 
-	void addPredicatedBiome(Biome biome, BiomeEdgeGenPredicate predicate, double chance) {
+	void addPredicatedBiome(Biome biome, BiomeNeighboursPredicate predicate, double chance) {
 		predicates.add(new PredicatedBiomeEntry(biome, predicate, chance));
 	}
 
