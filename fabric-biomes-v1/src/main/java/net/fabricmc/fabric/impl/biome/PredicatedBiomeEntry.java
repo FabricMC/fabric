@@ -21,14 +21,14 @@ import java.util.Collection;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
-import net.fabricmc.fabric.api.biomes.v1.BiomeNeighboursPredicate;
+import net.fabricmc.fabric.api.biomes.v1.BiomeNeighborsPredicate;
 
 class PredicatedBiomeEntry {
 	private final Biome biome;
-	private final BiomeNeighboursPredicate predicate;
+	private final BiomeNeighborsPredicate predicate;
 	private final double weight;
 
-	PredicatedBiomeEntry(Biome biome, BiomeNeighboursPredicate predicate, double weight) {
+	PredicatedBiomeEntry(Biome biome, BiomeNeighborsPredicate predicate, double weight) {
 		this.biome = biome;
 		this.predicate = predicate;
 		this.weight = weight;

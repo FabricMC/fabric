@@ -118,7 +118,7 @@ public final class OverworldBiomes {
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * @param predicate a predicate of the neighboring biomes and an {@link LayerRandomnessSource} which returns whether the conditions are correct for the large edge biome to spawn.
 	 */
-	public static void addLargeEdgeBiome(Biome parent, Biome edge, double weight, BiomeNeighboursPredicate predicate) {
+	public static void addLargeEdgeBiome(Biome parent, Biome edge, double weight, BiomeNeighborsPredicate predicate) {
 		InternalBiomeData.addOverworldLargeEdge(parent, edge, weight, predicate);
 	}
 
