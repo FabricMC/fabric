@@ -110,6 +110,7 @@ public final class OverworldBiomes {
 
 	/**
 	 * Adds the biome as a large edge biome of the parent biome, with the specified weight.
+	 * Large edges are around the same size as hills biomes.
 	 *
 	 * @param parent the base biome to which the large edge biome is added
 	 * @param edge the biome to be added as a large edge biome
@@ -123,7 +124,7 @@ public final class OverworldBiomes {
 
 	/**
 	 * Adds a 'sub biome,' similar to minecraft's sunflower plains, that occasionally replaces a portion of the parent biome.
-	 * The sub biome is around the same size as hill biomes.
+	 * The sub biome is around the same size as hills biomes.
 	 *
 	 * @param parent the base biome which can have portions replaced by the sub biome
 	 * @param subBiome the biome to be added as a sub biome

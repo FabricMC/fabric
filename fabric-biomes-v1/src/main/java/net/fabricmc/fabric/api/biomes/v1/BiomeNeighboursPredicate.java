@@ -24,7 +24,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.LayerRandomnessSource;
 
 /**
- * A predicate of a biome collection and randomness source.
+ * A predicate of a biome collection and randomness source. Tests whether the conditions for generating the biome are met.
  */
 public interface BiomeNeighboursPredicate {
 	/**
