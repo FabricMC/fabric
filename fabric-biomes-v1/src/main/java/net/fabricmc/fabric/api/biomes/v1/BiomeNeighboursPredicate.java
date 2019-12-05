@@ -28,7 +28,7 @@ import net.minecraft.world.biome.layer.LayerRandomnessSource;
  */
 public interface BiomeNeighboursPredicate {
 	/**
-	 * @param biomes the biomes neighboring generation
+	 * @param biomes a collection of biomes that neighbor the biome to be replaced. May contain duplicates, depending on the biome api method with which this is used.
 	 * @param rand the world gen randomness source
 	 * @return whether the conditions for generation are met
 	 */
