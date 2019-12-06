@@ -24,7 +24,9 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-/**Deprecated to be replaced by {@link FabricLootTableBuilder} to match yarn mappings. Use {@link FabricLootTableBuilder} instead */
+    /**
+     * @deprecated to be replaced by {@link FabricLootTableBuilder} to match yarn mappings. Use {@link FabricLootTableBuilder} instead 
+     */
 @Deprecated
 public class FabricLootSupplierBuilder extends FabricLootTableBuilder {
 	private final LootTableBuilderHooks extended = (LootTableBuilderHooks) this;

@@ -22,7 +22,8 @@ package net.fabricmc.fabric.api.loot.v1;
  * Deprecated to be replaced by {@link FabricLootTable} for matching yarn naming.
  */
 
-@Deprecated()
+/**@deprecated to be replaced by {@link FabricLootPool}.*/
+@Deprecated
 public interface FabricLootSupplier extends FabricLootTable {
 	// default LootTable asVanilla() {
 	// 	return (LootTable) this;
