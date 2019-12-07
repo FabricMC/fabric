@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-network-testmod",
+  "name": "Fabric Network Test mod",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*"
+  },
+  "description": "Networking hooks for block entities.",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.testmod.network.TestModEntry"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.testmod.network.TestModClientEntry"
+    ],
+    "fabric-networking-handshake": [
+      "net.fabricmc.fabric.impl.testmod.network.TestModHandshakeEntry"
+    ]
+  },
+  "mixins": [
+    "fabric-network-testmod.mixins.json"
+  ],
+  "custom": {
+    "fabric-networking-handshake": {
+      "versionRange": "*",
+      "__versionRange_comment": "A version range like that in dependency resolution",
+      "__requireExactVersion_comment": "false Requires presence only; true requires exact version match"
+    }
+  }
+}

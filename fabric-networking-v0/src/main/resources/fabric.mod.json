@@ -16,11 +16,18 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*"
+    "fabricloader": ">=0.7.0",
+    "fabric-api-base": "*",
+    "fabric-networking-v1": "*",
+    "fabric-networking-player-tracking-v1": "*"
   },
-  "description": "Networking packet hooks and registries.",
-  "mixins": [
-    "fabric-networking-v0.mixins.json"
-  ]
+  "description": "Networking packet hooks and registries. Outdated, please migrate to networking v1.",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.networking.Entrypoint"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.networking.ClientEntrypoint"
+    ]
+  }
 }

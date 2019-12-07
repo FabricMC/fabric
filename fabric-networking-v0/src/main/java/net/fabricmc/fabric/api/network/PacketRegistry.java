@@ -20,6 +20,11 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
+/**
+ * @deprecated replaced by {@link net.fabricmc.fabric.api.networking.v1.receiver.PacketReceiverRegistry}
+ * and {@link net.fabricmc.fabric.api.networking.v1.sender.PacketSender}in networking v1
+ */
+@Deprecated
 public interface PacketRegistry {
 	/**
 	 * Turn a (identifier, byte buffer) pair into a "custom payload" packet

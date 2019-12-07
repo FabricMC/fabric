@@ -7,7 +7,7 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
     "fabric-registry-sync-v0": "*",
-    "fabric-networking-v0": "*"
+    "fabric-networking-v1": "*"
   },
   "entrypoints": {
     "client": [

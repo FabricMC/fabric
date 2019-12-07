@@ -39,7 +39,7 @@ public abstract class MixinPlayerManager {
 
 		// No need to send the packet if the player is using the same game instance (dimension types are static)
 		if (!player.server.isSinglePlayer() || !conn.isLocal() || FabricDimensionInternals.DEBUG) {
-			player.networkHandler.sendPacket(DimensionIdsFixer.createPacket(player.world.getLevelProperties()));
+			DimensionIdsFixer.sendPacket(player.networkHandler, player.world.getLevelProperties());
 		}
 	}
 }

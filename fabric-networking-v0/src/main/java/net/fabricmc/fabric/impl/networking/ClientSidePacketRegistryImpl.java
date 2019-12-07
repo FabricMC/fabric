@@ -16,10 +16,6 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -30,20 +26,21 @@ import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
-import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
-import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.networking.v1.receiver.PlayPacketContext;
+import net.fabricmc.fabric.api.networking.v1.receiver.PacketReceiverRegistry;
+import net.fabricmc.fabric.api.networking.v1.receiver.ClientPacketReceiverRegistries;
+import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
 
 public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements ClientSidePacketRegistry {
-	private final Collection<Identifier> serverPayloadIds = new HashSet<>();
-
-	public static void invalidateRegisteredIdList() {
-		((ClientSidePacketRegistryImpl) ClientSidePacketRegistry.INSTANCE).serverPayloadIds.clear();
+	@Override
+	public boolean canServerReceive(Identifier id) {
+		return PacketSenders.of(MinecraftClient.getInstance().player.networkHandler).accepts(id);
 	}
 
 	@Override
-	public boolean canServerReceive(Identifier id) {
-		return serverPayloadIds.contains(id);
+	PacketReceiverRegistry<? extends PlayPacketContext> getReceiverRegistry() {
+		return ClientPacketReceiverRegistries.PLAY;
 	}
 
 	@Override
@@ -65,38 +62,5 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	public Packet<?> toPacket(Identifier id, PacketByteBuf buf) {
 		return new CustomPayloadC2SPacket(id, buf);
-	}
-
-	@Override
-	protected void onRegister(Identifier id) {
-		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
-
-		if (handler != null) {
-			createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
-		}
-	}
-
-	@Override
-	protected void onUnregister(Identifier id) {
-		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
-
-		if (handler != null) {
-			createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
-		}
-	}
-
-	@Override
-	protected Collection<Identifier> getIdCollectionFor(PacketContext context) {
-		return serverPayloadIds;
-	}
-
-	@Override
-	protected void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids) {
-		S2CPacketTypeCallback.REGISTERED.invoker().accept(ids);
-	}
-
-	@Override
-	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
-		S2CPacketTypeCallback.UNREGISTERED.invoker().accept(ids);
 	}
 }

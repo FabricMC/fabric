@@ -21,12 +21,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
@@ -34,7 +33,9 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.sender.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
+import net.fabricmc.fabric.api.networking.v1.sender.PlayPacketSender;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 
 /**
@@ -135,10 +136,14 @@ public class DimensionIdsFixer {
 		}
 	}
 
-	public static Packet<?> createPacket(LevelProperties levelProperties) {
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+	public static void sendPacket(ServerPlayNetworkHandler handler, LevelProperties levelProperties) {
+		PlayPacketSender sender = PacketSenders.of(handler);
+
+		if (!sender.accepts(ID)) return; // todo tick incompatible clients?
+
+		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeCompoundTag(((DimensionIdsHolder) levelProperties).fabric_getDimensionIds());
-		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
+		sender.send(ID, buf);
 	}
 
 	static {

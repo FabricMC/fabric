@@ -22,12 +22,17 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.networking.v1.event.ClientPacketChannelCallback;
 
 /**
  * Event for listening to packet type registrations and unregistrations
  * (also known as "minecraft:register" and "minecraft:unregister")
  * in the server -&gt; client direction.
+ *
+ * @deprecated use {@link ClientPacketChannelCallback}
+ * in networking v1 instead
  */
+@Deprecated
 public interface S2CPacketTypeCallback {
 	Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
 			S2CPacketTypeCallback.class,

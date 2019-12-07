@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.networking.handshake",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "LanguageMixin",
+    "ServerMetadataMixin",
+    "ServerMetadataSerializerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

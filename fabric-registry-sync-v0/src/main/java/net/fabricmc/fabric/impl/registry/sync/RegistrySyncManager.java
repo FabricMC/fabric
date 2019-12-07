@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -38,38 +37,45 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Packet;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.receiver.ClientPlayPacketContext;
+import net.fabricmc.fabric.api.networking.v1.sender.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
+import net.fabricmc.fabric.api.networking.v1.sender.PlayPacketSender;
 
 public final class RegistrySyncManager {
-	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
-	static final Identifier ID = new Identifier("fabric", "registry/sync");
+	public static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
+	static final Identifier OLD_SYNC_CHANNEL = new Identifier("fabric", "registry/sync");
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
 	private static final Set<Identifier> REGISTRY_BLACKLIST = ImmutableSet.of();
 	private static final Set<Identifier> REGISTRY_BLACKLIST_NETWORK = ImmutableSet.of();
 
-	private RegistrySyncManager() { }
-
-	public static Packet<?> createPacket() {
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeCompoundTag(toTag(true));
-
-		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
+	private RegistrySyncManager() {
 	}
 
-	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+	public static void sendPacket(ServerPlayNetworkHandler handler) {
+		PlayPacketSender sender = PacketSenders.of(handler);
+
+		if (!sender.accepts(OLD_SYNC_CHANNEL)) return; // todo kick?
+
+		PacketByteBuf buf = PacketByteBufs.create();
+		buf.writeCompoundTag(toTag(true));
+
+		sender.send(OLD_SYNC_CHANNEL, buf); // todo check if client accepts this or not
+	}
+
+	public static void receivePacket(ClientPlayPacketContext context, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
 		CompoundTag compound = buf.readCompoundTag();
 
 		if (accept) {
 			try {
-				context.getTaskQueue().submit(() -> {
+				context.getEngine().submit(() -> {
 					if (compound == null) {
 						errorHandler.accept(new RemapException("Received null compound tag in sync packet!"));
 						return null;

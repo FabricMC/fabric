@@ -25,7 +25,11 @@ import net.fabricmc.api.EnvType;
  * Interface defining a context used during packet processing. Allows access
  * to additional information, such as the source/target of the player, or
  * the correct task queue to enqueue synchronization-requiring code on.
+ *
+ * @deprecated use {@link net.fabricmc.fabric.api.networking.v1.receiver.PacketContext}
+ * in networking v1 instead
  */
+@Deprecated
 public interface PacketContext {
 	/**
 	 * Get the environment associated with the packet.

@@ -36,7 +36,11 @@ import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
  * <li>sending packets to clients (server -&gt; client packets).</ul>
  *
  * <p>For iterating over clients in a server, see {@link PlayerStream}.
+ *
+ * @deprecated Use {@link net.fabricmc.fabric.api.networking.v1.receiver.PacketReceiverRegistry}
+ * and {@link net.fabricmc.fabric.api.networking.v1.sender.PacketSender} in networking v1 instead
  */
+@Deprecated
 public interface ServerSidePacketRegistry extends PacketRegistry {
 	ServerSidePacketRegistry INSTANCE = new ServerSidePacketRegistryImpl();
 

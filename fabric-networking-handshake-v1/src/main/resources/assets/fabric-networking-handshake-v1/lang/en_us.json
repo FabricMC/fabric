@@ -1,0 +1,8 @@
+{
+  "fabric-networking-handshake-v1.bad_version": "Mod \"%1$s\" has unrecognized version \"%2$s\"",
+  "fabric-networking-handshake-v1.missing": "Mod \"%1$s\" is missing",
+  "fabric-networking-handshake-v1.version_rejection": "Mod \"%1$s\" with version \"%2$s\" is rejected",
+  "fabric-networking-handshake-v1.version_predicate_failed": "Mod \"%1$s\" requires version \"%3$s\", but detected version \"%2$s\"",
+  "fabric-networking-handshake-v1.version_check_error": "Mod \"%1$s\" with version \"%2$s\" has encountered an error in version checking: \"%3$s\"",
+  "fabric-networking-handshake-v1.errors": "Mod mismatch has been detected:"
+}

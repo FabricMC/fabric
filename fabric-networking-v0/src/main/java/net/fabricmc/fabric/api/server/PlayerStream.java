@@ -32,13 +32,16 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
 
-import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
+import net.fabricmc.fabric.impl.networking.player.tracking.EntityTrackerStorageAccessor;
 
 /**
  * Helper streams for looking up players on a server.
  *
  * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
+ *
+ * @deprecated Use {@link net.fabricmc.fabric.api.networking.player.tracking.v1.PlayerStream} instead.
  */
+@Deprecated
 public final class PlayerStream {
 	private PlayerStream() { }
 
@@ -84,7 +87,7 @@ public final class PlayerStream {
 
 			if (storage instanceof EntityTrackerStorageAccessor) {
 				//noinspection unchecked
-				return ((Stream) ((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity));
+				return ((Stream) ((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity).stream());
 			}
 		}
 

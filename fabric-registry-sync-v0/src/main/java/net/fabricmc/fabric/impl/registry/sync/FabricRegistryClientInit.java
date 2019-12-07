@@ -20,23 +20,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.receiver.ClientPacketReceiverRegistries;
 
 public class FabricRegistryClientInit implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	@Override
 	public void onInitializeClient() {
-		ClientSidePacketRegistry.INSTANCE.register(RegistrySyncManager.ID, (ctx, buf) -> {
+		ClientPacketReceiverRegistries.PLAY.register(RegistrySyncManager.OLD_SYNC_CHANNEL, (ctx, buf) -> {
 			// if not hosting server, apply packet
 			RegistrySyncManager.receivePacket(ctx, buf, RegistrySyncManager.DEBUG || !MinecraftClient.getInstance().isInSingleplayer(), (e) -> {
 				LOGGER.error("Registry remapping failed!", e);
 				MinecraftClient.getInstance().execute(() -> {
-					((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getConnection().disconnect(
+					ctx.getNetworkHandler().getConnection().disconnect(
 							new LiteralText("Registry remapping failed: " + e.getMessage())
 					);
 				});

@@ -20,11 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import io.netty.buffer.Unpooled;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -33,7 +31,8 @@ import net.minecraft.util.PacketByteBuf;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.impl.networking.PacketTypes;
+import net.fabricmc.fabric.api.networking.v1.sender.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
 import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 
 public class ContainerProviderImpl implements ContainerProviderRegistry {
@@ -41,6 +40,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 	 * Use the instance provided by ContainerProviderRegistry.
 	 */
 	public static final ContainerProviderImpl INSTANCE = new ContainerProviderImpl();
+	public static final Identifier OPEN_CONTAINER = new Identifier("fabric", "container/open");
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -86,14 +86,14 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 			throw new RuntimeException("Neither ServerPlayerEntitySyncHook nor Accessor present! This should not happen!");
 		}
 
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeIdentifier(identifier);
 		buf.writeByte(syncId);
 
 		writer.accept(buf);
-		player.networkHandler.sendPacket(new CustomPayloadS2CPacket(PacketTypes.OPEN_CONTAINER, buf));
+		PacketSenders.of(player.networkHandler).send(OPEN_CONTAINER, buf);
 
-		PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
+		PacketByteBuf clonedBuf = PacketByteBufs.duplicate(buf);
 		clonedBuf.readIdentifier();
 		clonedBuf.readUnsignedByte();
 

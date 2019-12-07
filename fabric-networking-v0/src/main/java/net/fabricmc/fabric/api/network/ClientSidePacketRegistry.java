@@ -32,7 +32,11 @@ import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
  *
  * <ul><li>registering client-side packet receivers (server -&gt; client packets)
  * <li>sending packets to the server (client -&gt; server packets).</ul>
+ *
+ * @deprecated Use {@link net.fabricmc.fabric.api.networking.v1.receiver.PacketReceiverRegistry}
+ * and {@link net.fabricmc.fabric.api.networking.v1.sender.PacketSender} in networking v1 instead
  */
+@Deprecated
 public interface ClientSidePacketRegistry extends PacketRegistry {
 	ClientSidePacketRegistry INSTANCE = new ClientSidePacketRegistryImpl();
 

@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.networking",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "login.LoginQueryResponsePacketAccessor",
+    "login.ServerLoginNetworkHandlerMixin",
+    "login.LoginQueryPacketAccessor",
+    "play.CustomPayloadC2SPacketAccessor",
+    "play.CustomPayloadC2SPacketMixin",
+    "play.ServerPlayNetworkHandlerMixin"
+  ],
+  "client": [
+    "login.ClientLoginNetworkHandlerMixin",
+    "play.ClientPlayNetworkHandlerMixin",
+    "play.CustomPayloadS2CPacketAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

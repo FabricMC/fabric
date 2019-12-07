@@ -31,8 +31,7 @@ import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 public abstract class MixinPlayerManager {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	public void onPlayerConnect(ClientConnection lvt1, ServerPlayerEntity lvt2, CallbackInfo info) {
-		// TODO: If integrated and local, don't send the packet (it's ignored)
-		// TODO: Refactor out into network + move registry hook to event
-		lvt2.networkHandler.sendPacket(RegistrySyncManager.createPacket());
+		// TODO: Refactor out into login query + move registry hook to event
+		if (RegistrySyncManager.DEBUG || !lvt1.isLocal()) RegistrySyncManager.sendPacket(lvt2.networkHandler);
 	}
 }
