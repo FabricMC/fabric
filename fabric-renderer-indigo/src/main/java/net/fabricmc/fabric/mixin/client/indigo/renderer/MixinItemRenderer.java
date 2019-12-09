@@ -38,16 +38,16 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext.
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
 	@Shadow
-	protected abstract void method_23182(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
+	protected abstract void renderBakedItemModel(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
 
 	@Shadow
 	protected ItemColors colorMap;
 
-	private final VanillaQuadHandler vanillaHandler = this::method_23182;
+	private final VanillaQuadHandler vanillaHandler = this::renderBakedItemModel;
 
 	private final ThreadLocal<ItemRenderContext> CONTEXTS = ThreadLocal.withInitial(() -> new ItemRenderContext(colorMap));
 
-	@Inject(at = @At("HEAD"), method = "method_23179", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "renderItem(Lnet/minecraft/item/ItemStack;Lnet/minecraft/client/render/model/json/ModelTransformation$Type;ZLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;IILnet/minecraft/client/render/model/BakedModel;)V", cancellable = true)
 	public void hook_method_23179(ItemStack stack, ModelTransformation.Type transformType, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int light, int overlay, BakedModel model, CallbackInfo ci) {
 		final FabricBakedModel fabricModel = (FabricBakedModel) model;
 

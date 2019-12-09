@@ -110,7 +110,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		modelVertexConsumer = selectVertexConsumer(RenderLayers.getItemLayer(itemStack));
 
 		matrixStack.push();
-		((BakedModel) model).getTransformation().getTransformation(transformType).method_23075(invert, matrixStack);
+		((BakedModel) model).getTransformation().getTransformation(transformType).apply(invert, matrixStack);
 		matrixStack.translate(-0.5D, -0.5D, -0.5D);
 		matrix = matrixStack.peek().getModel();
 		normalMatrix = matrixStack.peek().getNormal();

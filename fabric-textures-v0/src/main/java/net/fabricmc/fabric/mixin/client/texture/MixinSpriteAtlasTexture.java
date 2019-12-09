@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 @Mixin(SpriteAtlasTexture.class)
 public abstract class MixinSpriteAtlasTexture {
 	@Shadow
-	public abstract Identifier method_24106();
+	public abstract Identifier getId();
 
 	private Map<Identifier, Sprite> fabric_injectedSprites;
 
@@ -65,7 +65,7 @@ public abstract class MixinSpriteAtlasTexture {
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
 
-		SpriteRegistryCallbackHolder.eventLocal(method_24106()).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
+		SpriteRegistryCallbackHolder.eventLocal(getId()).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 		SpriteRegistryCallbackHolder.EVENT_GLOBAL.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
