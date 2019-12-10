@@ -14,15 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.mining.level;
+package net.fabricmc.fabric.api.tool.attribute.v1;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import javax.annotation.Nullable;
 
-import net.minecraft.item.MiningToolItem;
+/**
+ * Interface for the user of a tool.
+ *
+ * @param <T> The type of actor that will use this tool.
+ */
+public interface ToolActor<T> {
+	ToolActor<Void> NO_ACTOR = () -> null;
 
-@Mixin(MiningToolItem.class)
-public interface MiningToolItemAccessor {
-	@Accessor
-	float getMiningSpeed();
+	static <T> ToolActor<T> of(T actor) {
+		return () -> actor;
+	}
+
+	/**
+	 * @return The actor using a tool, if they exist.
+	 */
+	@Nullable
+	T get();
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tools;
+package net.fabricmc.fabric.api.tool.attribute.v1;
 
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
@@ -24,17 +24,18 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 
 /**
  * Tool item tags provided by Fabric.
- *
- * @deprecated Use the moved {@link net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags} class instead
  */
-@Deprecated
 public class FabricToolTags {
-	public static final Tag<Item> AXES = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.AXES;
-	public static final Tag<Item> HOES = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.HOES;
-	public static final Tag<Item> PICKAXES = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.PICKAXES;
-	public static final Tag<Item> SHOVELS = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.SHOVELS;
-	public static final Tag<Item> SWORDS = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.SWORDS;
+	public static final Tag<Item> AXES = register("axes");
+	public static final Tag<Item> HOES = register("hoes");
+	public static final Tag<Item> PICKAXES = register("pickaxes");
+	public static final Tag<Item> SHOVELS = register("shovels");
+	public static final Tag<Item> SWORDS = register("swords");
+	public static final Tag<Item> SHEARS = register("shears");
 
 	private FabricToolTags() { }
 
+	private static Tag<Item> register(String id) {
+		return TagRegistry.item(new Identifier("fabric", id));
+	}
 }
