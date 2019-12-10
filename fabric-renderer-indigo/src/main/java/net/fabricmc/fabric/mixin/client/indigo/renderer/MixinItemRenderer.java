@@ -34,16 +34,18 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext;
 import net.fabricmc.fabric.impl.client.indigo.renderer.render.ItemRenderContext.VanillaQuadHandler;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessItemRenderer;
+import net.fabricmc.fabric.impl.client.indigo.renderer.render.IndigoQuadHandler;
 
 @Mixin(ItemRenderer.class)
-public abstract class MixinItemRenderer {
+public abstract class MixinItemRenderer implements AccessItemRenderer {
 	@Shadow
 	protected abstract void renderBakedItemModel(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
 
 	@Shadow
 	protected ItemColors colorMap;
 
-	private final VanillaQuadHandler vanillaHandler = this::renderBakedItemModel;
+	private final VanillaQuadHandler vanillaHandler = new IndigoQuadHandler(this);
 
 	private final ThreadLocal<ItemRenderContext> CONTEXTS = ThreadLocal.withInitial(() -> new ItemRenderContext(colorMap));
 
@@ -55,5 +57,10 @@ public abstract class MixinItemRenderer {
 			CONTEXTS.get().renderModel(stack, transformType, invert, matrixStack, vertexConsumerProvider, light, overlay, fabricModel, vanillaHandler);
 			ci.cancel();
 		}
+	}
+
+	@Override
+	public void fabric_renderBakedItemModel(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrixStack, VertexConsumer buffer) {
+		renderBakedItemModel(model, stack, light, overlay, matrixStack, buffer);
 	}
 }
