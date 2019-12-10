@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.keybinding;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 
 import com.google.common.base.Preconditions;
 
@@ -83,6 +84,8 @@ public class FabricKeyBinding extends KeyBinding {
 
 		private InputUtil.Type type = InputUtil.Type.KEYSYM;
 
+		private BooleanSupplier toggleFlagSupplier = null;
+
 		private Identifier id = null;
 		private String translationKey;
 
@@ -117,6 +120,24 @@ public class FabricKeyBinding extends KeyBinding {
 		 */
 		public Builder category(String category) {
 			this.category = category;
+			return this;
+		}
+
+		/**
+		 * Sets this builder to create sticky beybindings that will toggle their state when pressed.
+		 */
+		public Builder sticky() {
+			return sticky(() -> true);
+		}
+
+		/**
+		 * Sets a sticking action to be used by the constructed key binding which can be used to switch between
+		 * a sticky (toggle) and a regular key binding.
+		 *
+		 * @param toggleGetter A getter function to determine whether to toggle or not. True for toggling behaviour, false otherwise.
+		 */
+		public Builder sticky(BooleanSupplier toggleFlagSupplier) {
+			this.toggleFlagSupplier = toggleFlagSupplier;
 			return this;
 		}
 
@@ -173,7 +194,13 @@ public class FabricKeyBinding extends KeyBinding {
 			Objects.requireNonNull(id, "Keybindings should be created with an identifier.");
 			Preconditions.checkState(unassigned || code != UNASSIGNED, "Keybingings need a default keycode.");
 
-			FabricKeyBinding binding = new FabricKeyBinding(id, translationKey, type, code, category);
+			FabricKeyBinding binding;
+			if (toggleFlagSupplier == null) {
+				binding = new FabricKeyBinding(id, translationKey, type, code, category);
+			} else {
+				binding = new StickyFabricKeyBinding(id, translationKey, type, code, category, toggleFlagSupplier);
+			}
+
 			if (registered) {
 				KeyBindingRegistry.INSTANCE.register(binding);
 			}
