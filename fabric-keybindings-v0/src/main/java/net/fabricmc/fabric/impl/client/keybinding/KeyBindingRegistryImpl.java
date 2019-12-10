@@ -41,6 +41,7 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 		fabricKeyBindingList = new ArrayList<>();
 	}
 
+	@SuppressWarnings("unchecked")
 	private Map<String, Integer> getCategoryMap() {
 		if (cachedCategoryMap == null) {
 			try {
