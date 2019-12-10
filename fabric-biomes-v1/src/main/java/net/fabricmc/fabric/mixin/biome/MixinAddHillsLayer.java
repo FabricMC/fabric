@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddHillsLayer;
-import net.minecraft.world.biome.layer.util.BiomeLayers;
+import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 
@@ -62,7 +62,7 @@ public class MixinAddHillsLayer {
 			Biome parent;
 
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
-				parent = Biome.getParentBiome(Registry.BIOME.get(biomeReturn));
+				parent = Biome.getModifiedBiome(Registry.BIOME.get(biomeReturn));
 				biomeReturn = parent == null ? biomeId : Registry.BIOME.getRawId(parent);
 			}
 
