@@ -18,9 +18,6 @@ package net.fabricmc.fabric.api.tools;
 
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
-
-import net.fabricmc.fabric.api.tag.TagRegistry;
 
 /**
  * Tool item tags provided by Fabric.
@@ -36,5 +33,4 @@ public class FabricToolTags {
 	public static final Tag<Item> SWORDS = net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags.SWORDS;
 
 	private FabricToolTags() { }
-
 }
