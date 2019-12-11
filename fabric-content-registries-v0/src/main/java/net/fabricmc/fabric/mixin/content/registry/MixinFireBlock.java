@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -53,7 +54,7 @@ public class MixinFireBlock implements FireBlockHooks {
 
 	@Inject(at = @At("HEAD"), method = "getBurnChance", cancellable = true)
 	private void getFabricBurnChance(BlockState block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block.getBlock());
+		FlammableBlockRegistry.@Nullable Entry entry = fabric_registry.getFabric(block.getBlock());
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl
@@ -67,7 +68,7 @@ public class MixinFireBlock implements FireBlockHooks {
 
 	@Inject(at = @At("HEAD"), method = "getSpreadChance", cancellable = true)
 	private void getFabricSpreadChance(BlockState block, CallbackInfoReturnable info) {
-		FlammableBlockRegistry.Entry entry = fabric_registry.getFabric(block.getBlock());
+		FlammableBlockRegistry.@Nullable Entry entry = fabric_registry.getFabric(block.getBlock());
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl

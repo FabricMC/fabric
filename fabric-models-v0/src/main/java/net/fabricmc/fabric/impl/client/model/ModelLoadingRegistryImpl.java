@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -48,7 +50,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 	@FunctionalInterface
 	private interface CustomModelItf<T> {
-		UnbakedModel load(T obj) throws ModelProviderException;
+		@Nullable UnbakedModel load(T obj) throws ModelProviderException;
 	}
 
 	public static class LoaderInstance implements ModelProviderContext {
@@ -57,7 +59,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 		private final List<ModelVariantProvider> modelVariantProviders;
 		private final List<ModelResourceProvider> modelResourceProviders;
 		private final List<ModelAppender> modelAppenders;
-		private ModelLoader loader;
+		private @Nullable ModelLoader loader;
 
 		private LoaderInstance(ModelLoadingRegistryImpl i, ModelLoader loader, ResourceManager manager) {
 			this.logger = ModelLoadingRegistryImpl.LOGGER;
@@ -83,11 +85,11 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 		}
 
-		private <T> UnbakedModel loadCustomModel(CustomModelItf<T> function, Collection<T> loaders, String debugName) {
+		private <T> @Nullable UnbakedModel loadCustomModel(CustomModelItf<T> function, Collection<T> loaders, String debugName) {
 			if (!DEBUG_MODEL_LOADING) {
 				for (T provider : loaders) {
 					try {
-						UnbakedModel model = function.load(provider);
+						@MonotonicNonNull UnbakedModel model = function.load(provider);
 
 						if (model != null) {
 							return model;
@@ -101,13 +103,13 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 				return null;
 			}
 
-			UnbakedModel modelLoaded = null;
-			T providerUsed = null;
-			List<T> providersApplied = null;
+			@MonotonicNonNull UnbakedModel modelLoaded = null;
+			@MonotonicNonNull T providerUsed = null;
+			@MonotonicNonNull List<T> providersApplied = null;
 
 			for (T provider : loaders) {
 				try {
-					UnbakedModel model = function.load(provider);
+					@Nullable UnbakedModel model = function.load(provider);
 
 					if (model != null) {
 						if (providersApplied != null) {
@@ -139,18 +141,16 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 		}
 
-		/* @Nullable */
-		public UnbakedModel loadModelFromResource(Identifier resourceId) {
+		public @Nullable UnbakedModel loadModelFromResource(Identifier resourceId) {
 			return loadCustomModel((r) -> r.loadModelResource(resourceId, this), modelResourceProviders, "resource provider");
 		}
 
-		/* @Nullable */
-		public UnbakedModel loadModelFromVariant(Identifier variantId) {
+		public @Nullable UnbakedModel loadModelFromVariant(Identifier variantId) {
 			if (!(variantId instanceof ModelIdentifier)) {
 				return loadModelFromResource(variantId);
 			} else {
 				ModelIdentifier modelId = (ModelIdentifier) variantId;
-				UnbakedModel model = loadCustomModel((r) -> r.loadModelVariant((ModelIdentifier) variantId, this), modelVariantProviders, "resource provider");
+				@Nullable UnbakedModel model = loadCustomModel((r) -> r.loadModelVariant((ModelIdentifier) variantId, this), modelVariantProviders, "resource provider");
 
 				if (model != null) {
 					return model;

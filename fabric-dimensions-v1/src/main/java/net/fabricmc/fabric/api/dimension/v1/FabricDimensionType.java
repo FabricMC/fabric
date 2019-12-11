@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.dimension.v1;
 import java.util.function.BiFunction;
 
 import com.google.common.base.Preconditions;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
@@ -118,8 +119,8 @@ public final class FabricDimensionType extends DimensionType {
 	 * @see FabricDimensionType#builder()
 	 */
 	public static final class Builder {
-		private EntityPlacer defaultPlacer;
-		private BiFunction<World, DimensionType, ? extends Dimension> factory;
+		private @MonotonicNonNull EntityPlacer defaultPlacer;
+		private @MonotonicNonNull BiFunction<World, DimensionType, ? extends Dimension> factory;
 		private int desiredRawId = 0;
 		private boolean skyLight = true;
 		private BiomeAccessType biomeAccessStrategy = VoronoiBiomeAccessType.INSTANCE;

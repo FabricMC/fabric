@@ -57,6 +57,7 @@ allprojects {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
 		modCompile "net.fabricmc:fabric-loader:0.7.2+build.174"
+		compileOnly "org.checkerframework:checker-qual:3.0.1"
 	}
 
 	configurations {

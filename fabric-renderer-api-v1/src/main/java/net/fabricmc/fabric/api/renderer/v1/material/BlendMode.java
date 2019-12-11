@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.client.render.RenderLayer;
 
 /**
@@ -50,9 +52,9 @@ public enum BlendMode {
 	 */
 	TRANSLUCENT(RenderLayer.getTranslucent());
 
-	public final RenderLayer blockRenderLayer;
+	public final @Nullable RenderLayer blockRenderLayer;
 
-	BlendMode(RenderLayer blockRenderLayer) {
+	BlendMode(@Nullable RenderLayer blockRenderLayer) {
 		this.blockRenderLayer = blockRenderLayer;
 	}
 

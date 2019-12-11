@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.fabricmc.fabric.api.event.Event;
 
 public final class EventFactoryImpl {
@@ -42,7 +44,7 @@ public final class EventFactoryImpl {
 		return createArrayBacked(type, null /* buildEmptyInvoker(type, invokerFactory) */, invokerFactory);
 	}
 
-	public static <T> Event<T> createArrayBacked(Class<? super T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
+	public static <T> Event<T> createArrayBacked(Class<? super T> type, @Nullable T emptyInvoker, Function<T[], T> invokerFactory) {
 		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, emptyInvoker, invokerFactory);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;

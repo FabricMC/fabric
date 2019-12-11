@@ -32,6 +32,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_Z;
 
 import com.google.common.base.Preconditions;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
@@ -47,7 +48,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
  * of maintaining and encoding the quad state.
  */
 public class QuadViewImpl implements QuadView {
-	protected Direction nominalFace;
+	protected @Nullable Direction nominalFace;
 	protected boolean isGeometryInvalid = true;
 	protected final Vector3f faceNormal = new Vector3f();
 	protected boolean isFaceNormalInvalid = true;

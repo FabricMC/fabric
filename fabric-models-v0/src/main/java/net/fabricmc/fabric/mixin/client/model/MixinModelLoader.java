@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.client.model;
 import java.util.Map;
 import java.util.Set;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -59,7 +60,7 @@ public class MixinModelLoader implements ModelLoaderHooks {
 
 	@Inject(at = @At("HEAD"), method = "loadModel", cancellable = true)
 	private void loadModelHook(Identifier id, CallbackInfo ci) {
-		UnbakedModel customModel = fabric_mlrLoaderInstance.loadModelFromVariant(id);
+		@Nullable UnbakedModel customModel = fabric_mlrLoaderInstance.loadModelFromVariant(id);
 
 		if (customModel != null) {
 			putModel(id, customModel);

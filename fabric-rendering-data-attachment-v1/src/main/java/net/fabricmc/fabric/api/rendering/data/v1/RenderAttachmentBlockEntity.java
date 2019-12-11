@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.rendering.data.v1;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.block.entity.BlockEntity;
 
 /**
@@ -35,5 +37,5 @@ public interface RenderAttachmentBlockEntity {
 	/**
 	 * @return The model state data provided by this block entity. Can be null.
 	 */
-	Object getRenderAttachmentData();
+	@Nullable Object getRenderAttachmentData();
 }

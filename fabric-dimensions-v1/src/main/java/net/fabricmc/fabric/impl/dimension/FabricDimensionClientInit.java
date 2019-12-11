@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.dimension;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -36,7 +37,7 @@ public final class FabricDimensionClientInit {
 
 	public static void onClientInit() {
 		ClientSidePacketRegistry.INSTANCE.register(DimensionIdsFixer.ID, (ctx, buf) -> {
-			CompoundTag compound = buf.readCompoundTag();
+			@Nullable CompoundTag compound = buf.readCompoundTag();
 
 			ctx.getTaskQueue().execute(() -> {
 				if (compound == null) {

@@ -50,5 +50,5 @@ public interface UseEntityCallback {
 			}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, /* Nullable */ EntityHitResult hitResult);
+	ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, EntityHitResult hitResult);
 }

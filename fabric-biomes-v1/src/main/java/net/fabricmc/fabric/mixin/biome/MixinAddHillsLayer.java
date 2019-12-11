@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -59,7 +60,7 @@ public class MixinAddHillsLayer {
 
 		if (rand.nextInt(3) == 0 || processedNoiseSample == 0) {
 			int biomeReturn = Registry.BIOME.getRawId(hillPicker.pickRandom(rand));
-			Biome parent;
+			@Nullable Biome parent;
 
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
 				parent = Biome.getModifiedBiome(Registry.BIOME.get(biomeReturn));

@@ -30,6 +30,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
 
 import com.google.common.base.Preconditions;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -77,7 +78,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl cullFace(Direction face) {
+	public final MutableQuadViewImpl cullFace(@Nullable Direction face) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(data[baseIndex + HEADER_BITS], face);
 		nominalFace(face);
 		return this;
@@ -91,7 +92,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	@Override
-	public final MutableQuadViewImpl nominalFace(Direction face) {
+	public final MutableQuadViewImpl nominalFace(@Nullable Direction face) {
 		nominalFace = face;
 		return this;
 	}

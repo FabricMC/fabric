@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.dimension;
 import com.google.common.base.Preconditions;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
@@ -46,7 +47,7 @@ public final class FabricDimensionInternals {
 	/**
 	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)}.
 	 */
-	private static EntityPlacer customPlacement;
+	private static @Nullable EntityPlacer customPlacement;
 
 	/*
 	 * The dimension change hooks consist of two steps:
@@ -77,8 +78,7 @@ public final class FabricDimensionInternals {
 		}
 	}
 
-	/* Nullable */
-	public static BlockPattern.TeleportTarget tryFindPlacement(ServerWorld destination, Direction portalDir, double portalX, double portalY) {
+	public static BlockPattern.@Nullable TeleportTarget tryFindPlacement(ServerWorld destination, Direction portalDir, double portalX, double portalY) {
 		Preconditions.checkNotNull(destination);
 		Entity teleported = PORTAL_ENTITY.get();
 		PORTAL_ENTITY.set(null);
@@ -89,10 +89,10 @@ public final class FabricDimensionInternals {
 		}
 
 		// Custom placement logic, falls back to default dimension placement if no placement or target found
-		EntityPlacer customPlacement = FabricDimensionInternals.customPlacement;
+		@Nullable EntityPlacer customPlacement = FabricDimensionInternals.customPlacement;
 
 		if (customPlacement != null) {
-			BlockPattern.TeleportTarget customTarget = customPlacement.placeEntity(teleported, destination, portalDir, portalX, portalY);
+			BlockPattern.@Nullable TeleportTarget customTarget = customPlacement.placeEntity(teleported, destination, portalDir, portalX, portalY);
 
 			if (customTarget != null) {
 				return customTarget;
@@ -103,7 +103,7 @@ public final class FabricDimensionInternals {
 		DimensionType dimType = destination.getDimension().getType();
 
 		if (dimType instanceof FabricDimensionType) {
-			BlockPattern.TeleportTarget defaultTarget = ((FabricDimensionType) dimType).getDefaultPlacement().placeEntity(teleported, destination, portalDir, portalX, portalY);
+			BlockPattern.@Nullable TeleportTarget defaultTarget = ((FabricDimensionType) dimType).getDefaultPlacement().placeEntity(teleported, destination, portalDir, portalX, portalY);
 
 			if (defaultTarget == null) {
 				throw new IllegalStateException("Mod dimension " + DimensionType.getId(dimType) + " returned an invalid teleport target");

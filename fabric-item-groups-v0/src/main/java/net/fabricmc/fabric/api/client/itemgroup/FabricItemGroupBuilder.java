@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
@@ -30,7 +32,7 @@ import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 public final class FabricItemGroupBuilder {
 	private Identifier identifier;
 	private Supplier<ItemStack> stackSupplier = () -> ItemStack.EMPTY;
-	private Consumer<List<ItemStack>> stacksForDisplay;
+	private @Nullable Consumer<List<ItemStack>> stacksForDisplay;
 
 	private FabricItemGroupBuilder(Identifier identifier) {
 		this.identifier = identifier;
@@ -75,7 +77,7 @@ public final class FabricItemGroupBuilder {
 	 * @param stacksForDisplay Add ItemStack's to this list to show in the ItemGroup
 	 * @return a reference to the FabricItemGroupBuilder
 	 */
-	public FabricItemGroupBuilder appendItems(Consumer<List<ItemStack>> stacksForDisplay) {
+	public FabricItemGroupBuilder appendItems(@Nullable Consumer<List<ItemStack>> stacksForDisplay) {
 		this.stacksForDisplay = stacksForDisplay;
 		return this;
 	}

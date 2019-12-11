@@ -21,6 +21,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.AbstractContainerScreen;
@@ -56,7 +57,7 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	@Override
 	public <C extends Container> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory) {
 		registerFactory(identifier, (syncId, identifier1, player, buf) -> {
-			C container = ContainerProviderImpl.INSTANCE.createContainer(syncId, identifier1, player, buf);
+			@Nullable C container = ContainerProviderImpl.INSTANCE.createContainer(syncId, identifier1, player, buf);
 
 			if (container == null) {
 				LOGGER.error("Could not open container for {} - a null object was created!", identifier1.toString());

@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.particle.ParticleTextureData;
 import net.minecraft.client.texture.Sprite;
@@ -92,8 +93,7 @@ public final class FabricParticleManager {
 	private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
 		private List<Identifier> spriteIds;
 
-		// @Nullable
-		private List<Sprite> sprites;
+		private @Nullable List<Sprite> sprites;
 
 		@Override
 		public Sprite getSprite(int min, int max) {

@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
@@ -58,7 +60,7 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
 	}
 
 	@Override
-	public List<BakedQuad> getQuads(BlockState blockState, Direction face, Random rand) {
+	public List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction face, Random rand) {
 		return wrapped.getQuads(blockState, face, rand);
 	}
 

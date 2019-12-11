@@ -26,6 +26,7 @@ import java.util.Set;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -50,7 +51,7 @@ public final class InternalBiomeData {
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
 
-	private static Method injectBiomeMethod = null;
+	private static @MonotonicNonNull Method injectBiomeMethod = null;
 
 	public static void addOverworldContinentalBiome(OverworldClimate climate, Biome biome, double weight) {
 		Preconditions.checkArgument(climate != null, "Climate is null");

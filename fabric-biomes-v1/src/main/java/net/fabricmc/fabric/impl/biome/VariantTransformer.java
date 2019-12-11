@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -38,7 +40,7 @@ final class VariantTransformer {
 	 * @param chance the chance of replacement of the biome into the variant
 	 * @param climates the climates that the variant can replace the base biome in, empty/null indicates all climates
 	 */
-	void addBiome(Biome variant, double chance, OverworldClimate[] climates) {
+	void addBiome(Biome variant, double chance, OverworldClimate @Nullable[] climates) {
 		if (climates == null || climates.length == 0) {
 			defaultTransformer.addBiome(variant, chance);
 			climates = OverworldClimate.values();
@@ -56,7 +58,7 @@ final class VariantTransformer {
 	 * @param random the {@link LayerRandomnessSource} from the layer
 	 * @return the transformed biome
 	 */
-	Biome transformBiome(Biome replaced, LayerRandomnessSource random, OverworldClimate climate) {
+	Biome transformBiome(Biome replaced, LayerRandomnessSource random, @Nullable OverworldClimate climate) {
 		if (climate == null) {
 			return defaultTransformer.transformBiome(replaced, random);
 		}

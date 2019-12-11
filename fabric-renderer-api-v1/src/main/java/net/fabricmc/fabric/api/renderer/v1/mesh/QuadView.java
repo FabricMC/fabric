@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
@@ -85,12 +87,12 @@ public interface QuadView {
 	 *
 	 * @see MutableQuadView#cullFace(Direction)
 	 */
-	Direction cullFace();
+	@Nullable Direction cullFace();
 
 	/**
 	 * See {@link MutableQuadView#nominalFace(Direction)}.
 	 */
-	Direction nominalFace();
+	@Nullable Direction nominalFace();
 
 	/**
 	 * Normal of the quad as implied by geometry. Will be invalid

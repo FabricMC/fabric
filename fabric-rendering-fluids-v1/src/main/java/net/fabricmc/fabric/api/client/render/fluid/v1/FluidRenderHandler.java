@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.common.value.qual.ArrayLen;
+
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
@@ -38,7 +41,7 @@ public interface FluidRenderHandler {
 	 * @return An array of size two: the first entry contains the "still" sprite,
 	 * while the second entry contains the "flowing" sprite.
 	 */
-	Sprite[] getFluidSprites(/* Nullable */ BlockRenderView view, /* Nullable */ BlockPos pos, FluidState state);
+	Sprite @ArrayLen(2)[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state);
 
 	/**
 	 * Get the tint color for a fluid being rendered at a given position.
@@ -51,7 +54,7 @@ public interface FluidRenderHandler {
 	 * @param state The current state of the fluid.
 	 * @return The tint color of the fluid.
 	 */
-	default int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
+	default int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
 		return -1;
 	}
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
@@ -43,6 +45,5 @@ public interface EntityPlacer {
 	 * @return a teleportation target, or {@code null} to fall back to further handling
 	 * @apiNote When this method is called, the entity's world is its source dimension.
 	 */
-	/* @Nullable */
-	BlockPattern.TeleportTarget placeEntity(Entity teleported, ServerWorld destination, Direction portalDir, double horizontalOffset, double verticalOffset);
+	BlockPattern.@Nullable TeleportTarget placeEntity(Entity teleported, ServerWorld destination, Direction portalDir, double horizontalOffset, double verticalOffset);
 }

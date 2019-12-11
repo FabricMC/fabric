@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 
 import net.minecraft.client.options.KeyBinding;
 
@@ -34,7 +35,7 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private Map<String, Integer> cachedCategoryMap;
+	private @MonotonicNonNull Map<String, Integer> cachedCategoryMap;
 	private List<FabricKeyBinding> fabricKeyBindingList;
 
 	private KeyBindingRegistryImpl() {

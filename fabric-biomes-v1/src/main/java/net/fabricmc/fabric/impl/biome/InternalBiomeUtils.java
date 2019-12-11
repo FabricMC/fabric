@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
@@ -106,7 +108,7 @@ public final class InternalBiomeUtils {
 	 * @param climate The climate in which the biome resides, or null to indicate an unknown climate
 	 * @return The potentially transformed biome
 	 */
-	public static int transformBiome(LayerRandomnessSource random, Biome existing, OverworldClimate climate) {
+	public static int transformBiome(LayerRandomnessSource random, Biome existing, @Nullable OverworldClimate climate) {
 		Map<Biome, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
 		VariantTransformer transformer = overworldVariantTransformers.get(existing);
 

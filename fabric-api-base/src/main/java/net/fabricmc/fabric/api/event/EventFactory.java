@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.event;
 
 import java.util.function.Function;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
 
 /**
@@ -71,7 +73,7 @@ public final class EventFactory {
 	 * @return The Event instance.
 	 */
 	// TODO: Deprecate this once we have working codegen
-	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
+	public static <T> Event<T> createArrayBacked(Class<? super T> type, @Nullable T emptyInvoker, Function<T[], T> invokerFactory) {
 		return EventFactoryImpl.createArrayBacked(type, emptyInvoker, invokerFactory);
 	}
 

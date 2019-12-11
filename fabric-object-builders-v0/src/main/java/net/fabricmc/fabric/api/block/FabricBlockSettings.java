@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
@@ -53,7 +55,7 @@ public class FabricBlockSettings {
 
 	static final class ExtraData {
 		private final List<MiningLevel> miningLevels = new ArrayList<>();
-		/* @Nullable */ private Boolean breakByHand;
+		private @MonotonicNonNull Boolean breakByHand;
 
 		private ExtraData(Block.Settings settings) {
 		}

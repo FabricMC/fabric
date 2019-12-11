@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.dimension.v1;
 
 import com.google.common.base.Preconditions;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
@@ -85,7 +86,7 @@ public final class FabricDimensions {
 	 * @throws IllegalStateException if this method is called on a client entity
 	 * @apiNote this method must be called from the main server thread
 	 */
-	public static <E extends Entity> E teleport(E teleported, DimensionType destination, /*Nullable*/ EntityPlacer customPlacer) {
+	public static <E extends Entity> E teleport(E teleported, DimensionType destination, @Nullable EntityPlacer customPlacer) {
 		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");
 
 		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacer);

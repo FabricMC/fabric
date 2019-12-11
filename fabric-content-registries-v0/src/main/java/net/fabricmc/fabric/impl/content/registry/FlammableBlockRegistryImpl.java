@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -85,7 +87,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	// User-facing fire registry interface - queries vanilla fire block
 	@Override
 	public Entry get(Block block) {
-		Entry entry = computedEntries.get(block);
+		@Nullable Entry entry = computedEntries.get(block);
 
 		if (entry != null) {
 			return entry;
@@ -94,7 +96,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 		}
 	}
 
-	public Entry getFabric(Block block) {
+	public @Nullable Entry getFabric(Block block) {
 		return computedEntries.get(block);
 	}
 

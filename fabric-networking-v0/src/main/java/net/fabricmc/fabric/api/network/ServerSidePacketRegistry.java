@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.network;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
@@ -57,7 +58,7 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	 * @param completionListener Completion listener. Can be used to check for
 	 *                           the success or failure of sending a given packet, among others.
 	 */
-	void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener);
+	void sendToPlayer(PlayerEntity player, Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> completionListener);
 
 	/**
 	 * Send an identifier/buffer-based packet to a given client.
@@ -68,7 +69,7 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	 * @param completionListener Completion listener. Can be used to check for
 	 *                           the success or failure of sending a given packet, among others.
 	 */
-	default void sendToPlayer(PlayerEntity player, Identifier id, PacketByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
+	default void sendToPlayer(PlayerEntity player, Identifier id, PacketByteBuf buf, @Nullable GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		sendToPlayer(player, toPacket(id, buf), completionListener);
 	}
 

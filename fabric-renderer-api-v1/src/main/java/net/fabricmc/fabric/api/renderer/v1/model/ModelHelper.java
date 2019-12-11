@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
@@ -45,7 +46,7 @@ public abstract class ModelHelper {
 	 * Null is returned as {@link #NULL_FACE_ID}.
 	 * Use {@link #faceFromIndex(int)} to retrieve encoded face.
 	 */
-	public static int toFaceIndex(Direction face) {
+	public static int toFaceIndex(@Nullable Direction face) {
 		return face == null ? NULL_FACE_ID : face.getId();
 	}
 
@@ -56,12 +57,12 @@ public abstract class ModelHelper {
 	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
 	 * to exclude or include the null value, respectively.)
 	 */
-	public static Direction faceFromIndex(int faceIndex) {
+	public static @Nullable Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
 	}
 
 	/** @see #faceFromIndex(int) */
-	private static final Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
+	private static final @Nullable Direction[] FACES = Arrays.copyOf(Direction.values(), 7);
 
 	/**
 	 * Converts a mesh into an array of lists of vanilla baked quads.
@@ -86,7 +87,7 @@ public abstract class ModelHelper {
 				final int limit = q.material().spriteDepth();
 
 				for (int l = 0; l < limit; l++) {
-					Direction face = q.cullFace();
+					@Nullable Direction face = q.cullFace();
 					builders[face == null ? 6 : face.getId()].add(q.toBakedQuad(l, finder.find(q, l), false));
 				}
 			});

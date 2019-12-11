@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.content.registry;
 
 import java.lang.reflect.Method;
 
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
+
 import net.minecraft.loot.entry.LootEntries;
 import net.minecraft.loot.entry.LootEntry;
 
@@ -29,7 +31,7 @@ public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
 	private static final Method REGISTER_METHOD;
 
 	static {
-		Method target = null;
+		@MonotonicNonNull Method target = null;
 
 		for (Method m : LootEntries.class.getDeclaredMethods()) {
 			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootEntry.Serializer.class) {

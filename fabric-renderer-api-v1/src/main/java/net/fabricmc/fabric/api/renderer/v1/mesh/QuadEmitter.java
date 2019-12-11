@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
@@ -40,10 +42,10 @@ public interface QuadEmitter extends MutableQuadView {
 	QuadEmitter material(RenderMaterial material);
 
 	@Override
-	QuadEmitter cullFace(Direction face);
+	QuadEmitter cullFace(@Nullable Direction face);
 
 	@Override
-	QuadEmitter nominalFace(Direction face);
+	QuadEmitter nominalFace(@Nullable Direction face);
 
 	@Override
 	QuadEmitter colorIndex(int colorIndex);

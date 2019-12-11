@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.loot.table;
 
 import java.lang.reflect.Method;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import net.minecraft.loot.entry.LootEntries;
 import net.minecraft.loot.entry.LootEntry;
 
@@ -26,7 +28,7 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 	private static final Method REGISTER_METHOD;
 
 	static {
-		Method target = null;
+		@Nullable Method target = null;
 
 		for (Method m : LootEntries.class.getDeclaredMethods()) {
 			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootEntry.Serializer.class) {

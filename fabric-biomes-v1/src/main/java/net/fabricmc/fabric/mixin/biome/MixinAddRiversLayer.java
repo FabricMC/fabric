@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.biome;
 
 import java.util.Map;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -52,7 +53,7 @@ public class MixinAddRiversLayer {
 		Map<Biome, Biome> overworldRivers = InternalBiomeData.getOverworldRivers();
 
 		if (overworldRivers.containsKey(landBiome) && riverBiomeId == RIVER_ID) {
-			Biome riverBiome = overworldRivers.get(landBiome);
+			@Nullable Biome riverBiome = overworldRivers.get(landBiome);
 			info.setReturnValue(riverBiome == null ? landBiomeId : Registry.BIOME.getRawId(riverBiome));
 		}
 	}

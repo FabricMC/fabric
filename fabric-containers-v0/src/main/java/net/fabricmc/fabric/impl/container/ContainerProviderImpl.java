@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 import io.netty.buffer.Unpooled;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.container.Container;
@@ -97,7 +98,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		clonedBuf.readIdentifier();
 		clonedBuf.readUnsignedByte();
 
-		Container container = createContainer(syncId, identifier, player, clonedBuf);
+		@Nullable Container container = createContainer(syncId, identifier, player, clonedBuf);
 
 		if (container == null) {
 			return;
@@ -107,7 +108,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		player.container.addListener(player);
 	}
 
-	public <C extends Container> C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf) {
+	public <C extends Container> @Nullable C createContainer(int syncId, Identifier identifier, PlayerEntity player, PacketByteBuf buf) {
 		ContainerFactory<Container> factory = FACTORIES.get(identifier);
 
 		if (factory == null) {

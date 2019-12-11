@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -99,7 +100,7 @@ public class MixinSetBaseBiomesLayer {
 		Biome biome = Registry.BIOME.get(biomeId);
 
 		// Determine what special case this is...
-		OverworldClimate climate;
+		@Nullable OverworldClimate climate;
 
 		if (biomeId == BADLANDS_PLATEAU_ID || biomeId == WOODED_BADLANDS_PLATEAU_ID) {
 			climate = OverworldClimate.DRY;
