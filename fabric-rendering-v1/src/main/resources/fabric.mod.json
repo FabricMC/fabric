@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-rendering-v0",
-  "name": "Fabric Rendering (v0)",
+  "id": "fabric-rendering-v1",
+  "name": "Fabric Rendering (v1)",
   "version": "${version}",
   "environment": "client",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-rendering-v0/icon.png",
+  "icon": "assets/fabric-rendering-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -15,16 +15,12 @@
   "authors": [
     "FabricMC"
   ],
-  "entrypoints": {
-    "client": [
-      "net.fabricmc.fabric.impl.client.rendering.RenderingCallbackInvoker"
-    ]
-  },
   "depends": {
     "fabricloader": ">=0.4.0",
-    "minecraft": ">=1.15-alpha.19.39.a",
-    "fabric-api-base": "*",
-    "fabric-rendering-v1": "*"
+    "fabric-api-base": "*"
   },
-  "description": "Hooks and registries for rendering-related things."
+  "description": "Hooks and registries for rendering-related things.",
+  "mixins": [
+    "fabric-rendering-v1.mixins.json"
+  ]
 }
