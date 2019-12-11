@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.tool.attribute.v1;
 
-import javax.annotation.Nullable;
+import edu.umd.cs.findbugs.annotations.Nullable;
 
 /**
  * Interface for the user of a tool.
