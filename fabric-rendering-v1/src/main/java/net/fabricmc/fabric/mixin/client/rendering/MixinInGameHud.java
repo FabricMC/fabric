@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;disableLighting()V", ordinal = 0, shift = At.Shift.BY, by = -3))
+	@Inject(method = "render", at = @At(value = "RETURN", shift = At.Shift.BY, by = -6))
 	public void render(float tickDelta, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(tickDelta);
 	}
