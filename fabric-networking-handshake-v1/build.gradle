@@ -1,9 +1,0 @@
-archivesBaseName = "fabric-networking-handshake-v1"
-version = getSubprojectVersion(project, "0.1.0")
-
-dependencies {
-    implementation project(path: ':fabric-api-base', configuration: 'dev')
-    implementation project(path: ':fabric-events-lifecycle-v0', configuration: 'dev')
-    compile project(path: ':fabric-networking-v1', configuration: 'dev')
-}
-
