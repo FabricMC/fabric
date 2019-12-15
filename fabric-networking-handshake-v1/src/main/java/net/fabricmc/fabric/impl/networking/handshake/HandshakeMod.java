@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.networking.handshake;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -61,6 +62,39 @@ public final class HandshakeMod implements ModInitializer {
 	static final String ID = "fabric-networking-handshake-v1";
 	static final Identifier HELLO_CHANNEL = id("hello");
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final List<ModHandshakeMetadataLoader> METADATA_LOADERS = Arrays.asList(
+			(remoteVersionRequirements, metadata, cvObject) -> {
+				CustomValue versionRange = cvObject.get("versionRange");
+
+				if (versionRange != null && versionRange.getType() == CvType.STRING) {
+					String st = versionRange.getAsString();
+					ModVersionReporter networkRequirement = (handler, modId, v) -> {
+						if (v == null) {
+							return ModVersionReporter.getDefaultAbsentMessage(modId);
+						}
+
+						try {
+							if (VersionPredicateParser.matches(v, st)) {
+								return null;
+							}
+
+							return new TranslatableText("fabric-networking-handshake-v1.version_predicate_failed", modId, v.getFriendlyString(), st);
+						} catch (VersionParsingException ex) {
+							return new TranslatableText("fabric-networking-handshake-v1.version_check_error", modId, v.getFriendlyString(), ex.getLocalizedMessage());
+						}
+					};
+					remoteVersionRequirements.put(metadata.getId(), networkRequirement);
+				}
+			},
+			(remoteVersionRequirements, metadata, cvObject) -> {
+				CustomValue requireExactVersion = cvObject.get("requireExactVersion");
+
+				if (requireExactVersion != null && requireExactVersion.getType() == CvType.BOOLEAN) {
+					Predicate<Version> networkRequirement = requireExactVersion.getAsBoolean() ? Predicate.isEqual(metadata.getVersion()) : Objects::nonNull;
+					remoteVersionRequirements.put(metadata.getId(), ModVersionReporter.fromChecker(networkRequirement));
+				}
+			}
+	);
 	// todo future: add a list of legacy handlers which warns when legacy is detected
 	private Multimap<String, ModVersionReporter> remoteVersionRequirements;
 
@@ -86,34 +120,8 @@ public final class HandshakeMod implements ModInitializer {
 			if (value != null && value.getType() == CvType.OBJECT) {
 				CustomValue.CvObject cvObject = value.getAsObject();
 
-				CustomValue versionRange = cvObject.get("versionRange");
-
-				if (versionRange != null && versionRange.getType() == CvType.STRING) {
-					String st = versionRange.getAsString();
-					ModVersionReporter networkRequirement = (handler, modId, v) -> {
-						if (v == null) {
-							return ModVersionReporter.getDefaultAbsentMessage(modId);
-						}
-
-						try {
-							if (VersionPredicateParser.matches(v, st)) {
-								return null;
-							}
-
-							return new TranslatableText("fabric-networking-handshake-v1.version_predicate_failed", modId, v.getFriendlyString(), st);
-						} catch (VersionParsingException ex) {
-							return new TranslatableText("fabric-networking-handshake-v1.version_check_error", modId, v.getFriendlyString(), ex.getLocalizedMessage());
-						}
-					};
-					remoteVersionRequirements.put(metadata.getId(), networkRequirement);
-					continue;
-				}
-
-				CustomValue requireExactVersion = cvObject.get("requireExactVersion");
-
-				if (requireExactVersion != null && requireExactVersion.getType() == CvType.BOOLEAN) {
-					Predicate<Version> networkRequirement = requireExactVersion.getAsBoolean() ? Predicate.isEqual(metadata.getVersion()) : Objects::nonNull;
-					remoteVersionRequirements.put(metadata.getId(), ModVersionReporter.fromChecker(networkRequirement));
+				for (ModHandshakeMetadataLoader metadataLoader : METADATA_LOADERS) {
+					metadataLoader.load(remoteVersionRequirements, metadata, cvObject);
 				}
 			}
 		}
@@ -205,5 +213,9 @@ public final class HandshakeMod implements ModInitializer {
 				context.getNetworkHandler().disconnect(disconnectReason);
 			}
 		}
+	}
+
+	interface ModHandshakeMetadataLoader {
+		void load(Multimap<String, ModVersionReporter> remoteVersionRequirements, ModMetadata metadata, CustomValue.CvObject cvObject);
 	}
 }

@@ -30,6 +30,10 @@ public interface ModHandshakeRegistrar {
 	/**
 	 * Register mod version reporters to a registry.
 	 *
+	 * <p>The passed registry is mutable and has already been populated with reporters defined
+	 * in fabric mod json files. i.e. the methods can remove mod version reporters defined by
+	 * json custom values if they desire.
+	 *
 	 * @param registry the registry
 	 */
 	void registerTo(Multimap<String, ModVersionReporter> registry);

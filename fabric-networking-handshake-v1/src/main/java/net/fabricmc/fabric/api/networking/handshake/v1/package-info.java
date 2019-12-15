@@ -19,11 +19,17 @@
  *
  * <p>This API allows mods to reject clients based on their mod presence.
  *
+ * <p>Mods can register handshake mod version mismatch reporters. If any of the
+ * reporters reported a mismatch, the connection is rejected.
+ *
  * <p>Mods can have a "fabric-networking-handshake" section in their custom values,
  * which has the following optional suboptions:
- * <ul><li>"versionRange": specifies an accepted remote version range for this mod;</li>
- * <li>"requireExactVersion": if true, it will check for exact version match on client
- * and server; otherwise, it will check for mod presence on client.</li></ul>
+ * <ul><li>"requireExactVersion": if true, it will check for exact version match on
+ * client and server; otherwise, it will check for mod presence on client.</li>
+ * <li>"versionRange": specifies an accepted remote version range for this mod.
+ * Since this is more specific than the exact version requirement, it is pointless
+ * to declare both.</li>
+ * </ul>
  */
 
 package net.fabricmc.fabric.api.networking.handshake.v1;

@@ -1,0 +1,8 @@
+{
+  "fabric-networking-handshake-v1.bad_version": "无法确定“%1$s”模组的版本（%2$s）",
+  "fabric-networking-handshake-v1.missing": "缺少“%1$s”模组",
+  "fabric-networking-handshake-v1.version_rejection": "不支持“%2$s”版的“%1$s”模组",
+  "fabric-networking-handshake-v1.version_predicate_failed": "“%1$s”模组只支持“%3$s”版本，但检测到“%2$s”版本",
+  "fabric-networking-handshake-v1.version_check_error": "“%2$s”版的“%1$s”模组在检测版本时出错：“%3$s”",
+  "fabric-networking-handshake-v1.errors": "检测到以下模组版本冲突："
+}
