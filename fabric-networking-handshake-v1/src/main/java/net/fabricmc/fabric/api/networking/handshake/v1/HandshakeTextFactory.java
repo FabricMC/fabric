@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.networking.handshake.v1;
 
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.loader.api.Version;
 
@@ -41,5 +42,7 @@ public interface HandshakeTextFactory {
 	 * @param remoteVersion the version on the client
 	 * @return the message
 	 */
-	Text getVersionMismatchMessage(String modId, Version remoteVersion);
+	default Text getVersionMismatchMessage(String modId, Version remoteVersion) {
+		return new TranslatableText("fabric-networking-handshake-v1.version_rejection", modId, remoteVersion.getFriendlyString());
+	}
 }
