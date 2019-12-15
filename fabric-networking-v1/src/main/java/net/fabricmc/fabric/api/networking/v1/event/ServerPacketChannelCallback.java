@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Holds event instances of client to server custom payload packet channel registration.
  *
- * <p>The events are fired on the logical server's network thread (asynchrously).
+ * <p>The events are fired on the logical server's network thread (asynchronously).
  */
 @FunctionalInterface
 public interface ServerPacketChannelCallback extends PacketChannelCallback<ServerPlayNetworkHandler> {
