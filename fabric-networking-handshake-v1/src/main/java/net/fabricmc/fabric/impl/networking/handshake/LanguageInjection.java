@@ -33,7 +33,6 @@ import net.minecraft.util.JsonHelper;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 
-// todo move to resources maybe
 public final class LanguageInjection {
 	private static final Logger LOGGER = LogManager.getLogger();
 

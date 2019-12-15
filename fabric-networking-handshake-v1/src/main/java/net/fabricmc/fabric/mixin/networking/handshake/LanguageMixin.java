@@ -30,7 +30,7 @@ import net.minecraft.util.Util;
 
 import net.fabricmc.fabric.impl.networking.handshake.LanguageInjection;
 
-@Mixin(Language.class) // TODO move to resource loader v1 later?
+@Mixin(Language.class)
 public abstract class LanguageMixin {
 	@Shadow
 	@Final
