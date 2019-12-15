@@ -41,7 +41,7 @@ public abstract class LanguageMixin {
 
 	@Redirect(method = "<init>()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMeasuringTimeMs()J"))
 	public long fabric_injectFabricLanguages() {
-		LanguageInjection.injectFabricDefaultTranslations(this.translations, field_11489);
+		LanguageInjection.injectHandshakeInfo(this.translations, field_11489);
 		return Util.getMeasuringTimeMs();
 	}
 }

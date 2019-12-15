@@ -40,21 +40,22 @@ public final class LanguageInjection {
 	private LanguageInjection() {
 	}
 
-	public static void injectFabricDefaultTranslations(Map<String, String> translations, Pattern argPattern) {
-		for (ModContainer mod : FabricLoader.getInstance().getAllMods()) {
-			Path langFile = mod.getPath("assets").resolve(mod.getMetadata().getId()).resolve("lang").resolve("en_us.json");
+	public static void injectHandshakeInfo(Map<String, String> translations, Pattern argPattern) {
+		ModContainer mod = FabricLoader.getInstance().getModContainer(HandshakeMod.ID).orElseThrow(() -> new IllegalStateException("Cannot find handshake mod!"));
+		Path langFile = mod.getPath("assets").resolve(mod.getMetadata().getId()).resolve("lang").resolve("en_us.json");
 
-			if (!Files.exists(langFile)) continue;
+		if (!Files.exists(langFile)) {
+			return;
+		}
 
-			try (BufferedReader reader = Files.newBufferedReader(langFile)) {
-				for (Map.Entry<String, JsonElement> element : JsonHelper.deserialize(reader).entrySet()) {
-					String key = element.getKey();
-					String translated = argPattern.matcher(JsonHelper.asString(element.getValue(), key)).replaceAll("%$1s");
-					translations.put(key, translated);
-				}
-			} catch (IOException | JsonParseException ex) {
-				LOGGER.error("Couldn't read strings from /assets/{}/lang/en_us.json", mod.getMetadata().getId(), ex);
+		try (BufferedReader reader = Files.newBufferedReader(langFile)) {
+			for (Map.Entry<String, JsonElement> element : JsonHelper.deserialize(reader).entrySet()) {
+				String key = element.getKey();
+				String translated = argPattern.matcher(JsonHelper.asString(element.getValue(), key)).replaceAll("%$1s");
+				translations.put(key, translated);
 			}
+		} catch (IOException | JsonParseException ex) {
+			LOGGER.error("Couldn't read strings from /assets/{}/lang/en_us.json", mod.getMetadata().getId(), ex);
 		}
 	}
 }
