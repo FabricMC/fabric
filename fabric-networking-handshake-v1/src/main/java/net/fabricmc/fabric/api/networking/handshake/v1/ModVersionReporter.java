@@ -21,7 +21,6 @@ import java.util.function.Predicate;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.loader.api.Version;
 
@@ -42,42 +41,8 @@ public interface ModVersionReporter {
 	 * @return the created reporter
 	 */
 	static ModVersionReporter fromChecker(Predicate<Version> checker) {
-		return (networkHandler, modId, remoteVersion) ->
-				checker.test(remoteVersion) ? null : remoteVersion == null ? getDefaultAbsentMessage(modId) : getDefaultVersionMismatchMessage(modId, remoteVersion);
-	}
-
-	/**
-	 * Converts a translated text to a literal one so that it's ready to be sent to
-	 * vanilla clients.
-	 *
-	 * @param original the original text
-	 * @return the literal text
-	 */
-	static Text toLiteral(Text original) {
-		return new LiteralText(original.getString());
-	}
-
-	/**
-	 * Returns the default message that is sent when a mod is absent on the client but
-	 * required by the server.
-	 *
-	 * @param modId the mod checked
-	 * @return the message
-	 */
-	static Text getDefaultAbsentMessage(String modId) {
-		return new TranslatableText("fabric-networking-handshake-v1.missing", modId);
-	}
-
-	/**
-	 * Returns the default message that is sent when a mod on the client has a version
-	 * that is rejected by the server.
-	 *
-	 * @param modId the mod checked
-	 * @param remoteVersion the version on the client
-	 * @return the message
-	 */
-	static Text getDefaultVersionMismatchMessage(String modId, Version remoteVersion) {
-		return new TranslatableText("fabric-networking-handshake-v1.version_rejection", modId, remoteVersion.getFriendlyString());
+		return (networkHandler, modId, remoteVersion, messageFactory) ->
+				checker.test(remoteVersion) ? null : remoteVersion == null ? messageFactory.getAbsentMessage(modId) : messageFactory.getVersionMismatchMessage(modId, remoteVersion);
 	}
 
 	/**
@@ -92,10 +57,15 @@ public interface ModVersionReporter {
 	 * absent on the client side. If the translation is not available, the
 	 * translation key instead of the translated text will appear to the client.
 	 *
+	 * <p>The message factory passed allows reporters to send messages that may be
+	 * default English or translated message depends on whether the client has the
+	 * handshake mod.
+	 *
 	 * @param networkHandler the login network handler
 	 * @param modId the mod's id
 	 * @param remoteVersion the client's mod version
+	 * @param messageFactory the handshake message factory
 	 * @return an error message, or {@code null} if the mod is okay
 	 */
-	/* Nullable */ Text report(ServerLoginNetworkHandler networkHandler, String modId, /* Nullable */ Version remoteVersion);
+	/* Nullable */ Text report(ServerLoginNetworkHandler networkHandler, String modId, /* Nullable */ Version remoteVersion, HandshakeTextFactory messageFactory);
 }

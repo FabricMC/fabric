@@ -28,8 +28,5 @@
     "client": [
       "net.fabricmc.fabric.impl.networking.handshake.HandshakeClientMod"
     ]
-  },
-  "mixins": [
-    "fabric-networking-handshake-v1.mixins.json"
-  ]
+  }
 }

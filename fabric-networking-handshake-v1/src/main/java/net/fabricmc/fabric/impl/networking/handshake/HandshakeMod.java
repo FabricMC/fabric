@@ -32,12 +32,10 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 import net.fabricmc.fabric.api.networking.handshake.v1.ModHandshakeRegistrar;
 import net.fabricmc.fabric.api.networking.handshake.v1.ModVersionReporter;
 import net.fabricmc.fabric.api.networking.v1.event.LoginQueryStartCallback;
@@ -62,15 +60,19 @@ public final class HandshakeMod implements ModInitializer {
 	static final String ID = "fabric-networking-handshake-v1";
 	static final Identifier HELLO_CHANNEL = id("hello");
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final HandshakeModTextFactory TRANSLATED_TEXT_FACTORY = new TranslatedHandshakeTextFactory();
+	private static final HandshakeModTextFactory HARDCODED_TEXT_FACTORY = new HardcodedHandshakeTextFactory();
 	private static final List<ModHandshakeMetadataLoader> METADATA_LOADERS = Arrays.asList(
 			(remoteVersionRequirements, metadata, cvObject) -> {
 				CustomValue versionRange = cvObject.get("versionRange");
 
 				if (versionRange != null && versionRange.getType() == CvType.STRING) {
 					String st = versionRange.getAsString();
-					ModVersionReporter networkRequirement = (handler, modId, v) -> {
+					ModVersionReporter networkRequirement = (handler, modId, v, handshakeTextFactory) -> {
+						HandshakeModTextFactory textFactory = (HandshakeModTextFactory) handshakeTextFactory;
+
 						if (v == null) {
-							return ModVersionReporter.getDefaultAbsentMessage(modId);
+							return textFactory.getAbsentMessage(modId);
 						}
 
 						try {
@@ -78,9 +80,9 @@ public final class HandshakeMod implements ModInitializer {
 								return null;
 							}
 
-							return new TranslatableText("fabric-networking-handshake-v1.version_predicate_failed", modId, v.getFriendlyString(), st);
+							return textFactory.getVersionPredicateFailedMessage(modId, v, st);
 						} catch (VersionParsingException ex) {
-							return new TranslatableText("fabric-networking-handshake-v1.version_check_error", modId, v.getFriendlyString(), ex.getLocalizedMessage());
+							return textFactory.getVersionCheckErrorMessage(modId, v, ex);
 						}
 					};
 					remoteVersionRequirements.put(metadata.getId(), networkRequirement);
@@ -132,13 +134,8 @@ public final class HandshakeMod implements ModInitializer {
 
 		this.remoteVersionRequirements = ImmutableMultimap.copyOf(remoteVersionRequirements);
 
-		ServerStartCallback.EVENT.register(this::onServerStart);
 		LoginQueryStartCallback.EVENT.register(this::onLoginQueryStart);
 		ServerPacketReceiverRegistries.LOGIN_QUERY_RESPONSE.register(HELLO_CHANNEL, this::onLoginQueryResponse);
-	}
-
-	private void onServerStart(MinecraftServer server) {
-		((FabricExtraMetaHolder) server.getServerMetadata()).setFabricExtraMeta(new FabricExtraMeta(remoteVersionRequirements.keySet()));
 	}
 
 	private void onLoginQueryStart(MinecraftServer server, ServerLoginNetworkHandler networkHandler, PacketSender sender) {
@@ -157,6 +154,8 @@ public final class HandshakeMod implements ModInitializer {
 		ServerLoginNetworkHandler networkHandler = context.getNetworkHandler();
 		List<Text> errorMessages = new ArrayList<>();
 
+		HandshakeModTextFactory textFactory = context.isUnderstood() ? TRANSLATED_TEXT_FACTORY : HARDCODED_TEXT_FACTORY;
+
 		if (context.isUnderstood()) {
 			int n = buffer.readVarInt();
 
@@ -172,13 +171,13 @@ public final class HandshakeMod implements ModInitializer {
 					try {
 						version = Version.parse(versionString);
 					} catch (VersionParsingException ex) {
-						errorMessages.add(new TranslatableText("fabric-networking-handshake-v1.bad_version", modId, versionString));
+						errorMessages.add(textFactory.getBadVersionsMessage(modId, versionString));
 						continue;
 					}
 				}
 
 				for (ModVersionReporter checker : allCheckers.removeAll(modId)) {
-					Text errorMessage = checker.report(networkHandler, modId, version);
+					Text errorMessage = checker.report(networkHandler, modId, version, textFactory);
 
 					if (errorMessage != null) {
 						errorMessages.add(errorMessage);
@@ -188,7 +187,7 @@ public final class HandshakeMod implements ModInitializer {
 		}
 
 		for (Entry<String, ModVersionReporter> entry : allCheckers.entries()) {
-			Text errorMessage = entry.getValue().report(networkHandler, entry.getKey(), null);
+			Text errorMessage = entry.getValue().report(networkHandler, entry.getKey(), null, textFactory);
 
 			if (errorMessage != null) {
 				errorMessages.add(errorMessage);
@@ -196,15 +195,10 @@ public final class HandshakeMod implements ModInitializer {
 		}
 
 		if (!errorMessages.isEmpty()) {
-			Text disconnectReason = new TranslatableText("fabric-networking-handshake-v1.errors");
+			Text disconnectReason = textFactory.getErrorsHeader();
 
 			for (Text errorMessage : errorMessages) {
 				disconnectReason.append("\n").append(errorMessage);
-			}
-
-			// Send raw English to clients without handshake mod
-			if (!context.isUnderstood()) {
-				disconnectReason = ModVersionReporter.toLiteral(disconnectReason);
 			}
 
 			if (context.getNetworkHandler().getConnection().isLocal()) {
