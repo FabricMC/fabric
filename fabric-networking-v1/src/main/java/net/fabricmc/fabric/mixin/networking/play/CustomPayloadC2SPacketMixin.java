@@ -28,7 +28,7 @@ import net.fabricmc.fabric.impl.networking.PacketHelper;
 @Mixin(CustomPayloadC2SPacket.class)
 public abstract class CustomPayloadC2SPacketMixin {
 	@Redirect(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/PacketByteBuf;release()Z"))
-	public boolean fabric_redirectRelease(PacketByteBuf buf) {
+	private boolean fabric_redirectRelease(PacketByteBuf buf) {
 		PacketHelper.releaseBuffer(buf); // handle refCnt
 		return true;
 	}

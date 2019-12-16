@@ -55,7 +55,7 @@ public abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetwo
 	public abstract void acceptPlayer();
 
 	@Inject(method = "<init>(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/network/ClientConnection;)V", at = @At("TAIL"))
-	public void fabric_onConstructor(CallbackInfo ci) {
+	private void fabric_onConstructor(CallbackInfo ci) {
 		neverReady = true;
 		handler = new ServerLoginPacketHandler(client);
 		handler.init();
@@ -67,7 +67,7 @@ public abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetwo
 	}
 
 	@Redirect(method = "tick()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;acceptPlayer()V"))
-	public void fabric_onReadyToAcceptPlayer(ServerLoginNetworkHandler self) {
+	private void fabric_onReadyToAcceptPlayer(ServerLoginNetworkHandler self) {
 		if (neverReady) {
 			neverReady = false;
 			fabric_sendCompressionPacket();
@@ -89,7 +89,7 @@ public abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetwo
 	}
 
 	@Inject(method = "onQueryResponse(Lnet/minecraft/server/network/packet/LoginQueryResponseC2SPacket;)V", at = @At("HEAD"), cancellable = true)
-	public void fabric_injectQueryResponse(LoginQueryResponseC2SPacket packet, CallbackInfo ci) {
+	private void fabric_injectQueryResponse(LoginQueryResponseC2SPacket packet, CallbackInfo ci) {
 		LoginQueryResponsePacketAccessor hook = (LoginQueryResponsePacketAccessor) packet;
 
 		if (handler.accept(server, (ServerLoginNetworkHandler) (Object) this, handler, hook)) {
@@ -99,7 +99,7 @@ public abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetwo
 	}
 
 	@Inject(method = "onQueryResponse(Lnet/minecraft/server/network/packet/LoginQueryResponseC2SPacket;)V", at = @At("TAIL"))
-	public void fabric_finishVanillaQueryResponse(LoginQueryResponseC2SPacket packet, CallbackInfo ci) {
+	private void fabric_finishVanillaQueryResponse(LoginQueryResponseC2SPacket packet, CallbackInfo ci) {
 		PacketHelper.releaseBuffer(((LoginQueryResponsePacketAccessor) packet).getResponse());
 		// clean up after vanilla disconnect unknown response
 	}
@@ -108,7 +108,7 @@ public abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetwo
 	 * @reason Packet sent before login query.
 	 */
 	@Redirect(method = "acceptPlayer()V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"))
-	public void fabric_passCompressionPacket(ClientConnection connection, Packet<?> packet, GenericFutureListener<?> listener) {
+	private void fabric_passCompressionPacket(ClientConnection connection, Packet<?> packet, GenericFutureListener<?> listener) {
 		// So the compression packet doesn't get sent here any more
 	}
 }

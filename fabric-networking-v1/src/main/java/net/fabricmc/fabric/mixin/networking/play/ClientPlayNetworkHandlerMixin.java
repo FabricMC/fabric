@@ -45,26 +45,26 @@ public abstract class ClientPlayNetworkHandlerMixin implements PlayNetworkHandle
 	private AbstractPlayPacketHandler<ClientPlayPacketContext> sender;
 
 	@Inject(method = "<init>*", at = @At("TAIL"))
-	public void fabric_onConstructor(CallbackInfo ci) {
+	private void fabric_onConstructor(CallbackInfo ci) {
 		sender = new ClientPlayPacketHandler((ClientPlayNetworkHandler) (Object) this);
 		// at this point, the handler is just waiting for a server game join packet;
 		// server still has the login network handler, so don't send anything yet!
 	}
 
 	@Inject(method = "onGameJoin", at = @At("TAIL"))
-	public void fabric_onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
+	private void fabric_onGameJoin(GameJoinS2CPacket packet, CallbackInfo ci) {
 		sender.init();
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	public void fabric_onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo info) {
+	private void fabric_onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo info) {
 		if (sender.accept(packet.getChannel(), this, ((CustomPayloadS2CPacketAccessor) packet).getRawBuffer())) {
 			info.cancel();
 		}
 	}
 
 	@Inject(method = "onDisconnected(Lnet/minecraft/text/Text;)V", at = @At("TAIL"))
-	public void fabric_injectDisconnect(Text text, CallbackInfo ci) {
+	private void fabric_injectDisconnect(Text text, CallbackInfo ci) {
 		ClientPlayNetworkHandlerCallback.DISCONNECTED.invoker().handle((ClientPlayNetworkHandler) (Object) this);
 	}
 

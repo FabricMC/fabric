@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.networking.receiver.ClientPacketReceivers;
 @Mixin(ClientLoginNetworkHandler.class)
 public abstract class ClientLoginNetworkHandlerMixin {
 	@Inject(method = "onQueryRequest(Lnet/minecraft/client/network/packet/LoginQueryRequestS2CPacket;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;)V"), cancellable = true)
-	public void fabric_redirectQueryRequest(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
+	private void fabric_redirectQueryRequest(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
 		LoginQueryPacketAccessor hook = (LoginQueryPacketAccessor) packet;
 
 		if (ClientPacketReceivers.LOGIN_QUERY.receive(hook.getChannel(), new ClientLoginQueryPacketContextImpl((ClientLoginNetworkHandler) (Object) this, hook.getQueryId()), hook.getPayload())) {
@@ -41,7 +41,7 @@ public abstract class ClientLoginNetworkHandlerMixin {
 	}
 
 	@Inject(method = "onQueryRequest(Lnet/minecraft/client/network/packet/LoginQueryRequestS2CPacket;)V", at = @At("RETURN"))
-	public void fabric_finishVanillaQueryRequest(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
+	private void fabric_finishVanillaQueryRequest(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
 		PacketHelper.releaseBuffer(((LoginQueryPacketAccessor) packet).getPayload());
 	}
 }

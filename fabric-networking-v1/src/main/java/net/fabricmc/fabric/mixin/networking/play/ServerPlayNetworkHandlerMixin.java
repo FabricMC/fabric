@@ -50,13 +50,13 @@ public abstract class ServerPlayNetworkHandlerMixin implements PlayNetworkHandle
 	private AbstractPlayPacketHandler<ServerPlayPacketContext> sender;
 
 	@Inject(method = "<init>(Lnet/minecraft/server/MinecraftServer;Lnet/minecraft/network/ClientConnection;Lnet/minecraft/server/network/ServerPlayerEntity;)V", at = @At("TAIL"))
-	public void fabric_onConstructor(CallbackInfo ci) {
+	private void fabric_onConstructor(CallbackInfo ci) {
 		sender = new ServerPlayPacketHandler((ServerPlayNetworkHandler) (Object) this);
 		sender.init();
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-	public void fabric_onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo info) {
+	private void fabric_onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo info) {
 		// Intentionally async;
 		CustomPayloadC2SPacketAccessor accessor = (CustomPayloadC2SPacketAccessor) packet;
 		Identifier channel = accessor.getChannel();
@@ -68,7 +68,7 @@ public abstract class ServerPlayNetworkHandlerMixin implements PlayNetworkHandle
 	}
 
 	@Inject(method = "onDisconnected(Lnet/minecraft/text/Text;)V", at = @At("TAIL"))
-	public void fabric_injectDisconnect(Text text, CallbackInfo ci) {
+	private void fabric_injectDisconnect(Text text, CallbackInfo ci) {
 		ServerPlayNetworkHandlerCallback.DISCONNECTED.invoker().handle((ServerPlayNetworkHandler) (Object) this);
 	}
 
