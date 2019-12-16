@@ -45,7 +45,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.networking.v1.receiver.ClientPlayPacketContext;
 import net.fabricmc.fabric.api.networking.v1.sender.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
+import net.fabricmc.fabric.api.networking.v1.sender.ServerPacketSenders;
 import net.fabricmc.fabric.api.networking.v1.sender.PlayPacketSender;
 
 public final class RegistrySyncManager {
@@ -60,7 +60,7 @@ public final class RegistrySyncManager {
 	}
 
 	public static void sendPacket(ServerPlayNetworkHandler handler) {
-		PlayPacketSender sender = PacketSenders.of(handler);
+		PlayPacketSender sender = ServerPacketSenders.of(handler);
 
 		if (!sender.accepts(OLD_SYNC_CHANNEL)) return; // todo kick?
 

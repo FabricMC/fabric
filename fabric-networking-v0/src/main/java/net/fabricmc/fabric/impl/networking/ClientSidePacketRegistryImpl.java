@@ -30,12 +30,12 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.networking.v1.receiver.PlayPacketContext;
 import net.fabricmc.fabric.api.networking.v1.receiver.PacketReceiverRegistry;
 import net.fabricmc.fabric.api.networking.v1.receiver.ClientPacketReceiverRegistries;
-import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
+import net.fabricmc.fabric.api.networking.v1.sender.ClientPacketSenders;
 
 public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements ClientSidePacketRegistry {
 	@Override
 	public boolean canServerReceive(Identifier id) {
-		return PacketSenders.of(MinecraftClient.getInstance().player.networkHandler).accepts(id);
+		return ClientPacketSenders.of().accepts(id);
 	}
 
 	@Override

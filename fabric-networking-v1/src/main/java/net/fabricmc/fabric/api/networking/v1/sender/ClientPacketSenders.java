@@ -18,33 +18,17 @@ package net.fabricmc.fabric.api.networking.v1.sender;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.server.network.ServerLoginNetworkHandler;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.receiver.ClientPacketReceiverRegistries;
 import net.fabricmc.fabric.api.networking.v1.receiver.ServerPacketReceiverRegistries;
 import net.fabricmc.fabric.impl.networking.hook.PlayNetworkHandlerHook;
-import net.fabricmc.fabric.impl.networking.hook.ServerLoginNetworkHandlerHook;
 
 /**
- * Utility methods for working with packet senders.
+ * Utility methods for getting packet senders on logical client.
  */
-public final class PacketSenders {
-	private PacketSenders() {
-	}
-
-	/**
-	 * Gets the custom payload packet sender of a server play network handler.
-	 *
-	 * @param handler the network handler
-	 * @return the packet sender
-	 * @see ClientPacketReceiverRegistries#PLAY
-	 */
-	public static PlayPacketSender of(ServerPlayNetworkHandler handler) {
-		return ((PlayNetworkHandlerHook) handler).getPacketSender();
+public final class ClientPacketSenders {
+	private ClientPacketSenders() {
 	}
 
 	/**
@@ -54,21 +38,8 @@ public final class PacketSenders {
 	 * @return the packet sender
 	 * @see ServerPacketReceiverRegistries#PLAY
 	 */
-	@Environment(EnvType.CLIENT) // method descriptor
 	public static PlayPacketSender of(ClientPlayNetworkHandler handler) {
 		return ((PlayNetworkHandlerHook) handler).getPacketSender();
-	}
-
-	/**
-	 * Gets the login query packet sender of a server login network handler.
-	 *
-	 * @param handler the network handler
-	 * @return the packet sender
-	 * @see ClientPacketReceiverRegistries#LOGIN_QUERY
-	 * @see ServerPacketReceiverRegistries#LOGIN_QUERY_RESPONSE
-	 */
-	public static PacketSender of(ServerLoginNetworkHandler handler) {
-		return ((ServerLoginNetworkHandlerHook) handler).getPacketSender();
 	}
 
 	/**
@@ -78,18 +49,7 @@ public final class PacketSenders {
 	 * @see ServerPacketReceiverRegistries#PLAY
 	 */
 	@Environment(EnvType.CLIENT)
-	public static PlayPacketSender ofClient() {
+	public static PlayPacketSender of() {
 		return of(MinecraftClient.getInstance().player.networkHandler);
-	}
-
-	/**
-	 * Gets the custom payload packet sender of a server player's network handler.
-	 *
-	 * @param player the server player
-	 * @return the packet sender
-	 * @see ClientPacketReceiverRegistries#PLAY
-	 */
-	public static PlayPacketSender of(ServerPlayerEntity player) {
-		return of(player.networkHandler);
 	}
 }

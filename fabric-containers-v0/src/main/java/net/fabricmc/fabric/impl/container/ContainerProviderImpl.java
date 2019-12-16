@@ -32,7 +32,7 @@ import net.minecraft.util.PacketByteBuf;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.fabricmc.fabric.api.networking.v1.sender.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
+import net.fabricmc.fabric.api.networking.v1.sender.ServerPacketSenders;
 import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 
 public class ContainerProviderImpl implements ContainerProviderRegistry {
@@ -91,7 +91,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		buf.writeByte(syncId);
 
 		writer.accept(buf);
-		PacketSenders.of(player.networkHandler).send(OPEN_CONTAINER, buf);
+		ServerPacketSenders.of(player).send(OPEN_CONTAINER, buf);
 
 		PacketByteBuf clonedBuf = PacketByteBufs.duplicate(buf);
 		clonedBuf.readIdentifier();

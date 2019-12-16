@@ -34,7 +34,7 @@ import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.networking.v1.sender.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
+import net.fabricmc.fabric.api.networking.v1.sender.ServerPacketSenders;
 import net.fabricmc.fabric.api.networking.v1.sender.PlayPacketSender;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 
@@ -137,7 +137,7 @@ public class DimensionIdsFixer {
 	}
 
 	public static void sendPacket(ServerPlayNetworkHandler handler, LevelProperties levelProperties) {
-		PlayPacketSender sender = PacketSenders.of(handler);
+		PlayPacketSender sender = ServerPacketSenders.of(handler);
 
 		if (!sender.accepts(ID)) return; // todo tick incompatible clients?
 

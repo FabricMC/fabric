@@ -25,9 +25,11 @@ import net.minecraft.util.PacketByteBuf;
 /**
  * A utility to send custom payload based packets to a network handler's recipient.
  *
- * <p>To obtain packet sender instances, call {@code PacketSenders.of} on your network handlers.
+ * <p>To obtain packet sender instances, call {@code ServerPacketSenders.of} or
+ * {@code ClientPacketSenders.of} on your network handlers.
  *
- * @see PacketSenders
+ * @see ServerPacketSenders
+ * @see ClientPacketSenders
  */
 public interface PacketSender {
 	/**

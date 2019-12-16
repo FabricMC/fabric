@@ -20,7 +20,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.networking.v1.sender.PacketSenders;
+import net.fabricmc.fabric.api.networking.v1.sender.ServerPacketSenders;
 
 /**
  * The callback for the client play network handler state changes.
@@ -35,7 +35,7 @@ public interface ClientPlayNetworkHandlerCallback extends NetworkHandlerCallback
 	 * Event for the initialization of a client play network handler.
 	 *
 	 * <p>At this point, the
-	 * {@link PacketSenders#of(ClientPlayNetworkHandler) packet sender}
+	 * {@link ServerPacketSenders#of(ClientPlayNetworkHandler) packet sender}
 	 * has been set up and the custom payload initial register packet has been received.
 	 * You can send your custom initial packets.
 	 */
