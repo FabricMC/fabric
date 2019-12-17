@@ -226,7 +226,6 @@ curseforge {
 		releaseType = 'beta'
 		addGameVersion '1.15'
 		addGameVersion '1.15.1'
-		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
