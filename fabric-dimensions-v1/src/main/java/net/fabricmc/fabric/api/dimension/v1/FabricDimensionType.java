@@ -26,8 +26,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeAccessType;
-import net.minecraft.world.biome.VoronoiBiomeAccessType;
+import net.minecraft.world.biome.source.BiomeAccessType;
+import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 

@@ -63,7 +63,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 			return 15 << 20 | 15 << 4;
 		}
 
-		return WorldRenderer.method_23793(blockInfo.blockView, blockInfo.blockView.getBlockState(pos), pos);
+		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockInfo.blockView.getBlockState(pos), pos);
 	}
 
 	private float aoLevel(BlockPos pos) {

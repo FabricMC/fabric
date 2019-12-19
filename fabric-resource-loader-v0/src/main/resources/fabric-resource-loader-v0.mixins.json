@@ -9,7 +9,7 @@
     "MixinDefaultResourcePack"
   ],
   "client": [
-    "MixinClass_4729",
+    "MixinFormat4ResourcePack",
     "MixinKeyedResourceReloadListener$Client",
     "MixinMinecraftGame"
   ],

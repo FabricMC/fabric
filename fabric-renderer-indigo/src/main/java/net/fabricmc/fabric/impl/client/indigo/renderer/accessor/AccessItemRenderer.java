@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.impl.client.indigo.renderer.accessor;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
 
-import net.minecraft.class_4729;
-import net.minecraft.resource.ResourcePack;
-
-@Mixin(class_4729.class)
-public interface MixinClass_4729 {
-	@Accessor
-	ResourcePack getField_21766();
+public interface AccessItemRenderer {
+	void fabric_renderBakedItemModel(BakedModel model, ItemStack stack, int light, int overlay, MatrixStack matrixStack, VertexConsumer buffer);
 }

@@ -23,7 +23,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import net.fabricmc.fabric.impl.client.rendereregistry.v1.BlockEntityRendererRegistryImpl;
+import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegistryImpl;
 
 /**
  * Helper class for registering BlockEntityRenderers.

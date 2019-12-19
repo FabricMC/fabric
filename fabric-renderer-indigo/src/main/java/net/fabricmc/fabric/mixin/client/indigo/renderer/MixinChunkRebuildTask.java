@@ -69,8 +69,10 @@ public class MixinChunkRebuildTask {
 	@Shadow
 	protected BuiltChunk field_20839;
 
-	@Inject(at = @At("HEAD"), method = "method_22785")
+	@Inject(at = @At("HEAD"), method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;")
 	private void hookChunkBuild(float float_1, float float_2, float float_3, ChunkBuilder.ChunkData renderData, BlockBufferBuilderStorage builder, CallbackInfoReturnable<Set<BlockEntity>> ci) {
+		ChunkRendererRegion region = this.region;
+
 		if (region != null) {
 			TerrainRenderContext renderer = TerrainRenderContext.POOL.get();
 			renderer.prepare(region, field_20839, renderData, builder);
@@ -94,7 +96,7 @@ public class MixinChunkRebuildTask {
 	 * Normally this does nothing but will allow mods to create rendering hooks that are
 	 * driven off of render type. (Not recommended or encouraged, but also not prevented.)
 	 */
-	@Redirect(method = "method_22785", require = 1, at = @At(value = "INVOKE",
+	@Redirect(method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;", require = 1, at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/render/block/BlockRenderManager;renderBlock(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/BlockRenderView;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumer;ZLjava/util/Random;)Z"))
 	private boolean hookChunkBuildTesselate(BlockRenderManager renderManager, BlockState blockState, BlockPos blockPos, BlockRenderView blockView, MatrixStack matrix, VertexConsumer bufferBuilder, boolean checkSides, Random random) {
 		if (blockState.getRenderType() == BlockRenderType.MODEL) {
@@ -111,7 +113,7 @@ public class MixinChunkRebuildTask {
 	/**
 	 * Release all references. Probably not necessary but would be $#%! to debug if it is.
 	 */
-	@Inject(at = @At("RETURN"), method = "method_22785")
+	@Inject(at = @At("RETURN"), method = "Lnet/minecraft/client/render/chunk/ChunkBuilder$BuiltChunk$RebuildTask;render(FFFLnet/minecraft/client/render/chunk/ChunkBuilder$ChunkData;Lnet/minecraft/client/render/chunk/BlockBufferBuilderStorage;)Ljava/util/Set;")
 	private void hookRebuildChunkReturn(CallbackInfoReturnable<Set<BlockEntity>> ci) {
 		TerrainRenderContext.POOL.get().release();
 	}

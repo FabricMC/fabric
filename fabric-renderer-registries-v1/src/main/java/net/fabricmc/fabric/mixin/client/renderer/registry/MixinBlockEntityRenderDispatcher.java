@@ -29,19 +29,16 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
-import net.fabricmc.fabric.impl.client.rendereregistry.v1.BlockEntityRendererRegistryImpl;
+import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegistryImpl;
 
 @Mixin(BlockEntityRenderDispatcher.class)
 public abstract class MixinBlockEntityRenderDispatcher {
-	@Shadow
-	@Final
-	public static BlockEntityRenderDispatcher INSTANCE;
 	@Shadow
 	@Final
 	private Map<BlockEntityType<?>, BlockEntityRenderer<?>> renderers;
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void init(CallbackInfo ci) {
-		BlockEntityRendererRegistryImpl.setup(((t, function) -> renderers.put(t, function.apply(INSTANCE))));
+		BlockEntityRendererRegistryImpl.setup(((t, function) -> renderers.put(t, function.apply((BlockEntityRenderDispatcher) (Object) this))));
 	}
 }

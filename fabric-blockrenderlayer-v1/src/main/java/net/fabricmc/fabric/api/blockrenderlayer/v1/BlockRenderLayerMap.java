@@ -48,6 +48,15 @@ public interface BlockRenderLayerMap {
 	void putBlock(Block block, RenderLayer renderLayer);
 
 	/**
+	 * Map (or re-map) multiple block states with a render layer.  Re-mapping is not recommended but if done, last one in wins.
+	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
+	 *
+	 * @param renderLayer Render layer.  Should be one of the layers used for terrain rendering.
+	 * @param blocks Identifies blocks to be mapped.
+	 */
+	void putBlocks(RenderLayer renderLayer, Block... blocks);
+
+	/**
 	 * Map (or re-map) a item with a render layer.  Re-mapping is not recommended but if done, last one in wins.
 	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
 	 *
@@ -57,6 +66,15 @@ public interface BlockRenderLayerMap {
 	void putItem(Item item, RenderLayer renderLayer);
 
 	/**
+	 * Map (or re-map) multiple items with a render layer.  Re-mapping is not recommended but if done, last one in wins.
+	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
+	 *
+	 * @param renderLayer Render layer.  Should be one of the layers used for entity rendering.
+	 * @param items Identifies items to be mapped.
+	 */
+	void putItems(RenderLayer renderLayer, Item... items);
+
+	/**
 	 * Map (or re-map) a fluid state with a render layer.  Re-mapping is not recommended but if done, last one in wins.
 	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
 	 *
@@ -64,4 +82,13 @@ public interface BlockRenderLayerMap {
 	 * @param renderLayer Render layer.  Should be one of the layers used for terrain rendering.
 	 */
 	void putFluid(Fluid fluid, RenderLayer renderLayer);
+
+	/**
+	 * Map (or re-map) multiple fluid states with a render layer.  Re-mapping is not recommended but if done, last one in wins.
+	 * Must be called from client thread prior to world load/rendering. Best practice will be to call from mod's client initializer.
+	 *
+	 * @param renderLayer Render layer.  Should be one of the layers used for terrain rendering.
+	 * @param fluids Identifies fluids to be mapped.
+	 */
+	void putFluids(RenderLayer renderLayer, Fluid... fluids);
 }

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.texture;
+package net.fabricmc.fabric.mixin.resource.loader;
 
-import net.minecraft.client.texture.NativeImage;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.client.texture.SpriteAtlasTexture;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-public class FabricSprite extends Sprite {
-	public FabricSprite(SpriteAtlasTexture spriteAtlasTexture, Sprite.Info info, int mipmap, int u, int v, int x, int y, NativeImage nativeImage) {
-		super(spriteAtlasTexture, info, mipmap, u, v, x, y, nativeImage);
-	}
+import net.minecraft.client.resource.Format4ResourcePack;
+import net.minecraft.resource.ResourcePack;
+
+@Mixin(Format4ResourcePack.class)
+public interface MixinFormat4ResourcePack {
+	@Accessor
+	ResourcePack getParent();
 }

@@ -89,7 +89,7 @@ public abstract class AbstractQuadRenderer {
 		} else {
 			final Vector3f faceNormal = quad.faceNormal();
 			normalVec.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
-			normalVec.multiply(normalMatrix);
+			normalVec.transform(normalMatrix);
 		}
 
 		for (int i = 0; i < 4; i++) {
@@ -102,7 +102,7 @@ public abstract class AbstractQuadRenderer {
 
 			if (useNormals) {
 				normalVec.set(quad.normalX(i), quad.normalY(i), quad.normalZ(i));
-				normalVec.multiply(normalMatrix);
+				normalVec.transform(normalMatrix);
 			}
 
 			buff.normal(normalVec.getX(), normalVec.getY(), normalVec.getZ());
@@ -173,6 +173,6 @@ public abstract class AbstractQuadRenderer {
 		}
 
 		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
-		return WorldRenderer.method_23793(blockInfo.blockView, blockState, mpos);
+		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockState, mpos);
 	}
 }
