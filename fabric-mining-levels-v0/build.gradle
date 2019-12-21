@@ -4,5 +4,5 @@ version = getSubprojectVersion(project, "0.1.2")
 dependencies {
     compile project(path: ':fabric-api-base', configuration: 'dev')
     compile project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
-    compile project(path: ':fabric-tool-attributes-v1', configuration: 'dev')
+    compile project(path: ':fabric-tool-attribute-v1', configuration: 'dev')
 }
