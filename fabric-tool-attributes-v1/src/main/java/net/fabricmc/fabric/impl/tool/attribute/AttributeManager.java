@@ -70,7 +70,7 @@ public final class AttributeManager {
 					multTotal += mod.getAmount();
 					break;
 				default:
-					throw new IllegalArgumentException("Someone added a new operation type to EAMs! This shouldn't happen!");
+					break;
 				}
 			}
 
