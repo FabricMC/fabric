@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.mining.level",
+  "package": "net.fabricmc.fabric.mixin.tool.attribute",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinItemStack",

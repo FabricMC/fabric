@@ -29,15 +29,12 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolActor;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
 
 @Mixin(PlayerInventory.class)
 public abstract class MixinPlayerInventory {
-	private final ToolActor<PlayerEntity> actor = ToolActor.of(this.player);
-
 	@Shadow
 	@Final
 	public DefaultedList<ItemStack> main;
@@ -56,8 +53,8 @@ public abstract class MixinPlayerInventory {
 	public void actMiningLevel(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		ItemStack stack = this.getInvStack(this.selectedSlot);
 
-		if (stack.getItem() instanceof ActableAttributeHolder) {
-			TriState ret = ToolManager.handleIsEffectiveOn(stack, state, actor);
+		if (stack.getItem() instanceof ToolAttributeHolder) {
+			TriState ret = ToolManager.handleIsEffectiveOn(stack, state, player);
 
 			if (ret != TriState.DEFAULT) {
 				info.setReturnValue(ret.get());
@@ -69,8 +66,8 @@ public abstract class MixinPlayerInventory {
 	public void actMiningSleed(BlockState state, CallbackInfoReturnable<Float> info) {
 		ItemStack stack = this.main.get(this.selectedSlot);
 
-		if (stack.getItem() instanceof ActableAttributeHolder) {
-			info.setReturnValue(((ActableAttributeHolder) stack.getItem()).getMiningSpeed(stack, actor));
+		if (stack.getItem() instanceof ToolAttributeHolder) {
+			info.setReturnValue(((ToolAttributeHolder) stack.getItem()).getMiningSpeed(stack, player));
 		}
 	}
 }

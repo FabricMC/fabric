@@ -30,13 +30,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.ActableAttributeHolder;
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolActor;
 import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
-	private ToolActor<LivingEntity> actor = ToolActor.of((LivingEntity) (Object) this);
-
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);
 	}
@@ -47,7 +44,7 @@ public abstract class MixinLivingEntity extends Entity {
 	 */
 	@Redirect(method = "writeCustomDataToTag", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"))
 	public Multimap<String, EntityAttributeModifier> actWriteModifiers(ItemStack stack, EquipmentSlot slot) {
-		return actModifiers(stack, slot, actor);
+		return actModifiers(stack, slot, (LivingEntity) (Object) this);
 	}
 
 	/**
@@ -56,15 +53,15 @@ public abstract class MixinLivingEntity extends Entity {
 	 */
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"))
 	public Multimap<String, EntityAttributeModifier> actTickModifiers(ItemStack stack, EquipmentSlot slot) {
-		return actModifiers(stack, slot, actor);
+		return actModifiers(stack, slot, (LivingEntity) (Object) this);
 	}
 
-	private static Multimap<String, EntityAttributeModifier> actModifiers(ItemStack stack, EquipmentSlot slot, ToolActor actor) {
+	private static Multimap<String, EntityAttributeModifier> actModifiers(ItemStack stack, EquipmentSlot slot, LivingEntity user) {
 		Multimap<String, EntityAttributeModifier> original = stack.getAttributeModifiers(slot);
 
 		if (stack.getItem() instanceof ActableAttributeHolder) {
 			ActableAttributeHolder holder = (ActableAttributeHolder) stack.getItem();
-			return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, actor)));
+			return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, user)));
 		}
 
 		return original;

@@ -1,8 +1,7 @@
-archivesBaseName = "fabric-tool-attributes-v1"
+archivesBaseName = "fabric-tool-attribute-v1"
 version = getSubprojectVersion(project, "0.1.0")
 
 dependencies {
     compile project(path: ':fabric-api-base', configuration: 'dev')
     compile project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
-    compileOnly 'com.github.spotbugs:spotbugs-annotations:4.0.0-beta4'
 }

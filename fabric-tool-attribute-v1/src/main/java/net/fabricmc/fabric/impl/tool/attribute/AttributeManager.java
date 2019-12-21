@@ -26,8 +26,7 @@ import com.google.common.collect.Multimap;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 
 public final class AttributeManager {
-	private AttributeManager() {
-	}
+	private AttributeManager() { }
 
 	/**
 	 * Merge two multimaps of EntityAttributeModifiers, combining their modifiers to prevent duplicate entries in a tooltip.
@@ -45,9 +44,9 @@ public final class AttributeManager {
 		allKeys.addAll(right.keySet());
 
 		for (String key : allKeys) {
-			double add = 0D;
-			double multBase = 0D;
-			double multTotal = 0D;
+			double add = 0;
+			double multBase = 0;
+			double multTotal = 0;
 			Collection<EntityAttributeModifier> modifiers;
 
 			if (left.containsKey(key)) {

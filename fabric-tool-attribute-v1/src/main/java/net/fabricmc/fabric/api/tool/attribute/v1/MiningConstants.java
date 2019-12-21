@@ -9,9 +9,9 @@ public final class MiningConstants {
 	public static final int DIAMOND_MINING_LEVEL = 3;
 	public static final int GOLD_MINING_LEVEL = 0;
 
-	public static final float WOOD_MINING_SPEED = 2.0F;
-	public static final float STONE_MINING_SPEED = 4.0F;
-	public static final float IRON_MINING_SPEED = 6.0F;
-	public static final float DIAMOND_MINING_SPEED = 8.0F;
-	public static final float GOLD_MINING_SPEED = 12.0F;
+	public static final float WOOD_MINING_SPEED = 2;
+	public static final float STONE_MINING_SPEED = 4;
+	public static final float IRON_MINING_SPEED = 6;
+	public static final float DIAMOND_MINING_SPEED = 8;
+	public static final float GOLD_MINING_SPEED = 12;
 }

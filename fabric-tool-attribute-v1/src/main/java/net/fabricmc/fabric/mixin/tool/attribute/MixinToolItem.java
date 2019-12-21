@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.tool.attribute;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
@@ -36,12 +37,12 @@ public abstract class MixinToolItem extends Item implements ToolAttributeHolder 
 	}
 
 	@Override
-	public int getMiningLevel(ItemStack stack) {
+	public int getMiningLevel(ItemStack stack, LivingEntity user) {
 		return this.getMaterial().getMiningLevel();
 	}
 
 	@Override
-	public float getMiningSpeed(ItemStack stack) {
+	public float getMiningSpeed(ItemStack stack, LivingEntity user) {
 		return this.getMaterial().getMiningSpeed();
 	}
 }

@@ -30,7 +30,6 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolActor;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
@@ -43,7 +42,7 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, ToolActor.NO_ACTOR);
+		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, null);
 
 		if (triState != TriState.DEFAULT) {
 			info.setReturnValue(triState.get());
@@ -53,14 +52,14 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, ToolActor.NO_ACTOR);
+		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, null);
 
 		if (triState != TriState.DEFAULT) {
 			Item item = this.getItem();
 			float miningSpeed;
 
 			if (item instanceof ToolAttributeHolder) {
-				miningSpeed = ((ToolAttributeHolder) this.getItem()).getMiningSpeed((ItemStack) (Object) this);
+				miningSpeed = ((ToolAttributeHolder) this.getItem()).getMiningSpeed((ItemStack) (Object) this, null);
 			} else {
 				return;
 			}
@@ -75,7 +74,7 @@ public abstract class MixinItemStack {
 
 		if (stack.getItem() instanceof ToolAttributeHolder) {
 			ToolAttributeHolder holder = (ToolAttributeHolder) stack.getItem();
-			Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack));
+			Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack, null));
 			info.setReturnValue(ret);
 		}
 	}
