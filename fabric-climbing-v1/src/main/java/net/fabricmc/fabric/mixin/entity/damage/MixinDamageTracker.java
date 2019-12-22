@@ -21,6 +21,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageTracker;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -40,7 +41,7 @@ public abstract class MixinDamageTracker {
     @Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), cancellable = true)
     public void setFallDeathSuffix(CallbackInfo ci) {
 
-        final BlockState block = entity.world.getBlockState(new BlockPos(entity.x, entity.getBoundingBox().minY, entity.z));
+        final BlockState block = entity.world.getBlockState(new BlockPos(entity.getX(), entity.getBoundingBox().getMin(Direction.Axis.Y), entity.getZ()));
 		String suffix = FallDeathSuffixCallback.event.invoker().getFallDeathSuffix(entity, block).suffix;
 
         if (suffix != null) {

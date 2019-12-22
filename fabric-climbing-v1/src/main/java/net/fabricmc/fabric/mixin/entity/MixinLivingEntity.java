@@ -60,15 +60,15 @@ public abstract class MixinLivingEntity extends Entity {
 		}
     }
 
-    @ModifyVariable(method = "travel", name = "vec3d_2", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V", shift = At.Shift.BEFORE))
-	private Vec3d modifyClimbVelocity(Vec3d vec3d_2) {
+    @ModifyVariable(method = "travel", name = "vec3d2", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getVelocity()Lnet/minecraft/util/math/Vec3d;", shift = At.Shift.AFTER))
+	private Vec3d modifyClimbVelocity(Vec3d vec3d2) {
 		if (isClimbing() && horizontalCollision) {
 			ClimbingCallback.Result result = climbingCallBackResult;
 			climbingCallBackResult = null;
 			if (result != null) {
-				return new Vec3d(vec3d_2.x, result.climbSpeed, vec3d_2.z);
+				return new Vec3d(vec3d2.x, result.climbSpeed, vec3d2.z);
 			}
 		}
-		return vec3d_2;
+		return vec3d2;
 	}
 }
