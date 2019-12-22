@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,6 @@
 
 package net.fabricmc.fabric.mixin.entity;
 
-import net.fabricmc.fabric.api.event.block.ClimbingCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,9 +24,17 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.event.block.ClimbingCallback;
+
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
-
 	@Shadow
 	public abstract boolean isClimbing();
 
@@ -45,30 +46,32 @@ public abstract class MixinLivingEntity extends Entity {
 
 	@Inject(method = "isClimbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void isClimbing(CallbackInfoReturnable<Boolean> cir, final BlockState state) {
-
-        final LivingEntity self = (LivingEntity) (Object) this;
+		final LivingEntity self = (LivingEntity) (Object) this;
 
 		climbingCallBackResult = ClimbingCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
-        if (climbingCallBackResult != null) {
+
+		if (climbingCallBackResult != null) {
 			if (climbingCallBackResult.climbSpeed <= 0.0D) {
 				cir.setReturnValue(false);
-			}
-			else {
+			} else {
 				cir.setReturnValue(true);
 			}
+
 			cir.cancel();
 		}
-    }
+	}
 
-    @ModifyVariable(method = "travel", name = "vec3d2", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getVelocity()Lnet/minecraft/util/math/Vec3d;", shift = At.Shift.AFTER))
+	@ModifyVariable(method = "travel", name = "vec3d2", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getVelocity()Lnet/minecraft/util/math/Vec3d;", shift = At.Shift.AFTER))
 	private Vec3d modifyClimbVelocity(Vec3d vec3d2) {
 		if (isClimbing() && horizontalCollision) {
 			ClimbingCallback.Result result = climbingCallBackResult;
 			climbingCallBackResult = null;
+
 			if (result != null) {
 				return new Vec3d(vec3d2.x, result.climbSpeed, vec3d2.z);
 			}
 		}
+
 		return vec3d2;
 	}
 }

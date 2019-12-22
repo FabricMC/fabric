@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,30 @@
 
 package net.fabricmc.fabric.api.event.block;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
 public interface ClimbingCallback {
-
 	Event<ClimbingCallback> EVENT = EventFactory.createArrayBacked(ClimbingCallback.class,
-		(listeners) -> ((entity, blockState, pos) -> {
-			Result finalResult = null;
+			(listeners) -> ((entity, blockState, pos) -> {
+				Result finalResult = null;
 
-			for (ClimbingCallback listener : listeners) {
-				Result result = listener.canClimb(entity, blockState, pos);
-				if (result != null) {
-					if (finalResult == null || finalResult.priority <= result.priority) {
-						finalResult = result;
+				for (ClimbingCallback listener : listeners) {
+					Result result = listener.canClimb(entity, blockState, pos);
+
+					if (result != null) {
+						if (finalResult == null || finalResult.priority <= result.priority) {
+							finalResult = result;
+						}
 					}
 				}
-			}
 
-			return finalResult;
-		}));
+				return finalResult;
+			}));
 
 	/**
 	 * Used for applying a non-vanilla climbing speed to the passed living entity.
@@ -53,8 +53,8 @@ public interface ClimbingCallback {
 	 * return the same priority number, the last one to return will be used. If this
 	 * number is less than 0, the result will be ignored.</p>
 	 *
-	 * In the event that all callbacks return null; vanilla's default behavior
-	 * will be applied.
+	 * <p>In the event that all callbacks return null; vanilla's default behavior
+	 * will be applied. </p>
 	 *
 	 * @param climber The LivingEntity attempting to climb the block.
 	 * @param state The BlockState of the block that the climber is attempting to climb.

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-
 package net.fabricmc.fabric.api.event.block;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
 public interface FallDeathSuffixCallback {
-
 	Event<FallDeathSuffixCallback> event = EventFactory.createArrayBacked(FallDeathSuffixCallback.class,
-		(fallDeathCallbacks -> (entity, state) -> {
-			String suffix = null;
-			int currentPriority = 0;
+			(fallDeathCallbacks -> (entity, state) -> {
+				String suffix = null;
+				int currentPriority = 0;
 
-			for (FallDeathSuffixCallback fallDeathCallback : fallDeathCallbacks) {
-				Result result = fallDeathCallback.getFallDeathSuffix(entity, state);
+				for (FallDeathSuffixCallback fallDeathCallback : fallDeathCallbacks) {
+					Result result = fallDeathCallback.getFallDeathSuffix(entity, state);
 
-				if (result != null) {
-					if (result.priority >= currentPriority) {
-						suffix = result.suffix;
+					if (result != null) {
+						if (result.priority >= currentPriority) {
+							suffix = result.suffix;
+						}
 					}
 				}
-			}
 
-			return new Result(suffix, 0);
-		}));
+				return new Result(suffix, 0);
+			}));
 
 	/**
 	 * Used for providing a non-vanilla fall-death message.

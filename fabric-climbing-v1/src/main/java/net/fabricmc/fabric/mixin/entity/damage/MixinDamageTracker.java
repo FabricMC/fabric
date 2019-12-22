@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,37 +16,38 @@
 
 package net.fabricmc.fabric.mixin.entity.damage;
 
-import net.fabricmc.fabric.api.event.block.FallDeathSuffixCallback;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageTracker;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageTracker;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+
+import net.fabricmc.fabric.api.event.block.FallDeathSuffixCallback;
 
 @Mixin(DamageTracker.class)
 public abstract class MixinDamageTracker {
+	@Shadow
+	private String fallDeathSuffix;
 
-    @Shadow
-    private String fallDeathSuffix;
+	@Shadow
+	@Final
+	private LivingEntity entity;
 
-    @Shadow @Final private LivingEntity entity;
-
-    @Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), cancellable = true)
-    public void setFallDeathSuffix(CallbackInfo ci) {
-
-        final BlockState block = entity.world.getBlockState(new BlockPos(entity.getX(), entity.getBoundingBox().getMin(Direction.Axis.Y), entity.getZ()));
+	@Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), cancellable = true)
+	public void setFallDeathSuffix(CallbackInfo ci) {
+		final BlockState block = entity.world.getBlockState(new BlockPos(entity.getX(), entity.getBoundingBox().getMin(Direction.Axis.Y), entity.getZ()));
 		String suffix = FallDeathSuffixCallback.event.invoker().getFallDeathSuffix(entity, block).suffix;
 
-        if (suffix != null) {
-        	fallDeathSuffix = suffix;
+		if (suffix != null) {
+			fallDeathSuffix = suffix;
 			ci.cancel();
 		}
-    }
+	}
 }
