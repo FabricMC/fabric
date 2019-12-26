@@ -3,6 +3,8 @@
 <module name="Checker">
 	<property name="charset" value="UTF-8"/>
 	<property name="fileExtensions" value="java"/>
+	<property name="localeLanguage" value="en"/>
+	<property name="localeCountry" value="US"/>
 
 	<module name="NewlineAtEndOfFile"/>
 
