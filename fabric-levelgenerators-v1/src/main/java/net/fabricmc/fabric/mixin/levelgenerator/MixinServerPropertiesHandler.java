@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.levelgenerator;
 import java.util.Properties;
 import java.util.function.Function;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,19 +29,22 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.server.dedicated.AbstractPropertiesHandler;
 import net.minecraft.server.dedicated.ServerPropertiesHandler;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.FabricLevelType;
+import net.fabricmc.fabric.impl.levelgenerator.ServerPropertiesHandlerImplements;
 
 @Mixin(ServerPropertiesHandler.class)
-@Implements(@Interface(iface = FabricLevelType.class, prefix = "fabric$"))
-public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHandler<ServerPropertiesHandler> implements FabricLevelType {
-	private String fabriclevelType;
+@Implements(@Interface(iface = ServerPropertiesHandlerImplements.class, prefix = "fabric$"))
+public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHandler<ServerPropertiesHandler> implements ServerPropertiesHandlerImplements {
+	private static final Logger LOGGER = LogManager.getLogger();
+	private Identifier fabriclevelType;
 
 	public MixinServerPropertiesHandler(Properties properties) {
 		super(properties);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/ServerPropertiesHandler;get(Ljava/lang/String;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 2))
 	private <V> V replaceLevelType(ServerPropertiesHandler serverPropertiesHandler, String prop, Function<String, V> function, Function<V, String> function2, V defaultObject) {
 		if (!prop.equals("level-type")) throw new RuntimeException("This mixin should only be applied to level-type");
@@ -48,12 +53,27 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 			get("level-type", LevelGeneratorType::getTypeFromName, LevelGeneratorType::getName, LevelGeneratorType.DEFAULT);
 		}
 
-		fabriclevelType = getProperties().get(prop).toString();
+		String value = getProperties().get(prop).toString();
+		LevelGeneratorType levelGeneratorType = LevelGeneratorType.getTypeFromName(value);
+		if (levelGeneratorType != null) return (V) levelGeneratorType;
+		String[] levelType = value.split(":");
+
+		if (levelType.length == 1) {
+			fabriclevelType = new Identifier("fabricdefault", levelType[0]);
+			return null;
+		}
+
+		if (levelType.length != 2) {
+			LOGGER.error("Invalid level-type identifier");
+			return null;
+		}
+
+		fabriclevelType = new Identifier(levelType[0], levelType[1]);
 		return null;
 	}
 
 	@Override
-	public String getFabriclevelType() {
+	public Identifier getFabriclevelType() {
 		return fabriclevelType;
 	}
 }

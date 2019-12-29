@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.levelgenerator;
 
-public interface FabricLevelType {
-	String getFabriclevelType();
+import net.minecraft.util.Identifier;
+
+public interface ServerPropertiesHandlerImplements {
+	Identifier getFabriclevelType();
 }

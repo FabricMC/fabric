@@ -8,6 +8,9 @@
     "MixinOverworldDimension",
     "MixinServerPropertiesHandler"
   ],
+  "client": [
+    "MixinLevelGeneratorType"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

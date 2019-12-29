@@ -25,9 +25,11 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.dedicated.ServerPropertiesLoader;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.FabricLevelType;
+import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
+import net.fabricmc.fabric.impl.levelgenerator.ServerPropertiesHandlerImplements;
 
 @Mixin(MinecraftDedicatedServer.class)
 public final class MixinMinecraftDedicatedServer {
@@ -40,15 +42,25 @@ public final class MixinMinecraftDedicatedServer {
 	private ServerPropertiesLoader propertiesLoader;
 
 	@ModifyVariable(method = "setupServer", at = @At("STORE"))
-	LevelGeneratorType replaceLevelGeneratorType(LevelGeneratorType unused) {
-		String fabriclevelType = ((FabricLevelType) propertiesLoader.getPropertiesHandler()).getFabriclevelType();
-		LevelGeneratorType levelGeneratorType = LevelGeneratorType.getTypeFromName(fabriclevelType);
+	LevelGeneratorType replaceLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
+		if (levelGeneratorType != null) return levelGeneratorType;
 
-		if (levelGeneratorType == null) {
+		Identifier fabriclevelType = ((ServerPropertiesHandlerImplements) propertiesLoader.getPropertiesHandler()).getFabriclevelType();
+		LevelGeneratorType finalLevelGeneratorType = null;
+
+		if (fabriclevelType != null) {
+			if (fabriclevelType.getNamespace().equals("fabricdefault")) {
+				finalLevelGeneratorType = FabricLevelGeneratorType.getTypeFromPath(fabriclevelType.getPath());
+			} else {
+				finalLevelGeneratorType = LevelGeneratorType.getTypeFromName(fabriclevelType.toString());
+			}
+		}
+
+		if (finalLevelGeneratorType == null) {
 			LOGGER.error("Incorrect level-type \"" + fabriclevelType + "\", falling back to default");
 			return LevelGeneratorType.DEFAULT;
 		}
 
-		return levelGeneratorType;
+		return finalLevelGeneratorType;
 	}
 }

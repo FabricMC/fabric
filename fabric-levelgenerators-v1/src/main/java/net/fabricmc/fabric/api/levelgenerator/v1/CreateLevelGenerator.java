@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.levelgenerator.v1;
 
 import java.util.function.Function;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
@@ -27,15 +28,15 @@ import net.minecraft.world.level.LevelGeneratorType;
 import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
 
 public final class CreateLevelGenerator {
-	public static LevelGeneratorType create(String name, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
+	public static LevelGeneratorType create(Identifier name, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, name, 0, generatorType, biomeSourceSupplier);
 	}
 
-	public static LevelGeneratorType create(String name, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
+	public static LevelGeneratorType create(Identifier name, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, name, version, generatorType, biomeSourceSupplier);
 	}
 
-	public static LevelGeneratorType create(String name, String storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
+	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, storedName, version, generatorType, biomeSourceSupplier);
 	}
 }

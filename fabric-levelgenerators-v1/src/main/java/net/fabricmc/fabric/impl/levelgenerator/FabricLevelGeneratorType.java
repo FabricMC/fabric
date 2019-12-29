@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.levelgenerator;
 import java.util.HashMap;
 import java.util.function.Function;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
@@ -31,8 +32,8 @@ import net.fabricmc.fabric.mixin.levelgenerator.AccessLevelGeneratorType;
 public final class FabricLevelGeneratorType {
 	public static final HashMap<LevelGeneratorType, Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>>> suppliers = new HashMap<>();
 
-	public static LevelGeneratorType create(String name, String storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
-		LevelGeneratorType levelType = AccessLevelGeneratorType.fabric_init(getFreeId(), name, storedName, version);
+	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
+		LevelGeneratorType levelType = AccessLevelGeneratorType.fabric_init(getFreeId(), name.toString(), storedName.toString(), version);
 		suppliers.put(levelType, new Pair<>(generatorType, biomeSource));
 		return levelType;
 	}
@@ -45,5 +46,19 @@ public final class FabricLevelGeneratorType {
 		}
 
 		throw new RuntimeException("No more free id's");
+	}
+
+	public static LevelGeneratorType getTypeFromPath(String name) {
+		for (int id = 0; id < LevelGeneratorType.TYPES.length; id++) {
+			LevelGeneratorType levelGeneratorType = LevelGeneratorType.TYPES[id];
+
+			if (levelGeneratorType != null) {
+				String[] levelGeneratorTypePath = levelGeneratorType.getName().split(":");
+				if (levelGeneratorTypePath.length < 2) continue;
+				if (levelGeneratorTypePath[1].equalsIgnoreCase(name)) return levelGeneratorType;
+			}
+		}
+
+		return null;
 	}
 }
