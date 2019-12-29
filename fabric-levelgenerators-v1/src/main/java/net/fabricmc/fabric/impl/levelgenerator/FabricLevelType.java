@@ -16,6 +16,6 @@
 
 package net.fabricmc.fabric.impl.levelgenerator;
 
-public interface IFabricLevelType {
+public interface FabricLevelType {
 	String getFabriclevelType();
 }

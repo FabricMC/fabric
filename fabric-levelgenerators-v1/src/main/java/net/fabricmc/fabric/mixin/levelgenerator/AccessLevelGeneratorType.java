@@ -22,9 +22,9 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import net.minecraft.world.level.LevelGeneratorType;
 
 @Mixin(LevelGeneratorType.class)
-public interface AccessorLevelGeneratorType {
+public interface AccessLevelGeneratorType {
 	@Invoker("<init>")
-	static LevelGeneratorType invoke(int id, String name, String storedName, int version) {
+	static LevelGeneratorType fabric_init(int id, String name, String storedName, int version) {
 		throw new RuntimeException();
 	}
 }

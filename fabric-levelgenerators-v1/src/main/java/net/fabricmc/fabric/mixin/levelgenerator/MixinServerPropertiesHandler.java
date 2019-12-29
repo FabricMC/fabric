@@ -29,30 +29,23 @@ import net.minecraft.server.dedicated.AbstractPropertiesHandler;
 import net.minecraft.server.dedicated.ServerPropertiesHandler;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.IFabricLevelType;
+import net.fabricmc.fabric.impl.levelgenerator.FabricLevelType;
 
 @Mixin(ServerPropertiesHandler.class)
-@Implements(@Interface(iface = IFabricLevelType.class, prefix = "fabric$"))
-public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHandler<ServerPropertiesHandler> implements
-				IFabricLevelType {
+@Implements(@Interface(iface = FabricLevelType.class, prefix = "fabric$"))
+public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHandler<ServerPropertiesHandler> implements FabricLevelType {
 	private String fabriclevelType;
 
 	public MixinServerPropertiesHandler(Properties properties) {
 		super(properties);
 	}
 
-	@Redirect(method = "<init>", at = @At(value = "INVOKE",
-					target = "Lnet/minecraft/server/dedicated/ServerPropertiesHandler;"
-									+ "get(Ljava/lang/String;Ljava/util/function/Function;"
-									+ "Ljava/util/function/Function;Ljava/lang/Object;)Ljava/lang/Object;",
-					ordinal = 2))
-	private <V> V replaceLevelType(ServerPropertiesHandler serverPropertiesHandler, String prop,
-									Function<String, V> function, Function<V, String> function2, V defaultObject) {
+	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/dedicated/ServerPropertiesHandler;get(Ljava/lang/String;Ljava/util/function/Function;Ljava/util/function/Function;Ljava/lang/Object;)Ljava/lang/Object;", ordinal = 2))
+	private <V> V replaceLevelType(ServerPropertiesHandler serverPropertiesHandler, String prop, Function<String, V> function, Function<V, String> function2, V defaultObject) {
 		if (!prop.equals("level-type")) throw new RuntimeException("This mixin should only be applied to level-type");
 
 		if (getProperties().get(prop) == null) {
-			get("level-type", LevelGeneratorType::getTypeFromName, LevelGeneratorType::getName,
-							LevelGeneratorType.DEFAULT);
+			get("level-type", LevelGeneratorType::getTypeFromName, LevelGeneratorType::getName, LevelGeneratorType.DEFAULT);
 		}
 
 		fabriclevelType = getProperties().get(prop).toString();

@@ -26,25 +26,13 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.mixin.levelgenerator.AccessorLevelGeneratorType;
+import net.fabricmc.fabric.mixin.levelgenerator.AccessLevelGeneratorType;
 
-public class FabricLevelGeneratorType {
-	public static final HashMap<LevelGeneratorType, Pair<ChunkGeneratorType<?,
-					? extends ChunkGenerator<?>>, Function<World, BiomeSource>>> suppliers = new HashMap<>();
+public final class FabricLevelGeneratorType {
+	public static final HashMap<LevelGeneratorType, Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>>> suppliers = new HashMap<>();
 
-	public static LevelGeneratorType create(String name, ChunkGeneratorType<?,
-					? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
-		return create(name, name, 0, generatorType, biomeSourceSupplier);
-	}
-
-	public static LevelGeneratorType create(String name, int version, ChunkGeneratorType<?,
-					? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
-		return create(name, name, version, generatorType, biomeSourceSupplier);
-	}
-
-	public static LevelGeneratorType create(String name, String storedName, int version, ChunkGeneratorType<?,
-					? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
-		LevelGeneratorType levelType = AccessorLevelGeneratorType.invoke(getFreeId(), name, storedName, version);
+	public static LevelGeneratorType create(String name, String storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
+		LevelGeneratorType levelType = AccessLevelGeneratorType.fabric_init(getFreeId(), name, storedName, version);
 		suppliers.put(levelType, new Pair<>(generatorType, biomeSource));
 		return levelType;
 	}

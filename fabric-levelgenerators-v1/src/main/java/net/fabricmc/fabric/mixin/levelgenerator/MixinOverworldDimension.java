@@ -32,7 +32,6 @@ import net.minecraft.world.dimension.OverworldDimension;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
-import net.minecraft.world.level.LevelGeneratorType;
 
 import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
 
@@ -45,18 +44,10 @@ public abstract class MixinOverworldDimension extends Dimension {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Inject(method = "createChunkGenerator", at = @At("RETURN"), cancellable = true)
 	public void createChunkGenerator(CallbackInfoReturnable<ChunkGenerator<? extends ChunkGeneratorConfig>> cir) {
-		LevelGeneratorType levelGeneratorType = this.world.getLevelProperties().getGeneratorType();
+		Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>> supplier = FabricLevelGeneratorType.suppliers.get(world.getLevelProperties().getGeneratorType());
+		if (supplier == null) return;
 
-		for (int id = 0; id < LevelGeneratorType.TYPES.length; id++) {
-			if (levelGeneratorType == LevelGeneratorType.TYPES[id]) {
-				Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>> supplier =
-								FabricLevelGeneratorType.suppliers.get(LevelGeneratorType.TYPES[id]);
-				if (supplier == null) break;
-
-				ChunkGeneratorType chunkGeneratorType = supplier.getLeft();
-				cir.setReturnValue(chunkGeneratorType.create(world, supplier.getRight().apply(world),
-								chunkGeneratorType.createSettings()));
-			}
-		}
+		ChunkGeneratorType chunkGeneratorType = supplier.getLeft();
+		cir.setReturnValue(chunkGeneratorType.create(world, supplier.getRight().apply(world), chunkGeneratorType.createSettings()));
 	}
 }

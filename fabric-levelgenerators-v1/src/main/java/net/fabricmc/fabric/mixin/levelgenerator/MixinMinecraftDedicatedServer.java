@@ -27,10 +27,10 @@ import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.server.dedicated.ServerPropertiesLoader;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.IFabricLevelType;
+import net.fabricmc.fabric.impl.levelgenerator.FabricLevelType;
 
 @Mixin(MinecraftDedicatedServer.class)
-public class MixinMinecraftDedicatedServer {
+public final class MixinMinecraftDedicatedServer {
 	@Shadow
 	@Final
 	private static Logger LOGGER;
@@ -41,7 +41,7 @@ public class MixinMinecraftDedicatedServer {
 
 	@ModifyVariable(method = "setupServer", at = @At("STORE"))
 	LevelGeneratorType replaceLevelGeneratorType(LevelGeneratorType unused) {
-		String fabriclevelType = ((IFabricLevelType) propertiesLoader.getPropertiesHandler()).getFabriclevelType();
+		String fabriclevelType = ((FabricLevelType) propertiesLoader.getPropertiesHandler()).getFabriclevelType();
 		LevelGeneratorType levelGeneratorType = LevelGeneratorType.getTypeFromName(fabriclevelType);
 
 		if (levelGeneratorType == null) {
