@@ -28,14 +28,38 @@ import net.minecraft.world.level.LevelGeneratorType;
 import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
 
 public final class CreateLevelGenerator {
+	/**
+	 * Called to create new instance of the LevelGeneratorType.
+	 *
+	 * @param name                identifier of the {@link LevelGeneratorType}
+	 * @param generatorType       instance of {@link ChunkGeneratorType}
+	 * @param biomeSourceSupplier provide {@link BiomeSource} using lambda expression
+	 */
 	public static LevelGeneratorType create(Identifier name, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, name, 0, generatorType, biomeSourceSupplier);
 	}
 
+	/**
+	 * Called to create new instance of the LevelGeneratorType.
+	 *
+	 * @param name                identifier of the {@link LevelGeneratorType}
+	 * @param version             version of {@link LevelGeneratorType}
+	 * @param generatorType       instance of {@link ChunkGeneratorType}
+	 * @param biomeSourceSupplier provide {@link BiomeSource} using lambda
+	 */
 	public static LevelGeneratorType create(Identifier name, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, name, version, generatorType, biomeSourceSupplier);
 	}
 
+	/**
+	 * Called to create new instance of the LevelGeneratorType.
+	 *
+	 * @param name                identifier of the {@link LevelGeneratorType}
+	 * @param storedName          identifier of the {@link LevelGeneratorType} used as world tag
+	 * @param version             version of {@link LevelGeneratorType}
+	 * @param generatorType       instance of {@link ChunkGeneratorType}
+	 * @param biomeSourceSupplier provide {@link BiomeSource} using lambda
+	 */
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, storedName, version, generatorType, biomeSourceSupplier);
 	}

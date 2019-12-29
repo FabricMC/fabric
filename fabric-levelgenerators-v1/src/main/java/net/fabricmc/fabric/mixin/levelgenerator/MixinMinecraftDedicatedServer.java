@@ -42,13 +42,17 @@ public final class MixinMinecraftDedicatedServer {
 	private ServerPropertiesLoader propertiesLoader;
 
 	@ModifyVariable(method = "setupServer", at = @At("STORE"))
-	LevelGeneratorType replaceLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
+	private LevelGeneratorType replaceLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
+		// Check if we are using vanilla LevelGeneratorType
 		if (levelGeneratorType != null) return levelGeneratorType;
 
+		// Get fabricLevelType identifier added with MixinServerPropertiesHandler
 		Identifier fabriclevelType = ((ServerPropertiesHandlerImplements) propertiesLoader.getPropertiesHandler()).getFabriclevelType();
 		LevelGeneratorType finalLevelGeneratorType = null;
 
 		if (fabriclevelType != null) {
+			// Gives ability to skip namespace if mods levelGenerators don't have same name
+			// If they do, first one will be used
 			if (fabriclevelType.getNamespace().equals("fabricdefault")) {
 				finalLevelGeneratorType = FabricLevelGeneratorType.getTypeFromPath(fabriclevelType.getPath());
 			} else {
@@ -56,6 +60,7 @@ public final class MixinMinecraftDedicatedServer {
 			}
 		}
 
+		// Fallback to LevelGeneratorType.DEFAULT
 		if (finalLevelGeneratorType == null) {
 			LOGGER.error("Incorrect level-type \"" + fabriclevelType + "\", falling back to default");
 			return LevelGeneratorType.DEFAULT;

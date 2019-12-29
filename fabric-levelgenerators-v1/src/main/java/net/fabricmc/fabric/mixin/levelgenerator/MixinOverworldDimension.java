@@ -43,8 +43,10 @@ public abstract class MixinOverworldDimension extends Dimension {
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Inject(method = "createChunkGenerator", at = @At("RETURN"), cancellable = true)
-	public void createChunkGenerator(CallbackInfoReturnable<ChunkGenerator<? extends ChunkGeneratorConfig>> cir) {
+	private void createChunkGenerator(CallbackInfoReturnable<ChunkGenerator<? extends ChunkGeneratorConfig>> cir) {
 		Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>> supplier = FabricLevelGeneratorType.suppliers.get(world.getLevelProperties().getGeneratorType());
+
+		// Skip if levelGenerator doesn't provide supplier
 		if (supplier == null) return;
 
 		ChunkGeneratorType chunkGeneratorType = supplier.getLeft();

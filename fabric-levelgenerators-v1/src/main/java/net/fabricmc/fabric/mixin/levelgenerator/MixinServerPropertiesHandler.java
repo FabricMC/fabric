@@ -49,25 +49,32 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 	private <V> V replaceLevelType(ServerPropertiesHandler serverPropertiesHandler, String prop, Function<String, V> function, Function<V, String> function2, V defaultObject) {
 		if (!prop.equals("level-type")) throw new RuntimeException("This mixin should only be applied to level-type");
 
+		// If level-type doesn't exist fallback to default behavior
 		if (getProperties().get(prop) == null) {
 			get("level-type", LevelGeneratorType::getTypeFromName, LevelGeneratorType::getName, LevelGeneratorType.DEFAULT);
 		}
 
+		// Parse String as segments
 		String value = getProperties().get(prop).toString();
-		LevelGeneratorType levelGeneratorType = LevelGeneratorType.getTypeFromName(value);
-		if (levelGeneratorType != null) return (V) levelGeneratorType;
 		String[] levelType = value.split(":");
 
+		// Check for vanilla levelGenerators
+		LevelGeneratorType levelGeneratorType = LevelGeneratorType.getTypeFromName(value);
+		if (levelGeneratorType != null) return (V) levelGeneratorType;
+
+		// Gives ability to skip namespace
 		if (levelType.length == 1) {
 			fabriclevelType = new Identifier("fabricdefault", levelType[0]);
 			return null;
 		}
 
+		// level-type should only have 2 elements separated by ":"
 		if (levelType.length != 2) {
 			LOGGER.error("Invalid level-type identifier");
 			return null;
 		}
 
+		// Parse string to identifier
 		fabriclevelType = new Identifier(levelType[0], levelType[1]);
 		return null;
 	}
