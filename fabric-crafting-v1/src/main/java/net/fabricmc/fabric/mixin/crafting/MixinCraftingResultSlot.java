@@ -28,7 +28,7 @@ public abstract class MixinCraftingResultSlot {
 	private PlayerEntity player;
 
 	@ModifyVariable(method = "onTakeItem", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/recipe/RecipeManager;getRemainingStacks(Lnet/minecraft/recipe/RecipeType;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/world/World;)Lnet/minecraft/util/DefaultedList;"))
-	private DefaultedList<ItemStack> defaultedList(DefaultedList<ItemStack> list) {
+	private DefaultedList<ItemStack> modifyDefaultedList(DefaultedList<ItemStack> list) {
 		for (int i = 0; i < craftingInv.getInvSize(); i++) {
 			ItemStack invStack = craftingInv.getInvStack(i);
 
