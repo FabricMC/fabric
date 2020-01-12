@@ -33,7 +33,7 @@ public final class FabricLevelGeneratorType {
 	public static final HashMap<LevelGeneratorType, Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>>> suppliers = new HashMap<>();
 
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
-		LevelGeneratorType levelType = AccessLevelGeneratorType.fabric_init(getFreeId(), name.toString(), storedName.toString(), version);
+		LevelGeneratorType levelType = AccessLevelGeneratorType.fabric_init(getFreeId(), name.toString().replaceAll(":", "."), storedName.toString(), version);
 		suppliers.put(levelType, new Pair<>(generatorType, biomeSource));
 		return levelType;
 	}

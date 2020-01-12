@@ -49,7 +49,7 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 	private <V> V replaceLevelType(ServerPropertiesHandler serverPropertiesHandler, String prop, Function<String, V> function, Function<V, String> function2, V defaultObject) {
 		if (!prop.equals("level-type")) throw new RuntimeException("This mixin should only be applied to level-type");
 
-		// If level-type doesn't exist fallback to default behavior
+		// If level-type doesn't exist, fallback to default behavior
 		if (getProperties().get(prop) == null) {
 			get("level-type", LevelGeneratorType::getTypeFromName, LevelGeneratorType::getName, LevelGeneratorType.DEFAULT);
 		}
