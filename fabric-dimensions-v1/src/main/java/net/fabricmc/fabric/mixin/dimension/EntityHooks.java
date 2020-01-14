@@ -26,8 +26,8 @@ import net.minecraft.util.math.Vec3d;
 @Mixin(Entity.class)
 public interface EntityHooks {
 	@Accessor
-	void setLastPortalDirectionVector(Vec3d vec);
+	void setLastNetherPortalDirectionVector(Vec3d vec);
 
 	@Accessor
-	void setLastPortalDirection(Direction dir);
+	void setLastNetherPortalDirection(Direction dir);
 }
