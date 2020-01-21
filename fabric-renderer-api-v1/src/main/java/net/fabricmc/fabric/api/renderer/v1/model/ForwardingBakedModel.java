@@ -68,8 +68,8 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
 	}
 
 	@Override
-	public boolean hasDepthInGui() {
-		return wrapped.hasDepthInGui();
+	public boolean hasDepth() {
+		return wrapped.hasDepth();
 	}
 
 	@Override

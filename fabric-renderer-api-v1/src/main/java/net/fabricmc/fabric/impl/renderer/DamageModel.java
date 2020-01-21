@@ -57,7 +57,7 @@ public class DamageModel extends ForwardingBakedModel {
 	}
 
 	@Override
-	public boolean method_24304() {
+	public boolean isSideLit() {
 		return false;
 	}
 
