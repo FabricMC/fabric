@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootEntry;
 
 import net.fabricmc.fabric.impl.content.registry.LootEntryTypeRegistryImpl;
 

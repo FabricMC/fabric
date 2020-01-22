@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.loot.v1.event;
 
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import net.minecraft.world.loot.LootManager;
-import net.minecraft.world.loot.LootSupplier;
+import net.minecraft.loot.LootManager;
+import net.minecraft.loot.LootTable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 public interface LootTableLoadingCallback {
 	@FunctionalInterface
 	interface LootTableSetter {
-		void set(LootSupplier supplier);
+		void set(LootTable supplier);
 	}
 
 	Event<LootTableLoadingCallback> EVENT = EventFactory.createArrayBacked(

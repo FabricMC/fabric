@@ -21,10 +21,10 @@ import java.util.List;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.entry.LootEntry;
-import net.minecraft.world.loot.function.LootFunction;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.function.LootFunction;
 
 @Mixin(LootPool.Builder.class)
 public interface LootPoolBuilderHooks {

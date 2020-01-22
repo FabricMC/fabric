@@ -23,7 +23,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
@@ -50,10 +50,15 @@ public class DamageModel extends ForwardingBakedModel {
 	}
 
 	@Override
-	public void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
+	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
 		context.pushTransform(damageTransform);
 		((FabricBakedModel) wrapped).emitBlockQuads(blockView, state, pos, randomSupplier, context);
 		context.popTransform();
+	}
+
+	@Override
+	public boolean isSideLit() {
+		return false;
 	}
 
 	private static class DamageTransform implements RenderContext.QuadTransform {

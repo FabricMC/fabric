@@ -25,6 +25,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.Transformation;
+import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
 
@@ -71,7 +72,7 @@ public abstract class ModelHelper {
 	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
 	 */
 	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
-		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getSpriteAtlas());
+		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEX));
 
 		@SuppressWarnings("unchecked")
 		final ImmutableList.Builder<BakedQuad>[] builders = new ImmutableList.Builder[7];
@@ -80,14 +81,16 @@ public abstract class ModelHelper {
 			builders[i] = ImmutableList.builder();
 		}
 
-		mesh.forEach(q -> {
-			final int limit = q.material().spriteDepth();
+		if (mesh != null) {
+			mesh.forEach(q -> {
+				final int limit = q.material().spriteDepth();
 
-			for (int l = 0; l < limit; l++) {
-				Direction face = q.cullFace();
-				builders[face == null ? 6 : face.getId()].add(q.toBakedQuad(l, finder.find(q, l), false));
-			}
-		});
+				for (int l = 0; l < limit; l++) {
+					Direction face = q.cullFace();
+					builders[face == null ? 6 : face.getId()].add(q.toBakedQuad(l, finder.find(q, l), false));
+				}
+			});
+		}
 
 		@SuppressWarnings("unchecked")
 		List<BakedQuad>[] result = new List[7];
@@ -105,17 +108,11 @@ public abstract class ModelHelper {
 	 * This convenient construction method applies the same scaling factors used for vanilla models.
 	 * This means you can use values from a vanilla JSON file as inputs to this method.
 	 */
-	private static Transformation makeTransform(
-			float rotationX, float rotationY, float rotationZ,
-			float translationX, float translationY, float translationZ,
-			float scaleX, float scaleY, float scaleZ) {
+	private static Transformation makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY, float translationZ, float scaleX, float scaleY, float scaleZ) {
 		Vector3f translation = new Vector3f(translationX, translationY, translationZ);
 		translation.scale(0.0625f);
 		translation.clamp(-5.0F, 5.0F);
-		return new Transformation(
-				new Vector3f(rotationX, rotationY, rotationZ),
-				translation,
-				new Vector3f(scaleX, scaleY, scaleZ));
+		return new Transformation(new Vector3f(rotationX, rotationY, rotationZ), translation, new Vector3f(scaleX, scaleY, scaleZ));
 	}
 
 	public static final Transformation TRANSFORM_BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f, 0.625f, 0.625f);
@@ -129,13 +126,5 @@ public abstract class ModelHelper {
 	 * Mimics the vanilla model transformation used for most vanilla blocks,
 	 * and should be suitable for most custom block-like models.
 	 */
-	public static final ModelTransformation MODEL_TRANSFORM_BLOCK = new ModelTransformation(
-			TRANSFORM_BLOCK_3RD_PERSON_RIGHT,
-			TRANSFORM_BLOCK_3RD_PERSON_RIGHT,
-			TRANSFORM_BLOCK_1ST_PERSON_LEFT,
-			TRANSFORM_BLOCK_1ST_PERSON_RIGHT,
-			Transformation.NONE,
-			TRANSFORM_BLOCK_GUI,
-			TRANSFORM_BLOCK_GROUND,
-			TRANSFORM_BLOCK_FIXED);
+	public static final ModelTransformation MODEL_TRANSFORM_BLOCK = new ModelTransformation(TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_3RD_PERSON_RIGHT, TRANSFORM_BLOCK_1ST_PERSON_LEFT, TRANSFORM_BLOCK_1ST_PERSON_RIGHT, Transformation.IDENTITY, TRANSFORM_BLOCK_GUI, TRANSFORM_BLOCK_GROUND, TRANSFORM_BLOCK_FIXED);
 }

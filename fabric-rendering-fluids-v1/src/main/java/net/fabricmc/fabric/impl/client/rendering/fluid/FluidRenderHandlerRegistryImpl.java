@@ -25,7 +25,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 import net.minecraft.world.biome.Biomes;
 
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
@@ -57,12 +57,12 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 	public void onFluidRendererReload(Sprite[] waterSprites, Sprite[] lavaSprites) {
 		FluidRenderHandler waterHandler = new FluidRenderHandler() {
 			@Override
-			public Sprite[] getFluidSprites(ExtendedBlockView view, BlockPos pos, FluidState state) {
+			public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
 				return waterSprites;
 			}
 
 			@Override
-			public int getFluidColor(ExtendedBlockView view, BlockPos pos, FluidState state) {
+			public int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
 				if (view != null && pos != null) {
 					return BiomeColors.getWaterColor(view, pos);
 				} else {
@@ -74,7 +74,7 @@ public class FluidRenderHandlerRegistryImpl implements FluidRenderHandlerRegistr
 		//noinspection Convert2Lambda
 		FluidRenderHandler lavaHandler = new FluidRenderHandler() {
 			@Override
-			public Sprite[] getFluidSprites(ExtendedBlockView view, BlockPos pos, FluidState state) {
+			public Sprite[] getFluidSprites(BlockRenderView view, BlockPos pos, FluidState state) {
 				return lavaSprites;
 			}
 		};

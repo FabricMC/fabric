@@ -32,23 +32,22 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
  * designed to be usable without the default renderer.
  */
 public abstract class ColorHelper {
+	private ColorHelper() { }
+
 	/**
 	 * Implement on quads to use methods that require it.
 	 * Allows for much cleaner method signatures.
 	 */
 	public interface ShadeableQuad extends MutableQuadView {
 		boolean isFaceAligned();
+
 		boolean needsDiffuseShading(int textureIndex);
 	}
 
-	private ColorHelper() { }
-
 	/** Same as vanilla values. */
-	private static final float[] FACE_SHADE_FACTORS = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F};
+	private static final float[] FACE_SHADE_FACTORS = { 0.5F, 1.0F, 0.8F, 0.8F, 0.6F, 0.6F };
 
-	private static final Int2IntFunction colorSwapper = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN
-			? color -> ((color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16))
-			: color -> color;
+	private static final Int2IntFunction colorSwapper = ByteOrder.nativeOrder() == ByteOrder.LITTLE_ENDIAN ? color -> ((color & 0xFF00FF00) | ((color & 0x00FF0000) >> 16) | ((color & 0xFF) << 16)) : color -> color;
 
 	/**
 	 * Swaps red blue order if needed to match GPU expectations for color component order.
@@ -103,11 +102,10 @@ public abstract class ColorHelper {
 	}
 
 	/**
-	 * See {@link diffuseShade}.
+	 * @see #diffuseShade
 	 */
 	public static float vertexShade(ShadeableQuad q, int vertexIndex, float faceShade) {
-		return q.hasNormal(vertexIndex)
-				? normalShade(q.normalX(vertexIndex), q.normalY(vertexIndex), q.normalZ(vertexIndex)) : faceShade;
+		return q.hasNormal(vertexIndex) ? normalShade(q.normalX(vertexIndex), q.normalY(vertexIndex), q.normalZ(vertexIndex)) : faceShade;
 	}
 
 	/**
@@ -129,16 +127,11 @@ public abstract class ColorHelper {
 		VERTEX_LIGHTERS[0b000] = (q, i, s) -> { };
 		VERTEX_LIGHTERS[0b001] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s));
 		VERTEX_LIGHTERS[0b010] = (q, i, s) -> q.spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s));
-		VERTEX_LIGHTERS[0b011] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s))
-				.spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s));
+		VERTEX_LIGHTERS[0b011] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s)).spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s));
 		VERTEX_LIGHTERS[0b100] = (q, i, s) -> q.spriteColor(i, 2, multiplyRGB(q.spriteColor(i, 2), s));
-		VERTEX_LIGHTERS[0b101] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s))
-				.spriteColor(i, 2, multiplyRGB(q.spriteColor(i, 2), s));
-		VERTEX_LIGHTERS[0b110] = (q, i, s) -> q.spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s))
-				.spriteColor(i, 2, multiplyRGB(q.spriteColor(i, 2), s));
-		VERTEX_LIGHTERS[0b111] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s))
-				.spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s))
-				.spriteColor(i, 2, multiplyRGB(q.spriteColor(i, 2), s));
+		VERTEX_LIGHTERS[0b101] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s)).spriteColor(i, 2, multiplyRGB(q.spriteColor(i, 2), s));
+		VERTEX_LIGHTERS[0b110] = (q, i, s) -> q.spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s)).spriteColor(i, 2, multiplyRGB(q.spriteColor(i, 2), s));
+		VERTEX_LIGHTERS[0b111] = (q, i, s) -> q.spriteColor(i, 0, multiplyRGB(q.spriteColor(i, 0), s)).spriteColor(i, 1, multiplyRGB(q.spriteColor(i, 1), s)).spriteColor(i, 2, multiplyRGB(q.spriteColor(i, 2), s));
 	}
 
 	/**

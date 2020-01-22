@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.indigo;
 import java.util.List;
 import java.util.Set;
 
-import org.spongepowered.asm.lib.tree.ClassNode;
+import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -30,7 +30,9 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 public class IndigoMixinConfigPlugin implements IMixinConfigPlugin {
 	/** Set by other renderers to disable loading of Indigo. */
 	private static final String JSON_KEY_DISABLE_INDIGO = "fabric-renderer-api-v1:contains_renderer";
-	/** Disables vanilla block tesselation and ensures vertex format compatibility. */
+	/**
+	 * Disables vanilla block tesselation and ensures vertex format compatibility.
+	 */
 	private static final String JSON_KEY_FORCE_COMPATIBILITY = "fabric-renderer-indigo:force_compatibility";
 
 	private static boolean needsLoad = true;

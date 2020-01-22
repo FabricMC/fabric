@@ -64,7 +64,7 @@ public class DimensionIdsFixer {
 		CompoundTag fabricDimensionIds = new CompoundTag();
 
 		// step 1: detect all fabric and non-fabric dimensions
-		for (Identifier id : Registry.DIMENSION.getIds()) {
+		for (Identifier id : Registry.DIMENSION_TYPE.getIds()) {
 			DimensionType dimensionType = Objects.requireNonNull(DimensionType.byId(id));
 
 			if (dimensionType instanceof FabricDimensionType) {

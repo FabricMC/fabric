@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
@@ -59,8 +59,8 @@ public class FabricCreativeGuiComponents {
 			if (this.visible) {
 				MinecraftClient minecraftClient = MinecraftClient.getInstance();
 				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
-				GlStateManager.disableLighting();
-				GlStateManager.color4f(1F, 1F, 1F, 1F);
+				RenderSystem.disableLighting();
+				RenderSystem.color4f(1F, 1F, 1F, 1F);
 				this.blit(this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);
 
 				if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {

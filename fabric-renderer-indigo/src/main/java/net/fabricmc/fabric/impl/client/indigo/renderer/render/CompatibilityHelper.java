@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import net.fabricmc.fabric.impl.client.indigo.Indigo;
+import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 
 /**
  * Controls 1x warning for vanilla quad vertex format when running in compatibility mode.
@@ -27,7 +28,7 @@ public abstract class CompatibilityHelper {
 	private static boolean logCompatibilityWarning = true;
 
 	private static boolean isCompatible(int[] vertexData) {
-		final boolean result = vertexData.length == 28;
+		final boolean result = vertexData.length == EncodingFormat.QUAD_STRIDE;
 
 		if (!result && logCompatibilityWarning) {
 			logCompatibilityWarning = false;

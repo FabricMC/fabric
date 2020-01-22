@@ -18,24 +18,22 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import it.unimi.dsi.fastutil.longs.Long2FloatOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import net.minecraft.block.Block.OffsetType;
-import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.chunk.ChunkRenderData;
-import net.minecraft.client.render.chunk.ChunkRenderTask;
-import net.minecraft.client.render.chunk.ChunkRenderer;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
+import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
+import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
-import net.fabricmc.fabric.impl.client.indigo.Indigo;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRenderer;
+import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRendererData;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 /**
  * Holds, manages and provides access to the chunk-related state
@@ -70,126 +68,58 @@ public class ChunkRenderInfo {
 	private final Long2IntOpenHashMap brightnessCache;
 	private final Long2FloatOpenHashMap aoLevelCache;
 
-	private final BlockRenderInfo blockInfo;
 	private final BlockPos.Mutable chunkOrigin = new BlockPos.Mutable();
-	ChunkRenderTask chunkTask;
-	ChunkRenderData chunkData;
-	ChunkRenderer chunkRenderer;
-	ExtendedBlockView blockView;
-	boolean[] resultFlags;
+	AccessChunkRendererData chunkData;
+	BuiltChunk chunkRenderer;
+	BlockBufferBuilderStorage builders;
+	BlockRenderView blockView;
 
-	private final AccessBufferBuilder[] buffers = new AccessBufferBuilder[4];
-	private final BlockRenderLayer[] LAYERS = BlockRenderLayer.values();
+	private final Object2ObjectOpenHashMap<RenderLayer, BufferBuilder> buffers = new Object2ObjectOpenHashMap<>();
 
-	private double chunkOffsetX;
-	private double chunkOffsetY;
-	private double chunkOffsetZ;
-
-	// chunk offset + block pos offset + model offsets for plants, etc.
-	private float offsetX = 0;
-	private float offsetY = 0;
-	private float offsetZ = 0;
-
-	ChunkRenderInfo(BlockRenderInfo blockInfo) {
-		this.blockInfo = blockInfo;
+	ChunkRenderInfo() {
 		brightnessCache = new Long2IntOpenHashMap();
 		brightnessCache.defaultReturnValue(Integer.MAX_VALUE);
 		aoLevelCache = new Long2FloatOpenHashMap();
 		aoLevelCache.defaultReturnValue(Float.MAX_VALUE);
 	}
 
-	void setBlockView(ChunkRendererRegion blockView) {
+	void prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders) {
 		this.blockView = blockView;
-	}
-
-	void setChunkTask(ChunkRenderTask chunkTask) {
-		this.chunkTask = chunkTask;
-	}
-
-	void prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean[] resultFlags) {
-		this.chunkOrigin.set(chunkOrigin);
-		this.chunkData = chunkTask.getRenderData();
+		this.chunkOrigin.set(chunkRenderer.getOrigin());
+		this.chunkData = (AccessChunkRendererData) chunkData;
 		this.chunkRenderer = chunkRenderer;
-		this.resultFlags = resultFlags;
-		buffers[0] = null;
-		buffers[1] = null;
-		buffers[2] = null;
-		buffers[3] = null;
-		chunkOffsetX = -chunkOrigin.getX();
-		chunkOffsetY = -chunkOrigin.getY();
-		chunkOffsetZ = -chunkOrigin.getZ();
+		this.builders = builders;
+		buffers.clear();
 		brightnessCache.clear();
 		aoLevelCache.clear();
 	}
 
 	void release() {
 		chunkData = null;
-		chunkTask = null;
 		chunkRenderer = null;
-		buffers[0] = null;
-		buffers[1] = null;
-		buffers[2] = null;
-		buffers[3] = null;
-	}
-
-	void beginBlock() {
-		final BlockState blockState = blockInfo.blockState;
-		final BlockPos blockPos = blockInfo.blockPos;
-
-		// When we are using the BufferBuilder input methods, the builder will
-		// add the chunk offset for us, so we should only apply the block offset.
-		if (Indigo.ENSURE_VERTEX_FORMAT_COMPATIBILITY) {
-			offsetX = (blockPos.getX());
-			offsetY = (blockPos.getY());
-			offsetZ = (blockPos.getZ());
-		} else {
-			offsetX = (float) (chunkOffsetX + blockPos.getX());
-			offsetY = (float) (chunkOffsetY + blockPos.getY());
-			offsetZ = (float) (chunkOffsetZ + blockPos.getZ());
-		}
-
-		if (blockState.getBlock().getOffsetType() != OffsetType.NONE) {
-			Vec3d offset = blockState.getOffsetPos(blockInfo.blockView, blockPos);
-			offsetX += (float) offset.x;
-			offsetY += (float) offset.y;
-			offsetZ += (float) offset.z;
-		}
+		buffers.clear();
 	}
 
 	/** Lazily retrieves output buffer for given layer, initializing as needed. */
-	public AccessBufferBuilder getInitializedBuffer(int layerIndex) {
-		// redundant for first layer, but probably not faster to check
-		resultFlags[layerIndex] = true;
-
-		AccessBufferBuilder result = buffers[layerIndex];
+	public BufferBuilder getInitializedBuffer(RenderLayer renderLayer) {
+		BufferBuilder result = buffers.get(renderLayer);
 
 		if (result == null) {
-			BufferBuilder builder = chunkTask.getBufferBuilders().get(layerIndex);
-			buffers[layerIndex] = (AccessBufferBuilder) builder;
-			BlockRenderLayer layer = LAYERS[layerIndex];
+			BufferBuilder builder = builders.get(renderLayer);
+			result = builder;
+			chunkData.fabric_markPopulated(renderLayer);
+			buffers.put(renderLayer, result);
 
-			if (!chunkData.isBufferInitialized(layer)) {
-				chunkData.markBufferInitialized(layer); // start buffer
-				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder, chunkOrigin);
+			if (chunkData.fabric_markInitialized(renderLayer)) {
+				((AccessChunkRenderer) chunkRenderer).fabric_beginBufferBuilding(builder);
 			}
-
-			result = (AccessBufferBuilder) builder;
 		}
 
 		return result;
 	}
 
 	/**
-	 * Applies position offset for chunk and, if present, block random offset.
-	 */
-	void applyOffsets(MutableQuadViewImpl q) {
-		for (int i = 0; i < 4; i++) {
-			q.pos(i, q.x(i) + offsetX, q.y(i) + offsetY, q.z(i) + offsetZ);
-		}
-	}
-
-	/**
-	 * Cached values for {@link BlockState#getBlockBrightness(ExtendedBlockView, BlockPos)}.
+	 * Cached values for {@link BlockState#getBlockBrightness(BlockRenderView, BlockPos)}.
 	 * See also the comments for {@link #brightnessCache}.
 	 */
 	int cachedBrightness(BlockPos pos) {
@@ -197,7 +127,7 @@ public class ChunkRenderInfo {
 		int result = brightnessCache.get(key);
 
 		if (result == Integer.MAX_VALUE) {
-			result = blockView.getBlockState(pos).getBlockBrightness(blockView, pos);
+			result = WorldRenderer.getLightmapCoordinates(blockView, blockView.getBlockState(pos), pos);
 			brightnessCache.put(key, result);
 		}
 

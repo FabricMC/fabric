@@ -17,9 +17,19 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 
 import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.EMPTY;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.NORMALS_OFFSET;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VANILLA_STRIDE;
-import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_START_OFFSET;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_BITS;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_COLOR_INDEX;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_STRIDE;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.HEADER_TAG;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.QUAD_STRIDE;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_COLOR;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_LIGHTMAP;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_NORMAL;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_STRIDE;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_U;
+import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat.VERTEX_X;
+
+import com.google.common.base.Preconditions;
 
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
@@ -45,37 +55,38 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	public void clear() {
-		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.MAX_STRIDE);
+		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isFaceNormalInvalid = true;
 		isGeometryInvalid = true;
-		normalFlags = 0;
-		tag = 0;
-		colorIndex = -1;
-		cullFace = null;
-		lightFace = null;
 		nominalFace = null;
-		material = IndigoRenderer.MATERIAL_STANDARD;
+		normalFlags(0);
+		tag(0);
+		colorIndex(-1);
+		cullFace(null);
+		material(IndigoRenderer.MATERIAL_STANDARD);
 	}
 
 	@Override
 	public final MutableQuadViewImpl material(RenderMaterial material) {
-		if (material == null || material.spriteDepth() > this.material.spriteDepth()) {
-			throw new UnsupportedOperationException("Material texture depth must be the same or less than original material.");
+		if (material == null) {
+			material = IndigoRenderer.MATERIAL_STANDARD;
 		}
 
-		this.material = (Value) material;
+		data[baseIndex + HEADER_BITS] = EncodingFormat.material(data[baseIndex + HEADER_BITS], (Value) material);
 		return this;
 	}
 
 	@Override
 	public final MutableQuadViewImpl cullFace(Direction face) {
-		cullFace = face;
-		nominalFace = face;
+		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(data[baseIndex + HEADER_BITS], face);
+		nominalFace(face);
 		return this;
 	}
 
 	public final MutableQuadViewImpl lightFace(Direction face) {
-		lightFace = face;
+		Preconditions.checkNotNull(face);
+
+		data[baseIndex + HEADER_BITS] = EncodingFormat.lightFace(data[baseIndex + HEADER_BITS], face);
 		return this;
 	}
 
@@ -87,34 +98,19 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public final MutableQuadViewImpl colorIndex(int colorIndex) {
-		this.colorIndex = colorIndex;
+		data[baseIndex + HEADER_COLOR_INDEX] = colorIndex;
 		return this;
 	}
 
 	@Override
 	public final MutableQuadViewImpl tag(int tag) {
-		this.tag = tag;
+		data[baseIndex + HEADER_TAG] = tag;
 		return this;
 	}
 
 	@Override
 	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
-		final int vertexStart = vertexStart();
-
-		if (isItem) {
-			System.arraycopy(quadData, startIndex, data, vertexStart, 6);
-			System.arraycopy(quadData, startIndex + 7, data, vertexStart + 7, 6);
-			System.arraycopy(quadData, startIndex + 14, data, vertexStart + 14, 6);
-			System.arraycopy(quadData, startIndex + 21, data, vertexStart + 21, 6);
-			final int normalsIndex = baseIndex + NORMALS_OFFSET;
-			data[normalsIndex] = quadData[startIndex + 6];
-			data[normalsIndex + 1] = quadData[startIndex + 13];
-			data[normalsIndex + 2] = quadData[startIndex + 20];
-			data[normalsIndex + 3] = quadData[startIndex + 27];
-		} else {
-			System.arraycopy(quadData, startIndex, data, vertexStart, 28);
-		}
-
+		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
 		this.invalidateShape();
 		return this;
 	}
@@ -126,12 +122,12 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public boolean needsDiffuseShading(int textureIndex) {
-		return textureIndex < material.spriteDepth() && !material.disableDiffuse(textureIndex);
+		return textureIndex == 0 && !material().disableDiffuse(textureIndex);
 	}
 
 	@Override
 	public MutableQuadViewImpl pos(int vertexIndex, float x, float y, float z) {
-		final int index = vertexStart() + vertexIndex * 7;
+		final int index = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_X;
 		data[index] = Float.floatToRawIntBits(x);
 		data[index + 1] = Float.floatToRawIntBits(y);
 		data[index + 2] = Float.floatToRawIntBits(z);
@@ -139,28 +135,55 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
+	public void normalFlags(int flags) {
+		data[baseIndex + HEADER_BITS] = EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS], flags);
+	}
+
 	@Override
 	public MutableQuadViewImpl normal(int vertexIndex, float x, float y, float z) {
-		normalFlags |= (1 << vertexIndex);
-		data[baseIndex + VERTEX_START_OFFSET + VANILLA_STRIDE + vertexIndex] = NormalHelper.packNormal(x, y, z, 0);
+		normalFlags(normalFlags() | (1 << vertexIndex));
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_NORMAL] = NormalHelper.packNormal(x, y, z, 0);
 		return this;
+	}
+
+	/**
+	 * Internal helper method. Copies face normals to vertex normals lacking one.
+	 */
+	public final void populateMissingNormals() {
+		final int normalFlags = this.normalFlags();
+
+		if (normalFlags == 0b1111) return;
+
+		final int packedFaceNormal = NormalHelper.packNormal(faceNormal(), 0);
+
+		for (int v = 0; v < 4; v++) {
+			if ((normalFlags & (1 << v)) == 0) {
+				data[baseIndex + v * VERTEX_STRIDE + VERTEX_NORMAL] = packedFaceNormal;
+			}
+		}
+
+		normalFlags(0b1111);
 	}
 
 	@Override
 	public MutableQuadViewImpl lightmap(int vertexIndex, int lightmap) {
-		data[baseIndex + vertexIndex * 7 + 6 + VERTEX_START_OFFSET] = lightmap;
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_LIGHTMAP] = lightmap;
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl spriteColor(int vertexIndex, int textureIndex, int color) {
-		data[baseIndex + colorIndex(vertexIndex, textureIndex)] = color;
+	public MutableQuadViewImpl spriteColor(int vertexIndex, int spriteIndex, int color) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
+		data[baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_COLOR] = color;
 		return this;
 	}
 
 	@Override
-	public MutableQuadViewImpl sprite(int vertexIndex, int textureIndex, float u, float v) {
-		final int i = baseIndex + colorIndex(vertexIndex, textureIndex) + 1;
+	public MutableQuadViewImpl sprite(int vertexIndex, int spriteIndex, float u, float v) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
+		final int i = baseIndex + vertexIndex * VERTEX_STRIDE + VERTEX_U;
 		data[i] = Float.floatToRawIntBits(u);
 		data[i + 1] = Float.floatToRawIntBits(v);
 		return this;
@@ -168,6 +191,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	@Override
 	public MutableQuadViewImpl spriteBake(int spriteIndex, Sprite sprite, int bakeFlags) {
+		Preconditions.checkArgument(spriteIndex == 0, "Unsupported sprite index: %s", spriteIndex);
+
 		TextureHelper.bakeSprite(this, spriteIndex, sprite, bakeFlags);
 		return this;
 	}

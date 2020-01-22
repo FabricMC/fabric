@@ -18,12 +18,18 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.Matrix3f;
+
 import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 
 abstract class AbstractRenderContext implements RenderContext {
 	private final ObjectArrayList<QuadTransform> transformStack = new ObjectArrayList<>();
 	private static final QuadTransform NO_TRANSFORM = (q) -> true;
+	protected Matrix4f matrix;
+	protected Matrix3f normalMatrix;
+	protected int overlay;
 
 	private final QuadTransform stackTransform = (q) -> {
 		int i = transformStack.size() - 1;

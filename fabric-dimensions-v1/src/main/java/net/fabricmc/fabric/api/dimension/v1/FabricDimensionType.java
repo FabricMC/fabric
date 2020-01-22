@@ -26,6 +26,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.source.BiomeAccessType;
+import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -53,16 +55,13 @@ public final class FabricDimensionType extends DimensionType {
 	/**
 	 * @param suffix        the string suffix unique to the dimension type
 	 * @param saveDir       the name of the save directory for the dimension type
-	 * @param factory       a function creating new {@code Dimension} instances
-	 * @param defaultPlacer a default {@code EntityPlacer} for the dimension
-	 * @param hasSkyLight   {@code true} if the dimension type should have skylight like the overworld,
-	 *                      {@code false} otherwise
+	 * @param builder   	builder instance containing other parameters
 	 * @see #builder()
 	 */
-	private FabricDimensionType(String suffix, String saveDir, BiFunction<World, DimensionType, ? extends Dimension> factory, EntityPlacer defaultPlacer, boolean hasSkyLight) {
+	private FabricDimensionType(String suffix, String saveDir, Builder builder) {
 		// Pass an arbitrary raw id that does not map to any vanilla dimension. That id should never get used.
-		super(3, suffix, saveDir, factory, hasSkyLight);
-		this.defaultPlacement = defaultPlacer;
+		super(3, suffix, saveDir, builder.factory, builder.skyLight, builder.biomeAccessStrategy);
+		this.defaultPlacement = builder.defaultPlacer;
 	}
 
 	/**
@@ -123,6 +122,7 @@ public final class FabricDimensionType extends DimensionType {
 		private BiFunction<World, DimensionType, ? extends Dimension> factory;
 		private int desiredRawId = 0;
 		private boolean skyLight = true;
+		private BiomeAccessType biomeAccessStrategy = VoronoiBiomeAccessType.INSTANCE;
 
 		private Builder() {
 		}
@@ -175,6 +175,21 @@ public final class FabricDimensionType extends DimensionType {
 		}
 
 		/**
+		 * Governs how biome information is retrieved from random seed and world coordinates.
+		 * If this method is not called, value defaults to the three-dimensional strategy
+		 * used by the End and Nether dimensions.
+		 *
+		 * @param biomeAccessStrategy Function to be used for biome generation.
+		 * @return this {@code Builder} object
+		 */
+		public Builder biomeAccessStrategy(BiomeAccessType biomeAccessStrategy) {
+			Preconditions.checkNotNull(biomeAccessStrategy);
+
+			this.biomeAccessStrategy = biomeAccessStrategy;
+			return this;
+		}
+
+		/**
 		 * Sets this dimension's desired raw id.
 		 * If this method is not called, the value defaults to the raw registry id
 		 * of the dimension type.
@@ -207,19 +222,19 @@ public final class FabricDimensionType extends DimensionType {
 		 *                                  have been set
 		 */
 		public FabricDimensionType buildAndRegister(Identifier dimensionId) {
-			Preconditions.checkArgument(Registry.DIMENSION.get(dimensionId) == null);
+			Preconditions.checkArgument(Registry.DIMENSION_TYPE.get(dimensionId) == null);
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
 			Preconditions.checkState(this.factory != null, "No dimension factory has been specified!");
 
 			String suffix = dimensionId.getNamespace() + "_" + dimensionId.getPath();
 			String saveDir = "DIM_" + dimensionId.getNamespace() + "_" + dimensionId.getPath();
-			FabricDimensionType built = new FabricDimensionType(suffix, saveDir, this.factory, this.defaultPlacer, this.skyLight);
-			Registry.register(Registry.DIMENSION, dimensionId, built);
+			FabricDimensionType built = new FabricDimensionType(suffix, saveDir, this);
+			Registry.register(Registry.DIMENSION_TYPE, dimensionId, built);
 
 			if (this.desiredRawId != 0) {
 				built.desiredRawId = this.desiredRawId;
 			} else {
-				built.desiredRawId = Registry.DIMENSION.getRawId(built) - 1;
+				built.desiredRawId = Registry.DIMENSION_TYPE.getRawId(built) - 1;
 			}
 
 			built.fixedRawId = built.desiredRawId;

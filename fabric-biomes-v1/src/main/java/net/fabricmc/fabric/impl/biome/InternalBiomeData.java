@@ -21,6 +21,8 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,6 +33,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
+import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 
 import net.fabricmc.fabric.api.biomes.v1.BiomeNeighborsPredicate;
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
@@ -53,13 +56,15 @@ public final class InternalBiomeData {
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
 
+	private static Method injectBiomeMethod = null;
+
 	public static void addOverworldContinentalBiome(OverworldClimate climate, Biome biome, double weight) {
 		Preconditions.checkArgument(climate != null, "Climate is null");
 		Preconditions.checkArgument(biome != null, "Biome is null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
 		OVERWORLD_MODDED_CONTINENTAL_BIOME_PICKERS.computeIfAbsent(climate, k -> new WeightedBiomePicker()).addBiome(biome, weight);
-		OVERWORLD_INJECTED_BIOMES.add(biome);
+		injectOverworldBiome(biome);
 	}
 
 	public static void addOverworldHillsBiome(Biome primary, Biome hills, double weight) {
@@ -68,7 +73,7 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
 		OVERWORLD_HILLS_MAP.computeIfAbsent(primary, biome -> DefaultHillsData.injectDefaultHills(primary, new WeightedBiomePicker())).addBiome(hills, weight);
-		OVERWORLD_INJECTED_BIOMES.add(hills);
+		injectOverworldBiome(hills);
 	}
 
 	public static void addOverworldShoreBiome(Biome primary, Biome shore, double weight) {
@@ -77,7 +82,7 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
 		OVERWORLD_SHORE_MAP.computeIfAbsent(primary, biome -> new WeightedBiomePicker()).addBiome(shore, weight);
-		OVERWORLD_INJECTED_BIOMES.add(shore);
+		injectOverworldBiome(shore);
 	}
 
 	public static void addOverworldEdgeBiome(Biome primary, Biome edge, double weight) {
@@ -86,7 +91,7 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
 		OVERWORLD_EDGE_MAP.computeIfAbsent(primary, biome -> new WeightedBiomePicker()).addBiome(edge, weight);
-		OVERWORLD_INJECTED_BIOMES.add(edge);
+		injectOverworldBiome(edge);
 	}
 
 	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, double chance, OverworldClimate[] climates) {
@@ -94,7 +99,7 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(variant != null, "Variant biome is null");
 		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 or less than or equal to 1");
 		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, chance, climates);
-		OVERWORLD_INJECTED_BIOMES.add(variant);
+		injectOverworldBiome(variant);
 	}
 
 	public static void setOverworldRiverBiome(Biome primary, Biome river) {
@@ -102,7 +107,7 @@ public final class InternalBiomeData {
 		OVERWORLD_RIVER_MAP.put(primary, river);
 
 		if (river != null) {
-			OVERWORLD_INJECTED_BIOMES.add(river);
+			injectOverworldBiome(river);
 		}
 	}
 
@@ -130,8 +135,17 @@ public final class InternalBiomeData {
 		SPAWN_BIOMES.add(biome);
 	}
 
-	public static List<Biome> getOverworldInjectedBiomes() {
-		return OVERWORLD_INJECTED_BIOMES;
+	private static void injectOverworldBiome(Biome biome) {
+		try {
+			if (injectBiomeMethod == null) {
+				injectBiomeMethod = VanillaLayeredBiomeSource.class.getDeclaredMethod("fabric_injectBiome", Biome.class);
+				injectBiomeMethod.setAccessible(true);
+			}
+
+			injectBiomeMethod.invoke(null, biome);
+		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public static Set<Biome> getSpawnBiomes() {

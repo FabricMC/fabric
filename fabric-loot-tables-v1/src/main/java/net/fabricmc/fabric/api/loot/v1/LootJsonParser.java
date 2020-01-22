@@ -24,7 +24,7 @@ import com.google.gson.Gson;
 
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.Lazy;
-import net.minecraft.world.loot.LootManager;
+import net.minecraft.loot.LootManager;
 
 public final class LootJsonParser {
 	/* Reading this from LootManager to access all serializers from vanilla. */

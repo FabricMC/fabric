@@ -21,7 +21,7 @@ import java.util.Collection;
 import com.google.common.collect.Lists;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 /**
  * A predicate of a biome collection and randomness source. Tests whether the conditions for generating the biome are met.

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.client.texture;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,11 +24,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.base.Joiner;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -43,37 +39,19 @@ import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 
-import net.fabricmc.fabric.api.client.texture.CustomSpriteLoader;
 import net.fabricmc.fabric.api.client.texture.DependentSprite;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
-import net.fabricmc.fabric.impl.client.texture.SpriteAtlasTextureHooks;
 import net.fabricmc.fabric.impl.client.texture.SpriteRegistryCallbackHolder;
 
 @Mixin(SpriteAtlasTexture.class)
-public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks {
-	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger();
+public abstract class MixinSpriteAtlasTexture {
 	@Shadow
-	private int mipLevel;
-
-	@Shadow
-	public abstract Sprite getSprite(Identifier id);
-
-	private final Set<Identifier> fabric_localIds = new HashSet<>();
-
-	// EVENT/HOOKS LOGIC
-
-	@Override
-	public void onRegisteredAs(Identifier id) {
-		fabric_localIds.add(id);
-	}
-
-	// INJECTION LOGIC
+	public abstract Identifier getId();
 
 	private Map<Identifier, Sprite> fabric_injectedSprites;
 
 	// Loads in custom sprite object injections.
-	@Inject(at = @At("RETURN"), method = "loadSprites")
+	@Inject(at = @At("RETURN"), method = "loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;")
 	private void afterLoadSprites(ResourceManager resourceManager_1, Set<Identifier> set_1, CallbackInfoReturnable<Collection<Sprite>> info) {
 		if (fabric_injectedSprites != null) {
 			info.getReturnValue().addAll(fabric_injectedSprites.values());
@@ -87,11 +65,7 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
 
-		//noinspection ConstantConditions
-		for (Identifier id : fabric_localIds) {
-			SpriteRegistryCallbackHolder.eventLocal(id).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
-		}
-
+		SpriteRegistryCallbackHolder.eventLocal(getId()).invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 		SpriteRegistryCallbackHolder.EVENT_GLOBAL.invoker().registerSprites((SpriteAtlasTexture) (Object) this, registry);
 
 		// TODO: Unoptimized.
@@ -163,33 +137,5 @@ public abstract class MixinSpriteAtlasTexture implements SpriteAtlasTextureHooks
 		}
 
 		return result;
-	}
-
-	/**
-	 * Handles CustomSpriteLoader.
-	 */
-	@Inject(at = @At("HEAD"), method = "loadSprite", cancellable = true)
-	public void loadSprite(ResourceManager manager, Sprite sprite, CallbackInfoReturnable<Boolean> info) {
-		// refer SpriteAtlasTexture.loadSprite
-		if (sprite instanceof CustomSpriteLoader) {
-			try {
-				if (!((CustomSpriteLoader) sprite).load(manager, mipLevel)) {
-					info.setReturnValue(false);
-					return;
-				}
-			} catch (RuntimeException | IOException e) {
-				FABRIC_LOGGER.error("Unable to load custom sprite {}: {}", sprite.getId(), e);
-				info.setReturnValue(false);
-				return;
-			}
-
-			try {
-				sprite.generateMipmaps(this.mipLevel);
-				info.setReturnValue(true);
-			} catch (Throwable e) {
-				FABRIC_LOGGER.error("Unable to apply mipmap to custom sprite {}: {}", sprite.getId(), e);
-				info.setReturnValue(false);
-			}
-		}
 	}
 }

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.client.rendering",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "MixinBlockColorMap",
+    "MixinInGameHud",
+    "MixinItemColorMap",
+    "MixinWorldRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

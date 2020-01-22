@@ -19,14 +19,18 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.function.Consumer;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.chunk.ChunkRenderTask;
-import net.minecraft.client.render.chunk.ChunkRenderer;
+import net.minecraft.client.render.chunk.BlockBufferBuilderStorage;
+import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
+import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.util.math.Matrix3f;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -42,22 +46,46 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 public class TerrainRenderContext extends AbstractRenderContext implements RenderContext {
 	public static final ThreadLocal<TerrainRenderContext> POOL = ThreadLocal.withInitial(TerrainRenderContext::new);
 	private final TerrainBlockRenderInfo blockInfo = new TerrainBlockRenderInfo();
-	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo(blockInfo);
+	private final ChunkRenderInfo chunkInfo = new ChunkRenderInfo();
 	private final AoCalculator aoCalc = new AoCalculator(blockInfo, chunkInfo::cachedBrightness, chunkInfo::cachedAoLevel);
-	private final TerrainMeshConsumer meshConsumer = new TerrainMeshConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
-	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo, aoCalc, this::transform);
 
-	public void setBlockView(ChunkRendererRegion blockView) {
+	private final AbstractMeshConsumer meshConsumer = new AbstractMeshConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
+		@Override
+		protected int overlay() {
+			return overlay;
+		}
+
+		@Override
+		protected Matrix4f matrix() {
+			return matrix;
+		}
+
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
+		}
+	};
+
+	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, this::transform) {
+		@Override
+		protected int overlay() {
+			return overlay;
+		}
+
+		@Override
+		protected Matrix4f matrix() {
+			return matrix;
+		}
+
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
+		}
+	};
+
+	public TerrainRenderContext prepare(ChunkRendererRegion blockView, BuiltChunk chunkRenderer, ChunkData chunkData, BlockBufferBuilderStorage builders) {
 		blockInfo.setBlockView(blockView);
-		chunkInfo.setBlockView(blockView);
-	}
-
-	public void setChunkTask(ChunkRenderTask chunkTask) {
-		chunkInfo.setChunkTask(chunkTask);
-	}
-
-	public TerrainRenderContext prepare(ChunkRenderer chunkRenderer, BlockPos.Mutable chunkOrigin, boolean[] resultFlags) {
-		chunkInfo.prepare(chunkRenderer, chunkOrigin, resultFlags);
+		chunkInfo.prepare(blockView, chunkRenderer, chunkData, builders);
 		return this;
 	}
 
@@ -67,11 +95,13 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 	}
 
 	/** Called from chunk renderer hook. */
-	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model) {
+	public boolean tesselateBlock(BlockState blockState, BlockPos blockPos, final BakedModel model, MatrixStack matrixStack) {
+		this.matrix = matrixStack.peek().getModel();
+		this.normalMatrix = matrixStack.peek().getNormal();
+
 		try {
 			aoCalc.clear();
 			blockInfo.prepareForBlock(blockState, blockPos, model.useAmbientOcclusion());
-			chunkInfo.beginBlock();
 			((FabricBakedModel) model).emitBlockQuads(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, blockInfo.randomSupplier, this);
 		} catch (Throwable var9) {
 			CrashReport crashReport_1 = CrashReport.create(var9, "Tesselating block in world - Indigo Renderer");
@@ -80,7 +110,8 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 			throw new CrashException(crashReport_1);
 		}
 
-		return chunkInfo.resultFlags[blockInfo.defaultLayerIndex];
+		// false because we've already marked the chunk as populated - caller doesn't need to
+		return false;
 	}
 
 	@Override

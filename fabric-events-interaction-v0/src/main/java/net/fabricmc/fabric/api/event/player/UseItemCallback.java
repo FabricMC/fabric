@@ -17,8 +17,10 @@
 package net.fabricmc.fabric.api.event.player;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -35,18 +37,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public interface UseItemCallback {
 	Event<UseItemCallback> EVENT = EventFactory.createArrayBacked(UseItemCallback.class,
-			(listeners) -> (player, world, hand) -> {
+			listeners -> (player, world, hand) -> {
 				for (UseItemCallback event : listeners) {
-					ActionResult result = event.interact(player, world, hand);
+					TypedActionResult<ItemStack> result = event.interact(player, world, hand);
 
-					if (result != ActionResult.PASS) {
+					if (result.getResult() != ActionResult.PASS) {
 						return result;
 					}
 				}
 
-				return ActionResult.PASS;
+				return TypedActionResult.pass(ItemStack.EMPTY);
 			}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Hand hand);
+	TypedActionResult<ItemStack> interact(PlayerEntity player, World world, Hand hand);
 }

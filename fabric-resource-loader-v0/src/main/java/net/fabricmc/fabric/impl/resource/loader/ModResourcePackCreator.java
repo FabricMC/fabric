@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourcePackContainer;
-import net.minecraft.resource.ResourcePackCreator;
+import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
-public class ModResourcePackCreator implements ResourcePackCreator {
+public class ModResourcePackCreator implements ResourcePackProvider {
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
@@ -35,7 +35,7 @@ public class ModResourcePackCreator implements ResourcePackCreator {
 	}
 
 	@Override
-	public <T extends ResourcePackContainer> void registerContainer(Map<String, T> map, ResourcePackContainer.Factory<T> factory) {
+	public <T extends ResourcePackProfile> void register(Map<String, T> map, ResourcePackProfile.Factory<T> factory) {
 		// TODO: "vanilla" does not emit a message; neither should a modded datapack
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
@@ -45,8 +45,8 @@ public class ModResourcePackCreator implements ResourcePackCreator {
 				throw new RuntimeException("Not a ModResourcePack!");
 			}
 
-			T var3 = ResourcePackContainer.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					false, () -> pack, factory, ResourcePackContainer.InsertionPosition.TOP);
+			T var3 = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
+					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP);
 
 			if (var3 != null) {
 				map.put(var3.getName(), var3);

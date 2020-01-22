@@ -32,6 +32,7 @@ import net.minecraft.server.network.packet.PlayerActionC2SPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -48,7 +49,7 @@ public class MixinServerPlayerInteractionManager {
 	@Shadow
 	public ServerPlayerEntity player;
 
-	@Inject(at = @At("HEAD"), method = "method_14263", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "processBlockBreakingAction", cancellable = true)
 	public void startBlockBreak(BlockPos pos, PlayerActionC2SPacket.Action playerAction, Direction direction, int i, CallbackInfo info) {
 		ActionResult result = AttackBlockCallback.EVENT.invoker().interact(player, world, Hand.MAIN_HAND, pos, direction);
 
@@ -72,10 +73,10 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At("HEAD"), method = "interactItem", cancellable = true)
 	public void interactItem(PlayerEntity player, World world, ItemStack stack, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		ActionResult result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
+		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
 
-		if (result != ActionResult.PASS) {
-			info.setReturnValue(result);
+		if (result.getResult() != ActionResult.PASS) {
+			info.setReturnValue(result.getResult());
 			info.cancel();
 			return;
 		}

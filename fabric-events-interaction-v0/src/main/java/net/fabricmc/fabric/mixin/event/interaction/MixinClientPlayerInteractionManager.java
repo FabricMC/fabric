@@ -30,11 +30,13 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.packet.PlayerInteractBlockC2SPacket;
 import net.minecraft.server.network.packet.PlayerInteractEntityC2SPacket;
 import net.minecraft.server.network.packet.PlayerInteractItemC2SPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -68,7 +70,7 @@ public class MixinClientPlayerInteractionManager {
 		}
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "method_2902", cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "updateBlockBreakingProgress", cancellable = true)
 	public void method_2902(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
 		if (!gameMode.isCreative()) {
 			return;
@@ -98,14 +100,14 @@ public class MixinClientPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "interactItem", cancellable = true)
 	public void interactItem(PlayerEntity player, World world, Hand hand, CallbackInfoReturnable<ActionResult> info) {
-		ActionResult result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
+		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
 
-		if (result != ActionResult.PASS) {
-			if (result == ActionResult.SUCCESS) {
+		if (result.getResult() != ActionResult.PASS) {
+			if (result.getResult() == ActionResult.SUCCESS) {
 				this.networkHandler.sendPacket(new PlayerInteractItemC2SPacket(hand));
 			}
 
-			info.setReturnValue(result);
+			info.setReturnValue(result.getResult());
 			info.cancel();
 			return;
 		}
@@ -130,7 +132,7 @@ public class MixinClientPlayerInteractionManager {
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
-				Vec3d hitVec = hitResult.getPos().subtract(entity.x, entity.y, entity.z);
+				Vec3d hitVec = hitResult.getPos().subtract(entity.getX(), entity.getY(), entity.getZ());
 				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, hand, hitVec));
 			}
 

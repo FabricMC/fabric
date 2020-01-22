@@ -18,25 +18,26 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.Random;
 import java.util.function.Consumer;
-
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import java.util.function.Function;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.client.util.math.Matrix3f;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoLuminanceFix;
-import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
-import net.fabricmc.fabric.mixin.client.indigo.renderer.BufferBuilderOffsetAccessor;
 
 /**
  * Context for non-terrain block rendering.
@@ -47,14 +48,11 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform);
 	private final Random random = new Random();
 	private BlockModelRenderer vanillaRenderer;
-	private AccessBufferBuilder fabricBuffer;
+	private VertexConsumer bufferBuilder;
 	private long seed;
 	private boolean isCallingVanilla = false;
 	private boolean didOutput = false;
-
-	private double offsetX;
-	private double offsetY;
-	private double offsetZ;
+	private MatrixStack matrixStack;
 
 	public boolean isCallingVanilla() {
 		return isCallingVanilla;
@@ -65,65 +63,66 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 			return 15 << 20 | 15 << 4;
 		}
 
-		return blockInfo.blockView.getBlockState(pos).getBlockBrightness(blockInfo.blockView, pos);
+		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockInfo.blockView.getBlockState(pos), pos);
 	}
 
 	private float aoLevel(BlockPos pos) {
-		final ExtendedBlockView blockView = blockInfo.blockView;
+		final BlockRenderView blockView = blockInfo.blockView;
 		return blockView == null ? 1f : AoLuminanceFix.INSTANCE.apply(blockView, pos);
 	}
 
-	private AccessBufferBuilder outputBuffer(int renderLayer) {
+	private VertexConsumer outputBuffer(RenderLayer renderLayer) {
 		didOutput = true;
-		return fabricBuffer;
+		return bufferBuilder;
 	}
 
-	public boolean tesselate(BlockModelRenderer vanillaRenderer, ExtendedBlockView blockView, BakedModel model, BlockState state, BlockPos pos, BufferBuilder buffer, long seed) {
+	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean checkSides, long seed, int overlay) {
 		this.vanillaRenderer = vanillaRenderer;
-		this.fabricBuffer = (AccessBufferBuilder) buffer;
+		this.bufferBuilder = buffer;
+		this.matrixStack = matrixStack;
+		this.matrix = matrixStack.peek().getModel();
+		this.normalMatrix = matrixStack.peek().getNormal();
+
 		this.seed = seed;
+		this.overlay = overlay;
 		this.didOutput = false;
 		aoCalc.clear();
 		blockInfo.setBlockView(blockView);
 		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
-		setupOffsets();
 
 		((FabricBakedModel) model).emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
 
 		this.vanillaRenderer = null;
 		blockInfo.release();
-		this.fabricBuffer = null;
+		this.bufferBuilder = null;
+
 		return didOutput;
 	}
 
 	protected void acceptVanillaModel(BakedModel model) {
 		isCallingVanilla = true;
-		didOutput = didOutput && vanillaRenderer.tesselate(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, (BufferBuilder) fabricBuffer, false, random, seed);
+		didOutput = didOutput && vanillaRenderer.render(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, bufferBuilder, false, random, seed, overlay);
 		isCallingVanilla = false;
 	}
 
-	private void setupOffsets() {
-		final BufferBuilderOffsetAccessor buffer = (BufferBuilderOffsetAccessor) fabricBuffer;
-		final BlockPos pos = blockInfo.blockPos;
-		offsetX = buffer.getOffsetX() + pos.getX();
-		offsetY = buffer.getOffsetY() + pos.getY();
-		offsetZ = buffer.getOffsetZ() + pos.getZ();
-	}
-
 	private class MeshConsumer extends AbstractMeshConsumer {
-		MeshConsumer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+		MeshConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 			super(blockInfo, bufferFunc, aoCalc, transform);
 		}
 
 		@Override
-		protected void applyOffsets(MutableQuadViewImpl q) {
-			final double x = offsetX;
-			final double y = offsetY;
-			final double z = offsetZ;
+		protected Matrix4f matrix() {
+			return matrix;
+		}
 
-			for (int i = 0; i < 4; i++) {
-				q.pos(i, (float) (q.x(i) + x), (float) (q.y(i) + y), (float) (q.z(i) + z));
-			}
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
+		}
+
+		@Override
+		protected int overlay() {
+			return overlay;
 		}
 	}
 

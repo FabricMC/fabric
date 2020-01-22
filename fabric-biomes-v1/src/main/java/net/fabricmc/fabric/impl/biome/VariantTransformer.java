@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.LayerRandomnessSource;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 

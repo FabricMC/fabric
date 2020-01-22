@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
-import static net.minecraft.util.math.MathHelper.equalsApproximate;
+import static net.minecraft.util.math.MathHelper.approximatelyEquals;
 
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.Vector3f;
@@ -32,6 +32,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadView;
  * designed to be usable without the default renderer.
  */
 public abstract class GeometryHelper {
+	private GeometryHelper() { }
+
 	/** set when a quad touches all four corners of a unit cube. */
 	public static final int CUBIC_FLAG = 1;
 
@@ -41,10 +43,11 @@ public abstract class GeometryHelper {
 	/** set when a quad is coplanar with its light face. Implies {@link #AXIS_ALIGNED_FLAG} */
 	public static final int LIGHT_FACE_FLAG = AXIS_ALIGNED_FLAG << 1;
 
+	/** how many bits quad header encoding should reserve for encoding geometry flags. */
+	public static final int FLAG_BIT_COUNT = 3;
+
 	private static final float EPS_MIN = 0.0001f;
 	private static final float EPS_MAX = 1.0f - EPS_MIN;
-
-	private GeometryHelper() { }
 
 	/**
 	 * Analyzes the quad and returns a value with some combination
@@ -83,9 +86,7 @@ public abstract class GeometryHelper {
 
 		int i = face.getAxis().ordinal();
 		final float val = quad.posByIndex(0, i);
-		return equalsApproximate(val, quad.posByIndex(1, i))
-				&& equalsApproximate(val, quad.posByIndex(2, i))
-				&& equalsApproximate(val, quad.posByIndex(3, i));
+		return approximatelyEquals(val, quad.posByIndex(1, i)) && approximatelyEquals(val, quad.posByIndex(2, i)) && approximatelyEquals(val, quad.posByIndex(3, i));
 	}
 
 	/**

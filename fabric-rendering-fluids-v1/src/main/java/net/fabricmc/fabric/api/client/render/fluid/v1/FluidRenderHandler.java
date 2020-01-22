@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 /**
  * Interface for handling the rendering of a FluidState.
@@ -38,7 +38,7 @@ public interface FluidRenderHandler {
 	 * @return An array of size two: the first entry contains the "still" sprite,
 	 * while the second entry contains the "flowing" sprite.
 	 */
-	Sprite[] getFluidSprites(/* Nullable */ ExtendedBlockView view, /* Nullable */ BlockPos pos, FluidState state);
+	Sprite[] getFluidSprites(/* Nullable */ BlockRenderView view, /* Nullable */ BlockPos pos, FluidState state);
 
 	/**
 	 * Get the tint color for a fluid being rendered at a given position.
@@ -51,7 +51,7 @@ public interface FluidRenderHandler {
 	 * @param state The current state of the fluid.
 	 * @return The tint color of the fluid.
 	 */
-	default int getFluidColor(ExtendedBlockView view, BlockPos pos, FluidState state) {
+	default int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
 		return -1;
 	}
 }

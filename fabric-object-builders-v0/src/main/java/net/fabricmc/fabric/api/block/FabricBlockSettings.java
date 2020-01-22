@@ -165,6 +165,11 @@ public class FabricBlockSettings {
 		return this;
 	}
 
+	public FabricBlockSettings nonOpaque() {
+		delegate.nonOpaque();
+		return this;
+	}
+
 	public FabricBlockSettings sounds(BlockSoundGroup group) {
 		BlockSettingsExtensions.sounds(delegate, group);
 		return this;

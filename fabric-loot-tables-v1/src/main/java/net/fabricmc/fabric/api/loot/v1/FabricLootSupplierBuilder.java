@@ -18,19 +18,19 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import java.util.Collection;
 
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootSupplier;
-import net.minecraft.world.loot.context.LootContextType;
-import net.minecraft.world.loot.function.LootFunction;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextType;
+import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.mixin.loot.table.LootSupplierBuilderHooks;
 
-public class FabricLootSupplierBuilder extends LootSupplier.Builder {
+public class FabricLootSupplierBuilder extends LootTable.Builder {
 	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;
 
 	protected FabricLootSupplierBuilder() { }
 
-	private FabricLootSupplierBuilder(LootSupplier supplier) {
+	private FabricLootSupplierBuilder(LootTable supplier) {
 		copyFrom(supplier, true);
 	}
 
@@ -48,7 +48,7 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 
 	@Override
 	public FabricLootSupplierBuilder withFunction(LootFunction.Builder function) {
-		super.method_335(function);
+		super.withFunction(function);
 		return this;
 	}
 
@@ -76,7 +76,7 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 	 * Copies the pools and functions of the {@code supplier} to this builder.
 	 * This is equal to {@code copyFrom(supplier, false)}.
 	 */
-	public FabricLootSupplierBuilder copyFrom(LootSupplier supplier) {
+	public FabricLootSupplierBuilder copyFrom(LootTable supplier) {
 		return copyFrom(supplier, false);
 	}
 
@@ -84,7 +84,7 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 	 * Copies the pools and functions of the {@code supplier} to this builder.
 	 * If {@code copyType} is true, the {@link FabricLootSupplier#getType type} of the supplier is also copied.
 	 */
-	public FabricLootSupplierBuilder copyFrom(LootSupplier supplier, boolean copyType) {
+	public FabricLootSupplierBuilder copyFrom(LootTable supplier, boolean copyType) {
 		FabricLootSupplier extendedSupplier = (FabricLootSupplier) supplier;
 		extended.getPools().addAll(extendedSupplier.getPools());
 		extended.getFunctions().addAll(extendedSupplier.getFunctions());
@@ -100,7 +100,7 @@ public class FabricLootSupplierBuilder extends LootSupplier.Builder {
 		return new FabricLootSupplierBuilder();
 	}
 
-	public static FabricLootSupplierBuilder of(LootSupplier supplier) {
+	public static FabricLootSupplierBuilder of(LootTable supplier) {
 		return new FabricLootSupplierBuilder(supplier);
 	}
 }

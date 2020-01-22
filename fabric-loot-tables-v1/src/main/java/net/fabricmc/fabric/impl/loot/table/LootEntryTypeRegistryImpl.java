@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.loot.table;
 
 import java.lang.reflect.Method;
 
-import net.minecraft.world.loot.entry.LootEntries;
-import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootEntries;
+import net.minecraft.loot.entry.LootEntry;
 
 public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
 	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();

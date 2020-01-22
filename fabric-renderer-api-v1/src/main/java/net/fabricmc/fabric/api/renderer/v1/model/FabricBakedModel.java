@@ -24,7 +24,7 @@ import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ExtendedBlockView;
+import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -92,7 +92,7 @@ public interface FabricBakedModel {
 	 * Will not be thread-safe. Do not cache or retain a reference.
 	 * @param context Accepts model output.
 	 */
-	void emitBlockQuads(ExtendedBlockView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
+	void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context);
 
 	/**
 	 * This method will be called during item rendering to generate both the static and

@@ -43,7 +43,8 @@ public class MixinServerPlayNetworkHandler {
 		Entity entity = packet.getEntity(world);
 
 		if (entity != null) {
-			EntityHitResult hitResult = new EntityHitResult(entity, packet.getHitPosition().add(entity.x, entity.y, entity.z));
+			EntityHitResult hitResult = new EntityHitResult(entity, packet.getHitPosition().add(entity.getX(), entity.getY(), entity.getZ()));
+
 			ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, packet.getHand(), entity, hitResult);
 
 			if (result != ActionResult.PASS) {

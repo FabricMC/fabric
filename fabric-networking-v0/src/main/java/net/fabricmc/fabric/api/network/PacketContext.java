@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.network;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ThreadExecutor;
+import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.api.EnvType;
 

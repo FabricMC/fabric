@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.content.registry;
 
 import java.lang.reflect.Method;
 
-import net.minecraft.world.loot.entry.LootEntries;
-import net.minecraft.world.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootEntries;
+import net.minecraft.loot.entry.LootEntry;
 
 import net.fabricmc.fabric.api.registry.LootEntryTypeRegistry;
 

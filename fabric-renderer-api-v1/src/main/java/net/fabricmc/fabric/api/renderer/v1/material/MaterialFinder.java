@@ -16,8 +16,7 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderLayer;
+import net.minecraft.client.render.RenderLayer;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
@@ -55,15 +54,27 @@ public interface MaterialFinder {
 	/**
 	 * Defines how sprite pixels will be blended with the scene.
 	 * Accepts {link @BlockRenderLayer} values and blending behavior
-	 * will emulate the way that Minecraft renders each pass. But this does
+	 * will emulate the way that Minecraft renders those instances. This does
 	 * NOT mean the sprite will be rendered in a specific render pass - some
-	 * implementations may not use the standard Minecraft render passes.
+	 * implementations may not use the standard vanilla render passes.
 	 *
 	 * <p>CAN be null and is null by default. A null value means the renderer
-	 * will use {@link Block#getRenderLayer()} for the associate block, or
-	 * {@link BlockRenderLayer#TRANSLUCENT} for item renders. (Normal Minecraft rendering)
+	 * will use the value normally associated with the block being rendered, or
+	 * {@code TRANSLUCENT} for item renders. (Normal Minecraft rendering)
+	 *
+	 * @deprecated Use {@code BlendMode} version instead.
 	 */
-	MaterialFinder blendMode(int spriteIndex, BlockRenderLayer blendMode);
+	@Deprecated
+	default MaterialFinder blendMode(int spriteIndex, RenderLayer renderLayer) {
+		return blendMode(spriteIndex, BlendMode.fromRenderLayer(renderLayer));
+	}
+
+	/**
+	 * Defines how sprite pixels will be blended with the scene.
+	 *
+	 * <p>See {@link BlendMode} for more information.
+	 */
+	MaterialFinder blendMode(int spriteIndex, BlendMode blendMode);
 
 	/**
 	 * Vertex color(s) will be modified for quad color index unless disabled.

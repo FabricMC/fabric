@@ -17,18 +17,17 @@
 package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 
 import java.util.function.Consumer;
-
-import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import java.util.function.Function;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
-import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl.Value;
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessBufferBuilder;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
@@ -41,7 +40,7 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
  * "editor" quad held in the instance, where all transformations are applied before buffering.
  */
 public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implements Consumer<Mesh> {
-	protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Int2ObjectFunction<AccessBufferBuilder> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+	protected AbstractMeshConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
 		super(blockInfo, bufferFunc, aoCalc, transform);
 	}
 
@@ -51,14 +50,14 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 	 */
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
 		{
-			data = new int[EncodingFormat.MAX_STRIDE];
-			material = (Value) IndigoRenderer.INSTANCE.materialFinder().spriteDepth(RenderMaterialImpl.MAX_SPRITE_DEPTH).find();
+			data = new int[EncodingFormat.TOTAL_STRIDE];
+			material(IndigoRenderer.MATERIAL_STANDARD);
 		}
 
 		// only used via RenderContext.getEmitter()
 		@Override
 		public Maker emit() {
-			lightFace = GeometryHelper.lightFace(this);
+			lightFace(GeometryHelper.lightFace(this));
 			ColorHelper.applyDiffuseShading(this, false);
 			renderQuad(this);
 			clear();
@@ -76,11 +75,9 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		int index = 0;
 
 		while (index < limit) {
-			RenderMaterialImpl.Value mat = RenderMaterialImpl.byIndex(data[index]);
-			final int stride = EncodingFormat.stride(mat.spriteDepth());
-			System.arraycopy(data, index, editorQuad.data(), 0, stride);
+			System.arraycopy(data, index, editorQuad.data(), 0, EncodingFormat.TOTAL_STRIDE);
 			editorQuad.load();
-			index += stride;
+			index += EncodingFormat.TOTAL_STRIDE;
 			renderQuad(editorQuad);
 		}
 	}
@@ -100,38 +97,14 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		}
 
 		final RenderMaterialImpl.Value mat = q.material();
-		final int textureCount = mat.spriteDepth();
 
-		if (mat.hasAo && MinecraftClient.isAmbientOcclusionEnabled()) {
+		if (!mat.disableAo(0) && MinecraftClient.isAmbientOcclusionEnabled()) {
 			// needs to happen before offsets are applied
 			aoCalc.compute(q, false);
 		}
 
-		applyOffsets(q);
-
-		// if maybe mix of emissive / non-emissive layers then
-		// need to save lightmaps in case they are overwritten by emissive
-		if (mat.hasEmissive && textureCount > 1) {
-			captureLightmaps(q);
-		}
-
 		tesselateQuad(q, mat, 0);
-
-		for (int t = 1; t < textureCount; t++) {
-			if (!mat.emissive(t)) {
-				restoreLightmaps(q);
-			}
-
-			for (int i = 0; i < 4; i++) {
-				q.spriteColor(i, 0, q.spriteColor(i, t));
-				q.sprite(i, 0, q.spriteU(i, t), q.spriteV(i, t));
-			}
-
-			tesselateQuad(q, mat, t);
-		}
 	}
-
-	protected abstract void applyOffsets(MutableQuadViewImpl quad);
 
 	/**
 	 * Determines color index and render layer, then routes to appropriate
@@ -139,7 +112,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 	 */
 	private void tesselateQuad(MutableQuadViewImpl quad, RenderMaterialImpl.Value mat, int textureIndex) {
 		final int colorIndex = mat.disableColorIndex(textureIndex) ? -1 : quad.colorIndex();
-		final int renderLayer = blockInfo.layerIndexOrDefault(mat.blendMode(textureIndex));
+		final RenderLayer renderLayer = blockInfo.effectiveRenderLayer(mat.blendMode(textureIndex));
 
 		if (blockInfo.defaultAo && !mat.disableAo(textureIndex)) {
 			if (mat.emissive(textureIndex)) {
@@ -149,7 +122,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 			}
 		} else {
 			if (mat.emissive(textureIndex)) {
-				tesselateFlatEmissive(quad, renderLayer, colorIndex, lightmaps);
+				tesselateFlatEmissive(quad, renderLayer, colorIndex);
 			} else {
 				tesselateFlat(quad, renderLayer, colorIndex);
 			}

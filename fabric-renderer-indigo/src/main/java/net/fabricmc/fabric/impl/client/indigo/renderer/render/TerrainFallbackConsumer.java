@@ -19,9 +19,12 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.util.math.Direction;
@@ -55,23 +58,20 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
  *  vertex data is sent to the byte buffer.  Generally POJO array access will be faster than
  *  manipulating the data via NIO.
  */
-public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel> {
+public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer implements Consumer<BakedModel> {
 	private static Value MATERIAL_FLAT = (Value) IndigoRenderer.INSTANCE.materialFinder().disableAo(0, true).find();
 	private static Value MATERIAL_SHADED = (Value) IndigoRenderer.INSTANCE.materialFinder().find();
 
-	private final int[] editorBuffer = new int[28];
-	private final ChunkRenderInfo chunkInfo;
+	private final int[] editorBuffer = new int[EncodingFormat.TOTAL_STRIDE];
 
-	TerrainFallbackConsumer(BlockRenderInfo blockInfo, ChunkRenderInfo chunkInfo, AoCalculator aoCalc, QuadTransform transform) {
-		super(blockInfo, chunkInfo::getInitializedBuffer, aoCalc, transform);
-		this.chunkInfo = chunkInfo;
+	TerrainFallbackConsumer(BlockRenderInfo blockInfo, Function<RenderLayer, VertexConsumer> bufferFunc, AoCalculator aoCalc, QuadTransform transform) {
+		super(blockInfo, bufferFunc, aoCalc, transform);
 	}
 
 	private final MutableQuadViewImpl editorQuad = new MutableQuadViewImpl() {
 		{
 			data = editorBuffer;
-			material = MATERIAL_SHADED;
-			baseIndex = -EncodingFormat.HEADER_STRIDE;
+			material(MATERIAL_SHADED);
 		}
 
 		@Override
@@ -84,8 +84,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 	@Override
 	public void accept(BakedModel model) {
 		final Supplier<Random> random = blockInfo.randomSupplier;
-		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion()
-				? MATERIAL_SHADED : MATERIAL_FLAT;
+		final Value defaultMaterial = blockInfo.defaultAo && model.useAmbientOcclusion() ? MATERIAL_SHADED : MATERIAL_FLAT;
 		final BlockState blockState = blockInfo.blockState;
 
 		for (int i = 0; i < 6; i++) {
@@ -120,7 +119,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 		}
 
 		final MutableQuadViewImpl editorQuad = this.editorQuad;
-		System.arraycopy(vertexData, 0, editorBuffer, 0, 28);
+		System.arraycopy(vertexData, 0, editorBuffer, EncodingFormat.HEADER_STRIDE, EncodingFormat.QUAD_STRIDE);
 		editorQuad.cullFace(cullFace);
 		final Direction lightFace = quad.getFace();
 		editorQuad.lightFace(lightFace);
@@ -132,12 +131,11 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 			return;
 		}
 
-		if (editorQuad.material().hasAo) {
+		if (!editorQuad.material().disableAo(0)) {
 			// needs to happen before offsets are applied
 			editorQuad.invalidateShape();
 			aoCalc.compute(editorQuad, true);
-			chunkInfo.applyOffsets(editorQuad);
-			tesselateSmooth(editorQuad, blockInfo.defaultLayerIndex, editorQuad.colorIndex());
+			tesselateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
 		} else {
 			// vanilla compatibility hack
 			// For flat lighting, cull face drives everything and light face is ignored.
@@ -150,8 +148,7 @@ public class TerrainFallbackConsumer extends AbstractQuadRenderer implements Con
 				editorQuad.lightFace(cullFace);
 			}
 
-			chunkInfo.applyOffsets(editorQuad);
-			tesselateFlat(editorQuad, blockInfo.defaultLayerIndex, editorQuad.colorIndex());
+			tesselateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
 		}
 	}
 }

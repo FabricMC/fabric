@@ -52,10 +52,10 @@ public abstract class MixinParticleManager implements VanillaParticleManager {
 		fabricParticleManager.injectValues();
 	}
 
-	@Inject(method = "method_18836(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
+	@Inject(method = "loadTextureList(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
 			at = @At("HEAD"),
 			cancellable = true)
-	private void onMethod_18836(ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> output, CallbackInfo info) {
+	private void onLoadTextureList(ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> output, CallbackInfo info) {
 		if (fabricParticleManager.loadParticle(manager, id)) {
 			info.cancel();
 		}

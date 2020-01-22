@@ -27,6 +27,8 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.MutableQuadView;
  * itself to implement automatic block-breaking models for enhanced models.
  */
 public class TextureHelper {
+	private TextureHelper() { }
+
 	private static final float NORMALIZER = 1f / 16f;
 
 	/**
@@ -89,11 +91,9 @@ public class TextureHelper {
 		}
 	}
 
-	private static final VertexModifier[] ROTATIONS = new VertexModifier[] {
-		null,
-		(q, i, t) -> q.sprite(i, t, q.spriteV(i, t), q.spriteU(i, t)), //90
-		(q, i, t) -> q.sprite(i, t, 1 - q.spriteU(i, t), 1 - q.spriteV(i, t)), //180
-		(q, i, t) -> q.sprite(i, t, 1 - q.spriteV(i, t), q.spriteU(i, t)) // 270
+	private static final VertexModifier[] ROTATIONS = new VertexModifier[] { null, (q, i, t) -> q.sprite(i, t, q.spriteV(i, t), q.spriteU(i, t)), //90
+			(q, i, t) -> q.sprite(i, t, 1 - q.spriteU(i, t), 1 - q.spriteV(i, t)), //180
+			(q, i, t) -> q.sprite(i, t, 1 - q.spriteV(i, t), q.spriteU(i, t)) // 270
 	};
 
 	private static final VertexModifier[] UVLOCKERS = new VertexModifier[6];

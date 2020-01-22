@@ -24,5 +24,6 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.render.TerrainRenderConte
  */
 public interface AccessChunkRendererRegion {
 	TerrainRenderContext fabric_getRenderer();
+
 	void fabric_setRenderer(TerrainRenderContext renderer);
 }
