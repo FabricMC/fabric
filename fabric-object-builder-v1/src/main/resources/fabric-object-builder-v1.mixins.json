@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.fabricmc.fabric.mixin.object.builder",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "PointOfInterestTypeAccessor",
+    "VillagerProfessionAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
