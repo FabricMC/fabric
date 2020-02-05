@@ -132,7 +132,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	 * support sprite layers, so this can't be helped in this implementation.
 	 */
 	private VertexConsumer selectVertexConsumer(RenderLayer layerIn) {
-		final RenderLayer layer = transformMode == ModelTransformation.Mode.GUI && Objects.equals(layerIn, TexturedRenderLayers.getEntityTranslucent()) ? TexturedRenderLayers.getEntityTranslucentCull() : layerIn;
+		final RenderLayer layer = transformMode == ModelTransformation.Mode.GUI ? TexturedRenderLayers.getEntityTranslucentCull() : layerIn;
 		return ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, layer, true, itemStack.hasEnchantmentGlint());
 	}
 
@@ -211,7 +211,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		if (blendMode == quadBlendMode) {
 			return quadVertexConsumer;
 		} else if (blendMode == BlendMode.TRANSLUCENT) {
-			quadVertexConsumer = selectVertexConsumer(TexturedRenderLayers.getEntityTranslucent());
+			quadVertexConsumer = selectVertexConsumer(TexturedRenderLayers.getEntityTranslucentCull());
 			quadBlendMode = BlendMode.TRANSLUCENT;
 		} else {
 			quadVertexConsumer = selectVertexConsumer(TexturedRenderLayers.getEntityCutout());

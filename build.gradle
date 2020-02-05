@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.4.29"
-	static def mcVersion = "1.15.2"
+	static def baseVersion = "0.4.30"
+	static def mcVersion = "20w06a"
 	static def yarnVersion = "+build.1"
 }
 
@@ -57,7 +57,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:0.7.2+build.174"
+		modCompile "net.fabricmc:fabric-loader:0.7.7+build.182"
 	}
 
 	configurations {
@@ -223,8 +223,8 @@ curseforge {
 	}
 	project {
 		id = '306612'
-		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
-		releaseType = 'beta'
+		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
+		releaseType = 'alpha'
 		addGameVersion '1.15-Snapshot'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"

@@ -33,7 +33,7 @@ public abstract class MixinPlayerManager {
 	/**
 	 * Synchronizes raw dimension ids to connecting players.
 	 */
-	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/packet/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
+	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	private void onPlayerConnect(ClientConnection conn, ServerPlayerEntity player, CallbackInfo info) {
 		// TODO: Refactor out into network + move dimension hook to event
 
