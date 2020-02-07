@@ -8,7 +8,8 @@
     "MixinAddRiversLayer",
     "MixinBiomeSource",
     "MixinSetBaseBiomesLayer",
-    "MixinVanillaLayeredBiomeSource"
+    "MixinVanillaLayeredBiomeSource",
+    "MixinTheNetherDimension"
   ],
   "injectors": {
     "defaultRequire": 1
