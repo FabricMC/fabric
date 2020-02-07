@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.class_4767;
@@ -31,11 +32,10 @@ import net.fabricmc.fabric.impl.biome.NetherBiomesImpl;
 
 @Mixin(TheNetherDimension.class)
 public class MixinTheNetherDimension {
-	@Redirect(method = "createChunkGenerator", at = @At(value = "INVOKE", target = "net/minecraft/class_4767.method_24404(Ljava/util/Set;)Lnet/minecraft/class_4767;"))
-	protected class_4767 redirect(class_4767 data, Set<Biome> set) {
-		Set<Biome> newSet = new HashSet<>(set);
+	@ModifyArg(method = "createChunkGenerator", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_4767;method_24404(Ljava/util/Set;)Lnet/minecraft/class_4767;"))
+	protected Set<Biome> modifyNetherBiomes(Set<Biome> set) {
+		Set<Biome> newSet = new HashSet<>(set); // the set in the parameter is immutable, so we construct our own
 		newSet.addAll(NetherBiomesImpl.getNetherBiomes());
-		data.method_24404(newSet);
-		return data;
+		return newSet;
 	}
 }
