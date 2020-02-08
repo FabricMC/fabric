@@ -27,9 +27,10 @@ public class NetherBiomes {
 	private NetherBiomes() { }
 
 	/**
-	 * Adds a biome to the Nether generator. Biomes must set their own noise generation values in the biome settings class.
+	 * Adds a biome to the Nether generator. Biomes must set their own noise values in the MixedNoisePoint class for the biome to properly generate.
 	 *
 	 * @param biome The biome to add. Must not be null.
+	 * {@link Biome.MixedNoisePoint}
 	 */
 	public static void addNetherBiome(Biome biome) {
 		NetherBiomesImpl.addNetherBiome(biome);
