@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import java.util.ArrayList;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,7 +50,6 @@ public final class InternalBiomeData {
 	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
 	private static final Map<Biome, PredicatedTransformer> OVERWORLD_LARGE_EDGES = new HashMap<>();
 	private static final Map<Biome, VariantTransformer> OVERWORLD_SUB_BIOME_TRANSFORMERS = new HashMap<>();
-	private static final List<Biome> OVERWORLD_INJECTED_BIOMES = new ArrayList<>();
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
 
@@ -118,7 +115,7 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
 
 		OVERWORLD_LARGE_EDGES.computeIfAbsent(primary, biome -> new PredicatedTransformer()).addPredicatedBiome(edge, predicate, weight);
-		OVERWORLD_INJECTED_BIOMES.add(edge);
+		injectOverworldBiome(edge);
 	}
 
 	public static void addOverworldSubBiome(Biome primary, Biome subBiome, double chance) {
@@ -127,7 +124,7 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 nor less than or equal to 1");
 
 		OVERWORLD_SUB_BIOME_TRANSFORMERS.computeIfAbsent(primary, biome -> new VariantTransformer()).addBiome(subBiome, chance, null);
-		OVERWORLD_INJECTED_BIOMES.add(subBiome);
+		injectOverworldBiome(subBiome);
 	}
 
 	public static void addSpawnBiome(Biome biome) {

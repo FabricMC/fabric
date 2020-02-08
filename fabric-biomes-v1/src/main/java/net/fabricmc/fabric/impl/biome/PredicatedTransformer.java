@@ -48,14 +48,14 @@ final class PredicatedTransformer {
 			return biome;
 		}
 
-		List<PredicatedBiomeEntry> truePredicates = new ArrayList<>();
+		List<Biome> candidates = new ArrayList<>();
 		double currentTotal = 0.0D;
 
 		DoubleList upperWeightBounds = new DoubleArrayList();
 
 		for (PredicatedBiomeEntry predicate : predicates) {
 			if (predicate.test(borders, random)) {
-				truePredicates.add(predicate);
+				candidates.add(predicate.getBiome());
 
 				currentTotal += predicate.getWeight();
 				upperWeightBounds.add(currentTotal);
@@ -63,17 +63,17 @@ final class PredicatedTransformer {
 			}
 		}
 
-		int size = truePredicates.size();
+		int size = candidates.size();
 
 		if (size == 0) {
 			return biome;
 		} else if (size == 1) {
-			return truePredicates.get(0).getBiome();
+			return candidates.get(0);
 		} else {
 			double target = (double) random.nextInt(Integer.MAX_VALUE) * currentTotal / Integer.MAX_VALUE;
 
 			int low = 0;
-			int high = truePredicates.size() - 1;
+			int high = candidates.size() - 1;
 
 			while (low < high) {
 				int mid = (high + low) >>> 1;
@@ -85,7 +85,7 @@ final class PredicatedTransformer {
 				}
 			}
 
-			return truePredicates.get(low).getBiome();
+			return candidates.get(low);
 		}
 	}
 }

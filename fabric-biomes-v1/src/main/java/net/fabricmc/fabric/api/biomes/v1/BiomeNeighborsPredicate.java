@@ -26,18 +26,19 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 /**
  * A predicate of a biome collection and randomness source. Tests whether the conditions for generating the biome are met.
  */
+@FunctionalInterface
 public interface BiomeNeighborsPredicate {
 	/**
 	 * @param biomes a collection of biomes that neighbor the biome to be replaced. May contain duplicates, depending on the biome api method with which this is used.
 	 * @param rand the world gen randomness source
 	 * @return whether the conditions for generation are met
 	 */
-	boolean isValidToGenerate(Collection<Biome> biomes, LayerRandomnessSource rand);
+	boolean test(Collection<Biome> biomes, LayerRandomnessSource rand);
 
 	/**
 	 * @return a {@link BiomeNeighborsPredicate} which returns true if any of the given biomes border the parent biome.
 	 */
-	static BiomeNeighborsPredicate anyOf(Biome biome, Biome...otherBiomes) {
+	static BiomeNeighborsPredicate anyOf(Biome biome, Biome... otherBiomes) {
 		final Collection<Biome> borderBiomes = Lists.asList(biome, otherBiomes);
 		return (biomes, rand) -> {
 			for (Biome neighbor : borderBiomes) {
@@ -51,7 +52,7 @@ public interface BiomeNeighborsPredicate {
 	/**
 	 * @return a {@link BiomeNeighborsPredicate} which returns true if any of the biomes bordering the parent biome are of any of the given categories.
 	 */
-	static BiomeNeighborsPredicate anyOf(Biome.Category category, Biome.Category...otherCategories) {
+	static BiomeNeighborsPredicate anyOf(Biome.Category category, Biome.Category... otherCategories) {
 		final Collection<Biome.Category> categories = Lists.asList(category, otherCategories);
 		return (biomes, rand) -> {
 			for (Biome neighbor : biomes) {
