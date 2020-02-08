@@ -34,7 +34,8 @@ import net.fabricmc.fabric.impl.biome.NetherBiomesImpl;
 public class MixinTheNetherDimension {
 	@ModifyArg(method = "createChunkGenerator", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_4767;method_24404(Ljava/util/Set;)Lnet/minecraft/class_4767;"))
 	protected Set<Biome> modifyNetherBiomes(Set<Biome> set) {
-		Set<Biome> newSet = new HashSet<>(set); // the set in the parameter is immutable, so we construct our own
+		// the provided set is immutable, so we construct our own
+		Set<Biome> newSet = new HashSet<>(set);
 		newSet.addAll(NetherBiomesImpl.getNetherBiomes());
 		return newSet;
 	}

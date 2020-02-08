@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.impl.biome;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import net.minecraft.world.biome.Biome;
@@ -30,10 +32,11 @@ public class NetherBiomesImpl {
 	private static final Set<Biome> netherBiomes = new HashSet<>();
 
 	public static void addNetherBiome(Biome biome) {
+		Objects.requireNonNull(biome);
 		netherBiomes.add(biome);
 	}
 
 	public static Set<Biome> getNetherBiomes() {
-		return netherBiomes;
+		return Collections.unmodifiableSet(netherBiomes);
 	}
 }
