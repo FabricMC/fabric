@@ -26,7 +26,7 @@ import net.minecraft.world.biome.Biome;
 /**
  * Sets for internal use only! Stores data that is used by the Nether dimension mixin.
  */
-public class NetherBiomesImpl {
+public final class NetherBiomesImpl {
 	private NetherBiomesImpl() { }
 
 	private static final Set<Biome> netherBiomes = new HashSet<>();
