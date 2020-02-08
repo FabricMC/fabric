@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.biomes.v1;
 
 import net.minecraft.world.biome.Biome;
 
-import net.fabricmc.fabric.impl.biome.NetherBiomesImpl;
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * API that exposes the internals of Minecraft's nether biome code.
@@ -33,6 +33,6 @@ public final class NetherBiomes {
 	 * @see Biome.MixedNoisePoint
 	 */
 	public static void addNetherBiome(Biome biome) {
-		NetherBiomesImpl.addNetherBiome(biome);
+		InternalBiomeData.addNetherBiome(biome);
 	}
 }
