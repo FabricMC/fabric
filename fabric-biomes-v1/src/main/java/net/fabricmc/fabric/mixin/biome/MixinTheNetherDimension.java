@@ -22,9 +22,7 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.class_4767;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.TheNetherDimension;
 
