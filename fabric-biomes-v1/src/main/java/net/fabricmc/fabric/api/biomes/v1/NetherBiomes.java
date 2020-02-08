@@ -21,7 +21,7 @@ import net.minecraft.world.biome.Biome;
 import net.fabricmc.fabric.impl.biome.NetherBiomesImpl;
 
 /**
- * API that exposes internals' of Minecraft's nether biome code.
+ * API that exposes the internals of Minecraft's nether biome code.
  */
 public class NetherBiomes {
 	private NetherBiomes() { }
@@ -29,7 +29,7 @@ public class NetherBiomes {
 	/**
 	 * Adds a biome to the Nether generator. Biomes must set their own noise generation values in the biome settings class.
 	 *
-	 * @param biome The biome to add.
+	 * @param biome The biome to add. Must not be null.
 	 */
 	public static void addNetherBiome(Biome biome) {
 		NetherBiomesImpl.addNetherBiome(biome);
