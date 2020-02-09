@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import com.google.common.annotations.Beta;
-
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
