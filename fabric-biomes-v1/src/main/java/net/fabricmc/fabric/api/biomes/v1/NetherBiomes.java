@@ -36,7 +36,6 @@ public final class NetherBiomes {
 	 * @see Biome.MixedNoisePoint
 	 */
 	@Deprecated
-	@Beta
 	public static void addNetherBiome(Biome biome) {
 		InternalBiomeData.addNetherBiome(biome);
 	}
