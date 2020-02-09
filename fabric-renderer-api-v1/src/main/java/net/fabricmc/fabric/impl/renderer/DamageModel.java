@@ -56,11 +56,6 @@ public class DamageModel extends ForwardingBakedModel {
 		context.popTransform();
 	}
 
-	@Override
-	public boolean isSideLit() {
-		return false;
-	}
-
 	private static class DamageTransform implements RenderContext.QuadTransform {
 		private Sprite damageSprite;
 

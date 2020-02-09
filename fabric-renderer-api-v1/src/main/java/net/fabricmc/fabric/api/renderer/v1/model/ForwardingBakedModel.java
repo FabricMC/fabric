@@ -83,6 +83,11 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
 	}
 
 	@Override
+	public boolean isSideLit() {
+		return wrapped.isSideLit();
+	}
+
+	@Override
 	public ModelTransformation getTransformation() {
 		return wrapped.getTransformation();
 	}
