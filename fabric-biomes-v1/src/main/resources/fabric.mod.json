@@ -16,7 +16,8 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0"
+    "fabricloader": ">=0.4.0",
+    "minecraft": ">=1.16-alpha.20.6.a"
   },
   "description": "Hooks for adding biomes to the default world generator.",
   "mixins": [

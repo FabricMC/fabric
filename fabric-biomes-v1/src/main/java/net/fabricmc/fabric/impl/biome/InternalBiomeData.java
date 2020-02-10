@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.biome;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,6 +48,8 @@ public final class InternalBiomeData {
 	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
 	private static final Map<Biome, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
 	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
+
+	private static final Set<Biome> NETHER_BIOMES = new HashSet<>();
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
 
@@ -123,6 +126,11 @@ public final class InternalBiomeData {
 		}
 	}
 
+	public static void addNetherBiome(Biome biome) {
+		Preconditions.checkArgument(biome != null, "Biome is null");
+		NETHER_BIOMES.add(biome);
+	}
+
 	public static Set<Biome> getSpawnBiomes() {
 		return SPAWN_BIOMES;
 	}
@@ -149,6 +157,10 @@ public final class InternalBiomeData {
 
 	public static Map<Biome, VariantTransformer> getOverworldVariantTransformers() {
 		return OVERWORLD_VARIANT_TRANSFORMERS;
+	}
+
+	public static Set<Biome> getNetherBiomes() {
+		return Collections.unmodifiableSet(NETHER_BIOMES);
 	}
 
 	private static class DefaultHillsData {
