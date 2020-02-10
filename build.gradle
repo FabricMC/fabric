@@ -118,7 +118,16 @@ javadoc {
 			source( it.sourceSets.main.allJava.srcDirs)
 		}
 	classpath = sourceSets.main.compileClasspath
+	include ("**/api/**")
+	failOnError false
 }
+
+task javadocJar(type: Jar) {
+	from javadoc
+	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
+	classifier = 'fatjavadoc'
+}
+build.dependsOn javadocJar
 
 subprojects {
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -138,6 +147,7 @@ subprojects {
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
 				}
+				artifact javadocJar
 			}
 		}
 
