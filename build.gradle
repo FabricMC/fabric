@@ -235,7 +235,7 @@ curseforge {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
 		releaseType = 'alpha'
-		addGameVersion '1.15-Snapshot'
+		addGameVersion '1.16-Snapshot'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
