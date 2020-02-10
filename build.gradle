@@ -147,9 +147,7 @@ subprojects {
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
 				}
-				artifact(javadocJar) {
-					builtBy javadocJar
-				}
+				artifact javadocJar
 			}
 		}
 
