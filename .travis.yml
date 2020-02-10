@@ -1,0 +1,12 @@
+language: java
+install: true
+
+jdk:
+  - openjdk8
+
+script:
+  - chmod +x gradlew
+  - ./gradlew check build --stacktrace
+
+notifications:
+  email: false
