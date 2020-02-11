@@ -92,7 +92,7 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 			List<BakedQuad> quads = model.getQuads(blockState, face, random.get());
 			final int count = quads.size();
 
-			if (count != 0 && blockInfo.shouldDrawFace(face)) {
+			if (count != 0) {
 				for (int j = 0; j < count; j++) {
 					BakedQuad q = quads.get(j);
 					renderQuad(q, face, defaultMaterial);
@@ -128,6 +128,12 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		editorQuad.material(defaultMaterial);
 
 		if (!transform.transform(editorQuad)) {
+			return;
+		}
+
+		cullFace = editorQuad.cullFace();
+
+		if (cullFace != null && !blockInfo.shouldDrawFace(cullFace)) {
 			return;
 		}
 
