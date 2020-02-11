@@ -1,19 +1,36 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.api.event.entity;
+
+import net.minecraft.entity.Entity;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.event.TickEventInternals;
-import net.minecraft.entity.Entity;
 
 /**
  * The callback interface for receiving entity ticking events.
  *
- * <p> The element that is interested in reacting
+ * <p>The element that is interested in reacting
  * to entity ticks implements this interface, and is
  * registered with an entity class' event, using {@link Event#register(Object)}.
  * When an entity of an applicable type gets ticked, the callback's
  * {@code tick} method is invoked.
  *
- * <p> Entity tick callbacks are registered per entity class, and apply to
+ * <p>Entity tick callbacks are registered per entity class, and apply to
  * instances of that class and of every subclass. More formally, if a callback
  * is registered for a class {@code E}, its {@code tick} method will
  * be invoked for any entity {@code e} verifying {@code e instanceof E}.
@@ -26,7 +43,7 @@ public interface EntityTickCallback<E extends Entity> {
 	 * Returns the {@code Event} used to register tick callbacks for
 	 * entities of the given type.
 	 *
-	 * <p> Callers of this method should always use the most specific entity
+	 * <p>Callers of this method should always use the most specific entity
 	 * type for their use. For example, a callback which goal is to add some behaviour
 	 * to players should pass {@code PlayerEntity.class} as a parameter,
 	 * not one of its superclasses. This limits the need for entity-dependant
@@ -42,7 +59,7 @@ public interface EntityTickCallback<E extends Entity> {
 	 * @throws IllegalArgumentException if {@code type} is not an {@link Entity} class
 	 * @throws NullPointerException     if {@code type} is {@code null}
 	 */
-	public static <E extends Entity> Event<EntityTickCallback<E>> event(Class<E> type) {
+	static <E extends Entity> Event<EntityTickCallback<E>> event(Class<E> type) {
 		return TickEventInternals.getOrCreateEntityEvent(type);
 	}
 

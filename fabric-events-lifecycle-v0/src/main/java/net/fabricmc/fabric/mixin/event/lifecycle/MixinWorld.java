@@ -16,13 +16,17 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import java.util.function.Consumer;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.impl.event.TickEventInternals;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 
 @Mixin(World.class)
@@ -31,5 +35,10 @@ public class MixinWorld {
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	public void tickBlockEntitiesAfter(CallbackInfo info) {
 		WorldTickCallback.EVENT.invoker().tick((World) (Object) this);
+	}
+
+	@Inject(at = @At("RETURN"), method = "tickEntity")
+	private void tickEntityEvent(Consumer<Entity> consumer, Entity entity, CallbackInfo ci) {
+		TickEventInternals.getOrCreateEntityEvent(entity.getClass()).invoker().tick(entity);
 	}
 }

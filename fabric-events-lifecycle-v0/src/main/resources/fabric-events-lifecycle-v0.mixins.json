@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinMinecraftServer",
-    "MixinWorld",
-    "MixinEntity"
+    "MixinWorld"
   ],
   "client": [
     "MixinItemStack",
