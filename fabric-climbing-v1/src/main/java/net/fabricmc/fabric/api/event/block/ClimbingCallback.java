@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+@FunctionalInterface
 public interface ClimbingCallback {
 	Event<ClimbingCallback> EVENT = EventFactory.createArrayBacked(ClimbingCallback.class,
 			(listeners) -> ((entity, blockState, pos) -> {

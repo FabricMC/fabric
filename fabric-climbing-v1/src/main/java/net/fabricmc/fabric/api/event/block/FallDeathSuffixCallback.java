@@ -22,6 +22,7 @@ import net.minecraft.entity.LivingEntity;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+@FunctionalInterface
 public interface FallDeathSuffixCallback {
 	Event<FallDeathSuffixCallback> event = EventFactory.createArrayBacked(FallDeathSuffixCallback.class,
 			(fallDeathCallbacks -> (entity, state) -> {
