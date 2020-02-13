@@ -26,8 +26,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageTracker;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.event.block.FallDeathSuffixCallback;
 
