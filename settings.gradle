@@ -16,7 +16,6 @@ include 'fabric-api-base'
 
 include 'fabric-biomes-v1'
 include 'fabric-blockrenderlayer-v1'
-include 'fabric-biomes-v1'
 include 'fabric-climbing-v1'
 include 'fabric-commands-v0'
 include 'fabric-containers-v0'
