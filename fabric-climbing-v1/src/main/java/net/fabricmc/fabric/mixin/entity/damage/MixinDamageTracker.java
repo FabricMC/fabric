@@ -42,7 +42,7 @@ public abstract class MixinDamageTracker {
 
 	@Inject(method = "setFallDeathSuffix", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER), cancellable = true)
 	public void setFallDeathSuffix(CallbackInfo ci) {
-		final BlockState block = entity.world.getBlockState(new BlockPos(entity.getX(), entity.getBoundingBox().getMin(Direction.Axis.Y), entity.getZ()));
+		final BlockState block = entity.world.getBlockState(entity.getBlockPos());
 		String suffix = FallDeathSuffixCallback.event.invoker().getFallDeathSuffix(entity, block);
 
 		if (suffix != null) {
