@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.dimension;
+package net.fabricmc.fabric.impl.client.rendering;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-
-@Mixin(Entity.class)
-public interface EntityHooks {
-	@Accessor
-	void setLastNetherPortalDirectionVector(Vec3d vec);
-
-	@Accessor
-	void setLastNetherPortalDirection(Direction dir);
+public class RenderingCallbackInvoker implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		InvalidateRenderStateCallback.EVENT.register(() -> net.fabricmc.fabric.api.client.render.InvalidateRenderStateCallback.EVENT.invoker().onInvalidate());
+	}
 }

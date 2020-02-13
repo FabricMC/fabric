@@ -68,12 +68,12 @@ public final class FabricDimensionInternals {
 		// Set values used by `PortalForcer#changeDimension` to prevent a NPE crash.
 		EntityHooks access = ((EntityHooks) entity);
 
-		if (entity.getLastPortalDirectionVector() == null) {
-			access.setLastPortalDirectionVector(entity.getRotationVector());
+		if (entity.getLastNetherPortalDirectionVector() == null) {
+			access.setLastNetherPortalDirectionVector(entity.getRotationVector());
 		}
 
-		if (entity.getLastPortalDirection() == null) {
-			access.setLastPortalDirection(entity.getHorizontalFacing());
+		if (entity.getLastNetherPortalDirection() == null) {
+			access.setLastNetherPortalDirection(entity.getHorizontalFacing());
 		}
 	}
 

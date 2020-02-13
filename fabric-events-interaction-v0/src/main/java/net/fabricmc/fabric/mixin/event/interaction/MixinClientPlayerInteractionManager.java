@@ -99,7 +99,7 @@ public class MixinClientPlayerInteractionManager {
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 0), method = "interactItem", cancellable = true)
-	public void interactItem(PlayerEntity player, World world, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info) {
+	public void interactItem(PlayerEntity player, World world, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
 
 		if (result.getResult() != ActionResult.PASS) {
@@ -107,7 +107,7 @@ public class MixinClientPlayerInteractionManager {
 				this.networkHandler.sendPacket(new PlayerInteractItemC2SPacket(hand));
 			}
 
-			info.setReturnValue(result);
+			info.setReturnValue(result.getResult());
 			info.cancel();
 			return;
 		}
