@@ -25,20 +25,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public interface FallDeathSuffixCallback {
 	Event<FallDeathSuffixCallback> event = EventFactory.createArrayBacked(FallDeathSuffixCallback.class,
 			(fallDeathCallbacks -> (entity, state) -> {
-				String suffix = null;
-				int currentPriority = 0;
+				String finalSuffix = null;
 
 				for (FallDeathSuffixCallback fallDeathCallback : fallDeathCallbacks) {
-					Result result = fallDeathCallback.getFallDeathSuffix(entity, state);
-
-					if (result != null) {
-						if (result.priority >= currentPriority) {
-							suffix = result.suffix;
-						}
-					}
+					String suffix = fallDeathCallback.getFallDeathSuffix(entity, state);
+					if (suffix != null) finalSuffix = suffix;
 				}
 
-				return new Result(suffix, 0);
+				return finalSuffix;
 			}));
 
 	/**
@@ -48,31 +42,11 @@ public interface FallDeathSuffixCallback {
 	 * "death.fell.accident.suffix", where "suffix" is the string returned by this method.
 	 * It is possible to return null if you do not wish to handle a specific situation. </p>
 	 *
-	 * <p>The priority number allows for the suffix to take priority over over other suffixes.
-	 * i.e. if you return a priority of 2 and everything after it returns a priority of 1,
-	 * your suffix will be used. In the event that multiple callbacks return the same priority
-	 * number, the suffix returned by the last callback will be used. All priority numbers
-	 * should be non-negative or they will be ignored. </p>
-	 *
 	 * @param entity The entity that is being tracked.
 	 * @param state the block state that is being climbed.
 	 *
-	 * @return a FallDeathSuffixCallback#Result containing the suffix for the fall death and the
-	 * priority number. Can be null.
+	 * @return The fall death suffix or null.
 	 *
 	 */
-	Result getFallDeathSuffix(LivingEntity entity, BlockState state);
-
-	/**
-	 * Result class for callback containing string and priority.
-	 */
-	class Result {
-		public String suffix;
-		public int priority = 0;
-
-		public Result(String suffix, int priority) {
-			this.suffix = suffix;
-			this.priority = priority;
-		}
-	}
+	String getFallDeathSuffix(LivingEntity entity, BlockState state);
 }

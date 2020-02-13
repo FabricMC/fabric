@@ -38,7 +38,7 @@ public abstract class MixinLivingEntity extends Entity {
 	@Shadow
 	public abstract boolean isClimbing();
 
-	private ClimbingCallback.Result climbingCallBackResult = null;
+	private Double speed = null;
 
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);
@@ -48,10 +48,10 @@ public abstract class MixinLivingEntity extends Entity {
 	private void isClimbing(CallbackInfoReturnable<Boolean> cir, final BlockState state) {
 		final LivingEntity self = (LivingEntity) (Object) this;
 
-		climbingCallBackResult = ClimbingCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
+		speed = ClimbingCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
 
-		if (climbingCallBackResult != null) {
-			if (climbingCallBackResult.climbSpeed <= 0.0D) {
+		if (speed != null) {
+			if (speed <= 0.0D) {
 				cir.setReturnValue(false);
 			} else {
 				cir.setReturnValue(true);
@@ -64,14 +64,11 @@ public abstract class MixinLivingEntity extends Entity {
 	@ModifyVariable(method = "travel", name = "vec3d2", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getVelocity()Lnet/minecraft/util/math/Vec3d;", shift = At.Shift.AFTER))
 	private Vec3d modifyClimbVelocity(Vec3d vec3d2) {
 		if (isClimbing() && horizontalCollision) {
-			ClimbingCallback.Result result = climbingCallBackResult;
-			climbingCallBackResult = null;
-
-			if (result != null) {
-				return new Vec3d(vec3d2.x, result.climbSpeed, vec3d2.z);
+			if (speed != null) {
+				return new Vec3d(vec3d2.x, speed, vec3d2.z);
 			}
+			speed = null;
 		}
-
 		return vec3d2;
 	}
 }

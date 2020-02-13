@@ -26,32 +26,22 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public interface ClimbingCallback {
 	Event<ClimbingCallback> EVENT = EventFactory.createArrayBacked(ClimbingCallback.class,
 			(listeners) -> ((entity, blockState, pos) -> {
-				Result finalResult = null;
+				Double finalSpeed = null;
 
 				for (ClimbingCallback listener : listeners) {
-					Result result = listener.canClimb(entity, blockState, pos);
-
-					if (result != null) {
-						if (finalResult == null || finalResult.priority <= result.priority) {
-							finalResult = result;
-						}
-					}
+					Double speed = listener.canClimb(entity, blockState, pos);
+					if (speed != null) finalSpeed = speed;
 				}
 
-				return finalResult;
+				return finalSpeed;
 			}));
 
 	/**
 	 * Used for applying a non-vanilla climbing speed to the passed living entity.
 	 *
-	 * <p>The climbing speed of the {@link Result} class determines how fast or slow
-	 * the Living Entity will climb; it should be noted that Result has a constructor
-	 * that specifies vanilla's default climbing speed of 0.2.</p>
-	 *
-	 * <p>The priority number allows for your climbing speed to take priority over
-	 * the climbing speeds returned by other callbacks. When multiple callbacks
-	 * return the same priority number, the last one to return will be used. If this
-	 * number is less than 0, the result will be ignored.</p>
+	 * <p>The climbing speed returned determines how fast or slow the
+	 * Living Entity will climb. Can be null if you don't want to handle the given
+	 * situation.</p>
 	 *
 	 * <p>In the event that all callbacks return null; vanilla's default behavior
 	 * will be applied. </p>
@@ -60,23 +50,7 @@ public interface ClimbingCallback {
 	 * @param state The BlockState of the block that the climber is attempting to climb.
 	 * @param pos The BlockPos of the BlockState.
 	 *
-	 * @return A Result instance containing the priority and the climbing speed to set.
-	 * Can be null if you don't want to handle a certain situation.
+	 * @return The desired climbing speed or null.
 	 */
-	Result canClimb(LivingEntity climber, BlockState state, BlockPos pos);
-
-	class Result {
-		public final int priority;
-		public final double climbSpeed;
-
-		public Result(int priority, double climbSpeed) {
-			this.priority = priority;
-			this.climbSpeed = climbSpeed;
-		}
-
-		public Result(int priority) {
-			this.priority = priority;
-			this.climbSpeed = 0.2D;
-		}
-	}
+	Double canClimb(LivingEntity climber, BlockState state, BlockPos pos);
 }
