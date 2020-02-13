@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @FunctionalInterface
 public interface ClimbingCallback {
 	Event<ClimbingCallback> EVENT = EventFactory.createArrayBacked(ClimbingCallback.class,
-		listeners -> (entity, blockState, pos) -> {
+			listeners -> (entity, blockState, pos) -> {
 				Double finalSpeed = null;
 
 				for (ClimbingCallback listener : listeners) {

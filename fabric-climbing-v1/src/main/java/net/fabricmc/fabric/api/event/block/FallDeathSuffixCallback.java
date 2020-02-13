@@ -25,16 +25,16 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @FunctionalInterface
 public interface FallDeathSuffixCallback {
 	Event<FallDeathSuffixCallback> event = EventFactory.createArrayBacked(FallDeathSuffixCallback.class,
-		fallDeathCallbacks -> (entity, state) -> {
-			String finalSuffix = null;
+			listeners -> (entity, state) -> {
+				String finalSuffix = null;
 
-			for (FallDeathSuffixCallback fallDeathCallback : fallDeathCallbacks) {
-				String suffix = fallDeathCallback.getFallDeathSuffix(entity, state);
-				if (suffix != null) finalSuffix = suffix;
-			}
+				for (FallDeathSuffixCallback fallDeathCallback : listeners) {
+					String suffix = fallDeathCallback.getFallDeathSuffix(entity, state);
+					if (suffix != null) finalSuffix = suffix;
+				}
 
-			return finalSuffix;
-		});
+				return finalSuffix;
+			});
 
 	/**
 	 * Used for providing a non-vanilla fall-death message.
