@@ -67,8 +67,10 @@ public abstract class MixinLivingEntity extends Entity {
 			if (speed != null) {
 				return new Vec3d(vec3d2.x, speed, vec3d2.z);
 			}
+
 			speed = null;
 		}
+
 		return vec3d2;
 	}
 }
