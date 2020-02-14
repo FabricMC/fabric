@@ -54,6 +54,12 @@ public final class RegistrySyncManager {
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
 	private static final Set<Identifier> REGISTRY_BLACKLIST = ImmutableSet.of();
 	private static final Set<Identifier> REGISTRY_BLACKLIST_NETWORK = ImmutableSet.of();
+	//These registry's are not saved to disk using their int id, so dont need to be same across runs.
+	private static final Set<Identifier> REGISTRY_BLACKLIST_SAVE = ImmutableSet.of(
+			new Identifier("block"),
+			new Identifier("item"),
+			new Identifier("sound_event")
+	);
 
 	private RegistrySyncManager() { }
 
@@ -135,6 +141,8 @@ public final class RegistrySyncManager {
 				continue;
 			} else if (isClientSync && REGISTRY_BLACKLIST_NETWORK.contains(registryId)) {
 				continue;
+			} else if (!isClientSync && REGISTRY_BLACKLIST_SAVE.contains(registryId)) {
+				continue;
 			}
 
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
@@ -185,6 +193,9 @@ public final class RegistrySyncManager {
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			if (!containedRegistries.remove(registryId.toString())) {
+				continue;
+			}
+			if (REGISTRY_BLACKLIST_SAVE.contains(registryId)) {
 				continue;
 			}
 
