@@ -38,7 +38,7 @@ public abstract class MixinLivingEntity extends Entity {
 	@Shadow
 	public abstract boolean isClimbing();
 
-	private Double speed = null;
+	private double speed = Double.NaN;
 
 	public MixinLivingEntity(EntityType<?> type, World world) {
 		super(type, world);
@@ -50,7 +50,7 @@ public abstract class MixinLivingEntity extends Entity {
 
 		speed = ClimbingCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
 
-		if (speed != null) {
+		if (!Double.isNaN(speed)) {
 			if (speed <= 0.0D) {
 				cir.setReturnValue(false);
 			} else {
@@ -64,11 +64,11 @@ public abstract class MixinLivingEntity extends Entity {
 	@ModifyVariable(method = "travel", name = "vec3d2", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;getVelocity()Lnet/minecraft/util/math/Vec3d;", shift = At.Shift.AFTER))
 	private Vec3d modifyClimbVelocity(Vec3d vec3d2) {
 		if (isClimbing() && horizontalCollision) {
-			if (speed != null) {
+			if (!Double.isNaN(speed)) {
 				return new Vec3d(vec3d2.x, speed, vec3d2.z);
 			}
 
-			speed = null;
+			speed = Double.NaN;
 		}
 
 		return vec3d2;

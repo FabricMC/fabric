@@ -27,11 +27,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public interface ClimbingCallback {
 	Event<ClimbingCallback> EVENT = EventFactory.createArrayBacked(ClimbingCallback.class,
 			listeners -> (entity, blockState, pos) -> {
-				Double finalSpeed = null;
+				double finalSpeed = Double.NaN;
 
 				for (ClimbingCallback listener : listeners) {
-					Double speed = listener.canClimb(entity, blockState, pos);
-					if (speed != null) finalSpeed = speed;
+					double speed = listener.canClimb(entity, blockState, pos);
+					if (!Double.isNaN(speed)) finalSpeed = speed;
 				}
 
 				return finalSpeed;
@@ -41,8 +41,8 @@ public interface ClimbingCallback {
 	 * Used for applying a non-vanilla climbing speed to the passed living entity.
 	 *
 	 * <p>The climbing speed returned determines how fast or slow the
-	 * Living Entity will climb. Can be null if you don't want to handle the given
-	 * situation.</p>
+	 * Living Entity will climb. Can be {@link Double#NaN} if you
+	 * don't want to handle the given situation.</p>
 	 *
 	 * <p>In the event that all callbacks return null; vanilla's default behavior
 	 * will be applied. </p>
@@ -51,7 +51,7 @@ public interface ClimbingCallback {
 	 * @param state The BlockState of the block that the climber is attempting to climb.
 	 * @param pos The BlockPos of the BlockState.
 	 *
-	 * @return The desired climbing speed or null.
+	 * @return The desired climbing speed or {@link Double#NaN}.
 	 */
-	Double canClimb(LivingEntity climber, BlockState state, BlockPos pos);
+	double canClimb(LivingEntity climber, BlockState state, BlockPos pos);
 }
