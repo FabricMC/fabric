@@ -12,9 +12,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.4.32"
-	static def mcVersion = "20w06a"
-	static def yarnVersion = "+build.8"
+	static def baseVersion = "0.4.33"
+	static def mcVersion = "20w07a"
+	static def yarnVersion = "+build.1"
 }
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -147,7 +147,9 @@ subprojects {
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
 				}
-				artifact javadocJar
+				artifact (javadocJar) {
+					builtBy javadocJar
+				}
 			}
 		}
 
