@@ -147,9 +147,6 @@ subprojects {
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
 				}
-				artifact (javadocJar) {
-					builtBy javadocJar
-				}
 			}
 		}
 
@@ -186,6 +183,7 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
+			artifact javadocJar
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
