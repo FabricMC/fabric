@@ -27,24 +27,32 @@ import net.minecraft.item.ItemStack;
 /**
  * Interface for adding various tool attributes to items.
  */
-public interface ToolAttributeHolder {
+public interface DynamicAttributeTool {
 	Multimap<String, EntityAttributeModifier> EMPTY = ImmutableSetMultimap.of();
 
 	/**
+	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
+	 *
+	 * <p>See {@link MiningConstants} for all vanilla tool mining levels.</p>
+	 *
 	 * @param stack The stack to check on.
-	 * @param user The current user of the tool, or none if there isn't any
+	 * @param user The current user of the tool, or null if there isn't any.
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
 	int getMiningLevel(ItemStack stack, LivingEntity user);
 
 	/**
+	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
+	 *
+	 * <p>See {@link MiningConstants} for all vanilla tool mining speed multipliers.</p>
+	 *
 	 * @param stack The stack to check on.
-	 * @param user The current user of the tool, or none if there isn't any
-	 * @return The mining speed of the item. 8.0 is equal to a diamond pick.
+	 * @param user The current user of the tool, or null if there isn't any.
+	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	float getMiningSpeed(ItemStack stack, LivingEntity user);
+	float getMiningSpeedMultiplier(ItemStack stack, LivingEntity user);
 
 	/**
 	 * Add modifiers for any {@link net.minecraft.entity.attribute.EntityAttributes} your item should give when equipped, based on the stack.

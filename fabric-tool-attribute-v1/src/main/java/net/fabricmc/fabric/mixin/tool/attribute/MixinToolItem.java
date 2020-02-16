@@ -25,10 +25,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 
 @Mixin(ToolItem.class)
-public abstract class MixinToolItem extends Item implements ToolAttributeHolder {
+public abstract class MixinToolItem extends Item implements DynamicAttributeTool {
 	@Shadow
 	public abstract ToolMaterial getMaterial();
 
@@ -42,7 +42,7 @@ public abstract class MixinToolItem extends Item implements ToolAttributeHolder 
 	}
 
 	@Override
-	public float getMiningSpeed(ItemStack stack, LivingEntity user) {
+	public float getMiningSpeedMultiplier(ItemStack stack, LivingEntity user) {
 		return this.getMaterial().getMiningSpeed();
 	}
 }

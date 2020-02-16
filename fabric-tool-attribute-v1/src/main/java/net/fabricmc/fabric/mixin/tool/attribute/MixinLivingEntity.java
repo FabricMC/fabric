@@ -29,7 +29,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ActableAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
 
 @Mixin(LivingEntity.class)
@@ -59,9 +59,9 @@ public abstract class MixinLivingEntity extends Entity {
 	private static Multimap<String, EntityAttributeModifier> actModifiers(ItemStack stack, EquipmentSlot slot, LivingEntity user) {
 		Multimap<String, EntityAttributeModifier> original = stack.getAttributeModifiers(slot);
 
-		if (stack.getItem() instanceof ActableAttributeHolder) {
-			ActableAttributeHolder holder = (ActableAttributeHolder) stack.getItem();
-			return (AttributeManager.mergeAttributes(original, holder.getDynamicModifiers(slot, stack, user)));
+		if (stack.getItem() instanceof DynamicAttributeTool) {
+			DynamicAttributeTool tool = (DynamicAttributeTool) stack.getItem();
+			return (AttributeManager.mergeAttributes(original, tool.getDynamicModifiers(slot, stack, user)));
 		}
 
 		return original;

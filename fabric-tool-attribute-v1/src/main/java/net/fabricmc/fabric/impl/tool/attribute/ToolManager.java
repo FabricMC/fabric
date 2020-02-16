@@ -26,7 +26,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManager {
@@ -88,8 +88,8 @@ public final class ToolManager {
 
 	//TODO: nullable on user once we have an official @Nullable annotation in
 	private static int getMiningLevel(ItemStack stack, LivingEntity user) {
-		if (stack.getItem() instanceof ToolAttributeHolder) {
-			return ((ToolAttributeHolder) stack.getItem()).getMiningLevel(stack, user);
+		if (stack.getItem() instanceof DynamicAttributeTool) {
+			return ((DynamicAttributeTool) stack.getItem()).getMiningLevel(stack, user);
 		} else {
 			return 0;
 		}

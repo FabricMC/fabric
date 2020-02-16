@@ -29,7 +29,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
 
@@ -53,7 +53,7 @@ public abstract class MixinPlayerInventory {
 	public void actMiningLevel(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		ItemStack stack = this.getInvStack(this.selectedSlot);
 
-		if (stack.getItem() instanceof ToolAttributeHolder) {
+		if (stack.getItem() instanceof DynamicAttributeTool) {
 			TriState ret = ToolManager.handleIsEffectiveOn(stack, state, player);
 
 			if (ret != TriState.DEFAULT) {
@@ -66,8 +66,8 @@ public abstract class MixinPlayerInventory {
 	public void actMiningSleed(BlockState state, CallbackInfoReturnable<Float> info) {
 		ItemStack stack = this.main.get(this.selectedSlot);
 
-		if (stack.getItem() instanceof ToolAttributeHolder) {
-			info.setReturnValue(((ToolAttributeHolder) stack.getItem()).getMiningSpeed(stack, player));
+		if (stack.getItem() instanceof DynamicAttributeTool) {
+			info.setReturnValue(((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(stack, player));
 		}
 	}
 }

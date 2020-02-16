@@ -30,7 +30,7 @@ import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolAttributeHolder;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
@@ -58,8 +58,8 @@ public abstract class MixinItemStack {
 			Item item = this.getItem();
 			float miningSpeed;
 
-			if (item instanceof ToolAttributeHolder) {
-				miningSpeed = ((ToolAttributeHolder) this.getItem()).getMiningSpeed((ItemStack) (Object) this, null);
+			if (item instanceof DynamicAttributeTool) {
+				miningSpeed = ((DynamicAttributeTool) this.getItem()).getMiningSpeedMultiplier((ItemStack) (Object) this, null);
 			} else {
 				return;
 			}
@@ -72,8 +72,8 @@ public abstract class MixinItemStack {
 	public void getAttributeModifiers(EquipmentSlot slot, CallbackInfoReturnable<Multimap<String, EntityAttributeModifier>> info, Multimap<String, EntityAttributeModifier> multimap) {
 		ItemStack stack = (ItemStack) (Object) this;
 
-		if (stack.getItem() instanceof ToolAttributeHolder) {
-			ToolAttributeHolder holder = (ToolAttributeHolder) stack.getItem();
+		if (stack.getItem() instanceof DynamicAttributeTool) {
+			DynamicAttributeTool holder = (DynamicAttributeTool) stack.getItem();
 			Multimap<String, EntityAttributeModifier> ret = AttributeManager.mergeAttributes(multimap, (holder).getDynamicModifiers(slot, stack, null));
 			info.setReturnValue(ret);
 		}
