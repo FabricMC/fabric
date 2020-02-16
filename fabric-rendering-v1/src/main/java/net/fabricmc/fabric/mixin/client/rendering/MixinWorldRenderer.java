@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.WorldRenderer;
 
-import net.fabricmc.fabric.api.client.render.InvalidateRenderStateCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback;
 
 @Mixin(WorldRenderer.class)
 public abstract class MixinWorldRenderer {

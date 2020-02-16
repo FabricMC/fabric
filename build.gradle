@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.4.24"
-	static def mcVersion = "1.15"
+	static def baseVersion = "0.4.32"
+	static def mcVersion = "1.15.2"
 	static def yarnVersion = "+build.1"
 }
 
@@ -39,7 +39,8 @@ def getBranch(){
 	if (grgit == null) {
 		return "unknown"
 	}
-	return grgit.branch.current().name
+	def branch = grgit.branch.current().name
+	return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
 allprojects {
@@ -117,7 +118,16 @@ javadoc {
 			source( it.sourceSets.main.allJava.srcDirs)
 		}
 	classpath = sourceSets.main.compileClasspath
+	include ("**/api/**")
+	failOnError false
 }
+
+task javadocJar(type: Jar) {
+	from javadoc
+	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
+	classifier = 'fatjavadoc'
+}
+build.dependsOn javadocJar
 
 subprojects {
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -137,6 +147,7 @@ subprojects {
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
 				}
+				artifact javadocJar
 			}
 		}
 
@@ -224,7 +235,7 @@ curseforge {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
 		releaseType = 'beta'
-		addGameVersion '1.15-Snapshot'
+		addGameVersion '1.15.2'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
