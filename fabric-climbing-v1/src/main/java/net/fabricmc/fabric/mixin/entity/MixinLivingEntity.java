@@ -51,13 +51,7 @@ public abstract class MixinLivingEntity extends Entity {
 		speed = ClimbingCallback.EVENT.invoker().canClimb(self, state, getBlockPos());
 
 		if (!Double.isNaN(speed)) {
-			if (speed <= 0.0D) {
-				cir.setReturnValue(false);
-			} else {
-				cir.setReturnValue(true);
-			}
-
-			cir.cancel();
+			cir.setReturnValue(speed > 0.0);
 		}
 	}
 
