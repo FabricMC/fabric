@@ -12,7 +12,7 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.4.1"
+	static def baseVersion = "0.4.2"
 	static def mcVersion = "1.14.4"
 	static def yarnVersion = "+build.1"
 }
@@ -39,7 +39,8 @@ def getBranch(){
 	if (grgit == null) {
 		return "unknown"
 	}
-	return grgit.branch.current().name
+	def branch = grgit.branch.current().name
+	return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
 allprojects {

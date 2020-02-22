@@ -41,19 +41,7 @@ public final class TagRegistry {
 	private TagRegistry() { }
 
 	public static <T> Tag<T> create(Identifier id, Supplier<TagContainer<T>> containerSupplier) {
-		return new TagDelegate<T>(id, null) {
-			private TagContainer<T> container;
-
-			@Override
-			protected void onAccess() {
-				TagContainer<T> currContainer = containerSupplier.get();
-
-				if (container != currContainer) {
-					container = currContainer;
-					delegate = container.getOrCreate(this.getId());
-				}
-			}
-		};
+		return new TagDelegate<>(id, containerSupplier);
 	}
 
 	public static Tag<Block> block(Identifier id) {
