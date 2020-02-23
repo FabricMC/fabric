@@ -6,7 +6,6 @@
     "EntityHooks",
     "MixinEntity",
     "MixinPortalForcer",
-    "MixinServerWorld",
     "MixinWorld",
     "idremap.MixinDimensionRawIndexFix",
     "idremap.MixinLevelProperties",
