@@ -11,9 +11,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(PlayerManager.class)
 public abstract class MixinPlayerManager {
+	/**
+	 * The reason why this injection was chosen rather than injecting at the "TAIL" of copyFrom is to allow repositioning of the player before respawn.
+	 */
 	@Inject(at = @At("TAIL"), method = "respawnPlayer(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/world/dimension/DimensionType;Z)Lnet/minecraft/server/network/ServerPlayerEntity;")
-	private void onPlayerRespawn(ServerPlayerEntity oldPlayer, DimensionType newDimension, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
+	private void onPlayerRespawn(ServerPlayerEntity oldPlayer, DimensionType newDimension, boolean oldPlayerIsAlive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
 		ServerPlayerEntity newPlayer = cir.getReturnValue();
-		PlayerRespawnCallback.EVENT.invoker().onRespawn(newPlayer, oldPlayer, newDimension, alive);
+		PlayerRespawnCallback.EVENT.invoker().onRespawn(newPlayer, oldPlayer, newDimension, oldPlayerIsAlive);
 	}
 }
