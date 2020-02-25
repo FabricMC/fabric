@@ -1,14 +1,17 @@
-package net.fabricmc.api.event.v1.player;
+package net.fabricmc.api.event.player.v1;
+
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.dimension.DimensionType;
 
 /**
  * Represents a callback for when a {@link ServerPlayerEntity} is respawned.
  *
- * <p>This occurs when a player dies, or changes dimensions, such as returning to the overworld from the end.</p>
+ * <p>This occurs when a player dies, or changes dimensions, such as returning to the overworld from the end.
+ *
+ * <p>Note the player can be repositioned.
  */
 public interface PlayerRespawnCallback {
 	Event<PlayerRespawnCallback> EVENT = EventFactory.createArrayBacked(PlayerRespawnCallback.class, (callbacks) -> (newPlayer, oldPlayer, newDimension, alive) -> {
@@ -19,6 +22,8 @@ public interface PlayerRespawnCallback {
 
 	/**
 	 * Called when a player respawns.
+	 *
+	 * <p>Note the player can be repositioned.
 	 *
 	 * @param newPlayer The new {@link ServerPlayerEntity} that will be spawned.
 	 * @param oldPlayer The old {@link ServerPlayerEntity} that is being removed.

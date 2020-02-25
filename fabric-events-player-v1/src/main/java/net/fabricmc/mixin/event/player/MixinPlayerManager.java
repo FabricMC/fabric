@@ -1,13 +1,15 @@
 package net.fabricmc.mixin.event.player;
 
-import net.fabricmc.api.event.v1.player.PlayerRespawnCallback;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.dimension.DimensionType;
+
+import net.fabricmc.api.event.player.v1.PlayerRespawnCallback;
 
 @Mixin(PlayerManager.class)
 public abstract class MixinPlayerManager {
