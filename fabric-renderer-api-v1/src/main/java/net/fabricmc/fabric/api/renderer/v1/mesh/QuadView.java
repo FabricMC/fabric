@@ -122,7 +122,7 @@ public interface QuadView {
 	default BakedQuad toBakedQuad(int spriteIndex, Sprite sprite, boolean isItem) {
 		int[] vertexData = new int[VANILLA_QUAD_STRIDE];
 		toVanilla(spriteIndex, vertexData, 0, isItem);
-		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite);
+		return new BakedQuad(vertexData, colorIndex(), lightFace(), sprite, true /* TODO:20w09a check me */);
 	}
 
 	/**

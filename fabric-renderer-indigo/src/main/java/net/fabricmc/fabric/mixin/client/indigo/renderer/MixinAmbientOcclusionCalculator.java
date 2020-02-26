@@ -34,7 +34,7 @@ public abstract class MixinAmbientOcclusionCalculator implements AccessAmbientOc
 	@Shadow private int[] light;
 
 	@Shadow
-	public abstract void apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits);
+	public abstract void apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits, boolean shade);
 
 	@Override
 	public float[] fabric_colorMultiplier() {
@@ -47,7 +47,7 @@ public abstract class MixinAmbientOcclusionCalculator implements AccessAmbientOc
 	}
 
 	@Override
-	public void fabric_apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits) {
-		apply(blockRenderView, blockState, pos, face, aoData, controlBits);
+	public void fabric_apply(BlockRenderView blockRenderView, BlockState blockState, BlockPos pos, Direction face, float[] aoData, BitSet controlBits, boolean shade) {
+		apply(blockRenderView, blockState, pos, face, aoData, controlBits, shade);
 	}
 }

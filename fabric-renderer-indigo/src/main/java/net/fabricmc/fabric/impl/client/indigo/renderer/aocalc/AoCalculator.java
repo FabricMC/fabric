@@ -114,7 +114,7 @@ public class AoCalculator {
 	}
 
 	public void compute(MutableQuadViewImpl quad, boolean isVanilla) {
-		final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
+		final AoConfig config = AoConfig.VANILLA; // Indigo.AMBIENT_OCCLUSION_MODE; TODO:20w09a Fix me
 		final boolean shouldCompare;
 
 		switch (config) {
@@ -188,7 +188,7 @@ public class AoCalculator {
 		quad.toVanilla(0, vertexData, 0, false);
 
 		VanillaAoHelper.updateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, face, vanillaAoData, vanillaAoControlBits);
-		vanillaCalc.fabric_apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), vanillaAoData, vanillaAoControlBits);
+		vanillaCalc.fabric_apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), vanillaAoData, vanillaAoControlBits, true /* TODO:20w09a check me */);
 
 		System.arraycopy(vanillaCalc.fabric_colorMultiplier(), 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.fabric_brightness(), 0, lightDest, 0, 4);
