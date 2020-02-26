@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-levelgenerators-v1"
+archivesBaseName = "fabric-level-generators-v1"
 version = getSubprojectVersion(project, "0.1.0")
 
 dependencies {

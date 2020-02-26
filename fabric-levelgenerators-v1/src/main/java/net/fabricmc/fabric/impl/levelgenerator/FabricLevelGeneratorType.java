@@ -16,25 +16,29 @@
 
 package net.fabricmc.fabric.impl.levelgenerator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.mixin.levelgenerator.AccessLevelGeneratorType;
+import net.fabricmc.fabric.mixin.levelgenerator.LevelGeneratorTypeAccessor;
 
 public final class FabricLevelGeneratorType {
-	public static final HashMap<LevelGeneratorType, Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>>> suppliers = new HashMap<>();
+	public static final HashMap<LevelGeneratorType, ChunkGeneratorSupplier> suppliers = new HashMap<>();
 
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
-		LevelGeneratorType levelType = AccessLevelGeneratorType.fabric_init(getFreeId(), name.toString().replaceAll(":", "."), storedName.toString(), version);
-		suppliers.put(levelType, new Pair<>(generatorType, biomeSource));
+		if (name.toString().contains(":")) {
+			throw new IllegalArgumentException("Character ':' is not allowed in level generator type identifier");
+		}
+
+		LevelGeneratorType levelType = LevelGeneratorTypeAccessor.fabric_create(getFreeId(), name.toString(), storedName.toString(), version);
+		suppliers.put(levelType, new ChunkGeneratorSupplier(generatorType, biomeSource));
 		return levelType;
 	}
 
@@ -45,20 +49,42 @@ public final class FabricLevelGeneratorType {
 			}
 		}
 
-		throw new RuntimeException("No more free id's");
+		int length = LevelGeneratorType.TYPES.length;
+		LevelGeneratorTypeAccessor.setTYPES(java.util.Arrays.copyOf(LevelGeneratorType.TYPES, length + 1));
+		return length;
 	}
 
 	public static LevelGeneratorType getTypeFromPath(String name) {
+		ArrayList<LevelGeneratorType> matches = new ArrayList<>();
+
 		for (int id = 0; id < LevelGeneratorType.TYPES.length; id++) {
 			LevelGeneratorType levelGeneratorType = LevelGeneratorType.TYPES[id];
 
-			if (levelGeneratorType != null) {
-				String[] levelGeneratorTypePath = levelGeneratorType.getName().split(":");
-				if (levelGeneratorTypePath.length < 2) continue;
-				if (levelGeneratorTypePath[1].equalsIgnoreCase(name)) return levelGeneratorType;
+			if (levelGeneratorType != null && levelGeneratorType.getName().equals(name)) {
+				matches.add(levelGeneratorType);
 			}
 		}
 
-		return null;
+		if (matches.size() > 1) throw new RuntimeException("Multiple level generator types matching path");
+
+		return matches.get(0);
+	}
+
+	public static final class ChunkGeneratorSupplier {
+		private ChunkGeneratorType<?, ? extends ChunkGenerator<?>> chunkGeneratorType;
+		private Function<World, BiomeSource> biomeSourceFunction;
+
+		ChunkGeneratorSupplier(ChunkGeneratorType<?, ? extends ChunkGenerator<?>> chunkGeneratorType, Function<World, BiomeSource> biomeSourceFunction) {
+			this.chunkGeneratorType = chunkGeneratorType;
+			this.biomeSourceFunction = biomeSourceFunction;
+		}
+
+		public ChunkGeneratorType<?, ? extends ChunkGenerator<?>> getChunkGeneratorType() {
+			return chunkGeneratorType;
+		}
+
+		public Function<World, BiomeSource> getBiomeSourceFunction() {
+			return biomeSourceFunction;
+		}
 	}
 }

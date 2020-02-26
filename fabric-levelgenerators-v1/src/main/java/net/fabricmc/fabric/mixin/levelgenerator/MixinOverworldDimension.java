@@ -16,16 +16,12 @@
 
 package net.fabricmc.fabric.mixin.levelgenerator;
 
-import java.util.function.Function;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.Pair;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.dimension.OverworldDimension;
@@ -44,12 +40,12 @@ public abstract class MixinOverworldDimension extends Dimension {
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	@Inject(method = "createChunkGenerator", at = @At("RETURN"), cancellable = true)
 	private void createChunkGenerator(CallbackInfoReturnable<ChunkGenerator<? extends ChunkGeneratorConfig>> cir) {
-		Pair<ChunkGeneratorType<?, ? extends ChunkGenerator<?>>, Function<World, BiomeSource>> supplier = FabricLevelGeneratorType.suppliers.get(world.getLevelProperties().getGeneratorType());
+		FabricLevelGeneratorType.ChunkGeneratorSupplier supplier = FabricLevelGeneratorType.suppliers.get(world.getLevelProperties().getGeneratorType());
 
 		// Skip if levelGenerator doesn't provide supplier
 		if (supplier == null) return;
 
-		ChunkGeneratorType chunkGeneratorType = supplier.getLeft();
-		cir.setReturnValue(chunkGeneratorType.create(world, supplier.getRight().apply(world), chunkGeneratorType.createSettings()));
+		ChunkGeneratorType chunkGeneratorType = supplier.getChunkGeneratorType();
+		cir.setReturnValue(chunkGeneratorType.create(world, supplier.getBiomeSourceFunction().apply(world), chunkGeneratorType.createSettings()));
 	}
 }

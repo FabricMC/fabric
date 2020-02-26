@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.world.level.LevelGeneratorType;
 
 import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
-import net.fabricmc.fabric.impl.levelgenerator.ServerPropertiesHandlerImplements;
+import net.fabricmc.fabric.impl.levelgenerator.FabricLevelTypeProvider;
 
 @Mixin(MinecraftDedicatedServer.class)
 public final class MixinMinecraftDedicatedServer {
@@ -47,25 +47,20 @@ public final class MixinMinecraftDedicatedServer {
 		if (levelGeneratorType != null) return levelGeneratorType;
 
 		// Get fabricLevelType identifier added with MixinServerPropertiesHandler
-		Identifier fabriclevelType = ((ServerPropertiesHandlerImplements) propertiesLoader.getPropertiesHandler()).getFabriclevelType();
-		LevelGeneratorType finalLevelGeneratorType = null;
+		Identifier fabricLevelType = ((FabricLevelTypeProvider) propertiesLoader.getPropertiesHandler()).getFabricLevelType();
 
-		if (fabriclevelType != null) {
+		if (fabricLevelType != null) {
 			// Give ability to skip namespace if mods levelGenerators don't have same name
 			// If they do, first one will be used
-			if (fabriclevelType.getNamespace().equals("fabricdefault")) {
-				finalLevelGeneratorType = FabricLevelGeneratorType.getTypeFromPath(fabriclevelType.getPath());
+			if (fabricLevelType.getNamespace().equals("fabric_omitted_namespace")) {
+				return FabricLevelGeneratorType.getTypeFromPath(fabricLevelType.getPath());
 			} else {
-				finalLevelGeneratorType = LevelGeneratorType.getTypeFromName(fabriclevelType.toString().replaceAll(":", "."));
+				return LevelGeneratorType.getTypeFromName(fabricLevelType.toString().replaceAll(":", "."));
 			}
 		}
 
 		// Fallback to LevelGeneratorType.DEFAULT
-		if (finalLevelGeneratorType == null) {
-			LOGGER.error("Incorrect level-type \"" + fabriclevelType + "\", falling back to default");
-			return LevelGeneratorType.DEFAULT;
-		}
-
-		return finalLevelGeneratorType;
+		LOGGER.error("Incorrect level-type, falling back to default");
+		return LevelGeneratorType.DEFAULT;
 	}
 }

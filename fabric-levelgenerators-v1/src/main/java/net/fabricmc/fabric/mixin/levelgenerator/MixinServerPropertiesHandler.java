@@ -21,8 +21,6 @@ import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -32,13 +30,12 @@ import net.minecraft.server.dedicated.ServerPropertiesHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.ServerPropertiesHandlerImplements;
+import net.fabricmc.fabric.impl.levelgenerator.FabricLevelTypeProvider;
 
 @Mixin(ServerPropertiesHandler.class)
-@Implements(@Interface(iface = ServerPropertiesHandlerImplements.class, prefix = "fabric$"))
-public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHandler<ServerPropertiesHandler> implements ServerPropertiesHandlerImplements {
+public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHandler<ServerPropertiesHandler> implements FabricLevelTypeProvider {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private Identifier fabriclevelType;
+	private Identifier fabricLevelType;
 
 	public MixinServerPropertiesHandler(Properties properties) {
 		super(properties);
@@ -64,23 +61,23 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 
 		// Gives ability to skip namespace
 		if (levelType.length == 1) {
-			fabriclevelType = new Identifier("fabricdefault", levelType[0]);
+			fabricLevelType = new Identifier("fabric_omitted_namespace", levelType[0]);
 			return null;
 		}
 
 		// level-type should only have 2 elements separated by ":"
 		if (levelType.length != 2) {
-			LOGGER.error("Invalid level-type identifier");
+			LOGGER.error("Level-type identifier has more than one ':' character");
 			return null;
 		}
 
 		// Parse string to identifier
-		fabriclevelType = new Identifier(levelType[0], levelType[1]);
+		fabricLevelType = new Identifier(levelType[0], levelType[1]);
 		return null;
 	}
 
 	@Override
-	public Identifier getFabriclevelType() {
-		return fabriclevelType;
+	public Identifier getFabricLevelType() {
+		return fabricLevelType;
 	}
 }
