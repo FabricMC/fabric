@@ -66,6 +66,7 @@ public final class FabricLevelGeneratorType {
 		}
 
 		if (matches.size() > 1) throw new RuntimeException("Multiple level generator types matching path");
+		if (matches.size() != 1) return null;
 
 		return matches.get(0);
 	}
