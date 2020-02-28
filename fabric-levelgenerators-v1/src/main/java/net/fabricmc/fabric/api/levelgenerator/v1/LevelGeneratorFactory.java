@@ -27,38 +27,38 @@ import net.minecraft.world.level.LevelGeneratorType;
 
 import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
 
-public final class CreateLevelGenerator {
+public final class LevelGeneratorFactory {
 	/**
-	 * Called to create new instance of the LevelGeneratorType.
+	 * Creates a new instance of a LevelGeneratorType.
 	 *
-	 * @param name                identifier of the {@link LevelGeneratorType}
+	 * @param name                identifier of the {@link LevelGeneratorType}, must not contain ':'
 	 * @param generatorType       instance of {@link ChunkGeneratorType}
-	 * @param biomeSourceSupplier provide {@link BiomeSource} using lambda expression
+	 * @param biomeSourceSupplier provides a {@link BiomeSource} using a lambda
 	 */
 	public static LevelGeneratorType create(Identifier name, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, name, 0, generatorType, biomeSourceSupplier);
 	}
 
 	/**
-	 * Called to create new instance of the LevelGeneratorType.
+	 * Creates a new instance of a LevelGeneratorType.
 	 *
-	 * @param name                identifier of the {@link LevelGeneratorType}
-	 * @param version             version of {@link LevelGeneratorType}
+	 * @param name                identifier of the {@link LevelGeneratorType}, must not contain ':'
+	 * @param version             version of {@link LevelGeneratorType} used to store in the level properties and shown in crash reports
 	 * @param generatorType       instance of {@link ChunkGeneratorType}
-	 * @param biomeSourceSupplier provide {@link BiomeSource} using lambda
+	 * @param biomeSourceSupplier provides a {@link BiomeSource} using a lambda
 	 */
 	public static LevelGeneratorType create(Identifier name, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, name, version, generatorType, biomeSourceSupplier);
 	}
 
 	/**
-	 * Called to create new instance of the LevelGeneratorType.
+	 * Creates a new instance of a LevelGeneratorType.
 	 *
-	 * @param name                identifier of the {@link LevelGeneratorType}
-	 * @param storedName          identifier of the {@link LevelGeneratorType} used as world tag
-	 * @param version             version of {@link LevelGeneratorType}
+	 * @param name                identifier of the {@link LevelGeneratorType}, must not contain ':'
+	 * @param storedName          identifier of the {@link LevelGeneratorType} used to store in the level properties
+	 * @param version             version of {@link LevelGeneratorType} used to store in the level properties and shown in crash reports
 	 * @param generatorType       instance of {@link ChunkGeneratorType}
-	 * @param biomeSourceSupplier provide {@link BiomeSource} using lambda
+	 * @param biomeSourceSupplier provides a {@link BiomeSource} using a lambda
 	 */
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSourceSupplier) {
 		return FabricLevelGeneratorType.create(name, storedName, version, generatorType, biomeSourceSupplier);
