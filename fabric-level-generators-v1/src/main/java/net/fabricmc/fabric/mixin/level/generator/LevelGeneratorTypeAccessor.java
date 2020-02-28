@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.levelgenerator;
+package net.fabricmc.fabric.mixin.level.generator;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,9 @@ public interface LevelGeneratorTypeAccessor {
 		throw new RuntimeException();
 	}
 
-	@Accessor
 	@Final
-	static void setTYPES(LevelGeneratorType[] types) { }
+	@Accessor("TYPES")
+	static void setTypes(LevelGeneratorType[] types) {
+		throw new RuntimeException();
+	}
 }

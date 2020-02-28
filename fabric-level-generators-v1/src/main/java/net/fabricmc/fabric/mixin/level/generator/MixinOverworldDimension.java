@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.levelgenerator;
+package net.fabricmc.fabric.mixin.level.generator;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +29,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
+import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorType;
 
 @Mixin(OverworldDimension.class)
 public abstract class MixinOverworldDimension extends Dimension {

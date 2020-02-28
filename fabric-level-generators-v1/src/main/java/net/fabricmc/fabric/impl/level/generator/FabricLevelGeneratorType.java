@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.levelgenerator;
+package net.fabricmc.fabric.impl.level.generator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,19 +27,23 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.mixin.levelgenerator.LevelGeneratorTypeAccessor;
+import net.fabricmc.fabric.mixin.level.generator.LevelGeneratorTypeAccessor;
 
 public final class FabricLevelGeneratorType {
 	public static final HashMap<LevelGeneratorType, ChunkGeneratorSupplier> suppliers = new HashMap<>();
 
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
-		if (name.toString().contains(":")) {
+		if (changeIdentifierSeparator(name).contains(":")) {
 			throw new IllegalArgumentException("Character ':' is not allowed in level generator type identifier");
 		}
 
-		LevelGeneratorType levelType = LevelGeneratorTypeAccessor.fabric_create(getFreeId(), name.toString(), storedName.toString(), version);
+		LevelGeneratorType levelType = LevelGeneratorTypeAccessor.fabric_create(getFreeId(), changeIdentifierSeparator(name), changeIdentifierSeparator(storedName), version);
 		suppliers.put(levelType, new ChunkGeneratorSupplier(generatorType, biomeSource));
 		return levelType;
+	}
+
+	public static String changeIdentifierSeparator(Identifier identifier) {
+		return identifier.getNamespace() + "." + identifier.getPath();
 	}
 
 	private static int getFreeId() {
@@ -50,7 +54,7 @@ public final class FabricLevelGeneratorType {
 		}
 
 		int length = LevelGeneratorType.TYPES.length;
-		LevelGeneratorTypeAccessor.setTYPES(java.util.Arrays.copyOf(LevelGeneratorType.TYPES, length + 1));
+		LevelGeneratorTypeAccessor.setTypes(java.util.Arrays.copyOf(LevelGeneratorType.TYPES, length + 16));
 		return length;
 	}
 
@@ -59,13 +63,20 @@ public final class FabricLevelGeneratorType {
 
 		for (int id = 0; id < LevelGeneratorType.TYPES.length; id++) {
 			LevelGeneratorType levelGeneratorType = LevelGeneratorType.TYPES[id];
+			String[] levelGeneratorTypes;
 
-			if (levelGeneratorType != null && levelGeneratorType.getName().equals(name)) {
-				matches.add(levelGeneratorType);
+			if (levelGeneratorType != null) {
+				levelGeneratorTypes = levelGeneratorType.getName().split("\\.", 2);
+				if (levelGeneratorTypes.length != 2) continue;
+
+				if (levelGeneratorTypes[1].equals(name)) {
+					matches.add(levelGeneratorType);
+				}
 			}
+
+			if (matches.size() > 1) throw new RuntimeException("Multiple level generator types matching path");
 		}
 
-		if (matches.size() > 1) throw new RuntimeException("Multiple level generator types matching path");
 		if (matches.size() != 1) return null;
 
 		return matches.get(0);

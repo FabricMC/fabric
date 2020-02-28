@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.levelgenerator.v1;
+package net.fabricmc.fabric.api.level.generator.v1;
 
 import java.util.function.Function;
 
@@ -25,7 +25,7 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
+import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorType;
 
 public final class LevelGeneratorFactory {
 	/**

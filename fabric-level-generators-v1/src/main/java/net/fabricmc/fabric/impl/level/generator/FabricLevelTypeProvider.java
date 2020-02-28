@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.levelgenerator;
+package net.fabricmc.fabric.impl.level.generator;
 
 import net.minecraft.util.Identifier;
 

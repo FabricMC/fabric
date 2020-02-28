@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.levelgenerator;
+package net.fabricmc.fabric.mixin.level.generator;
 
 import java.util.Properties;
 import java.util.function.Function;
@@ -30,7 +30,7 @@ import net.minecraft.server.dedicated.ServerPropertiesHandler;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.FabricLevelTypeProvider;
+import net.fabricmc.fabric.impl.level.generator.FabricLevelTypeProvider;
 
 @Mixin(ServerPropertiesHandler.class)
 public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHandler<ServerPropertiesHandler> implements FabricLevelTypeProvider {
@@ -59,7 +59,7 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 		LevelGeneratorType levelGeneratorType = LevelGeneratorType.getTypeFromName(value);
 		if (levelGeneratorType != null) return (V) levelGeneratorType;
 
-		// Gives ability to skip namespace
+		// Skip namespace if not supplied
 		if (levelType.length == 1) {
 			fabricLevelType = new Identifier("fabric_omitted_namespace", levelType[0]);
 			return null;
@@ -67,7 +67,7 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 
 		// level-type should only have 2 elements separated by ":"
 		if (levelType.length != 2) {
-			LOGGER.error("Level-type identifier has more than one ':' character");
+			LOGGER.error("Level-type identifier \"" + value + "\" has more than one ':' character");
 			return null;
 		}
 

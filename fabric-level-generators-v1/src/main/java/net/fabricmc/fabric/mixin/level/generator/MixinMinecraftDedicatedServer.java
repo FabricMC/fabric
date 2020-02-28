@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.levelgenerator;
+package net.fabricmc.fabric.mixin.level.generator;
 
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -28,8 +28,8 @@ import net.minecraft.server.dedicated.ServerPropertiesLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.levelgenerator.FabricLevelGeneratorType;
-import net.fabricmc.fabric.impl.levelgenerator.FabricLevelTypeProvider;
+import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorType;
+import net.fabricmc.fabric.impl.level.generator.FabricLevelTypeProvider;
 
 @Mixin(MinecraftDedicatedServer.class)
 public final class MixinMinecraftDedicatedServer {
@@ -53,11 +53,13 @@ public final class MixinMinecraftDedicatedServer {
 			// Give ability to skip namespace if mods levelGenerators don't have same name
 			// If they do, first one will be used
 			if (fabricLevelType.getNamespace().equals("fabric_omitted_namespace")) {
-				return FabricLevelGeneratorType.getTypeFromPath(fabricLevelType.getPath());
+				levelGeneratorType = FabricLevelGeneratorType.getTypeFromPath(fabricLevelType.getPath());
 			} else {
-				return LevelGeneratorType.getTypeFromName(fabricLevelType.toString().replaceAll(":", "."));
+				levelGeneratorType = LevelGeneratorType.getTypeFromName(FabricLevelGeneratorType.changeIdentifierSeparator(fabricLevelType));
 			}
 		}
+
+		if (levelGeneratorType != null) return levelGeneratorType;
 
 		// Fallback to LevelGeneratorType.DEFAULT
 		LOGGER.error("Incorrect level-type, falling back to default");

@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.levelgenerator",
+  "package": "net.fabricmc.fabric.mixin.level.generator",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AccessLevelGeneratorType",
+    "LevelGeneratorTypeAccessor",
     "MixinMinecraftDedicatedServer",
     "MixinOverworldDimension",
     "MixinServerPropertiesHandler"
