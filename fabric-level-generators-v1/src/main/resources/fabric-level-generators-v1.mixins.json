@@ -4,8 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "LevelGeneratorTypeAccessor",
+    "MixinGameJoinS2CPacket",
     "MixinMinecraftDedicatedServer",
     "MixinOverworldDimension",
+    "MixinPlayerRespawnS2CPacket",
     "MixinServerPropertiesHandler"
   ],
   "injectors": {
