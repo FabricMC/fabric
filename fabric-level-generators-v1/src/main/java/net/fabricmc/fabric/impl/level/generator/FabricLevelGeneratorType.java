@@ -31,7 +31,6 @@ import net.fabricmc.fabric.mixin.level.generator.LevelGeneratorTypeAccessor;
 
 public final class FabricLevelGeneratorType {
 	public static final HashMap<LevelGeneratorType, ChunkGeneratorSupplier> suppliers = new HashMap<>();
-	private static Integer longestNameLength;
 
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
 		if (changeIdentifierSeparator(name).contains(":") || name.getNamespace().contains(".")) {
@@ -57,27 +56,6 @@ public final class FabricLevelGeneratorType {
 		int length = LevelGeneratorType.TYPES.length;
 		LevelGeneratorTypeAccessor.setTypes(java.util.Arrays.copyOf(LevelGeneratorType.TYPES, length + 16));
 		return length;
-	}
-
-	public static int getLongestNameLength() {
-		if (longestNameLength == null) {
-			int length = 16, newLength;
-
-			for (int id = 0; id < LevelGeneratorType.TYPES.length; id++) {
-				if (LevelGeneratorType.TYPES[id] != null) {
-					newLength = LevelGeneratorType.TYPES[id].getName().length();
-
-					if (newLength > length) {
-						length = newLength;
-					}
-				}
-			}
-
-			longestNameLength = length;
-			return longestNameLength;
-		}
-
-		return longestNameLength;
 	}
 
 	public static LevelGeneratorType getTypeFromPath(String name) {

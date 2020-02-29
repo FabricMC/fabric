@@ -17,17 +17,16 @@
 package net.fabricmc.fabric.mixin.level.generator;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.network.packet.GameJoinS2CPacket;
-
-import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorType;
+import net.minecraft.world.level.LevelGeneratorType;
 
 @Mixin(GameJoinS2CPacket.class)
 public class MixinGameJoinS2CPacket {
-	@ModifyConstant(method = "read", constant = @Constant(intValue = 16))
-	private int changeBufferSize(int original) {
-		return FabricLevelGeneratorType.getLongestNameLength();
+	@Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/LevelGeneratorType;getName()Ljava/lang/String;"))
+	private String changeSentLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
+		return LevelGeneratorType.DEFAULT.getName();
 	}
 }
