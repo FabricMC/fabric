@@ -17,16 +17,26 @@
 package net.fabricmc.fabric.mixin.level.generator;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.client.network.packet.GameJoinS2CPacket;
 import net.minecraft.world.level.LevelGeneratorType;
 
+import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorType;
+
 @Mixin(GameJoinS2CPacket.class)
 public class MixinGameJoinS2CPacket {
-	@Redirect(method = "write", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/LevelGeneratorType;getName()Ljava/lang/String;"))
-	private String changeSentLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
-		return LevelGeneratorType.DEFAULT.getName();
+	@Shadow
+	private LevelGeneratorType generatorType;
+
+	@Redirect(method = "write", at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/packet/GameJoinS2CPacket;generatorType:Lnet/minecraft/world/level/LevelGeneratorType;"))
+	private LevelGeneratorType changeSentLevelGeneratorType(GameJoinS2CPacket gameJoinS2CPacket) {
+		if (FabricLevelGeneratorType.suppliers.get(generatorType) == null) {
+			return generatorType;
+		}
+
+		return LevelGeneratorType.DEFAULT;
 	}
 }
