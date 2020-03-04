@@ -25,8 +25,8 @@ public class FabricEntityType<T extends Entity> extends EntityType<T> {
 	private final int maxTrackDistance, trackTickInterval;
 	private final Boolean alwaysUpdateVelocity;
 
-	public FabricEntityType(EntityFactory<T> entityType$EntityFactory_1, EntityCategory entityCategory_1, boolean boolean_1, boolean boolean_2, boolean boolean_3, boolean boolean_4, EntityDimensions entitySize_1, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
-		super(entityType$EntityFactory_1, entityCategory_1, boolean_1, boolean_2, boolean_3, boolean_4, entitySize_1);
+	public FabricEntityType(EntityType.EntityFactory<T> factory, EntityCategory category, boolean bl, boolean summonable, boolean fireImmune, boolean spawnableFarFromPlayer, int i, int j, EntityDimensions entityDimensions, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
+		super(factory, category, bl, summonable, fireImmune, spawnableFarFromPlayer, i, j, entityDimensions);
 		this.maxTrackDistance = maxTrackDistance;
 		this.trackTickInterval = trackTickInterval;
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;

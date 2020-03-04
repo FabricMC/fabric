@@ -46,6 +46,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private int updateIntervalTicks = -1;
 	private Boolean alwaysUpdateVelocity;
 	private boolean immuneToFire = false;
+	private int maxDespawnDistance = 128;
+	private int minDespawnDistance = 32;
 	private EntityDimensions size = EntityDimensions.changing(-1.0f, -1.0f);
 
 	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
@@ -116,7 +118,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		boolean figureMeOut1 = this.category == EntityCategory.CREATURE || this.category == EntityCategory.MISC; // TODO
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, figureMeOut1, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, figureMeOut1, maxDespawnDistance, minDespawnDistance, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}

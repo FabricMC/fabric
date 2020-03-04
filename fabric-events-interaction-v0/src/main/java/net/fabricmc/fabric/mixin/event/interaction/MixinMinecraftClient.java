@@ -68,7 +68,7 @@ public abstract class MixinMinecraftClient {
 			// I don't like that we clone vanilla logic here, but it's our best bet for now.
 			PlayerInventory playerInventory = client.player.inventory;
 
-			if (client.player.abilities.creativeMode && Screen.hasControlDown() && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+			if (client.player.abilities.creativeMode && Screen.method_25441() && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
 				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.crosshairTarget).getBlockPos());
 
 				if (be != null) {

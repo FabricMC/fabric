@@ -52,19 +52,19 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void render(int mouseX, int mouseY, float float_1) {
-			this.visible = extensions.fabric_isButtonVisible(type);
-			this.active = extensions.fabric_isButtonEnabled(type);
+		public void method_25394(int mouseX, int mouseY, float float_1) {
+			this.field_22764 = extensions.fabric_isButtonVisible(type);
+			this.field_22763 = extensions.fabric_isButtonEnabled(type);
 
-			if (this.visible) {
+			if (this.field_22764) {
 				MinecraftClient minecraftClient = MinecraftClient.getInstance();
 				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
 				RenderSystem.disableLighting();
 				RenderSystem.color4f(1F, 1F, 1F, 1F);
-				this.blit(this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);
+				this.method_25302(this.field_22760, this.field_22761, (type == Type.NEXT ? 12 : 0), (field_22763 ? 0 : 12), 12, 12);
 
-				if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
-					gui.renderTooltip(I18n.translate("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
+				if (mouseX >= this.field_22760 && mouseY >= this.field_22761 && mouseX < this.field_22760 + this.field_22758 && mouseY < this.field_22761 + this.field_22759) {
+					gui.method_25424(I18n.translate("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
 				}
 			}
 		}
