@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.event;
+package net.fabricmc.fabric.impl.event.entity;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.entity;
+package net.fabricmc.fabric.api.event.v1;
 
 import net.minecraft.entity.Entity;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.impl.event.TickEventInternals;
+import net.fabricmc.fabric.impl.event.entity.TickEventInternals;
 
 /**
  * The callback interface for receiving entity ticking events.

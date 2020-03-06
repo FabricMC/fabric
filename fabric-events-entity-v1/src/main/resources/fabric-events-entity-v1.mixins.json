@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.event.entity",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinWorld"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

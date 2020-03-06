@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.event;
+package net.fabricmc.fabric.impl.event.entity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,7 +26,7 @@ import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.entity.EntityTickCallback;
+import net.fabricmc.fabric.api.event.v1.EntityTickCallback;
 
 public class TickEventInternals {
 	/** Cache of entity class to {@code Event}. */
