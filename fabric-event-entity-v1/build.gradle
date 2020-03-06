@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-events-entity-v1"
+archivesBaseName = "fabric-event-entity-v1"
 version = getSubprojectVersion(project, "1.0.0")
 
 dependencies {
