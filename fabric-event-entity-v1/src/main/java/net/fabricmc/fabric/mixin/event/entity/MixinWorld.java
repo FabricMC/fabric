@@ -26,12 +26,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.event.entity.TickEventInternals;
+import net.fabricmc.fabric.impl.event.entity.EntityCascadingEventBridge;
 
 @Mixin(World.class)
 public abstract class MixinWorld {
 	@Inject(at = @At("RETURN"), method = "tickEntity")
 	private void fabric_tickEntityEvent(Consumer<Entity> consumer, Entity entity, CallbackInfo ci) {
-		TickEventInternals.getOrCreateEntityEvent(entity.getClass()).invoker().tick(entity);
+		EntityCascadingEventBridge bridge = (EntityCascadingEventBridge) entity;
+		bridge.getTickEvent().invoker().tick(entity);
 	}
 }

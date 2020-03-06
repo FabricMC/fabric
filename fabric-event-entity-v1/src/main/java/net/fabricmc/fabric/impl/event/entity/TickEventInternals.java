@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.event.entity;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import com.google.common.base.Preconditions;
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.v1.EntityTickCallback;
 
 public class TickEventInternals {
 	/** Cache of entity class to {@code Event}. */
-	private static final Map<Class<?>, CascadingEvent> ENTITY_TICK_EVENTS = new HashMap<>();
+	private static final Map<Class<?>, CascadingEvent> ENTITY_TICK_EVENTS = new IdentityHashMap<>();
 
 	/**
 	 * Retrieves an entity tick event for a given class. If none exists, this method creates one and registers it
@@ -43,7 +43,7 @@ public class TickEventInternals {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <E extends Entity> CascadingEvent<EntityTickCallback<E>> getOrCreateEntityEvent(Class<?> entityClass) {
-		Preconditions.checkArgument(Entity.class.isAssignableFrom(entityClass));
+		Preconditions.checkArgument(Entity.class.isAssignableFrom(entityClass), "Cannot register entity tick callback to non-entity class. Found: " + entityClass.getName());
 		CascadingEvent<EntityTickCallback<E>> event = ENTITY_TICK_EVENTS.get(entityClass);
 
 		if (event == null) {
