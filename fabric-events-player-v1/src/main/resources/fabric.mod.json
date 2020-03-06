@@ -17,8 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*",
-    "fabric-mining-levels-v0": "*"
+    "fabric-api-base": "*"
   },
   "description": "Events related to players",
   "mixins": [

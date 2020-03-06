@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 @Mixin(PlayerManager.class)
 public abstract class MixinPlayerManager {
 	/**
-	 * The this injection has been chosen to allow repositioning of the player by dimension and location before respawn packets are sent to the client.
+	 * This injection point has been chosen to allow repositioning of the player by dimension and location before respawn packets are sent to the client.
 	 */
 	@Inject(method = "respawnPlayer(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/world/dimension/DimensionType;Z)Lnet/minecraft/server/network/ServerPlayerEntity;",
 		slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;doesNotCollide(Lnet/minecraft/entity/Entity;)Z")),
