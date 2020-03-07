@@ -18,20 +18,23 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class EnchantmentMod implements ModInitializer {
+	public static final TestTarget TEST_ENCHANTMENT_TARGET = new TestTarget();
+
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.ENCHANTMENT, new Identifier("fabric", "test"), new TestEnchantment(Enchantment.Weight.COMMON, EquipmentSlot.values()));
+		EnchantmentTargetRegistry.INSTANCE.register(TEST_ENCHANTMENT_TARGET);
 		Registry.register(Registry.BLOCK, new Identifier("fabric", "enchanting_power_block"), new TestBlock(Block.Settings.copy(Blocks.STONE)));
 	}
 
 	static class TestEnchantment extends Enchantment implements FabricEnchantment {
-		protected TestEnchantment(Weight enchantment$Weight_1, EquipmentSlot[] equipmentSlots_1) {
-			super(enchantment$Weight_1, EnchantmentTarget.ALL, equipmentSlots_1);
+		protected TestEnchantment(Weight weight, EquipmentSlot[] equipmentSlots) {
+			super(weight, EnchantmentTarget.ALL, equipmentSlots);
 		}
 
 		@Override
 		public FabricEnchantmentTarget getEnchantmentTarget() {
-			return new TestTarget();
+			return TEST_ENCHANTMENT_TARGET;
 		}
 	}
 
@@ -43,8 +46,8 @@ public class EnchantmentMod implements ModInitializer {
 	}
 
 	static class TestBlock extends Block implements EnchantingPowerProvider {
-		public TestBlock(Settings block$Settings_1) {
-			super(block$Settings_1);
+		public TestBlock(Settings settings) {
+			super(settings);
 		}
 
 		@Override
