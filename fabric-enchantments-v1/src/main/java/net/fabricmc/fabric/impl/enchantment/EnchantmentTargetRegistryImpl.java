@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.enchantment;
 
-import net.fabricmc.fabric.api.enchantment.EnchantmentTargetRegistry;
-import net.fabricmc.fabric.api.enchantment.FabricEnchantmentTarget;
+import net.fabricmc.fabric.api.enchantment.v1.EnchantmentTargetRegistry;
+import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantmentTarget;
 
 import java.util.Collection;
 import java.util.HashSet;

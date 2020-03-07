@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.mixin.enchantment;
 
-import net.fabricmc.fabric.api.enchantment.FabricEnchantment;
+import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.InfoEnchantment;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -39,14 +40,16 @@ public class MixinEnchantmentHelper {
 	private static Enchantment currentEnchantment;
 
 	@Inject(method = "getHighestApplicableEnchantmentsAtPower", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentTarget;isAcceptableItem(Lnet/minecraft/item/Item;)Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
-	private static void nextEnchantment(int level, ItemStack itemStack, boolean allowTreasure, CallbackInfoReturnable<List> callbackInfoReturnable, List enchantmentList, Item item, boolean isBook, Iterator enchantmentIterator, Enchantment enchantment) {
+	private static void nextEnchantment(int level, ItemStack itemStack, boolean allowTreasure, CallbackInfoReturnable<List<InfoEnchantment>> callbackInfoReturnable, List<?> enchantmentList, Item item, boolean isBook, Iterator<?> enchantmentIterator, Enchantment enchantment) {
 		currentEnchantment = enchantment;
 	}
 
 	@Redirect(method = "getHighestApplicableEnchantmentsAtPower", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentTarget;isAcceptableItem(Lnet/minecraft/item/Item;)Z"))
 	private static boolean isEnchantmentApplicable(EnchantmentTarget enchantmentTarget, Item item, int level, ItemStack itemStack, boolean allowTreasure) {
-		if(currentEnchantment instanceof FabricEnchantment)
+		if (currentEnchantment instanceof FabricEnchantment) {
 			return ((FabricEnchantment) currentEnchantment).getEnchantmentTarget().isAcceptableItem(item);
+		}
+
 		return enchantmentTarget.isAcceptableItem(item);
 	}
 }

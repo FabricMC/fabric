@@ -1,9 +1,9 @@
 package net.fabricmc.fabric;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.enchantment.EnchantingPowerProvider;
-import net.fabricmc.fabric.api.enchantment.FabricEnchantment;
-import net.fabricmc.fabric.api.enchantment.FabricEnchantmentTarget;
+import net.fabricmc.fabric.api.enchantment.enchantment.EnchantingPowerProvider;
+import net.fabricmc.fabric.api.enchantment.enchantment.FabricEnchantment;
+import net.fabricmc.fabric.api.enchantment.enchantment.FabricEnchantmentTarget;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BlockState;

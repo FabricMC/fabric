@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.enchantment;
+package net.fabricmc.fabric.api.enchantment.v1;
 
-import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 /**
- * Implement this interface on your enchantments if you want them to use a custom enchantment target.
- * Your enchantments should have a vanilla enchantment target of {@link EnchantmentTarget#ALL}.
+ * To be used on blocks which increase the power of an enchanting table.
  */
-public interface FabricEnchantment {
+public interface EnchantingPowerProvider {
 	/**
-	 * Returns the {@link FabricEnchantmentTarget} for this enchantment.
-	 * @return a {@link FabricEnchantmentTarget} that specifies the the items that this enchantment can apply to
+	 * Returns how much the enchanting power should be increased by.
+	 *
+	 * @param blockState The blockstate
+	 * @param world The world of the block
+	 * @param blockPos The block position of the block
+	 * @return The power amount provided by this block
 	 */
-	FabricEnchantmentTarget getEnchantmentTarget();
+	int getEnchantingPower(BlockState blockState, World world, BlockPos blockPos);
 }

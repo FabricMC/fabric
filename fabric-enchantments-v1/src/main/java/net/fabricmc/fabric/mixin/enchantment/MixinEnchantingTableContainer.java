@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.enchantment;
 
-import net.fabricmc.fabric.api.enchantment.EnchantingPowerProvider;
+import net.fabricmc.fabric.api.enchantment.v1.EnchantingPowerProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.container.EnchantingTableContainer;
 import net.minecraft.item.ItemStack;
@@ -38,21 +38,23 @@ public abstract class MixinEnchantingTableContainer {
 	private BlockPos blockPos;
 
 	@SuppressWarnings("UnresolvedMixinReference")
-	@Inject(method = "method_17411", at = @At("HEAD"))
+	@Inject(method = "method_17411(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V", at = @At("HEAD"))
 	private void onEnchantmentCalculation(ItemStack itemStack, World world, BlockPos blockPos, CallbackInfo callbackInfo) {
 		this.world = world;
 		this.blockPos = blockPos;
 	}
 
 	@SuppressWarnings("UnresolvedMixinReference")
-	@ModifyVariable(method = "method_17411", at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V", shift = At.Shift.BEFORE), ordinal = 0)
+	@ModifyVariable(method = "method_17411(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V", at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V", shift = At.Shift.BEFORE), ordinal = 0)
 	private int changeEnchantingPower(int power) {
 		BlockPos.Mutable position = new BlockPos.Mutable();
-		for(int offsetZ = -1; offsetZ <= 1; ++offsetZ) {
-			for(int offsetX = -1; offsetX <= 1; ++offsetX) {
+
+		for (int offsetZ = -1; offsetZ <= 1; ++offsetZ) {
+			for (int offsetX = -1; offsetX <= 1; ++offsetX) {
 				if ((offsetZ != 0 || offsetX != 0) && world.isAir(position.set(blockPos).setOffset(offsetX, 0, offsetZ)) && world.isAir(position.setOffset(Direction.UP))) {
 					power += getEnchantingPower(position.set(blockPos).setOffset(offsetX * 2, 0, offsetZ * 2));
 					power += getEnchantingPower(position.setOffset(Direction.UP));
+
 					if (offsetX != 0 && offsetZ != 0) {
 						power += getEnchantingPower(position.set(blockPos).setOffset(offsetX * 2, 0, offsetZ));
 						power += getEnchantingPower(position.setOffset(Direction.UP));
@@ -62,15 +64,18 @@ public abstract class MixinEnchantingTableContainer {
 				}
 			}
 		}
+
 		return power;
 	}
 
 	@Unique
 	private int getEnchantingPower(BlockPos blockPos) {
 		BlockState blockState = world.getBlockState(blockPos);
-        if(blockState.getBlock() instanceof EnchantingPowerProvider) {
-        	return ((EnchantingPowerProvider) blockState.getBlock()).getEnchantingPower(blockState, world, blockPos);
-        }
-        return 0;
+
+		if (blockState.getBlock() instanceof EnchantingPowerProvider) {
+			return ((EnchantingPowerProvider) blockState.getBlock()).getEnchantingPower(blockState, world, blockPos);
+		}
+
+		return 0;
 	}
 }

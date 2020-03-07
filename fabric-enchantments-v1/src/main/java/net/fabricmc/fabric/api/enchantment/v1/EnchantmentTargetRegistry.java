@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.enchantment;
+package net.fabricmc.fabric.api.enchantment.v1;
 
 import net.fabricmc.fabric.impl.enchantment.EnchantmentTargetRegistryImpl;
 
@@ -30,13 +30,13 @@ public interface EnchantmentTargetRegistry {
 	EnchantmentTargetRegistry INSTANCE = EnchantmentTargetRegistryImpl.INSTANCE;
 
 	/**
-	 * Registers a new {@link FabricEnchantmentTarget}
+	 * Registers a new {@link FabricEnchantmentTarget}.
 	 * @param enchantmentTarget the custom target
 	 */
 	void register(FabricEnchantmentTarget enchantmentTarget);
 
 	/**
-	 * Gets an iterator over all registered enchantment targets
+	 * Gets an iterator over all registered enchantment targets.
 	 * @return the iterator
 	 */
 	Iterator<FabricEnchantmentTarget> getIterator();
