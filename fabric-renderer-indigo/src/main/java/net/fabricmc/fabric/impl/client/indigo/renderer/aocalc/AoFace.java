@@ -95,7 +95,7 @@ enum AoFace {
 		this.weightFunc = weightFunc;
 	}
 
-	private static final AoFace[] values = Util.create(new AoFace[6], (neighborData) -> {
+	private static final AoFace[] values = Util.make(new AoFace[6], (neighborData) -> {
 		neighborData[DOWN.getId()] = AOF_DOWN;
 		neighborData[UP.getId()] = AOF_UP;
 		neighborData[NORTH.getId()] = AOF_NORTH;

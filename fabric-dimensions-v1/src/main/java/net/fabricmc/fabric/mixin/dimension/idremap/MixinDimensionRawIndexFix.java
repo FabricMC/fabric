@@ -30,7 +30,7 @@ public abstract class MixinDimensionRawIndexFix {
 	@Inject(at = @At("RETURN"), method = "byRawId", cancellable = true)
 	private static void byRawId(final int id, final CallbackInfoReturnable<DimensionType> info) {
 		if (info.getReturnValue() == null || info.getReturnValue().getRawId() != id) {
-			for (DimensionType dimension : Registry.DIMENSION) {
+			for (DimensionType dimension : Registry.DIMENSION_TYPE) {
 				if (dimension.getRawId() == id) {
 					info.setReturnValue(dimension);
 					return;

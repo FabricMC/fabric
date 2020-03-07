@@ -27,7 +27,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Render chunks and other render-related object instances will be made null
  * or invalid after this event so do not use it to capture dependent state.
  * Instead, use it to invalidate state and reinitialize lazily.
+ *
+ * @deprecated Replaced by {@link net.fabricmc.fabric.api.client.rendering.v1.InvalidateRenderStateCallback}
  */
+@Deprecated
 public interface InvalidateRenderStateCallback {
 	Event<InvalidateRenderStateCallback> EVENT = EventFactory.createArrayBacked(InvalidateRenderStateCallback.class,
 			(listeners) -> () -> {

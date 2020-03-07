@@ -15,13 +15,16 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.client.rendering.RenderingCallbackInvoker"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.4.0",
     "minecraft": ">=1.15-alpha.19.39.a",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-rendering-v1": "*"
   },
-  "description": "Hooks and registries for rendering-related things.",
-  "mixins": [
-    "fabric-rendering-v0.mixins.json"
-  ]
+  "description": "Hooks and registries for rendering-related things."
 }

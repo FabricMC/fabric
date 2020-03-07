@@ -39,6 +39,7 @@ import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.BlockRenderView;
 
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
@@ -103,6 +104,8 @@ public class MixinChunkRebuildTask {
 			final BakedModel model = renderManager.getModel(blockState);
 
 			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
+				Vec3d vec3d = blockState.getOffsetPos(blockView, blockPos);
+				matrix.translate(vec3d.x, vec3d.y, vec3d.z);
 				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model, matrix);
 			}
 		}

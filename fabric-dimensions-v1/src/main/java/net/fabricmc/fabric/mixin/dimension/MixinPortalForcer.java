@@ -39,7 +39,7 @@ public abstract class MixinPortalForcer {
 	@Final
 	private ServerWorld world;
 
-	@Inject(method = "usePortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
+	@Inject(method = "usePortal", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastNetherPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
 	private void onUsePortal(Entity teleported, float yaw, CallbackInfoReturnable<Boolean> cir) {
 		FabricDimensionInternals.prepareDimensionalTeleportation(teleported);
 	}

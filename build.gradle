@@ -3,7 +3,7 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'fabric-loom' version '0.2.5-SNAPSHOT' apply false
+	id 'fabric-loom' version '0.2.6-SNAPSHOT' apply false
 	id 'net.minecrell.licenser' version '0.4.1'
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.4.18"
-	static def mcVersion = "1.15-pre3"
+	static def baseVersion = "0.5.0"
+	static def mcVersion = "1.15.2"
 	static def yarnVersion = "+build.1"
 }
 
@@ -39,7 +39,8 @@ def getBranch(){
 	if (grgit == null) {
 		return "unknown"
 	}
-	return grgit.branch.current().name
+	def branch = grgit.branch.current().name
+	return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
 allprojects {
@@ -55,8 +56,8 @@ allprojects {
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
-		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.7.1+build.173"
+		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
+		modCompile "net.fabricmc:fabric-loader:0.7.2+build.174"
 	}
 
 	configurations {
@@ -117,7 +118,16 @@ javadoc {
 			source( it.sourceSets.main.allJava.srcDirs)
 		}
 	classpath = sourceSets.main.compileClasspath
+	include ("**/api/**")
+	failOnError false
 }
+
+task javadocJar(type: Jar) {
+	from javadoc
+	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
+	classifier = 'fatjavadoc'
+}
+build.dependsOn javadocJar
 
 subprojects {
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -137,6 +147,7 @@ subprojects {
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
 				}
+				artifact javadocJar
 			}
 		}
 
@@ -223,8 +234,8 @@ curseforge {
 	project {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
-		releaseType = 'alpha'
-		addGameVersion '1.15-Snapshot'
+		releaseType = 'beta'
+		addGameVersion '1.15.2'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}

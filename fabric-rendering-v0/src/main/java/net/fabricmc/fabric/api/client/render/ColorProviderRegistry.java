@@ -21,12 +21,34 @@ import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.ItemConvertible;
 
-import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
-
+/**
+ * @deprecated Replaced by {@link net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry}
+ */
+@Deprecated
 public interface ColorProviderRegistry<T, Provider> {
-	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = ColorProviderRegistryImpl.ITEM;
+	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = new ColorProviderRegistry<ItemConvertible, ItemColorProvider>() {
+		@Override
+		public void register(ItemColorProvider itemColorProvider, ItemConvertible... objects) {
+			net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.ITEM.register(itemColorProvider, objects);
+		}
 
-	ColorProviderRegistry<Block, BlockColorProvider> BLOCK = ColorProviderRegistryImpl.BLOCK;
+		@Override
+		public ItemColorProvider get(ItemConvertible object) {
+			return net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.ITEM.get(object);
+		}
+	};
+
+	ColorProviderRegistry<Block, BlockColorProvider> BLOCK = new ColorProviderRegistry<Block, BlockColorProvider>() {
+		@Override
+		public void register(BlockColorProvider blockColorProvider, Block... objects) {
+			net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.BLOCK.register(blockColorProvider, objects);
+		}
+
+		@Override
+		public BlockColorProvider get(Block object) {
+			return net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.BLOCK.get(object);
+		}
+	};
 
 	/**
 	 * Register a color provider for one or more objects.

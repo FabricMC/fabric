@@ -33,7 +33,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
-import net.minecraft.client.render.model.json.ModelTransformation.Type;
+import net.minecraft.client.render.model.json.ModelTransformation.Mode;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
@@ -79,7 +79,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	private VertexConsumer modelVertexConsumer;
 	private BlendMode quadBlendMode;
 	private VertexConsumer quadVertexConsumer;
-	private Type transformType;
+	private Mode transformMode;
 	private int lightmap;
 	private int overlay;
 	private ItemStack itemStack;
@@ -98,19 +98,19 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		fallbackConsumer = this::fallbackConsumer;
 	}
 
-	public void renderModel(ItemStack itemStack, Type transformType, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, FabricBakedModel model, VanillaQuadHandler vanillaHandler) {
+	public void renderModel(ItemStack itemStack, Mode transformMode, boolean invert, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int lightmap, int overlay, FabricBakedModel model, VanillaQuadHandler vanillaHandler) {
 		this.lightmap = lightmap;
 		this.overlay = overlay;
 		this.itemStack = itemStack;
 		this.vertexConsumerProvider = vertexConsumerProvider;
 		this.matrixStack = matrixStack;
-		this.transformType = transformType;
+		this.transformMode = transformMode;
 		this.vanillaHandler = vanillaHandler;
 		quadBlendMode = BlendMode.DEFAULT;
 		modelVertexConsumer = selectVertexConsumer(RenderLayers.getItemLayer(itemStack));
 
 		matrixStack.push();
-		((BakedModel) model).getTransformation().getTransformation(transformType).method_23075(invert, matrixStack);
+		((BakedModel) model).getTransformation().getTransformation(transformMode).apply(invert, matrixStack);
 		matrixStack.translate(-0.5D, -0.5D, -0.5D);
 		matrix = matrixStack.peek().getModel();
 		normalMatrix = matrixStack.peek().getNormal();
@@ -132,7 +132,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	 * support sprite layers, so this can't be helped in this implementation.
 	 */
 	private VertexConsumer selectVertexConsumer(RenderLayer layerIn) {
-		final RenderLayer layer = transformType == ModelTransformation.Type.GUI && Objects.equals(layerIn, TexturedRenderLayers.getEntityTranslucent()) ? TexturedRenderLayers.getEntityTranslucentCull() : layerIn;
+		final RenderLayer layer = transformMode == ModelTransformation.Mode.GUI && Objects.equals(layerIn, TexturedRenderLayers.getEntityTranslucent()) ? TexturedRenderLayers.getEntityTranslucentCull() : layerIn;
 		return ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, layer, true, itemStack.hasEnchantmentGlint());
 	}
 

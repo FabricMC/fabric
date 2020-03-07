@@ -119,8 +119,8 @@ public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryS
 	private void init(CallbackInfo info) {
 		fabric_updateSelection();
 
-		int xpos = left + 170;
-		int ypos = top + 4;
+		int xpos = x + 170;
+		int ypos = y + 4;
 
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
 		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));

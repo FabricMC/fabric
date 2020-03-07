@@ -30,7 +30,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.layer.util.BiomeLayers;
+import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
