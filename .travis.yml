@@ -5,7 +5,6 @@ jdk:
   - openjdk8
 
 script:
-  - chmod +x gradlew
   - ./gradlew check build publishToMavenLocal --stacktrace
 
 notifications:
