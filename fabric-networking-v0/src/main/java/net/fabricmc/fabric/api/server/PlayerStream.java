@@ -38,7 +38,11 @@ import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
  * Helper streams for looking up players on a server.
  *
  * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
+ *
+ * @deprecated Please use {@link net.fabricmc.fabric.api.networking.player.tracking.v1.PlayerStream
+ * the player stream class from networking player tracking v1} instead.
  */
+@Deprecated
 public final class PlayerStream {
 	private PlayerStream() { }
 
