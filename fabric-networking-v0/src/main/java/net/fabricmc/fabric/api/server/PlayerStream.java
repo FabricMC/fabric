@@ -16,7 +16,8 @@
 
 package net.fabricmc.fabric.api.server;
 
-import net.fabricmc.fabric.impl.server.EntityTrackerStorageAccessor;
+import java.util.stream.Stream;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -31,17 +32,15 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
 
-import java.util.stream.Stream;
+import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
 
 /**
  * Helper streams for looking up players on a server.
- * <p>
- * In general, most of these methods will only function with a {@link ServerWorld} instance.
+ *
+ * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
  */
 public final class PlayerStream {
-	private PlayerStream() {
-
-	}
+	private PlayerStream() { }
 
 	public static Stream<ServerPlayerEntity> all(MinecraftServer server) {
 		if (server.getPlayerManager() != null) {
@@ -54,7 +53,7 @@ public final class PlayerStream {
 	public static Stream<PlayerEntity> world(World world) {
 		if (world instanceof ServerWorld) {
 			// noinspection unchecked
-			return ((Stream<PlayerEntity>) (Stream) ((ServerWorld) world).getPlayers().stream());
+			return ((Stream) ((ServerWorld) world).getPlayers().stream());
 		} else {
 			throw new RuntimeException("Only supported on ServerWorld!");
 		}
@@ -62,11 +61,12 @@ public final class PlayerStream {
 
 	public static Stream<PlayerEntity> watching(World world, ChunkPos pos) {
 		ChunkManager manager = world.getChunkManager();
+
 		if (!(manager instanceof ServerChunkManager)) {
 			throw new RuntimeException("Only supported on ServerWorld!");
 		} else {
 			//noinspection unchecked
-			return ((Stream<PlayerEntity>) (Stream) ((ServerChunkManager) manager).threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false));
+			return ((Stream) ((ServerChunkManager) manager).threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false));
 		}
 	}
 
@@ -81,14 +81,15 @@ public final class PlayerStream {
 
 		if (manager instanceof ServerChunkManager) {
 			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;
+
 			if (storage instanceof EntityTrackerStorageAccessor) {
 				//noinspection unchecked
-				return ((Stream<PlayerEntity>) (Stream) ((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity));
+				return ((Stream) ((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity));
 			}
 		}
 
 		// fallback
-		return watching(entity.getEntityWorld(), new ChunkPos((int) (entity.x / 16.0D), (int) (entity.z / 16.0D)));
+		return watching(entity.getEntityWorld(), new ChunkPos((int) (entity.getX() / 16.0D), (int) (entity.getZ() / 16.0D)));
 	}
 
 	public static Stream<PlayerEntity> watching(BlockEntity entity) {

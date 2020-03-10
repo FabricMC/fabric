@@ -21,22 +21,22 @@ import net.minecraft.client.render.BufferBuilder;
 /**
  * Similar in purpose to {@link BufferBuilder} but simpler
  * and not tied to NIO or any other specific implementation,
- * plus designed to handle both static and dynamic building.<p>
- * 
- * Decouples models from the vertex format(s) used by
- * ModelRenderer to allow compatibility across diverse implementations.<p>
+ * plus designed to handle both static and dynamic building.
+ *
+ * <p>Decouples models from the vertex format(s) used by
+ * ModelRenderer to allow compatibility across diverse implementations.
  */
 public interface MeshBuilder {
-    /**
-     * Returns the {@link QuadEmitter} used to append quad to this mesh. 
-     * Calling this method a second time invalidates any prior result.
-     * Do not retain references outside the context of building the mesh.
-     */
-    QuadEmitter getEmitter();
-    
-    /**
-     * Returns a new {@link Mesh} instance containing all
-     * quads added to this builder and resets the builder to an empty state<p>
-     */
-    Mesh build();
+	/**
+	 * Returns the {@link QuadEmitter} used to append quad to this mesh.
+	 * Calling this method a second time invalidates any prior result.
+	 * Do not retain references outside the context of building the mesh.
+	 */
+	QuadEmitter getEmitter();
+
+	/**
+	 * Returns a new {@link Mesh} instance containing all
+	 * quads added to this builder and resets the builder to an empty state.
+	 */
+	Mesh build();
 }

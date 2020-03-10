@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.loot",
+  "package": "net.fabricmc.fabric.mixin.loot.table",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "LootPoolBuilderHooks",

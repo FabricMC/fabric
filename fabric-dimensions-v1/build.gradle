@@ -1,0 +1,8 @@
+archivesBaseName = "fabric-dimensions-v1"
+version = getSubprojectVersion(project, "0.3.0")
+
+dependencies {
+	compile project(path: ':fabric-api-base', configuration: 'dev')
+	compile project(path: ':fabric-networking-v0', configuration: 'dev')
+	compile project(path: ':fabric-registry-sync-v0', configuration: 'dev')
+}

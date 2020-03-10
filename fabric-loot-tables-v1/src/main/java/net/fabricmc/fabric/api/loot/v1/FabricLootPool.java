@@ -16,22 +16,23 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootTableRange;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.entry.LootEntry;
-import net.minecraft.world.loot.function.LootFunction;
-
 import java.util.List;
 
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTableRange;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.function.LootFunction;
+
 /**
- * An interface implemented by all {@code net.minecraft.world.loot.LootPool} instances when
+ * An interface implemented by all {@code net.minecraft.loot.LootPool} instances when
  * Fabric API is present. Contains accessors for various fields.
  */
 public interface FabricLootPool {
 	default LootPool asVanilla() {
 		return (LootPool) this;
 	}
+
 	List<LootEntry> getEntries();
 	List<LootCondition> getConditions();
 	List<LootFunction> getFunctions();

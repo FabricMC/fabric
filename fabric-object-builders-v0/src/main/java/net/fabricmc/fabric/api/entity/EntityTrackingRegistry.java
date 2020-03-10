@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.api.entity;
 
-import net.minecraft.entity.EntityType;
-import net.minecraft.util.registry.Registry;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.entity.EntityType;
+import net.minecraft.util.registry.Registry;
 
 /**
  * Registry for server-&gt;client entity tracking values.
@@ -63,9 +64,7 @@ public class EntityTrackingRegistry {
 	public static final EntityTrackingRegistry INSTANCE = new EntityTrackingRegistry();
 	private final Map<EntityType, Entry> entries = new HashMap<>();
 
-	private EntityTrackingRegistry() {
-
-	}
+	private EntityTrackingRegistry() { }
 
 	@Deprecated
 	public Entry get(EntityType type) {

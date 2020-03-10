@@ -3,8 +3,8 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'fabric-loom' version '0.2.5-SNAPSHOT' apply false
-	id 'net.minecrell.licenser' version '0.4.1'	
+	id 'fabric-loom' version '0.2.6-SNAPSHOT' apply false
+	id 'net.minecrell.licenser' version '0.4.1'
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.1.2"
 }
@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.3.1"
-	static def mcVersion = "1.14.4"
+	static def baseVersion = "0.5.0"
+	static def mcVersion = "1.15.2"
 	static def yarnVersion = "+build.1"
 }
 
@@ -31,7 +31,20 @@ def getSubprojectVersion(project, version) {
 	}
 }
 
+def getBranch(){
+	if(System.getenv().GIT_BRANCH){
+		def branch = System.getenv().GIT_BRANCH
+		return branch.substring(branch.lastIndexOf("/") + 1)
+	}
+	if (grgit == null) {
+		return "unknown"
+	}
+	def branch = grgit.branch.current().name
+	return branch.substring(branch.lastIndexOf("/") + 1)
+}
+
 allprojects {
+	apply plugin: 'checkstyle'
 	apply plugin: 'maven-publish'
 	apply plugin: 'fabric-loom'
 	apply plugin: 'net.minecrell.licenser'
@@ -41,12 +54,10 @@ allprojects {
 
 	group = "net.fabricmc.fabric-api"
 
-
-
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
-		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}"
-		modCompile "net.fabricmc:fabric-loader:0.4.8+build.154"
+		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
+		modCompile "net.fabricmc:fabric-loader:0.7.2+build.174"
 	}
 
 	configurations {
@@ -94,15 +105,29 @@ allprojects {
 		classifier = 'sources'
 		from sourceSets.main.allSource
 	}
-	
+
+	checkstyle {
+		configFile = rootProject.file("checkstyle.xml")
+		toolVersion = '8.25'
+	}
 }
-javadoc{
+
+javadoc {
 	options.memberLevel = "PACKAGE"
 	allprojects.each{
 			source( it.sourceSets.main.allJava.srcDirs)
 		}
 	classpath = sourceSets.main.compileClasspath
+	include ("**/api/**")
+	failOnError false
 }
+
+task javadocJar(type: Jar) {
+	from javadoc
+	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
+	classifier = 'fatjavadoc'
+}
+build.dependsOn javadocJar
 
 subprojects {
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -122,6 +147,7 @@ subprojects {
 				artifact(sourcesJar) {
 					builtBy remapSourcesJar
 				}
+				artifact javadocJar
 			}
 		}
 
@@ -168,7 +194,7 @@ publishing {
 					depNode.appendNode("scope", "compile")
 				}
 			}
-		}	
+		}
 	}
 
 	repositories {
@@ -197,7 +223,9 @@ dependencies {
 	}
 }
 
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local")
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+
+logger.lifecycle("Building Fabric: " + version)
 
 curseforge {
 	if (project.hasProperty('curse_api_key')){
@@ -206,8 +234,8 @@ curseforge {
 	project {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
-		releaseType = 'alpha'
-		addGameVersion '1.14-Snapshot'
+		releaseType = 'beta'
+		addGameVersion '1.15.2'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}

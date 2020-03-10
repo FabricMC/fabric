@@ -16,19 +16,42 @@
 
 package net.fabricmc.fabric.api.client.render;
 
-import net.fabricmc.fabric.impl.client.render.ColorProviderRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
 import net.minecraft.item.ItemConvertible;
 
+/**
+ * @deprecated Replaced by {@link net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry}
+ */
+@Deprecated
 public interface ColorProviderRegistry<T, Provider> {
-	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = ColorProviderRegistryImpl.ITEM;
+	ColorProviderRegistry<ItemConvertible, ItemColorProvider> ITEM = new ColorProviderRegistry<ItemConvertible, ItemColorProvider>() {
+		@Override
+		public void register(ItemColorProvider itemColorProvider, ItemConvertible... objects) {
+			net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.ITEM.register(itemColorProvider, objects);
+		}
 
-	ColorProviderRegistry<Block, BlockColorProvider> BLOCK = ColorProviderRegistryImpl.BLOCK;
+		@Override
+		public ItemColorProvider get(ItemConvertible object) {
+			return net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.ITEM.get(object);
+		}
+	};
+
+	ColorProviderRegistry<Block, BlockColorProvider> BLOCK = new ColorProviderRegistry<Block, BlockColorProvider>() {
+		@Override
+		public void register(BlockColorProvider blockColorProvider, Block... objects) {
+			net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.BLOCK.register(blockColorProvider, objects);
+		}
+
+		@Override
+		public BlockColorProvider get(Block object) {
+			return net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry.BLOCK.get(object);
+		}
+	};
 
 	/**
-	 * Register a color provider for one or more objects
+	 * Register a color provider for one or more objects.
 	 *
 	 * @param provider The color provider to register.
 	 * @param objects  The objects which should be colored using this provider.
@@ -37,8 +60,8 @@ public interface ColorProviderRegistry<T, Provider> {
 
 	/**
 	 * Get a color provider for the given object.
-	 * <p>
-	 * Please note that the underlying registry may not be fully populated or stable until the game has started,
+	 *
+	 * <p>Please note that the underlying registry may not be fully populated or stable until the game has started,
 	 * as other mods may overwrite the registry.
 	 *
 	 * @param object The object to acquire the provide for.

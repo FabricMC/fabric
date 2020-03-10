@@ -16,17 +16,18 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import net.fabricmc.fabric.mixin.loot.LootPoolBuilderHooks;
-import net.minecraft.world.loot.LootPool;
-import net.minecraft.world.loot.LootTableRange;
-import net.minecraft.world.loot.condition.LootCondition;
-import net.minecraft.world.loot.entry.LootEntry;
-import net.minecraft.world.loot.function.LootFunction;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTableRange;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.function.LootFunction;
+
+import net.fabricmc.fabric.mixin.loot.table.LootPoolBuilderHooks;
 
 public class FabricLootPoolBuilder extends LootPool.Builder {
 	private final LootPoolBuilderHooks extended = (LootPoolBuilderHooks) this;
 
-	private FabricLootPoolBuilder() {}
+	private FabricLootPoolBuilder() { }
 
 	private FabricLootPoolBuilder(LootPool pool) {
 		copyFrom(pool, true);
@@ -46,13 +47,13 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 
 	@Override
 	public FabricLootPoolBuilder withCondition(LootCondition.Builder condition) {
-		super.method_356(condition);
+		super.withCondition(condition);
 		return this;
 	}
 
 	@Override
 	public FabricLootPoolBuilder withFunction(LootFunction.Builder function) {
-		super.method_353(function);
+		super.withFunction(function);
 		return this;
 	}
 
@@ -75,7 +76,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * Copies the entries, conditions and functions of the {@code pool} to this
 	 * builder.
 	 *
-	 * This is equal to {@code copyFrom(pool, false)}.
+	 * <p>This is equal to {@code copyFrom(pool, false)}.
 	 */
 	public FabricLootPoolBuilder copyFrom(LootPool pool) {
 		return copyFrom(pool, false);
@@ -85,7 +86,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * Copies the entries, conditions and functions of the {@code pool} to this
 	 * builder.
 	 *
-	 * If {@code copyRolls} is true, the {@link FabricLootPool#getRollsRange rolls} of the pool are also copied.
+	 * <p>If {@code copyRolls} is true, the {@link FabricLootPool#getRollsRange rolls} of the pool are also copied.
 	 */
 	public FabricLootPoolBuilder copyFrom(LootPool pool, boolean copyRolls) {
 		FabricLootPool extendedPool = (FabricLootPool) pool;
