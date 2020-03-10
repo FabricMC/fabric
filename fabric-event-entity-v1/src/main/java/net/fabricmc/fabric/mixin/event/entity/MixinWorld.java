@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.event.entity.EntityCascadingEventBridge;
 
 @Mixin(World.class)
 public abstract class MixinWorld {
-	@Inject(at = @At("RETURN"), method = "tickEntity")
+	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", shift = At.Shift.AFTER), method = "tickEntity")
 	private void fabric_tickEntityEvent(Consumer<Entity> consumer, Entity entity, CallbackInfo ci) {
 		EntityCascadingEventBridge bridge = (EntityCascadingEventBridge) entity;
 		bridge.getTickEvent().invoker().tick(entity);

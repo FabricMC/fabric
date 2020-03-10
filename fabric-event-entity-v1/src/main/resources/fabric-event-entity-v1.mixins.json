@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.event.entity",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MininEntity",
+    "MixinEntity",
     "MixinWorld"
   ],
   "client": [
