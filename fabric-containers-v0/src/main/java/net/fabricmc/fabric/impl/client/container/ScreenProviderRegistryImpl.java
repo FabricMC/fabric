@@ -19,13 +19,13 @@ package net.fabricmc.fabric.impl.client.container;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
-import net.minecraft.screen.ScreenHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.screen.ScreenHandler;
 
 import net.fabricmc.fabric.api.client.screen.ContainerScreenFactory;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
