@@ -24,11 +24,11 @@ import net.fabricmc.fabric.api.event.server.ServerStartCallback;
 public class FabricDataFixerInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		FabricDataFixerImpl.INSTANCE.isLocked();
+		FabricDataFixesImpl.INSTANCE.isLocked();
 		ServerStartCallback.EVENT.register(this::lockDataFixer);
 	}
 
 	private void lockDataFixer(MinecraftServer server) {
-		FabricDataFixerImpl.INSTANCE.lock();
+		FabricDataFixesImpl.INSTANCE.lock();
 	}
 }

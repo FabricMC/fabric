@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.CompoundTag;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixesImpl;
 
 @Mixin(PlayerEntity.class)
 public abstract class MixinPlayerEntity {
 	@Inject(at = @At("RETURN"), method = "writeCustomDataToTag")
 	public void fabric_writeModDataFixer(CompoundTag tag, CallbackInfo ci) {
-		FabricDataFixerImpl.INSTANCE.addFixerVersions(tag);
+		FabricDataFixesImpl.INSTANCE.addFixerVersions(tag);
 	}
 }
 

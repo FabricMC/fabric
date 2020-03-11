@@ -22,7 +22,7 @@ import com.mojang.datafixers.schemas.Schema;
 
 import net.minecraft.datafixer.schema.SchemaIdentifierNormalize;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixesImpl;
 
 /**
  * This allows quick access to common Schema types used in the game.
@@ -31,7 +31,7 @@ public interface FabricSchemas {
 	/**
 	 * Fabric Schema Type. This is required for all custom DataFixers or fixing any data registered under {@link net.minecraft.datafixer.TypeReferences} will fail. This should be registered under version 0 within your DataFixer.
 	 */
-	BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = (version, parent) -> FabricDataFixerImpl.INSTANCE.fabricSchema;
+	BiFunction<Integer, Schema, Schema> FABRIC_SCHEMA = (version, parent) -> FabricDataFixesImpl.INSTANCE.fabricSchema;
 
 	/**
 	 * Normalize Identifier Schema.

@@ -24,14 +24,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.structure.Structure;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixesImpl;
 
 @Mixin(Structure.class)
 public abstract class MixinStructure {
 	@Inject(at = @At("TAIL"), method = "toTag", cancellable = true)
 	private void fabric_writeModDataFixers(CompoundTag tag, CallbackInfoReturnable<CompoundTag> cir) {
 		CompoundTag out = cir.getReturnValue();
-		FabricDataFixerImpl.INSTANCE.addFixerVersions(out);
+		FabricDataFixesImpl.INSTANCE.addFixerVersions(out);
 		cir.setReturnValue(out);
 	}
 }

@@ -23,13 +23,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ChunkSerializer;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixesImpl;
 
 @Mixin(ChunkSerializer.class)
 public abstract class MixinChunkSerializer {
 	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/nbt/CompoundTag.putInt(Ljava/lang/String;I)V", ordinal = 0), method = "serialize(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/Chunk;)Lnet/minecraft/nbt/CompoundTag;", name = "compoundTag")
 	private static CompoundTag fabric_addModDataVersions(CompoundTag input) {
-		FabricDataFixerImpl.INSTANCE.addFixerVersions(input);
+		FabricDataFixesImpl.INSTANCE.addFixerVersions(input);
 		return input;
 	}
 }

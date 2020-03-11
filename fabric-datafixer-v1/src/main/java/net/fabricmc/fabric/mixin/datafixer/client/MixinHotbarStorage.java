@@ -25,12 +25,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.client.options.HotbarStorage;
 import net.minecraft.nbt.CompoundTag;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixesImpl;
 
 @Mixin(HotbarStorage.class)
 public abstract class MixinHotbarStorage {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/nbt/NbtIo;write(Lnet/minecraft/nbt/CompoundTag;Ljava/io/File;)V"), method = "save()V", locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	public void dataFixer_addModdedFixerVersions(CallbackInfo ci, CompoundTag tag) {
-		FabricDataFixerImpl.INSTANCE.addFixerVersions(tag);
+		FabricDataFixesImpl.INSTANCE.addFixerVersions(tag);
 	}
 }

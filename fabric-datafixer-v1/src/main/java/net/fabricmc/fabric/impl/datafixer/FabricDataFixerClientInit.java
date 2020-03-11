@@ -24,11 +24,11 @@ import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 public class FabricDataFixerClientInit implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		FabricDataFixerImpl.INSTANCE.isLocked();
+		FabricDataFixesImpl.INSTANCE.isLocked();
 		ClientTickCallback.EVENT.register(this::lockDataFixer);
 	}
 
 	private void lockDataFixer(MinecraftClient client) {
-		FabricDataFixerImpl.INSTANCE.lock();
+		FabricDataFixesImpl.INSTANCE.lock();
 	}
 }

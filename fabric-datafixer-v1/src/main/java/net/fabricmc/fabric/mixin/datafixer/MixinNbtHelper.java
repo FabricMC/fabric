@@ -26,14 +26,14 @@ import net.minecraft.datafixer.DataFixTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtHelper;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixesImpl;
 
 @Mixin(NbtHelper.class)
 public abstract class MixinNbtHelper {
 	@Inject(at = @At("RETURN"), method = "update(Lcom/mojang/datafixers/DataFixer;Lnet/minecraft/datafixer/DataFixTypes;Lnet/minecraft/nbt/CompoundTag;II)Lnet/minecraft/nbt/CompoundTag;", cancellable = true)
 	private static void fabric_updateDataWithFixers(DataFixer vanillaDataFixer, DataFixTypes dataFixTypes, CompoundTag inputTag$unused, int vanillaDynamicDataVersion, int vanillaRuntimeDataVersion, CallbackInfoReturnable<CompoundTag> cir) {
 		CompoundTag original = cir.getReturnValue(); // We do our fixes after vanilla.
-		CompoundTag finalTag = FabricDataFixerImpl.INSTANCE.updateWithAllFixers(dataFixTypes, original);
+		CompoundTag finalTag = FabricDataFixesImpl.INSTANCE.updateWithAllFixers(dataFixTypes, original);
 		cir.setReturnValue(finalTag);
 	}
 }

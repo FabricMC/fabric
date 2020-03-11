@@ -26,7 +26,7 @@ import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Util;
 
-import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
+import net.fabricmc.fabric.impl.datafixer.FabricDataFixesImpl;
 
 /**
  * This registers and creates DataFixers for the game, along with some other util methods.
@@ -54,25 +54,25 @@ import net.fabricmc.fabric.impl.datafixer.FabricDataFixerImpl;
  *
  *     <p>Finally you need to build and register your DataFixer for use.
  *         First build the DataFixer using {@link DataFixerBuilder#build(Executor)}. The executor should be {@link Util#getServerWorkerExecutor()}.
- *         Finally register the DataFixer using {@link DataFixerHelper#registerFixer(String, int, DataFixer)} so that the DataFixer is invoked when the game normally fixes any data.
+ *         Finally register the DataFixer using {@link FabricDataFixes#registerFixer(String, int, DataFixer)} so that the DataFixer is invoked when the game normally fixes any data.
  *
  * <p>If you need more help, see the wiki article here: https://fabricmc.net/wiki/tutorial:datafixer or visit the Fabric Discord server.
  */
-public interface DataFixerHelper {
+public interface FabricDataFixes {
 	/**
-	 * Gets the instance of the {@link DataFixerHelper}.
+	 * Gets the instance of the {@link FabricDataFixes}.
 	 */
-	DataFixerHelper INSTANCE = FabricDataFixerImpl.INSTANCE;
+	FabricDataFixes INSTANCE = FabricDataFixesImpl.INSTANCE;
 
 	/**
 	 * Registers a DataFixer.
 	 *
 	 * @param modid The modid of the mod registering this DataFixer
-	 * @param runtimeDataVersion the current dataversion of the mod being ran.
+	 * @param currentVersion the current data version of the mod being ran.
 	 * @param dataFixer The DataFixer to register
 	 * @return The inputted DataFixer
 	 */
-	DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer dataFixer);
+	DataFixer registerFixer(String modid, int currentVersion, DataFixer dataFixer);
 
 	/**
 	 * Gets the DataFixer registered under a mod.

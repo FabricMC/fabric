@@ -34,31 +34,31 @@ import net.minecraft.datafixer.NbtOps;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.nbt.CompoundTag;
 
-import net.fabricmc.fabric.api.datafixer.v1.DataFixerHelper;
+import net.fabricmc.fabric.api.datafixer.v1.FabricDataFixes;
 
-public class FabricDataFixerImpl implements DataFixerHelper {
-	private FabricDataFixerImpl() {
+public class FabricDataFixesImpl implements FabricDataFixes {
+	private FabricDataFixesImpl() {
 		this.fabricSchema = createSchema();
 	}
 
-	public static final Logger LOGGER = LogManager.getLogger(DataFixerHelper.class);
-	public static FabricDataFixerImpl INSTANCE = new FabricDataFixerImpl();
+	public static final Logger LOGGER = LogManager.getLogger(FabricDataFixes.class);
+	public static FabricDataFixesImpl INSTANCE = new FabricDataFixesImpl();
 
 	public final Schema fabricSchema;
 	private final Map<String, DataFixerEntry> modDataFixers = new IdentityHashMap<>();
 	private boolean locked;
 
 	@Override
-	public DataFixer registerFixer(String modid, int runtimeDataVersion, DataFixer datafixer) {
+	public DataFixer registerFixer(String modid, int currentVersion, DataFixer datafixer) {
 		Preconditions.checkNotNull(modid, "modid cannot be null");
-		Preconditions.checkArgument(runtimeDataVersion >= 0, "dataVersion cannot be lower than 0");
+		Preconditions.checkArgument(currentVersion >= 0, "dataVersion cannot be lower than 0");
 
 		if (isLocked()) {
 			throw new UnsupportedOperationException("Failed to register DataFixer for " + modid + ", registration is locked.");
 		}
 
 		LOGGER.info("Registered DataFixer for " + modid);
-		modDataFixers.put(modid, new DataFixerEntry(datafixer, runtimeDataVersion));
+		modDataFixers.put(modid, new DataFixerEntry(datafixer, currentVersion));
 
 		return datafixer;
 	}
@@ -92,7 +92,7 @@ public class FabricDataFixerImpl implements DataFixerHelper {
 			int modidCurrentDynamicVersion = getModDataVersion(compoundTag, currentModid);
 			DataFixerEntry dataFixerEntry = entry.getValue();
 
-			currentTag = (CompoundTag) dataFixerEntry.dataFixer.update(dataFixTypes.getTypeReference(), new Dynamic<>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.runtimeDataVersion).getValue();
+			currentTag = (CompoundTag) dataFixerEntry.dataFixer.update(dataFixTypes.getTypeReference(), new Dynamic<>(NbtOps.INSTANCE, currentTag), modidCurrentDynamicVersion, dataFixerEntry.currentVersion).getValue();
 		}
 
 		return currentTag;
@@ -100,7 +100,7 @@ public class FabricDataFixerImpl implements DataFixerHelper {
 
 	public void addFixerVersions(CompoundTag compoundTag) {
 		for (Map.Entry<String, DataFixerEntry> entry : modDataFixers.entrySet()) {
-			compoundTag.putInt(entry.getKey() + "_DataVersion", entry.getValue().runtimeDataVersion);
+			compoundTag.putInt(entry.getKey() + "_DataVersion", entry.getValue().currentVersion);
 		}
 	}
 
@@ -119,11 +119,11 @@ public class FabricDataFixerImpl implements DataFixerHelper {
 
 	static final class DataFixerEntry {
 		private final DataFixer dataFixer;
-		private final int runtimeDataVersion;
+		private final int currentVersion;
 
-		DataFixerEntry(DataFixer fix, int runtimeDataVersion) {
+		DataFixerEntry(DataFixer fix, int currentVersion) {
 			this.dataFixer = fix;
-			this.runtimeDataVersion = runtimeDataVersion;
+			this.currentVersion = currentVersion;
 		}
 	}
 
