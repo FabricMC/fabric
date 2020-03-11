@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +48,8 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
@@ -54,6 +58,9 @@ public final class RegistrySyncManager {
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
 	private static final Set<Identifier> REGISTRY_BLACKLIST = ImmutableSet.of();
 	private static final Set<Identifier> REGISTRY_BLACKLIST_NETWORK = ImmutableSet.of();
+
+	public static final HashMap<Registry<?>, Integer> bootstrapRegistryHashes = new HashMap<>();
+	public static final ArrayList<Registry<?>> moddedRegistries = new ArrayList<>();
 
 	private RegistrySyncManager() { }
 
@@ -129,6 +136,13 @@ public final class RegistrySyncManager {
 						LOGGER.warn("[fabric-registry-sync debug] Could not write to " + file.getAbsolutePath() + "!", e);
 					}
 				}
+			}
+
+			if (!isRegistryModded(Registry.REGISTRIES.get(registryId))) {
+				System.out.println("Skipping vanilla registry: " + registryId);
+				continue;
+			} else {
+				System.out.println("Syncing modded registry: " + registryId);
 			}
 
 			if (REGISTRY_BLACKLIST.contains(registryId)) {
@@ -215,5 +229,43 @@ public final class RegistrySyncManager {
 				((RemappableRegistry) registry).unmap(registryId.toString());
 			}
 		}
+	}
+
+	public static void bootstrapRegistries() {
+		for (MutableRegistry<?> registry : Registry.REGISTRIES) {
+			//Save the registry entry hashes
+			bootstrapRegistryHashes.put(registry, registry.getIds().hashCode());
+
+			//Mark as modded if the event is fired
+			RegistryEntryAddedCallback.event(registry).register((RegistryEntryAddedCallback) (rawId, id, object) -> markModded(registry));
+			RegistryEntryRemovedCallback.event(registry).register((RegistryEntryRemovedCallback) (rawId, id, object) -> markModded(registry));
+		}
+	}
+
+	private static void markModded(Registry<?> registry) {
+		moddedRegistries.add(registry);
+	}
+
+	public static boolean isRegistryModded(Registry<?> registry) {
+		if (moddedRegistries.contains(registry)) {
+			return true;
+		}
+
+		//Check to see if the hashes have changed
+		int hash = bootstrapRegistryHashes.getOrDefault(registry, 0);
+
+		if (hash != 0 && registry.getIds().hashCode() != hash) {
+			markModded(registry);
+			return true;
+		}
+
+		//See if the registry contains something that isnt vanilla
+		if (registry.getIds().stream().anyMatch(identifier -> !identifier.getNamespace().equals("minecraft"))) {
+			markModded(registry);
+			return true;
+		}
+
+		//TODO cache this value
+		return false;
 	}
 }
