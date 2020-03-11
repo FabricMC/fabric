@@ -44,7 +44,7 @@ public abstract class MixinItemStack {
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "getMiningSpeedMultiplier", cancellable = true)
 	public void getBlockBreakingSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
 		if (this.getItem() instanceof MiningToolItemAccessor) {
 			TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state);

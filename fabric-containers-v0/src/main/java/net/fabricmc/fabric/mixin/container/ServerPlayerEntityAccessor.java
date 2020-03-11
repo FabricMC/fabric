@@ -24,7 +24,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 @Mixin(ServerPlayerEntity.class)
 public interface ServerPlayerEntityAccessor {
 	@Accessor
-	int getContainerSyncId();
+	int getScreenHandlerSyncId();
 	@Accessor
-	void setContainerSyncId(int syncId);
+	void setScreenHandlerSyncId(int syncId);
 }

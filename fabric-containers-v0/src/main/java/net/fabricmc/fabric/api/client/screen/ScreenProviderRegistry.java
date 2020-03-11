@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.screen;
 
-import net.minecraft.client.gui.screen.ingame.ContainerScreen;
-import net.minecraft.container.Container;
+import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
@@ -33,14 +33,14 @@ public interface ScreenProviderRegistry {
 	 * @param identifier             a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
 	 * @param containerScreenFactory the supplier that should be used to create the new gui
 	 */
-	<C extends Container> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory);
+	<C extends ScreenHandler> void registerFactory(Identifier identifier, ContainerScreenFactory<C> containerScreenFactory);
 
 	/**
 	 * Register a "packet -&gt; ContainerScreen" factory. This is used only on the client side, and allows you
 	 * to override the default behaviour of re-using the existing "packet -&gt; Container" logic.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
-	 * @param factory    the gui factory, this should return a new {@link ContainerScreen}
+	 * @param factory    the gui factory, this should return a new {@link ScreenWithHandler}
 	 */
-	void registerFactory(Identifier identifier, ContainerFactory<ContainerScreen> factory);
+	void registerFactory(Identifier identifier, ContainerFactory<ScreenWithHandler> factory);
 }

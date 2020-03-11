@@ -26,14 +26,14 @@ import net.fabricmc.fabric.impl.container.ServerPlayerEntitySyncHook;
 @Mixin(ServerPlayerEntity.class)
 public abstract class MixinServerPlayerEntity implements ServerPlayerEntitySyncHook {
 	@Shadow
-	private int containerSyncId;
+	private int screenHandlerSyncId;
 
 	@Shadow
-	protected abstract void incrementContainerSyncId();
+	protected abstract void incrementScreenHandlerSyncId();
 
 	@Override
 	public int fabric_incrementSyncId() {
-		incrementContainerSyncId();
-		return containerSyncId;
+		incrementScreenHandlerSyncId();
+		return screenHandlerSyncId;
 	}
 }

@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
-import net.minecraft.container.Container;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.item.group.FabricCreativeGuiComponents;
 
 @Mixin(CreativeInventoryScreen.class)
 public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryScreen implements CreativeGuiExtensions {
-	public MixinCreativePlayerInventoryGui(Container container_1, PlayerInventory playerInventory_1, Text textComponent_1) {
+	public MixinCreativePlayerInventoryGui(ScreenHandler container_1, PlayerInventory playerInventory_1, Text textComponent_1) {
 		super(container_1, playerInventory_1, textComponent_1);
 	}
 
