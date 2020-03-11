@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-datafixer-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-events-lifecycle-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.datafixer.FabricDataFixerInit"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.datafixer.FabricDataFixerClientInit"
+    ]
+  },
+  "mixins": [
+    "fabric-datafixer-v1.mixins.json"
+  ]
+}
