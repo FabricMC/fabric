@@ -41,10 +41,10 @@ import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.profiler.Profiler;
+
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 
 public final class FabricParticleManager {
-
 	public static final Identifier PARTICLE_ATLAS_TEX = new Identifier("fabric", SpriteAtlasTexture.PARTICLE_ATLAS_TEX.getPath());
 
 	private final VanillaParticleManager manager;

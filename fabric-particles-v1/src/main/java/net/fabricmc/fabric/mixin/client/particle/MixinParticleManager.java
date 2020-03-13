@@ -39,6 +39,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
+
 import net.fabricmc.fabric.impl.client.particle.FabricParticleManager;
 import net.fabricmc.fabric.impl.client.particle.FabricSpriteAtlasTexture;
 import net.fabricmc.fabric.impl.client.particle.VanillaParticleManager;
