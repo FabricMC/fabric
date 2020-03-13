@@ -70,7 +70,8 @@ public abstract class MixinParticleManager implements VanillaParticleManager {
 	        + "Lnet/minecraft/client/resource/ResourceManager;"
 	        + "Lnet/minecraft/util/profiler/Profiler;"
 	        + "Lnet/minecraft/util/profiler/Profiler;"
-	        + "Ljava/utilconcurrent/Executor;Ljava/utilconcurrent/Executor;"
+	        + "Ljava/util/concurrent/Executor;"
+	        + "Ljava/util/concurrent/Executor;"
 	        + ")Ljava/util/concurrent/CompletableFuture;",
 	        at = @At("RETURN"),
 	        cancellable = true)
