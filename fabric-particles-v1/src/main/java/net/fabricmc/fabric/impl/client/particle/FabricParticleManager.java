@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -64,7 +65,7 @@ public final class FabricParticleManager {
 		return providers.get((int) ParticleFactoryRegistryImpl.INSTANCE.constructorsIdsMap.get(id));
 	}
 
-	public boolean loadParticle(ResourceManager manager, Identifier id) {
+	public boolean loadParticle(ResourceManager manager, Identifier id, Map<Identifier, List<Identifier>> spritesToLoad) {
 		FabricSpriteProviderImpl provider = getProvider(id);
 
 		if (provider == null) {
@@ -81,6 +82,7 @@ public final class FabricParticleManager {
 				throw new IllegalStateException("(Fabric) Missing texture list for particle " + id);
 			}
 
+			spritesToLoad.put(id, spriteIds);
 			provider.setSprites(spriteIds);
 		} catch (IOException e) {
 			throw new IllegalStateException("Failed to load description for particle " + id, e);
