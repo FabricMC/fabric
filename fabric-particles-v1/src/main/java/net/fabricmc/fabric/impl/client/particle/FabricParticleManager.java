@@ -82,7 +82,10 @@ public final class FabricParticleManager {
 				throw new IllegalStateException("(Fabric) Missing texture list for particle " + id);
 			}
 
-			spritesToLoad.put(id, spriteIds);
+			spritesToLoad.put(id, spriteIds.stream()
+			        .map(sprite -> new Identifier(sprite.getNamespace(), "particle/" + sprite.getPath()))
+			        .collect(Collectors.toList())
+	        );
 			provider.setSprites(spriteIds);
 		} catch (IOException e) {
 			throw new IllegalStateException("Failed to load description for particle " + id, e);
