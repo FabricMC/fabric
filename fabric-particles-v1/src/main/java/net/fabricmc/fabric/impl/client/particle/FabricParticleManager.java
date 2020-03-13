@@ -21,7 +21,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -46,14 +45,13 @@ import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 
 public final class FabricParticleManager {
 
-    public static final Identifier PARTICLE_ATLAS_TEX = new Identifier("fabric", SpriteAtlasTexture.PARTICLE_ATLAS_TEX.getPath());
+	public static final Identifier PARTICLE_ATLAS_TEX = new Identifier("fabric", SpriteAtlasTexture.PARTICLE_ATLAS_TEX.getPath());
 
 	private final VanillaParticleManager manager;
 
 	private final Int2ObjectMap<FabricSpriteProviderImpl> providers = new Int2ObjectOpenHashMap<>();
 
-	private final Map<Identifier, List<Identifier>> loadedSpriteIds = Maps.newConcurrentMap();
-	private final Map<Identifier, List<Identifier>> unloadedSprites = Maps.newConcurrentMap();
+	final Map<Identifier, List<Identifier>> unloadedSprites = Maps.newConcurrentMap();
 
 	public FabricParticleManager(VanillaParticleManager manager) {
 		this.manager = manager;
@@ -95,9 +93,9 @@ public final class FabricParticleManager {
 			}
 
 			unloadedSprites.put(id, spriteIds.stream()
-			        .map(sprite -> new Identifier(sprite.getNamespace(), "particle/" + sprite.getPath()))
-			        .collect(Collectors.toList())
-	        );
+					.map(sprite -> new Identifier(sprite.getNamespace(), "particle/" + sprite.getPath()))
+					.collect(Collectors.toList())
+			);
 		} catch (IOException e) {
 			throw new IllegalStateException("(Fabric) Failed to load description for particle " + id, e);
 		}
@@ -106,33 +104,21 @@ public final class FabricParticleManager {
 	}
 
 	public CompletableFuture<Void> reload(CompletableFuture<Void> prev, ResourceReloadListener.Synchronizer sync, ResourceManager manager, Profiler executeProf, Profiler applyProf, Executor one, Executor two) {
-	    return prev.thenApplyAsync(v -> {
-            executeProf.startTick();
-            executeProf.push("stitching");
-
-            loadedSpriteIds.putAll(unloadedSprites);
-
-            SpriteAtlasTexture.Data data = this.manager.getAtlas().stitch(manager, loadedSpriteIds.values().stream().flatMap(Collection::stream), executeProf, 0);
-            executeProf.pop();
-            executeProf.endTick();
-            return data;
-        }, one).thenCompose(sync::whenPrepared).thenAcceptAsync(data -> {
-	        applyProf.startTick();
-	        applyProf.push("upload");
-	        this.manager.getAtlas().upload(data);
-	        applyProf.swap("bindSpriteSets");
-	        List<Sprite> missing = ImmutableList.of(this.manager.getAtlas().getSprite(MissingSprite.getMissingSpriteId()));
-	        unloadedSprites.forEach((id, sprites) -> {
-	            getProvider(id).setSprites(sprites.isEmpty() ? missing : getSprites(sprites));
-	        });
-	        unloadedSprites.clear();
-	        applyProf.pop();
-	        applyProf.endTick();
-	    }, two);
+		return prev.thenCompose(sync::whenPrepared).thenAcceptAsync(data -> {
+			applyProf.startTick();
+			applyProf.push("bindSpriteSets");
+			List<Sprite> missing = ImmutableList.of(this.manager.getAtlas().getSprite(MissingSprite.getMissingSpriteId()));
+			unloadedSprites.forEach((id, sprites) -> {
+				getProvider(id).setSprites(sprites.isEmpty() ? missing : getSprites(sprites));
+			});
+			unloadedSprites.clear();
+			applyProf.pop();
+			applyProf.endTick();
+		}, two);
 	}
 
 	private List<Sprite> getSprites(List<Identifier> ids) {
-        return ids.stream().map(manager.getAtlas()::getSprite).collect(ImmutableList.toImmutableList());
+		return ids.stream().map(manager.getAtlas()::getSprite).collect(ImmutableList.toImmutableList());
 	}
 
 	private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
@@ -160,7 +146,7 @@ public final class FabricParticleManager {
 		}
 
 		public void setSprites(List<Sprite> sprites) {
-		    this.sprites = sprites;
+			this.sprites = sprites;
 		}
 	}
 }

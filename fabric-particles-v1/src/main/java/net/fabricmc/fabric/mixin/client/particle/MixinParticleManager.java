@@ -22,7 +22,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -32,20 +34,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleManager;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.client.texture.TextureManager;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import net.fabricmc.fabric.impl.client.particle.FabricParticleManager;
+import net.fabricmc.fabric.impl.client.particle.FabricSpriteAtlasTexture;
 import net.fabricmc.fabric.impl.client.particle.VanillaParticleManager;
 
 @Mixin(ParticleManager.class)
 public abstract class MixinParticleManager implements VanillaParticleManager {
 	private final FabricParticleManager fabricParticleManager = new FabricParticleManager(this);
 
+	@Shadow
+	private TextureManager textureManager;
+
 	@Override
 	@Accessor("particleAtlasTexture")
 	public abstract SpriteAtlasTexture getAtlas();
+
+	@Override
+	@Accessor("particleAtlasTexture")
+	public abstract void setAtlas(SpriteAtlasTexture atlas);
 
 	@Override
 	@Accessor("factories")
@@ -54,6 +65,8 @@ public abstract class MixinParticleManager implements VanillaParticleManager {
 	@Inject(method = "registerDefaultFactories()V", at = @At("RETURN"))
 	private void onRegisterDefaultFactories(CallbackInfo info) {
 		fabricParticleManager.injectValues();
+		setAtlas(new FabricSpriteAtlasTexture(SpriteAtlasTexture.PARTICLE_ATLAS_TEX, fabricParticleManager));
+		textureManager.registerTexture(getAtlas().getId(), getAtlas());
 	}
 
 	@Inject(method = "loadTextureList(Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/Identifier;Ljava/util/Map;)V",
@@ -66,16 +79,16 @@ public abstract class MixinParticleManager implements VanillaParticleManager {
 	}
 
 	@Inject(method = "reload("
-	        + "Lnet/minecraft/client/resource/ResourceReloadListener$Synchronizer;"
-	        + "Lnet/minecraft/resource/ResourceManager;"
-	        + "Lnet/minecraft/util/profiler/Profiler;"
-	        + "Lnet/minecraft/util/profiler/Profiler;"
-	        + "Ljava/util/concurrent/Executor;"
-	        + "Ljava/util/concurrent/Executor;"
-	        + ")Ljava/util/concurrent/CompletableFuture;",
-	        at = @At("RETURN"),
-	        cancellable = true)
+			+ "Lnet/minecraft/client/resource/ResourceReloadListener$Synchronizer;"
+			+ "Lnet/minecraft/resource/ResourceManager;"
+			+ "Lnet/minecraft/util/profiler/Profiler;"
+			+ "Lnet/minecraft/util/profiler/Profiler;"
+			+ "Ljava/util/concurrent/Executor;"
+			+ "Ljava/util/concurrent/Executor;"
+			+ ")Ljava/util/concurrent/CompletableFuture;",
+			at = @At("RETURN"),
+			cancellable = true)
 	private void onReload(ResourceReloadListener.Synchronizer sync, ResourceManager manager, Profiler executeProf, Profiler applyProf, Executor one, Executor two, CallbackInfoReturnable<CompletableFuture<Void>> info) {
-	    info.setReturnValue(fabricParticleManager.reload(info.getReturnValue(), sync, manager, executeProf, applyProf, one, two));
+		info.setReturnValue(fabricParticleManager.reload(info.getReturnValue(), sync, manager, executeProf, applyProf, one, two));
 	}
 }

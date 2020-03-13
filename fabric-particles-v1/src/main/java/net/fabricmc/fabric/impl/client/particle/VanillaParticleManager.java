@@ -30,6 +30,8 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
  * }</pre>
  */
 public interface VanillaParticleManager {
+	void setAtlas(SpriteAtlasTexture atlas);
+
 	SpriteAtlasTexture getAtlas();
 
 	Int2ObjectMap<ParticleFactory<?>> getFactories();
