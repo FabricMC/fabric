@@ -23,7 +23,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.particle.v1.FabricParticleTypes;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.AnimatedParticle;
 import net.minecraft.client.particle.Particle;
@@ -31,6 +30,7 @@ import net.minecraft.client.particle.ParticleFactory;
 import net.minecraft.client.particle.ParticleTextureSheet;
 import net.minecraft.client.particle.SpriteBillboardParticle;
 import net.minecraft.client.particle.SpriteProvider;
+import net.minecraft.item.Items;
 import net.minecraft.particle.DefaultParticleType;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.util.Identifier;
@@ -57,20 +57,25 @@ public class ParticleModClient implements ClientModInitializer, ModInitializer {
 	static class SimpleTestParticle extends SpriteBillboardParticle {
 		public SimpleTestParticle(ParticleEffect effect, World world, double x, double y, double z, double velX, double velY, double velZ) {
 			super(world, x, y, z, velX, velY, velZ);
-			setSprite(MinecraftClient.getInstance().getItemRenderer().getModels().getSprite(Blocks.BARRIER.asItem()));
+			setSprite(MinecraftClient.getInstance().getItemRenderer().getModels().getSprite(Items.BEEF));
+			maxAge = 80;
 		}
 
 		@Override
 		public ParticleTextureSheet getType() {
-			return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
+			return ParticleTextureSheet.TERRAIN_SHEET;
 		}
 	}
 
 	@Environment(EnvType.CLIENT)
 	static class CustomTestParticle extends AnimatedParticle {
 		protected CustomTestParticle(World world, double x, double y, double z, SpriteProvider sprites) {
-			super(world, x, y, z, sprites, 1);
+			super(world, x, y, z, sprites, 0);
 			setSprite(sprites.getSprite(world.random));
+			maxAge = 80;
+			this.velocityX = world.random.nextGaussian() / 10;
+			this.velocityZ = world.random.nextGaussian() / 10;
+			this.velocityY = world.random.nextGaussian() / 10;
 		}
 
 		@Environment(EnvType.CLIENT)

@@ -20,28 +20,40 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
-
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-
 import net.minecraft.client.particle.ParticleTextureData;
+import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-
+import net.minecraft.util.profiler.Profiler;
 import net.fabricmc.fabric.api.client.particle.v1.FabricSpriteProvider;
 
 public final class FabricParticleManager {
+
+    public static final Identifier PARTICLE_ATLAS_TEX = new Identifier("fabric", SpriteAtlasTexture.PARTICLE_ATLAS_TEX.getPath());
+
 	private final VanillaParticleManager manager;
 
 	private final Int2ObjectMap<FabricSpriteProviderImpl> providers = new Int2ObjectOpenHashMap<>();
+
+	private final Map<Identifier, List<Identifier>> loadedSpriteIds = Maps.newConcurrentMap();
+	private final Map<Identifier, List<Identifier>> unloadedSprites = Maps.newConcurrentMap();
 
 	public FabricParticleManager(VanillaParticleManager manager) {
 		this.manager = manager;
@@ -82,23 +94,50 @@ public final class FabricParticleManager {
 				throw new IllegalStateException("(Fabric) Missing texture list for particle " + id);
 			}
 
-			spritesToLoad.put(id, spriteIds.stream()
+			unloadedSprites.put(id, spriteIds.stream()
 			        .map(sprite -> new Identifier(sprite.getNamespace(), "particle/" + sprite.getPath()))
 			        .collect(Collectors.toList())
 	        );
-			provider.setSprites(spriteIds);
 		} catch (IOException e) {
-			throw new IllegalStateException("Failed to load description for particle " + id, e);
+			throw new IllegalStateException("(Fabric) Failed to load description for particle " + id, e);
 		}
 
 		return true; // i got dis
 	}
 
-	private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
-		private List<Identifier> spriteIds;
+	public CompletableFuture<Void> reload(CompletableFuture<Void> prev, ResourceReloadListener.Synchronizer sync, ResourceManager manager, Profiler executeProf, Profiler applyProf, Executor one, Executor two) {
+	    return prev.thenApplyAsync(v -> {
+            executeProf.startTick();
+            executeProf.push("stitching");
 
-		// @Nullable
-		private List<Sprite> sprites;
+            loadedSpriteIds.putAll(unloadedSprites);
+
+            SpriteAtlasTexture.Data data = this.manager.getAtlas().stitch(manager, loadedSpriteIds.values().stream().flatMap(Collection::stream), executeProf, 0);
+            executeProf.pop();
+            executeProf.endTick();
+            return data;
+        }, one).thenCompose(sync::whenPrepared).thenAcceptAsync(data -> {
+	        applyProf.startTick();
+	        applyProf.push("upload");
+	        this.manager.getAtlas().upload(data);
+	        applyProf.swap("bindSpriteSets");
+	        List<Sprite> missing = ImmutableList.of(this.manager.getAtlas().getSprite(MissingSprite.getMissingSpriteId()));
+	        unloadedSprites.forEach((id, sprites) -> {
+	            getProvider(id).setSprites(sprites.isEmpty() ? missing : getSprites(sprites));
+	        });
+	        unloadedSprites.clear();
+	        applyProf.pop();
+	        applyProf.endTick();
+	    }, two);
+	}
+
+	private List<Sprite> getSprites(List<Identifier> ids) {
+        return ids.stream().map(manager.getAtlas()::getSprite).collect(ImmutableList.toImmutableList());
+	}
+
+	private final class FabricSpriteProviderImpl implements FabricSpriteProvider {
+
+		private List<Sprite> sprites = new ArrayList<>();
 
 		@Override
 		public Sprite getSprite(int min, int max) {
@@ -117,16 +156,11 @@ public final class FabricParticleManager {
 
 		@Override
 		public List<Sprite> getSprites() {
-			if (sprites == null) {
-				sprites = spriteIds.stream().map(getAtlas()::getSprite).collect(Collectors.toList());
-			}
-
 			return sprites;
 		}
 
-		public void setSprites(List<Identifier> sprites) {
-			this.sprites = null;
-			this.spriteIds = ImmutableList.copyOf(sprites);
+		public void setSprites(List<Sprite> sprites) {
+		    this.sprites = sprites;
 		}
 	}
 }
