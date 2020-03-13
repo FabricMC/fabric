@@ -67,7 +67,7 @@ public abstract class MixinParticleManager implements VanillaParticleManager {
 
 	@Inject(method = "reload("
 	        + "Lnet/minecraft/client/resource/ResourceReloadListener$Synchronizer;"
-	        + "Lnet/minecraft/client/resource/ResourceManager;"
+	        + "Lnet/minecraft/resource/ResourceManager;"
 	        + "Lnet/minecraft/util/profiler/Profiler;"
 	        + "Lnet/minecraft/util/profiler/Profiler;"
 	        + "Ljava/util/concurrent/Executor;"
