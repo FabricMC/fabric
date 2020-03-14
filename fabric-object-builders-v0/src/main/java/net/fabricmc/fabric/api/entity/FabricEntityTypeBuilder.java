@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.entity;
 
-import java.util.function.Function;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,7 +23,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 
@@ -45,7 +42,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private int trackingDistance = -1;
 	private int updateIntervalTicks = -1;
 	private Boolean alwaysUpdateVelocity;
-	private boolean immuneToFire = false;
+	private boolean fireImmune = false;
+	private boolean spawnableFarFromPlayer;
 	private int maxDespawnDistance = 128;
 	private int minDespawnDistance = 32;
 	private EntityDimensions size = EntityDimensions.changing(-1.0f, -1.0f);
@@ -53,18 +51,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
 		this.category = category;
 		this.function = function;
+		this.spawnableFarFromPlayer = category == EntityCategory.CREATURE || category == EntityCategory.MISC;
 	}
 
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
 		return new FabricEntityTypeBuilder<>(category, (t, w) -> null);
-	}
-
-	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#create(EntityCategory, EntityType.EntityFactory)}
-	 */
-	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, Function<? super World, ? extends T> function) {
-		return create(category, (t, w) -> function.apply(w));
 	}
 
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.EntityFactory<T> function) {
@@ -81,22 +72,23 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> setImmuneToFire() {
-		this.immuneToFire = true;
+	public FabricEntityTypeBuilder<T> makeFireImmune() {
+		this.fireImmune = true;
 		return this;
 	}
 
-	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#size(EntityDimensions)}
-	 */
-	@Deprecated
-	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		this.size = EntityDimensions.changing(width, height);
+	public FabricEntityTypeBuilder<T> spawnableFarFromPlayer() {
+		this.spawnableFarFromPlayer = true;
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
+	public FabricEntityTypeBuilder<T> setDimensions(EntityDimensions size) {
 		this.size = size;
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> setMaxDespawnDistance(int maxDespawnDistance) {
+		this.maxDespawnDistance = maxDespawnDistance;
 		return this;
 	}
 
@@ -117,9 +109,22 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		boolean figureMeOut1 = this.category == EntityCategory.CREATURE || this.category == EntityCategory.MISC; // TODO
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, figureMeOut1, maxDespawnDistance, minDespawnDistance, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		return new FabricEntityType<>(this.function, this.category, this.saveable, this.summonable, this.fireImmune, spawnableFarFromPlayer, maxDespawnDistance, minDespawnDistance, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+	}
 
-		return type;
+	/**
+	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#setDimensions(EntityDimensions size)}.
+	 */
+	@Deprecated
+	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
+		return setDimensions(size);
+	}
+
+	/**
+	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#makeFireImmune()}.
+	 */
+	@Deprecated
+	public FabricEntityTypeBuilder<T> setImmuneToFire() {
+		return makeFireImmune();
 	}
 }
