@@ -72,6 +72,14 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
+	/**
+	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#makeFireImmune()}.
+	 */
+	@Deprecated
+	public FabricEntityTypeBuilder<T> setImmuneToFire() {
+		return makeFireImmune();
+	}
+
 	public FabricEntityTypeBuilder<T> makeFireImmune() {
 		this.fireImmune = true;
 		return this;
@@ -80,6 +88,14 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	public FabricEntityTypeBuilder<T> spawnableFarFromPlayer() {
 		this.spawnableFarFromPlayer = true;
 		return this;
+	}
+
+	/**
+	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#setDimensions(EntityDimensions size)}.
+	 */
+	@Deprecated
+	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
+		return setDimensions(size);
 	}
 
 	public FabricEntityTypeBuilder<T> setDimensions(EntityDimensions size) {
@@ -110,21 +126,5 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		return new FabricEntityType<>(this.function, this.category, this.saveable, this.summonable, this.fireImmune, spawnableFarFromPlayer, maxDespawnDistance, minDespawnDistance, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
-	}
-
-	/**
-	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#setDimensions(EntityDimensions size)}.
-	 */
-	@Deprecated
-	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
-		return setDimensions(size);
-	}
-
-	/**
-	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#makeFireImmune()}.
-	 */
-	@Deprecated
-	public FabricEntityTypeBuilder<T> setImmuneToFire() {
-		return makeFireImmune();
 	}
 }
