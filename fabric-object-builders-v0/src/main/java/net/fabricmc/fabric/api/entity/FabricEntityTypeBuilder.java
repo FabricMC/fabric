@@ -80,7 +80,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return makeFireImmune();
 	}
 
-	public FabricEntityTypeBuilder<T> makeFireImmune() {
+	public FabricEntityTypeBuilder<T> fireImmune() {
 		this.fireImmune = true;
 		return this;
 	}
@@ -98,12 +98,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return setDimensions(size);
 	}
 
-	public FabricEntityTypeBuilder<T> setDimensions(EntityDimensions size) {
+	public FabricEntityTypeBuilder<T> dimensions(EntityDimensions size) {
 		this.size = size;
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> setMaxDespawnDistance(int maxDespawnDistance) {
+	public FabricEntityTypeBuilder<T> maxDespawnDistance(int maxDespawnDistance) {
 		this.maxDespawnDistance = maxDespawnDistance;
 		return this;
 	}
