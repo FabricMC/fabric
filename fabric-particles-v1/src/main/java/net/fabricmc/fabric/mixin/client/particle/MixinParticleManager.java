@@ -79,14 +79,7 @@ public abstract class MixinParticleManager implements VanillaParticleManager {
 		}
 	}
 
-	@Inject(method = "reload("
-			+ "Lnet/minecraft/resource/ResourceReloadListener$Synchronizer;"
-			+ "Lnet/minecraft/resource/ResourceManager;"
-			+ "Lnet/minecraft/util/profiler/Profiler;"
-			+ "Lnet/minecraft/util/profiler/Profiler;"
-			+ "Ljava/util/concurrent/Executor;"
-			+ "Ljava/util/concurrent/Executor;"
-			+ ")Ljava/util/concurrent/CompletableFuture;",
+	@Inject(method = "reload(Lnet/minecraft/resource/ResourceReloadListener$Synchronizer;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/profiler/Profiler;Lnet/minecraft/util/profiler/Profiler;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;",
 			at = @At("RETURN"),
 			cancellable = true)
 	private void onReload(ResourceReloadListener.Synchronizer sync, ResourceManager manager, Profiler executeProf, Profiler applyProf, Executor one, Executor two, CallbackInfoReturnable<CompletableFuture<Void>> info) {
