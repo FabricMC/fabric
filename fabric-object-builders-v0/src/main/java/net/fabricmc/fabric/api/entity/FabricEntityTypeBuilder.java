@@ -73,11 +73,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#makeFireImmune()}.
+	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#fireImmune()}.
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> setImmuneToFire() {
-		return makeFireImmune();
+		return fireImmune();
 	}
 
 	public FabricEntityTypeBuilder<T> fireImmune() {
@@ -91,11 +91,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#setDimensions(EntityDimensions size)}.
+	 * @deprecated Old name that will be removed in a later version. Use {@link FabricEntityTypeBuilder#dimensions(EntityDimensions size)}.
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
-		return setDimensions(size);
+		return dimensions(size);
 	}
 
 	public FabricEntityTypeBuilder<T> dimensions(EntityDimensions size) {
