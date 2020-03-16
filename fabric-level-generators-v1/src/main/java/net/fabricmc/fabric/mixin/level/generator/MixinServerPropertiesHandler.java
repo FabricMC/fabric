@@ -48,7 +48,7 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 
 		// If level-type doesn't exist, fallback to default behavior
 		if (getProperties().get(prop) == null) {
-			get("level-type", LevelGeneratorType::getTypeFromName, LevelGeneratorType::getName, LevelGeneratorType.DEFAULT);
+			return (V) get("level-type", LevelGeneratorType::getTypeFromName, LevelGeneratorType::getName, LevelGeneratorType.DEFAULT);
 		}
 
 		// Parse String as segments
@@ -61,7 +61,7 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 
 		// Skip namespace if not supplied
 		if (levelType.length == 1) {
-			fabricLevelType = new Identifier("fabric_omitted_namespace", levelType[0]);
+			fabricLevelType = new Identifier(levelType[0]);
 			return null;
 		}
 

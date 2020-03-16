@@ -52,7 +52,7 @@ public final class MixinMinecraftDedicatedServer {
 		if (fabricLevelType != null) {
 			// Give ability to skip namespace if mods levelGenerators don't have same name
 			// If they do, first one will be used
-			if (fabricLevelType.getNamespace().equals("fabric_omitted_namespace")) {
+			if (fabricLevelType.getNamespace().equals("minecraft")) {
 				levelGeneratorType = FabricLevelGeneratorType.getTypeFromPath(fabricLevelType.getPath());
 			} else {
 				levelGeneratorType = LevelGeneratorType.getTypeFromName(FabricLevelGeneratorType.changeIdentifierSeparator(fabricLevelType));

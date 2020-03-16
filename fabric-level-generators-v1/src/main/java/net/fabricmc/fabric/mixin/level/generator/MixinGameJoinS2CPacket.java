@@ -33,10 +33,6 @@ public class MixinGameJoinS2CPacket {
 
 	@Redirect(method = "write", at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/packet/GameJoinS2CPacket;generatorType:Lnet/minecraft/world/level/LevelGeneratorType;"))
 	private LevelGeneratorType changeSentLevelGeneratorType(GameJoinS2CPacket gameJoinS2CPacket) {
-		if (FabricLevelGeneratorType.suppliers.get(generatorType) == null) {
-			return generatorType;
-		}
-
-		return LevelGeneratorType.DEFAULT;
+		return FabricLevelGeneratorType.checkForFabricLevelGeneratorType(generatorType);
 	}
 }

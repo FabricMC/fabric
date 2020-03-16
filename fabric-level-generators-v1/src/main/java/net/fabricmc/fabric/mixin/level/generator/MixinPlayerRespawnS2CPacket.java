@@ -33,10 +33,6 @@ public class MixinPlayerRespawnS2CPacket {
 
 	@Redirect(method = "write", at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/packet/PlayerRespawnS2CPacket;generatorType:Lnet/minecraft/world/level/LevelGeneratorType;"))
 	private LevelGeneratorType changeSentLevelGeneratorType(PlayerRespawnS2CPacket playerRespawnS2CPacket) {
-		if (FabricLevelGeneratorType.suppliers.get(generatorType) == null) {
-			return generatorType;
-		}
-
-		return LevelGeneratorType.DEFAULT;
+		return FabricLevelGeneratorType.checkForFabricLevelGeneratorType(generatorType);
 	}
 }
