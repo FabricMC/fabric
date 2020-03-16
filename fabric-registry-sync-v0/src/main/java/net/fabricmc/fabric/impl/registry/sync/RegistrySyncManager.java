@@ -19,9 +19,10 @@ package net.fabricmc.fabric.impl.registry.sync;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +30,12 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -46,27 +51,25 @@ import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
 	static final Identifier ID = new Identifier("fabric", "registry/sync");
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
-	private static final Set<Identifier> REGISTRY_BLACKLIST = ImmutableSet.of();
-	private static final Set<Identifier> REGISTRY_BLACKLIST_NETWORK = ImmutableSet.of();
+	private static final RegistryTypes REGISTRY_TYPES = RegistryTypes.getInstance();
 
-	public static final HashMap<Registry<?>, Integer> bootstrapRegistryHashes = new HashMap<>();
-	public static final ArrayList<Registry<?>> moddedRegistries = new ArrayList<>();
+	public static boolean postBootstrap = false;
 
 	private RegistrySyncManager() { }
 
 	public static Packet<?> createPacket() {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeCompoundTag(toTag(true));
+		buf.writeCompoundTag(toTag(true, null));
 
 		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
 	}
@@ -96,7 +99,7 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	public static CompoundTag toTag(boolean isClientSync) {
+	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeIdMap) {
 		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
@@ -138,17 +141,30 @@ public final class RegistrySyncManager {
 				}
 			}
 
-			if (!isRegistryModded(Registry.REGISTRIES.get(registryId))) {
-				System.out.println("Skipping vanilla registry: " + registryId);
-				continue;
-			} else {
-				System.out.println("Syncing modded registry: " + registryId);
+			CompoundTag existingRegistryData = null;
+
+			if (activeIdMap != null && activeIdMap.contains(registryId.toString())) {
+				existingRegistryData = activeIdMap.getCompound(registryId.toString());
 			}
 
-			if (REGISTRY_BLACKLIST.contains(registryId)) {
+			//Dont save none persistent registries
+			if (!isClientSync && REGISTRY_TYPES.nonePersistent.contains(registryId)) {
+				LOGGER.debug("Not saving registry: " + registryId);
 				continue;
-			} else if (isClientSync && REGISTRY_BLACKLIST_NETWORK.contains(registryId)) {
+			}
+
+			//Dont sync network blacklisted registries
+			if (isClientSync && REGISTRY_TYPES.networkBlacklist.contains(registryId)) {
+				LOGGER.debug("Not syncing registry: " + registryId);
 				continue;
+			}
+
+			//Keep vanilla registry that we have no existing registry entries for
+			if (existingRegistryData == null && !isRegistryModded(registryId)) {
+				LOGGER.debug("Skipping vanilla registry: " + registryId);
+				continue;
+			} else {
+				LOGGER.debug("Syncing vanilla registry: " + registryId);
 			}
 
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
@@ -182,7 +198,27 @@ public final class RegistrySyncManager {
 					registryTag.putInt(id.toString(), rawId);
 				}
 
+				// Look for existing registry key/values that are not in the current registries
+				if (!isClientSync && existingRegistryData != null) {
+					for (String key : existingRegistryData.getKeys()) {
+						if (!registryTag.contains(key)) {
+							LOGGER.info("Saving orphaned registry entry: " + key);
+							registryTag.putInt(key, registryTag.getInt(key));
+						}
+					}
+				}
+
 				mainTag.put(registryId.toString(), registryTag);
+			}
+		}
+
+		// Ensure any orphaned registry's are kept on disk
+		if (!isClientSync && activeIdMap != null) {
+			for (String registryKey : activeIdMap.getKeys()) {
+				if (!mainTag.contains(registryKey)) {
+					LOGGER.info("Saving orphaned registry: " + registryKey);
+					mainTag.put(registryKey, activeIdMap.getCompound(registryKey));
+				}
 			}
 		}
 
@@ -193,7 +229,7 @@ public final class RegistrySyncManager {
 		return tag;
 	}
 
-	public static void apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
+	public static CompoundTag apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
 		CompoundTag mainTag = tag.getCompound("registries");
 		Set<String> containedRegistries = Sets.newHashSet(mainTag.getKeys());
 
@@ -219,6 +255,7 @@ public final class RegistrySyncManager {
 		if (!containedRegistries.isEmpty()) {
 			LOGGER.warn("[fabric-registry-sync] Could not find the following registries: " + Joiner.on(", ").join(containedRegistries));
 		}
+		return mainTag;
 	}
 
 	public static void unmap() throws RemapException {
@@ -233,39 +270,64 @@ public final class RegistrySyncManager {
 
 	public static void bootstrapRegistries() {
 		for (MutableRegistry<?> registry : Registry.REGISTRIES) {
-			//Save the registry entry hashes
-			bootstrapRegistryHashes.put(registry, registry.getIds().hashCode());
-
-			//Mark as modded if the event is fired
-			RegistryEntryAddedCallback.event(registry).register((RegistryEntryAddedCallback) (rawId, id, object) -> markModded(registry));
-			RegistryEntryRemovedCallback.event(registry).register((RegistryEntryRemovedCallback) (rawId, id, object) -> markModded(registry));
+			if (registry instanceof ModdableRegistry) {
+				((ModdableRegistry) registry).storeIdHash(registry.getIds().hashCode());
+			}
 		}
+
+		postBootstrap = true;
 	}
 
 	private static void markModded(Registry<?> registry) {
-		moddedRegistries.add(registry);
+		if (registry instanceof ModdableRegistry) {
+			((ModdableRegistry) registry).markModded();
+		} else {
+			throw new RuntimeException("Cannot mark a none moddable registry as modded!");
+		}
 	}
 
-	public static boolean isRegistryModded(Registry<?> registry) {
-		if (moddedRegistries.contains(registry)) {
+	public static boolean isRegistryModded(Identifier registryId) {
+		//All none minecraft registries are modded
+		if (!registryId.getNamespace().equals("minecraft")) {
 			return true;
 		}
 
-		//Check to see if the hashes have changed
-		int hash = bootstrapRegistryHashes.getOrDefault(registry, 0);
+		Registry<?> registry = Registry.REGISTRIES.get(registryId);
 
-		if (hash != 0 && registry.getIds().hashCode() != hash) {
-			markModded(registry);
-			return true;
+		if (registry instanceof ModdableRegistry) {
+			ModdableRegistry moddableRegistry = (ModdableRegistry) registry;
+			return moddableRegistry.isModded();
+		} else {
+			return false; //TODO what should this be?
 		}
+	}
 
-		//See if the registry contains something that isnt vanilla
-		if (registry.getIds().stream().anyMatch(identifier -> !identifier.getNamespace().equals("minecraft"))) {
-			markModded(registry);
-			return true;
+	private static class RegistryTypes {
+		private List<Identifier> nonePersistent;
+		private List<Identifier> persistent;
+		private List<Identifier> networkBlacklist;
+
+		private static Gson GSON = new GsonBuilder()
+				.registerTypeAdapter(Identifier.class, new TypeAdapter<Identifier>() {
+					@Override
+					public void write(JsonWriter out, Identifier value) throws IOException {
+						out.value(value.toString());
+					}
+
+					@Override
+					public Identifier read(JsonReader in) throws IOException {
+						return new Identifier(in.nextString());
+					}
+				}).create();
+
+		public static RegistryTypes getInstance() {
+			ModContainer modContainer = FabricLoader.getInstance().getModContainer("fabric-registry-sync-v0").get();
+
+			try (InputStreamReader isr = new InputStreamReader(Files.newInputStream(modContainer.getPath("fabric-registry-sync-v0.registry-types.json")))) {
+				return GSON.fromJson(isr, RegistryTypes.class);
+			} catch (IOException e) {
+				throw new RuntimeException("Failed to read registry types", e);
+			}
 		}
-
-		//TODO cache this value
-		return false;
 	}
 }

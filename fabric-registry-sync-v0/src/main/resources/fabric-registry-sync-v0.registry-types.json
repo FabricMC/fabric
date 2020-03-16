@@ -1,0 +1,12 @@
+{
+  "nonePersistent" : [
+    "minecraft:blocks",
+    "minecraft:items"
+  ],
+  "persistent": [
+    "minecraft:biomes"
+  ],
+  "networkBlacklist": [
+
+  ]
+}

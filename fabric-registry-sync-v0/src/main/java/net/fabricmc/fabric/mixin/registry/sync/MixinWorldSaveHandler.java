@@ -52,6 +52,8 @@ public class MixinWorldSaveHandler {
 
 	@Unique
 	private CompoundTag fabric_lastSavedIdMap = null;
+	@Unique
+	private CompoundTag fabric_activeIdMap = null;
 
 	@Unique
 	private boolean fabric_readIdMapFile(File file) throws IOException, RemapException {
@@ -61,7 +63,7 @@ public class MixinWorldSaveHandler {
 			fileInputStream.close();
 
 			if (tag != null) {
-				RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
+				fabric_activeIdMap = RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
 				return true;
 			}
 		}
@@ -76,7 +78,7 @@ public class MixinWorldSaveHandler {
 
 	@Unique
 	private void fabric_saveRegistryData() {
-		CompoundTag newIdMap = RegistrySyncManager.toTag(false);
+		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeIdMap);
 
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
@@ -113,7 +115,7 @@ public class MixinWorldSaveHandler {
 		}
 	}
 
-	@Inject(method = "saveWorld", at = @At("HEAD"))
+	@Inject(method = "saveWorld(Lnet/minecraft/world/level/LevelProperties;Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
 	public void saveWorld(LevelProperties levelProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!worldDir.exists()) {
 			return;
