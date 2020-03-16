@@ -23,7 +23,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.mixin.object.builder.BlockSettingsHooks;
+import net.fabricmc.fabric.mixin.object.builder.BlockSettingsAccessor;
 
 public final class BlockSettingsExtensions {
 	private BlockSettingsExtensions() {
@@ -38,50 +38,50 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void hardness(Settings settings, float hardness) {
-		((BlockSettingsHooks) settings).setHardness(hardness);
+		((BlockSettingsAccessor) settings).setHardness(hardness);
 	}
 
 	public static void resistance(Settings settings, float resistance) {
-		((BlockSettingsHooks) settings).setResistance(Math.max(0.0F, resistance));
+		((BlockSettingsAccessor) settings).setResistance(Math.max(0.0F, resistance));
 	}
 
 	public static void collidable(Settings settings, boolean collidable) {
-		((BlockSettingsHooks) settings).setCollidable(collidable);
+		((BlockSettingsAccessor) settings).setCollidable(collidable);
 	}
 
 	public static void materialColor(Settings settings, MaterialColor materialColor) {
-		((BlockSettingsHooks) settings).setMaterialColor(materialColor);
+		((BlockSettingsAccessor) settings).setMaterialColor(materialColor);
 	}
 
 	public static void drops(Settings settings, Identifier dropTableId) {
-		((BlockSettingsHooks) settings).setDropTableId(dropTableId);
+		((BlockSettingsAccessor) settings).setDropTableId(dropTableId);
 	}
 
 	public static void sounds(Settings settings, BlockSoundGroup soundGroup) {
-		((BlockSettingsHooks) settings).invokeSounds(soundGroup);
+		((BlockSettingsAccessor) settings).invokeSounds(soundGroup);
 	}
 
 	public static void lightLevel(Settings settings, int lightLevel) {
-		((BlockSettingsHooks) settings).invokeLightLevel(lightLevel);
+		((BlockSettingsAccessor) settings).invokeLightLevel(lightLevel);
 	}
 
 	public static void breakInstantly(Settings settings) {
-		((BlockSettingsHooks) settings).invokeBreakInstantly();
+		((BlockSettingsAccessor) settings).invokeBreakInstantly();
 	}
 
 	public static void strength(Settings settings, float strength) {
-		((BlockSettingsHooks) settings).invokeStrength(strength);
+		((BlockSettingsAccessor) settings).invokeStrength(strength);
 	}
 
 	public static void ticksRandomly(Settings settings) {
-		((BlockSettingsHooks) settings).invokeTicksRandomly();
+		((BlockSettingsAccessor) settings).invokeTicksRandomly();
 	}
 
 	public static void dynamicBounds(Settings settings) {
-		((BlockSettingsHooks) settings).invokeHasDynamicBounds();
+		((BlockSettingsAccessor) settings).invokeHasDynamicBounds();
 	}
 
 	public static void dropsNothing(Settings settings) {
-		((BlockSettingsHooks) settings).invokeDropsNothing();
+		((BlockSettingsAccessor) settings).invokeDropsNothing();
 	}
 }

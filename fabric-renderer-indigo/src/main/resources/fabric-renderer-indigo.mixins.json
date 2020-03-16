@@ -9,8 +9,8 @@
     "MixinAmbientOcclusionCalculator",
     "MixinBlockModelRenderer",
     "MixinChunkRebuildTask",
-    "MixinChunkRenderData",
-    "MixinChunkRenderer",
+    "MixinChunkData",
+    "MixinBuiltChunk",
     "MixinChunkRendererRegion",
     "MixinItemRenderer"
   ],

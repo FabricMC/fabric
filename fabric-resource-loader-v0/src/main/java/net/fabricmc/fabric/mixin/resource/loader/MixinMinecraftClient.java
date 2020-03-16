@@ -41,7 +41,7 @@ import net.minecraft.resource.ResourceType;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
 @Mixin(MinecraftClient.class)
-public class MixinMinecraftGame {
+public class MixinMinecraftClient {
 	@Shadow
 	private ReloadableResourceManager resourceManager;
 

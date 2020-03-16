@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.rendering.data.attachment;
+package net.fabricmc.fabric.mixin.client.keybinding;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.world.BlockRenderView;
-import net.minecraft.world.WorldView;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 
-import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
-
-/** Make {@link BlockRenderView} implement {@link RenderAttachedBlockView}. */
-@Mixin(WorldView.class)
-public interface MixinViewableWorld extends RenderAttachedBlockView { }
+@Mixin(KeyBinding.class)
+public interface KeyBindingAccessor {
+	@Accessor
+	InputUtil.KeyCode getKeyCode();
+}

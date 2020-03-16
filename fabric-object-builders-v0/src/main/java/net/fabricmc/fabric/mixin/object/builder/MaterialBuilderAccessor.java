@@ -14,24 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
-
-import java.util.List;
+package net.fabricmc.fabric.mixin.object.builder;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
-import net.minecraft.loot.function.LootFunction;
+import net.minecraft.block.Material;
+import net.minecraft.block.piston.PistonBehavior;
 
-@Mixin(LootPool.Builder.class)
-public interface LootPoolBuilderHooks {
+@Mixin(Material.Builder.class)
+public interface MaterialBuilderAccessor {
 	@Accessor
-	List<LootEntry> getEntries();
-	@Accessor
-	List<LootCondition> getConditions();
-	@Accessor
-	List<LootFunction> getFunctions();
+	void setPistonBehavior(PistonBehavior behavior);
+
+	@Invoker
+	Material.Builder invokeLightPassesThrough();
 }

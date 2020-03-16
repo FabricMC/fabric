@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.dimension.idremap;
+package net.fabricmc.fabric.mixin.command;
 
+import com.mojang.brigadier.CommandDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
 
-// NOTE: This probably goes into dimension-fixes
-@Mixin(DimensionType.class)
-public abstract class MixinDimensionRawIndexFix {
-	@Inject(at = @At("RETURN"), method = "byRawId", cancellable = true)
-	private static void byRawId(final int id, final CallbackInfoReturnable<DimensionType> info) {
-		if (info.getReturnValue() == null || info.getReturnValue().getRawId() != id) {
-			for (DimensionType dimension : Registry.DIMENSION_TYPE) {
-				if (dimension.getRawId() == id) {
-					info.setReturnValue(dimension);
-					return;
-				}
-			}
+import net.fabricmc.fabric.impl.command.CommandRegistryImpl;
+
+@Mixin(CommandManager.class)
+public class MixinCommandManager {
+	@Shadow
+	private CommandDispatcher<ServerCommandSource> dispatcher;
+
+	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
+	public void addMethods(boolean dedicated, CallbackInfo info) {
+		// TODO: Run before findAmbiguities
+		if (!dedicated) {
+			CommandRegistryImpl.INSTANCE.entries(false).forEach((e) -> e.accept(dispatcher));
 		}
 	}
 }

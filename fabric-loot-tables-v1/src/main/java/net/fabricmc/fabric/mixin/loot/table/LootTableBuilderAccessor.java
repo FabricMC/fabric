@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.indigo.renderer;
+package net.fabricmc.fabric.mixin.loot.table;
+
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.impl.client.indigo.renderer.accessor.AccessChunkRenderer;
-
-@Mixin(BuiltChunk.class)
-public abstract class MixinChunkRenderer implements AccessChunkRenderer {
-	@Shadow
-	abstract void beginBufferBuilding(BufferBuilder builder);
-
-	/**
-	 * Access method for renderer.
-	 */
-	@Override
-	public void fabric_beginBufferBuilding(BufferBuilder builder) {
-		beginBufferBuilding(builder);
-	}
+@Mixin(LootTable.Builder.class)
+public interface LootTableBuilderAccessor {
+	@Accessor
+	List<LootPool> getPools();
+	@Accessor
+	List<LootFunction> getFunctions();
 }

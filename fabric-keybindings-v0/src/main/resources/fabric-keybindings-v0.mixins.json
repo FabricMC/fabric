@@ -5,7 +5,7 @@
   "client": [
     "MixinGameOptions",
     "MixinKeyBinding",
-    "KeyCodeAccessor"
+    "KeyBindingAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

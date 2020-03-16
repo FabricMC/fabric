@@ -23,27 +23,28 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
+import net.minecraft.client.color.item.ItemColorProvider;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.IdList;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 
-@Mixin(BlockColors.class)
-public class MixinBlockColorMap implements ColorProviderRegistryImpl.ColorMapperHolder<Block, BlockColorProvider> {
+@Mixin(ItemColors.class)
+public class MixinItemColors implements ColorProviderRegistryImpl.ColorMapperHolder<ItemConvertible, ItemColorProvider> {
 	@Shadow
 	@Final
-	private IdList<BlockColorProvider> providers;
+	private IdList<ItemColorProvider> providers;
 
 	@Inject(method = "create", at = @At("RETURN"))
-	private static void create(CallbackInfoReturnable<BlockColors> info) {
-		ColorProviderRegistryImpl.BLOCK.initialize(info.getReturnValue());
+	private static void create(BlockColors blockMap, CallbackInfoReturnable<ItemColors> info) {
+		ColorProviderRegistryImpl.ITEM.initialize(info.getReturnValue());
 	}
 
 	@Override
-	public BlockColorProvider get(Block block) {
-		return providers.get(Registry.BLOCK.getRawId(block));
+	public ItemColorProvider get(ItemConvertible item) {
+		return providers.get(Registry.ITEM.getRawId(item.asItem()));
 	}
 }

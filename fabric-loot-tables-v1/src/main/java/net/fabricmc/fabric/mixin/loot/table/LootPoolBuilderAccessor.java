@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.client.keybinding;
+package net.fabricmc.fabric.mixin.loot.table;
+
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.function.LootFunction;
 
-@Mixin(KeyBinding.class)
-public interface KeyCodeAccessor {
+@Mixin(LootPool.Builder.class)
+public interface LootPoolBuilderAccessor {
 	@Accessor
-	InputUtil.KeyCode getKeyCode();
+	List<LootEntry> getEntries();
+	@Accessor
+	List<LootCondition> getConditions();
+	@Accessor
+	List<LootFunction> getFunctions();
 }

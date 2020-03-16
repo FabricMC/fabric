@@ -11,7 +11,7 @@
   "client": [
     "MixinFormat4ResourcePack",
     "MixinKeyedResourceReloadListener$Client",
-    "MixinMinecraftGame"
+    "MixinMinecraftClient"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -32,7 +32,7 @@ import net.minecraft.fluid.Fluid;
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 
 @Mixin(RenderLayers.class)
-public class MixinBlockRenderLayer {
+public class MixinRenderLayers {
 	@Shadow private static Map<Block, RenderLayer> BLOCKS;
 	@Shadow private static Map<Fluid, RenderLayer> FLUIDS;
 

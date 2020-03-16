@@ -26,7 +26,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
 @Mixin(Block.Settings.class)
-public interface BlockSettingsHooks {
+public interface BlockSettingsAccessor {
 	@Accessor
 	void setHardness(float hardness);
 

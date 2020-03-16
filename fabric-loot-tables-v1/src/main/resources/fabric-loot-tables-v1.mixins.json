@@ -3,11 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.loot.table",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "LootPoolBuilderHooks",
-    "LootSupplierBuilderHooks",
+    "LootPoolBuilderAccessor",
+    "LootTableBuilderAccessor",
     "MixinLootManager",
     "MixinLootPool",
-    "MixinLootSupplier"
+    "MixinLootTable"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -5,7 +5,7 @@
   "mixins": [
     "MixinBootstrap",
     "MixinIdList",
-    "MixinIdRegistry",
+    "MixinSimpleRegistry",
     "MixinPlayerManager",
     "MixinWorldSaveHandler"
   ],

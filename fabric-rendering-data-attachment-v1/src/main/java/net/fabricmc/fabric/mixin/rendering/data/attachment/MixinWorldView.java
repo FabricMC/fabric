@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.object.builder;
+package net.fabricmc.fabric.mixin.rendering.data.attachment;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.world.BlockRenderView;
+import net.minecraft.world.WorldView;
 
-@Mixin(Material.Builder.class)
-public interface MaterialBuilderHooks {
-	@Accessor
-	void setPistonBehavior(PistonBehavior behavior);
+import net.fabricmc.fabric.api.rendering.data.v1.RenderAttachedBlockView;
 
-	@Invoker
-	Material.Builder invokeLightPassesThrough();
-}
+/** Make {@link BlockRenderView} implement {@link RenderAttachedBlockView}. */
+@Mixin(WorldView.class)
+public interface MixinWorldView extends RenderAttachedBlockView { }

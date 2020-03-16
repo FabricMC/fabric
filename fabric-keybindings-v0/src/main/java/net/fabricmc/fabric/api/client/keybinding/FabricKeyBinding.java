@@ -20,7 +20,7 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
+import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 
 /**
  * Expanded version of {@link KeyBinding} for use by Fabric mods.
@@ -38,7 +38,7 @@ public class FabricKeyBinding extends KeyBinding {
 	 * @return configured KeyCode
 	 */
 	public InputUtil.KeyCode getBoundKey() {
-		return ((KeyCodeAccessor) this).getKeyCode();
+		return ((KeyBindingAccessor) this).getKeyCode();
 	}
 
 	public static class Builder {

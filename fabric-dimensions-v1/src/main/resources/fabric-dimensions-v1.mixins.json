@@ -7,7 +7,7 @@
     "MixinEntity",
     "MixinPortalForcer",
     "MixinWorld",
-    "idremap.MixinDimensionRawIndexFix",
+    "idremap.MixinDimensionType",
     "idremap.MixinLevelProperties",
     "idremap.MixinLevelStorage",
     "idremap.MixinPlayerManager",

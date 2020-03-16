@@ -21,7 +21,7 @@ import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.DyeColor;
 
-import net.fabricmc.fabric.mixin.object.builder.MaterialBuilderHooks;
+import net.fabricmc.fabric.mixin.object.builder.MaterialBuilderAccessor;
 
 public class FabricMaterialBuilder extends Material.Builder {
 	public FabricMaterialBuilder(MaterialColor color) {
@@ -39,12 +39,12 @@ public class FabricMaterialBuilder extends Material.Builder {
 	}
 
 	public FabricMaterialBuilder pistonBehavior(PistonBehavior behavior) {
-		((MaterialBuilderHooks) this).setPistonBehavior(behavior);
+		((MaterialBuilderAccessor) this).setPistonBehavior(behavior);
 		return this;
 	}
 
 	public FabricMaterialBuilder lightPassesThrough() {
-		((MaterialBuilderHooks) this).invokeLightPassesThrough();
+		((MaterialBuilderAccessor) this).invokeLightPassesThrough();
 		return this;
 	}
 

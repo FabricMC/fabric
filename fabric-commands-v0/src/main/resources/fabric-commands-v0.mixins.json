@@ -6,7 +6,7 @@
     "MixinMinecraftDedicatedServer"
   ],
   "client": [
-    "MixinCommandManagerIntegrated"
+    "MixinCommandManager"
   ],
   "injectors": {
     "defaultRequire": 1

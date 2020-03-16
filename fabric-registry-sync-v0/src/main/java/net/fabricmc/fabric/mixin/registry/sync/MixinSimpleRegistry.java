@@ -54,7 +54,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
-public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry {
+public abstract class MixinSimpleRegistry<T> implements RemappableRegistry, ListenableRegistry {
 	@Shadow
 	protected Int2ObjectBiMap<T> indexedEntries;
 	@Shadow

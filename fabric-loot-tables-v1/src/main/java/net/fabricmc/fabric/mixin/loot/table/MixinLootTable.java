@@ -32,7 +32,7 @@ import net.minecraft.loot.function.LootFunction;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplier;
 
 @Mixin(LootTable.class)
-public abstract class MixinLootSupplier implements FabricLootSupplier {
+public abstract class MixinLootTable implements FabricLootSupplier {
 	@Shadow
 	@Final
 	private LootPool[] pools;
