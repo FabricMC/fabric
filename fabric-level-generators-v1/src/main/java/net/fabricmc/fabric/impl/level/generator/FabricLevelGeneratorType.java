@@ -31,7 +31,7 @@ import net.minecraft.world.level.LevelGeneratorType;
 import net.fabricmc.fabric.mixin.level.generator.LevelGeneratorTypeAccessor;
 
 public final class FabricLevelGeneratorType {
-	public static final HashMap<LevelGeneratorType, ChunkGeneratorSupplier> suppliers = new HashMap<>();
+	public static final HashMap<LevelGeneratorType, ChunkGeneratorSupplier> SUPPLIERS = new HashMap<>();
 
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
 		if (name.getNamespace().contains(".")) {
@@ -39,7 +39,7 @@ public final class FabricLevelGeneratorType {
 		}
 
 		LevelGeneratorType levelType = LevelGeneratorTypeAccessor.fabric_create(getFreeId(), changeIdentifierSeparator(name), changeIdentifierSeparator(storedName), version);
-		suppliers.put(levelType, new ChunkGeneratorSupplier(generatorType, biomeSource));
+		SUPPLIERS.put(levelType, new ChunkGeneratorSupplier(generatorType, biomeSource));
 		return levelType;
 	}
 
@@ -60,7 +60,7 @@ public final class FabricLevelGeneratorType {
 	}
 
 	public static LevelGeneratorType checkForFabricLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
-		if (FabricLevelGeneratorType.suppliers.get(levelGeneratorType) == null) {
+		if (FabricLevelGeneratorType.SUPPLIERS.get(levelGeneratorType) == null) {
 			return levelGeneratorType;
 		}
 
