@@ -34,13 +34,13 @@ import net.fabricmc.fabric.impl.item.group.CreativeGuiExtensions;
 import net.fabricmc.fabric.impl.item.group.FabricCreativeGuiComponents;
 
 @Mixin(CreativeInventoryScreen.class)
-public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryScreen implements CreativeGuiExtensions {
-	public MixinCreativePlayerInventoryGui(ScreenHandler container_1, PlayerInventory playerInventory_1, Text textComponent_1) {
-		super(container_1, playerInventory_1, textComponent_1);
+public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScreen implements CreativeGuiExtensions {
+	public MixinCreativeInventoryScreen(ScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
+		super(screenHandler, playerInventory, text);
 	}
 
 	@Shadow
-	protected abstract void setSelectedTab(ItemGroup itemGroup_1);
+	protected abstract void setSelectedTab(ItemGroup itemGroup);
 
 	@Shadow
 	public abstract int getSelectedTab(); /* XXX getSelectedTab XXX */
