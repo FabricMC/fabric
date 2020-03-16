@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.entity;
+package net.fabricmc.fabric.api.entity.v1;
 
 import java.util.function.Function;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
@@ -24,21 +27,30 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
+
 /**
- * @deprecated Please migrate to v1
- *
  * Extended version of {@link EntityType.Builder} with added registration for
  * server-&gt;client entity tracking values.
  *
  * @param <T> Entity class.
  */
 // TODO more javadocs
-@Deprecated
 public class FabricEntityTypeBuilder<T extends Entity> {
-	private final net.fabricmc.fabric.api.entity.v1.FabricEntityTypeBuilder<T> delegate;
+	private static final Logger LOGGER = LogManager.getLogger();
+	private final EntityCategory category;
+	private final EntityType.EntityFactory<T> function;
+	private boolean saveable = true;
+	private boolean summonable = true;
+	private int trackingDistance = -1;
+	private int updateIntervalTicks = -1;
+	private Boolean alwaysUpdateVelocity;
+	private boolean immuneToFire = false;
+	private EntityDimensions size = EntityDimensions.changing(-1.0f, -1.0f);
 
 	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
-		this.delegate = net.fabricmc.fabric.api.entity.v1.FabricEntityTypeBuilder.create(category, function);
+		this.category = category;
+		this.function = function;
 	}
 
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
@@ -58,17 +70,17 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	public FabricEntityTypeBuilder<T> disableSummon() {
-		this.delegate.disableSummon();
+		this.summonable = false;
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> disableSaving() {
-		this.delegate.disableSaving();
+		this.saveable = false;
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> setImmuneToFire() {
-		this.delegate.setImmuneToFire();
+		this.immuneToFire = true;
 		return this;
 	}
 
@@ -77,26 +89,35 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		this.delegate.size(width, height);
+		this.size = EntityDimensions.changing(width, height);
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
-		this.delegate.size(size);
+		this.size = size;
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-		this.delegate.trackable(trackingDistanceBlocks, updateIntervalTicks);
-		return this;
+		return trackable(trackingDistanceBlocks, updateIntervalTicks, true);
 	}
 
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-		this.delegate.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+		this.trackingDistance = trackingDistanceBlocks;
+		this.updateIntervalTicks = updateIntervalTicks;
+		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
 		return this;
 	}
 
 	public EntityType<T> build() {
-		return this.delegate.build();
+		if (this.saveable) {
+			// SNIP! Modded datafixers are not supported anyway.
+			// TODO: Flesh out once modded datafixers exist.
+		}
+
+		boolean figureMeOut1 = this.category == EntityCategory.CREATURE || this.category == EntityCategory.MISC; // TODO
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, figureMeOut1, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+
+		return type;
 	}
 }

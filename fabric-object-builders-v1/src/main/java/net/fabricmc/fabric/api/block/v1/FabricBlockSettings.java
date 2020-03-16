@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.block;
+package net.fabricmc.fabric.api.block.v1;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import net.minecraft.block.Block;
@@ -27,12 +31,70 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.event.registry.v1.BlockConstructedCallback;
+import net.fabricmc.fabric.impl.mining.level.ToolManager;
+
 /**
- * @deprecated Please migrate to v1.
+ * Fabric's version of Block.Settings. Adds additional methods and hooks
+ * not found in the original class.
+ *
+ * <p>To use it, simply replace Block.Settings.create() with
+ * FabricBlockSettings.create() and add .build() at the end to return the
+ * vanilla Block.Settings instance beneath.
  */
-@Deprecated
 public class FabricBlockSettings {
-	protected final net.fabricmc.fabric.api.block.v1.FabricBlockSettings delegate;
+	static {
+		BlockConstructedCallback.EVENT.register(FabricBlockSettings::onBuild);
+	}
+
+	private static final Map<Block.Settings, ExtraData> EXTRA_DATA = new HashMap<>();
+
+	protected final Block.Settings delegate;
+
+	static final class ExtraData {
+		private final List<MiningLevel> miningLevels = new ArrayList<>();
+		/* @Nullable */ private Boolean breakByHand;
+
+		private ExtraData(Block.Settings settings) {
+		}
+
+		void breakByHand(boolean breakByHand) {
+			this.breakByHand = breakByHand;
+		}
+
+		void addMiningLevel(Tag<Item> tag, int level) {
+			miningLevels.add(new MiningLevel(tag, level));
+		}
+	}
+
+	private static final class MiningLevel {
+		private final Tag<Item> tag;
+		private final int level;
+
+		MiningLevel(Tag<Item> tag, int level) {
+			this.tag = tag;
+			this.level = level;
+		}
+	}
+
+	static ExtraData computeExtraData(Block.Settings settings) {
+		return EXTRA_DATA.computeIfAbsent(settings, ExtraData::new);
+	}
+
+	private static void onBuild(Block.Settings settings, Block block) {
+		// TODO: Load only if fabric-mining-levels present
+		ExtraData data = EXTRA_DATA.get(settings);
+
+		if (data != null) {
+			if (data.breakByHand != null) {
+				ToolManager.entry(block).setBreakByHand(data.breakByHand);
+			}
+
+			for (MiningLevel tml : data.miningLevels) {
+				ToolManager.entry(block).putBreakByTool(tml.tag, tml.level);
+			}
+		}
+	}
 
 	protected FabricBlockSettings(Material material, MaterialColor color) {
 		this(Block.Settings.of(material, color));
@@ -43,7 +105,7 @@ public class FabricBlockSettings {
 	}
 
 	protected FabricBlockSettings(final Block.Settings delegate) {
-		this.delegate = net.fabricmc.fabric.api.block.v1.FabricBlockSettings.copyOf(delegate);
+		this.delegate = delegate;
 	}
 
 	public static FabricBlockSettings of(Material material) {
@@ -69,34 +131,32 @@ public class FabricBlockSettings {
 	/* FABRIC HELPERS */
 
 	public FabricBlockSettings breakByHand(boolean breakByHand) {
-		this.delegate.breakByHand(breakByHand);
+		computeExtraData(this.delegate).breakByHand(breakByHand);
 		return this;
 	}
 
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
-		this.delegate.breakByTool(tag, miningLevel);
+		computeExtraData(this.delegate).addMiningLevel(tag, miningLevel);
 		return this;
 	}
 
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
-		this.delegate.breakByTool(tag);
-		return this;
+		return this.breakByTool(tag, 0);
 	}
 
 	/* DELEGATE WRAPPERS */
 
 	public FabricBlockSettings materialColor(MaterialColor color) {
-		this.delegate.materialColor(color);
+		BlockSettingsExtensions.materialColor(delegate, color);
 		return this;
 	}
 
 	public FabricBlockSettings materialColor(DyeColor color) {
-		this.delegate.materialColor(color.getMaterialColor());
-		return this;
+		return this.materialColor(color.getMaterialColor());
 	}
 
 	public FabricBlockSettings collidable(boolean collidable) {
-		this.delegate.collidable(collidable);
+		BlockSettingsExtensions.collidable(delegate, collidable);
 		return this;
 	}
 
@@ -111,52 +171,52 @@ public class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings sounds(BlockSoundGroup group) {
-		this.delegate.sounds(group);
+		BlockSettingsExtensions.sounds(delegate, group);
 		return this;
 	}
 
 	public FabricBlockSettings ticksRandomly() {
-		this.delegate.ticksRandomly();
+		BlockSettingsExtensions.ticksRandomly(delegate);
 		return this;
 	}
 
 	public FabricBlockSettings lightLevel(int lightLevel) {
-		this.delegate.lightLevel(lightLevel);
+		BlockSettingsExtensions.lightLevel(delegate, lightLevel);
 		return this;
 	}
 
 	public FabricBlockSettings hardness(float hardness) {
-		this.delegate.hardness(hardness);
+		BlockSettingsExtensions.hardness(delegate, hardness);
 		return this;
 	}
 
 	public FabricBlockSettings resistance(float resistance) {
-		this.delegate.resistance(resistance);
+		BlockSettingsExtensions.resistance(delegate, resistance);
 		return this;
 	}
 
 	public FabricBlockSettings strength(float hardness, float resistance) {
-		this.delegate.strength(hardness, resistance);
+		delegate.strength(hardness, resistance);
 		return this;
 	}
 
 	public FabricBlockSettings breakInstantly() {
-		this.delegate.breakInstantly();
+		BlockSettingsExtensions.breakInstantly(delegate);
 		return this;
 	}
 
 	public FabricBlockSettings dropsNothing() {
-		this.delegate.dropsNothing();
+		BlockSettingsExtensions.dropsNothing(delegate);
 		return this;
 	}
 
 	public FabricBlockSettings dropsLike(Block block) {
-		this.delegate.dropsLike(block);
+		delegate.dropsLike(block);
 		return this;
 	}
 
 	public FabricBlockSettings drops(Identifier dropTableId) {
-		this.delegate.drops(dropTableId);
+		BlockSettingsExtensions.drops(delegate, dropTableId);
 		return this;
 	}
 
@@ -172,17 +232,17 @@ public class FabricBlockSettings {
 	}
 
 	public FabricBlockSettings dynamicBounds() {
-		this.delegate.dynamicBounds();
+		BlockSettingsExtensions.dynamicBounds(delegate);
 		return this;
 	}
 
 	/* BUILDING LOGIC */
 
 	public Block.Settings build() {
-		return this.delegate.build();
+		return this.delegate;
 	}
 
 	public <T> T build(Function<Block.Settings, T> function) {
-		return this.delegate.build(function);
+		return function.apply(this.delegate);
 	}
 }

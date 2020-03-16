@@ -14,20 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.object.builder;
+package net.fabricmc.fabric.api.event.registry.v1;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import net.minecraft.block.Block;
 
-import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
-@Mixin(Material.Builder.class)
-public interface MaterialBuilderHooks {
-	@Accessor
-	void setPistonBehavior(PistonBehavior behavior);
+/**
+ * A callback for when an block is constructed.
+ */
+public interface BlockConstructedCallback {
+	Event<BlockConstructedCallback> EVENT = EventFactory.createArrayBacked(BlockConstructedCallback.class,
+			(listeners) -> (settings, builtBlock) -> {
+				for (BlockConstructedCallback callback : listeners) {
+					callback.building(settings, builtBlock);
+				}
+			}
+	);
 
-	@Invoker
-	Material.Builder invokeLightPassesThrough();
+	void building(Block.Settings settings, Block builtBlock);
 }

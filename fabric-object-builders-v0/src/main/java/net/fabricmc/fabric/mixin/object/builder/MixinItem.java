@@ -25,10 +25,10 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 
-@Mixin(Item.class)
-public class MixinItem {
+@Mixin(value = Item.class, priority = 1001)
+public abstract class MixinItem {
 	@Inject(method = "<init>(Lnet/minecraft/item/Item$Settings;)V", at = @At("RETURN"))
-	public void init(Item.Settings builder, CallbackInfo info) {
+	public void fabric_init(Item.Settings builder, CallbackInfo info) {
 		ItemConstructedCallback.EVENT.invoker().building(builder, (Item) (Object) this);
 	}
 }

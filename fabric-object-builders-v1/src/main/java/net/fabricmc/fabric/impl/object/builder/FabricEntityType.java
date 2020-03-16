@@ -25,8 +25,8 @@ public class FabricEntityType<T extends Entity> extends EntityType<T> {
 	private final int maxTrackDistance, trackTickInterval;
 	private final Boolean alwaysUpdateVelocity;
 
-	public FabricEntityType(EntityFactory<T> entityType$EntityFactory_1, EntityCategory entityCategory_1, boolean boolean_1, boolean boolean_2, boolean boolean_3, boolean boolean_4, EntityDimensions entitySize_1, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
-		super(entityType$EntityFactory_1, entityCategory_1, boolean_1, boolean_2, boolean_3, boolean_4, entitySize_1);
+	public FabricEntityType(EntityFactory<T> entityFactory, EntityCategory entityCategory, boolean saveable, boolean summonable, boolean fireImmune, boolean spawnableFromPlayer, EntityDimensions dimensions, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
+		super(entityFactory, entityCategory, saveable, summonable, fireImmune, spawnableFromPlayer, dimensions);
 		this.maxTrackDistance = maxTrackDistance;
 		this.trackTickInterval = trackTickInterval;
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
@@ -34,8 +34,8 @@ public class FabricEntityType<T extends Entity> extends EntityType<T> {
 
 	@Override
 	public int getMaxTrackDistance() {
-		if (maxTrackDistance != -1) {
-			return (maxTrackDistance + 15) / 16;
+		if (this.maxTrackDistance != -1) {
+			return (this.maxTrackDistance + 15) / 16;
 		}
 
 		return super.getMaxTrackDistance();
@@ -43,8 +43,8 @@ public class FabricEntityType<T extends Entity> extends EntityType<T> {
 
 	@Override
 	public int getTrackTickInterval() {
-		if (trackTickInterval != -1) {
-			return trackTickInterval;
+		if (this.trackTickInterval != -1) {
+			return this.trackTickInterval;
 		}
 
 		return super.getTrackTickInterval();
@@ -52,8 +52,8 @@ public class FabricEntityType<T extends Entity> extends EntityType<T> {
 
 	@Override
 	public boolean alwaysUpdateVelocity() {
-		if (alwaysUpdateVelocity != null) {
-			return alwaysUpdateVelocity;
+		if (this.alwaysUpdateVelocity != null) {
+			return this.alwaysUpdateVelocity;
 		}
 
 		return super.alwaysUpdateVelocity();

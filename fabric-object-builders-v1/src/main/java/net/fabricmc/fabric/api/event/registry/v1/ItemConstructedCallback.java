@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.registry;
+package net.fabricmc.fabric.api.event.registry.v1;
 
-import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * @deprecated Please migrate to v1.
+ * A callback for when an item is constructed.
  */
-@Deprecated
-public interface BlockConstructedCallback {
-	Event<BlockConstructedCallback> EVENT = EventFactory.createArrayBacked(BlockConstructedCallback.class,
-			(listeners) -> (settings, builtBlock) -> {
-				for (BlockConstructedCallback callback : listeners) {
-					callback.building(settings, builtBlock);
+public interface ItemConstructedCallback {
+	Event<ItemConstructedCallback> EVENT = EventFactory.createArrayBacked(ItemConstructedCallback.class,
+			(listeners) -> (settings, builtItem) -> {
+				for (ItemConstructedCallback callback : listeners) {
+					callback.building(settings, builtItem);
 				}
 			}
 	);
 
-	void building(Block.Settings settings, Block builtBlock);
+	void building(Item.Settings settings, Item builtItem);
 }

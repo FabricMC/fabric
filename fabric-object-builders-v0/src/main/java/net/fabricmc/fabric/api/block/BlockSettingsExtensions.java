@@ -23,65 +23,67 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.mixin.object.builder.BlockSettingsHooks;
-
+/**
+ * @deprecated Please migrate to v1.
+ */
+@Deprecated
 public final class BlockSettingsExtensions {
 	private BlockSettingsExtensions() {
 	}
 
 	public static void breakByHand(Settings settings, boolean breakByHand) {
-		FabricBlockSettings.computeExtraData(settings).breakByHand(breakByHand);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.breakByHand(settings, breakByHand);
 	}
 
 	public static void breakByTool(Settings settings, Tag<Item> tag, int miningLevel) {
-		FabricBlockSettings.computeExtraData(settings).addMiningLevel(tag, miningLevel);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.breakByTool(settings, tag, miningLevel);
 	}
 
 	public static void hardness(Settings settings, float hardness) {
-		((BlockSettingsHooks) settings).setHardness(hardness);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.hardness(settings, hardness);
 	}
 
 	public static void resistance(Settings settings, float resistance) {
-		((BlockSettingsHooks) settings).setResistance(Math.max(0.0F, resistance));
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.resistance(settings, resistance);
 	}
 
 	public static void collidable(Settings settings, boolean collidable) {
-		((BlockSettingsHooks) settings).setCollidable(collidable);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.collidable(settings, collidable);
 	}
 
 	public static void materialColor(Settings settings, MaterialColor materialColor) {
-		((BlockSettingsHooks) settings).setMaterialColor(materialColor);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.materialColor(settings, materialColor);
 	}
 
 	public static void drops(Settings settings, Identifier dropTableId) {
-		((BlockSettingsHooks) settings).setDropTableId(dropTableId);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.drops(settings, dropTableId);
 	}
 
 	public static void sounds(Settings settings, BlockSoundGroup soundGroup) {
-		((BlockSettingsHooks) settings).invokeSounds(soundGroup);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.sounds(settings, soundGroup);
 	}
 
 	public static void lightLevel(Settings settings, int lightLevel) {
-		((BlockSettingsHooks) settings).invokeLightLevel(lightLevel);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.lightLevel(settings, lightLevel);
 	}
 
 	public static void breakInstantly(Settings settings) {
-		((BlockSettingsHooks) settings).invokeBreakInstantly();
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.breakInstantly(settings);
 	}
 
 	public static void strength(Settings settings, float strength) {
-		((BlockSettingsHooks) settings).invokeStrength(strength);
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.strength(settings, strength);
 	}
 
 	public static void ticksRandomly(Settings settings) {
-		((BlockSettingsHooks) settings).invokeTicksRandomly();
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.ticksRandomly(settings);
 	}
 
 	public static void dynamicBounds(Settings settings) {
-		((BlockSettingsHooks) settings).invokeHasDynamicBounds();
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.dynamicBounds(settings);
 	}
 
 	public static void dropsNothing(Settings settings) {
-		((BlockSettingsHooks) settings).invokeDropsNothing();
+		net.fabricmc.fabric.api.block.v1.BlockSettingsExtensions.dropsNothing(settings);
 	}
 }
