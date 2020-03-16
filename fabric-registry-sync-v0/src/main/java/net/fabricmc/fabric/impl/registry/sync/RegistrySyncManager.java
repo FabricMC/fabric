@@ -255,6 +255,7 @@ public final class RegistrySyncManager {
 		if (!containedRegistries.isEmpty()) {
 			LOGGER.warn("[fabric-registry-sync] Could not find the following registries: " + Joiner.on(", ").join(containedRegistries));
 		}
+
 		return mainTag;
 	}
 
