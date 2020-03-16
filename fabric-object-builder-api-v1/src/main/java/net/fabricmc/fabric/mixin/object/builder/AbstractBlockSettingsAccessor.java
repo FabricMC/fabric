@@ -26,12 +26,57 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
 @Mixin(AbstractBlock.Settings.class)
-public interface BlockSettingsHooks {
+public interface AbstractBlockSettingsAccessor {
+	/* GETTERS */
+	@Accessor
+	Material getMaterial();
+
+	@Accessor
+	float getHardness();
+
+	@Accessor
+	float getResistance();
+
+	@Accessor
+	boolean getCollidable();
+
+	@Accessor
+	boolean getRandomTicks();
+
+	@Accessor
+	ToIntFunction<BlockState> getLuminance();
+
+	@Accessor
+	Function<BlockState, MaterialColor> getMaterialColorFactory();
+
+	@Accessor
+	BlockSoundGroup getSoundGroup();
+
+	@Accessor
+	float getSlipperiness();
+
+	@Accessor
+	float getVelocityMultiplier();
+
+	@Accessor
+	boolean getDynamicBounds();
+
+	@Accessor
+	boolean getOpaque();
+
+	@Accessor
+	boolean getIsAir();
+
+	/* SETTERS */
+	@Accessor
+	void setMaterial(Material material);
+
 	@Accessor
 	void setHardness(float hardness);
 
@@ -42,10 +87,23 @@ public interface BlockSettingsHooks {
 	void setCollidable(boolean collidable);
 
 	@Accessor
+	void setRandomTicks(boolean ticksRandomly);
+
+	@Accessor
 	void setMaterialColorFactory(Function<BlockState, MaterialColor> materialColorFunction);
 
 	@Accessor
-	void setLootTableId(Identifier dropTableId);
+	void setDynamicBounds(boolean dynamicBounds);
+
+	@Accessor
+	void setOpaque(boolean opaque);
+
+	@Accessor
+	void setIsAir(boolean isAir);
+
+	@Accessor
+	void setLootTableId(Identifier lootTableId);
+	/* INVOKERS */
 
 	@Invoker
 	Block.Settings invokeSounds(BlockSoundGroup group);
@@ -61,9 +119,6 @@ public interface BlockSettingsHooks {
 
 	@Invoker
 	Block.Settings invokeTicksRandomly();
-
-	@Invoker
-	Block.Settings invokeDynamicBounds();
 
 	@Invoker
 	Block.Settings invokeDropsNothing();
