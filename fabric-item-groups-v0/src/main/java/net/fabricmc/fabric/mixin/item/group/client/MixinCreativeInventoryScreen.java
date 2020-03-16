@@ -30,11 +30,11 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.impl.item.group.CreativeGuiExtensions;
-import net.fabricmc.fabric.impl.item.group.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.item.group.CreativeScreenExtensions;
+import net.fabricmc.fabric.impl.item.group.FabricCreativeScreenComponents;
 
 @Mixin(CreativeInventoryScreen.class)
-public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScreen implements CreativeGuiExtensions {
+public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScreen implements CreativeScreenExtensions {
 	public MixinCreativeInventoryScreen(ScreenHandler screenHandler, PlayerInventory playerInventory, Text text) {
 		super(screenHandler, playerInventory, text);
 	}
@@ -55,7 +55,7 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 		case 1:
 			return 12;
 		default:
-			return 12 + ((12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) * (page - 1));
+			return 12 + ((12 - FabricCreativeScreenComponents.COMMON_GROUPS.size()) * (page - 1));
 		}
 	}
 
@@ -63,7 +63,7 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 		if (offset < 12) {
 			return 0;
 		} else {
-			return 1 + ((offset - 12) / (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
+			return 1 + ((offset - 12) / (12 - FabricCreativeScreenComponents.COMMON_GROUPS.size()));
 		}
 	}
 
@@ -88,17 +88,17 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 	}
 
 	@Override
-	public boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type) {
+	public boolean fabric_isButtonVisible(FabricCreativeScreenComponents.Type type) {
 		return ItemGroup.GROUPS.length > 12;
 	}
 
 	@Override
-	public boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type) {
-		if (type == FabricCreativeGuiComponents.Type.NEXT) {
+	public boolean fabric_isButtonEnabled(FabricCreativeScreenComponents.Type type) {
+		if (type == FabricCreativeScreenComponents.Type.NEXT) {
 			return !(fabric_getPageOffset(fabric_currentPage + 1) >= ItemGroup.GROUPS.length);
 		}
 
-		if (type == FabricCreativeGuiComponents.Type.PREVIOUS) {
+		if (type == FabricCreativeScreenComponents.Type.PREVIOUS) {
 			return fabric_currentPage != 0;
 		}
 
@@ -122,8 +122,8 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 		int xpos = x + 170;
 		int ypos = y + 4;
 
-		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos + 10, ypos, FabricCreativeGuiComponents.Type.NEXT, this));
-		addButton(new FabricCreativeGuiComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeGuiComponents.Type.PREVIOUS, this));
+		addButton(new FabricCreativeScreenComponents.ItemGroupButtonWidget(xpos + 10, ypos, FabricCreativeScreenComponents.Type.NEXT, this));
+		addButton(new FabricCreativeScreenComponents.ItemGroupButtonWidget(xpos, ypos, FabricCreativeScreenComponents.Type.PREVIOUS, this));
 	}
 
 	@Inject(method = "setSelectedTab", at = @At("HEAD"), cancellable = true)
@@ -155,7 +155,7 @@ public abstract class MixinCreativeInventoryScreen extends AbstractInventoryScre
 	}
 
 	private boolean fabric_isGroupVisible(ItemGroup itemGroup) {
-		if (FabricCreativeGuiComponents.COMMON_GROUPS.contains(itemGroup)) {
+		if (FabricCreativeScreenComponents.COMMON_GROUPS.contains(itemGroup)) {
 			return true;
 		}
 

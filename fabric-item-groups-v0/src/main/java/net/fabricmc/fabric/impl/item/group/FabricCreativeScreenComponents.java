@@ -29,7 +29,7 @@ import net.minecraft.client.resource.language.I18n;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 
-public class FabricCreativeGuiComponents {
+public class FabricCreativeScreenComponents {
 	private static final Identifier BUTTON_TEX = new Identifier("fabric", "textures/gui/creative_buttons.png");
 	public static final Set<ItemGroup> COMMON_GROUPS = new HashSet<>();
 
@@ -40,15 +40,15 @@ public class FabricCreativeGuiComponents {
 	}
 
 	public static class ItemGroupButtonWidget extends ButtonWidget {
-		CreativeGuiExtensions extensions;
-		CreativeInventoryScreen gui;
+		CreativeScreenExtensions extensions;
+		CreativeInventoryScreen screen;
 		Type type;
 
-		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
+		public ItemGroupButtonWidget(int x, int y, Type type, CreativeScreenExtensions extensions) {
 			super(x, y, 10, 11, type.text, (bw) -> type.clickConsumer.accept(extensions));
 			this.extensions = extensions;
 			this.type = type;
-			this.gui = (CreativeInventoryScreen) extensions;
+			this.screen = (CreativeInventoryScreen) extensions;
 		}
 
 		@Override
@@ -64,20 +64,20 @@ public class FabricCreativeGuiComponents {
 				this.blit(this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);
 
 				if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
-					gui.renderTooltip(I18n.translate("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
+					screen.renderTooltip(I18n.translate("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
 				}
 			}
 		}
 	}
 
 	public enum Type {
-		NEXT(">", CreativeGuiExtensions::fabric_nextPage),
-		PREVIOUS("<", CreativeGuiExtensions::fabric_previousPage);
+		NEXT(">", CreativeScreenExtensions::fabric_nextPage),
+		PREVIOUS("<", CreativeScreenExtensions::fabric_previousPage);
 
 		String text;
-		Consumer<CreativeGuiExtensions> clickConsumer;
+		Consumer<CreativeScreenExtensions> clickConsumer;
 
-		Type(String text, Consumer<CreativeGuiExtensions> clickConsumer) {
+		Type(String text, Consumer<CreativeScreenExtensions> clickConsumer) {
 			this.text = text;
 			this.clickConsumer = clickConsumer;
 		}

@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.item.ItemGroup;
 
-import net.fabricmc.fabric.impl.item.group.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.item.group.FabricCreativeScreenComponents;
 
 @Mixin(ItemGroup.class)
 public abstract class MixinItemGroup {
@@ -37,7 +37,7 @@ public abstract class MixinItemGroup {
 	@Inject(method = "isTopRow", cancellable = true, at = @At("HEAD"))
 	private void isTopRow(CallbackInfoReturnable<Boolean> info) {
 		if (getIndex() > 11) {
-			info.setReturnValue((getIndex() - 12) % (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) < 4);
+			info.setReturnValue((getIndex() - 12) % (12 - FabricCreativeScreenComponents.COMMON_GROUPS.size()) < 4);
 		}
 	}
 
@@ -45,9 +45,9 @@ public abstract class MixinItemGroup {
 	private void getColumn(CallbackInfoReturnable<Integer> info) {
 		if (getIndex() > 11) {
 			if (isTopRow()) {
-				info.setReturnValue((getIndex() - 12) % (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()));
+				info.setReturnValue((getIndex() - 12) % (12 - FabricCreativeScreenComponents.COMMON_GROUPS.size()));
 			} else {
-				info.setReturnValue((getIndex() - 12) % (12 - FabricCreativeGuiComponents.COMMON_GROUPS.size()) - 4);
+				info.setReturnValue((getIndex() - 12) % (12 - FabricCreativeScreenComponents.COMMON_GROUPS.size()) - 4);
 			}
 		}
 	}
