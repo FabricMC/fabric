@@ -55,7 +55,7 @@ public final class MixinMinecraftDedicatedServer {
 			if (fabricLevelType.getNamespace().equals("minecraft")) {
 				levelGeneratorType = FabricLevelGeneratorType.getTypeFromPath(fabricLevelType.getPath());
 			} else {
-				levelGeneratorType = LevelGeneratorType.getTypeFromName(FabricLevelGeneratorType.changeIdentifierSeparator(fabricLevelType));
+				levelGeneratorType = LevelGeneratorType.getTypeFromName(fabricLevelType.toString());
 			}
 		}
 

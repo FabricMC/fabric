@@ -34,17 +34,9 @@ public final class FabricLevelGeneratorType {
 	public static final HashMap<LevelGeneratorType, ChunkGeneratorSupplier> SUPPLIERS = new HashMap<>();
 
 	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
-		if (name.getNamespace().contains(".")) {
-			throw new IllegalArgumentException("Character '.' is not allowed in namespace");
-		}
-
-		LevelGeneratorType levelType = LevelGeneratorTypeAccessor.fabric_create(getFreeId(), changeIdentifierSeparator(name), changeIdentifierSeparator(storedName), version);
+		LevelGeneratorType levelType = LevelGeneratorTypeAccessor.fabric_create(getFreeId(), name.toString(), storedName.toString(), version);
 		SUPPLIERS.put(levelType, new ChunkGeneratorSupplier(generatorType, biomeSource));
 		return levelType;
-	}
-
-	public static String changeIdentifierSeparator(Identifier identifier) {
-		return identifier.getNamespace() + "." + identifier.getPath();
 	}
 
 	private static int getFreeId() {
@@ -60,7 +52,7 @@ public final class FabricLevelGeneratorType {
 	}
 
 	public static LevelGeneratorType checkForFabricLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
-		if (FabricLevelGeneratorType.SUPPLIERS.get(levelGeneratorType) == null) {
+		if (SUPPLIERS.get(levelGeneratorType) == null) {
 			return levelGeneratorType;
 		}
 
@@ -73,24 +65,12 @@ public final class FabricLevelGeneratorType {
 		for (int id = 0; id < LevelGeneratorType.TYPES.length; id++) {
 			LevelGeneratorType levelGeneratorType = LevelGeneratorType.TYPES[id];
 			String[] levelGeneratorTypes;
-			StringBuilder levelGeneratorTypeName = new StringBuilder();
 
 			if (levelGeneratorType != null) {
-				levelGeneratorTypes = levelGeneratorType.getName().split("\\.", 2);
+				levelGeneratorTypes = levelGeneratorType.getName().split(":", 2);
+				if (levelGeneratorTypes.length != 2) continue;
 
-				if (levelGeneratorTypes.length == 2) {
-					levelGeneratorTypeName = new StringBuilder(levelGeneratorTypes[1]);
-				} else if (levelGeneratorTypes.length > 2) {
-					levelGeneratorTypeName.append(levelGeneratorTypes[1]);
-
-					for (int i = 2; i < levelGeneratorTypes.length; i++) {
-						levelGeneratorTypeName.append(".").append(levelGeneratorTypes[i]);
-					}
-				} else {
-					continue;
-				}
-
-				if (levelGeneratorTypeName.toString().equals(name)) {
+				if (levelGeneratorTypes[1].equals(name)) {
 					matches.add(levelGeneratorType);
 				}
 			}
