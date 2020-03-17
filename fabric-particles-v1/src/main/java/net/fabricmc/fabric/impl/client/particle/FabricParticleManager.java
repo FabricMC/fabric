@@ -102,7 +102,7 @@ public final class FabricParticleManager {
 	}
 
 	public CompletableFuture<Void> reload(CompletableFuture<Void> prev, ResourceReloadListener.Synchronizer sync, ResourceManager manager, Profiler executeProf, Profiler applyProf, Executor one, Executor two) {
-		return prev.thenCompose(sync::whenPrepared).thenAcceptAsync(data -> {
+		return prev.thenAcceptAsync(data -> {
 			applyProf.startTick();
 			applyProf.push("bindSpriteSets");
 			List<Sprite> missing = ImmutableList.of(this.manager.getAtlas().getSprite(MissingSprite.getMissingSpriteId()));
