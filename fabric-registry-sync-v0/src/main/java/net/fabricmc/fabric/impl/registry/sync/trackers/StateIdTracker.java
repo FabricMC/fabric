@@ -24,7 +24,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectRBTreeMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.util.IdList;
+import net.minecraft.util.collection.IdList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

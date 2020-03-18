@@ -382,32 +382,32 @@ public class AoCalculator {
 			lightPos.set(isOnBlockFace ? pos.offset(lightFace) : pos);
 			AoFace aoFace = AoFace.get(lightFace);
 
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[0]);
+			searchPos.set(lightPos).move(aoFace.neighbors[0]);
 			final int light0 = brightnessFunc.applyAsInt(searchPos);
 			final float ao0 = aoFunc.apply(searchPos);
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[1]);
+			searchPos.set(lightPos).move(aoFace.neighbors[1]);
 			final int light1 = brightnessFunc.applyAsInt(searchPos);
 			final float ao1 = aoFunc.apply(searchPos);
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[2]);
+			searchPos.set(lightPos).move(aoFace.neighbors[2]);
 			final int light2 = brightnessFunc.applyAsInt(searchPos);
 			final float ao2 = aoFunc.apply(searchPos);
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[3]);
+			searchPos.set(lightPos).move(aoFace.neighbors[3]);
 			final int light3 = brightnessFunc.applyAsInt(searchPos);
 			final float ao3 = aoFunc.apply(searchPos);
 
 			// vanilla was further offsetting these in the direction of the light face
 			// but it was actually mis-sampling and causing visible artifacts in certain situation
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[0]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
+			searchPos.set(lightPos).move(aoFace.neighbors[0]); //.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
 			final boolean isClear0 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[1]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
+			searchPos.set(lightPos).move(aoFace.neighbors[1]); //.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
 			final boolean isClear1 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[2]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
+			searchPos.set(lightPos).move(aoFace.neighbors[2]); //.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
 			final boolean isClear2 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
-			searchPos.set(lightPos).setOffset(aoFace.neighbors[3]); //.setOffset(lightFace);
-			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.setOffset(lightFace);
+			searchPos.set(lightPos).move(aoFace.neighbors[3]); //.setOffset(lightFace);
+			if (!Indigo.FIX_SMOOTH_LIGHTING_OFFSET) searchPos.move(lightFace);
 			final boolean isClear3 = world.getBlockState(searchPos).getOpacity(world, searchPos) == 0;
 
 			// c = corner - values at corners of face
@@ -421,7 +421,7 @@ public class AoCalculator {
 				cAo0 = ao0;
 				cLight0 = light0;
 			} else {
-				searchPos.set(lightPos).setOffset(aoFace.neighbors[0]).setOffset(aoFace.neighbors[2]);
+				searchPos.set(lightPos).move(aoFace.neighbors[0]).move(aoFace.neighbors[2]);
 				cAo0 = aoFunc.apply(searchPos);
 				cLight0 = brightnessFunc.applyAsInt(searchPos);
 			}
@@ -430,7 +430,7 @@ public class AoCalculator {
 				cAo1 = ao0;
 				cLight1 = light0;
 			} else {
-				searchPos.set(lightPos).setOffset(aoFace.neighbors[0]).setOffset(aoFace.neighbors[3]);
+				searchPos.set(lightPos).move(aoFace.neighbors[0]).move(aoFace.neighbors[3]);
 				cAo1 = aoFunc.apply(searchPos);
 				cLight1 = brightnessFunc.applyAsInt(searchPos);
 			}
@@ -439,7 +439,7 @@ public class AoCalculator {
 				cAo2 = ao1;
 				cLight2 = light1;
 			} else {
-				searchPos.set(lightPos).setOffset(aoFace.neighbors[1]).setOffset(aoFace.neighbors[2]);
+				searchPos.set(lightPos).move(aoFace.neighbors[1]).move(aoFace.neighbors[2]);
 				cAo2 = aoFunc.apply(searchPos);
 				cLight2 = brightnessFunc.applyAsInt(searchPos);
 			}
@@ -448,7 +448,7 @@ public class AoCalculator {
 				cAo3 = ao1;
 				cLight3 = light1;
 			} else {
-				searchPos.set(lightPos).setOffset(aoFace.neighbors[1]).setOffset(aoFace.neighbors[3]);
+				searchPos.set(lightPos).move(aoFace.neighbors[1]).move(aoFace.neighbors[3]);
 				cAo3 = aoFunc.apply(searchPos);
 				cLight3 = brightnessFunc.applyAsInt(searchPos);
 			}
@@ -456,9 +456,9 @@ public class AoCalculator {
 			// If on block face or neighbor isn't occluding, "center" will be neighbor brightness
 			// Doesn't use light pos because logic not based solely on this block's geometry
 			int lightCenter;
-			searchPos.set(pos).setOffset(lightFace);
+			searchPos.set(pos).move(lightFace);
 
-			if (isOnBlockFace || !world.getBlockState(searchPos).isFullOpaque(world, searchPos)) {
+			if (isOnBlockFace || !world.getBlockState(searchPos).method_26216(world, searchPos)) {
 				lightCenter = brightnessFunc.applyAsInt(searchPos);
 			} else {
 				lightCenter = brightnessFunc.applyAsInt(pos);

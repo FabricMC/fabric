@@ -42,6 +42,6 @@ public final class BlockInitTracker implements RegistryEntryAddedCallback<Block>
 		// if false, getDropTableId() will generate an invalid drop table ID
 		assert id.equals(registry.getId(object));
 
-		object.getDropTableId();
+		object.method_26162();
 	}
 }

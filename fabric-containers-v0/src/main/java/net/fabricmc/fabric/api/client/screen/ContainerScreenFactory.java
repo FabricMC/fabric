@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.client.screen;
 
-import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.ScreenHandler;
 
 @FunctionalInterface
 public interface ContainerScreenFactory<C extends ScreenHandler> {
-	ScreenWithHandler create(C container);
+	HandledScreen create(C container);
 }

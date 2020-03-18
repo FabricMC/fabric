@@ -16,16 +16,21 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
+import java.util.function.Function;
+import java.util.function.ToIntFunction;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
-@Mixin(Block.Settings.class)
+@Mixin(AbstractBlock.Settings.class)
 public interface BlockSettingsHooks {
 	@Accessor
 	void setHardness(float hardness);
@@ -37,7 +42,7 @@ public interface BlockSettingsHooks {
 	void setCollidable(boolean collidable);
 
 	@Accessor
-	void setMaterialColor(MaterialColor materialColor);
+	void setMaterialColor(Function<BlockState, MaterialColor> materialColorFunction);
 
 	@Accessor
 	void setDropTableId(Identifier dropTableId);
@@ -46,7 +51,7 @@ public interface BlockSettingsHooks {
 	Block.Settings invokeSounds(BlockSoundGroup group);
 
 	@Invoker
-	Block.Settings invokeLightLevel(int lightLevel);
+	Block.Settings invokeLightLevel(ToIntFunction<BlockState> lightLevelFunction);
 
 	@Invoker
 	Block.Settings invokeBreakInstantly();

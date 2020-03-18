@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.impl.networking;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 /**
  * Helper interface containing getters for CustomPayloadC2SPacket
