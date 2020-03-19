@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-commands-v0",
-  "name": "Fabric Commands (v0)",
+  "id": "fabric-commands-v1",
+  "name": "Fabric Commands (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-commands-v0/icon.png",
+  "icon": "assets/fabric-commands-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -17,10 +17,10 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*",
-    "fabric-commands-v1": "*"
+    "fabric-api-base": "*"
   },
-  "description": "Deprecated. Please migrate to v1",
+  "description": "Adds command-related hooks.",
   "mixins": [
+    "fabric-commands-v1.mixins.json"
   ]
 }
