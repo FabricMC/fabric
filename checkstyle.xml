@@ -5,6 +5,7 @@
 	<property name="fileExtensions" value="java"/>
 	<property name="localeLanguage" value="en"/>
 	<property name="localeCountry" value="US"/>
+	<property name="tabWidth" value="4"/>
 
 	<module name="NewlineAtEndOfFile"/>
 
