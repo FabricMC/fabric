@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
 
 @Mixin(Block.class)
 public class MixinBlock {
-	@Inject(method = "<init>(Lnet/minecraft/block/Block$Settings;)V", at = @At("RETURN"))
+	@Inject(method = "<init>(Lnet/minecraft/block/AbstractBlock$Settings;)V", at = @At("RETURN"))
 	public void init(Block.Settings builder, CallbackInfo info) {
 		BlockConstructedCallback.EVENT.invoker().building(builder, (Block) (Object) this);
 	}

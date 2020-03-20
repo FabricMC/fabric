@@ -12,9 +12,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.5.3"
-	static def mcVersion = "20w11a"
-	static def yarnVersion = "+build.1"
+	static def baseVersion = "0.5.5"
+	static def mcVersion = "20w12a"
+	static def yarnVersion = "+build.3"
 }
 
 import org.apache.commons.codec.digest.DigestUtils

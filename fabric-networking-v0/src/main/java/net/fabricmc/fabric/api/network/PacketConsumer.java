@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.network;
 
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 /**
  * Interface for receiving CustomPayload-based packets.

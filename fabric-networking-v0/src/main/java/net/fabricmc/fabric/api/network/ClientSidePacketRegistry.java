@@ -21,7 +21,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
 

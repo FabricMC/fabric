@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.block.BlockColors;
-import net.minecraft.util.IdList;
+import net.minecraft.util.collection.IdList;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.registry.sync.trackers.IdListTracker;

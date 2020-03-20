@@ -40,7 +40,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Int2ObjectBiMap;
+import net.minecraft.util.collection.Int2ObjectBiMap;
 import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.event.Event;

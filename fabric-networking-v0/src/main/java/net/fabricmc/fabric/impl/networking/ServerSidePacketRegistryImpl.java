@@ -35,7 +35,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
 import net.fabricmc.fabric.api.network.PacketContext;

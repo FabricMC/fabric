@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.block;
 
-import net.minecraft.block.Block.Settings;
+import net.minecraft.block.AbstractBlock.Settings;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
@@ -50,7 +50,7 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void materialColor(Settings settings, MaterialColor materialColor) {
-		((BlockSettingsHooks) settings).setMaterialColor(materialColor);
+		((BlockSettingsHooks) settings).setMaterialColor(blockState -> materialColor);
 	}
 
 	public static void drops(Settings settings, Identifier dropTableId) {
@@ -62,7 +62,7 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void lightLevel(Settings settings, int lightLevel) {
-		((BlockSettingsHooks) settings).invokeLightLevel(lightLevel);
+		((BlockSettingsHooks) settings).invokeLightLevel(value -> lightLevel);
 	}
 
 	public static void breakInstantly(Settings settings) {
