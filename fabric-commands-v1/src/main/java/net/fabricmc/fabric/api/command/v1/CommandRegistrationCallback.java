@@ -27,11 +27,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Callback for when a server registers all commands.
  */
 public interface CommandRegistrationCallback {
-	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> ((dedicated, dispatcher) -> {
+	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dedicated, dispatcher) -> {
 		for (CommandRegistrationCallback callback : callbacks) {
 			callback.register(dedicated, dispatcher);
 		}
-	}));
+	});
 
 	/**
 	 * Called when the server is registering commands.
