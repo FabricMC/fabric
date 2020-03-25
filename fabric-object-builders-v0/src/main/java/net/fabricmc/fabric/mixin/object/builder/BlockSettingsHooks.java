@@ -42,7 +42,7 @@ public interface BlockSettingsHooks {
 	void setCollidable(boolean collidable);
 
 	@Accessor
-	void setMaterialColor(Function<BlockState, MaterialColor> materialColorFunction);
+	void setMaterialColorFactory(Function<BlockState, MaterialColor> materialColorFunction);
 
 	@Accessor
 	void setDropTableId(Identifier dropTableId);

@@ -50,7 +50,7 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void materialColor(Settings settings, MaterialColor materialColor) {
-		((BlockSettingsHooks) settings).setMaterialColor(blockState -> materialColor);
+		((BlockSettingsHooks) settings).setMaterialColorFactory(blockState -> materialColor);
 	}
 
 	public static void drops(Settings settings, Identifier dropTableId) {

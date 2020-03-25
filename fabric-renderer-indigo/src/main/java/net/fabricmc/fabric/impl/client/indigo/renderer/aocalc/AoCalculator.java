@@ -458,7 +458,7 @@ public class AoCalculator {
 			int lightCenter;
 			searchPos.set(pos).move(lightFace);
 
-			if (isOnBlockFace || !world.getBlockState(searchPos).method_26216(world, searchPos)) {
+			if (isOnBlockFace || !world.getBlockState(searchPos).isOpaqueFullCube(world, searchPos)) {
 				lightCenter = brightnessFunc.applyAsInt(searchPos);
 			} else {
 				lightCenter = brightnessFunc.applyAsInt(pos);
