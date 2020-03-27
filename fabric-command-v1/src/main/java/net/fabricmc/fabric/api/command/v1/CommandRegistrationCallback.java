@@ -36,9 +36,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </code></pre>
  */
 public interface CommandRegistrationCallback {
-	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dedicated, dispatcher) -> {
+	Event<CommandRegistrationCallback> EVENT = EventFactory.createArrayBacked(CommandRegistrationCallback.class, (callbacks) -> (dispatcher, dedicated) -> {
 		for (CommandRegistrationCallback callback : callbacks) {
-			callback.register(dedicated, dispatcher);
+			callback.register(dispatcher, dedicated);
 		}
 	});
 
