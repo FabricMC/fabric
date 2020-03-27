@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-commands-v1",
-  "name": "Fabric Commands (v1)",
+  "id": "fabric-command-v1",
+  "name": "Fabric Command (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-commands-v1/icon.png",
+  "icon": "assets/fabric-command-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -21,6 +21,6 @@
   },
   "description": "Adds command-related hooks.",
   "mixins": [
-    "fabric-commands-v1.mixins.json"
+    "fabric-command-v1.mixins.json"
   ]
 }
