@@ -30,12 +30,12 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 @Mixin(CommandManager.class)
 public abstract class MixinCommandManager {
 	/**
-	 * @reason Add commands before ambiguities are found.
+	 * @reason Add commands before ambiguities are calculated.
 	 */
 	@Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
 	private void fabric_addCommands(CommandDispatcher<ServerCommandSource> dispatcher, AmbiguityConsumer<ServerCommandSource> ambiguityConsumer, boolean isDedicated) {
 		CommandRegistrationCallback.EVENT.invoker().register(isDedicated, dispatcher);
-		// Now return to vanilla and check for ambiguities.
+		// Now mimic vanilla logic by calling findAmbiguities.
 		dispatcher.findAmbiguities(ambiguityConsumer);
 	}
 }
