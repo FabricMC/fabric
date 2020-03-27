@@ -45,8 +45,8 @@ public final class AttributeManager {
 
 		for (String key : allKeys) {
 			double add = 0;
-			double multBase = 0;
-			double multTotal = 0;
+			double multBase = 1;
+			double multTotal = 1;
 			Collection<EntityAttributeModifier> modifiers;
 
 			if (left.containsKey(key)) {
@@ -66,7 +66,7 @@ public final class AttributeManager {
 					multBase += mod.getAmount();
 					break;
 				case MULTIPLY_TOTAL:
-					multTotal += mod.getAmount();
+					multTotal *= 1 + mod.getAmount();
 					break;
 				default:
 					break;

@@ -33,8 +33,6 @@ public interface DynamicAttributeTool {
 	/**
 	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
 	 *
-	 * <p>See {@link MiningConstants} for all vanilla tool mining levels.</p>
-	 *
 	 * @param stack The stack to check on.
 	 * @param user The current user of the tool, or null if there isn't any.
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
@@ -44,8 +42,6 @@ public interface DynamicAttributeTool {
 
 	/**
 	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
-	 *
-	 * <p>See {@link MiningConstants} for all vanilla tool mining speed multipliers.</p>
 	 *
 	 * @param stack The stack to check on.
 	 * @param user The current user of the tool, or null if there isn't any.
