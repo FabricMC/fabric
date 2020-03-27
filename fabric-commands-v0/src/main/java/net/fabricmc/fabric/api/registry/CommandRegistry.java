@@ -38,7 +38,7 @@ public class CommandRegistry {
 	 * @param consumer  The command provider, consuming {@link CommandDispatcher}.
 	 */
 	public void register(boolean dedicated, Consumer<CommandDispatcher<ServerCommandSource>> consumer) {
-		CommandRegistrationCallback.EVENT.register(((isDedicated, dispatcher) -> {
+		CommandRegistrationCallback.EVENT.register(((dispatcher, isDedicated) -> {
 			if (dedicated && !isDedicated) {
 				return;
 			}
