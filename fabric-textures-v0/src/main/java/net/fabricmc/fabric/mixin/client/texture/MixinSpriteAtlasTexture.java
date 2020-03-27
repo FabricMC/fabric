@@ -60,7 +60,7 @@ public abstract class MixinSpriteAtlasTexture {
 	}
 
 	// Handles DependentSprite + custom sprite object injections.
-	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/SpriteAtlasTexture;loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;"), method = "stitch")
+	@ModifyVariable(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/texture/SpriteAtlasTexture;loadSprites(Lnet/minecraft/resource/ResourceManager;Ljava/util/Set;)Ljava/util/Collection;"), method = "stitch", ordinal = 0)
 	public Set<Identifier> beforeSpriteLoad(Set<Identifier> set) {
 		fabric_injectedSprites = new HashMap<>();
 		ClientSpriteRegistryCallback.Registry registry = new ClientSpriteRegistryCallback.Registry(fabric_injectedSprites, set::add);
