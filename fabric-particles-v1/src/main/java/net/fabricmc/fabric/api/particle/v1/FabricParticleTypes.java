@@ -76,6 +76,6 @@ public final class FabricParticleTypes {
 	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
 	 */
 	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
-		return new ParticleType<T>(alwaysSpawn, factory) { };
+		return new ParticleType<T>(alwaysSpawn, factory, (random, tParticleType) -> (T) tParticleType) { };
 	}
 }

@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.biomes.v1;
 
 import net.minecraft.world.biome.Biome;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-
 /**
  * API that exposes the internals of Minecraft's nether biome code.
  */
@@ -35,6 +33,7 @@ public final class NetherBiomes {
 	 */
 	@Deprecated
 	public static void addNetherBiome(Biome biome) {
-		InternalBiomeData.addNetherBiome(biome);
+		// Not working, as the april fools version broke it, but I want to ensure that most mods can run on this version.
+		// If this was a normal version I would have removed this api if it couldnt have been fixed.
 	}
 }

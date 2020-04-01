@@ -18,7 +18,8 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
-    "fabric-networking-v0": "*"
+    "fabric-networking-v0": "*",
+    "minecraft": "1.16-20.w.14"
   },
   "description": "Syncs registry mappings.",
   "mixins": [

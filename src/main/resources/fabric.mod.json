@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.7.8",
-    "minecraft": "~1.16-alpha.20.10.a"
+    "minecraft": "1.16-20.w.14"
   },
   "description": "Core API module providing key hooks and intercompatibility features."
 }

@@ -24,12 +24,12 @@ import net.minecraft.client.render.chunk.ChunkBuilder.ChunkData;
 import net.minecraft.client.render.chunk.ChunkBuilder.BuiltChunk;
 import net.minecraft.client.render.chunk.ChunkRendererRegion;
 import net.minecraft.client.render.model.BakedModel;
-import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.crash.CrashException;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.crash.CrashReportSection;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.client.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix3f;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;

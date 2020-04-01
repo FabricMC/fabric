@@ -4,7 +4,8 @@
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
-    "fabricloader": ">=0.4.0"
+    "fabricloader": ">=0.4.0",
+    "minecraft": "1.16-20.w.14"
   },
   "mixins": [
     "fabric-particles-v1.mixins.json"
