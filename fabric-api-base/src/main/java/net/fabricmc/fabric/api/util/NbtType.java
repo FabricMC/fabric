@@ -24,8 +24,8 @@ import net.minecraft.nbt.Tag;
  *
  * <p>For the current list of types, check with {@link Tag#TYPES}.
  *
- * @see CompoundTag#containsKey(String, int)
- * @see Tag#idToString(int)
+ * @see CompoundTag#contains(String, int)
+ * @see net.minecraft.nbt.TagReaders#of(int)
  */
 public final class NbtType {
 	public static final int END = 0;
@@ -45,7 +45,7 @@ public final class NbtType {
 	/**
 	 * Any numeric value: byte, short, int, long, float, double.
 	 *
-	 * @see CompoundTag#containsKey(String, int)
+	 * @see CompoundTag#contains(String, int)
 	 */
 	public static final int NUMBER = 99;
 

@@ -119,13 +119,15 @@ javadoc {
 		charSet = 'UTF-8'
 		memberLevel = JavadocMemberLevel.PACKAGE
 		links(
-				'https://google.github.io/guava/releases/21.0/api/docs/',
-				'http://asm.ow2.org/asm50/javadoc/user/',
+				'https://guava.dev/releases/21.0/api/docs/',
+				'https://asm.ow2.io/javadoc/',
 				'https://docs.oracle.com/javase/8/docs/api/',
 				'http://jenkins.liteloader.com/job/Mixin/javadoc/',
 				'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
 				// Need to add minecraft jd publication etc once there is one available
 		)
+		// Disable the crazy super-strict doclint tool in Java 8
+		addStringOption('Xdoclint:none', '-quiet')
 	}
 	allprojects.each {
 		source(it.sourceSets.main.allJava.srcDirs)
@@ -136,6 +138,7 @@ javadoc {
 }
 
 task javadocJar(type: Jar) {
+	dependsOn javadoc
 	from javadoc.destinationDir
 	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
 	classifier = 'fatjavadoc'

@@ -24,15 +24,18 @@ import net.minecraft.particle.ParticleType;
  * Methods for creating particle types, both simple and using an existing attribute factory.
  *
  * <p>Usage:
- * <pre> {@code
+ * <blockquote>
+ * <pre>
  * public static final DefaultParticleType SIMPLE_TEST_PARTICLE = FabricParticleTypes.simple();
  * public static final DefaultParticleType CUSTOM_TEST_PARTICLE = FabricParticleTypes.simple();
  *
- * @Override
+ * {@literal @}Override
  * public void onInitialize() {
  *     Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "simple"), SIMPLE_TEST_PARTICLE);
  *     Registry.register(Registry.PARTICLE_TYPE, new Identifier("testmod", "custom"), CUSTOM_TEST_PARTICLE);
- * }}</pre>
+ * }}
+ * </pre>
+ * </blockquote>
  *
  * @see ParticleModClient in the fabric example mods for a more complete usage.
  */
@@ -41,8 +44,6 @@ public final class FabricParticleTypes {
 
 	/**
 	 * Creates a new, default particle type for the given id.
-	 *
-	 * @param id The particle id.
 	 */
 	public static DefaultParticleType simple() {
 		return simple(false);
@@ -51,7 +52,6 @@ public final class FabricParticleTypes {
 	/**
 	 * Creates a new, default particle type for the given id.
 	 *
-	 * @param id The particle id.
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
 	 */
 	public static DefaultParticleType simple(boolean alwaysSpawn) {
@@ -61,7 +61,6 @@ public final class FabricParticleTypes {
 	/**
 	 * Creates a new particle type with a custom factory for packet/data serialization.
 	 *
-	 * @param id The particle id.
 	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
 	 */
 	public static <T extends ParticleEffect> ParticleType<T> complex(ParticleEffect.Factory<T> factory) {
@@ -71,7 +70,6 @@ public final class FabricParticleTypes {
 	/**
 	 * Creates a new particle type with a custom factory for packet/data serialization.
 	 *
-	 * @param id The particle id.
 	 * @param alwaysSpawn True to always spawn the particle regardless of distance.
 	 * @param factory	 A factory for serializing packet data and string command parameters into a particle effect.
 	 */
