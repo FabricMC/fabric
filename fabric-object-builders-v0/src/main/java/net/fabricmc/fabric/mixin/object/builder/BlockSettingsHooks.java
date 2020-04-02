@@ -63,7 +63,7 @@ public interface BlockSettingsHooks {
 	Block.Settings invokeTicksRandomly();
 
 	@Invoker
-	Block.Settings invokeHasDynamicBounds();
+	Block.Settings invokeDynamicBounds();
 
 	@Invoker
 	Block.Settings invokeDropsNothing();

@@ -12,8 +12,8 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.5.6"
-	static def mcVersion = "20w13a"
+	static def baseVersion = "0.5.7"
+	static def mcVersion = "20w14a"
 	static def yarnVersion = "+build.1"
 }
 
@@ -183,7 +183,9 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
-			artifact javadocJar
+			artifact (javadocJar) {
+				builtBy javadocJar
+			}
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {

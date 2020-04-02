@@ -78,7 +78,7 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void dynamicBounds(Settings settings) {
-		((BlockSettingsHooks) settings).invokeHasDynamicBounds();
+		((BlockSettingsHooks) settings).invokeDynamicBounds();
 	}
 
 	public static void dropsNothing(Settings settings) {

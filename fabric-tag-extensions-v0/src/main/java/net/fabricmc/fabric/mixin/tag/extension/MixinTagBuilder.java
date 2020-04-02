@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.tag.extension;
 
+import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 
 import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,10 +25,10 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.tag.FabricTagBuilder;
 import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
@@ -36,24 +36,25 @@ import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
 @Mixin(Tag.Builder.class)
 public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	@Shadow
-	private Set<Tag.Entry<T>> entries;
+	private Set<Tag.Entry> field_23688;
 
 	@Unique
 	private int fabric_clearCount;
 
-	@Inject(at = @At("RETURN"), method = "build")
-	public void onBuildFinished(Identifier id, CallbackInfoReturnable<Tag<T>> info) {
-		((FabricTagHooks) info.getReturnValue()).fabric_setExtraData(fabric_clearCount);
+	@Redirect(method = "method_26782", at = @At(value = "INVOKE", target = "Ljava/util/Optional;of(Ljava/lang/Object;)Ljava/util/Optional;"))
+	private Optional<?> build(Object tagObj) {
+		((FabricTagHooks) tagObj).fabric_setExtraData(fabric_clearCount);
+		return Optional.of(tagObj);
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"), method = "fromJson")
-	public void onFromJsonClear(Function<Identifier, T> function_1, JsonObject jsonObject_1, CallbackInfoReturnable<Tag.Builder<T>> info) {
+	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"), method = "method_26780")
+	public void onFromJsonClear(JsonObject jsonObject_1, CallbackInfoReturnable<Tag.Builder> info) {
 		fabric_clearCount++;
 	}
 
 	@Override
 	public void clearTagEntries() {
-		entries.clear();
+		field_23688.clear();
 		fabric_clearCount++;
 	}
 }
