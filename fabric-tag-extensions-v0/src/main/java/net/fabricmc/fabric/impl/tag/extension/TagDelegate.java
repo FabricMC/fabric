@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.tag.FabricTag;
 
-public final class TagDelegate<T> implements Tag.class_5123<T>, FabricTag<T>, FabricTagHooks {
+public final class TagDelegate<T> implements Tag.Identified<T>, FabricTag<T>, FabricTagHooks {
 	private final Identifier id;
 	private final Supplier<TagContainer<T>> containerSupplier;
 	private volatile Target<T> target;
@@ -61,7 +61,7 @@ public final class TagDelegate<T> implements Tag.class_5123<T>, FabricTag<T>, Fa
 		Tag<T> ret;
 
 		if (target == null || target.container != reqContainer) {
-			ret = reqContainer.getOrCreate(method_26791());
+			ret = reqContainer.getOrCreate(getId());
 			this.target = new Target<>(reqContainer, ret);
 		} else {
 			ret = target.tag;
@@ -71,7 +71,7 @@ public final class TagDelegate<T> implements Tag.class_5123<T>, FabricTag<T>, Fa
 	}
 
 	@Override
-	public Identifier method_26791() {
+	public Identifier getId() {
 		return id;
 	}
 

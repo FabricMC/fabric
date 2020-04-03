@@ -110,8 +110,8 @@ public class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	private static String getTagName(Tag<?> tag) {
-		if (tag instanceof Tag.class_5123) {
-			return ((Tag.class_5123<?>) tag).method_26791().toString();
+		if (tag instanceof Tag.Identified) {
+			return ((Tag.Identified<?>) tag).getId().toString();
 		}
 
 		return tag.toString();

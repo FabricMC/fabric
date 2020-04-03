@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
 public final class TagRegistry {
 	private TagRegistry() { }
 
-	public static <T> Tag.class_5123<T> create(Identifier id, Supplier<TagContainer<T>> containerSupplier) {
+	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagContainer<T>> containerSupplier) {
 		return new TagDelegate<>(id, containerSupplier);
 	}
 

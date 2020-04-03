@@ -36,25 +36,25 @@ import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
 @Mixin(Tag.Builder.class)
 public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	@Shadow
-	private Set<Tag.Entry> field_23688;
+	private Set<Tag.Entry> entries;
 
 	@Unique
 	private int fabric_clearCount;
 
-	@Redirect(method = "method_26782", at = @At(value = "INVOKE", target = "Ljava/util/Optional;of(Ljava/lang/Object;)Ljava/util/Optional;"))
+	@Redirect(method = "build", at = @At(value = "INVOKE", target = "Ljava/util/Optional;of(Ljava/lang/Object;)Ljava/util/Optional;"))
 	private Optional<?> build(Object tagObj) {
 		((FabricTagHooks) tagObj).fabric_setExtraData(fabric_clearCount);
 		return Optional.of(tagObj);
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"), method = "method_26780")
+	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"), method = "read")
 	public void onFromJsonClear(JsonObject jsonObject_1, CallbackInfoReturnable<Tag.Builder> info) {
 		fabric_clearCount++;
 	}
 
 	@Override
 	public void clearTagEntries() {
-		field_23688.clear();
+		entries.clear();
 		fabric_clearCount++;
 	}
 }
