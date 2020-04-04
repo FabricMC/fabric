@@ -72,7 +72,7 @@ public interface FabricDataFixes {
 	 * @param dataFixer The DataFixer to register
 	 * @return The inputted DataFixer
 	 */
-	DataFixer registerFixer(String modid, int currentVersion, DataFixer dataFixer);
+	DataFixer registerFixer(String modId, int currentVersion, DataFixer dataFixer);
 
 	/**
 	 * Gets the DataFixer registered under a mod.
