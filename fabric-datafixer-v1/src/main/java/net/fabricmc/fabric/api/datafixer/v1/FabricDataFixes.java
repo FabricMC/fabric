@@ -81,7 +81,7 @@ public interface FabricDataFixes {
 	 * @return An optional, which may contain a DataFixer if a mod has registered a DataFixer.
 	 * @throws IllegalArgumentException if the mod with the following id does not have a DataFixer.
 	 */
-	DataFixer getDataFixer(String modid);
+	DataFixer getDataFixer(String modId);
 
 	/**
 	 * Retrieves the DataVersion registered in a CompoundTag by a mod.
