@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.tag;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
@@ -53,35 +51,10 @@ public final class TagRegistry {
 	}
 
 	public static Tag<Fluid> fluid(Identifier id) {
-		return create(id, TagRegistry::getFluidTagContainer);
+		return create(id, FluidTags::getContainer);
 	}
 
 	public static Tag<Item> item(Identifier id) {
 		return create(id, ItemTags::getContainer);
-	}
-
-	private static Field fluidTagContainer;
-
-	private static TagContainer<Fluid> getFluidTagContainer() {
-		if (fluidTagContainer == null) {
-			for (Field f : FluidTags.class.getDeclaredFields()) {
-				if ((f.getModifiers() & Modifier.STATIC) != 0 && f.getType() == TagContainer.class) {
-					f.setAccessible(true);
-					fluidTagContainer = f;
-					break;
-				}
-			}
-
-			if (fluidTagContainer == null) {
-				throw new RuntimeException("Could not find FluidTags.container!");
-			}
-		}
-
-		try {
-			//noinspection unchecked
-			return (TagContainer<Fluid>) fluidTagContainer.get(null);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException("Could not access FluidTags.container (" + fluidTagContainer.getName() + ")!", e);
-		}
 	}
 }
