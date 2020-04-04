@@ -90,7 +90,7 @@ public interface FabricDataFixes {
 	 * @param modid The id of the mod to check.
 	 * @return The DataVersion stored for the mod or 0 if no DataVersion or mod is present.
 	 */
-	int getModDataVersion(CompoundTag compoundTag, String modid);
+	int getModDataVersion(CompoundTag compoundTag, String modId);
 
 	/**
 	 * Checks if Fabric is allowing any more DataFixers to be registered.
