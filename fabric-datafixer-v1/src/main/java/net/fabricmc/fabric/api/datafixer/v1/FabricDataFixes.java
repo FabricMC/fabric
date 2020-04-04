@@ -67,7 +67,7 @@ public interface FabricDataFixes {
 	/**
 	 * Registers a DataFixer.
 	 *
-	 * @param modid The modid of the mod registering this DataFixer
+	 * @param modId The ID of the mod registering this DataFixer
 	 * @param currentVersion the current data version of the mod being ran.
 	 * @param dataFixer The DataFixer to register
 	 * @return The inputted DataFixer
