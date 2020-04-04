@@ -87,7 +87,7 @@ public interface FabricDataFixes {
 	 * Retrieves the DataVersion registered in a CompoundTag by a mod.
 	 *
 	 * @param compoundTag The CompoundTag to check
-	 * @param modid The id of the mod to check.
+	 * @param modId The id of the mod to check.
 	 * @return The DataVersion stored for the mod or 0 if no DataVersion or mod is present.
 	 */
 	int getModDataVersion(CompoundTag compoundTag, String modId);
