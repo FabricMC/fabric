@@ -77,7 +77,7 @@ public interface FabricDataFixes {
 	/**
 	 * Gets the DataFixer registered under a mod.
 	 *
-	 * @param modid The mod which the DataFixer was registered under.
+	 * @param modId The mod which the DataFixer was registered under.
 	 * @return An optional, which may contain a DataFixer if a mod has registered a DataFixer.
 	 * @throws IllegalArgumentException if the mod with the following id does not have a DataFixer.
 	 */
