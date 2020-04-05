@@ -33,13 +33,13 @@ public enum BlendMode {
 	SOLID(RenderLayer.getSolid()),
 
 	/**
-	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
+	 * Pixels with alpha &gt; 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
 	 * Texture mip-map enabled.  Used for leaves.
 	 */
 	CUTOUT_MIPPED(RenderLayer.getCutoutMipped()),
 
 	/**
-	 * Pixels with alpha > 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
+	 * Pixels with alpha &gt; 0.5 are rendered as if {@code SOLID}. Other pixels are not rendered.
 	 * Texture mip-map disabled.  Used for iron bars, glass and other cutout sprites with hard edges.
 	 */
 	CUTOUT(RenderLayer.getCutout()),

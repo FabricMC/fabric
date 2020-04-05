@@ -31,8 +31,8 @@ def getSubprojectVersion(project, version) {
 	}
 }
 
-def getBranch(){
-	if(System.getenv().GIT_BRANCH){
+def getBranch() {
+	if (System.getenv().GIT_BRANCH) {
 		def branch = System.getenv().GIT_BRANCH
 		return branch.substring(branch.lastIndexOf("/") + 1)
 	}
@@ -113,17 +113,33 @@ allprojects {
 }
 
 javadoc {
-	options.memberLevel = "PACKAGE"
-	allprojects.each{
-			source( it.sourceSets.main.allJava.srcDirs)
-		}
+	options {
+		source = "8"
+		encoding = 'UTF-8'
+		charSet = 'UTF-8'
+		memberLevel = JavadocMemberLevel.PACKAGE
+		links(
+				'https://guava.dev/releases/21.0/api/docs/',
+				'https://asm.ow2.io/javadoc/',
+				'https://docs.oracle.com/javase/8/docs/api/',
+				'http://jenkins.liteloader.com/job/Mixin/javadoc/',
+				'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
+				// Need to add minecraft jd publication etc once there is one available
+		)
+		// Disable the crazy super-strict doclint tool in Java 8
+		addStringOption('Xdoclint:none', '-quiet')
+	}
+	allprojects.each {
+		source(it.sourceSets.main.allJava.srcDirs)
+	}
 	classpath = sourceSets.main.compileClasspath
-	include ("**/api/**")
+	include("**/api/**")
 	failOnError false
 }
 
 task javadocJar(type: Jar) {
-	from javadoc
+	dependsOn javadoc
+	from javadoc.destinationDir
 	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
 	classifier = 'fatjavadoc'
 }
@@ -150,17 +166,7 @@ subprojects {
 			}
 		}
 
-		repositories {
-			maven {
-				url "http://mavenupload.modmuss50.me/"
-				if (project.hasProperty('mavenPass')) {
-					credentials {
-						username 'buildslave'
-						password project.getProperty('mavenPass')
-					}
-				}
-			}
-		}
+		setupRepositories(repositories)
 	}
 
 	javadoc.enabled = false
@@ -183,9 +189,7 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
-			artifact (javadocJar) {
-				builtBy javadocJar
-			}
+			artifact javadocJar
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
@@ -199,14 +203,17 @@ publishing {
 		}
 	}
 
-	repositories {
-		maven {
+	setupRepositories(repositories)
+}
+
+void setupRepositories(RepositoryHandler repositories) {
+	//repositories.mavenLocal() // uncomment for testing
+	if (project.hasProperty('mavenPass')) {
+		repositories.maven {
 			url "http://mavenupload.modmuss50.me/"
-			if (project.hasProperty('mavenPass')) {
-				credentials {
-					username 'buildslave'
-					password project.getProperty('mavenPass')
-				}
+			credentials {
+				username 'buildslave'
+				password project.getProperty('mavenPass')
 			}
 		}
 	}
@@ -230,7 +237,7 @@ version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_
 logger.lifecycle("Building Fabric: " + version)
 
 curseforge {
-	if (project.hasProperty('curse_api_key')){
+	if (project.hasProperty('curse_api_key')) {
 		apiKey = project.getProperty('curse_api_key')
 	}
 	project {
@@ -245,7 +252,7 @@ curseforge {
 			uploadTask.dependsOn("remapJar")
 		}
 	}
-	options{
+	options {
 		forgeGradleIntegration = false
 	}
 }

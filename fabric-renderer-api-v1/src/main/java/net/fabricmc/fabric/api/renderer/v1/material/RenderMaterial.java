@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.renderer.v1.material;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -67,8 +67,9 @@ public interface RenderMaterial {
 	 * This will be identical to the material that would be obtained by calling {@link MaterialFinder#find()}
 	 * on a new, unaltered, {@link MaterialFinder} instance.  It is defined here for clarity and convenience.
 	 *
-	 * <p>Quads using this material use {@link Block#getRenderLayer()} of the associated block to determine texture blending,
-	 * honor block color index, are non-emissive, and apply both diffuse and ambient occlusion shading to vertex colors.
+	 * <p>Quads using this material use {@link net.minecraft.client.render.RenderLayers#getBlockLayer(BlockState)} of
+	 * the associated block to determine texture blending, honor block color index, are non-emissive, and apply both
+	 * diffuse and ambient occlusion shading to vertex colors.
 	 *
 	 * <p>All standard, non-fluid baked models are rendered using this material.
 	 */
