@@ -17,6 +17,9 @@ class Globals {
 	static def yarnVersion = "+build.6"
 }
 
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+logger.lifecycle("Building Fabric: " + version)
+
 import org.apache.commons.codec.digest.DigestUtils
 
 def getSubprojectVersion(project, version) {
@@ -157,11 +160,13 @@ subprojects {
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
-				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-					builtBy remapMavenJar
-				}
-				artifact(sourcesJar) {
-					builtBy remapSourcesJar
+				afterEvaluate {
+					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+						builtBy remapMavenJar
+					}
+					artifact(sourcesJar) {
+						builtBy remapSourcesJar
+					}
 				}
 			}
 		}
@@ -231,10 +236,6 @@ dependencies {
 		}
 	}
 }
-
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
-
-logger.lifecycle("Building Fabric: " + version)
 
 curseforge {
 	if (project.hasProperty('curse_api_key')) {
