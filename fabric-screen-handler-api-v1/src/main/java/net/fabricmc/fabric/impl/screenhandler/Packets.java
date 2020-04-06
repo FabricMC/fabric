@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.screen;
+package net.fabricmc.fabric.impl.screenhandler;
 
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.Identifier;
 
-/**
- * @deprecated Use {@link net.fabricmc.fabric.api.screenhandler.v1.client.FabricHandledScreens.Factory} instead.
- */
-@Deprecated
-@FunctionalInterface
-public interface ContainerScreenFactory<C extends ScreenHandler> {
-	HandledScreen create(C container);
+public final class Packets {
+	// [Packet format]
+	// typeId: varInt
+	// syncId: varInt
+	// title: text
+	// customData: buf
+	public static final Identifier OPEN_ID = new Identifier("fabric-screen-handler-api-v1", "open_screen");
 }

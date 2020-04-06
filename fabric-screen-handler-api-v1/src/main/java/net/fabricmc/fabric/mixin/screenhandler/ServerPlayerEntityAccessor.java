@@ -14,16 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.screen;
+package net.fabricmc.fabric.mixin.screenhandler;
 
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.screen.ScreenHandler;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-/**
- * @deprecated Use {@link net.fabricmc.fabric.api.screenhandler.v1.client.FabricHandledScreens.Factory} instead.
- */
-@Deprecated
-@FunctionalInterface
-public interface ContainerScreenFactory<C extends ScreenHandler> {
-	HandledScreen create(C container);
+import net.minecraft.server.network.ServerPlayerEntity;
+
+@Mixin(ServerPlayerEntity.class)
+public interface ServerPlayerEntityAccessor {
+	@Invoker
+	void callIncrementScreenHandlerSyncId();
+
+	@Accessor
+	int getScreenHandlerSyncId();
 }
