@@ -18,7 +18,6 @@ package net.fabricmc.fabric.mixin.tag.extension;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Mixin;
