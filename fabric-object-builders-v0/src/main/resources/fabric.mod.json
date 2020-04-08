@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
-    "fabric-mining-levels-v0": "*"
+    "fabric-tool-attribute-api-v1": "*"
   },
   "description": "Builders for objects vanilla has locked down.",
   "mixins": [
