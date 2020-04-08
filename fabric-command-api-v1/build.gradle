@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-command-v1"
+archivesBaseName = "fabric-command-api-v1"
 version = getSubprojectVersion(project, "1.0.0")
 
 dependencies {
