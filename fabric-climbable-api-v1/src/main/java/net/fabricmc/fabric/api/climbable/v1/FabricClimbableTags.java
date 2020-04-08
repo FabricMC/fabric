@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.climbable.api;
+package net.fabricmc.fabric.api.climbable.v1;
 
 import net.minecraft.block.Block;
 import net.minecraft.tag.Tag;

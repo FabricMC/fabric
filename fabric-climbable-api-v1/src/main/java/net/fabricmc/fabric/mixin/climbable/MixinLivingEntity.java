@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.climbable.mixin;
+package net.fabricmc.fabric.mixin.climbable;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,7 +28,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.climbable.api.FabricClimbableTags;
+import net.fabricmc.fabric.api.climbable.v1.FabricClimbableTags;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
