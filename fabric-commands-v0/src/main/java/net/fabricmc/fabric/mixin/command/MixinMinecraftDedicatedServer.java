@@ -37,8 +37,8 @@ import net.fabricmc.fabric.impl.command.CommandRegistryImpl;
 
 @Mixin(MinecraftDedicatedServer.class)
 public abstract class MixinMinecraftDedicatedServer extends MinecraftServer {
-	public MixinMinecraftDedicatedServer(LevelStorage.class_5143 arg, Proxy proxy, DataFixer dataFixer, CommandManager commandManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
-		super(arg, proxy, dataFixer, commandManager, minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
+	public MixinMinecraftDedicatedServer(LevelStorage.Session session, Proxy proxy, DataFixer dataFixer, CommandManager commandManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
+		super(session, proxy, dataFixer, commandManager, minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
 	}
 
 	@Inject(method = "setupServer", at = @At("HEAD"))

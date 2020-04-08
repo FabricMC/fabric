@@ -26,7 +26,7 @@ import net.fabricmc.fabric.impl.dimension.DimensionRemapException;
 
 @Mixin(LevelStorage.class)
 public abstract class MixinLevelStorage {
-	@ModifyArg(method = "readLevelProperties", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false), index = 2)
+	@ModifyArg(method = "readLevelProperties(Ljava/io/File;Lcom/mojang/datafixers/DataFixer;)Lnet/minecraft/world/level/LevelProperties;", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false), index = 2)
 	private static Object disableRecovery(Object e) {
 		if (e instanceof DimensionRemapException) {
 			throw (DimensionRemapException) e;

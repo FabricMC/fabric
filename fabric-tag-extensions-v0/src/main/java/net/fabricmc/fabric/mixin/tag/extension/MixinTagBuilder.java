@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.tag.extension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -36,7 +37,7 @@ import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
 @Mixin(Tag.Builder.class)
 public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	@Shadow
-	private Set<Tag.Entry> entries;
+	private List<Tag.class_5145> entries;
 
 	@Unique
 	private int fabric_clearCount;
@@ -47,8 +48,8 @@ public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 		return Optional.of(tagObj);
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/Set;clear()V"), method = "read")
-	public void onFromJsonClear(JsonObject jsonObject_1, CallbackInfoReturnable<Tag.Builder> info) {
+	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V"), method = "read")
+	public void onFromJsonClear(JsonObject json, String packName, CallbackInfoReturnable<Tag.Builder> info) {
 		fabric_clearCount++;
 	}
 
