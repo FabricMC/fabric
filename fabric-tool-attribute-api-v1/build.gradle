@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-tool-attributes-v1"
+archivesBaseName = "fabric-tool-attribute-api-v1"
 version = getSubprojectVersion(project, "1.0.0")
 
 dependencies {
