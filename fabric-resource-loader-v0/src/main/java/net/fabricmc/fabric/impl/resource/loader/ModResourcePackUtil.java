@@ -23,6 +23,7 @@ import java.util.List;
 import com.google.common.base.Charsets;
 import org.apache.commons.io.IOUtils;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 
@@ -34,7 +35,7 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
  * Internal utilities for managing resource packs.
  */
 public final class ModResourcePackUtil {
-	public static final int PACK_FORMAT_VERSION = 4;
+	public static final int PACK_FORMAT_VERSION = SharedConstants.getGameVersion().getPackVersion();
 
 	private ModResourcePackUtil() { }
 
