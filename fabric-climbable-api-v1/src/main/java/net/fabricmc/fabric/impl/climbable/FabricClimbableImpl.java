@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.climbable.v1;
+package net.fabricmc.fabric.impl.climbable;
 
 import net.minecraft.block.Block;
 import net.minecraft.tag.Tag;
@@ -22,9 +22,9 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.tag.TagRegistry;
 
-public class FabricClimbableTags {
+public class FabricClimbableImpl {
 	public static final Tag<Block> CLIMBABLE = TagRegistry.block(new Identifier("minecraft", "climbable"));
 
-	private FabricClimbableTags() {
+	private FabricClimbableImpl() {
 	}
 }

@@ -16,19 +16,17 @@
 
 package net.fabricmc.fabric.mixin.climbable;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
+import net.fabricmc.fabric.impl.climbable.FabricClimbableImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.World;
-
-import net.fabricmc.fabric.api.climbable.v1.FabricClimbableTags;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(LivingEntity.class)
 public abstract class MixinLivingEntity extends Entity {
@@ -36,12 +34,9 @@ public abstract class MixinLivingEntity extends Entity {
 		super(type, world);
 	}
 
-	@Shadow
-	public abstract BlockState getBlockState();
-
-	@Inject(method = "isClimbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;getBlockState()Lnet/minecraft/block/BlockState;"), cancellable = true)
-	public void onIsClimbing(CallbackInfoReturnable<Boolean> info) {
-		if (this.getBlockState().matches(FabricClimbableTags.CLIMBABLE)) {
+	@Inject(method = "isClimbing", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+	public void onIsClimbing(CallbackInfoReturnable<Boolean> info, BlockState state) {
+		if (state.matches(FabricClimbableImpl.CLIMBABLE)) {
 			info.setReturnValue(true);
 		}
 	}
