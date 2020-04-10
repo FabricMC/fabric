@@ -19,11 +19,9 @@ public enum BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegist
 
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
-		if (RENDERERS.containsKey(item)) {
+		if (RENDERERS.put(item, renderer) != null) {
 			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item) + " already has a builtin renderer!");
 		}
-
-		RENDERERS.put(item, renderer);
 	}
 
 	/* @Nullable */
