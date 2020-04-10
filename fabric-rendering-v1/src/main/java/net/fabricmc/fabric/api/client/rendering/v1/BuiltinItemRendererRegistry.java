@@ -11,6 +11,10 @@ import net.fabricmc.fabric.impl.client.rendering.BuiltinItemRendererRegistryImpl
  */
 @Environment(EnvType.CLIENT)
 public interface BuiltinItemRendererRegistry {
+	/**
+	 * The singleton instance of the renderer registry.
+	 * Use this instance to call the methods in this interface.
+	 */
 	BuiltinItemRendererRegistry INSTANCE = BuiltinItemRendererRegistryImpl.INSTANCE;
 
 	/**

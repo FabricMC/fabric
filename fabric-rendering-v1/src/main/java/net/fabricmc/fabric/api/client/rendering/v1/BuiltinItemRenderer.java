@@ -17,5 +17,14 @@ import net.fabricmc.api.Environment;
 @Environment(EnvType.CLIENT)
 @FunctionalInterface
 public interface BuiltinItemRenderer {
+	/**
+	 * Renders an item stack.
+	 *
+	 * @param stack           the rendered item stack
+	 * @param matrices        the matrix stack
+	 * @param vertexConsumers the vertex consumer provider
+	 * @param light           the color light multiplier at the rendering position
+	 * @param overlay         the overlay UV passed to {@link net.minecraft.client.render.VertexConsumer#overlay(int)}
+	 */
 	void render(ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay);
 }
