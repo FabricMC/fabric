@@ -18,8 +18,9 @@ public interface BuiltinItemRendererRegistry {
 	 *
 	 * <p>Note that the item's JSON model must also extend {@code minecraft:builtin/entity}.
 	 *
-	 * @param item the item
+	 * @param item     the item
 	 * @param renderer the renderer
+	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 */
 	void register(Item item, BuiltinItemRenderer renderer);
 }

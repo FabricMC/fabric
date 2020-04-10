@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.item.Item;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,12 +20,13 @@ public enum BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegist
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
 		if (RENDERERS.containsKey(item)) {
-			throw new IllegalArgumentException("Item " + item + " already has a builtin renderer!");
+			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item) + " already has a builtin renderer!");
 		}
 
 		RENDERERS.put(item, renderer);
 	}
 
+	/* @Nullable */
 	public static BuiltinItemRenderer getRenderer(Item item) {
 		return RENDERERS.get(item);
 	}
