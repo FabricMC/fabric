@@ -3,9 +3,9 @@ install: true
 
 jdk:
   - openjdk8
+  - openjdk11
 
 script:
-  - chmod +x gradlew
   - ./gradlew check build publishToMavenLocal --stacktrace
 
 notifications:

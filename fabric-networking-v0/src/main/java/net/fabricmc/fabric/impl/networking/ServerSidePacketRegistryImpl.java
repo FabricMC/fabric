@@ -28,14 +28,14 @@ import java.util.function.Consumer;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 import net.minecraft.util.Identifier;
-import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
 import net.fabricmc.fabric.api.network.PacketContext;
@@ -94,13 +94,13 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	protected void onRegister(Identifier id) {
 		createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id))
-			.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
+				.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
 	}
 
 	@Override
 	protected void onUnregister(Identifier id) {
 		createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id))
-			.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
+				.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
 	}
 
 	@Override
