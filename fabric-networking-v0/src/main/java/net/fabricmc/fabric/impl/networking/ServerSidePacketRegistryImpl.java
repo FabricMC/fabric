@@ -94,13 +94,13 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	protected void onRegister(Identifier id) {
 		createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id))
-			.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
+				.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
 	}
 
 	@Override
 	protected void onUnregister(Identifier id) {
 		createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id))
-			.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
+				.ifPresent((packet) -> forEachHandler((n) -> n.sendPacket(packet)));
 	}
 
 	@Override
