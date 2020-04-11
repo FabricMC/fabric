@@ -20,8 +20,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public interface HudRenderCallback {
-	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) ->
-			(delta) -> {
+	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (delta) -> {
 		for (HudRenderCallback event : listeners) {
 			event.onHudRender(delta);
 		}
