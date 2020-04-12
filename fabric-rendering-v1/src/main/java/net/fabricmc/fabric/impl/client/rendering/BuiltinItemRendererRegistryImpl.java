@@ -28,10 +28,13 @@ import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 
 @Environment(EnvType.CLIENT)
-public enum BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
-	INSTANCE;
+public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
+	public static final BuiltinItemRendererRegistryImpl INSTANCE = new BuiltinItemRendererRegistryImpl();
 
 	private static final Map<Item, BuiltinItemRenderer> RENDERERS = new HashMap<>();
+
+	private BuiltinItemRendererRegistryImpl() {
+	}
 
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
