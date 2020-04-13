@@ -20,7 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import com.google.common.collect.ImmutableMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -31,25 +32,32 @@ import net.fabricmc.fabric.api.entity.attribute.v1.EntityAttributeRegistry;
 
 public final class FabricEntityAttributeRegistry implements EntityAttributeRegistry {
 	public static final FabricEntityAttributeRegistry INSTANCE = new FabricEntityAttributeRegistry();
-	private final Map<EntityType<? extends LivingEntity>, Supplier<DefaultAttributeContainer.Builder>> registrations = new HashMap<>();
-	private boolean invalid = false;
+	private static final Logger LOGGER = LogManager.getLogger();
+	private final Map<EntityType<? extends LivingEntity>, Supplier<DefaultAttributeContainer.Builder>> pendingRegistrations = new HashMap<>();
+	private Map<EntityType<? extends LivingEntity>, DefaultAttributeContainer> registrations;
 
 	@Override
 	public void register(EntityType<? extends LivingEntity> type, Supplier<DefaultAttributeContainer.Builder> builderSupplier) {
-		if (this.invalid) {
-			throw new IllegalStateException("Registering default living attribute too late!");
+		if (this.registrations == null) {
+			if (this.pendingRegistrations.put(type, builderSupplier) != null) {
+				LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
+			}
+			return;
 		}
 
-		if (this.registrations.put(type, builderSupplier) != null) {
-			throw new IllegalArgumentException(String.format("Duplicate registration for entity type %s (id \"%s\")", type, Registry.ENTITY_TYPE.getId(type)));
+		if (this.registrations.put(type, builderSupplier.get().build()) != null) {
+			LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
 		}
 	}
 
-	public void registerTo(ImmutableMap.Builder<EntityType<? extends LivingEntity>, DefaultAttributeContainer> builder) {
-		this.invalid = true;
-
-		for (Map.Entry<EntityType<? extends LivingEntity>, Supplier<DefaultAttributeContainer.Builder>> entry : this.registrations.entrySet()) {
-			builder.put(entry.getKey(), entry.getValue().get().build());
+	public void initMap(Map<EntityType<? extends LivingEntity>, DefaultAttributeContainer> map) {
+		for (Map.Entry<EntityType<? extends LivingEntity>, Supplier<DefaultAttributeContainer.Builder>> entry : this.pendingRegistrations.entrySet()) {
+			EntityType<? extends LivingEntity> type = entry.getKey();
+			if (map.put(type, entry.getValue().get().build()) != null) {
+				LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
+			}
 		}
+
+		this.registrations = map;
 	}
 }

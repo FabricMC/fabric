@@ -51,14 +51,10 @@ public interface EntityAttributeRegistry {
 	 * </pre></blockquote>
 	 * </p>
 	 *
-	 * <p>If a registration is too late or duplicates a custom registration, the registry
-	 * will throw an exception. If a registration duplicates a vanilla registration, the
-	 * registry will fail when vanilla finishes the registration.</p>
+	 * <p>If a registration overrides another, a log message will be emitted./p>
 	 *
 	 * @param type            the entity type
 	 * @param builderSupplier the supplier giving a builder that creates the default attribute
-	 * @throws IllegalStateException    if the registration is too late
-	 * @throws IllegalArgumentException if a registration duplicates a previous registration
 	 */
 	void register(EntityType<? extends LivingEntity> type, Supplier<DefaultAttributeContainer.Builder> builderSupplier);
 }
