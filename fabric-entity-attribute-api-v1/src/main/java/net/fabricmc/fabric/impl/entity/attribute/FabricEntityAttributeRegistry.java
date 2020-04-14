@@ -42,6 +42,7 @@ public final class FabricEntityAttributeRegistry implements EntityAttributeRegis
 			if (this.pendingRegistrations.put(type, builderSupplier) != null) {
 				LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
 			}
+
 			return;
 		}
 
@@ -53,6 +54,7 @@ public final class FabricEntityAttributeRegistry implements EntityAttributeRegis
 	public void initMap(Map<EntityType<? extends LivingEntity>, DefaultAttributeContainer> map) {
 		for (Map.Entry<EntityType<? extends LivingEntity>, Supplier<DefaultAttributeContainer.Builder>> entry : this.pendingRegistrations.entrySet()) {
 			EntityType<? extends LivingEntity> type = entry.getKey();
+
 			if (map.put(type, entry.getValue().get().build()) != null) {
 				LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
 			}
