@@ -26,12 +26,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.LegacyFuelRegistryImpl;
 
+@Deprecated
 @Mixin(AbstractFurnaceBlockEntity.class)
-public class MixinAbstractFurnaceBlockEntity {
+public class LegacyMixinAbstractFurnaceBlockEntity {
 	@Inject(at = @At("RETURN"), method = "createFuelTimeMap")
 	private static void fuelTimeMapHook(CallbackInfoReturnable<Map<Item, Integer>> info) {
-		FuelRegistryImpl.INSTANCE.apply(info.getReturnValue());
+		LegacyFuelRegistryImpl.INSTANCE.apply(info.getReturnValue());
 	}
 }

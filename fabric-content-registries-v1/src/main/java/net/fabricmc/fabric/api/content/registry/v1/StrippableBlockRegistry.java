@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.api.content.registry.v1;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.CompostingChanceRegistryImpl;
+import net.minecraft.block.Block;
+import net.minecraft.block.PillarBlock;
+
+import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistries;
 
 /**
- * Registry of items to 0.0-1.0 values, defining the chance of a given item
- * increasing the Composter block's level.
- * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.CompostableItemRegistry}
+ * Registry of Blocks that when stripped turn into a specific Block.
+ * Note: Both KEY and VALUE must have the {@link PillarBlock#AXIS} property!
  */
-@Deprecated
-public interface CompostingChanceRegistry extends Item2ObjectMap<Float> {
-	CompostingChanceRegistry INSTANCE = new CompostingChanceRegistryImpl();
+public interface StrippableBlockRegistry {
+	Taggable2ObjectMap<Block, Block> INSTANCE = ToolBlockTransformationRegistries.STRIPPABLE_BLOCKS;
 }

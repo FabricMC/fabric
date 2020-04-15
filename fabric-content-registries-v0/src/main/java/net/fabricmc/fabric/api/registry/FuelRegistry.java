@@ -17,11 +17,13 @@
 package net.fabricmc.fabric.api.registry;
 
 import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.LegacyFuelRegistryImpl;
 
 /**
  * Registry of items to 0-32767 fuel burn time values, in in-game ticks.
+ * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.FuelItemRegistry}
  */
+@Deprecated
 public interface FuelRegistry extends Item2ObjectMap<Integer> {
-	FuelRegistry INSTANCE = FuelRegistryImpl.INSTANCE;
+	FuelRegistry INSTANCE = LegacyFuelRegistryImpl.INSTANCE;
 }

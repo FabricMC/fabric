@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.api.content.registry.v1;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.CompostingChanceRegistryImpl;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+
+import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistries;
 
 /**
- * Registry of items to 0.0-1.0 values, defining the chance of a given item
- * increasing the Composter block's level.
- * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.CompostableItemRegistry}
+ * Registry of Blocks that when tilled turn into a specific BlockState.
  */
-@Deprecated
-public interface CompostingChanceRegistry extends Item2ObjectMap<Float> {
-	CompostingChanceRegistry INSTANCE = new CompostingChanceRegistryImpl();
+public interface TillableBlockRegistry extends Taggable2ObjectMap<Block, BlockState> {
+	Taggable2ObjectMap<Block, BlockState> INSTANCE = ToolBlockTransformationRegistries.TILLABLE_BLOCKS;
 }

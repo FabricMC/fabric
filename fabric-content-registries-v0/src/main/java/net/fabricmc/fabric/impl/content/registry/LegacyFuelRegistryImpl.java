@@ -31,13 +31,14 @@ import net.minecraft.tag.Tag;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
-public class FuelRegistryImpl implements FuelRegistry {
-	public static final FuelRegistryImpl INSTANCE = new FuelRegistryImpl();
+@Deprecated
+public class LegacyFuelRegistryImpl implements FuelRegistry {
+	public static final LegacyFuelRegistryImpl INSTANCE = new LegacyFuelRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
 
-	public FuelRegistryImpl() { }
+	public LegacyFuelRegistryImpl() { }
 
 	@Override
 	public Integer get(ItemConvertible item) {

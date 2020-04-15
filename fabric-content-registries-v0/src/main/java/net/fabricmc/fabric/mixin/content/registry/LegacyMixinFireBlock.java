@@ -30,11 +30,12 @@ import net.minecraft.state.property.Properties;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.fabricmc.fabric.impl.content.registry.FireBlockHooks;
-import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
+import net.fabricmc.fabric.impl.content.registry.LegacyFlammableBlockRegistryImpl;
 
+@Deprecated
 @Mixin(FireBlock.class)
-public class MixinFireBlock implements FireBlockHooks {
-	private FlammableBlockRegistryImpl fabric_registry;
+public class LegacyMixinFireBlock implements FireBlockHooks {
+	private LegacyFlammableBlockRegistryImpl fabric_registry;
 
 	@Shadow
 	private int getSpreadChance(BlockState block_1) {
@@ -48,7 +49,7 @@ public class MixinFireBlock implements FireBlockHooks {
 
 	@Inject(at = @At("RETURN"), method = "<init>")
 	private void afterConstruct(Block.Settings settings, CallbackInfo info) {
-		fabric_registry = FlammableBlockRegistryImpl.getInstance((Block) (Object) this);
+		fabric_registry = LegacyFlammableBlockRegistryImpl.getInstance((Block) (Object) this);
 	}
 
 	@Inject(at = @At("HEAD"), method = "getBurnChance", cancellable = true)
