@@ -19,6 +19,10 @@ package net.fabricmc.fabric.api.util;
 import net.minecraft.block.Block;
 import net.minecraft.tag.Tag;
 
+/**
+ * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap}
+ */
+@Deprecated
 public interface Block2ObjectMap<V> {
 	V get(Block block);
 

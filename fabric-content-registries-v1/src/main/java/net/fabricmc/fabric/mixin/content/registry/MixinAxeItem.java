@@ -14,17 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.mixin.content.registry;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.CompostingChanceRegistryImpl;
+import java.util.Map;
 
-/**
- * Registry of items to 0.0-1.0 values, defining the chance of a given item
- * increasing the Composter block's level.
- * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.CompostableItemRegistry}
- */
-@Deprecated
-public interface CompostingChanceRegistry extends Item2ObjectMap<Float> {
-	CompostingChanceRegistry INSTANCE = new CompostingChanceRegistryImpl();
+import com.google.common.collect.Maps;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
+
+import net.minecraft.block.Block;
+import net.minecraft.item.AxeItem;
+
+@Mixin(AxeItem.class)
+public class MixinAxeItem {
+	@Shadow
+	@Final
+	@Mutable
+	protected static Map<Block, Block> STRIPPED_BLOCKS;
+
+	static {
+		STRIPPED_BLOCKS = Maps.newHashMap(STRIPPED_BLOCKS); // Makes the map mutable
+	}
 }

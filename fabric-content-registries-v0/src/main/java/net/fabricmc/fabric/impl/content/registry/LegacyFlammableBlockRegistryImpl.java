@@ -32,9 +32,10 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
-public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, SimpleSynchronousResourceReloadListener {
+@Deprecated
+public class LegacyFlammableBlockRegistryImpl implements FlammableBlockRegistry, SimpleSynchronousResourceReloadListener {
 	private static final FlammableBlockRegistry.Entry REMOVED = new FlammableBlockRegistry.Entry(0, 0);
-	private static final Map<Block, FlammableBlockRegistryImpl> REGISTRIES = new HashMap<>();
+	private static final Map<Block, LegacyFlammableBlockRegistryImpl> REGISTRIES = new HashMap<>();
 	private static final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
 	private static int idCounter = 0;
 
@@ -45,7 +46,7 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 	private final Block key;
 	private boolean tagsPresent = false;
 
-	private FlammableBlockRegistryImpl(Block key) {
+	private LegacyFlammableBlockRegistryImpl(Block key) {
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(this);
 		this.id = new Identifier("fabric:private/fire_registry_" + (++idCounter));
 		this.key = key;
@@ -144,12 +145,12 @@ public class FlammableBlockRegistryImpl implements FlammableBlockRegistry, Simpl
 		}
 	}
 
-	public static FlammableBlockRegistryImpl getInstance(Block block) {
+	public static LegacyFlammableBlockRegistryImpl getInstance(Block block) {
 		if (!(block instanceof FireBlockHooks)) {
 			throw new RuntimeException("Not a hookable fire block: " + block);
 		}
 
-		return REGISTRIES.computeIfAbsent(block, FlammableBlockRegistryImpl::new);
+		return REGISTRIES.computeIfAbsent(block, LegacyFlammableBlockRegistryImpl::new);
 	}
 
 	@Override

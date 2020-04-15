@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.api.content.registry.v1;
 
-import net.fabricmc.fabric.api.util.Item2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.CompostingChanceRegistryImpl;
+import net.fabricmc.fabric.api.content.registry.v1.util.Item2ObjectMap;
+import net.fabricmc.fabric.impl.content.registry.CompostableItemRegistryImpl;
 
 /**
- * Registry of items to 0.0-1.0 values, defining the chance of a given item
+ * Registry of Items to 0.0-1.0 values, defining the chance of a given item
  * increasing the Composter block's level.
- * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.CompostableItemRegistry}
  */
-@Deprecated
-public interface CompostingChanceRegistry extends Item2ObjectMap<Float> {
-	CompostingChanceRegistry INSTANCE = new CompostingChanceRegistryImpl();
+public interface CompostableItemRegistry {
+	Item2ObjectMap<Float> INSTANCE = CompostableItemRegistryImpl.INSTANCE;
 }

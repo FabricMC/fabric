@@ -14,27 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.api.content.registry.v1;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.util.Block2ObjectMap;
-import net.fabricmc.fabric.impl.content.registry.LegacyFlammableBlockRegistryImpl;
+import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
 
 /**
- * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.FlammableBlockRegistry}
+ * Registry of Blocks that can be set on fire.
  */
-@Deprecated
-public interface FlammableBlockRegistry extends Block2ObjectMap<FlammableBlockRegistry.Entry> {
-	static FlammableBlockRegistry getDefaultInstance() {
-		return getInstance(Blocks.FIRE);
-	}
-
-	static FlammableBlockRegistry getInstance(Block block) {
-		return LegacyFlammableBlockRegistryImpl.getInstance(block);
-	}
+public interface FlammableBlockRegistry extends Taggable2ObjectMap<Block, FlammableBlockRegistry.Entry> {
+	/**
+	 * Registry of Blocks that can be set on fire by {@link net.minecraft.block.Blocks#FIRE}.
+	 */
+	FlammableBlockRegistry FIRE_INSTANCE = FlammableBlockRegistryImpl.FIRE_INSTANCE;
 
 	default void add(Block block, int burn, int spread) {
 		this.add(block, new Entry(burn, spread));

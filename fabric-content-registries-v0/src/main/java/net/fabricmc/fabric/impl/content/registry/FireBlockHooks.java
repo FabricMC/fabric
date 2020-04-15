@@ -20,6 +20,7 @@ import net.minecraft.block.BlockState;
 
 import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 
+@Deprecated
 public interface FireBlockHooks {
 	FlammableBlockRegistry.Entry fabric_getVanillaEntry(BlockState block);
 }

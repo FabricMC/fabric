@@ -23,6 +23,7 @@ import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 
+@Deprecated
 public class CompostingChanceRegistryImpl implements CompostingChanceRegistry {
 	@Override
 	public Float get(ItemConvertible item) {
