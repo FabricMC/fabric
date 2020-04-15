@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -35,6 +35,6 @@ public class MixinAxeItem {
 	protected static Map<Block, Block> STRIPPED_BLOCKS;
 
 	static {
-		STRIPPED_BLOCKS = Maps.newHashMap(STRIPPED_BLOCKS); // Makes the map mutable
+		STRIPPED_BLOCKS = new HashMap<>(STRIPPED_BLOCKS); // Makes the map mutable
 	}
 }
