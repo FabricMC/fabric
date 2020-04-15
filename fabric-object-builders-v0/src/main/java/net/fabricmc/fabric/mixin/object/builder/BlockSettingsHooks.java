@@ -45,7 +45,7 @@ public interface BlockSettingsHooks {
 	void setMaterialColorFactory(Function<BlockState, MaterialColor> materialColorFunction);
 
 	@Accessor
-	void setDropTableId(Identifier dropTableId);
+	void setLootTableId(Identifier dropTableId);
 
 	@Invoker
 	Block.Settings invokeSounds(BlockSoundGroup group);

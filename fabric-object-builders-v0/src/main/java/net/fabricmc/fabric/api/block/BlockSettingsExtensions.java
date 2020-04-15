@@ -54,7 +54,7 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void drops(Settings settings, Identifier dropTableId) {
-		((BlockSettingsHooks) settings).setDropTableId(dropTableId);
+		((BlockSettingsHooks) settings).setLootTableId(dropTableId);
 	}
 
 	public static void sounds(Settings settings, BlockSoundGroup soundGroup) {
