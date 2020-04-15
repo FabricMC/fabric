@@ -41,7 +41,7 @@ public class Taggable2ObjectMapRegistryImpl<K, V> implements Taggable2ObjectMap<
 	private static final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
 
 	private boolean tagsPresent = false;
-	private final List<Runnable> loader = new LinkedList<>();
+	private final List<Runnable> loader = new LinkedList<>(); // This is to preserve the order of how things are added and removed. This would be a lot simpler if we did not have to deal with Tags
 	private final Map<K, V> restorer = new HashMap<>();
 	private final BiConsumer<K, V> putter;
 	private final Consumer<K> remover;
