@@ -35,15 +35,15 @@ public final class ToolBlockTransformationRegistries {
 			super(material, attackSpeed, settings);
 		}
 
-		private static void addTillable(Block block, BlockState tilled) {
+		static void addTillable(Block block, BlockState tilled) {
 			TILLED_BLOCKS.put(block, tilled);
 		}
 
-		private static void removeTillable(Block block) {
+		static void removeTillable(Block block) {
 			TILLED_BLOCKS.remove(block);
 		}
 
-		private static BlockState getTilled(Block block) {
+		static BlockState getTilled(Block block) {
 			return TILLED_BLOCKS.get(block);
 		}
 	}
@@ -53,15 +53,15 @@ public final class ToolBlockTransformationRegistries {
 			super(material, attackDamage, attackSpeed, settings);
 		}
 
-		private static void addFlattenable(Block block, BlockState flattened) {
+		static void addFlattenable(Block block, BlockState flattened) {
 			PATH_BLOCKSTATES.put(block, flattened);
 		}
 
-		private static void removeFlattenable(Block block) {
+		static void removeFlattenable(Block block) {
 			PATH_BLOCKSTATES.remove(block);
 		}
 
-		private static BlockState getFlattenable(Block block) {
+		static BlockState getFlattenable(Block block) {
 			return PATH_BLOCKSTATES.get(block);
 		}
 	}
@@ -71,15 +71,15 @@ public final class ToolBlockTransformationRegistries {
 			super(material, attackDamage, attackSpeed, settings);
 		}
 
-		private static void addStrippable(Block block, Block stripped) {
+		static void addStrippable(Block block, Block stripped) {
 			STRIPPED_BLOCKS.put(block, stripped);
 		}
 
-		private static void removeStrippable(Block block) {
+		static void removeStrippable(Block block) {
 			STRIPPED_BLOCKS.remove(block);
 		}
 
-		private static Block getStrippable(Block block) {
+		static Block getStrippable(Block block) {
 			return STRIPPED_BLOCKS.get(block);
 		}
 	}
