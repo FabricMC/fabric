@@ -39,13 +39,13 @@ public class FuelItemRegistryImpl extends Taggable2ObjectMapRegistryImpl<Item, I
 
 	@Override
 	public void add(Tag<Item> tag, Integer value) {
-		Preconditions.checkArgument(value >= Short.MIN_VALUE && value <= Short.MAX_VALUE, "Fuel value " + value + " for tag " + tag.getId() + " is out of range. Must be between -32768 and 32767 (inclusive)");
+		Preconditions.checkArgument(value >= 0 && value <= Short.MAX_VALUE, "Fuel value " + value + " for tag " + tag.getId() + " is out of range. Must be between 0 and 32767 (inclusive)");
 		super.add(tag, value);
 	}
 
 	@Override
 	public void add(Item item, Integer value) {
-		Preconditions.checkArgument(value >= Short.MIN_VALUE && value <= Short.MAX_VALUE, "Fuel value " + value + " for item " + Registry.ITEM.getId(item) + " is out of range. Must be between -32768 and 32767 (inclusive)");
+		Preconditions.checkArgument(value >= 0 && value <= Short.MAX_VALUE, "Fuel value " + value + " for item " + Registry.ITEM.getId(item) + " is out of range. Must be between 0 and 32767 (inclusive)");
 		super.add(item, value);
 	}
 

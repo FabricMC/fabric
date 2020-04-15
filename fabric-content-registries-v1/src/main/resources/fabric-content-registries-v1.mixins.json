@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.content.registry",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AccessorFireBlock",
+    "FireBlockAccessor",
     "MixinAbstractFurnaceBlockEntity",
     "MixinAxeItem"
   ],

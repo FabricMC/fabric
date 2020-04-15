@@ -24,7 +24,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.FireBlock;
 
 @Mixin(FireBlock.class)
-public interface AccessorFireBlock {
+public interface FireBlockAccessor {
 	@Accessor
 	Object2IntMap<Block> getBurnChances();
 

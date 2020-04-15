@@ -24,13 +24,13 @@ import net.minecraft.block.FireBlock;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.content.registry.v1.FlammableBlockRegistry;
-import net.fabricmc.fabric.mixin.content.registry.AccessorFireBlock;
+import net.fabricmc.fabric.mixin.content.registry.FireBlockAccessor;
 
 public class FlammableBlockRegistryImpl extends Taggable2ObjectMapRegistryImpl<Block, FlammableBlockRegistry.Entry> implements FlammableBlockRegistry {
 	public static final FlammableBlockRegistry FIRE_INSTANCE = new FlammableBlockRegistryImpl(Blocks.FIRE, "fire");
 
 	public FlammableBlockRegistryImpl(Block fireBlock, String prefix) {
-		super(prefix + "_flammable_block_registry", (block, entry) -> ((FireBlock) fireBlock).registerFlammableBlock(block, entry.getBurnChance(), entry.getSpreadChance()), block -> ((FireBlock) fireBlock).registerFlammableBlock(block, 0, 0), block -> new Entry(((AccessorFireBlock) fireBlock).getBurnChances().getInt(block), ((AccessorFireBlock) fireBlock).getSpreadChances().getInt(block)));
+		super(prefix + "_flammable_block_registry", (block, entry) -> ((FireBlock) fireBlock).registerFlammableBlock(block, entry.getBurnChance(), entry.getSpreadChance()), block -> ((FireBlock) fireBlock).registerFlammableBlock(block, 0, 0), block -> new Entry(((FireBlockAccessor) fireBlock).getBurnChances().getInt(block), ((FireBlockAccessor) fireBlock).getSpreadChances().getInt(block)));
 		Preconditions.checkArgument(fireBlock instanceof FireBlock, "Block " + Registry.BLOCK.getId(fireBlock) + " is not a FireBlock and a FlammablcBlockRegistry cannot be created for it");
 	}
 }
