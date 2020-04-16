@@ -41,6 +41,8 @@ import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryAttributeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -59,10 +61,10 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
 	static final Identifier ID = new Identifier("fabric", "registry/sync");
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
-	private static final RegistryTypes REGISTRY_TYPES = RegistryTypes.getInstance();
 
+	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
 
 	private RegistrySyncManager() { }
@@ -148,23 +150,27 @@ public final class RegistrySyncManager {
 			}
 
 			//Dont save none persistent registries
-			if (!isClientSync && REGISTRY_TYPES.nonePersistent.contains(registryId)) {
-				LOGGER.debug("Not saving registry: " + registryId);
+			if (!isClientSync && !RegistryAttributeRegistry.INSTANCE.hasAttribute(registryId, RegistryAttribute.PERSISTENT)) {
+				LOGGER.debug("Not saving none-persistent registry: " + registryId);
 				continue;
 			}
 
 			//Dont sync network blacklisted registries
-			if (isClientSync && REGISTRY_TYPES.networkBlacklist.contains(registryId)) {
+			if (isClientSync && !RegistryAttributeRegistry.INSTANCE.hasAttribute(registryId, RegistryAttribute.SYNC)) {
 				LOGGER.debug("Not syncing registry: " + registryId);
 				continue;
 			}
 
 			//Keep vanilla registry that we have no existing registry entries for
 			if (existingRegistryData == null && !isRegistryModded(registryId)) {
-				LOGGER.debug("Skipping vanilla registry: " + registryId);
+				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
+			}
+
+			if (isClientSync) {
+				LOGGER.debug("Syncing registry: " + registryId);
 			} else {
-				LOGGER.debug("Syncing vanilla registry: " + registryId);
+				LOGGER.debug("Saving registry: " + registryId);
 			}
 
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
@@ -279,14 +285,6 @@ public final class RegistrySyncManager {
 		postBootstrap = true;
 	}
 
-	private static void markModded(Registry<?> registry) {
-		if (registry instanceof ModdableRegistry) {
-			((ModdableRegistry) registry).markModded();
-		} else {
-			throw new RuntimeException("Cannot mark a none moddable registry as modded!");
-		}
-	}
-
 	public static boolean isRegistryModded(Identifier registryId) {
 		//All none minecraft registries are modded
 		if (!registryId.getNamespace().equals("minecraft")) {
@@ -300,35 +298,6 @@ public final class RegistrySyncManager {
 			return moddableRegistry.isModded();
 		} else {
 			return false; //TODO what should this be?
-		}
-	}
-
-	private static class RegistryTypes {
-		private List<Identifier> nonePersistent;
-		private List<Identifier> persistent;
-		private List<Identifier> networkBlacklist;
-
-		private static Gson GSON = new GsonBuilder()
-				.registerTypeAdapter(Identifier.class, new TypeAdapter<Identifier>() {
-					@Override
-					public void write(JsonWriter out, Identifier value) throws IOException {
-						out.value(value.toString());
-					}
-
-					@Override
-					public Identifier read(JsonReader in) throws IOException {
-						return new Identifier(in.nextString());
-					}
-				}).create();
-
-		public static RegistryTypes getInstance() {
-			ModContainer modContainer = FabricLoader.getInstance().getModContainer("fabric-registry-sync-v0").get();
-
-			try (InputStreamReader isr = new InputStreamReader(Files.newInputStream(modContainer.getPath("fabric-registry-sync-v0.registry-types.json")))) {
-				return GSON.fromJson(isr, RegistryTypes.class);
-			} catch (IOException e) {
-				throw new RuntimeException("Failed to read registry types", e);
-			}
 		}
 	}
 }
