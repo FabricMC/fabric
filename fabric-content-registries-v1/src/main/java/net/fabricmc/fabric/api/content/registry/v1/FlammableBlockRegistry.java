@@ -19,13 +19,13 @@ package net.fabricmc.fabric.api.content.registry.v1;
 import net.minecraft.block.Block;
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
 
 /**
  * Registry of Blocks that can be set on fire.
  */
-public interface FlammableBlockRegistry extends Taggable2ObjectMap<Block, FlammableBlockRegistry.Entry> {
+public interface FlammableBlockRegistry extends ContentRegistry<Block, FlammableBlockRegistry.Entry> {
 	/**
 	 * Registry of Blocks that can be set on fire by {@link net.minecraft.block.Blocks#FIRE}.
 	 */

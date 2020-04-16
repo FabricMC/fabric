@@ -26,7 +26,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.content.registry.v1.FlammableBlockRegistry;
 import net.fabricmc.fabric.mixin.content.registry.FireBlockAccessor;
 
-public class FlammableBlockRegistryImpl extends Taggable2ObjectMapRegistryImpl<Block, FlammableBlockRegistry.Entry> implements FlammableBlockRegistry {
+public class FlammableBlockRegistryImpl extends ContentRegistryImpl<Block, FlammableBlockRegistry.Entry> implements FlammableBlockRegistry {
 	public static final FlammableBlockRegistry FIRE_INSTANCE = new FlammableBlockRegistryImpl(Blocks.FIRE, "fire");
 
 	public FlammableBlockRegistryImpl(Block fireBlock, String prefix) {

@@ -31,12 +31,12 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 
-public class Taggable2ObjectMapRegistryImpl<K, V> implements Taggable2ObjectMap<K, V>, SimpleSynchronousResourceReloadListener {
+public class ContentRegistryImpl<K, V> implements ContentRegistry<K, V>, SimpleSynchronousResourceReloadListener {
 	private final Identifier reloadIdentifier;
 	private static final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
 
@@ -47,7 +47,7 @@ public class Taggable2ObjectMapRegistryImpl<K, V> implements Taggable2ObjectMap<
 	private final Consumer<K> remover;
 	private final Function<K, V> getter;
 
-	Taggable2ObjectMapRegistryImpl(String name, BiConsumer<K, V> putter, Consumer<K> remover, Function<K, V> getter) {
+	ContentRegistryImpl(String name, BiConsumer<K, V> putter, Consumer<K> remover, Function<K, V> getter) {
 		reloadIdentifier = new Identifier("fabric:private/" + name);
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(this);
 		this.putter = putter;
