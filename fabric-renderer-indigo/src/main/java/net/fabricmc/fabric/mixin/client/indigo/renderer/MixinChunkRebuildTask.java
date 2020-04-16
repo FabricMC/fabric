@@ -104,7 +104,7 @@ public class MixinChunkRebuildTask {
 			final BakedModel model = renderManager.getModel(blockState);
 
 			if (Indigo.ALWAYS_TESSELATE_INDIGO || !((FabricBakedModel) model).isVanillaAdapter()) {
-				Vec3d vec3d = blockState.getOffsetPos(blockView, blockPos);
+				Vec3d vec3d = blockState.getModelOffset(blockView, blockPos);
 				matrix.translate(vec3d.x, vec3d.y, vec3d.z);
 				return ((AccessChunkRendererRegion) blockView).fabric_getRenderer().tesselateBlock(blockState, blockPos, model, matrix);
 			}

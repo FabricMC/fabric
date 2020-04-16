@@ -56,7 +56,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 	@Override
 	public void add(Tag<Item> tag, Integer cookTime) {
 		if (cookTime > 32767) {
-			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + tag.getId() + ")");
+			LOGGER.warn("Tried to register an overly high cookTime: " + cookTime + " > 32767! (" + getTagName(tag) + ")");
 		}
 
 		tagCookTimes.put(tag, cookTime.intValue());
@@ -107,5 +107,13 @@ public class FuelRegistryImpl implements FuelRegistry {
 				map.put(item.asItem(), time);
 			}
 		}
+	}
+
+	private static String getTagName(Tag<?> tag) {
+		if (tag instanceof Tag.Identified) {
+			return ((Tag.Identified<?>) tag).getId().toString();
+		}
+
+		return tag.toString();
 	}
 }

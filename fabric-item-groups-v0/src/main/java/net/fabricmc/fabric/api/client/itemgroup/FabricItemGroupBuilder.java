@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;

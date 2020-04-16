@@ -25,10 +25,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.util.math.Matrix4f;
+import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.client.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix3f;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
@@ -169,7 +169,7 @@ public abstract class AbstractQuadRenderer {
 		mpos.set(pos);
 
 		if ((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
-			mpos.setOffset(quad.lightFace());
+			mpos.move(quad.lightFace());
 		}
 
 		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329

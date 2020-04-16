@@ -16,20 +16,23 @@
 
 package net.fabricmc.fabric.impl.tag.extension;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.function.Supplier;
 
 import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagContainer;
 import net.minecraft.util.Identifier;
 
-public final class TagDelegate<T> extends Tag<T> {
+import net.fabricmc.fabric.api.tag.FabricTag;
+
+public final class TagDelegate<T> implements Tag.Identified<T>, FabricTag<T>, FabricTagHooks {
+	private final Identifier id;
 	private final Supplier<TagContainer<T>> containerSupplier;
 	private volatile Target<T> target;
+	private int clearCount;
 
 	public TagDelegate(Identifier id, Supplier<TagContainer<T>> containerSupplier) {
-		super(id);
-
+		this.id = id;
 		this.containerSupplier = containerSupplier;
 	}
 
@@ -39,13 +42,8 @@ public final class TagDelegate<T> extends Tag<T> {
 	}
 
 	@Override
-	public Collection<T> values() {
+	public List<T> values() {
 		return getTag().values();
-	}
-
-	@Override
-	public Collection<Tag.Entry<T>> entries() {
-		return getTag().entries();
 	}
 
 	/**
@@ -70,6 +68,21 @@ public final class TagDelegate<T> extends Tag<T> {
 		}
 
 		return ret;
+	}
+
+	@Override
+	public Identifier getId() {
+		return id;
+	}
+
+	@Override
+	public boolean hasBeenReplaced() {
+		return clearCount > 0;
+	}
+
+	@Override
+	public void fabric_setExtraData(int clearCount) {
+		this.clearCount = clearCount;
 	}
 
 	private static final class Target<T> {

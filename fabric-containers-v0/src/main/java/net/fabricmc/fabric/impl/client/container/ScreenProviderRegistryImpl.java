@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.util.Identifier;
-import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.ScreenHandler;
 
 import net.fabricmc.fabric.api.client.screen.ContainerScreenFactory;
@@ -42,10 +42,10 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final Map<Identifier, ContainerFactory<ScreenWithHandler>> FACTORIES = new HashMap<>();
+	private static final Map<Identifier, ContainerFactory<HandledScreen>> FACTORIES = new HashMap<>();
 
 	@Override
-	public void registerFactory(Identifier identifier, ContainerFactory<ScreenWithHandler> factory) {
+	public void registerFactory(Identifier identifier, ContainerFactory<HandledScreen> factory) {
 		if (FACTORIES.containsKey(identifier)) {
 			throw new RuntimeException("A factory has already been registered as " + identifier + "!");
 		}
@@ -75,14 +75,14 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 
 			MinecraftClient.getInstance().execute(() -> {
 				try {
-					ContainerFactory<ScreenWithHandler> factory = FACTORIES.get(identifier);
+					ContainerFactory<HandledScreen> factory = FACTORIES.get(identifier);
 
 					if (factory == null) {
 						LOGGER.error("No GUI factory found for {}!", identifier.toString());
 						return;
 					}
 
-					ScreenWithHandler gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
+					HandledScreen gui = factory.create(syncId, identifier, packetContext.getPlayer(), packetByteBuf);
 					packetContext.getPlayer().currentScreenHandler = gui.getScreenHandler();
 					MinecraftClient.getInstance().openScreen(gui);
 				} finally {

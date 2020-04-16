@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.client.screen;
 
-import net.minecraft.client.gui.screen.ingame.ScreenWithHandler;
+import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
 
@@ -40,7 +40,7 @@ public interface ScreenProviderRegistry {
 	 * to override the default behaviour of re-using the existing "packet -&gt; Container" logic.
 	 *
 	 * @param identifier a shared identifier, this identifier should also be used to register a container using {@link ContainerProviderRegistry}
-	 * @param factory    the gui factory, this should return a new {@link ScreenWithHandler}
+	 * @param factory    the gui factory, this should return a new {@link HandledScreen}
 	 */
-	void registerFactory(Identifier identifier, ContainerFactory<ScreenWithHandler> factory);
+	void registerFactory(Identifier identifier, ContainerFactory<HandledScreen> factory);
 }

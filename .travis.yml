@@ -3,10 +3,10 @@ install: true
 
 jdk:
   - openjdk8
+  - openjdk11
 
 script:
-  - chmod +x gradlew
-  - ./gradlew check build --stacktrace
+  - ./gradlew check build publishToMavenLocal --stacktrace
 
 notifications:
   email: false

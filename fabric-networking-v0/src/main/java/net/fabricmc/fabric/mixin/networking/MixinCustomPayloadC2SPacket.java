@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.impl.networking.CustomPayloadC2SPacketAccessor;
 
