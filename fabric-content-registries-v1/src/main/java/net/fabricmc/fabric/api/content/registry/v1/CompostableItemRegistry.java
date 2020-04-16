@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.content.registry.v1;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Item2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ItemContentRegistry;
 import net.fabricmc.fabric.impl.content.registry.CompostableItemRegistryImpl;
 
 /**
@@ -24,5 +24,5 @@ import net.fabricmc.fabric.impl.content.registry.CompostableItemRegistryImpl;
  * increasing the Composter block's level.
  */
 public interface CompostableItemRegistry {
-	Item2ObjectMap<Float> INSTANCE = CompostableItemRegistryImpl.INSTANCE;
+	ItemContentRegistry<Float> INSTANCE = CompostableItemRegistryImpl.INSTANCE;
 }

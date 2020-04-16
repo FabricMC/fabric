@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.content.registry.v1;
 import net.minecraft.block.Block;
 import net.minecraft.block.PillarBlock;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistries;
 
 /**
@@ -27,5 +27,5 @@ import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistri
  * Note: Both KEY and VALUE must have the {@link PillarBlock#AXIS} property!
  */
 public interface StrippableBlockRegistry {
-	Taggable2ObjectMap<Block, Block> INSTANCE = ToolBlockTransformationRegistries.STRIPPABLE_BLOCKS;
+	ContentRegistry<Block, Block> INSTANCE = ToolBlockTransformationRegistries.STRIPPABLE_BLOCKS;
 }

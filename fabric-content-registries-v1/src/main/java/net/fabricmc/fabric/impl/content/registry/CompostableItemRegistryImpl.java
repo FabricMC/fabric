@@ -19,10 +19,10 @@ package net.fabricmc.fabric.impl.content.registry;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Item2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ItemContentRegistry;
 
-public class CompostableItemRegistryImpl extends Taggable2ObjectMapRegistryImpl<Item, Float> implements Item2ObjectMap<Float> {
-	public static final Item2ObjectMap<Float> INSTANCE = new CompostableItemRegistryImpl();
+public class CompostableItemRegistryImpl extends ContentRegistryImpl<Item, Float> implements ItemContentRegistry<Float> {
+	public static final ItemContentRegistry<Float> INSTANCE = new CompostableItemRegistryImpl();
 
 	public CompostableItemRegistryImpl() {
 		super("compostable_item_registry", (item, value) -> ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.put(item.asItem(), value), item -> ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.removeFloat(item.asItem()), item -> ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getOrDefault(item.asItem(), 0.0F));

@@ -23,12 +23,12 @@ import net.minecraft.item.HoeItem;
 import net.minecraft.item.ShovelItem;
 import net.minecraft.item.ToolMaterial;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 
 public final class ToolBlockTransformationRegistries {
-	public static final Taggable2ObjectMap<Block, BlockState> TILLABLE_BLOCKS = new Taggable2ObjectMapRegistryImpl<>("tillable_block_registry", HoeAccessor::addTillable, HoeAccessor::removeTillable, HoeAccessor::getTilled);
-	public static final Taggable2ObjectMap<Block, BlockState> FLATTENABLE_BLOCKS = new Taggable2ObjectMapRegistryImpl<>("flattenable_block_registry", ShovelAccessor::addFlattenable, ShovelAccessor::removeFlattenable, ShovelAccessor::getFlattenable);
-	public static final Taggable2ObjectMap<Block, Block> STRIPPABLE_BLOCKS = new Taggable2ObjectMapRegistryImpl<>("strippable_block_registry", AxeAccessor::addStrippable, AxeAccessor::removeStrippable, AxeAccessor::getStrippable);
+	public static final ContentRegistry<Block, BlockState> TILLABLE_BLOCKS = new ContentRegistryImpl<>("tillable_block_registry", HoeAccessor::addTillable, HoeAccessor::removeTillable, HoeAccessor::getTilled);
+	public static final ContentRegistry<Block, BlockState> FLATTENABLE_BLOCKS = new ContentRegistryImpl<>("flattenable_block_registry", ShovelAccessor::addFlattenable, ShovelAccessor::removeFlattenable, ShovelAccessor::getFlattenable);
+	public static final ContentRegistry<Block, Block> STRIPPABLE_BLOCKS = new ContentRegistryImpl<>("strippable_block_registry", AxeAccessor::addStrippable, AxeAccessor::removeStrippable, AxeAccessor::getStrippable);
 
 	static class HoeAccessor extends HoeItem {
 		private HoeAccessor(ToolMaterial material, float attackSpeed, Settings settings) {

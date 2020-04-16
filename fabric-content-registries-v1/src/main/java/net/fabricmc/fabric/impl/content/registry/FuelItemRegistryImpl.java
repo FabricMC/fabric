@@ -26,12 +26,12 @@ import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Item2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ItemContentRegistry;
 
-public class FuelItemRegistryImpl extends Taggable2ObjectMapRegistryImpl<Item, Integer> implements Item2ObjectMap<Integer> {
+public class FuelItemRegistryImpl extends ContentRegistryImpl<Item, Integer> implements ItemContentRegistry<Integer> {
 	public static final Map<Item, Integer> FUELS = new HashMap<>();
 
-	public static final Item2ObjectMap<Integer> INSTANCE = new FuelItemRegistryImpl();
+	public static final ItemContentRegistry<Integer> INSTANCE = new FuelItemRegistryImpl();
 
 	public FuelItemRegistryImpl() {
 		super("fuel_item_registry", FUELS::put, fuel -> FUELS.put(fuel, 0), item -> AbstractFurnaceBlockEntity.createFuelTimeMap().get(item));

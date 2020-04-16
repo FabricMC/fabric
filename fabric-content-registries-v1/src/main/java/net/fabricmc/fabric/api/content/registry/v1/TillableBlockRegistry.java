@@ -19,12 +19,12 @@ package net.fabricmc.fabric.api.content.registry.v1;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistries;
 
 /**
  * Registry of Blocks that when tilled turn into a specific BlockState.
  */
-public interface TillableBlockRegistry extends Taggable2ObjectMap<Block, BlockState> {
-	Taggable2ObjectMap<Block, BlockState> INSTANCE = ToolBlockTransformationRegistries.TILLABLE_BLOCKS;
+public interface TillableBlockRegistry extends ContentRegistry<Block, BlockState> {
+	ContentRegistry<Block, BlockState> INSTANCE = ToolBlockTransformationRegistries.TILLABLE_BLOCKS;
 }

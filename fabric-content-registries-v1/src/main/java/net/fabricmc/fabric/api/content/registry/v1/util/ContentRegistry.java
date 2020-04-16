@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.content.registry.v1.util;
 
 import net.minecraft.tag.Tag;
 
-public interface Taggable2ObjectMap<K, V> {
+public interface ContentRegistry<K, V> {
 	V get(K key);
 
 	void add(K key, V value);

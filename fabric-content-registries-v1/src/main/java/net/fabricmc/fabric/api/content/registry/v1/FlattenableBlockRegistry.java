@@ -19,12 +19,12 @@ package net.fabricmc.fabric.api.content.registry.v1;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistries;
 
 /**
  * Registry of Blocks that when flattened turn into a specific BlockState.
  */
 public interface FlattenableBlockRegistry {
-	Taggable2ObjectMap<Block, BlockState> INSTANCE = ToolBlockTransformationRegistries.FLATTENABLE_BLOCKS;
+	ContentRegistry<Block, BlockState> INSTANCE = ToolBlockTransformationRegistries.FLATTENABLE_BLOCKS;
 }
