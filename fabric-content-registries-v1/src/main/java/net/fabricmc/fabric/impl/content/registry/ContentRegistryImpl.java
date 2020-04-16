@@ -41,7 +41,7 @@ public class ContentRegistryImpl<K, V> implements ContentRegistry<K, V>, SimpleS
 	private static final Collection<Identifier> RELOAD_DEPS = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
 
 	private boolean tagsPresent = false;
-	private final List<Runnable> loader = new LinkedList<>(); // This is to preserve the order of how things are added and removed. This would be a lot simpler if we did not have to deal with Tags
+	private final List<Runnable> processor = new LinkedList<>(); // This is to preserve the order of how things are added and removed. This would be a lot simpler if we did not have to deal with Tags
 	private final Map<K, V> restorer = new HashMap<>();
 	private final BiConsumer<K, V> putter;
 	private final Consumer<K> remover;
@@ -63,7 +63,7 @@ public class ContentRegistryImpl<K, V> implements ContentRegistry<K, V>, SimpleS
 
 	private void reload() {
 		restorer.forEach(putter);
-		loader.forEach(Runnable::run);
+		processor.forEach(Runnable::run);
 	}
 
 	@Override
@@ -73,61 +73,61 @@ public class ContentRegistryImpl<K, V> implements ContentRegistry<K, V>, SimpleS
 
 	@Override
 	public void add(K key, V value) {
-		loader.add(
-				() -> {
-					restorer.put(key, get(key));
-					putter.accept(key, value);
-				}
-		);
+		Runnable adder = () -> {
+			restorer.computeIfAbsent(key, ContentRegistryImpl.this::get);
+			putter.accept(key, value);
+		};
+
+		processor.add(adder);
 
 		if (tagsPresent) {
-			reload();
+			adder.run();
 		}
 	}
 
 	@Override
 	public void add(Tag<K> tag, V value) {
-		loader.add(
-				() -> {
-					for (K key : tag.values()) {
-						restorer.put(key, get(key));
-						putter.accept(key, value);
-					}
-				}
-		);
+		Runnable adder = () -> {
+			for (K key : tag.values()) {
+				restorer.computeIfAbsent(key, ContentRegistryImpl.this::get);
+				putter.accept(key, value);
+			}
+		};
+
+		processor.add(adder);
 
 		if (tagsPresent) {
-			reload();
+			adder.run();
 		}
 	}
 
 	@Override
 	public void remove(K key) {
-		loader.add(
-				() -> {
-					restorer.put(key, get(key));
-					remover.accept(key);
-				}
-		);
+		Runnable remover = () -> {
+			restorer.computeIfAbsent(key, ContentRegistryImpl.this::get);
+			this.remover.accept(key);
+		};
+
+		processor.add(remover);
 
 		if (tagsPresent) {
-			reload();
+			remover.run();
 		}
 	}
 
 	@Override
 	public void remove(Tag<K> tag) {
-		loader.add(
-				() -> {
-					for (K key : tag.values()) {
-						restorer.put(key, get(key));
-						remover.accept(key);
-					}
-				}
-		);
+		Runnable remover = () -> {
+			for (K key : tag.values()) {
+				restorer.computeIfAbsent(key, ContentRegistryImpl.this::get);
+				this.remover.accept(key);
+			}
+		};
+
+		processor.add(remover);
 
 		if (tagsPresent) {
-			reload();
+			remover.run();
 		}
 	}
 
