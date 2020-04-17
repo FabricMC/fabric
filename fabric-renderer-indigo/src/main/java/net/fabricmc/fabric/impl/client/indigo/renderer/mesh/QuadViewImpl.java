@@ -51,6 +51,7 @@ public class QuadViewImpl implements QuadView {
 	protected boolean isGeometryInvalid = true;
 	protected final Vector3f faceNormal = new Vector3f();
 	protected boolean isFaceNormalInvalid = true;
+	private boolean shade = true;
 
 	/** Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array. */
 	protected int[] data;
@@ -284,5 +285,13 @@ public class QuadViewImpl implements QuadView {
 
 	public int vertexStart() {
 		return baseIndex + HEADER_STRIDE;
+	}
+
+	public boolean hasShade() {
+		return shade;
+	}
+
+	public void shade(boolean shade) {
+		this.shade = shade;
 	}
 }

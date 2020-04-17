@@ -139,7 +139,7 @@ public abstract class AbstractQuadRenderer {
 	/** for non-emissive mesh quads and all fallback quads with flat lighting. */
 	protected void tesselateFlat(MutableQuadViewImpl quad, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
-		final int brightness = flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos);
+		final int brightness = ColorHelper.multiplyRGB(flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos), blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade()));
 
 		for (int i = 0; i < 4; i++) {
 			quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), brightness));

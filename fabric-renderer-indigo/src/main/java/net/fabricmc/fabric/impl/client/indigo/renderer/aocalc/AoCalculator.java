@@ -114,7 +114,7 @@ public class AoCalculator {
 	}
 
 	public void compute(MutableQuadViewImpl quad, boolean isVanilla) {
-		final AoConfig config = AoConfig.VANILLA; // Indigo.AMBIENT_OCCLUSION_MODE; TODO:20w09a Fix me
+		final AoConfig config = Indigo.AMBIENT_OCCLUSION_MODE;
 		final boolean shouldCompare;
 
 		switch (config) {
@@ -188,7 +188,7 @@ public class AoCalculator {
 		quad.toVanilla(0, vertexData, 0, false);
 
 		VanillaAoHelper.updateShape(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, vertexData, face, vanillaAoData, vanillaAoControlBits);
-		vanillaCalc.fabric_apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), vanillaAoData, vanillaAoControlBits, true /* TODO:20w09a check me */);
+		vanillaCalc.fabric_apply(blockInfo.blockView, blockInfo.blockState, blockInfo.blockPos, quad.lightFace(), vanillaAoData, vanillaAoControlBits, quad.hasShade());
 
 		System.arraycopy(vanillaCalc.fabric_colorMultiplier(), 0, aoDest, 0, 4);
 		System.arraycopy(vanillaCalc.fabric_brightness(), 0, lightDest, 0, 4);
@@ -229,12 +229,12 @@ public class AoCalculator {
 
 	private void vanillaFullFace(QuadViewImpl quad, boolean isOnLightFace) {
 		final Direction lightFace = quad.lightFace();
-		computeFace(lightFace, isOnLightFace).toArray(ao, light, VERTEX_MAP[lightFace.getId()]);
+		computeFace(lightFace, isOnLightFace, quad.hasShade()).toArray(ao, light, VERTEX_MAP[lightFace.getId()]);
 	}
 
 	private void vanillaPartialFace(QuadViewImpl quad, boolean isOnLightFace) {
 		final Direction lightFace = quad.lightFace();
-		AoFaceData faceData = computeFace(lightFace, isOnLightFace);
+		AoFaceData faceData = computeFace(lightFace, isOnLightFace, quad.hasShade());
 		final WeightFunction wFunc = AoFace.get(lightFace).weightFunc;
 		final float[] w = this.w;
 
@@ -252,7 +252,7 @@ public class AoCalculator {
 	private AoFaceData blendedInsetFace(QuadViewImpl quad, int vertexIndex, Direction lightFace) {
 		final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
 		final float w0 = 1 - w1;
-		return AoFaceData.weightedMean(computeFace(lightFace, true), w0, computeFace(lightFace, false), w1, tmpFace);
+		return AoFaceData.weightedMean(computeFace(lightFace, true, quad.hasShade()), w0, computeFace(lightFace, false, quad.hasShade()), w1, tmpFace);
 	}
 
 	/**
@@ -263,12 +263,12 @@ public class AoCalculator {
 		final float w1 = AoFace.get(lightFace).depthFunc.apply(quad, vertexIndex);
 
 		if (MathHelper.approximatelyEquals(w1, 0)) {
-			return computeFace(lightFace, true);
+			return computeFace(lightFace, true, quad.hasShade());
 		} else if (MathHelper.approximatelyEquals(w1, 1)) {
-			return computeFace(lightFace, false);
+			return computeFace(lightFace, false, quad.hasShade());
 		} else {
 			final float w0 = 1 - w1;
-			return AoFaceData.weightedMean(computeFace(lightFace, true), w0, computeFace(lightFace, false), w1, tmpFace);
+			return AoFaceData.weightedMean(computeFace(lightFace, true, quad.hasShade()), w0, computeFace(lightFace, false, quad.hasShade()), w1, tmpFace);
 		}
 	}
 
@@ -366,7 +366,7 @@ public class AoCalculator {
 	 * in vanilla logic for some blocks that aren't full opaque cubes.
 	 * Except for parameterization, the logic itself is practically identical to vanilla.
 	 */
-	private AoFaceData computeFace(Direction lightFace, boolean isOnBlockFace) {
+	private AoFaceData computeFace(Direction lightFace, boolean isOnBlockFace, boolean shade) {
 		final int faceDataIndex = isOnBlockFace ? lightFace.getId() : lightFace.getId() + 6;
 		final int mask = 1 << faceDataIndex;
 		final AoFaceData result = faceData[faceDataIndex];
@@ -465,11 +465,12 @@ public class AoCalculator {
 			}
 
 			float aoCenter = aoFunc.apply(isOnBlockFace ? lightPos : pos);
+			float worldBrightness = world.getBrightness(lightFace, shade);
 
-			result.a0 = (ao3 + ao0 + cAo1 + aoCenter) * 0.25F;
-			result.a1 = (ao2 + ao0 + cAo0 + aoCenter) * 0.25F;
-			result.a2 = (ao2 + ao1 + cAo2 + aoCenter) * 0.25F;
-			result.a3 = (ao3 + ao1 + cAo3 + aoCenter) * 0.25F;
+			result.a0 = ((ao3 + ao0 + cAo1 + aoCenter) * 0.25F) * worldBrightness;
+			result.a1 = ((ao2 + ao0 + cAo0 + aoCenter) * 0.25F) * worldBrightness;
+			result.a2 = ((ao2 + ao1 + cAo2 + aoCenter) * 0.25F) * worldBrightness;
+			result.a3 = ((ao3 + ao1 + cAo3 + aoCenter) * 0.25F) * worldBrightness;
 
 			result.l0(meanBrightness(light3, light0, cLight1, lightCenter));
 			result.l1(meanBrightness(light2, light0, cLight0, lightCenter));
