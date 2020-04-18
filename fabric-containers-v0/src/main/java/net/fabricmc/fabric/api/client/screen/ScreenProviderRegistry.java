@@ -27,6 +27,7 @@ import net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl;
 /**
  * @deprecated Use {@link net.fabricmc.fabric.api.screenhandler.v1.client.FabricHandledScreens} instead.
  */
+@Deprecated
 public interface ScreenProviderRegistry {
 	ScreenProviderRegistry INSTANCE = ScreenProviderRegistryImpl.INSTANCE;
 
