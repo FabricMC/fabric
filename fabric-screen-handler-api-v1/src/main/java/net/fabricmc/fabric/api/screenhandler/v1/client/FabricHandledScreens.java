@@ -39,19 +39,19 @@ public interface FabricHandledScreens {
 	 *
 	 * @param type          the screen handler type object
 	 * @param screenFactory the screen handler factory
-	 * @param <T>           the screen handler type
-	 * @param <U>           the screen type
+	 * @param <H>           the screen handler type
+	 * @param <S>           the screen type
 	 */
-	<T extends ScreenHandler, U extends Screen & ScreenHandlerProvider<T>> void register(ScreenHandlerType<? extends T> type, Factory<? super T, ? extends U> screenFactory);
+	<H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, Factory<? super H, ? extends S> screenFactory);
 
 	/**
 	 * A factory for handled screens.
 	 *
-	 * @param <T> the screen handler type
-	 * @param <U> the screen type
+	 * @param <H> the screen handler type
+	 * @param <S> the screen type
 	 */
 	@FunctionalInterface
-	interface Factory<T extends ScreenHandler, U extends Screen & ScreenHandlerProvider<T>> {
+	interface Factory<H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> {
 		/**
 		 * Creates a new handled screen.
 		 *
@@ -60,6 +60,6 @@ public interface FabricHandledScreens {
 		 * @param title     the title of the screen
 		 * @return the created screen
 		 */
-		U create(T handler, PlayerInventory inventory, Text title);
+		S create(H handler, PlayerInventory inventory, Text title);
 	}
 }

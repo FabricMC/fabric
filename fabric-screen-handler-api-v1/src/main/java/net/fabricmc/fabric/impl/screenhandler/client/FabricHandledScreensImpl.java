@@ -34,7 +34,7 @@ public final class FabricHandledScreensImpl implements FabricHandledScreens {
 	}
 
 	@Override
-	public <T extends ScreenHandler, U extends Screen & ScreenHandlerProvider<T>> void register(ScreenHandlerType<? extends T> type, Factory<? super T, ? extends U> screenFactory) {
+	public <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, Factory<? super H, ? extends S> screenFactory) {
 		// Convert our factory to the vanilla provider here as it won't be available to modders.
 		HandledScreens.register(type, screenFactory::create);
 	}
