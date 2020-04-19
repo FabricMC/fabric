@@ -17,7 +17,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.8.0",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-networking-v0": "*"
   },
   "entrypoints": {
     "client": ["net.fabricmc.fabric.impl.screenhandler.client.NetworkingClient"]
