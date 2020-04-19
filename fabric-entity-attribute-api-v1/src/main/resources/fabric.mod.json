@@ -19,7 +19,7 @@
     "fabricloader": ">=0.8.0",
     "minecraft": ">=1.16-alpha.20.15.a"
   },
-  "description": "Hooks for registering .",
+  "description": "Hooks for registering default living entity attributes. Experimental.",
   "mixins": [
     "fabric-entity-attribute-api-v1.mixins.json"
   ]
