@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-event-entity-v1",
-  "name": "Fabric Event Entity (v1)",
+  "id": "fabric-entity-tick-events-v1",
+  "name": "Fabric Entity Tick Events (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-event-entity-v1/icon.png",
+  "icon": "assets/fabric-entity-tick-events-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -19,8 +19,8 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "description": "Events related to entities.",
+  "description": "Events related to entities ticking.",
   "mixins": [
-    "fabric-event-entity-v1.mixins.json"
+    "fabric-entity-tick-events-v1.mixins.json"
   ]
 }

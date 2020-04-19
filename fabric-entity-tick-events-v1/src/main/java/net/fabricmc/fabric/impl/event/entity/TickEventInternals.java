@@ -87,9 +87,9 @@ public class TickEventInternals {
 						}
 					};
 				} else {
-					return (Entity player) -> {
+					return (Entity entity) -> {
 						for (EntityTickCallback event : listeners) {
-							event.tick(player);
+							event.tick(entity);
 						}
 					};
 				}
