@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.event.entity.TickEventInternals;
  * When an entity of an applicable type gets ticked, the callback's
  * {@code tick} method is invoked.
  *
- * <p>Entity tick callbacks are registered per entity class, and apply to
+ * <p>Entity tick callbacks are registered per entity class and apply to
  * instances of that class and of every subclass. More formally, if a callback
  * is registered for a class {@code E}, its {@code tick} method will
  * be invoked for any entity {@code e} verifying {@code e instanceof E}.
@@ -38,6 +38,7 @@ import net.fabricmc.fabric.impl.event.entity.TickEventInternals;
  * @param <E> the type of entity targeted by this callback
  * @see #event(Class)
  */
+@FunctionalInterface
 public interface EntityTickCallback<E extends Entity> {
 	/**
 	 * Returns the {@code Event} used to register tick callbacks for
@@ -64,7 +65,8 @@ public interface EntityTickCallback<E extends Entity> {
 	}
 
 	/**
-	 * Called at the end of {@link Entity#tick()} for every entity of type {@code E}.
+	 * Called at the end of {@link Entity#tick()} for every entity that
+	 * {@link Class#isInstance(Object) is an instance} of {@code E}.
 	 *
 	 * @param entity the entity that is being ticked
 	 * @implNote because this method is called every tick for every entity of an appropriate type,

@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.v1.EntityTickCallback;
 
 public class TickEventInternals {
 	/** Cache of entity class to {@code Event}. */
-	private static final Map<Class<?>, CascadingEvent> ENTITY_TICK_EVENTS = new IdentityHashMap<>();
+	private static final Map<Class<?>, CascadingEvent<?>> ENTITY_TICK_EVENTS = new IdentityHashMap<>();
 
 	/**
 	 * Retrieves an entity tick event for a given class. If none exists, this method creates one and registers it
@@ -44,7 +44,7 @@ public class TickEventInternals {
 	@SuppressWarnings("unchecked")
 	public static <E extends Entity> CascadingEvent<EntityTickCallback<E>> getOrCreateEntityEvent(Class<?> entityClass) {
 		Preconditions.checkArgument(Entity.class.isAssignableFrom(entityClass), "Cannot register entity tick callback to non-entity class. Found: " + entityClass.getName());
-		CascadingEvent<EntityTickCallback<E>> event = ENTITY_TICK_EVENTS.get(entityClass);
+		CascadingEvent<EntityTickCallback<E>> event = (CascadingEvent<EntityTickCallback<E>>) ENTITY_TICK_EVENTS.get(entityClass);
 
 		if (event == null) {
 			event = new CascadingEvent<>(createEntityEvent());    // decorator around the base Event
@@ -67,19 +67,17 @@ public class TickEventInternals {
 	 *
 	 * @return a new Event to which {@code EntityTickCallback} can be registered
 	 */
-	@SuppressWarnings("unchecked")
 	private static <E extends Entity> Event<EntityTickCallback<E>> createEntityEvent() {
-		return (Event) EventFactory.createArrayBacked(EntityTickCallback.class,
-			(EntityTickCallback[] listeners) -> {
+		return EventFactory.createArrayBacked(EntityTickCallback.class, listeners -> {
 				if (EventFactory.isProfilingEnabled()) {
-					return (Entity player) -> {
-						if (player.getServer() != null) {
-							Profiler profiler = player.getServer().getProfiler();
+					return entity -> {
+						if (entity.getServer() != null) {
+							Profiler profiler = entity.getServer().getProfiler();
 							profiler.push("fabricEntityTick");
 
-							for (EntityTickCallback event : listeners) {
+							for (EntityTickCallback<E> event : listeners) {
 								profiler.push(EventFactory.getHandlerName(event));
-								event.tick(player);
+								event.tick(entity);
 								profiler.pop();
 							}
 
@@ -87,8 +85,8 @@ public class TickEventInternals {
 						}
 					};
 				} else {
-					return (Entity entity) -> {
-						for (EntityTickCallback event : listeners) {
+					return entity -> {
+						for (EntityTickCallback<E> event : listeners) {
 							event.tick(entity);
 						}
 					};
