@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.entity.attribute.v1;
+package net.fabricmc.fabric.api.entity;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -24,7 +24,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.mixin.entity.attribute.DefaultAttributeRegistryAccessor;
+import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor;
 
 /**
  * Allows registering custom default attributes for living entities.
@@ -38,7 +38,6 @@ import net.fabricmc.fabric.mixin.entity.attribute.DefaultAttributeRegistryAccess
  * @deprecated Experimental feature, may be removed or changed without further notice.
  * Vanilla snapshot feature, subject to vanilla change.
  */
-// Experimental
 @Deprecated
 public final class FabricDefaultAttributeRegistry {
 	/**
