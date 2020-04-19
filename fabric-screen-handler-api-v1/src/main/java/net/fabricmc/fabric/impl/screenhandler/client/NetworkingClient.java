@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.screenhandler.Packets;
 
 @Environment(EnvType.CLIENT)
 public final class NetworkingClient implements ClientModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger("fabric-screen-handler-api-v1");
 
 	@Override
 	public void onInitializeClient() {
@@ -53,12 +53,12 @@ public final class NetworkingClient implements ClientModInitializer {
 		ScreenHandlerType<?> type = Registry.SCREEN_HANDLER.get(typeId);
 
 		if (type == null) {
-			LOGGER.warn("[Fabric] Unknown screen handler ID: {}", typeId);
+			LOGGER.warn("Unknown screen handler ID: {}", typeId);
 			return;
 		}
 
 		if (!(type instanceof ExtendedScreenHandlerType<?>)) {
-			LOGGER.warn("[Fabric] Received extended opening packet for non-extended screen handler {}", Registry.SCREEN_HANDLER.getId(type));
+			LOGGER.warn("Received extended opening packet for non-extended screen handler {}", Registry.SCREEN_HANDLER.getId(type));
 			return;
 		}
 
@@ -79,7 +79,7 @@ public final class NetworkingClient implements ClientModInitializer {
 				client.openScreen(screen);
 			});
 		} else {
-			LOGGER.warn("[Fabric] Screen not registered for screen handler {}!", title);
+			LOGGER.warn("Screen not registered for screen handler {}!", title);
 		}
 	}
 }
