@@ -34,11 +34,9 @@ import net.fabricmc.fabric.mixin.entity.attribute.DefaultAttributeRegistryAccess
  * <p>A registered default attribute for an entity type can be retrieved through
  * {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#get(EntityType)}.</p>
  *
- * <p>This API is <strong>experimental</strong> and subject to breaking changes without
- * prior deprecation or warning.</p>
- *
  * @see net.minecraft.entity.attribute.DefaultAttributeRegistry
- * @deprecated Vanilla snapshot feature, subject to vanilla change; experimental API
+ * @deprecated Experimental feature, may be removed or changed without further notice.
+ * Vanilla snapshot feature, subject to vanilla change.
  */
 // Experimental
 @Deprecated
