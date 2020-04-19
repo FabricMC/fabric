@@ -48,7 +48,7 @@ public class ServerPlayerEntityMixin {
 	private final ThreadLocal<ScreenHandler> fabric_openedScreenHandler = new ThreadLocal<>();
 
 	@Inject(method = "openHandledScreen(Lnet/minecraft/screen/NamedScreenHandlerFactory;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
-	private void fabric_onOpenHandledScreen_cacheScreenHandler(NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> info, ScreenHandler handler) {
+	private void fabric_storeOpenedScreenHandler(NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> info, ScreenHandler handler) {
 		if (factory instanceof ExtendedScreenHandlerFactory) {
 			fabric_openedScreenHandler.set(handler);
 		} else if (handler.getType() instanceof ExtendedScreenHandlerType<?>) {
@@ -58,7 +58,7 @@ public class ServerPlayerEntityMixin {
 	}
 
 	@Redirect(method = "openHandledScreen(Lnet/minecraft/screen/NamedScreenHandlerFactory;)Ljava/util/OptionalInt;", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V"))
-	private void fabric_onOpenHandledScreen_redirectPacket(ServerPlayNetworkHandler networkHandler, Packet<?> packet, NamedScreenHandlerFactory factory) {
+	private void fabric_replaceVanillaScreenPacket(ServerPlayNetworkHandler networkHandler, Packet<?> packet, NamedScreenHandlerFactory factory) {
 		if (factory instanceof ExtendedScreenHandlerFactory) {
 			ScreenHandler handler = fabric_openedScreenHandler.get();
 
@@ -74,7 +74,7 @@ public class ServerPlayerEntityMixin {
 	}
 
 	@Inject(method = "openHandledScreen(Lnet/minecraft/screen/NamedScreenHandlerFactory;)Ljava/util/OptionalInt;", at = @At("RETURN"))
-	private void fabric_onOpenHandledScreen_return(NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> info) {
+	private void fabric_clearStoredScreenHandler(NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> info) {
 		fabric_openedScreenHandler.remove();
 	}
 }
