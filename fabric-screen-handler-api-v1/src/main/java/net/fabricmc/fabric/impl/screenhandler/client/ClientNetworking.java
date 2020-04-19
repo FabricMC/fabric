@@ -62,7 +62,7 @@ public final class ClientNetworking implements ClientModInitializer {
 		}
 
 		if (!(type instanceof ExtendedScreenHandlerType<?>)) {
-			LOGGER.warn("Received extended opening packet for non-extended screen handler {}", Registry.SCREEN_HANDLER.getId(type));
+			LOGGER.warn("Received extended opening packet for non-extended screen handler {}", typeId);
 			return;
 		}
 
