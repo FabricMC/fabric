@@ -29,7 +29,8 @@ import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor
 /**
  * Allows registering custom default attributes for living entities.
  *
- * <p>All living entity types must have default attributes registered.</p>
+ * <p>All living entity types must have default attributes registered. See {@link
+ * FabricEntityTypeBuilder} for utility on entity type registration in general.</p>
  *
  * <p>A registered default attribute for an entity type can be retrieved through
  * {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#get(EntityType)}.</p>
