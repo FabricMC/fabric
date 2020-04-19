@@ -22,30 +22,20 @@ import io.netty.buffer.Unpooled;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlers;
 
-public final class ScreenHandlersImpl implements ScreenHandlers {
-	public static final ScreenHandlers INSTANCE = new ScreenHandlersImpl();
-
-	private ScreenHandlersImpl() {
-	}
-
-	@Override
-	public <T extends ScreenHandler> ScreenHandlerType<T> simple(SimpleFactory<T> factory) {
-		// Wrap our factory in vanilla's factory; it will not be public for users.
-		return new ScreenHandlerType<>(factory::create);
-	}
-
-	@Override
-	public <T extends ScreenHandler> ScreenHandlerType<T> extended(ExtendedFactory<T> factory) {
-		return new ExtendedScreenHandlerType<>(factory);
-	}
+public final class Networking {
+	// [Packet format]
+	// typeId: identifier
+	// syncId: varInt
+	// title: text
+	// customData: buf
+	public static final Identifier OPEN_ID = new Identifier("fabric-screen-handler-api-v1", "open_screen");
 
 	/**
 	 * Opens an extended screen handler by sending a custom packet to the client.
@@ -60,12 +50,18 @@ public final class ScreenHandlersImpl implements ScreenHandlers {
 		Objects.requireNonNull(factory, "factory is null");
 		Objects.requireNonNull(handler, "handler is null");
 
+		Identifier typeId = Registry.SCREEN_HANDLER.getId(handler.getType());
+
+		if (typeId == null) {
+			throw new IllegalArgumentException("Trying to open unregistered screen handler " + handler);
+		}
+
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeVarInt(Registry.SCREEN_HANDLER.getRawId(handler.getType()));
+		buf.writeIdentifier(typeId);
 		buf.writeVarInt(syncId);
 		buf.writeText(factory.getDisplayName());
 		factory.writeScreenData(buf);
 
-		ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, Packets.OPEN_ID, buf);
+		ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, OPEN_ID, buf);
 	}
 }

@@ -32,6 +32,9 @@ import net.fabricmc.api.Environment;
  */
 @Environment(EnvType.CLIENT)
 public final class FabricHandledScreens {
+	private FabricHandledScreens() {
+	}
+
 	/**
 	 * Registers a new screen factory for a screen handler type.
 	 *

@@ -23,13 +23,14 @@ import net.minecraft.screen.ScreenHandlerType;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.screenhandler.ScreenHandlersImpl;
+import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 
 /**
  * An utility for creating screen handler types.
  */
-public interface ScreenHandlers {
-	ScreenHandlers INSTANCE = ScreenHandlersImpl.INSTANCE;
+public final class ScreenHandlers {
+	private ScreenHandlers() {
+	}
 
 	/**
 	 * Creates a new {@code ScreenHandlerType} that creates client-sided screen handlers using the factory.
@@ -38,7 +39,10 @@ public interface ScreenHandlers {
 	 * @param <T>     the screen handler type
 	 * @return the created type object
 	 */
-	<T extends ScreenHandler> ScreenHandlerType<T> simple(SimpleFactory<T> factory);
+	public static <T extends ScreenHandler> ScreenHandlerType<T> simple(SimpleFactory<T> factory) {
+		// Wrap our factory in vanilla's factory; it will not be public for users.
+		return new ScreenHandlerType<>(factory::create);
+	}
 
 	/**
 	 * Creates a new {@code ScreenHandlerType} that creates client-sided screen handlers with additional
@@ -50,14 +54,16 @@ public interface ScreenHandlers {
 	 * @param <T>     the screen handler type
 	 * @return the created type object
 	 */
-	<T extends ScreenHandler> ScreenHandlerType<T> extended(ExtendedFactory<T> factory);
+	public static <T extends ScreenHandler> ScreenHandlerType<T> extended(ExtendedFactory<T> factory) {
+		return new ExtendedScreenHandlerType<>(factory);
+	}
 
 	/**
 	 * A factory for client-sided screen handler instances.
 	 *
 	 * @param <T> the screen handler type
 	 */
-	interface SimpleFactory<T extends ScreenHandler> {
+	public interface SimpleFactory<T extends ScreenHandler> {
 		/**
 		 * Creates a new client-sided screen handler.
 		 *
@@ -76,7 +82,7 @@ public interface ScreenHandlers {
 	 * @param <T> the screen handler type
 	 * @see ExtendedScreenHandlerFactory
 	 */
-	interface ExtendedFactory<T extends ScreenHandler> {
+	public interface ExtendedFactory<T extends ScreenHandler> {
 		/**
 		 * Creates a new client-sided screen handler with additional opening data.
 		 *

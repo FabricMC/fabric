@@ -37,7 +37,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
-import net.fabricmc.fabric.impl.screenhandler.ScreenHandlersImpl;
+import net.fabricmc.fabric.impl.screenhandler.Networking;
 
 @Mixin(ServerPlayerEntity.class)
 public class ServerPlayerEntityMixin {
@@ -63,7 +63,7 @@ public class ServerPlayerEntityMixin {
 			ScreenHandler handler = fabric_openedScreenHandler.get();
 
 			if (handler.getType() instanceof ExtendedScreenHandlerType<?>) {
-				ScreenHandlersImpl.sendOpenPacket((ServerPlayerEntity) (Object) this, (ExtendedScreenHandlerFactory) factory, handler, screenHandlerSyncId);
+				Networking.sendOpenPacket((ServerPlayerEntity) (Object) this, (ExtendedScreenHandlerFactory) factory, handler, screenHandlerSyncId);
 			} else {
 				Identifier id = Registry.SCREEN_HANDLER.getId(handler.getType());
 				throw new IllegalArgumentException("[Fabric] Non-extended screen handler " + id + " must not be opened with an ExtendedScreenHandlerFactory!");

@@ -27,6 +27,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.text.Text;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -34,7 +35,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
-import net.fabricmc.fabric.impl.screenhandler.Packets;
+import net.fabricmc.fabric.impl.screenhandler.Networking;
 
 @Environment(EnvType.CLIENT)
 public final class NetworkingClient implements ClientModInitializer {
@@ -42,8 +43,8 @@ public final class NetworkingClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientSidePacketRegistry.INSTANCE.register(Packets.OPEN_ID, (ctx, buf) -> {
-			int typeId = buf.readVarInt();
+		ClientSidePacketRegistry.INSTANCE.register(Networking.OPEN_ID, (ctx, buf) -> {
+			Identifier typeId = buf.readIdentifier();
 			int syncId = buf.readVarInt();
 			Text title = buf.readText();
 			buf.retain();
@@ -52,7 +53,7 @@ public final class NetworkingClient implements ClientModInitializer {
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	private void openScreen(int typeId, int syncId, Text title, PacketByteBuf buf) {
+	private void openScreen(Identifier typeId, int syncId, Text title, PacketByteBuf buf) {
 		ScreenHandlerType<?> type = Registry.SCREEN_HANDLER.get(typeId);
 
 		if (type == null) {
