@@ -56,7 +56,7 @@ public final class FabricEntityAttributeRegistry implements EntityAttributeRegis
 			EntityType<? extends LivingEntity> type = entry.getKey();
 
 			if (map.put(type, entry.getValue().get().build()) != null) {
-				LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
+				LOGGER.info("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
 			}
 		}
 
