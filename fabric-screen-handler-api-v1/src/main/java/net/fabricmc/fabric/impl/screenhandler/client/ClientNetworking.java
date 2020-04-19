@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 import net.fabricmc.fabric.impl.screenhandler.Networking;
 
 @Environment(EnvType.CLIENT)
-public final class NetworkingClient implements ClientModInitializer {
+public final class ClientNetworking implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger("fabric-screen-handler-api-v1");
 
 	@Override

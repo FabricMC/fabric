@@ -21,7 +21,7 @@
     "fabric-networking-v0": "*"
   },
   "entrypoints": {
-    "client": ["net.fabricmc.fabric.impl.screenhandler.client.NetworkingClient"]
+    "client": ["net.fabricmc.fabric.impl.screenhandler.client.ClientNetworking"]
   },
   "description": "Hooks and extensions for creating screen handlers.",
   "mixins": [
