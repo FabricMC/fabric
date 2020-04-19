@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.screenhandler.v1.client;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.screen.ScreenHandler;
@@ -25,15 +26,12 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.screenhandler.client.FabricHandledScreensImpl;
 
 /**
  * An utility for registering screens with screen handlers.
  */
 @Environment(EnvType.CLIENT)
-public interface FabricHandledScreens {
-	FabricHandledScreens INSTANCE = FabricHandledScreensImpl.INSTANCE;
-
+public final class FabricHandledScreens {
 	/**
 	 * Registers a new screen factory for a screen handler type.
 	 *
@@ -42,7 +40,10 @@ public interface FabricHandledScreens {
 	 * @param <H>           the screen handler type
 	 * @param <S>           the screen type
 	 */
-	<H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, Factory<? super H, ? extends S> screenFactory);
+	public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, Factory<? super H, ? extends S> screenFactory) {
+		// Convert our factory to the vanilla provider here as the vanilla interface won't be available to modders.
+		HandledScreens.<H, S>register(type, screenFactory::create);
+	}
 
 	/**
 	 * A factory for handled screens.
@@ -51,7 +52,7 @@ public interface FabricHandledScreens {
 	 * @param <S> the screen type
 	 */
 	@FunctionalInterface
-	interface Factory<H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> {
+	public interface Factory<H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> {
 		/**
 		 * Creates a new handled screen.
 		 *
