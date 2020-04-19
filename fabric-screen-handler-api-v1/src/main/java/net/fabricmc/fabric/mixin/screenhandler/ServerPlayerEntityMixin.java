@@ -69,6 +69,7 @@ public class ServerPlayerEntityMixin {
 				throw new IllegalArgumentException("[Fabric] Non-extended screen handler " + id + " must not be opened with an ExtendedScreenHandlerFactory!");
 			}
 		} else {
+			// Use vanilla logic for non-extended screen handlers
 			networkHandler.sendPacket(packet);
 		}
 	}
