@@ -51,7 +51,8 @@ public interface EntityAttributeRegistry {
 	 * </pre></blockquote>
 	 * </p>
 	 *
-	 * <p>If a registration overrides another, a log message will be emitted./p>
+	 * <p>If a registration overrides another, a log message will be emitted. Existing registrations
+	 * can be checked at {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#hasDefinitionFor(EntityType)}.</p>
 	 *
 	 * @param type            the entity type
 	 * @param builderSupplier the supplier giving a builder that creates the default attribute

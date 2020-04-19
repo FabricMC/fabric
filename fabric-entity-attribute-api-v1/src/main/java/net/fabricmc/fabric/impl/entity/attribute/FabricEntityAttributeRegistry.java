@@ -40,14 +40,14 @@ public final class FabricEntityAttributeRegistry implements EntityAttributeRegis
 	public void register(EntityType<? extends LivingEntity> type, Supplier<DefaultAttributeContainer.Builder> builderSupplier) {
 		if (this.registrations == null) {
 			if (this.pendingRegistrations.put(type, builderSupplier) != null) {
-				LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
+				LOGGER.info("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
 			}
 
 			return;
 		}
 
 		if (this.registrations.put(type, builderSupplier.get().build()) != null) {
-			LOGGER.info("Overriding existing registration for entity type {} (id \"{}\")", type, Registry.ENTITY_TYPE.getId(type));
+			LOGGER.info("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
 		}
 	}
 
