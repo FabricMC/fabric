@@ -32,8 +32,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.DefaultAttributeRegistry;
 
-import net.fabricmc.fabric.impl.entity.attribute.FabricEntityAttributeRegistry;
-
 @Mixin(DefaultAttributeRegistry.class)
 public abstract class DefaultAttributeRegistryMixin {
 	@Shadow
@@ -44,6 +42,5 @@ public abstract class DefaultAttributeRegistryMixin {
 	@Inject(method = "<clinit>*", at = @At("TAIL"))
 	private static void injectAttributes(CallbackInfo ci) {
 		DEFAULT_ATTRIBUTE_REGISTRY = new HashMap<>(DEFAULT_ATTRIBUTE_REGISTRY);
-		FabricEntityAttributeRegistry.INSTANCE.initMap(DEFAULT_ATTRIBUTE_REGISTRY);
 	}
 }

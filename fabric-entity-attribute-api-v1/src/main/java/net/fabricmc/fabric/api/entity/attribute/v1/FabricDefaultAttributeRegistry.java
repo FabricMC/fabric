@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.api.entity.attribute.v1;
 
-import java.util.function.Supplier;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.impl.entity.attribute.FabricEntityAttributeRegistry;
+import net.fabricmc.fabric.mixin.entity.attribute.DefaultAttributeRegistryAccessor;
 
 /**
  * Allows registering custom default attributes for living entities.
@@ -36,26 +38,30 @@ import net.fabricmc.fabric.impl.entity.attribute.FabricEntityAttributeRegistry;
  * @deprecated Vanilla snapshot feature, subject to vanilla change
  */
 @Deprecated
-public interface EntityAttributeRegistry {
+public final class FabricDefaultAttributeRegistry {
 	/**
-	 * The entity attribute registry provided by the Fabric API.
+	 * Private logger, not exposed.
 	 */
-	EntityAttributeRegistry INSTANCE = FabricEntityAttributeRegistry.INSTANCE;
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	/**
 	 * Registers a default attribute for a type of living entity.
 	 *
 	 * <p>It can be used in a fashion similar to this:
 	 * <blockquote><pre>
-	 * EntityAttributeRegistry.INSTANCE.register(type, LivingEntity::createLivingAttributes);
+	 * EntityAttributeRegistry.INSTANCE.register(type, LivingEntity.createLivingAttributes());
 	 * </pre></blockquote>
 	 * </p>
 	 *
 	 * <p>If a registration overrides another, a log message will be emitted. Existing registrations
 	 * can be checked at {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#hasDefinitionFor(EntityType)}.</p>
 	 *
-	 * @param type            the entity type
-	 * @param builderSupplier the supplier giving a builder that creates the default attribute
+	 * @param type    the entity type
+	 * @param builder the builder that creates the default attribute
 	 */
-	void register(EntityType<? extends LivingEntity> type, Supplier<DefaultAttributeContainer.Builder> builderSupplier);
+	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer.Builder builder) {
+		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, builder.build()) != null) {
+			LOGGER.info("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
+		}
+	}
 }

@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.entity.attribute",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin"
   ],
   "injectors": {
