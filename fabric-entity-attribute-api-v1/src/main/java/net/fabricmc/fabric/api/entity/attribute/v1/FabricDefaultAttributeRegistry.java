@@ -57,7 +57,7 @@ public final class FabricDefaultAttributeRegistry {
 	 * </pre></blockquote>
 	 * </p>
 	 *
-	 * <p>If a registration overrides another, a log message will be emitted. Existing registrations
+	 * <p>If a registration overrides another, a debug log message will be emitted. Existing registrations
 	 * can be checked at {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#hasDefinitionFor(EntityType)}.</p>
 	 *
 	 * @param type    the entity type
@@ -65,7 +65,7 @@ public final class FabricDefaultAttributeRegistry {
 	 */
 	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer.Builder builder) {
 		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, builder.build()) != null) {
-			LOGGER.info("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
+			LOGGER.debug("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
 		}
 	}
 }
