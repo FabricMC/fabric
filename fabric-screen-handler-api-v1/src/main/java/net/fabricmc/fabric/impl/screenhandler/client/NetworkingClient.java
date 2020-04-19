@@ -42,14 +42,17 @@ public final class NetworkingClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientSidePacketRegistry.INSTANCE.register(Packets.OPEN_ID, (ctx, buf) -> openScreen(buf));
+		ClientSidePacketRegistry.INSTANCE.register(Packets.OPEN_ID, (ctx, buf) -> {
+			int typeId = buf.readVarInt();
+			int syncId = buf.readVarInt();
+			Text title = buf.readText();
+			buf.retain();
+			ctx.getTaskQueue().execute(() -> openScreen(typeId, syncId, title, buf));
+		});
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	private void openScreen(PacketByteBuf buf) {
-		int typeId = buf.readVarInt();
-		int syncId = buf.readVarInt();
-		Text title = buf.readText();
+	private void openScreen(int typeId, int syncId, Text title, PacketByteBuf buf) {
 		ScreenHandlerType<?> type = Registry.SCREEN_HANDLER.get(typeId);
 
 		if (type == null) {
@@ -74,10 +77,8 @@ public final class NetworkingClient implements ClientModInitializer {
 					title
 			);
 
-			MinecraftClient.getInstance().execute(() -> {
-				player.currentScreenHandler = ((ScreenHandlerProvider<?>) screen).getScreenHandler();
-				client.openScreen(screen);
-			});
+			player.currentScreenHandler = ((ScreenHandlerProvider<?>) screen).getScreenHandler();
+			client.openScreen(screen);
 		} else {
 			LOGGER.warn("Screen not registered for screen handler {}!", title);
 		}
