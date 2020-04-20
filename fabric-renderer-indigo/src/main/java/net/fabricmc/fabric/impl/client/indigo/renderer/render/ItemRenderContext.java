@@ -255,6 +255,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 			editorQuad.lightFace(lightFace);
 			editorQuad.nominalFace(lightFace);
 			editorQuad.colorIndex(q.getColorIndex());
+			editorQuad.shade(q.hasShade());
 			renderQuad();
 		}
 	}

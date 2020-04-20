@@ -126,6 +126,7 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		editorQuad.nominalFace(lightFace);
 		editorQuad.colorIndex(quad.getColorIndex());
 		editorQuad.material(defaultMaterial);
+		editorQuad.shade(quad.hasShade());
 
 		if (!transform.transform(editorQuad)) {
 			return;
