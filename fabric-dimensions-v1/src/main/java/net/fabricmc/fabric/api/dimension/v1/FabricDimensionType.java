@@ -207,19 +207,19 @@ public final class FabricDimensionType extends DimensionType {
 		 *                                  have been set
 		 */
 		public FabricDimensionType buildAndRegister(Identifier dimensionId) {
-			Preconditions.checkArgument(Registry.DIMENSION.get(dimensionId) == null);
+			Preconditions.checkArgument(Registry.DIMENSION_TYPE.get(dimensionId) == null);
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
 			Preconditions.checkState(this.factory != null, "No dimension factory has been specified!");
 
 			String suffix = dimensionId.getNamespace() + "_" + dimensionId.getPath();
 			String saveDir = "DIM_" + dimensionId.getNamespace() + "_" + dimensionId.getPath();
 			FabricDimensionType built = new FabricDimensionType(suffix, saveDir, this.factory, this.defaultPlacer, this.skyLight);
-			Registry.register(Registry.DIMENSION, dimensionId, built);
+			Registry.register(Registry.DIMENSION_TYPE, dimensionId, built);
 
 			if (this.desiredRawId != 0) {
 				built.desiredRawId = this.desiredRawId;
 			} else {
-				built.desiredRawId = Registry.DIMENSION.getRawId(built) - 1;
+				built.desiredRawId = Registry.DIMENSION_TYPE.getRawId(built) - 1;
 			}
 
 			built.fixedRawId = built.desiredRawId;
