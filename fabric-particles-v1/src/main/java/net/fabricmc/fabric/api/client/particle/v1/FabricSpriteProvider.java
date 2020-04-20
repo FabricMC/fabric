@@ -21,6 +21,7 @@ import java.util.List;
 import net.minecraft.client.particle.SpriteProvider;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.particle.ParticleType;
 
 /**
  * FabricSpriteProvider. It does the same thing as vanilla's SpriteProvider,
@@ -31,7 +32,7 @@ import net.minecraft.client.texture.SpriteAtlasTexture;
  * interface containing the sprites set loaded for their particle from the
  * active resourcepacks.
  *
- * @see ParticleFactoryRegistry#register(type, constructor)
+ * @see ParticleFactoryRegistry#register(ParticleType, ParticleFactoryRegistry.PendingParticleFactory)
  * @see ParticleFactoryRegistry.PendingParticleFactory
  */
 public interface FabricSpriteProvider extends SpriteProvider {
