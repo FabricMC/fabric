@@ -3,7 +3,7 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'fabric-loom' version '0.2.6-SNAPSHOT' apply false
+	id 'fabric-loom' version '0.2.7-SNAPSHOT' apply false
 	id 'net.minecrell.licenser' version '0.4.1'
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.4.0"
@@ -12,10 +12,13 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.5.1"
+	static def baseVersion = "0.5.11"
 	static def mcVersion = "1.15.2"
 	static def yarnVersion = "+build.1"
 }
+
+version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
 
@@ -31,8 +34,8 @@ def getSubprojectVersion(project, version) {
 	}
 }
 
-def getBranch(){
-	if(System.getenv().GIT_BRANCH){
+def getBranch() {
+	if (System.getenv().GIT_BRANCH) {
 		def branch = System.getenv().GIT_BRANCH
 		return branch.substring(branch.lastIndexOf("/") + 1)
 	}
@@ -57,7 +60,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:0.7.2+build.174"
+		modCompile "net.fabricmc:fabric-loader:0.7.9+build.190"
 	}
 
 	configurations {
@@ -113,17 +116,33 @@ allprojects {
 }
 
 javadoc {
-	options.memberLevel = "PACKAGE"
-	allprojects.each{
-			source( it.sourceSets.main.allJava.srcDirs)
-		}
+	options {
+		source = "8"
+		encoding = 'UTF-8'
+		charSet = 'UTF-8'
+		memberLevel = JavadocMemberLevel.PACKAGE
+		links(
+				'https://guava.dev/releases/21.0/api/docs/',
+				'https://asm.ow2.io/javadoc/',
+				'https://docs.oracle.com/javase/8/docs/api/',
+				'http://jenkins.liteloader.com/job/Mixin/javadoc/',
+				'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
+				// Need to add minecraft jd publication etc once there is one available
+		)
+		// Disable the crazy super-strict doclint tool in Java 8
+		addStringOption('Xdoclint:none', '-quiet')
+	}
+	allprojects.each {
+		source(it.sourceSets.main.allJava.srcDirs)
+	}
 	classpath = sourceSets.main.compileClasspath
-	include ("**/api/**")
+	include("**/api/**")
 	failOnError false
 }
 
 task javadocJar(type: Jar) {
-	from javadoc
+	dependsOn javadoc
+	from javadoc.destinationDir
 	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
 	classifier = 'fatjavadoc'
 }
@@ -141,27 +160,18 @@ subprojects {
 	publishing {
 		publications {
 			mavenJava(MavenPublication) {
-				artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
-					builtBy remapMavenJar
-				}
-				artifact(sourcesJar) {
-					builtBy remapSourcesJar
-				}
-				artifact javadocJar
-			}
-		}
-
-		repositories {
-			maven {
-				url "http://mavenupload.modmuss50.me/"
-				if (project.hasProperty('mavenPass')) {
-					credentials {
-						username 'buildslave'
-						password project.getProperty('mavenPass')
+				afterEvaluate {
+					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
+						builtBy remapMavenJar
+					}
+					artifact(sourcesJar) {
+						builtBy remapSourcesJar
 					}
 				}
 			}
 		}
+
+		setupRepositories(repositories)
 	}
 
 	javadoc.enabled = false
@@ -184,6 +194,7 @@ publishing {
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
+			artifact javadocJar
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
@@ -197,14 +208,17 @@ publishing {
 		}
 	}
 
-	repositories {
-		maven {
+	setupRepositories(repositories)
+}
+
+void setupRepositories(RepositoryHandler repositories) {
+	//repositories.mavenLocal() // uncomment for testing
+	if (project.hasProperty('mavenPass')) {
+		repositories.maven {
 			url "http://mavenupload.modmuss50.me/"
-			if (project.hasProperty('mavenPass')) {
-				credentials {
-					username 'buildslave'
-					password project.getProperty('mavenPass')
-				}
+			credentials {
+				username 'buildslave'
+				password project.getProperty('mavenPass')
 			}
 		}
 	}
@@ -223,18 +237,14 @@ dependencies {
 	}
 }
 
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
-
-logger.lifecycle("Building Fabric: " + version)
-
 curseforge {
-	if (project.hasProperty('curse_api_key')){
+	if (project.hasProperty('curse_api_key')) {
 		apiKey = project.getProperty('curse_api_key')
 	}
 	project {
 		id = '306612'
-		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits/master'
-		releaseType = 'beta'
+		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
+		releaseType = 'release'
 		addGameVersion '1.15.2'
 		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
@@ -244,7 +254,7 @@ curseforge {
 			uploadTask.dependsOn("remapJar")
 		}
 	}
-	options{
+	options {
 		forgeGradleIntegration = false
 	}
 }
