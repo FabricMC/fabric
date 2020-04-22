@@ -54,6 +54,8 @@ public final class ToolManagerImpl {
 
 		@Override
 		public void putBreakByTool(Tag<Item> tag, int miningLevel) {
+			tag(tag); // Generate tag entry
+
 			for (int i = 0; i < tags.length; i++) {
 				if (tags[i] == tag) {
 					tagLevels[i] = miningLevel;
@@ -183,10 +185,19 @@ public final class ToolManagerImpl {
 
 		for (Map.Entry<Tag<Item>, Event<ToolManager.ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
-				Float speedMultiplier = eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
-				if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
-				speedMultiplier = general().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
-				if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
+				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), stack, user, state);
+
+				if (effective.isAccepted()) {
+					Float speedMultiplier = eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
+					if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
+				}
+
+				effective = general().invoker().isEffectiveOn(eventEntry.getKey(), stack, user, state);
+
+				if (effective.isAccepted()) {
+					Float speedMultiplier = general().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
+					if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
+				}
 			}
 		}
 
