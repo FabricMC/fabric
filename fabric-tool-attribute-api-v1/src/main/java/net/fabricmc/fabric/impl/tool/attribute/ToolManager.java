@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.mining.level;
+package net.fabricmc.fabric.impl.tool.attribute;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
 import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManager {
@@ -85,9 +86,10 @@ public final class ToolManager {
 		entry(block).putBreakByTool(tag, miningLevel);
 	}
 
-	private static int getMiningLevel(ItemStack stack) {
-		if (stack.getItem() instanceof ToolItem) {
-			return ((ToolItem) stack.getItem()).getMaterial().getMiningLevel();
+	//TODO: nullable on user once we have an official @Nullable annotation in
+	private static int getMiningLevel(ItemStack stack, LivingEntity user) {
+		if (stack.getItem() instanceof DynamicAttributeTool) {
+			return ((DynamicAttributeTool) stack.getItem()).getMiningLevel(stack, user);
 		} else {
 			return 0;
 		}
@@ -96,7 +98,8 @@ public final class ToolManager {
 	/**
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 */
-	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state) {
+	//TODO: nullable on user once we have an official @Nullable annotation in
+	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state, LivingEntity user) {
 		EntryImpl entry = entries.get(state.getBlock());
 
 		if (entry != null) {
@@ -104,7 +107,7 @@ public final class ToolManager {
 
 			for (int i = 0; i < entry.tags.length; i++) {
 				if (item.isIn(entry.tags[i])) {
-					return TriState.of(getMiningLevel(stack) >= entry.tagLevels[i]);
+					return TriState.of(getMiningLevel(stack, user) >= entry.tagLevels[i]);
 				}
 			}
 

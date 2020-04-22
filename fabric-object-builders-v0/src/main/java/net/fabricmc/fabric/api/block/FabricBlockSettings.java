@@ -32,7 +32,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
-import net.fabricmc.fabric.impl.mining.level.ToolManager;
+import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
 
 /**
  * Fabric's version of Block.Settings. Adds additional methods and hooks
