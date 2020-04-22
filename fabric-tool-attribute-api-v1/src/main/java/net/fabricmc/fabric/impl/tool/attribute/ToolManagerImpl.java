@@ -179,15 +179,17 @@ public final class ToolManagerImpl {
 	}
 
 	public static float handleBreakingSpeed(ItemStack stack, BlockState state, LivingEntity user) {
+		float breakingSpeed = 1f;
+
 		for (Map.Entry<Tag<Item>, Event<ToolManager.ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
 				Float speedMultiplier = eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
-				if (speedMultiplier != null && speedMultiplier != 1f) return speedMultiplier;
+				if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
 				speedMultiplier = general().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
-				if (speedMultiplier != null && speedMultiplier != 1f) return speedMultiplier;
+				if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
 			}
 		}
 
-		return 1f;
+		return breakingSpeed;
 	}
 }

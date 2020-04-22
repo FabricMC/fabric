@@ -134,14 +134,9 @@ public class ToolHandlers implements ModInitializer {
 		public ActionResult isEffectiveOn(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
 			if (stack.getItem() instanceof DynamicAttributeTool) {
 				ToolMaterial tempMaterial = ((ToolItem) vanillaItem).getMaterial();
-				fakeMaterial.miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
-				((ToolItemAccessor) vanillaItem).setMaterial(fakeMaterial);
-				boolean effective = vanillaItem.isEffectiveOn(state);
-				((ToolItemAccessor) vanillaItem).setMaterial(tempMaterial);
-				return effective ? ActionResult.SUCCESS : ActionResult.PASS;
-			} else if (!(stack.getItem() instanceof ToolItem)) {
-				ToolMaterial tempMaterial = ((ToolItem) vanillaItem).getMaterial();
-				fakeMaterial.miningLevel = 0;
+				int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
+				if (miningLevel < 0) return ActionResult.PASS;
+				fakeMaterial.miningLevel = miningLevel;
 				((ToolItemAccessor) vanillaItem).setMaterial(fakeMaterial);
 				boolean effective = vanillaItem.isEffectiveOn(state);
 				((ToolItemAccessor) vanillaItem).setMaterial(tempMaterial);
