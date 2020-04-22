@@ -12,7 +12,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 public class VanillaToolsSupport implements ModInitializer {
@@ -24,7 +23,6 @@ public class VanillaToolsSupport implements ModInitializer {
 			registerBlockSupport(Registry.BLOCK.getId(block), block);
 		}
 
-		RegistryEntryAddedCallback.event(Registry.BLOCK).register((rawId, id, object) -> registerBlockSupport(id, object));
 		registerSupport(FabricToolTags.PICKAXES, 3, Blocks.OBSIDIAN);
 		registerSupport(FabricToolTags.PICKAXES, 2, Blocks.DIAMOND_BLOCK, Blocks.DIAMOND_ORE, Blocks.EMERALD_ORE, Blocks.EMERALD_BLOCK, Blocks.GOLD_BLOCK, Blocks.GOLD_ORE, Blocks.REDSTONE_ORE);
 		registerSupport(FabricToolTags.PICKAXES, 1, Blocks.IRON_BLOCK, Blocks.IRON_ORE, Blocks.LAPIS_BLOCK, Blocks.LAPIS_ORE);

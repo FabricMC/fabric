@@ -19,16 +19,12 @@ package net.fabricmc.fabric.api.tool.attribute.v1;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ToolItem;
-import net.minecraft.tag.BlockTags;
 
 /**
  * Interface for adding various tool attributes to items.
@@ -44,6 +40,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
+	@Deprecated
 	default int getMiningLevel(ItemStack stack, LivingEntity user) {
 		return this instanceof ToolItem ? ((ToolItem) this).getMaterial().getMiningLevel() : 0;
 	}
@@ -69,6 +66,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
+	@Deprecated
 	default float getMiningSpeedMultiplier(ItemStack stack, LivingEntity user) {
 		return this instanceof ToolItem ? ((ToolItem) this).getMaterial().getMiningSpeed() : 1f;
 	}
@@ -83,12 +81,6 @@ public interface DynamicAttributeTool {
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
 	default float getMiningSpeedMultiplier(BlockState state, ItemStack stack, LivingEntity user) {
-		if (this instanceof ShearsItem) {
-			Block block = state.getBlock();
-			if (block == Blocks.COBWEB || state.matches(BlockTags.LEAVES)) return 15f;
-			if (state.matches(BlockTags.WOOL)) return 5f;
-		}
-		
 		return getMiningSpeedMultiplier(stack, user);
 	}
 

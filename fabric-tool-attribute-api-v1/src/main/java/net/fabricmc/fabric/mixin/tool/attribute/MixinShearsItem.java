@@ -18,8 +18,14 @@ package net.fabricmc.fabric.mixin.tool.attribute;
 
 import org.spongepowered.asm.mixin.Mixin;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
+import net.minecraft.tag.BlockTags;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 
@@ -27,5 +33,13 @@ import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 public abstract class MixinShearsItem extends Item implements DynamicAttributeTool {
 	public MixinShearsItem(Settings settings) {
 		super(settings);
+	}
+
+	@Override
+	public float getMiningSpeedMultiplier(BlockState state, ItemStack stack, LivingEntity user) {
+		Block block = state.getBlock();
+		if (block == Blocks.COBWEB || state.matches(BlockTags.LEAVES)) return 15f;
+		if (state.matches(BlockTags.WOOL)) return 5f;
+		return DynamicAttributeTool.super.getMiningSpeedMultiplier(state, stack, user);
 	}
 }
