@@ -41,6 +41,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @param item     the item
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
+	 * @throws NullPointerException if either the item or the renderer is null
 	 */
 	void register(Item item, BuiltinItemRenderer renderer);
 }

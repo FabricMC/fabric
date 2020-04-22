@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
@@ -38,6 +39,9 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
+		Objects.requireNonNull(item, "item is null");
+		Objects.requireNonNull(renderer, "renderer is null");
+
 		if (RENDERERS.put(item, renderer) != null) {
 			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item) + " already has a builtin renderer!");
 		}
