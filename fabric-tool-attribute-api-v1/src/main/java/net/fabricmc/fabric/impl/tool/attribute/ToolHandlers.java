@@ -1,8 +1,6 @@
 package net.fabricmc.fabric.impl.tool.attribute;
 
 import com.google.common.collect.ImmutableList;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -30,9 +28,10 @@ import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.fabric.mixin.tool.attribute.MiningToolItemAccessor;
 import net.fabricmc.fabric.mixin.tool.attribute.ToolItemAccessor;
 
+/**
+ * Entrypoint to register the default tool handlers.
+ */
 public class ToolHandlers implements ModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-tool-attribute-api-v1");
-
 	@Override
 	public void onInitialize() {
 		ToolManager.general().register(new ModdedToolsModdedBlocksToolHandler());
@@ -108,14 +107,14 @@ public class ToolHandlers implements ModInitializer {
 	}
 
 	private static class DummyAxeItem extends AxeItem {
-		public DummyAxeItem(ToolMaterial material, float attackDamage, float attackSpeed, Settings settings) {
+		private DummyAxeItem(ToolMaterial material, float attackDamage, float attackSpeed, Settings settings) {
 			super(material, attackDamage, attackSpeed, settings);
 		}
 	}
 
 	/**
-	 * This handler handles items that are an subclass of {@link DynamicAttributeTool} by getting their mining level
-	 * from {@link DynamicAttributeTool#getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} and comparing to the block mining level.
+	 * This handler handles items that are an subclass of {@link DynamicAttributeTool} by comparing their mining level
+	 * using {@link DynamicAttributeTool#getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} and the block mining level.
 	 *
 	 * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
 	 */
@@ -140,7 +139,7 @@ public class ToolHandlers implements ModInitializer {
 
 	/**
 	 * This handler handles items that are not a subclass of {@link DynamicAttributeTool} by
-	 * getting their mining level by {@link ToolMaterial#getMiningLevel()} and comparing to the block mining level.
+	 * comparing their mining level using {@link ToolMaterial#getMiningLevel()} and the block mining level.
 	 *
 	 * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
 	 */
@@ -190,10 +189,9 @@ public class ToolHandlers implements ModInitializer {
 	}
 
 	/**
-	 * This handler handles items that are a subclass of {@link DynamicAttributeTool} or not a subclass of {@link ToolItem} by
-	 * using the vanilla {@link Item#isEffectiveOn(BlockState)} by using a custom fake tool material to use the mining level
-	 * from {@link DynamicAttributeTool#getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} or by default {@code 0}
-	 * if the item is not a subclass of {@link DynamicAttributeTool}.
+	 * This handler handles items that are a subclass of {@link DynamicAttributeTool} by using the
+	 * vanilla {@link Item#isEffectiveOn(BlockState)} with a custom fake tool material to use the mining level
+	 * from {@link DynamicAttributeTool#getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)}.
 	 *
 	 * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
 	 */
@@ -285,6 +283,9 @@ public class ToolHandlers implements ModInitializer {
 		}
 	}
 
+	/**
+	 * Fake tool material in which their mining level can be modified.
+	 */
 	private static class FakeAdaptableToolMaterial implements ToolMaterial {
 		private int miningLevel = 0;
 
