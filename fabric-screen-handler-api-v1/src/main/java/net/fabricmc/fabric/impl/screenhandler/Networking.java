@@ -60,7 +60,7 @@ public final class Networking {
 		buf.writeIdentifier(typeId);
 		buf.writeVarInt(syncId);
 		buf.writeText(factory.getDisplayName());
-		factory.writeScreenData(buf);
+		factory.writeScreenOpeningData(buf);
 
 		ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, OPEN_ID, buf);
 	}
