@@ -49,7 +49,7 @@ public abstract class MixinPlayerInventory {
 	@Shadow
 	public abstract ItemStack getInvStack(int int_1);
 
-	@Inject(method = "isUsingEffectiveTool", at = @At("HEAD"))
+	@Inject(method = "isUsingEffectiveTool", at = @At("HEAD"), cancellable = true)
 	public void actMiningLevel(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		ItemStack stack = this.getInvStack(this.selectedSlot);
 
@@ -62,7 +62,7 @@ public abstract class MixinPlayerInventory {
 		}
 	}
 
-	@Inject(method = "getBlockBreakingSpeed", at = @At("HEAD"))
+	@Inject(method = "getBlockBreakingSpeed", at = @At("HEAD"), cancellable = true)
 	public void actMiningSleed(BlockState state, CallbackInfoReturnable<Float> info) {
 		ItemStack stack = this.main.get(this.selectedSlot);
 
