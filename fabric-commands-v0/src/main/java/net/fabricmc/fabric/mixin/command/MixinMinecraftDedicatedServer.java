@@ -32,13 +32,14 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 import net.minecraft.world.level.storage.LevelStorage;
 import net.minecraft.util.UserCache;
+import net.minecraft.class_5219;
 
 import net.fabricmc.fabric.impl.command.CommandRegistryImpl;
 
 @Mixin(MinecraftDedicatedServer.class)
 public abstract class MixinMinecraftDedicatedServer extends MinecraftServer {
-	public MixinMinecraftDedicatedServer(LevelStorage.Session session, Proxy proxy, DataFixer dataFixer, CommandManager commandManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
-		super(session, proxy, dataFixer, commandManager, minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
+	public MixinMinecraftDedicatedServer(LevelStorage.Session session, class_5219 arg, Proxy proxy, DataFixer dataFixer, CommandManager commandManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
+		super(session, arg, proxy, dataFixer, commandManager, minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
 	}
 
 	@Inject(method = "setupServer", at = @At("HEAD"))

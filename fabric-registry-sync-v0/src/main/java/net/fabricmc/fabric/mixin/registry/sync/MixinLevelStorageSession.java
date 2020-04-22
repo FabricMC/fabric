@@ -21,9 +21,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -34,27 +37,30 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.world.WorldSaveHandler;
-import net.minecraft.world.level.LevelProperties;
+import net.minecraft.class_5219;
+import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
-@Mixin(WorldSaveHandler.class)
-public class MixinWorldSaveHandler {
+@Mixin(LevelStorage.Session.class)
+public class MixinLevelStorageSession {
 	@Unique
 	private static final int FABRIC_ID_REGISTRY_BACKUPS = 3;
 	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger();
-	@Shadow
-	public File worldDir;
-
+	private static Logger FABRIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
 	@Unique
 	private CompoundTag fabric_lastSavedIdMap = null;
 
+	@Shadow
+	@Final
+	private Path directory;
+
 	@Unique
 	private boolean fabric_readIdMapFile(File file) throws IOException, RemapException {
+		FABRIC_LOGGER.debug("Reading registry data from " + file.toString());
+
 		if (file.exists()) {
 			FileInputStream fileInputStream = new FileInputStream(file);
 			CompoundTag tag = NbtIo.readCompressed(fileInputStream);
@@ -71,7 +77,7 @@ public class MixinWorldSaveHandler {
 
 	@Unique
 	private File fabric_getWorldIdMapFile(int i) {
-		return new File(new File(worldDir, "data"), "fabricRegistry" + ".dat" + (i == 0 ? "" : ("." + i)));
+		return new File(new File(directory.toFile(), "data"), "fabricRegistry" + ".dat" + (i == 0 ? "" : ("." + i)));
 	}
 
 	@Unique
@@ -102,6 +108,7 @@ public class MixinWorldSaveHandler {
 					}
 				}
 
+				FABRIC_LOGGER.debug("Saving registry data to " + file.toString());
 				FileOutputStream fileOutputStream = new FileOutputStream(file);
 				NbtIo.writeCompressed(newIdMap, fileOutputStream);
 				fileOutputStream.close();
@@ -113,9 +120,9 @@ public class MixinWorldSaveHandler {
 		}
 	}
 
-	@Inject(method = "saveWorld", at = @At("HEAD"))
-	public void saveWorld(LevelProperties levelProperties, CompoundTag compoundTag, CallbackInfo info) {
-		if (!worldDir.exists()) {
+	@Inject(method = "method_27426", at = @At("HEAD"))
+	public void saveWorld(class_5219 levelProperties, CompoundTag compoundTag, CallbackInfo info) {
+		if (!Files.exists(directory)) {
 			return;
 		}
 
@@ -123,8 +130,8 @@ public class MixinWorldSaveHandler {
 	}
 
 	// TODO: stop double save on client?
-	@Inject(method = "readProperties", at = @At("HEAD"))
-	public void readWorldProperties(CallbackInfoReturnable<LevelProperties> callbackInfo) {
+	@Inject(method = "readLevelProperties", at = @At("HEAD"))
+	public void readWorldProperties(CallbackInfoReturnable<class_5219> callbackInfo) {
 		// Load
 		for (int i = 0; i < FABRIC_ID_REGISTRY_BACKUPS; i++) {
 			FABRIC_LOGGER.trace("[fabric-registry-sync] Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");

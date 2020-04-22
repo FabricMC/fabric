@@ -22,32 +22,11 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 
 public class FabricEntityType<T extends Entity> extends EntityType<T> {
-	private final int maxTrackDistance, trackTickInterval;
 	private final Boolean alwaysUpdateVelocity;
 
 	public FabricEntityType(EntityType.EntityFactory<T> factory, EntityCategory category, boolean bl, boolean summonable, boolean fireImmune, boolean spawnableFarFromPlayer, int i, int j, EntityDimensions entityDimensions, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
-		super(factory, category, bl, summonable, fireImmune, spawnableFarFromPlayer, i, j, entityDimensions);
-		this.maxTrackDistance = maxTrackDistance;
-		this.trackTickInterval = trackTickInterval;
+		super(factory, category, bl, summonable, fireImmune, spawnableFarFromPlayer, i, j, entityDimensions, (maxTrackDistance + 15) / 16, trackTickInterval);
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
-	}
-
-	@Override
-	public int getMaxTrackDistance() {
-		if (maxTrackDistance != -1) {
-			return (maxTrackDistance + 15) / 16;
-		}
-
-		return super.getMaxTrackDistance();
-	}
-
-	@Override
-	public int getTrackTickInterval() {
-		if (trackTickInterval != -1) {
-			return trackTickInterval;
-		}
-
-		return super.getTrackTickInterval();
 	}
 
 	@Override

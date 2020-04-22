@@ -7,7 +7,7 @@
     "MixinIdList",
     "MixinIdRegistry",
     "MixinPlayerManager",
-    "MixinWorldSaveHandler"
+    "MixinLevelStorageSession"
   ],
   "client": [
     "client.MixinBlockColorMap",

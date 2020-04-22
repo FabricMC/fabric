@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
 @Mixin(Tag.Builder.class)
 public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	@Shadow
-	private List<Tag.class_5145> entries;
+	private List<Tag.TrackedEntry> entries;
 
 	@Unique
 	private int fabric_clearCount;
