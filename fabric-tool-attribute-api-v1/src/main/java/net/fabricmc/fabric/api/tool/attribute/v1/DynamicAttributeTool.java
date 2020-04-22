@@ -25,7 +25,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolItem;
 import net.minecraft.tag.Tag;
 
 /**
@@ -38,24 +37,26 @@ public interface DynamicAttributeTool {
 	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
 	 *
 	 * @param stack The stack to check on.
-	 * @param user The current user of the tool, or null if there isn't any.
+	 * @param user  The current user of the tool, or null if there isn't any.
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
+	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
-	//TODO: nullable on user once we have an official @Nullable annotation in
+	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
 	default int getMiningLevel(ItemStack stack, LivingEntity user) {
-		return this instanceof ToolItem ? ((ToolItem) this).getMaterial().getMiningLevel() : 0;
+		return 0;
 	}
 
 	/**
 	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
 	 *
+	 * @param tag   The tool tag the item stack is being compared to
 	 * @param state The block to mine.
 	 * @param stack The stack to check on.
-	 * @param user The current user of the tool, or null if there isn't any.
+	 * @param user  The current user of the tool, or null if there isn't any.
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
-	//TODO: nullable on user once we have an official @Nullable annotation in
+	// nullable on user once we have an official @Nullable annotation in
 	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		return getMiningLevel(stack, user);
 	}
@@ -64,24 +65,26 @@ public interface DynamicAttributeTool {
 	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
 	 *
 	 * @param stack The stack to check on.
-	 * @param user The current user of the tool, or null if there isn't any.
+	 * @param user  The current user of the tool, or null if there isn't any.
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
+	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
-	//TODO: nullable on user once we have an official @Nullable annotation in
+	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
 	default float getMiningSpeedMultiplier(ItemStack stack, LivingEntity user) {
-		return this instanceof ToolItem ? ((ToolItem) this).getMaterial().getMiningSpeed() : 1f;
+		return 1f;
 	}
 
 	/**
 	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
 	 *
+	 * @param tag   The tool tag the item stack is being compared to
 	 * @param state The block to mine.
 	 * @param stack The stack to check on.
-	 * @param user The current user of the tool, or null if there isn't any.
+	 * @param user  The current user of the tool, or null if there isn't any.
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
-	//TODO: nullable on user once we have an official @Nullable annotation in
+	// nullable on user once we have an official @Nullable annotation in
 	default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		return getMiningSpeedMultiplier(stack, user);
 	}
@@ -93,10 +96,10 @@ public interface DynamicAttributeTool {
 	 *
 	 * @param slot  The equipment slot this item is equipped in.
 	 * @param stack The stack that's equipped.
-	 * @param user The current user of the tool, or none if there isn't any
+	 * @param user  The current user of the tool, or none if there isn't any
 	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.
 	 */
-	//TODO: nullable on user once we have an official @Nullable annotation in
+	// nullable on user once we have an official @Nullable annotation in
 	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, LivingEntity user) {
 		return EMPTY;
 	}
