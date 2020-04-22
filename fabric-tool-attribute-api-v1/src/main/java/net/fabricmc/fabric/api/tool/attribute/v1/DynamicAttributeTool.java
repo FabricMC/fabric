@@ -19,10 +19,16 @@ package net.fabricmc.fabric.api.tool.attribute.v1;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShearsItem;
+import net.minecraft.item.ToolItem;
+import net.minecraft.tag.BlockTags;
 
 /**
  * Interface for adding various tool attributes to items.
@@ -38,7 +44,22 @@ public interface DynamicAttributeTool {
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	int getMiningLevel(ItemStack stack, LivingEntity user);
+	default int getMiningLevel(ItemStack stack, LivingEntity user) {
+		return this instanceof ToolItem ? ((ToolItem) this).getMaterial().getMiningLevel() : 0;
+	}
+
+	/**
+	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
+	 *
+	 * @param state The block to mine.
+	 * @param stack The stack to check on.
+	 * @param user The current user of the tool, or null if there isn't any.
+	 * @return The mining level of the item. 3 is equal to a diamond pick.
+	 */
+	//TODO: nullable on user once we have an official @Nullable annotation in
+	default int getMiningLevel(BlockState state, ItemStack stack, LivingEntity user) {
+		return getMiningLevel(stack, user);
+	}
 
 	/**
 	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
@@ -48,7 +69,28 @@ public interface DynamicAttributeTool {
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	float getMiningSpeedMultiplier(ItemStack stack, LivingEntity user);
+	default float getMiningSpeedMultiplier(ItemStack stack, LivingEntity user) {
+		return this instanceof ToolItem ? ((ToolItem) this).getMaterial().getMiningSpeed() : 1f;
+	}
+
+	/**
+	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
+	 *
+	 * @param state The block to mine.
+	 * @param stack The stack to check on.
+	 * @param user The current user of the tool, or null if there isn't any.
+	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
+	 */
+	//TODO: nullable on user once we have an official @Nullable annotation in
+	default float getMiningSpeedMultiplier(BlockState state, ItemStack stack, LivingEntity user) {
+		if (this instanceof ShearsItem) {
+			Block block = state.getBlock();
+			if (block == Blocks.COBWEB || state.matches(BlockTags.LEAVES)) return 15f;
+			if (state.matches(BlockTags.WOOL)) return 5f;
+		}
+		
+		return getMiningSpeedMultiplier(stack, user);
+	}
 
 	/**
 	 * Add modifiers for any {@link net.minecraft.entity.attribute.EntityAttributes} your item should give when equipped, based on the stack.

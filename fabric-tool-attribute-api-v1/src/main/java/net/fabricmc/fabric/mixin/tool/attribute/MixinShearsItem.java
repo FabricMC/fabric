@@ -19,13 +19,13 @@ package net.fabricmc.fabric.mixin.tool.attribute;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ToolItem;
+import net.minecraft.item.ShearsItem;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 
-@Mixin(ToolItem.class)
-public abstract class MixinToolItem extends Item implements DynamicAttributeTool {
-	public MixinToolItem(Settings settings) {
+@Mixin(ShearsItem.class)
+public abstract class MixinShearsItem extends Item implements DynamicAttributeTool {
+	public MixinShearsItem(Settings settings) {
 		super(settings);
 	}
 }

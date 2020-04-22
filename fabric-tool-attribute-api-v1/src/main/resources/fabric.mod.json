@@ -20,6 +20,11 @@
     "fabric-api-base": "*",
     "fabric-tag-extensions-v0": "*"
   },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.tool.attribute.VanillaToolsSupport"
+    ]
+  },
   "description": "Dynamic atttributes for tools.",
   "mixins": [
     "fabric-tool-attribute-api-v1.mixins.json"

@@ -6,6 +6,7 @@
     "MixinItemStack",
     "MixinLivingEntity",
     "MixinPlayerInventory",
+    "MixinShearsItem",
     "MixinToolItem"
   ],
   "injectors": {

@@ -59,7 +59,7 @@ public abstract class MixinItemStack {
 			float miningSpeed;
 
 			if (item instanceof DynamicAttributeTool) {
-				miningSpeed = ((DynamicAttributeTool) this.getItem()).getMiningSpeedMultiplier((ItemStack) (Object) this, null);
+				miningSpeed = ((DynamicAttributeTool) this.getItem()).getMiningSpeedMultiplier(state, (ItemStack) (Object) this, null);
 			} else {
 				return;
 			}

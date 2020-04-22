@@ -34,6 +34,8 @@ public final class ToolManager {
 		void setBreakByHand(boolean value);
 
 		void putBreakByTool(Tag<Item> tag, int miningLevel);
+
+		int getMiningLevel(Tag<Item> tag);
 	}
 
 	private static class EntryImpl implements Entry {
@@ -66,6 +68,17 @@ public final class ToolManager {
 			tags = newTags;
 			tagLevels = newTagLevels;
 		}
+
+		@Override
+		public int getMiningLevel(Tag<Item> tag) {
+			for (int i = 0; i < tags.length; i++) {
+				if (tags[i] == tag) {
+					return tagLevels[i];
+				}
+			}
+
+			return -1;
+		}
 	}
 
 	private static final Map<Block, EntryImpl> entries = new HashMap<>();
@@ -87,9 +100,9 @@ public final class ToolManager {
 	}
 
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	private static int getMiningLevel(ItemStack stack, LivingEntity user) {
+	private static int getMiningLevel(BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
-			return ((DynamicAttributeTool) stack.getItem()).getMiningLevel(stack, user);
+			return ((DynamicAttributeTool) stack.getItem()).getMiningLevel(state, stack, user);
 		} else {
 			return 0;
 		}
@@ -107,7 +120,7 @@ public final class ToolManager {
 
 			for (int i = 0; i < entry.tags.length; i++) {
 				if (item.isIn(entry.tags[i])) {
-					return TriState.of(getMiningLevel(stack, user) >= entry.tagLevels[i]);
+					return TriState.of(getMiningLevel(state, stack, user) >= entry.tagLevels[i]);
 				}
 			}
 
