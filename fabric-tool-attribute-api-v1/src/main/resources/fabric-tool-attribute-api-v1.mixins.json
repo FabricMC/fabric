@@ -5,7 +5,6 @@
   "mixins": [
     "MixinItemStack",
     "MixinLivingEntity",
-    "MixinPlayerInventory",
     "MixinShearsItem",
     "MixinToolItem"
   ],
