@@ -22,7 +22,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.tool.attribute.VanillaToolsSupport"
+      "net.fabricmc.fabric.impl.tool.attribute.ToolHandlers"
     ]
   },
   "description": "Dynamic atttributes for tools.",

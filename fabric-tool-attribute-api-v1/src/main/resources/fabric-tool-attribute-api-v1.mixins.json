@@ -3,10 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.tool.attribute",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "MiningToolItemAccessor",
     "MixinItemStack",
     "MixinLivingEntity",
-    "MixinShearsItem",
-    "MixinToolItem"
+    "ToolItemAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

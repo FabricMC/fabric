@@ -23,8 +23,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
+import net.minecraft.tag.Tag;
 
 /**
  * Interface for adding various tool attributes to items.
@@ -54,7 +56,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	default int getMiningLevel(BlockState state, ItemStack stack, LivingEntity user) {
+	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		return getMiningLevel(stack, user);
 	}
 
@@ -80,7 +82,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	default float getMiningSpeedMultiplier(BlockState state, ItemStack stack, LivingEntity user) {
+	default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		return getMiningSpeedMultiplier(stack, user);
 	}
 

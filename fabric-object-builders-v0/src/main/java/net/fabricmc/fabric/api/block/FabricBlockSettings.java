@@ -32,7 +32,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
-import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
+import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * Fabric's version of Block.Settings. Adds additional methods and hooks
@@ -87,11 +87,11 @@ public class FabricBlockSettings {
 
 		if (data != null) {
 			if (data.breakByHand != null) {
-				ToolManager.entry(block).setBreakByHand(data.breakByHand);
+				ToolManagerImpl.entry(block).setBreakByHand(data.breakByHand);
 			}
 
 			for (MiningLevel tml : data.miningLevels) {
-				ToolManager.entry(block).putBreakByTool(tml.tag, tml.level);
+				ToolManagerImpl.entry(block).putBreakByTool(tml.tag, tml.level);
 			}
 		}
 	}

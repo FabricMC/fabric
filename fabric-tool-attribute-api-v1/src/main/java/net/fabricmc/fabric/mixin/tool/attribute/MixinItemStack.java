@@ -31,9 +31,9 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
-import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
 
 @Mixin(ItemStack.class)
 public abstract class MixinItemStack {
@@ -54,17 +54,10 @@ public abstract class MixinItemStack {
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
 		TriState triState = ToolManager.handleIsEffectiveOn((ItemStack) (Object) this, state, null);
 
-		if (triState != TriState.DEFAULT) {
-			Item item = this.getItem();
-			float miningSpeed;
-
-			if (item instanceof DynamicAttributeTool) {
-				miningSpeed = ((DynamicAttributeTool) this.getItem()).getMiningSpeedMultiplier(state, (ItemStack) (Object) this, null);
-			} else {
-				return;
-			}
-
-			info.setReturnValue(triState.get() ? miningSpeed : 1.0F);
+		if (triState == TriState.TRUE) {
+			info.setReturnValue(ToolManager.handleBreakingSpeed((ItemStack) (Object) this, state, null));
+		} else if (triState == TriState.FALSE) {
+			info.setReturnValue(1f);
 		}
 	}
 
