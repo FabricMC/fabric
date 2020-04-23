@@ -42,8 +42,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private final EntityType.EntityFactory<T> function;
 	private boolean saveable = true;
 	private boolean summonable = true;
-	private int trackingDistance = -1;
-	private int updateIntervalTicks = -1;
+	private int trackingDistance = 5;
+	private int updateIntervalTicks = 3;
 	private Boolean alwaysUpdateVelocity;
 	private boolean immuneToFire = false;
 	private int maxDespawnDistance = 128;

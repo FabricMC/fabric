@@ -31,7 +31,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -135,9 +134,9 @@ public class DimensionIdsFixer {
 		}
 	}
 
-	public static Packet<?> createPacket(LevelProperties levelProperties) {
+	public static Packet<?> createPacket(DimensionIdsHolder dimensionIdsHolder) {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeCompoundTag(((DimensionIdsHolder) levelProperties).fabric_getDimensionIds());
+		buf.writeCompoundTag(dimensionIdsHolder.fabric_getDimensionIds());
 		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
 	}
 

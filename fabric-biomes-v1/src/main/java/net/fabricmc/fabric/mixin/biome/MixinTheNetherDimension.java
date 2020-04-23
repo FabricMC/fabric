@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,11 +30,11 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 @Mixin(TheNetherDimension.class)
 public class MixinTheNetherDimension {
-	@ModifyArg(method = "createChunkGenerator", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSourceConfig;withBiomes(Ljava/util/Set;)Lnet/minecraft/world/biome/source/MultiNoiseBiomeSourceConfig;"))
-	protected Set<Biome> modifyNetherBiomes(Set<Biome> set) {
+	@ModifyArg(method = "createChunkGenerator", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSourceConfig;withBiomes(Ljava/util/List;)Lnet/minecraft/world/biome/source/MultiNoiseBiomeSourceConfig;"))
+	protected List<Biome> modifyNetherBiomes(List<Biome> list) {
 		// the provided set is immutable, so we construct our own
-		Set<Biome> newSet = new HashSet<>(set);
-		newSet.addAll(InternalBiomeData.getNetherBiomes());
-		return newSet;
+		List<Biome> newList = new ArrayList<>(list);
+		newList.addAll(InternalBiomeData.getNetherBiomes());
+		return newList;
 	}
 }

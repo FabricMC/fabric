@@ -27,6 +27,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.impl.dimension.DimensionIdsFixer;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+import net.fabricmc.fabric.impl.dimension.DimensionIdsHolder;
 
 @Mixin(PlayerManager.class)
 public abstract class MixinPlayerManager {
@@ -39,7 +40,9 @@ public abstract class MixinPlayerManager {
 
 		// No need to send the packet if the player is using the same game instance (dimension types are static)
 		if (!player.server.isSinglePlayer() || !conn.isLocal() || FabricDimensionInternals.DEBUG) {
-			player.networkHandler.sendPacket(DimensionIdsFixer.createPacket(player.world.getLevelProperties()));
+			if (player.world.getLevelProperties() instanceof DimensionIdsHolder) {
+				player.networkHandler.sendPacket(DimensionIdsFixer.createPacket((DimensionIdsHolder) player.world.getLevelProperties()));
+			}
 		}
 	}
 }
