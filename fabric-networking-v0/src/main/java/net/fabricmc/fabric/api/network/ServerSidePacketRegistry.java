@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.network;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -73,6 +74,19 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	}
 
 	/**
+	 * Send an identifier/buffer-based packet to a given client.
+	 *
+	 * @param player             The given client.
+	 * @param id                 The packet identifier.
+	 * @param buf                The packet byte buffer.
+	 * @param completionListener Completion listener. Can be used to check for
+	 *                           the success or failure of sending a given packet, among others.
+	 */
+	default void sendToPlayer(PlayerEntity player, Identifier id, ByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
+		sendToPlayer(player, id, new PacketByteBuf(buf), completionListener);
+	}
+
+	/**
 	 * Send a packet to a given client.
 	 *
 	 * @param player The given client.
@@ -91,5 +105,16 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	 */
 	default void sendToPlayer(PlayerEntity player, Identifier id, PacketByteBuf buf) {
 		sendToPlayer(player, id, buf, null);
+	}
+
+	/**
+	 * Send an identifier/buffer-based packet to a given client.
+	 *
+	 * @param player The given client.
+	 * @param id     The packet identifier.
+	 * @param buf    The packet byte buffer.
+	 */
+	default void sendToPlayer(PlayerEntity player, Identifier id, ByteBuf buf) {
+		sendToPlayer(player, id, new PacketByteBuf(buf));
 	}
 }
