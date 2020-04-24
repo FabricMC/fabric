@@ -76,7 +76,7 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 	 *                           the success or failure of sending a given packet, among others.
 	 */
 	default void sendToServer(Identifier id, ByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		sendToServer(id, new PacketByteBuf(buf), completionListener);
+		sendToServer(id, buf instanceof PacketByteBuf ? (PacketByteBuf) buf : new PacketByteBuf(buf), completionListener);
 	}
 
 	/**
@@ -105,6 +105,6 @@ public interface ClientSidePacketRegistry extends PacketRegistry {
 	 * @param buf The packet byte buffer.
 	 */
 	default void sendToServer(Identifier id, ByteBuf buf) {
-		sendToServer(id, new PacketByteBuf(buf));
+		sendToServer(id, buf instanceof PacketByteBuf ? (PacketByteBuf) buf : new PacketByteBuf(buf));
 	}
 }

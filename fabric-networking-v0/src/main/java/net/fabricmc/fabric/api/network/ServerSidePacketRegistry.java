@@ -83,7 +83,7 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	 *                           the success or failure of sending a given packet, among others.
 	 */
 	default void sendToPlayer(PlayerEntity player, Identifier id, ByteBuf buf, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		sendToPlayer(player, id, new PacketByteBuf(buf), completionListener);
+		sendToPlayer(player, id, buf instanceof PacketByteBuf ? (PacketByteBuf) buf : new PacketByteBuf(buf), completionListener);
 	}
 
 	/**
@@ -115,6 +115,6 @@ public interface ServerSidePacketRegistry extends PacketRegistry {
 	 * @param buf    The packet byte buffer.
 	 */
 	default void sendToPlayer(PlayerEntity player, Identifier id, ByteBuf buf) {
-		sendToPlayer(player, id, new PacketByteBuf(buf));
+		sendToPlayer(player, id, buf instanceof PacketByteBuf ? (PacketByteBuf) buf : new PacketByteBuf(buf));
 	}
 }
