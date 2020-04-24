@@ -17,7 +17,9 @@
 package net.fabricmc.fabric.impl.tool.attribute;
 
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -26,10 +28,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.TypedActionResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManagerImpl {
@@ -42,7 +44,6 @@ public final class ToolManagerImpl {
 	}
 
 	private static class EntryImpl implements Entry {
-		@SuppressWarnings("unchecked")
 		private Tag<Item>[] tags = new Tag[0];
 		private int[] tagLevels = new int[0];
 		private TriState defaultValue = TriState.DEFAULT;
@@ -63,7 +64,6 @@ public final class ToolManagerImpl {
 				}
 			}
 
-			//noinspection unchecked
 			Tag<Item>[] newTags = new Tag[tags.length + 1];
 			int[] newTagLevels = new int[tagLevels.length + 1];
 			System.arraycopy(tags, 0, newTags, 0, tags.length);
@@ -86,35 +86,43 @@ public final class ToolManagerImpl {
 		}
 	}
 
-	private static final Map<Tag<Item>, Event<ToolManager.ToolHandler>> HANDLER_MAP = new HashMap<>();
-	private static final Event<ToolManager.ToolHandler> GENERAL_TOOLS_HANDLER = EventFactory.createArrayBacked(ToolManager.ToolHandler.class, ToolManagerImpl::taggedToolHandlerInvoker);
+	private static final Map<Tag<Item>, Event<ToolHandler>> HANDLER_MAP = new HashMap<>();
+	private static final Event<ToolHandler> GENERAL_TOOLS_HANDLER = EventFactory.createArrayBacked(ToolHandler.class, ToolManagerImpl::taggedToolHandlerInvoker);
 
-	private static final Map<Block, EntryImpl> entries = new HashMap<>();
+	private static final Map<Block, EntryImpl> entries = new IdentityHashMap<>();
 
-	private ToolManagerImpl() {
-	}
-
-	public static Event<ToolManager.ToolHandler> tag(Tag<Item> tag) {
-		for (Map.Entry<Tag<Item>, Event<ToolManager.ToolHandler>> entry : HANDLER_MAP.entrySet()) {
+	/**
+	 * Returns a event for the tag provided, creates a new event if it does not exist.
+	 *
+	 * @param tag the tag provided for the tool
+	 * @return the event callback.
+	 */
+	public static Event<ToolHandler> tag(Tag<Item> tag) {
+		for (Map.Entry<Tag<Item>, Event<ToolHandler>> entry : HANDLER_MAP.entrySet()) {
 			if (entry.getKey().getId().equals(tag.getId())) {
 				return entry.getValue();
 			}
 		}
 
-		HANDLER_MAP.put(tag, EventFactory.createArrayBacked(ToolManager.ToolHandler.class, ToolManagerImpl::taggedToolHandlerInvoker));
+		HANDLER_MAP.put(tag, EventFactory.createArrayBacked(ToolHandler.class, ToolManagerImpl::taggedToolHandlerInvoker));
 		return HANDLER_MAP.get(tag);
 	}
 
-	public static Event<ToolManager.ToolHandler> general() {
+	/**
+	 * Returns a event used for every tag registered.
+	 *
+	 * @return the event callback.
+	 */
+	public static Event<ToolHandler> general() {
 		return GENERAL_TOOLS_HANDLER;
 	}
 
-	private static ToolManager.ToolHandler taggedToolHandlerInvoker(ToolManager.ToolHandler[] toolHandlers) {
-		return new ToolManager.ToolHandler() {
+	private static ToolHandler taggedToolHandlerInvoker(ToolHandler[] toolHandlers) {
+		return new ToolHandler() {
 			@Override
-			public ActionResult isEffectiveOn(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
-				for (ToolManager.ToolHandler toolHandler : toolHandlers) {
-					ActionResult effectiveOn = toolHandler.isEffectiveOn(tag, stack, user, state);
+			public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+				for (ToolHandler toolHandler : toolHandlers) {
+					ActionResult effectiveOn = Objects.requireNonNull(toolHandler.isEffectiveOn(tag, state, stack, user));
 
 					if (effectiveOn != ActionResult.PASS) {
 						return effectiveOn;
@@ -125,11 +133,11 @@ public final class ToolManagerImpl {
 			}
 
 			@Override
-			public Float getMiningSpeedMultiplier(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
-				for (ToolManager.ToolHandler toolHandler : toolHandlers) {
-					Float miningSpeedMultiplier = toolHandler.getMiningSpeedMultiplier(tag, stack, user, state);
+			public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+				for (ToolHandler toolHandler : toolHandlers) {
+					TypedActionResult<Float> miningSpeedMultiplier = Objects.requireNonNull(toolHandler.getMiningSpeedMultiplier(tag, state, stack, user));
 
-					if (miningSpeedMultiplier != null) {
+					if (miningSpeedMultiplier.getResult() != ActionResult.PASS) {
 						return miningSpeedMultiplier;
 					}
 				}
@@ -161,12 +169,12 @@ public final class ToolManagerImpl {
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	public static TriState handleIsEffectiveOn(ItemStack stack, BlockState state, LivingEntity user) {
-		for (Map.Entry<Tag<Item>, Event<ToolManager.ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
+	public static TriState handleIsEffectiveOn(BlockState state, ItemStack stack, LivingEntity user) {
+		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
-				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), stack, user, state);
+				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 				if (effective.isAccepted()) return TriState.TRUE;
-				effective = general().invoker().isEffectiveOn(eventEntry.getKey(), stack, user, state);
+				effective = general().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 				if (effective.isAccepted()) return TriState.TRUE;
 			}
 		}
@@ -180,27 +188,66 @@ public final class ToolManagerImpl {
 		}
 	}
 
-	public static float handleBreakingSpeed(ItemStack stack, BlockState state, LivingEntity user) {
+	public static float handleBreakingSpeed(BlockState state, ItemStack stack, LivingEntity user) {
 		float breakingSpeed = 1f;
 
-		for (Map.Entry<Tag<Item>, Event<ToolManager.ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
+		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
-				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), stack, user, state);
+				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 
 				if (effective.isAccepted()) {
-					Float speedMultiplier = eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
-					if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
+					TypedActionResult<Float> speedMultiplier = eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user);
+
+					if (speedMultiplier.getResult().isAccepted() && speedMultiplier.getValue() > breakingSpeed) {
+						breakingSpeed = speedMultiplier.getValue();
+					}
 				}
 
-				effective = general().invoker().isEffectiveOn(eventEntry.getKey(), stack, user, state);
+				effective = general().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 
 				if (effective.isAccepted()) {
-					Float speedMultiplier = general().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), stack, user, state);
-					if (speedMultiplier != null && speedMultiplier > breakingSpeed) breakingSpeed = speedMultiplier;
+					TypedActionResult<Float> speedMultiplier = general().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user);
+
+					if (speedMultiplier.getResult().isAccepted() && speedMultiplier.getValue() > breakingSpeed) {
+						breakingSpeed = speedMultiplier.getValue();
+					}
 				}
 			}
 		}
 
 		return breakingSpeed;
+	}
+
+	/**
+	 * The handler to handle tool speed and effectiveness.
+	 *
+	 * @see net.fabricmc.fabric.impl.tool.attribute.ToolHandlers for default handlers.
+	 */
+	public interface ToolHandler {
+		/**
+		 * Determines whether this handler is active and effective of the tools.
+		 *
+		 * @param tag   the tag involved
+		 * @param state the block state to break
+		 * @param stack the item stack breaking the block
+		 * @param user  the user involved in breaking the block, null if not applicable.
+		 * @return the result of effectiveness
+		 */
+		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			return ActionResult.PASS;
+		}
+
+		/**
+		 * Determines the mining speed multiplier of the tools.
+		 *
+		 * @param tag   the tag involved
+		 * @param state the block state to break
+		 * @param stack the item stack breaking the block
+		 * @param user  the user involved in breaking the block, null if not applicable.
+		 * @return the result of mining speed.
+		 */
+		default TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			return null;
+		}
 	}
 }

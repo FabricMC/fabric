@@ -4,26 +4,20 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.AxeItem;
-import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ShearsItem;
-import net.minecraft.item.ShovelItem;
-import net.minecraft.item.SwordItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
-import net.minecraft.item.ToolMaterials;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.TypedActionResult;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 import net.fabricmc.fabric.mixin.tool.attribute.MiningToolItemAccessor;
 import net.fabricmc.fabric.mixin.tool.attribute.ToolItemAccessor;
 
@@ -33,82 +27,50 @@ import net.fabricmc.fabric.mixin.tool.attribute.ToolItemAccessor;
 public class ToolHandlers implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ToolManager.general().register(new ModdedToolsModdedBlocksToolHandler());
-		ToolManager.general().register(new VanillaToolsModdedBlocksToolHandler());
-		ToolManager.general().register(new VanillaToolsVanillaBlocksToolHandler());
-		ToolManager.tag(FabricToolTags.PICKAXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.general().register(new ModdedToolsModdedBlocksToolHandler());
+		ToolManagerImpl.general().register(new VanillaToolsModdedBlocksToolHandler());
+		ToolManagerImpl.general().register(new VanillaToolsVanillaBlocksToolHandler());
+		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
 				ImmutableList.of(
-						createPickaxe(ToolMaterials.WOOD),
-						createPickaxe(ToolMaterials.STONE),
-						createPickaxe(ToolMaterials.IRON),
-						createPickaxe(ToolMaterials.DIAMOND)
+						Items.WOODEN_PICKAXE,
+						Items.STONE_PICKAXE,
+						Items.IRON_PICKAXE,
+						Items.DIAMOND_PICKAXE
 				)
 		));
-		ToolManager.tag(FabricToolTags.AXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.AXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
 				ImmutableList.of(
-						createAxe(ToolMaterials.WOOD),
-						createAxe(ToolMaterials.STONE),
-						createAxe(ToolMaterials.IRON),
-						createAxe(ToolMaterials.DIAMOND)
+						Items.WOODEN_AXE,
+						Items.STONE_AXE,
+						Items.IRON_AXE,
+						Items.DIAMOND_AXE
 				)
 		));
-		ToolManager.tag(FabricToolTags.SHOVELS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
 				ImmutableList.of(
-						createShovel(ToolMaterials.WOOD),
-						createShovel(ToolMaterials.STONE),
-						createShovel(ToolMaterials.IRON),
-						createShovel(ToolMaterials.DIAMOND)
+						Items.WOODEN_SHOVEL,
+						Items.STONE_SHOVEL,
+						Items.IRON_SHOVEL,
+						Items.DIAMOND_SHOVEL
 				)
 		));
-		ToolManager.tag(FabricToolTags.HOES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.HOES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
 				ImmutableList.of(
-						createHoe(ToolMaterials.WOOD),
-						createHoe(ToolMaterials.STONE),
-						createHoe(ToolMaterials.IRON),
-						createHoe(ToolMaterials.DIAMOND)
+						Items.WOODEN_HOE,
+						Items.STONE_HOE,
+						Items.IRON_HOE,
+						Items.DIAMOND_HOE
 				)
 		));
-		ToolManager.tag(FabricToolTags.SWORDS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
 				ImmutableList.of(
-						createSword(ToolMaterials.WOOD),
-						createSword(ToolMaterials.STONE),
-						createSword(ToolMaterials.IRON),
-						createSword(ToolMaterials.DIAMOND)
+						Items.WOODEN_SWORD,
+						Items.STONE_SWORD,
+						Items.IRON_SWORD,
+						Items.DIAMOND_SWORD
 				)
 		));
-		ToolManager.tag(FabricToolTags.SHEARS).register(new ShearsVanillaBlocksToolHandler());
-	}
-
-	private ToolItem createPickaxe(ToolMaterial material) {
-		return new DummyPickaxeItem(material, 1, -2.8F, new Item.Settings());
-	}
-
-	private ToolItem createAxe(ToolMaterial material) {
-		return new DummyAxeItem(material, 6.0F, -3.2F, new Item.Settings());
-	}
-
-	private ToolItem createShovel(ToolMaterial material) {
-		return new ShovelItem(material, 1.5F, -3.0F, new Item.Settings());
-	}
-
-	private ToolItem createHoe(ToolMaterial material) {
-		return new HoeItem(material, -2.0F, new Item.Settings());
-	}
-
-	private ToolItem createSword(ToolMaterial material) {
-		return new SwordItem(material, 3, -2.4F, new Item.Settings());
-	}
-
-	private static class DummyPickaxeItem extends PickaxeItem {
-		private DummyPickaxeItem(ToolMaterial material, int attackDamage, float attackSpeed, Settings settings) {
-			super(material, attackDamage, attackSpeed, settings);
-		}
-	}
-
-	private static class DummyAxeItem extends AxeItem {
-		private DummyAxeItem(ToolMaterial material, float attackDamage, float attackSpeed, Settings settings) {
-			super(material, attackDamage, attackSpeed, settings);
-		}
+		ToolManagerImpl.tag(FabricToolTags.SHEARS).register(new ShearsVanillaBlocksToolHandler());
 	}
 
 	/**
@@ -117,9 +79,9 @@ public class ToolHandlers implements ModInitializer {
 	 *
 	 * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
 	 */
-	private static class ModdedToolsModdedBlocksToolHandler implements ToolManager.ToolHandler {
+	private static class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 		@Override
-		public ActionResult isEffectiveOn(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (stack.getItem() instanceof DynamicAttributeTool) {
 				ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
@@ -137,13 +99,13 @@ public class ToolHandlers implements ModInitializer {
 		}
 
 		@Override
-		public Float getMiningSpeedMultiplier(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (stack.getItem() instanceof DynamicAttributeTool) {
 				float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
-				if (multiplier != 1f) return multiplier;
+				if (multiplier != 1f) return TypedActionResult.success(multiplier);
 			}
 
-			return null;
+			return TypedActionResult.pass(1f);
 		}
 	}
 
@@ -153,9 +115,9 @@ public class ToolHandlers implements ModInitializer {
 	 *
 	 * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
 	 */
-	private static class VanillaToolsModdedBlocksToolHandler implements ToolManager.ToolHandler {
+	private static class VanillaToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 		@Override
-		public ActionResult isEffectiveOn(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
@@ -173,13 +135,13 @@ public class ToolHandlers implements ModInitializer {
 		}
 
 		@Override
-		public Float getMiningSpeedMultiplier(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				float multiplier = stack.getItem().getMiningSpeed(stack, state);
-				if (multiplier != 1f) return multiplier;
+				if (multiplier != 1f) return TypedActionResult.success(multiplier);
 			}
 
-			return null;
+			return TypedActionResult.pass(1f);
 		}
 	}
 
@@ -189,23 +151,23 @@ public class ToolHandlers implements ModInitializer {
 	 *
 	 * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
 	 */
-	private static class VanillaToolsVanillaBlocksToolHandler implements ToolManager.ToolHandler {
+	private static class VanillaToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 		@Override
-		public ActionResult isEffectiveOn(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			return !(stack.getItem() instanceof DynamicAttributeTool) && (stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1f) ? ActionResult.SUCCESS : ActionResult.PASS;
 		}
 
 		@Override
-		public Float getMiningSpeedMultiplier(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				float miningSpeed = stack.getItem().getMiningSpeed(stack, state);
 
 				if (miningSpeed != 1f) {
-					return miningSpeed;
+					return TypedActionResult.success(miningSpeed);
 				}
 			}
 
-			return null;
+			return TypedActionResult.pass(1f);
 		}
 	}
 
@@ -216,31 +178,41 @@ public class ToolHandlers implements ModInitializer {
 	 *
 	 * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
 	 */
-	private static class ModdedMiningToolsVanillaBlocksToolHandler implements ToolManager.ToolHandler {
+	private static class ModdedMiningToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 		private final FakeAdaptableToolMaterial fakeMaterial = new FakeAdaptableToolMaterial();
-		private final ImmutableList<ToolItem> vanillaItems;
+		private final ImmutableList<Item> vanillaItems;
 
-		private ModdedMiningToolsVanillaBlocksToolHandler(ImmutableList<ToolItem> vanillaItems) {
+		private ModdedMiningToolsVanillaBlocksToolHandler(ImmutableList<Item> vanillaItems) {
 			this.vanillaItems = vanillaItems;
 		}
 
 		private ToolItem getVanillaItem(int miningLevel) {
-			if (miningLevel < 0) return vanillaItems.get(0);
-			if (miningLevel >= vanillaItems.size()) return vanillaItems.get(vanillaItems.size() - 1);
-			return vanillaItems.get(miningLevel);
+			if (miningLevel < 0) return (ToolItem) vanillaItems.get(0);
+			if (miningLevel >= vanillaItems.size()) return (ToolItem) vanillaItems.get(vanillaItems.size() - 1);
+			return (ToolItem) vanillaItems.get(miningLevel);
 		}
 
 		@Override
-		public ActionResult isEffectiveOn(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (stack.getItem() instanceof DynamicAttributeTool) {
+				// Gets the mining level from our modded tool
 				int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
 				if (miningLevel < 0) return ActionResult.PASS;
+
 				ToolItem vanillaItem = getVanillaItem(miningLevel);
-				ToolMaterial tempMaterial = vanillaItem.getMaterial();
-				fakeMaterial.miningLevel = miningLevel;
-				((ToolItemAccessor) vanillaItem).setMaterial(fakeMaterial);
-				boolean effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f;
-				((ToolItemAccessor) vanillaItem).setMaterial(tempMaterial);
+				boolean effective;
+
+				// Fake the vanilla items' mining level if needed
+				if (vanillaItem.getMaterial().getMiningLevel() != miningLevel) {
+					ToolMaterial tempMaterial = vanillaItem.getMaterial();
+					fakeMaterial.miningLevel = miningLevel;
+					((ToolItemAccessor) vanillaItem).setMaterial(fakeMaterial);
+					effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f;
+					((ToolItemAccessor) vanillaItem).setMaterial(tempMaterial);
+				} else {
+					effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f;
+				}
+
 				return effective ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 
@@ -248,19 +220,30 @@ public class ToolHandlers implements ModInitializer {
 		}
 
 		@Override
-		public Float getMiningSpeedMultiplier(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (stack.getItem() instanceof DynamicAttributeTool) {
+				// Gets the mining level from our modded tool
 				int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
 				if (miningLevel < 0) return null;
-				Item vanillaItem = getVanillaItem(miningLevel);
-				float tempMiningSpeed = ((MiningToolItemAccessor) vanillaItem).getMiningSpeed();
-				((MiningToolItemAccessor) vanillaItem).setMiningSpeed(((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user));
-				float miningSpeed = vanillaItem.getMiningSpeed(stack, state);
-				((MiningToolItemAccessor) vanillaItem).setMiningSpeed(tempMiningSpeed);
-				return miningSpeed != 1f ? miningSpeed : null;
+
+				float moddedToolSpeed = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
+				ToolItem vanillaItem = getVanillaItem(miningLevel);
+				float miningSpeed;
+
+				// Fake the vanilla items' mining speed if needed
+				if (((MiningToolItemAccessor) vanillaItem).getMiningSpeed() != moddedToolSpeed) {
+					float tempMiningSpeed = ((MiningToolItemAccessor) vanillaItem).getMiningSpeed();
+					((MiningToolItemAccessor) vanillaItem).setMiningSpeed(moddedToolSpeed);
+					miningSpeed = vanillaItem.getMiningSpeed(stack, state);
+					((MiningToolItemAccessor) vanillaItem).setMiningSpeed(tempMiningSpeed);
+				} else {
+					miningSpeed = vanillaItem.getMiningSpeed(stack, state);
+				}
+
+				return miningSpeed != 1f ? TypedActionResult.success(miningSpeed) : TypedActionResult.pass(1f);
 			}
 
-			return null;
+			return TypedActionResult.pass(1f);
 		}
 	}
 
@@ -272,11 +255,11 @@ public class ToolHandlers implements ModInitializer {
 	 * <p>Only applicable to items that are not a subclass of {@link DynamicAttributeTool}</p>
 	 * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
 	 */
-	private static class ShearsVanillaBlocksToolHandler implements ToolManager.ToolHandler {
+	private static class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 		private final Item vanillaItem = Items.SHEARS;
 
 		@Override
-		public ActionResult isEffectiveOn(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
+		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				if (!(stack.getItem() instanceof ShearsItem)) {
 					return vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f ? ActionResult.SUCCESS : ActionResult.PASS;
@@ -289,8 +272,8 @@ public class ToolHandlers implements ModInitializer {
 		}
 
 		@Override
-		public Float getMiningSpeedMultiplier(Tag<Item> tag, ItemStack stack, LivingEntity user, BlockState state) {
-			Float speed = null;
+		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			float speed = 1f;
 
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				if (!(stack.getItem() instanceof ShearsItem)) {
@@ -300,7 +283,7 @@ public class ToolHandlers implements ModInitializer {
 				}
 			}
 
-			return speed != 1f ? speed : null;
+			return speed != 1f ? TypedActionResult.success(speed) : TypedActionResult.pass(1f);
 		}
 	}
 
