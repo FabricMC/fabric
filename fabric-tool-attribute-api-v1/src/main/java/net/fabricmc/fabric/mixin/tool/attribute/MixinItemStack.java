@@ -32,7 +32,6 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
-import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tool.attribute.AttributeManager;
 
 @Mixin(ItemStack.class)
@@ -42,9 +41,7 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		TriState triState = ToolManager.handleIsEffectiveOn(state, (ItemStack) (Object) this, null);
-
-		info.setReturnValue(triState.get());
+		info.setReturnValue(ToolManager.handleIsEffectiveOn(state, (ItemStack) (Object) this, null).get());
 	}
 
 	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
