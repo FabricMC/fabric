@@ -8,7 +8,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
@@ -19,7 +18,6 @@ import net.minecraft.util.TypedActionResult;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.fabric.mixin.tool.attribute.MiningToolItemAccessor;
 
 /**
  * Entrypoint to register the default tool handlers.
@@ -132,7 +130,7 @@ public class ToolHandlers implements ModInitializer {
 		@Override
 		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
-				float multiplier = stack.getItem() instanceof MiningToolItem ? ((MiningToolItemAccessor) stack.getItem()).getMiningSpeed() : stack.getItem().getMiningSpeed(stack, state);
+				float multiplier = stack.getItem() instanceof ToolItem ? ((ToolItem) stack.getItem()).getMaterial().getMiningSpeed() : stack.getItem().getMiningSpeed(stack, state);
 				if (multiplier != 1f) return TypedActionResult.success(multiplier);
 			}
 
