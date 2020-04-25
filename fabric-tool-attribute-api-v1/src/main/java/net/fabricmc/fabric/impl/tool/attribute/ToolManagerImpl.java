@@ -32,6 +32,7 @@ import net.minecraft.util.TypedActionResult;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManagerImpl {
@@ -87,9 +88,9 @@ public final class ToolManagerImpl {
 	}
 
 	private static final Map<Tag<Item>, Event<ToolHandler>> HANDLER_MAP = new HashMap<>();
-	private static final Event<ToolHandler> GENERAL_TOOLS_HANDLER = EventFactory.createArrayBacked(ToolHandler.class, ToolManagerImpl::taggedToolHandlerInvoker);
+	private static final Event<ToolHandler> GENERAL_TOOLS_HANDLER = EventFactory.createArrayBacked(ToolHandler.class, ToolManagerImpl::toolHandlerInvoker);
 
-	private static final Map<Block, EntryImpl> entries = new IdentityHashMap<>();
+	private static final Map<Block, EntryImpl> ENTRIES = new IdentityHashMap<>();
 
 	/**
 	 * Returns a event for the tag provided, creates a new event if it does not exist.
@@ -104,7 +105,7 @@ public final class ToolManagerImpl {
 			}
 		}
 
-		HANDLER_MAP.put(tag, EventFactory.createArrayBacked(ToolHandler.class, ToolManagerImpl::taggedToolHandlerInvoker));
+		HANDLER_MAP.put(tag, EventFactory.createArrayBacked(ToolHandler.class, ToolManagerImpl::toolHandlerInvoker));
 		return HANDLER_MAP.get(tag);
 	}
 
@@ -117,7 +118,7 @@ public final class ToolManagerImpl {
 		return GENERAL_TOOLS_HANDLER;
 	}
 
-	private static ToolHandler taggedToolHandlerInvoker(ToolHandler[] toolHandlers) {
+	private static ToolHandler toolHandlerInvoker(ToolHandler[] toolHandlers) {
 		return new ToolHandler() {
 			@Override
 			public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
@@ -142,17 +143,17 @@ public final class ToolManagerImpl {
 					}
 				}
 
-				return null;
+				return TypedActionResult.pass(1f);
 			}
 		};
 	}
 
 	public static Entry entry(Block block) {
-		return entries.computeIfAbsent(block, (bb) -> new EntryImpl());
+		return ENTRIES.computeIfAbsent(block, (bb) -> new EntryImpl());
 	}
 
 	public static Entry entryNullable(Block block) {
-		return entries.get(block);
+		return ENTRIES.get(block);
 	}
 
 	@Deprecated
@@ -189,30 +190,49 @@ public final class ToolManagerImpl {
 	}
 
 	public static float handleBreakingSpeed(BlockState state, ItemStack stack, LivingEntity user) {
-		float breakingSpeed = 1f;
+		float breakingSpeed = 0f;
+		Tag<Item> handledTag = null;
+		boolean handled = false;
 
 		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
 				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 
 				if (effective.isAccepted()) {
-					TypedActionResult<Float> speedMultiplier = eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user);
+					TypedActionResult<Float> speedMultiplier = Objects.requireNonNull(eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user));
 
-					if (speedMultiplier.getResult().isAccepted() && speedMultiplier.getValue() > breakingSpeed) {
-						breakingSpeed = speedMultiplier.getValue();
+					if (speedMultiplier.getResult().isAccepted()) {
+						handled = true;
+
+						if (speedMultiplier.getValue() > breakingSpeed) {
+							breakingSpeed = speedMultiplier.getValue();
+							handledTag = eventEntry.getKey();
+						}
 					}
 				}
 
 				effective = general().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 
 				if (effective.isAccepted()) {
-					TypedActionResult<Float> speedMultiplier = general().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user);
+					TypedActionResult<Float> speedMultiplier = Objects.requireNonNull(general().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user));
 
-					if (speedMultiplier.getResult().isAccepted() && speedMultiplier.getValue() > breakingSpeed) {
-						breakingSpeed = speedMultiplier.getValue();
+					if (speedMultiplier.getResult().isAccepted()) {
+						handled = true;
+
+						if (speedMultiplier.getValue() > breakingSpeed) {
+							breakingSpeed = speedMultiplier.getValue();
+							handledTag = eventEntry.getKey();
+						}
 					}
 				}
 			}
+		}
+
+		// Give it a default speed if it is not handled.
+		breakingSpeed = handled ? breakingSpeed : 1f;
+
+		if (stack.getItem() instanceof DynamicAttributeTool) {
+			breakingSpeed = ((DynamicAttributeTool) stack.getItem()).postProcessMiningSpeed(handledTag, state, stack, user, breakingSpeed, handled);
 		}
 
 		return breakingSpeed;

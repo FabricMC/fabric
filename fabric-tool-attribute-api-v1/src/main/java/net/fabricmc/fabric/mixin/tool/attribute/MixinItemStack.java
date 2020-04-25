@@ -44,21 +44,12 @@ public abstract class MixinItemStack {
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		TriState triState = ToolManager.handleIsEffectiveOn(state, (ItemStack) (Object) this, null);
 
-		if (triState != TriState.DEFAULT) {
-			info.setReturnValue(triState.get());
-			info.cancel();
-		}
+		info.setReturnValue(triState.get());
 	}
 
 	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-		TriState triState = ToolManager.handleIsEffectiveOn(state, (ItemStack) (Object) this, null);
-
-		if (triState == TriState.TRUE) {
-			info.setReturnValue(ToolManager.handleBreakingSpeed(state, (ItemStack) (Object) this, null));
-		} else if (triState == TriState.FALSE) {
-			info.setReturnValue(1f);
-		}
+		info.setReturnValue(ToolManager.handleBreakingSpeed(state, (ItemStack) (Object) this, null));
 	}
 
 	@Inject(at = @At("RETURN"), method = "getAttributeModifiers", cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)

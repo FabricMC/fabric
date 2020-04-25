@@ -7,6 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
@@ -88,9 +89,7 @@ public class ToolHandlers implements ModInitializer {
 					int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
 					int requiredMiningLevel = entry.getMiningLevel(tag);
 
-					if (requiredMiningLevel >= 0 && miningLevel >= requiredMiningLevel) {
-						return ActionResult.SUCCESS;
-					}
+					return requiredMiningLevel >= 0 && miningLevel >= 0 && miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
 				}
 			}
 
@@ -121,12 +120,9 @@ public class ToolHandlers implements ModInitializer {
 				ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 				if (entry != null) {
-					int miningLevel = stack.getItem() instanceof ToolItem ? ((ToolItem) stack.getItem()).getMaterial().getMiningLevel() : 0;
+					int miningLevel = stack.getItem() instanceof ToolItem ? ((ToolItem) stack.getItem()).getMaterial().getMiningLevel() : -1;
 					int requiredMiningLevel = entry.getMiningLevel(tag);
-
-					if (requiredMiningLevel >= 0 && miningLevel >= requiredMiningLevel) {
-						return ActionResult.SUCCESS;
-					}
+					return requiredMiningLevel >= 0 && miningLevel >= 0 && miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
 				}
 			}
 
@@ -136,7 +132,7 @@ public class ToolHandlers implements ModInitializer {
 		@Override
 		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
-				float multiplier = stack.getItem().getMiningSpeed(stack, state);
+				float multiplier = stack.getItem() instanceof MiningToolItem ? ((MiningToolItemAccessor) stack.getItem()).getMiningSpeed() : stack.getItem().getMiningSpeed(stack, state);
 				if (multiplier != 1f) return TypedActionResult.success(multiplier);
 			}
 

@@ -36,8 +36,8 @@ public interface DynamicAttributeTool {
 	/**
 	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
 	 *
-	 * @param stack The stack to check on.
-	 * @param user  The current user of the tool, or null if there isn't any.
+	 * @param stack The stack mining the block
+	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
@@ -51,9 +51,9 @@ public interface DynamicAttributeTool {
 	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
 	 *
 	 * @param tag   The tool tag the item stack is being compared to
-	 * @param state The block to mine.
-	 * @param stack The stack to check on.
-	 * @param user  The current user of the tool, or null if there isn't any.
+	 * @param state The block to mine
+	 * @param stack The stack mining the block
+	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
 	// nullable on user once we have an official @Nullable annotation in
@@ -64,8 +64,8 @@ public interface DynamicAttributeTool {
 	/**
 	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
 	 *
-	 * @param stack The stack to check on.
-	 * @param user  The current user of the tool, or null if there isn't any.
+	 * @param stack The stack mining the block
+	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
@@ -79,14 +79,29 @@ public interface DynamicAttributeTool {
 	 * Determines the mining speed multiplier of the passed stack, which is one factor in overall mining speed.
 	 *
 	 * @param tag   The tool tag the item stack is being compared to
-	 * @param state The block to mine.
-	 * @param stack The stack to check on.
-	 * @param user  The current user of the tool, or null if there isn't any.
+	 * @param state The block to mine
+	 * @param stack The stack mining the block
+	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
 	// nullable on user once we have an official @Nullable annotation in
 	default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		return getMiningSpeedMultiplier(stack, user);
+	}
+
+	/**
+	 * Post process the mining speed.
+	 *
+	 * @param tag          The tool tag the item stack is handled by
+	 * @param state        The block to mine
+	 * @param stack        The stack mining the block
+	 * @param user         The current user of the tool, or null if there isn't any
+	 * @param currentSpeed The mining speed before post process
+	 * @param isEffective  whether the tool has been handled
+	 * @return the speed after post processing
+	 */
+	default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
+		return currentSpeed;
 	}
 
 	/**
