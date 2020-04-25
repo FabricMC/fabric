@@ -1,6 +1,7 @@
 package net.fabricmc.fabric.impl.tool.attribute;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
+import java.util.List;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -11,7 +12,6 @@ import net.minecraft.item.MiningToolItem;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.item.ToolItem;
 import net.minecraft.item.ToolMaterial;
-import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
@@ -31,7 +31,7 @@ public class ToolHandlers implements ModInitializer {
 		ToolManagerImpl.general().register(new VanillaToolsModdedBlocksToolHandler());
 		ToolManagerImpl.general().register(new VanillaToolsVanillaBlocksToolHandler());
 		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
-				ImmutableList.of(
+				Arrays.asList(
 						Items.WOODEN_PICKAXE,
 						Items.STONE_PICKAXE,
 						Items.IRON_PICKAXE,
@@ -39,7 +39,7 @@ public class ToolHandlers implements ModInitializer {
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.AXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
-				ImmutableList.of(
+				Arrays.asList(
 						Items.WOODEN_AXE,
 						Items.STONE_AXE,
 						Items.IRON_AXE,
@@ -47,7 +47,7 @@ public class ToolHandlers implements ModInitializer {
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
-				ImmutableList.of(
+				Arrays.asList(
 						Items.WOODEN_SHOVEL,
 						Items.STONE_SHOVEL,
 						Items.IRON_SHOVEL,
@@ -55,7 +55,7 @@ public class ToolHandlers implements ModInitializer {
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.HOES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
-				ImmutableList.of(
+				Arrays.asList(
 						Items.WOODEN_HOE,
 						Items.STONE_HOE,
 						Items.IRON_HOE,
@@ -63,7 +63,7 @@ public class ToolHandlers implements ModInitializer {
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
-				ImmutableList.of(
+				Arrays.asList(
 						Items.WOODEN_SWORD,
 						Items.STONE_SWORD,
 						Items.IRON_SWORD,
@@ -182,10 +182,9 @@ public class ToolHandlers implements ModInitializer {
 	 * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
 	 */
 	private static class ModdedMiningToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
-		private final FakeAdaptableToolMaterial fakeMaterial = new FakeAdaptableToolMaterial();
-		private final ImmutableList<Item> vanillaItems;
+		private final List<Item> vanillaItems;
 
-		private ModdedMiningToolsVanillaBlocksToolHandler(ImmutableList<Item> vanillaItems) {
+		private ModdedMiningToolsVanillaBlocksToolHandler(List<Item> vanillaItems) {
 			this.vanillaItems = vanillaItems;
 		}
 
@@ -223,20 +222,21 @@ public class ToolHandlers implements ModInitializer {
 				if (miningLevel < 0) return null;
 
 				float moddedToolSpeed = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
-				ToolItem vanillaItem = getVanillaItem(miningLevel);
-				float miningSpeed;
+				ToolItem firstVanillaItem = getVanillaItem(miningLevel);
+				ToolItem secondVanillaItem = getVanillaItem(miningLevel + 1 >= vanillaItems.size() ? vanillaItems.size() - 2 : miningLevel + 1);
 
-				// Fake the vanilla items' mining speed if needed
-				if (((MiningToolItemAccessor) vanillaItem).getMiningSpeed() != moddedToolSpeed) {
-					float tempMiningSpeed = ((MiningToolItemAccessor) vanillaItem).getMiningSpeed();
-					((MiningToolItemAccessor) vanillaItem).setMiningSpeed(moddedToolSpeed);
-					miningSpeed = vanillaItem.getMiningSpeed(stack, state);
-					((MiningToolItemAccessor) vanillaItem).setMiningSpeed(tempMiningSpeed);
-				} else {
-					miningSpeed = vanillaItem.getMiningSpeed(stack, state);
+				float firstSpeed = firstVanillaItem.getMiningSpeed(new ItemStack(firstVanillaItem, 1), state);
+				float secondSpeed = secondVanillaItem.getMiningSpeed(new ItemStack(secondVanillaItem, 1), state);
+				boolean hasForcedSpeed = firstSpeed == secondSpeed && firstSpeed >= 1f;
+
+				// Has forced speed, which as actions like swords breaking cobwebs.
+				if (hasForcedSpeed) {
+					return secondSpeed != 1f ? TypedActionResult.success(secondSpeed) : TypedActionResult.pass(1f);
 				}
 
-				return miningSpeed != 1f ? TypedActionResult.success(miningSpeed) : TypedActionResult.pass(1f);
+				// We adjust the mining speed according to the ratio for the closest tool.
+				float adjustedMiningSpeed = firstSpeed / firstVanillaItem.getMaterial().getMiningSpeed() * moddedToolSpeed;
+				return adjustedMiningSpeed != 1f ? TypedActionResult.success(adjustedMiningSpeed) : TypedActionResult.pass(1f);
 			}
 
 			return TypedActionResult.pass(1f);
@@ -285,43 +285,6 @@ public class ToolHandlers implements ModInitializer {
 			}
 
 			return speed != 1f ? TypedActionResult.success(speed) : TypedActionResult.pass(1f);
-		}
-	}
-
-	/**
-	 * Fake tool material in which their mining level can be modified.
-	 */
-	private static class FakeAdaptableToolMaterial implements ToolMaterial {
-		private int miningLevel = 0;
-
-		@Override
-		public int getDurability() {
-			return 0;
-		}
-
-		@Override
-		public float getMiningSpeed() {
-			return 0;
-		}
-
-		@Override
-		public float getAttackDamage() {
-			return 0;
-		}
-
-		@Override
-		public int getMiningLevel() {
-			return miningLevel;
-		}
-
-		@Override
-		public int getEnchantability() {
-			return 0;
-		}
-
-		@Override
-		public Ingredient getRepairIngredient() {
-			return Ingredient.EMPTY;
 		}
 	}
 }
