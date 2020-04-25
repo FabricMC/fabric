@@ -9,6 +9,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * API facing part to register tool handlers and get information about how tools are handled.
+ * Implement {@link DynamicAttributeTool} to change the mining level or speed of your tool.
  */
 public final class ToolManager {
 	/**

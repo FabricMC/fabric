@@ -19,7 +19,6 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 import net.fabricmc.fabric.mixin.tool.attribute.MiningToolItemAccessor;
-import net.fabricmc.fabric.mixin.tool.attribute.ToolItemAccessor;
 
 /**
  * Entrypoint to register the default tool handlers.
@@ -154,7 +153,15 @@ public class ToolHandlers implements ModInitializer {
 	private static class VanillaToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 		@Override
 		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-			return !(stack.getItem() instanceof DynamicAttributeTool) && (stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1f) ? ActionResult.SUCCESS : ActionResult.PASS;
+			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
+				ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
+
+				if (entry == null) {
+					return stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1f ? ActionResult.SUCCESS : ActionResult.PASS;
+				}
+			}
+
+			return ActionResult.PASS;
 		}
 
 		@Override
@@ -195,24 +202,17 @@ public class ToolHandlers implements ModInitializer {
 		@Override
 		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (stack.getItem() instanceof DynamicAttributeTool) {
+				if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
+					// Block is a modded block, and we should ignore it
+					return ActionResult.PASS;
+				}
+
 				// Gets the mining level from our modded tool
 				int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
 				if (miningLevel < 0) return ActionResult.PASS;
 
 				ToolItem vanillaItem = getVanillaItem(miningLevel);
-				boolean effective;
-
-				// Fake the vanilla items' mining level if needed
-				if (vanillaItem.getMaterial().getMiningLevel() != miningLevel) {
-					ToolMaterial tempMaterial = vanillaItem.getMaterial();
-					fakeMaterial.miningLevel = miningLevel;
-					((ToolItemAccessor) vanillaItem).setMaterial(fakeMaterial);
-					effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f;
-					((ToolItemAccessor) vanillaItem).setMaterial(tempMaterial);
-				} else {
-					effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f;
-				}
-
+				boolean effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f;
 				return effective ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 
@@ -260,6 +260,11 @@ public class ToolHandlers implements ModInitializer {
 
 		@Override
 		public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
+				// Block is a modded block, and we should ignore it
+				return ActionResult.PASS;
+			}
+
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				if (!(stack.getItem() instanceof ShearsItem)) {
 					return vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f ? ActionResult.SUCCESS : ActionResult.PASS;
