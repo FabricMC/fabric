@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 @Mixin(Entity.class)
 public abstract class MixinEntity {
 	// Inject right before the direction vector is retrieved by the game
-	@Inject(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
+	@Inject(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastNetherPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
 	private void onGetPortal(DimensionType dimension, CallbackInfoReturnable<Entity> cir) {
 		FabricDimensionInternals.prepareDimensionalTeleportation((Entity) (Object) this);
 	}

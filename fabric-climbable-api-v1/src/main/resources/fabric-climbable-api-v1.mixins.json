@@ -1,10 +1,9 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.mining.level",
+  "package": "net.fabricmc.fabric.mixin.climbable",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MiningToolItemAccessor",
-    "MixinItemStack"
+    "MixinLivingEntity"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.mining.level;
+package net.fabricmc.fabric.impl.climbable;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.minecraft.block.Block;
+import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
 
-import net.minecraft.item.MiningToolItem;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 
-@Mixin(MiningToolItem.class)
-public interface MiningToolItemAccessor {
-	@Accessor
-	float getMiningSpeed();
+public class FabricClimbableImpl {
+	public static final Tag<Block> CLIMBABLE = TagRegistry.block(new Identifier("minecraft", "climbable"));
+
+	private FabricClimbableImpl() {
+	}
 }
