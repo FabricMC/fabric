@@ -28,7 +28,7 @@ import net.minecraft.server.dedicated.ServerPropertiesLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorType;
+import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorTypeImpl;
 import net.fabricmc.fabric.impl.level.generator.FabricLevelTypeProvider;
 
 @Mixin(MinecraftDedicatedServer.class)
@@ -51,9 +51,8 @@ public final class MixinMinecraftDedicatedServer {
 
 		if (fabricLevelType != null) {
 			// Give ability to skip namespace if mods levelGenerators don't have same name
-			// If they do, first one will be used
 			if (fabricLevelType.getNamespace().equals("minecraft")) {
-				levelGeneratorType = FabricLevelGeneratorType.getTypeFromPath(fabricLevelType.getPath());
+				levelGeneratorType = FabricLevelGeneratorTypeImpl.getTypeFromPath(fabricLevelType.getPath());
 			} else {
 				levelGeneratorType = LevelGeneratorType.getTypeFromName(fabricLevelType.toString());
 			}

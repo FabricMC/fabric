@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-level-generators-v1"
 version = getSubprojectVersion(project, "0.1.0")
 
+minecraft {
+	accessWidener = file("src/main/resources/fabric-level-generators-v1.accesswidener")
+}
+
 dependencies {
 	compile project(path: ':fabric-api-base', configuration: 'dev')
 }

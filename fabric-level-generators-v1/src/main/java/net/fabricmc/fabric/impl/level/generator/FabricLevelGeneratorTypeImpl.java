@@ -18,28 +18,14 @@ package net.fabricmc.fabric.impl.level.generator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.function.Function;
 
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.source.BiomeSource;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.world.level.LevelGeneratorType;
 
+import net.fabricmc.fabric.api.level.generator.v1.FabricLevelGeneratorType;
 import net.fabricmc.fabric.mixin.level.generator.LevelGeneratorTypeAccessor;
 
-public final class FabricLevelGeneratorType {
-	public static final HashMap<LevelGeneratorType, ChunkGeneratorSupplier> SUPPLIERS = new HashMap<>();
-
-	public static LevelGeneratorType create(Identifier name, Identifier storedName, int version, ChunkGeneratorType<?, ? extends ChunkGenerator<?>> generatorType, Function<World, BiomeSource> biomeSource) {
-		LevelGeneratorType levelType = LevelGeneratorTypeAccessor.fabric_create(getFreeId(), name.toString(), storedName.toString(), version);
-		SUPPLIERS.put(levelType, new ChunkGeneratorSupplier(generatorType, biomeSource));
-		return levelType;
-	}
-
-	private static int getFreeId() {
+public final class FabricLevelGeneratorTypeImpl {
+	public static int getFreeId() {
 		for (int id = 0; id < LevelGeneratorType.TYPES.length; id++) {
 			if (LevelGeneratorType.TYPES[id] == null) {
 				return id;
@@ -52,7 +38,7 @@ public final class FabricLevelGeneratorType {
 	}
 
 	public static LevelGeneratorType checkForFabricLevelGeneratorType(LevelGeneratorType levelGeneratorType) {
-		if (SUPPLIERS.get(levelGeneratorType) == null) {
+		if (!(levelGeneratorType instanceof FabricLevelGeneratorType)) {
 			return levelGeneratorType;
 		}
 
@@ -81,23 +67,5 @@ public final class FabricLevelGeneratorType {
 		if (matches.size() != 1) return null;
 
 		return matches.get(0);
-	}
-
-	public static final class ChunkGeneratorSupplier {
-		private ChunkGeneratorType<?, ? extends ChunkGenerator<?>> chunkGeneratorType;
-		private Function<World, BiomeSource> biomeSourceFunction;
-
-		ChunkGeneratorSupplier(ChunkGeneratorType<?, ? extends ChunkGenerator<?>> chunkGeneratorType, Function<World, BiomeSource> biomeSourceFunction) {
-			this.chunkGeneratorType = chunkGeneratorType;
-			this.biomeSourceFunction = biomeSourceFunction;
-		}
-
-		public ChunkGeneratorType<?, ? extends ChunkGenerator<?>> getChunkGeneratorType() {
-			return chunkGeneratorType;
-		}
-
-		public Function<World, BiomeSource> getBiomeSourceFunction() {
-			return biomeSourceFunction;
-		}
 	}
 }

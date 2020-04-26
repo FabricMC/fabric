@@ -19,17 +19,11 @@ package net.fabricmc.fabric.mixin.level.generator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.world.level.LevelGeneratorType;
 
 @Mixin(LevelGeneratorType.class)
 public interface LevelGeneratorTypeAccessor {
-	@Invoker("<init>")
-	static LevelGeneratorType fabric_create(int id, String name, String storedName, int version) {
-		throw new RuntimeException();
-	}
-
 	@Final
 	@Accessor("TYPES")
 	static void setTypes(LevelGeneratorType[] types) {

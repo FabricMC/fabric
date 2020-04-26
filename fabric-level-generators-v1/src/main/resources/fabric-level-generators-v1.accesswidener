@@ -1,0 +1,3 @@
+accessWidener	v1	named
+
+extendable	method	net/minecraft/world/level/LevelGeneratorType	<init>	(ILjava/lang/String;Ljava/lang/String;I)V

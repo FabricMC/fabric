@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.client.network.packet.PlayerRespawnS2CPacket;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorType;
+import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorTypeImpl;
 
 @Mixin(PlayerRespawnS2CPacket.class)
 public class MixinPlayerRespawnS2CPacket {
@@ -33,6 +33,6 @@ public class MixinPlayerRespawnS2CPacket {
 
 	@Redirect(method = "write", at = @At(value = "FIELD", target = "Lnet/minecraft/client/network/packet/PlayerRespawnS2CPacket;generatorType:Lnet/minecraft/world/level/LevelGeneratorType;"))
 	private LevelGeneratorType changeSentLevelGeneratorType(PlayerRespawnS2CPacket playerRespawnS2CPacket) {
-		return FabricLevelGeneratorType.checkForFabricLevelGeneratorType(generatorType);
+		return FabricLevelGeneratorTypeImpl.checkForFabricLevelGeneratorType(generatorType);
 	}
 }

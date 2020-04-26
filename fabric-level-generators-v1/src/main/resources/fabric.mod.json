@@ -9,5 +9,6 @@
   },
   "mixins": [
     "fabric-level-generators-v1.mixins.json"
-  ]
+  ],
+  "accessWidener": "fabric-level-generators-v1.accesswidener"
 }

@@ -10,7 +10,10 @@
     "MixinPlayerRespawnS2CPacket",
     "MixinServerPropertiesHandler"
   ],
-  "client": ["MixinLevelGeneratorType"],
+  "client": [
+    "MixinCreateWorldScreen",
+    "MixinLevelGeneratorType"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
