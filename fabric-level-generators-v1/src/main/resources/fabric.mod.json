@@ -4,7 +4,7 @@
   "version": "${version}",
   "license": "Apache-2.0",
   "depends": {
-    "fabricloader": ">=0.4.0",
+    "fabricloader": ">=0.8.0",
     "fabric-api-base": "*"
   },
   "mixins": [

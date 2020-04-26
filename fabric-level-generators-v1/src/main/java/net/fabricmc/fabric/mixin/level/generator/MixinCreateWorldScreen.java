@@ -42,7 +42,7 @@ public class MixinCreateWorldScreen extends Screen {
 		super(title);
 	}
 
-	@Inject(method = "method_19926", at = @At("RETURN"))
+	@Inject(method = "method_19926", at = @At("HEAD"))
 	void customizeLevelGeneratorType(ButtonWidget buttonWidget, CallbackInfo ci) {
 		LevelGeneratorType levelGeneratorType = LevelGeneratorType.TYPES[generatorType];
 

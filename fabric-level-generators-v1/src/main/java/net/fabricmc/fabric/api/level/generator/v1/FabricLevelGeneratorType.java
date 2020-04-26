@@ -32,14 +32,14 @@ import net.fabricmc.fabric.impl.level.generator.FabricLevelGeneratorTypeImpl;
 
 public abstract class FabricLevelGeneratorType extends LevelGeneratorType {
 	/**
-	 * @param name identifier of the {@link LevelGeneratorType}, must not contain ':'
+	 * @param name identifier of the {@link LevelGeneratorType}
 	 */
 	protected FabricLevelGeneratorType(Identifier name) {
 		super(FabricLevelGeneratorTypeImpl.getFreeId(), name.toString(), name.toString(), 0);
 	}
 
 	/**
-	 * @param name       identifier of the {@link LevelGeneratorType}, must not contain ':'
+	 * @param name       identifier of the {@link LevelGeneratorType}
 	 * @param storedName identifier of the {@link LevelGeneratorType} used to store in the level properties
 	 * @param version    version of {@link LevelGeneratorType} used to store in the level properties and shown in crash reports
 	 */
