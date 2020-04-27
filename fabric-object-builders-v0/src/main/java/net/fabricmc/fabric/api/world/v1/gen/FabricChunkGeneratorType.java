@@ -72,6 +72,7 @@ public final class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T ex
 	 * @param <C>  ChunkGeneratorConfig
 	 * @param <T>  ChunkGenerator
 	 */
+	@FunctionalInterface
 	public interface FabricChunkGeneratorFactory<C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> {
 		T create(World world, BiomeSource source, C config);
 	}
