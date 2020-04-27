@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BlockSettingsHooks",
+    "DefaultAttributeRegistryAccessor",
+    "DefaultAttributeRegistryMixin",
     "MaterialBuilderHooks",
     "MixinBlock",
     "MixinItem"

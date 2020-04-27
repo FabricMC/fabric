@@ -33,6 +33,9 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
  * Extended version of {@link EntityType.Builder} with added registration for
  * server-&gt;client entity tracking values.
  *
+ * <p>For living entities, they must have {@link FabricDefaultAttributeRegistry
+ * default attributes registered} after the entity type is registered.</p>
+ *
  * @param <T> Entity class.
  */
 // TODO more javadocs
