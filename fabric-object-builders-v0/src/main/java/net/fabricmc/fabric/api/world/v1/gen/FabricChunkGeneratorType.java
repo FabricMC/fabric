@@ -27,11 +27,11 @@ import net.minecraft.world.gen.chunk.ChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 
 /**
- * Fabric version of ChunkGeneratorType.
- * Needed as the standard ChunkGeneratorFactory used by ChunkGeneratorType is private.
+ * Wrapper class that allows for {@link ChunkGeneratorType} creation.
+ * The standard {@link ChunkGeneratorType} class constructor requires a {@link net.minecraft.world.gen.chunk.ChunkGeneratorFactory}, which is protected.
  *
- * @param <C> ChunkGenerator config
- * @param <T> ChunkGenerator
+ * @param <C>  config of the {@link ChunkGenerator} stored by this type
+ * @param <T>  {@link ChunkGenerator} stored by this type
  */
 public final class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> extends ChunkGeneratorType<C, T> {
 	private final FabricChunkGeneratorFactory<C, T> factory;
@@ -42,7 +42,7 @@ public final class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T ex
 	}
 
 	/**
-	 * Called to register and create new instance of the ChunkGeneratorType.
+	 * Registers and returns a new instance of {@link ChunkGeneratorType}.
 	 *
 	 * @param id                 registry ID of the ChunkGeneratorType
 	 * @param factory            factory instance to provide a ChunkGenerator
@@ -69,8 +69,8 @@ public final class FabricChunkGeneratorType<C extends ChunkGeneratorConfig, T ex
 	 * Responsible for creating the FabricChunkGeneratorType's ChunkGenerator instance.
 	 * Called when a new instance of a ChunkGenerator is requested in {@link FabricChunkGeneratorType#create(World, BiomeSource, ChunkGeneratorConfig)}.
 	 *
-	 * @param <C> ChunkGeneratorConfig
-	 * @param <T> ChunkGenerator
+	 * @param <C>  ChunkGeneratorConfig
+	 * @param <T>  ChunkGenerator
 	 */
 	public interface FabricChunkGeneratorFactory<C extends ChunkGeneratorConfig, T extends ChunkGenerator<C>> {
 		T create(World world, BiomeSource source, C config);
