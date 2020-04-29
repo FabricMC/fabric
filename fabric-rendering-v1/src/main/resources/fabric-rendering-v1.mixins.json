@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "MixinBlockColorMap",
+    "MixinBuiltinModelItemRenderer",
     "MixinInGameHud",
     "MixinItemColorMap",
     "MixinWorldRenderer"
