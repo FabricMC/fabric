@@ -21,12 +21,48 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
 @Mixin(Block.Settings.class)
-public interface BlockSettingsHooks {
+public interface BlockSettingsAccessor {
+	/* GETTERS */
+	@Accessor
+	Material getMaterial();
+
+	@Accessor
+	float getHardness();
+
+	@Accessor
+	float getResistance();
+
+	@Accessor
+	boolean getCollidable();
+
+	@Accessor
+	boolean getRandomTicks();
+
+	@Accessor
+	int getLuminance();
+
+	@Accessor
+	MaterialColor getMaterialColor();
+
+	@Accessor
+	BlockSoundGroup getSoundGroup();
+
+	@Accessor
+	float getSlipperiness();
+
+	@Accessor
+	boolean getDynamicBounds();
+
+	/* SETTERS */
+	@Accessor
+	void setMaterial(Material material);
+
 	@Accessor
 	void setHardness(float hardness);
 
@@ -37,10 +73,18 @@ public interface BlockSettingsHooks {
 	void setCollidable(boolean collidable);
 
 	@Accessor
+	void setRandomTicks(boolean ticksRandomly);
+
+	@Accessor
 	void setMaterialColor(MaterialColor materialColor);
 
 	@Accessor
 	void setDropTableId(Identifier dropTableId);
+
+	@Accessor
+	void setDynamicBounds(boolean dynamicBounds);
+
+	/* INVOKERS */
 
 	@Invoker
 	Block.Settings invokeSounds(BlockSoundGroup group);
