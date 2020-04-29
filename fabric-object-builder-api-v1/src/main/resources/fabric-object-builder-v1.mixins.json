@@ -5,6 +5,9 @@
   "mixins": [
     "AbstractBlockAccessor",
     "AbstractBlockSettingsAccessor",
+    "AbstractBlockSettingsMixin",
+    "DefaultAttributeRegistryAccessor",
+    "DefaultAttributeRegistryMixin",
     "MaterialBuilderAccessor",
     "MixinBlock"
   ],

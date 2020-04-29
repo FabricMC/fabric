@@ -17,9 +17,7 @@
 package net.fabricmc.fabric.impl.object.builder;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -31,15 +29,19 @@ public final class FabricBlockInternals {
 	private FabricBlockInternals() {
 	}
 
-	public static final Map<Block.Settings, ExtraData> EXTRA_DATA = new HashMap<>();
-
 	public static ExtraData computeExtraData(Block.Settings settings) {
-		return EXTRA_DATA.computeIfAbsent(settings, ExtraData::new);
+		BlockSettingsInternals internals = (BlockSettingsInternals) settings;
+
+		if (internals.getExtraData() == null) {
+			internals.setExtraData(new ExtraData(settings));
+		}
+
+		return internals.getExtraData();
 	}
 
 	public static void onBuild(Block.Settings settings, Block block) {
 		// TODO: Load only if fabric-tool-attribute-api present
-		ExtraData data = FabricBlockInternals.EXTRA_DATA.get(settings);
+		ExtraData data = ((BlockSettingsInternals) settings).getExtraData();
 
 		if (data != null) {
 			if (data.breakByHand != null) {

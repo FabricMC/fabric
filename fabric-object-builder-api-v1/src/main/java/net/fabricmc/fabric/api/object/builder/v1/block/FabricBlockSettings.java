@@ -30,6 +30,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.object.builder.BlockSettingsInternals;
 import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
@@ -67,13 +68,11 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
 
 		// Now attempt to copy fabric specific data
-		if (settings instanceof FabricBlockSettings) {
-			// Check if we have extra data
-			FabricBlockInternals.ExtraData extraData = FabricBlockInternals.EXTRA_DATA.get(settings);
+		BlockSettingsInternals otherInternals = (BlockSettingsInternals) settings;
+		FabricBlockInternals.ExtraData extraData = otherInternals.getExtraData();
 
-			if (extraData != null) { // If present, populate the extra data on our new settings
-				FabricBlockInternals.EXTRA_DATA.put(this, extraData);
-			}
+		if (extraData != null) { // If present, populate the extra data on our new settings
+			((BlockSettingsInternals) this).setExtraData(extraData);
 		}
 	}
 
