@@ -22,13 +22,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.AbstractBlock;
 
 import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 
 @Mixin(Block.class)
 public abstract class MixinBlock {
-	@Inject(method = "<init>(Lnet/minecraft/block/Block$Settings;)V", at = @At("RETURN"))
-	public void fabric_init(Block.Settings builder, CallbackInfo info) {
+	@Inject(method = "<init>(Lnet/minecraft/block/AbstractBlock$Settings;)V", at = @At("RETURN"))
+	public void fabric_init(AbstractBlock.Settings builder, CallbackInfo info) {
 		FabricBlockInternals.onBuild(builder, (Block) (Object) this);
 	}
 }
