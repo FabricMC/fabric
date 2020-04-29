@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.UnmodifiableLevelProperties;
-import net.minecraft.class_5217;
+import net.minecraft.class_5268;
 
 import net.fabricmc.fabric.impl.dimension.DimensionIdsHolder;
 
@@ -30,7 +30,7 @@ import net.fabricmc.fabric.impl.dimension.DimensionIdsHolder;
 public abstract class MixinUnmodifiableLevelProperties implements DimensionIdsHolder {
 	@Shadow
 	@Final
-	private class_5217 properties;
+	private class_5268 properties;
 
 	/**
 	 * Delegates to the main level properties.

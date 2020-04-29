@@ -69,7 +69,7 @@ public final class AttributeManager {
 				double multTotal = 1;
 
 				for (EntityAttributeModifier mod : modifiers) {
-					double amount = mod.getAmount();
+					double amount = mod.getValue();
 					if (amount == 0) continue;
 
 					switch (mod.getOperation()) {
