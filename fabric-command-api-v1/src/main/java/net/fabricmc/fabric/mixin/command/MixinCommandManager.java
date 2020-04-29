@@ -16,28 +16,26 @@
 
 package net.fabricmc.fabric.mixin.command;
 
+import com.mojang.brigadier.AmbiguityConsumer;
 import com.mojang.brigadier.CommandDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 
-import net.fabricmc.fabric.impl.command.CommandRegistryImpl;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 @Mixin(CommandManager.class)
-public class MixinCommandManagerIntegrated {
-	@Shadow
-	private CommandDispatcher<ServerCommandSource> dispatcher;
-
-	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
-	public void addMethods(boolean dedicated, CallbackInfo info) {
-		// TODO: Run before findAmbiguities
-		if (!dedicated) {
-			CommandRegistryImpl.INSTANCE.entries(false).forEach((e) -> e.accept(dispatcher));
-		}
+public abstract class MixinCommandManager {
+	/**
+	 * @reason Add commands before ambiguities are calculated.
+	 */
+	@Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
+	private void fabric_addCommands(CommandDispatcher<ServerCommandSource> dispatcher, AmbiguityConsumer<ServerCommandSource> ambiguityConsumer, boolean isDedicated) {
+		CommandRegistrationCallback.EVENT.invoker().register(dispatcher, isDedicated);
+		// Now mimic vanilla logic by calling findAmbiguities.
+		dispatcher.findAmbiguities(ambiguityConsumer);
 	}
 }
