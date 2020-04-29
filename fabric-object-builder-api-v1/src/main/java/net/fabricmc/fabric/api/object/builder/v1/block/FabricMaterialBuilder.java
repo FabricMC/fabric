@@ -14,23 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.block;
+package net.fabricmc.fabric.api.object.builder.v1.block;
 
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.DyeColor;
 
-/**
- * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder} instead.
- */
-@Deprecated
-public class FabricMaterialBuilder extends Material.Builder {
-	private net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder delegate;
+import net.fabricmc.fabric.mixin.object.builder.MaterialBuilderAccessor;
 
+public class FabricMaterialBuilder extends Material.Builder {
 	public FabricMaterialBuilder(MaterialColor color) {
 		super(color);
-		this.delegate = new net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder(color);
 	}
 
 	public FabricMaterialBuilder(DyeColor color) {
@@ -39,64 +34,59 @@ public class FabricMaterialBuilder extends Material.Builder {
 
 	@Override
 	public FabricMaterialBuilder burnable() {
-		this.delegate.burnable();
+		super.burnable();
 		return this;
 	}
 
 	public FabricMaterialBuilder pistonBehavior(PistonBehavior behavior) {
-		this.delegate.pistonBehavior(behavior);
+		((MaterialBuilderAccessor) this).setPistonBehavior(behavior);
 		return this;
 	}
 
 	public FabricMaterialBuilder lightPassesThrough() {
-		this.delegate.lightPassesThrough();
+		((MaterialBuilderAccessor) this).invokeLightPassesThrough();
 		return this;
 	}
 
 	@Override
 	public FabricMaterialBuilder destroyedByPiston() {
-		this.delegate.destroyedByPiston();
+		super.destroyedByPiston();
 		return this;
 	}
 
 	@Override
 	public FabricMaterialBuilder blocksPistons() {
-		this.delegate.blocksPistons();
+		super.blocksPistons();
 		return this;
 	}
 
 	@Override
 	public FabricMaterialBuilder allowsMovement() {
-		this.delegate.allowsMovement();
+		super.allowsMovement();
 		return this;
 	}
 
 	@Override
 	public FabricMaterialBuilder liquid() {
-		this.delegate.liquid();
+		super.liquid();
 		return this;
 	}
 
 	@Override
-	public FabricMaterialBuilder notSolid() {
-		this.delegate.notSolid();
+	public Material.Builder notSolid() {
+		super.notSolid();
 		return this;
 	}
 
 	@Override
 	public FabricMaterialBuilder replaceable() {
-		this.delegate.replaceable();
+		super.replaceable();
 		return this;
 	}
 
 	@Override
 	public FabricMaterialBuilder requiresTool() {
-		this.delegate.requiresTool();
+		super.requiresTool();
 		return this;
-	}
-
-	@Override
-	public Material build() {
-		return this.delegate.build();
 	}
 }

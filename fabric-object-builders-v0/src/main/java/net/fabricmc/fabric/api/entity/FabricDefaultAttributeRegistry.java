@@ -16,54 +16,20 @@
 
 package net.fabricmc.fabric.api.entity;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
-import net.minecraft.util.registry.Registry;
-
-import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor;
 
 /**
- * Allows registering custom default attributes for living entities.
- *
- * <p>All living entity types must have default attributes registered. See {@link
- * FabricEntityTypeBuilder} for utility on entity type registration in general.</p>
- *
- * <p>A registered default attribute for an entity type can be retrieved through
- * {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#get(EntityType)}.</p>
- *
- * @see net.minecraft.entity.attribute.DefaultAttributeRegistry
- * @deprecated Experimental feature, may be removed or changed without further notice.
- * Vanilla snapshot feature, subject to vanilla change.
+ * @deprecated Please use {@link net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry} instead.
  */
 @Deprecated
 public final class FabricDefaultAttributeRegistry {
 	/**
-	 * Private logger, not exposed.
+	 * @deprecated Please {@link net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry#register(EntityType, DefaultAttributeContainer.Builder)} instead.
 	 */
-	private static final Logger LOGGER = LogManager.getLogger();
-
-	/**
-	 * Registers a default attribute for a type of living entity.
-	 *
-	 * <p>It can be used in a fashion similar to this:
-	 * <blockquote><pre>
-	 * EntityAttributeRegistry.INSTANCE.register(type, LivingEntity.createLivingAttributes());
-	 * </pre></blockquote>
-	 * </p>
-	 *
-	 * <p>If a registration overrides another, a debug log message will be emitted. Existing registrations
-	 * can be checked at {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#hasDefinitionFor(EntityType)}.</p>
-	 *
-	 * @param type    the entity type
-	 * @param builder the builder that creates the default attribute
-	 */
+	@Deprecated
 	public static void register(EntityType<? extends LivingEntity> type, DefaultAttributeContainer.Builder builder) {
-		if (DefaultAttributeRegistryAccessor.getRegistry().put(type, builder.build()) != null) {
-			LOGGER.debug("Overriding existing registration for entity type {}", Registry.ENTITY_TYPE.getId(type));
-		}
+		net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry.register(type, builder);
 	}
 }

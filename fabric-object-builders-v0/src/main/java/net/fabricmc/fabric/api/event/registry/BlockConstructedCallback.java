@@ -21,6 +21,10 @@ import net.minecraft.block.Block;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * @deprecated Please migrate to v1. Please use registry events instead.
+ */
+@Deprecated
 public interface BlockConstructedCallback {
 	Event<BlockConstructedCallback> EVENT = EventFactory.createArrayBacked(BlockConstructedCallback.class,
 			(listeners) -> (settings, builtBlock) -> {

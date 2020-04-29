@@ -3,10 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.object.builder",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlockSettingsHooks",
-    "DefaultAttributeRegistryAccessor",
-    "DefaultAttributeRegistryMixin",
-    "MaterialBuilderHooks",
     "MixinBlock",
     "MixinItem"
   ],

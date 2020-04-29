@@ -17,17 +17,18 @@
 package net.fabricmc.fabric.mixin.object.builder;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.block.Block;
 
-@Mixin(Material.Builder.class)
-public interface MaterialBuilderHooks {
-	@Accessor
-	void setPistonBehavior(PistonBehavior behavior);
+import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 
-	@Invoker
-	Material.Builder invokeLightPassesThrough();
+@Mixin(Block.class)
+public abstract class MixinBlock {
+	@Inject(method = "<init>(Lnet/minecraft/block/Block$Settings;)V", at = @At("RETURN"))
+	public void fabric_init(Block.Settings builder, CallbackInfo info) {
+		FabricBlockInternals.onBuild(builder, (Block) (Object) this);
+	}
 }
