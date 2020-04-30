@@ -114,10 +114,10 @@ public class ToolHandlers implements ModInitializer {
 		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (stack.getItem() instanceof DynamicAttributeTool) {
 				float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
-				if (multiplier != 1f) return TypedActionResult.success(multiplier);
+				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
 			}
 
-			return TypedActionResult.pass(1f);
+			return TypedActionResult.pass(1.0F);
 		}
 	}
 
@@ -147,10 +147,10 @@ public class ToolHandlers implements ModInitializer {
 		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				float multiplier = stack.getItem() instanceof ToolItem ? ((ToolItem) stack.getItem()).getMaterial().getMiningSpeed() : stack.getItem().getMiningSpeed(stack, state);
-				if (multiplier != 1f) return TypedActionResult.success(multiplier);
+				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
 			}
 
-			return TypedActionResult.pass(1f);
+			return TypedActionResult.pass(1.0F);
 		}
 	}
 
@@ -167,7 +167,7 @@ public class ToolHandlers implements ModInitializer {
 				ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 				if (entry == null) {
-					return stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1f ? ActionResult.SUCCESS : ActionResult.PASS;
+					return stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1.0F ? ActionResult.SUCCESS : ActionResult.PASS;
 				}
 			}
 
@@ -179,12 +179,12 @@ public class ToolHandlers implements ModInitializer {
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				float miningSpeed = stack.getItem().getMiningSpeed(stack, state);
 
-				if (miningSpeed != 1f) {
+				if (miningSpeed != 1.0F) {
 					return TypedActionResult.success(miningSpeed);
 				}
 			}
 
-			return TypedActionResult.pass(1f);
+			return TypedActionResult.pass(1.0F);
 		}
 	}
 
@@ -221,7 +221,7 @@ public class ToolHandlers implements ModInitializer {
 				if (miningLevel < 0) return ActionResult.PASS;
 
 				ToolItem vanillaItem = getVanillaItem(miningLevel);
-				boolean effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f;
+				boolean effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1.0F;
 				return effective ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 
@@ -241,19 +241,19 @@ public class ToolHandlers implements ModInitializer {
 
 				float firstSpeed = firstVanillaItem.getMiningSpeed(new ItemStack(firstVanillaItem, 1), state);
 				float secondSpeed = secondVanillaItem.getMiningSpeed(new ItemStack(secondVanillaItem, 1), state);
-				boolean hasForcedSpeed = firstSpeed == secondSpeed && firstSpeed >= 1f;
+				boolean hasForcedSpeed = firstSpeed == secondSpeed && firstSpeed >= 1.0F;
 
 				// Has forced speed, which as actions like swords breaking cobwebs.
 				if (hasForcedSpeed) {
-					return secondSpeed != 1f ? TypedActionResult.success(secondSpeed) : TypedActionResult.pass(1f);
+					return secondSpeed != 1.0F ? TypedActionResult.success(secondSpeed) : TypedActionResult.pass(1.0F);
 				}
 
 				// We adjust the mining speed according to the ratio for the closest tool.
 				float adjustedMiningSpeed = firstSpeed / firstVanillaItem.getMaterial().getMiningSpeed() * moddedToolSpeed;
-				return adjustedMiningSpeed != 1f ? TypedActionResult.success(adjustedMiningSpeed) : TypedActionResult.pass(1f);
+				return adjustedMiningSpeed != 1.0F ? TypedActionResult.success(adjustedMiningSpeed) : TypedActionResult.pass(1.0F);
 			}
 
-			return TypedActionResult.pass(1f);
+			return TypedActionResult.pass(1.0F);
 		}
 	}
 
@@ -277,9 +277,9 @@ public class ToolHandlers implements ModInitializer {
 
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				if (!(stack.getItem() instanceof ShearsItem)) {
-					return vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1f ? ActionResult.SUCCESS : ActionResult.PASS;
+					return vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1.0F ? ActionResult.SUCCESS : ActionResult.PASS;
 				} else {
-					return stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1f ? ActionResult.SUCCESS : ActionResult.PASS;
+					return stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1.0F ? ActionResult.SUCCESS : ActionResult.PASS;
 				}
 			}
 
@@ -288,7 +288,7 @@ public class ToolHandlers implements ModInitializer {
 
 		@Override
 		public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-			float speed = 1f;
+			float speed = 1.0F;
 
 			if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 				if (!(stack.getItem() instanceof ShearsItem)) {
@@ -298,7 +298,7 @@ public class ToolHandlers implements ModInitializer {
 				}
 			}
 
-			return speed != 1f ? TypedActionResult.success(speed) : TypedActionResult.pass(1f);
+			return speed != 1.0F ? TypedActionResult.success(speed) : TypedActionResult.pass(1.0F);
 		}
 	}
 }
