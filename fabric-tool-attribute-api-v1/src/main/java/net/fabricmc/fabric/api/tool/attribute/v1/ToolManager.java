@@ -61,9 +61,7 @@ public final class ToolManager {
 	 * @return the speed multiplier in breaking the block, 1.0 if no change.
 	 */
 	public static float handleBreakingSpeed(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
-		float miningSpeed = stack.getMiningSpeed(state);
-		if (miningSpeed == 1f) miningSpeed = handleBreakingSpeedIgnoresVanilla(state, stack, user);
-		return miningSpeed;
+		return Math.max(stack.getMiningSpeed(state), handleBreakingSpeedIgnoresVanilla(state, stack, user));
 	}
 
 	/**

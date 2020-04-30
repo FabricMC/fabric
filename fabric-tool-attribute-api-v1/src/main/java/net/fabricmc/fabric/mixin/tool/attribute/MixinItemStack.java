@@ -48,8 +48,9 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("RETURN"), method = "getMiningSpeed", cancellable = true)
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-		if (info.getReturnValueF() == 1.0F) {
-			info.setReturnValue(ToolManager.handleBreakingSpeedIgnoresVanilla(state, (ItemStack) (Object) this, null));
+		float customSpeed = ToolManager.handleBreakingSpeedIgnoresVanilla(state, (ItemStack) (Object) this, null);
+		if (info.getReturnValueF() < customSpeed) {
+			info.setReturnValue(customSpeed);
 		}
 	}
 
