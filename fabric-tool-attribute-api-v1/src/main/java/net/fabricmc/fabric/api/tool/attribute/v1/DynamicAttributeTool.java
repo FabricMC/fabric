@@ -91,6 +91,7 @@ public interface DynamicAttributeTool {
 
 	/**
 	 * Post process the mining speed, can be used to change tool speed regardless if the tool is effective.
+	 * Useful if you want to change the mining speed even if it is not effective.
 	 *
 	 * @param tag          The tool tag the item stack is handled by
 	 * @param state        The block to mine
