@@ -26,7 +26,6 @@ import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedMiningToolsVanilla
 import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedToolsModdedBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.ShearsVanillaBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.VanillaToolsModdedBlocksToolHandler;
-import net.fabricmc.fabric.impl.tool.attribute.handlers.VanillaToolsVanillaBlocksToolHandler;
 
 /**
  * Entrypoint to register the default tool handlers.
@@ -36,7 +35,6 @@ public class ToolHandlers implements ModInitializer {
 	public void onInitialize() {
 		ToolManagerImpl.general().register(new ModdedToolsModdedBlocksToolHandler());
 		ToolManagerImpl.general().register(new VanillaToolsModdedBlocksToolHandler());
-		ToolManagerImpl.general().register(new VanillaToolsVanillaBlocksToolHandler());
 		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_PICKAXE,

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.tool.attribute;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -65,14 +66,11 @@ public final class ToolManagerImpl {
 				}
 			}
 
-			Tag<Item>[] newTags = new Tag[tags.length + 1];
-			int[] newTagLevels = new int[tagLevels.length + 1];
-			System.arraycopy(tags, 0, newTags, 0, tags.length);
-			System.arraycopy(tagLevels, 0, newTagLevels, 0, tagLevels.length);
-			newTags[tags.length] = tag;
-			newTagLevels[tagLevels.length] = miningLevel;
-			tags = newTags;
-			tagLevels = newTagLevels;
+			tags = Arrays.copyOf(tags, tags.length + 1);
+			tags[tags.length - 1] = tag;
+
+			tagLevels = Arrays.copyOf(tagLevels, tagLevels.length + 1);
+			tagLevels[tagLevels.length - 1] = miningLevel;
 		}
 
 		@Override
@@ -170,7 +168,7 @@ public final class ToolManagerImpl {
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	public static TriState handleIsEffectiveOn(BlockState state, ItemStack stack, LivingEntity user) {
+	public static TriState handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, LivingEntity user) {
 		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
 				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
@@ -189,7 +187,7 @@ public final class ToolManagerImpl {
 		}
 	}
 
-	public static float handleBreakingSpeed(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+	public static float handleBreakingSpeedIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		float breakingSpeed = 0f;
 		Tag<Item> handledTag = null;
 		boolean handled = false;

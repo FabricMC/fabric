@@ -39,14 +39,18 @@ public abstract class MixinItemStack {
 	@Shadow
 	public abstract Item getItem();
 
-	@Inject(at = @At("HEAD"), method = "isEffectiveOn", cancellable = true)
+	@Inject(at = @At("RETURN"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		info.setReturnValue(ToolManager.handleIsEffectiveOn(state, (ItemStack) (Object) this, null).get());
+		if (!info.getReturnValueZ()) {
+			info.setReturnValue(ToolManager.handleIsEffectiveOnIgnoresVanilla(state, (ItemStack) (Object) this, null).get());
+		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "getMiningSpeed", cancellable = true)
+	@Inject(at = @At("RETURN"), method = "getMiningSpeed", cancellable = true)
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
-		info.setReturnValue(ToolManager.handleBreakingSpeed(state, (ItemStack) (Object) this, null));
+		if (info.getReturnValueF() == 1.0F) {
+			info.setReturnValue(ToolManager.handleBreakingSpeedIgnoresVanilla(state, (ItemStack) (Object) this, null));
+		}
 	}
 
 	@Inject(at = @At("RETURN"), method = "getAttributeModifiers", cancellable = true, locals = LocalCapture.CAPTURE_FAILEXCEPTION)

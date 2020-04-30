@@ -25,7 +25,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * API facing part to register tool handlers and get information about how tools are handled.
- * Implement {@link DynamicAttributeTool} to change the mining level or speed of your tool.
+ * Implement {@link DynamicAttributeTool} to change the mining level or speed of your tool depending on the {@link ItemStack}.
  */
 public final class ToolManager {
 	/**
@@ -36,8 +36,20 @@ public final class ToolManager {
 	 * @param user  the user involved in breaking the block, null if not applicable.
 	 * @return the state of effective
 	 */
-	public static TriState handleIsEffectiveOn(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
-		return ToolManagerImpl.handleIsEffectiveOn(state, stack, user);
+	public static boolean handleIsEffectiveOn(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+		return stack.isEffectiveOn(state) || handleIsEffectiveOnIgnoresVanilla(state, stack, user).get();
+	}
+
+	/**
+	 * Handles if the tool is effective on a block, ignores vanilla tools on vanilla blocks.
+	 *
+	 * @param state the block state to break
+	 * @param stack the item stack involved with breaking the block
+	 * @param user  the user involved in breaking the block, null if not applicable.
+	 * @return the state of effective
+	 */
+	public static TriState handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+		return ToolManagerImpl.handleIsEffectiveOnIgnoresVanilla(state, stack, user);
 	}
 
 	/**
@@ -49,7 +61,21 @@ public final class ToolManager {
 	 * @return the speed multiplier in breaking the block, 1.0 if no change.
 	 */
 	public static float handleBreakingSpeed(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
-		return ToolManagerImpl.handleBreakingSpeed(state, stack, user);
+		float miningSpeed = stack.getMiningSpeed(state);
+		if (miningSpeed == 1f) miningSpeed = handleBreakingSpeedIgnoresVanilla(state, stack, user);
+		return miningSpeed;
+	}
+
+	/**
+	 * Handles the breaking speed breaking a block, ignores vanilla tools on vanilla blocks.
+	 *
+	 * @param state the block state to break
+	 * @param stack the item stack involved with breaking the block
+	 * @param user  the user involved in breaking the block, null if not applicable.
+	 * @return the speed multiplier in breaking the block, 1.0 if no change.
+	 */
+	public static float handleBreakingSpeedIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+		return ToolManagerImpl.handleBreakingSpeedIgnoresVanilla(state, stack, user);
 	}
 
 	private ToolManager() {
