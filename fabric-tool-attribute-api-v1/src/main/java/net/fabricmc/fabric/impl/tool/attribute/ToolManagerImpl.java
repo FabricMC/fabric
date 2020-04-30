@@ -189,7 +189,7 @@ public final class ToolManagerImpl {
 		}
 	}
 
-	public static float handleBreakingSpeed(BlockState state, ItemStack stack, LivingEntity user) {
+	public static float handleBreakingSpeed(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		float breakingSpeed = 0f;
 		Tag<Item> handledTag = null;
 		boolean handled = false;
@@ -253,7 +253,7 @@ public final class ToolManagerImpl {
 		 * @param user  the user involved in breaking the block, null if not applicable.
 		 * @return the result of effectiveness
 		 */
-		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 			return ActionResult.PASS;
 		}
 

@@ -43,7 +43,7 @@ public interface DynamicAttributeTool {
 	 */
 	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
-	default int getMiningLevel(ItemStack stack, LivingEntity user) {
+	default int getMiningLevel(ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return 0;
 	}
 
@@ -57,7 +57,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
 	// nullable on user once we have an official @Nullable annotation in
-	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return getMiningLevel(stack, user);
 	}
 
@@ -71,7 +71,7 @@ public interface DynamicAttributeTool {
 	 */
 	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
-	default float getMiningSpeedMultiplier(ItemStack stack, LivingEntity user) {
+	default float getMiningSpeedMultiplier(ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return 1.0F;
 	}
 
@@ -85,7 +85,7 @@ public interface DynamicAttributeTool {
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
 	// nullable on user once we have an official @Nullable annotation in
-	default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return getMiningSpeedMultiplier(stack, user);
 	}
 
@@ -100,7 +100,7 @@ public interface DynamicAttributeTool {
 	 * @param isEffective  whether the tool has been handled
 	 * @return the speed after post processing
 	 */
-	default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user, float currentSpeed, boolean isEffective) {
+	default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user, float currentSpeed, boolean isEffective) {
 		return currentSpeed;
 	}
 
@@ -115,7 +115,7 @@ public interface DynamicAttributeTool {
 	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.
 	 */
 	// nullable on user once we have an official @Nullable annotation in
-	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, LivingEntity user) {
+	default Multimap<String, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return EMPTY;
 	}
 }

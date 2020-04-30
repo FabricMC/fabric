@@ -36,7 +36,7 @@ public final class ToolManager {
 	 * @param user  the user involved in breaking the block, null if not applicable.
 	 * @return the state of effective
 	 */
-	public static TriState handleIsEffectiveOn(BlockState state, ItemStack stack, LivingEntity user) {
+	public static TriState handleIsEffectiveOn(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return ToolManagerImpl.handleIsEffectiveOn(state, stack, user);
 	}
 
@@ -48,7 +48,7 @@ public final class ToolManager {
 	 * @param user  the user involved in breaking the block, null if not applicable.
 	 * @return the speed multiplier in breaking the block, 1.0 if no change.
 	 */
-	public static float handleBreakingSpeed(BlockState state, ItemStack stack, LivingEntity user) {
+	public static float handleBreakingSpeed(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return ToolManagerImpl.handleBreakingSpeed(state, stack, user);
 	}
 
