@@ -21,6 +21,10 @@ import net.minecraft.item.Item;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * @deprecated Please migrate to v1. Please use Please use registry events instead.
+ */
+@Deprecated
 public interface ItemConstructedCallback {
 	Event<ItemConstructedCallback> EVENT = EventFactory.createArrayBacked(ItemConstructedCallback.class,
 			(listeners) -> (settings, builtItem) -> {

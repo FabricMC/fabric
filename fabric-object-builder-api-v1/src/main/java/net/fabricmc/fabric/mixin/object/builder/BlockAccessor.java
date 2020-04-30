@@ -18,48 +18,41 @@ package net.fabricmc.fabric.mixin.object.builder;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
 import net.minecraft.sound.BlockSoundGroup;
-import net.minecraft.util.Identifier;
 
-@Mixin(Block.Settings.class)
-public interface BlockSettingsHooks {
+@Mixin(Block.class)
+public interface BlockAccessor {
 	@Accessor
-	void setHardness(float hardness);
-
-	@Accessor
-	void setResistance(float resistance);
+	Material getMaterial();
 
 	@Accessor
-	void setCollidable(boolean collidable);
+	MaterialColor getMaterialColor();
 
 	@Accessor
-	void setMaterialColor(MaterialColor materialColor);
+	float getHardness();
 
 	@Accessor
-	void setDropTableId(Identifier dropTableId);
+	float getResistance();
 
-	@Invoker
-	Block.Settings invokeSounds(BlockSoundGroup group);
+	@Accessor
+	boolean getCollidable();
 
-	@Invoker
-	Block.Settings invokeLightLevel(int lightLevel);
+	@Accessor
+	boolean getRandomTicks();
 
-	@Invoker
-	Block.Settings invokeBreakInstantly();
+	@Accessor
+	int getLightLevel();
 
-	@Invoker
-	Block.Settings invokeStrength(float strength);
+	@Accessor
+	BlockSoundGroup getSoundGroup();
 
-	@Invoker
-	Block.Settings invokeTicksRandomly();
+	@Accessor
+	boolean getDynamicBounds();
 
-	@Invoker
-	Block.Settings invokeHasDynamicBounds();
-
-	@Invoker
-	Block.Settings invokeDropsNothing();
+	@Accessor
+	boolean getOpaque();
 }

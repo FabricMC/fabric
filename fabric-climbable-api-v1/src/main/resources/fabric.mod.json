@@ -17,7 +17,7 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-tag-extensions-v0": ">=0.1.3",
+    "fabric-tag-extensions-v0": "*",
     "minecraft": "<1.16-"
   },
   "description": "Re-implements the minecraft:climbable tag from 1.16+ back in 1.15",
