@@ -39,5 +39,4 @@ public interface ModelPredicateProviderRegistryAccessor {
 			throw new AssertionError("mixin dummy");
 		}
 	}
-
 }
