@@ -14,7 +14,7 @@ def ENV = System.getenv()
 class Globals {
 	static def baseVersion = "0.10.1"
 	static def mcVersion = "20w18a"
-	static def yarnVersion = "+build.1"
+	static def yarnVersion = "+build.9"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
