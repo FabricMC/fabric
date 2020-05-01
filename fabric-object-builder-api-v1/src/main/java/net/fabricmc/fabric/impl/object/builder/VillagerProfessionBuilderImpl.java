@@ -75,7 +75,7 @@ public class VillagerProfessionBuilderImpl implements VillagerProfessionBuilder 
 	}
 
 	@Override
-	public VillagerProfessionBuilder workSound(/*Nullable*/ SoundEvent workSoundEvent) {
+	public VillagerProfessionBuilder workSound(/* @Nullable */ SoundEvent workSoundEvent) {
 		this.workSoundEvent = workSoundEvent;
 		return this;
 	}

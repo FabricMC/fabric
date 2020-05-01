@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.villager;
 
-import net.fabricmc.fabric.impl.object.builder.VillagerProfessionBuilderImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.entity.feature.VillagerResourceMetadata;
@@ -26,6 +25,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterestType;
+
+import net.fabricmc.fabric.impl.object.builder.VillagerProfessionBuilderImpl;
 
 /**
  * Allows for the creation of new {@link VillagerProfession}s.

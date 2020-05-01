@@ -7,7 +7,9 @@
     "BlockSettingsAccessor",
     "BlockSettingsMixin",
     "MaterialBuilderAccessor",
-    "MixinBlock"
+    "MixinBlock",
+    "PointOfInterestTypeAccessor",
+    "VillagerProfessionAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
