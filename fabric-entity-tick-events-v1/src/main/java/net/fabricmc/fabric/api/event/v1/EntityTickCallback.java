@@ -53,12 +53,10 @@ public interface EntityTickCallback<E extends Entity> {
 	 * it is often better to register a separate specialized callback for each type
 	 * than a single generic callback with additional checks.
 	 *
-	 * @param type The class object representing the desired entity type
-	 * @param <E>  The type of entities targeted by the event
+	 * @param type the class object representing the desired type of entity
+	 * @param <E>  the type of entities targeted by the event
 	 * @return the {@code Event} used to register tick callbacks for entities
 	 * of the given type.
-	 * @throws IllegalArgumentException if {@code type} is not an {@link Entity} class
-	 * @throws NullPointerException     if {@code type} is {@code null}
 	 */
 	static <E extends Entity> Event<EntityTickCallback<E>> event(Class<E> type) {
 		return TickEventInternals.getOrCreateEntityEvent(type);

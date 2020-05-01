@@ -42,7 +42,7 @@ public class TickEventInternals {
 	 * @return a tick {@code Event} for entities of the given class
 	 */
 	@SuppressWarnings("unchecked")
-	public static <E extends Entity> CascadingEvent<EntityTickCallback<E>> getOrCreateEntityEvent(Class<?> entityClass) {
+	public static <E extends Entity> CascadingEvent<EntityTickCallback<E>> getOrCreateEntityEvent(Class<E> entityClass) {
 		Preconditions.checkArgument(Entity.class.isAssignableFrom(entityClass), "Cannot register entity tick callback to non-entity class. Found: " + entityClass.getName());
 		CascadingEvent<EntityTickCallback<E>> event = (CascadingEvent<EntityTickCallback<E>>) ENTITY_TICK_EVENTS.get(entityClass);
 
@@ -50,8 +50,8 @@ public class TickEventInternals {
 			event = new CascadingEvent<>(createEntityEvent());    // decorator around the base Event
 
 			if (entityClass != Entity.class) {    // entities cannot inherit callbacks from anything
-				Class<?> superclass = entityClass.getSuperclass();
-				getOrCreateEntityEvent(superclass).registerDescendant((Event) event);    // recursive call to init every parent
+				Class<E> superclass = (Class<E>) entityClass.getSuperclass();
+				getOrCreateEntityEvent(superclass).registerDescendant(event);    // recursive call to init every parent
 			}
 
 			ENTITY_TICK_EVENTS.put(entityClass, event);
@@ -71,18 +71,16 @@ public class TickEventInternals {
 		return EventFactory.createArrayBacked(EntityTickCallback.class, listeners -> {
 				if (EventFactory.isProfilingEnabled()) {
 					return entity -> {
-						if (entity.getServer() != null) {
-							Profiler profiler = entity.getServer().getProfiler();
-							profiler.push("fabricEntityTick");
+						Profiler profiler = entity.getEntityWorld().getProfiler();
+						profiler.push("fabricEntityTick");
 
-							for (EntityTickCallback<E> event : listeners) {
-								profiler.push(EventFactory.getHandlerName(event));
-								event.tick(entity);
-								profiler.pop();
-							}
-
+						for (EntityTickCallback<E> event : listeners) {
+							profiler.push(EventFactory.getHandlerName(event));
+							event.tick(entity);
 							profiler.pop();
 						}
+
+						profiler.pop();
 					};
 				} else {
 					return entity -> {
