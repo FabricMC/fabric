@@ -45,7 +45,6 @@ public abstract class MixinMinecraftDedicatedServer extends MinecraftServer {
 	@Inject(method = "setupServer", at = @At("HEAD"))
 	private void setupServer(CallbackInfoReturnable<Boolean> info) {
 		CommandRegistrationCallback.EVENT.invoker().register(getCommandManager().getDispatcher(), true);
-		CommandRegistrationCallback.EVENT.invoker().register(getCommandManager().getDispatcher(), false);
 
 		//Possibly call findAmbiguities here
 	}
