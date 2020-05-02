@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.world.poi;
 
+import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -31,6 +31,9 @@ import net.fabricmc.fabric.mixin.object.builder.PointOfInterestTypeAccessor;
 
 /**
  * This class provides utilities to create a {@link PointOfInterestType}.
+ *
+ * <p>A point of interest is typically used by villagers to specify their workstation blocks, meeting zones and homes.
+ * Points of interest are also used by bees to specify where their bee hive is and nether portals to find existing portals.
  */
 public final class PointOfInterestHelper {
 	private PointOfInterestHelper() {
@@ -38,64 +41,84 @@ public final class PointOfInterestHelper {
 	}
 
 	/**
-	 * Registers and creates a {@link PointOfInterestType}.
+	 * Creates and registers a {@link PointOfInterestType}.
+	 *
 	 * @param id The id of this {@link PointOfInterestType}.
 	 * @param ticketCount The amount of tickets.
 	 * @param searchDistance The search distance.
-	 * @param workStationBlocks All the blocks this {@link PointOfInterestType} can be present on.
+	 * @param blocks All the blocks this {@link PointOfInterestType} can be present on.
 	 * @return a new {@link PointOfInterestType}.
 	 */
-	public static PointOfInterestType create(Identifier id, int ticketCount, int searchDistance, Block... workStationBlocks) {
-		ImmutableSet.Builder<BlockState> states = ImmutableSet.builder();
+	public static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Block... blocks) {
+		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
 
-		for (Block block : workStationBlocks) {
-			states.addAll(block.getStateManager().getStates());
+		for (Block block : blocks) {
+			builder.addAll(block.getStateManager().getStates());
 		}
 
-		return Registry.POINT_OF_INTEREST_TYPE.add(id, PointOfInterestTypeAccessor.callSetup(PointOfInterestTypeAccessor.callCreate(id.toString(), states.build(), ticketCount, searchDistance)));
+		return register(id, ticketCount, searchDistance, builder.build());
 	}
 
 	/**
-	 * Registers and creates a {@link PointOfInterestType}.
-	 * @param id The id of this {@link PointOfInterestType}.
-	 * @param ticketCount The amount of tickets.
-	 * @param searchDistance The search distance.
-	 * @param workStationStates A list of {@link BlockState BlockStates} which this {@link PointOfInterestType} can be present on.
-	 * @return a new {@link PointOfInterestType}.
-	 */
-	public static PointOfInterestType create(Identifier id, int ticketCount, int searchDistance, Iterable<BlockState> workStationStates) {
-		return Registry.POINT_OF_INTEREST_TYPE.add(id, PointOfInterestTypeAccessor.callSetup(PointOfInterestTypeAccessor.callCreate(id.toString(), Sets.newHashSet(workStationStates), ticketCount, searchDistance)));
-	}
-
-	/**
-	 * Registers and creates a {@link PointOfInterestType}.
+	 * Creates and registers a {@link PointOfInterestType}.
+	 *
 	 * @param id The id of this {@link PointOfInterestType}.
 	 * @param ticketCount The amount of tickets.
 	 * @param completionCondition A {@link Predicate} which determines whether this point of interest type should be present.
 	 * @param searchDistance The search distance.
-	 * @param workStationBlocks All the blocks this {@link PointOfInterestType} can be present on.
+	 * @param blocks All the blocks this {@link PointOfInterestType} can be present on.
 	 * @return a new {@link PointOfInterestType}.
 	 */
-	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> completionCondition, int searchDistance, Block... workStationBlocks) {
-		ImmutableSet.Builder<BlockState> states = ImmutableSet.builder();
+	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> completionCondition, int searchDistance, Block... blocks) {
+		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
 
-		for (Block block : workStationBlocks) {
-			states.addAll(block.getStateManager().getStates());
+		for (Block block : blocks) {
+			builder.addAll(block.getStateManager().getStates());
 		}
 
-		return Registry.POINT_OF_INTEREST_TYPE.add(id, PointOfInterestTypeAccessor.callSetup(PointOfInterestTypeAccessor.callCreate(id.toString(), states.build(), ticketCount, completionCondition, searchDistance)));
+		return register(id, ticketCount, completionCondition, searchDistance, builder.build());
 	}
 
 	/**
-	 * Registers and creates a {@link PointOfInterestType}.
+	 * Creates and registers a {@link PointOfInterestType}.
+	 *
 	 * @param id The id of this {@link PointOfInterestType}.
 	 * @param ticketCount The amount of tickets.
-	 * @param completionCondition A {@link Predicate} which determines whether this point of interest type should be present.
 	 * @param searchDistance The search distance.
-	 * @param workStationStates A list of {@link BlockState BlockStates} which this {@link PointOfInterestType} can be present on.
+	 * @param blocks A list of {@link BlockState BlockStates} which this {@link PointOfInterestType} can be present on.
 	 * @return a new {@link PointOfInterestType}.
 	 */
-	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> completionCondition, int searchDistance, Iterable<BlockState> workStationStates) {
-		return Registry.POINT_OF_INTEREST_TYPE.add(id, PointOfInterestTypeAccessor.callSetup(PointOfInterestTypeAccessor.callCreate(id.toString(), Sets.newHashSet(workStationStates), ticketCount, completionCondition, searchDistance)));
+	public static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Iterable<BlockState> blocks) {
+		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
+
+		return register(id, ticketCount, searchDistance, builder.addAll(blocks).build());
+	}
+
+	/**
+	 * Creates and registers a {@link PointOfInterestType}.
+	 *
+	 * @param id The id of this {@link PointOfInterestType}.
+	 * @param ticketCount The amount of tickets.
+	 * @param typePredicate A {@link Predicate} which determines whether this point of interest type should be present.
+	 * @param searchDistance The search distance.
+	 * @param states A list of {@link BlockState BlockStates} which this {@link PointOfInterestType} can be present on.
+	 * @return a new {@link PointOfInterestType}.
+	 */
+	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> typePredicate, int searchDistance, Iterable<BlockState> states) {
+		final ImmutableSet.Builder<BlockState> builder = ImmutableSet.builder();
+
+		return register(id, ticketCount, typePredicate, searchDistance, builder.addAll(states).build());
+	}
+
+	// INTERNAL METHODS
+
+	private static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Set<BlockState> states) {
+		return Registry.register(Registry.POINT_OF_INTEREST_TYPE, id, PointOfInterestTypeAccessor.callSetup(
+				PointOfInterestTypeAccessor.callCreate(id.toString(), states, ticketCount, searchDistance)));
+	}
+
+	private static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> typePredicate, int searchDistance, Set<BlockState> states) {
+		return Registry.register(Registry.POINT_OF_INTEREST_TYPE, id, PointOfInterestTypeAccessor.callSetup(
+				PointOfInterestTypeAccessor.callCreate(id.toString(), states, ticketCount, typePredicate, searchDistance)));
 	}
 }

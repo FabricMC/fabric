@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.villager;
 
+import static com.google.common.base.Preconditions.checkState;
+
+import com.google.common.collect.ImmutableSet;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.render.entity.feature.VillagerResourceMetadata;
@@ -26,7 +30,7 @@ import net.minecraft.village.TradeOffers;
 import net.minecraft.village.VillagerProfession;
 import net.minecraft.world.poi.PointOfInterestType;
 
-import net.fabricmc.fabric.impl.object.builder.VillagerProfessionBuilderImpl;
+import net.fabricmc.fabric.mixin.object.builder.VillagerProfessionAccessor;
 
 /**
  * Allows for the creation of new {@link VillagerProfession}s.
@@ -37,13 +41,23 @@ import net.fabricmc.fabric.impl.object.builder.VillagerProfessionBuilderImpl;
  *
  * <p>Note this does not register any trades to these villagers. To register trades, add a new entry with your profession as the key to {@link TradeOffers#PROFESSION_TO_LEVELED_TRADE}.
  */
-public interface VillagerProfessionBuilder {
+public class VillagerProfessionBuilder {
+	private final ImmutableSet.Builder<Item> gatherableItemsBuilder = ImmutableSet.builder();
+	private final ImmutableSet.Builder<Block> secondaryJobSiteBlockBuilder = ImmutableSet.builder();
+	private Identifier identifier;
+	private PointOfInterestType pointOfInterestType;
+	/* @Nullable */
+	private SoundEvent workSoundEvent;
+
+	private VillagerProfessionBuilder() {
+	}
+
 	/**
 	 * Creates a builder instance to allow for creation of a {@link VillagerProfession}.
 	 * @return A new builder.
 	 */
 	static VillagerProfessionBuilder create() {
-		return new VillagerProfessionBuilderImpl();
+		return new VillagerProfessionBuilder();
 	}
 
 	/**
@@ -52,14 +66,21 @@ public interface VillagerProfessionBuilder {
 	 * @param id The identifier to assign to this profession.
 	 * @return this builder
 	 */
-	VillagerProfessionBuilder id(Identifier id);
+	public VillagerProfessionBuilder id(Identifier id) {
+		this.identifier = id;
+		return this;
+	}
 
 	/**
 	 * The {@link PointOfInterestType} the Villager of this profession will search for when finding a workstation.
+	 *
 	 * @param type The {@link PointOfInterestType} the Villager will attempt to find.
 	 * @return this builder.
 	 */
-	VillagerProfessionBuilder workstation(PointOfInterestType type);
+	public VillagerProfessionBuilder workstation(PointOfInterestType type) {
+		this.pointOfInterestType = type;
+		return this;
+	}
 
 	/**
 	 * Items that a Villager may harvest in this profession.
@@ -69,7 +90,10 @@ public interface VillagerProfessionBuilder {
 	 * @param items Items harvestable by this profession.
 	 * @return this builder.
 	 */
-	VillagerProfessionBuilder harvestableItems(Item... items);
+	public VillagerProfessionBuilder harvestableItems(Item... items) {
+		this.gatherableItemsBuilder.add(items);
+		return this;
+	}
 
 	/**
 	 * Items that a Villager may harvest in this profession.
@@ -79,7 +103,10 @@ public interface VillagerProfessionBuilder {
 	 * @param items Items harvestable by this profession.
 	 * @return this builder.
 	 */
-	VillagerProfessionBuilder harvestableItems(Iterable<Item> items);
+	public VillagerProfessionBuilder harvestableItems(Iterable<Item> items) {
+		this.gatherableItemsBuilder.addAll(items);
+		return this;
+	}
 
 	/**
 	 * A collection of blocks blocks which may suffice as a secondary job site for a Villager.
@@ -89,7 +116,10 @@ public interface VillagerProfessionBuilder {
 	 * @param blocks Collection of secondary job site blocks.
 	 * @return this builder.
 	 */
-	VillagerProfessionBuilder secondaryJobSites(Block... blocks);
+	public VillagerProfessionBuilder secondaryJobSites(Block... blocks) {
+		this.secondaryJobSiteBlockBuilder.add(blocks);
+		return this;
+	}
 
 	/**
 	 * A collection of blocks blocks which may suffice as a secondary job site for a Villager.
@@ -99,19 +129,31 @@ public interface VillagerProfessionBuilder {
 	 * @param blocks Collection of secondary job site blocks.
 	 * @return this builder.
 	 */
-	VillagerProfessionBuilder secondaryJobSites(Iterable<Block> blocks);
+	public VillagerProfessionBuilder secondaryJobSites(Iterable<Block> blocks) {
+		this.secondaryJobSiteBlockBuilder.addAll(blocks);
+		return this;
+	}
 
 	/**
 	 * Provides the sound made when a Villager works.
+	 *
 	 * @param workSoundEvent The {@link SoundEvent} to be played.
 	 * @return this builder.
 	 */
-	VillagerProfessionBuilder workSound(/*Nullable*/ SoundEvent workSoundEvent);
+	public VillagerProfessionBuilder workSound(/* @Nullable */ SoundEvent workSoundEvent) {
+		this.workSoundEvent = workSoundEvent;
+		return this;
+	}
 
 	/**
 	 * Creates the {@link VillagerProfession}.
+	 *
 	 * @return a new {@link VillagerProfession}.
 	 * @throws IllegalStateException if the builder is missing an {@link Identifier id} and {@link PointOfInterestType workstation}.
 	 */
-	VillagerProfession build();
+	public VillagerProfession build() {
+		checkState(this.identifier != null, "An Identifier is required to build a new VillagerProfession.");
+		checkState(this.pointOfInterestType != null, "A PointOfInterestType is required to build a new VillagerProfession.");
+		return VillagerProfessionAccessor.create(this.identifier.toString(), this.pointOfInterestType, this.gatherableItemsBuilder.build(), this.secondaryJobSiteBlockBuilder.build(), this.workSoundEvent);
+	}
 }

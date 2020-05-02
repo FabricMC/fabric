@@ -28,7 +28,7 @@ import net.minecraft.world.poi.PointOfInterestType;
 @Mixin(PointOfInterestType.class)
 public interface PointOfInterestTypeAccessor {
 	@Invoker("<init>")
-	static PointOfInterestType callCreate(String id, Set<BlockState> blockStates, int ticketCount, Predicate<PointOfInterestType> completionCondition, int searchDistance) {
+	static PointOfInterestType callCreate(String id, Set<BlockState> blockStates, int ticketCount, Predicate<PointOfInterestType> typePredicate, int searchDistance) {
 		throw new AssertionError("Untransformed Accessor!");
 	}
 
