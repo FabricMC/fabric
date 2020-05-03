@@ -2,5 +2,11 @@ archivesBaseName = "fabric-networking-api-v1"
 version = getSubprojectVersion(project, "1.0.0")
 
 dependencies {
-    compile project(path: ':fabric-api-base', configuration: 'dev')
+	compile project(path: ':fabric-api-base', configuration: 'dev')
+	testmodCompile project(path: ':fabric-command-api-v1', configuration: 'dev')
+}
+
+tasks.withType(net.fabricmc.loom.task.AbstractRunTask) {
+	classpath += sourceSets.testmod.runtimeClasspath
+	classpath += sourceSets.testmod.output
 }

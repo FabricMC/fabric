@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-networking-api-v1-test",
+  "name": "Test for Fabric Networking API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.8.0",
+    "fabric-networking-api-v1": ">=1.0.0"
+  },
+  "description": "Test mod for Fabric Networking API (v1).",
+  "mixins": [
+  ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.networking.NetworkingTintedChat::init"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.networking.NetworkingTintedChat::clientInit"
+    ]
+  }
+}

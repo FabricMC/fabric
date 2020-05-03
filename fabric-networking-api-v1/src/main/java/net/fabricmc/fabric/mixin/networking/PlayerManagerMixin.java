@@ -29,7 +29,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerNetworkingDetails;
 
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
-	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;<init>(Lnet/minecraft/util/Identifier;Lnet/minecraft/util/PacketByteBuf;)V"))
+	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/CustomPayloadS2CPacket;<init>(Lnet/minecraft/util/Identifier;Lnet/minecraft/network/PacketByteBuf;)V"))
 	private void networking$onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
 		ServerNetworkingDetails.getAddon(player.networkHandler).onClientReady();
 	}

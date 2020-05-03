@@ -43,7 +43,7 @@ public enum OffThreadGameAccessPolicy {
 		}
 	};
 
-	public static OffThreadGameAccessPolicy parse(String propertyKey, OffThreadGameAccessPolicy fallback) {
+	public static OffThreadGameAccessPolicy lookup(String propertyKey, OffThreadGameAccessPolicy fallback) {
 		String value = System.getProperty(propertyKey);
 
 		if (value == null) {
