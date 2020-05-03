@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -15,7 +16,18 @@ public class RegistryAttributesImpl<T> implements RegistryAttributeHolder<T> {
 
 	public static <T> RegistryAttributeHolder<T> get(Registry<T> registry) {
 		//noinspection unchecked
-		return (RegistryAttributeHolder<T>) registryAttributeMap.computeIfAbsent(registry, r -> new RegistryAttributesImpl<>());
+		return (RegistryAttributeHolder<T>) registryAttributeMap.computeIfAbsent(registry, RegistryAttributesImpl::new);
+	}
+
+	public RegistryAttributesImpl(Registry<T> registry) {
+		if (registry instanceof MutableRegistry) {
+			if (!Registry.REGISTRIES.getId((MutableRegistry<?>) registry).getNamespace().equals("minecraft")) {
+				// By default always sync, save and mark modded registries as modded
+				addAttribute(RegistryAttribute.SYNCED);
+				addAttribute(RegistryAttribute.PERSISTED);
+				addAttribute(RegistryAttribute.MODDED);
+			}
+		}
 	}
 
 	private final Set<RegistryAttribute> attributes = new HashSet<>();

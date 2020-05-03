@@ -4,12 +4,12 @@ public enum RegistryAttribute {
 	/**
 	 * Registry will be saved to disk when modded.
 	 */
-	PERSISTENT,
+	PERSISTED,
 
 	/**
 	 * Registry will be synced to the client when modded.
 	 */
-	SYNC,
+	SYNCED,
 
 	/**
 	 * Registry has been modded.

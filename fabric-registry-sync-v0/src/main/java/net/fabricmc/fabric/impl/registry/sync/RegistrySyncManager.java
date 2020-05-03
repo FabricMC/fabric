@@ -146,19 +146,20 @@ public final class RegistrySyncManager {
 			}
 
 			//noinspection unchecked
-			if (!isClientSync && !RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.PERSISTENT)) {
-				LOGGER.debug("Not saving none-persistent registry: " + registryId);
+			RegistryAttributeHolder<?> attributeHolder = RegistryAttributeHolder.get(registry);
+
+			if (!isClientSync && !attributeHolder.hasAttribute(RegistryAttribute.PERSISTED)) {
+				LOGGER.debug("Not saving non-persistent registry: " + registryId);
 				continue;
 			}
 
-			//noinspection unchecked
-			if (isClientSync && !RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.SYNC)) {
+			if (isClientSync && !attributeHolder.hasAttribute(RegistryAttribute.SYNCED)) {
 				LOGGER.debug("Not syncing registry: " + registryId);
 				continue;
 			}
 
 			//Keep vanilla registry that we have no existing registry entries for
-			if (existingRegistryData == null && !isRegistryModded(registryId)) {
+			if (existingRegistryData == null && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
 			}
@@ -293,16 +294,5 @@ public final class RegistrySyncManager {
 				}
 			}
 		}
-	}
-
-	public static boolean isRegistryModded(Identifier registryId) {
-		//All none minecraft registries are modded
-		if (!registryId.getNamespace().equals("minecraft")) {
-			return true;
-		}
-
-		Registry<?> registry = Registry.REGISTRIES.get(registryId);
-
-		return RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.MODDED);
 	}
 }
