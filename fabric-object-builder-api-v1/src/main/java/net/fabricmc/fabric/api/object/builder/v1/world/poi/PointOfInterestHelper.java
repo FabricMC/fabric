@@ -25,6 +25,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.poi.PointOfInterest;
 import net.minecraft.world.poi.PointOfInterestType;
 
 import net.fabricmc.fabric.mixin.object.builder.PointOfInterestTypeAccessor;
@@ -44,9 +45,9 @@ public final class PointOfInterestHelper {
 	 * Creates and registers a {@link PointOfInterestType}.
 	 *
 	 * @param id The id of this {@link PointOfInterestType}.
-	 * @param ticketCount The amount of tickets.
-	 * @param searchDistance The search distance.
-	 * @param blocks All the blocks this {@link PointOfInterestType} can be present on.
+	 * @param ticketCount the amount of tickets.
+	 * @param searchDistance the search distance.
+	 * @param blocks all the blocks a {@link PointOfInterest} of this type will present in.
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Block... blocks) {
@@ -63,10 +64,10 @@ public final class PointOfInterestHelper {
 	 * Creates and registers a {@link PointOfInterestType}.
 	 *
 	 * @param id The id of this {@link PointOfInterestType}.
-	 * @param ticketCount The amount of tickets.
-	 * @param completionCondition A {@link Predicate} which determines whether this point of interest type should be present.
-	 * @param searchDistance The search distance.
-	 * @param blocks All the blocks this {@link PointOfInterestType} can be present on.
+	 * @param ticketCount the amount of tickets.
+	 * @param completionCondition a {@link Predicate} which determines whether this point of interest type should be present.
+	 * @param searchDistance the search distance.
+	 * @param blocks all the blocks a {@link PointOfInterest} of this type will present in.
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> completionCondition, int searchDistance, Block... blocks) {
@@ -82,10 +83,10 @@ public final class PointOfInterestHelper {
 	/**
 	 * Creates and registers a {@link PointOfInterestType}.
 	 *
-	 * @param id The id of this {@link PointOfInterestType}.
-	 * @param ticketCount The amount of tickets.
-	 * @param searchDistance The search distance.
-	 * @param blocks A list of {@link BlockState BlockStates} which this {@link PointOfInterestType} can be present on.
+	 * @param id the id of this {@link PointOfInterestType}.
+	 * @param ticketCount the amount of tickets.
+	 * @param searchDistance the search distance.
+	 * @param blocks all the {@link BlockState block states} a {@link PointOfInterest} of this type will present in.
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Iterable<BlockState> blocks) {
@@ -97,11 +98,11 @@ public final class PointOfInterestHelper {
 	/**
 	 * Creates and registers a {@link PointOfInterestType}.
 	 *
-	 * @param id The id of this {@link PointOfInterestType}.
-	 * @param ticketCount The amount of tickets.
-	 * @param typePredicate A {@link Predicate} which determines whether this point of interest type should be present.
-	 * @param searchDistance The search distance.
-	 * @param states A list of {@link BlockState BlockStates} which this {@link PointOfInterestType} can be present on.
+	 * @param id the id of this {@link PointOfInterestType}.
+	 * @param ticketCount the amount of tickets.
+	 * @param typePredicate a {@link Predicate} which determines whether this point of interest type should be present.
+	 * @param searchDistance the search distance.
+	 * @param states all the {@link BlockState block states} a {@link PointOfInterest} of this type will present in.
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> typePredicate, int searchDistance, Iterable<BlockState> states) {
