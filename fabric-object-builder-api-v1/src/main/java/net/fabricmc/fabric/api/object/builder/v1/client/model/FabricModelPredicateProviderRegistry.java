@@ -21,6 +21,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistryAccessor;
+import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistrySpecificAccessor;
 
 /**
  * Allows registering model predicate providers for item models.
@@ -52,6 +53,6 @@ public final class FabricModelPredicateProviderRegistry {
 	 * @param provider the provider
 	 */
 	public static void register(Item item, Identifier id, ModelPredicateProvider provider) {
-		ModelPredicateProviderRegistryAccessor.Specific.callRegister(item, id, provider);
+		ModelPredicateProviderRegistrySpecificAccessor.callRegister(item, id, provider);
 	}
 }

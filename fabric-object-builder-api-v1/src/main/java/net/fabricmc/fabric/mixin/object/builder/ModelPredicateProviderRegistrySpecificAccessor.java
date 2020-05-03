@@ -21,12 +21,14 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.client.item.ModelPredicateProvider;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
+// mixin doesn't care about descriptor, must put two "register" accessors in different places
 @Mixin(ModelPredicateProviderRegistry.class)
-public interface ModelPredicateProviderRegistryAccessor {
+public interface ModelPredicateProviderRegistrySpecificAccessor {
 	@Invoker
-	static ModelPredicateProvider callRegister(Identifier id, ModelPredicateProvider provider) {
+	static void callRegister(Item item, Identifier id, ModelPredicateProvider provider) {
 		throw new AssertionError("mixin dummy");
 	}
 }

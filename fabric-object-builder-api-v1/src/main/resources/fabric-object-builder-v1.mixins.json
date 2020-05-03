@@ -13,7 +13,7 @@
   ],
   "client": [
     "ModelPredicateProviderRegistryAccessor",
-    "ModelPredicateProviderRegistryAccessor$Specific"
+    "ModelPredicateProviderRegistrySpecificAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
