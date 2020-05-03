@@ -16,10 +16,8 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
-public interface ModdableRegistry {
-	boolean isModded();
+public interface HashedRegistry {
+	int getStoredHash();
 
-	void markModded();
-
-	void storeIdHash(int hash);
+	int storeHash();
 }

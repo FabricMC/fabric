@@ -19,10 +19,7 @@ package net.fabricmc.fabric.impl.registry.sync;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -31,18 +28,11 @@ import java.util.function.Consumer;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,10 +43,10 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
@@ -66,6 +56,7 @@ public final class RegistrySyncManager {
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
+	private static boolean hasChecked = false;
 
 	private RegistrySyncManager() { }
 
@@ -104,7 +95,14 @@ public final class RegistrySyncManager {
 	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeIdMap) {
 		CompoundTag mainTag = new CompoundTag();
 
+		if (!hasChecked) {
+			checkRegistryHashes();
+			hasChecked = true;
+		}
+
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
+			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+
 			if (DEBUG_WRITE_REGISTRY_DATA) {
 				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
 				boolean c = true;
@@ -115,8 +113,6 @@ public final class RegistrySyncManager {
 						c = false;
 					}
 				}
-
-				MutableRegistry registry = Registry.REGISTRIES.get(registryId);
 
 				if (c && registry != null) {
 					File file = new File(location, registryId.toString().replace(':', '.').replace('/', '.') + ".csv");
@@ -149,14 +145,14 @@ public final class RegistrySyncManager {
 				existingRegistryData = activeIdMap.getCompound(registryId.toString());
 			}
 
-			//Dont save none persistent registries
-			if (!isClientSync && !RegistryAttributeRegistry.INSTANCE.hasAttribute(registryId, RegistryAttribute.PERSISTENT)) {
+			//noinspection unchecked
+			if (!isClientSync && !RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.PERSISTENT)) {
 				LOGGER.debug("Not saving none-persistent registry: " + registryId);
 				continue;
 			}
 
-			//Dont sync network blacklisted registries
-			if (isClientSync && !RegistryAttributeRegistry.INSTANCE.hasAttribute(registryId, RegistryAttribute.SYNC)) {
+			//noinspection unchecked
+			if (isClientSync && !RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.SYNC)) {
 				LOGGER.debug("Not syncing registry: " + registryId);
 				continue;
 			}
@@ -172,8 +168,6 @@ public final class RegistrySyncManager {
 			} else {
 				LOGGER.debug("Saving registry: " + registryId);
 			}
-
-			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				CompoundTag registryTag = new CompoundTag();
@@ -277,12 +271,28 @@ public final class RegistrySyncManager {
 
 	public static void bootstrapRegistries() {
 		for (MutableRegistry<?> registry : Registry.REGISTRIES) {
-			if (registry instanceof ModdableRegistry) {
-				((ModdableRegistry) registry).storeIdHash(registry.getIds().hashCode());
+			if (registry instanceof HashedRegistry) {
+				((HashedRegistry) registry).storeHash();
 			}
 		}
 
 		postBootstrap = true;
+	}
+
+	// Checks the stored hash against the current hash, if it has changed mark as modded
+	public static void checkRegistryHashes() {
+		for (MutableRegistry<?> registry : Registry.REGISTRIES) {
+			if (registry instanceof HashedRegistry) {
+				if (((HashedRegistry) registry).getStoredHash() != ((HashedRegistry) registry).storeHash()) {
+					RegistryAttributeHolder<?> holder = RegistryAttributeHolder.get(registry);
+
+					if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
+						LOGGER.debug("Registry {} has been marked as modded as the hash changed since bootstrap", Registry.REGISTRIES.getId(registry));
+						holder.addAttribute(RegistryAttribute.MODDED);
+					}
+				}
+			}
+		}
 	}
 
 	public static boolean isRegistryModded(Identifier registryId) {
@@ -293,11 +303,6 @@ public final class RegistrySyncManager {
 
 		Registry<?> registry = Registry.REGISTRIES.get(registryId);
 
-		if (registry instanceof ModdableRegistry) {
-			ModdableRegistry moddableRegistry = (ModdableRegistry) registry;
-			return moddableRegistry.isModded();
-		} else {
-			return false; //TODO what should this be?
-		}
+		return RegistryAttributeHolder.get(registry).hasAttribute(RegistryAttribute.MODDED);
 	}
 }
