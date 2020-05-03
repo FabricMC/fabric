@@ -22,7 +22,7 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
-import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedMiningToolsVanillaBlocksToolHandler;
+import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedToolsVanillaBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.ModdedToolsModdedBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.ShearsVanillaBlocksToolHandler;
 import net.fabricmc.fabric.impl.tool.attribute.handlers.VanillaToolsModdedBlocksToolHandler;
@@ -35,7 +35,7 @@ public class ToolHandlers implements ModInitializer {
 	public void onInitialize() {
 		ToolManagerImpl.general().register(new ModdedToolsModdedBlocksToolHandler());
 		ToolManagerImpl.general().register(new VanillaToolsModdedBlocksToolHandler());
-		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.PICKAXES).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_PICKAXE,
 						Items.STONE_PICKAXE,
@@ -43,7 +43,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.DIAMOND_PICKAXE
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.AXES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.AXES).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_AXE,
 						Items.STONE_AXE,
@@ -51,7 +51,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.DIAMOND_AXE
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_SHOVEL,
 						Items.STONE_SHOVEL,
@@ -59,7 +59,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.DIAMOND_SHOVEL
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.HOES).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.HOES).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_HOE,
 						Items.STONE_HOE,
@@ -67,7 +67,7 @@ public class ToolHandlers implements ModInitializer {
 						Items.DIAMOND_HOE
 				)
 		));
-		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new ModdedMiningToolsVanillaBlocksToolHandler(
+		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new ModdedToolsVanillaBlocksToolHandler(
 				Arrays.asList(
 						Items.WOODEN_SWORD,
 						Items.STONE_SWORD,

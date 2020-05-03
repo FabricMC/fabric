@@ -37,10 +37,10 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  *
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
  */
-public class ModdedMiningToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
+public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	private final List<Item> vanillaItems;
 
-	public ModdedMiningToolsVanillaBlocksToolHandler(List<Item> vanillaItems) {
+	public ModdedToolsVanillaBlocksToolHandler(List<Item> vanillaItems) {
 		this.vanillaItems = vanillaItems;
 	}
 
