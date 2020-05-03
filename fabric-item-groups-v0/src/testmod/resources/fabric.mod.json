@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-item-groups-v0-testmod",
+  "name": "Fabric Item Groups (v0) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-item-groups-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.item.group.ItemGroupTest"
+    ]
+  }
+}
