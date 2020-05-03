@@ -16,20 +16,23 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import net.minecraft.client.util.math.MatrixStack;
+
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public interface HudRenderCallback {
-	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (delta) -> {
+	Event<HudRenderCallback> EVENT = EventFactory.createArrayBacked(HudRenderCallback.class, (listeners) -> (matrixStack, delta) -> {
 		for (HudRenderCallback event : listeners) {
-			event.onHudRender(delta);
+			event.onHudRender(matrixStack, delta);
 		}
 	});
 
 	/**
 	 * Called after rendering the whole hud, which is displayed in game, in a world.
 	 *
+	 * @param matrixStack the matrixStack
 	 * @param tickDelta Progress for linearly interpolating between the previous and current game state
 	 */
-	void onHudRender(float tickDelta);
+	void onHudRender(MatrixStack matrixStack, float tickDelta);
 }

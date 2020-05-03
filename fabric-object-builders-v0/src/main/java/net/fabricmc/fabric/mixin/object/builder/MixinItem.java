@@ -26,6 +26,7 @@ import net.minecraft.item.Item;
 import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 
 @Mixin(Item.class)
+@Deprecated
 public class MixinItem {
 	@Inject(method = "<init>(Lnet/minecraft/item/Item$Settings;)V", at = @At("RETURN"))
 	public void init(Item.Settings builder, CallbackInfo info) {

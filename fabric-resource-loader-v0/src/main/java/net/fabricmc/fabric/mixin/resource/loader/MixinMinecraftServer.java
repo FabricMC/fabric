@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.io.File;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +26,6 @@ import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
@@ -38,7 +35,7 @@ public class MixinMinecraftServer {
 	private ResourcePackManager<ResourcePackProfile> dataPackManager;
 
 	@Inject(method = "loadWorldDataPacks", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;registerProvider(Lnet/minecraft/resource/ResourcePackProvider;)V", ordinal = 1))
-	public void appendFabricDataPacks(File file, LevelProperties properties, CallbackInfo info) {
+	public void appendFabricDataPacks(CallbackInfo info) {
 		dataPackManager.registerProvider(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 	}
 }

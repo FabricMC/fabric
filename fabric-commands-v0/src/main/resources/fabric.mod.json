@@ -17,10 +17,10 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-command-api-v1": "*"
   },
-  "description": "Adds command-related hooks.",
+  "description": "Deprecated. Please migrate to v1",
   "mixins": [
-    "fabric-commands-v0.mixins.json"
   ]
 }

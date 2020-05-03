@@ -3,17 +3,17 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'fabric-loom' version '0.2.7-SNAPSHOT' apply false
+	id 'fabric-loom' version '0.4.3' apply false
 	id 'net.minecrell.licenser' version '0.4.1'
 	id "org.ajoberstar.grgit" version "3.1.1"
-	id 'com.matthewprenger.cursegradle' version "1.1.2"
+	id 'com.matthewprenger.cursegradle' version "1.4.0"
 }
 
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.5.11"
-	static def mcVersion = "20w16a"
+	static def baseVersion = "0.10.3"
+	static def mcVersion = "20w18a"
 	static def yarnVersion = "+build.1"
 }
 
@@ -57,10 +57,17 @@ allprojects {
 
 	group = "net.fabricmc.fabric-api"
 
+	sourceSets {
+		testmod {
+			compileClasspath += main.compileClasspath
+			runtimeClasspath += main.runtimeClasspath
+		}
+	}
+
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:0.7.9+build.190"
+		modCompile "net.fabricmc:fabric-loader:0.8.2+build.194"
 	}
 
 	configurations {
@@ -149,6 +156,11 @@ task javadocJar(type: Jar) {
 build.dependsOn javadocJar
 
 subprojects {
+
+	dependencies {
+		testmodCompile sourceSets.main.output
+	}
+
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
 		afterEvaluate {
 			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
@@ -228,11 +240,17 @@ task licenseFormatAll
 subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
 subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 
+sourceSets {
+	testmod
+}
+
 dependencies {
 	afterEvaluate {
 		subprojects.each {
 			compile project(path: ":${it.name}", configuration: "dev")
 			include project("${it.name}:")
+
+			testmodCompile project("${it.name}:").sourceSets.testmod.output
 		}
 	}
 }
@@ -246,6 +264,7 @@ curseforge {
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
 		releaseType = 'beta'
 		addGameVersion '1.16-Snapshot'
+		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}

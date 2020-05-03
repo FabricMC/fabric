@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-tool-attribute-api-v1",
+  "name": "Fabric Tool Attribute API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-tool-attribute0api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-tag-extensions-v0": "*"
+  },
+  "description": "Dynamic atttributes for tools.",
+  "mixins": [
+    "fabric-tool-attribute-api-v1.mixins.json"
+  ]
+}
