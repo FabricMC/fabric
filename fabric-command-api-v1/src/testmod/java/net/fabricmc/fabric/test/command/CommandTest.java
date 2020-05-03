@@ -23,6 +23,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
+import net.fabricmc.fabric.api.event.server.ServerStopCallback;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -39,10 +40,17 @@ public class CommandTest implements ModInitializer {
 	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_DEDICATED = new SimpleCommandExceptionType(new LiteralText("This command was registered incorrectly. Should only be present on an dedicated server but was ran on an integrated server!"));
 
 	private boolean hasTested = false;
+	private boolean hasRegistered = false;
 
 	@Override
 	public void onInitialize() {
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+			if (this.hasRegistered) {
+				throw new AssertionError("Commands should not be registered twice per server instance!");
+			}
+
+			this.hasRegistered = true;
+
 			// A command that exists on both types of servers
 			dispatcher.register(literal("fabric_common_test_command").executes(this::executeCommonCommand));
 
@@ -100,6 +108,11 @@ public class CommandTest implements ModInitializer {
 			// Success!
 			this.hasTested = true;
 			CommandTest.LOGGER.info("The command tests have passed! Please make sure you execute the three commands for extra safety.");
+		});
+
+		ServerStopCallback.EVENT.register(server -> {
+			// When the server shuts down, we reset the registered flag.
+			this.hasRegistered = false;
 		});
 	}
 
