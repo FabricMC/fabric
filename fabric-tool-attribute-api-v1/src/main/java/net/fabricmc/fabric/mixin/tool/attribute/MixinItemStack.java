@@ -42,13 +42,14 @@ public abstract class MixinItemStack {
 	@Inject(at = @At("RETURN"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		if (!info.getReturnValueZ()) {
-			info.setReturnValue(ToolManager.handleIsEffectiveOnIgnoresVanilla(state, (ItemStack) (Object) this, null).get());
+			info.setReturnValue(ToolManager.handleIsEffectiveOnIgnoresVanilla(state, (ItemStack) (Object) this, null));
 		}
 	}
 
 	@Inject(at = @At("RETURN"), method = "getMiningSpeed", cancellable = true)
 	public void getMiningSpeed(BlockState state, CallbackInfoReturnable<Float> info) {
 		float customSpeed = ToolManager.handleBreakingSpeedIgnoresVanilla(state, (ItemStack) (Object) this, null);
+
 		if (info.getReturnValueF() < customSpeed) {
 			info.setReturnValue(customSpeed);
 		}
