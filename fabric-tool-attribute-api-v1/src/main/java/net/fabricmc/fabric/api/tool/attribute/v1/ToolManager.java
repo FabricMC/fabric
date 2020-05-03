@@ -20,7 +20,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
@@ -34,10 +33,10 @@ public final class ToolManager {
 	 * @param state the block state to break
 	 * @param stack the item stack involved with breaking the block
 	 * @param user  the user involved in breaking the block, null if not applicable.
-	 * @return the state of effective
+	 * @return whether the tool is effective
 	 */
 	public static boolean handleIsEffectiveOn(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
-		return stack.isEffectiveOn(state) || handleIsEffectiveOnIgnoresVanilla(state, stack, user).get();
+		return stack.isEffectiveOn(state) || handleIsEffectiveOnIgnoresVanilla(state, stack, user);
 	}
 
 	/**
@@ -46,9 +45,9 @@ public final class ToolManager {
 	 * @param state the block state to break
 	 * @param stack the item stack involved with breaking the block
 	 * @param user  the user involved in breaking the block, null if not applicable.
-	 * @return the state of effective
+	 * @return whether the tool is effective
 	 */
-	public static TriState handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
 		return ToolManagerImpl.handleIsEffectiveOnIgnoresVanilla(state, stack, user);
 	}
 
