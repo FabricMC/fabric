@@ -39,13 +39,13 @@ import net.fabricmc.fabric.api.networking.v1.util.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.NetworkingDetails;
 
 public final class NetworkingTintedChat {
-	public static final Identifier TEST_CHANNEL = id("tinted_chat/v1");
+	public static final Identifier CHANNEL = id("tinted_chat/v1");
 
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeText(new LiteralText(stuff));
-		ServerNetworking.getPlaySender(player).sendPacket(TEST_CHANNEL, buf);
-		NetworkingDetails.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
+		ServerNetworking.getPlaySender(player).sendPacket(CHANNEL, buf);
+		NetworkingDetails.LOGGER.info("Sent custom payload packet in {}", CHANNEL);
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated) {
@@ -70,7 +70,7 @@ public final class NetworkingTintedChat {
 	@Environment(EnvType.CLIENT)
 	@SuppressWarnings("unused") // entrypoint
 	public static void clientInit() {
-		ClientNetworking.getPlayReceiver().register(TEST_CHANNEL, (context, buf) -> {
+		ClientNetworking.getPlayReceiver().register(CHANNEL, (context, buf) -> {
 			Text text = buf.readText();
 			context.getEngine().send(() -> context.getEngine().inGameHud.setOverlayMessage(text, true));
 		});

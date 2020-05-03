@@ -23,10 +23,12 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.networking.NetworkingTintedChat::init"
+      "net.fabricmc.fabric.test.networking.NetworkingTintedChat::init",
+      "net.fabricmc.fabric.test.networking.NetworkingSpawningEntity::init"
     ],
     "client": [
-      "net.fabricmc.fabric.test.networking.NetworkingTintedChat::clientInit"
+      "net.fabricmc.fabric.test.networking.NetworkingTintedChat::clientInit",
+      "net.fabricmc.fabric.test.networking.NetworkingSpawningEntity::clientInit"
     ]
   }
 }
