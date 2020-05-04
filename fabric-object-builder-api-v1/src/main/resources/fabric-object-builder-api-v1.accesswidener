@@ -1,0 +1,2 @@
+accessWidener	v1	named
+extendable  method    net/minecraft/block/Block$Settings    <init>  (Lnet/minecraft/block/Material;Lnet/minecraft/block/MaterialColor;)V

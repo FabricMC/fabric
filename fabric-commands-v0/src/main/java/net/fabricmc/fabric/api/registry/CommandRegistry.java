@@ -22,11 +22,12 @@ import com.mojang.brigadier.CommandDispatcher;
 
 import net.minecraft.server.command.ServerCommandSource;
 
-import net.fabricmc.fabric.impl.command.CommandRegistryImpl;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 /**
- * Registry for server-side command providers.
+ * @deprecated Please migrate to v1. Please use {@link CommandRegistrationCallback} instead.
  */
+@Deprecated
 public class CommandRegistry {
 	public static final CommandRegistry INSTANCE = new CommandRegistry();
 
@@ -37,6 +38,12 @@ public class CommandRegistry {
 	 * @param consumer  The command provider, consuming {@link CommandDispatcher}.
 	 */
 	public void register(boolean dedicated, Consumer<CommandDispatcher<ServerCommandSource>> consumer) {
-		CommandRegistryImpl.INSTANCE.register(dedicated, consumer);
+		CommandRegistrationCallback.EVENT.register(((dispatcher, isDedicated) -> {
+			if (dedicated && !isDedicated) {
+				return;
+			}
+
+			consumer.accept(dispatcher);
+		}));
 	}
 }

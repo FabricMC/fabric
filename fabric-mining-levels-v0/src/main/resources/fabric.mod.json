@@ -18,10 +18,8 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
-    "fabric-tag-extensions-v0": "*"
+    "fabric-tag-extensions-v0": "*",
+    "fabric-tool-attribute-api-v1": "*"
   },
-  "description": "Block mining level tags for tools.",
-  "mixins": [
-    "fabric-mining-levels-v0.mixins.json"
-  ]
+  "description": "Block mining level tags for tools. Deprecated and replaced by fabric-tool-attribute-v1."
 }

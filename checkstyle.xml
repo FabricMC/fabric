@@ -5,6 +5,7 @@
 	<property name="fileExtensions" value="java"/>
 	<property name="localeLanguage" value="en"/>
 	<property name="localeCountry" value="US"/>
+	<property name="tabWidth" value="4"/>
 
 	<module name="NewlineAtEndOfFile"/>
 
@@ -107,11 +108,11 @@
 		</module>
 
 		<module name="Indentation">
-			<property name="basicOffset" value="8"/>
+			<property name="basicOffset" value="4"/>
 			<property name="caseIndent" value="0"/>
-			<property name="throwsIndent" value="8"/>
-			<property name="arrayInitIndent" value="8"/>
-			<property name="lineWrappingIndentation" value="16"/>
+			<property name="throwsIndent" value="4"/>
+			<property name="arrayInitIndent" value="4"/>
+			<property name="lineWrappingIndentation" value="8"/>
 		</module>
 
 		<module name="ParenPad"/>
@@ -186,7 +187,7 @@
 			- largely unconstained trailing subpackages
 			-->
 			<property name="format"
-			value="^net\.fabricmc\.fabric\.(api(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+[a-rt-z])+\.v[1-9][0-9]*|(impl|mixin)(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+[a-rt-z])+|api\.(event|util|biomes\.v1|registry|client\.screen|container|block|entity|client\.itemgroup|client\.keybinding|tag|tools|client\.model|network|server|client\.render|resource|client\.texture))(|\.[a-z]+(\.[a-z0-9]+)*)$"/>
+			value="^net\.fabricmc\.fabric\.(api(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+[a-rt-z])+\.v[1-9][0-9]*|(impl|mixin|test)(?!\.common\.)(\.client|\.server|)(\.(?!client\.|server\.)[a-z]+[a-rt-z])+|api\.(event|util|biomes\.v1|registry|client\.screen|container|block|entity|client\.itemgroup|client\.keybinding|tag|tools|client\.model|network|server|client\.render|resource|client\.texture))(|\.[a-z]+(\.[a-z0-9]+)*)$"/>
 		</module>
 
 		<!--<module name="InvalidJavadocPosition"/>-->
