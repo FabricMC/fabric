@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.registry;
+package net.fabricmc.fabric.impl.registry.sync;
 
-import net.minecraft.util.registry.Registry;
+import java.util.Set;
 
-public interface RegistryAttributeHolder {
-	static RegistryAttributeHolder get(Registry<?> registry) {
-		return (RegistryAttributeHolder) registry;
-	}
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 
-	RegistryAttributeHolder addAttribute(RegistryAttribute attribute);
+public interface FabricRegistry extends RegistryAttributeHolder {
+	void build(Set<RegistryAttribute> attributes);
 
-	boolean hasAttribute(RegistryAttribute attribute);
+	boolean builtByBuilder();
 }

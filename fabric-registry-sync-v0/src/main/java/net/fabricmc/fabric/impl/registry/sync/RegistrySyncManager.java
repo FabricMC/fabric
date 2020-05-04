@@ -145,8 +145,7 @@ public final class RegistrySyncManager {
 				existingRegistryData = activeIdMap.getCompound(registryId.toString());
 			}
 
-			//noinspection unchecked
-			RegistryAttributeHolder<?> attributeHolder = RegistryAttributeHolder.get(registry);
+			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
 
 			if (!isClientSync && !attributeHolder.hasAttribute(RegistryAttribute.PERSISTED)) {
 				LOGGER.debug("Not saving non-persistent registry: " + registryId);
@@ -285,7 +284,7 @@ public final class RegistrySyncManager {
 		for (MutableRegistry<?> registry : Registry.REGISTRIES) {
 			if (registry instanceof HashedRegistry) {
 				if (((HashedRegistry) registry).getStoredHash() != ((HashedRegistry) registry).storeHash()) {
-					RegistryAttributeHolder<?> holder = RegistryAttributeHolder.get(registry);
+					RegistryAttributeHolder holder = RegistryAttributeHolder.get(registry);
 
 					if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
 						LOGGER.debug("Registry {} has been marked as modded as the hash changed since bootstrap", Registry.REGISTRIES.getId(registry));
