@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
-import net.minecraft.client.render.model.json.ModelItemPropertyOverrideList;
+import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.item.ItemStack;
@@ -92,7 +92,7 @@ public abstract class ForwardingBakedModel implements BakedModel, FabricBakedMod
 	}
 
 	@Override
-	public ModelItemPropertyOverrideList getItemPropertyOverrides() {
-		return wrapped.getItemPropertyOverrides();
+	public ModelOverrideList getOverrides() {
+		return wrapped.getOverrides();
 	}
 }
