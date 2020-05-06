@@ -43,8 +43,6 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private Boolean alwaysUpdateVelocity;
 	private boolean fireImmune = false;
 	private boolean spawnableFarFromPlayer;
-	private int maxDespawnDistance = 128;
-	private int minDespawnDistance = 32;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
 
 	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
@@ -126,26 +124,27 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * Sets the maximum distance entities of this type can be from a player to possibly despawn.
+	 * @deprecated For removal: Gas been moved to EntityCategory
 	 *
 	 * @param maxDespawnDistance the distance
 	 *
+	 *
 	 * @return this builder for chaining
 	 */
+	@Deprecated
 	public FabricEntityTypeBuilder<T> maxDespawnDistance(int maxDespawnDistance) {
-		this.maxDespawnDistance = maxDespawnDistance;
 		return this;
 	}
 
 	/**
-	 * Sets the minimum distance entities of this type can be from a player to possibly despawn.
+	 * @deprecated For removal: Gas been moved to EntityCategory
 	 *
 	 * @param minDespawnDistance the distance
 	 *
 	 * @return this builder for chaining
 	 */
+	@Deprecated
 	public FabricEntityTypeBuilder<T> minDespawnDistance(int minDespawnDistance) {
-		this.minDespawnDistance = minDespawnDistance;
 		return this;
 	}
 
@@ -171,7 +170,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.maxDespawnDistance, this.minDespawnDistance, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}

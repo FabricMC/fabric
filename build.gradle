@@ -12,9 +12,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.10.1"
-	static def mcVersion = "20w18a"
-	static def yarnVersion = "+build.9"
+	static def baseVersion = "0.10.5"
+	static def mcVersion = "20w19a"
+	static def yarnVersion = "+build.1"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
@@ -56,6 +56,13 @@ allprojects {
 	targetCompatibility = 1.8
 
 	group = "net.fabricmc.fabric-api"
+
+	sourceSets {
+		testmod {
+			compileClasspath += main.compileClasspath
+			runtimeClasspath += main.runtimeClasspath
+		}
+	}
 
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
@@ -149,6 +156,11 @@ task javadocJar(type: Jar) {
 build.dependsOn javadocJar
 
 subprojects {
+
+	dependencies {
+		testmodCompile sourceSets.main.output
+	}
+
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
 		afterEvaluate {
 			from("${project.buildDir}/libs/$archivesBaseName-${version}.jar")
@@ -228,11 +240,17 @@ task licenseFormatAll
 subprojects { p -> licenseFormatAll.dependsOn("${p.path}:licenseFormat") }
 subprojects.each { remapJar.dependsOn("${it.path}:remapJar") }
 
+sourceSets {
+	testmod
+}
+
 dependencies {
 	afterEvaluate {
 		subprojects.each {
 			compile project(path: ":${it.name}", configuration: "dev")
 			include project("${it.name}:")
+
+			testmodCompile project("${it.name}:").sourceSets.testmod.output
 		}
 	}
 }
