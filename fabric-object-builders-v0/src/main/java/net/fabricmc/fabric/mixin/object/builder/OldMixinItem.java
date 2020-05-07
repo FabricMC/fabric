@@ -21,16 +21,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.AbstractBlock;
+import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.event.registry.BlockConstructedCallback;
+import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 
-@Mixin(Block.class)
+@Mixin(Item.class)
 @Deprecated
-public class MixinBlock {
-	@Inject(method = "<init>(Lnet/minecraft/block/AbstractBlock$Settings;)V", at = @At("RETURN"))
-	public void init(AbstractBlock.Settings builder, CallbackInfo info) {
-		BlockConstructedCallback.EVENT.invoker().building(builder, (Block) (Object) this);
+public class OldMixinItem {
+	@Inject(method = "<init>(Lnet/minecraft/item/Item$Settings;)V", at = @At("RETURN"))
+	public void init(Item.Settings builder, CallbackInfo info) {
+		ItemConstructedCallback.EVENT.invoker().building(builder, (Item) (Object) this);
 	}
 }

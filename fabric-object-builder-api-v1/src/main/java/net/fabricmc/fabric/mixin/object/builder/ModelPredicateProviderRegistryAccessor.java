@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.texture;
+package net.fabricmc.fabric.mixin.object.builder;
 
-import java.util.Set;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.minecraft.client.item.ModelPredicateProvider;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.util.Identifier;
 
-/**
- * Implement this interface on a Sprite to declare additional dependencies
- * that should be processed prior to this sprite.
- *
- * <p>Best used in conjunction with {@link net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback}.
- */
-public interface DependentSprite {
-	/**
-	 * @return A set of all sprites that should be loaded before this sprite.
-	 */
-	Set<Identifier> getDependencies();
+@Mixin(ModelPredicateProviderRegistry.class)
+public interface ModelPredicateProviderRegistryAccessor {
+	@Invoker
+	static ModelPredicateProvider callRegister(Identifier id, ModelPredicateProvider provider) {
+		throw new AssertionError("mixin dummy");
+	}
 }

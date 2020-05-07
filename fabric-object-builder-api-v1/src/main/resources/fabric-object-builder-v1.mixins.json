@@ -11,6 +11,10 @@
     "MaterialBuilderAccessor",
     "MixinBlock"
   ],
+  "client": [
+    "ModelPredicateProviderRegistryAccessor",
+    "ModelPredicateProviderRegistrySpecificAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
