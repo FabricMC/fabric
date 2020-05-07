@@ -33,10 +33,10 @@ public class FabricRegistryBuilder<T> {
 
 	private FabricRegistryBuilder(Registry<T> registry) {
 		this.registry = registry;
-		addAttribute(RegistryAttribute.MODDED);
+		attribute(RegistryAttribute.MODDED);
 	}
 
-	public FabricRegistryBuilder<T> addAttribute(RegistryAttribute attribute) {
+	public FabricRegistryBuilder<T> attribute(RegistryAttribute attribute) {
 		attributes.add(attribute);
 		return this;
 	}

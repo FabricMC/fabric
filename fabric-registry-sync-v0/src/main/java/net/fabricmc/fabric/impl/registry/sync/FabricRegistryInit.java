@@ -25,11 +25,11 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 public class FabricRegistryInit implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		// RegistryAttribute.SYNCED in PlaySoundS2CPacket.
+		// Synced in PlaySoundS2CPacket.
 		RegistryAttributeHolder.get(Registry.SOUND_EVENT)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// RegistryAttribute.SYNCED with RegistryTagContainer from RegistryTagManager.
+		// Synced with RegistryTagContainer from RegistryTagManager.
 		RegistryAttributeHolder.get(Registry.FLUID)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -38,14 +38,14 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED)
 				.addAttribute(RegistryAttribute.PERSISTED);
 
-		// RegistryAttribute.SYNCED in ChunkDeltaUpdateS2CPacket among other places, a pallet is used when saving.
+		// Synced in ChunkDeltaUpdateS2CPacket among other places, a pallet is used when saving.
 		RegistryAttributeHolder.get(Registry.BLOCK)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Does not appear to be saved or RegistryAttribute.SYNCED, the string id is used.
+		// Does not appear to be saved or synced, the string id is used.
 		RegistryAttributeHolder.get(Registry.ENCHANTMENT);
 
-		// RegistryAttribute.SYNCED in EntitySpawnS2CPacket
+		// Synced in EntitySpawnS2CPacket
 		RegistryAttributeHolder.get(Registry.ENTITY_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -53,7 +53,7 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registry.ITEM)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Saved and RegistryAttribute.SYNCED using string ID.
+		// Saved and synced using string ID.
 		RegistryAttributeHolder.get(Registry.POTION);
 
 		// Doesnt seem to be accessed apart from registering?
@@ -62,10 +62,10 @@ public class FabricRegistryInit implements ModInitializer {
 		// Doesnt seem to be accessed apart from registering?
 		RegistryAttributeHolder.get(Registry.SURFACE_BUILDER);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.FEATURE);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.DECORATOR);
 
 		// Saved to level format
@@ -73,44 +73,44 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED)
 				.addAttribute(RegistryAttribute.PERSISTED);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BLOCK_STATE_PROVIDER_TYPE);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BLOCK_PLACER_TYPE);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.FOLIAGE_PLACER_TYPE);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.TRUNK_PLACER_TYPE);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.TREE_DECORATOR_TYPE);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.FEATURE_SIZE_TYPE);
 
-		// RegistryAttribute.SYNCED in ParticleS2CPacket
+		// Synced in ParticleS2CPacket
 		RegistryAttributeHolder.get(Registry.PARTICLE_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BIOME_SOURCE_TYPE);
 
-		// Serialised by string, doesnt seem to be RegistryAttribute.SYNCED
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.CHUNK_GENERATOR_TYPE);
 
-		// RegistryAttribute.SYNCED in GameJoinS2CPacket and PlayerRespawnS2CPacket. Entities and maps also use the id when saving.
+		// Synced in GameJoinS2CPacket and PlayerRespawnS2CPacket. Entities and maps also use the id when saving.
 		RegistryAttributeHolder.get(Registry.DIMENSION_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED)
 				.addAttribute(RegistryAttribute.PERSISTED);
 
-		// RegistryAttribute.SYNCED in PaintingSpawnS2CPacket
+		// Synced in PaintingSpawnS2CPacket
 		RegistryAttributeHolder.get(Registry.PAINTING_MOTIVE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Doesnt seem to be RegistryAttribute.SYNCED or saved, STAT_TYPE seems to handle the syncing.
+		// Doesnt seem to be synced or saved, STAT_TYPE seems to handle the syncing.
 		RegistryAttributeHolder.get(Registry.CUSTOM_STAT);
 
 		RegistryAttributeHolder.get(Registry.CHUNK_STATUS);
@@ -127,7 +127,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		RegistryAttributeHolder.get(Registry.STRUCTURE_POOL_ELEMENT);
 
-		// RegistryAttribute.SYNCED in OpenScreenS2CPacket
+		// Synced in OpenScreenS2CPacket
 		RegistryAttributeHolder.get(Registry.SCREEN_HANDLER)
 				.addAttribute(RegistryAttribute.SYNCED);
 
@@ -137,7 +137,7 @@ public class FabricRegistryInit implements ModInitializer {
 
 		RegistryAttributeHolder.get(Registry.ATTRIBUTES);
 
-		// RegistryAttribute.SYNCED in StatisticsS2CPacket
+		// Synced in StatisticsS2CPacket
 		RegistryAttributeHolder.get(Registry.STAT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
