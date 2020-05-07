@@ -113,46 +113,63 @@ public class FabricRegistryInit implements ModInitializer {
 		// Doesnt seem to be synced or saved, STAT_TYPE seems to handle the syncing.
 		RegistryAttributeHolder.get(Registry.CUSTOM_STAT);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.CHUNK_STATUS);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.STRUCTURE_FEATURE);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.STRUCTURE_PIECE);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.RULE_TEST);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.POS_RULE_TEST);
 
 		RegistryAttributeHolder.get(Registry.STRUCTURE_PROCESSOR);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.STRUCTURE_POOL_ELEMENT);
 
 		// Synced in OpenScreenS2CPacket
 		RegistryAttributeHolder.get(Registry.SCREEN_HANDLER)
 				.addAttribute(RegistryAttribute.SYNCED);
 
+		// Does not seem to be serialised, only queried by id. Not synced
 		RegistryAttributeHolder.get(Registry.RECIPE_TYPE);
 
+		// Synced by id
 		RegistryAttributeHolder.get(Registry.RECIPE_SERIALIZER);
 
+		// Synced and saved by id
 		RegistryAttributeHolder.get(Registry.ATTRIBUTES);
 
 		// Synced in StatisticsS2CPacket
 		RegistryAttributeHolder.get(Registry.STAT_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		RegistryAttributeHolder.get(Registry.VILLAGER_TYPE);
+		// Synced by rawID in TrackedDataHandlerRegistry.VILLAGER_DATA
+		RegistryAttributeHolder.get(Registry.VILLAGER_TYPE)
+				.addAttribute(RegistryAttribute.SYNCED);
 
+		// Synced by rawID in TrackedDataHandlerRegistry.VILLAGER_DATA
 		RegistryAttributeHolder.get(Registry.VILLAGER_PROFESSION);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.POINT_OF_INTEREST_TYPE);
 
+		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.MEMORY_MODULE_TYPE);
 
+		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.SENSOR_TYPE);
 
+		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.SCHEDULE);
 
+		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.ACTIVITY);
 	}
 }
