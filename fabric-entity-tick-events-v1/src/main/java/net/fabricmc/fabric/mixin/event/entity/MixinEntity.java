@@ -36,7 +36,7 @@ public abstract class MixinEntity implements EntityCascadingEventBridge {
 
 	@Inject(at = @At("TAIL"), method = "<init>")
 	private void fabric_initTickEvent(EntityType<?> type, World world, CallbackInfo ci) {
-		this.fabric_tickEvent = TickEventInternals.getOrCreateEntityEvent(((Entity) (Object) this).getClass());
+		this.fabric_tickEvent = TickEventInternals.getOrCreateEntityEvent((Class<Entity>) ((Entity) (Object) this).getClass());
 	}
 
 	@Override

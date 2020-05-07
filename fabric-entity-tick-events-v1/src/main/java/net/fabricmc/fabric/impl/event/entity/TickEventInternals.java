@@ -47,11 +47,11 @@ public class TickEventInternals {
 		CascadingEvent<EntityTickCallback<E>> event = (CascadingEvent<EntityTickCallback<E>>) ENTITY_TICK_EVENTS.get(entityClass);
 
 		if (event == null) {
-			event = new CascadingEvent<>(createEntityEvent());    // decorator around the base Event
+			event = new CascadingEvent<>(createEntityEvent()); // decorator around the base Event
 
-			if (entityClass != Entity.class) {    // entities cannot inherit callbacks from anything
+			if (entityClass != Entity.class) { // entities cannot inherit callbacks from anything
 				Class<E> superclass = (Class<E>) entityClass.getSuperclass();
-				getOrCreateEntityEvent(superclass).registerDescendant(event);    // recursive call to init every parent
+				getOrCreateEntityEvent(superclass).registerDescendant(event); // recursive call to init every parent
 			}
 
 			ENTITY_TICK_EVENTS.put(entityClass, event);

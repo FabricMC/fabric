@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-entity-tick-events-v1-testmod",
+  "name": "Fabric Entity Tick Events (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-entity-tick-events-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.event.entity.tick.EntityTickEventTest"
+    ]
+  }
+}
