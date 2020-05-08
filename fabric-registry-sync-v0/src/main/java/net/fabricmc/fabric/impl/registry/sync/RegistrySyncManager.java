@@ -61,6 +61,7 @@ public final class RegistrySyncManager {
 	private RegistrySyncManager() { }
 
 	public static Packet<?> createPacket() {
+		LOGGER.debug("Creating registry sync packet");
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(toTag(true, null));
 
@@ -157,7 +158,12 @@ public final class RegistrySyncManager {
 				continue;
 			}
 
-			//Keep vanilla registry that we have no existing registry entries for
+			/*
+			 * Dont do anything with vanilla registries, that are un-modded and we do not have previous ids for.
+			 *
+			 * This will still sync IDs if a world has been previously modded, either from removed mods
+			 * or a previous version of fabric registry sync.
+			 */
 			if (existingRegistryData == null && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;

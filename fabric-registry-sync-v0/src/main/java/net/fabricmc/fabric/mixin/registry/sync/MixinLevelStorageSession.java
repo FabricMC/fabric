@@ -84,6 +84,7 @@ public class MixinLevelStorageSession {
 
 	@Unique
 	private void fabric_saveRegistryData() {
+		FABRIC_LOGGER.debug("Starting registry save");
 		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeIdMap);
 
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {

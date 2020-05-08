@@ -27,18 +27,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 
-import net.fabricmc.fabric.impl.registry.sync.HashedRegistry;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 
-@Mixin(MutableRegistry.class)
-public abstract class MixinMutableRegistry<T> extends Registry<T> implements HashedRegistry {
-	@Unique
-	private int preBootstrapHash = -1;
-
+@Mixin(SimpleRegistry.class)
+public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	@Unique
 	private static final Logger FARBIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
 
@@ -83,15 +80,5 @@ public abstract class MixinMutableRegistry<T> extends Registry<T> implements Has
 				}
 			}
 		}
-	}
-
-	@Override
-	public int getStoredHash() {
-		return preBootstrapHash;
-	}
-
-	@Override
-	public int storeHash() {
-		return preBootstrapHash = getIds().hashCode();
 	}
 }

@@ -20,18 +20,27 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
+import net.fabricmc.fabric.impl.registry.sync.HashedRegistry;
 
 @Mixin(Registry.class)
-public abstract class MixinRegistry<T> implements RegistryAttributeHolder, FabricRegistry {
+public abstract class MixinRegistry<T> implements RegistryAttributeHolder, FabricRegistry, HashedRegistry {
 	@Unique
 	private final Set<RegistryAttribute> attributes = new HashSet<>();
+
+	@Unique
+	private int preBootstrapHash = -1;
+
+	@Shadow
+	public abstract Set<Identifier> getIds();
 
 	/**
 	 * This is used to denote backwards compatibility, when false default attributes will be applied.
@@ -60,5 +69,15 @@ public abstract class MixinRegistry<T> implements RegistryAttributeHolder, Fabri
 	@Override
 	public boolean builtByBuilder() {
 		return builtWithBuilder;
+	}
+
+	@Override
+	public int getStoredHash() {
+		return preBootstrapHash;
+	}
+
+	@Override
+	public int storeHash() {
+		return preBootstrapHash = getIds().hashCode();
 	}
 }
