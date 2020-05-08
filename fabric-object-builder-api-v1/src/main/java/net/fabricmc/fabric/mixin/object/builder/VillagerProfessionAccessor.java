@@ -29,7 +29,7 @@ import net.minecraft.world.poi.PointOfInterestType;
 @Mixin(VillagerProfession.class)
 public interface VillagerProfessionAccessor {
 	@Invoker("<init>")
-	static VillagerProfession create(String id, PointOfInterestType type, ImmutableSet<Item> gatherableItems, ImmutableSet<Block> secondaryJobSites, /*Nullable*/ SoundEvent soundEvent) {
+	static VillagerProfession create(String id, PointOfInterestType type, ImmutableSet<Item> gatherableItems, ImmutableSet<Block> secondaryJobSites, /* @Nullable */ SoundEvent soundEvent) {
 		throw new AssertionError("Untransformed accessor!");
 	}
 }

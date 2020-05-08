@@ -41,7 +41,7 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerProfessionAccessor;
  *
  * <p>Note this does not register any trades to these villagers. To register trades, add a new entry with your profession as the key to {@link TradeOffers#PROFESSION_TO_LEVELED_TRADE}.
  */
-public class VillagerProfessionBuilder {
+public final class VillagerProfessionBuilder {
 	private final ImmutableSet.Builder<Item> gatherableItemsBuilder = ImmutableSet.builder();
 	private final ImmutableSet.Builder<Block> secondaryJobSiteBlockBuilder = ImmutableSet.builder();
 	private Identifier identifier;

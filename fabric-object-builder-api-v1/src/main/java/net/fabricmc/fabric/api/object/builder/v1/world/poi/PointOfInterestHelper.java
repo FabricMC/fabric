@@ -38,7 +38,6 @@ import net.fabricmc.fabric.mixin.object.builder.PointOfInterestTypeAccessor;
  */
 public final class PointOfInterestHelper {
 	private PointOfInterestHelper() {
-		throw new IllegalStateException("You shouldn't be initializing this!");
 	}
 
 	/**
@@ -47,7 +46,7 @@ public final class PointOfInterestHelper {
 	 * @param id The id of this {@link PointOfInterestType}.
 	 * @param ticketCount the amount of tickets.
 	 * @param searchDistance the search distance.
-	 * @param blocks all the blocks a {@link PointOfInterest} of this type will present in.
+	 * @param blocks all the blocks where a {@link PointOfInterest} of this type will be present.
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Block... blocks) {
@@ -65,9 +64,9 @@ public final class PointOfInterestHelper {
 	 *
 	 * @param id The id of this {@link PointOfInterestType}.
 	 * @param ticketCount the amount of tickets.
-	 * @param completionCondition a {@link Predicate} which determines whether this point of interest type should be present.
+	 * @param completionCondition a {@link Predicate} which determines if two {@link PointOfInterestType}s are the same.
 	 * @param searchDistance the search distance.
-	 * @param blocks all the blocks a {@link PointOfInterest} of this type will present in.
+	 * @param blocks all blocks where a {@link PointOfInterest} of this type will be present
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> completionCondition, int searchDistance, Block... blocks) {
@@ -86,7 +85,7 @@ public final class PointOfInterestHelper {
 	 * @param id the id of this {@link PointOfInterestType}.
 	 * @param ticketCount the amount of tickets.
 	 * @param searchDistance the search distance.
-	 * @param blocks all the {@link BlockState block states} a {@link PointOfInterest} of this type will present in.
+	 * @param blocks all {@link BlockState block states} where a {@link PointOfInterest} of this type will be present
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, int searchDistance, Iterable<BlockState> blocks) {
@@ -100,9 +99,9 @@ public final class PointOfInterestHelper {
 	 *
 	 * @param id the id of this {@link PointOfInterestType}.
 	 * @param ticketCount the amount of tickets.
-	 * @param typePredicate a {@link Predicate} which determines whether this point of interest type should be present.
+	 * @param typePredicate a {@link Predicate} which determines if two {@link PointOfInterestType}s are the same.
 	 * @param searchDistance the search distance.
-	 * @param states all the {@link BlockState block states} a {@link PointOfInterest} of this type will present in.
+	 * @param states all {@link BlockState block states} where a {@link PointOfInterest} of this type will be present
 	 * @return a new {@link PointOfInterestType}.
 	 */
 	public static PointOfInterestType register(Identifier id, int ticketCount, Predicate<PointOfInterestType> typePredicate, int searchDistance, Iterable<BlockState> states) {
