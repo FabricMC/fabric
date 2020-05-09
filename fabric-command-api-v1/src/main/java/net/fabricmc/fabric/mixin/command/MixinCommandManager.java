@@ -34,7 +34,10 @@ public abstract class MixinCommandManager {
 	 */
 	@Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
 	private void fabric_addCommands(CommandDispatcher<ServerCommandSource> dispatcher, AmbiguityConsumer<ServerCommandSource> ambiguityConsumer, boolean isDedicated) {
-		CommandRegistrationCallback.EVENT.invoker().register(dispatcher, isDedicated);
+		if (!isDedicated) {
+			CommandRegistrationCallback.EVENT.invoker().register(dispatcher, isDedicated);
+		}
+
 		// Now mimic vanilla logic by calling findAmbiguities.
 		dispatcher.findAmbiguities(ambiguityConsumer);
 	}
