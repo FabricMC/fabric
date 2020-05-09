@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import org.apache.commons.lang3.Validate;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -26,12 +25,14 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import org.apache.commons.lang3.Validate;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 
 public class RegistrySyncTest implements ModInitializer {
-
 	/**
-	 * These are system property's as it allows for easier testing with different run configurations
+	 * These are system property's as it allows for easier testing with different run configurations.
 	 */
 	public static final boolean REGISTER_BLOCKS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.blocks", "true"));
 	public static final boolean REGISTER_ITEMS = Boolean.parseBoolean(System.getProperty("fabric.registry.sync.test.register.items", "true"));
@@ -50,6 +51,7 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 
 			Validate.isTrue(RegistryAttributeHolder.get(Registry.BLOCK).hasAttribute(RegistryAttribute.MODDED), "Modded block was registered but registry not marked as modded");
+
 			if (REGISTER_ITEMS) {
 				Validate.isTrue(RegistryAttributeHolder.get(Registry.ITEM).hasAttribute(RegistryAttribute.MODDED), "Modded item was registered but registry not marked as modded");
 			}
