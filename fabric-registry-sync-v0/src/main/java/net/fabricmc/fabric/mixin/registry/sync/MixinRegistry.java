@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.registry.sync.HashedRegistry;
 @Mixin(Registry.class)
 public abstract class MixinRegistry<T> implements RegistryAttributeHolder, FabricRegistry, HashedRegistry {
 	@Unique
-	private final EnumSet<RegistryAttribute> attributes = EnumSet.allOf(RegistryAttribute.class);
+	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
 
 	@Unique
 	private int preBootstrapHash = -1;
