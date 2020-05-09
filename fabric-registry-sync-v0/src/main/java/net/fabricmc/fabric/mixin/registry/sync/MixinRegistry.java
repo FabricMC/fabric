@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.registry.sync.HashedRegistry;
 @Mixin(Registry.class)
 public abstract class MixinRegistry<T> implements RegistryAttributeHolder, FabricRegistry, HashedRegistry {
 	@Unique
-	private final Set<RegistryAttribute> attributes = new HashSet<>();
+	private final EnumSet<RegistryAttribute> attributes = EnumSet.allOf(RegistryAttribute.class);
 
 	@Unique
 	private int preBootstrapHash = -1;
