@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.mixin.object.builder.CriteriaAccessor;
 
 /**
- * Allows registering advancement criterions for triggers.
+ * Allows registering advancement criteria for triggers.
  *
  * <p>A registered criteria can be retrieved through
  * {@link net.minecraft.advancement.criterion.Criteria#getById(Identifier)}.</p>
