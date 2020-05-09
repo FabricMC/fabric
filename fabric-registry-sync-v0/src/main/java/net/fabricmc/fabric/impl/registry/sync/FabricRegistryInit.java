@@ -50,8 +50,7 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Doesnt appear to need syncing or saving?
-		RegistryAttributeHolder.get(Registry.ITEM)
-				.addAttribute(RegistryAttribute.SYNCED);
+		RegistryAttributeHolder.get(Registry.ITEM);
 
 		// Saved and synced using string ID.
 		RegistryAttributeHolder.get(Registry.POTION);
@@ -155,7 +154,8 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced by rawID in TrackedDataHandlerRegistry.VILLAGER_DATA
-		RegistryAttributeHolder.get(Registry.VILLAGER_PROFESSION);
+		RegistryAttributeHolder.get(Registry.VILLAGER_PROFESSION)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.POINT_OF_INTEREST_TYPE);

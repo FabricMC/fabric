@@ -159,14 +159,18 @@ public final class RegistrySyncManager {
 			}
 
 			/*
-			 * Dont do anything with vanilla registries, that are un-modded and we do not have previous ids for.
+			 * Dont do anything with vanilla registries on client sync.
+			 * When saving, preserve existing registry ids if they exist, else dont save the registry.
 			 *
-			 * This will still sync IDs if a world has been previously modded, either from removed mods
-			 * or a previous version of fabric registry sync.
+			 * This will not sync IDs if a world has been previously modded, either from removed mods
+			 * or a previous version of fabric registry sync, but will save these ids to disk in case the mod or mods
+			 * are added back.
 			 */
-			if (existingRegistryData == null && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+			if ((existingRegistryData == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
+			} else if (existingRegistryData != null) {
+				LOGGER.debug("Preserving previously modded registry: " + registryId);
 			}
 
 			if (isClientSync) {
