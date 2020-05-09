@@ -6,6 +6,7 @@
     "AbstractBlockAccessor",
     "AbstractBlockSettingsAccessor",
     "AbstractBlockSettingsMixin",
+    "CriteriaAccessor",
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "MaterialBuilderAccessor",
