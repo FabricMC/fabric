@@ -24,7 +24,7 @@ import net.fabricmc.fabric.mixin.object.builder.CriteriaAccessor;
 /**
  * Allows registering advancement criteria for triggers.
  *
- * <p>A registered criteria can be retrieved through
+ * <p>A registered criterion (trigger) can be retrieved through
  * {@link net.minecraft.advancement.criterion.Criteria#getById(Identifier)}.</p>
  *
  * @see net.minecraft.advancement.criterion.Criteria
