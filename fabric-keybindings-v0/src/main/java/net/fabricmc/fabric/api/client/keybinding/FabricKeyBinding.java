@@ -31,7 +31,7 @@ import net.minecraft.util.Identifier;
 @Deprecated
 public class FabricKeyBinding extends net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding {
 	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
-		super(id, "key." + String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
+		super(id, String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
 	}
 
 	/**
