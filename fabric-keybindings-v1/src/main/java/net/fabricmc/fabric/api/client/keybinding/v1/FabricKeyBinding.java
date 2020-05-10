@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.keybinding.v1;
 
 import java.util.Objects;
+import java.util.function.BooleanSupplier;
 
 import com.google.common.base.Preconditions;
 
@@ -24,6 +25,7 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.client.keybinding.StickyFabricKeyBinding;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 
 /**
@@ -98,7 +100,7 @@ public class FabricKeyBinding extends KeyBinding {
 		private String translationKey;
 		private boolean unassigned = false;
 		private boolean automaticallyRegister = false;
-
+		private BooleanSupplier toggleFlagSupplier = null;
 		private int code = UNASSIGNED;
 		private String category = KeyCategories.MISC;
 
@@ -151,6 +153,24 @@ public class FabricKeyBinding extends KeyBinding {
 		}
 
 		/**
+		 * Sets this builder to create sticky keybindings that will toggle their state when pressed.
+		 */
+		public Builder sticky() {
+			return sticky(() -> true);
+		}
+
+		/**
+		 * Sets a sticking action to be used by the constructed key binding which can be used to switch between
+		 * a sticky (toggle) and a regular key binding.
+		 *
+		 * @param toggleFlagSupplier A getter function to determine whether to toggle or not. True for toggling behaviour, false otherwise.
+		 */
+		public Builder sticky(BooleanSupplier toggleFlagSupplier) {
+			this.toggleFlagSupplier = toggleFlagSupplier;
+			return this;
+		}
+
+		/**
 		 * Sets this builder to auto-register any key bindings created using it.
 		 *
 		 * <p>Mods who intend to register their own key bindings manually may choose not to use this.</p>
@@ -181,7 +201,13 @@ public class FabricKeyBinding extends KeyBinding {
 		public FabricKeyBinding build() {
 			Objects.requireNonNull(id, "Keybindings should be created with an identifier.");
 			Preconditions.checkState(unassigned || code != UNASSIGNED, "Keybindings need a default keycode.");
-			FabricKeyBinding binding = new FabricKeyBinding(id, translationKey, type, code, category);
+			FabricKeyBinding binding;
+
+			if (toggleFlagSupplier == null) {
+				binding = new FabricKeyBinding(id, translationKey, type, code, category);
+			} else {
+				binding = new StickyFabricKeyBinding(id, translationKey, type, code, category, toggleFlagSupplier);
+			}
 
 			if (automaticallyRegister) {
 				KeyBindingRegistry.INSTANCE.register(binding);
