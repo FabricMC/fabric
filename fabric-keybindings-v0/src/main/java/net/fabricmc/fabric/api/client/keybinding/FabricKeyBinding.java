@@ -20,27 +20,31 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
-
 /**
  * Expanded version of {@link KeyBinding} for use by Fabric mods.
  *
  * <p>*ALL* instantiated FabricKeyBindings should be registered in
- * {@link KeyBindingRegistry#register(FabricKeyBinding)}!
+ * {@link KeyBindingRegistry#register(FabricKeyBinding)}!</p>
+ *
+ * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding} instead.
  */
-public class FabricKeyBinding extends KeyBinding {
+@Deprecated
+public class FabricKeyBinding extends net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding {
 	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
-		super("key." + id.toString().replace(':', '.'), type, code, category);
+		super(id, "key." + String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
 	}
 
 	/**
 	 * Returns the configured KeyCode assigned to the KeyBinding from the player's settings.
+	 *
 	 * @return configured KeyCode
 	 */
+	@Override
 	public InputUtil.KeyCode getBoundKey() {
-		return ((KeyCodeAccessor) this).getKeyCode();
+		return super.getBoundKey();
 	}
 
+	@Deprecated
 	public static class Builder {
 		protected final FabricKeyBinding binding;
 

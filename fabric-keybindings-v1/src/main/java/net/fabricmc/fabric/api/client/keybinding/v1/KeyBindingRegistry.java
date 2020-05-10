@@ -14,29 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.keybinding;
+package net.fabricmc.fabric.api.client.keybinding.v1;
 
 import net.minecraft.client.options.KeyBinding;
+
+import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 
 /**
  * Interface for registering key bindings.
  *
  * @see KeyBinding
- * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingRegistry} instead.
  */
-@Deprecated
 public interface KeyBindingRegistry {
-	KeyBindingRegistry INSTANCE = new KeyBindingRegistry() {
-		@Override
-		public boolean addCategory(String categoryName) {
-			return net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingRegistry.INSTANCE.addCategory(categoryName);
-		}
-
-		@Override
-		public boolean register(FabricKeyBinding binding) {
-			return net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingRegistry.INSTANCE.register(binding);
-		}
-	};
+	KeyBindingRegistry INSTANCE = KeyBindingRegistryImpl.INSTANCE;
 
 	/**
 	 * Add a new key binding category.

@@ -27,8 +27,8 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.options.KeyBinding;
 
-import net.fabricmc.fabric.api.client.keybinding.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingRegistry;
 
 public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
