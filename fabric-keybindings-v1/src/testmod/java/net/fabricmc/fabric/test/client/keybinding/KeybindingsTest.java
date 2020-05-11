@@ -35,8 +35,8 @@ public class KeybindingsTest implements ClientModInitializer {
 				.category("category.this.is.a.test")
 				.type(InputUtil.Type.KEYSYM)
 				.code(80) // P
-				.automaticallyRegister() // This is going to register automatically
-				.build();
+				.build()
+				.register();
 
 		ClientTickCallback.EVENT.register(client -> {
 			while (binding.wasPressed()) {

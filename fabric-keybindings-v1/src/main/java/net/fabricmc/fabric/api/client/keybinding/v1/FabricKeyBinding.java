@@ -67,6 +67,16 @@ public class FabricKeyBinding extends KeyBinding {
 	}
 
 	/**
+	 * Registers the keybinding with {@link KeyBindingRegistry#register(FabricKeyBinding)}.
+	 *
+	 * @return self
+	 */
+	public <T extends FabricKeyBinding> T register() {
+		KeyBindingRegistry.INSTANCE.register(this);
+		return (T) this;
+	}
+
+	/**
 	 * Creates a new builder for constructing custom key bindings.
 	 */
 	public static Builder builder() {
@@ -99,7 +109,6 @@ public class FabricKeyBinding extends KeyBinding {
 		private Identifier id = null;
 		private String translationKey;
 		private boolean unassigned = false;
-		private boolean automaticallyRegister = false;
 		private BooleanSupplier toggleFlagSupplier = null;
 		private int code = UNASSIGNED;
 		private String category = KeyCategories.MISC;
@@ -171,16 +180,6 @@ public class FabricKeyBinding extends KeyBinding {
 		}
 
 		/**
-		 * Sets this builder to auto-register any key bindings created using it.
-		 *
-		 * <p>Mods who intend to register their own key bindings manually may choose not to use this.</p>
-		 */
-		public Builder automaticallyRegister() {
-			this.automaticallyRegister = true;
-			return this;
-		}
-
-		/**
 		 * Sets the key's type. Maybe be one of [{@link InputUtil.Type#KEYSYM} (keyboard), {@link InputUtil.Type#SCANCODE}, {@link InputUtil.Type#MOUSE}]
 		 *
 		 * @param type The binding type.
@@ -207,10 +206,6 @@ public class FabricKeyBinding extends KeyBinding {
 				binding = new FabricKeyBinding(id, translationKey, type, code, category);
 			} else {
 				binding = new StickyFabricKeyBinding(id, translationKey, type, code, category, toggleFlagSupplier);
-			}
-
-			if (automaticallyRegister) {
-				KeyBindingRegistry.INSTANCE.register(binding);
 			}
 
 			return binding;
