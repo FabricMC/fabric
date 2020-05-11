@@ -22,11 +22,11 @@ import net.minecraft.advancement.criterion.ImpossibleCriterion;
 import net.minecraft.predicate.entity.AdvancementEntityPredicateDeserializer;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.object.builder.v1.advancement.FabricCriterionRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.advancement.CriterionRegistry;
 
 public final class CriterionRegistryTest {
 	public static void init() {
-		FabricCriterionRegistry.register(new CustomCriterion());
+		CriterionRegistry.register(new CustomCriterion());
 	}
 
 	static class CustomCriterion extends ImpossibleCriterion {

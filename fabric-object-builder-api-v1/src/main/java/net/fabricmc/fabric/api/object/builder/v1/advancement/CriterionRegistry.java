@@ -29,7 +29,7 @@ import net.fabricmc.fabric.mixin.object.builder.CriteriaAccessor;
  *
  * @see net.minecraft.advancement.criterion.Criteria
  */
-public final class FabricCriterionRegistry {
+public final class CriterionRegistry {
 	/**
 	 * Registers a criterion for a trigger for advancements.
 	 *
