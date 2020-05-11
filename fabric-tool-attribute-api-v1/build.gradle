@@ -1,7 +1,8 @@
 archivesBaseName = "fabric-tool-attribute-api-v1"
-version = getSubprojectVersion(project, "1.0.4")
+version = getSubprojectVersion(project, "1.1.0")
 
 dependencies {
     compile project(path: ':fabric-api-base', configuration: 'dev')
     compile project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
+    testmodCompile project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
 }

@@ -68,16 +68,27 @@ public class FabricBlockSettings {
 
 	/* FABRIC HELPERS */
 
+	/**
+	 * Makes the block breakable by any tool if {@code breakByHand} is set to true.
+	 */
 	public FabricBlockSettings breakByHand(boolean breakByHand) {
 		this.delegate.breakByHand(breakByHand);
 		return this;
 	}
 
+	/**
+	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder#requiresTool()}.
+	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		this.delegate.breakByTool(tag, miningLevel);
 		return this;
 	}
 
+	/**
+	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder#requiresTool()}.
+	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		this.delegate.breakByTool(tag);
 		return this;
