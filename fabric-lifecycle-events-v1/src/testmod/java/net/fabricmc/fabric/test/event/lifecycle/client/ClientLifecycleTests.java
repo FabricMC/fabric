@@ -16,21 +16,15 @@
 
 package net.fabricmc.fabric.test.event.lifecycle.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.world.dimension.DimensionType;
-
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.test.event.lifecycle.LifecycleEventsTest;
+import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 @Environment(EnvType.CLIENT)
-public class ClientLifecycleEventsTest implements ClientModInitializer {
+public class ClientLifecycleTests implements ClientModInitializer {
 	private int ticks;
-	private Map<DimensionType, Integer> tickTracker = new HashMap<>();
 
 	@Override
 	public void onInitializeClient() {
@@ -38,18 +32,8 @@ public class ClientLifecycleEventsTest implements ClientModInitializer {
 			this.ticks++; // Just track our own tick since the client doesn't have a ticks value.
 
 			if (this.ticks % 200 == 0) {
-				LifecycleEventsTest.LOGGER.info("Ticked Client at " + this.ticks + " ticks.");
+				ServerLifecycleTests.LOGGER.info("Ticked Client at " + this.ticks + " ticks.");
 			}
-		});
-
-		ClientLifecycleEvents.WORLD_TICK.register(world -> {
-			final int worldTicks = tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
-
-			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the client world
-				LifecycleEventsTest.LOGGER.info("Ticked Client World - " + worldTicks + " ticks:" + world.dimension.getType());
-			}
-
-			this.tickTracker.put(world.dimension.getType(), worldTicks + 1);
 		});
 	}
 }

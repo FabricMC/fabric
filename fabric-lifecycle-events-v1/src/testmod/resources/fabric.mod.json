@@ -10,10 +10,14 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.event.lifecycle.LifecycleEventsTest"
+      "net.fabricmc.fabric.test.event.lifecycle.ServerEntityLifecycleTests",
+      "net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests",
+      "net.fabricmc.fabric.test.event.lifecycle.ServerTickTests"
     ],
     "client": [
-      "net.fabricmc.fabric.test.event.lifecycle.client.ClientLifecycleEventsTest"
+      "net.fabricmc.fabric.test.event.lifecycle.client.ClientEntityLifecycleTests",
+      "net.fabricmc.fabric.test.event.lifecycle.client.ClientLifecycleTests",
+      "net.fabricmc.fabric.test.event.lifecycle.client.ClientTickTests"
     ]
   }
 }

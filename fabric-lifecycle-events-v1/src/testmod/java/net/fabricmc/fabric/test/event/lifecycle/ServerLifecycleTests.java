@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.event.lifecycle;
+package net.fabricmc.fabric.test.event.lifecycle;
 
-import java.util.List;
-
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerWorld;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class LifecycleInternalListeners implements ModInitializer {
+/**
+ * Tests related to the lifecycle of a server.
+ */
+public class ServerLifecycleTests implements ModInitializer {
+	public static final Logger LOGGER = LogManager.getLogger("LifecycleEventsTest");
+
 	@Override
 	public void onInitialize() {
+		ServerLifecycleEvents.SERVER_START.register(server -> {
+			LOGGER.info("Started Server!");
+		});
+
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			// We use the server shutdown to unload all entities and block entities so their events are fired.
-			for (ServerWorld world : server.getWorlds()) {
-				final List<Entity> entities = world.getEntities(null, entity -> true); // Get every single entity in the world
+			LOGGER.info("Stopping Server!");
+		});
 
-				for (Entity entity : entities) {
-					ServerLifecycleEvents.ENTITY_UNLOAD.invoker().onEntityUnload(entity, world);
-				}
-
-				for (BlockEntity blockEntity : world.blockEntities) {
-					ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, world);
-				}
-			}
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			LOGGER.info("Stopped Server!");
 		});
 	}
 }

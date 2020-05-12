@@ -15,11 +15,6 @@
   "authors": [
     "FabricMC"
   ],
-  "entrypoints": {
-    "main": [
-      "net.fabricmc.fabric.impl.event.lifecycle.LifecycleInternalListeners"
-    ]
-  },
   "mixins": [
     "fabric-lifecycle-events-v1.mixins.json"
   ],

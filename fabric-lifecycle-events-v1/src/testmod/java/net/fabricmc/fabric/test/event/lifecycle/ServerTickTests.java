@@ -19,39 +19,30 @@ package net.fabricmc.fabric.test.event.lifecycle;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class LifecycleEventsTest implements ModInitializer {
-	public static final Logger LOGGER = LogManager.getLogger("LifecycleEventsTest");
+/**
+ * Test related to ticking events on the server.
+ */
+public class ServerTickTests implements ModInitializer {
 	private Map<DimensionType, Integer> tickTracker = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
 		ServerLifecycleEvents.SERVER_TICK.register(server -> {
 			if (server.getTicks() % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server
-				LOGGER.info("Ticked Server at " + server.getTicks() + " ticks.");
+				ServerLifecycleTests.LOGGER.info("Ticked Server at " + server.getTicks() + " ticks.");
 			}
-		});
-
-		ServerLifecycleEvents.SERVER_START.register(server -> {
-			LOGGER.info("Started Server!");
-		});
-
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			LOGGER.info("Stopped Server!");
 		});
 
 		ServerLifecycleEvents.WORLD_TICK.register(world -> {
 			final int worldTicks = tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
 
 			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server world
-				LOGGER.info("Ticked Server World - " + worldTicks + " ticks:" + world.dimension.getType());
+				ServerLifecycleTests.LOGGER.info("Ticked Server World - " + worldTicks + " ticks:" + world.dimension.getType());
 			}
 
 			this.tickTracker.put(world.dimension.getType(), worldTicks + 1);
