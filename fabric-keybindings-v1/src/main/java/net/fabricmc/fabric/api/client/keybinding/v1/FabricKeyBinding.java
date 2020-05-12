@@ -67,16 +67,6 @@ public class FabricKeyBinding extends KeyBinding {
 	}
 
 	/**
-	 * Registers the keybinding with {@link KeyBindingRegistry#register(FabricKeyBinding)}.
-	 *
-	 * @return self
-	 */
-	public <T extends FabricKeyBinding> T register() {
-		KeyBindingRegistry.INSTANCE.register(this);
-		return (T) this;
-	}
-
-	/**
 	 * Creates a new builder for constructing custom key bindings.
 	 */
 	public static Builder builder() {
