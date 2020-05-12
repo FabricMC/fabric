@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.event.generic",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+    "client.ItemStackMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

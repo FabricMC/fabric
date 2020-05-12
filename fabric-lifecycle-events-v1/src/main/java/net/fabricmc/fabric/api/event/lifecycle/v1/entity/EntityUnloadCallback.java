@@ -14,22 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.lifecycle;
+package net.fabricmc.fabric.api.event.lifecycle.v1.entity;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
+import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.event.world.WorldTickCallback;
-
-@Mixin(World.class)
-public class MixinWorld {
-	// TODO split into ClientWorld/ServerWorld ticks? mmm need more mappings
-	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
-	public void tickBlockEntitiesAfter(CallbackInfo info) {
-		WorldTickCallback.EVENT.invoker().tick((World) (Object) this);
-	}
+public interface EntityUnloadCallback<W extends World> {
+	void onEntityUnload(Entity entity, W world);
 }

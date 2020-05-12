@@ -25,10 +25,15 @@ import net.minecraft.text.Text;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * @deprecated Please use {@link net.fabricmc.fabric.api.client.event.generic.v1.item.ItemTooltipCallback}
+ */
+@Deprecated
 public interface ItemTooltipCallback {
 	/**
 	 * Fired after the game has appended all base tooltip lines to the list.
 	 */
+	@Deprecated
 	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, (listeners) -> (stack, tooltipContext, lines) -> {
 		for (ItemTooltipCallback callback : listeners) {
 			callback.getTooltip(stack, tooltipContext, lines);

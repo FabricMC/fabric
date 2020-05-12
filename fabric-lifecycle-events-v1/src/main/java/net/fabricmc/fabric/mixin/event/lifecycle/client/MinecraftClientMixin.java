@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.lifecycle;
-
-import java.util.List;
+package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.client.item.TooltipContext;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
+import net.minecraft.client.MinecraftClient;
 
-import net.fabricmc.fabric.api.event.client.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
-@Mixin(ItemStack.class)
-public class MixinItemStack {
-	@Inject(method = "getTooltip", at = @At("RETURN"))
-	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext, CallbackInfoReturnable<List<Text>> info) {
-		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext, info.getReturnValue());
+@Mixin(MinecraftClient.class)
+public abstract class MinecraftClientMixin {
+	@Inject(at = @At("RETURN"), method = "tick")
+	private void tick(CallbackInfo info) {
+		ClientLifecycleEvents.CLIENT_TICK.invoker().onTick((MinecraftClient) (Object) this);
 	}
 }

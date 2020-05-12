@@ -25,24 +25,22 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.MinecraftServer;
 
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
-import net.fabricmc.fabric.api.event.server.ServerStopCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 @Mixin(MinecraftServer.class)
-public class MixinMinecraftServer {
+public abstract class MinecraftServerMixin {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V", ordinal = 0), method = "run")
 	public void afterSetupServer(CallbackInfo info) {
-		ServerStartCallback.EVENT.invoker().onStartServer((MinecraftServer) (Object) this);
+		ServerLifecycleEvents.SERVER_START.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At("HEAD"), method = "shutdown")
 	public void beforeShutdownServer(CallbackInfo info) {
-		ServerStopCallback.EVENT.invoker().onStopServer((MinecraftServer) (Object) this);
+		ServerLifecycleEvents.SERVER_STOP.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At("RETURN"), method = "tick")
-	protected void tick(BooleanSupplier var1, CallbackInfo info) {
-		ServerTickCallback.EVENT.invoker().tick((MinecraftServer) (Object) this);
+	protected void tick(BooleanSupplier shouldKeepTicking, CallbackInfo info) {
+		ServerLifecycleEvents.SERVER_TICK.invoker().onTick((MinecraftServer) (Object) this);
 	}
 }

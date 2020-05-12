@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-lifecycle-events-v1-testmod",
+  "name": "Fabric Lifecycle Events (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-lifecycle-events-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.event.lifecycle.LifecycleEventsTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.event.lifecycle.client.ClientLifecycleEventsTest"
+    ]
+  }
+}
