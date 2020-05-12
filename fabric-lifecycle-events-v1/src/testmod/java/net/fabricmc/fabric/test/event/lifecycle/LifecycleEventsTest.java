@@ -16,14 +16,20 @@
 
 package net.fabricmc.fabric.test.event.lifecycle;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class LifecycleEventsTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("LifecycleEventsTest");
+	private Map<DimensionType, Integer> tickTracker = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
@@ -39,6 +45,16 @@ public class LifecycleEventsTest implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STOP.register(server -> {
 			LOGGER.info("Stopped Server!");
+		});
+
+		ServerLifecycleEvents.WORLD_TICK.register(world -> {
+			final int worldTicks = tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
+
+			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server world
+				LOGGER.info("Ticked Server World - " + worldTicks + " ticks:" + world.dimension.getType());
+			}
+
+			this.tickTracker.put(world.dimension.getType(), worldTicks + 1);
 		});
 	}
 }

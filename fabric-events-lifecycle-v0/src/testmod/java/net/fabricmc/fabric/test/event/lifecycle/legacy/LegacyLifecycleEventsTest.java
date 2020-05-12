@@ -16,8 +16,13 @@
 
 package net.fabricmc.fabric.test.event.lifecycle.legacy;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.server.ServerStartCallback;
@@ -27,12 +32,13 @@ import net.fabricmc.fabric.api.event.world.WorldTickCallback;
 
 public class LegacyLifecycleEventsTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("LegacyLifecycleEventsTest");
+	private Map<DimensionType, Integer> tickTracker = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
 		ServerTickCallback.EVENT.register(server -> {
 			if (server.getTicks() % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server
-				LOGGER.info("Ticked Server at " + server.getTicks() + " ticks.");
+				LOGGER.info("Ticked Server at " + server.getTicks() + " ticks. (Legacy)");
 			}
 		});
 
@@ -45,7 +51,13 @@ public class LegacyLifecycleEventsTest implements ModInitializer {
 		});
 
 		WorldTickCallback.EVENT.register(world -> {
-			LOGGER.info("Ticked " + world.dimension.getType() + ": " + world.getClass().toString());
+			final int worldTicks = tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
+
+			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server world
+				LOGGER.info("[LEGACY] Ticked World " + world.dimension.getType() + " - " + worldTicks + " ticks: " + world.getClass().getName());
+			}
+
+			this.tickTracker.put(world.dimension.getType(), worldTicks + 1);
 		});
 	}
 }
