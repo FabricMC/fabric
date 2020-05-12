@@ -83,7 +83,7 @@ public final class ServerLifecycleEvents {
 	 */
 	public static final Event<ChunkLoadCallback<ServerWorld>> CHUNK_LOAD = EventFactory.createArrayBacked(ChunkLoadCallback.class, callbacks -> (serverWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
-			Profiler profiler = serverWorld.getProfiler();
+			final Profiler profiler = serverWorld.getProfiler();
 			profiler.push("fabricServerChunkLoad");
 
 			for (ChunkLoadCallback<ServerWorld> callback : callbacks) {
@@ -105,7 +105,7 @@ public final class ServerLifecycleEvents {
 	 */
 	public static final Event<ChunkUnloadCallback<ServerWorld>> CHUNK_UNLOAD = EventFactory.createArrayBacked(ChunkUnloadCallback.class, callbacks -> (serverWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
-			Profiler profiler = serverWorld.getProfiler();
+			final Profiler profiler = serverWorld.getProfiler();
 			profiler.push("fabricServerChunkUnload");
 
 			for (ChunkUnloadCallback<ServerWorld> callback : callbacks) {
@@ -126,9 +126,8 @@ public final class ServerLifecycleEvents {
 	 * Called when an BlockEntity is loaded into a ServerWorld.
 	 */
 	public static final Event<BlockEntityLoadCallback<ServerWorld>> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(BlockEntityLoadCallback.class, callbacks -> (blockEntity, world) -> {
-		final Profiler profiler = world.getProfiler();
-
 		if (EventFactory.isProfilingEnabled()) {
+			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricServerBlockEntityLoad");
 
 			for (BlockEntityLoadCallback<ServerWorld> callback : callbacks) {
@@ -149,9 +148,8 @@ public final class ServerLifecycleEvents {
 	 * Called when an BlockEntity is unloaded from a ServerWorld.
 	 */
 	public static final Event<BlockEntityUnloadCallback<ServerWorld>> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(BlockEntityUnloadCallback.class, callbacks -> (blockEntity, world) -> {
-		final Profiler profiler = world.getProfiler();
-
 		if (EventFactory.isProfilingEnabled()) {
+			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricServerBlockEntityUnload");
 
 			for (BlockEntityUnloadCallback<ServerWorld> callback : callbacks) {
@@ -172,9 +170,8 @@ public final class ServerLifecycleEvents {
 	 * Called when an Entity is loaded into a ServerWorld.
 	 */
 	public static final Event<EntityLoadCallback<ServerWorld>> ENTITY_LOAD = EventFactory.createArrayBacked(EntityLoadCallback.class, callbacks -> (entity, world) -> {
-		final Profiler profiler = world.getProfiler();
-
 		if (EventFactory.isProfilingEnabled()) {
+			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricServerEntityLoad");
 
 			for (EntityLoadCallback<ServerWorld> callback : callbacks) {
@@ -195,9 +192,8 @@ public final class ServerLifecycleEvents {
 	 * Called when an Entity is unloaded from a ServerWorld.
 	 */
 	public static final Event<EntityUnloadCallback<ServerWorld>> ENTITY_UNLOAD = EventFactory.createArrayBacked(EntityUnloadCallback.class, callbacks -> (entity, world) -> {
-		final Profiler profiler = world.getProfiler();
-
 		if (EventFactory.isProfilingEnabled()) {
+			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricServerEntityUnload");
 
 			for (EntityUnloadCallback<ServerWorld> callback : callbacks) {
