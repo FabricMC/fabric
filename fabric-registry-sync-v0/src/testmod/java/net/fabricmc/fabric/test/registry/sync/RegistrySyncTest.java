@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import net.minecraft.util.registry.MutableRegistry;
 import org.apache.commons.lang3.Validate;
 
 import net.minecraft.block.AbstractBlock;
@@ -25,10 +26,12 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -56,5 +59,26 @@ public class RegistrySyncTest implements ModInitializer {
 				Validate.isTrue(RegistryAttributeHolder.get(Registry.ITEM).hasAttribute(RegistryAttribute.MODDED), "Modded item was registered but registry not marked as modded");
 			}
 		}
+
+		MutableRegistry<String> fabricRegistry = FabricRegistryBuilder.create(new SimpleRegistry<String>())
+													.attribute(RegistryAttribute.SYNCED)
+													.build();
+
+		Registry.REGISTRIES.add(new Identifier("registry_sync", "fabric_registry"), fabricRegistry);
+		fabricRegistry.add(new Identifier("registry_sync", "test"), "test");
+
+		MutableRegistry<String> legacyRegistry = new SimpleRegistry<>();
+
+		Registry.REGISTRIES.add(new Identifier("registry_sync", "legacy_registry"), legacyRegistry);
+		legacyRegistry.add(new Identifier("registry_sync", "test"), "test");
+
+		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
+		Validate.isTrue(RegistryAttributeHolder.get(legacyRegistry).hasAttribute(RegistryAttribute.MODDED));
+
+		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
+		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
+
+		Validate.isTrue(RegistryAttributeHolder.get(legacyRegistry).hasAttribute(RegistryAttribute.SYNCED));
+		Validate.isTrue(RegistryAttributeHolder.get(legacyRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 	}
 }

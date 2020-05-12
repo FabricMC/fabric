@@ -23,25 +23,58 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 
-public class FabricRegistryBuilder<T> {
-	public static <T> FabricRegistryBuilder<T> create(Registry<T> registry) {
+/**
+ * Used to create custom registry's, with specified registry attributes.
+ *
+ * <pre>
+ *     MutableRegistry<String> exampleRegistry = FabricRegistryBuilder.create(new SimpleRegistry<String>())
+ * 													.attribute(RegistryAttribute.SYNCED)
+ * 													.build();
+ *
+ * 		Registry.REGISTRIES.add(new Identifier("mod_id", "example_registry"), exampleRegistry);
+ * </pre>
+ *
+ * @param <T> The type stored in the Registry
+ * @param <R> The registry type
+ */
+public class FabricRegistryBuilder<T, R extends Registry<T>> {
+
+	/**
+	 * Create a new FabricRegistryBuilder, the registry has the {@link RegistryAttribute#MODDED} attribute by default
+	 *
+	 * @param registry The base registry type such as {@link net.minecraft.util.registry.SimpleRegistry} or {@link net.minecraft.util.registry.DefaultedRegistry}
+	 * @param <T> The type stored in the Registry
+	 * @param <R> The registry type
+	 * @return An instance of FabricRegistryBuilder
+	 */
+	public static <T, R extends Registry<T>> FabricRegistryBuilder<T, R> create(R registry) {
 		return new FabricRegistryBuilder<>(registry);
 	}
 
-	private final Registry<T> registry;
+	private final R registry;
 	private final Set<RegistryAttribute> attributes = new HashSet<>();
 
-	private FabricRegistryBuilder(Registry<T> registry) {
+	private FabricRegistryBuilder(R registry) {
 		this.registry = registry;
 		attribute(RegistryAttribute.MODDED);
 	}
 
-	public FabricRegistryBuilder<T> attribute(RegistryAttribute attribute) {
+	/**
+	 * Add a {@link RegistryAttribute} to the registry
+	 *
+	 * @param attribute the {@link RegistryAttribute} to add to the registry
+	 * @return the instance of {@link FabricRegistryBuilder}
+	 */
+	public FabricRegistryBuilder<T, R> attribute(RegistryAttribute attribute) {
 		attributes.add(attribute);
 		return this;
 	}
 
-	public Registry<T> build() {
+	/**
+	 * Applies the attributes to the registry
+	 * @return the registry instance with the attributes applied.
+	 */
+	public R build() {
 		FabricRegistry fabricRegistry = (FabricRegistry) registry;
 		fabricRegistry.build(attributes);
 		return registry;
