@@ -27,9 +27,9 @@ public class LegacyEventInvokers implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Allows deprecated events to still be invoked by the newer implementations
-		ServerLifecycleEvents.SERVER_START.register(ServerStartCallback.EVENT.invoker()::onStartServer);
-		ServerLifecycleEvents.SERVER_STOP.register(ServerStopCallback.EVENT.invoker()::onStopServer);
-		ServerLifecycleEvents.SERVER_TICK.register(ServerTickCallback.EVENT.invoker()::tick);
-		ServerLifecycleEvents.WORLD_TICK.register(WorldTickCallback.EVENT.invoker()::tick);
+		ServerLifecycleEvents.SERVER_START.register(server -> ServerStartCallback.EVENT.invoker().onStartServer(server));
+		ServerLifecycleEvents.SERVER_STOP.register(server -> ServerStopCallback.EVENT.invoker().onStopServer(server));
+		ServerLifecycleEvents.SERVER_TICK.register(server -> ServerTickCallback.EVENT.invoker().tick(server));
+		ServerLifecycleEvents.WORLD_TICK.register(world -> WorldTickCallback.EVENT.invoker().tick(world));
 	}
 }

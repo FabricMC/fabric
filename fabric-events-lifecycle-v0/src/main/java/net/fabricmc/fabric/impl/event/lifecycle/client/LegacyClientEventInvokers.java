@@ -26,9 +26,9 @@ public class LegacyClientEventInvokers implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Allows deprecated events to still be invoked by the newer implementations
-		ClientLifecycleEvents.CLIENT_TICK.register(ClientTickCallback.EVENT.invoker()::tick);
-		ClientLifecycleEvents.WORLD_TICK.register(WorldTickCallback.EVENT.invoker()::tick);
+		ClientLifecycleEvents.CLIENT_TICK.register(client -> ClientTickCallback.EVENT.invoker().tick(client));
+		ClientLifecycleEvents.WORLD_TICK.register(world -> WorldTickCallback.EVENT.invoker().tick(world));
 		// This is part of generic events now.
-		net.fabricmc.fabric.api.client.event.generic.v1.item.ItemTooltipCallback.EVENT.register(ItemTooltipCallback.EVENT.invoker()::getTooltip);
+		net.fabricmc.fabric.api.client.event.generic.v1.item.ItemTooltipCallback.EVENT.register((stack, context, lines) -> ItemTooltipCallback.EVENT.invoker().getTooltip(stack, context, lines));
 	}
 }
