@@ -34,6 +34,9 @@ public final class ServerLifecycleEvents {
 	private ServerLifecycleEvents() {
 	}
 
+	/**
+	 * Called when a server ticks.
+	 */
 	public static final Event<GameTickCallback<MinecraftServer>> SERVER_TICK = EventFactory.createArrayBacked(GameTickCallback.class, callbacks -> server -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = server.getProfiler();
@@ -53,6 +56,9 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when a ServerWorld ticks.
+	 */
 	public static final Event<WorldTickCallback<ServerWorld>> WORLD_TICK = EventFactory.createArrayBacked(WorldTickCallback.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
@@ -72,6 +78,9 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an chunk is loaded into a ServerWorld.
+	 */
 	public static final Event<ChunkLoadCallback<ServerWorld>> CHUNK_LOAD = EventFactory.createArrayBacked(ChunkLoadCallback.class, callbacks -> (serverWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			Profiler profiler = serverWorld.getProfiler();
@@ -91,6 +100,9 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an chunk is unloaded from a ServerWorld.
+	 */
 	public static final Event<ChunkUnloadCallback<ServerWorld>> CHUNK_UNLOAD = EventFactory.createArrayBacked(ChunkUnloadCallback.class, callbacks -> (serverWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			Profiler profiler = serverWorld.getProfiler();
@@ -110,6 +122,9 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an BlockEntity is loaded into a ServerWorld.
+	 */
 	public static final Event<BlockEntityLoadCallback<ServerWorld>> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(BlockEntityLoadCallback.class, callbacks -> (blockEntity, world) -> {
 		final Profiler profiler = world.getProfiler();
 
@@ -130,6 +145,9 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an BlockEntity is unloaded from a ServerWorld.
+	 */
 	public static final Event<BlockEntityUnloadCallback<ServerWorld>> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(BlockEntityUnloadCallback.class, callbacks -> (blockEntity, world) -> {
 		final Profiler profiler = world.getProfiler();
 
@@ -150,6 +168,9 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an Entity is loaded into a ServerWorld.
+	 */
 	public static final Event<EntityLoadCallback<ServerWorld>> ENTITY_LOAD = EventFactory.createArrayBacked(EntityLoadCallback.class, callbacks -> (entity, world) -> {
 		final Profiler profiler = world.getProfiler();
 
@@ -170,6 +191,9 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an Entity is unloaded from a ServerWorld.
+	 */
 	public static final Event<EntityUnloadCallback<ServerWorld>> ENTITY_UNLOAD = EventFactory.createArrayBacked(EntityUnloadCallback.class, callbacks -> (entity, world) -> {
 		final Profiler profiler = world.getProfiler();
 
@@ -190,13 +214,28 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when the server has started. At this stage, all worlds are live.
+	 */
 	public static final Event<ServerLifecycleCallback> SERVER_START = EventFactory.createArrayBacked(ServerLifecycleCallback.class, (callbacks) -> (server) -> {
 		for (ServerLifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}
 	});
 
-	public static final Event<ServerLifecycleCallback> SERVER_STOP = EventFactory.createArrayBacked(ServerLifecycleCallback.class, (callbacks) -> (server) -> {
+	/**
+	 * Called when the server has started stopping. All worlds are still present.
+	 */
+	public static final Event<ServerLifecycleCallback> SERVER_STOPPING = EventFactory.createArrayBacked(ServerLifecycleCallback.class, (callbacks) -> (server) -> {
+		for (ServerLifecycleCallback callback : callbacks) {
+			callback.onChangeLifecycle(server);
+		}
+	});
+
+	/**
+	 * Called when the server has stopped. All worlds have been closed and all (block)entities and players have been unloaded.
+	 */
+	public static final Event<ServerLifecycleCallback> SERVER_STOPPED = EventFactory.createArrayBacked(ServerLifecycleCallback.class, callbacks -> server -> {
 		for (ServerLifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}

@@ -38,6 +38,9 @@ public final class ClientLifecycleEvents {
 	private ClientLifecycleEvents() {
 	}
 
+	/**
+	 * Called when a client ticks.
+	 */
 	public static final Event<GameTickCallback<MinecraftClient>> CLIENT_TICK = EventFactory.createArrayBacked(GameTickCallback.class, callbacks -> client -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = client.getProfiler();
@@ -57,6 +60,9 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when a ClientWorld ticks.
+	 */
 	public static final Event<WorldTickCallback<ClientWorld>> WORLD_TICK = EventFactory.createArrayBacked(WorldTickCallback.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
@@ -76,6 +82,9 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when a chunk is loaded into a ClientWorld.
+	 */
 	public static final Event<ChunkLoadCallback<ClientWorld>> CHUNK_LOAD = EventFactory.createArrayBacked(ChunkLoadCallback.class, callbacks -> (clientWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			Profiler profiler = clientWorld.getProfiler();
@@ -95,6 +104,9 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when a chunk is unloaded from a ClientWorld.
+	 */
 	public static final Event<ChunkUnloadCallback<ClientWorld>> CHUNK_UNLOAD = EventFactory.createArrayBacked(ChunkUnloadCallback.class, callbacks -> (clientWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			Profiler profiler = clientWorld.getProfiler();
@@ -114,6 +126,9 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when a BlockEntity is loaded into a ClientWorld.
+	 */
 	public static final Event<BlockEntityLoadCallback<ClientWorld>> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(BlockEntityLoadCallback.class, callbacks -> (blockEntity, world) -> {
 		final Profiler profiler = world.getProfiler();
 
@@ -134,6 +149,9 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when a BlockEntity is unloaded from a ClientWorld.
+	 */
 	public static final Event<BlockEntityUnloadCallback<ClientWorld>> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(BlockEntityUnloadCallback.class, callbacks -> (blockEntity, world) -> {
 		final Profiler profiler = world.getProfiler();
 
@@ -154,6 +172,9 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an Entity is loaded into a ClientWorld.
+	 */
 	public static final Event<EntityLoadCallback<ClientWorld>> ENTITY_LOAD = EventFactory.createArrayBacked(EntityLoadCallback.class, callbacks -> (entity, world) -> {
 		final Profiler profiler = world.getProfiler();
 
@@ -174,6 +195,9 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when an Entity is unloaded from a ClientWorld.
+	 */
 	public static final Event<EntityUnloadCallback<ClientWorld>> ENTITY_UNLOAD = EventFactory.createArrayBacked(EntityUnloadCallback.class, callbacks -> (entity, world) -> {
 		final Profiler profiler = world.getProfiler();
 

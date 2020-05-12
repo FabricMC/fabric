@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class LifecycleInternalListeners implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerLifecycleEvents.SERVER_STOP.register(server -> {
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			// We use the server shutdown to unload all entities and block entities so their events are fired.
 			for (ServerWorld world : server.getWorlds()) {
 				final List<Entity> entities = world.getEntities(null, entity -> true); // Get every single entity in the world

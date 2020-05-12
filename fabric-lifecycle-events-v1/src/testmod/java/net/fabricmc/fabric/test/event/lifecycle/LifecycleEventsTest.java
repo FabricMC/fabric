@@ -43,7 +43,7 @@ public class LifecycleEventsTest implements ModInitializer {
 			LOGGER.info("Started Server!");
 		});
 
-		ServerLifecycleEvents.SERVER_STOP.register(server -> {
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
 			LOGGER.info("Stopped Server!");
 		});
 

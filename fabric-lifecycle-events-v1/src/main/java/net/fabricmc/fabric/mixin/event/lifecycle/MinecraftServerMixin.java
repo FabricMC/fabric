@@ -36,7 +36,12 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(at = @At("HEAD"), method = "shutdown")
 	public void beforeShutdownServer(CallbackInfo info) {
-		ServerLifecycleEvents.SERVER_STOP.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
+		ServerLifecycleEvents.SERVER_STOPPING.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
+	}
+
+	@Inject(at = @At("TAIL"), method = "shutdown")
+	public void afterShutdownServer(CallbackInfo info) {
+		ServerLifecycleEvents.SERVER_STOPPED.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At("RETURN"), method = "tick")

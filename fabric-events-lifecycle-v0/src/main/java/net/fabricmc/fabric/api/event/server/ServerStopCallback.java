@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Deprecated
 public interface ServerStopCallback {
 	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents#SERVER_STOP}
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents#SERVER_STOPPING}
 	 */
 	@Deprecated
 	Event<ServerStopCallback> EVENT = EventFactory.createArrayBacked(ServerStopCallback.class,
