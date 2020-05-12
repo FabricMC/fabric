@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.lifecycle;
+package net.fabricmc.fabric.impl.lifecycle;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import java.util.function.Supplier;
 
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.server.MinecraftServer;
 
-import net.fabricmc.fabric.api.event.client.ClientTickCallback;
+public abstract class ServerLifecycleInternals {
+	private static Supplier<MinecraftServer> serverSupplier;
 
-@Mixin(MinecraftClient.class)
-public class MixinMinecraftClient {
-	@Inject(at = @At("RETURN"), method = "tick")
-	public void tick(CallbackInfo info) {
-		ClientTickCallback.EVENT.invoker().tick((MinecraftClient) (Object) this);
+	/* @Nullable */
+	public static MinecraftServer getServer() {
+		return serverSupplier.get();
+	}
+
+	protected ServerLifecycleInternals(Supplier<MinecraftServer> supplier) {
+		serverSupplier = supplier;
 	}
 }
