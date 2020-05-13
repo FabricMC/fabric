@@ -1,4 +1,4 @@
-archivesBaseName = "fabric-keybindings-v1"
+archivesBaseName = "fabric-key-binding-api-v1"
 version = getSubprojectVersion(project, "1.0.0")
 
 dependencies {

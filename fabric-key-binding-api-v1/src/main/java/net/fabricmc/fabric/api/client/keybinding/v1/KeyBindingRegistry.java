@@ -23,7 +23,7 @@ import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 /**
  * Interface for registering key bindings.
  *
- * @see KeyBinding
+ * @see FabricKeyBinding
  */
 public interface KeyBindingRegistry {
 	KeyBindingRegistry INSTANCE = KeyBindingRegistryImpl.INSTANCE;

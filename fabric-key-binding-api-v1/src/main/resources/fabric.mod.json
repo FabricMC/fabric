@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-keybindings-v1",
-  "name": "Fabric Key Bindings (v1)",
+  "id": "fabric-key-binding-api-v1",
+  "name": "Fabric Key Bindings API (v1)",
   "version": "${version}",
   "environment": "client",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-keybindings-v1/icon.png",
+  "icon": "assets/fabric-key-binding-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -21,6 +21,6 @@
   },
   "description": "Keybinding registry API.",
   "mixins": [
-    "fabric-keybindings-v1.mixins.json"
+    "fabric-key-binding-api-v1.mixins.json"
   ]
 }
