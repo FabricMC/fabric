@@ -19,19 +19,23 @@ package net.fabricmc.fabric.api.event.registry;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
+import net.minecraft.util.registry.SimpleRegistry;
 
 /**
  * Used to create custom registry's, with specified registry attributes.
  *
  * <pre>
- *     MutableRegistry<String> exampleRegistry = FabricRegistryBuilder.create(new SimpleRegistry<String>())
- * 													.attribute(RegistryAttribute.SYNCED)
- * 													.build();
- *
- * 		Registry.REGISTRIES.add(new Identifier("mod_id", "example_registry"), exampleRegistry);
+ * {@code
+ *  MutableRegistry<String> exampleRegistry = FabricRegistryBuilder.create(new SimpleRegistry<String>())
+ * 												.attribute(RegistryAttribute.SYNCED)
+ * 												.build();
+ * 	Registry.REGISTRIES.add(new Identifier("mod_id", "example_registry"), exampleRegistry);
+ * 	}
  * </pre>
  *
  * @param <T> The type stored in the Registry
@@ -40,15 +44,38 @@ import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 public class FabricRegistryBuilder<T, R extends Registry<T>> {
 
 	/**
-	 * Create a new FabricRegistryBuilder, the registry has the {@link RegistryAttribute#MODDED} attribute by default
+	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default
 	 *
 	 * @param registry The base registry type such as {@link net.minecraft.util.registry.SimpleRegistry} or {@link net.minecraft.util.registry.DefaultedRegistry}
 	 * @param <T> The type stored in the Registry
 	 * @param <R> The registry type
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T, R extends Registry<T>> FabricRegistryBuilder<T, R> create(R registry) {
+	public static <T, R extends Registry<T>> FabricRegistryBuilder<T, R> from(R registry) {
 		return new FabricRegistryBuilder<>(registry);
+	}
+
+	/**
+	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default
+	 *
+	 * @param type A class matching the type being stored in the registry
+	 * @param <T> The type stored in the Registry
+	 * @return An instance of FabricRegistryBuilder
+	 */
+	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type) {
+		return from(new SimpleRegistry<>());
+	}
+
+	/**
+	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default
+	 *
+	 * @param type A class matching the type being stored in the registry
+	 * @param defaultId The default registry id
+	 * @param <T> The type stored in the Registry
+	 * @return An instance of FabricRegistryBuilder
+	 */
+	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier defaultId) {
+		return from(new DefaultedRegistry<>(defaultId.toString()));
 	}
 
 	private final R registry;

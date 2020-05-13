@@ -60,7 +60,7 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 		}
 
-		MutableRegistry<String> fabricRegistry = FabricRegistryBuilder.create(new SimpleRegistry<String>())
+		MutableRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(String.class)
 													.attribute(RegistryAttribute.SYNCED)
 													.build();
 
