@@ -4,16 +4,8 @@ version = getSubprojectVersion(project, "1.4.0")
 dependencies {
 	compile project(path: ':fabric-api-base', configuration: 'dev')
 	compile project(path: ':fabric-tool-attribute-api-v1', configuration: 'dev')
-
-	testmodImplementation project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
-	testmodImplementation project(path: ":fabric-resource-loader-v0", configuration: 'dev')
 }
 
 minecraft {
 	accessWidener = file("src/main/resources/fabric-object-builder-api-v1.accesswidener")
-}
-
-tasks.withType(net.fabricmc.loom.task.AbstractRunTask) {
-	classpath += sourceSets.testmod.runtimeClasspath
-	classpath += sourceSets.testmod.output
 }
