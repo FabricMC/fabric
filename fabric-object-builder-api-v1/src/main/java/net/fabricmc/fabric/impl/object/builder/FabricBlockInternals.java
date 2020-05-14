@@ -23,7 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.impl.tool.attribute.ToolManager;
+import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 public final class FabricBlockInternals {
 	private FabricBlockInternals() {
@@ -45,11 +45,11 @@ public final class FabricBlockInternals {
 
 		if (data != null) {
 			if (data.breakByHand != null) {
-				ToolManager.entry(block).setBreakByHand(data.breakByHand);
+				ToolManagerImpl.entry(block).setBreakByHand(data.breakByHand);
 			}
 
 			for (MiningLevel tml : data.miningLevels) {
-				ToolManager.entry(block).putBreakByTool(tml.tag, tml.level);
+				ToolManagerImpl.entry(block).putBreakByTool(tml.tag, tml.level);
 			}
 		}
 	}

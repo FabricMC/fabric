@@ -63,5 +63,5 @@ public abstract class MixinLootPool implements FabricLootPool {
 
 	@Accessor
 	@Override
-	public abstract LootTableRange getRollsRange();
+	public abstract LootTableRange getRolls();
 }
