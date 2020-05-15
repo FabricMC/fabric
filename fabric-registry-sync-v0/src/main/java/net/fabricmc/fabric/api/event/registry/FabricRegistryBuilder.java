@@ -21,10 +21,10 @@ import java.util.Set;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
+import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
-import net.minecraft.util.registry.SimpleRegistry;
 
 /**
  * Used to create custom registry's, with specified registry attributes.
@@ -42,9 +42,8 @@ import net.minecraft.util.registry.SimpleRegistry;
  * @param <R> The registry type
  */
 public class FabricRegistryBuilder<T, R extends Registry<T>> {
-
 	/**
-	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default
+	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
 	 * @param registry The base registry type such as {@link net.minecraft.util.registry.SimpleRegistry} or {@link net.minecraft.util.registry.DefaultedRegistry}
 	 * @param <T> The type stored in the Registry
@@ -56,7 +55,7 @@ public class FabricRegistryBuilder<T, R extends Registry<T>> {
 	}
 
 	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default
+	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
 	 * @param type A class matching the type being stored in the registry
 	 * @param <T> The type stored in the Registry
@@ -67,7 +66,7 @@ public class FabricRegistryBuilder<T, R extends Registry<T>> {
 	}
 
 	/**
-	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default
+	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
 	 * @param type A class matching the type being stored in the registry
 	 * @param defaultId The default registry id
@@ -87,7 +86,7 @@ public class FabricRegistryBuilder<T, R extends Registry<T>> {
 	}
 
 	/**
-	 * Add a {@link RegistryAttribute} to the registry
+	 * Add a {@link RegistryAttribute} to the registry.
 	 *
 	 * @param attribute the {@link RegistryAttribute} to add to the registry
 	 * @return the instance of {@link FabricRegistryBuilder}
@@ -98,8 +97,8 @@ public class FabricRegistryBuilder<T, R extends Registry<T>> {
 	}
 
 	/**
-	 * Applies the attributes to the registry
-	 * @return the registry instance with the attributes applied.
+	 * Applies the attributes to the registry.
+	 * @return the registry instance with the attributes applied
 	 */
 	public R build() {
 		FabricRegistry fabricRegistry = (FabricRegistry) registry;
