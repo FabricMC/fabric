@@ -24,7 +24,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
@@ -62,7 +61,7 @@ public class MixinServerPlayerInteractionManager {
 	}
 
 	@Inject(at = @At("HEAD"), method = "interactBlock", cancellable = true)
-	public void interactBlock(PlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
+	public void interactBlock(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info) {
 		ActionResult result = UseBlockCallback.EVENT.invoker().interact(player, world, hand, blockHitResult);
 
 		if (result != ActionResult.PASS) {
@@ -73,7 +72,7 @@ public class MixinServerPlayerInteractionManager {
 	}
 
 	@Inject(at = @At("HEAD"), method = "interactItem", cancellable = true)
-	public void interactItem(PlayerEntity player, World world, ItemStack stack, Hand hand, CallbackInfoReturnable<ActionResult> info) {
+	public void interactItem(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, CallbackInfoReturnable<ActionResult> info) {
 		TypedActionResult<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, world, hand);
 
 		if (result.getResult() != ActionResult.PASS) {

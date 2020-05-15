@@ -36,5 +36,5 @@ public interface FabricLootPool {
 	List<LootEntry> getEntries();
 	List<LootCondition> getConditions();
 	List<LootFunction> getFunctions();
-	LootTableRange getRollsRange();
+	LootTableRange getRolls();
 }

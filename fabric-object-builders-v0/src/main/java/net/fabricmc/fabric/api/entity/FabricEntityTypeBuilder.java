@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.entity;
 import java.util.function.Function;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
@@ -31,24 +31,24 @@ import net.minecraft.world.World;
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private final net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder<T> delegate;
 
-	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
-		this.delegate = net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder.create(category, function);
+	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		this.delegate = net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder.create(spawnGroup, function);
 	}
 
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
-		return new FabricEntityTypeBuilder<>(category, (t, w) -> null);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup) {
+		return new FabricEntityTypeBuilder<>(spawnGroup, (t, w) -> null);
 	}
 
 	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#create(EntityCategory, EntityType.EntityFactory)}
+	 * @deprecated Use {@link FabricEntityTypeBuilder#create(SpawnGroup, EntityType.EntityFactory)}
 	 */
 	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, Function<? super World, ? extends T> function) {
-		return create(category, (t, w) -> function.apply(w));
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, Function<? super World, ? extends T> function) {
+		return create(spawnGroup, (t, w) -> function.apply(w));
 	}
 
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.EntityFactory<T> function) {
-		return new FabricEntityTypeBuilder<>(category, function);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		return new FabricEntityTypeBuilder<>(spawnGroup, function);
 	}
 
 	public FabricEntityTypeBuilder<T> disableSummon() {
