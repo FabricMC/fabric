@@ -16,10 +16,16 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -27,6 +33,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -43,11 +50,31 @@ public abstract class WorldMixin {
 		}
 	}
 
+	// Mojang what hell, why do you need three ways to unload block entities
 	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", ordinal = 1), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	protected void onUnloadBlockEntity(BlockPos pos, CallbackInfo ci, BlockEntity blockEntity) {
 		if (!this.isClient()) { // Only fire this event if we are a server world
 			ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, (ServerWorld) (Object) this);
 		}
+	}
+
+	@Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;removeBlockEntity(Lnet/minecraft/util/math/BlockPos;)V")), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	protected void onRemoveBlockEntity(CallbackInfo ci, Profiler profiler, Iterator iterator, BlockEntity blockEntity) {
+		if (!this.isClient()) {
+			ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, (ServerWorld) (Object) this);
+		}
+	}
+
+	@Redirect(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;removeAll(Ljava/util/Collection;)Z", ordinal = 1))
+	protected boolean onPurgeRemovedBlockEntities(List<BlockEntity> blockEntityList, Collection<BlockEntity> removals) {
+		if (!this.isClient()) {
+			for (BlockEntity removal : removals) {
+				ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(removal, (ServerWorld) (Object) this);
+			}
+		}
+
+		// Mimic vanilla logic
+		return blockEntityList.removeAll(removals);
 	}
 
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")

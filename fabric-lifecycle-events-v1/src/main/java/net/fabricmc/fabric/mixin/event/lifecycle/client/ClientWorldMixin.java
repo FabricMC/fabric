@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,6 +30,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.mixin.event.lifecycle.WorldMixin;
@@ -54,6 +59,20 @@ public abstract class ClientWorldMixin extends WorldMixin {
 	@Override
 	protected void onUnloadBlockEntity(BlockPos pos, CallbackInfo ci, BlockEntity blockEntity) {
 		ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, (ClientWorld) (Object) this);
+	}
+
+	@Override
+	protected void onRemoveBlockEntity(CallbackInfo ci, Profiler profiler, Iterator iterator, BlockEntity blockEntity) {
+		ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, (ClientWorld) (Object) this);
+	}
+
+	@Override
+	protected boolean onPurgeRemovedBlockEntities(List<BlockEntity> blockEntityList, Collection<BlockEntity> removals) {
+		for (BlockEntity removal : removals) {
+			ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(removal, (ClientWorld) (Object) this);
+		}
+
+		return super.onPurgeRemovedBlockEntities(blockEntityList, removals); // Call super
 	}
 
 	// We override our injection on the clientworld so only the client world's tick invocations will run

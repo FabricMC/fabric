@@ -19,59 +19,52 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.common.collect.Iterables;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
-/**
- * Tests related to the lifecycle of entities.
- */
-@Environment(EnvType.CLIENT)
-public class ClientEntityLifecycleTests implements ClientModInitializer {
-	private List<Entity> clientEntities = new ArrayList<>();
+public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
+	private List<BlockEntity> clientBlockEntities = new ArrayList<>();
 	private int clientTicks;
 
 	@Override
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientLifecycleEvents.ENTITY_LOAD.register((entity, world) -> {
-			this.clientEntities.add(entity);
-			logger.info("[CLIENT]" + " LOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+		ClientLifecycleEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
+			this.clientBlockEntities.add(blockEntity);
+			logger.info("[CLIENT]" + " LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
 		});
 
-		ClientLifecycleEvents.ENTITY_UNLOAD.register((entity, world) -> {
-			this.clientEntities.remove(entity);
-			logger.info("[CLIENT]" + " UNLOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+		ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
+			this.clientBlockEntities.remove(blockEntity);
+			logger.info("[CLIENT]" + " UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
 		});
 
 		ClientLifecycleEvents.CLIENT_TICK.register(client -> {
 			if (this.clientTicks++ % 200 == 0 && client.world != null) {
-				final int entities = Iterables.toArray(client.world.getEntities(), Entity.class).length;
-				logger.info("[CLIENT] Tracked Entities:" + this.clientEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
-				logger.info("[CLIENT] Actual Entities: " + entities);
+				final int blockEntities = client.world.blockEntities.size();
+				logger.info("[CLIENT] Tracked BlockEntities:" + this.clientBlockEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
+				logger.info("[CLIENT] Actual BlockEntities: " + client.world.blockEntities.size());
 
-				if (entities != this.clientEntities.size()) {
-					logger.error("[CLIENT] Mismatch in tracked entities and actual entities");
+				if (blockEntities != this.clientBlockEntities.size()) {
+					logger.error("[CLIENT] Mismatch in tracked blockentities and actual blockentities");
 				}
 			}
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(minecraftServer -> {
 			if (!minecraftServer.isDedicated()) { // fixme: Use ClientNetworking#PLAY_DISCONNECTED instead of the server stop callback for testing.
-				logger.info("[CLIENT] Disconnected. Tracking: " + this.clientEntities.size() + " entities");
+				logger.info("[CLIENT] Disconnected. Tracking: " + this.clientBlockEntities.size() + " blockentities");
 
-				if (this.clientEntities.size() != 0) {
-					logger.error("[CLIENT] Mismatch in tracked entities, expected 0");
+				if (this.clientBlockEntities.size() != 0) {
+					logger.error("[CLIENT] Mismatch in tracked blockentities, expected 0");
 				}
 			}
 		});
