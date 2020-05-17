@@ -8,4 +8,5 @@ minecraft {
 dependencies {
 	compile(project(path: ':fabric-api-base', configuration: 'dev')) { exclude module: 'minecraft' }
 	compile(project(path: ':fabric-networking-v0', configuration: 'dev')) { exclude module: 'minecraft' }
+	testmodCompile(project(path: ':fabric-resource-loader-v0', configuration: 'dev')) { exclude module: 'minecraft' }
 }
