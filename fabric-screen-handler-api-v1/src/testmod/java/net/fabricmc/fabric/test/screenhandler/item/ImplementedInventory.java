@@ -34,8 +34,6 @@ import net.minecraft.util.math.Direction;
  * Use {@link Inventories#fromTag(CompoundTag, DefaultedList)} and {@link Inventories#toTag(CompoundTag, DefaultedList)}
  * on {@linkplain #getItems() the item list}.
  *
- * <p>License: <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0</a>
- *
  * @author Juuz
  */
 @FunctionalInterface
