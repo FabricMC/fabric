@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.object.builder",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "AbstractBlockAccessor",
+    "AbstractBlockSettingsAccessor",
+    "AbstractBlockSettingsMixin",
+    "DefaultAttributeRegistryAccessor",
+    "DefaultAttributeRegistryMixin",
+    "MaterialBuilderAccessor",
+    "MixinBlock"
+  ],
+  "client": [
+    "ModelPredicateProviderRegistryAccessor",
+    "ModelPredicateProviderRegistrySpecificAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

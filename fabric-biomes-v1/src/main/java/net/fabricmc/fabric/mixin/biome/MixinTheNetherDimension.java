@@ -16,25 +16,25 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.dimension.TheNetherDimension;
+import net.minecraft.class_5285;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
-@Mixin(TheNetherDimension.class)
+@Mixin(class_5285.class)
 public class MixinTheNetherDimension {
-	@ModifyArg(method = "createChunkGenerator", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSourceConfig;withBiomes(Ljava/util/Set;)Lnet/minecraft/world/biome/source/MultiNoiseBiomeSourceConfig;"))
-	protected Set<Biome> modifyNetherBiomes(Set<Biome> set) {
+	@ModifyArg(method = "method_28026", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;method_27986(JLjava/util/List;)Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;"))
+	private static List<Biome> modifyNetherBiomes(List<Biome> list) {
 		// the provided set is immutable, so we construct our own
-		Set<Biome> newSet = new HashSet<>(set);
-		newSet.addAll(InternalBiomeData.getNetherBiomes());
-		return newSet;
+		List<Biome> newList = new ArrayList<>(list);
+		newList.addAll(InternalBiomeData.getNetherBiomes());
+		return newList;
 	}
 }

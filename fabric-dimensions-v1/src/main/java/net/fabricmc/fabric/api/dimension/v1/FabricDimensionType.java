@@ -60,7 +60,7 @@ public final class FabricDimensionType extends DimensionType {
 	 */
 	private FabricDimensionType(String suffix, String saveDir, Builder builder) {
 		// Pass an arbitrary raw id that does not map to any vanilla dimension. That id should never get used.
-		super(3, suffix, saveDir, builder.factory, builder.skyLight, builder.biomeAccessStrategy);
+		super(3, suffix, saveDir, builder.factory, builder.skyLight, false, false, builder.biomeAccessStrategy);
 		this.defaultPlacement = builder.defaultPlacer;
 	}
 

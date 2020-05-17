@@ -25,8 +25,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.resource.language.I18n;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class FabricCreativeGuiComponents {
@@ -52,7 +55,7 @@ public class FabricCreativeGuiComponents {
 		}
 
 		@Override
-		public void render(int mouseX, int mouseY, float float_1) {
+		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float float_1) {
 			this.visible = extensions.fabric_isButtonVisible(type);
 			this.active = extensions.fabric_isButtonEnabled(type);
 
@@ -61,23 +64,23 @@ public class FabricCreativeGuiComponents {
 				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
 				RenderSystem.disableLighting();
 				RenderSystem.color4f(1F, 1F, 1F, 1F);
-				this.drawTexture(this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);
+				this.drawTexture(matrixStack, this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);
 
 				if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
-					gui.renderTooltip(I18n.translate("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
+					gui.renderTooltip(matrixStack, new TranslatableText("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
 				}
 			}
 		}
 	}
 
 	public enum Type {
-		NEXT(">", CreativeGuiExtensions::fabric_nextPage),
-		PREVIOUS("<", CreativeGuiExtensions::fabric_previousPage);
+		NEXT(new LiteralText(">"), CreativeGuiExtensions::fabric_nextPage),
+		PREVIOUS(new LiteralText("<"), CreativeGuiExtensions::fabric_previousPage);
 
-		String text;
+		Text text;
 		Consumer<CreativeGuiExtensions> clickConsumer;
 
-		Type(String text, Consumer<CreativeGuiExtensions> clickConsumer) {
+		Type(Text text, Consumer<CreativeGuiExtensions> clickConsumer) {
 			this.text = text;
 			this.clickConsumer = clickConsumer;
 		}

@@ -16,11 +16,11 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
+    "fabricloader": ">=0.8.2",
     "fabric-api-base": "*",
-    "fabric-mining-levels-v0": "*"
+    "fabric-object-builder-api-v1": "*"
   },
-  "description": "Builders for objects vanilla has locked down.",
+  "description": "Legacy builders for objects vanilla has locked down, superseded by fabric-object-builder-api-v1.",
   "mixins": [
     "fabric-object-builders-v0.mixins.json"
   ]

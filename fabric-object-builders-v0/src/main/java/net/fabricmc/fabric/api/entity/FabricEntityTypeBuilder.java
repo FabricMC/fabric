@@ -18,71 +18,51 @@ package net.fabricmc.fabric.api.entity;
 
 import java.util.function.Function;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
-
 /**
- * Extended version of {@link EntityType.Builder} with added registration for
- * server-&gt;client entity tracking values.
- *
- * @param <T> Entity class.
+ * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder} instead.
  */
-// TODO more javadocs
+@Deprecated
 public class FabricEntityTypeBuilder<T extends Entity> {
-	private static final Logger LOGGER = LogManager.getLogger();
-	private final EntityCategory category;
-	private final EntityType.EntityFactory<T> function;
-	private boolean saveable = true;
-	private boolean summonable = true;
-	private int trackingDistance = -1;
-	private int updateIntervalTicks = -1;
-	private Boolean alwaysUpdateVelocity;
-	private boolean immuneToFire = false;
-	private int maxDespawnDistance = 128;
-	private int minDespawnDistance = 32;
-	private EntityDimensions size = EntityDimensions.changing(-1.0f, -1.0f);
+	private final net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder<T> delegate;
 
-	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
-		this.category = category;
-		this.function = function;
+	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		this.delegate = net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder.create(spawnGroup, function);
 	}
 
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
-		return new FabricEntityTypeBuilder<>(category, (t, w) -> null);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup) {
+		return new FabricEntityTypeBuilder<>(spawnGroup, (t, w) -> null);
 	}
 
 	/**
-	 * @deprecated Use {@link FabricEntityTypeBuilder#create(EntityCategory, EntityType.EntityFactory)}
+	 * @deprecated Use {@link FabricEntityTypeBuilder#create(SpawnGroup, EntityType.EntityFactory)}
 	 */
 	@Deprecated
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, Function<? super World, ? extends T> function) {
-		return create(category, (t, w) -> function.apply(w));
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, Function<? super World, ? extends T> function) {
+		return create(spawnGroup, (t, w) -> function.apply(w));
 	}
 
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.EntityFactory<T> function) {
-		return new FabricEntityTypeBuilder<>(category, function);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		return new FabricEntityTypeBuilder<>(spawnGroup, function);
 	}
 
 	public FabricEntityTypeBuilder<T> disableSummon() {
-		this.summonable = false;
+		this.delegate.disableSummon();
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> disableSaving() {
-		this.saveable = false;
+		this.delegate.disableSaving();
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> setImmuneToFire() {
-		this.immuneToFire = true;
+		this.delegate.fireImmune();
 		return this;
 	}
 
@@ -91,35 +71,26 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 */
 	@Deprecated
 	public FabricEntityTypeBuilder<T> size(float width, float height) {
-		this.size = EntityDimensions.changing(width, height);
+		this.delegate.dimensions(EntityDimensions.changing(width, height));
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> size(EntityDimensions size) {
-		this.size = size;
+		this.delegate.dimensions(size);
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-		return trackable(trackingDistanceBlocks, updateIntervalTicks, true);
+		this.delegate.trackable(trackingDistanceBlocks, updateIntervalTicks);
+		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-		this.trackingDistance = trackingDistanceBlocks;
-		this.updateIntervalTicks = updateIntervalTicks;
-		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+		this.delegate.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
 		return this;
 	}
 
 	public EntityType<T> build() {
-		if (this.saveable) {
-			// SNIP! Modded datafixers are not supported anyway.
-			// TODO: Flesh out once modded datafixers exist.
-		}
-
-		boolean figureMeOut1 = this.category == EntityCategory.CREATURE || this.category == EntityCategory.MISC; // TODO
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.immuneToFire, figureMeOut1, maxDespawnDistance, minDespawnDistance, size, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
-
-		return type;
+		return this.delegate.build();
 	}
 }

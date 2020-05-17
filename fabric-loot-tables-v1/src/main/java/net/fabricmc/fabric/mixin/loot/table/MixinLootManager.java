@@ -52,7 +52,7 @@ public class MixinLootManager {
 					manager, (LootManager) (Object) this, id, builder, (s) -> newSuppliers.put(id, s)
 			);
 
-			newSuppliers.computeIfAbsent(id, (i) -> builder.create());
+			newSuppliers.computeIfAbsent(id, (i) -> builder.build());
 		});
 
 		tables = ImmutableMap.copyOf(newSuppliers);

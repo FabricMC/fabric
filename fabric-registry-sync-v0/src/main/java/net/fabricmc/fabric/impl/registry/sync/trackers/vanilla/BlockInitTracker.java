@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.impl.registry.sync.trackers.vanilla;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -37,8 +36,6 @@ public final class BlockInitTracker implements RegistryEntryAddedCallback<Block>
 
 	@Override
 	public void onEntryAdded(int rawId, Identifier id, Block object) {
-		object.getStateManager().getStates().forEach(BlockState::initShapeCache);
-
 		// if false, getDropTableId() will generate an invalid drop table ID
 		assert id.equals(registry.getId(object));
 

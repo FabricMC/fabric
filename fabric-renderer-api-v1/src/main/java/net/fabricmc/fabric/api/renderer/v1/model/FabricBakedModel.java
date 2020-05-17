@@ -20,8 +20,10 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -62,7 +64,7 @@ public interface FabricBakedModel {
 	 * <p>Also called to render block models outside of chunk rebuild or block entity rendering.
 	 * Typically this happens when the block is being rendered as an entity, not as a block placed in the world.
 	 * Currently this happens for falling blocks and blocks being pushed by a piston, but renderers
-	 * should invoke this for all calls to {@link BlockModelRenderer#tesselate(ExtendedBlockView, BakedModel, BlockState, BlockPos, net.minecraft.client.render.BufferBuilder, boolean, Random, long)}
+	 * should invoke this for all calls to {@link BlockModelRenderer#render(BlockRenderView, BakedModel, BlockState, BlockPos, MatrixStack, VertexConsumer, boolean, Random, long, int)}
 	 * that occur outside of chunk rebuilds to allow for features added by mods, unless
 	 * {@link #isVanillaAdapter()} returns true.
 	 *
@@ -111,14 +113,14 @@ public interface FabricBakedModel {
 	 * method thread-safe.
 	 *
 	 * <p>Implementing this method does NOT mitigate the need to implement a functional
-	 * {@link BakedModel#getItemPropertyOverrides()} method, because this method will be called
-	 * on the <em>result</em> of  {@link BakedModel#getItemPropertyOverrides}.  However, that
+	 * {@link BakedModel#getOverrides()} method, because this method will be called
+	 * on the <em>result</em> of  {@link BakedModel#getOverrides}.  However, that
 	 * method can simply return the base model because the output from this method will
 	 * be used for rendering.
 	 *
 	 * <p>Renderer implementations should also use this method to obtain the quads used
 	 * for item enchantment glint rendering.  This means models can put geometric variation
-	 * logic here, instead of returning every possible shape from {@link BakedModel#getItemPropertyOverrides}
+	 * logic here, instead of returning every possible shape from {@link BakedModel#getOverrides}
 	 * as vanilla baked models.
 	 */
 	void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context);
