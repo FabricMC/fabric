@@ -28,7 +28,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
 
 /**
- * An API for creating {@linkplain ScreenHandlerType screen handler types}.
+ * An API for creating and registering {@linkplain ScreenHandlerType screen handler types}.
  *
  * <p>This class exposes the private {@link ScreenHandlerType} constructor,
  * as well as adds support for creating types using Fabric's extended screen handler API.
@@ -50,7 +50,7 @@ import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
  * <pre>
  * {@code
  * // Creating the screen handler type
- * public static final ScreenHandlerType<OvenScreenHandler> OVEN = FabricScreenHandlerTypes.simple(new Identifier("my_mod", "oven"), OvenScreenHandler::new);
+ * public static final ScreenHandlerType<OvenScreenHandler> OVEN = ScreenHandlerRegistry.registerSimple(new Identifier("my_mod", "oven"), OvenScreenHandler::new);
  *
  * // Screen handler class
  * public class OvenScreenHandler extends ScreenHandler {
@@ -63,13 +63,12 @@ import net.fabricmc.fabric.impl.screenhandler.ExtendedScreenHandlerType;
  * NamedScreenHandlerFactory factory = ...;
  * player.openHandledScreen(factory); // only works on ServerPlayerEntity instances
  * }
- * }
  * </pre>
  *
- * @see net.fabricmc.fabric.api.client.screenhandler.v1.FabricHandledScreens registering screens for screen handlers
+ * @see net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry registering screens for screen handlers
  */
-public final class FabricScreenHandlerTypes {
-	private FabricScreenHandlerTypes() {
+public final class ScreenHandlerRegistry {
+	private ScreenHandlerRegistry() {
 	}
 
 	/**
@@ -80,7 +79,7 @@ public final class FabricScreenHandlerTypes {
 	 * @param <T>     the screen handler type
 	 * @return the created type object
 	 */
-	public static <T extends ScreenHandler> ScreenHandlerType<T> simple(Identifier id, SimpleClientHandlerFactory<T> factory) {
+	public static <T extends ScreenHandler> ScreenHandlerType<T> registerSimple(Identifier id, SimpleClientHandlerFactory<T> factory) {
 		// Wrap our factory in vanilla's factory; it will not be public for users.
 		ScreenHandlerType<T> type = new ScreenHandlerType<>(factory::create);
 		return Registry.register(Registry.SCREEN_HANDLER, id, type);
@@ -97,7 +96,7 @@ public final class FabricScreenHandlerTypes {
 	 * @param <T>     the screen handler type
 	 * @return the created type object
 	 */
-	public static <T extends ScreenHandler> ScreenHandlerType<T> extended(Identifier id, ExtendedClientHandlerFactory<T> factory) {
+	public static <T extends ScreenHandler> ScreenHandlerType<T> registerExtended(Identifier id, ExtendedClientHandlerFactory<T> factory) {
 		ScreenHandlerType<T> type = new ExtendedScreenHandlerType<>(factory);
 		return Registry.register(Registry.SCREEN_HANDLER, id, type);
 	}

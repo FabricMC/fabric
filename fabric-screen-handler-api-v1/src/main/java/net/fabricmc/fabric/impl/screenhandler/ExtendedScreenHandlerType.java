@@ -23,12 +23,12 @@ import net.minecraft.screen.ScreenHandlerType;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.screenhandler.v1.FabricScreenHandlerTypes;
+import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 
 public final class ExtendedScreenHandlerType<T extends ScreenHandler> extends ScreenHandlerType<T> {
-	private final FabricScreenHandlerTypes.ExtendedClientHandlerFactory<T> factory;
+	private final ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory;
 
-	public ExtendedScreenHandlerType(FabricScreenHandlerTypes.ExtendedClientHandlerFactory<T> factory) {
+	public ExtendedScreenHandlerType(ScreenHandlerRegistry.ExtendedClientHandlerFactory<T> factory) {
 		super(null);
 		this.factory = factory;
 	}

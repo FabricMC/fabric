@@ -23,7 +23,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 /**
  * An extension of {@code NamedScreenHandlerFactory} that can write additional data to a screen opening packet.
  *
- * @see FabricScreenHandlerTypes#extended(net.minecraft.util.Identifier, FabricScreenHandlerTypes.ExtendedClientHandlerFactory)
+ * @see ScreenHandlerRegistry#extended(net.minecraft.util.Identifier, ScreenHandlerRegistry.ExtendedClientHandlerFactory)
  */
 public interface ExtendedScreenHandlerFactory extends NamedScreenHandlerFactory {
 	/**
