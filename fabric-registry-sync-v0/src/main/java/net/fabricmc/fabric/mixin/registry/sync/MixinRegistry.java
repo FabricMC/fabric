@@ -37,7 +37,7 @@ public abstract class MixinRegistry<T> implements RegistryAttributeHolder, Fabri
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
 
 	@Unique
-	private int preBootstrapHash = -1;
+	private int previousHash = -1;
 
 	@Shadow
 	public abstract Set<Identifier> getIds();
@@ -73,11 +73,11 @@ public abstract class MixinRegistry<T> implements RegistryAttributeHolder, Fabri
 
 	@Override
 	public int getStoredHash() {
-		return preBootstrapHash;
+		return previousHash;
 	}
 
 	@Override
 	public int storeHash() {
-		return preBootstrapHash = getIds().hashCode();
+		return previousHash = getIds().hashCode();
 	}
 }

@@ -67,7 +67,7 @@ public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	@Unique
 	private <V extends T> void checkEntry(Identifier id, V entry) {
 		// Detect legacy modded registries, this is deprecated as they should use the builder from now on.
-		if (entry instanceof FabricRegistry) {
+		if (((Object) this) == Registry.REGISTRIES && entry instanceof FabricRegistry) {
 			if (!id.getNamespace().equals("minecraft")) {
 				FabricRegistry fabricRegistry = (FabricRegistry) entry;
 

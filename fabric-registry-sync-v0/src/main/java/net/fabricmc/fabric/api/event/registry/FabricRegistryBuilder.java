@@ -27,7 +27,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 
 /**
- * Used to create custom registry's, with specified registry attributes.
+ * Used to create custom registries, with specified registry attributes.
  *
  * <pre>
  * {@code
