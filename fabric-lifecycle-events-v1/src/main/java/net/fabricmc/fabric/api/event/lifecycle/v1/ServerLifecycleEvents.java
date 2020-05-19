@@ -27,7 +27,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.block.entity.BlockEntityUnload
 import net.fabricmc.fabric.api.event.lifecycle.v1.chunk.ChunkLoadCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.chunk.ChunkUnloadCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.entity.EntityLoadCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.entity.EntityUnloadCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.world.WorldTickCallback;
 
 public final class ServerLifecycleEvents {
