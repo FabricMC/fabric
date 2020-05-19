@@ -62,10 +62,6 @@ public abstract class MinecraftServerMixin {
 	private void closeWorld(CallbackInfo ci, Iterator<ServerWorld> worlds, ServerWorld serverWorld) {
 		final List<Entity> entities = serverWorld.getEntities(null, entity -> true); // Get every single entity in the world
 
-		for (Entity entity : entities) {
-			ServerLifecycleEvents.ENTITY_UNLOAD.invoker().onEntityUnload(entity, serverWorld);
-		}
-
 		for (BlockEntity blockEntity : serverWorld.blockEntities) {
 			ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, serverWorld);
 		}

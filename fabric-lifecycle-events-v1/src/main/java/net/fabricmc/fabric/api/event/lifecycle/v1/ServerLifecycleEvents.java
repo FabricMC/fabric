@@ -168,6 +168,8 @@ public final class ServerLifecycleEvents {
 
 	/**
 	 * Called when an Entity is loaded into a ServerWorld.
+	 *
+	 * <p>Note there is no corresponding unload event because entity unloads cannot be reliably tracked.
 	 */
 	public static final Event<EntityLoadCallback<ServerWorld>> ENTITY_LOAD = EventFactory.createArrayBacked(EntityLoadCallback.class, callbacks -> (entity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {
@@ -184,28 +186,6 @@ public final class ServerLifecycleEvents {
 		} else {
 			for (EntityLoadCallback<ServerWorld> callback : callbacks) {
 				callback.onEntityLoad(entity, world);
-			}
-		}
-	});
-
-	/**
-	 * Called when an Entity is unloaded from a ServerWorld.
-	 */
-	public static final Event<EntityUnloadCallback<ServerWorld>> ENTITY_UNLOAD = EventFactory.createArrayBacked(EntityUnloadCallback.class, callbacks -> (entity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerEntityUnload");
-
-			for (EntityUnloadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onEntityUnload(entity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (EntityUnloadCallback<ServerWorld> callback : callbacks) {
-				callback.onEntityUnload(entity, world);
 			}
 		}
 	});

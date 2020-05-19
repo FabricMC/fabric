@@ -39,11 +39,4 @@ public abstract class ServerWorldMixin {
 			ServerLifecycleEvents.ENTITY_LOAD.invoker().onEntityLoad(entity, (ServerWorld) (Object) this);
 		}
 	}
-
-	// TODO: Killing an entity does not unload it
-	// Call our unload event before vanilla does.
-	@Inject(method = "unloadEntity", at = @At("HEAD"))
-	private void onUnloadEntity(Entity entity, CallbackInfo ci) {
-		ServerLifecycleEvents.ENTITY_UNLOAD.invoker().onEntityUnload(entity, (ServerWorld) (Object) this);
-	}
 }

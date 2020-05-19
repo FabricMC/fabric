@@ -41,48 +41,5 @@ public class ServerEntityLifecycleTests implements ModInitializer {
 			this.serverEntities.add(entity);
 			logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
 		});
-
-		ServerLifecycleEvents.ENTITY_UNLOAD.register((entity, world) -> {
-			this.serverEntities.remove(entity);
-			logger.info("[SERVER] UNLOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
-		});
-
-		ServerLifecycleEvents.SERVER_TICK.register(minecraftServer -> {
-			if (minecraftServer.getTicks() % 200 == 0) {
-				final List<Entity> entities = new ArrayList<>();
-
-				for (ServerWorld world : minecraftServer.getWorlds()) {
-					List<Entity> worldEntities = world.getEntities(null, entity -> true);
-					logger.info("[SERVER] Tracked Entities in " + world.dimension.getType().toString() + " - " + worldEntities.size());
-					entities.addAll(worldEntities);
-				}
-
-				logger.info("[SERVER] Tracked Entities: " + this.serverEntities.size() + " Ticked at: " + minecraftServer.getTicks() + "ticks");
-				logger.info("[SERVER] Actual Total Entities: " + entities.size());
-
-				if (entities.size() != this.serverEntities.size()) {
-					logger.error("[SERVER] Mismatch in tracked entities and actual entities");
-					//
-					List<Entity> temp = new ArrayList<>(this.serverEntities);
-					temp.removeAll(entities);
-
-					for (Entity entity : temp) {
-						logger.error(entity.toString());
-					}
-				}
-			}
-		});
-
-		ServerLifecycleEvents.SERVER_STOPPED.register(minecraftServer -> {
-			logger.info("[SERVER] Disconnected. Tracking: " + this.serverEntities.size() + " entities");
-
-			if (this.serverEntities.size() != 0) {
-				logger.error("[SERVER] Mismatch in tracked entities, expected 0");
-
-				for (Entity serverEntity : this.serverEntities) {
-					logger.error(serverEntity.toString());
-				}
-			}
-		});
 	}
 }
