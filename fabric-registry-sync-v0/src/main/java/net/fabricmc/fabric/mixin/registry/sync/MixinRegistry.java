@@ -29,15 +29,11 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
-import net.fabricmc.fabric.impl.registry.sync.HashedRegistry;
 
 @Mixin(Registry.class)
-public abstract class MixinRegistry<T> implements RegistryAttributeHolder, FabricRegistry, HashedRegistry {
+public abstract class MixinRegistry<T> implements RegistryAttributeHolder, FabricRegistry {
 	@Unique
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
-
-	@Unique
-	private int previousHash = -1;
 
 	@Shadow
 	public abstract Set<Identifier> getIds();
@@ -69,15 +65,5 @@ public abstract class MixinRegistry<T> implements RegistryAttributeHolder, Fabri
 	@Override
 	public boolean builtByBuilder() {
 		return builtWithBuilder;
-	}
-
-	@Override
-	public int getStoredHash() {
-		return previousHash;
-	}
-
-	@Override
-	public int storeHash() {
-		return previousHash = getIds().hashCode();
 	}
 }

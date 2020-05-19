@@ -56,7 +56,6 @@ public final class RegistrySyncManager {
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
-	private static boolean hasChecked = false;
 
 	private RegistrySyncManager() { }
 
@@ -95,11 +94,6 @@ public final class RegistrySyncManager {
 
 	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeIdMap) {
 		CompoundTag mainTag = new CompoundTag();
-
-		if (!hasChecked) {
-			checkRegistryHashes();
-			hasChecked = true;
-		}
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
 			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
@@ -280,28 +274,6 @@ public final class RegistrySyncManager {
 	}
 
 	public static void bootstrapRegistries() {
-		for (MutableRegistry<?> registry : Registry.REGISTRIES) {
-			if (registry instanceof HashedRegistry) {
-				((HashedRegistry) registry).storeHash();
-			}
-		}
-
 		postBootstrap = true;
-	}
-
-	// Checks the stored hash against the current hash, if it has changed mark as modded
-	public static void checkRegistryHashes() {
-		for (MutableRegistry<?> registry : Registry.REGISTRIES) {
-			if (registry instanceof HashedRegistry) {
-				if (((HashedRegistry) registry).getStoredHash() != ((HashedRegistry) registry).storeHash()) {
-					RegistryAttributeHolder holder = RegistryAttributeHolder.get(registry);
-
-					if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
-						LOGGER.debug("Registry {} has been marked as modded as the hash changed since bootstrap", Registry.REGISTRIES.getId(registry));
-						holder.addAttribute(RegistryAttribute.MODDED);
-					}
-				}
-			}
-		}
 	}
 }
