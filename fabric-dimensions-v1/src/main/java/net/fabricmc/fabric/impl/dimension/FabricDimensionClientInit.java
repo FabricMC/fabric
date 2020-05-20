@@ -35,29 +35,8 @@ public final class FabricDimensionClientInit {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static void onClientInit() {
-		ClientSidePacketRegistry.INSTANCE.register(DimensionIdsFixer.ID, (ctx, buf) -> {
-			CompoundTag compound = buf.readCompoundTag();
 
-			ctx.getTaskQueue().execute(() -> {
-				if (compound == null) {
-					handleError(ctx, new RemapException("Received null compound tag in dimension sync packet!"));
-					return;
-				}
-
-				try {
-					DimensionIdsFixer.apply(compound);
-				} catch (RemapException e) {
-					handleError(ctx, e);
-				}
-			});
-		});
 	}
 
-	private static void handleError(PacketContext ctx, Exception e) {
-		LOGGER.error("Dimension id remapping failed!", e);
 
-		MinecraftClient.getInstance().execute(() -> ((ClientPlayerEntity) ctx.getPlayer()).networkHandler.getConnection().disconnect(
-				new LiteralText("Dimension id remapping failed: " + e)
-		));
-	}
 }

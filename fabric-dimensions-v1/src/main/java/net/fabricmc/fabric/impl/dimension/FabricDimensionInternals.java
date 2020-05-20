@@ -17,6 +17,9 @@
 package net.fabricmc.fabric.impl.dimension;
 
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +34,8 @@ import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.mixin.dimension.EntityHooks;
 
+import java.util.LinkedHashMap;
+
 public final class FabricDimensionInternals {
 	private FabricDimensionInternals() {
 		throw new AssertionError();
@@ -38,6 +43,8 @@ public final class FabricDimensionInternals {
 
 	public static final boolean DEBUG = System.getProperty("fabric.dimension.debug", "false").equalsIgnoreCase("true");
 	public static final Logger LOGGER = LogManager.getLogger();
+
+	public static final LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGenerator>> FABRIC_DIM_MAP = new LinkedHashMap<>();
 
 	/**
 	 * The entity currently being transported to another dimension.
@@ -100,13 +107,13 @@ public final class FabricDimensionInternals {
 		}
 
 		// Default placement logic, falls back to vanilla if not a fabric dimension
-		DimensionType dimType = destination.getDimension().getType();
+		DimensionType dimType = destination.getDimension();
 
 		if (dimType instanceof FabricDimensionType) {
 			BlockPattern.TeleportTarget defaultTarget = ((FabricDimensionType) dimType).getDefaultPlacement().placeEntity(teleported, destination, portalDir, portalX, portalY);
 
 			if (defaultTarget == null) {
-				throw new IllegalStateException("Mod dimension " + DimensionType.getId(dimType) + " returned an invalid teleport target");
+				throw new IllegalStateException("Mod dimension " + destination.method_27983().toString() + " returned an invalid teleport target");
 			}
 
 			return defaultTarget;
@@ -117,7 +124,7 @@ public final class FabricDimensionInternals {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Entity> E changeDimension(E teleported, DimensionType dimension, EntityPlacer placement) {
+	public static <E extends Entity> E changeDimension(E teleported, RegistryKey<DimensionType> dimension, EntityPlacer placement) {
 		assert !teleported.world.isClient : "Entities can only be teleported on the server side";
 		assert Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread() : "Entities must be teleported from the main server thread";
 

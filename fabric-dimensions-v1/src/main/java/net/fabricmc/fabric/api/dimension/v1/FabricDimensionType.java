@@ -16,20 +16,22 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
-import java.util.function.BiFunction;
+import java.util.OptionalLong;
+import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
 
+import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.biome.source.BiomeAccessType;
-import net.minecraft.world.biome.source.VoronoiBiomeAccessType;
-import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 /**
  * An extended version of {@link DimensionType} with automatic raw id management and default placement settings.
@@ -37,13 +39,9 @@ import net.minecraft.world.dimension.DimensionType;
  *
  * @see #builder()
  * @see #getDefaultPlacement()
- * @see #getDesiredRawId()
  */
 public final class FabricDimensionType extends DimensionType {
 	private final EntityPlacer defaultPlacement;
-	private int desiredRawId;
-	/** The fixed raw id for this dimension type, set through reflection. */
-	private int fixedRawId;
 
 	/**
 	 * Returns a new {@link Builder}.
@@ -53,40 +51,13 @@ public final class FabricDimensionType extends DimensionType {
 	}
 
 	/**
-	 * @param suffix        the string suffix unique to the dimension type
-	 * @param saveDir       the name of the save directory for the dimension type
 	 * @param builder   	builder instance containing other parameters
 	 * @see #builder()
 	 */
-	private FabricDimensionType(String suffix, String saveDir, Builder builder) {
+	private FabricDimensionType(Builder builder) {
 		// Pass an arbitrary raw id that does not map to any vanilla dimension. That id should never get used.
-		super(3, suffix, saveDir, builder.factory, builder.skyLight, false, false, builder.biomeAccessStrategy);
+		super(OptionalLong.empty(), builder.skyLight, false, false, false, false, 0F);
 		this.defaultPlacement = builder.defaultPlacer;
-	}
-
-	/**
-	 * Return the desired raw id of this dimension type.
-	 *
-	 * @return the preferred raw id of this dimension type
-	 * @see Builder#desiredRawId(int)
-	 */
-	public int getDesiredRawId() {
-		return desiredRawId;
-	}
-
-	/**
-	 * Return the current raw id for this dimension type.
-	 *
-	 * <p>The returned id is guaranteed to be unique and persistent in a save,
-	 * as well as synchronized between a server and its connected clients.
-	 * It may change when connecting to a different server or opening a new save.
-	 *
-	 * @return the current raw id for this dimension type
-	 * @see #getDesiredRawId()
-	 */
-	@Override
-	public int getRawId() {
-		return this.fixedRawId;
 	}
 
 	/**
@@ -94,7 +65,7 @@ public final class FabricDimensionType extends DimensionType {
 	 * never returns {@code null} when called.
 	 *
 	 * @return the default placement logic for this dimension
-	 * @see FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)
+	 * @see FabricDimensions#teleport(Entity, RegistryKey, EntityPlacer)
 	 */
 	public EntityPlacer getDefaultPlacement() {
 		return this.defaultPlacement;
@@ -119,10 +90,8 @@ public final class FabricDimensionType extends DimensionType {
 	 */
 	public static final class Builder {
 		private EntityPlacer defaultPlacer;
-		private BiFunction<World, DimensionType, ? extends Dimension> factory;
-		private int desiredRawId = 0;
 		private boolean skyLight = true;
-		private BiomeAccessType biomeAccessStrategy = VoronoiBiomeAccessType.INSTANCE;
+		private ChunkGenerator chunkGenerator;
 
 		private Builder() {
 		}
@@ -147,21 +116,6 @@ public final class FabricDimensionType extends DimensionType {
 		}
 
 		/**
-		 * Set the factory used to create new {@link Dimension} instances of the built type.
-		 * The dimension factory must be set before building a dimension type.
-		 *
-		 * @param factory a function creating new {@code Dimension} instances
-		 * @return this {@code Builder} object
-		 * @throws NullPointerException if {@code factory} is {@code null}
-		 */
-		public Builder factory(BiFunction<World, DimensionType, ? extends Dimension> factory) {
-			Preconditions.checkNotNull(factory);
-
-			this.factory = factory;
-			return this;
-		}
-
-		/**
 		 * Set whether built dimension types use skylight like the Overworld.
 		 * If this method is not called, the value defaults to {@code true}.
 		 *
@@ -174,38 +128,8 @@ public final class FabricDimensionType extends DimensionType {
 			return this;
 		}
 
-		/**
-		 * Governs how biome information is retrieved from random seed and world coordinates.
-		 * If this method is not called, value defaults to the three-dimensional strategy
-		 * used by the End and Nether dimensions.
-		 *
-		 * @param biomeAccessStrategy Function to be used for biome generation.
-		 * @return this {@code Builder} object
-		 */
-		public Builder biomeAccessStrategy(BiomeAccessType biomeAccessStrategy) {
-			Preconditions.checkNotNull(biomeAccessStrategy);
-
-			this.biomeAccessStrategy = biomeAccessStrategy;
-			return this;
-		}
-
-		/**
-		 * Sets this dimension's desired raw id.
-		 * If this method is not called, the value defaults to the raw registry id
-		 * of the dimension type.
-		 *
-		 * <p>A Fabric Dimension's desired raw id is used as its actual raw id
-		 * when it does not conflict with any existing id, and the world
-		 * save does not map the dimension to a different raw id.
-		 *
-		 * @param desiredRawId the new raw id for this dimension type
-		 * @return this {@code Builder} object
-		 * @apiNote Mods that used to have a dimension with a manually set id
-		 * may use this method to set a default id corresponding to the old one,
-		 * so as not to break compatibility with old worlds.
-		 */
-		public Builder desiredRawId(int desiredRawId) {
-			this.desiredRawId = desiredRawId;
+		public Builder chunkGenerator(ChunkGenerator chunkGenerator) {
+			this.chunkGenerator = chunkGenerator;
 			return this;
 		}
 
@@ -218,27 +142,17 @@ public final class FabricDimensionType extends DimensionType {
 		 * @param dimensionId the id used to name and register the dimension
 		 * @return the built {@code FabricDimensionType}
 		 * @throws IllegalArgumentException if an existing dimension has already been registered with {@code dimensionId}
-		 * @throws IllegalStateException    if no {@link #factory(BiFunction) factory} or {@link #defaultPlacer(EntityPlacer) default placer}
+		 * @throws IllegalStateException    if no {@link #factory(Function) factory} or {@link #defaultPlacer(EntityPlacer) default placer}
 		 *                                  have been set
 		 */
 		public FabricDimensionType buildAndRegister(Identifier dimensionId) {
-			Preconditions.checkArgument(Registry.DIMENSION_TYPE.get(dimensionId) == null);
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
-			Preconditions.checkState(this.factory != null, "No dimension factory has been specified!");
+			Preconditions.checkState(this.chunkGenerator != null, "No chunk generator has been specified!");
 
-			String suffix = dimensionId.getNamespace() + "_" + dimensionId.getPath();
-			String saveDir = "DIM_" + dimensionId.getNamespace() + "_" + dimensionId.getPath();
-			FabricDimensionType built = new FabricDimensionType(suffix, saveDir, this);
-			Registry.register(Registry.DIMENSION_TYPE, dimensionId, built);
-
-			if (this.desiredRawId != 0) {
-				built.desiredRawId = this.desiredRawId;
-			} else {
-				built.desiredRawId = Registry.DIMENSION_TYPE.getRawId(built) - 1;
-			}
-
-			built.fixedRawId = built.desiredRawId;
-			return built;
+			FabricDimensionType dimensionType = new FabricDimensionType( this);
+			Pair<DimensionType, ChunkGenerator> pair = Pair.of(dimensionType, chunkGenerator);
+			FabricDimensionInternals.FABRIC_DIM_MAP.put(RegistryKey.getOrCreate(Registry.DIMENSION_TYPE_KEY, dimensionId), pair);
+			return dimensionType;
 		}
 	}
 }

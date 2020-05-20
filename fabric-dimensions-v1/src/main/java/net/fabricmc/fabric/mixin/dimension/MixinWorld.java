@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,12 +24,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.Dimension;
 
 @Mixin(World.class)
 public abstract class MixinWorld {
 	@Shadow
-	public abstract Dimension getDimension();
+	public abstract DimensionType getDimension();
 
 	@Shadow
 	private int ambientDarkness;
@@ -44,14 +44,14 @@ public abstract class MixinWorld {
 	 */
 	@Inject(method = "isDay", at = @At("HEAD"), cancellable = true)
 	private void isDay(CallbackInfoReturnable<Boolean> infoReturnable) {
-		if (getDimension().hasVisibleSky()) {
+		if (getDimension().hasSkyLight()) {
 			infoReturnable.setReturnValue(ambientDarkness < 4);
 		}
 	}
 
 	@Inject(method = "isNight", at = @At("HEAD"), cancellable = true)
 	private void isNight(CallbackInfoReturnable<Boolean> infoReturnable) {
-		if (getDimension().hasVisibleSky()) {
+		if (getDimension().hasSkyLight()) {
 			infoReturnable.setReturnValue(!(ambientDarkness < 4));
 		}
 	}

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import net.minecraft.util.registry.RegistryKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -30,7 +31,7 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 public abstract class MixinEntity {
 	// Inject right before the direction vector is retrieved by the game
 	@Inject(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastNetherPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
-	private void onGetPortal(DimensionType dimension, CallbackInfoReturnable<Entity> cir) {
+	private void onGetPortal(RegistryKey<DimensionType> dimension, CallbackInfoReturnable<Entity> cir) {
 		FabricDimensionInternals.prepareDimensionalTeleportation((Entity) (Object) this);
 	}
 }
