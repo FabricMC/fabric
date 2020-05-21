@@ -22,7 +22,6 @@ import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 import net.fabricmc.fabric.impl.loot.DelegatingLootTableBuilder;
@@ -41,14 +40,12 @@ public interface LootTableLoadingCallback extends net.fabricmc.fabric.api.loot.v
 		void set(LootTable supplier);
 	}
 
-	Event<LootTableLoadingCallback> EVENT = EventFactory.createArrayBacked(
-			LootTableLoadingCallback.class,
-			(listeners) -> (resourceManager, manager, id, supplier, setter) -> {
-				for (LootTableLoadingCallback callback : listeners) {
-					callback.onLootTableLoading(resourceManager, manager, id, supplier, setter);
-				}
-			}
-	);
+	Event<LootTableLoadingCallback> EVENT = new Event<LootTableLoadingCallback>() {
+		@Override
+		public void register(LootTableLoadingCallback listener) {
+			net.fabricmc.fabric.api.loot.v2.event.LootTableLoadingCallback.EVENT.register(listener);
+		}
+	};
 
 	@Override
 	default void onLootTableLoading(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootTableBuilder table, net.fabricmc.fabric.api.loot.v2.event.LootTableLoadingCallback.LootTableSetter setter) {
