@@ -104,7 +104,7 @@ public class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	}
 
 	/**
-	 * Applies the attributes to the registry and register's it.
+	 * Applies the attributes to the registry and registers it.
 	 * @return the registry instance with the attributes applied
 	 */
 	public R buildAndRegister() {
