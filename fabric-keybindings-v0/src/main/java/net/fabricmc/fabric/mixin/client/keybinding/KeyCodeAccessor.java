@@ -25,5 +25,5 @@ import net.minecraft.client.util.InputUtil;
 @Mixin(KeyBinding.class)
 public interface KeyCodeAccessor {
 	@Accessor
-	InputUtil.KeyCode getKeyCode();
+	InputUtil.Key getBoundKey();
 }

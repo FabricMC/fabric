@@ -42,6 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Int2ObjectBiMap;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.class_5321;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -123,26 +124,26 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
-	public void setPre(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
+	public void setPre(int id, class_5321<T> registryId, Object object, CallbackInfoReturnable info) {
 		int indexedEntriesId = indexedEntries.getId((T) object);
 
 		if (indexedEntriesId >= 0) {
 			throw new RuntimeException("Attempted to register object " + object + " twice! (at raw IDs " + indexedEntriesId + " and " + id + " )");
 		}
 
-		if (!entries.containsKey(identifier)) {
+		if (!entries.containsKey(registryId.method_29177())) {
 			fabric_isObjectNew = true;
 		} else {
-			T oldObject = entries.get(identifier);
+			T oldObject = entries.get(registryId.method_29177());
 
 			if (oldObject != null && oldObject != object) {
 				int oldId = indexedEntries.getId(oldObject);
 
 				if (oldId != id) {
-					throw new RuntimeException("Attempted to register ID " + identifier + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
+					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
 				}
 
-				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, identifier, oldObject);
+				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, registryId.method_29177(), oldObject);
 				fabric_isObjectNew = true;
 			} else {
 				fabric_isObjectNew = false;
@@ -152,9 +153,9 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "set", at = @At("RETURN"))
-	public void setPost(int id, Identifier identifier, Object object, CallbackInfoReturnable info) {
+	public void setPost(int id, class_5321<T> registryId, Object object, CallbackInfoReturnable info) {
 		if (fabric_isObjectNew) {
-			fabric_addObjectEvent.invoker().onEntryAdded(id, identifier, object);
+			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.method_29177(), object);
 		}
 	}
 

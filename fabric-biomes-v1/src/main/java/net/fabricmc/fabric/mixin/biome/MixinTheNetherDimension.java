@@ -24,13 +24,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.world.biome.Biome;
-import net.minecraft.class_5285;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
-@Mixin(class_5285.class)
+@Mixin(MultiNoiseBiomeSource.class)
 public class MixinTheNetherDimension {
-	@ModifyArg(method = "method_28026", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;method_27986(JLjava/util/List;)Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;"))
+	@ModifyArg(method = "method_28467", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;<init>(JLjava/util/List;Ljava/util/Optional;)V"))
 	private static List<Biome> modifyNetherBiomes(List<Biome> list) {
 		// the provided set is immutable, so we construct our own
 		List<Biome> newList = new ArrayList<>(list);

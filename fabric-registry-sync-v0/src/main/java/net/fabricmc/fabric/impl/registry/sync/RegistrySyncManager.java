@@ -40,7 +40,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.network.PacketContext;
@@ -96,7 +95,7 @@ public final class RegistrySyncManager {
 		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			if (DEBUG_WRITE_REGISTRY_DATA) {
 				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
@@ -243,7 +242,7 @@ public final class RegistrySyncManager {
 			}
 
 			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
-			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
@@ -265,7 +264,7 @@ public final class RegistrySyncManager {
 
 	public static void unmap() throws RemapException {
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				((RemappableRegistry) registry).unmap(registryId.toString());
