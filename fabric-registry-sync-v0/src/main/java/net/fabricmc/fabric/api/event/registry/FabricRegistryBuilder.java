@@ -19,12 +19,17 @@ package net.fabricmc.fabric.api.event.registry;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.mojang.serialization.Lifecycle;
+
+import net.minecraft.class_5321;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
+import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
 
 /**
  * Used to create custom registries, with specified registry attributes.
@@ -41,7 +46,7 @@ import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
  * @param <T> The type stored in the Registry
  * @param <R> The registry type
  */
-public class FabricRegistryBuilder<T, R extends Registry<T>> {
+public class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
@@ -50,31 +55,33 @@ public class FabricRegistryBuilder<T, R extends Registry<T>> {
 	 * @param <R> The registry type
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T, R extends Registry<T>> FabricRegistryBuilder<T, R> from(R registry) {
+	public static <T, R extends MutableRegistry<T>> FabricRegistryBuilder<T, R> from(R registry) {
 		return new FabricRegistryBuilder<>(registry);
 	}
 
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param type A class matching the type being stored in the registry
+	 * @param registryKey The RegistryKey to create the registry
+	 * @param lifecycle The {@link Lifecycle} used to create the registry
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type) {
-		return from(new SimpleRegistry<>());
+	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(class_5321<Registry<T>> registryKey, Lifecycle lifecycle) {
+		return from(new SimpleRegistry<>(registryKey, lifecycle));
 	}
 
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param type A class matching the type being stored in the registry
+	 * @param registryKey The RegistryKey to create the registry
+	 * @param lifecycle The {@link Lifecycle} used to create the registry
 	 * @param defaultId The default registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier defaultId) {
-		return from(new DefaultedRegistry<>(defaultId.toString()));
+	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Identifier defaultId, class_5321<Registry<T>> registryKey, Lifecycle lifecycle) {
+		return from(new DefaultedRegistry<>(defaultId.toString(), registryKey, lifecycle));
 	}
 
 	private final R registry;
@@ -97,12 +104,16 @@ public class FabricRegistryBuilder<T, R extends Registry<T>> {
 	}
 
 	/**
-	 * Applies the attributes to the registry.
+	 * Applies the attributes to the registry and register's it.
 	 * @return the registry instance with the attributes applied
 	 */
-	public R build() {
+	public R buildAndRegister() {
 		FabricRegistry fabricRegistry = (FabricRegistry) registry;
 		fabricRegistry.build(attributes);
+
+		//noinspection unchecked
+		AccessorRegistry.getRootRegistry().add(((AccessorRegistry) registry).getRegistryKey(), registry);
+
 		return registry;
 	}
 }

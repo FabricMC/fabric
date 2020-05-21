@@ -23,6 +23,4 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 
 public interface FabricRegistry extends RegistryAttributeHolder {
 	void build(Set<RegistryAttribute> attributes);
-
-	boolean builtByBuilder();
 }

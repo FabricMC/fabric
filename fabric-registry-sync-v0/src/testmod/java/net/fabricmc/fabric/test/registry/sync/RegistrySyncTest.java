@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
+import com.mojang.serialization.Lifecycle;
 import org.apache.commons.lang3.Validate;
 
 import net.minecraft.block.AbstractBlock;
@@ -25,8 +26,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.class_5321;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -45,11 +46,11 @@ public class RegistrySyncTest implements ModInitializer {
 		if (REGISTER_BLOCKS) {
 			for (int i = 0; i < 5; i++) {
 				Block block = new Block(AbstractBlock.Settings.of(Material.STONE));
-				Registry.BLOCK.add(new Identifier("registry_sync", "block_" + i), block);
+				Registry.register(Registry.BLOCK, new Identifier("registry_sync", "block_" + i), block);
 
 				if (REGISTER_ITEMS) {
 					BlockItem blockItem = new BlockItem(block, new Item.Settings());
-					Registry.ITEM.add(new Identifier("registry_sync", "block_" + i), blockItem);
+					Registry.register(Registry.ITEM, new Identifier("registry_sync", "block_" + i), blockItem);
 				}
 			}
 
@@ -60,25 +61,17 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 		}
 
-		MutableRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(String.class)
+		class_5321<Registry<String>> fabricRegistryKey = class_5321.method_29180(new Identifier("registry_sync", "fabric_registry"));
+		MutableRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey, Lifecycle.stable())
 													.attribute(RegistryAttribute.SYNCED)
-													.build();
+													.buildAndRegister();
 
-		Registry.REGISTRIES.add(new Identifier("registry_sync", "fabric_registry"), fabricRegistry);
-		fabricRegistry.add(new Identifier("registry_sync", "test"), "test");
+		Registry.register(fabricRegistry, new Identifier("registry_sync", "test"), "test");
 
-		MutableRegistry<String> legacyRegistry = new SimpleRegistry<>();
-
-		Registry.REGISTRIES.add(new Identifier("registry_sync", "legacy_registry"), legacyRegistry);
-		legacyRegistry.add(new Identifier("registry_sync", "test"), "test");
+		Validate.isTrue(Registry.REGISTRIES.containsId(new Identifier("registry_sync", "fabric_registry")));
 
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
-		Validate.isTrue(RegistryAttributeHolder.get(legacyRegistry).hasAttribute(RegistryAttribute.MODDED));
-
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
-
-		Validate.isTrue(RegistryAttributeHolder.get(legacyRegistry).hasAttribute(RegistryAttribute.SYNCED));
-		Validate.isTrue(RegistryAttributeHolder.get(legacyRegistry).hasAttribute(RegistryAttribute.PERSISTED));
 	}
 }

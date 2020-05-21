@@ -20,11 +20,9 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
@@ -34,16 +32,6 @@ import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 public abstract class MixinRegistry<T> implements RegistryAttributeHolder, FabricRegistry {
 	@Unique
 	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
-
-	@Shadow
-	public abstract Set<Identifier> getIds();
-
-	/**
-	 * This is used to denote backwards compatibility, when false default attributes will be applied.
-	 * This is set to true when using FabricRegistryBuilder
-	 */
-	@Unique
-	private boolean builtWithBuilder = false;
 
 	@Override
 	public RegistryAttributeHolder addAttribute(RegistryAttribute attribute) {
@@ -58,12 +46,6 @@ public abstract class MixinRegistry<T> implements RegistryAttributeHolder, Fabri
 
 	@Override
 	public void build(Set<RegistryAttribute> attributes) {
-		builtWithBuilder = true;
 		this.attributes.addAll(attributes);
-	}
-
-	@Override
-	public boolean builtByBuilder() {
-		return builtWithBuilder;
 	}
 }

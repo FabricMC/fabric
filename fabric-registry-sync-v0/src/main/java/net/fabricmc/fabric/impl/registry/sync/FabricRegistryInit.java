@@ -95,12 +95,7 @@ public class FabricRegistryInit implements ModInitializer {
 				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Serialised by string, doesnt seem to be synced
-		RegistryAttributeHolder.get(Registry.BIOME_SOURCE_TYPE);
-
-		// Synced in GameJoinS2CPacket and PlayerRespawnS2CPacket. Entities and maps also use the id when saving.
-		RegistryAttributeHolder.get(Registry.DIMENSION_TYPE)
-				.addAttribute(RegistryAttribute.SYNCED)
-				.addAttribute(RegistryAttribute.PERSISTED);
+		RegistryAttributeHolder.get(Registry.BIOME_SOURCE);
 
 		// Synced in PaintingSpawnS2CPacket
 		RegistryAttributeHolder.get(Registry.PAINTING_MOTIVE)
