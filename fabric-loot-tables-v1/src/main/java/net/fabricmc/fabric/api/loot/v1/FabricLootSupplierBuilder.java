@@ -23,11 +23,13 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.table.LootSupplierBuilderHooks;
+import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 
-public class FabricLootSupplierBuilder extends LootTable.Builder {
-	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;
-
+/**
+ * @deprecated Replaced with {@link FabricLootTableBuilder}.
+ */
+@Deprecated
+public class FabricLootSupplierBuilder extends FabricLootTableBuilder {
 	protected FabricLootSupplierBuilder() { }
 
 	private FabricLootSupplierBuilder(LootTable supplier) {
@@ -53,22 +55,22 @@ public class FabricLootSupplierBuilder extends LootTable.Builder {
 	}
 
 	public FabricLootSupplierBuilder withPool(LootPool pool) {
-		extended.getPools().add(pool);
+		super.pool(pool);
 		return this;
 	}
 
 	public FabricLootSupplierBuilder withFunction(LootFunction function) {
-		extended.getFunctions().add(function);
+		super.apply(function);
 		return this;
 	}
 
 	public FabricLootSupplierBuilder withPools(Collection<LootPool> pools) {
-		pools.forEach(this::withPool);
+		super.pools(pools);
 		return this;
 	}
 
 	public FabricLootSupplierBuilder withFunctions(Collection<LootFunction> functions) {
-		functions.forEach(this::withFunction);
+		super.apply(functions);
 		return this;
 	}
 
@@ -77,7 +79,8 @@ public class FabricLootSupplierBuilder extends LootTable.Builder {
 	 * This is equal to {@code copyFrom(supplier, false)}.
 	 */
 	public FabricLootSupplierBuilder copyFrom(LootTable supplier) {
-		return copyFrom(supplier, false);
+		super.copyFrom(supplier);
+		return this;
 	}
 
 	/**
@@ -85,14 +88,7 @@ public class FabricLootSupplierBuilder extends LootTable.Builder {
 	 * If {@code copyType} is true, the {@link FabricLootSupplier#getType type} of the supplier is also copied.
 	 */
 	public FabricLootSupplierBuilder copyFrom(LootTable supplier, boolean copyType) {
-		FabricLootSupplier extendedSupplier = (FabricLootSupplier) supplier;
-		extended.getPools().addAll(extendedSupplier.getPools());
-		extended.getFunctions().addAll(extendedSupplier.getFunctions());
-
-		if (copyType) {
-			type(extendedSupplier.getType());
-		}
-
+		super.copyFrom(supplier, copyType);
 		return this;
 	}
 

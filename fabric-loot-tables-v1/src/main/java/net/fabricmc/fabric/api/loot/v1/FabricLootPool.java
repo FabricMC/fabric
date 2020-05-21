@@ -16,25 +16,12 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import java.util.List;
-
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTableRange;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
-import net.minecraft.loot.function.LootFunction;
-
 /**
  * An interface implemented by all {@code net.minecraft.loot.LootPool} instances when
  * Fabric API is present. Contains accessors for various fields.
+ *
+ * @deprecated Replaced with {@link net.fabricmc.fabric.api.loot.v2.FabricLootPool}.
  */
-public interface FabricLootPool {
-	default LootPool asVanilla() {
-		return (LootPool) this;
-	}
-
-	List<LootEntry> getEntries();
-	List<LootCondition> getConditions();
-	List<LootFunction> getFunctions();
-	LootTableRange getRolls();
+@Deprecated
+public interface FabricLootPool extends net.fabricmc.fabric.api.loot.v2.FabricLootPool {
 }

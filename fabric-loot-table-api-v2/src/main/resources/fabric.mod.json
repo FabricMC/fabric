@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-loot-tables-v1",
-  "name": "Fabric Loot Tables (v1)",
+  "id": "fabric-loot-table-api-v2",
+  "name": "Fabric Loot Table API (v2)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-loot-tables-v1/icon.png",
+  "icon": "assets/fabric-loot-table-api-v2/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -17,8 +17,10 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*",
-    "fabric-loot-table-api-v2": "*"
+    "fabric-api-base": "*"
   },
-  "description": "Hooks for manipulating loot tables."
+  "description": "Hooks for manipulating loot tables.",
+  "mixins": [
+    "fabric-loot-table-api-v2.mixins.json"
+  ]
 }

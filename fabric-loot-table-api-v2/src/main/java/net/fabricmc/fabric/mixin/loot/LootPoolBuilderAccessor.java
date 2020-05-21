@@ -14,16 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.loot.v1;
+package net.fabricmc.fabric.mixin.loot;
 
-import net.fabricmc.fabric.api.loot.v2.FabricLootTable;
+import java.util.List;
 
-/**
- * An interface implemented by all {@code net.minecraft.loot.LootSupplier} instances when
- * Fabric API is present. Contains accessors for various fields.
- *
- * @deprecated Replaced with {@link FabricLootTable}.
- */
-@Deprecated
-public interface FabricLootSupplier extends FabricLootTable {
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.function.LootFunction;
+
+@Mixin(LootPool.Builder.class)
+public interface LootPoolBuilderAccessor {
+	@Accessor
+	List<LootEntry> getEntries();
+	@Accessor
+	List<LootCondition> getConditions();
+	@Accessor
+	List<LootFunction> getFunctions();
 }

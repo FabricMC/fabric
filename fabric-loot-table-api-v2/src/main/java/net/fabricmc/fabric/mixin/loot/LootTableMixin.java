@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
+package net.fabricmc.fabric.mixin.loot;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,35 +25,24 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTableRange;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.LootTable;
+import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.api.loot.v1.FabricLootPool;
+import net.fabricmc.fabric.api.loot.v2.FabricLootTable;
 
-@Mixin(LootPool.class)
-public abstract class MixinLootPool implements FabricLootPool {
+@Mixin(LootTable.class)
+abstract class LootTableMixin implements FabricLootTable {
 	@Shadow
 	@Final
-	private LootEntry[] entries;
-
-	@Shadow
-	@Final
-	private LootCondition[] conditions;
-
+	private LootPool[] pools;
 	@Shadow
 	@Final
 	private LootFunction[] functions;
 
 	@Override
-	public List<LootEntry> getEntries() {
-		return Arrays.asList(entries);
-	}
-
-	@Override
-	public List<LootCondition> getConditions() {
-		return Arrays.asList(conditions);
+	public List<LootPool> getPools() {
+		return Arrays.asList(pools);
 	}
 
 	@Override
@@ -63,5 +52,5 @@ public abstract class MixinLootPool implements FabricLootPool {
 
 	@Accessor
 	@Override
-	public abstract LootTableRange getRolls();
+	public abstract LootContextType getType();
 }

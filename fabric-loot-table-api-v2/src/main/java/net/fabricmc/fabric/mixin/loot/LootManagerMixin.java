@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
+package net.fabricmc.fabric.mixin.loot;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,28 +33,28 @@ import net.minecraft.util.profiler.Profiler;
 import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
-import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
+import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
+import net.fabricmc.fabric.api.loot.v2.event.LootTableLoadingCallback;
 
 @Mixin(LootManager.class)
-public class MixinLootManager {
+abstract class LootManagerMixin {
 	@Shadow private Map<Identifier, LootTable> tables;
 
 	@Inject(method = "apply", at = @At("RETURN"))
 	private void apply(Map<Identifier, JsonObject> objectMap, ResourceManager manager, Profiler profiler, CallbackInfo info) {
-		Map<Identifier, LootTable> newSuppliers = new HashMap<>();
+		Map<Identifier, LootTable> newTables = new HashMap<>();
 
-		tables.forEach((id, supplier) -> {
-			FabricLootSupplierBuilder builder = FabricLootSupplierBuilder.of(supplier);
+		tables.forEach((id, table) -> {
+			FabricLootTableBuilder builder = FabricLootTableBuilder.copyOf(table);
 
 			//noinspection ConstantConditions
 			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(
-					manager, (LootManager) (Object) this, id, builder, (s) -> newSuppliers.put(id, s)
+					manager, (LootManager) (Object) this, id, builder, (s) -> newTables.put(id, s)
 			);
 
-			newSuppliers.computeIfAbsent(id, (i) -> builder.build());
+			newTables.computeIfAbsent(id, (i) -> builder.build());
 		});
 
-		tables = ImmutableMap.copyOf(newSuppliers);
+		tables = ImmutableMap.copyOf(newTables);
 	}
 }

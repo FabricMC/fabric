@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.loot.v1.event;
+package net.fabricmc.fabric.api.loot.v2.event;
 
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
@@ -23,37 +23,36 @@ import net.minecraft.loot.LootTable;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
-import net.fabricmc.fabric.impl.loot.DelegatingLootTableBuilder;
 
 /**
  * An event handler that is called when loot tables are loaded.
  * Use {@link #EVENT} to register instances.
- *
- * @deprecated Replaced with {@link net.fabricmc.fabric.api.loot.v2.event.LootTableLoadingCallback}
  */
-@Deprecated
 @FunctionalInterface
-public interface LootTableLoadingCallback extends net.fabricmc.fabric.api.loot.v2.event.LootTableLoadingCallback {
+public interface LootTableLoadingCallback {
 	@FunctionalInterface
 	interface LootTableSetter {
-		void set(LootTable supplier);
+		void set(LootTable table);
 	}
 
 	Event<LootTableLoadingCallback> EVENT = EventFactory.createArrayBacked(
 			LootTableLoadingCallback.class,
-			(listeners) -> (resourceManager, manager, id, supplier, setter) -> {
+			(listeners) -> (resourceManager, lootManager, id, table, setter) -> {
 				for (LootTableLoadingCallback callback : listeners) {
-					callback.onLootTableLoading(resourceManager, manager, id, supplier, setter);
+					callback.onLootTableLoading(resourceManager, lootManager, id, table, setter);
 				}
 			}
 	);
 
-	@Override
-	default void onLootTableLoading(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootTableBuilder table, net.fabricmc.fabric.api.loot.v2.event.LootTableLoadingCallback.LootTableSetter setter) {
-		onLootTableLoading(resourceManager, lootManager, id, new DelegatingLootTableBuilder(table), setter::set);
-	}
-
-	void onLootTableLoading(ResourceManager resourceManager, LootManager manager, Identifier id, FabricLootSupplierBuilder supplier, LootTableSetter setter);
+	/**
+	 * Called when a loot table is loaded.
+	 *
+	 * @param resourceManager the resource manager
+	 * @param lootManager     the loot manager
+	 * @param id              the loot table ID
+	 * @param table           the loot table builder; can be used to add new entries to the table
+	 * @param setter          the loot table setter; can be used to replace the entire loot table
+	 */
+	void onLootTableLoading(ResourceManager resourceManager, LootManager lootManager, Identifier id, FabricLootTableBuilder table, LootTableSetter setter);
 }

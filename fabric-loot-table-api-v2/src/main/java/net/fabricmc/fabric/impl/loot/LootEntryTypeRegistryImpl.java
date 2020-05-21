@@ -14,16 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.loot.v1;
+package net.fabricmc.fabric.impl.loot;
 
-import net.fabricmc.fabric.api.loot.v2.FabricLootTable;
+import net.minecraft.loot.entry.LootEntry;
 
-/**
- * An interface implemented by all {@code net.minecraft.loot.LootSupplier} instances when
- * Fabric API is present. Contains accessors for various fields.
- *
- * @deprecated Replaced with {@link FabricLootTable}.
- */
-@Deprecated
-public interface FabricLootSupplier extends FabricLootTable {
+import net.fabricmc.fabric.api.loot.v2.LootEntryTypeRegistry;
+import net.fabricmc.fabric.mixin.loot.LootEntriesAccessor;
+
+public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
+	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
+
+	private LootEntryTypeRegistryImpl() { }
+
+	@Override
+	public void register(LootEntry.Serializer<?> serializer) {
+		LootEntriesAccessor.callRegister(serializer);
+	}
 }

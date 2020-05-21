@@ -14,43 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
+package net.fabricmc.fabric.api.loot.v2;
 
-import java.util.Arrays;
 import java.util.List;
-
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.api.loot.v1.FabricLootSupplier;
-
-@Mixin(LootTable.class)
-public abstract class MixinLootSupplier implements FabricLootSupplier {
-	@Shadow
-	@Final
-	private LootPool[] pools;
-	@Shadow
-	@Final
-	private LootFunction[] functions;
-
-	@Override
-	public List<LootPool> getPools() {
-		return Arrays.asList(pools);
+/**
+ * An interface implemented by all {@link LootTable} instances when
+ * Fabric API is present. Contains accessors for various fields.
+ */
+public interface FabricLootTable {
+	default LootTable asVanilla() {
+		return (LootTable) this;
 	}
 
-	@Override
-	public List<LootFunction> getFunctions() {
-		return Arrays.asList(functions);
-	}
-
-	@Accessor
-	@Override
-	public abstract LootContextType getType();
+	List<LootPool> getPools();
+	List<LootFunction> getFunctions();
+	LootContextType getType();
 }
