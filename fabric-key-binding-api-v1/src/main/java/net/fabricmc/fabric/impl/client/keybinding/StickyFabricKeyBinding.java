@@ -18,16 +18,34 @@ package net.fabricmc.fabric.impl.client.keybinding;
 
 import java.util.function.BooleanSupplier;
 
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil.Type;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
 
-public class StickyFabricKeyBinding extends FabricKeyBinding {
+/**
+ * Expanded version of {@link KeyBinding} for use by Fabric mods that is sticky.
+ *
+ * <p>*ALL* built FabricKeyBindings are automatically registered!</p>
+ *
+ * <pre><code>
+ * FabricKeyBinding left = FabricKeyBinding.builder()
+ * 			.id(new Identifier("example", "left"))
+ * 			.key(InputUtil.Type.KEYSYM, Keys.Left)
+ * 			.build();
+ * FabricKeyBinding right = FabricKeyBinding.builder()
+ * 			.id(new Identifier("example", "right"))
+ * 			.key(InputUtil.Type.KEYSYM, Keys.Right)
+ * 			.build();
+ * </code></pre>
+ */
+public final class StickyFabricKeyBinding extends FabricKeyBinding {
 	private final BooleanSupplier toggled;
 
-	public StickyFabricKeyBinding(Identifier id, String translationKey, Type type, int code, String category, BooleanSupplier toggled) {
-		super(id, translationKey, type, code, category);
+	@SuppressWarnings("deprecation")
+	public StickyFabricKeyBinding(Identifier identifier, String translationKey, Type type, int code, String category, BooleanSupplier toggled) {
+		super(identifier, translationKey, type, code, category);
 		this.toggled = toggled;
 	}
 

@@ -29,16 +29,16 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.options.KeyBinding;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.ModdedKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
 
-public class KeyBindingRegistry {
-	public static final KeyBindingRegistry INSTANCE = new KeyBindingRegistry();
+public final class KeyBindingRegistryImpl {
+	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private Map<String, Integer> cachedCategoryMap;
-	private final List<ModdedKeyBinding> moddedKeyBindings = Lists.newArrayList();
+	private final List<FabricKeyBinding> fabricKeyBindings = Lists.newArrayList();
 
-	private KeyBindingRegistry() {
+	private KeyBindingRegistryImpl() {
 	}
 
 	private Map<String, Integer> getCategoryMap() {
@@ -62,8 +62,8 @@ public class KeyBindingRegistry {
 		return cachedCategoryMap;
 	}
 
-	private boolean hasCategory(String categoryName) {
-		return getCategoryMap().containsKey(categoryName);
+	private boolean hasCategory(String categoryTranslationKey) {
+		return getCategoryMap().containsKey(categoryTranslationKey);
 	}
 
 	public boolean addCategory(String categoryTranslationKey) {
@@ -79,11 +79,11 @@ public class KeyBindingRegistry {
 		return true;
 	}
 
-	public boolean registerKeyBinding(ModdedKeyBinding binding) {
-		for (KeyBinding exBinding : moddedKeyBindings) {
-			if (exBinding == binding) {
+	public boolean registerKeyBinding(FabricKeyBinding binding) {
+		for (KeyBinding existingKeyBindings : fabricKeyBindings) {
+			if (existingKeyBindings == binding) {
 				return false;
-			} else if (exBinding.getId().equals(binding.getId())) {
+			} else if (existingKeyBindings.getId().equals(binding.getId())) {
 				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getId() + "!");
 			}
 		}
@@ -92,13 +92,12 @@ public class KeyBindingRegistry {
 			addCategory(binding.getCategory());
 		}
 
-		moddedKeyBindings.add(binding);
-		return true;
+		return fabricKeyBindings.add(binding);
 	}
 
 	public KeyBinding[] process(KeyBinding[] keysAll) {
-		List<KeyBinding> newKeysAll = Stream.of(keysAll).filter(keyBinding -> !(keyBinding instanceof ModdedKeyBinding)).collect(Collectors.toList());
-		newKeysAll.addAll(moddedKeyBindings);
+		List<KeyBinding> newKeysAll = Stream.of(keysAll).filter(keyBinding -> !(keyBinding instanceof FabricKeyBinding)).collect(Collectors.toList());
+		newKeysAll.addAll(fabricKeyBindings);
 		return newKeysAll.toArray(new KeyBinding[0]);
 	}
 }

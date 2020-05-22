@@ -22,23 +22,24 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingUtil;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 
 public class KeybindingsTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		FabricKeyBinding binding1 = FabricKeyBinding.builder()
-				.id(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_1"))
+		FabricKeyBinding binding1 = KeyBindingUtil.builder()
+				.identifier(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_1"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 80) // P
 				.build();
-		FabricKeyBinding binding2 = FabricKeyBinding.builder()
-				.id(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_2"))
+		FabricKeyBinding binding2 = KeyBindingUtil.builder()
+				.identifier(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_2"))
 				.category("category.second.test")
 				.key(InputUtil.Type.KEYSYM, 85) // U
 				.build();
-		FabricKeyBinding stickyBinding = FabricKeyBinding.builder()
-				.id(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_sticky"))
+		FabricKeyBinding stickyBinding = KeyBindingUtil.builder()
+				.identifier(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_sticky"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 82) // R
 				.sticky()

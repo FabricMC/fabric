@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.keybinding;
 import net.minecraft.client.options.KeyBinding;
 
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingUtil;
+import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 
 /**
  * Interface for registering key bindings.
@@ -31,12 +32,12 @@ public interface KeyBindingRegistry {
 	KeyBindingRegistry INSTANCE = new KeyBindingRegistry() {
 		@Override
 		public boolean addCategory(String categoryName) {
-			return net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistry.INSTANCE.addCategory(categoryName);
+			return KeyBindingRegistryImpl.INSTANCE.addCategory(categoryName);
 		}
 
 		@Override
 		public boolean register(FabricKeyBinding binding) {
-			return net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistry.INSTANCE.registerKeyBinding(binding);
+			return KeyBindingRegistryImpl.INSTANCE.registerKeyBinding(binding);
 		}
 	};
 

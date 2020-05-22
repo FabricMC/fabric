@@ -20,20 +20,18 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.ModdedKeyBinding;
-
 /**
  * Expanded version of {@link KeyBinding} for use by Fabric mods.
  *
  * <p>*ALL* instantiated FabricKeyBindings should be registered in
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!</p>
  *
- * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding} instead.
+ * @deprecated Please migrate to v1. Please use {@link FabricKeyBinding#builder()} instead.
  */
 @Deprecated
-public class FabricKeyBinding extends ModdedKeyBinding {
+public class FabricKeyBinding extends net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding {
 	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
-		super(String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
+		super(id, String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
 	}
 
 	/**

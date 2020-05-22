@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
 
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistry;
+import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 
 @Mixin(GameOptions.class)
 public class MixinGameOptions {
@@ -38,6 +38,6 @@ public class MixinGameOptions {
 
 	@Inject(at = @At("HEAD"), method = "load()V")
 	public void loadHook(CallbackInfo info) {
-		keysAll = KeyBindingRegistry.INSTANCE.process(keysAll);
+		keysAll = KeyBindingRegistryImpl.INSTANCE.process(keysAll);
 	}
 }
