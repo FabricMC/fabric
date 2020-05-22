@@ -16,29 +16,27 @@
 
 package net.fabricmc.fabric.api.client.keybinding.v1;
 
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+
+import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 
 /**
  * Interface for registering key bindings.
  *
  * @see FabricKeyBinding
  */
-public interface KeyBindingRegistry {
-	KeyBindingRegistry INSTANCE = KeyBindingRegistryImpl.INSTANCE;
+public final class KeyBindingUtil {
+	private KeyBindingUtil() {
+	}
 
 	/**
-	 * Add a new key binding category.
+	 * Returns the configured KeyCode bound to the KeyBinding from the player's settings.
 	 *
-	 * @param categoryName The key binding category name.
-	 * @return True if a new category was added.
+	 * @param keyBinding the keybinding
+	 * @return configured KeyCode
 	 */
-	boolean addCategory(String categoryName);
-
-	/**
-	 * Register a new key binding.
-	 *
-	 * @param binding The key binding.
-	 * @return True if a new key binding was registered.
-	 */
-	boolean register(FabricKeyBinding binding);
+	public static InputUtil.KeyCode getBoundKeyOf(KeyBinding keyBinding) {
+		return ((KeyCodeAccessor) keyBinding).getKeyCode();
+	}
 }

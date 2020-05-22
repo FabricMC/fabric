@@ -25,31 +25,26 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistry;
 import net.fabricmc.fabric.impl.client.keybinding.StickyFabricKeyBinding;
-import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
 
 /**
  * Expanded version of {@link KeyBinding} for use by Fabric mods.
  *
- * <p>*ALL* instantiated FabricKeyBindings should be registered in
- * {@link KeyBindingRegistry#register(FabricKeyBinding)}!
- * </p>
+ * <p>*ALL* built FabricKeyBindings are automatically registered!</p>
  *
  * <pre><code>
- * FabricKeyBinding.Builder builder = FabricKeyBinding.builder();
- * FabricKeyBinding left = builder
+ * FabricKeyBinding left = FabricKeyBinding.builder()
  * 			.id(new Identifier("example", "left"))
- * 			.code(Keys.Left)
+ * 			.key(InputUtil.Type.KEYSYM, Keys.Left)
  * 			.build();
- * FabricKeyBinding right = builder
+ * FabricKeyBinding right = FabricKeyBinding.builder()
  * 			.id(new Identifier("example", "right"))
- * 			.code(Keys.Right)
+ * 			.key(InputUtil.Type.KEYSYM, Keys.Right)
  * 			.build();
- * KeyBindingRegistry.register(left);
- * KeyBindingRegistry.register(right);
  * </code></pre>
  */
-public class FabricKeyBinding extends KeyBinding {
+public class FabricKeyBinding extends ModdedKeyBinding {
 	private final Identifier id;
 
 	protected FabricKeyBinding(Identifier id, String translationKey, InputUtil.Type type, int code, String category) {
@@ -73,34 +68,14 @@ public class FabricKeyBinding extends KeyBinding {
 		return new Builder();
 	}
 
-	/**
-	 * Returns the configured KeyCode assigned to the KeyBinding from the player's settings.
-	 *
-	 * @return configured KeyCode
-	 */
-	public InputUtil.KeyCode getBoundKey() {
-		return getBoundKeyOf(this);
-	}
-
-	/**
-	 * Returns the configured KeyCode assigned to the KeyBinding from the player's settings.
-	 *
-	 * @param keyBinding the keybinding
-	 * @return configured KeyCode
-	 */
-	public static InputUtil.KeyCode getBoundKeyOf(KeyBinding keyBinding) {
-		return ((KeyCodeAccessor) keyBinding).getKeyCode();
-	}
-
 	public static class Builder {
-		private static final int UNASSIGNED = InputUtil.UNKNOWN_KEYCODE.getKeyCode();
+		private static final int UNKNOWN_KEY = InputUtil.UNKNOWN_KEYCODE.getKeyCode();
 
 		private InputUtil.Type type = InputUtil.Type.KEYSYM;
 		private Identifier id = null;
 		private String translationKey;
-		private boolean unassigned = false;
 		private BooleanSupplier toggleFlagSupplier = null;
-		private int code = UNASSIGNED;
+		private int key = UNKNOWN_KEY;
 		private String category = KeyCategories.MISC;
 
 		private Builder() {
@@ -133,21 +108,22 @@ public class FabricKeyBinding extends KeyBinding {
 		/**
 		 * Sets the default key to be used for the key binding created using this builder.
 		 *
-		 * @param keyCode The default key code. Must be a valid key. May not be -1.
+		 * @param type The key's type. Maybe be one of [{@link InputUtil.Type#KEYSYM} (keyboard), {@link InputUtil.Type#SCANCODE}, {@link InputUtil.Type#MOUSE}]
+		 * @param key  The default key code. Must be a valid key. May not be -1.
 		 */
-		public Builder code(int keyCode) {
-			Preconditions.checkState(keyCode != UNASSIGNED, "UNASSIGNED is not a valid key code.");
-			this.code = keyCode;
-			this.unassigned = false;
+		public Builder key(InputUtil.Type type, int key) {
+			Preconditions.checkState(key != UNKNOWN_KEY, "UNKNOWN is not a valid key code.");
+			this.type = Objects.requireNonNull(type, "Keybinding's type can not be null!");
+			this.key = key;
 			return this;
 		}
 
 		/**
-		 * Indicates to this builder that keybindings built through it are intended to be unbound.
+		 * Sets the default key to be used for the key binding to unbound.
 		 */
-		public Builder unassigned() {
-			this.code = UNASSIGNED;
-			this.unassigned = true;
+		public Builder unbound() {
+			this.type = InputUtil.Type.KEYSYM;
+			this.key = UNKNOWN_KEY;
 			return this;
 		}
 
@@ -170,16 +146,6 @@ public class FabricKeyBinding extends KeyBinding {
 		}
 
 		/**
-		 * Sets the key's type. Maybe be one of [{@link InputUtil.Type#KEYSYM} (keyboard), {@link InputUtil.Type#SCANCODE}, {@link InputUtil.Type#MOUSE}]
-		 *
-		 * @param type The binding type.
-		 */
-		public Builder type(InputUtil.Type type) {
-			this.type = Objects.requireNonNull(type, "Keybinding's type can not be null!");
-			return this;
-		}
-
-		/**
 		 * Returns a key binding with a matching configuration to that of this builder.
 		 *
 		 * <p>Implementation Note:</p>
@@ -189,14 +155,15 @@ public class FabricKeyBinding extends KeyBinding {
 		 */
 		public FabricKeyBinding build() {
 			Objects.requireNonNull(id, "Keybindings should be created with an identifier.");
-			Preconditions.checkState(unassigned || code != UNASSIGNED, "Keybindings need a default keycode.");
 			FabricKeyBinding binding;
 
 			if (toggleFlagSupplier == null) {
-				binding = new FabricKeyBinding(id, translationKey, type, code, category);
+				binding = new FabricKeyBinding(id, translationKey, type, key, category);
 			} else {
-				binding = new StickyFabricKeyBinding(id, translationKey, type, code, category, toggleFlagSupplier);
+				binding = new StickyFabricKeyBinding(id, translationKey, type, key, category, toggleFlagSupplier);
 			}
+
+			KeyBindingRegistry.INSTANCE.registerKeyBinding(binding);
 
 			return binding;
 		}

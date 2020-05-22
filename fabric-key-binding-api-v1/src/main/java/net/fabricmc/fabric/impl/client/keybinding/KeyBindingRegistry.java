@@ -17,28 +17,28 @@
 package net.fabricmc.fabric.impl.client.keybinding;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.options.KeyBinding;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingRegistry;
+import net.fabricmc.fabric.api.client.keybinding.v1.ModdedKeyBinding;
 
-public class KeyBindingRegistryImpl implements KeyBindingRegistry {
-	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
+public class KeyBindingRegistry {
+	public static final KeyBindingRegistry INSTANCE = new KeyBindingRegistry();
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private Map<String, Integer> cachedCategoryMap;
-	private List<FabricKeyBinding> fabricKeyBindingList;
+	private final List<ModdedKeyBinding> moddedKeyBindings = Lists.newArrayList();
 
-	private KeyBindingRegistryImpl() {
-		fabricKeyBindingList = new ArrayList<>();
+	private KeyBindingRegistry() {
 	}
 
 	private Map<String, Integer> getCategoryMap() {
@@ -66,23 +66,21 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 		return getCategoryMap().containsKey(categoryName);
 	}
 
-	@Override
-	public boolean addCategory(String categoryName) {
+	public boolean addCategory(String categoryTranslationKey) {
 		Map<String, Integer> map = getCategoryMap();
 
-		if (map.containsKey(categoryName)) {
+		if (map.containsKey(categoryTranslationKey)) {
 			return false;
 		}
 
 		Optional<Integer> largest = map.values().stream().max(Integer::compareTo);
 		int largestInt = largest.orElse(0);
-		map.put(categoryName, largestInt + 1);
+		map.put(categoryTranslationKey, largestInt + 1);
 		return true;
 	}
 
-	@Override
-	public boolean register(FabricKeyBinding binding) {
-		for (KeyBinding exBinding : fabricKeyBindingList) {
+	public boolean registerKeyBinding(ModdedKeyBinding binding) {
+		for (KeyBinding exBinding : moddedKeyBindings) {
 			if (exBinding == binding) {
 				return false;
 			} else if (exBinding.getId().equals(binding.getId())) {
@@ -91,24 +89,16 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 		}
 
 		if (!hasCategory(binding.getCategory())) {
-			LOGGER.warn("Tried to register key binding with unregistered category '" + binding.getCategory() + "' - please use addCategory to ensure intended category ordering!");
 			addCategory(binding.getCategory());
 		}
 
-		fabricKeyBindingList.add(binding);
+		moddedKeyBindings.add(binding);
 		return true;
 	}
 
 	public KeyBinding[] process(KeyBinding[] keysAll) {
-		List<KeyBinding> newKeysAll = new ArrayList<>();
-
-		for (KeyBinding binding : keysAll) {
-			if (!(binding instanceof FabricKeyBinding)) {
-				newKeysAll.add(binding);
-			}
-		}
-
-		newKeysAll.addAll(fabricKeyBindingList);
+		List<KeyBinding> newKeysAll = Stream.of(keysAll).filter(keyBinding -> !(keyBinding instanceof ModdedKeyBinding)).collect(Collectors.toList());
+		newKeysAll.addAll(moddedKeyBindings);
 		return newKeysAll.toArray(new KeyBinding[0]);
 	}
 }

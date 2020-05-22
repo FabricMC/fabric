@@ -22,25 +22,39 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingRegistry;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 
 public class KeybindingsTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		KeyBindingRegistry registry = KeyBindingRegistry.INSTANCE;
-		registry.addCategory("category.this.is.a.test");
-		FabricKeyBinding binding = FabricKeyBinding.builder()
-				.id(new Identifier("fabric-keybindings-v1-testmod:test_keybinding"))
-				.category("category.this.is.a.test")
-				.type(InputUtil.Type.KEYSYM)
-				.code(80) // P
+		FabricKeyBinding binding1 = FabricKeyBinding.builder()
+				.id(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_1"))
+				.category("category.first.test")
+				.key(InputUtil.Type.KEYSYM, 80) // P
 				.build();
-		registry.register(binding);
+		FabricKeyBinding binding2 = FabricKeyBinding.builder()
+				.id(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_2"))
+				.category("category.second.test")
+				.key(InputUtil.Type.KEYSYM, 85) // U
+				.build();
+		FabricKeyBinding stickyBinding = FabricKeyBinding.builder()
+				.id(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_sticky"))
+				.category("category.first.test")
+				.key(InputUtil.Type.KEYSYM, 82) // R
+				.sticky()
+				.build();
 
 		ClientTickCallback.EVENT.register(client -> {
-			while (binding.wasPressed()) {
-				client.player.sendMessage(new LiteralText("Key was pressed!"));
+			while (binding1.wasPressed()) {
+				client.player.sendMessage(new LiteralText("Key 1 was pressed!"));
+			}
+
+			while (binding2.wasPressed()) {
+				client.player.sendMessage(new LiteralText("Key 2 was pressed!"));
+			}
+
+			if (stickyBinding.isPressed()) {
+				client.player.sendMessage(new LiteralText("Sticky Key was pressed!"));
 			}
 		});
 	}
