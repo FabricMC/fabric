@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.screenhandler.Networking;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworking implements ClientModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-screen-handler-api-v1");
+	private static final Logger LOGGER = LogManager.getLogger("fabric-screen-handler-api-v1/client");
 
 	@Override
 	public void onInitializeClient() {
@@ -81,7 +81,7 @@ public final class ClientNetworking implements ClientModInitializer {
 			player.currentScreenHandler = ((ScreenHandlerProvider<?>) screen).getScreenHandler();
 			client.openScreen(screen);
 		} else {
-			LOGGER.warn("Screen not registered for screen handler {}!", title);
+			LOGGER.warn("Screen not registered for screen handler {}!", typeId);
 		}
 	}
 }

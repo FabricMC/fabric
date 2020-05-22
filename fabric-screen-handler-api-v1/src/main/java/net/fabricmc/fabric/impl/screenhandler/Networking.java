@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.screenhandler;
 import java.util.Objects;
 
 import io.netty.buffer.Unpooled;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
@@ -30,6 +32,8 @@ import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 
 public final class Networking {
+	private static final Logger LOGGER = LogManager.getLogger("fabric-screen-handler-api-v1/server");
+
 	// [Packet format]
 	// typeId: identifier
 	// syncId: varInt
@@ -53,7 +57,8 @@ public final class Networking {
 		Identifier typeId = Registry.SCREEN_HANDLER.getId(handler.getType());
 
 		if (typeId == null) {
-			throw new IllegalArgumentException("Trying to open unregistered screen handler " + handler);
+			LOGGER.warn("Trying to open unregistered screen handler {}", handler);
+			return;
 		}
 
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
