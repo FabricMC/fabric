@@ -20,13 +20,15 @@ import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingUtil;
+
 /**
  * Expanded version of {@link KeyBinding} for use by Fabric mods.
  *
  * <p>*ALL* instantiated FabricKeyBindings should be registered in
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!</p>
  *
- * @deprecated Please migrate to v1. Please use {@link FabricKeyBinding#builder()} instead.
+ * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingUtil#builder()} instead.
  */
 @Deprecated
 public class FabricKeyBinding extends net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding {
@@ -39,9 +41,9 @@ public class FabricKeyBinding extends net.fabricmc.fabric.api.client.keybinding.
 	 *
 	 * @return configured KeyCode
 	 */
-	@Override
-	public InputUtil.KeyCode getBoundKey() {
-		return super.getBoundKey();
+	@Deprecated
+	public final InputUtil.KeyCode getBoundKey() {
+		return KeyBindingUtil.getBoundKeyOf(this);
 	}
 
 	@Deprecated

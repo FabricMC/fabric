@@ -29,17 +29,17 @@ public class KeybindingsTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		FabricKeyBinding binding1 = KeyBindingUtil.builder()
-				.identifier(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_1"))
+				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_1"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 80) // P
 				.build();
 		FabricKeyBinding binding2 = KeyBindingUtil.builder()
-				.identifier(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_2"))
+				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_2"))
 				.category("category.second.test")
 				.key(InputUtil.Type.KEYSYM, 85) // U
 				.build();
 		FabricKeyBinding stickyBinding = KeyBindingUtil.builder()
-				.identifier(new Identifier("fabric-keybindings-v1-testmod:test_keybinding_sticky"))
+				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_sticky"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 82) // R
 				.sticky()
