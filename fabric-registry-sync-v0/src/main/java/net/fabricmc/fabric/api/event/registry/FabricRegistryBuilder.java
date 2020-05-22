@@ -24,7 +24,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
@@ -35,9 +34,7 @@ import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
  *
  * <pre>
  * {@code
- *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(new Identifier("registry_sync", "fabric_registry"));
- *
- * 		MutableRegistry<String> registry = FabricRegistryBuilder.createSimple(registryKey, Lifecycle.stable())
+ *  SimpleRegistry<String> registry = FabricRegistryBuilder.createSimple(String.class, new Identifier("registry_sync", "fabric_registry"))
  * 													.attribute(RegistryAttribute.SYNCED)
  * 													.buildAndRegister();
  * 	}
@@ -62,26 +59,24 @@ public class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link SimpleRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registryKey The RegistryKey to create the registry
-	 * @param lifecycle The {@link Lifecycle} used to create the registry
+	 * @param registryId The registry {@link Identifier} used as the registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(RegistryKey<Registry<T>> registryKey, Lifecycle lifecycle) {
-		return from(new SimpleRegistry<>(registryKey, lifecycle));
+	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(Class<T> type, Identifier registryId) {
+		return from(new SimpleRegistry<T>(RegistryKey.ofRegistry(registryId), Lifecycle.stable()));
 	}
 
 	/**
 	 * Create a new {@link FabricRegistryBuilder} using a {@link DefaultedRegistry}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
-	 * @param registryKey The RegistryKey to create the registry
-	 * @param lifecycle The {@link Lifecycle} used to create the registry
+	 * @param registryId The registry {@link Identifier} used as the registry id
 	 * @param defaultId The default registry id
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Identifier defaultId, RegistryKey<Registry<T>> registryKey, Lifecycle lifecycle) {
-		return from(new DefaultedRegistry<>(defaultId.toString(), registryKey, lifecycle));
+	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Class<T> type, Identifier registryId, Identifier defaultId) {
+		return from(new DefaultedRegistry<T>(defaultId.toString(), RegistryKey.ofRegistry(registryId), Lifecycle.stable()));
 	}
 
 	private final R registry;

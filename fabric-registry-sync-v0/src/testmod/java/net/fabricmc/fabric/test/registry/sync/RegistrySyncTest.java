@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.registry.sync;
 
-import com.mojang.serialization.Lifecycle;
 import org.apache.commons.lang3.Validate;
 
 import net.minecraft.block.AbstractBlock;
@@ -26,8 +25,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -61,9 +59,7 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 		}
 
-		RegistryKey<Registry<String>> fabricRegistryKey = RegistryKey.ofRegistry(new Identifier("registry_sync", "fabric_registry"));
-
-		MutableRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey, Lifecycle.stable())
+		SimpleRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(String.class, new Identifier("registry_sync", "fabric_registry"))
 													.attribute(RegistryAttribute.SYNCED)
 													.buildAndRegister();
 

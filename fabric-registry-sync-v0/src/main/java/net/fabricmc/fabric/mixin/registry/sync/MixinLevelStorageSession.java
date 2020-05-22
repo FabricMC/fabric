@@ -87,9 +87,7 @@ public class MixinLevelStorageSession {
 		FABRIC_LOGGER.debug("Starting registry save");
 		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeTag);
 
-		CompoundTag registries = (CompoundTag) newIdMap.get("registries");
-
-		if (registries.getKeys().isEmpty()) {
+		if (newIdMap == null) {
 			FABRIC_LOGGER.debug("Not saving empty registry data");
 			return;
 		}

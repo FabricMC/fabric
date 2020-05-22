@@ -61,7 +61,13 @@ public final class RegistrySyncManager {
 	public static Packet<?> createPacket() {
 		LOGGER.debug("Creating registry sync packet");
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeCompoundTag(toTag(true, null));
+		CompoundTag tag = toTag(true, null);
+
+		if (tag == null) {
+			return null;
+		}
+
+		buf.writeCompoundTag(tag);
 
 		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
 	}
@@ -96,7 +102,7 @@ public final class RegistrySyncManager {
 	 *
 	 * @param isClientSync true when syncing to the client, false when saving
 	 * @param activeTag contains the registry ids that were previously read and applied, can be null.
-	 * @return a {@link CompoundTag} to save or sync
+	 * @return a {@link CompoundTag} to save or sync, null when empty
 	 */
 	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeTag) {
 		CompoundTag mainTag = new CompoundTag();
@@ -237,6 +243,10 @@ public final class RegistrySyncManager {
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("version", 1);
 		tag.put("registries", mainTag);
+
+		if (mainTag.getKeys().isEmpty()) {
+			return null;
+		}
 
 		return tag;
 	}
