@@ -41,7 +41,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.network.PacketContext;
@@ -104,7 +103,7 @@ public final class RegistrySyncManager {
 					}
 				}
 
-				MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+				Registry registry = Registry.REGISTRIES.get(registryId);
 
 				if (c && registry != null) {
 					File file = new File(location, registryId.toString().replace(':', '.').replace('/', '.') + ".csv");
@@ -137,7 +136,7 @@ public final class RegistrySyncManager {
 				continue;
 			}
 
-			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				CompoundTag registryTag = new CompoundTag();
@@ -189,7 +188,7 @@ public final class RegistrySyncManager {
 			}
 
 			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
-			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
@@ -209,7 +208,7 @@ public final class RegistrySyncManager {
 
 	public static void unmap() throws RemapException {
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			MutableRegistry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = Registry.REGISTRIES.get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				((RemappableRegistry) registry).unmap(registryId.toString());

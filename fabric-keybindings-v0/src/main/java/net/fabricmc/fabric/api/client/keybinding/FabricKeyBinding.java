@@ -37,8 +37,8 @@ public class FabricKeyBinding extends KeyBinding {
 	 * Returns the configured KeyCode assigned to the KeyBinding from the player's settings.
 	 * @return configured KeyCode
 	 */
-	public InputUtil.KeyCode getBoundKey() {
-		return ((KeyCodeAccessor) this).getKeyCode();
+	public InputUtil.Key getBoundKey() {
+		return ((KeyCodeAccessor) this).getBoundKey();
 	}
 
 	public static class Builder {

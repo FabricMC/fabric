@@ -57,7 +57,7 @@ public class MixinFireBlock implements FireBlockHooks {
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl
-			if (block.contains(Properties.WATERLOGGED) && block.get(Properties.WATERLOGGED)) {
+			if (block.method_28498(Properties.WATERLOGGED) && block.get(Properties.WATERLOGGED)) {
 				info.setReturnValue(0);
 			} else {
 				info.setReturnValue(entry.getBurnChance());
@@ -71,7 +71,7 @@ public class MixinFireBlock implements FireBlockHooks {
 
 		if (entry != null) {
 			// TODO: use a (BlockState -> int) with this as the default impl
-			if (block.contains(Properties.WATERLOGGED) && block.get(Properties.WATERLOGGED)) {
+			if (block.method_28498(Properties.WATERLOGGED) && block.get(Properties.WATERLOGGED)) {
 				info.setReturnValue(0);
 			} else {
 				info.setReturnValue(entry.getSpreadChance());
