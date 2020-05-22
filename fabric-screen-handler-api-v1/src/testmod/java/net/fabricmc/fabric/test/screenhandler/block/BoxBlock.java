@@ -61,7 +61,7 @@ public class BoxBlock extends BlockWithEntity {
 	}
 
 	@Override
-	public void onBlockRemoved(BlockState state, World world, BlockPos pos, BlockState newState, boolean notify) {
+	public void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
 		if (state.getBlock() != newState.getBlock()) {
 			BlockEntity be = world.getBlockEntity(pos);
 
@@ -70,7 +70,7 @@ public class BoxBlock extends BlockWithEntity {
 				world.updateComparators(pos, this);
 			}
 
-			super.onBlockRemoved(state, world, pos, newState, notify);
+			super.onStateReplaced(state, world, pos, newState, moved);
 		}
 	}
 
