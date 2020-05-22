@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.class_5321;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -38,28 +38,28 @@ public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	@Unique
 	private static final Logger FARBIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
 
-	protected MixinSimpleRegistry(class_5321<Registry<T>> arg, Lifecycle lifecycle) {
+	protected MixinSimpleRegistry(RegistryKey<Registry<T>> arg, Lifecycle lifecycle) {
 		super(arg, lifecycle);
 	}
 
 	@Inject(method = "add", at = @At("RETURN"))
-	private <V extends T> void add(class_5321<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
+	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
 		onChange(registryKey);
 	}
 
 	@Inject(method = "set", at = @At("RETURN"))
-	private <V extends T> void set(int rawId, class_5321<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
+	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
 		onChange(registryKey);
 	}
 
 	@Unique
-	private void onChange(class_5321<Registry<T>> registryKey) {
-		if (RegistrySyncManager.postBootstrap || !registryKey.method_29177().getNamespace().equals("minecraft")) {
+	private void onChange(RegistryKey<Registry<T>> registryKey) {
+		if (RegistrySyncManager.postBootstrap || !registryKey.getValue().getNamespace().equals("minecraft")) {
 			RegistryAttributeHolder holder = RegistryAttributeHolder.get(this);
 
 			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
 				// noinspection unchecked
-				FARBIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", ((Registry) Registry.REGISTRIES).getId(this), registryKey.method_29177());
+				FARBIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", ((Registry) Registry.REGISTRIES).getId(this), registryKey.getValue());
 				RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.MODDED);
 			}
 		}

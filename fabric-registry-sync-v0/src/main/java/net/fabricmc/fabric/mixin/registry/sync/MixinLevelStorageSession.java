@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.class_5219;
+import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
@@ -53,7 +53,7 @@ public class MixinLevelStorageSession {
 	@Unique
 	private CompoundTag fabric_lastSavedIdMap = null;
 	@Unique
-	private CompoundTag fabric_activeIdMap = null;
+	private CompoundTag fabric_activeTag = null;
 
 	@Shadow
 	@Final
@@ -69,7 +69,7 @@ public class MixinLevelStorageSession {
 			fileInputStream.close();
 
 			if (tag != null) {
-				fabric_activeIdMap = RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
+				fabric_activeTag = RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
 				return true;
 			}
 		}
@@ -85,7 +85,7 @@ public class MixinLevelStorageSession {
 	@Unique
 	private void fabric_saveRegistryData() {
 		FABRIC_LOGGER.debug("Starting registry save");
-		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeIdMap);
+		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeTag);
 
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
@@ -124,7 +124,7 @@ public class MixinLevelStorageSession {
 	}
 
 	@Inject(method = "method_27426", at = @At("HEAD"))
-	public void saveWorld(class_5219 levelProperties, CompoundTag compoundTag, CallbackInfo info) {
+	public void saveWorld(SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!Files.exists(directory)) {
 			return;
 		}
@@ -134,7 +134,7 @@ public class MixinLevelStorageSession {
 
 	// TODO: stop double save on client?
 	@Inject(method = "readLevelProperties", at = @At("HEAD"))
-	public void readWorldProperties(CallbackInfoReturnable<class_5219> callbackInfo) {
+	public void readWorldProperties(CallbackInfoReturnable<SaveProperties> callbackInfo) {
 		// Load
 		for (int i = 0; i < FABRIC_ID_REGISTRY_BACKUPS; i++) {
 			FABRIC_LOGGER.trace("[fabric-registry-sync] Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");

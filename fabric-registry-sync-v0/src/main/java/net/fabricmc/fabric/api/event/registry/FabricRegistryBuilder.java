@@ -16,17 +16,16 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.EnumSet;
 
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.class_5321;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.DefaultedRegistry;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
@@ -36,10 +35,11 @@ import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
  *
  * <pre>
  * {@code
- *  MutableRegistry<String> exampleRegistry = FabricRegistryBuilder.create(new SimpleRegistry<String>())
- * 												.attribute(RegistryAttribute.SYNCED)
- * 												.build();
- * 	Registry.REGISTRIES.add(new Identifier("mod_id", "example_registry"), exampleRegistry);
+ *  RegistryKey<Registry<String>> registryKey = RegistryKey.ofRegistry(new Identifier("registry_sync", "fabric_registry"));
+ *
+ * 		MutableRegistry<String> registry = FabricRegistryBuilder.createSimple(registryKey, Lifecycle.stable())
+ * 													.attribute(RegistryAttribute.SYNCED)
+ * 													.buildAndRegister();
  * 	}
  * </pre>
  *
@@ -67,7 +67,7 @@ public class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(class_5321<Registry<T>> registryKey, Lifecycle lifecycle) {
+	public static <T> FabricRegistryBuilder<T, SimpleRegistry<T>> createSimple(RegistryKey<Registry<T>> registryKey, Lifecycle lifecycle) {
 		return from(new SimpleRegistry<>(registryKey, lifecycle));
 	}
 
@@ -80,12 +80,12 @@ public class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @param <T> The type stored in the Registry
 	 * @return An instance of FabricRegistryBuilder
 	 */
-	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Identifier defaultId, class_5321<Registry<T>> registryKey, Lifecycle lifecycle) {
+	public static <T> FabricRegistryBuilder<T, DefaultedRegistry<T>> createDefaulted(Identifier defaultId, RegistryKey<Registry<T>> registryKey, Lifecycle lifecycle) {
 		return from(new DefaultedRegistry<>(defaultId.toString(), registryKey, lifecycle));
 	}
 
 	private final R registry;
-	private final Set<RegistryAttribute> attributes = new HashSet<>();
+	private final EnumSet<RegistryAttribute> attributes = EnumSet.noneOf(RegistryAttribute.class);
 
 	private FabricRegistryBuilder(R registry) {
 		this.registry = registry;
@@ -112,7 +112,7 @@ public class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 		fabricRegistry.build(attributes);
 
 		//noinspection unchecked
-		AccessorRegistry.getRootRegistry().add(((AccessorRegistry) registry).getRegistryKey(), registry);
+		AccessorRegistry.getROOT().add(((AccessorRegistry) registry).getRegistryKey(), registry);
 
 		return registry;
 	}

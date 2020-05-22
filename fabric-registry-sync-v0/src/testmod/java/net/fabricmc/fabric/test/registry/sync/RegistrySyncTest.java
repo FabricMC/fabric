@@ -27,7 +27,7 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.class_5321;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
@@ -61,7 +61,8 @@ public class RegistrySyncTest implements ModInitializer {
 			}
 		}
 
-		class_5321<Registry<String>> fabricRegistryKey = class_5321.method_29180(new Identifier("registry_sync", "fabric_registry"));
+		RegistryKey<Registry<String>> fabricRegistryKey = RegistryKey.ofRegistry(new Identifier("registry_sync", "fabric_registry"));
+
 		MutableRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(fabricRegistryKey, Lifecycle.stable())
 													.attribute(RegistryAttribute.SYNCED)
 													.buildAndRegister();

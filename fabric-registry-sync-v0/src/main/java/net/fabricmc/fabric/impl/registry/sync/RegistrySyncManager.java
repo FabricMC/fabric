@@ -91,7 +91,14 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeIdMap) {
+	/**
+	 * Creates a {@link CompoundTag} used to save or sync the registry ids.
+	 *
+	 * @param isClientSync true when syncing to the client, false when saving
+	 * @param activeTag contains the registry ids that were previously read and applied, can be null.
+	 * @return a {@link CompoundTag} to save or sync
+	 */
+	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeTag) {
 		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
@@ -133,21 +140,20 @@ public final class RegistrySyncManager {
 				}
 			}
 
+			/*
+			 * This contains the previous state's registry data, this is used for a few things:
+			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
+			 */
 			CompoundTag existingRegistryData = null;
 
-			if (activeIdMap != null && activeIdMap.contains(registryId.toString())) {
-				existingRegistryData = activeIdMap.getCompound(registryId.toString());
+			if (activeTag != null && activeTag.contains(registryId.toString())) {
+				existingRegistryData = activeTag.getCompound(registryId.toString());
 			}
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
 
-			if (!isClientSync && !attributeHolder.hasAttribute(RegistryAttribute.PERSISTED)) {
-				LOGGER.debug("Not saving non-persistent registry: " + registryId);
-				continue;
-			}
-
-			if (isClientSync && !attributeHolder.hasAttribute(RegistryAttribute.SYNCED)) {
-				LOGGER.debug("Not syncing registry: " + registryId);
+			if (!attributeHolder.hasAttribute(isClientSync ? RegistryAttribute.SYNCED : RegistryAttribute.PERSISTED)) {
+				LOGGER.debug("Not {} registry: {}", isClientSync ? "syncing" : "saving", registryId);
 				continue;
 			}
 
@@ -201,7 +207,10 @@ public final class RegistrySyncManager {
 					registryTag.putInt(id.toString(), rawId);
 				}
 
-				// Look for existing registry key/values that are not in the current registries
+				/*
+				 * Look for existing registry key/values that are not in the current registries.
+				 * This can happen when registry entries are removed, preventing that ID from being re-used by something else.
+				 */
 				if (!isClientSync && existingRegistryData != null) {
 					for (String key : existingRegistryData.getKeys()) {
 						if (!registryTag.contains(key)) {
@@ -216,11 +225,11 @@ public final class RegistrySyncManager {
 		}
 
 		// Ensure any orphaned registry's are kept on disk
-		if (!isClientSync && activeIdMap != null) {
-			for (String registryKey : activeIdMap.getKeys()) {
+		if (!isClientSync && activeTag != null) {
+			for (String registryKey : activeTag.getKeys()) {
 				if (!mainTag.contains(registryKey)) {
 					LOGGER.info("Saving orphaned registry: " + registryKey);
-					mainTag.put(registryKey, activeIdMap.getCompound(registryKey));
+					mainTag.put(registryKey, activeTag.getCompound(registryKey));
 				}
 			}
 		}
