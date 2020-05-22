@@ -87,6 +87,13 @@ public class MixinLevelStorageSession {
 		FABRIC_LOGGER.debug("Starting registry save");
 		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeTag);
 
+		CompoundTag registries = (CompoundTag) newIdMap.get("registries");
+
+		if (registries.getKeys().isEmpty()) {
+			FABRIC_LOGGER.debug("Not saving empty registry data");
+			return;
+		}
+
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
 				File file = fabric_getWorldIdMapFile(i);

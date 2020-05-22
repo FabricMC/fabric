@@ -144,10 +144,10 @@ public final class RegistrySyncManager {
 			 * This contains the previous state's registry data, this is used for a few things:
 			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
 			 */
-			CompoundTag existingRegistryData = null;
+			CompoundTag previousRegistryData = null;
 
 			if (activeTag != null && activeTag.contains(registryId.toString())) {
-				existingRegistryData = activeTag.getCompound(registryId.toString());
+				previousRegistryData = activeTag.getCompound(registryId.toString());
 			}
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
@@ -159,16 +159,16 @@ public final class RegistrySyncManager {
 
 			/*
 			 * Dont do anything with vanilla registries on client sync.
-			 * When saving, preserve existing registry ids if they exist, else dont save the registry.
+			 * When saving skip none modded registries that doesnt have previous registry data
 			 *
 			 * This will not sync IDs if a world has been previously modded, either from removed mods
 			 * or a previous version of fabric registry sync, but will save these ids to disk in case the mod or mods
 			 * are added back.
 			 */
-			if ((existingRegistryData == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+			if ((previousRegistryData == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
 				LOGGER.debug("Skipping un-modded registry: " + registryId);
 				continue;
-			} else if (existingRegistryData != null) {
+			} else if (previousRegistryData != null) {
 				LOGGER.debug("Preserving previously modded registry: " + registryId);
 			}
 
@@ -211,8 +211,8 @@ public final class RegistrySyncManager {
 				 * Look for existing registry key/values that are not in the current registries.
 				 * This can happen when registry entries are removed, preventing that ID from being re-used by something else.
 				 */
-				if (!isClientSync && existingRegistryData != null) {
-					for (String key : existingRegistryData.getKeys()) {
+				if (!isClientSync && previousRegistryData != null) {
+					for (String key : previousRegistryData.getKeys()) {
 						if (!registryTag.contains(key)) {
 							LOGGER.info("Saving orphaned registry entry: " + key);
 							registryTag.putInt(key, registryTag.getInt(key));
@@ -252,6 +252,13 @@ public final class RegistrySyncManager {
 
 			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
 			Registry registry = Registry.REGISTRIES.get(registryId);
+
+			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
+
+			if (!attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+				LOGGER.debug("Not applying registry data to vanilla registry {}", registryId.toString());
+				continue;
+			}
 
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
