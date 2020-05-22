@@ -4,6 +4,8 @@ version = getSubprojectVersion(project, "1.6.0")
 dependencies {
 	compile project(path: ':fabric-api-base', configuration: 'dev')
 	compile project(path: ':fabric-tool-attribute-api-v1', configuration: 'dev')
+
+	testmodCompile project(path: ':fabric-command-api-v1', configuration: 'dev')
 }
 
 minecraft {

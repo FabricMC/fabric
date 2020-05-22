@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-object-builder-api-v1-testmod",
+  "name": "Fabric Object Builder API Testmod (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-object-builder-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.object.builder.VillagerTypeTest1",
+      "net.fabricmc.fabric.test.object.builder.VillagerTypeTest2"
+    ]
+  }
+}
