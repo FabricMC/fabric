@@ -60,13 +60,14 @@ public final class RegistrySyncManager {
 
 	public static Packet<?> createPacket() {
 		LOGGER.debug("Creating registry sync packet");
-		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
+
 		CompoundTag tag = toTag(true, null);
 
 		if (tag == null) {
 			return null;
 		}
 
+		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(tag);
 
 		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
@@ -240,13 +241,13 @@ public final class RegistrySyncManager {
 			}
 		}
 
-		CompoundTag tag = new CompoundTag();
-		tag.putInt("version", 1);
-		tag.put("registries", mainTag);
-
 		if (mainTag.getKeys().isEmpty()) {
 			return null;
 		}
+
+		CompoundTag tag = new CompoundTag();
+		tag.putInt("version", 1);
+		tag.put("registries", mainTag);
 
 		return tag;
 	}

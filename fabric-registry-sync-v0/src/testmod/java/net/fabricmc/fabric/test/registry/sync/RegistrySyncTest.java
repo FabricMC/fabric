@@ -60,8 +60,8 @@ public class RegistrySyncTest implements ModInitializer {
 		}
 
 		SimpleRegistry<String> fabricRegistry = FabricRegistryBuilder.createSimple(String.class, new Identifier("registry_sync", "fabric_registry"))
-													.attribute(RegistryAttribute.SYNCED)
-													.buildAndRegister();
+				.attribute(RegistryAttribute.SYNCED)
+				.buildAndRegister();
 
 		Registry.register(fabricRegistry, new Identifier("registry_sync", "test"), "test");
 
