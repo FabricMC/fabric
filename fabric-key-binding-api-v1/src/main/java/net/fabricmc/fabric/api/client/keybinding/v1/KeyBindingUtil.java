@@ -39,11 +39,11 @@ import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
  * KeyBinding left = KeyBindingUtil.builder()
  * 			.identifier(new Identifier("example", "left"))
  * 			.key(InputUtil.Type.KEYSYM, Keys.Left)
- * 			.build();
+ * 			.buildAndRegister();
  * KeyBinding right = KeyBindingUtil.builder()
  * 			.identifier(new Identifier("example", "right"))
  * 			.key(InputUtil.Type.KEYSYM, Keys.Right)
- * 			.build();
+ * 			.buildAndRegister();
  * </code></pre>
  */
 public final class KeyBindingUtil {
@@ -149,7 +149,7 @@ public final class KeyBindingUtil {
 		 * <p>At current this returns a <i>new</i> key binding that modders should
 		 * hold onto for their own use, though this may change in the future.</p>
 		 */
-		public KeyBinding build() {
+		public KeyBinding buildAndRegister() {
 			Objects.requireNonNull(identifier, "Keybindings should be created with an identifier.");
 			Objects.requireNonNull(categoryTranslationKey, "Keybindings should be created with a category.");
 			KeyBinding binding;

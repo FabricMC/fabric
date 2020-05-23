@@ -32,18 +32,18 @@ public class KeybindingsTest implements ClientModInitializer {
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_1"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 80) // P
-				.build();
+				.buildAndRegister();
 		KeyBinding binding2 = KeyBindingUtil.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_2"))
 				.category("category.second.test")
 				.key(InputUtil.Type.KEYSYM, 85) // U
-				.build();
+				.buildAndRegister();
 		KeyBinding stickyBinding = KeyBindingUtil.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_sticky"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 82) // R
 				.sticky()
-				.build();
+				.buildAndRegister();
 
 		ClientTickCallback.EVENT.register(client -> {
 			while (binding1.wasPressed()) {
