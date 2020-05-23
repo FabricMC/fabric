@@ -30,7 +30,7 @@ def getSubprojectVersion(project, version) {
 	if (latestCommits.isEmpty()) {
 		return version + "+uncommited"
 	} else {
-		return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
+		return version + "+" + latestCommits.get(0).id.substring(0, 8) + "." + Globals.mcVersion.replaceAll("[^a-zA-Z0-9.-]", "-")
 	}
 }
 
