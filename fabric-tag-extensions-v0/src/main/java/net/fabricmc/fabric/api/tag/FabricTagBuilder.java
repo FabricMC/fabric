@@ -16,12 +16,17 @@
 
 package net.fabricmc.fabric.api.tag;
 
+import net.minecraft.tag.Tag;
+
 /**
  * Interface implemented by {@link net.minecraft.tag.Tag.Builder} instances when
  * Fabric API is present.
  *
  * @param <T>
+ *
+ * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagHelper#clearEntries(Tag.Builder)} instead.
  */
+@Deprecated
 public interface FabricTagBuilder<T> {
 	/**
 	 * Clear the contained entries and mark the tag as replaced.

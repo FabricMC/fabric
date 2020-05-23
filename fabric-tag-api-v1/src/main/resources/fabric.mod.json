@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-tag-extensions-v0",
-  "name": "Fabric Tag Extensions (v0)",
+  "id": "fabric-tag-api-v1",
+  "name": "Fabric Tag API (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-tag-extensions-v0/icon.png",
+  "icon": "assets/fabric-tag-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -19,11 +19,10 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
     "fabric-resource-loader-v0": "*",
-    "fabric-tag-api-v1": "*",
     "minecraft": "~1.16-alpha.20.14.a"
   },
   "description": "Hooks for tags.",
   "mixins": [
-    "fabric-tag-extensions-v0.mixins.json"
+    "fabric-tag-api-v1.mixins.json"
   ]
 }

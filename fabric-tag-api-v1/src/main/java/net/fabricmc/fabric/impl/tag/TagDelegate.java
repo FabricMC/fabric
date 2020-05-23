@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.tag.extension;
+package net.fabricmc.fabric.impl.tag;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -23,22 +23,24 @@ import net.minecraft.tag.TagGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.tag.FabricTag;
-
-public final class TagDelegate<T> implements Tag.Identified<T>, FabricTag<T>, FabricTagHooks {
+public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensions {
 	private final Identifier id;
 	private final Supplier<TagGroup<T>> containerSupplier;
 	private volatile Target<T> target;
 	private int clearCount;
 
-	public TagDelegate(Identifier id, Supplier<TagGroup<T>> containerSupplier) {
+	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagGroup<T>> groupSupplier) {
+		return new TagDelegate<>(id, groupSupplier);
+	}
+
+	private TagDelegate(Identifier id, Supplier<TagGroup<T>> containerSupplier) {
 		this.id = id;
 		this.containerSupplier = containerSupplier;
 	}
 
 	@Override
-	public boolean contains(T var1) {
-		return getTag().contains(var1);
+	public boolean contains(T entry) {
+		return getTag().contains(entry);
 	}
 
 	@Override
@@ -76,12 +78,12 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTag<T>, Fa
 	}
 
 	@Override
-	public boolean hasBeenReplaced() {
+	public boolean fabric_hasBeenReplaced() {
 		return clearCount > 0;
 	}
 
 	@Override
-	public void fabric_setExtraData(int clearCount) {
+	public void fabric_setClearCount(int clearCount) {
 		this.clearCount = clearCount;
 	}
 

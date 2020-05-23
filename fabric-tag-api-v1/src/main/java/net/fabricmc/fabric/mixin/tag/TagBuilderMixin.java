@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tag.extension;
+package net.fabricmc.fabric.mixin.tag;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,11 +30,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.tag.FabricTagBuilder;
-import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
+import net.fabricmc.fabric.impl.tag.FabricTagBuilderExtensions;
+import net.fabricmc.fabric.impl.tag.FabricTagExtensions;
 
 @Mixin(Tag.Builder.class)
-public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
+public abstract class TagBuilderMixin<T> implements FabricTagBuilderExtensions {
 	@Shadow
 	private List<Tag.TrackedEntry> entries;
 
@@ -43,7 +43,7 @@ public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 
 	@Redirect(method = "build", at = @At(value = "INVOKE", target = "Ljava/util/Optional;of(Ljava/lang/Object;)Ljava/util/Optional;"))
 	private Optional<?> build(Object tagObj) {
-		((FabricTagHooks) tagObj).fabric_setExtraData(fabric_clearCount);
+		((FabricTagExtensions) tagObj).fabric_setClearCount(fabric_clearCount);
 		return Optional.of(tagObj);
 	}
 
@@ -53,7 +53,7 @@ public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	}
 
 	@Override
-	public void clearTagEntries() {
+	public void fabric_clearTagEntries() {
 		entries.clear();
 		fabric_clearCount++;
 	}

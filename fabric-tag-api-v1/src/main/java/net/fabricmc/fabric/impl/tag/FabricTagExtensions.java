@@ -14,22 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tag;
+package net.fabricmc.fabric.impl.tag;
 
-import net.minecraft.tag.Tag;
+public interface FabricTagExtensions {
+	void fabric_setClearCount(int clearCount);
 
-/**
- * Interface implemented by {@link net.minecraft.tag.Tag} instances when
- * Fabric API is present.
- *
- * @param <T>
- *
- * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagHelper#hasBeenReplaced(Tag)} instead.
- */
-@Deprecated
-public interface FabricTag<T> {
-	/**
-	 * @return True if the given tag has been "replaced" by a datapack at least once.
-	 */
-	boolean hasBeenReplaced();
+	boolean fabric_hasBeenReplaced();
 }

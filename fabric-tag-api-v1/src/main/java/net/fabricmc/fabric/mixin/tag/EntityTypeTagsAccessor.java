@@ -14,22 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.tag;
+package net.fabricmc.fabric.mixin.tag;
 
-import net.minecraft.tag.Tag;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-/**
- * Interface implemented by {@link net.minecraft.tag.Tag} instances when
- * Fabric API is present.
- *
- * @param <T>
- *
- * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagHelper#hasBeenReplaced(Tag)} instead.
- */
-@Deprecated
-public interface FabricTag<T> {
-	/**
-	 * @return True if the given tag has been "replaced" by a datapack at least once.
-	 */
-	boolean hasBeenReplaced();
+import net.minecraft.entity.EntityType;
+import net.minecraft.tag.EntityTypeTags;
+import net.minecraft.tag.RequiredTagList;
+
+@Mixin(EntityTypeTags.class)
+public interface EntityTypeTagsAccessor {
+	@Accessor("REQUIRED_TAGS")
+	static RequiredTagList<EntityType<?>> getRequiredTags() {
+		throw new AssertionError("This should not occur!");
+	}
 }

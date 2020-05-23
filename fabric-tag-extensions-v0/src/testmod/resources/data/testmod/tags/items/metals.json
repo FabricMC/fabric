@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:iron_ingot",
+    "minecraft:gold_ingot",
+    "minecraft:iron_nugget"
+  ]
+}

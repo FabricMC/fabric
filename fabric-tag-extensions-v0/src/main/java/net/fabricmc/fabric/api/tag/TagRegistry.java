@@ -19,42 +19,58 @@ package net.fabricmc.fabric.api.tag;
 import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
-import net.minecraft.tag.TagGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.EntityTypeTags;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
-import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
+import net.fabricmc.fabric.impl.tag.TagDelegate;
 
 /**
  * Helper methods for registering Tags.
+ *
+ * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry} instead.
  */
+@Deprecated
 public final class TagRegistry {
 	private TagRegistry() { }
 
-	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagGroup<T>> containerSupplier) {
-		return new TagDelegate<>(id, containerSupplier);
+	@Deprecated
+	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagGroup<T>> groupSupplier) {
+		return TagDelegate.create(id, groupSupplier);
 	}
 
+	/**
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#block(Identifier)} instead.
+	 */
+	@Deprecated
 	public static Tag<Block> block(Identifier id) {
-		return create(id, BlockTags::getTagGroup);
+		return net.fabricmc.fabric.api.tag.v1.TagRegistry.block(id);
 	}
 
+	/**
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#entityType(Identifier)} instead.
+	 */
+	@Deprecated
 	public static Tag<EntityType<?>> entityType(Identifier id) {
-		return create(id, EntityTypeTags::getTagGroup);
+		return net.fabricmc.fabric.api.tag.v1.TagRegistry.entityType(id);
 	}
 
+	/**
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#fluid(Identifier)} instead.
+	 */
+	@Deprecated
 	public static Tag<Fluid> fluid(Identifier id) {
-		return create(id, () -> AccessorFluidTags.getRequiredTags().getGroup());
+		return net.fabricmc.fabric.api.tag.v1.TagRegistry.fluid(id);
 	}
 
+	/**
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#item(Identifier)} instead.
+	 */
+	@Deprecated
 	public static Tag<Item> item(Identifier id) {
-		return create(id, ItemTags::getTagGroup);
+		return net.fabricmc.fabric.api.tag.v1.TagRegistry.item(id);
 	}
 }
