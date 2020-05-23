@@ -36,18 +36,18 @@ import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
  * <p>*ALL* built FabricKeyBindings are automatically registered!</p>
  *
  * <pre><code>
- * KeyBinding left = KeyBindingUtil.builder()
+ * KeyBinding left = KeyBindingHelper.builder()
  * 			.identifier(new Identifier("example", "left"))
  * 			.key(InputUtil.Type.KEYSYM, Keys.Left)
  * 			.buildAndRegister();
- * KeyBinding right = KeyBindingUtil.builder()
+ * KeyBinding right = KeyBindingHelper.builder()
  * 			.identifier(new Identifier("example", "right"))
  * 			.key(InputUtil.Type.KEYSYM, Keys.Right)
  * 			.buildAndRegister();
  * </code></pre>
  */
-public final class KeyBindingUtil {
-	private KeyBindingUtil() {
+public final class KeyBindingHelper {
+	private KeyBindingHelper() {
 	}
 
 	/**
@@ -160,9 +160,20 @@ public final class KeyBindingUtil {
 				binding = new StickyFabricKeyBinding(String.format("key.%s.%s", identifier.getNamespace(), identifier.getPath()), type, key, categoryTranslationKey, stickyBindingProvider);
 			}
 
-			KeyBindingRegistryImpl.INSTANCE.registerKeyBinding(binding);
+			KeyBindingRegistryImpl.registerKeyBinding(binding);
 
 			return binding;
 		}
+	}
+
+	/**
+	 * Provider for determining whether the keybinding is sticky.
+	 */
+	@FunctionalInterface
+	public interface StickyBindingProvider {
+		/**
+		 * @return whether this keybinding is currently sticky.
+		 */
+		boolean isSticky();
 	}
 }

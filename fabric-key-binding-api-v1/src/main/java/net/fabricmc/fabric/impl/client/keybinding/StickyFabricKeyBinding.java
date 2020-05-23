@@ -19,15 +19,15 @@ package net.fabricmc.fabric.impl.client.keybinding;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil.Type;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.StickyBindingProvider;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 /**
  * Expanded version of {@link net.minecraft.client.options.StickyKeyBinding} for use by Fabric mods for non keyboard default keycode.
  */
 public final class StickyFabricKeyBinding extends KeyBinding {
-	private final StickyBindingProvider toggled;
+	private final KeyBindingHelper.StickyBindingProvider toggled;
 
-	public StickyFabricKeyBinding(String translationKey, Type type, int code, String category, StickyBindingProvider toggled) {
+	public StickyFabricKeyBinding(String translationKey, Type type, int code, String category, KeyBindingHelper.StickyBindingProvider toggled) {
 		super(translationKey, type, code, category);
 		this.toggled = toggled;
 	}

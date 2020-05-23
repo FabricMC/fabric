@@ -38,6 +38,6 @@ public class MixinGameOptions {
 
 	@Inject(at = @At("HEAD"), method = "load()V")
 	public void loadHook(CallbackInfo info) {
-		keysAll = KeyBindingRegistryImpl.INSTANCE.process(keysAll);
+		keysAll = KeyBindingRegistryImpl.process(keysAll);
 	}
 }

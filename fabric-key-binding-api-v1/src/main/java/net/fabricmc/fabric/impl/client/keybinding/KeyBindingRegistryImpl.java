@@ -29,23 +29,22 @@ import net.minecraft.client.options.KeyBinding;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 
 public final class KeyBindingRegistryImpl {
-	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private final List<KeyBinding> fabricKeyBindings = Lists.newArrayList();
+	private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
 
 	private KeyBindingRegistryImpl() {
 	}
 
-	private Map<String, Integer> getCategoryMap() {
+	private static Map<String, Integer> getCategoryMap() {
 		return KeyBindingAccessor.fabric_getCategoryMap();
 	}
 
-	private boolean hasCategory(String categoryTranslationKey) {
+	private static boolean hasCategory(String categoryTranslationKey) {
 		return getCategoryMap().containsKey(categoryTranslationKey);
 	}
 
-	public boolean addCategory(String categoryTranslationKey) {
+	public static boolean addCategory(String categoryTranslationKey) {
 		Map<String, Integer> map = getCategoryMap();
 
 		if (map.containsKey(categoryTranslationKey)) {
@@ -58,8 +57,8 @@ public final class KeyBindingRegistryImpl {
 		return true;
 	}
 
-	public boolean registerKeyBinding(KeyBinding binding) {
-		for (KeyBinding existingKeyBindings : fabricKeyBindings) {
+	public static boolean registerKeyBinding(KeyBinding binding) {
+		for (KeyBinding existingKeyBindings : moddedKeyBindings) {
 			if (existingKeyBindings == binding) {
 				return false;
 			} else if (existingKeyBindings.getId().equals(binding.getId())) {
@@ -71,13 +70,17 @@ public final class KeyBindingRegistryImpl {
 			addCategory(binding.getCategory());
 		}
 
-		return fabricKeyBindings.add(binding);
+		return moddedKeyBindings.add(binding);
 	}
 
-	public KeyBinding[] process(KeyBinding[] keysAll) {
+	/**
+	 * Processes the keybindings array for our modded ones by first removing existing modded keybindings and readding them,
+	 * we can make sure that there are no duplicates this way.
+	 */
+	public static KeyBinding[] process(KeyBinding[] keysAll) {
 		List<KeyBinding> newKeysAll = Lists.newArrayList(keysAll);
-		newKeysAll.removeAll(fabricKeyBindings);
-		newKeysAll.addAll(fabricKeyBindings);
+		newKeysAll.removeAll(moddedKeyBindings);
+		newKeysAll.addAll(moddedKeyBindings);
 		return newKeysAll.toArray(new KeyBinding[0]);
 	}
 }

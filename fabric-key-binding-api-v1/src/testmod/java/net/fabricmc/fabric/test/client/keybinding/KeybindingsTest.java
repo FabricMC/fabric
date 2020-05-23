@@ -22,23 +22,23 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingUtil;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 
 public class KeybindingsTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		KeyBinding binding1 = KeyBindingUtil.builder()
+		KeyBinding binding1 = KeyBindingHelper.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_1"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 80) // P
 				.buildAndRegister();
-		KeyBinding binding2 = KeyBindingUtil.builder()
+		KeyBinding binding2 = KeyBindingHelper.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_2"))
 				.category("category.second.test")
 				.key(InputUtil.Type.KEYSYM, 85) // U
 				.buildAndRegister();
-		KeyBinding stickyBinding = KeyBindingUtil.builder()
+		KeyBinding stickyBinding = KeyBindingHelper.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_sticky"))
 				.category("category.first.test")
 				.key(InputUtil.Type.KEYSYM, 82) // R
