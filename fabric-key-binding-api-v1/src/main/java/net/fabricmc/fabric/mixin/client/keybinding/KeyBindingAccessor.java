@@ -18,19 +18,15 @@ package net.fabricmc.fabric.mixin.client.keybinding;
 
 import java.util.Map;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.options.KeyBinding;
 
 @Mixin(KeyBinding.class)
-public class MixinKeyBinding {
-	@Final
-	@Shadow
-	private static Map<String, Integer> categoryOrderMap;
-
-	private static Map<String, Integer> fabric_getCategoryMap() {
-		return categoryOrderMap;
+public interface KeyBindingAccessor {
+	@Accessor("categoryOrderMap")
+	static Map<String, Integer> fabric_getCategoryMap() {
+		throw new AssertionError();
 	}
 }

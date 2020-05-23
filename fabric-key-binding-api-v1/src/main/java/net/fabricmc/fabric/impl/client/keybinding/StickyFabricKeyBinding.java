@@ -16,42 +16,25 @@
 
 package net.fabricmc.fabric.impl.client.keybinding;
 
-import java.util.function.BooleanSupplier;
-
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil.Type;
-import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
+import net.fabricmc.fabric.api.client.keybinding.v1.StickyBindingProvider;
 
 /**
- * Expanded version of {@link KeyBinding} for use by Fabric mods that is sticky.
- *
- * <p>*ALL* built FabricKeyBindings are automatically registered!</p>
- *
- * <pre><code>
- * FabricKeyBinding left = FabricKeyBinding.builder()
- * 			.id(new Identifier("example", "left"))
- * 			.key(InputUtil.Type.KEYSYM, Keys.Left)
- * 			.build();
- * FabricKeyBinding right = FabricKeyBinding.builder()
- * 			.id(new Identifier("example", "right"))
- * 			.key(InputUtil.Type.KEYSYM, Keys.Right)
- * 			.build();
- * </code></pre>
+ * Expanded version of {@link net.minecraft.client.options.StickyKeyBinding} for use by Fabric mods for non keyboard default keycode.
  */
-public final class StickyFabricKeyBinding extends FabricKeyBinding {
-	private final BooleanSupplier toggled;
+public final class StickyFabricKeyBinding extends KeyBinding {
+	private final StickyBindingProvider toggled;
 
-	@SuppressWarnings("deprecation")
-	public StickyFabricKeyBinding(Identifier identifier, String translationKey, Type type, int code, String category, BooleanSupplier toggled) {
-		super(identifier, translationKey, type, code, category);
+	public StickyFabricKeyBinding(String translationKey, Type type, int code, String category, StickyBindingProvider toggled) {
+		super(translationKey, type, code, category);
 		this.toggled = toggled;
 	}
 
 	@Override
 	public void setPressed(boolean pressed) {
-		if (toggled.getAsBoolean()) {
+		if (toggled.isSticky()) {
 			if (pressed) {
 				super.setPressed(!isPressed());
 			}

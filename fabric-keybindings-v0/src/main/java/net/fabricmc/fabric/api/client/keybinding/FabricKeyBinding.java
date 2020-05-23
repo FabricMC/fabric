@@ -31,9 +31,9 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingUtil;
  * @deprecated Please migrate to v1. Please use {@link net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingUtil#builder()} instead.
  */
 @Deprecated
-public class FabricKeyBinding extends net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding {
+public class FabricKeyBinding extends KeyBinding {
 	protected FabricKeyBinding(Identifier id, InputUtil.Type type, int code, String category) {
-		super(id, String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
+		super(String.format("key.%s.%s", id.getNamespace(), id.getPath()), type, code, category);
 	}
 
 	/**

@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.keybinding;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
@@ -29,37 +26,19 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.options.KeyBinding;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.FabricKeyBinding;
+import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 
 public final class KeyBindingRegistryImpl {
 	public static final KeyBindingRegistryImpl INSTANCE = new KeyBindingRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private Map<String, Integer> cachedCategoryMap;
-	private final List<FabricKeyBinding> fabricKeyBindings = Lists.newArrayList();
+	private final List<KeyBinding> fabricKeyBindings = Lists.newArrayList();
 
 	private KeyBindingRegistryImpl() {
 	}
 
 	private Map<String, Integer> getCategoryMap() {
-		if (cachedCategoryMap == null) {
-			try {
-				//noinspection JavaReflectionMemberAccess
-				Method m = KeyBinding.class.getDeclaredMethod("fabric_getCategoryMap");
-				m.setAccessible(true);
-
-				//noinspection unchecked
-				cachedCategoryMap = (Map<String, Integer>) m.invoke(null);
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-
-			if (cachedCategoryMap == null) {
-				throw new RuntimeException("Cached key binding category map missing!");
-			}
-		}
-
-		return cachedCategoryMap;
+		return KeyBindingAccessor.fabric_getCategoryMap();
 	}
 
 	private boolean hasCategory(String categoryTranslationKey) {
@@ -79,7 +58,7 @@ public final class KeyBindingRegistryImpl {
 		return true;
 	}
 
-	public boolean registerKeyBinding(FabricKeyBinding binding) {
+	public boolean registerKeyBinding(KeyBinding binding) {
 		for (KeyBinding existingKeyBindings : fabricKeyBindings) {
 			if (existingKeyBindings == binding) {
 				return false;
@@ -96,7 +75,8 @@ public final class KeyBindingRegistryImpl {
 	}
 
 	public KeyBinding[] process(KeyBinding[] keysAll) {
-		List<KeyBinding> newKeysAll = Stream.of(keysAll).filter(keyBinding -> !(keyBinding instanceof FabricKeyBinding)).collect(Collectors.toList());
+		List<KeyBinding> newKeysAll = Lists.newArrayList(keysAll);
+		newKeysAll.removeAll(fabricKeyBindings);
 		newKeysAll.addAll(fabricKeyBindings);
 		return newKeysAll.toArray(new KeyBinding[0]);
 	}

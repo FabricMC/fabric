@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.keybinding.v1;
 
 import java.util.Objects;
-import java.util.function.BooleanSupplier;
 
 import com.google.common.base.Preconditions;
 
@@ -37,11 +36,11 @@ import net.fabricmc.fabric.mixin.client.keybinding.KeyCodeAccessor;
  * <p>*ALL* built FabricKeyBindings are automatically registered!</p>
  *
  * <pre><code>
- * FabricKeyBinding left = KeyBindingUtil.builder()
+ * KeyBinding left = KeyBindingUtil.builder()
  * 			.identifier(new Identifier("example", "left"))
  * 			.key(InputUtil.Type.KEYSYM, Keys.Left)
  * 			.build();
- * FabricKeyBinding right = KeyBindingUtil.builder()
+ * KeyBinding right = KeyBindingUtil.builder()
  * 			.identifier(new Identifier("example", "right"))
  * 			.key(InputUtil.Type.KEYSYM, Keys.Right)
  * 			.build();
@@ -73,8 +72,7 @@ public final class KeyBindingUtil {
 
 		private InputUtil.Type type = InputUtil.Type.KEYSYM;
 		private Identifier identifier = null;
-		private String translationKey;
-		private BooleanSupplier toggleFlagSupplier = null;
+		private StickyBindingProvider stickyBindingProvider = null;
 		private int key = UNKNOWN_KEY;
 		private String categoryTranslationKey = null;
 
@@ -90,7 +88,6 @@ public final class KeyBindingUtil {
 		 */
 		public Builder identifier(Identifier identifier) {
 			this.identifier = Objects.requireNonNull(identifier, "Keybinding's id can not be null!");
-			this.translationKey = String.format("key.%s.%s", identifier.getNamespace(), identifier.getPath());
 			return this;
 		}
 
@@ -139,8 +136,8 @@ public final class KeyBindingUtil {
 		 *
 		 * @param toggleFlagSupplier A getter function to determine whether to toggle or not. True for toggling behaviour, false otherwise.
 		 */
-		public Builder sticky(BooleanSupplier toggleFlagSupplier) {
-			this.toggleFlagSupplier = toggleFlagSupplier;
+		public Builder sticky(StickyBindingProvider toggleFlagSupplier) {
+			this.stickyBindingProvider = toggleFlagSupplier;
 			return this;
 		}
 
@@ -152,16 +149,15 @@ public final class KeyBindingUtil {
 		 * <p>At current this returns a <i>new</i> key binding that modders should
 		 * hold onto for their own use, though this may change in the future.</p>
 		 */
-		@SuppressWarnings("deprecation")
-		public FabricKeyBinding build() {
+		public KeyBinding build() {
 			Objects.requireNonNull(identifier, "Keybindings should be created with an identifier.");
 			Objects.requireNonNull(categoryTranslationKey, "Keybindings should be created with a category.");
-			FabricKeyBinding binding;
+			KeyBinding binding;
 
-			if (toggleFlagSupplier == null) {
-				binding = new FabricKeyBinding(identifier, translationKey, type, key, categoryTranslationKey);
+			if (stickyBindingProvider == null) {
+				binding = new KeyBinding(String.format("key.%s.%s", identifier.getNamespace(), identifier.getPath()), type, key, categoryTranslationKey);
 			} else {
-				binding = new StickyFabricKeyBinding(identifier, translationKey, type, key, categoryTranslationKey, toggleFlagSupplier);
+				binding = new StickyFabricKeyBinding(String.format("key.%s.%s", identifier.getNamespace(), identifier.getPath()), type, key, categoryTranslationKey, stickyBindingProvider);
 			}
 
 			KeyBindingRegistryImpl.INSTANCE.registerKeyBinding(binding);
