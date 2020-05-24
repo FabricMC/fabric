@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.client.keybinding;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
@@ -31,17 +33,17 @@ public class KeybindingsTest implements ClientModInitializer {
 		KeyBinding binding1 = KeyBindingHelper.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_1"))
 				.category("category.first.test")
-				.key(InputUtil.Type.KEYSYM, 80) // P
+				.key(InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_P)
 				.buildAndRegister();
 		KeyBinding binding2 = KeyBindingHelper.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_2"))
 				.category("category.second.test")
-				.key(InputUtil.Type.KEYSYM, 85) // U
+				.key(InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U)
 				.buildAndRegister();
 		KeyBinding stickyBinding = KeyBindingHelper.builder()
 				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_sticky"))
 				.category("category.first.test")
-				.key(InputUtil.Type.KEYSYM, 82) // R
+				.key(InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R)
 				.sticky()
 				.buildAndRegister();
 
