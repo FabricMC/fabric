@@ -33,11 +33,11 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.ModelTransformation.Mode;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -144,7 +144,6 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		@Override
 		public Maker emit() {
 			lightFace(GeometryHelper.lightFace(this));
-			ColorHelper.applyDiffuseShading(this, false);
 			renderQuad();
 			clear();
 			return this;
