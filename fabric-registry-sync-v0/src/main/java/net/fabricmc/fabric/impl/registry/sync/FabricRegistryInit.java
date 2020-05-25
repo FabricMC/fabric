@@ -45,12 +45,13 @@ public class FabricRegistryInit implements ModInitializer {
 		// Does not appear to be saved or synced, the string id is used.
 		RegistryAttributeHolder.get(Registry.ENCHANTMENT);
 
-		// Synced in EntitySpawnS2CPacket
+		// Synced in EntitySpawnS2CPacket and RegistryTagManager
 		RegistryAttributeHolder.get(Registry.ENTITY_TYPE)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Doesnt appear to need syncing or saving?
-		RegistryAttributeHolder.get(Registry.ITEM);
+		// Synced in RegistryTagManager
+		RegistryAttributeHolder.get(Registry.ITEM)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Saved and synced using string ID.
 		RegistryAttributeHolder.get(Registry.POTION);
