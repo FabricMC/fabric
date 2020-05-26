@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.function.BiConsumer;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
@@ -68,7 +70,7 @@ public final class RuleFactory {
 		return createIntRule(defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, changedCallback);
 	}
 
-	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, int upperBound, BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
+	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, int upperBound, /* @Nullable */ BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
 		return new GameRules.RuleType<>(
 				() -> IntegerArgumentType.integer(lowerBound, upperBound),
 				type -> new BoundedIntRule(type, defaultValue, lowerBound, upperBound), // Internally use a bounded int rule
@@ -156,6 +158,9 @@ public final class RuleFactory {
 	}
 
 	public static <E extends Enum<E>> GameRules.RuleType<EnumRule<E>> createEnumRule(E defaultValue, E[] supportedValues, BiConsumer<MinecraftServer, EnumRule<E>> changedCallback) {
+		checkNotNull(defaultValue, "Default rule value cannot be null");
+		checkNotNull(supportedValues, "Supported Values cannot be null");
+
 		if (supportedValues.length == 0) {
 			throw new IllegalArgumentException("Cannot register an enum rule where no values are supported");
 		}

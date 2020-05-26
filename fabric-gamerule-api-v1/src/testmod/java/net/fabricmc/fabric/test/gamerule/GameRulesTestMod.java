@@ -78,12 +78,12 @@ public class GameRulesTestMod implements ModInitializer {
 		LOGGER.info("Loading GameRules test mod.");
 
 		// Test a vanilla rule
-		if (!GameRuleRegistry.isRuleNameUsed("keepInventory")) {
+		if (!GameRuleRegistry.isRegistered("keepInventory")) {
 			throw new AssertionError("Expected to find \"keepInventory\" already registered, but it was not detected as registered");
 		}
 
 		// Test our own rule
-		if (!GameRuleRegistry.isRuleNameUsed("redSleepFailureEnum")) {
+		if (!GameRuleRegistry.isRegistered("redSleepFailureEnum")) {
 			throw new AssertionError("Expected to find \"redSleepFailureEnum\" already registered, but it was not detected as registered");
 		}
 

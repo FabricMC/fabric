@@ -38,11 +38,17 @@ public class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
 	protected final Collection<E> supportedValues;
 	protected E value;
 
+	/**
+	 * You should not be calling this constructor!
+	 */
 	@Deprecated
 	public EnumRule(GameRules.RuleType<EnumRule<E>> type, E value, E[] supportedValues) {
 		this(type, value, Arrays.asList(supportedValues));
 	}
 
+	/**
+	 * You should not be calling this constructor!
+	 */
 	@Deprecated
 	public EnumRule(GameRules.RuleType<EnumRule<E>> type, E value, Collection<E> supportedValues) {
 		super(type);

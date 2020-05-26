@@ -13,8 +13,7 @@
   "client": [
     "client.EditGameRulesScreenAccessor",
     "client.RuleListWidgetMixin",
-    "client.RuleListWidgetRuleTypeConsumerMixin",
-    "client.ScreenAccessor"
+    "client.RuleListWidgetRuleTypeConsumerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

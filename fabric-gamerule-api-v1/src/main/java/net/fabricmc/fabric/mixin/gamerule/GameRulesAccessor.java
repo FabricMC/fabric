@@ -26,8 +26,8 @@ import net.minecraft.world.GameRules;
 
 @Mixin(GameRules.class)
 public interface GameRulesAccessor {
-	@Invoker
-	static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> invokeRegister(String name, GameRules.RuleCategory category, GameRules.RuleType<T> type) {
+	@Invoker("register")
+	static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> callRegister(String name, GameRules.RuleCategory category, GameRules.RuleType<T> type) {
 		throw new AssertionError("This shouldn't happen!");
 	}
 

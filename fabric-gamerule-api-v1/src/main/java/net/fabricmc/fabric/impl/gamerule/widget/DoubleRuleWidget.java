@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
@@ -30,23 +31,19 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
-import net.fabricmc.fabric.mixin.gamerule.client.ScreenAccessor;
 
 @Environment(EnvType.CLIENT)
 public class DoubleRuleWidget extends EditGameRulesScreen.AbstractRuleWidget {
 	private final List<? extends Element> children;
 	private final TextFieldWidget textFieldWidget;
 	private final Text name;
-	private final EditGameRulesScreen screen;
 
 	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<Text> description, final String ruleName, DoubleRule rule) {
 		gameRuleScreen.super(description);
-		this.screen = gameRuleScreen;
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
-		ScreenAccessor screenAccessor = (ScreenAccessor) gameRuleScreen;
 		this.name = name;
 
-		this.textFieldWidget = new TextFieldWidget(screenAccessor.getClient().textRenderer, 10, 5, 42, 20,
+		this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 10, 5, 42, 20,
 				name.shallowCopy()
 				.append("\n")
 				.append(ruleName)
@@ -74,8 +71,7 @@ public class DoubleRuleWidget extends EditGameRulesScreen.AbstractRuleWidget {
 
 	@Override
 	public void render(MatrixStack matrixStack, int x, int y, int width, int height, int mouseX, int mouseY, int i, boolean bl, float delta) {
-		ScreenAccessor accessor = (ScreenAccessor) this.screen;
-		accessor.getClient().textRenderer.draw(matrixStack, this.name, width, (y + 5), 16777215);
+		MinecraftClient.getInstance().textRenderer.draw(matrixStack, this.name, width, (y + 5), 16777215);
 
 		this.textFieldWidget.x = width + height - 44;
 		this.textFieldWidget.y = y;

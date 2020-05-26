@@ -28,6 +28,6 @@ import net.minecraft.world.GameRules;
 public interface BooleanRuleAccessor {
 	@Invoker
 	static GameRules.RuleType<GameRules.BooleanRule> invokeCreate(boolean initialValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changeCallback) {
-		throw new AssertionError("Untransformed accessor");
+		throw new AssertionError("This shouldn't happen!");
 	}
 }

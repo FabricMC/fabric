@@ -36,7 +36,7 @@ public final class GameRuleRegistry {
 	 * @throws IllegalStateException if a rule of the same name already exists
 	 */
 	public static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> register(String name, GameRules.RuleCategory category, GameRules.RuleType<T> type) {
-		return GameRulesAccessor.invokeRegister(name, category, type);
+		return GameRulesAccessor.callRegister(name, category, type);
 	}
 
 	/**
@@ -50,18 +50,18 @@ public final class GameRuleRegistry {
 	 * @throws IllegalStateException if a rule of the same name already exists
 	 */
 	public static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> register(String name, CustomGameRuleCategory category, GameRules.RuleType<T> type) {
-		final GameRules.RuleKey<T> key = GameRulesAccessor.invokeRegister(name, GameRules.RuleCategory.MISC, type);
+		final GameRules.RuleKey<T> key = GameRulesAccessor.callRegister(name, GameRules.RuleCategory.MISC, type);
 		((RuleKeyInternals) (Object) key).fabric_setCustomCategory(category);
 		return key;
 	}
 
 	/**
-	 * Checks if a name for a rule is already being used.
+	 * Checks if a name for a rule is already registered.
 	 *
 	 * @param ruleName the rule name to test
 	 * @return true if the name is taken.
 	 */
-	public static boolean isRuleNameUsed(String ruleName) {
+	public static boolean isRegistered(String ruleName) {
 		return GameRulesAccessor.getRuleTypes().keySet().stream().anyMatch(key -> key.getName().equals(ruleName));
 	}
 }

@@ -33,6 +33,9 @@ public class DoubleRule extends GameRules.Rule<DoubleRule> implements Validateab
 	private final double upperBound;
 	private double value;
 
+	/**
+	 * You should not be calling this constructor!
+	 */
 	@Deprecated
 	public DoubleRule(GameRules.RuleType<DoubleRule> type, double value, double lowerBound, double upperBound) {
 		super(type);

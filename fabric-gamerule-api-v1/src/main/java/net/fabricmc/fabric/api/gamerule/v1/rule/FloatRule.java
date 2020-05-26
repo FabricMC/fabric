@@ -33,6 +33,9 @@ public class FloatRule extends GameRules.Rule<FloatRule> implements Validateable
 	private final float upperBound;
 	private float value;
 
+	/**
+	 * You should not be calling this constructor!
+	 */
 	@Deprecated
 	public FloatRule(GameRules.RuleType<FloatRule> type, float value, float lowerBound, float upperBound) {
 		super(type);

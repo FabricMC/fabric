@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.gamerule.client;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -36,7 +37,7 @@ import net.fabricmc.fabric.impl.gamerule.RuleKeyInternals;
 @Mixin(EditGameRulesScreen.RuleListWidget.class)
 public abstract class RuleListWidgetMixin extends net.minecraft.client.gui.widget.EntryListWidget<EditGameRulesScreen.AbstractRuleWidget> {
 	@Unique
-	private final Map<CustomGameRuleCategory, ArrayList<EditGameRulesScreen.AbstractRuleWidget>> fabricCategories = new HashMap<>();
+	private final Map<CustomGameRuleCategory, List<EditGameRulesScreen.AbstractRuleWidget>> fabricCategories = new HashMap<>();
 
 	public RuleListWidgetMixin(MinecraftClient client, int width, int height, int top, int bottom, int itemHeight) {
 		super(client, width, height, top, bottom, itemHeight);
