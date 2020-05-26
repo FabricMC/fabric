@@ -43,7 +43,7 @@ import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
  * @param <T> The type stored in the Registry
  * @param <R> The registry type
  */
-public class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
+public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
 	 *
