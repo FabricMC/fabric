@@ -43,10 +43,7 @@ public final class FabricDimensionInternals {
 		throw new AssertionError();
 	}
 
-	public static final boolean DEBUG = System.getProperty("fabric.dimension.debug", "false").equalsIgnoreCase("true");
-	public static final Logger LOGGER = LogManager.getLogger();
-
-	public static final LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGeneratorFactory>> FABRIC_DIM_MAP = new LinkedHashMap<>();
+	public static final Map<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGeneratorFactory>> FABRIC_DIM_MAP = new LinkedHashMap<>();
 
 	/**
 	 * The entity currently being transported to another dimension.

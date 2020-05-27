@@ -42,18 +42,14 @@ public class FabricDimensionTest implements ModInitializer {
 		);
 	}
 
-	private int executeTestCommand(CommandContext<ServerCommandSource> context) {
-		try {
-			ServerPlayerEntity serverPlayerEntity = context.getSource().getPlayer();
-			ServerWorld serverWorld = serverPlayerEntity.getServerWorld();
+	private int executeTestCommand(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+		ServerPlayerEntity serverPlayerEntity = context.getSource().getPlayer();
+		ServerWorld serverWorld = serverPlayerEntity.getServerWorld();
 
-			if (!serverWorld.method_27983().equals(dimensionRegistryKey)) {
-				FabricDimensions.teleport(serverPlayerEntity, dimensionRegistryKey, FabricDimensionTest::placeEntity);
-			} else {
-				FabricDimensions.teleport(serverPlayerEntity, DimensionType.OVERWORLD_REGISTRY_KEY, FabricDimensionTest::placeEntity);
-			}
-		} catch (CommandSyntaxException e) {
-			return 0;
+		if (!serverWorld.method_27983().equals(dimensionRegistryKey)) {
+			FabricDimensions.teleport(serverPlayerEntity, dimensionRegistryKey, FabricDimensionTest::placeEntity);
+		} else {
+			FabricDimensions.teleport(serverPlayerEntity, DimensionType.OVERWORLD_REGISTRY_KEY, FabricDimensionTest::placeEntity);
 		}
 
 		return 1;
