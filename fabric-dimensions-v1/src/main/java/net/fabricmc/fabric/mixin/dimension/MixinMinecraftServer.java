@@ -1,24 +1,25 @@
 package net.fabricmc.fabric.mixin.dimension;
 
+import java.util.LinkedHashMap;
+
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import org.spongepowered.asm.mixin.Final;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.LinkedHashMap;
+import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
-
 	@Shadow
 	@Final
 	protected SaveProperties field_24372;
@@ -31,5 +32,4 @@ public class MixinMinecraftServer {
 
 		return map;
 	}
-
 }

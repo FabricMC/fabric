@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.api.dimension.v1.ChunkGeneratorFactory;
-import net.minecraft.class_5317;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,16 +28,15 @@ import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import net.fabricmc.fabric.api.dimension.v1.ChunkGeneratorFactory;
 import net.fabricmc.fabric.mixin.dimension.EntityHooks;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.function.Function;
 
 public final class FabricDimensionInternals {
 	private FabricDimensionInternals() {
@@ -56,7 +53,7 @@ public final class FabricDimensionInternals {
 	 */
 	private static final ThreadLocal<Entity> PORTAL_ENTITY = new ThreadLocal<>();
 	/**
-	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, RegistryKey<DimensionType>, EntityPlacer)}.
+	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, RegistryKey, EntityPlacer)}.
 	 */
 	private static EntityPlacer customPlacement;
 
@@ -146,6 +143,7 @@ public final class FabricDimensionInternals {
 			if (map.containsKey(entry.getKey())) {
 				throw new RuntimeException("Duplicate dimension id");
 			}
+
 			map.put(entry.getKey(), entry.getValue().mapSecond(factory -> factory.create(seed)));
 		}
 	}

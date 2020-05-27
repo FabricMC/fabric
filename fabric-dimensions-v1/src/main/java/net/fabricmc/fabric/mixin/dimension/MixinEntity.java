@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
-import net.minecraft.util.registry.RegistryKey;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 

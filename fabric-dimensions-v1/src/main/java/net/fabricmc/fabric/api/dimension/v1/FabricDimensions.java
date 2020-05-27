@@ -52,7 +52,7 @@ public final class FabricDimensions {
 	 * @param teleported  the entity to teleport
 	 * @param destination the dimension the entity will be teleported to
 	 * @return the teleported entity, or a clone of it
-	 * @see #teleport(Entity, RegistryKey<DimensionType>, EntityPlacer)
+	 * @see #teleport(Entity, RegistryKey, EntityPlacer)
 	 */
 	public static <E extends Entity> E teleport(E teleported, RegistryKey<DimensionType> destination) {
 		return teleport(teleported, destination, null);

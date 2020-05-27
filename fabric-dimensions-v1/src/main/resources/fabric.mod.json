@@ -9,11 +9,6 @@
     "fabric-registry-sync-v0": "*",
     "fabric-networking-v0": "*"
   },
-  "entrypoints": {
-    "client": [
-      "net.fabricmc.fabric.impl.dimension.FabricDimensionClientInit::onClientInit"
-    ]
-  },
   "mixins": [
     "fabric-dimensions-v1.mixins.json"
   ]

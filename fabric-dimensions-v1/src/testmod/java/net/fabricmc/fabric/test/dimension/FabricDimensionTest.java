@@ -2,15 +2,9 @@ package net.fabricmc.fabric.test.dimension;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.dimension.v1.ChunkGeneratorFactory;
-import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
@@ -26,8 +20,12 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 
-public class FabricDimensionTest implements ModInitializer {
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
+import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
+public class FabricDimensionTest implements ModInitializer {
 	private static RegistryKey<DimensionType> dimensionRegistryKey;
 
 	@Override
@@ -54,10 +52,10 @@ public class FabricDimensionTest implements ModInitializer {
 			} else {
 				FabricDimensions.teleport(serverPlayerEntity, DimensionType.OVERWORLD_REGISTRY_KEY, FabricDimensionTest::placeEntity);
 			}
-
 		} catch (CommandSyntaxException e) {
 			return 0;
 		}
+
 		return 1;
 	}
 

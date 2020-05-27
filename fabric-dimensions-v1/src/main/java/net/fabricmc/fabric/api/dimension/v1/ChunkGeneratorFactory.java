@@ -4,7 +4,6 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @FunctionalInterface
 public interface ChunkGeneratorFactory {
-
 	/**
 	 * Create a {@link ChunkGenerator} given the seed.
 	 *

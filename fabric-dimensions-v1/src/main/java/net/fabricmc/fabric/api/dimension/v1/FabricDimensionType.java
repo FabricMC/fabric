@@ -19,17 +19,16 @@ package net.fabricmc.fabric.api.dimension.v1;
 import java.util.OptionalLong;
 
 import com.google.common.base.Preconditions;
-
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
-import net.minecraft.class_5317;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+
+import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
  * An extended version of {@link DimensionType} with automatic raw id management and default placement settings.
@@ -127,7 +126,7 @@ public final class FabricDimensionType extends DimensionType {
 		}
 
 		/**
-		 * Set the {@link ChunkGeneratorFactory} to supply the {@link ChunkGenerator}
+		 * Set the {@link ChunkGeneratorFactory} to supply the {@link ChunkGenerator}.
 		 *
 		 * @param chunkGeneratorFactory the chunkGenerator used to generate the dimension
 		 * @return this {@code Builder} object
@@ -157,7 +156,7 @@ public final class FabricDimensionType extends DimensionType {
 			Preconditions.checkState(this.chunkGeneratorFactory != null, "No chunk generator factory has been specified!");
 			Preconditions.checkState(!FabricDimensionInternals.FABRIC_DIM_MAP.containsKey(registryKey), "Duplicate dimension id: " + registryKey.toString());
 
-			FabricDimensionType dimensionType = new FabricDimensionType( this);
+			FabricDimensionType dimensionType = new FabricDimensionType(this);
 			Pair<DimensionType, ChunkGeneratorFactory> pair = Pair.of(dimensionType, chunkGeneratorFactory);
 
 			FabricDimensionInternals.FABRIC_DIM_MAP.put(registryKey, pair);
