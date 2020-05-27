@@ -37,7 +37,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.class_5219;
+import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
@@ -121,7 +121,7 @@ public class MixinLevelStorageSession {
 	}
 
 	@Inject(method = "method_27426", at = @At("HEAD"))
-	public void saveWorld(class_5219 levelProperties, CompoundTag compoundTag, CallbackInfo info) {
+	public void saveWorld(SaveProperties levelProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!Files.exists(directory)) {
 			return;
 		}
@@ -131,7 +131,7 @@ public class MixinLevelStorageSession {
 
 	// TODO: stop double save on client?
 	@Inject(method = "readLevelProperties", at = @At("HEAD"))
-	public void readWorldProperties(CallbackInfoReturnable<class_5219> callbackInfo) {
+	public void readWorldProperties(CallbackInfoReturnable<SaveProperties> callbackInfo) {
 		// Load
 		for (int i = 0; i < FABRIC_ID_REGISTRY_BACKUPS; i++) {
 			FABRIC_LOGGER.trace("[fabric-registry-sync] Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");

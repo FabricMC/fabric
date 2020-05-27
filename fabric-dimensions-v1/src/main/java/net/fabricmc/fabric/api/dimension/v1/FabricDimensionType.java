@@ -17,19 +17,17 @@
 package net.fabricmc.fabric.api.dimension.v1;
 
 import java.util.OptionalLong;
-import java.util.function.Function;
 
 import com.google.common.base.Preconditions;
 
 import com.mojang.datafixers.util.Pair;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+import net.minecraft.class_5317;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
@@ -82,7 +80,7 @@ public final class FabricDimensionType extends DimensionType {
 	 *           .skyLight(true)
 	 *           .buildAndRegister();}</pre>
 	 *
-	 * <p>Builder instances can be reused; it is safe to call {@link #buildAndRegister(Identifier)} multiple
+	 * <p>Builder instances can be reused; it is safe to call {@link #buildAndRegister(RegistryKey)} multiple
 	 * times (with different identifiers) to build and register multiple dimension types in series.
 	 * Each new dimension type uses the settings of the builder at the time it is built.
 	 *
@@ -91,7 +89,7 @@ public final class FabricDimensionType extends DimensionType {
 	public static final class Builder {
 		private EntityPlacer defaultPlacer;
 		private boolean skyLight = true;
-		private ChunkGenerator chunkGenerator;
+		private ChunkGeneratorFactory chunkGeneratorFactory;
 
 		private Builder() {
 		}
@@ -128,8 +126,17 @@ public final class FabricDimensionType extends DimensionType {
 			return this;
 		}
 
-		public Builder chunkGenerator(ChunkGenerator chunkGenerator) {
-			this.chunkGenerator = chunkGenerator;
+		/**
+		 * Set the {@link ChunkGeneratorFactory} to supply the {@link ChunkGenerator}
+		 *
+		 * @param chunkGeneratorFactory the chunkGenerator used to generate the dimension
+		 * @return this {@code Builder} object
+		 * @throws NullPointerException if {@code chunkGenerator} is {@code null}
+		 */
+		public Builder chunkGenerator(ChunkGeneratorFactory chunkGeneratorFactory) {
+			Preconditions.checkNotNull(chunkGeneratorFactory);
+
+			this.chunkGeneratorFactory = chunkGeneratorFactory;
 			return this;
 		}
 
@@ -137,21 +144,23 @@ public final class FabricDimensionType extends DimensionType {
 		 * Build and register a {@code FabricDimensionType}.
 		 *
 		 * <p>The {@code dimensionId} is used as a registry ID, and as
-		 * a unique name both for the dimension suffix and the save directory.
+		 * a unique name both for the the save directory.
 		 *
-		 * @param dimensionId the id used to name and register the dimension
+		 * @param registryKey the {@link RegistryKey} used register and reference the dimension
 		 * @return the built {@code FabricDimensionType}
 		 * @throws IllegalArgumentException if an existing dimension has already been registered with {@code dimensionId}
-		 * @throws IllegalStateException    if no {@link #factory(Function) factory} or {@link #defaultPlacer(EntityPlacer) default placer}
+		 * @throws IllegalStateException    if no {@link #chunkGeneratorFactory} or {@link #defaultPlacer(EntityPlacer) default placer}
 		 *                                  have been set
 		 */
-		public FabricDimensionType buildAndRegister(Identifier dimensionId) {
+		public FabricDimensionType buildAndRegister(RegistryKey<DimensionType> registryKey) {
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
-			Preconditions.checkState(this.chunkGenerator != null, "No chunk generator has been specified!");
+			Preconditions.checkState(this.chunkGeneratorFactory != null, "No chunk generator factory has been specified!");
+			Preconditions.checkState(!FabricDimensionInternals.FABRIC_DIM_MAP.containsKey(registryKey), "Duplicate dimension id: " + registryKey.toString());
 
 			FabricDimensionType dimensionType = new FabricDimensionType( this);
-			Pair<DimensionType, ChunkGenerator> pair = Pair.of(dimensionType, chunkGenerator);
-			FabricDimensionInternals.FABRIC_DIM_MAP.put(RegistryKey.getOrCreate(Registry.DIMENSION_TYPE_KEY, dimensionId), pair);
+			Pair<DimensionType, ChunkGeneratorFactory> pair = Pair.of(dimensionType, chunkGeneratorFactory);
+
+			FabricDimensionInternals.FABRIC_DIM_MAP.put(registryKey, pair);
 			return dimensionType;
 		}
 	}

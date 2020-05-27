@@ -131,10 +131,10 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			throw new RuntimeException("Attempted to register object " + object + " twice! (at raw IDs " + indexedEntriesId + " and " + id + " )");
 		}
 
-		if (!entriesById.containsKey(registryId.getValueId())) {
+		if (!entriesById.containsKey(registryId.getValue())) {
 			fabric_isObjectNew = true;
 		} else {
-			T oldObject = entriesById.get(registryId.getValueId());
+			T oldObject = entriesById.get(registryId.getValue());
 
 			if (oldObject != null && oldObject != object) {
 				int oldId = indexedEntries.getId(oldObject);
@@ -143,7 +143,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
 				}
 
-				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, registryId.getValueId(), oldObject);
+				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, registryId.getValue(), oldObject);
 				fabric_isObjectNew = true;
 			} else {
 				fabric_isObjectNew = false;
@@ -155,7 +155,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@Inject(method = "set", at = @At("RETURN"))
 	public void setPost(int id, RegistryKey<T> registryId, Object object, CallbackInfoReturnable info) {
 		if (fabric_isObjectNew) {
-			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValueId(), object);
+			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
 		}
 	}
 

@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.dimension;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
+import net.fabricmc.fabric.api.dimension.v1.ChunkGeneratorFactory;
+import net.minecraft.class_5317;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +38,8 @@ import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.fabricmc.fabric.mixin.dimension.EntityHooks;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 public final class FabricDimensionInternals {
 	private FabricDimensionInternals() {
@@ -44,14 +49,14 @@ public final class FabricDimensionInternals {
 	public static final boolean DEBUG = System.getProperty("fabric.dimension.debug", "false").equalsIgnoreCase("true");
 	public static final Logger LOGGER = LogManager.getLogger();
 
-	public static final LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGenerator>> FABRIC_DIM_MAP = new LinkedHashMap<>();
+	public static final LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGeneratorFactory>> FABRIC_DIM_MAP = new LinkedHashMap<>();
 
 	/**
 	 * The entity currently being transported to another dimension.
 	 */
 	private static final ThreadLocal<Entity> PORTAL_ENTITY = new ThreadLocal<>();
 	/**
-	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, DimensionType, EntityPlacer)}.
+	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, RegistryKey<DimensionType>, EntityPlacer)}.
 	 */
 	private static EntityPlacer customPlacement;
 
@@ -133,6 +138,15 @@ public final class FabricDimensionInternals {
 			return (E) teleported.changeDimension(dimension);
 		} finally {
 			customPlacement = null;
+		}
+	}
+
+	public static void setupWorlds(LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGenerator>> map, long seed) {
+		for (Map.Entry<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGeneratorFactory>> entry : FabricDimensionInternals.FABRIC_DIM_MAP.entrySet()) {
+			if (map.containsKey(entry.getKey())) {
+				throw new RuntimeException("Duplicate dimension id");
+			}
+			map.put(entry.getKey(), entry.getValue().mapSecond(factory -> factory.create(seed)));
 		}
 	}
 }
