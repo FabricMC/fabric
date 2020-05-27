@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
  * <p>*ALL* instantiated FabricKeyBindings should be registered in
  * {@link KeyBindingRegistry#register(FabricKeyBinding)}!</p>
  *
- * @deprecated Please migrate to v1. Please use {@link KeyBindingHelper#builder()} instead.
+ * @deprecated Please migrate to v1. Please use {@link KeyBindingHelper#registerKeyBinding(KeyBinding)} instead.
  */
 @Deprecated
 public class FabricKeyBinding extends KeyBinding {

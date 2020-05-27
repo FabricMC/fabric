@@ -57,10 +57,10 @@ public final class KeyBindingRegistryImpl {
 		return true;
 	}
 
-	public static boolean registerKeyBinding(KeyBinding binding) {
+	public static KeyBinding registerKeyBinding(KeyBinding binding) {
 		for (KeyBinding existingKeyBindings : moddedKeyBindings) {
 			if (existingKeyBindings == binding) {
-				return false;
+				throw null;
 			} else if (existingKeyBindings.getId().equals(binding.getId())) {
 				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getId() + "!");
 			}
@@ -70,7 +70,7 @@ public final class KeyBindingRegistryImpl {
 			addCategory(binding.getCategory());
 		}
 
-		return moddedKeyBindings.add(binding);
+		return moddedKeyBindings.add(binding) ? binding : null;
 	}
 
 	/**

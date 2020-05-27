@@ -19,9 +19,9 @@ package net.fabricmc.fabric.test.client.keybinding;
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.options.StickyKeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -30,22 +30,9 @@ import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 public class KeybindingsTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		KeyBinding binding1 = KeyBindingHelper.builder()
-				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_1"))
-				.category("category.first.test")
-				.key(InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_P)
-				.buildAndRegister();
-		KeyBinding binding2 = KeyBindingHelper.builder()
-				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_2"))
-				.category("category.second.test")
-				.key(InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U)
-				.buildAndRegister();
-		KeyBinding stickyBinding = KeyBindingHelper.builder()
-				.identifier(new Identifier("fabric-key-binding-api-v1-testmod:test_keybinding_sticky"))
-				.category("category.first.test")
-				.key(InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_R)
-				.sticky()
-				.buildAndRegister();
+		KeyBinding binding1 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_1", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_P, "key.category.first.test"));
+		KeyBinding binding2 = KeyBindingHelper.registerKeyBinding(new KeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_2", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_U, "key.category.second.test"));
+		KeyBinding stickyBinding = KeyBindingHelper.registerKeyBinding(new StickyKeyBinding("key.fabric-key-binding-api-v1-testmod.test_keybinding_sticky", GLFW.GLFW_KEY_R, "key.category.first.test", () -> true));
 
 		ClientTickCallback.EVENT.register(client -> {
 			while (binding1.wasPressed()) {
