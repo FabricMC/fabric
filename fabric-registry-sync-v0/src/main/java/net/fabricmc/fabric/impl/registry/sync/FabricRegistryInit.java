@@ -42,8 +42,9 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registry.BLOCK)
 				.addAttribute(RegistryAttribute.SYNCED);
 
-		// Does not appear to be saved or synced, the string id is used.
-		RegistryAttributeHolder.get(Registry.ENCHANTMENT);
+		// Synced in EnchantmentScreenHandler
+		RegistryAttributeHolder.get(Registry.ENCHANTMENT)
+				.addAttribute(RegistryAttribute.SYNCED);
 
 		// Synced in EntitySpawnS2CPacket and RegistryTagManager
 		RegistryAttributeHolder.get(Registry.ENTITY_TYPE)
@@ -97,6 +98,9 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BIOME_SOURCE);
+
+		// Not synced or saved
+		RegistryAttributeHolder.get(Registry.BLOCK_ENTITY_TYPE);
 
 		// Synced in PaintingSpawnS2CPacket
 		RegistryAttributeHolder.get(Registry.PAINTING_MOTIVE)
@@ -164,5 +168,14 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.ACTIVITY);
+
+		// Doesnt seem to be serialised or synced. (LOOT_POOL_ENTRY_TYPE)
+		RegistryAttributeHolder.get(Registry.field_25293);
+
+		// Doesnt seem to be serialised or synced. (LOOT_FUNCTION_TYPE)
+		RegistryAttributeHolder.get(Registry.field_25294);
+
+		// Doesnt seem to be serialised or synced. (LOOT_CONDITION_TYPE)
+		RegistryAttributeHolder.get(Registry.field_25299);
 	}
 }
