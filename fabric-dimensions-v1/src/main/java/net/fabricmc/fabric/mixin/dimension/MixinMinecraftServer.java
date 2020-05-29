@@ -2,6 +2,7 @@ package net.fabricmc.fabric.mixin.dimension;
 
 import java.util.LinkedHashMap;
 
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -25,8 +26,8 @@ public class MixinMinecraftServer {
 	protected SaveProperties field_24372;
 
 	@Redirect(method = "createWorlds", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/GeneratorOptions;method_28609()Ljava/util/LinkedHashMap;"))
-	private LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGenerator>> injectDimensions(GeneratorOptions generatorOptions) {
-		LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGenerator>> map = new LinkedHashMap<>(generatorOptions.method_28609());
+	private LinkedHashMap<RegistryKey<World>, Pair<DimensionType, ChunkGenerator>> injectDimensions(GeneratorOptions generatorOptions) {
+		LinkedHashMap<RegistryKey<World>, Pair<DimensionType, ChunkGenerator>> map = new LinkedHashMap<>(generatorOptions.method_28609());
 
 		FabricDimensionInternals.setupWorlds(map, field_24372.method_28057().getSeed());
 

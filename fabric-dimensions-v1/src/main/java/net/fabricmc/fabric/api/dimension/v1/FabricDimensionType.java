@@ -25,6 +25,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
@@ -151,7 +152,7 @@ public final class FabricDimensionType extends DimensionType {
 		 * @throws IllegalStateException    if no {@link #chunkGeneratorFactory} or {@link #defaultPlacer(EntityPlacer) default placer}
 		 *                                  have been set
 		 */
-		public FabricDimensionType buildAndRegister(RegistryKey<DimensionType> registryKey) {
+		public FabricDimensionType buildAndRegister(RegistryKey<World> registryKey) {
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
 			Preconditions.checkState(this.chunkGeneratorFactory != null, "No chunk generator factory has been specified!");
 			Preconditions.checkState(!FabricDimensionInternals.FABRIC_DIM_MAP.containsKey(registryKey), "Duplicate dimension id: " + registryKey.toString());

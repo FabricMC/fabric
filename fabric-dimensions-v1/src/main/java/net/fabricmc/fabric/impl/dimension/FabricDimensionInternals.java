@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +44,7 @@ public final class FabricDimensionInternals {
 		throw new AssertionError();
 	}
 
-	public static final Map<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGeneratorFactory>> FABRIC_DIM_MAP = new LinkedHashMap<>();
+	public static final Map<RegistryKey<World>, Pair<DimensionType, ChunkGeneratorFactory>> FABRIC_DIM_MAP = new LinkedHashMap<>();
 
 	/**
 	 * The entity currently being transported to another dimension.
@@ -123,7 +124,7 @@ public final class FabricDimensionInternals {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Entity> E changeDimension(E teleported, RegistryKey<DimensionType> dimension, EntityPlacer placement) {
+	public static <E extends Entity> E changeDimension(E teleported, RegistryKey<World> dimension, EntityPlacer placement) {
 		assert !teleported.world.isClient : "Entities can only be teleported on the server side";
 		assert Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread() : "Entities must be teleported from the main server thread";
 
@@ -135,8 +136,8 @@ public final class FabricDimensionInternals {
 		}
 	}
 
-	public static void setupWorlds(LinkedHashMap<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGenerator>> map, long seed) {
-		for (Map.Entry<RegistryKey<DimensionType>, Pair<DimensionType, ChunkGeneratorFactory>> entry : FabricDimensionInternals.FABRIC_DIM_MAP.entrySet()) {
+	public static void setupWorlds(LinkedHashMap<RegistryKey<World>, Pair<DimensionType, ChunkGenerator>> map, long seed) {
+		for (Map.Entry<RegistryKey<World>, Pair<DimensionType, ChunkGeneratorFactory>> entry : FabricDimensionInternals.FABRIC_DIM_MAP.entrySet()) {
 			if (map.containsKey(entry.getKey())) {
 				throw new RuntimeException("Duplicate dimension id");
 			}

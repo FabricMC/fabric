@@ -13,6 +13,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 import net.minecraft.util.Identifier;
@@ -26,14 +27,14 @@ import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
 public class FabricDimensionTest implements ModInitializer {
-	private static RegistryKey<DimensionType> dimensionRegistryKey;
+	private static RegistryKey<World> dimensionRegistryKey;
 
 	@Override
 	public void onInitialize() {
-		dimensionRegistryKey = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier("fabric_dimension", "test"));
+		dimensionRegistryKey = RegistryKey.of(Registry.DIMENSION, new Identifier("fabric_dimension", "test"));
 
 		FabricDimensionType.builder()
-				.chunkGenerator(seed -> new SurfaceChunkGenerator(new VanillaLayeredBiomeSource(seed, false, false), seed, ChunkGeneratorType.Preset.OVERWORLD.getChunkGeneratorType()))
+				.chunkGenerator(seed -> new SurfaceChunkGenerator(new VanillaLayeredBiomeSource(seed / 2, false, false), seed / 2, ChunkGeneratorType.Preset.OVERWORLD.getChunkGeneratorType()))
 				.defaultPlacer(FabricDimensionTest::placeEntity)
 				.buildAndRegister(dimensionRegistryKey);
 
@@ -49,7 +50,7 @@ public class FabricDimensionTest implements ModInitializer {
 		if (!serverWorld.method_27983().equals(dimensionRegistryKey)) {
 			FabricDimensions.teleport(serverPlayerEntity, dimensionRegistryKey, FabricDimensionTest::placeEntity);
 		} else {
-			FabricDimensions.teleport(serverPlayerEntity, DimensionType.OVERWORLD_REGISTRY_KEY, FabricDimensionTest::placeEntity);
+			FabricDimensions.teleport(serverPlayerEntity, World.field_25179, FabricDimensionTest::placeEntity);
 		}
 
 		return 1;

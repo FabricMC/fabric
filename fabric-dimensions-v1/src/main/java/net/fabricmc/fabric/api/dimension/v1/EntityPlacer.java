@@ -32,7 +32,7 @@ import net.minecraft.util.math.Direction;
 public interface EntityPlacer {
 	/**
 	 * Handles the placement of an entity going to a dimension.
-	 * Utilized by {@link FabricDimensions#teleport(Entity, net.minecraft.world.dimension.DimensionType, EntityPlacer)} to specify placement logic when needed.
+	 * Utilized by {@link FabricDimensions#teleport(Entity, net.minecraft.util.registry.RegistryKey, EntityPlacer)} to specify placement logic when needed.
 	 *
 	 * <p>This method may have side effects such as the creation of a portal in the target dimension,
 	 * or the creation of a chunk loading ticket.
