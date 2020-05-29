@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.BiMap;
@@ -41,6 +42,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Int2ObjectBiMap;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
 
@@ -60,6 +62,8 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	protected Int2ObjectBiMap<T> indexedEntries;
 	@Shadow
 	protected BiMap<Identifier, T> entriesById;
+	@Shadow
+	protected BiMap<RegistryKey<T>, T> entriesByKey;
 	@Shadow
 	private int nextId;
 	@Unique
@@ -286,6 +290,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 			// note: indexedEntries cannot be safely remove()d from
 			entriesById.keySet().removeAll(droppedIds);
+			entriesByKey.keySet().removeIf(registryKey -> droppedIds.contains(registryKey.getValue()));
 
 			break;
 		}
@@ -353,7 +358,14 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			}
 
 			entriesById.clear();
+			entriesByKey.clear();
+
 			entriesById.putAll(fabric_prevEntries);
+
+			for (Map.Entry<Identifier, T> entry : fabric_prevEntries.entrySet()) {
+				//noinspection unchecked
+				entriesByKey.put(RegistryKey.of(RegistryKey.ofRegistry(((Registry) Registry.REGISTRIES).getId(this)), entry.getKey()), entry.getValue());
+			}
 
 			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
 

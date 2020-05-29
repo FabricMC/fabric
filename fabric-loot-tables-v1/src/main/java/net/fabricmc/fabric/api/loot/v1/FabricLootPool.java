@@ -20,7 +20,7 @@ import java.util.List;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTableRange;
-import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.class_5341;
 import net.minecraft.loot.entry.LootEntry;
 import net.minecraft.loot.function.LootFunction;
 
@@ -34,7 +34,7 @@ public interface FabricLootPool {
 	}
 
 	List<LootEntry> getEntries();
-	List<LootCondition> getConditions();
+	List<class_5341> getConditions();
 	List<LootFunction> getFunctions();
 	LootTableRange getRolls();
 }

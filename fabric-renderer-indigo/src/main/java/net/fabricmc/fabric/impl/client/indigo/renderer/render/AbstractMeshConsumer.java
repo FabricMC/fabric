@@ -29,7 +29,6 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshImpl;
@@ -58,7 +57,6 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 		@Override
 		public Maker emit() {
 			lightFace(GeometryHelper.lightFace(this));
-			ColorHelper.applyDiffuseShading(this, false);
 			renderQuad(this);
 			clear();
 			return this;
@@ -69,7 +67,7 @@ public abstract class AbstractMeshConsumer extends AbstractQuadRenderer implemen
 
 	@Override
 	public void accept(Mesh mesh) {
-		MeshImpl m = (MeshImpl) mesh;
+		final MeshImpl m = (MeshImpl) mesh;
 		final int[] data = m.data();
 		final int limit = data.length;
 		int index = 0;

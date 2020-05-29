@@ -16,9 +16,9 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
+import net.minecraft.class_5341;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTableRange;
-import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootEntry;
 import net.minecraft.loot.function.LootFunction;
 
@@ -46,7 +46,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	}
 
 	@Override
-	public FabricLootPoolBuilder conditionally(LootCondition.Builder condition) {
+	public FabricLootPoolBuilder conditionally(class_5341.Builder condition) {
 		super.conditionally(condition);
 		return this;
 	}
@@ -62,7 +62,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 		return this;
 	}
 
-	public FabricLootPoolBuilder withCondition(LootCondition condition) {
+	public FabricLootPoolBuilder withCondition(class_5341 condition) {
 		extended.getConditions().add(condition);
 		return this;
 	}
