@@ -16,24 +16,25 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourcePackManager;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
 
-@Mixin(MinecraftClient.class)
-public class MixinMinecraftGame {
-	@Inject(method = "reloadResources", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ReloadableResourceManager;beginMonitoredReload(Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;Ljava/util/concurrent/CompletableFuture;Ljava/util/List;)Lnet/minecraft/resource/ResourceReloadMonitor;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void reloadResources(CallbackInfoReturnable<CompletableFuture> info, CompletableFuture<java.lang.Void> cf, List<ResourcePack> list) {
+@Mixin(ResourcePackManager.class)
+public class MixinResourcePackManager {
+	@Inject(method = "method_29211", at = @At("RETURN"), cancellable = true)
+	public void method_29211(CallbackInfoReturnable<List<ResourcePack>> infoReturnable) {
+		List<ResourcePack> list = new ArrayList<>(infoReturnable.getReturnValue());
 		ModResourcePackUtil.modifyResourcePackList(list);
+		infoReturnable.setReturnValue(list);
 	}
 }

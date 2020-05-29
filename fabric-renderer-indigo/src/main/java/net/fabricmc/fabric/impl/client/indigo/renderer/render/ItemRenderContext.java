@@ -106,7 +106,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		this.transformMode = transformMode;
 		this.vanillaHandler = vanillaHandler;
 		quadBlendMode = BlendMode.DEFAULT;
-		modelVertexConsumer = selectVertexConsumer(RenderLayers.getItemLayer(itemStack));
+		modelVertexConsumer = selectVertexConsumer(RenderLayers.getItemLayer(itemStack, transformMode != ModelTransformation.Mode.GROUND));
 
 		matrixStack.push();
 		((BakedModel) model).getTransformation().getTransformation(transformMode).apply(invert, matrixStack);

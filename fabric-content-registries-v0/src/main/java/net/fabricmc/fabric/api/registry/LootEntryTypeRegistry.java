@@ -29,5 +29,5 @@ public interface LootEntryTypeRegistry {
 	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 
 	@Deprecated
-	void register(LootEntry.Serializer<?> serializer);
+	void register(LootEntry.class_5337<?> serializer);
 }
