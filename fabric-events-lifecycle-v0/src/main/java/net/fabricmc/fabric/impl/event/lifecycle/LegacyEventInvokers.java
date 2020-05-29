@@ -30,6 +30,7 @@ public class LegacyEventInvokers implements ModInitializer {
 		ServerLifecycleEvents.SERVER_START.register(server -> ServerStartCallback.EVENT.invoker().onStartServer(server));
 		ServerLifecycleEvents.SERVER_STOPPING.register(server -> ServerStopCallback.EVENT.invoker().onStopServer(server));
 		ServerLifecycleEvents.SERVER_TICK.register(server -> ServerTickCallback.EVENT.invoker().tick(server));
+		// Tick old events on ServerWorld
 		ServerLifecycleEvents.WORLD_TICK.register(world -> WorldTickCallback.EVENT.invoker().tick(world));
 	}
 }

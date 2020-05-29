@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.client;
+package net.fabricmc.fabric.api.client.item.v1;
 
 import java.util.List;
 
@@ -22,21 +22,19 @@ import net.minecraft.client.item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-/**
- * @deprecated Please use {@link net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback}
- */
-@Deprecated
+@Environment(EnvType.CLIENT)
 public interface ItemTooltipCallback {
 	/**
 	 * Fired after the game has appended all base tooltip lines to the list.
 	 */
-	@Deprecated
-	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, (listeners) -> (stack, tooltipContext, lines) -> {
-		for (ItemTooltipCallback callback : listeners) {
-			callback.getTooltip(stack, tooltipContext, lines);
+	Event<ItemTooltipCallback> EVENT = EventFactory.createArrayBacked(ItemTooltipCallback.class, callbacks -> (stack, context, lines) -> {
+		for (ItemTooltipCallback callback : callbacks) {
+			callback.getTooltip(stack, context, lines);
 		}
 	});
 
@@ -46,5 +44,5 @@ public interface ItemTooltipCallback {
 	 *
 	 * @param lines the list containing the lines of text displayed on the stack's tooltip
 	 */
-	void getTooltip(ItemStack stack, TooltipContext tooltipContext, List<Text> lines);
+	void getTooltip(ItemStack stack, TooltipContext context, List<Text> lines);
 }
