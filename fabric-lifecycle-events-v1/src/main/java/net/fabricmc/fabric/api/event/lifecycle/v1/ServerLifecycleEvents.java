@@ -28,6 +28,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.chunk.ChunkLoadCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.chunk.ChunkUnloadCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.entity.EntityLoadCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.world.WorldTickCallback;
+import net.fabricmc.fabric.impl.lifecycle.ServerLifecycleInternals;
 
 public final class ServerLifecycleEvents {
 	private ServerLifecycleEvents() {
@@ -215,4 +216,31 @@ public final class ServerLifecycleEvents {
 			callback.onChangeLifecycle(server);
 		}
 	});
+
+	/**
+	 * Gets the currently running server.
+	 *
+	 * <p>The server instance returned SHOULD NOT be cached! Call the method every time you need the server.
+	 *
+	 * @return the currently running server
+	 * @throws IllegalStateException if the server is not available
+	 */
+	public static MinecraftServer getCurrentServer() {
+		final MinecraftServer server = ServerLifecycleInternals.getServer();
+
+		if (server != null) {
+			return server;
+		}
+
+		throw new IllegalStateException("Server was not available");
+	}
+
+	/**
+	 * Checks if the current server is available. The server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to
+	 *
+	 * @return true if the server is available.
+	 */
+	public static boolean isServerAvailable() {
+		return ServerLifecycleInternals.getServer() != null;
+	}
 }

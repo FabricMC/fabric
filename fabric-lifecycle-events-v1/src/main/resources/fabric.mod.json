@@ -18,6 +18,14 @@
   "mixins": [
     "fabric-lifecycle-events-v1.mixins.json"
   ],
+  "entrypoints": {
+    "client": [
+      "net.fabricmc.fabric.impl.lifecycle.client.IntegratedServerLifecycleInternals"
+    ],
+    "server": [
+      "net.fabricmc.fabric.impl.lifecycle.DedicatedServerLifecycleInternals"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
