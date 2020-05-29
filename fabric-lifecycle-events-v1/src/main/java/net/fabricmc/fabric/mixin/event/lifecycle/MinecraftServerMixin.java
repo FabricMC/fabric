@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public abstract class MinecraftServerMixin {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V", ordinal = 0), method = "run")
 	private void afterSetupServer(CallbackInfo info) {
-		ServerLifecycleEvents.SERVER_START.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
+		ServerLifecycleEvents.SERVER_STARTED.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At("HEAD"), method = "shutdown")

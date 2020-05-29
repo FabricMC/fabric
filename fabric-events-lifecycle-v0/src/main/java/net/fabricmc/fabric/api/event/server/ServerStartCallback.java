@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Deprecated
 public interface ServerStartCallback {
 	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents#SERVER_START}
+	 * @deprecated Please use {@link net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents#SERVER_STARTED}
 	 */
 	@Deprecated
 	Event<ServerStartCallback> EVENT = EventFactory.createArrayBacked(ServerStartCallback.class,

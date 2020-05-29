@@ -192,7 +192,7 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called when the server has started. At this stage, all worlds are live.
 	 */
-	public static final Event<ServerLifecycleCallback> SERVER_START = EventFactory.createArrayBacked(ServerLifecycleCallback.class, (callbacks) -> (server) -> {
+	public static final Event<ServerLifecycleCallback> SERVER_STARTED = EventFactory.createArrayBacked(ServerLifecycleCallback.class, (callbacks) -> (server) -> {
 		for (ServerLifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}

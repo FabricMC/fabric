@@ -30,7 +30,7 @@ public class ServerLifecycleTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerLifecycleEvents.SERVER_START.register(server -> {
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			LOGGER.info("Started Server!");
 		});
 
