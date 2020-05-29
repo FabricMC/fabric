@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.client.rendering;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.util.math.MatrixStack;
@@ -28,7 +29,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-	@Inject(method = "render", at = @At(value = "RETURN", shift = At.Shift.BY, by = -6))
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;color4f(FFFF)V"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/PlayerListHud;render(Lnet/minecraft/client/util/math/MatrixStack;ILnet/minecraft/scoreboard/Scoreboard;Lnet/minecraft/scoreboard/ScoreboardObjective;)V")))
 	public void render(MatrixStack matrixStack, float tickDelta, CallbackInfo callbackInfo) {
 		HudRenderCallback.EVENT.invoker().onHudRender(matrixStack, tickDelta);
 	}

@@ -25,14 +25,16 @@ import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.util.math.Matrix4f;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix3f;
+import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
+import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
 /**
@@ -139,7 +141,9 @@ public abstract class AbstractQuadRenderer {
 	/** for non-emissive mesh quads and all fallback quads with flat lighting. */
 	protected void tesselateFlat(MutableQuadViewImpl quad, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
-		final int brightness = ColorHelper.multiplyRGB(flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos), blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade()));
+		shadeFlatQuad(quad);
+
+		final int brightness = flatBrightness(quad, blockInfo.blockState, blockInfo.blockPos);
 
 		for (int i = 0; i < 4; i++) {
 			quad.lightmap(i, ColorHelper.maxBrightness(quad.lightmap(i), brightness));
@@ -151,6 +155,7 @@ public abstract class AbstractQuadRenderer {
 	/** for emissive mesh quads with flat lighting. */
 	protected void tesselateFlatEmissive(MutableQuadViewImpl quad, RenderLayer renderLayer, int blockColorIndex) {
 		colorizeQuad(quad, blockColorIndex);
+		shadeFlatQuad(quad);
 
 		for (int i = 0; i < 4; i++) {
 			quad.lightmap(i, FULL_BRIGHTNESS);
@@ -174,5 +179,69 @@ public abstract class AbstractQuadRenderer {
 
 		// Unfortunately cannot use brightness cache here unless we implement one specifically for flat lighting. See #329
 		return WorldRenderer.getLightmapCoordinates(blockInfo.blockView, blockState, mpos);
+	}
+
+	/**
+	 * Starting in 1.16 flat shading uses dimension-specific diffuse factors that can be < 1.0
+	 * even for un-shaded quads. These are also applied with AO shading but that is done in AO calculator.
+	 */
+	private void shadeFlatQuad(MutableQuadViewImpl quad) {
+		if ((quad.geometryFlags() & GeometryHelper.AXIS_ALIGNED_FLAG) == 0 || quad.hasVertexNormals()) {
+			// Quads that aren't direction-aligned or that have vertex normals need to be shaded
+			// using interpolation - vanilla can't handle them. Generally only applies to modded models.
+			final float faceShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
+
+			for (int i = 0; i < 4; i++) {
+				quad.spriteColor(i, 0, ColorHelper.multiplyRGB(quad.spriteColor(i, 0), vertexShade(quad, i, faceShade)));
+			}
+		} else {
+			final float diffuseShade = blockInfo.blockView.getBrightness(quad.lightFace(), quad.hasShade());
+
+			if (diffuseShade != 1.0f) {
+				for (int i = 0; i < 4; i++) {
+					quad.spriteColor(i, 0, ColorHelper.multiplyRGB(quad.spriteColor(i, 0), diffuseShade));
+				}
+			}
+		}
+	}
+
+	private float vertexShade(MutableQuadViewImpl quad, int vertexIndex, float faceShade) {
+		return quad.hasNormal(vertexIndex) ? normalShade(quad.normalX(vertexIndex), quad.normalY(vertexIndex), quad.normalZ(vertexIndex), quad.hasShade()) : faceShade;
+	}
+
+	/**
+	 * Finds mean of per-face shading factors weighted by normal components.
+	 * Not how light actually works but the vanilla diffuse shading model is a hack to start with
+	 * and this gives reasonable results for non-cubic surfaces in a vanilla-style renderer.
+	 */
+	private float normalShade(float normalX, float normalY, float normalZ, boolean hasShade) {
+		float sum = 0;
+		float div = 0;
+
+		if (normalX > 0) {
+			sum += normalX * blockInfo.blockView.getBrightness(Direction.EAST, hasShade);
+			div += normalX;
+		} else if (normalX < 0) {
+			sum += -normalX * blockInfo.blockView.getBrightness(Direction.WEST, hasShade);
+			div -= normalX;
+		}
+
+		if (normalY > 0) {
+			sum += normalY * blockInfo.blockView.getBrightness(Direction.UP, hasShade);
+			div += normalY;
+		} else if (normalY < 0) {
+			sum += -normalY * blockInfo.blockView.getBrightness(Direction.DOWN, hasShade);
+			div -= normalY;
+		}
+
+		if (normalZ > 0) {
+			sum += normalZ * blockInfo.blockView.getBrightness(Direction.SOUTH, hasShade);
+			div += normalZ;
+		} else if (normalZ < 0) {
+			sum += -normalZ * blockInfo.blockView.getBrightness(Direction.NORTH, hasShade);
+			div -= normalZ;
+		}
+
+		return sum / div;
 	}
 }
