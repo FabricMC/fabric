@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.class_5341;
 import net.minecraft.loot.entry.LootEntry;
 import net.minecraft.loot.function.LootFunction;
 
@@ -31,7 +31,7 @@ public interface LootPoolBuilderHooks {
 	@Accessor
 	List<LootEntry> getEntries();
 	@Accessor
-	List<LootCondition> getConditions();
+	List<class_5341> getConditions();
 	@Accessor
 	List<LootFunction> getFunctions();
 }

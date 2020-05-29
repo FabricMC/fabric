@@ -121,7 +121,7 @@ public class MixinLevelStorageSession {
 	}
 
 	@Inject(method = "method_27426", at = @At("HEAD"))
-	public void saveWorld(SaveProperties levelProperties, CompoundTag compoundTag, CallbackInfo info) {
+	public void saveWorld(SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!Files.exists(directory)) {
 			return;
 		}

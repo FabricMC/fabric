@@ -26,7 +26,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTableRange;
-import net.minecraft.loot.condition.LootCondition;
+import net.minecraft.class_5341;
 import net.minecraft.loot.entry.LootEntry;
 import net.minecraft.loot.function.LootFunction;
 
@@ -40,7 +40,7 @@ public abstract class MixinLootPool implements FabricLootPool {
 
 	@Shadow
 	@Final
-	private LootCondition[] conditions;
+	private class_5341[] conditions;
 
 	@Shadow
 	@Final
@@ -52,7 +52,7 @@ public abstract class MixinLootPool implements FabricLootPool {
 	}
 
 	@Override
-	public List<LootCondition> getConditions() {
+	public List<class_5341> getConditions() {
 		return Arrays.asList(conditions);
 	}
 
