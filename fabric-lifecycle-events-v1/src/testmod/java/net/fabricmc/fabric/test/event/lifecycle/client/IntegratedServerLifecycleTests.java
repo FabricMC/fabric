@@ -10,6 +10,7 @@ public class IntegratedServerLifecycleTests implements ClientModInitializer {
 		try {
 			ServerLifecycleEvents.getCurrentServer();
 		} catch (IllegalStateException ignored) {
+			// Do nothing, this is intended
 		}
 	}
 }
