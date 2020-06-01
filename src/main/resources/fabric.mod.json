@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.7.1",
+    "fabricloader": ">=0.8.2",
     "minecraft": "~1.15-alpha.19.42.a"
   },
   "description": "Core API module providing key hooks and intercompatibility features."
