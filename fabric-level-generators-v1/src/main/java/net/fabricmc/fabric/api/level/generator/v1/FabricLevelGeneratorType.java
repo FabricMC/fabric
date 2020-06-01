@@ -58,7 +58,7 @@ public abstract class FabricLevelGeneratorType extends LevelGeneratorType {
 	 * @return {@link Screen} that is opened when customize {@link ButtonWidget} is clicked
 	 */
 	@Environment(EnvType.CLIENT)
-	public Screen customizationScreen(CreateWorldScreen parent) {
-		throw new RuntimeException("Not implemented");
+	public Screen getCustomizationScreen(CreateWorldScreen parent) {
+		throw new UnsupportedOperationException("Not implemented");
 	}
 }

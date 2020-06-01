@@ -31,7 +31,7 @@ public class MixinLevelGeneratorType {
 	private String name;
 
 	@Redirect(method = "getTranslationKey", at = @At(value = "FIELD", target = "Lnet/minecraft/world/level/LevelGeneratorType;name:Ljava/lang/String;"))
-	String replaceColonWithPeriod(LevelGeneratorType levelGeneratorType) {
+	private String replaceColonWithPeriod(LevelGeneratorType levelGeneratorType) {
 		return name.replace(':', '.');
 	}
 }

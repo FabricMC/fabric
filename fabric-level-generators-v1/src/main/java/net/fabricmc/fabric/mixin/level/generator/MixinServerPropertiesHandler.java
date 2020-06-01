@@ -37,7 +37,7 @@ public abstract class MixinServerPropertiesHandler extends AbstractPropertiesHan
 	private static final Logger LOGGER = LogManager.getLogger();
 	private Identifier fabricLevelType;
 
-	public MixinServerPropertiesHandler(Properties properties) {
+	private MixinServerPropertiesHandler(Properties properties) {
 		super(properties);
 	}
 

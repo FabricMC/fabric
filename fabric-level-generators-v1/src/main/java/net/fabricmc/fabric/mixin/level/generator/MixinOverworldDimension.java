@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.level.generator.v1.FabricLevelGeneratorType;
 
 @Mixin(OverworldDimension.class)
 public abstract class MixinOverworldDimension extends Dimension {
-	public MixinOverworldDimension(World world, DimensionType type) {
+	private MixinOverworldDimension(World world, DimensionType type) {
 		super(world, type, 0);
 	}
 

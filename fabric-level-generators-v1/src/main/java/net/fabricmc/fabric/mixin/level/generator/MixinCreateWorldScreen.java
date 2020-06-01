@@ -28,27 +28,24 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.text.Text;
 import net.minecraft.world.level.LevelGeneratorType;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.level.generator.v1.FabricLevelGeneratorType;
 
-@Environment(EnvType.CLIENT)
 @Mixin(CreateWorldScreen.class)
 public class MixinCreateWorldScreen extends Screen {
 	@Shadow
 	private int generatorType;
 
-	protected MixinCreateWorldScreen(Text title) {
+	private MixinCreateWorldScreen(Text title) {
 		super(title);
 	}
 
 	@Inject(method = "method_19926", at = @At("HEAD"))
-	void customizeLevelGeneratorType(ButtonWidget buttonWidget, CallbackInfo ci) {
+	private void customizeLevelGeneratorType(ButtonWidget buttonWidget, CallbackInfo ci) {
 		LevelGeneratorType levelGeneratorType = LevelGeneratorType.TYPES[generatorType];
 
 		if (levelGeneratorType instanceof FabricLevelGeneratorType && levelGeneratorType.isCustomizable()) {
 			//noinspection ConstantConditions
-			minecraft.openScreen(((FabricLevelGeneratorType) levelGeneratorType).customizationScreen((CreateWorldScreen) (Object) this));
+			minecraft.openScreen(((FabricLevelGeneratorType) levelGeneratorType).getCustomizationScreen((CreateWorldScreen) (Object) this));
 		}
 	}
 }
