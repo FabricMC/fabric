@@ -12,6 +12,7 @@ import net.fabricmc.fabric.api.fluids.v1.minecraft.properties.CustomPotionColorP
 import net.fabricmc.fabric.api.fluids.v1.minecraft.properties.CustomPotionEffectsFluidProperty;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.properties.PotionFluidProperty;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.properties.SuspiciousStewEffectsProperty;
+import net.fabricmc.fabric.api.util.NbtIdentifier;
 import net.fabricmc.fabric.api.util.NbtType;
 
 public class FluidPropertyMerger {

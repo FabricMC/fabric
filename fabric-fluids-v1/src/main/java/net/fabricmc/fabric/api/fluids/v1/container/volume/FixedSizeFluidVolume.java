@@ -3,6 +3,7 @@ package net.fabricmc.fabric.api.fluids.v1.container.volume;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
 import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
 
@@ -33,13 +34,13 @@ public class FixedSizeFluidVolume extends SimpleFluidVolume {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume volume, boolean simulate) {
+	public FluidVolume add(FluidVolume volume, Action action) {
 		Identifier fluidA = volume.fluid();
 
 		if (FluidIds.miscible(fluidA, this.fluid)) {
 			long amount = Math.min(volume.amount(), this.size - this.amount);
 
-			if (!simulate) {
+			if (action.perform()) {
 				this.data = FluidPropertyMerger.INSTANCE.merge(this.fluid, this.data(), this.amount(), volume.data(), amount);
 				this.amount += amount;
 				this.fluid = volume.fluid();

@@ -4,6 +4,7 @@ import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
@@ -38,7 +39,7 @@ public class CowFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, boolean simulate) {
+	public FluidVolume drain(Identifier fluid, long amount, Action action) {
 		if (fluid == null || fluid.equals(FluidIds.MILK)) {
 			return new SimpleFluidVolume(FluidIds.MILK, amount);
 		}
@@ -47,7 +48,7 @@ public class CowFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume container, boolean simulate) {
+	public FluidVolume add(FluidVolume container, Action action) {
 		return container;
 	}
 

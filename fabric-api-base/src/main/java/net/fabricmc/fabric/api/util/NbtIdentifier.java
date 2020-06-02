@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.fluids.v1.properties;
+package net.fabricmc.fabric.api.util;
 
 public final class NbtIdentifier {
 	public final int type;
@@ -9,12 +9,12 @@ public final class NbtIdentifier {
 	 * @deprecated for minecraft namespaces only!
 	 */
 	@Deprecated
-	@SuppressWarnings ("DeprecatedIsStillUsed")
 	public NbtIdentifier(String val, int type) {
 		this(val, "minecraft", type);
 	}
 
 	public NbtIdentifier(String namespace, String path, int type) {
+		if (type < 0 || type > NbtType.LONG_ARRAY) throw new IllegalArgumentException("Invalid NBT type: " + type);
 		this.type = type;
 		this.namespace = namespace;
 		this.path = path;

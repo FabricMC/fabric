@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.access.fluids.BucketItemAccess;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
@@ -41,12 +42,12 @@ public class BucketItemFluidContainer extends UnitItemFluidContainer {
 	}
 
 	@Override
-	protected void addFilled(ItemSink sink, Identifier fluid, int items, boolean simulate) {
+	protected void addFilled(ItemSink sink, Identifier fluid, int items, Action action) {
 		if (this.stack.getItem() == Items.BUCKET) {
 			if (fluid.equals(FluidIds.MILK)) {
-				sink.push(new ItemStack(Items.MILK_BUCKET, items), simulate);
+				sink.push(new ItemStack(Items.MILK_BUCKET, items), action);
 			} else {
-				sink.push(new ItemStack(FluidIds.forId(fluid).getBucketItem(), items), simulate);
+				sink.push(new ItemStack(FluidIds.forId(fluid).getBucketItem(), items), action);
 			}
 
 			return;

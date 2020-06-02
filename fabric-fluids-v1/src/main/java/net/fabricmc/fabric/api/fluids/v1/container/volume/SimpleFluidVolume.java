@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
 import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
@@ -46,12 +47,12 @@ public class SimpleFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, boolean simulate) {
+	public FluidVolume drain(Identifier fluid, long amount, Action action) {
 		if (FluidIds.miscible(this.fluid, fluid)) {
 			amount = Drops.floor(Math.min(amount, this.amount), 1);
 			fluid = this.fluid;
 
-			if (!simulate) {
+			if (action.perform()) {
 				this.amount -= amount;
 				this.updateEmpty();
 				this.update();
@@ -64,11 +65,11 @@ public class SimpleFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume volume, boolean simulate) {
+	public FluidVolume add(FluidVolume volume, Action simulate) {
 		Identifier fluidA = volume.fluid();
 
 		if (FluidIds.miscible(fluidA, this.fluid)) {
-			if (!simulate) {
+			if (simulate.perform()) {
 				this.data = FluidPropertyMerger.INSTANCE.merge(this.fluid, this.data(), this.amount(), volume.data(), volume.amount());
 				this.amount += volume.amount();
 				this.fluid = volume.fluid();

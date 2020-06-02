@@ -7,7 +7,9 @@ import com.google.common.collect.Iterables;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
+import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
 
 public class SimpleFluidContainer implements FluidContainer {
@@ -22,12 +24,14 @@ public class SimpleFluidContainer implements FluidContainer {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, boolean simulate) {
+	public FluidVolume drain(Identifier fluid, long amount, Action simulate) {
 		FluidVolume current = new SimpleFluidVolume();
 
 		for (FluidContainer container : this.containers) {
-			FluidVolume drained = container.drain(current.isEmpty() ? fluid : current.fluid(), amount, false);
-			current.add(drained, false);
+			FluidVolume drained = container.drain(current.isEmpty() ? fluid : current.fluid(), amount, Action.SIMULATE);
+			if (!current.add(drained, Action.PERFORM).equals(ImmutableFluidVolume.EMPTY)) {
+				container.drain(current.isEmpty() ? fluid : current.fluid(), amount, simulate);
+			}
 			amount -= drained.amount();
 
 			if (amount <= 0) {
@@ -39,9 +43,9 @@ public class SimpleFluidContainer implements FluidContainer {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume volume, boolean simulate) {
+	public FluidVolume add(FluidVolume volume, Action action) {
 		for (FluidContainer container : this.containers) {
-			volume = container.add(volume, simulate);
+			volume = container.add(volume, action);
 
 			if (volume.isEmpty()) {
 				break;

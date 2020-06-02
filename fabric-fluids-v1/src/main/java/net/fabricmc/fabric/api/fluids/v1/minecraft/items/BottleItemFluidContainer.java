@@ -17,6 +17,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
@@ -58,7 +59,7 @@ public class BottleItemFluidContainer extends UnitItemFluidContainer {
 	}
 
 	@Override
-	protected void addFilled(ItemSink sink, Identifier fluid, int items, boolean simulate) {
-		sink.push(new ItemStack(BOTTLES.inverse().get(fluid), items), simulate);
+	protected void addFilled(ItemSink sink, Identifier fluid, int items, Action action) {
+		sink.push(new ItemStack(BOTTLES.inverse().get(fluid), items), action);
 	}
 }

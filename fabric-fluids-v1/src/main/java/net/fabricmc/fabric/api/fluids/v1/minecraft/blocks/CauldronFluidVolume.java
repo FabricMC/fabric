@@ -7,6 +7,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
@@ -35,10 +36,10 @@ public class CauldronFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, boolean simulate) {
+	public FluidVolume drain(Identifier fluid, long amount, Action action) {
 		if (FluidIds.miscible(fluid, FluidIds.WATER)) {
 			amount = Drops.floor(Math.min(amount, this.amount()), FRACTION);
-			long change = this.addAmount(-amount, !simulate);
+			long change = this.addAmount(-amount, action);
 			return new SimpleFluidVolume(FluidIds.WATER, change);
 		}
 
@@ -56,7 +57,7 @@ public class CauldronFluidVolume implements FluidVolume {
 		return 0;
 	}
 
-	private long addAmount(long amount, boolean update) {
+	private long addAmount(long amount, Action action) {
 		amount = Math.min(amount, Drops.getBucket());
 		BlockState state = this.world.getBlockState(this.pos);
 
@@ -65,7 +66,7 @@ public class CauldronFluidVolume implements FluidVolume {
 			int newLevel = (int) (level + (amount / Drops.getBucket()));
 
 			if (newLevel <= 0) {
-				if (level != 0 && update) {
+				if (level != 0 && action.perform()) {
 					this.world.setBlockState(this.pos, state.with(CauldronBlock.LEVEL, 0));
 				}
 
@@ -74,7 +75,7 @@ public class CauldronFluidVolume implements FluidVolume {
 				newLevel = MAX_LEVEL;
 			}
 
-			if (newLevel != level && update) {
+			if (newLevel != level && action.perform()) {
 				this.world.setBlockState(this.pos, state.with(CauldronBlock.LEVEL, newLevel));
 			}
 
@@ -84,10 +85,10 @@ public class CauldronFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume container, boolean simulate) {
+	public FluidVolume add(FluidVolume container, Action action) {
 		if (container.fluid().equals(FluidIds.WATER)) {
 			long amount = Drops.floor(Math.min(container.amount(), Drops.getBucket()), container.amount());
-			long change = this.addAmount(amount, !simulate);
+			long change = this.addAmount(amount, action);
 			return new SimpleFluidVolume(container.fluid(), amount - change, container.data());
 		}
 

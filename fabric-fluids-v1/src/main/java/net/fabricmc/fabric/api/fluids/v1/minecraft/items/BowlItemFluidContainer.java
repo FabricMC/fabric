@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
@@ -39,9 +40,9 @@ public class BowlItemFluidContainer extends UnitItemFluidContainer {
 	}
 
 	@Override
-	protected void addFilled(ItemSink sink, Identifier fluid, int items, boolean simulate) {
-		if (fluid == FluidIds.MUSHROOM_STEW) sink.push(new ItemStack(Items.MUSHROOM_STEW, items), simulate);
-		if (fluid == FluidIds.SUSPICIOUS_STEW) sink.push(new ItemStack(Items.SUSPICIOUS_STEW, items), simulate);
-		if (fluid == FluidIds.EMPTY) sink.push(new ItemStack(Items.BOWL, items), simulate);
+	protected void addFilled(ItemSink sink, Identifier fluid, int items, Action action) {
+		if (fluid == FluidIds.MUSHROOM_STEW) sink.push(new ItemStack(Items.MUSHROOM_STEW, items), action);
+		if (fluid == FluidIds.SUSPICIOUS_STEW) sink.push(new ItemStack(Items.SUSPICIOUS_STEW, items), action);
+		if (fluid == FluidIds.EMPTY) sink.push(new ItemStack(Items.BOWL, items), action);
 	}
 }

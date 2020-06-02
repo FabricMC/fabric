@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 
 @Mixin (PlayerInventory.class)
@@ -20,7 +21,7 @@ public abstract class PlayerInventoryMixin implements ItemSink {
 	@Shadow @Final public PlayerEntity player;
 
 	@Override
-	public ItemStack take(ItemStack stack, boolean simulate) {
+	public ItemStack take(ItemStack stack, Action action) {
 		if (stack.isEmpty()) {
 			return stack;
 		}
@@ -42,8 +43,8 @@ public abstract class PlayerInventoryMixin implements ItemSink {
 	}
 
 	@Override
-	public void push(ItemStack stack, boolean simulate) {
-		if (!simulate) {
+	public void push(ItemStack stack, Action action) {
+		if (action.perform()) {
 			this.offerOrDrop(this.player.world, stack);
 		}
 	}

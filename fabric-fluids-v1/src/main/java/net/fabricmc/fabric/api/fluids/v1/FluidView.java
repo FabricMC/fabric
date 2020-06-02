@@ -77,9 +77,9 @@ public class FluidView {
 	 * @param face the face
 	 * @return a fluid container for the face
 	 */
-	public static FluidContainer getContainer(World world, BlockPos pos, Direction face) {
-		FluidContainer container = getBlockContainer(world, pos, face);
-		Iterable<FluidContainer> entities = getEntityContainersIterable(world, pos, face);
+	public static FluidContainer getFluidContainer(World world, BlockPos pos, Direction face) {
+		FluidContainer container = getBlockFluidContainer(world, pos, face);
+		Iterable<FluidContainer> entities = getEntityFluidContainersIterable(world, pos, face);
 
 		if (Iterables.isEmpty(entities)) {
 			return container;
@@ -88,7 +88,7 @@ public class FluidView {
 		if ((container.isImmutable() && container.isEmpty())) {
 			return new SimpleFluidContainer(entities);
 		} else {
-			return new SimpleFluidContainer(Iterables.concat(() -> Iterators.singletonIterator(container), getEntityContainersIterable(world, pos, face)));
+			return new SimpleFluidContainer(Iterables.concat(() -> Iterators.singletonIterator(container), getEntityFluidContainersIterable(world, pos, face)));
 		}
 	}
 
@@ -100,7 +100,7 @@ public class FluidView {
 	 * @param face the face to access
 	 * @return the fluid container
 	 */
-	public static FluidContainer getBlockContainer(World world, BlockPos pos, Direction face) {
+	public static FluidContainer getBlockFluidContainer(World world, BlockPos pos, Direction face) {
 		BlockState state = world.getBlockState(pos);
 		Block block = state.getBlock();
 
@@ -111,7 +111,7 @@ public class FluidView {
 		return ImmutableFluidVolume.EMPTY;
 	}
 
-	public static Iterable<FluidContainer> getEntityContainersIterable(World world, BlockPos pos, Direction face) {
+	public static Iterable<FluidContainer> getEntityFluidContainersIterable(World world, BlockPos pos, Direction face) {
 		List<Entity> entities = world.getEntities((Entity) null, new Box(pos), e -> e instanceof SidedFluidContainer);
 
 		if (entities.isEmpty()) {
@@ -133,7 +133,7 @@ public class FluidView {
 		};
 	}
 
-	public static FluidContainer getEntityContainer(World world, BlockPos pos, Direction face) {
-		return new SimpleFluidContainer(getEntityContainersIterable(world, pos, face));
+	public static FluidContainer getEntityFluidContainer(World world, BlockPos pos, Direction face) {
+		return new SimpleFluidContainer(getEntityFluidContainersIterable(world, pos, face));
 	}
 }

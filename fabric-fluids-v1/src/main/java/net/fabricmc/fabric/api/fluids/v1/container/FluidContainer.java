@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
 
@@ -11,7 +12,7 @@ import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
  * An object that stores fluid, it is assumed that all fluid containers that only hold one fluid fluid Volumes.
  */
 public interface FluidContainer extends Iterable<FluidVolume> {
-	default FluidVolume drain(long amount, boolean simulate) {
+	default FluidVolume drain(long amount, Action simulate) {
 		return this.drain(FluidIds.EMPTY, amount, simulate);
 	}
 
@@ -20,19 +21,19 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 	 *
 	 * @param fluid the specific fluid to drain, or EMPTY for wildcard
 	 * @param amount the amount of fluid in drops
-	 * @param simulate true if the state of the container should not mutate
+	 * @param action the nature of the transaction
 	 * @return the amount of fluid actually drained
 	 */
-	FluidVolume drain(Identifier fluid, long amount, boolean simulate);
+	FluidVolume drain(Identifier fluid, long amount, Action action);
 
 	/**
 	 * add an amount of fluid to the container.
 	 *
 	 * @param container the amount to be added
-	 * @param simulate true if the state of the container should not mutate
+	 * @param action the nature of the transaction
 	 * @return the amount left over
 	 */
-	FluidVolume add(FluidVolume container, boolean simulate);
+	FluidVolume add(FluidVolume container, Action action);
 
 	/**
 	 * @return all the individual fluid volumes that make up this fluid container or `this` if it is a fluid volume

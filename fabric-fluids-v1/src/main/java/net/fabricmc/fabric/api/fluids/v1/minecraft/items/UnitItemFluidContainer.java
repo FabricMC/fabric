@@ -9,6 +9,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
@@ -27,11 +28,11 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, boolean simulate) {
+	public FluidVolume drain(Identifier fluid, long amount, Action action) {
 		if (!EMPTY.equals(this.fluid())) {
 			int items = Math.toIntExact(Math.min(this.stack.getCount(), amount / this.unit()));
 
-			if (!simulate) {
+			if (action.perform()) {
 				this.stack.setCount(this.stack.getCount() - items);
 			}
 
@@ -62,7 +63,7 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 	protected abstract Identifier getFluid();
 
 	@Override
-	public FluidVolume add(FluidVolume container, boolean simulate) {
+	public FluidVolume add(FluidVolume container, Action simulate) {
 		if (this.stack.isEmpty()) {
 			return container;
 		}
@@ -74,7 +75,7 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 			long toAdd = Math.min((this.stack.getMaxCount() - this.stack.getCount()) * this.unit(), Drops.floor(container.amount(), this.unit()));
 
 			if (!this.empty()) {
-				ItemStack consume = this.output.take(new ItemStack(this.consumeOnAdd(), (int) (toAdd / this.unit())), true);
+				ItemStack consume = this.output.take(new ItemStack(this.consumeOnAdd(), (int) (toAdd / this.unit())), Action.SIMULATE);
 				toAdd = Math.min(toAdd, consume.getCount() * this.unit());
 				this.output.take(consume, simulate);
 			} else {
@@ -85,7 +86,7 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 				return container;
 			}
 
-			if (!simulate) {
+			if (simulate.perform()) {
 				this.stack.setCount((int) (this.stack.getCount() + (toAdd / this.unit())));
 				this.stack.setTag(FluidPropertyMerger.INSTANCE.merge(fluid, this.data(), this.stack.getCount() * this.unit(), container.data(), container.amount()));
 			}
@@ -102,7 +103,7 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 	protected abstract Item consumeOnAdd();
 
 	// byproduct of filling (water buckets, water bottles etc.)
-	protected abstract void addFilled(ItemSink sink, Identifier fluid, int items, boolean simulate);
+	protected abstract void addFilled(ItemSink sink, Identifier fluid, int items, Action action);
 
 	@Override
 	public boolean isEmpty() {

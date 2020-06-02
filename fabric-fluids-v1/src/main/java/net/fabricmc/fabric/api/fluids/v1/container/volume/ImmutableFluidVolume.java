@@ -5,6 +5,7 @@ import java.util.Objects;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
 
 public class ImmutableFluidVolume implements FluidVolume {
@@ -29,18 +30,18 @@ public class ImmutableFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, boolean simulate) {
+	public FluidVolume drain(Identifier fluid, long amount, Action action) {
 		return EMPTY;
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume container, boolean simulate) {
+	public FluidVolume add(FluidVolume container, Action action) {
 		return EMPTY;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		return false;
+		return this.amount == 0 || FluidIds.EMPTY.equals(this.fluid);
 	}
 
 	@Override
