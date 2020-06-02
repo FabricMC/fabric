@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.fluids",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "CauldronBlockMixin",
+    "PlayerInventoryMixin",
+    "items.BucketItemMixin",
+    "items.HoneyBottleItemMixin",
+    "items.MilkBucketItemMixin",
+    "items.MushroomStewItem",
+    "items.PotionItemMixin",
+    "items.SuspiciousStewItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
