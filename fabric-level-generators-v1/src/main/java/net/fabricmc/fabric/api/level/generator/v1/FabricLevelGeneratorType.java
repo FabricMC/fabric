@@ -55,10 +55,8 @@ public abstract class FabricLevelGeneratorType extends LevelGeneratorType {
 	/**
 	 * {@link LevelGeneratorType#isCustomizable()} must be true to show {@link ButtonWidget} in {@link CreateWorldScreen}.
 	 *
-	 * @return {@link Screen} that is opened when customize {@link ButtonWidget} is clicked
+	 * @return {@link Screen} that is opened when customize {@link ButtonWidget} is clicked, null if not used
 	 */
 	@Environment(EnvType.CLIENT)
-	public Screen getCustomizationScreen(CreateWorldScreen parent) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
+	public abstract Screen getCustomizationScreen(CreateWorldScreen parent);
 }
