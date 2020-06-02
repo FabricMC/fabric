@@ -7,9 +7,9 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.fluids.containers.FluidContainer;
-import net.fabricmc.fabric.api.fluids.minecraft.blocks.CauldronFluidVolume;
-import net.fabricmc.fabric.api.fluids.world.SidedFluidContainer;
+import net.fabricmc.fabric.api.fluids.v1.container.FluidContainer;
+import net.fabricmc.fabric.api.fluids.v1.minecraft.blocks.CauldronFluidVolume;
+import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
 
 @Mixin (CauldronBlock.class)
 public class CauldronBlockMixin implements SidedFluidContainer {

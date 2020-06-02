@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.fluids.items.ItemSink;
+import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 
 @Mixin (PlayerInventory.class)
 public abstract class PlayerInventoryMixin implements ItemSink {
@@ -27,12 +27,15 @@ public abstract class PlayerInventoryMixin implements ItemSink {
 
 		int i;
 		int count = stack.getCount();
+
 		while ((i = this.getSlot(stack)) != -1) {
 			count -= this.removeStack(i, count).getCount();
+
 			if (count <= 0) {
 				return stack.copy();
 			}
 		}
+
 		ItemStack copy = stack.copy();
 		copy.setCount(stack.getCount() - count);
 		return copy;
