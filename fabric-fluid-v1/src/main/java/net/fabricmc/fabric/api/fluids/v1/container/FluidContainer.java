@@ -14,7 +14,7 @@ import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 public interface FluidContainer extends Iterable<FluidVolume> {
 
 	/**
-	 * drains a wildcard matched fluid
+	 * Drains a wildcard matched fluid
 	 * @param amount the amount to drain
 	 * @param action the nature of the transaction
 	 * @return the fluid drained
@@ -24,7 +24,7 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 	}
 
 	/**
-	 * drain an amount of fluid from the container.
+	 * Drain an amount of fluid from the container.
 	 *
 	 * @param fluid the specific fluid to drain, or EMPTY for wildcard
 	 * @param amount the amount of fluid in drops
@@ -34,7 +34,7 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 	FluidVolume drain(Fluid fluid, long amount, Action action);
 
 	/**
-	 * attempt to drain from all the fluid volumes inside the fluid container and insert it to this container
+	 * Attempt to drain from all the fluid volumes inside the fluid container and insert it to this container
 	 * @param container the container
 	 * @param action the nature of the transaction
 	 */
@@ -45,7 +45,7 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 	}
 
 	/**
-	 * add an amount of fluid to the container, and drain from the one given.
+	 * Add an amount of fluid to the container, and drain from the one given.
 	 *
 	 * @param volume the amount to be added, and drained
 	 * @param action the nature of the transaction

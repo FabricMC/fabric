@@ -19,7 +19,7 @@ import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
 
 /**
- * a container with different fluid containers per face, can be implemented on entities, and blocks (does not check block entities!).
+ * A container with different fluid containers per face, can be implemented on entities, and blocks (does not check block entities!).
  */
 public interface SidedFluidContainer extends FluidFillable, FluidDrainable {
 	@Override
@@ -34,7 +34,7 @@ public interface SidedFluidContainer extends FluidFillable, FluidDrainable {
 	}
 
 	/**
-	 * get the container for the given face.
+	 * Get the container for the given face.
 	 *
 	 * @param world the world
 	 * @param pos the position

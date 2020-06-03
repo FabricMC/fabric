@@ -38,7 +38,7 @@ public class FluidView {
 	}
 
 	/**
-	 * get the fluid container for the given stack.
+	 * Get the fluid container for the given stack.
 	 *
 	 * @param stack the itemstack
 	 * @param sink a place for the item to put it's byproducts into, and take items when being filled
@@ -55,7 +55,7 @@ public class FluidView {
 	}
 
 	/**
-	 * merge all the entity and block containers in the given location for the given face into one fluid container.
+	 * Merge all the entity and block containers in the given location for the given face into one fluid container.
 	 *
 	 * @param world the world
 	 * @param pos the position
@@ -78,7 +78,7 @@ public class FluidView {
 	}
 
 	/**
-	 * get the fluid container for the block at the given location at the given side.
+	 * Get the fluid container for the block at the given location at the given side.
 	 *
 	 * @param world the world
 	 * @param pos the position
