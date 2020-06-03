@@ -10,7 +10,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.FabricBiomeTest"
+      "net.fabricmc.fabric.test.biome.FabricBiomeTest"
     ]
   }
 }

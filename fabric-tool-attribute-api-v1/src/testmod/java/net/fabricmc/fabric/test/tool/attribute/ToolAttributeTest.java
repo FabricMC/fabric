@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.biome.tool.attribute;
+package net.fabricmc.fabric.test.tool.attribute;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

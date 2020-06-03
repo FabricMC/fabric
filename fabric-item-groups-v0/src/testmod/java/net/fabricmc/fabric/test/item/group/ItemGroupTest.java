@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.biome.item.group;
+package net.fabricmc.fabric.test.item.group;
 
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
