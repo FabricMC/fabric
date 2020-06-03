@@ -1,10 +1,10 @@
 {
-  "gamerule.testCardinalDirectionRule": "Random Cardinal Direction",
-  "gamerule.testCardinalDirectionRule.description": "A cardinal direction. Should never be up or down",
-  "gamerule.testCardinalDirectionRule.north": "Northbound",
-  "gamerule.testCardinalDirectionRule.south": "Southbound",
-  "gamerule.testCardinalDirectionRule.east": "Eastbound",
-  "gamerule.testCardinalDirectionRule.west": "Westbound",
+  "gamerule.cardinalDirection": "Random Cardinal Direction",
+  "gamerule.cardinalDirection.description": "A cardinal direction. Should never be up or down",
+  "gamerule.cardinalDirection.north": "Northbound",
+  "gamerule.cardinalDirection.south": "Southbound",
+  "gamerule.cardinalDirection.east": "Eastbound",
+  "gamerule.cardinalDirection.west": "Westbound",
 
   "gamerule.redSleepFailureEnum": "Why I didn't go to bed",
   "gamerule.redSleepFailureEnum.description": "Bed bugs are nasty man.",

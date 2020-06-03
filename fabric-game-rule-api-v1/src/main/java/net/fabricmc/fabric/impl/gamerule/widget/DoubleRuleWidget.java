@@ -20,6 +20,7 @@ import java.util.List;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.class_5348;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
@@ -38,7 +39,7 @@ public class DoubleRuleWidget extends EditGameRulesScreen.AbstractRuleWidget {
 	private final TextFieldWidget textFieldWidget;
 	private final Text name;
 
-	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<Text> description, final String ruleName, DoubleRule rule) {
+	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<class_5348> description, final String ruleName, DoubleRule rule) {
 		gameRuleScreen.super(description);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 		this.name = name;

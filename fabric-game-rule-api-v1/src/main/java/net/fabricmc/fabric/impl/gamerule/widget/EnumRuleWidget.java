@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.class_5348;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -40,7 +41,7 @@ public class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.Abstr
 	private final ButtonWidget buttonWidget;
 	private final String rootTranslationKey;
 
-	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<Text> description, final String ruleName, EnumRule<E> rule, String translationKey) {
+	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<class_5348> description, final String ruleName, EnumRule<E> rule, String translationKey) {
 		gameRuleScreen.super(description);
 
 		// Base translation key needs to be set before the button widget is created.
