@@ -33,7 +33,7 @@ public class FluidShard extends Item implements ItemFluidContainer {
 		return new FluidVolume() {
 			@Override
 			public FluidVolume drain(Fluid fluid, long amount, Action action) {
-				if(FluidView.miscible(fluid, Fluids.WATER)) {
+				if(FluidView.mixable(fluid, Fluids.WATER)) {
 					int count = (int) Math.min(stack.getCount(), Math.min(amount / ONE_THIRD, Integer.MAX_VALUE));
 					if (action.shouldPerform()) {
 						stack.setCount(stack.getCount() - count);

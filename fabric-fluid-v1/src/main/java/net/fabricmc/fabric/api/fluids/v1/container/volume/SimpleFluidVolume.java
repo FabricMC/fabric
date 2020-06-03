@@ -56,7 +56,7 @@ public class SimpleFluidVolume implements FluidVolume {
 
 	@Override
 	public FluidVolume drain(Fluid fluid, long amount, Action action) {
-		if (FluidView.miscible(this.fluid, fluid)) {
+		if (FluidView.mixable(this.fluid, fluid)) {
 			amount = Drops.floor(Math.min(amount, this.amount), 1);
 			fluid = this.fluid;
 
@@ -74,7 +74,7 @@ public class SimpleFluidVolume implements FluidVolume {
 
 	@Override
 	public FluidVolume consume(FluidVolume volume, Action action) {
-		if (FluidView.miscible(volume.getFluid(), this.fluid)) {
+		if (FluidView.mixable(volume.getFluid(), this.fluid)) {
 			if(action.isSimulation()) {
 				volume = volume.simpleCopy();
 			}

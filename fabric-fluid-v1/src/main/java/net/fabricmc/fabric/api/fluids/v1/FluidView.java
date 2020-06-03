@@ -122,7 +122,7 @@ public class FluidView {
 		return new SimpleFluidContainer(getEntityFluidContainersIterable(world, pos, face));
 	}
 
-	public static boolean miscible(Fluid a, Fluid b) {
+	public static boolean mixable(Fluid a, Fluid b) {
 		return Fluids.EMPTY.equals(a) || Fluids.EMPTY.equals(b) || Objects.equals(a, b);
 	}
 

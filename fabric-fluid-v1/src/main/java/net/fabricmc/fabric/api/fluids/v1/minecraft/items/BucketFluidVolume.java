@@ -31,7 +31,7 @@ public class BucketFluidVolume implements FluidVolume {
 	@Override
 	public FluidVolume drain(Fluid fluid, long amount, Action action) {
 		Fluid thisFluid = this.getFluid();
-		if (!Fluids.EMPTY.equals(thisFluid) && FluidView.miscible(thisFluid, fluid)) {
+		if (!Fluids.EMPTY.equals(thisFluid) && FluidView.mixable(thisFluid, fluid)) {
 			int items = Math.toIntExact(Math.min(this.stack.getCount(), amount / getBucket()));
 
 			if (action.shouldPerform()) {
@@ -49,7 +49,7 @@ public class BucketFluidVolume implements FluidVolume {
 	@Override
 	public FluidVolume consume(FluidVolume container, Action action) {
 		Fluid fluid = this.getFluid();
-		if (FluidView.miscible(fluid, container.getFluid())) {
+		if (FluidView.mixable(fluid, container.getFluid())) {
 			int itemCapacity;
 			if (fluid == Fluids.EMPTY) {
 				itemCapacity = this.stack.getCount();

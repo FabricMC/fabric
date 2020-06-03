@@ -28,7 +28,7 @@ public class CauldronFluidVolume implements FluidVolume {
 
 	@Override
 	public FluidVolume drain(Fluid fluid, long amount, Action action) {
-		if (FluidView.miscible(fluid, Fluids.WATER)) {
+		if (FluidView.mixable(fluid, Fluids.WATER)) {
 			amount = Drops.floor(Math.min(amount, this.getAmount()), FRACTION);
 			long change = this.addAmount(-amount, action);
 			return new SimpleFluidVolume(Fluids.WATER, change);
