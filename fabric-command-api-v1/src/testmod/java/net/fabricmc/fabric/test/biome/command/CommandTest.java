@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.command;
+package net.fabricmc.fabric.test.biome.command;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
