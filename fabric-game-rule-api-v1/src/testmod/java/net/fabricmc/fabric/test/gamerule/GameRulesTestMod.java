@@ -45,8 +45,8 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(GameRulesTestMod.class);
 	private static final Direction[] CARDINAL_DIRECTIONS = Arrays.stream(Direction.values()).filter(direction -> direction != Direction.UP && direction != Direction.DOWN).toArray(Direction[]::new);
-	public static final CustomGameRuleCategory GREEN_CATEGORY = CustomGameRuleCategory.of(new Identifier("fabric", "green"), new LiteralText("This One is Green").styled(style -> style.withBold(true).withColor(Formatting.DARK_GREEN)));
-	public static final CustomGameRuleCategory RED_CATEGORY = CustomGameRuleCategory.of(new Identifier("fabric", "red"), new LiteralText("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
+	public static final CustomGameRuleCategory GREEN_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "green"), new LiteralText("This One is Green").styled(style -> style.withBold(true).withColor(Formatting.DARK_GREEN)));
+	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "red"), new LiteralText("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
 
 	// Bounded, Integer, Double and Float rules
 	public static final GameRules.RuleKey<GameRules.IntRule> POSITIVE_ONLY_TEST_INT = register("positiveOnlyTestInteger", GameRules.RuleCategory.UPDATES, RuleFactory.createIntRule(2, 0));

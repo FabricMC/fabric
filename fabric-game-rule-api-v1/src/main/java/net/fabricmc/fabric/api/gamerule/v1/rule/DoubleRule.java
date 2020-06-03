@@ -80,7 +80,7 @@ public class DoubleRule extends GameRules.Rule<DoubleRule> implements Validateab
 
 	@Override
 	public int getCommandResult() {
-		return 0;
+		return Double.compare(this.value, 0.0);
 	}
 
 	@Override

@@ -23,14 +23,10 @@ import net.minecraft.util.Identifier;
  * Utility class for registering GameRule objects with custom categories outside of the categories Minecraft provides.
  */
 public final class CustomGameRuleCategory {
-	public static CustomGameRuleCategory of(Identifier id, Text name) {
-		return new CustomGameRuleCategory(id, name);
-	}
-
 	private final Identifier id;
 	private final Text name;
 
-	private CustomGameRuleCategory(Identifier id, Text name) {
+	public CustomGameRuleCategory(Identifier id, Text name) {
 		this.id = id;
 		this.name = name;
 	}

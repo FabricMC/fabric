@@ -80,7 +80,7 @@ public class FloatRule extends GameRules.Rule<FloatRule> implements Validateable
 
 	@Override
 	public int getCommandResult() {
-		return 0;
+		return Float.compare(this.value, 0.0F);
 	}
 
 	@Override

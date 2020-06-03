@@ -79,7 +79,8 @@ public class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
 
 	@Override
 	public int getCommandResult() {
-		return 0;
+		// For now we are gonna use the ordinal as the command result. Could be changed or set to relate to something else entirely.
+		return this.value.ordinal();
 	}
 
 	@Override
