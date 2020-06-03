@@ -37,4 +37,9 @@ public interface FluidVolume extends FluidContainer {
 	 * @return the amount of fluid currently in the fluid volume.
 	 */
 	long amount();
+
+	@Override
+	default FluidVolume simpleCopy() {
+		return new SimpleFluidVolume(this.fluid(), this.amount(), this.data() == null ? null : this.data().copy());
+	}
 }

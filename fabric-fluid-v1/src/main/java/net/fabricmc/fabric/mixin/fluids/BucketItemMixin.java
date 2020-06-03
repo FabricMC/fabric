@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.fluids.v1.container.FluidContainer;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemFluidContainer;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.items.BucketItemFluidContainer;
+import net.fabricmc.fabric.api.fluids.v1.minecraft.items.BucketFluidVolume;
 import net.fabricmc.fabric.impl.fluids.BucketItemAccessor;
 
 @Mixin (BucketItem.class)
@@ -25,6 +25,6 @@ public class BucketItemMixin implements BucketItemAccessor, ItemFluidContainer {
 
 	@Override
 	public FluidContainer getContainer(ItemSink waste, ItemStack stack) {
-		return new BucketItemFluidContainer(stack, waste);
+		return new BucketFluidVolume(stack, waste);
 	}
 }

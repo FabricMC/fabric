@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-fluid-v1-test",
+  "name": "Fabric Fluid (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-events-lifecycle-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.fluid.FluidTest"
+    ]
+  }
+}

@@ -37,9 +37,9 @@ public class FluidPropertyMerger {
 			Tag bType = bData.get(key);
 
 			if (type(aType) > type(bType)) {
-				merged.put(key, aType.copy());
+				merged.put(key, aType == null ? null : aType.copy());
 			} else if (type(aType) < type(bType)) {
-				merged.put(key, bType.copy());
+				merged.put(key, bType == null ? null : bType.copy());
 			} else {
 				NbtIdentifier identifier = new NbtIdentifier(key, aData.getType(key));
 				Tag add = this.data.getOrDefault(identifier, FluidProperty.DEFAULT).merge(fluid, aType, aAmount, bType, bAmount);

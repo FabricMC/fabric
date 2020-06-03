@@ -4,8 +4,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 
 import net.fabricmc.fabric.Action;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidUtil;
-import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
 
 public class FixedSizeFluidVolume extends SimpleFluidVolume {
 	private final long size;
@@ -34,25 +32,13 @@ public class FixedSizeFluidVolume extends SimpleFluidVolume {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume volume, Action action) {
-		Fluid fluidA = volume.fluid();
-
-		if (FluidUtil.miscible(fluidA, this.fluid)) {
-			long amount = Math.min(volume.amount(), this.size - this.amount);
-
-			if (action.perform()) {
-				this.data = FluidPropertyMerger.INSTANCE.merge(this.fluid, this.data(), this.amount(), volume.data(), amount);
-				this.amount += amount;
-				this.fluid = volume.fluid();
+	public FluidVolume consume(FluidVolume volume, Action action) {
+		return super.consume(new FluidVolumeDelegate(volume) {
+			// middle-man to prevent trying to drain more-than-capacity amount of fluid
+			@Override
+			public FluidVolume drain(Fluid fluid, long amount, Action action) {
+				return super.drain(fluid, Math.min(amount, FixedSizeFluidVolume.this.size - this.amount()), action);
 			}
-
-			if (amount == volume.amount()) {
-				return ImmutableFluidVolume.EMPTY;
-			} else {
-				return new SimpleFluidVolume(this.fluid, volume.amount() - amount, this.data.copy());
-			}
-		}
-
-		return volume;
+		}, action);
 	}
 }

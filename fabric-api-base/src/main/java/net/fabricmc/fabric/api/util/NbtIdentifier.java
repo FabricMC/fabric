@@ -1,16 +1,22 @@
 package net.fabricmc.fabric.api.util;
 
+import java.util.Objects;
+
 public final class NbtIdentifier {
 	public final int type;
 	public final String namespace;
 	public final String path;
 
-	/**
-	 * @deprecated for minecraft namespaces only!
-	 */
-	@Deprecated
 	public NbtIdentifier(String val, int type) {
-		this(val, "minecraft", type);
+		this.type = type;
+		String[] splt = val.split(":");
+		if(splt.length == 1) {
+			this.namespace = "minecraft";
+			this.path = splt[0];
+		} else {
+			this.namespace = splt[0];
+			this.path = splt[1];
+		}
 	}
 
 	public NbtIdentifier(String namespace, String path, int type) {
@@ -22,17 +28,22 @@ public final class NbtIdentifier {
 
 	@Override
 	public int hashCode() {
-		int result = super.hashCode();
-		result = 31 * result + this.type;
+		int result = this.type;
+		result = 31 * result + (this.namespace != null ? this.namespace.hashCode() : 0);
+		result = 31 * result + (this.path != null ? this.path.hashCode() : 0);
 		return result;
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
-		if (o == null || this.getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
+		if (!(o instanceof NbtIdentifier)) return false;
 		NbtIdentifier that = (NbtIdentifier) o;
-		return this.type == that.type;
+		return this.type == that.type && Objects.equals(this.namespace, that.namespace) && Objects.equals(this.path, that.path);
+	}
+
+	@Override
+	public String toString() {
+		return this.namespace + ":" + this.path + " of " + this.type;
 	}
 }

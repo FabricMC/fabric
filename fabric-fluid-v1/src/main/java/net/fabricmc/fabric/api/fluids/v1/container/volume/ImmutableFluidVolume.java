@@ -35,8 +35,8 @@ public class ImmutableFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume container, Action action) {
-		return EMPTY;
+	public FluidVolume consume(FluidVolume container, Action action) {
+		return container;
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class ImmutableFluidVolume implements FluidVolume {
 
 	@Override
 	public CompoundTag data() {
-		return this.tag.copy();
+		return this.tag == null ? null : this.tag.copy();
 	}
 
 	@Override

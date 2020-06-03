@@ -1,7 +1,9 @@
 package net.fabricmc.fabric.api.fluids.v1.container;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 
 import com.google.common.collect.Iterables;
 
@@ -29,7 +31,8 @@ public class SimpleFluidContainer implements FluidContainer {
 
 		for (FluidContainer container : this.containers) {
 			FluidVolume drained = container.drain(current.isEmpty() ? fluid : current.fluid(), amount, Action.SIMULATE);
-			if (!current.add(drained, Action.PERFORM).equals(ImmutableFluidVolume.EMPTY)) {
+			if (!drained.equals(ImmutableFluidVolume.EMPTY)) {
+				current.consume(drained, Action.PERFORM);
 				container.drain(current.isEmpty() ? fluid : current.fluid(), amount, simulate);
 			}
 			amount -= drained.amount();
@@ -43,15 +46,11 @@ public class SimpleFluidContainer implements FluidContainer {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume volume, Action action) {
+	public FluidVolume consume(FluidVolume volume, Action action) {
 		for (FluidContainer container : this.containers) {
-			volume = container.add(volume, action);
-
-			if (volume.isEmpty()) {
-				break;
-			}
+			if (volume.isEmpty()) break;
+			container.consume(volume, action);
 		}
-
 		return volume;
 	}
 
@@ -63,7 +62,6 @@ public class SimpleFluidContainer implements FluidContainer {
 	@Override
 	public boolean isEmpty() {
 		for (FluidContainer container : this.containers) {
-
 			if (!container.isEmpty()) {
 				return false;
 			}
@@ -88,6 +86,15 @@ public class SimpleFluidContainer implements FluidContainer {
 	}
 
 	@Override
+	public FluidContainer simpleCopy() {
+		List<FluidContainer> volumes = new ArrayList<>();
+		for (FluidVolume volume : this) {
+			volumes.add(volume.simpleCopy());
+		}
+		return new SimpleFluidContainer(volumes);
+	}
+
+	@Override
 	public int hashCode() {
 		return this.containers != null ? this.containers.hashCode() : 0;
 	}
@@ -101,4 +108,6 @@ public class SimpleFluidContainer implements FluidContainer {
 
 		return Iterables.elementsEqual(this.containers, that);
 	}
+
+
 }

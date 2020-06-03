@@ -26,7 +26,7 @@ public class SimpleFluidVolume implements FluidVolume {
 		if (Fluids.EMPTY.equals(fluid) || amount <= 0) {
 			amount = 0;
 			fluid = Fluids.EMPTY;
-			data = data.isEmpty() ? data : new CompoundTag();
+			data = (data == null || data.isEmpty()) ? data : new CompoundTag();
 		}
 		this.fluid = fluid;
 		this.amount = amount;
@@ -43,10 +43,11 @@ public class SimpleFluidVolume implements FluidVolume {
 		this.data = tag.getCompound("data");
 	}
 
-	public void toTag(CompoundTag tag) {
+	public CompoundTag toTag(CompoundTag tag) {
 		tag.putString("fluid", this.fluid.toString());
 		Drops.toTag(tag, this.amount);
 		tag.put("data", this.data);
+		return tag;
 	}
 
 	@Override
@@ -68,19 +69,22 @@ public class SimpleFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume add(FluidVolume volume, Action simulate) {
-		Fluid fluidA = volume.fluid();
-
-		if (FluidUtil.miscible(fluidA, this.fluid)) {
-			if (simulate.perform()) {
-				this.data = FluidPropertyMerger.INSTANCE.merge(this.fluid, this.data(), this.amount(), volume.data(), volume.amount());
-				this.amount += volume.amount();
-				this.fluid = volume.fluid();
+	public FluidVolume consume(FluidVolume volume, Action action) {
+		if (FluidUtil.miscible(volume.fluid(), this.fluid)) {
+			if(action.simulate()) {
+				volume = volume.simpleCopy();
 			}
 
-			return ImmutableFluidVolume.EMPTY;
+			// drain as much as we can
+			Fluid drained = volume.fluid();
+			long amount = volume.drain(Long.MAX_VALUE, Action.PERFORM).amount();
+			if (action.perform() && amount != 0) {
+				this.data = FluidPropertyMerger.INSTANCE.merge(this.fluid, this.data(), this.amount(), volume.data(), amount);
+				this.amount += amount;
+				this.fluid = FluidUtil.tryFindNonEmpty(drained, this.fluid);
+				this.updateEmpty();
+			}
 		}
-
 		return volume;
 	}
 

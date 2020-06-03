@@ -12,8 +12,15 @@ import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
  * An object that stores fluid, it is assumed that all fluid containers that only hold one fluid fluid Volumes.
  */
 public interface FluidContainer extends Iterable<FluidVolume> {
-	default FluidVolume drain(long amount, Action simulate) {
-		return this.drain(Fluids.EMPTY, amount, simulate);
+
+	/**
+	 * drains a wildcard matched fluid
+	 * @param amount the amount to drain
+	 * @param action the nature of the transaction
+	 * @return the fluid drained
+	 */
+	default FluidVolume drain(long amount, Action action) {
+		return this.drain(Fluids.EMPTY, amount, action);
 	}
 
 	/**
@@ -27,13 +34,25 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 	FluidVolume drain(Fluid fluid, long amount, Action action);
 
 	/**
-	 * add an amount of fluid to the container.
-	 *
-	 * @param container the amount to be added
+	 * attempt to drain from all the fluid volumes inside the fluid container and insert it to this container
+	 * @param container the container
 	 * @param action the nature of the transaction
-	 * @return the amount left over
 	 */
-	FluidVolume add(FluidVolume container, Action action);
+	default void consume(FluidContainer container, Action action) {
+		for (FluidVolume volume : container) {
+			this.consume(volume, action);
+		}
+	}
+
+	/**
+	 * add an amount of fluid to the container, and drain from the one given.
+	 *
+	 * @param volume the amount to be added, and drained
+	 * @param action the nature of the transaction
+	 * @return the amount leftover, so that a simulated action's result can still be observed without modifying the container
+	 */
+	FluidVolume consume(FluidVolume volume, Action action);
+
 
 	/**
 	 * @return all the individual fluid volumes that make up this fluid container or `this` if it is a fluid volume
@@ -55,4 +74,9 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 	 * @return true if the fluid container is immutable
 	 */
 	boolean isImmutable();
+
+	/**
+	 * @return a simple copy of the object, only contains the fluid, data and amount
+	 */
+	FluidContainer simpleCopy();
 }

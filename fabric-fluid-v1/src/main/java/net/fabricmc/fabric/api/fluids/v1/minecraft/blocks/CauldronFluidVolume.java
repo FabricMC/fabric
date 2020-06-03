@@ -58,20 +58,42 @@ public class CauldronFluidVolume implements FluidVolume {
 		return 0;
 	}
 
+	@Override
+	public FluidVolume consume(FluidVolume volume, Action action) {
+		if (volume.fluid().equals(Fluids.WATER)) {
+			long amount = Drops.floor(volume.amount(), FRACTION);
+			amount = this.addAmount(amount, Action.SIMULATE);
+			amount = volume.drain(amount, Action.SIMULATE).amount();
+
+			if(action.simulate()) {
+				volume = volume.simpleCopy();
+			}
+
+			volume.drain(amount, Action.PERFORM);
+
+			if(action.perform()) {
+				this.addAmount(amount, Action.PERFORM);
+			}
+
+			return volume;
+		}
+		return volume;
+	}
+
 	private long addAmount(long amount, Action action) {
 		amount = Math.min(amount, Drops.getBucket());
 		BlockState state = this.world.getBlockState(this.pos);
 
 		if (state.getBlock() instanceof CauldronBlock) {
 			int level = state.get(CauldronBlock.LEVEL);
-			int newLevel = (int) (level + (amount / Drops.getBucket()));
+			int newLevel = (int) (level + (amount / FRACTION));
 
 			if (newLevel <= 0) {
 				if (level != 0 && action.perform()) {
 					this.world.setBlockState(this.pos, state.with(CauldronBlock.LEVEL, 0));
 				}
 
-				return (-level) * Drops.getBucket(); // decreased to 0
+				return (-level) * FRACTION; // decreased to 0
 			} else if (newLevel > MAX_LEVEL) {
 				newLevel = MAX_LEVEL;
 			}
@@ -80,20 +102,9 @@ public class CauldronFluidVolume implements FluidVolume {
 				this.world.setBlockState(this.pos, state.with(CauldronBlock.LEVEL, newLevel));
 			}
 
-			return (newLevel - level) * Drops.getBucket(); // decreased by some amount
+			return (newLevel - level) * FRACTION; // decreased by some amount
 		}
 		return 0;
-	}
-
-	@Override
-	public FluidVolume add(FluidVolume container, Action action) {
-		if (container.fluid().equals(Fluids.WATER)) {
-			long amount = Drops.floor(Math.min(container.amount(), Drops.getBucket()), container.amount());
-			long change = this.addAmount(amount, action);
-			return new SimpleFluidVolume(container.fluid(), amount - change, container.data());
-		}
-
-		return ImmutableFluidVolume.EMPTY;
 	}
 
 	@Override

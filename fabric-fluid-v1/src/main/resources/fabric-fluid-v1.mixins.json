@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BucketItemMixin",
-    "CauldronBlockMixin",
-    "PlayerInventoryMixin"
+    "CauldronBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
