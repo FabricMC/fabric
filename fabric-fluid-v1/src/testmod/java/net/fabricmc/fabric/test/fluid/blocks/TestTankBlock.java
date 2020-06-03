@@ -37,7 +37,9 @@ public class TestTankBlock extends Block implements BlockEntityProvider, SidedFl
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		FluidContainer container = FluidView.getFluidContainer(player.getStackInHand(hand), ItemSinks.playerItemSink(player));
 		if (container.isEmpty()) {
-			container.consume((FluidVolume) this.getContainer(world, pos, null), Action.PERFORM);
+			for (FluidVolume volume : this.getContainer(world, pos, null)) {
+				container.consume(volume, Action.PERFORM);
+			}
 		} else {
 			// take buckets out
 			for (FluidVolume volume : container) {

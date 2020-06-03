@@ -35,9 +35,6 @@ public class CauldronFluidVolume implements FluidVolume {
 		}
 
 		return ImmutableFluidVolume.EMPTY;
-	}	@Override
-	public Fluid getFluid() {
-		return this.getAmount() == 0 ? Fluids.EMPTY : Fluids.WATER;
 	}
 
 	@Override
@@ -47,27 +44,45 @@ public class CauldronFluidVolume implements FluidVolume {
 			amount = this.addAmount(amount, Action.SIMULATE);
 			amount = volume.drain(amount, Action.SIMULATE).getAmount();
 
-			if(action.isSimulation()) {
+			if (action.isSimulation()) {
 				volume = volume.simpleCopy();
 			}
 
 			volume.drain(amount, Action.PERFORM);
 
-			if(action.shouldPerform()) {
+			if (action.shouldPerform()) {
 				this.addAmount(amount, Action.PERFORM);
 			}
 
 			return volume;
 		}
 		return volume;
-	}	@Override
-	public CompoundTag getData() {
-		return new CompoundTag();
+	}
+
+	@Override
+	public long getAmount() {
+		BlockState state = this.world.getBlockState(this.pos);
+
+		if (state.getBlock() instanceof CauldronBlock) {
+			return state.get(CauldronBlock.LEVEL) * FRACTION;
+		}
+
+		return 0;
+	}
+
+	@Override
+	public Fluid getFluid() {
+		return this.getAmount() == 0 ? Fluids.EMPTY : Fluids.WATER;
 	}
 
 	@Override
 	public boolean isEmpty() {
 		return this.getAmount() == 0;
+	}
+
+	@Override
+	public CompoundTag getData() {
+		return new CompoundTag();
 	}
 
 	private long addAmount(long amount, Action action) {
@@ -95,23 +110,8 @@ public class CauldronFluidVolume implements FluidVolume {
 			return (newLevel - level) * FRACTION; // decreased by some amount
 		}
 		return 0;
-	}	@Override
-	public long getAmount() {
-		BlockState state = this.world.getBlockState(this.pos);
-
-		if (state.getBlock() instanceof CauldronBlock) {
-			return state.get(CauldronBlock.LEVEL) * FRACTION;
-		}
-
-		return 0;
 	}
-
-
-
-
-
-
-
+	
 	@Override
 	public boolean isImmutable() {
 		return false;
