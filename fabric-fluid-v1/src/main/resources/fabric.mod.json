@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-fluids-v1",
-  "name": "Fabric Fluids (v1)",
+  "id": "fabric-fluid-v1",
+  "name": "Fabric Fluid (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-fluids-v1/icon.png",
+  "icon": "assets/fabric-fluid-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -23,6 +23,6 @@
   },
   "description": "An API for adding custom item groups.",
   "mixins": [
-    "fabric-fluids-v1.mixins.json"
+    "fabric-fluid-v1.mixins.json"
   ]
 }

@@ -7,10 +7,10 @@ import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.Action;
-import net.fabricmc.fabric.access.fluids.BucketItemAccess;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
 import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
+import net.fabricmc.fabric.impl.fluids.BucketItemAccessor;
 
 public class BucketItemFluidContainer extends UnitItemFluidContainer {
 	public BucketItemFluidContainer(ItemStack stack, ItemSink output) {
@@ -27,7 +27,7 @@ public class BucketItemFluidContainer extends UnitItemFluidContainer {
 		if (this.stack.isEmpty()) return FluidIds.EMPTY;
 		if (this.stack.getItem() == Items.MILK_BUCKET) return FluidIds.MILK;
 
-		Fluid fluid = ((BucketItemAccess) this.stack.getItem()).getFluid();
+		Fluid fluid = ((BucketItemAccessor) this.stack.getItem()).getFluid();
 		return FluidIds.getId(fluid);
 	}
 
