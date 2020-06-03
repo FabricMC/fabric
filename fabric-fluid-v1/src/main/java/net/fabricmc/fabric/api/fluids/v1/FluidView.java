@@ -38,7 +38,7 @@ public class FluidView {
 	}
 
 	/**
-	 * get the fluid container for the given stack.
+	 * Get the fluid container for the given stack.
 	 *
 	 * @param stack the itemstack
 	 * @param sink a place for the item to put it's byproducts into, and take items when being filled
