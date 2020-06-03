@@ -31,4 +31,20 @@ public abstract class MinecraftClientMixin {
 	private void onTick(CallbackInfo info) {
 		ClientLifecycleEvents.CLIENT_TICK.invoker().onTick((MinecraftClient) (Object) this);
 	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V", shift = At.Shift.AFTER), method = "stop")
+	private void onStopping(CallbackInfo ci) {
+		ClientLifecycleEvents.CLIENT_STOPPING.invoker().onChangeLifecycle((MinecraftClient) (Object) this);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;close()V"), method = "stop")
+	private void onStop(CallbackInfo ci) {
+		ClientLifecycleEvents.CLIENT_STOPPED.invoker().onChangeLifecycle((MinecraftClient) (Object) this);
+	}
+
+	// We inject after the thread field is set so `ThreadExecutor#getThread` will work
+	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER), method = "run")
+	private void onStart(CallbackInfo ci) {
+		ClientLifecycleEvents.CLIENT_STARTING.invoker().onChangeLifecycle((MinecraftClient) (Object) this);
+	}
 }

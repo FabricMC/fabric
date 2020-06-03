@@ -193,8 +193,8 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called when the server has started. At this stage, all worlds are live.
 	 */
-	public static final Event<ServerLifecycleCallback> SERVER_STARTED = EventFactory.createArrayBacked(ServerLifecycleCallback.class, (callbacks) -> (server) -> {
-		for (ServerLifecycleCallback callback : callbacks) {
+	public static final Event<GameLifecycleCallback<MinecraftServer>> SERVER_STARTED = EventFactory.createArrayBacked(GameLifecycleCallback.class, (callbacks) -> (server) -> {
+		for (GameLifecycleCallback<MinecraftServer> callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}
 	});
@@ -202,8 +202,8 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called when the server has started stopping. All worlds are still present.
 	 */
-	public static final Event<ServerLifecycleCallback> SERVER_STOPPING = EventFactory.createArrayBacked(ServerLifecycleCallback.class, (callbacks) -> (server) -> {
-		for (ServerLifecycleCallback callback : callbacks) {
+	public static final Event<GameLifecycleCallback<MinecraftServer>> SERVER_STOPPING = EventFactory.createArrayBacked(GameLifecycleCallback.class, (callbacks) -> (server) -> {
+		for (GameLifecycleCallback<MinecraftServer> callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}
 	});
@@ -211,8 +211,8 @@ public final class ServerLifecycleEvents {
 	/**
 	 * Called when the server has stopped. All worlds have been closed and all (block)entities and players have been unloaded.
 	 */
-	public static final Event<ServerLifecycleCallback> SERVER_STOPPED = EventFactory.createArrayBacked(ServerLifecycleCallback.class, callbacks -> server -> {
-		for (ServerLifecycleCallback callback : callbacks) {
+	public static final Event<GameLifecycleCallback<MinecraftServer>> SERVER_STOPPED = EventFactory.createArrayBacked(GameLifecycleCallback.class, callbacks -> server -> {
+		for (GameLifecycleCallback<MinecraftServer> callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}
 	});

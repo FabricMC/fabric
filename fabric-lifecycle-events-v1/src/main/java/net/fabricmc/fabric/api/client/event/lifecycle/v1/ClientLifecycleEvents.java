@@ -24,6 +24,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.lifecycle.v1.GameLifecycleCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.GameTickCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.block.entity.BlockEntityLoadCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.block.entity.BlockEntityUnloadCallback;
@@ -211,6 +212,24 @@ public final class ClientLifecycleEvents {
 			for (EntityUnloadCallback<ClientWorld> callback : callbacks) {
 				callback.onEntityUnload(entity, world);
 			}
+		}
+	});
+
+	public static final Event<GameLifecycleCallback<MinecraftClient>> CLIENT_STARTING = EventFactory.createArrayBacked(GameLifecycleCallback.class, callbacks -> client -> {
+		for (GameLifecycleCallback<MinecraftClient> callback : callbacks) {
+			callback.onChangeLifecycle(client);
+		}
+	});
+
+	public static final Event<GameLifecycleCallback<MinecraftClient>> CLIENT_STOPPING = EventFactory.createArrayBacked(GameLifecycleCallback.class, callbacks -> client -> {
+		for (GameLifecycleCallback<MinecraftClient> callback : callbacks) {
+			callback.onChangeLifecycle(client);
+		}
+	});
+
+	public static final Event<GameLifecycleCallback<MinecraftClient>> CLIENT_STOPPED = EventFactory.createArrayBacked(GameLifecycleCallback.class, callbacks -> client -> {
+		for (GameLifecycleCallback<MinecraftClient> callback : callbacks) {
+			callback.onChangeLifecycle(client);
 		}
 	});
 }

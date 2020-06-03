@@ -16,11 +16,9 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
-import net.minecraft.server.MinecraftServer;
-
 /**
- * A callback which is invoked when the server advances in it's lifecycle.
+ * A callback which is invoked when the game's engine advances in it's lifecycle.
  */
-public interface ServerLifecycleCallback {
-	void onChangeLifecycle(MinecraftServer server);
+public interface GameLifecycleCallback<T> {
+	void onChangeLifecycle(T engine);
 }
