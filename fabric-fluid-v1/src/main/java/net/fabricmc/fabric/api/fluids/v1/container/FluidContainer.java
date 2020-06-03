@@ -9,7 +9,10 @@ import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 
 /**
- * An object that stores fluid, it is assumed that all fluid containers that only hold one fluid fluid Volumes.
+ * An object that stores fluid.
+ * FluidContainers can hold one or more types of fluid at once.
+ *
+ * @see FluidVolume
  */
 public interface FluidContainer extends Iterable<FluidVolume> {
 

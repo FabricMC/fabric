@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.fluids.v1.math.Drops;
 import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
 
 /**
- * A util class for accessing fluid containers.
+ * An util class for accessing fluid containers.
  *
  * @see Drops
  */
@@ -40,7 +40,6 @@ public class FluidView {
 	/**
 	 * Get the fluid container for the given stack.
 	 *
-	 * @param stack the itemstack
 	 * @param sink a place for the item to put it's byproducts into, and take items when being filled
 	 * @return the fluid container for the stack
 	 */
@@ -57,9 +56,7 @@ public class FluidView {
 	/**
 	 * Merge all the entity and block containers in the given location for the given face into one fluid container.
 	 *
-	 * @param world the world
-	 * @param pos the position
-	 * @param face the face
+	 * @param face the face to access
 	 * @return a fluid container for the face
 	 */
 	public static FluidContainer getFluidContainer(World world, BlockPos pos, Direction face) {
@@ -80,8 +77,6 @@ public class FluidView {
 	/**
 	 * Get the fluid container for the block at the given location at the given side.
 	 *
-	 * @param world the world
-	 * @param pos the position
 	 * @param face the face to access
 	 * @return the fluid container
 	 */

@@ -1,8 +1,10 @@
 package net.fabricmc.fabric.api.fluids.v1.properties;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
@@ -28,8 +30,7 @@ public final class FluidPropertyMerger {
 		if (aData == null) return bData == null ? null : bData.copy();
 		if (bData == null) return aData.copy();
 
-		HashSet<String> iterate = new HashSet<>(aData.getKeys());
-		iterate.addAll(bData.getKeys());
+		Set<String> iterate = Sets.union(aData.getKeys(), bData.getKeys());
 		CompoundTag merged = new CompoundTag();
 
 		for (String key : iterate) {

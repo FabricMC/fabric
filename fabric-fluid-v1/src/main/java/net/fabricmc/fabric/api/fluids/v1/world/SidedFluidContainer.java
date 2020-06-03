@@ -38,10 +38,10 @@ public interface SidedFluidContainer extends FluidFillable, FluidDrainable {
 	 *
 	 * @param world the world
 	 * @param pos the position
-	 * @param direction the face being accessed, nullable
+	 * @param face the face being accessed, may be null
 	 * @return the container
 	 */
-	FluidContainer getContainer(World world, BlockPos pos, Direction direction);
+	FluidContainer getContainer(World world, BlockPos pos, Direction face);
 
 	@Override
 	default boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid) {

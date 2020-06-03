@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
 @Mixin (CauldronBlock.class)
 public class CauldronBlockMixin implements SidedFluidContainer {
 	@Override
-	public FluidContainer getContainer(World world, BlockPos pos, Direction direction) {
+	public FluidContainer getContainer(World world, BlockPos pos, Direction face) {
 		return new CauldronFluidVolume(world, pos);
 	}
 

@@ -4,7 +4,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.Tag;
 
 /**
- * a property of a fluid.
+ * A property of a fluid.
  *
  * @param <T> the type of data this property handles
  */
@@ -22,21 +22,21 @@ public interface FluidProperty<T extends Tag> {
 	};
 
 	/**
-	 * checks if 2 fluid volume's data are compatible with one another.
+	 * Checks if a FluidVolume's data is compatible with another's
 	 *
 	 * @param fluid the fluid being merged
 	 * @param aData the data in the first volume
 	 * @param aAmount the amount of the first volume
 	 * @param bData the data in the second volume
 	 * @param bAmount the amount of the second volume
-	 * @return true if the 2 data values are compatible with one another
+	 * @return true if the values are compatible with one another
 	 */
 	boolean areCompatible(Fluid fluid, T aData, long aAmount, T bData, long bAmount);
 
 	/**
-	 * combine the two data values together.
+	 * Combine two FluidVolume data values together.
 	 *
-	 * @return a newly combined and merged data of the two fluids
+	 * @return a newly created combined data value from the two given FluidVolumes' values
 	 */
 	T merge(Fluid fluid, T aData, long aAmount, T bData, long bAmount);
 

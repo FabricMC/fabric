@@ -111,7 +111,7 @@ public class CauldronFluidVolume implements FluidVolume {
 		}
 		return 0;
 	}
-	
+
 	@Override
 	public boolean isImmutable() {
 		return false;

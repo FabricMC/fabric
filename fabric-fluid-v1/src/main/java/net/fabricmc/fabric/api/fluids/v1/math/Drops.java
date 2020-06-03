@@ -9,9 +9,10 @@ import net.minecraft.nbt.CompoundTag;
  */
 public final class Drops {
 	/**
-	 * because of constant inlining use {@link #getBucket()} and {@link #getBuckets(long)}.
+	 * To avoid constant inlining use {@link #getBucket()} and {@link #getBuckets(long)}.
+	 * this number is divisible by all numbers from 1 to 10 inclusive.
 	 */
-	private static final long BUCKET = 2520L /*this number is divisible by all numbers from 1 to 10 inclusive.*/;
+	private static final long BUCKET = 2520L;
 
 	public static long getBuckets(long number) {
 		return BUCKET * number;

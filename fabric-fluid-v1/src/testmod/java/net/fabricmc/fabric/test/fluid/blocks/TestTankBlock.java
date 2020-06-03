@@ -51,7 +51,7 @@ public class TestTankBlock extends Block implements BlockEntityProvider, SidedFl
 	}
 
 	@Override
-	public FluidContainer getContainer(World world, BlockPos pos, Direction direction) {
+	public FluidContainer getContainer(World world, BlockPos pos, Direction face) {
 		return ((TestTankBlockEntity) Objects.requireNonNull(world.getBlockEntity(pos))).getVolume();
 	}
 }
