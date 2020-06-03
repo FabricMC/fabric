@@ -56,7 +56,7 @@ public final class VillagerProfessionBuilder {
 	 * Creates a builder instance to allow for creation of a {@link VillagerProfession}.
 	 * @return A new builder.
 	 */
-	static VillagerProfessionBuilder create() {
+	public static VillagerProfessionBuilder create() {
 		return new VillagerProfessionBuilder();
 	}
 
