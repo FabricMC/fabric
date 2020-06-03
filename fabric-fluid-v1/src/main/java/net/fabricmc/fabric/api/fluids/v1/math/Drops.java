@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
  * 1/{@link #BUCKET} is the smallest amount of fluid that can be described with the Drops system.
  * Stored in a long, at one bucket per tick, would take around 11.6 million years to overflow!
  */
-public class Drops {
+public final class Drops {
 	/**
 	 * because of constant inlining use {@link #getBucket()} and {@link #getBuckets(long)}.
 	 */

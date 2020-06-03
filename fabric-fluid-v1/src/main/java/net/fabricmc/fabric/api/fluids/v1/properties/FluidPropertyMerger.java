@@ -10,7 +10,7 @@ import net.minecraft.nbt.Tag;
 
 import net.fabricmc.fabric.api.util.NbtIdentifier;
 
-public class FluidPropertyMerger {
+public final class FluidPropertyMerger {
 	public static final FluidPropertyMerger INSTANCE = new FluidPropertyMerger();
 	@SuppressWarnings ("rawtypes") private final Map<NbtIdentifier, FluidProperty> data = new HashMap<>();
 

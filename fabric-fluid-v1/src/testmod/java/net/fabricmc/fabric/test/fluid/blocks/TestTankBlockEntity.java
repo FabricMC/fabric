@@ -7,10 +7,10 @@ import net.minecraft.nbt.CompoundTag;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
 import net.fabricmc.fabric.test.fluid.Register;
 
-public class FluidBlockBlockEntity extends BlockEntity {
+public class TestTankBlockEntity extends BlockEntity {
 	private SimpleFluidVolume volume = new SimpleFluidVolume();
 
-	public FluidBlockBlockEntity() {
+	public TestTankBlockEntity() {
 		super(Register.BLOCK_ENTITY);
 	}
 

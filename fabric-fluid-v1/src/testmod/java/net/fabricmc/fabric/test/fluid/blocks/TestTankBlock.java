@@ -23,14 +23,14 @@ import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSinks;
 import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
 
-public class FluidBlockBlock extends Block implements BlockEntityProvider, SidedFluidContainer {
-	public FluidBlockBlock(Settings settings) {
+public class TestTankBlock extends Block implements BlockEntityProvider, SidedFluidContainer {
+	public TestTankBlock(Settings settings) {
 		super(settings);
 	}
 
 	@Override
 	public BlockEntity createBlockEntity(BlockView world) {
-		return new FluidBlockBlockEntity();
+		return new TestTankBlockEntity();
 	}
 
 	@Override
@@ -50,6 +50,6 @@ public class FluidBlockBlock extends Block implements BlockEntityProvider, Sided
 
 	@Override
 	public FluidContainer getContainer(World world, BlockPos pos, Direction direction) {
-		return ((FluidBlockBlockEntity) Objects.requireNonNull(world.getBlockEntity(pos))).getVolume();
+		return ((TestTankBlockEntity) Objects.requireNonNull(world.getBlockEntity(pos))).getVolume();
 	}
 }
