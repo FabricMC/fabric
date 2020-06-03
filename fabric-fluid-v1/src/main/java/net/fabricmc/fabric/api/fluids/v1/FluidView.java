@@ -1,10 +1,8 @@
 package net.fabricmc.fabric.api.fluids.v1;
 
 import java.util.Collections;
-import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
@@ -14,7 +12,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -26,8 +23,6 @@ import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemFluidContainer;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.items.BottleItemFluidContainer;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.items.BowlItemFluidContainer;
 import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
 
 /**
@@ -36,13 +31,6 @@ import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
  * @see Drops
  */
 public class FluidView {
-	public static final Map<Item, ItemFluidContainer> FLUID_CONTAINERS = new IdentityHashMap<>();
-
-	static {
-		FLUID_CONTAINERS.put(Items.BOWL, ((waste, stack) -> new BowlItemFluidContainer(stack, waste)));
-		FLUID_CONTAINERS.put(Items.DRAGON_BREATH, ((waste, stack) -> new BottleItemFluidContainer(stack, waste)));
-	}
-
 	private FluidView() {
 	}
 
@@ -58,12 +46,6 @@ public class FluidView {
 
 		if (item instanceof ItemFluidContainer) {
 			return ((ItemFluidContainer) item).getContainer(sink, stack);
-		}
-
-		ItemFluidContainer container = FLUID_CONTAINERS.get(item);
-
-		if (container != null) {
-			return container.getContainer(sink, stack);
 		}
 
 		return ImmutableFluidVolume.EMPTY;
@@ -111,7 +93,7 @@ public class FluidView {
 		return ImmutableFluidVolume.EMPTY;
 	}
 
-	public static Iterable<FluidContainer> getEntityFluidContainersIterable(World world, BlockPos pos, Direction face) {
+	private static Iterable<FluidContainer> getEntityFluidContainersIterable(World world, BlockPos pos, Direction face) {
 		List<Entity> entities = world.getEntities((Entity) null, new Box(pos), e -> e instanceof SidedFluidContainer);
 
 		if (entities.isEmpty()) {

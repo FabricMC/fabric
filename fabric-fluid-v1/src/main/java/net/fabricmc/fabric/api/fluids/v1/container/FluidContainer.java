@@ -2,18 +2,18 @@ package net.fabricmc.fabric.api.fluids.v1.container;
 
 import java.util.Iterator;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 
 import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
 
 /**
  * An object that stores fluid, it is assumed that all fluid containers that only hold one fluid fluid Volumes.
  */
 public interface FluidContainer extends Iterable<FluidVolume> {
 	default FluidVolume drain(long amount, Action simulate) {
-		return this.drain(FluidIds.EMPTY, amount, simulate);
+		return this.drain(Fluids.EMPTY, amount, simulate);
 	}
 
 	/**
@@ -24,7 +24,7 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 	 * @param action the nature of the transaction
 	 * @return the amount of fluid actually drained
 	 */
-	FluidVolume drain(Identifier fluid, long amount, Action action);
+	FluidVolume drain(Fluid fluid, long amount, Action action);
 
 	/**
 	 * add an amount of fluid to the container.

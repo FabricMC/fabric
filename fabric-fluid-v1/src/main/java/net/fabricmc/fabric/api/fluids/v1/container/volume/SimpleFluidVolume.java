@@ -2,27 +2,30 @@ package net.fabricmc.fabric.api.fluids.v1.container.volume;
 
 import java.util.Objects;
 
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
+import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidUtil;
 import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
 
 public class SimpleFluidVolume implements FluidVolume {
-	protected Identifier fluid;
+	protected Fluid fluid;
 	protected long amount;
 	protected CompoundTag data;
 
-	public SimpleFluidVolume(Identifier fluid, long amount) {
+	public SimpleFluidVolume(Fluid fluid, long amount) {
 		this(fluid, amount, new CompoundTag());
 	}
 
-	public SimpleFluidVolume(Identifier fluid, long amount, CompoundTag data) {
-		if (FluidIds.EMPTY.equals(fluid) || amount <= 0) {
+	public SimpleFluidVolume(Fluid fluid, long amount, CompoundTag data) {
+		if (Fluids.EMPTY.equals(fluid) || amount <= 0) {
 			amount = 0;
-			fluid = FluidIds.EMPTY;
+			fluid = Fluids.EMPTY;
 			data = data.isEmpty() ? data : new CompoundTag();
 		}
 		this.fluid = fluid;
@@ -35,7 +38,7 @@ public class SimpleFluidVolume implements FluidVolume {
 	}
 
 	public SimpleFluidVolume(CompoundTag tag) {
-		this.fluid = new Identifier(tag.getString("fluid"));
+		this.fluid = Registry.FLUID.get(new Identifier(tag.getString("fluid")));
 		this.amount = Drops.fromTag(tag);
 		this.data = tag.getCompound("data");
 	}
@@ -47,8 +50,8 @@ public class SimpleFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, Action action) {
-		if (FluidIds.miscible(this.fluid, fluid)) {
+	public FluidVolume drain(Fluid fluid, long amount, Action action) {
+		if (FluidUtil.miscible(this.fluid, fluid)) {
 			amount = Drops.floor(Math.min(amount, this.amount), 1);
 			fluid = this.fluid;
 
@@ -66,9 +69,9 @@ public class SimpleFluidVolume implements FluidVolume {
 
 	@Override
 	public FluidVolume add(FluidVolume volume, Action simulate) {
-		Identifier fluidA = volume.fluid();
+		Fluid fluidA = volume.fluid();
 
-		if (FluidIds.miscible(fluidA, this.fluid)) {
+		if (FluidUtil.miscible(fluidA, this.fluid)) {
 			if (simulate.perform()) {
 				this.data = FluidPropertyMerger.INSTANCE.merge(this.fluid, this.data(), this.amount(), volume.data(), volume.amount());
 				this.amount += volume.amount();
@@ -83,7 +86,7 @@ public class SimpleFluidVolume implements FluidVolume {
 
 	@Override
 	public boolean isEmpty() {
-		return this.fluid == FluidIds.EMPTY;
+		return this.fluid == Fluids.EMPTY;
 	}
 
 	@Override
@@ -93,7 +96,7 @@ public class SimpleFluidVolume implements FluidVolume {
 
 	private void updateEmpty() {
 		if (this.amount <= 0) {
-			this.fluid = FluidIds.EMPTY;
+			this.fluid = Fluids.EMPTY;
 			this.data = new CompoundTag();
 			this.amount = 0;
 		}
@@ -128,7 +131,7 @@ public class SimpleFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public Identifier fluid() {
+	public Fluid fluid() {
 		return this.fluid;
 	}
 

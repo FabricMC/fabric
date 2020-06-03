@@ -1,21 +1,21 @@
 package net.fabricmc.fabric.api.fluids.v1.container.volume;
 
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.Action;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
+import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidUtil;
 import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
 
 public class FixedSizeFluidVolume extends SimpleFluidVolume {
 	private final long size;
 
-	public FixedSizeFluidVolume(Identifier fluid, long amount, CompoundTag data, long size) {
+	public FixedSizeFluidVolume(Fluid fluid, long amount, CompoundTag data, long size) {
 		super(fluid, amount, data);
 		this.size = size;
 	}
 
-	public FixedSizeFluidVolume(Identifier fluid, long amount, long size) {
+	public FixedSizeFluidVolume(Fluid fluid, long amount, long size) {
 		super(fluid, amount);
 		this.size = size;
 	}
@@ -35,9 +35,9 @@ public class FixedSizeFluidVolume extends SimpleFluidVolume {
 
 	@Override
 	public FluidVolume add(FluidVolume volume, Action action) {
-		Identifier fluidA = volume.fluid();
+		Fluid fluidA = volume.fluid();
 
-		if (FluidIds.miscible(fluidA, this.fluid)) {
+		if (FluidUtil.miscible(fluidA, this.fluid)) {
 			long amount = Math.min(volume.amount(), this.size - this.amount);
 
 			if (action.perform()) {

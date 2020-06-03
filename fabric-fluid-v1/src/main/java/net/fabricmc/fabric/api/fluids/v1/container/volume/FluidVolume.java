@@ -4,8 +4,8 @@ import java.util.Iterator;
 
 import com.google.common.collect.Iterators;
 
+import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.fluids.v1.container.FluidContainer;
 
@@ -16,7 +16,7 @@ public interface FluidVolume extends FluidContainer {
 	/**
 	 * @return the id for the fluid
 	 */
-	Identifier fluid();
+	Fluid fluid();
 
 	/**
 	 * @return the data associated with the fluid

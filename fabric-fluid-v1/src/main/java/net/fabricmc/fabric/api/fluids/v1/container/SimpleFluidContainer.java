@@ -5,7 +5,7 @@ import java.util.Iterator;
 
 import com.google.common.collect.Iterables;
 
-import net.minecraft.util.Identifier;
+import net.minecraft.fluid.Fluid;
 
 import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
@@ -24,7 +24,7 @@ public class SimpleFluidContainer implements FluidContainer {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, Action simulate) {
+	public FluidVolume drain(Fluid fluid, long amount, Action simulate) {
 		FluidVolume current = new SimpleFluidVolume();
 
 		for (FluidContainer container : this.containers) {

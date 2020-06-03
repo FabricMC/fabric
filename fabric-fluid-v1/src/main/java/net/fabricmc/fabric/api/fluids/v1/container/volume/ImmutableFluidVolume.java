@@ -2,35 +2,35 @@ package net.fabricmc.fabric.api.fluids.v1.container.volume;
 
 import java.util.Objects;
 
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.Action;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
 
 public class ImmutableFluidVolume implements FluidVolume {
 	public static final ImmutableFluidVolume EMPTY = new ImmutableFluidVolume();
 
-	private final Identifier fluid;
+	private final Fluid fluid;
 	private final long amount;
 	private final CompoundTag tag;
 
 	public ImmutableFluidVolume() {
-		this(FluidIds.EMPTY, 0);
+		this(Fluids.EMPTY, 0);
 	}
 
-	public ImmutableFluidVolume(Identifier fluid, long amount) {
+	public ImmutableFluidVolume(Fluid fluid, long amount) {
 		this(fluid, amount, new CompoundTag());
 	}
 
-	public ImmutableFluidVolume(Identifier fluid, long amount, CompoundTag tag) {
+	public ImmutableFluidVolume(Fluid fluid, long amount, CompoundTag tag) {
 		this.fluid = fluid;
 		this.amount = amount;
 		this.tag = tag;
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, Action action) {
+	public FluidVolume drain(Fluid fluid, long amount, Action action) {
 		return EMPTY;
 	}
 
@@ -41,7 +41,7 @@ public class ImmutableFluidVolume implements FluidVolume {
 
 	@Override
 	public boolean isEmpty() {
-		return this.amount == 0 || FluidIds.EMPTY.equals(this.fluid);
+		return this.amount == 0 || Fluids.EMPTY.equals(this.fluid);
 	}
 
 	@Override
@@ -75,7 +75,7 @@ public class ImmutableFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public Identifier fluid() {
+	public Fluid fluid() {
 		return this.fluid;
 	}
 

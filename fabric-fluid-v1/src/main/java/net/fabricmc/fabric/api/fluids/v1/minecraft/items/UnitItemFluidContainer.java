@@ -1,13 +1,12 @@
 package net.fabricmc.fabric.api.fluids.v1.minecraft.items;
 
-import static net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds.EMPTY;
-
 import com.google.common.annotations.VisibleForTesting;
 
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.Action;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
@@ -15,7 +14,7 @@ import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidIds;
+import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidUtil;
 import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
 
 public abstract class UnitItemFluidContainer implements FluidVolume {
@@ -28,8 +27,8 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 	}
 
 	@Override
-	public FluidVolume drain(Identifier fluid, long amount, Action action) {
-		if (!EMPTY.equals(this.fluid())) {
+	public FluidVolume drain(Fluid fluid, long amount, Action action) {
+		if (!Fluids.EMPTY.equals(this.fluid())) {
 			int items = Math.toIntExact(Math.min(this.stack.getCount(), amount / this.unit()));
 
 			if (action.perform()) {
@@ -44,8 +43,8 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 	}
 
 	@Override
-	public Identifier fluid() {
-		return this.stack.isEmpty() ? EMPTY : this.getFluid();
+	public Fluid fluid() {
+		return this.stack.isEmpty() ? Fluids.EMPTY : this.getFluid();
 	}
 
 	@Override
@@ -60,7 +59,7 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 
 	protected abstract long unit();
 
-	protected abstract Identifier getFluid();
+	protected abstract Fluid getFluid();
 
 	@Override
 	public FluidVolume add(FluidVolume container, Action simulate) {
@@ -70,8 +69,8 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 
 		long original = container.amount();
 
-		if (FluidIds.miscible(container.fluid(), this.fluid())) {
-			Identifier fluid = FluidIds.getNonEmpty(this.fluid(), container.fluid());
+		if (FluidUtil.miscible(container.fluid(), this.fluid())) {
+			Fluid fluid = FluidUtil.tryFindNonEmpty(this.fluid(), container.fluid());
 			long toAdd = Math.min((this.stack.getMaxCount() - this.stack.getCount()) * this.unit(), Drops.floor(container.amount(), this.unit()));
 
 			if (!this.empty()) {
@@ -103,7 +102,7 @@ public abstract class UnitItemFluidContainer implements FluidVolume {
 	protected abstract Item consumeOnAdd();
 
 	// byproduct of filling (water buckets, water bottles etc.)
-	protected abstract void addFilled(ItemSink sink, Identifier fluid, int items, Action action);
+	protected abstract void addFilled(ItemSink sink, Fluid fluid, int items, Action action);
 
 	@Override
 	public boolean isEmpty() {
