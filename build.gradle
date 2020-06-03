@@ -68,6 +68,7 @@ allprojects {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
 		modCompile "net.fabricmc:fabric-loader:0.8.4+build.198"
+		compileOnly "org.jetbrains:annotations:19.0.0"
 	}
 
 	configurations {
