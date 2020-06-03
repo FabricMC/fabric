@@ -3,6 +3,7 @@ package net.fabricmc.fabric.api.fluids.v1;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Iterators;
@@ -10,6 +11,8 @@ import com.google.common.collect.Iterators;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -117,5 +120,13 @@ public class FluidView {
 
 	public static FluidContainer getEntityFluidContainer(World world, BlockPos pos, Direction face) {
 		return new SimpleFluidContainer(getEntityFluidContainersIterable(world, pos, face));
+	}
+
+	public static boolean miscible(Fluid a, Fluid b) {
+		return Fluids.EMPTY.equals(a) || Fluids.EMPTY.equals(b) || Objects.equals(a, b);
+	}
+
+	public static Fluid tryFindNonEmpty(Fluid a, Fluid b) {
+		return Fluids.EMPTY.equals(a) ? b : a;
 	}
 }

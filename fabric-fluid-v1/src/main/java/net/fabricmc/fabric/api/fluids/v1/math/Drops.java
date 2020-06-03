@@ -11,7 +11,7 @@ public class Drops {
 	/**
 	 * because of constant inlining use {@link #getBucket()} and {@link #getBuckets(long)}.
 	 */
-	private static final long BUCKET = 2520L /*this number is divisible by all numbers from 1 to 9 inclusive.*/;
+	private static final long BUCKET = 2520L /*this number is divisible by all numbers from 1 to 10 inclusive.*/;
 
 	public static long getBuckets(long number) {
 		return BUCKET * number;

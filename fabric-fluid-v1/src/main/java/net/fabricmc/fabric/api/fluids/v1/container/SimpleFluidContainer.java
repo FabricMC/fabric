@@ -30,12 +30,12 @@ public class SimpleFluidContainer implements FluidContainer {
 		FluidVolume current = new SimpleFluidVolume();
 
 		for (FluidContainer container : this.containers) {
-			FluidVolume drained = container.drain(current.isEmpty() ? fluid : current.fluid(), amount, Action.SIMULATE);
+			FluidVolume drained = container.drain(current.isEmpty() ? fluid : current.getFluid(), amount, Action.SIMULATE);
 			if (!drained.equals(ImmutableFluidVolume.EMPTY)) {
 				current.consume(drained, Action.PERFORM);
-				container.drain(current.isEmpty() ? fluid : current.fluid(), amount, simulate);
+				container.drain(current.isEmpty() ? fluid : current.getFluid(), amount, simulate);
 			}
-			amount -= drained.amount();
+			amount -= drained.getAmount();
 
 			if (amount <= 0) {
 				break;

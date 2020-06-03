@@ -2,28 +2,27 @@ package net.fabricmc.fabric.api.util;
 
 import java.util.Objects;
 
-public final class NbtIdentifier {
-	public final int type;
-	public final String namespace;
-	public final String path;
+import net.minecraft.util.Identifier;
 
-	public NbtIdentifier(String val, int type) {
+public final class NbtIdentifier extends Identifier {
+	public final int type;
+
+	public NbtIdentifier(String[] id, int type) {
+		super(id);
+		if (type < 0 || type > NbtType.LONG_ARRAY) throw new IllegalArgumentException("Invalid NBT type: " + type);
 		this.type = type;
-		String[] splt = val.split(":");
-		if(splt.length == 1) {
-			this.namespace = "minecraft";
-			this.path = splt[0];
-		} else {
-			this.namespace = splt[0];
-			this.path = splt[1];
-		}
+	}
+
+	public NbtIdentifier(String id, int type) {
+		super(id);
+		if (type < 0 || type > NbtType.LONG_ARRAY) throw new IllegalArgumentException("Invalid NBT type: " + type);
+		this.type = type;
 	}
 
 	public NbtIdentifier(String namespace, String path, int type) {
+		super(namespace, path);
 		if (type < 0 || type > NbtType.LONG_ARRAY) throw new IllegalArgumentException("Invalid NBT type: " + type);
 		this.type = type;
-		this.namespace = namespace;
-		this.path = path;
 	}
 
 	@Override

@@ -28,7 +28,7 @@ public class FixedSizeFluidVolume extends SimpleFluidVolume {
 	}
 
 	private static FluidVolume with(FluidVolume volume, long amount) {
-		return new SimpleFluidVolume(volume.fluid(), amount, volume.data());
+		return new SimpleFluidVolume(volume.getFluid(), amount, volume.getData());
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class FixedSizeFluidVolume extends SimpleFluidVolume {
 			// middle-man to prevent trying to drain more-than-capacity amount of fluid
 			@Override
 			public FluidVolume drain(Fluid fluid, long amount, Action action) {
-				return super.drain(fluid, Math.min(amount, FixedSizeFluidVolume.this.size - this.amount()), action);
+				return super.drain(fluid, Math.min(amount, FixedSizeFluidVolume.this.size - this.getAmount()), action);
 			}
 		}, action);
 	}

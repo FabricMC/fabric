@@ -55,7 +55,7 @@ public class ItemSinks {
 
 			@Override
 			public void push(ItemStack stack, Action action) {
-				if (action.perform()) {
+				if (action.shouldPerform()) {
 					this.inventory.offerOrDrop(entity.world, stack);
 				}
 			}

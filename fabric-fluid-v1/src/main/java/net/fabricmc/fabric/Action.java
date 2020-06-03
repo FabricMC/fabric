@@ -14,11 +14,11 @@ public enum Action {
 	 */
 	SIMULATE;
 
-	public boolean simulate() {
+	public boolean isSimulation() {
 		return this == SIMULATE;
 	}
 
-	public boolean perform() {
+	public boolean shouldPerform() {
 		return this == PERFORM;
 	}
 }

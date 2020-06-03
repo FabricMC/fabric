@@ -26,8 +26,8 @@ public interface SidedFluidContainer extends FluidFillable, FluidDrainable {
 	default Fluid tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state) {
 		if(world instanceof World) {
 			FluidVolume volume = this.getContainer((World) world, pos, null).drain(Drops.getBucket(), Action.SIMULATE);
-			if(volume.fluid() != Fluids.EMPTY && volume.amount() == Drops.getBucket()) {
-				return this.getContainer((World) world, pos, null).drain(Drops.getBucket(), Action.PERFORM).fluid();
+			if(volume.getFluid() != Fluids.EMPTY && volume.getAmount() == Drops.getBucket()) {
+				return this.getContainer((World) world, pos, null).drain(Drops.getBucket(), Action.PERFORM).getFluid();
 			}
 		}
 		return Fluids.EMPTY;
@@ -46,7 +46,7 @@ public interface SidedFluidContainer extends FluidFillable, FluidDrainable {
 	@Override
 	default boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid) {
 		if(world instanceof World) {
-			return this.getContainer((World)world, pos, null).consume(new SimpleFluidVolume(fluid, Drops.getBucket()), Action.SIMULATE).amount() == Drops.getBucket();
+			return this.getContainer((World)world, pos, null).consume(new SimpleFluidVolume(fluid, Drops.getBucket()), Action.SIMULATE).getAmount() == Drops.getBucket();
 		}
 		return false;
 	}

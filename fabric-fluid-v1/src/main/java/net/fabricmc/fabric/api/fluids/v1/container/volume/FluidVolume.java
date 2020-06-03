@@ -13,15 +13,15 @@ import net.fabricmc.fabric.api.fluids.v1.container.FluidContainer;
  * a fluid container that can only hold 1 fluid.
  */
 public interface FluidVolume extends FluidContainer {
-	/**
-	 * @return the id for the fluid
-	 */
-	Fluid fluid();
+	@Override
+	default long getTotalVolume() {
+		return this.getAmount();
+	}
 
 	/**
-	 * @return the data associated with the fluid
+	 * @return the amount of fluid currently in the fluid volume.
 	 */
-	CompoundTag data();
+	long getAmount();
 
 	@Override
 	default Iterator<FluidVolume> iterator() {
@@ -29,17 +29,17 @@ public interface FluidVolume extends FluidContainer {
 	}
 
 	@Override
-	default long getTotalVolume() {
-		return this.amount();
+	default FluidVolume simpleCopy() {
+		return new SimpleFluidVolume(this.getFluid(), this.getAmount(), this.getData() == null ? null : this.getData().copy());
 	}
 
 	/**
-	 * @return the amount of fluid currently in the fluid volume.
+	 * @return the id for the fluid
 	 */
-	long amount();
+	Fluid getFluid();
 
-	@Override
-	default FluidVolume simpleCopy() {
-		return new SimpleFluidVolume(this.fluid(), this.amount(), this.data() == null ? null : this.data().copy());
-	}
+	/**
+	 * @return the data associated with the fluid
+	 */
+	CompoundTag getData();
 }

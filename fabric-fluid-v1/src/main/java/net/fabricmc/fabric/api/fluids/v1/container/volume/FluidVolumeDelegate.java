@@ -11,13 +11,13 @@ public class FluidVolumeDelegate implements FluidVolume {
 	public FluidVolumeDelegate(FluidVolume delegate) {this.delegate = delegate;}
 
 	@Override
-	public Fluid fluid() {return this.delegate.fluid();}
+	public long getAmount() {return this.delegate.getAmount();}
 
 	@Override
-	public CompoundTag data() {return this.delegate.data();}
+	public Fluid getFluid() {return this.delegate.getFluid();}
 
 	@Override
-	public long amount() {return this.delegate.amount();}
+	public CompoundTag getData() {return this.delegate.getData();}
 
 	@Override
 	public FluidVolume drain(Fluid fluid, long amount, Action action) {return this.delegate.drain(fluid, amount, action);}

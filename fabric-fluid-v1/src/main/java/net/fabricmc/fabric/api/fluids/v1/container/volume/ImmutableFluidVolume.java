@@ -51,9 +51,9 @@ public class ImmutableFluidVolume implements FluidVolume {
 
 	@Override
 	public int hashCode() {
-		int result = this.fluid() != null ? this.fluid().hashCode() : 0;
-		result = 31 * result + (int) (this.amount() ^ (this.amount() >>> 32));
-		result = 31 * result + (this.data() != null ? this.data().hashCode() : 0);
+		int result = this.getFluid() != null ? this.getFluid().hashCode() : 0;
+		result = 31 * result + (int) (this.getAmount() ^ (this.getAmount() >>> 32));
+		result = 31 * result + (this.getData() != null ? this.getData().hashCode() : 0);
 		return result;
 	}
 
@@ -64,9 +64,9 @@ public class ImmutableFluidVolume implements FluidVolume {
 
 		FluidVolume that = (FluidVolume) o;
 
-		if (this.amount() != that.amount()) return false;
-		if (!Objects.equals(this.fluid(), that.fluid())) return false;
-		return Objects.equals(this.data(), that.data());
+		if (this.getAmount() != that.getAmount()) return false;
+		if (!Objects.equals(this.getFluid(), that.getFluid())) return false;
+		return Objects.equals(this.getData(), that.getData());
 	}
 
 	@Override
@@ -75,17 +75,17 @@ public class ImmutableFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public Fluid fluid() {
+	public long getAmount() {
+		return this.amount;
+	}
+
+	@Override
+	public Fluid getFluid() {
 		return this.fluid;
 	}
 
 	@Override
-	public CompoundTag data() {
+	public CompoundTag getData() {
 		return this.tag == null ? null : this.tag.copy();
-	}
-
-	@Override
-	public long amount() {
-		return this.amount;
 	}
 }

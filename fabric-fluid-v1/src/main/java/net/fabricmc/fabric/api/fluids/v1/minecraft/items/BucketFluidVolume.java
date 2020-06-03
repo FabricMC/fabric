@@ -11,11 +11,11 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 
 import net.fabricmc.fabric.Action;
+import net.fabricmc.fabric.api.fluids.v1.FluidView;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidUtil;
 import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
 import net.fabricmc.fabric.impl.fluids.BucketItemAccessor;
 
@@ -30,16 +30,16 @@ public class BucketFluidVolume implements FluidVolume {
 
 	@Override
 	public FluidVolume drain(Fluid fluid, long amount, Action action) {
-		Fluid thisFluid = this.fluid();
-		if (!Fluids.EMPTY.equals(thisFluid) && FluidUtil.miscible(thisFluid, fluid)) {
+		Fluid thisFluid = this.getFluid();
+		if (!Fluids.EMPTY.equals(thisFluid) && FluidView.miscible(thisFluid, fluid)) {
 			int items = Math.toIntExact(Math.min(this.stack.getCount(), amount / getBucket()));
 
-			if (action.perform()) {
+			if (action.shouldPerform()) {
 				this.stack.setCount(this.stack.getCount() - items);
 				this.output.push(new ItemStack(Items.BUCKET, items), action);
 			}
 
-			CompoundTag toCopy = this.data();
+			CompoundTag toCopy = this.getData();
 			return new SimpleFluidVolume(thisFluid, items * getBucket(), toCopy == null ? null : toCopy.copy());
 		}
 
@@ -47,25 +47,9 @@ public class BucketFluidVolume implements FluidVolume {
 	}
 
 	@Override
-	public Fluid fluid() {
-		return this.stack.isEmpty() ? Fluids.EMPTY : ((BucketItemAccessor) this.stack.getItem()).getFluid();
-	}
-
-	@Override
-	public CompoundTag data() {
-		return this.stack.getTag();
-	}
-
-	@Override
-	public long amount() {
-		return getBucket() * this.stack.getCount();
-	}
-
-
-	@Override
 	public FluidVolume consume(FluidVolume container, Action action) {
-		Fluid fluid = this.fluid();
-		if (FluidUtil.miscible(fluid, container.fluid())) {
+		Fluid fluid = this.getFluid();
+		if (FluidView.miscible(fluid, container.getFluid())) {
 			int itemCapacity;
 			if (fluid == Fluids.EMPTY) {
 				itemCapacity = this.stack.getCount();
@@ -73,22 +57,22 @@ public class BucketFluidVolume implements FluidVolume {
 				itemCapacity = this.stack.getMaxCount() - this.stack.getCount();
 			}
 
-			int count = (int) Math.min(itemCapacity, container.amount() / getBucket());
+			int count = (int) Math.min(itemCapacity, container.getAmount() / getBucket());
 			FluidVolume toTake = container.drain(count * getBucket(), Action.SIMULATE);
-			if (toTake.amount() % getBucket() == 0) {
-				if (action.simulate()) {
+			if (toTake.getAmount() % getBucket() == 0) {
+				if (action.isSimulation()) {
 					container = container.simpleCopy();
 				}
 				if (fluid == Fluids.EMPTY) {
-					this.output.push(new ItemStack(container.fluid().getBucketItem(), (int) (toTake.amount() / getBucket())), action);
+					this.output.push(new ItemStack(container.getFluid().getBucketItem(), (int) (toTake.getAmount() / getBucket())), action);
 				} else {
-					count = this.output.take(new ItemStack(Items.BUCKET, (int) (toTake.amount() / getBucket())), action).getCount();
+					count = this.output.take(new ItemStack(Items.BUCKET, (int) (toTake.getAmount() / getBucket())), action).getCount();
 				}
 				container.drain(count * getBucket(), Action.PERFORM);
-				if (action.perform()) {
+				if (action.shouldPerform()) {
 					if(fluid != Fluids.EMPTY) {
 						this.stack.setCount(this.stack.getCount() + count);
-						this.stack.setTag(FluidPropertyMerger.INSTANCE.merge(this.fluid(), this.data(), this.amount(), toTake.data(), count * getBucket()));
+						this.stack.setTag(FluidPropertyMerger.INSTANCE.merge(this.getFluid(), this.getData(), this.getAmount(), toTake.getData(), count * getBucket()));
 					} else {
 						this.stack.setCount(this.stack.getCount() - count);
 					}
@@ -99,8 +83,23 @@ public class BucketFluidVolume implements FluidVolume {
 	}
 
 	@Override
+	public long getAmount() {
+		return getBucket() * this.stack.getCount();
+	}
+
+	@Override
+	public Fluid getFluid() {
+		return this.stack.isEmpty() ? Fluids.EMPTY : ((BucketItemAccessor) this.stack.getItem()).getFluid();
+	}
+
+	@Override
+	public CompoundTag getData() {
+		return this.stack.getTag();
+	}
+
+	@Override
 	public boolean isEmpty() {
-		return this.stack.isEmpty() || this.fluid() == Fluids.EMPTY;
+		return this.stack.isEmpty() || this.getFluid() == Fluids.EMPTY;
 	}
 
 	@Override

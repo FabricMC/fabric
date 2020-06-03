@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
 import net.fabricmc.fabric.Action;
+import net.fabricmc.fabric.api.fluids.v1.FluidView;
 import net.fabricmc.fabric.api.fluids.v1.container.FluidContainer;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
@@ -18,7 +19,6 @@ import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemFluidContainer;
 import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
 import net.fabricmc.fabric.api.fluids.v1.math.Drops;
-import net.fabricmc.fabric.api.fluids.v1.minecraft.FluidUtil;
 import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
 
 public class FluidShard extends Item implements ItemFluidContainer {
@@ -33,9 +33,9 @@ public class FluidShard extends Item implements ItemFluidContainer {
 		return new FluidVolume() {
 			@Override
 			public FluidVolume drain(Fluid fluid, long amount, Action action) {
-				if(FluidUtil.miscible(fluid, Fluids.WATER)) {
+				if(FluidView.miscible(fluid, Fluids.WATER)) {
 					int count = (int) Math.min(stack.getCount(), Math.min(amount / ONE_THIRD, Integer.MAX_VALUE));
-					if (action.perform()) {
+					if (action.shouldPerform()) {
 						stack.setCount(stack.getCount() - count);
 					}
 					return new SimpleFluidVolume(Fluids.WATER, count * ONE_THIRD, stack.getTag());
@@ -45,21 +45,21 @@ public class FluidShard extends Item implements ItemFluidContainer {
 
 			@Override
 			public FluidVolume consume(FluidVolume container, Action action) {
-				if(container.fluid() == Fluids.WATER) {
-					int count = (int) Math.min(stack.getMaxCount() - stack.getCount(), container.amount() / ONE_THIRD);
+				if(container.getFluid() == Fluids.WATER) {
+					int count = (int) Math.min(stack.getMaxCount() - stack.getCount(), container.getAmount() / ONE_THIRD);
 					FluidVolume toTake = container.drain(count * ONE_THIRD, Action.SIMULATE);
 
-					if (toTake.amount() % ONE_THIRD == 0) {
-						if(action.simulate()) {
+					if (toTake.getAmount() % ONE_THIRD == 0) {
+						if(action.isSimulation()) {
 							container = container.simpleCopy();
 						}
 
-						count = (int) (toTake.amount() / ONE_THIRD);
+						count = (int) (toTake.getAmount() / ONE_THIRD);
 						container.drain(count * ONE_THIRD, Action.PERFORM);
 
-						if(action.perform()) {
+						if(action.shouldPerform()) {
 							stack.setCount(stack.getCount() + count);
-							stack.setTag(FluidPropertyMerger.INSTANCE.merge(this.fluid(), this.data(), this.amount(), toTake.data(), toTake.amount()));
+							stack.setTag(FluidPropertyMerger.INSTANCE.merge(this.getFluid(), this.getData(), this.getAmount(), toTake.getData(), toTake.getAmount()));
 						}
 					}
 				}
@@ -68,13 +68,13 @@ public class FluidShard extends Item implements ItemFluidContainer {
 			}
 
 			@Override
-			public Fluid fluid() {
-				return Fluids.WATER;
+			public long getAmount() {
+				return stack.getCount() * ONE_THIRD;
 			}
 
 			@Override
-			public CompoundTag data() {
-				return stack.getTag();
+			public Fluid getFluid() {
+				return Fluids.WATER;
 			}
 
 			@Override
@@ -83,8 +83,8 @@ public class FluidShard extends Item implements ItemFluidContainer {
 			}
 
 			@Override
-			public long amount() {
-				return stack.getCount() * ONE_THIRD;
+			public CompoundTag getData() {
+				return stack.getTag();
 			}
 
 			@Override
