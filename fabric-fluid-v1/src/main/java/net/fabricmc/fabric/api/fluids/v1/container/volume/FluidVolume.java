@@ -33,9 +33,6 @@ public interface FluidVolume extends FluidContainer {
 		return new SimpleFluidVolume(this.getFluid(), this.getAmount(), this.getData() == null ? null : this.getData().copy());
 	}
 
-	/**
-	 * @return the id for the fluid
-	 */
 	Fluid getFluid();
 
 	/**
