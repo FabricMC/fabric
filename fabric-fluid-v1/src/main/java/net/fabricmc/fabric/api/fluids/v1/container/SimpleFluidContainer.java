@@ -57,28 +57,7 @@ public class SimpleFluidContainer implements FluidContainer {
 
 	@Override
 	public Iterator<FluidVolume> iterator() {
-		Iterator<FluidContainer> containers = this.containers.iterator();
-		return new Iterator<FluidVolume>() {
-			private Iterator<FluidVolume> current;
-
-			@Override
-			public boolean hasNext() {
-				return (this.current != null && this.current.hasNext()) || containers.hasNext();
-			}
-
-			@Override
-			public FluidVolume next() {
-				if (this.current == null) {
-					this.current = containers.next().iterator();
-				}
-
-				while (!this.current.hasNext()) {
-					this.current = containers.next().iterator();
-				}
-
-				return this.current.next();
-			}
-		};
+		return Iterables.concat(this.containers).iterator();
 	}
 
 	@Override
