@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.fluids.v1.math.Drops;
 import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
 
 /**
- * An util class for accessing fluid containers.
+ * A util class for accessing fluid containers.
  *
  * @see Drops
  */
