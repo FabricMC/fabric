@@ -12,6 +12,6 @@ public final class DedicatedServerLifecycleInternals extends ServerLifecycleInte
 	}
 
 	@Override
-	public final void onInitializeServer() {
+	public void onInitializeServer() {
 	}
 }

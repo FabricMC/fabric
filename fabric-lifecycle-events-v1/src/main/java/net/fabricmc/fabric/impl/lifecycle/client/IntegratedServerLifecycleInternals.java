@@ -22,6 +22,6 @@ public final class IntegratedServerLifecycleInternals extends ServerLifecycleInt
 	}
 
 	@Override
-	public final void onInitializeClient() {
+	public void onInitializeClient() {
 	}
 }
