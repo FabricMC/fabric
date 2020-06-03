@@ -4,8 +4,4 @@ import net.minecraft.world.biome.CrimsonForestBiome;
 
 public class TestCrimsonForestBiome extends CrimsonForestBiome
 {
-	public TestCrimsonForestBiome()
-	{
-		super();
-	}
 }

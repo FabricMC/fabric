@@ -32,7 +32,7 @@ import java.util.Optional;
 
 @Mixin(MultiNoiseBiomeSource.class)
 public class MixinTheNetherDimension {
-	@Inject(at = @At("RETURN"), method = "method_28467", cancellable = true)
+	@Inject(method = "method_28467", at = @At("RETURN"), cancellable = true)
 	private static void method_28467(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> info) {
 		List<Biome> newList = new ArrayList<>(info.getReturnValue().method_28443());
 		newList.addAll(InternalBiomeData.getNetherBiomes());
