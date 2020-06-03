@@ -39,7 +39,7 @@ public interface FluidVolume extends FluidContainer {
 	Fluid getFluid();
 
 	/**
-	 * @return the data associated with the fluid
+	 * @return the data associated with the fluid, may be null
 	 */
 	CompoundTag getData();
 }
