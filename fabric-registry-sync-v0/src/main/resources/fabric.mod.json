@@ -25,6 +25,9 @@
     "fabric-registry-sync-v0.mixins.json"
   ],
   "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.registry.sync.FabricRegistryInit"
+    ],
     "client": [
       "net.fabricmc.fabric.impl.registry.sync.FabricRegistryClientInit"
     ]

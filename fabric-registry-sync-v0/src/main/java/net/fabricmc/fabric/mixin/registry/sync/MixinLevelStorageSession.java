@@ -53,6 +53,8 @@ public class MixinLevelStorageSession {
 	private static Logger FABRIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
 	@Unique
 	private CompoundTag fabric_lastSavedIdMap = null;
+	@Unique
+	private CompoundTag fabric_activeTag = null;
 
 	@Shadow
 	@Final
@@ -68,7 +70,7 @@ public class MixinLevelStorageSession {
 			fileInputStream.close();
 
 			if (tag != null) {
-				RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
+				fabric_activeTag = RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
 				return true;
 			}
 		}
@@ -83,7 +85,13 @@ public class MixinLevelStorageSession {
 
 	@Unique
 	private void fabric_saveRegistryData() {
-		CompoundTag newIdMap = RegistrySyncManager.toTag(false);
+		FABRIC_LOGGER.debug("Starting registry save");
+		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeTag);
+
+		if (newIdMap == null) {
+			FABRIC_LOGGER.debug("Not saving empty registry data");
+			return;
+		}
 
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
