@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.content.registry;
 
 import java.lang.reflect.Method;
 
-import net.minecraft.loot.entry.LootEntries;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntryTypes;
+import net.minecraft.loot.entry.LootPoolEntry;
 
 import net.fabricmc.fabric.api.registry.LootEntryTypeRegistry;
 
@@ -31,8 +31,8 @@ public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
 	static {
 		Method target = null;
 
-		for (Method m : LootEntries.class.getDeclaredMethods()) {
-			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootEntry.class_5337.class) {
+		for (Method m : LootPoolEntryTypes.class.getDeclaredMethods()) {
+			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootPoolEntry.class_5337.class) {
 				if (target != null) {
 					throw new RuntimeException("More than one register-like method found in LootEntries!");
 				} else {
@@ -52,7 +52,7 @@ public final class LootEntryTypeRegistryImpl implements LootEntryTypeRegistry {
 	private LootEntryTypeRegistryImpl() { }
 
 	@Override
-	public void register(LootEntry.class_5337<?> serializer) {
+	public void register(LootPoolEntry.class_5337<?> serializer) {
 		try {
 			REGISTER_METHOD.invoke(null, serializer);
 		} catch (Throwable t) {
