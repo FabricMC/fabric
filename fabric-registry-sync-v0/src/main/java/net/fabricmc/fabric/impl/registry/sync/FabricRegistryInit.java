@@ -169,13 +169,13 @@ public class FabricRegistryInit implements ModInitializer {
 		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.ACTIVITY);
 
-		// Doesnt seem to be serialised or synced. (LOOT_POOL_ENTRY_TYPE)
-		RegistryAttributeHolder.get(Registry.field_25293);
+		// Doesnt seem to be serialised or synced.
+		RegistryAttributeHolder.get(Registry.LOOT_POOL_ENTRY_TYPE);
 
-		// Doesnt seem to be serialised or synced. (LOOT_FUNCTION_TYPE)
-		RegistryAttributeHolder.get(Registry.field_25294);
+		// Doesnt seem to be serialised or synced.
+		RegistryAttributeHolder.get(Registry.LOOT_FUNCTION_TYPE);
 
-		// Doesnt seem to be serialised or synced. (LOOT_CONDITION_TYPE)
-		RegistryAttributeHolder.get(Registry.field_25299);
+		// Doesnt seem to be serialised or synced.
+		RegistryAttributeHolder.get(Registry.LOOT_CONDITION_TYPE);
 	}
 }
