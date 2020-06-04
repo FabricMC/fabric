@@ -22,14 +22,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.resource.ResourceType;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.Main;
 import net.minecraft.resource.ResourcePackProvider;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
-@Mixin(MinecraftServer.class)
+@Mixin(Main.class)
 public class MixinMinecraftServer {
-	@ModifyArg(method = "method_29438", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;<init>(Lnet/minecraft/resource/ResourcePackProfile$Factory;[Lnet/minecraft/resource/ResourcePackProvider;)V"))
+	@ModifyArg(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;<init>(Lnet/minecraft/resource/ResourcePackProfile$class_5351;[Lnet/minecraft/resource/ResourcePackProvider;)V"))
 	private static ResourcePackProvider[] appendFabricDataPacks(ResourcePackProvider[] packProviders) {
 		return ArrayUtils.add(packProviders, new ModResourcePackCreator(ResourceType.SERVER_DATA));
 	}

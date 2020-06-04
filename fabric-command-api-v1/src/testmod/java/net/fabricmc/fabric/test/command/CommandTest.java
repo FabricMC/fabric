@@ -63,11 +63,6 @@ public class CommandTest implements ModInitializer {
 			}
 		});
 
-		// Disabling the test mod for now, as https://bugs.mojang.com/browse/MC-186109 breaks it
-		if (true) {
-			return;
-		}
-
 		// Use the ServerTickCallback to verify the commands actually exist in the command dispatcher.
 		ServerTickCallback.EVENT.register(server -> {
 			// Don't run the test more than once
