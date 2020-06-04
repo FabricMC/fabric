@@ -27,7 +27,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
@@ -45,20 +44,31 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
 	static final Identifier ID = new Identifier("fabric", "registry/sync");
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
-	private static final Set<Identifier> REGISTRY_BLACKLIST = ImmutableSet.of();
-	private static final Set<Identifier> REGISTRY_BLACKLIST_NETWORK = ImmutableSet.of();
+
+	//Set to true after vanilla's bootstrap has completed
+	public static boolean postBootstrap = false;
 
 	private RegistrySyncManager() { }
 
 	public static Packet<?> createPacket() {
+		LOGGER.debug("Creating registry sync packet");
+
+		CompoundTag tag = toTag(true, null);
+
+		if (tag == null) {
+			return null;
+		}
+
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		buf.writeCompoundTag(toTag(true));
+		buf.writeCompoundTag(tag);
 
 		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
 	}
@@ -88,10 +98,19 @@ public final class RegistrySyncManager {
 		}
 	}
 
-	public static CompoundTag toTag(boolean isClientSync) {
+	/**
+	 * Creates a {@link CompoundTag} used to save or sync the registry ids.
+	 *
+	 * @param isClientSync true when syncing to the client, false when saving
+	 * @param activeTag contains the registry ids that were previously read and applied, can be null.
+	 * @return a {@link CompoundTag} to save or sync, null when empty
+	 */
+	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeTag) {
 		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
+			Registry registry = Registry.REGISTRIES.get(registryId);
+
 			if (DEBUG_WRITE_REGISTRY_DATA) {
 				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
 				boolean c = true;
@@ -102,8 +121,6 @@ public final class RegistrySyncManager {
 						c = false;
 					}
 				}
-
-				Registry registry = Registry.REGISTRIES.get(registryId);
 
 				if (c && registry != null) {
 					File file = new File(location, registryId.toString().replace(':', '.').replace('/', '.') + ".csv");
@@ -130,13 +147,43 @@ public final class RegistrySyncManager {
 				}
 			}
 
-			if (REGISTRY_BLACKLIST.contains(registryId)) {
-				continue;
-			} else if (isClientSync && REGISTRY_BLACKLIST_NETWORK.contains(registryId)) {
+			/*
+			 * This contains the previous state's registry data, this is used for a few things:
+			 * Such as ensuring that previously modded registries or registry entries are not lost or overwritten.
+			 */
+			CompoundTag previousRegistryData = null;
+
+			if (activeTag != null && activeTag.contains(registryId.toString())) {
+				previousRegistryData = activeTag.getCompound(registryId.toString());
+			}
+
+			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
+
+			if (!attributeHolder.hasAttribute(isClientSync ? RegistryAttribute.SYNCED : RegistryAttribute.PERSISTED)) {
+				LOGGER.debug("Not {} registry: {}", isClientSync ? "syncing" : "saving", registryId);
 				continue;
 			}
 
-			Registry registry = Registry.REGISTRIES.get(registryId);
+			/*
+			 * Dont do anything with vanilla registries on client sync.
+			 * When saving skip none modded registries that doesnt have previous registry data
+			 *
+			 * This will not sync IDs if a world has been previously modded, either from removed mods
+			 * or a previous version of fabric registry sync, but will save these ids to disk in case the mod or mods
+			 * are added back.
+			 */
+			if ((previousRegistryData == null || isClientSync) && !attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+				LOGGER.debug("Skipping un-modded registry: " + registryId);
+				continue;
+			} else if (previousRegistryData != null) {
+				LOGGER.debug("Preserving previously modded registry: " + registryId);
+			}
+
+			if (isClientSync) {
+				LOGGER.debug("Syncing registry: " + registryId);
+			} else {
+				LOGGER.debug("Saving registry: " + registryId);
+			}
 
 			if (registry instanceof RemappableRegistry) {
 				CompoundTag registryTag = new CompoundTag();
@@ -167,8 +214,35 @@ public final class RegistrySyncManager {
 					registryTag.putInt(id.toString(), rawId);
 				}
 
+				/*
+				 * Look for existing registry key/values that are not in the current registries.
+				 * This can happen when registry entries are removed, preventing that ID from being re-used by something else.
+				 */
+				if (!isClientSync && previousRegistryData != null) {
+					for (String key : previousRegistryData.getKeys()) {
+						if (!registryTag.contains(key)) {
+							LOGGER.info("Saving orphaned registry entry: " + key);
+							registryTag.putInt(key, registryTag.getInt(key));
+						}
+					}
+				}
+
 				mainTag.put(registryId.toString(), registryTag);
 			}
+		}
+
+		// Ensure any orphaned registry's are kept on disk
+		if (!isClientSync && activeTag != null) {
+			for (String registryKey : activeTag.getKeys()) {
+				if (!mainTag.contains(registryKey)) {
+					LOGGER.info("Saving orphaned registry: " + registryKey);
+					mainTag.put(registryKey, activeTag.getCompound(registryKey));
+				}
+			}
+		}
+
+		if (mainTag.getKeys().isEmpty()) {
+			return null;
 		}
 
 		CompoundTag tag = new CompoundTag();
@@ -178,7 +252,7 @@ public final class RegistrySyncManager {
 		return tag;
 	}
 
-	public static void apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
+	public static CompoundTag apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
 		CompoundTag mainTag = tag.getCompound("registries");
 		Set<String> containedRegistries = Sets.newHashSet(mainTag.getKeys());
 
@@ -189,6 +263,13 @@ public final class RegistrySyncManager {
 
 			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
 			Registry registry = Registry.REGISTRIES.get(registryId);
+
+			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
+
+			if (!attributeHolder.hasAttribute(RegistryAttribute.MODDED)) {
+				LOGGER.debug("Not applying registry data to vanilla registry {}", registryId.toString());
+				continue;
+			}
 
 			if (registry instanceof RemappableRegistry) {
 				Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
@@ -204,6 +285,8 @@ public final class RegistrySyncManager {
 		if (!containedRegistries.isEmpty()) {
 			LOGGER.warn("[fabric-registry-sync] Could not find the following registries: " + Joiner.on(", ").join(containedRegistries));
 		}
+
+		return mainTag;
 	}
 
 	public static void unmap() throws RemapException {
@@ -214,5 +297,9 @@ public final class RegistrySyncManager {
 				((RemappableRegistry) registry).unmap(registryId.toString());
 			}
 		}
+	}
+
+	public static void bootstrapRegistries() {
+		postBootstrap = true;
 	}
 }

@@ -210,14 +210,12 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	}
 
 	@Override
-	public void close() throws IOException {
+	public void close() {
 		if (closer != null) {
 			try {
 				closer.close();
-			} catch (IOException e) {
-				throw e;
 			} catch (Exception e) {
-				throw new IOException(e);
+				throw new RuntimeException(e);
 			}
 		}
 	}

@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.Packet;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -33,6 +34,10 @@ public abstract class MixinPlayerManager {
 	public void onPlayerConnect(ClientConnection lvt1, ServerPlayerEntity lvt2, CallbackInfo info) {
 		// TODO: If integrated and local, don't send the packet (it's ignored)
 		// TODO: Refactor out into network + move registry hook to event
-		lvt2.networkHandler.sendPacket(RegistrySyncManager.createPacket());
+		Packet<?> packet = RegistrySyncManager.createPacket();
+
+		if (packet != null) {
+			lvt2.networkHandler.sendPacket(packet);
+		}
 	}
 }

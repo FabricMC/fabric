@@ -4,7 +4,6 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinKeyedResourceReloadListener$Server",
-    "MixinMinecraftServer",
     "MixinReloadableResourceManagerImpl",
     "MixinDefaultResourcePack"
   ],

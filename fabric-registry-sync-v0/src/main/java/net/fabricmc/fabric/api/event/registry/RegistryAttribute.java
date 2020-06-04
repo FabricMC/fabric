@@ -14,25 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.biomes.v1;
+package net.fabricmc.fabric.api.event.registry;
 
-import net.minecraft.world.biome.Biome;
-
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-
-/**
- * API that exposes the internals of Minecraft's nether biome code.
- */
-public final class NetherBiomes {
-	private NetherBiomes() { }
+public enum RegistryAttribute {
+	/**
+	 * Registry will be saved to disk when modded.
+	 */
+	PERSISTED,
 
 	/**
-	 * Adds a biome to the Nether generator. Biomes must set their own noise values in the {@link Biome.MixedNoisePoint} class for the biome to properly generate.
-	 *
-	 * @param biome The biome to add. Must not be null.
-	 * @see Biome.MixedNoisePoint
+	 * Registry will be synced to the client when modded.
 	 */
-	public static void addNetherBiome(Biome biome) {
-		InternalBiomeData.addNetherBiome(biome);
-	}
+	SYNCED,
+
+	/**
+	 * Registry has been modded.
+	 */
+	MODDED
 }
