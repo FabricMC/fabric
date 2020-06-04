@@ -4,7 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.CompoundTag;
 
-import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
+import net.fabricmc.fabric.api.fluid.v1.container.volume.SimpleFluidVolume;
 import net.fabricmc.fabric.test.fluid.Register;
 
 public class TestTankBlockEntity extends BlockEntity {

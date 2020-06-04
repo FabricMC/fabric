@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.fluids",
+  "package": "net.fabricmc.fabric.mixin.fluid",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BucketItemMixin",

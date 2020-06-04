@@ -10,16 +10,16 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 
-import net.fabricmc.fabric.Action;
-import net.fabricmc.fabric.api.fluids.v1.FluidView;
-import net.fabricmc.fabric.api.fluids.v1.container.FluidContainer;
-import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
-import net.fabricmc.fabric.api.fluids.v1.container.volume.ImmutableFluidVolume;
-import net.fabricmc.fabric.api.fluids.v1.container.volume.SimpleFluidVolume;
-import net.fabricmc.fabric.api.fluids.v1.item.ItemFluidContainer;
-import net.fabricmc.fabric.api.fluids.v1.item.ItemSink;
-import net.fabricmc.fabric.api.fluids.v1.math.Drops;
-import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
+import net.fabricmc.fabric.api.fluid.v1.Action;
+import net.fabricmc.fabric.api.fluid.v1.FluidView;
+import net.fabricmc.fabric.api.fluid.v1.container.FluidContainer;
+import net.fabricmc.fabric.api.fluid.v1.container.volume.FluidVolume;
+import net.fabricmc.fabric.api.fluid.v1.container.volume.ImmutableFluidVolume;
+import net.fabricmc.fabric.api.fluid.v1.container.volume.SimpleFluidVolume;
+import net.fabricmc.fabric.api.fluid.v1.item.ItemFluidContainer;
+import net.fabricmc.fabric.api.fluid.v1.item.ItemSink;
+import net.fabricmc.fabric.api.fluid.v1.math.Drops;
+import net.fabricmc.fabric.api.fluid.v1.properties.FluidPropertyMerger;
 
 public class FluidShard extends Item implements ItemFluidContainer {
 	private static final long ONE_THIRD = Drops.fraction(1, 3);
@@ -35,9 +35,11 @@ public class FluidShard extends Item implements ItemFluidContainer {
 			public FluidVolume drain(Fluid fluid, long amount, Action action) {
 				if(FluidView.mixable(fluid, Fluids.WATER)) {
 					int count = (int) Math.min(stack.getCount(), Math.min(amount / ONE_THIRD, Integer.MAX_VALUE));
+
 					if (action.shouldPerform()) {
 						stack.setCount(stack.getCount() - count);
 					}
+
 					return new SimpleFluidVolume(Fluids.WATER, count * ONE_THIRD, stack.getTag());
 				}
 				return ImmutableFluidVolume.EMPTY;

@@ -9,8 +9,8 @@ import net.minecraft.nbt.DoubleTag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.api.fluids.v1.properties.FluidProperty;
-import net.fabricmc.fabric.api.fluids.v1.properties.FluidPropertyMerger;
+import net.fabricmc.fabric.api.fluid.v1.properties.FluidProperty;
+import net.fabricmc.fabric.api.fluid.v1.properties.FluidPropertyMerger;
 import net.fabricmc.fabric.api.util.NbtIdentifier;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.fabricmc.fabric.test.fluid.blocks.TestTankBlock;

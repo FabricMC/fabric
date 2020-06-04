@@ -16,12 +16,12 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.Action;
-import net.fabricmc.fabric.api.fluids.v1.FluidView;
-import net.fabricmc.fabric.api.fluids.v1.container.FluidContainer;
-import net.fabricmc.fabric.api.fluids.v1.container.volume.FluidVolume;
-import net.fabricmc.fabric.api.fluids.v1.item.ItemSinks;
-import net.fabricmc.fabric.api.fluids.v1.world.SidedFluidContainer;
+import net.fabricmc.fabric.api.fluid.v1.Action;
+import net.fabricmc.fabric.api.fluid.v1.FluidView;
+import net.fabricmc.fabric.api.fluid.v1.container.FluidContainer;
+import net.fabricmc.fabric.api.fluid.v1.container.volume.FluidVolume;
+import net.fabricmc.fabric.api.fluid.v1.item.ItemSinks;
+import net.fabricmc.fabric.api.fluid.v1.world.SidedFluidContainer;
 
 public class TestTankBlock extends Block implements BlockEntityProvider, SidedFluidContainer {
 	public TestTankBlock(Settings settings) {
@@ -36,6 +36,7 @@ public class TestTankBlock extends Block implements BlockEntityProvider, SidedFl
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		FluidContainer container = FluidView.getFluidContainer(player.getStackInHand(hand), ItemSinks.playerItemSink(player));
+
 		if (container.isEmpty()) {
 			for (FluidVolume volume : this.getContainer(world, pos, null)) {
 				container.consume(volume, Action.PERFORM);
