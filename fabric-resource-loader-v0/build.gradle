@@ -1,2 +1,2 @@
 archivesBaseName = "fabric-resource-loader-v0"
-version = getSubprojectVersion(project, "0.2.0")
+version = getSubprojectVersion(project, "0.2.1")

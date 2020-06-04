@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import net.minecraft.world.dimension.DimensionTracker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -121,7 +122,7 @@ public class MixinLevelStorageSession {
 	}
 
 	@Inject(method = "method_27426", at = @At("HEAD"))
-	public void saveWorld(SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
+	public void saveWorld(DimensionTracker dimensionTracker, SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!Files.exists(directory)) {
 			return;
 		}

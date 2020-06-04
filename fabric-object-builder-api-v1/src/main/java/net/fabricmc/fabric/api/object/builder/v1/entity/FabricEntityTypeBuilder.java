@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
+import com.google.common.collect.ImmutableSet;
+import net.minecraft.block.Block;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -44,6 +46,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean fireImmune = false;
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
+	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
 
 	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 		this.spawnGroup = spawnGroup;
@@ -123,31 +126,6 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	/**
-	 * @deprecated For removal: Gas been moved to EntityCategory
-	 *
-	 * @param maxDespawnDistance the distance
-	 *
-	 *
-	 * @return this builder for chaining
-	 */
-	@Deprecated
-	public FabricEntityTypeBuilder<T> maxDespawnDistance(int maxDespawnDistance) {
-		return this;
-	}
-
-	/**
-	 * @deprecated For removal: Gas been moved to EntityCategory
-	 *
-	 * @param minDespawnDistance the distance
-	 *
-	 * @return this builder for chaining
-	 */
-	@Deprecated
-	public FabricEntityTypeBuilder<T> minDespawnDistance(int minDespawnDistance) {
-		return this;
-	}
-
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
 		return trackable(trackingDistanceBlocks, updateIntervalTicks, true);
 	}
@@ -156,6 +134,17 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		this.trackingDistance = trackingDistanceBlocks;
 		this.updateIntervalTicks = updateIntervalTicks;
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+		return this;
+	}
+
+	/**
+	 * Sets the {@link ImmutableSet} of blocks this entity can spawn on
+	 *
+	 * @param blocks the blocks the entity can spawn on
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> specificSpawnBlocks(Block... blocks) {
+		this.specificSpawnBlocks = ImmutableSet.copyOf(blocks);
 		return this;
 	}
 
@@ -170,7 +159,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}
