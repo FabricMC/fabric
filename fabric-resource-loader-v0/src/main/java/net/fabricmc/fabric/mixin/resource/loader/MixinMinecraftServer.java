@@ -16,14 +16,13 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import net.minecraft.server.Main;
 import org.apache.commons.lang3.ArrayUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 import net.minecraft.resource.ResourceType;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.Main;
 import net.minecraft.resource.ResourcePackProvider;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;

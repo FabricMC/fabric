@@ -21,7 +21,6 @@ import java.net.Proxy;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.datafixers.DataFixer;
-import net.minecraft.world.dimension.DimensionTracker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -36,6 +35,7 @@ import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.util.UserCache;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
+import net.minecraft.world.dimension.DimensionTracker;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 

@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -25,6 +24,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.block.Block;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 
@@ -138,7 +138,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * Sets the {@link ImmutableSet} of blocks this entity can spawn on
+	 * Sets the {@link ImmutableSet} of blocks this entity can spawn on.
 	 *
 	 * @param blocks the blocks the entity can spawn on
 	 * @return this builder for chaining
