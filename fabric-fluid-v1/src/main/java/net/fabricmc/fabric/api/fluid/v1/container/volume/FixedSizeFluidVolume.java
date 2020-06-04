@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.fabricmc.fabric.api.fluid.v1.Action;
 
 public class FixedSizeFluidVolume extends SimpleFluidVolume {
-	private final long size;
+	public final long size;
 
 	public FixedSizeFluidVolume(Fluid fluid, long amount, CompoundTag data, long size) {
 		super(fluid, amount, data);
@@ -27,18 +27,17 @@ public class FixedSizeFluidVolume extends SimpleFluidVolume {
 		this.size = size;
 	}
 
-	private static FluidVolume with(FluidVolume volume, long amount) {
-		return new SimpleFluidVolume(volume.getFluid(), amount, volume.getData());
-	}
-
 	@Override
 	public FluidVolume consume(FluidVolume volume, Action action) {
-		return super.consume(new FluidVolumeDelegate(volume) {
+		FluidVolumeDelegate delegate = new FluidVolumeDelegate(volume) {
 			// middle-man to prevent trying to drain more-than-capacity amount of fluid
 			@Override
 			public FluidVolume drain(Fluid fluid, long amount, Action action) {
-				return super.drain(fluid, Math.min(amount, FixedSizeFluidVolume.this.size - this.getAmount()), action);
+				return super.drain(fluid, Math.min(amount, FixedSizeFluidVolume.this.size - FixedSizeFluidVolume.this.getAmount()), action);
 			}
-		}, action);
+
+		};
+		FluidVolume vol = super.consume(delegate, action);
+		return vol == delegate ? delegate.delegate : vol;
 	}
 }

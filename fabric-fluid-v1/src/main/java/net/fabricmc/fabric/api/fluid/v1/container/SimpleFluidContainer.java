@@ -26,18 +26,22 @@ public class SimpleFluidContainer implements FluidContainer {
 	}
 
 	@Override
-	public FluidVolume drain(Fluid fluid, long amount, Action simulate) {
+	public FluidVolume drain(Fluid fluid, long amount, Action action) {
 		FluidVolume current = new SimpleFluidVolume();
 
 		for (FluidContainer container : this.containers) {
 			FluidVolume drained = container.drain(current.isEmpty() ? fluid : current.getFluid(), amount, Action.SIMULATE);
+			long amountDrained = drained.getAmount();
 
 			if (!drained.equals(ImmutableFluidVolume.EMPTY)) {
+				if (action.shouldPerform()) {
+					container.drain(current.isEmpty() ? fluid : current.getFluid(), amount, Action.PERFORM);
+				}
+
 				current.consume(drained, Action.PERFORM);
-				container.drain(current.isEmpty() ? fluid : current.getFluid(), amount, simulate);
 			}
 
-			amount -= drained.getAmount();
+			amount -= amountDrained;
 
 			if (amount <= 0) {
 				break;
@@ -51,7 +55,7 @@ public class SimpleFluidContainer implements FluidContainer {
 	public FluidVolume consume(FluidVolume volume, Action action) {
 		for (FluidContainer container : this.containers) {
 			if (volume.isEmpty()) break;
-			container.consume(volume, action);
+			volume = container.consume(volume, action);
 		}
 
 		return volume;

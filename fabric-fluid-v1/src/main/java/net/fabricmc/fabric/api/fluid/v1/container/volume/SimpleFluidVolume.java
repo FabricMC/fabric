@@ -49,7 +49,7 @@ public class SimpleFluidVolume implements FluidVolume {
 	}
 
 	public CompoundTag toTag(CompoundTag tag) {
-		tag.putString("fluid", this.fluid.toString());
+		tag.putString("fluid", Registry.FLUID.getId(this.fluid).toString());
 		Drops.toTag(tag, this.amount);
 		tag.put("data", this.data);
 		return tag;

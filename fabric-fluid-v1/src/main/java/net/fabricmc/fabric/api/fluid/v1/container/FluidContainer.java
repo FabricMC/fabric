@@ -7,6 +7,7 @@ import net.minecraft.fluid.Fluids;
 
 import net.fabricmc.fabric.api.fluid.v1.Action;
 import net.fabricmc.fabric.api.fluid.v1.container.volume.FluidVolume;
+import net.fabricmc.fabric.api.fluid.v1.container.volume.SimpleFluidVolume;
 
 /**
  * An object that stores fluid.
@@ -44,6 +45,14 @@ public interface FluidContainer extends Iterable<FluidVolume> {
 		for (FluidVolume volume : container) {
 			this.consume(volume, action);
 		}
+	}
+
+	/**
+	 * Add an amount of fluid to the container
+	 * @return a newly created container representing the leftover fluid from the transaction
+	 */
+	default FluidVolume add(Fluid fluid, long amount, Action action) {
+		return this.consume(new SimpleFluidVolume(fluid, amount), action);
 	}
 
 	/**

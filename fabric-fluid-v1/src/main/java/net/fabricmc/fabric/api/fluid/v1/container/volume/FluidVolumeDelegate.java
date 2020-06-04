@@ -1,12 +1,15 @@
 package net.fabricmc.fabric.api.fluid.v1.container.volume;
 
+import java.util.Objects;
+
 import net.minecraft.fluid.Fluid;
 import net.minecraft.nbt.CompoundTag;
 
 import net.fabricmc.fabric.api.fluid.v1.Action;
+import net.fabricmc.fabric.api.fluid.v1.container.FluidContainer;
 
 public class FluidVolumeDelegate implements FluidVolume {
-	private final FluidVolume delegate;
+	public final FluidVolume delegate;
 
 	public FluidVolumeDelegate(FluidVolume delegate) {
 		this.delegate = delegate;
@@ -45,5 +48,24 @@ public class FluidVolumeDelegate implements FluidVolume {
 	@Override
 	public boolean isImmutable() {
 		return this.delegate.isImmutable();
+	}
+
+	@Override
+	public String toString() {
+		return "FluidVolumeDelegate{" + "delegate=" + this.delegate + '}';
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (!(o instanceof FluidContainer)) return false;
+
+		FluidContainer volume = (FluidContainer) o;
+		return Objects.equals(this.delegate, volume);
+	}
+
+	@Override
+	public int hashCode() {
+		return this.delegate != null ? this.delegate.hashCode() : 0;
 	}
 }
