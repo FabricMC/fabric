@@ -10,7 +10,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.fabricmc.fabric.api.fluid.v1.container.FluidContainer;
 
 /**
- * A fluid container that can only hold 1 fluid.
+ * A fluid container that can only hold one fluid.
  */
 public interface FluidVolume extends FluidContainer {
 	@Override
