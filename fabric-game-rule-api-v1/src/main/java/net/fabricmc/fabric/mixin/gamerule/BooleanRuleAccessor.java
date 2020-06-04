@@ -27,7 +27,7 @@ import net.minecraft.world.GameRules;
 @Mixin(GameRules.BooleanRule.class)
 public interface BooleanRuleAccessor {
 	@Invoker
-	static GameRules.RuleType<GameRules.BooleanRule> invokeCreate(boolean initialValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changeCallback) {
+	static GameRules.Type<GameRules.BooleanRule> invokeCreate(boolean initialValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changeCallback) {
 		throw new AssertionError("This shouldn't happen!");
 	}
 }

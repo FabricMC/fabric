@@ -37,7 +37,7 @@ public class DoubleRule extends GameRules.Rule<DoubleRule> implements Validateab
 	 * You should not be calling this constructor!
 	 */
 	@Deprecated
-	public DoubleRule(GameRules.RuleType<DoubleRule> type, double value, double lowerBound, double upperBound) {
+	public DoubleRule(GameRules.Type<DoubleRule> type, double value, double lowerBound, double upperBound) {
 		super(type);
 		this.value = value;
 		this.lowerBound = lowerBound;

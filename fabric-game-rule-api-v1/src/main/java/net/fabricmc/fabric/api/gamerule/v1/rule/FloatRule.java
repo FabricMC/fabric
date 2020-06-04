@@ -37,7 +37,7 @@ public class FloatRule extends GameRules.Rule<FloatRule> implements Validateable
 	 * You should not be calling this constructor!
 	 */
 	@Deprecated
-	public FloatRule(GameRules.RuleType<FloatRule> type, float value, float lowerBound, float upperBound) {
+	public FloatRule(GameRules.Type<FloatRule> type, float value, float lowerBound, float upperBound) {
 		super(type);
 		this.value = value;
 		this.lowerBound = lowerBound;

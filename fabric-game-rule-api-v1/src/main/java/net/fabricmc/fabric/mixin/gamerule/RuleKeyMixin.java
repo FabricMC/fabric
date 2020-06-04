@@ -24,7 +24,7 @@ import net.minecraft.world.GameRules;
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 import net.fabricmc.fabric.impl.gamerule.RuleKeyInternals;
 
-@Mixin(GameRules.RuleKey.class)
+@Mixin(GameRules.Key.class)
 public abstract class RuleKeyMixin implements RuleKeyInternals {
 	/* @Nullable */
 	@Unique

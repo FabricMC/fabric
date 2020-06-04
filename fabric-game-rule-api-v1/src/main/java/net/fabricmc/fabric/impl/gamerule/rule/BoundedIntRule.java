@@ -32,7 +32,7 @@ public class BoundedIntRule extends GameRules.IntRule {
 	private final int lowerBound;
 	private final int upperBound;
 
-	public BoundedIntRule(GameRules.RuleType<GameRules.IntRule> type, int initialValue, int lowerBound, int upperBound) {
+	public BoundedIntRule(GameRules.Type<GameRules.IntRule> type, int initialValue, int lowerBound, int upperBound) {
 		super(type, initialValue);
 		this.lowerBound = lowerBound;
 		this.upperBound = upperBound;

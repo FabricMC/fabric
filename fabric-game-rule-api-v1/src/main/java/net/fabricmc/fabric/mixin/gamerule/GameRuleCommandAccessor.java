@@ -27,12 +27,12 @@ import net.minecraft.world.GameRules;
 @Mixin(GameRuleCommand.class)
 public interface GameRuleCommandAccessor {
 	@Invoker
-	static <T extends GameRules.Rule<T>> int invokeExecuteSet(CommandContext<ServerCommandSource> commandContext, GameRules.RuleKey<T> ruleKey) {
+	static <T extends GameRules.Rule<T>> int invokeExecuteSet(CommandContext<ServerCommandSource> commandContext, GameRules.Key<T> ruleKey) {
 		throw new AssertionError("This shouldn't happen!");
 	}
 
 	@Invoker
-	static <T extends GameRules.Rule<T>> int invokeExecuteQuery(ServerCommandSource serverCommandSource, GameRules.RuleKey<T> ruleKey) {
+	static <T extends GameRules.Rule<T>> int invokeExecuteQuery(ServerCommandSource serverCommandSource, GameRules.Key<T> ruleKey) {
 		throw new AssertionError("This shouldn't happen!");
 	}
 }

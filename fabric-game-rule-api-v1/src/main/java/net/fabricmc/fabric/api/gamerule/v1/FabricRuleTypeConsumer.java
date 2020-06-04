@@ -25,13 +25,13 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 /**
  * An extended RuleTypeConsumer which supports fabric's own rule types.
  */
-public interface FabricRuleTypeConsumer extends GameRules.RuleTypeConsumer {
-	default void acceptDoubleRule(GameRules.RuleKey<DoubleRule> key, GameRules.RuleType<DoubleRule> type) {
+public interface FabricRuleTypeConsumer extends GameRules.TypeConsumer {
+	default void acceptDoubleRule(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
 	}
 
-	default void acceptFloatRule(GameRules.RuleKey<FloatRule> key, GameRules.RuleType<FloatRule> type) {
+	default void acceptFloatRule(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
 	}
 
-	default <E extends Enum<E>> void acceptEnumRule(GameRules.RuleKey<EnumRule<E>> key, GameRules.RuleType<EnumRule<E>> type) {
+	default <E extends Enum<E>> void acceptEnumRule(GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
 	}
 }

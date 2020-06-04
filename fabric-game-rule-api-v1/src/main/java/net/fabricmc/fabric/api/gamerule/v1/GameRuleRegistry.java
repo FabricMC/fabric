@@ -35,7 +35,7 @@ public final class GameRuleRegistry {
 	 * @return a rule key which can be used to query the value of the rule
 	 * @throws IllegalStateException if a rule of the same name already exists
 	 */
-	public static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> register(String name, GameRules.RuleCategory category, GameRules.RuleType<T> type) {
+	public static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
 		return GameRulesAccessor.callRegister(name, category, type);
 	}
 
@@ -49,8 +49,8 @@ public final class GameRuleRegistry {
 	 * @return a rule key which can be used to query the value of the rule
 	 * @throws IllegalStateException if a rule of the same name already exists
 	 */
-	public static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> register(String name, CustomGameRuleCategory category, GameRules.RuleType<T> type) {
-		final GameRules.RuleKey<T> key = GameRulesAccessor.callRegister(name, GameRules.RuleCategory.MISC, type);
+	public static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
+		final GameRules.Key<T> key = GameRulesAccessor.callRegister(name, GameRules.Category.MISC, type);
 		((RuleKeyInternals) (Object) key).fabric_setCustomCategory(category);
 		return key;
 	}

@@ -55,8 +55,8 @@ public abstract class RuleListWidgetMixin extends net.minecraft.client.gui.widge
 	}
 
 	@Inject(method = "method_27638(Ljava/util/Map$Entry;)V", at = @At("HEAD"), cancellable = true)
-	private void ignoreKeysWithCustomCategories(Map.Entry<GameRules.RuleKey<?>, EditGameRulesScreen.AbstractRuleWidget> entry, CallbackInfo ci) {
-		final GameRules.RuleKey<?> ruleKey = entry.getKey();
+	private void ignoreKeysWithCustomCategories(Map.Entry<GameRules.Key<?>, EditGameRulesScreen.AbstractRuleWidget> entry, CallbackInfo ci) {
+		final GameRules.Key<?> ruleKey = entry.getKey();
 		final CustomGameRuleCategory customRuleCategory = ((RuleKeyInternals) (Object) ruleKey).fabric_getCustomCategory();
 
 		if (customRuleCategory != null) {

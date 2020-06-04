@@ -28,7 +28,7 @@ import net.minecraft.world.GameRules;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
 final class EnumRuleCommand {
-	public static <E extends Enum<E>> int executeEnumSet(CommandContext<ServerCommandSource> context, E value, GameRules.RuleKey<EnumRule<E>> key) throws CommandSyntaxException {
+	public static <E extends Enum<E>> int executeEnumSet(CommandContext<ServerCommandSource> context, E value, GameRules.Key<EnumRule<E>> key) throws CommandSyntaxException {
 		// Mostly copied from vanilla, but tweaked so we can use literals
 		ServerCommandSource serverCommandSource = context.getSource();
 		EnumRule<E> rule = serverCommandSource.getMinecraftServer().getGameRules().get(key);

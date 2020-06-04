@@ -42,7 +42,7 @@ public class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
 	 * You should not be calling this constructor!
 	 */
 	@Deprecated
-	public EnumRule(GameRules.RuleType<EnumRule<E>> type, E value, E[] supportedValues) {
+	public EnumRule(GameRules.Type<EnumRule<E>> type, E value, E[] supportedValues) {
 		this(type, value, Arrays.asList(supportedValues));
 	}
 
@@ -50,7 +50,7 @@ public class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
 	 * You should not be calling this constructor!
 	 */
 	@Deprecated
-	public EnumRule(GameRules.RuleType<EnumRule<E>> type, E value, Collection<E> supportedValues) {
+	public EnumRule(GameRules.Type<EnumRule<E>> type, E value, Collection<E> supportedValues) {
 		super(type);
 		this.classType = value.getDeclaringClass();
 		this.value = value;

@@ -33,13 +33,13 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 public class EnumRuleType<E extends Enum<E>> extends LiteralRuleType<EnumRule<E>> {
 	private final E[] supportedValues;
 
-	public EnumRuleType(Function<GameRules.RuleType<EnumRule<E>>, EnumRule<E>> ruleFactory, BiConsumer<MinecraftServer, EnumRule<E>> changeCallback, E[] supportedValues, GameRules.RuleAcceptor<EnumRule<E>> acceptor) {
+	public EnumRuleType(Function<GameRules.Type<EnumRule<E>>, EnumRule<E>> ruleFactory, BiConsumer<MinecraftServer, EnumRule<E>> changeCallback, E[] supportedValues, GameRules.Acceptor<EnumRule<E>> acceptor) {
 		super(null, ruleFactory, changeCallback, acceptor);
 		this.supportedValues = supportedValues;
 	}
 
 	@Override
-	public void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.RuleKey<EnumRule<E>> key) {
+	public void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.Key<EnumRule<E>> key) {
 		LiteralCommandNode<ServerCommandSource> ruleNode = literal(key.getName()).build();
 
 		for (E supportedValue : this.supportedValues) {

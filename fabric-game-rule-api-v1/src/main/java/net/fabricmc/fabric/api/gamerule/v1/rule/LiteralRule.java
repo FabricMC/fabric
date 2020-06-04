@@ -22,7 +22,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.GameRules;
 
 public abstract class LiteralRule<T extends GameRules.Rule<T>> extends GameRules.Rule<T> {
-	protected LiteralRule(GameRules.RuleType<T> type) {
+	protected LiteralRule(GameRules.Type<T> type) {
 		super(type);
 	}
 

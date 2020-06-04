@@ -30,8 +30,8 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.rule.LiteralRule;
 
-public abstract class LiteralRuleType<T extends LiteralRule<T>> extends GameRules.RuleType<T> {
-	public LiteralRuleType(Supplier<ArgumentType<?>> argumentType, Function<GameRules.RuleType<T>, T> ruleFactory, BiConsumer<MinecraftServer, T> changeCallback, GameRules.RuleAcceptor<T> acceptor) {
+public abstract class LiteralRuleType<T extends LiteralRule<T>> extends GameRules.Type<T> {
+	public LiteralRuleType(Supplier<ArgumentType<?>> argumentType, Function<GameRules.Type<T>, T> ruleFactory, BiConsumer<MinecraftServer, T> changeCallback, GameRules.Acceptor<T> acceptor) {
 		super(argumentType, ruleFactory, changeCallback, acceptor);
 	}
 
@@ -44,5 +44,5 @@ public abstract class LiteralRuleType<T extends LiteralRule<T>> extends GameRule
 	/**
 	 * Literal Rule types should implement this method in order to register their nodes on the GameRule command.
 	 */
-	public abstract void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.RuleKey<T> key);
+	public abstract void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.Key<T> key);
 }

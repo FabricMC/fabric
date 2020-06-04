@@ -38,72 +38,72 @@ public final class RuleFactory {
 	private RuleFactory() {
 	}
 
-	public static GameRules.RuleType<GameRules.BooleanRule> createBooleanRule(boolean defaultValue) {
+	public static GameRules.Type<GameRules.BooleanRule> createBooleanRule(boolean defaultValue) {
 		return createBooleanRule(defaultValue, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<GameRules.BooleanRule> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changedCallback) {
+	public static GameRules.Type<GameRules.BooleanRule> createBooleanRule(boolean defaultValue, BiConsumer<MinecraftServer, GameRules.BooleanRule> changedCallback) {
 		return BooleanRuleAccessor.invokeCreate(defaultValue, changedCallback);
 	}
 
-	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue) {
+	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue) {
 		return createIntRule(defaultValue, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound) {
+	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound) {
 		return createIntRule(defaultValue, lowerBound, Integer.MAX_VALUE, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
+	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
 		return createIntRule(defaultValue, lowerBound, Integer.MAX_VALUE, changedCallback);
 	}
 
-	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, int upperBound) {
+	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, int upperBound) {
 		return createIntRule(defaultValue, lowerBound, upperBound, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue, BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
+	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
 		return createIntRule(defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, changedCallback);
 	}
 
-	public static GameRules.RuleType<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, int upperBound, /* @Nullable */ BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
-		return new GameRules.RuleType<>(
+	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int lowerBound, int upperBound, /* @Nullable */ BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
+		return new GameRules.Type<>(
 				() -> IntegerArgumentType.integer(lowerBound, upperBound),
 				type -> new BoundedIntRule(type, defaultValue, lowerBound, upperBound), // Internally use a bounded int rule
 				changedCallback,
-				GameRules.RuleTypeConsumer::acceptInt
+				GameRules.TypeConsumer::acceptInt
 		);
 	}
 
-	public static GameRules.RuleType<DoubleRule> createDoubleRule(double defaultValue) {
+	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue) {
 		return createDoubleRule(defaultValue, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<DoubleRule> createDoubleRule(double defaultValue, double lowerBound) {
+	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double lowerBound) {
 		return createDoubleRule(defaultValue, lowerBound, Integer.MAX_VALUE, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
+	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
 		return createDoubleRule(defaultValue, lowerBound, Integer.MAX_VALUE, changedCallback);
 	}
 
-	public static GameRules.RuleType<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, double upperBound) {
+	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, double upperBound) {
 		return createDoubleRule(defaultValue, lowerBound, upperBound, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<DoubleRule> createDoubleRule(double defaultValue, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
+	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
 		return createDoubleRule(defaultValue, Double.MIN_VALUE, Double.MAX_VALUE, changedCallback);
 	}
 
-	public static GameRules.RuleType<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, double upperBound, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
-		return new GameRules.RuleType<>(
+	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, double upperBound, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
+		return new GameRules.Type<>(
 				() -> DoubleArgumentType.doubleArg(lowerBound, upperBound),
 				type -> new DoubleRule(type, defaultValue, lowerBound, upperBound),
 				changedCallback,
@@ -111,31 +111,31 @@ public final class RuleFactory {
 		);
 	}
 
-	public static GameRules.RuleType<FloatRule> createFloatRule(float defaultValue) {
+	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue) {
 		return createFloatRule(defaultValue, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<FloatRule> createFloatRule(float defaultValue, float lowerBound) {
+	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, float lowerBound) {
 		return createFloatRule(defaultValue, lowerBound, Integer.MAX_VALUE, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<FloatRule> createFloatRule(float defaultValue, float lowerBound, BiConsumer<MinecraftServer, FloatRule> changedCallback) {
+	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, float lowerBound, BiConsumer<MinecraftServer, FloatRule> changedCallback) {
 		return createFloatRule(defaultValue, lowerBound, Integer.MAX_VALUE, changedCallback);
 	}
 
-	public static GameRules.RuleType<FloatRule> createFloatRule(float defaultValue, float lowerBound, float upperBound) {
+	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, float lowerBound, float upperBound) {
 		return createFloatRule(defaultValue, lowerBound, upperBound, (server, rule) -> {
 		});
 	}
 
-	public static GameRules.RuleType<FloatRule> createFloatRule(float defaultValue, BiConsumer<MinecraftServer, FloatRule> changedCallback) {
+	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, BiConsumer<MinecraftServer, FloatRule> changedCallback) {
 		return createFloatRule(defaultValue, Float.MIN_VALUE, Float.MAX_VALUE, changedCallback);
 	}
 
-	public static GameRules.RuleType<FloatRule> createFloatRule(float defaultValue, float lowerBound, float upperBound, BiConsumer<MinecraftServer, FloatRule> changedCallback) {
-		return new GameRules.RuleType<>(
+	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, float lowerBound, float upperBound, BiConsumer<MinecraftServer, FloatRule> changedCallback) {
+		return new GameRules.Type<>(
 				() -> FloatArgumentType.floatArg(lowerBound, upperBound),
 				type -> new FloatRule(type, defaultValue, lowerBound, upperBound),
 				changedCallback,
@@ -143,21 +143,21 @@ public final class RuleFactory {
 		);
 	}
 
-	public static <E extends Enum<E>> GameRules.RuleType<EnumRule<E>> createEnumRule(E defaultValue) {
+	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue) {
 		return createEnumRule(defaultValue, (server, rule) -> {
 		});
 	}
 
-	public static <E extends Enum<E>> GameRules.RuleType<EnumRule<E>> createEnumRule(E defaultValue, BiConsumer<MinecraftServer, EnumRule<E>> changedCallback) {
+	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue, BiConsumer<MinecraftServer, EnumRule<E>> changedCallback) {
 		return createEnumRule(defaultValue, defaultValue.getDeclaringClass().getEnumConstants(), changedCallback);
 	}
 
-	public static <E extends Enum<E>> GameRules.RuleType<EnumRule<E>> createEnumRule(E defaultValue, E[] supportedValues) {
+	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue, E[] supportedValues) {
 		return createEnumRule(defaultValue, supportedValues, (server, rule) -> {
 		});
 	}
 
-	public static <E extends Enum<E>> GameRules.RuleType<EnumRule<E>> createEnumRule(E defaultValue, E[] supportedValues, BiConsumer<MinecraftServer, EnumRule<E>> changedCallback) {
+	public static <E extends Enum<E>> GameRules.Type<EnumRule<E>> createEnumRule(E defaultValue, E[] supportedValues, BiConsumer<MinecraftServer, EnumRule<E>> changedCallback) {
 		checkNotNull(defaultValue, "Default rule value cannot be null");
 		checkNotNull(supportedValues, "Supported Values cannot be null");
 
@@ -175,27 +175,27 @@ public final class RuleFactory {
 
 	// RULE ACCEPTORS
 
-	private static void acceptDouble(GameRules.RuleTypeConsumer consumer, GameRules.RuleKey<DoubleRule> key, GameRules.RuleType<DoubleRule> type) {
+	private static void acceptDouble(GameRules.TypeConsumer consumer, GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
 		if (consumer instanceof FabricRuleTypeConsumer) {
 			((FabricRuleTypeConsumer) consumer).acceptDoubleRule(key, type);
 		}
 
-		// If we don't have a FabricRuleTypeConsumer, do nothing
+		// If we don't have a FabricTypeConsumer, do nothing
 	}
 
-	private static void acceptFloat(GameRules.RuleTypeConsumer consumer, GameRules.RuleKey<FloatRule> key, GameRules.RuleType<FloatRule> type) {
+	private static void acceptFloat(GameRules.TypeConsumer consumer, GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
 		if (consumer instanceof FabricRuleTypeConsumer) {
 			((FabricRuleTypeConsumer) consumer).acceptFloatRule(key, type);
 		}
 
-		// If we don't have a FabricRuleTypeConsumer, do nothing
+		// If we don't have a FabricTypeConsumer, do nothing
 	}
 
-	private static <E extends Enum<E>> void acceptEnum(GameRules.RuleTypeConsumer consumer, GameRules.RuleKey<EnumRule<E>> key, GameRules.RuleType<EnumRule<E>> type) {
+	private static <E extends Enum<E>> void acceptEnum(GameRules.TypeConsumer consumer, GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
 		if (consumer instanceof FabricRuleTypeConsumer) {
 			((FabricRuleTypeConsumer) consumer).acceptEnumRule(key, type);
 		}
 
-		// If we don't have a FabricRuleTypeConsumer, do nothing
+		// If we don't have a FabricTypeConsumer, do nothing
 	}
 }

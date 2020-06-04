@@ -40,29 +40,29 @@ import net.fabricmc.fabric.impl.gamerule.widget.FloatRuleWidget;
 
 @Environment(EnvType.CLIENT)
 @Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
-public abstract class RuleListWidgetRuleTypeConsumerMixin implements GameRules.RuleTypeConsumer, FabricRuleTypeConsumer {
+public abstract class RuleListWidgetRuleTypeConsumerMixin implements GameRules.TypeConsumer, FabricRuleTypeConsumer {
 	@Final
 	@Shadow
 	private EditGameRulesScreen field_24314;
 	@Shadow
-	protected abstract <T extends GameRules.Rule<T>> void createRuleWidget(GameRules.RuleKey<T> key, EditGameRulesScreen.RuleWidgetFactory<T> ruleWidgetFactory); // createRuleWidget
+	protected abstract <T extends GameRules.Rule<T>> void createRuleWidget(GameRules.Key<T> key, EditGameRulesScreen.RuleWidgetFactory<T> ruleWidgetFactory); // createRuleWidget
 
 	@Override
-	public void acceptDoubleRule(GameRules.RuleKey<DoubleRule> key, GameRules.RuleType<DoubleRule> type) {
+	public void acceptDoubleRule(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
 		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
 			return new DoubleRuleWidget(this.field_24314, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
-	public void acceptFloatRule(GameRules.RuleKey<FloatRule> key, GameRules.RuleType<FloatRule> type) {
+	public void acceptFloatRule(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
 		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
 			return new FloatRuleWidget(this.field_24314, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
-	public <E extends Enum<E>> void acceptEnumRule(GameRules.RuleKey<EnumRule<E>> key, GameRules.RuleType<EnumRule<E>> type) {
+	public <E extends Enum<E>> void acceptEnumRule(GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
 		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
 			return new EnumRuleWidget<>(this.field_24314, name, description, ruleName, rule, key.getTranslationKey());
 		});
@@ -72,7 +72,7 @@ public abstract class RuleListWidgetRuleTypeConsumerMixin implements GameRules.R
 	 * @reason We need to display an enum rule's default value as translated.
 	 */
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules$Rule;serialize()Ljava/lang/String;"), method = "createRuleWidget")
-	private <T extends GameRules.Rule<T>> String displayProperEnumName(GameRules.Rule<T> rule, GameRules.RuleKey<T> key, EditGameRulesScreen.RuleWidgetFactory<T> widgetFactory) {
+	private <T extends GameRules.Rule<T>> String displayProperEnumName(GameRules.Rule<T> rule, GameRules.Key<T> key, EditGameRulesScreen.RuleWidgetFactory<T> widgetFactory) {
 		if (rule instanceof EnumRule) {
 			String translationKey = key.getTranslationKey() + "." + ((EnumRule<?>) rule).get().name().toLowerCase(Locale.ROOT);
 

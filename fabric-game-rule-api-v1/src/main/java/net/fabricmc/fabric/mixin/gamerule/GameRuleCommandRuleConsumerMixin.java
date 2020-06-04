@@ -34,12 +34,12 @@ public abstract class GameRuleCommandRuleConsumerMixin {
 	@Shadow
 	private LiteralArgumentBuilder<ServerCommandSource> field_19419;
 
-	@Inject(at = @At("HEAD"), method = "accept(Lnet/minecraft/world/GameRules$RuleKey;Lnet/minecraft/world/GameRules$RuleType;)V", cancellable = true)
-	private <T extends GameRules.Rule<T>> void onRegisterCommand(GameRules.RuleKey<T> key, GameRules.RuleType<T> type, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "accept(Lnet/minecraft/world/GameRules$Key;Lnet/minecraft/world/GameRules$Type;)V", cancellable = true)
+	private <T extends GameRules.Rule<T>> void onRegisterCommand(GameRules.Key<T> key, GameRules.Type<T> type, CallbackInfo ci) {
 		// Check if our type is a LiteralRuleType
 		if (type instanceof LiteralRuleType) {
 			//noinspection rawtypes,unchecked
-			LiteralRuleCommand.register(this.field_19419, (GameRules.RuleKey) key, (LiteralRuleType) type);
+			LiteralRuleCommand.register(this.field_19419, (GameRules.Key) key, (LiteralRuleType) type);
 			ci.cancel();
 		}
 	}

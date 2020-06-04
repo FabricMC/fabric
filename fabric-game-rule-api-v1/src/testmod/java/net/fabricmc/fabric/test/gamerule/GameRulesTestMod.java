@@ -49,27 +49,27 @@ public class GameRulesTestMod implements ModInitializer {
 	public static final CustomGameRuleCategory RED_CATEGORY = new CustomGameRuleCategory(new Identifier("fabric", "red"), new LiteralText("This One is Red").styled(style -> style.withBold(true).withColor(Formatting.DARK_RED)));
 
 	// Bounded, Integer, Double and Float rules
-	public static final GameRules.RuleKey<GameRules.IntRule> POSITIVE_ONLY_TEST_INT = register("positiveOnlyTestInteger", GameRules.RuleCategory.UPDATES, RuleFactory.createIntRule(2, 0));
-	public static final GameRules.RuleKey<DoubleRule> ONE_TO_TEN_DOUBLE = register("oneToTenDouble", GameRules.RuleCategory.MISC, RuleFactory.createDoubleRule(1.0D, 1.0D, 10.0D));
-	public static final GameRules.RuleKey<FloatRule> ZERO_TO_ONE_FLOAT = register("zeroToOneFloat", GameRules.RuleCategory.MISC, RuleFactory.createFloatRule(0.0F, 0.0F, 1.0F));
+	public static final GameRules.Key<GameRules.IntRule> POSITIVE_ONLY_TEST_INT = register("positiveOnlyTestInteger", GameRules.Category.UPDATES, RuleFactory.createIntRule(2, 0));
+	public static final GameRules.Key<DoubleRule> ONE_TO_TEN_DOUBLE = register("oneToTenDouble", GameRules.Category.MISC, RuleFactory.createDoubleRule(1.0D, 1.0D, 10.0D));
+	public static final GameRules.Key<FloatRule> ZERO_TO_ONE_FLOAT = register("zeroToOneFloat", GameRules.Category.MISC, RuleFactory.createFloatRule(0.0F, 0.0F, 1.0F));
 
 	// Test enum rule, with only some supported values.
-	public static final GameRules.RuleKey<EnumRule<Direction>> CARDINAL_DIRECTION_ENUM = register("cardinalDirection", GameRules.RuleCategory.MISC, RuleFactory.createEnumRule(Direction.NORTH, CARDINAL_DIRECTIONS, (server, rule) -> {
+	public static final GameRules.Key<EnumRule<Direction>> CARDINAL_DIRECTION_ENUM = register("cardinalDirection", GameRules.Category.MISC, RuleFactory.createEnumRule(Direction.NORTH, CARDINAL_DIRECTIONS, (server, rule) -> {
 		LOGGER.info("Changed rule value to {}", rule.get());
 	}));
 
 	// Rules in custom categories
-	public static final GameRules.RuleKey<GameRules.BooleanRule> RED_BOOLEAN = register("redBoolean", RED_CATEGORY, RuleFactory.createBooleanRule(true));
-	public static final GameRules.RuleKey<GameRules.BooleanRule> GREEN_BOOLEAN = register("greenBoolean", GREEN_CATEGORY, RuleFactory.createBooleanRule(false));
+	public static final GameRules.Key<GameRules.BooleanRule> RED_BOOLEAN = register("redBoolean", RED_CATEGORY, RuleFactory.createBooleanRule(true));
+	public static final GameRules.Key<GameRules.BooleanRule> GREEN_BOOLEAN = register("greenBoolean", GREEN_CATEGORY, RuleFactory.createBooleanRule(false));
 
 	// An enum rule with no "toString" logic
-	public static final GameRules.RuleKey<EnumRule<PlayerEntity.SleepFailureReason>> RED_SLEEP_FAILURE_ENUM = register("redSleepFailureEnum", RED_CATEGORY, RuleFactory.createEnumRule(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
+	public static final GameRules.Key<EnumRule<PlayerEntity.SleepFailureReason>> RED_SLEEP_FAILURE_ENUM = register("redSleepFailureEnum", RED_CATEGORY, RuleFactory.createEnumRule(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE));
 
-	private static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> register(String name, GameRules.RuleCategory category, GameRules.RuleType<T> type) {
+	private static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, GameRules.Category category, GameRules.Type<T> type) {
 		return GameRuleRegistry.register(name, category, type);
 	}
 
-	private static <T extends GameRules.Rule<T>> GameRules.RuleKey<T> register(String name, CustomGameRuleCategory category, GameRules.RuleType<T> type) {
+	private static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
 		return GameRuleRegistry.register(name, category, type);
 	}
 
