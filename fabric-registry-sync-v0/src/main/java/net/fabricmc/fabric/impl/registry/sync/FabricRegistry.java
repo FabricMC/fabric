@@ -14,24 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot.table;
+package net.fabricmc.fabric.impl.registry.sync;
 
-import java.util.List;
+import java.util.Set;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.function.LootFunction;
-
-@Mixin(LootPool.Builder.class)
-public interface LootPoolBuilderHooks {
-	@Accessor
-	List<LootPoolEntry> getEntries();
-	@Accessor
-	List<LootCondition> getConditions();
-	@Accessor
-	List<LootFunction> getFunctions();
+public interface FabricRegistry extends RegistryAttributeHolder {
+	void build(Set<RegistryAttribute> attributes);
 }

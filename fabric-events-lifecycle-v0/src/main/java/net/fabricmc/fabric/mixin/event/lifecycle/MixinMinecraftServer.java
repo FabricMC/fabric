@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V", ordinal = 0), method = "run")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V", ordinal = 0), method = "method_29741")
 	public void afterSetupServer(CallbackInfo info) {
 		ServerStartCallback.EVENT.invoker().onStartServer((MinecraftServer) (Object) this);
 	}

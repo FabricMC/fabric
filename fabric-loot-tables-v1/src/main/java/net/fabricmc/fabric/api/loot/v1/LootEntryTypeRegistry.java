@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 
 import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
 
@@ -34,5 +34,5 @@ public interface LootEntryTypeRegistry {
 	 *
 	 * @param serializer the loot entry serializer
 	 */
-	void register(LootEntry.class_5337<?> serializer);
+	void register(LootPoolEntry.class_5337<?> serializer);
 }
