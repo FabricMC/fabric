@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-loot-table-api-v2-testmod",
+  "name": "Fabric Loot Table API (v2) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-loot-table-api-v2": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.loot.LootTableTest"
+    ]
+  }
+}
