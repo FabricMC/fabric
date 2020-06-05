@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.loot;
+package net.fabricmc.fabric.impl.loot.table;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import net.minecraft.loot.entry.LootPoolEntry;
 
-import net.minecraft.loot.entry.LootEntries;
-import net.minecraft.loot.entry.LootEntry;
+@SuppressWarnings("deprecation")
+public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
+	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
 
-@Mixin(LootEntries.class)
-public interface LootEntriesAccessor {
-	@Invoker
-	static void callRegister(LootEntry.Serializer<?> serializer) {
-		throw new AssertionError("@Invoker body called!");
+	private LootEntryTypeRegistryImpl() { }
+
+	@Override
+	public void register(LootPoolEntry.class_5337<?> serializer) {
+		throw new UnsupportedOperationException("Use Registry.LOOT_POOL_ENTRY_TYPE!");
 	}
 }

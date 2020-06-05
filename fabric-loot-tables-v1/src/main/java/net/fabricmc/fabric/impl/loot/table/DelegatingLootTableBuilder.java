@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.loot;
+package net.fabricmc.fabric.impl.loot.table;
 
 import java.util.Collection;
 

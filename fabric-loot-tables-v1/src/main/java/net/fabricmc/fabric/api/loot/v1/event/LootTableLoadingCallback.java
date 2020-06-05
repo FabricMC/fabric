@@ -24,7 +24,7 @@ import net.minecraft.loot.LootTable;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
-import net.fabricmc.fabric.impl.loot.DelegatingLootTableBuilder;
+import net.fabricmc.fabric.impl.loot.table.DelegatingLootTableBuilder;
 
 /**
  * An event handler that is called when loot tables are loaded.

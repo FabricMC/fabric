@@ -21,7 +21,7 @@ import java.util.Collection;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTableRange;
 import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.mixin.loot.LootPoolBuilderAccessor;
@@ -45,7 +45,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	}
 
 	@Override
-	public FabricLootPoolBuilder with(LootEntry.Builder<?> entry) {
+	public FabricLootPoolBuilder with(LootPoolEntry.Builder<?> entry) {
 		super.with(entry);
 		return this;
 	}
@@ -68,7 +68,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * @param entry the added loot entry
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder with(LootEntry entry) {
+	public FabricLootPoolBuilder with(LootPoolEntry entry) {
 		extended.getEntries().add(entry);
 		return this;
 	}
@@ -79,7 +79,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * @param entries the added loot entries
 	 * @return this builder
 	 */
-	public FabricLootPoolBuilder with(Collection<? extends LootEntry> entries) {
+	public FabricLootPoolBuilder with(Collection<? extends LootPoolEntry> entries) {
 		extended.getEntries().addAll(entries);
 		return this;
 	}
