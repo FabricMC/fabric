@@ -285,4 +285,13 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);
 	}
+
+	/**
+	 * Make the material require tool to drop and slows down mining speed if the incorrect tool is used.
+	 */
+	@Override
+	public FabricBlockSettings method_29292() {
+		super.method_29292();
+		return this;
+	}
 }
