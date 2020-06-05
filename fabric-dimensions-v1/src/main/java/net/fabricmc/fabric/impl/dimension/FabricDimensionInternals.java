@@ -16,19 +16,19 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.google.common.base.Preconditions;
-import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionType;
-import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
@@ -42,7 +42,7 @@ public final class FabricDimensionInternals {
 		throw new AssertionError();
 	}
 
-	public static final Map<RegistryKey<World>, Pair<DimensionType, ChunkGeneratorFactory>> FABRIC_DIM_MAP = new LinkedHashMap<>();
+	public static final List<FabricDimensionOptions> FABRIC_DIMENSIONS = new ArrayList<>();
 
 	/**
 	 * The entity currently being transported to another dimension.
@@ -111,7 +111,7 @@ public final class FabricDimensionInternals {
 			BlockPattern.TeleportTarget defaultTarget = ((FabricDimensionType) dimType).getDefaultPlacement().placeEntity(teleported, destination, portalDir, portalX, portalY);
 
 			if (defaultTarget == null) {
-				throw new IllegalStateException("Mod dimension " + destination.method_27983().toString() + " returned an invalid teleport target");
+				throw new IllegalStateException("Mod dimension " + destination.getRegistryKey().getValue().toString() + " returned an invalid teleport target");
 			}
 
 			return defaultTarget;
@@ -134,13 +134,19 @@ public final class FabricDimensionInternals {
 		}
 	}
 
-	public static void setupWorlds(LinkedHashMap<RegistryKey<World>, Pair<DimensionType, ChunkGenerator>> map, long seed) {
-		for (Map.Entry<RegistryKey<World>, Pair<DimensionType, ChunkGeneratorFactory>> entry : FabricDimensionInternals.FABRIC_DIM_MAP.entrySet()) {
-			if (map.containsKey(entry.getKey())) {
-				throw new RuntimeException("Duplicate dimension id");
-			}
+	public static class FabricDimensionOptions {
+		public final Identifier identifier;
+		public final ChunkGeneratorFactory chunkGeneratorFactory;
+		public final DimensionType dimensionType;
 
-			map.put(entry.getKey(), entry.getValue().mapSecond(factory -> factory.create(seed)));
+		public FabricDimensionOptions(Identifier identifier, ChunkGeneratorFactory chunkGeneratorFactory, DimensionType dimensionType) {
+			this.identifier = identifier;
+			this.chunkGeneratorFactory = chunkGeneratorFactory;
+			this.dimensionType = dimensionType;
+		}
+
+		public <T> RegistryKey<T> getRegistryKey(RegistryKey<Registry<T>> key) {
+			return RegistryKey.of(key, identifier);
 		}
 	}
 }

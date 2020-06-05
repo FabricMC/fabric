@@ -7,7 +7,7 @@
     "MixinEntity",
     "MixinPortalForcer",
     "MixinWorld",
-    "MixinMinecraftServer"
+    "MixinDimensionType"
   ],
   "injectors": {
     "defaultRequire": 1

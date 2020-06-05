@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.dimension.v1;
 import java.util.OptionalLong;
 
 import com.google.common.base.Preconditions;
-import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
@@ -155,12 +154,9 @@ public final class FabricDimensionType extends DimensionType {
 		public FabricDimensionType buildAndRegister(RegistryKey<World> registryKey) {
 			Preconditions.checkState(this.defaultPlacer != null, "No defaultPlacer has been specified!");
 			Preconditions.checkState(this.chunkGeneratorFactory != null, "No chunk generator factory has been specified!");
-			Preconditions.checkState(!FabricDimensionInternals.FABRIC_DIM_MAP.containsKey(registryKey), "Duplicate dimension id: " + registryKey.toString());
 
 			FabricDimensionType dimensionType = new FabricDimensionType(this);
-			Pair<DimensionType, ChunkGeneratorFactory> pair = Pair.of(dimensionType, chunkGeneratorFactory);
-
-			FabricDimensionInternals.FABRIC_DIM_MAP.put(registryKey, pair);
+			FabricDimensionInternals.FABRIC_DIMENSIONS.add(new FabricDimensionInternals.FabricDimensionOptions(registryKey.getValue(), chunkGeneratorFactory, dimensionType));
 			return dimensionType;
 		}
 	}
