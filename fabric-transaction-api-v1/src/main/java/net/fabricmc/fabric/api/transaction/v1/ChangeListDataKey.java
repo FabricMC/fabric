@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @param <T> the change list item type
  */
-public interface ChangelistDataKey<T> extends TransactionDataKey<List<T>> {
+public interface ChangeListDataKey<T> extends TransactionDataKey<List<T>> {
 	/**
 	 * Insert a change list item at the end of the list.
 	 *

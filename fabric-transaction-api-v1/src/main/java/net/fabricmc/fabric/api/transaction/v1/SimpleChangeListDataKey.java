@@ -19,13 +19,13 @@ package net.fabricmc.fabric.api.transaction.v1;
 import java.util.List;
 
 /**
- * An implementation of {@link ChangelistDataKey} that provides prebuilt
+ * An implementation of {@link ChangeListDataKey} that provides prebuilt
  * methods for applying changelists to the target object.
  *
  * @param <T> the change list item type
  * @param <R> the target object type
  */
-public interface SimpleChangelistDataKey<T, R> extends ChangelistDataKey<T> {
+public interface SimpleChangeListDataKey<T, R> extends ChangeListDataKey<T> {
 	/**
 	 * Gets the current state of the target object.
 	 *
