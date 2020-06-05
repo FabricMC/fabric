@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,9 +29,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.class_5359;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 
 @Mixin(class_5359.class)
 public class MixinClass_5359 {
@@ -50,8 +54,16 @@ public class MixinClass_5359 {
 			List<String> newEnabled = new ArrayList<>(enabled);
 
 			for (ModContainer container : FabricLoader.getInstance().getAllMods()) {
-				if (!container.getMetadata().getType().equals("builtin")) {
-					newEnabled.add("fabric/" + container.getMetadata().getId());
+				if (container.getMetadata().getType().equals("builtin")) {
+					continue;
+				}
+
+				Path path = container.getRootPath();
+
+				try (ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null)) {
+					if (!pack.getNamespaces(ResourceType.SERVER_DATA).isEmpty()) {
+						newEnabled.add("fabric/" + container.getMetadata().getId());
+					}
 				}
 			}
 

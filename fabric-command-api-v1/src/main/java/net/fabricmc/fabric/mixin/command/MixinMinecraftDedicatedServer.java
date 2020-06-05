@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 public abstract class MixinMinecraftDedicatedServer {
 	@Inject(method = "setupServer", at = @At("HEAD"))
 	private void setupServer(CallbackInfoReturnable<Boolean> info) {
-		CommandRegistrationCallback.EVENT.invoker().register(((MinecraftDedicatedServer)(Object)this).getCommandManager().getDispatcher(), true);
+		CommandRegistrationCallback.EVENT.invoker().register(((MinecraftDedicatedServer) (Object) this).getCommandManager().getDispatcher(), true);
 
 		//Possibly call findAmbiguities here
 	}
