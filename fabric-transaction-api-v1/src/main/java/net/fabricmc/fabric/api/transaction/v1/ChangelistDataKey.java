@@ -11,25 +11,25 @@ import java.util.List;
  * @param <T> the change list item type
  */
 public interface ChangelistDataKey<T> extends TransactionDataKey<List<T>> {
+	/**
+	 * Insert a change list item at the end of the list.
+	 *
+	 * @param ta     the transaction to insert into
+	 * @param change the change list item to insert
+	 */
+	default void insert(Transaction ta, T change) {
+		List<T> changes = ta.get(this);
 
-    /**
-     * Insert a change list item at the end of the list.
-     *
-     * @param ta     the transaction to insert into
-     * @param change the change list item to insert
-     */
-    default void insert(Transaction ta, T change) {
-        List<T> changes = ta.get(this);
-        if (changes == null) {
-            changes = new ArrayList<>();
-            ta.put(this, changes);
-        }
-        changes.add(change);
-    }
+		if (changes == null) {
+			changes = new ArrayList<>();
+			ta.put(this, changes);
+		}
 
-    @Override
-    default void applyChangesToTransaction(Transaction ta, List<T> changes) {
-        ta.computeIfAbsent(this, _k -> new ArrayList<>()).addAll(changes);
-    }
+		changes.add(change);
+	}
 
+	@Override
+	default void applyChangesToTransaction(Transaction ta, List<T> changes) {
+		ta.computeIfAbsent(this, _k -> new ArrayList<>()).addAll(changes);
+	}
 }

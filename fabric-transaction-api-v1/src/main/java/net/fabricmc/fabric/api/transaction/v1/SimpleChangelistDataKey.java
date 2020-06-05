@@ -10,51 +10,51 @@ import java.util.List;
  * @param <R> the target object type
  */
 public interface SimpleChangelistDataKey<T, R> extends ChangelistDataKey<T> {
+	/**
+	 * Gets the current state of the target object.
+	 *
+	 * @param ta the transaction to retrieve the object state from
+	 * @return the current state of the object
+	 */
+	default R getCurrentState(Transaction ta) {
+		R inv = this.copyState();
 
-    /**
-     * Gets the current state of the target object.
-     *
-     * @param ta the transaction to retrieve the object state from
-     * @return the current state of the object
-     */
-    default R getCurrentState(Transaction ta) {
-        R inv = this.copyState();
-        for (List<T> l : ta.collectData(this)) {
-            for (T change : l) {
-                this.apply(inv, change);
-            }
-        }
-        return inv;
-    }
+		for (List<T> l : ta.collectData(this)) {
+			for (T change : l) {
+				this.apply(inv, change);
+			}
+		}
 
-    /**
-     * Create a copy of the persistent state.
-     *
-     * @return
-     */
-    R copyState();
+		return inv;
+	}
 
-    /**
-     * Gets the persistent state (the state outside of the transaction) of the
-     * target object.
-     *
-     * @return the persistent object state
-     */
-    R getPersistentState();
+	/**
+	 * Create a copy of the persistent state.
+	 *
+	 * @return
+	 */
+	R copyState();
 
-    /**
-     * Apply a single change onto the receiver.
-     *
-     * @param receiver the receiver
-     * @param change   the change to apply
-     */
-    void apply(R receiver, T change);
+	/**
+	 * Gets the persistent state (the state outside of the transaction) of the
+	 * target object.
+	 *
+	 * @return the persistent object state
+	 */
+	R getPersistentState();
 
-    @Override
-    default void applyChanges(List<T> changes) {
-        for (T change : changes) {
-            this.apply(this.getPersistentState(), change);
-        }
-    }
+	/**
+	 * Apply a single change onto the receiver.
+	 *
+	 * @param receiver the receiver
+	 * @param change   the change to apply
+	 */
+	void apply(R receiver, T change);
 
+	@Override
+	default void applyChanges(List<T> changes) {
+		for (T change : changes) {
+			this.apply(this.getPersistentState(), change);
+		}
+	}
 }
