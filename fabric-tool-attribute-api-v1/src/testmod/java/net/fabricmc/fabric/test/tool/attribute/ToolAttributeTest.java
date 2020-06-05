@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.tool.attribute;
 
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MaterialColor;
@@ -23,6 +24,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -35,6 +37,9 @@ import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 public class ToolAttributeTest implements ModInitializer {
+
+	private boolean hasValidatedTags = false;
+
 	@Override
 	public void onInitialize() {
 		// Register a custom shovel that has a mining level of 2 (iron) dynamically.
@@ -47,6 +52,19 @@ public class ToolAttributeTest implements ModInitializer {
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.GRAVEL)));
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_block"), new BlockItem(block, new Item.Settings()));
+
+		ServerTickCallback.EVENT.register(this::validateTags);
+	}
+
+	private void validateTags(MinecraftServer server) {
+		if (hasValidatedTags) {
+			return;
+		}
+		hasValidatedTags = true;
+
+		if (FabricToolTags.PICKAXES.values().isEmpty()) {
+			throw new AssertionError("Failed to load tool tags");
+		}
 	}
 
 	private static class TestShovel extends Item implements DynamicAttributeTool {
