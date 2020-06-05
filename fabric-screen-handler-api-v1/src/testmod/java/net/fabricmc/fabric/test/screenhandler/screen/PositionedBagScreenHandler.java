@@ -17,8 +17,8 @@
 package net.fabricmc.fabric.test.screenhandler.screen;
 
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.BasicInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.math.BlockPos;
 
@@ -28,7 +28,7 @@ public class PositionedBagScreenHandler extends BagScreenHandler implements Posi
 	private final BlockPos pos;
 
 	public PositionedBagScreenHandler(int syncId, PlayerInventory playerInventory, PacketByteBuf buf) {
-		this(syncId, playerInventory, new BasicInventory(9), readOptionalPos(buf));
+		this(syncId, playerInventory, new SimpleInventory(9), readOptionalPos(buf));
 	}
 
 	private static BlockPos readOptionalPos(PacketByteBuf buf) {
