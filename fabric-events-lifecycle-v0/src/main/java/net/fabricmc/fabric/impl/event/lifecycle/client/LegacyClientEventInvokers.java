@@ -17,18 +17,18 @@
 package net.fabricmc.fabric.impl.event.lifecycle.client;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.client.ClientTickCallback;
 import net.fabricmc.fabric.api.event.client.ItemTooltipCallback;
 import net.fabricmc.fabric.api.event.world.WorldTickCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 public class LegacyClientEventInvokers implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Allows deprecated events to still be invoked by the newer implementations
-		ClientLifecycleEvents.CLIENT_TICK.register(client -> ClientTickCallback.EVENT.invoker().tick(client));
+		ClientTickEvents.END_CLIENT_TICK.register(client -> ClientTickCallback.EVENT.invoker().tick(client));
 		// Tick old events on ClientWorld
-		ClientLifecycleEvents.WORLD_TICK.register(world -> WorldTickCallback.EVENT.invoker().tick(world));
+		ClientTickEvents.END_WORLD_TICK.register(world -> WorldTickCallback.EVENT.invoker().tick(world));
 		// This is part of item api now.
 		net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback.EVENT.register((stack, context, lines) -> ItemTooltipCallback.EVENT.invoker().getTooltip(stack, context, lines));
 	}

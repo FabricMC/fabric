@@ -21,14 +21,14 @@ import java.util.function.Supplier;
 import net.minecraft.server.MinecraftServer;
 
 public abstract class ServerLifecycleInternals {
-	private static Supplier<MinecraftServer> SERVER_SUPPLIER;
+	private static Supplier<MinecraftServer> serverSupplier;
 
 	/* @Nullable */
 	public static MinecraftServer getServer() {
-		return SERVER_SUPPLIER.get();
+		return serverSupplier.get();
 	}
 
 	protected ServerLifecycleInternals(Supplier<MinecraftServer> supplier) {
-		SERVER_SUPPLIER = supplier;
+		serverSupplier = supplier;
 	}
 }

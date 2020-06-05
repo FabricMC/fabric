@@ -18,14 +18,14 @@ package net.fabricmc.fabric.api.event.client;
 
 import net.minecraft.client.MinecraftClient;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 @Deprecated
 public interface ClientTickCallback {
 	/**
-	 * @deprecated Please use {@link ClientLifecycleEvents#CLIENT_TICK}.
+	 * @deprecated Please use {@link ClientTickEvents#END_CLIENT_TICK}.
 	 */
 	@Deprecated
 	Event<ClientTickCallback> EVENT = EventFactory.createArrayBacked(ClientTickCallback.class,

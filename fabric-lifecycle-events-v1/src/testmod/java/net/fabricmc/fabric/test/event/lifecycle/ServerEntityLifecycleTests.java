@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.entity.Entity;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 
 /**
  * Tests related to the lifecycle of entities.
@@ -36,7 +36,7 @@ public class ServerEntityLifecycleTests implements ModInitializer {
 	public void onInitialize() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ServerLifecycleEvents.ENTITY_LOAD.register((entity, world) -> {
+		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			this.serverEntities.add(entity);
 			logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
 		});

@@ -31,7 +31,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
@@ -52,7 +54,7 @@ public abstract class MinecraftServerMixin {
 
 	@Inject(at = @At("TAIL"), method = "tick")
 	private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo info) {
-		ServerLifecycleEvents.SERVER_TICK.invoker().onTick((MinecraftServer) (Object) this);
+		ServerTickEvents.END_SERVER_TICK.invoker().onTick((MinecraftServer) (Object) this);
 	}
 
 	/**
@@ -63,7 +65,7 @@ public abstract class MinecraftServerMixin {
 		final List<Entity> entities = serverWorld.getEntities(null, entity -> true); // Get every single entity in the world
 
 		for (BlockEntity blockEntity : serverWorld.blockEntities) {
-			ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, serverWorld);
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, serverWorld);
 		}
 	}
 }

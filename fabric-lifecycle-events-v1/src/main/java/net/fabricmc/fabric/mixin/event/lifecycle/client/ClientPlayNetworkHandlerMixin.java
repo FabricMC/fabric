@@ -29,8 +29,12 @@ import net.minecraft.client.network.packet.PlayerRespawnS2CPacket;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 
+@Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
@@ -41,11 +45,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.world != null) {
 			for (Entity entity : world.getEntities()) {
-				ClientLifecycleEvents.ENTITY_UNLOAD.invoker().onEntityUnload(entity, this.world);
+				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
 			}
 
 			for (BlockEntity blockEntity : world.blockEntities) {
-				ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, this.world);
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
 				// No need to clear the `tickingBlockEntities` list since it will be null in just an instant
 			}
 		}
@@ -62,11 +66,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.world != null) {
 			for (Entity entity : world.getEntities()) {
-				ClientLifecycleEvents.ENTITY_UNLOAD.invoker().onEntityUnload(entity, this.world);
+				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
 			}
 
 			for (BlockEntity blockEntity : world.blockEntities) {
-				ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, this.world);
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
 				// No need to clear the `tickingBlockEntities` list since it will be null in just an instant
 			}
 		}
@@ -78,11 +82,11 @@ public abstract class ClientPlayNetworkHandlerMixin {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.world != null) {
 			for (Entity entity : world.getEntities()) {
-				ClientLifecycleEvents.ENTITY_UNLOAD.invoker().onEntityUnload(entity, this.world);
+				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
 			}
 
 			for (BlockEntity blockEntity : world.blockEntities) {
-				ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, this.world);
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
 				// No need to clear the `tickingBlockEntities` list since it will be null in just an instant
 			}
 		}

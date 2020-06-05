@@ -26,7 +26,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class ServerBlockEntityLifecycleTests implements ModInitializer {
 	private List<BlockEntity> serverBlockEntities = new ArrayList<>();
@@ -35,17 +37,17 @@ public class ServerBlockEntityLifecycleTests implements ModInitializer {
 	public void onInitialize() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ServerLifecycleEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
+		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.serverBlockEntities.add(blockEntity);
 			logger.info("[SERVER] LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.serverBlockEntities.size());
 		});
 
-		ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
+		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
 			this.serverBlockEntities.remove(blockEntity);
 			logger.info("[SERVER] UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.serverBlockEntities.size());
 		});
 
-		ServerLifecycleEvents.SERVER_TICK.register(minecraftServer -> {
+		ServerTickEvents.END_SERVER_TICK.register(minecraftServer -> {
 			if (minecraftServer.getTicks() % 200 == 0) {
 				int entities = 0;
 				logger.info("[SERVER] Tracked BlockEntities:" + this.serverBlockEntities.size() + " Ticked at: " + minecraftServer.getTicks() + "ticks");

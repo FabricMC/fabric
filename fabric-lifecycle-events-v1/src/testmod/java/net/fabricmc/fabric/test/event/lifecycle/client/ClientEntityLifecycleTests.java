@@ -28,8 +28,9 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 /**
@@ -44,17 +45,17 @@ public class ClientEntityLifecycleTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientLifecycleEvents.ENTITY_LOAD.register((entity, world) -> {
+		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			this.clientEntities.add(entity);
 			logger.info("[CLIENT]" + " LOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
 		});
 
-		ClientLifecycleEvents.ENTITY_UNLOAD.register((entity, world) -> {
+		ClientEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
 			this.clientEntities.remove(entity);
 			logger.info("[CLIENT]" + " UNLOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
 		});
 
-		ClientLifecycleEvents.CLIENT_TICK.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (this.clientTicks++ % 200 == 0 && client.world != null) {
 				final int entities = Iterables.toArray(client.world.getEntities(), Entity.class).length;
 				logger.info("[CLIENT] Tracked Entities:" + this.clientEntities.size() + " Ticked at: " + this.clientTicks + "ticks");

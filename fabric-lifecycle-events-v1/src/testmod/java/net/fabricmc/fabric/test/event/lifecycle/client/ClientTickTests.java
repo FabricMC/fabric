@@ -24,7 +24,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 @Environment(EnvType.CLIENT)
@@ -33,7 +33,7 @@ public class ClientTickTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientLifecycleEvents.WORLD_TICK.register(world -> {
+		ClientTickEvents.END_WORLD_TICK.register(world -> {
 			final int worldTicks = this.tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
 
 			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the client world

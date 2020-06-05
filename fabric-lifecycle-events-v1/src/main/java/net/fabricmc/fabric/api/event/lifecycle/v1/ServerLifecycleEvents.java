@@ -18,16 +18,9 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.lifecycle.v1.block.entity.BlockEntityLoadCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.block.entity.BlockEntityUnloadCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.chunk.ChunkLoadCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.chunk.ChunkUnloadCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.entity.EntityLoadCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.world.WorldTickCallback;
 import net.fabricmc.fabric.impl.lifecycle.ServerLifecycleInternals;
 
 public final class ServerLifecycleEvents {
@@ -35,190 +28,44 @@ public final class ServerLifecycleEvents {
 	}
 
 	/**
-	 * Called when a server ticks.
-	 */
-	public static final Event<GameTickCallback<MinecraftServer>> SERVER_TICK = EventFactory.createArrayBacked(GameTickCallback.class, callbacks -> server -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = server.getProfiler();
-			profiler.push("fabricServerTick");
-
-			for (GameTickCallback<MinecraftServer> event : callbacks) {
-				profiler.push(EventFactory.getHandlerName(event));
-				event.onTick(server);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (GameTickCallback<MinecraftServer> event : callbacks) {
-				event.onTick(server);
-			}
-		}
-	});
-
-	/**
-	 * Called when a ServerWorld ticks.
-	 */
-	public static final Event<WorldTickCallback<ServerWorld>> WORLD_TICK = EventFactory.createArrayBacked(WorldTickCallback.class, callbacks -> world -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerWorldTick_" + world.dimension.getType().toString());
-
-			for (WorldTickCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onTick(world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (WorldTickCallback<ServerWorld> callback : callbacks) {
-				callback.onTick(world);
-			}
-		}
-	});
-
-	/**
-	 * Called when an chunk is loaded into a ServerWorld.
-	 */
-	public static final Event<ChunkLoadCallback<ServerWorld>> CHUNK_LOAD = EventFactory.createArrayBacked(ChunkLoadCallback.class, callbacks -> (serverWorld, chunk) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = serverWorld.getProfiler();
-			profiler.push("fabricServerChunkLoad");
-
-			for (ChunkLoadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onChunkLoad(serverWorld, chunk);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ChunkLoadCallback<ServerWorld> callback : callbacks) {
-				callback.onChunkLoad(serverWorld, chunk);
-			}
-		}
-	});
-
-	/**
-	 * Called when an chunk is unloaded from a ServerWorld.
-	 */
-	public static final Event<ChunkUnloadCallback<ServerWorld>> CHUNK_UNLOAD = EventFactory.createArrayBacked(ChunkUnloadCallback.class, callbacks -> (serverWorld, chunk) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = serverWorld.getProfiler();
-			profiler.push("fabricServerChunkUnload");
-
-			for (ChunkUnloadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onChunkUnload(serverWorld, chunk);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (ChunkUnloadCallback<ServerWorld> callback : callbacks) {
-				callback.onChunkUnload(serverWorld, chunk);
-			}
-		}
-	});
-
-	/**
-	 * Called when an BlockEntity is loaded into a ServerWorld.
-	 */
-	public static final Event<BlockEntityLoadCallback<ServerWorld>> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(BlockEntityLoadCallback.class, callbacks -> (blockEntity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerBlockEntityLoad");
-
-			for (BlockEntityLoadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onLoadBlockEntity(blockEntity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (BlockEntityLoadCallback<ServerWorld> callback : callbacks) {
-				callback.onLoadBlockEntity(blockEntity, world);
-			}
-		}
-	});
-
-	/**
-	 * Called when an BlockEntity is unloaded from a ServerWorld.
-	 */
-	public static final Event<BlockEntityUnloadCallback<ServerWorld>> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(BlockEntityUnloadCallback.class, callbacks -> (blockEntity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerBlockEntityUnload");
-
-			for (BlockEntityUnloadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onUnloadBlockEntity(blockEntity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (BlockEntityUnloadCallback<ServerWorld> callback : callbacks) {
-				callback.onUnloadBlockEntity(blockEntity, world);
-			}
-		}
-	});
-
-	/**
-	 * Called when an Entity is loaded into a ServerWorld.
+	 * Called when the server has started and is about to tick for the first time.
 	 *
-	 * <p>Note there is no corresponding unload event because entity unloads cannot be reliably tracked.
+	 * <p>At this stage, all worlds are live.
 	 */
-	public static final Event<EntityLoadCallback<ServerWorld>> ENTITY_LOAD = EventFactory.createArrayBacked(EntityLoadCallback.class, callbacks -> (entity, world) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerEntityLoad");
-
-			for (EntityLoadCallback<ServerWorld> callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onEntityLoad(entity, world);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (EntityLoadCallback<ServerWorld> callback : callbacks) {
-				callback.onEntityLoad(entity, world);
-			}
-		}
-	});
-
-	/**
-	 * Called when the server has started. At this stage, all worlds are live.
-	 */
-	public static final Event<GameLifecycleCallback<MinecraftServer>> SERVER_STARTED = EventFactory.createArrayBacked(GameLifecycleCallback.class, (callbacks) -> (server) -> {
-		for (GameLifecycleCallback<MinecraftServer> callback : callbacks) {
+	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STARTED = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, (callbacks) -> (server) -> {
+		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}
 	});
 
 	/**
-	 * Called when the server has started stopping. All worlds are still present.
+	 * Called when the server has started shutting down. This occurs before the server's network channel is closed and before any players are disconnected.
+	 *
+	 * <p>All worlds are still present and can be modified.
 	 */
-	public static final Event<GameLifecycleCallback<MinecraftServer>> SERVER_STOPPING = EventFactory.createArrayBacked(GameLifecycleCallback.class, (callbacks) -> (server) -> {
-		for (GameLifecycleCallback<MinecraftServer> callback : callbacks) {
+	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STOPPING = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, (callbacks) -> (server) -> {
+		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}
 	});
 
 	/**
 	 * Called when the server has stopped. All worlds have been closed and all (block)entities and players have been unloaded.
+	 *
+	 * <p>On a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
+	 * Otherwise the client will continue to tick.
 	 */
-	public static final Event<GameLifecycleCallback<MinecraftServer>> SERVER_STOPPED = EventFactory.createArrayBacked(GameLifecycleCallback.class, callbacks -> server -> {
-		for (GameLifecycleCallback<MinecraftServer> callback : callbacks) {
+	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STOPPED = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, callbacks -> server -> {
+		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(server);
 		}
 	});
 
 	/**
 	 * Gets the currently running server.
+	 *
+	 * <p><b>Use of this method is highly impractical and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
+	 * One should attempt to obtain the server instance from a {@link ServerWorld server world} or via other means.
 	 *
 	 * <p>The server instance returned SHOULD NOT be cached! Call the method every time you need the server.
 	 *
@@ -236,11 +83,19 @@ public final class ServerLifecycleEvents {
 	}
 
 	/**
-	 * Checks if the current server is available. The server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to
+	 * Checks if the current server is available.
+	 * he server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to verify this is {@code true} before calling {@link ServerLifecycleEvents#getCurrentServer()}
+	 *
+	 * <p><b>Use of this method is highly impractical and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
+	 * One should attempt to obtain the server instance from a {@link ServerWorld server world} or via other means.
 	 *
 	 * @return true if the server is available.
 	 */
 	public static boolean isServerAvailable() {
 		return ServerLifecycleInternals.getServer() != null;
+	}
+
+	public interface LifecycleCallback {
+		void onChangeLifecycle(MinecraftServer server);
 	}
 }

@@ -31,7 +31,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.world.chunk.Chunk;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
 
 @Mixin(ThreadedAnvilChunkStorage.class)
 public abstract class ThreadedAnvilChunkStorageMixin {
@@ -48,7 +48,7 @@ public abstract class ThreadedAnvilChunkStorageMixin {
 	 */
 	@Inject(method = "method_18843", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;setLoadedToWorld(Z)V", shift = At.Shift.AFTER))
 	private void onChunkUnload(ChunkHolder chunkHolder, CompletableFuture<Chunk> chunkFuture, long pos, Chunk chunk, CallbackInfo ci) {
-		ServerLifecycleEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, chunk);
+		ServerChunkEvents.CHUNK_UNLOAD.invoker().onChunkUnload(this.world, chunk);
 	}
 
 	/**
@@ -62,6 +62,6 @@ public abstract class ThreadedAnvilChunkStorageMixin {
 	@Inject(method = "method_17227", at = @At("TAIL"))
 	private void onChunkLoad(ChunkHolder chunkHolder, Chunk protoChunk, CallbackInfoReturnable<Chunk> callbackInfoReturnable) {
 		// We fire the event at TAIL since the chunk is guaranteed to be a WorldChunk then.
-		ServerLifecycleEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, callbackInfoReturnable.getReturnValue());
+		ServerChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, callbackInfoReturnable.getReturnValue());
 	}
 }

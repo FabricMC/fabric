@@ -22,7 +22,7 @@ import java.util.Map;
 import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 /**
  * Test related to ticking events on the server.
@@ -32,13 +32,13 @@ public class ServerTickTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerLifecycleEvents.SERVER_TICK.register(server -> {
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (server.getTicks() % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server
 				ServerLifecycleTests.LOGGER.info("Ticked Server at " + server.getTicks() + " ticks.");
 			}
 		});
 
-		ServerLifecycleEvents.WORLD_TICK.register(world -> {
+		ServerTickEvents.END_WORLD_TICK.register(world -> {
 			final int worldTicks = tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
 
 			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the server world

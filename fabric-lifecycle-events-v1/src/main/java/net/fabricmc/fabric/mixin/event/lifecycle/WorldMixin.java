@@ -36,7 +36,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 @Mixin(World.class)
 public abstract class WorldMixin {
@@ -46,7 +47,7 @@ public abstract class WorldMixin {
 	@Inject(method = "addBlockEntity", at = @At("TAIL"))
 	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
 		if (!this.isClient()) { // Only fire this event if we are a server world
-			ServerLifecycleEvents.BLOCK_ENTITY_LOAD.invoker().onLoadBlockEntity(blockEntity, (ServerWorld) (Object) this);
+			ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) (Object) this);
 		}
 	}
 
@@ -54,14 +55,14 @@ public abstract class WorldMixin {
 	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", ordinal = 1), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	protected void onUnloadBlockEntity(BlockPos pos, CallbackInfo ci, BlockEntity blockEntity) {
 		if (!this.isClient()) { // Only fire this event if we are a server world
-			ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, (ServerWorld) (Object) this);
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ServerWorld) (Object) this);
 		}
 	}
 
 	@Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;removeBlockEntity(Lnet/minecraft/util/math/BlockPos;)V")), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	protected void onRemoveBlockEntity(CallbackInfo ci, Profiler profiler, Iterator iterator, BlockEntity blockEntity) {
 		if (!this.isClient()) {
-			ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(blockEntity, (ServerWorld) (Object) this);
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ServerWorld) (Object) this);
 		}
 	}
 
@@ -69,7 +70,7 @@ public abstract class WorldMixin {
 	protected boolean onPurgeRemovedBlockEntities(List<BlockEntity> blockEntityList, Collection<BlockEntity> removals) {
 		if (!this.isClient()) {
 			for (BlockEntity removal : removals) {
-				ServerLifecycleEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnloadBlockEntity(removal, (ServerWorld) (Object) this);
+				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removal, (ServerWorld) (Object) this);
 			}
 		}
 
@@ -80,7 +81,7 @@ public abstract class WorldMixin {
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
 		if (!this.isClient()) {
-			ServerLifecycleEvents.WORLD_TICK.invoker().onTick((ServerWorld) (Object) this);
+			ServerTickEvents.END_WORLD_TICK.invoker().onTick((ServerWorld) (Object) this);
 		}
 	}
 }

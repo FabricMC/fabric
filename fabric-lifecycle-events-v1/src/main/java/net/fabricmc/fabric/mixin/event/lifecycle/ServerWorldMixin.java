@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
@@ -36,7 +36,7 @@ public abstract class ServerWorldMixin {
 	@Inject(method = "loadEntityUnchecked", at = @At("TAIL"))
 	private void onLoadEntity(Entity entity, CallbackInfo ci) {
 		if (!this.ticking) { // Copy vanilla logic, we cannot load entities while the game is ticking entities
-			ServerLifecycleEvents.ENTITY_LOAD.invoker().onEntityLoad(entity, (ServerWorld) (Object) this);
+			ServerEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, (ServerWorld) (Object) this);
 		}
 	}
 }

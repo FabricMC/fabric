@@ -25,7 +25,8 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
@@ -37,17 +38,17 @@ public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		final Logger logger = ServerLifecycleTests.LOGGER;
 
-		ClientLifecycleEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
+		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.clientBlockEntities.add(blockEntity);
 			logger.info("[CLIENT]" + " LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
 		});
 
-		ClientLifecycleEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
+		ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
 			this.clientBlockEntities.remove(blockEntity);
 			logger.info("[CLIENT]" + " UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
 		});
 
-		ClientLifecycleEvents.CLIENT_TICK.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (this.clientTicks++ % 200 == 0 && client.world != null) {
 				final int blockEntities = client.world.blockEntities.size();
 				logger.info("[CLIENT] Tracked BlockEntities:" + this.clientBlockEntities.size() + " Ticked at: " + this.clientTicks + "ticks");

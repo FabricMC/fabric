@@ -23,13 +23,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
+@Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 	@Inject(at = @At("RETURN"), method = "tick")
 	private void onTick(CallbackInfo info) {
-		ClientLifecycleEvents.CLIENT_TICK.invoker().onTick((MinecraftClient) (Object) this);
+		ClientTickEvents.END_CLIENT_TICK.invoker().onTick((MinecraftClient) (Object) this);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;)V", shift = At.Shift.AFTER), method = "stop")

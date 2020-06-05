@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 @Environment(EnvType.CLIENT)
@@ -28,7 +28,7 @@ public class ClientLifecycleTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientLifecycleEvents.CLIENT_TICK.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			this.ticks++; // Just track our own tick since the client doesn't have a ticks value.
 
 			if (this.ticks % 200 == 0) {

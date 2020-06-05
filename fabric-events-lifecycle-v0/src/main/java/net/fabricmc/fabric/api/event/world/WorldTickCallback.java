@@ -18,15 +18,16 @@ package net.fabricmc.fabric.api.event.world;
 
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 @Deprecated
 public interface WorldTickCallback {
 	/**
 	 * @deprecated The new WorldTickCallback has been split into a client and server callback.
-	 * Please use the {@link net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents#WORLD_TICK server} or {@link ClientLifecycleEvents#WORLD_TICK client} callbacks.
+	 * Please use the {@link ServerTickEvents#END_WORLD_TICK server} or {@link ClientTickEvents#END_WORLD_TICK client} callbacks.
 	 */
 	@Deprecated
 	Event<WorldTickCallback> EVENT = EventFactory.createArrayBacked(WorldTickCallback.class,
