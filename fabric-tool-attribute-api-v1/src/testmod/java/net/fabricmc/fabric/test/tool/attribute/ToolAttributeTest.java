@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.tool.attribute;
 
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.MaterialColor;
@@ -35,9 +34,9 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 
 public class ToolAttributeTest implements ModInitializer {
-
 	private boolean hasValidatedTags = false;
 
 	@Override
@@ -60,6 +59,7 @@ public class ToolAttributeTest implements ModInitializer {
 		if (hasValidatedTags) {
 			return;
 		}
+
 		hasValidatedTags = true;
 
 		if (FabricToolTags.PICKAXES.values().isEmpty()) {
