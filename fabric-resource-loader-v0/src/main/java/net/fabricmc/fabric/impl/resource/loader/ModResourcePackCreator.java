@@ -20,11 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.class_5352;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
@@ -47,7 +47,8 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			}
 
 			T var3 = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP, class_5352.field_25348);
+					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
+					text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod")));
 
 			if (var3 != null) {
 				consumer.accept(var3);

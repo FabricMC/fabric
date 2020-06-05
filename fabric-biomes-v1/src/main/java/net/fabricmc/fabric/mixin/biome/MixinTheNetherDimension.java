@@ -18,12 +18,14 @@ package net.fabricmc.fabric.mixin.biome;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
@@ -32,11 +34,11 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 @Mixin(MultiNoiseBiomeSource.class)
 public class MixinTheNetherDimension {
-	@ModifyArg(method = "method_28467", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource;<init>(JLjava/util/List;Ljava/util/Optional;)V"))
-	private static List<Pair<Biome.MixedNoisePoint, Biome>> modifyNetherBiomes(List<Pair<Biome.MixedNoisePoint, Biome>> list) {
-		// the provided set is immutable, so we construct our own
-		List<Pair<Biome.MixedNoisePoint, Biome>> newList = new ArrayList<>(list);
-		newList.addAll(InternalBiomeData.getNetherBiomes().stream().flatMap((biome) -> biome.streamNoises().map((point) -> Pair.of(point, biome))).collect(ImmutableList.toImmutableList()));
-		return newList;
+	@Inject(method = "method_28467", at = @At("RETURN"), cancellable = true)
+	private static void method_28467(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> info) {
+		List<Biome> newList = new ArrayList<>(info.getReturnValue().method_28443());
+		newList.addAll(InternalBiomeData.getNetherBiomes());
+		MultiNoiseBiomeSource multiNoiseBiomeSource = new MultiNoiseBiomeSource(l, newList.stream().flatMap((biome) -> biome.streamNoises().map((point) -> Pair.of(point, biome))).collect(ImmutableList.toImmutableList()), Optional.of(MultiNoiseBiomeSource.class_5305.field_24723));
+		info.setReturnValue(multiNoiseBiomeSource);
 	}
 }
