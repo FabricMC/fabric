@@ -33,8 +33,8 @@ public abstract class MixinCommandManager {
 	 * @reason Add commands before ambiguities are calculated.
 	 */
 	@Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
-	private void fabric_addCommands(CommandDispatcher<ServerCommandSource> dispatcher, AmbiguityConsumer<ServerCommandSource> ambiguityConsumer, CommandManager.class_5364 arg) {
-		if (arg == CommandManager.class_5364.field_25421) {
+	private void fabric_addCommands(CommandDispatcher<ServerCommandSource> dispatcher, AmbiguityConsumer<ServerCommandSource> ambiguityConsumer, CommandManager.RegistrationEnvironment arg) {
+		if (arg != CommandManager.RegistrationEnvironment.DEDICATED) {
 			CommandRegistrationCallback.EVENT.invoker().register(dispatcher, false);
 		}
 
