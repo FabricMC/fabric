@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-transactions-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.transaction.TransactionInit"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*",
+    "fabric-events-lifecycle-v0": "*"
+  }
+}
