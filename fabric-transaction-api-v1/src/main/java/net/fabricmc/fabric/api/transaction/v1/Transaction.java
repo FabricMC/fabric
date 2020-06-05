@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class Transaction {
+public final class Transaction {
 	private final Transaction parent;
 	private Transaction child = null;
 
