@@ -20,7 +20,7 @@ import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.screen.ScreenHandler;
 
 /**
- * @deprecated Use {@link net.fabricmc.fabric.api.screenhandler.v1.client.FabricHandledScreens.Factory} instead.
+ * @deprecated Use {@link net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry.Factory} instead.
  */
 @Deprecated
 @FunctionalInterface
