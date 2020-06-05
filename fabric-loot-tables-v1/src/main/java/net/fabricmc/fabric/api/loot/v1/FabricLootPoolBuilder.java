@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
+import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTableRange;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.mixin.loot.table.LootPoolBuilderHooks;
@@ -40,7 +40,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	}
 
 	@Override
-	public FabricLootPoolBuilder with(LootEntry.Builder<?> entry) {
+	public FabricLootPoolBuilder with(LootPoolEntry.Builder<?> entry) {
 		super.with(entry);
 		return this;
 	}
@@ -57,7 +57,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 		return this;
 	}
 
-	public FabricLootPoolBuilder withEntry(LootEntry entry) {
+	public FabricLootPoolBuilder withEntry(LootPoolEntry entry) {
 		extended.getEntries().add(entry);
 		return this;
 	}

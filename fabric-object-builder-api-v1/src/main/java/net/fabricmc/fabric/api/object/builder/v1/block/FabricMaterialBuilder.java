@@ -83,13 +83,4 @@ public class FabricMaterialBuilder extends Material.Builder {
 		super.replaceable();
 		return this;
 	}
-
-	/**
-	 * Make the material require tool to drop and slows down mining speed if the incorrect tool is used.
-	 */
-	@Override
-	public FabricMaterialBuilder requiresTool() {
-		super.requiresTool();
-		return this;
-	}
 }

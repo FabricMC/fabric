@@ -170,7 +170,7 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public void copyTo(MutableQuadView target) {
-		MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
+		final MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
 		// copy everything except the header/material
 		System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, EncodingFormat.TOTAL_STRIDE - 1);
 		quad.isFaceNormalInvalid = this.isFaceNormalInvalid;
@@ -288,7 +288,7 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	public boolean hasShade() {
-		return shade;
+		return shade && !material().disableDiffuse(0);
 	}
 
 	public void shade(boolean shade) {

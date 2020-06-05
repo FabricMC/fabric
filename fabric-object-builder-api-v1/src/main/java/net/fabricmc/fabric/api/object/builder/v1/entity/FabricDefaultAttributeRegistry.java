@@ -36,10 +36,7 @@ import net.fabricmc.fabric.mixin.object.builder.DefaultAttributeRegistryAccessor
  * {@link net.minecraft.entity.attribute.DefaultAttributeRegistry#get(EntityType)}.</p>
  *
  * @see net.minecraft.entity.attribute.DefaultAttributeRegistry
- * @deprecated Experimental feature, may be removed or changed without further notice.
- * Vanilla snapshot feature, subject to vanilla change.
  */
-@Deprecated
 public final class FabricDefaultAttributeRegistry {
 	/**
 	 * Private logger, not exposed.
