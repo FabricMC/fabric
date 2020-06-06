@@ -50,6 +50,7 @@ public final class ClientLifecycleEvents {
 
 	/**
 	 * Called when the client has stopped.
+	 * This is the last event called before the client is terminated.
 	 */
 	public static final Event<ClientLifecycleCallback> CLIENT_STOPPED = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
