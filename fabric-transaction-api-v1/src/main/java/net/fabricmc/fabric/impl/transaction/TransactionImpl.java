@@ -149,7 +149,7 @@ public class TransactionImpl implements Transaction {
 	///// STATIC MEMBERS FOLLOW /////
 
 	public static void setServerThread(MinecraftServer server) {
-		serverThread = Thread.currentThread();
+		serverThread = server == null ? null : Thread.currentThread();
 	}
 
 	private static Thread serverThread;
