@@ -48,13 +48,14 @@ public final class ServerTickEvents {
 			}
 		}
 	});
+
 	/**
-	 * Called when a ServerWorld ticks.
+	 * Called at the end of a ServerWorld's tick.
 	 */
 	public static final Event<ServerTickEvents.World> END_WORLD_TICK = EventFactory.createArrayBacked(ServerTickEvents.World.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricServerWorldTick_" + world.dimension.getType().toString());
+			profiler.push("fabricEndServerWorldTick_" + world.dimension.getType().toString());
 
 			for (ServerTickEvents.World callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));

@@ -53,7 +53,6 @@ public final class ServerLifecycleEvents {
 	 * Called when the server has stopped. All worlds have been closed and all (block)entities and players have been unloaded.
 	 *
 	 * <p>On a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
-	 * Otherwise the client will continue to tick.
 	 */
 	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STOPPED = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, callbacks -> server -> {
 		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {

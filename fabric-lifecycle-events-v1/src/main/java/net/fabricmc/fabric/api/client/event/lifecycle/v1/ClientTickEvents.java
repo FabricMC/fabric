@@ -53,12 +53,12 @@ public final class ClientTickEvents {
 	});
 
 	/**
-	 * Called when a ClientWorld ticks.
+	 * Called at the end of a ClientWorld's tick.
 	 */
 	public static final Event<ClientTickEvents.World> END_WORLD_TICK = EventFactory.createArrayBacked(ClientTickEvents.World.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
-			profiler.push("fabricClientWorldTick");
+			profiler.push("fabricEndClientWorldTick");
 
 			for (ClientTickEvents.World callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));

@@ -28,18 +28,29 @@ public final class ClientLifecycleEvents {
 	private ClientLifecycleEvents() {
 	}
 
-	public static final Event<ClientLifecycleCallback> CLIENT_STARTING = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
+	/**
+	 * Called when the client has started and is about to tick for the first time.
+	 */
+	public static final Event<ClientLifecycleCallback> CLIENT_STARTED = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(client);
 		}
 	});
 
+	/**
+	 * Called when the client begins to stop. This will fire before the client's player is disconnected if in game.
+	 *
+	 * <p>This will occur whether the client was gracefully stopped or the game crashes.
+	 */
 	public static final Event<ClientLifecycleCallback> CLIENT_STOPPING = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(client);
 		}
 	});
 
+	/**
+	 * Called when the client has stopped.
+	 */
 	public static final Event<ClientLifecycleCallback> CLIENT_STOPPED = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
 			callback.onChangeLifecycle(client);

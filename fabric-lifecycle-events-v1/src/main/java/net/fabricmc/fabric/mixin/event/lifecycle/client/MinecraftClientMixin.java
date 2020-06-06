@@ -49,6 +49,6 @@ public abstract class MinecraftClientMixin {
 	// We inject after the thread field is set so `ThreadExecutor#getThread` will work
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER), method = "run")
 	private void onStart(CallbackInfo ci) {
-		ClientLifecycleEvents.CLIENT_STARTING.invoker().onChangeLifecycle((MinecraftClient) (Object) this);
+		ClientLifecycleEvents.CLIENT_STARTED.invoker().onChangeLifecycle((MinecraftClient) (Object) this);
 	}
 }
