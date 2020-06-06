@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import java.util.function.BooleanSupplier;
+
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +29,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
@@ -38,5 +42,11 @@ public abstract class ServerWorldMixin {
 		if (!this.ticking) { // Copy vanilla logic, we cannot load entities while the game is ticking entities
 			ServerEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, (ServerWorld) (Object) this);
 		}
+	}
+
+	// Make sure "ticking" is true before we call the start tick, so inject after it is set
+	@Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/world/ServerWorld;insideTick:Z", opcode = Opcodes.PUTFIELD, ordinal = 0, shift = At.Shift.AFTER))
+	private void startWorldTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+		ServerTickEvents.START_WORLD_TICK.invoker().onTick((ServerWorld) (Object) this);
 	}
 }

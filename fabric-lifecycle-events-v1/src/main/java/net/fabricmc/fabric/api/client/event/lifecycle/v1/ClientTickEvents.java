@@ -31,6 +31,28 @@ public final class ClientTickEvents {
 	}
 
 	/**
+	 * Called at the start of the client tick.
+	 */
+	public static final Event<ClientTickEvents.Client> START_CLIENT_TICK = EventFactory.createArrayBacked(ClientTickEvents.Client.class, callbacks -> client -> {
+		if (EventFactory.isProfilingEnabled()) {
+			final Profiler profiler = client.getProfiler();
+			profiler.push("fabricStartClientTick");
+
+			for (ClientTickEvents.Client event : callbacks) {
+				profiler.push(EventFactory.getHandlerName(event));
+				event.onTick(client);
+				profiler.pop();
+			}
+
+			profiler.pop();
+		} else {
+			for (ClientTickEvents.Client event : callbacks) {
+				event.onTick(client);
+			}
+		}
+	});
+
+	/**
 	 * Called at the end of the client tick.
 	 */
 	public static final Event<ClientTickEvents.Client> END_CLIENT_TICK = EventFactory.createArrayBacked(ClientTickEvents.Client.class, callbacks -> client -> {
@@ -53,7 +75,31 @@ public final class ClientTickEvents {
 	});
 
 	/**
+	 * Called at the start of a ClientWorld's tick.
+	 */
+	public static final Event<ClientTickEvents.World> START_WORLD_TICK = EventFactory.createArrayBacked(ClientTickEvents.World.class, callbacks -> world -> {
+		if (EventFactory.isProfilingEnabled()) {
+			final Profiler profiler = world.getProfiler();
+			profiler.push("fabricStartClientWorldTick");
+
+			for (ClientTickEvents.World callback : callbacks) {
+				profiler.push(EventFactory.getHandlerName(callback));
+				callback.onTick(world);
+				profiler.pop();
+			}
+
+			profiler.pop();
+		} else {
+			for (ClientTickEvents.World callback : callbacks) {
+				callback.onTick(world);
+			}
+		}
+	});
+
+	/**
 	 * Called at the end of a ClientWorld's tick.
+	 *
+	 * <p>End of world tick may be used to start async computations for the next tick.
 	 */
 	public static final Event<ClientTickEvents.World> END_WORLD_TICK = EventFactory.createArrayBacked(ClientTickEvents.World.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {

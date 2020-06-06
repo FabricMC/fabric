@@ -31,8 +31,13 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 @Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
+	@Inject(at = @At("HEAD"), method = "tick")
+	private void onStartTick(CallbackInfo info) {
+		ClientTickEvents.START_CLIENT_TICK.invoker().onTick((MinecraftClient) (Object) this);
+	}
+
 	@Inject(at = @At("RETURN"), method = "tick")
-	private void onTick(CallbackInfo info) {
+	private void onEndTick(CallbackInfo info) {
 		ClientTickEvents.END_CLIENT_TICK.invoker().onTick((MinecraftClient) (Object) this);
 	}
 

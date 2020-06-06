@@ -24,7 +24,7 @@ public class IntegratedServerLifecycleTests implements ClientModInitializer {
 	public void onInitializeClient() {
 		// This should throw an illegal state exception, if it throws anything else, something is wrong. Should not return null since the supplier is setup in the api's ctor.
 		try {
-			ServerLifecycleEvents.getCurrentServer();
+			ServerLifecycleEvents.getPrimaryServer();
 		} catch (IllegalStateException ignored) {
 			// Do nothing, this is intended
 		}

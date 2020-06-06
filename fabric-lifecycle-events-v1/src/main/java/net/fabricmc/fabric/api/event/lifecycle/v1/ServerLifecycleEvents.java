@@ -61,9 +61,9 @@ public final class ServerLifecycleEvents {
 	});
 
 	/**
-	 * Gets the currently running server.
+	 * Gets the currently running primary server.
 	 *
-	 * <p><b>Use of this method is highly impractical and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
+	 * <p><b>Use of this method is highly discouraged and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
 	 * One should attempt to obtain the server instance from a {@link ServerWorld server world} or via other means.
 	 *
 	 * <p>The server instance returned SHOULD NOT be cached! Call the method every time you need the server.
@@ -71,7 +71,7 @@ public final class ServerLifecycleEvents {
 	 * @return the currently running server
 	 * @throws IllegalStateException if the server is not available
 	 */
-	public static MinecraftServer getCurrentServer() {
+	public static MinecraftServer getPrimaryServer() {
 		final MinecraftServer server = ServerLifecycleInternals.getServer();
 
 		if (server != null) {
@@ -83,14 +83,14 @@ public final class ServerLifecycleEvents {
 
 	/**
 	 * Checks if the current server is available.
-	 * he server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to verify this is {@code true} before calling {@link ServerLifecycleEvents#getCurrentServer()}
+	 * he server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to verify this is {@code true} before calling {@link ServerLifecycleEvents#getPrimaryServer()}
 	 *
-	 * <p><b>Use of this method is highly impractical and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
+	 * <p><b>Use of this method is highly discouraged and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
 	 * One should attempt to obtain the server instance from a {@link ServerWorld server world} or via other means.
 	 *
 	 * @return true if the server is available.
 	 */
-	public static boolean isServerAvailable() {
+	public static boolean isPrimaryServerAvailable() {
 		return ServerLifecycleInternals.getServer() != null;
 	}
 

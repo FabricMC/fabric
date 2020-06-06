@@ -44,6 +44,9 @@ public abstract class WorldMixin {
 	@Shadow
 	public abstract boolean isClient();
 
+	@Shadow
+	public abstract Profiler getProfiler();
+
 	@Inject(method = "addBlockEntity", at = @At("TAIL"))
 	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
 		if (!this.isClient()) { // Only fire this event if we are a server world

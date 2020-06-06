@@ -85,4 +85,9 @@ public abstract class ClientWorldMixin extends WorldMixin {
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
 		ClientTickEvents.END_WORLD_TICK.invoker().onTick((ClientWorld) (Object) this);
 	}
+
+	@Inject(method = "tickEntities", at = @At("HEAD"))
+	private void startWorldTick(CallbackInfo ci) {
+		ClientTickEvents.START_WORLD_TICK.invoker().onTick((ClientWorld) (Object) this);
+	}
 }
