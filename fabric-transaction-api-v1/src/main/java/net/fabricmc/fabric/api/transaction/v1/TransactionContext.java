@@ -23,7 +23,7 @@ package net.fabricmc.fabric.api.transaction.v1;
  */
 public interface TransactionContext {
 	/**
-	 * Use during {@link TransactionParticipant.TransactionDelegate#prepareRollback(TransactionContext)} to
+	 * Use during {@link TransactionParticipant.TransactionDelegate#prepareCompletionHandler(TransactionContext)} to
 	 * save rollback state in the transaction.  The state can be any type of instance or {@code null}. It
 	 * will never be inspected or altered by the transaction.
 	 *
@@ -33,7 +33,7 @@ public interface TransactionContext {
 	<T> void setState(T state);
 
 	/**
-	 * Use during when the consumer returned by {@link TransactionParticipant.TransactionDelegate#prepareRollback(TransactionContext)}
+	 * Use during when the consumer returned by {@link TransactionParticipant.TransactionDelegate#prepareCompletionHandler(TransactionContext)}
 	 * is called to retrieve the rollback state that was earlier passed to {@link #setState(Object)}.
 	 *
 	 * @param <T> Class of the state instance
@@ -42,7 +42,7 @@ public interface TransactionContext {
 	<T> T getState();
 
 	/**
-	 * Use during when the consumer returned by {@link TransactionParticipant.TransactionDelegate#prepareRollback(TransactionContext)}
+	 * Use during when the consumer returned by {@link TransactionParticipant.TransactionDelegate#prepareCompletionHandler(TransactionContext)}
 	 * to test if the transaction is rolled back or committed. If rolled back, the participant must undo
 	 * all state changes that happened during the transaction.
 	 *

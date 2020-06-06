@@ -135,7 +135,7 @@ public class TransactionImpl implements Transaction {
 
 		if (!participants.containsKey(d)) {
 			contextDelegate = d;
-			participants.put(d, defaultRollback(d.prepareRollback(context)));
+			participants.put(d, defaultRollback(d.prepareCompletionHandler(context)));
 			contextDelegate = null;
 		}
 
