@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fabric-key-binding-api-v1-testmod",
-  "name": "Fabric Key Bindings API (v1) Test Mod",
+  "name": "Fabric Key Binding API (v1) Test Mod",
   "version": "1.0.0",
   "environment": "*",
   "license": "Apache-2.0",
@@ -12,7 +12,7 @@
   },
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.test.client.keybinding.KeybindingsTest"
+      "net.fabricmc.fabric.test.client.keybinding.KeyBindingsTest"
     ]
   }
 }
