@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-transactions-v1",
+  "id": "fabric-transaction-api-v1",
   "version": "${version}",
   "license": "Apache-2.0",
   "entrypoints": {
