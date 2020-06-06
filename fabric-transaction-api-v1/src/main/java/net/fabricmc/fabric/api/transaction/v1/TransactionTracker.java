@@ -16,8 +16,11 @@
 
 package net.fabricmc.fabric.api.transaction.v1;
 
+import net.minecraft.world.World;
+
 public class TransactionTracker {
-	public static final TransactionTracker INSTANCE = new TransactionTracker();
+	private static final TransactionTracker CLIENT = new TransactionTracker();
+	private static final TransactionTracker SERVER = new TransactionTracker();
 
 	private Transaction current;
 
@@ -37,4 +40,9 @@ public class TransactionTracker {
 		this.current = ta;
 		return ta;
 	}
+
+	public static TransactionTracker getInstance(World world) {
+		return world.isClient() ? CLIENT : SERVER;
+	}
+
 }

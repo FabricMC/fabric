@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.transaction.v1;
 
+import net.minecraft.world.World;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -198,13 +200,13 @@ public final class Transaction {
 	}
 
 	/**
-	 * Create a new transaction.
+	 * Create a new transaction using the default {@link TransactionTracker}s.
 	 *
 	 * <p>Calling this will invalidate any existing transactions.
 	 *
 	 * @return the new transaction
 	 */
-	public static Transaction create() {
-		return TransactionTracker.INSTANCE.create();
+	public static Transaction create(World world) {
+		return TransactionTracker.getInstance(world).create();
 	}
 }
