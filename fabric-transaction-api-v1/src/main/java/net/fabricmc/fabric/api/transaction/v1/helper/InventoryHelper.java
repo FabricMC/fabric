@@ -42,7 +42,7 @@ public class InventoryHelper {
 		}
 
 		@Override
-		public Consumer<TransactionContext> prepareRollback(TransactionContext context) {
+		public Consumer<TransactionContext> prepareCompletionHandler(TransactionContext context) {
 			final int size = inventory.size();
 			final ItemStack[] state = new ItemStack[size];
 

@@ -36,7 +36,7 @@ public interface TransactionParticipant {
 	}
 
 	/**
-	 * Allows instances that share the same rollback state to share a delegate.
+	 * Allows instances that share the same rollback/rollforwar state to share a delegate.
 	 * If the same delegate is enlisted more than once, it will only be asked to prepare
 	 * rollback the first time.
 	 *
@@ -58,7 +58,7 @@ public interface TransactionParticipant {
 		 * @param The transaction context - use to store and retrieve transaction state and query status at close
 		 * @return The action (as a {@code Consumer}) to be run when the transaction is closed
 		 */
-		Consumer<TransactionContext> prepareRollback(TransactionContext context);
+		Consumer<TransactionContext> prepareCompletionHandler(TransactionContext context);
 
 		/**
 		 * Specialized transaction delegate that does nothing. Use as the delegate
