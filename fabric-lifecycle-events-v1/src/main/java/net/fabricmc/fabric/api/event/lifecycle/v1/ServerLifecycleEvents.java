@@ -39,7 +39,10 @@ public final class ServerLifecycleEvents {
 	});
 
 	/**
-	 * Called when the server has started shutting down. This occurs before the server's network channel is closed and before any players are disconnected.
+	 * Called when the server has started shutting down.
+	 * This occurs before the server's network channel is closed and before any players are disconnected.
+	 *
+	 * <p>For example, an integrated server will begin stopping, but it's client may continue to run.
 	 *
 	 * <p>All worlds are still present and can be modified.
 	 */
@@ -50,9 +53,11 @@ public final class ServerLifecycleEvents {
 	});
 
 	/**
-	 * Called when the server has stopped. All worlds have been closed and all (block)entities and players have been unloaded.
+	 * Called when the server has stopped.
+	 * All worlds have been closed and all (block)entities and players have been unloaded.
 	 *
-	 * <p>On a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
+	 * <p>For example, an integrated server will begin stopping, but it's client may continue to run.
+	 * Meanwhile for a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
 	 */
 	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STOPPED = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, callbacks -> server -> {
 		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {
