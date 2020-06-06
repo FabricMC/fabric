@@ -56,6 +56,11 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 	}
 
 	@Override
+	public boolean factoryExists(Identifier identifier) {
+		return FACTORIES.containsKey(identifier);
+	}
+
+	@Override
 	public void openContainer(Identifier identifier, PlayerEntity player, Consumer<PacketByteBuf> writer) {
 		if (!(player instanceof ServerPlayerEntity)) {
 			LOGGER.warn("Please only use ContainerProviderRegistry.openContainer() with server-sided player entities!");

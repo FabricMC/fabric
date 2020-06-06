@@ -39,6 +39,14 @@ public interface ContainerProviderRegistry {
 	void registerFactory(Identifier identifier, ContainerFactory<Container> factory);
 
 	/**
+	 * Checks if a container factory has already been registered with the given identifier.
+	 *
+	 * @param identifier the identifier of the container factory.
+	 * @return           true if a container factory has already been registered for the given identifier.
+	 */
+	boolean factoryExists(Identifier identifier);
+
+	/**
 	 * Open a modded container.
 	 *
 	 * @param identifier the identifier that was used when registering the container
