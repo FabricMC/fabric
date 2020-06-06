@@ -43,9 +43,14 @@ public final class Transaction {
 	 *
 	 * @see Map#get(Object)
 	 */
-	@SuppressWarnings("unchecked")
 	public <D> D get(TransactionDataKey<D> container) {
 		this.checkValid();
+		this.invalidateChildren();
+		return this.getUnchecked(container);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <D> D getUnchecked(TransactionDataKey<D> container) {
 		return (D) this.data.get(container);
 	}
 
@@ -56,9 +61,14 @@ public final class Transaction {
 	 *
 	 * @see Map#put(Object, Object)
 	 */
-	@SuppressWarnings("unchecked")
 	public <D> D put(TransactionDataKey<D> container, D value) {
 		this.checkValid();
+		this.invalidateChildren();
+		return putUnchecked(container, value);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <D> D putUnchecked(TransactionDataKey<D> container, D value) {
 		return (D) this.data.put((TransactionDataKey<Object>) container, value);
 	}
 
@@ -70,6 +80,7 @@ public final class Transaction {
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	public <D> D computeIfAbsent(TransactionDataKey<D> container, Function<TransactionDataKey<D>, D> op) {
 		this.checkValid();
+		this.invalidateChildren();
 		return (D) this.data.computeIfAbsent((TransactionDataKey<Object>) container, (Function) op);
 	}
 
@@ -78,24 +89,30 @@ public final class Transaction {
 	 * the transaction tree, picking the closest value and applying {@code op}
 	 * to it.
 	 *
+	 * <p><b>WARNING</b>: The data passed to {@code op} must be copied if it
+	 * contains mutable state to prevent modifying the parent transaction's
+	 * state!
+	 *
 	 * <p>Calling this will invalidate any child transactions.
 	 *
 	 * @param container the container to init the value for
 	 * @param op        the map to apply before putting the value into the data
-	 *                  map
+	 *                  map, this should copy the object to prevent mutating the
+	 *                  parent transaction's state
 	 * @param <D>       the data type
 	 */
 	public <D> void initWithParent(TransactionDataKey<D> container, Function<D, D> op) {
 		this.checkValid();
+		this.invalidateChildren();
 
 		if (!this.data.containsKey(container)) {
 			Transaction current = this;
 
 			while (current != null) {
-				D data = current.get(container);
+				D data = current.getUnchecked(container);
 
 				if (data != null) {
-					this.put(container, op.apply(data));
+					this.putUnchecked(container, op.apply(data));
 					return;
 				}
 
@@ -108,6 +125,9 @@ public final class Transaction {
 	 * Collect a list of all the data. The first element in the list will be
 	 * closest to the root of the transaction tree.
 	 *
+	 * <p><b>WARNING</b>: The data returned here must not be modified since it
+	 * partially belongs to parent transactions!
+	 *
 	 * <p>Calling this will invalidate any child transactions.
 	 *
 	 * @param container the container to get the data list for
@@ -116,11 +136,13 @@ public final class Transaction {
 	 */
 	public <D> List<D> collectData(TransactionDataKey<D> container) {
 		this.checkValid();
+		this.invalidateChildren();
+
 		LinkedList<D> dataList = new LinkedList<>();
 		Transaction current = this;
 
 		while (current != null) {
-			D data = current.get(container);
+			D data = current.getUnchecked(container);
 
 			if (data != null) {
 				dataList.addFirst(data);
@@ -159,16 +181,20 @@ public final class Transaction {
 	 * <p>In most cases, this does not have to be called manually.
 	 */
 	public void invalidate() {
-		if (this.child != null) {
-			this.child.invalidate();
-			this.child = null;
-		}
+		this.invalidateChildren();
 
 		if (this.parent != null) {
 			this.parent.child = null;
 		}
 
 		this.valid = false;
+	}
+
+	private void invalidateChildren() {
+		if (this.child != null) {
+			this.child.invalidate();
+			this.child = null;
+		}
 	}
 
 	public boolean isValid() {
@@ -189,10 +215,7 @@ public final class Transaction {
 	 */
 	public Transaction createTransaction() {
 		this.checkValid();
-
-		if (this.child != null) {
-			this.child.valid = false;
-		}
+		this.invalidateChildren();
 
 		Transaction transaction = new Transaction(this);
 		this.child = transaction;
