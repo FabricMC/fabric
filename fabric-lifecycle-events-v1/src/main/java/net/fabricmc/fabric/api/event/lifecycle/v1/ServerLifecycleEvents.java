@@ -71,6 +71,7 @@ public final class ServerLifecycleEvents {
 	 * @return the currently running server
 	 * @throws IllegalStateException if the server is not available
 	 */
+	@Deprecated
 	public static MinecraftServer getPrimaryServer() {
 		final MinecraftServer server = ServerLifecycleInternals.getServer();
 
@@ -90,6 +91,7 @@ public final class ServerLifecycleEvents {
 	 *
 	 * @return true if the server is available.
 	 */
+	@Deprecated
 	public static boolean isPrimaryServerAvailable() {
 		return ServerLifecycleInternals.getServer() != null;
 	}
