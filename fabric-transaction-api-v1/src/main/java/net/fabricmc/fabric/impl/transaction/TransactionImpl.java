@@ -30,7 +30,6 @@ import net.fabricmc.fabric.api.transaction.v1.TransactionParticipant;
 import net.fabricmc.fabric.api.transaction.v1.TransactionParticipant.TransactionDelegate;
 
 public class TransactionImpl implements Transaction {
-
 	private final class ContextImpl implements TransactionContext {
 		private ContextImpl() {
 		}
@@ -154,7 +153,7 @@ public class TransactionImpl implements Transaction {
 
 	private static Thread serverThread;
 
-	/** Held by thread of active transaction, regardless of thread */
+	/** Held by thread of active transaction, regardless of thread. */
 	static final ReentrantLock innerLock = new ReentrantLock();
 
 	/**

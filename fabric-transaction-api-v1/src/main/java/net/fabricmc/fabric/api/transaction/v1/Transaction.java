@@ -50,7 +50,7 @@ public interface Transaction extends AutoCloseable {
 	 * @return the participant
 	 */
 	default <T extends TransactionParticipant> T enlist(T participant) {
-		if(!participant.isSelfEnlisting()) {
+		if (!participant.isSelfEnlisting()) {
 			return enlistSelf(participant);
 		} else {
 			return participant;
@@ -120,7 +120,7 @@ public interface Transaction extends AutoCloseable {
 	static void enlistIfOpen(TransactionParticipant participant) {
 		final Transaction tx = current();
 
-		if(tx != null) {
+		if (tx != null) {
 			tx.enlist(participant);
 		}
 	}
@@ -135,7 +135,7 @@ public interface Transaction extends AutoCloseable {
 	static void selfEnlistIfOpen(TransactionParticipant participant) {
 		final Transaction tx = current();
 
-		if(tx != null) {
+		if (tx != null) {
 			tx.enlistSelf(participant);
 		}
 	}

@@ -64,7 +64,7 @@ public class InventoryHelper {
 					final ItemStack myStack = inventory.getStack(i);
 					final ItemStack stateStack = stacks[i];
 
-					if ((myStack.isEmpty() && stateStack.isEmpty()) || (myStack.isItemEqual(stateStack) && myStack.getCount() == stateStack.getCount()) ) {
+					if ((myStack.isEmpty() && stateStack.isEmpty()) || (myStack.isItemEqual(stateStack) && myStack.getCount() == stateStack.getCount())) {
 						continue;
 					}
 

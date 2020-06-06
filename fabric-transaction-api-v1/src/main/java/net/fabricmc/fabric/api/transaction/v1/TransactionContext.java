@@ -17,9 +17,9 @@
 package net.fabricmc.fabric.api.transaction.v1;
 
 /**
- * Defines the object used to share data between a transaction and a specific participant.<p>
+ * Defines the object used to share data between a transaction and a specific participant.
  *
- * Participants should never retain a reference - this instance may be reused for other participants.
+ * <p>Participants should never retain a reference - this instance may be reused for other participants.
  */
 public interface TransactionContext {
 	/**

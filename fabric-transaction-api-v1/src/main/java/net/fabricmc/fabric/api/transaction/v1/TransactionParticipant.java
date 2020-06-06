@@ -49,9 +49,9 @@ public interface TransactionParticipant {
 		/**
 		 * Called on enlisting to signal saving of rollback state or whatever
 		 * preparation is appropriate for the participating implementation.
-		 * Will be called only once per transaction (including nested transactions).<p>
+		 * Will be called only once per transaction (including nested transactions).
 		 *
-		 * Consumer is called for both commit and rollback events just in case some
+		 * <p>Consumer is called for both commit and rollback events just in case some
 		 * implementations need to lock or store resources internally during a
 		 * transaction and need notification when one ends.
 		 *
@@ -64,7 +64,7 @@ public interface TransactionParticipant {
 		 * Specialized transaction delegate that does nothing. Use as the delegate
 		 * for participants without any internal state to be rolled back.
 		 */
-		TransactionDelegate IGNORE = c0 -> c1 -> {};
+		TransactionDelegate IGNORE = c0 -> c1 -> { };
 	}
 }
 
