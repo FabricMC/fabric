@@ -1,14 +1,31 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.test.transaction;
+
+import java.util.Objects;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.CauldronBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
 import net.fabricmc.fabric.api.transaction.v1.FullCopyDataKey;
 import net.fabricmc.fabric.api.transaction.v1.Transaction;
-
-import java.util.Objects;
 
 public class CauldronTransactionSupport {
 	private final DataKey key;
@@ -77,8 +94,8 @@ public class CauldronTransactionSupport {
 			if (this == o) return true;
 			if (o == null || getClass() != o.getClass()) return false;
 			DataKey dataKey = (DataKey) o;
-			return world.equals(dataKey.world) &&
-				pos.equals(dataKey.pos);
+			return world.equals(dataKey.world)
+				&& pos.equals(dataKey.pos);
 		}
 
 		@Override
@@ -86,5 +103,4 @@ public class CauldronTransactionSupport {
 			return Objects.hash(world, pos);
 		}
 	}
-
 }

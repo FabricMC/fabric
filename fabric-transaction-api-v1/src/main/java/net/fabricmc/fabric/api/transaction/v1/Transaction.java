@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.transaction.v1;
 
-import net.minecraft.world.World;
-
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+
+import net.minecraft.world.World;
 
 public final class Transaction {
 	private final Transaction parent;

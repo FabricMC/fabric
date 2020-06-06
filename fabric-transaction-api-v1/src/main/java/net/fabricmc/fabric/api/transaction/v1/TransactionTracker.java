@@ -44,5 +44,4 @@ public class TransactionTracker {
 	public static TransactionTracker getInstance(World world) {
 		return world.isClient() ? CLIENT : SERVER;
 	}
-
 }
