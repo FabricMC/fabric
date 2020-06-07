@@ -51,16 +51,6 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
-	/**
-	 * Called when the game's client has stopped.
-	 * This is the last event called before the game cleans up and the JVM is terminated.
-	 */
-	public static final Event<ClientLifecycleCallback> CLIENT_STOPPED = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
-		for (ClientLifecycleCallback callback : callbacks) {
-			callback.onChangeLifecycle(client);
-		}
-	});
-
 	public interface ClientLifecycleCallback {
 		void onChangeLifecycle(MinecraftClient client);
 	}

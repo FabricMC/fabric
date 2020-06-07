@@ -53,6 +53,7 @@ public final class ClientEntityEvents {
 			}
 		}
 	});
+
 	/**
 	 * Called when an Entity is about to be unloaded from a ClientWorld.
 	 *

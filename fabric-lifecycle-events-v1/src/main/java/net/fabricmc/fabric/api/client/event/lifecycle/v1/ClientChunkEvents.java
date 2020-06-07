@@ -53,6 +53,7 @@ public final class ClientChunkEvents {
 			}
 		}
 	});
+
 	/**
 	 * Called when a chunk is about to be unloaded from a ClientWorld.
 	 *

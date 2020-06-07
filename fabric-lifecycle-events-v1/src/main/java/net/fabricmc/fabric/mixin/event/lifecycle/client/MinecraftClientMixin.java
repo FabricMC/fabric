@@ -46,11 +46,6 @@ public abstract class MinecraftClientMixin {
 		ClientLifecycleEvents.CLIENT_STOPPING.invoker().onChangeLifecycle((MinecraftClient) (Object) this);
 	}
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;close()V"), method = "stop")
-	private void onStop(CallbackInfo ci) {
-		ClientLifecycleEvents.CLIENT_STOPPED.invoker().onChangeLifecycle((MinecraftClient) (Object) this);
-	}
-
 	// We inject after the thread field is set so `ThreadExecutor#getThread` will work
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER), method = "run")
 	private void onStart(CallbackInfo ci) {
