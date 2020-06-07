@@ -47,7 +47,7 @@ public class LegacyLifecycleEventsTest implements ModInitializer {
 		});
 
 		ServerStopCallback.EVENT.register(server -> {
-			LOGGER.info("Stopped Server! (Legacy)");
+			LOGGER.info("Stopping Server! (Legacy)");
 		});
 
 		WorldTickCallback.EVENT.register(world -> {

@@ -19,13 +19,24 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 @Environment(EnvType.CLIENT)
 public class ClientLifecycleTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+			client.submitAndJoin(() -> { // This should fail if the client thread was not bound yet.
+				System.out.println("Started the client");
+			});
+		});
 
+		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
+			System.out.println("Recieved stop interuption");
+		});
+
+		ClientLifecycleEvents.CLIENT_STOPPED.register(client -> {
+			System.out.println("Client has stopped!");
+		});
 	}
 }

@@ -30,6 +30,8 @@ public final class ServerEntityEvents {
 	/**
 	 * Called when an Entity is loaded into a ServerWorld.
 	 *
+	 * <p>When this event is called, the entity is already in the world.
+	 *
 	 * <p>Note there is no corresponding unload event because entity unloads cannot be reliably tracked.
 	 */
 	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, callbacks -> (entity, world) -> {

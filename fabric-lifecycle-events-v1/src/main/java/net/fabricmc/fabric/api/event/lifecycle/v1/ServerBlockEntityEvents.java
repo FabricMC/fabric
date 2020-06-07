@@ -29,6 +29,8 @@ public final class ServerBlockEntityEvents {
 
 	/**
 	 * Called when an BlockEntity is loaded into a ServerWorld.
+	 *
+	 * <p>When this is event is called, the block entity is already in the world.
 	 */
 	public static final Event<ServerBlockEntityEvents.Load> BLOCK_ENTITY_LOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Load.class, callbacks -> (blockEntity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {
@@ -50,7 +52,9 @@ public final class ServerBlockEntityEvents {
 	});
 
 	/**
-	 * Called when an BlockEntity is unloaded from a ServerWorld.
+	 * Called when an BlockEntity is about to be unloaded from a ServerWorld.
+	 *
+	 * <p>When this event is called, the block entity is still present on the world.
 	 */
 	public static final Event<Unload> BLOCK_ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerBlockEntityEvents.Unload.class, callbacks -> (blockEntity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {

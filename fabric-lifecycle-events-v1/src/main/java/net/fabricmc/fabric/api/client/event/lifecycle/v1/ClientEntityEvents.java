@@ -32,6 +32,8 @@ public final class ClientEntityEvents {
 
 	/**
 	 * Called when an Entity is loaded into a ClientWorld.
+	 *
+	 * <p>When this event is called, the chunk is already in the world.
 	 */
 	public static final Event<ClientEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ClientEntityEvents.Load.class, callbacks -> (entity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {
@@ -52,7 +54,9 @@ public final class ClientEntityEvents {
 		}
 	});
 	/**
-	 * Called when an Entity is unloaded from a ClientWorld.
+	 * Called when an Entity is about to be unloaded from a ClientWorld.
+	 *
+	 * <p>When this event is called, the entity is still present in the world.
 	 */
 	public static final Event<ClientEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientEntityEvents.Unload.class, callbacks -> (entity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {

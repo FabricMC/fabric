@@ -32,6 +32,8 @@ public final class ClientChunkEvents {
 
 	/**
 	 * Called when a chunk is loaded into a ClientWorld.
+	 *
+	 * <p>When this event is called, the chunk is already in the world.
 	 */
 	public static final Event<ClientChunkEvents.Load> CHUNK_LOAD = EventFactory.createArrayBacked(ClientChunkEvents.Load.class, callbacks -> (clientWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
@@ -52,7 +54,9 @@ public final class ClientChunkEvents {
 		}
 	});
 	/**
-	 * Called when a chunk is unloaded from a ClientWorld.
+	 * Called when a chunk is about to be unloaded from a ClientWorld.
+	 *
+	 * <p>When this event is called, the chunk is still present in the world.
 	 */
 	public static final Event<ClientChunkEvents.Unload> CHUNK_UNLOAD = EventFactory.createArrayBacked(ClientChunkEvents.Unload.class, callbacks -> (clientWorld, chunk) -> {
 		if (EventFactory.isProfilingEnabled()) {
