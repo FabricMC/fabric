@@ -52,8 +52,13 @@ public abstract class MinecraftServerMixin {
 		ServerLifecycleEvents.SERVER_STOPPED.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
 	}
 
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;tickWorlds(Ljava/util/function/BooleanSupplier;)V"), method = "tick")
+	private void onStartTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
+		ServerTickEvents.START_SERVER_TICK.invoker().onTick((MinecraftServer) (Object) this);
+	}
+
 	@Inject(at = @At("TAIL"), method = "tick")
-	private void tick(BooleanSupplier shouldKeepTicking, CallbackInfo info) {
+	private void onEndTick(BooleanSupplier shouldKeepTicking, CallbackInfo info) {
 		ServerTickEvents.END_SERVER_TICK.invoker().onTick((MinecraftServer) (Object) this);
 	}
 
