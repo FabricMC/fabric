@@ -29,7 +29,9 @@ public final class ClientLifecycleEvents {
 	}
 
 	/**
-	 * Called when the client has started and is about to tick for the first time.
+	 * Called when the client thread has started and the client is about to tick for the first time.
+	 *
+	 * <p>This occurs while the game is still on the splash screen.
 	 */
 	public static final Event<ClientLifecycleCallback> CLIENT_STARTED = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
@@ -38,7 +40,10 @@ public final class ClientLifecycleEvents {
 	});
 
 	/**
-	 * Called when the client begins to stop. This will fire before the client's player is disconnected if in game.
+	 * Called when the game's client begins to stop.
+	 * This is caused by quitting the game, or closing the game window.
+	 *
+	 * <p>This will fire before the client's player is disconnected if in game.
 	 */
 	public static final Event<ClientLifecycleCallback> CLIENT_STOPPING = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
@@ -47,8 +52,8 @@ public final class ClientLifecycleEvents {
 	});
 
 	/**
-	 * Called when the client has stopped.
-	 * This is the last event called before the client is terminated.
+	 * Called when the game's client has stopped.
+	 * This is the last event called before the game cleans up and the JVM is terminated.
 	 */
 	public static final Event<ClientLifecycleCallback> CLIENT_STOPPED = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
