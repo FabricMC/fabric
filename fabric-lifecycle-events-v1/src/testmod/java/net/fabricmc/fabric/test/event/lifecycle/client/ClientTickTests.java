@@ -30,9 +30,18 @@ import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 @Environment(EnvType.CLIENT)
 public class ClientTickTests implements ClientModInitializer {
 	private Map<DimensionType, Integer> tickTracker = new HashMap<>();
+	private int ticks;
 
 	@Override
 	public void onInitializeClient() {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			this.ticks++; // Just track our own tick since the client doesn't have a ticks value.
+
+			if (this.ticks % 200 == 0) {
+				ServerLifecycleTests.LOGGER.info("Ticked Client at " + this.ticks + " ticks.");
+			}
+		});
+
 		ClientTickEvents.END_WORLD_TICK.register(world -> {
 			final int worldTicks = this.tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
 

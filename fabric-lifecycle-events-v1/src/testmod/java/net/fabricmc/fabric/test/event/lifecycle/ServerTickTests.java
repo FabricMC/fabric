@@ -38,6 +38,13 @@ public class ServerTickTests implements ModInitializer {
 			}
 		});
 
+		ServerTickEvents.START_WORLD_TICK.register(world -> {
+			// Verify we are inside the tick
+			if (!world.isInsideTick()) {
+				throw new AssertionError("Start tick event should be fired while ServerWorld is inside of tick");
+			}
+		});
+
 		ServerTickEvents.END_WORLD_TICK.register(world -> {
 			final int worldTicks = tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
 

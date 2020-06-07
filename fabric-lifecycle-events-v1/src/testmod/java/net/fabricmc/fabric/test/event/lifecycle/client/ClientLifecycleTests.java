@@ -24,16 +24,8 @@ import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 @Environment(EnvType.CLIENT)
 public class ClientLifecycleTests implements ClientModInitializer {
-	private int ticks;
-
 	@Override
 	public void onInitializeClient() {
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			this.ticks++; // Just track our own tick since the client doesn't have a ticks value.
 
-			if (this.ticks % 200 == 0) {
-				ServerLifecycleTests.LOGGER.info("Ticked Client at " + this.ticks + " ticks.");
-			}
-		});
 	}
 }
