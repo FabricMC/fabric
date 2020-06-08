@@ -34,9 +34,5 @@ public class ClientLifecycleTests implements ClientModInitializer {
 		ClientLifecycleEvents.CLIENT_STOPPING.register(client -> {
 			System.out.println("Client has started stopping!");
 		});
-
-		ClientLifecycleEvents.CLIENT_STOPPED.register(client -> {
-			System.out.println("Client has stopped!");
-		});
 	}
 }
