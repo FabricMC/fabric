@@ -10,7 +10,7 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.LifecycleEventsTest"
+      "net.fabricmc.fabric.test.event.LifecycleEventsTest"
     ]
   }
 }
