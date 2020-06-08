@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinMinecraftServer",
+    "MixinPlayerManager",
     "MixinWorld"
   ],
   "client": [
