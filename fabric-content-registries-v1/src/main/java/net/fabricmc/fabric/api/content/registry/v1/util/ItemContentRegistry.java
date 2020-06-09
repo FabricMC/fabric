@@ -19,6 +19,9 @@ package net.fabricmc.fabric.api.content.registry.v1.util;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
+/**
+ * A registry that maps items to values.
+ */
 public interface ItemContentRegistry<V> extends ContentRegistry<Item, V> {
 	default V get(ItemConvertible key) {
 		return this.get(key.asItem());

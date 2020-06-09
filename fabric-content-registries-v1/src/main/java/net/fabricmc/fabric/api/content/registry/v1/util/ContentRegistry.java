@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.content.registry.v1.util;
 
 import net.minecraft.tag.Tag;
 
+/**
+ * A registry that maps keys to values.
+ */
 public interface ContentRegistry<K, V> {
 	V get(K key);
 
