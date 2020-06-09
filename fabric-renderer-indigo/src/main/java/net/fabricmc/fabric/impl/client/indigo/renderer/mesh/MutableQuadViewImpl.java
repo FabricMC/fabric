@@ -38,16 +38,14 @@ import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl.Value;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.TextureHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper.ShadeableQuad;
 
 /**
  * Almost-concrete implementation of a mutable quad. The only missing part is {@link #emit()},
  * because that depends on where/how it is used. (Mesh encoding vs. render-time transformation).
  */
-public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter, ShadeableQuad {
+public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEmitter {
 	public final void begin(int[] data, int baseIndex) {
 		this.data = data;
 		this.baseIndex = baseIndex;
@@ -113,16 +111,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
 		this.invalidateShape();
 		return this;
-	}
-
-	@Override
-	public boolean isFaceAligned() {
-		return (geometryFlags() & GeometryHelper.AXIS_ALIGNED_FLAG) != 0;
-	}
-
-	@Override
-	public boolean needsDiffuseShading(int textureIndex) {
-		return textureIndex == 0 && !material().disableDiffuse(textureIndex);
 	}
 
 	@Override

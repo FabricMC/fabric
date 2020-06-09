@@ -21,7 +21,7 @@ import java.util.List;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTableRange;
 import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
 /**
@@ -33,8 +33,8 @@ public interface FabricLootPool {
 		return (LootPool) this;
 	}
 
-	List<LootEntry> getEntries();
+	List<LootPoolEntry> getEntries();
 	List<LootCondition> getConditions();
 	List<LootFunction> getFunctions();
-	LootTableRange getRollsRange();
+	LootTableRange getRolls();
 }

@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -40,11 +40,11 @@ public class MixinVanillaLayeredBiomeSource {
 	@Shadow
 	@Final
 	@Mutable
-	private static Set<Biome> BIOMES;
+	private static List<Biome> BIOMES;
 
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void cinit(CallbackInfo info) {
-		BIOMES = new HashSet<>(BIOMES);
+		BIOMES = new ArrayList<>(BIOMES);
 	}
 
 	//Called via reflection

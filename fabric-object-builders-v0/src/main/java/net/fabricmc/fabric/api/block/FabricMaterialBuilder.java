@@ -90,12 +90,6 @@ public class FabricMaterialBuilder extends Material.Builder {
 	}
 
 	@Override
-	public FabricMaterialBuilder requiresTool() {
-		this.delegate.requiresTool();
-		return this;
-	}
-
-	@Override
 	public Material build() {
 		return this.delegate.build();
 	}

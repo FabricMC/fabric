@@ -30,10 +30,7 @@ import net.fabricmc.fabric.mixin.object.builder.ModelPredicateProviderRegistrySp
  * {@link net.minecraft.client.item.ModelPredicateProviderRegistry#get(Item, Identifier)}.</p>
  *
  * @see net.minecraft.client.item.ModelPredicateProviderRegistry
- * @deprecated Experimental feature, may be removed or changed without further notice.
- * Vanilla snapshot feature, subject to vanilla change.
  */
-@Deprecated
 public final class FabricModelPredicateProviderRegistry {
 	/**
 	 * Registers a model predicate provider that is applicable for any item.

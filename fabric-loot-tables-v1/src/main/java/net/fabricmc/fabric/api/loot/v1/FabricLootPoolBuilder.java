@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.api.loot.v1;
 
+import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTableRange;
-import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
 import net.fabricmc.fabric.mixin.loot.table.LootPoolBuilderHooks;
@@ -34,30 +34,30 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	}
 
 	@Override
-	public FabricLootPoolBuilder withRolls(LootTableRange range) {
-		super.withRolls(range);
+	public FabricLootPoolBuilder rolls(LootTableRange range) {
+		super.rolls(range);
 		return this;
 	}
 
 	@Override
-	public FabricLootPoolBuilder withEntry(LootEntry.Builder<?> entry) {
-		super.withEntry(entry);
+	public FabricLootPoolBuilder with(LootPoolEntry.Builder<?> entry) {
+		super.with(entry);
 		return this;
 	}
 
 	@Override
-	public FabricLootPoolBuilder withCondition(LootCondition.Builder condition) {
-		super.withCondition(condition);
+	public FabricLootPoolBuilder conditionally(LootCondition.Builder condition) {
+		super.conditionally(condition);
 		return this;
 	}
 
 	@Override
-	public FabricLootPoolBuilder withFunction(LootFunction.Builder function) {
-		super.withFunction(function);
+	public FabricLootPoolBuilder apply(LootFunction.Builder function) {
+		super.apply(function);
 		return this;
 	}
 
-	public FabricLootPoolBuilder withEntry(LootEntry entry) {
+	public FabricLootPoolBuilder withEntry(LootPoolEntry entry) {
 		extended.getEntries().add(entry);
 		return this;
 	}
@@ -86,7 +86,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * Copies the entries, conditions and functions of the {@code pool} to this
 	 * builder.
 	 *
-	 * <p>If {@code copyRolls} is true, the {@link FabricLootPool#getRollsRange rolls} of the pool are also copied.
+	 * <p>If {@code copyRolls} is true, the {@link FabricLootPool#getRolls rolls} of the pool are also copied.
 	 */
 	public FabricLootPoolBuilder copyFrom(LootPool pool, boolean copyRolls) {
 		FabricLootPool extendedPool = (FabricLootPool) pool;
@@ -95,7 +95,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 		extended.getEntries().addAll(extendedPool.getEntries());
 
 		if (copyRolls) {
-			withRolls(extendedPool.getRollsRange());
+			rolls(extendedPool.getRolls());
 		}
 
 		return this;

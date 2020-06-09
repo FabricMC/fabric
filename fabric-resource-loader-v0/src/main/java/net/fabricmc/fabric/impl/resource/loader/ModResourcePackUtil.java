@@ -21,12 +21,16 @@ import java.nio.file.Path;
 import java.util.List;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.IOUtils;
 
 import net.minecraft.SharedConstants;
+import net.minecraft.client.resource.Format4ResourcePack;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.DefaultResourcePack;
 
+import net.fabricmc.fabric.mixin.resource.loader.MixinFormat4ResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -81,6 +85,40 @@ public final class ModResourcePackUtil {
 			return info.getName();
 		} else {
 			return "Fabric Mod \"" + info.getId() + "\"";
+		}
+	}
+
+	public static void modifyResourcePackList(List<ResourcePack> list) {
+		List<ResourcePack> oldList = Lists.newArrayList(list);
+		list.clear();
+
+		boolean appended = false;
+
+		for (int i = 0; i < oldList.size(); i++) {
+			ResourcePack pack = oldList.get(i);
+			list.add(pack);
+
+			boolean isDefaultResources = pack instanceof DefaultResourcePack;
+
+			if (!isDefaultResources && pack instanceof Format4ResourcePack) {
+				MixinFormat4ResourcePack fixer = (MixinFormat4ResourcePack) pack;
+				isDefaultResources = fixer.getParent() instanceof DefaultResourcePack;
+			}
+
+			if (isDefaultResources) {
+				ModResourcePackUtil.appendModResourcePacks(list, ResourceType.CLIENT_RESOURCES);
+				appended = true;
+			}
+		}
+
+		if (!appended) {
+			StringBuilder builder = new StringBuilder("Fabric could not find resource pack injection location!");
+
+			for (ResourcePack rp : oldList) {
+				builder.append("\n - ").append(rp.getName()).append(" (").append(rp.getClass().getName()).append(")");
+			}
+
+			throw new RuntimeException(builder.toString());
 		}
 	}
 }

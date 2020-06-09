@@ -23,13 +23,13 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.condition.LootCondition;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
 @Mixin(LootPool.Builder.class)
 public interface LootPoolBuilderHooks {
 	@Accessor
-	List<LootEntry> getEntries();
+	List<LootPoolEntry> getEntries();
 	@Accessor
 	List<LootCondition> getConditions();
 	@Accessor

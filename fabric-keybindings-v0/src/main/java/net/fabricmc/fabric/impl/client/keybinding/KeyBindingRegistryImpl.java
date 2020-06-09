@@ -85,8 +85,8 @@ public class KeyBindingRegistryImpl implements KeyBindingRegistry {
 		for (KeyBinding exBinding : fabricKeyBindingList) {
 			if (exBinding == binding) {
 				return false;
-			} else if (exBinding.getId().equals(binding.getId())) {
-				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getId() + "!");
+			} else if (exBinding.getTranslationKey().equals(binding.getTranslationKey())) {
+				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
 			}
 		}
 

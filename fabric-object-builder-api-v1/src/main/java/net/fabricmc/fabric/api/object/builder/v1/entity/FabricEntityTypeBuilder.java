@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
+import com.google.common.collect.ImmutableSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
+import net.minecraft.block.Block;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 
@@ -34,7 +36,7 @@ import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
  */
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final EntityCategory category;
+	private final SpawnGroup spawnGroup;
 	private final EntityType.EntityFactory<T> function;
 	private boolean saveable = true;
 	private boolean summonable = true;
@@ -44,36 +46,37 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean fireImmune = false;
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
+	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
 
-	protected FabricEntityTypeBuilder(EntityCategory category, EntityType.EntityFactory<T> function) {
-		this.category = category;
+	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		this.spawnGroup = spawnGroup;
 		this.function = function;
-		this.spawnableFarFromPlayer = category == EntityCategory.CREATURE || category == EntityCategory.MISC;
+		this.spawnableFarFromPlayer = spawnGroup == SpawnGroup.CREATURE || spawnGroup == SpawnGroup.MISC;
 	}
 
 	/**
 	 * Creates an entity type builder.
 	 *
-	 * @param category the entity category
+	 * @param spawnGroup the entity spawn group
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
 	 */
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category) {
-		return new FabricEntityTypeBuilder<>(category, (t, w) -> null);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup) {
+		return new FabricEntityTypeBuilder<>(spawnGroup, (t, w) -> null);
 	}
 
 	/**
 	 * Creates an entity type builder.
 	 *
-	 * @param category the entity category
+	 * @param spawnGroup the entity spawn group
 	 * @param function the entity function used to create this entity
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
 	 */
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityCategory category, EntityType.EntityFactory<T> function) {
-		return new FabricEntityTypeBuilder<>(category, function);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+		return new FabricEntityTypeBuilder<>(spawnGroup, function);
 	}
 
 	/**
@@ -123,31 +126,6 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	/**
-	 * @deprecated For removal: Gas been moved to EntityCategory
-	 *
-	 * @param maxDespawnDistance the distance
-	 *
-	 *
-	 * @return this builder for chaining
-	 */
-	@Deprecated
-	public FabricEntityTypeBuilder<T> maxDespawnDistance(int maxDespawnDistance) {
-		return this;
-	}
-
-	/**
-	 * @deprecated For removal: Gas been moved to EntityCategory
-	 *
-	 * @param minDespawnDistance the distance
-	 *
-	 * @return this builder for chaining
-	 */
-	@Deprecated
-	public FabricEntityTypeBuilder<T> minDespawnDistance(int minDespawnDistance) {
-		return this;
-	}
-
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
 		return trackable(trackingDistanceBlocks, updateIntervalTicks, true);
 	}
@@ -156,6 +134,17 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		this.trackingDistance = trackingDistanceBlocks;
 		this.updateIntervalTicks = updateIntervalTicks;
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+		return this;
+	}
+
+	/**
+	 * Sets the {@link ImmutableSet} of blocks this entity can spawn on.
+	 *
+	 * @param blocks the blocks the entity can spawn on
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> specificSpawnBlocks(Block... blocks) {
+		this.specificSpawnBlocks = ImmutableSet.copyOf(blocks);
 		return this;
 	}
 
@@ -170,7 +159,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.category, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}
