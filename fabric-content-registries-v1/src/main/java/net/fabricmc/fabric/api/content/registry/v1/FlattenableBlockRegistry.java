@@ -23,7 +23,7 @@ import net.minecraft.block.BlockState;
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 
 /**
- * Registry of Blocks that when flattened turn into a specific BlockState.
+ * Registry of Blocks that when flattened (right-clicked with shovel) turn into a specific BlockState.
  */
 public interface FlattenableBlockRegistry {
 	ContentRegistry<Block, BlockState> INSTANCE = FlattenableBlockRegistryImpl.INSTANCE;
