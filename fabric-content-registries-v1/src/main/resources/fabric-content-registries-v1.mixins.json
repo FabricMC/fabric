@@ -3,7 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.content.registry",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "AxeItemAccessor",
     "FireBlockAccessor",
+    "HoeItemAccessor",
+    "ShovelItemAccessor",
     "MixinAbstractFurnaceBlockEntity",
     "MixinAxeItem"
   ],

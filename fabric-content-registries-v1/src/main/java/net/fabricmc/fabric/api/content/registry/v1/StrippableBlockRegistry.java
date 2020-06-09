@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.api.content.registry.v1;
 
+import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.PillarBlock;
 
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
-import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistries;
 
 /**
  * Registry of Blocks that when stripped turn into a specific Block.
  * Note: Both KEY and VALUE must have the {@link PillarBlock#AXIS} property!
  */
 public interface StrippableBlockRegistry {
-	ContentRegistry<Block, Block> INSTANCE = ToolBlockTransformationRegistries.STRIPPABLE_BLOCKS;
+	ContentRegistry<Block, Block> INSTANCE = StrippableBlockRegistryImpl.INSTANCE;
 }

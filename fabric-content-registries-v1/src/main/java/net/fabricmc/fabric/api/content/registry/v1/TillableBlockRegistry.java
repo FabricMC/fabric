@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.content.registry.v1;
 
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
-import net.fabricmc.fabric.impl.content.registry.ToolBlockTransformationRegistries;
+import net.fabricmc.fabric.impl.content.registry.TillableBlockRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
@@ -25,5 +25,5 @@ import net.minecraft.block.BlockState;
  * Registry of Blocks that when tilled turn into a specific BlockState.
  */
 public interface TillableBlockRegistry {
-	ContentRegistry<Block, BlockState> INSTANCE = ToolBlockTransformationRegistries.TILLABLE_BLOCKS;
+	ContentRegistry<Block, BlockState> INSTANCE = TillableBlockRegistryImpl.INSTANCE;
 }

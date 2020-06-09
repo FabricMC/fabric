@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.content.registry.v1;
+package net.fabricmc.fabric.impl.content.registry;
 
-import net.fabricmc.fabric.impl.content.registry.FlattenableBlockRegistryImpl;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+import net.fabricmc.fabric.mixin.content.registry.ShovelItemAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+public class FlattenableBlockRegistryImpl extends ContentRegistryImpl<Block, BlockState> {
+	public static final ContentRegistry<Block, BlockState> INSTANCE = new FlattenableBlockRegistryImpl();
 
-/**
- * Registry of Blocks that when flattened turn into a specific BlockState.
- */
-public interface FlattenableBlockRegistry {
-	ContentRegistry<Block, BlockState> INSTANCE = FlattenableBlockRegistryImpl.INSTANCE;
+	public FlattenableBlockRegistryImpl() {
+		super("flattenable_block_registry",
+				ShovelItemAccessor.getPathBlockstates()::put, // Putter
+				ShovelItemAccessor.getPathBlockstates()::remove, // Remover
+				ShovelItemAccessor.getPathBlockstates()::get); // Getter
+	}
 }
