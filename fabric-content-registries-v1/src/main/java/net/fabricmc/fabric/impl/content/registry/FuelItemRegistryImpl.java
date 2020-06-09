@@ -29,7 +29,7 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.content.registry.v1.util.ItemContentRegistry;
 
 public class FuelItemRegistryImpl extends ContentRegistryImpl<Item, Integer> implements ItemContentRegistry<Integer> {
-	public static final Map<Item, Integer> FUELS = new HashMap<>();
+	private static final Map<Item, Integer> FUELS = new HashMap<>();
 
 	public static final ItemContentRegistry<Integer> INSTANCE = new FuelItemRegistryImpl();
 
