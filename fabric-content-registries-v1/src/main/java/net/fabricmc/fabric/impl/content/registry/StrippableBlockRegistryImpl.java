@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.content.registry.v1;
-
-import net.fabricmc.fabric.impl.content.registry.FlattenableBlockRegistryImpl;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+package net.fabricmc.fabric.impl.content.registry;
 
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+import net.fabricmc.fabric.mixin.content.registry.AxeItemAccessor;
+import net.minecraft.block.Block;
 
-/**
- * Registry of Blocks that when flattened turn into a specific BlockState.
- */
-public interface FlattenableBlockRegistry {
-	ContentRegistry<Block, BlockState> INSTANCE = FlattenableBlockRegistryImpl.INSTANCE;
+public class StrippableBlockRegistryImpl extends ContentRegistryImpl<Block, Block> {
+	public static final ContentRegistry<Block, Block> INSTANCE = new StrippableBlockRegistryImpl();
+
+	public StrippableBlockRegistryImpl() {
+		super("strippable_block_registry",
+				AxeItemAccessor.getStrippedBlocks()::put, // Putter
+				AxeItemAccessor.getStrippedBlocks()::remove, // Remover
+				AxeItemAccessor.getStrippedBlocks()::get); // Getter
+	}
 }

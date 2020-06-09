@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.content.registry.v1;
+package net.fabricmc.fabric.impl.content.registry;
 
-import net.fabricmc.fabric.impl.content.registry.FlattenableBlockRegistryImpl;
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+import net.fabricmc.fabric.mixin.content.registry.HoeItemAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+public class TillableBlockRegistryImpl extends ContentRegistryImpl<Block, BlockState> {
+	public static final ContentRegistry<Block, BlockState> INSTANCE = new TillableBlockRegistryImpl();
 
-/**
- * Registry of Blocks that when flattened turn into a specific BlockState.
- */
-public interface FlattenableBlockRegistry {
-	ContentRegistry<Block, BlockState> INSTANCE = FlattenableBlockRegistryImpl.INSTANCE;
+	public TillableBlockRegistryImpl() {
+		super("tillable_block_registry",
+				HoeItemAccessor.getTilledBlocks()::put, // Putter
+				HoeItemAccessor.getTilledBlocks()::remove, // Remover
+				HoeItemAccessor.getTilledBlocks()::get); // Getter
+	}
 }
