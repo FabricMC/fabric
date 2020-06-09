@@ -34,7 +34,10 @@ public class FuelItemRegistryImpl extends ContentRegistryImpl<Item, Integer> imp
 	public static final ItemContentRegistry<Integer> INSTANCE = new FuelItemRegistryImpl();
 
 	public FuelItemRegistryImpl() {
-		super("fuel_item_registry", FUELS::put, fuel -> FUELS.put(fuel, 0), item -> AbstractFurnaceBlockEntity.createFuelTimeMap().get(item));
+		super("fuel_item_registry",
+				FUELS::put, // Putter
+				fuel -> FUELS.put(fuel, 0), // Remover
+				item -> AbstractFurnaceBlockEntity.createFuelTimeMap().get(item)); // Getter
 	}
 
 	@Override
