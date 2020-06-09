@@ -36,7 +36,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
 @Environment(EnvType.CLIENT)
-public class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.AbstractRuleWidget {
+public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.AbstractRuleWidget {
 	private final List<? extends Element> children;
 	private final ButtonWidget buttonWidget;
 	private final String rootTranslationKey;

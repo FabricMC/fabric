@@ -34,7 +34,7 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
 @Environment(EnvType.CLIENT)
-public class DoubleRuleWidget extends EditGameRulesScreen.AbstractRuleWidget {
+public final class DoubleRuleWidget extends EditGameRulesScreen.AbstractRuleWidget {
 	private final List<? extends Element> children;
 	private final TextFieldWidget textFieldWidget;
 	private final Text name;

@@ -26,7 +26,7 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
-public class DoubleRule extends GameRules.Rule<DoubleRule> implements ValidateableRule {
+public final class DoubleRule extends GameRules.Rule<DoubleRule> implements ValidateableRule {
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
 	private final double lowerBound;

@@ -31,12 +31,12 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
-public class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
+public final class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
 	private final Class<E> classType;
-	protected final Collection<E> supportedValues;
-	protected E value;
+	private final Collection<E> supportedValues;
+	private E value;
 
 	/**
 	 * You should not be calling this constructor!
@@ -131,11 +131,7 @@ public class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
 			}
 		} while (!iterator.next().equals(value));
 
-		if (iterator.hasNext()) {
-			return iterator.next();
-		} else {
-			return values.iterator().next();
-		}
+		return iterator.hasNext() ? iterator.next() : values.iterator().next();
 	}
 
 	public boolean supports(E value) {

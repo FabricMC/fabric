@@ -30,7 +30,7 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
-public class EnumRuleType<E extends Enum<E>> extends LiteralRuleType<EnumRule<E>> {
+public final class EnumRuleType<E extends Enum<E>> extends LiteralRuleType<EnumRule<E>> {
 	private final E[] supportedValues;
 
 	public EnumRuleType(Function<GameRules.Type<EnumRule<E>>, EnumRule<E>> ruleFactory, BiConsumer<MinecraftServer, EnumRule<E>> changeCallback, E[] supportedValues, GameRules.Acceptor<EnumRule<E>> acceptor) {

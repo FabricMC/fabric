@@ -27,6 +27,9 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.LiteralRule;
 import net.fabricmc.fabric.mixin.gamerule.GameRuleCommandAccessor;
 
 public final class LiteralRuleCommand {
+	private LiteralRuleCommand() {
+	}
+
 	public static <T extends LiteralRule<T>> void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.Key<T> key, LiteralRuleType<T> type) {
 		literalArgumentBuilder.then(literal(key.getName())
 				.executes(context -> {

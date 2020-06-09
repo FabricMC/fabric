@@ -26,7 +26,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
 
-public class BoundedIntRule extends GameRules.IntRule {
+public final class BoundedIntRule extends GameRules.IntRule {
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
 	private final int lowerBound;
@@ -47,7 +47,7 @@ public class BoundedIntRule extends GameRules.IntRule {
 			return;
 		}
 
-		((IntRuleAccessor) this).setValue(i);
+		((IntRuleAccessor) (Object) this).setValue(i);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class BoundedIntRule extends GameRules.IntRule {
 				return false;
 			}
 
-			((IntRuleAccessor) this).setValue(value);
+			((IntRuleAccessor) (Object) this).setValue(value);
 			return true;
 		} catch (NumberFormatException var3) {
 			return false;
@@ -69,7 +69,7 @@ public class BoundedIntRule extends GameRules.IntRule {
 
 	@Override
 	protected GameRules.IntRule copy() {
-		return new BoundedIntRule(this.type, ((IntRuleAccessor) this).getValue(), this.lowerBound, this.upperBound);
+		return new BoundedIntRule(this.type, ((IntRuleAccessor) (Object) this).getValue(), this.lowerBound, this.upperBound);
 	}
 
 	private static int parseInt(String input) {

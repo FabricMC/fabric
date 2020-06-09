@@ -16,8 +16,13 @@
 
 package net.fabricmc.fabric.api.gamerule.v1;
 
+import java.util.Optional;
+
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.world.GameRules;
+
+import net.fabricmc.fabric.impl.gamerule.RuleKeyInternals;
 
 /**
  * Utility class for registering GameRule objects with custom categories outside of the categories Minecraft provides.
@@ -29,6 +34,10 @@ public final class CustomGameRuleCategory {
 	public CustomGameRuleCategory(Identifier id, Text name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	public Identifier getId() {
+		return this.id;
 	}
 
 	public Text getName() {
@@ -48,5 +57,16 @@ public final class CustomGameRuleCategory {
 	@Override
 	public int hashCode() {
 		return this.id.hashCode();
+	}
+
+	/**
+	 * Gets the custom category a {@link GameRules.Key game rule key} is registered under.
+	 *
+	 * @param key the rule key
+	 * @param <T> the type of value the rule holds
+	 * @return the custom category this rule belongs to. Otherwise {@link Optional#empty() empty}
+	 */
+	public static <T extends GameRules.Rule<T>> Optional<CustomGameRuleCategory> getCategory(GameRules.Key<T> key) {
+		return Optional.ofNullable(((RuleKeyInternals) (Object) key).fabric_getCustomCategory());
 	}
 }
