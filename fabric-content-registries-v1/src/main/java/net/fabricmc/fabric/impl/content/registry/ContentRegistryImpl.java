@@ -42,10 +42,10 @@ public class ContentRegistryImpl<K, V> implements ContentRegistry<K, V>, SimpleS
 
 	private boolean tagsPresent = false;
 	private final List<Runnable> processor = new LinkedList<>(); // This is to preserve the order of how things are added and removed. This would be a lot simpler if we did not have to deal with Tags
-	private final Map<K, V> restorer = new HashMap<>();
-	private final BiConsumer<K, V> putter;
-	private final Consumer<K> remover;
-	private final Function<K, V> getter;
+	private final Map<K, V> restorer = new HashMap<>(); // Stores the state of the vanilla map without any fabric modifications so everything can be undone on resource reload
+	private final BiConsumer<K, V> putter; // Used to add registry values to whatever stores them
+	private final Consumer<K> remover; // Used to remove registry values from whatever stores them
+	private final Function<K, V> getter; // Used to get registry values from whatever stores them
 
 	ContentRegistryImpl(String name, BiConsumer<K, V> putter, Consumer<K> remover, Function<K, V> getter) {
 		reloadIdentifier = new Identifier("fabric:private/" + name);
