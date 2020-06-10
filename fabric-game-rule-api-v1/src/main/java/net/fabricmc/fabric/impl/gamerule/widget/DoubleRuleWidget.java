@@ -18,10 +18,7 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -36,12 +33,10 @@ import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 @Environment(EnvType.CLIENT)
 public final class DoubleRuleWidget extends EditGameRulesScreen.class_5400 {
 	private final TextFieldWidget textFieldWidget;
-	private final Text name;
 
 	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<StringRenderable> description, final String ruleName, DoubleRule rule) {
 		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
-		this.name = name;
 
 		this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 10, 5, 42, 20,
 				name.shallowCopy()

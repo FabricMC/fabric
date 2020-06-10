@@ -19,9 +19,6 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 import java.util.List;
 import java.util.Locale;
 
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
