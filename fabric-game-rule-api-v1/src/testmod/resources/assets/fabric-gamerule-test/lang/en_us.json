@@ -8,8 +8,8 @@
 
   "gamerule.redSleepFailureEnum": "Why I didn't go to bed",
   "gamerule.redSleepFailureEnum.description": "Bed bugs are nasty man.",
-  "gamerule.redSleepFailureEnum.not_possible_here": "Not possible here",
-  "gamerule.redSleepFailureEnum.not_possible_now": "Not possible now",
+  "gamerule.redSleepFailureEnum.not_possible_here": "Not here",
+  "gamerule.redSleepFailureEnum.not_possible_now": "Not now",
   "gamerule.redSleepFailureEnum.too_far_away": "Too far away",
   "gamerule.redSleepFailureEnum.obstructed": "Obstructed",
   "gamerule.redSleepFailureEnum.other_problem": "Other problem",

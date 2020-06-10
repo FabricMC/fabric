@@ -18,14 +18,11 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableList;
-
-import net.minecraft.class_5348;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
@@ -34,13 +31,12 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
 @Environment(EnvType.CLIENT)
-public final class FloatRuleWidget extends EditGameRulesScreen.AbstractRuleWidget {
-	private final List<? extends Element> children;
+public final class FloatRuleWidget extends EditGameRulesScreen.class_5400 {
 	private final TextFieldWidget textFieldWidget;
 	private final Text name;
 
-	public FloatRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<class_5348> description, final String ruleName, FloatRule rule) {
-		gameRuleScreen.super(description);
+	public FloatRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<StringRenderable> description, final String ruleName, FloatRule rule) {
+		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 		this.name = name;
 		this.textFieldWidget = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 10, 5, 42, 20,
@@ -61,20 +57,16 @@ public final class FloatRuleWidget extends EditGameRulesScreen.AbstractRuleWidge
 			}
 		});
 
-		this.children = ImmutableList.of(this.textFieldWidget);
+		this.field_25630.add(this.textFieldWidget);
 	}
 
 	@Override
-	public List<? extends Element> children() {
-		return this.children;
-	}
+	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+		// FIXME: Param names nightmare
+		this.method_29989(matrices, y, x);
 
-	@Override
-	public void render(MatrixStack matrices, int x, int y, int width, int height, int mouseX, int mouseY, int i, boolean bl, float tickDelta) {
-		MinecraftClient.getInstance().textRenderer.draw(matrices, this.name, width, (y + 5), 16777215);
-
-		this.textFieldWidget.x = width + height - 44;
+		this.textFieldWidget.x = x + entryWidth - 44;
 		this.textFieldWidget.y = y;
-		this.textFieldWidget.render(matrices, mouseY, i, tickDelta);
+		this.textFieldWidget.render(matrices, mouseX, mouseY, tickDelta);
 	}
 }
