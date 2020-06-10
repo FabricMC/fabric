@@ -6,8 +6,7 @@
     "EntityHooks",
     "MixinEntity",
     "MixinPortalForcer",
-    "MixinWorld",
-    "MixinDimensionType"
+    "MixinWorld"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -16,25 +16,20 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.google.common.base.Preconditions;
 
 import net.minecraft.block.pattern.BlockPattern;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.dimension.v1.EntityPlacer;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensionType;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
-import net.fabricmc.fabric.api.dimension.v1.ChunkGeneratorFactory;
 import net.fabricmc.fabric.mixin.dimension.EntityHooks;
 
 public final class FabricDimensionInternals {
@@ -42,7 +37,7 @@ public final class FabricDimensionInternals {
 		throw new AssertionError();
 	}
 
-	public static final List<FabricDimensionOptions> FABRIC_DIMENSIONS = new ArrayList<>();
+	public static final Map<RegistryKey<World>, EntityPlacer> DEFAULT_PLACERS = new HashMap<>();
 
 	/**
 	 * The entity currently being transported to another dimension.
@@ -105,10 +100,10 @@ public final class FabricDimensionInternals {
 		}
 
 		// Default placement logic, falls back to vanilla if not a fabric dimension
-		DimensionType dimType = destination.getDimension();
+		RegistryKey<World> registryKey = destination.getRegistryKey();
 
-		if (dimType instanceof FabricDimensionType) {
-			BlockPattern.TeleportTarget defaultTarget = ((FabricDimensionType) dimType).getDefaultPlacement().placeEntity(teleported, destination, portalDir, portalX, portalY);
+		if (DEFAULT_PLACERS.containsKey(registryKey)) {
+			BlockPattern.TeleportTarget defaultTarget = DEFAULT_PLACERS.get(registryKey).placeEntity(teleported, destination, portalDir, portalX, portalY);
 
 			if (defaultTarget == null) {
 				throw new IllegalStateException("Mod dimension " + destination.getRegistryKey().getValue().toString() + " returned an invalid teleport target");
@@ -122,7 +117,7 @@ public final class FabricDimensionInternals {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Entity> E changeDimension(E teleported, RegistryKey<World> dimension, EntityPlacer placement) {
+	public static <E extends Entity> E changeDimension(E teleported, ServerWorld dimension, EntityPlacer placement) {
 		assert !teleported.world.isClient : "Entities can only be teleported on the server side";
 		assert Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread() : "Entities must be teleported from the main server thread";
 
@@ -131,22 +126,6 @@ public final class FabricDimensionInternals {
 			return (E) teleported.changeDimension(dimension);
 		} finally {
 			customPlacement = null;
-		}
-	}
-
-	public static class FabricDimensionOptions {
-		public final Identifier identifier;
-		public final ChunkGeneratorFactory chunkGeneratorFactory;
-		public final DimensionType dimensionType;
-
-		public FabricDimensionOptions(Identifier identifier, ChunkGeneratorFactory chunkGeneratorFactory, DimensionType dimensionType) {
-			this.identifier = identifier;
-			this.chunkGeneratorFactory = chunkGeneratorFactory;
-			this.dimensionType = dimensionType;
-		}
-
-		public <T> RegistryKey<T> getRegistryKey(RegistryKey<Registry<T>> key) {
-			return RegistryKey.of(key, identifier);
 		}
 	}
 }
