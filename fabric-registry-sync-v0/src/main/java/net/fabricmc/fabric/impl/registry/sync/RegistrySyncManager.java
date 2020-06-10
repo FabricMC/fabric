@@ -221,7 +221,7 @@ public final class RegistrySyncManager {
 				if (!isClientSync && previousRegistryData != null) {
 					for (String key : previousRegistryData.getKeys()) {
 						if (!registryTag.contains(key)) {
-							LOGGER.info("Saving orphaned registry entry: " + key);
+							LOGGER.debug("Saving orphaned registry entry: " + key);
 							registryTag.putInt(key, registryTag.getInt(key));
 						}
 					}
@@ -235,7 +235,7 @@ public final class RegistrySyncManager {
 		if (!isClientSync && activeTag != null) {
 			for (String registryKey : activeTag.getKeys()) {
 				if (!mainTag.contains(registryKey)) {
-					LOGGER.info("Saving orphaned registry: " + registryKey);
+					LOGGER.debug("Saving orphaned registry: " + registryKey);
 					mainTag.put(registryKey, activeTag.getCompound(registryKey));
 				}
 			}

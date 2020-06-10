@@ -36,7 +36,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	}
 
 	@Override
-	public <T extends ResourcePackProfile> void register(Consumer<T> consumer, ResourcePackProfile.class_5351<T> factory) {
+	public <T extends ResourcePackProfile> void register(Consumer<T> consumer, ResourcePackProfile.Factory<T> factory) {
 		// TODO: "vanilla" does not emit a message; neither should a modded datapack
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
