@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
-import net.fabricmc.fabric.mixin.content.registry.HoeItemAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+
+import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+import net.fabricmc.fabric.mixin.content.registry.HoeItemAccessor;
 
 public class TillableBlockRegistryImpl extends ContentRegistryImpl<Block, BlockState> {
 	public static final ContentRegistry<Block, BlockState> INSTANCE = new TillableBlockRegistryImpl();

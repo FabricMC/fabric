@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.content.registry.v1;
 
-import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.PillarBlock;
 
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 
 /**
  * Registry of Blocks that when stripped turn into a specific Block.

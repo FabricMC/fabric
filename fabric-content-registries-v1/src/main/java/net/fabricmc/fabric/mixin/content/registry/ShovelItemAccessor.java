@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.mixin.content.registry;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ShovelItem;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Map;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.item.ShovelItem;
 
 @Mixin(ShovelItem.class)
 public interface ShovelItemAccessor {
