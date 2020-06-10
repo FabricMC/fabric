@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.content.registry.v1;
 
-import net.fabricmc.fabric.impl.content.registry.FlattenableBlockRegistryImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
+import net.fabricmc.fabric.impl.content.registry.FlattenableBlockRegistryImpl;
 
 /**
  * Registry of Blocks that when flattened (right-clicked with shovel) turn into a specific BlockState.

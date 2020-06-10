@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
+import net.minecraft.block.Block;
+
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
 import net.fabricmc.fabric.mixin.content.registry.AxeItemAccessor;
-import net.minecraft.block.Block;
 
 public class StrippableBlockRegistryImpl extends ContentRegistryImpl<Block, Block> {
 	public static final ContentRegistry<Block, Block> INSTANCE = new StrippableBlockRegistryImpl();
