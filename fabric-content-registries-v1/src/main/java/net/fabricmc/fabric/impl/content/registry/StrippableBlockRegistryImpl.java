@@ -24,7 +24,7 @@ import net.fabricmc.fabric.mixin.content.registry.AxeItemAccessor;
 public class StrippableBlockRegistryImpl extends ContentRegistryImpl<Block, Block> {
 	public static final ContentRegistry<Block, Block> INSTANCE = new StrippableBlockRegistryImpl();
 
-	public StrippableBlockRegistryImpl() {
+	private StrippableBlockRegistryImpl() {
 		super("strippable_block_registry",
 				AxeItemAccessor.getStrippedBlocks()::put, // Putter
 				AxeItemAccessor.getStrippedBlocks()::remove, // Remover

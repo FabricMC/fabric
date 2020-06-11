@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.content.registry.v1.util.ItemContentRegistry;
 public class CompostableItemRegistryImpl extends ContentRegistryImpl<Item, Float> implements ItemContentRegistry<Float> {
 	public static final ItemContentRegistry<Float> INSTANCE = new CompostableItemRegistryImpl();
 
-	public CompostableItemRegistryImpl() {
+	private CompostableItemRegistryImpl() {
 		super("compostable_item_registry",
 				ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE::put, // Putter
 				ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE::removeFloat, // Remover

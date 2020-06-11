@@ -25,7 +25,7 @@ import net.fabricmc.fabric.mixin.content.registry.HoeItemAccessor;
 public class TillableBlockRegistryImpl extends ContentRegistryImpl<Block, BlockState> {
 	public static final ContentRegistry<Block, BlockState> INSTANCE = new TillableBlockRegistryImpl();
 
-	public TillableBlockRegistryImpl() {
+	private TillableBlockRegistryImpl() {
 		super("tillable_block_registry",
 				HoeItemAccessor.getTilledBlocks()::put, // Putter
 				HoeItemAccessor.getTilledBlocks()::remove, // Remover
