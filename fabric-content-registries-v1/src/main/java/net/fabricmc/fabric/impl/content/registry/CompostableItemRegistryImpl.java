@@ -26,7 +26,7 @@ public class CompostableItemRegistryImpl extends ContentRegistryImpl<Item, Float
 
 	private CompostableItemRegistryImpl() {
 		super("compostable_item_registry",
-				ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE::put, // Putter
+				(key, value) -> ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.put(key, (float) value), // Putter
 				ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE::removeFloat, // Remover
 				item -> ComposterBlock.ITEM_TO_LEVEL_INCREASE_CHANCE.getOrDefault(item, 0.0F)); // Getter
 	}
