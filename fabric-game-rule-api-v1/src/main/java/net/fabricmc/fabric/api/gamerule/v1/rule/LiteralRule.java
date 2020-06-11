@@ -21,13 +21,18 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.GameRules;
 
-public abstract class LiteralRule<T extends GameRules.Rule<T>> extends GameRules.Rule<T> {
+/**
+ * Represents a game rule which uses literals for the argument in commands.
+ *
+ * @param <T> the type of rule
+ */
+public abstract class LiteralRule<T extends LiteralRule<T>> extends GameRules.Rule<T> {
 	protected LiteralRule(GameRules.Type<T> type) {
 		super(type);
 	}
 
 	@Override
 	protected final void setFromArgument(CommandContext<ServerCommandSource> context, String name) {
-		// Do nothing. We use a different system for application
+		// Do nothing. We use a different system for application with literals
 	}
 }
