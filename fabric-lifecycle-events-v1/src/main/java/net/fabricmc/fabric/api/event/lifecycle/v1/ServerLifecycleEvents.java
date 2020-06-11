@@ -28,7 +28,7 @@ public final class ServerLifecycleEvents {
 	}
 
 	/**
-	 * Called when the server has started and is about to tick for the first time.
+	 * Called when a Minecraft server has started and is about to tick for the first time.
 	 *
 	 * <p>At this stage, all worlds are live.
 	 */
@@ -39,7 +39,7 @@ public final class ServerLifecycleEvents {
 	});
 
 	/**
-	 * Called when the server has started shutting down.
+	 * Called when a Minecraft server has started shutting down.
 	 * This occurs before the server's network channel is closed and before any players are disconnected.
 	 *
 	 * <p>For example, an integrated server will begin stopping, but it's client may continue to run.
@@ -53,10 +53,10 @@ public final class ServerLifecycleEvents {
 	});
 
 	/**
-	 * Called when the server has stopped.
+	 * Called when a Minecraft server has stopped.
 	 * All worlds have been closed and all (block)entities and players have been unloaded.
 	 *
-	 * <p>For example, an integrated server will begin stopping, but it's client may continue to run.
+	 * <p>For example, an {@link net.fabricmc.api.EnvType#CLIENT integrated server} will begin stopping, but it's client may continue to run.
 	 * Meanwhile for a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
 	 */
 	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STOPPED = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, callbacks -> server -> {
@@ -88,8 +88,8 @@ public final class ServerLifecycleEvents {
 	}
 
 	/**
-	 * Checks if the current server is available.
-	 * he server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to verify this is {@code true} before calling {@link ServerLifecycleEvents#getPrimaryServer()}
+	 * Checks if the primary server is available.
+	 * The server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to verify this is {@code true} before calling {@link ServerLifecycleEvents#getPrimaryServer()}
 	 *
 	 * <p><b>Use of this method is highly discouraged and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
 	 * One should attempt to obtain the server instance from a {@link ServerWorld server world} or via other means.
