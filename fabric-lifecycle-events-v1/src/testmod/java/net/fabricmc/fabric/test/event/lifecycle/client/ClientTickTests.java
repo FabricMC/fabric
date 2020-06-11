@@ -21,7 +21,6 @@ import java.util.Map;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
