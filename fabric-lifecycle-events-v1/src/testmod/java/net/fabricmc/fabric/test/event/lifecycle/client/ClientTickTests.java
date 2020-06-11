@@ -19,6 +19,8 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -29,7 +31,7 @@ import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 @Environment(EnvType.CLIENT)
 public class ClientTickTests implements ClientModInitializer {
-	private Map<DimensionType, Integer> tickTracker = new HashMap<>();
+	private Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
 	private int ticks;
 
 	@Override
@@ -43,13 +45,13 @@ public class ClientTickTests implements ClientModInitializer {
 		});
 
 		ClientTickEvents.END_WORLD_TICK.register(world -> {
-			final int worldTicks = this.tickTracker.computeIfAbsent(world.dimension.getType(), k -> 0);
+			final int worldTicks = this.tickTracker.computeIfAbsent(world.getRegistryKey(), k -> 0);
 
 			if (worldTicks % 200 == 0) { // Log every 200 ticks to verify the tick callback works on the client world
-				ServerLifecycleTests.LOGGER.info("Ticked Client World - " + worldTicks + " ticks:" + world.dimension.getType());
+				ServerLifecycleTests.LOGGER.info("Ticked Client World - " + worldTicks + " ticks:" + world.getRegistryKey());
 			}
 
-			this.tickTracker.put(world.dimension.getType(), worldTicks + 1);
+			this.tickTracker.put(world.getRegistryKey(), worldTicks + 1);
 		});
 	}
 }

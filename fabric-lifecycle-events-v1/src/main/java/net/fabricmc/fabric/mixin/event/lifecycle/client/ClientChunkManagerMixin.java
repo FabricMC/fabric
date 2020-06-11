@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.client.world.ClientChunkManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.PacketByteBuf;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.world.biome.source.BiomeArray;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -44,7 +44,7 @@ public abstract class ClientChunkManagerMixin {
 	private ClientWorld world;
 
 	@Inject(method = "loadChunkFromPacket", at = @At("TAIL")) // 1.16 has a boolean param here. I think it means whether the packet is complete.
-	private void onChunkLoad(int chunkX, int chunkZ, BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, int k, /* boolean complete, */ CallbackInfoReturnable<WorldChunk> cir) {
+	private void onChunkLoad(int chunkX, int chunkZ, BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, int k, boolean complete, CallbackInfoReturnable<WorldChunk> cir) {
 		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, cir.getReturnValue());
 	}
 

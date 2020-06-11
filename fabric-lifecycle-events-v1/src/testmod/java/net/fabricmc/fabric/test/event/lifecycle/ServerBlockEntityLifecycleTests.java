@@ -54,7 +54,7 @@ public class ServerBlockEntityLifecycleTests implements ModInitializer {
 
 				for (ServerWorld world : minecraftServer.getWorlds()) {
 					int worldEntities = world.blockEntities.size();
-					logger.info("[SERVER] Tracked BlockEntities in " + world.dimension.getType().toString() + " - " + worldEntities);
+					logger.info("[SERVER] Tracked BlockEntities in " + world.getRegistryKey().toString() + " - " + worldEntities);
 					entities += worldEntities;
 				}
 
