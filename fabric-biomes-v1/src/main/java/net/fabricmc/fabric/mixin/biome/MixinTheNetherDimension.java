@@ -38,7 +38,7 @@ public class MixinTheNetherDimension {
 	private static void method_28467(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> info) {
 		List<Biome> newList = new ArrayList<>(info.getReturnValue().method_28443());
 		newList.addAll(InternalBiomeData.getNetherBiomes());
-		MultiNoiseBiomeSource multiNoiseBiomeSource = new MultiNoiseBiomeSource(l, newList.stream().flatMap((biome) -> biome.streamNoises().map((point) -> Pair.of(point, biome))).collect(ImmutableList.toImmutableList()), Optional.of(MultiNoiseBiomeSource.class_5305.field_24723));
+		MultiNoiseBiomeSource multiNoiseBiomeSource = new MultiNoiseBiomeSource(l, newList.stream().flatMap((biome) -> biome.streamNoises().map((point) -> Pair.of(point, biome))).collect(ImmutableList.toImmutableList()), Optional.of(MultiNoiseBiomeSource.Preset.NETHER));
 		info.setReturnValue(multiNoiseBiomeSource);
 	}
 }

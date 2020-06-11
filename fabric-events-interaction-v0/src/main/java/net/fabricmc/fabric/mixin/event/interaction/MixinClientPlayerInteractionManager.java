@@ -133,7 +133,7 @@ public class MixinClientPlayerInteractionManager {
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
 				Vec3d hitVec = hitResult.getPos().subtract(entity.getX(), entity.getY(), entity.getZ());
-				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, hand, hitVec));
+				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, hand, hitVec, player.isSneaking()));
 			}
 
 			info.setReturnValue(result);
