@@ -85,12 +85,12 @@ public final class RuleFactory {
 	}
 
 	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double lowerBound) {
-		return createDoubleRule(defaultValue, lowerBound, Integer.MAX_VALUE, (server, rule) -> {
+		return createDoubleRule(defaultValue, lowerBound, Double.MAX_VALUE, (server, rule) -> {
 		});
 	}
 
 	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, BiConsumer<MinecraftServer, DoubleRule> changedCallback) {
-		return createDoubleRule(defaultValue, lowerBound, Integer.MAX_VALUE, changedCallback);
+		return createDoubleRule(defaultValue, lowerBound, Double.MAX_VALUE, changedCallback);
 	}
 
 	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double lowerBound, double upperBound) {
@@ -117,12 +117,12 @@ public final class RuleFactory {
 	}
 
 	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, float lowerBound) {
-		return createFloatRule(defaultValue, lowerBound, Integer.MAX_VALUE, (server, rule) -> {
+		return createFloatRule(defaultValue, lowerBound, Float.MAX_VALUE, (server, rule) -> {
 		});
 	}
 
 	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, float lowerBound, BiConsumer<MinecraftServer, FloatRule> changedCallback) {
-		return createFloatRule(defaultValue, lowerBound, Integer.MAX_VALUE, changedCallback);
+		return createFloatRule(defaultValue, lowerBound, Float.MAX_VALUE, changedCallback);
 	}
 
 	public static GameRules.Type<FloatRule> createFloatRule(float defaultValue, float lowerBound, float upperBound) {
