@@ -33,7 +33,7 @@ public class FuelItemRegistryImpl extends ContentRegistryImpl<Item, Integer> imp
 
 	public static final ItemContentRegistry<Integer> INSTANCE = new FuelItemRegistryImpl();
 
-	public FuelItemRegistryImpl() {
+	private FuelItemRegistryImpl() {
 		super("fuel_item_registry",
 				FUELS::put, // Putter
 				fuel -> FUELS.put(fuel, 0), // Remover

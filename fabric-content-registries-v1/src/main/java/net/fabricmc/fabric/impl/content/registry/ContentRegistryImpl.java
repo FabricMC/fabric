@@ -47,7 +47,7 @@ public class ContentRegistryImpl<K, V> implements ContentRegistry<K, V>, SimpleS
 	private final Consumer<K> remover; // Used to remove registry values from whatever stores them
 	private final Function<K, V> getter; // Used to get registry values from whatever stores them
 
-	ContentRegistryImpl(String name, BiConsumer<K, V> putter, Consumer<K> remover, Function<K, V> getter) {
+	protected ContentRegistryImpl(String name, BiConsumer<K, V> putter, Consumer<K> remover, Function<K, V> getter) {
 		reloadIdentifier = new Identifier("fabric:private/" + name);
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(this);
 		this.putter = putter;
