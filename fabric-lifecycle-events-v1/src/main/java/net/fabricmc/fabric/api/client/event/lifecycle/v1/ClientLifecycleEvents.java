@@ -29,7 +29,7 @@ public final class ClientLifecycleEvents {
 	}
 
 	/**
-	 * Called when the {@link MinecraftClient client} has started and is about to tick for the first time.
+	 * Called when Minecraft has started and it's client about to tick for the first time.
 	 *
 	 * <p>This occurs while the splash screen is displayed.
 	 */
@@ -40,10 +40,10 @@ public final class ClientLifecycleEvents {
 	});
 
 	/**
-	 * Called when the client begins to stop.
+	 * Called when Minecraft's client begins to stop.
 	 * This is caused by quitting while in game, or closing the game window.
 	 *
-	 * <p>This will be called before the integrated server is stopped.
+	 * <p>This will be called before the integrated server is stopped if it is running.
 	 */
 	public static final Event<ClientLifecycleCallback> CLIENT_STOPPING = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
 		for (ClientLifecycleCallback callback : callbacks) {
