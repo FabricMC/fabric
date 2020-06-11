@@ -44,7 +44,7 @@ public final class FabricDimensionInternals {
 	 */
 	private static final ThreadLocal<Entity> PORTAL_ENTITY = new ThreadLocal<>();
 	/**
-	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, RegistryKey, EntityPlacer)}.
+	 * The custom placement logic passed from {@link FabricDimensions#teleport(Entity, ServerWorld, EntityPlacer)}.
 	 */
 	private static EntityPlacer customPlacement;
 

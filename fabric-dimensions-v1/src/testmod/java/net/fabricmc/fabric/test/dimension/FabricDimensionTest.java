@@ -60,9 +60,9 @@ public class FabricDimensionTest implements ModInitializer {
 		ServerWorld serverWorld = serverPlayerEntity.getServerWorld();
 
 		if (!serverWorld.getRegistryKey().equals(dimensionRegistryKey)) {
-			serverPlayerEntity.changeDimension(serverWorld.getServer().getWorld(dimensionRegistryKey));
+			serverPlayerEntity.changeDimension(context.getSource().getMinecraftServer().getWorld(dimensionRegistryKey));
 		} else {
-			FabricDimensions.teleport(serverPlayerEntity, serverWorld.getServer().getWorld(World.OVERWORLD), FabricDimensionTest::placeEntity);
+			FabricDimensions.teleport(serverPlayerEntity, context.getSource().getMinecraftServer().getWorld(World.OVERWORLD), FabricDimensionTest::placeEntity);
 		}
 
 		return 1;

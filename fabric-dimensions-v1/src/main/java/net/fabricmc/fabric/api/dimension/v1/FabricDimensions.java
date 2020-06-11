@@ -27,7 +27,10 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
  * This class consists exclusively of static methods that operate on world dimensions.
+ *
+ * @deprecated Experimental feature, may be removed or changed without further notice due to potential changes to Dimensions in subsequent versions.
  */
+@Deprecated
 public final class FabricDimensions {
 	private FabricDimensions() {
 		throw new AssertionError();
@@ -39,8 +42,7 @@ public final class FabricDimensions {
 	 * <p>This method behaves as if:
 	 * <pre>{@code teleported.changeDimension(destination)}</pre>
 	 *
-	 * <p>If {@code destination} is a {@link FabricDimensionType}, the placement logic used
-	 * is {@link FabricDimensionType#getDefaultPlacement()}. If {@code destination} is
+	 * <p>If {@code destination} has a default placer, that placer will be used. If {@code destination} is
 	 * the nether or the overworld, the default logic is the vanilla path.
 	 * For any other dimension, the default placement behaviour is undefined.
 	 * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
@@ -53,7 +55,7 @@ public final class FabricDimensions {
 	 * @param teleported  the entity to teleport
 	 * @param destination the dimension the entity will be teleported to
 	 * @return the teleported entity, or a clone of it
-	 * @see #teleport(Entity, RegistryKey, EntityPlacer)
+	 * @see #teleport(Entity, ServerWorld)
 	 */
 	public static <E extends Entity> E teleport(E teleported, ServerWorld destination) {
 		return teleport(teleported, destination, null);
@@ -67,9 +69,8 @@ public final class FabricDimensions {
 	 * The {@code customPlacement} may itself return {@code null}, in which case
 	 * the default placement logic for that dimension will be run.
 	 *
-	 * <p>If {@code destination} is a {@link FabricDimensionType}, the default placement logic
-	 * is {@link FabricDimensionType#getDefaultPlacement()}. If {@code destination} is the nether
-	 * or the overworld, the default logic is the vanilla path.
+	 * <p>If {@code destination} has a default placer, that placer will be used. If {@code destination} is
+	 * the nether or the overworld, the default logic is the vanilla path.
 	 * For any other dimension, the default placement behaviour is undefined.
 	 * When delegating to a placement logic that uses portals, the entity's {@code lastPortalPosition},
 	 * {@code lastPortalDirectionVector}, and {@code lastPortalDirection} fields should be updated
@@ -81,7 +82,7 @@ public final class FabricDimensions {
 	 * @param teleported   the entity to teleport
 	 * @param destination  the dimension the entity will be teleported to
 	 * @param customPlacer custom placement logic that will run before the default one,
-	 *                     or {@code null} to use the dimension's default behavior (see {@link FabricDimensionType#getDefaultPlacement()}).
+	 *                     or {@code null} to use the dimension's default behavior.
 	 * @param <E>          the type of the teleported entity
 	 * @return the teleported entity, or a clone of it
 	 * @throws IllegalStateException if this method is called on a client entity
@@ -93,7 +94,17 @@ public final class FabricDimensions {
 		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacer);
 	}
 
+	/**
+	 * Register a default placer for a dimension, this is used when an entity is teleported to a dimension without
+	 * a specified {@link EntityPlacer}.
+	 *
+	 * @param registryKey The dimension {@link RegistryKey}
+	 * @param entityPlacer The {@link EntityPlacer}
+	 */
 	public static void registerDefaultPlacer(RegistryKey<World> registryKey, EntityPlacer entityPlacer) {
+		Preconditions.checkState(!FabricDimensionInternals.DEFAULT_PLACERS.containsKey(registryKey), "Only 1 EntityPlacer can be registered per dimension");
+		Preconditions.checkState(!registryKey.getValue().getNamespace().equals("minecraft"), "Minecraft dimensions cannot have a default placer");
+
 		FabricDimensionInternals.DEFAULT_PLACERS.put(registryKey, entityPlacer);
 	}
 }
