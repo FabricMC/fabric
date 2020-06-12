@@ -16,20 +16,21 @@
 
 package net.fabricmc.fabric.api.structures.v1;
 
-import net.fabricmc.fabric.mixin.structures.StructureFeatureMixin;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
+import net.fabricmc.fabric.mixin.structures.StructureFeatureMixin;
+
 /**
- * API that hooks into the internal structure generation step logic
+ * API that hooks into the internal structure generation step logic.
  */
 public final class FabricStructureHelper {
 	private FabricStructureHelper() { }
 
 	/**
-	 * Adds a structure to the given generation step
+	 * Adds a structure to the given generation step.
 	 *
 	 * @param structure The structure to add to the step map. Must not be null
 	 */
@@ -39,7 +40,7 @@ public final class FabricStructureHelper {
 	}
 
 	/**
-	 * Registers a structure in the structure registry, the serialization hashmap, and generation step hashmap
+	 * Registers a structure in the structure registry, the serialization hashmap, and generation step hashmap.
 	 *
 	 * @param id        The identifier under which to register the structure universally
 	 * @param structure The structure to register under the given identifier

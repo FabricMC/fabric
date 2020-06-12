@@ -16,21 +16,22 @@
 
 package net.fabricmc.fabric.mixin.structures;
 
-import net.minecraft.world.gen.GenerationStep;
-import net.minecraft.world.gen.feature.StructureFeature;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import java.util.Map;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.StructureFeature;
 
 /**
- * Provides access to the internal Generation Step hashmap
+ * Provides access to the internal Generation Step hashmap.
  */
 @Mixin(StructureFeature.class)
 public interface StructureFeatureMixin {
 	/**
-	 * @return A static hashmap that controls which structures generate on which generation steps
+	 * @return A static hashmap that controls which structures generate on which generation steps.
 	 */
 	@Accessor("STRUCTURE_TO_GENERATION_STEP")
 	@Mutable
