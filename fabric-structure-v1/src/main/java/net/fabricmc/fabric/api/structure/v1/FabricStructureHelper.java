@@ -21,7 +21,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import net.fabricmc.fabric.mixin.structure.StructureFeatureMixin;
+import net.fabricmc.fabric.mixin.structure.StructureFeatureAccessor;
 
 /**
  * API that hooks into the internal structure generation step logic.
@@ -36,11 +36,11 @@ public final class FabricStructureHelper {
 	 */
 	public static void setGenerationStep(FabricStructure structure) {
 		// Put if absent was used to avoid vanilla overrides
-		StructureFeatureMixin.getGenerationStepMap().putIfAbsent(structure, structure.method_28663());
+		StructureFeatureAccessor.getGenerationStepMap().putIfAbsent(structure, structure.method_28663());
 	}
 
 	/**
-	 * Registers a structure in the structure registry, the serialization hashmap, and generation step hashmap.
+	 * Registers a structure in the structure registries with its respective generation step, and the structure serializer.
 	 *
 	 * @param id        The identifier under which to register the structure universally
 	 * @param structure The structure to register under the given identifier

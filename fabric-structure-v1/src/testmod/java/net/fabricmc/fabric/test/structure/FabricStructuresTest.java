@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.test.structure;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.structure.v1.FabricStructureHelper;
-import net.fabricmc.fabric.test.structure.structure.TestStructure;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.structure.v1.FabricStructureHelper;
+import net.fabricmc.fabric.test.structure.structure.TestStructure;
+
 /**
- * Test mod for the structure module
+ * Test mod for the structure module.
  */
 public class FabricStructuresTest implements ModInitializer {
-
 	public static final StructureFeature<DefaultFeatureConfig> TEST_STRUCTURE = FabricStructureHelper.register(new Identifier("fabric", "test_structure"), new TestStructure());
 
 	@Override

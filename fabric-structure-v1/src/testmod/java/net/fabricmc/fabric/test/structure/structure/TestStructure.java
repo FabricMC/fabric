@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.structure.structure;
 
-import net.fabricmc.fabric.api.structure.v1.FabricStructure;
 import net.minecraft.structure.IglooGenerator;
 import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructureStart;
@@ -29,8 +28,10 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
+import net.fabricmc.fabric.api.structure.v1.FabricStructure;
+
 /**
- *
+ * A testing structure that clones the generator of the igloo.
  */
 public class TestStructure extends FabricStructure<DefaultFeatureConfig> {
 	public TestStructure() {

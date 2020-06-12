@@ -29,7 +29,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
  * Provides access to the internal Generation Step hashmap.
  */
 @Mixin(StructureFeature.class)
-public interface StructureFeatureMixin {
+public interface StructureFeatureAccessor {
 	/**
 	 * @return A static hashmap that controls which structure generate on which generation steps.
 	 */

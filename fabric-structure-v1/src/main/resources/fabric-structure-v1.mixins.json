@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.structure",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "StructureFeatureMixin"
+    "StructureFeatureAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
