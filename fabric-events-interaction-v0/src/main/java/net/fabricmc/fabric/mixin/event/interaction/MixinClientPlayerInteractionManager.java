@@ -119,7 +119,7 @@ public class MixinClientPlayerInteractionManager {
 
 		if (result != ActionResult.PASS) {
 			if (result == ActionResult.SUCCESS) {
-				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity));
+				this.networkHandler.sendPacket(new PlayerInteractEntityC2SPacket(entity, player.isSneaking()));
 			}
 
 			info.cancel();
