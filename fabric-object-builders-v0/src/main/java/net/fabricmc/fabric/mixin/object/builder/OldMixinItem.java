@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.registry;
+package net.fabricmc.fabric.mixin.object.builder;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 
-/**
- * @deprecated Please migrate to v1. Please use Please use registry events instead.
- */
+@Mixin(Item.class)
 @Deprecated
-public interface ItemConstructedCallback {
-	Event<ItemConstructedCallback> EVENT = EventFactory.createArrayBacked(ItemConstructedCallback.class,
-			(listeners) -> (settings, builtItem) -> {
-				for (ItemConstructedCallback callback : listeners) {
-					callback.building(settings, builtItem);
-				}
-			}
-	);
-
-	void building(Item.Settings settings, Item builtItem);
+public class OldMixinItem {
+	@Inject(method = "<init>(Lnet/minecraft/item/Item$Settings;)V", at = @At("RETURN"))
+	public void init(Item.Settings builder, CallbackInfo info) {
+		ItemConstructedCallback.EVENT.invoker().building(builder, (Item) (Object) this);
+	}
 }
