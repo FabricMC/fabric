@@ -27,9 +27,13 @@ import net.fabricmc.fabric.impl.content.registry.FlammableBlockRegistryImpl;
  */
 public interface FlammableBlockRegistry extends ContentRegistry<Block, FlammableBlockRegistry.Entry> {
 	/**
-	 * Registry of Blocks that can be set on fire by {@link net.minecraft.block.Blocks#FIRE}.
+	 * Create a new flammable block registry for a type of fire.
+	 * @param fireBlock the block that this registry belongs to
+	 * @param prefix the name of the block
 	 */
-	FlammableBlockRegistry FIRE_INSTANCE = FlammableBlockRegistryImpl.FIRE_INSTANCE;
+	default FlammableBlockRegistry create(Block fireBlock, String prefix) {
+		return new FlammableBlockRegistryImpl(fireBlock, prefix);
+	}
 
 	default void add(Block block, int burn, int spread) {
 		this.add(block, new Entry(burn, spread));
