@@ -1,0 +1,2 @@
+accessWidener    v1    named
+accessible    field    net/minecraft/world/gen/feature/StructureFeature    STRUCTURE_TO_GENERATION_STEP    Ljava/util/Map;

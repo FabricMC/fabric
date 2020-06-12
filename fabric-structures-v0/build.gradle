@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-structures-v0"
+version = getSubprojectVersion(project, "0.0.1")
+
+minecraft {
+	accessWidener = file("src/main/resources/fabric-structures-v0.accesswidener")
+}

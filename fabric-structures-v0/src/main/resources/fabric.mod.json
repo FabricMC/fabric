@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-structures-v0",
+  "name": "Fabric Structures (v0)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-structures-v0/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "minecraft": ">=1.16-alpha.20.22.a"
+  },
+  "description": "Hooks for adding structures to the default registries.",
+  "mixins": [
+    "fabric-structures-v0.mixins.json"
+  ],
+  "accessWidener" : "fabric-structures-v0.accesswidener"
+}
