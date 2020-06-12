@@ -17,17 +17,19 @@
 package net.fabricmc.fabric.mixin.object.builder;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.block.Material;
-import net.minecraft.block.piston.PistonBehavior;
+import net.minecraft.item.Item;
 
-@Mixin(Material.Builder.class)
-public interface MaterialBuilderHooks {
-	@Accessor
-	void setPistonBehavior(PistonBehavior behavior);
+import net.fabricmc.fabric.api.event.registry.ItemConstructedCallback;
 
-	@Invoker
-	Material.Builder invokeLightPassesThrough();
+@Mixin(Item.class)
+@Deprecated
+public class OldMixinItem {
+	@Inject(method = "<init>(Lnet/minecraft/item/Item$Settings;)V", at = @At("RETURN"))
+	public void init(Item.Settings builder, CallbackInfo info) {
+		ItemConstructedCallback.EVENT.invoker().building(builder, (Item) (Object) this);
+	}
 }
