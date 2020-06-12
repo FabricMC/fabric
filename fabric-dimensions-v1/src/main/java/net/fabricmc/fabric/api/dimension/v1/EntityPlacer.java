@@ -23,16 +23,18 @@ import net.minecraft.util.math.Direction;
 
 /**
  * Responsible for placing an Entity once they have entered a dimension.
- * Stored by a FabricDimensionType, and used in Entity::changeDimension.
+ * used in Entity::changeDimension.
+ *
+ * @deprecated Experimental feature, may be removed or changed without further notice due to potential changes to Dimensions in subsequent versions.
  *
  * @see FabricDimensions
- * @see FabricDimensionType
  */
+@Deprecated
 @FunctionalInterface
 public interface EntityPlacer {
 	/**
 	 * Handles the placement of an entity going to a dimension.
-	 * Utilized by {@link FabricDimensions#teleport(Entity, net.minecraft.world.dimension.DimensionType, EntityPlacer)} to specify placement logic when needed.
+	 * Utilized by {@link FabricDimensions#teleport(Entity, ServerWorld, EntityPlacer)} to specify placement logic when needed.
 	 *
 	 * <p>This method may have side effects such as the creation of a portal in the target dimension,
 	 * or the creation of a chunk loading ticket.

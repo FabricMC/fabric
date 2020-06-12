@@ -47,7 +47,7 @@ public class ToolAttributeTest implements ModInitializer {
 		Block block = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_block"),
 				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.SAND).build(), MaterialColor.STONE)
 						.breakByTool(FabricToolTags.SHOVELS, 2)
-						.method_29292()
+						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.GRAVEL)));
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_block"), new BlockItem(block, new Item.Settings()));

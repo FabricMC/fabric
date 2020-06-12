@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_5359;
+import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 
@@ -36,12 +36,12 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 
-@Mixin(class_5359.class)
+@Mixin(DataPackSettings.class)
 public class MixinClass_5359 {
 	@Shadow
 	@Final
 	@Mutable
-	private List<String> field_25395;
+	private List<String> enabled;
 
 	/*
 	This injection takes all instances of this class with an enabled list that only have the vanilla pack enabled,
@@ -67,7 +67,7 @@ public class MixinClass_5359 {
 				}
 			}
 
-			this.field_25395 = newEnabled;
+			this.enabled = newEnabled;
 		}
 	}
 }

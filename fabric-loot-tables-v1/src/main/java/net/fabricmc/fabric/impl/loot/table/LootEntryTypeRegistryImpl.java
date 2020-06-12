@@ -29,7 +29,7 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 		Method target = null;
 
 		for (Method m : LootPoolEntryTypes.class.getDeclaredMethods()) {
-			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootPoolEntry.class_5337.class) {
+			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootPoolEntry.Serializer.class) {
 				if (target != null) {
 					throw new RuntimeException("More than one register-like method found in LootEntries!");
 				} else {
@@ -49,7 +49,7 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 	private LootEntryTypeRegistryImpl() { }
 
 	@Override
-	public void register(LootPoolEntry.class_5337<?> serializer) {
+	public void register(LootPoolEntry.Serializer<?> serializer) {
 		try {
 			REGISTER_METHOD.invoke(null, serializer);
 		} catch (Throwable t) {

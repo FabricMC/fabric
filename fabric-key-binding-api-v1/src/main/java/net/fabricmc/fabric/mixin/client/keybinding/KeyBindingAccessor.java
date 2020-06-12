@@ -16,24 +16,17 @@
 
 package net.fabricmc.fabric.mixin.client.keybinding;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import java.util.Map;
 
-import net.minecraft.client.options.GameOptions;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
 import net.minecraft.client.options.KeyBinding;
 
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
-
-@Mixin(GameOptions.class)
-public class MixinGameOptions {
-	@Shadow
-	public KeyBinding[] keysAll;
-
-	@Inject(at = @At("HEAD"), method = "load()V")
-	public void loadHook(CallbackInfo info) {
-		keysAll = KeyBindingRegistryImpl.INSTANCE.process(keysAll);
+@Mixin(KeyBinding.class)
+public interface KeyBindingAccessor {
+	@Accessor("categoryOrderMap")
+	static Map<String, Integer> fabric_getCategoryMap() {
+		throw new AssertionError();
 	}
 }

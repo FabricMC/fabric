@@ -48,7 +48,7 @@ public class FabricCreativeGuiComponents {
 		Type type;
 
 		public ItemGroupButtonWidget(int x, int y, Type type, CreativeGuiExtensions extensions) {
-			super(x, y, 10, 11, type.text, (bw) -> type.clickConsumer.accept(extensions));
+			super(x, y, 11, 10, type.text, (bw) -> type.clickConsumer.accept(extensions));
 			this.extensions = extensions;
 			this.type = type;
 			this.gui = (CreativeInventoryScreen) extensions;
@@ -56,17 +56,21 @@ public class FabricCreativeGuiComponents {
 
 		@Override
 		public void render(MatrixStack matrixStack, int mouseX, int mouseY, float float_1) {
+			this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
 			this.visible = extensions.fabric_isButtonVisible(type);
 			this.active = extensions.fabric_isButtonEnabled(type);
 
 			if (this.visible) {
+				int u = active && this.isHovered() ? 22 : 0;
+				int v = active ? 0 : 10;
+
 				MinecraftClient minecraftClient = MinecraftClient.getInstance();
 				minecraftClient.getTextureManager().bindTexture(BUTTON_TEX);
 				RenderSystem.disableLighting();
 				RenderSystem.color4f(1F, 1F, 1F, 1F);
-				this.drawTexture(matrixStack, this.x, this.y, (type == Type.NEXT ? 12 : 0), (active ? 0 : 12), 12, 12);
+				this.drawTexture(matrixStack, this.x, this.y, u + (type == Type.NEXT ? 11 : 0), v, 11, 10);
 
-				if (mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height) {
+				if (this.hovered) {
 					gui.renderTooltip(matrixStack, new TranslatableText("fabric.gui.creativeTabPage", extensions.fabric_currentPage() + 1, ((ItemGroup.GROUPS.length - 12) / 9) + 2), mouseX, mouseY);
 				}
 			}

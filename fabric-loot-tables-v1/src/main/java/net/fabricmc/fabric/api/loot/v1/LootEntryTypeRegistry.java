@@ -34,5 +34,5 @@ public interface LootEntryTypeRegistry {
 	 *
 	 * @param serializer the loot entry serializer
 	 */
-	void register(LootPoolEntry.class_5337<?> serializer);
+	void register(LootPoolEntry.Serializer<?> serializer);
 }

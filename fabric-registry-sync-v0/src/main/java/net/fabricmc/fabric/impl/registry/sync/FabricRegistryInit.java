@@ -140,7 +140,7 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registry.RECIPE_SERIALIZER);
 
 		// Synced and saved by id
-		RegistryAttributeHolder.get(Registry.ATTRIBUTES);
+		RegistryAttributeHolder.get(Registry.ATTRIBUTE);
 
 		// Synced in StatisticsS2CPacket
 		RegistryAttributeHolder.get(Registry.STAT_TYPE)

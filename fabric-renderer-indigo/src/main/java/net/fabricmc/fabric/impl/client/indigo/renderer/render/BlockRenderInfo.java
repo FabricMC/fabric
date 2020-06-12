@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.renderer.v1.material.BlendMode;
  * so they can be applied together with chunk offsets.
  */
 public class BlockRenderInfo {
-	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColorMap();
+	private final BlockColors blockColorMap = MinecraftClient.getInstance().getBlockColors();
 	public final Random random = new Random();
 	public BlockRenderView blockView;
 	public BlockPos blockPos;
