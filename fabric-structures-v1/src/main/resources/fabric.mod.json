@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "fabric-structures-v0",
-  "name": "Fabric Structures (v0)",
+  "id": "fabric-structures-v1",
+  "name": "Fabric Structures (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-structures-v0/icon.png",
+  "icon": "assets/fabric-structures-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",
@@ -21,7 +21,6 @@
   },
   "description": "Hooks for adding structures to the default registries.",
   "mixins": [
-    "fabric-structures-v0.mixins.json"
-  ],
-  "accessWidener" : "fabric-structures-v0.accesswidener"
+    "fabric-structures-v1.mixins.json"
+  ]
 }
