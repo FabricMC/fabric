@@ -61,8 +61,8 @@ public final class KeyBindingRegistryImpl {
 		for (KeyBinding existingKeyBindings : moddedKeyBindings) {
 			if (existingKeyBindings == binding) {
 				throw null;
-			} else if (existingKeyBindings.getId().equals(binding.getId())) {
-				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getId() + "!");
+			} else if (existingKeyBindings.getTranslationKey().equals(binding.getTranslationKey())) {
+				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
 			}
 		}
 

@@ -36,15 +36,15 @@ public class KeyBindingsTest implements ClientModInitializer {
 
 		ClientTickCallback.EVENT.register(client -> {
 			while (binding1.wasPressed()) {
-				client.player.sendMessage(new LiteralText("Key 1 was pressed!"));
+				client.player.sendMessage(new LiteralText("Key 1 was pressed!"), false);
 			}
 
 			while (binding2.wasPressed()) {
-				client.player.sendMessage(new LiteralText("Key 2 was pressed!"));
+				client.player.sendMessage(new LiteralText("Key 2 was pressed!"), false);
 			}
 
 			if (stickyBinding.isPressed()) {
-				client.player.sendMessage(new LiteralText("Sticky Key was pressed!"));
+				client.player.sendMessage(new LiteralText("Sticky Key was pressed!"), false);
 			}
 		});
 	}

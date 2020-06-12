@@ -52,7 +52,7 @@ public final class KeyBindingHelper {
 	 * @param keyBinding the keybinding
 	 * @return configured KeyCode
 	 */
-	public static InputUtil.KeyCode getBoundKeyOf(KeyBinding keyBinding) {
-		return ((KeyCodeAccessor) keyBinding).getKeyCode();
+	public static InputUtil.Key getBoundKeyOf(KeyBinding keyBinding) {
+		return ((KeyCodeAccessor) keyBinding).getBoundKey();
 	}
 }
