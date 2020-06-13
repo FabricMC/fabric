@@ -29,7 +29,10 @@ import net.fabricmc.fabric.impl.content.registry.FuelItemRegistryImpl;
 import net.fabricmc.fabric.impl.content.registry.StrippableBlockRegistryImpl;
 import net.fabricmc.fabric.impl.content.registry.TillableBlockRegistryImpl;
 
-public class ContentRegistries {
+public final class ContentRegistries {
+	private ContentRegistries() {
+	}
+
 	/**
 	 * Registry of Items to values from 0.0 to 1.0, defining the chance of a given item
 	 * increasing the Composter block's level.
