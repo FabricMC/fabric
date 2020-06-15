@@ -16,21 +16,36 @@
 
 package net.fabricmc.fabric.mixin.command;
 
+import com.mojang.brigadier.CommandDispatcher;
+import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 @Mixin(MinecraftDedicatedServer.class)
 public abstract class MixinMinecraftDedicatedServer {
+	@Shadow
+	@Final
+	private static Logger LOGGER;
+
 	@Inject(method = "setupServer", at = @At("HEAD"))
 	private void setupServer(CallbackInfoReturnable<Boolean> info) {
-		CommandRegistrationCallback.EVENT.invoker().register(((MinecraftDedicatedServer) (Object) this).getCommandManager().getDispatcher(), true);
+		MinecraftDedicatedServer server = ((MinecraftDedicatedServer) (Object) this);
+		CommandDispatcher<ServerCommandSource> dispatcher = server.getCommandManager().getDispatcher();
 
-		//Possibly call findAmbiguities here
+		CommandRegistrationCallback.EVENT.invoker().register(dispatcher, true);
+
+		// Now find ambiguities after commands have loaded.
+		dispatcher.findAmbiguities((parent, child, sibling, collection) -> {
+			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", dispatcher.getPath(child), dispatcher.getPath(sibling), collection);
+		});
 	}
 }
