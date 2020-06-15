@@ -44,7 +44,7 @@ public abstract class MixinMinecraftDedicatedServer {
 		CommandRegistrationCallback.EVENT.invoker().register(dispatcher, true);
 
 		// Now find ambiguities after commands have loaded.
-		server.getCommandManager().getDispatcher().findAmbiguities((parent, child, sibling, collection) -> {
+		dispatcher.findAmbiguities((parent, child, sibling, collection) -> {
 			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", dispatcher.getPath(child), dispatcher.getPath(sibling), collection);
 		});
 	}
