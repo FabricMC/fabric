@@ -47,7 +47,7 @@ public abstract class MixinCommandManager {
 				dispatcher.findAmbiguities(ambiguityConsumer);
 			}
 		} else {
-			// This will occur only if "/reload" is called.
+			// This will occur only if "/reload" is called or this is being registered on an integrated server.
 			CommandRegistrationCallback.EVENT.invoker().register(dispatcher, registrationEnvironment == CommandManager.RegistrationEnvironment.DEDICATED);
 
 			// Mimic vanilla logic by calling findAmbiguities.
