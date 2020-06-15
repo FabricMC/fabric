@@ -14,16 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.screen;
+package net.fabricmc.fabric.test.screenhandler.screen;
 
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.screen.ScreenHandler;
+import net.minecraft.util.math.BlockPos;
 
-/**
- * @deprecated Use {@link net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry.Factory} instead.
- */
-@Deprecated
-@FunctionalInterface
-public interface ContainerScreenFactory<C extends ScreenHandler> {
-	HandledScreen create(C container);
+public interface PositionedScreenHandler {
+	BlockPos getPos();
 }

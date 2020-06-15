@@ -14,16 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.screen;
-
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.screen.ScreenHandler;
-
 /**
- * @deprecated Use {@link net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry.Factory} instead.
+ * The Fabric screen handler API for creating screen handlers.
  */
-@Deprecated
-@FunctionalInterface
-public interface ContainerScreenFactory<C extends ScreenHandler> {
-	HandledScreen create(C container);
-}
+package net.fabricmc.fabric.api.screenhandler.v1;
