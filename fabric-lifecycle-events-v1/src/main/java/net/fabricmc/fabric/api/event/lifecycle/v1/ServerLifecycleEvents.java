@@ -65,42 +65,6 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
-	/**
-	 * Gets the currently running primary server.
-	 *
-	 * <p><b>Use of this method is highly discouraged and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
-	 * One should attempt to obtain the server instance from a {@link ServerWorld server world} or via other means.
-	 *
-	 * <p>The server instance returned SHOULD NOT be cached! Call the method every time you need the server.
-	 *
-	 * @return the currently running server
-	 * @throws IllegalStateException if the server is not available
-	 */
-	@Deprecated
-	public static MinecraftServer getPrimaryServer() {
-		final MinecraftServer server = ServerLifecycleInternals.getServer();
-
-		if (server != null) {
-			return server;
-		}
-
-		throw new IllegalStateException("Server was not available");
-	}
-
-	/**
-	 * Checks if the primary server is available.
-	 * The server may not always be available on a {@link net.fabricmc.api.EnvType#CLIENT client}, so it is advised to verify this is {@code true} before calling {@link ServerLifecycleEvents#getPrimaryServer()}
-	 *
-	 * <p><b>Use of this method is highly discouraged and not recommended since there is no real restriction on whether the game engine could run multiple servers concurrently.</b>
-	 * One should attempt to obtain the server instance from a {@link ServerWorld server world} or via other means.
-	 *
-	 * @return true if the server is available.
-	 */
-	@Deprecated
-	public static boolean isPrimaryServerAvailable() {
-		return ServerLifecycleInternals.getServer() != null;
-	}
-
 	public interface LifecycleCallback {
 		void onChangeLifecycle(MinecraftServer server);
 	}
