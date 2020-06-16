@@ -21,7 +21,6 @@ import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.impl.lifecycle.ServerLifecycleInternals;
 
 public final class ServerLifecycleEvents {
 	private ServerLifecycleEvents() {
