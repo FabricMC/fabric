@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.loot.table;
 
 import java.lang.reflect.Method;
 
-import net.minecraft.loot.entry.LootEntries;
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntryTypes;
+import net.minecraft.loot.entry.LootPoolEntry;
 
 public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
 	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
@@ -28,8 +28,8 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 	static {
 		Method target = null;
 
-		for (Method m : LootEntries.class.getDeclaredMethods()) {
-			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootEntry.Serializer.class) {
+		for (Method m : LootPoolEntryTypes.class.getDeclaredMethods()) {
+			if (m.getParameterCount() == 1 && m.getParameterTypes()[0] == LootPoolEntry.Serializer.class) {
 				if (target != null) {
 					throw new RuntimeException("More than one register-like method found in LootEntries!");
 				} else {
@@ -49,7 +49,7 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 	private LootEntryTypeRegistryImpl() { }
 
 	@Override
-	public void register(LootEntry.Serializer<?> serializer) {
+	public void register(LootPoolEntry.Serializer<?> serializer) {
 		try {
 			REGISTER_METHOD.invoke(null, serializer);
 		} catch (Throwable t) {

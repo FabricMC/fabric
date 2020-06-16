@@ -18,12 +18,13 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Consumer;
 
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
@@ -35,7 +36,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	}
 
 	@Override
-	public <T extends ResourcePackProfile> void register(Map<String, T> map, ResourcePackProfile.Factory<T> factory) {
+	public <T extends ResourcePackProfile> void register(Consumer<T> consumer, ResourcePackProfile.Factory<T> factory) {
 		// TODO: "vanilla" does not emit a message; neither should a modded datapack
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
@@ -46,10 +47,11 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			}
 
 			T var3 = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP);
+					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
+					text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod")));
 
 			if (var3 != null) {
-				map.put(var3.getName(), var3);
+				consumer.accept(var3);
 			}
 		}
 	}

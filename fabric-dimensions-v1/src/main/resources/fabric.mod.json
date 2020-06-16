@@ -5,14 +5,10 @@
   "license": "Apache-2.0",
   "depends": {
     "fabricloader": ">=0.4.0",
+    "minecraft": ">=1.16-rc.3",
     "fabric-api-base": "*",
     "fabric-registry-sync-v0": "*",
     "fabric-networking-v0": "*"
-  },
-  "entrypoints": {
-    "client": [
-      "net.fabricmc.fabric.impl.dimension.FabricDimensionClientInit::onClientInit"
-    ]
   },
   "mixins": [
     "fabric-dimensions-v1.mixins.json"

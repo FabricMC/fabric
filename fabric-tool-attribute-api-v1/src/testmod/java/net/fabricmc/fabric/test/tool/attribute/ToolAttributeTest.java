@@ -23,6 +23,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -33,19 +34,37 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.event.server.ServerTickCallback;
 
 public class ToolAttributeTest implements ModInitializer {
+	private boolean hasValidatedTags = false;
+
 	@Override
 	public void onInitialize() {
 		// Register a custom shovel that has a mining level of 2 (iron) dynamically.
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_shovel"), new TestShovel(new Item.Settings()));
 		// Register a block that requires a shovel that is as strong or stronger than an iron one.
 		Block block = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_block"),
-				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.SAND).requiresTool().build(), MaterialColor.STONE)
+				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.SAND).build(), MaterialColor.STONE)
 						.breakByTool(FabricToolTags.SHOVELS, 2)
+						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.GRAVEL)));
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_block"), new BlockItem(block, new Item.Settings()));
+
+		ServerTickCallback.EVENT.register(this::validateTags);
+	}
+
+	private void validateTags(MinecraftServer server) {
+		if (hasValidatedTags) {
+			return;
+		}
+
+		hasValidatedTags = true;
+
+		if (FabricToolTags.PICKAXES.values().isEmpty()) {
+			throw new AssertionError("Failed to load tool tags");
+		}
 	}
 
 	private static class TestShovel extends Item implements DynamicAttributeTool {

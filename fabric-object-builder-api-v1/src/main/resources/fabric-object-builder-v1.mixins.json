@@ -10,7 +10,9 @@
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "MaterialBuilderAccessor",
-    "MixinBlock"
+    "MixinBlock",
+    "PointOfInterestTypeAccessor",
+    "VillagerProfessionAccessor"
   ],
   "client": [
     "ModelPredicateProviderRegistryAccessor",

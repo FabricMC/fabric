@@ -6,12 +6,7 @@
     "EntityHooks",
     "MixinEntity",
     "MixinPortalForcer",
-    "MixinWorld",
-    "idremap.MixinDimensionRawIndexFix",
-    "idremap.MixinLevelProperties",
-    "idremap.MixinLevelStorage",
-    "idremap.MixinPlayerManager",
-    "idremap.MixinUnmodifiableLevelProperties"
+    "MixinWorld"
   ],
   "injectors": {
     "defaultRequire": 1
