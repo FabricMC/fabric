@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
