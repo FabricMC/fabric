@@ -39,27 +39,27 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 public abstract class MinecraftServerMixin {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V", ordinal = 0), method = "run")
 	private void afterSetupServer(CallbackInfo info) {
-		ServerLifecycleEvents.SERVER_STARTED.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
+		ServerLifecycleEvents.SERVER_STARTED.invoker().onServerStarted((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At("HEAD"), method = "shutdown")
 	private void beforeShutdownServer(CallbackInfo info) {
-		ServerLifecycleEvents.SERVER_STOPPING.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
+		ServerLifecycleEvents.SERVER_STOPPING.invoker().onServerStopping((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At("TAIL"), method = "shutdown")
 	private void afterShutdownServer(CallbackInfo info) {
-		ServerLifecycleEvents.SERVER_STOPPED.invoker().onChangeLifecycle((MinecraftServer) (Object) this);
+		ServerLifecycleEvents.SERVER_STOPPED.invoker().onServerStopped((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;tickWorlds(Ljava/util/function/BooleanSupplier;)V"), method = "tick")
 	private void onStartTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-		ServerTickEvents.START_SERVER_TICK.invoker().onTick((MinecraftServer) (Object) this);
+		ServerTickEvents.START_SERVER_TICK.invoker().onStartTick((MinecraftServer) (Object) this);
 	}
 
 	@Inject(at = @At("TAIL"), method = "tick")
 	private void onEndTick(BooleanSupplier shouldKeepTicking, CallbackInfo info) {
-		ServerTickEvents.END_SERVER_TICK.invoker().onTick((MinecraftServer) (Object) this);
+		ServerTickEvents.END_SERVER_TICK.invoker().onEndTick((MinecraftServer) (Object) this);
 	}
 
 	/**

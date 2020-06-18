@@ -33,21 +33,21 @@ public final class ClientTickEvents {
 	/**
 	 * Called at the start of the client tick.
 	 */
-	public static final Event<ClientTickEvents.Client> START_CLIENT_TICK = EventFactory.createArrayBacked(ClientTickEvents.Client.class, callbacks -> client -> {
+	public static final Event<StartTick> START_CLIENT_TICK = EventFactory.createArrayBacked(StartTick.class, callbacks -> client -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = client.getProfiler();
 			profiler.push("fabricStartClientTick");
 
-			for (ClientTickEvents.Client event : callbacks) {
+			for (StartTick event : callbacks) {
 				profiler.push(EventFactory.getHandlerName(event));
-				event.onTick(client);
+				event.onStartTick(client);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ClientTickEvents.Client event : callbacks) {
-				event.onTick(client);
+			for (StartTick event : callbacks) {
+				event.onStartTick(client);
 			}
 		}
 	});
@@ -55,21 +55,21 @@ public final class ClientTickEvents {
 	/**
 	 * Called at the end of the client tick.
 	 */
-	public static final Event<ClientTickEvents.Client> END_CLIENT_TICK = EventFactory.createArrayBacked(ClientTickEvents.Client.class, callbacks -> client -> {
+	public static final Event<EndTick> END_CLIENT_TICK = EventFactory.createArrayBacked(EndTick.class, callbacks -> client -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = client.getProfiler();
 			profiler.push("fabricEndClientTick");
 
-			for (ClientTickEvents.Client event : callbacks) {
+			for (EndTick event : callbacks) {
 				profiler.push(EventFactory.getHandlerName(event));
-				event.onTick(client);
+				event.onEndTick(client);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ClientTickEvents.Client event : callbacks) {
-				event.onTick(client);
+			for (EndTick event : callbacks) {
+				event.onEndTick(client);
 			}
 		}
 	});
@@ -77,21 +77,21 @@ public final class ClientTickEvents {
 	/**
 	 * Called at the start of a ClientWorld's tick.
 	 */
-	public static final Event<ClientTickEvents.World> START_WORLD_TICK = EventFactory.createArrayBacked(ClientTickEvents.World.class, callbacks -> world -> {
+	public static final Event<StartWorldTick> START_WORLD_TICK = EventFactory.createArrayBacked(StartWorldTick.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricStartClientWorldTick");
 
-			for (ClientTickEvents.World callback : callbacks) {
+			for (StartWorldTick callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onTick(world);
+				callback.onStartTick(world);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ClientTickEvents.World callback : callbacks) {
-				callback.onTick(world);
+			for (StartWorldTick callback : callbacks) {
+				callback.onStartTick(world);
 			}
 		}
 	});
@@ -101,30 +101,38 @@ public final class ClientTickEvents {
 	 *
 	 * <p>End of world tick may be used to start async computations for the next tick.
 	 */
-	public static final Event<ClientTickEvents.World> END_WORLD_TICK = EventFactory.createArrayBacked(ClientTickEvents.World.class, callbacks -> world -> {
+	public static final Event<EndWorldTick> END_WORLD_TICK = EventFactory.createArrayBacked(EndWorldTick.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricEndClientWorldTick");
 
-			for (ClientTickEvents.World callback : callbacks) {
+			for (EndWorldTick callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onTick(world);
+				callback.onEndTick(world);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ClientTickEvents.World callback : callbacks) {
-				callback.onTick(world);
+			for (EndWorldTick callback : callbacks) {
+				callback.onEndTick(world);
 			}
 		}
 	});
 
-	public interface Client {
-		void onTick(MinecraftClient client);
+	public interface StartTick {
+		void onStartTick(MinecraftClient client);
 	}
 
-	public interface World {
-		void onTick(ClientWorld world);
+	public interface EndTick {
+		void onEndTick(MinecraftClient client);
+	}
+
+	public interface StartWorldTick {
+		void onStartTick(ClientWorld world);
+	}
+
+	public interface EndWorldTick {
+		void onEndTick(ClientWorld world);
 	}
 }

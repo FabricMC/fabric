@@ -47,6 +47,6 @@ public abstract class ServerWorldMixin {
 	// Make sure "insideTick" is true before we call the start tick, so inject after it is set
 	@Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/world/ServerWorld;insideTick:Z", opcode = Opcodes.PUTFIELD, ordinal = 0, shift = At.Shift.AFTER))
 	private void startWorldTick(BooleanSupplier shouldKeepTicking, CallbackInfo ci) {
-		ServerTickEvents.START_WORLD_TICK.invoker().onTick((ServerWorld) (Object) this);
+		ServerTickEvents.START_WORLD_TICK.invoker().onStartTick((ServerWorld) (Object) this);
 	}
 }
