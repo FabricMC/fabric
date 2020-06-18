@@ -81,7 +81,8 @@ public final class ScreenHandlerRegistry {
 	 */
 	public static <T extends ScreenHandler> ScreenHandlerType<T> registerSimple(Identifier id, SimpleClientHandlerFactory<T> factory) {
 		// Wrap our factory in vanilla's factory; it will not be public for users.
-		ScreenHandlerType<T> type = new ScreenHandlerType<>(factory::create);
+		// noinspection Convert2MethodRef - Must be a lambda or else dedicated server will crash
+		ScreenHandlerType<T> type = new ScreenHandlerType<>((syncId, inventory) -> factory.create(syncId, inventory));
 		return Registry.register(Registry.SCREEN_HANDLER, id, type);
 	}
 
