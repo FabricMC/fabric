@@ -30,9 +30,9 @@ public final class ServerLifecycleEvents {
 	 *
 	 * <p>At this stage, all worlds are live.
 	 */
-	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STARTED = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, (callbacks) -> (server) -> {
-		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {
-			callback.onChangeLifecycle(server);
+	public static final Event<ServerStarted> SERVER_STARTED = EventFactory.createArrayBacked(ServerStarted.class, (callbacks) -> (server) -> {
+		for (ServerStarted callback : callbacks) {
+			callback.onServerStarted(server);
 		}
 	});
 
@@ -44,9 +44,9 @@ public final class ServerLifecycleEvents {
 	 *
 	 * <p>All worlds are still present and can be modified.
 	 */
-	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STOPPING = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, (callbacks) -> (server) -> {
-		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {
-			callback.onChangeLifecycle(server);
+	public static final Event<ServerStopping> SERVER_STOPPING = EventFactory.createArrayBacked(ServerStopping.class, (callbacks) -> (server) -> {
+		for (ServerStopping callback : callbacks) {
+			callback.onServerStopping(server);
 		}
 	});
 
@@ -57,13 +57,21 @@ public final class ServerLifecycleEvents {
 	 * <p>For example, an {@link net.fabricmc.api.EnvType#CLIENT integrated server} will begin stopping, but it's client may continue to run.
 	 * Meanwhile for a {@link net.fabricmc.api.EnvType#SERVER dedicated server}, this will be the last event called.
 	 */
-	public static final Event<ServerLifecycleEvents.LifecycleCallback> SERVER_STOPPED = EventFactory.createArrayBacked(ServerLifecycleEvents.LifecycleCallback.class, callbacks -> server -> {
-		for (ServerLifecycleEvents.LifecycleCallback callback : callbacks) {
-			callback.onChangeLifecycle(server);
+	public static final Event<ServerStopped> SERVER_STOPPED = EventFactory.createArrayBacked(ServerStopped.class, callbacks -> server -> {
+		for (ServerStopped callback : callbacks) {
+			callback.onServerStopped(server);
 		}
 	});
 
-	public interface LifecycleCallback {
-		void onChangeLifecycle(MinecraftServer server);
+	public interface ServerStarted {
+		void onServerStarted(MinecraftServer server);
+	}
+
+	public interface ServerStopping {
+		void onServerStopping(MinecraftServer server);
+	}
+
+	public interface ServerStopped {
+		void onServerStopped(MinecraftServer server);
 	}
 }

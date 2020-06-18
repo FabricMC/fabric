@@ -83,11 +83,11 @@ public abstract class ClientWorldMixin extends WorldMixin {
 	// We override our injection on the clientworld so only the client world's tick invocations will run
 	@Override
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
-		ClientTickEvents.END_WORLD_TICK.invoker().onTick((ClientWorld) (Object) this);
+		ClientTickEvents.END_WORLD_TICK.invoker().onEndTick((ClientWorld) (Object) this);
 	}
 
 	@Inject(method = "tickEntities", at = @At("HEAD"))
 	private void startWorldTick(CallbackInfo ci) {
-		ClientTickEvents.START_WORLD_TICK.invoker().onTick((ClientWorld) (Object) this);
+		ClientTickEvents.START_WORLD_TICK.invoker().onStartTick((ClientWorld) (Object) this);
 	}
 }

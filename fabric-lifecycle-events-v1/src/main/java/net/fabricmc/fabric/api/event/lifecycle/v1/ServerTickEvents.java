@@ -30,21 +30,21 @@ public final class ServerTickEvents {
 	/**
 	 * Called at the start of the server tick.
 	 */
-	public static final Event<ServerTickEvents.Server> START_SERVER_TICK = EventFactory.createArrayBacked(ServerTickEvents.Server.class, callbacks -> server -> {
+	public static final Event<StartTick> START_SERVER_TICK = EventFactory.createArrayBacked(StartTick.class, callbacks -> server -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = server.getProfiler();
 			profiler.push("fabricStartServerTick");
 
-			for (ServerTickEvents.Server event : callbacks) {
+			for (StartTick event : callbacks) {
 				profiler.push(EventFactory.getHandlerName(event));
-				event.onTick(server);
+				event.onStartTick(server);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ServerTickEvents.Server event : callbacks) {
-				event.onTick(server);
+			for (StartTick event : callbacks) {
+				event.onStartTick(server);
 			}
 		}
 	});
@@ -52,21 +52,21 @@ public final class ServerTickEvents {
 	/**
 	 * Called at the end of the server tick.
 	 */
-	public static final Event<ServerTickEvents.Server> END_SERVER_TICK = EventFactory.createArrayBacked(ServerTickEvents.Server.class, callbacks -> server -> {
+	public static final Event<EndTick> END_SERVER_TICK = EventFactory.createArrayBacked(EndTick.class, callbacks -> server -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = server.getProfiler();
 			profiler.push("fabricEndServerTick");
 
-			for (ServerTickEvents.Server event : callbacks) {
+			for (EndTick event : callbacks) {
 				profiler.push(EventFactory.getHandlerName(event));
-				event.onTick(server);
+				event.onEndTick(server);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ServerTickEvents.Server event : callbacks) {
-				event.onTick(server);
+			for (EndTick event : callbacks) {
+				event.onEndTick(server);
 			}
 		}
 	});
@@ -74,21 +74,21 @@ public final class ServerTickEvents {
 	/**
 	 * Called at the start of a ServerWorld's tick.
 	 */
-	public static final Event<ServerTickEvents.World> START_WORLD_TICK = EventFactory.createArrayBacked(ServerTickEvents.World.class, callbacks -> world -> {
+	public static final Event<StartWorldTick> START_WORLD_TICK = EventFactory.createArrayBacked(StartWorldTick.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricStartServerWorldTick_" + world.getRegistryKey().getValue());
 
-			for (ServerTickEvents.World callback : callbacks) {
+			for (StartWorldTick callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onTick(world);
+				callback.onStartTick(world);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ServerTickEvents.World callback : callbacks) {
-				callback.onTick(world);
+			for (StartWorldTick callback : callbacks) {
+				callback.onStartTick(world);
 			}
 		}
 	});
@@ -98,30 +98,38 @@ public final class ServerTickEvents {
 	 *
 	 * <p>End of world tick may be used to start async computations for the next tick.
 	 */
-	public static final Event<ServerTickEvents.World> END_WORLD_TICK = EventFactory.createArrayBacked(ServerTickEvents.World.class, callbacks -> world -> {
+	public static final Event<EndWorldTick> END_WORLD_TICK = EventFactory.createArrayBacked(EndWorldTick.class, callbacks -> world -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = world.getProfiler();
 			profiler.push("fabricEndServerWorldTick_" + world.getRegistryKey().getValue());
 
-			for (ServerTickEvents.World callback : callbacks) {
+			for (EndWorldTick callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onTick(world);
+				callback.onEndTick(world);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
-			for (ServerTickEvents.World callback : callbacks) {
-				callback.onTick(world);
+			for (EndWorldTick callback : callbacks) {
+				callback.onEndTick(world);
 			}
 		}
 	});
 
-	public interface Server {
-		void onTick(MinecraftServer server);
+	public interface StartTick {
+		void onStartTick(MinecraftServer server);
 	}
 
-	public interface World {
-		void onTick(ServerWorld world);
+	public interface EndTick {
+		void onEndTick(MinecraftServer server);
+	}
+
+	public interface StartWorldTick {
+		void onStartTick(ServerWorld world);
+	}
+
+	public interface EndWorldTick {
+		void onEndTick(ServerWorld world);
 	}
 }

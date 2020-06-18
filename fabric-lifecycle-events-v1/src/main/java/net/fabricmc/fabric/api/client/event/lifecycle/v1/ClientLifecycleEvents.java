@@ -33,9 +33,9 @@ public final class ClientLifecycleEvents {
 	 *
 	 * <p>This occurs while the splash screen is displayed.
 	 */
-	public static final Event<ClientLifecycleCallback> CLIENT_STARTED = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
-		for (ClientLifecycleCallback callback : callbacks) {
-			callback.onChangeLifecycle(client);
+	public static final Event<ClientStarted> CLIENT_STARTED = EventFactory.createArrayBacked(ClientStarted.class, callbacks -> client -> {
+		for (ClientStarted callback : callbacks) {
+			callback.onClientStarted(client);
 		}
 	});
 
@@ -45,13 +45,17 @@ public final class ClientLifecycleEvents {
 	 *
 	 * <p>This will be called before the integrated server is stopped if it is running.
 	 */
-	public static final Event<ClientLifecycleCallback> CLIENT_STOPPING = EventFactory.createArrayBacked(ClientLifecycleCallback.class, callbacks -> client -> {
-		for (ClientLifecycleCallback callback : callbacks) {
-			callback.onChangeLifecycle(client);
+	public static final Event<ClientStopping> CLIENT_STOPPING = EventFactory.createArrayBacked(ClientStopping.class, callbacks -> client -> {
+		for (ClientStopping callback : callbacks) {
+			callback.onClientStopping(client);
 		}
 	});
 
-	public interface ClientLifecycleCallback {
-		void onChangeLifecycle(MinecraftClient client);
+	public interface ClientStarted {
+		void onClientStarted(MinecraftClient client);
+	}
+
+	public interface ClientStopping {
+		void onClientStopping(MinecraftClient client);
 	}
 }

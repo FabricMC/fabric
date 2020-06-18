@@ -84,7 +84,7 @@ public abstract class WorldMixin {
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
 		if (!this.isClient()) {
-			ServerTickEvents.END_WORLD_TICK.invoker().onTick((ServerWorld) (Object) this);
+			ServerTickEvents.END_WORLD_TICK.invoker().onEndTick((ServerWorld) (Object) this);
 		}
 	}
 }
