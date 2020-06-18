@@ -19,7 +19,6 @@ package net.fabricmc.fabric.mixin.command;
 import com.mojang.brigadier.AmbiguityConsumer;
 import com.mojang.brigadier.CommandDispatcher;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
@@ -30,31 +29,14 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 @Mixin(CommandManager.class)
 public abstract class MixinCommandManager {
-	@Unique
-	private static boolean fabric_isFirstRun = true;
 
 	/**
 	 * @reason Add commands before ambiguities are calculated.
 	 */
 	@Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
 	private void fabric_addCommands(CommandDispatcher<ServerCommandSource> dispatcher, AmbiguityConsumer<ServerCommandSource> ambiguityConsumer, CommandManager.RegistrationEnvironment registrationEnvironment) {
-		if (fabric_isFirstRun) {
-			// Mods have not initialized yet on a dedicated server. These will be registered later though.
-			if (registrationEnvironment != CommandManager.RegistrationEnvironment.DEDICATED) {
-				CommandRegistrationCallback.EVENT.invoker().register(dispatcher, false);
+		CommandRegistrationCallback.EVENT.invoker().register(dispatcher, registrationEnvironment == CommandManager.RegistrationEnvironment.DEDICATED);
 
-				// This should only be called on integrated server. On dedicated, we test this later due to mod init.
-				dispatcher.findAmbiguities(ambiguityConsumer);
-			}
-		} else {
-			// This will occur only if "/reload" is called or this is being registered on an integrated server.
-			CommandRegistrationCallback.EVENT.invoker().register(dispatcher, registrationEnvironment == CommandManager.RegistrationEnvironment.DEDICATED);
-
-			// Mimic vanilla logic by calling findAmbiguities.
-			dispatcher.findAmbiguities(ambiguityConsumer);
-		}
-
-		fabric_isFirstRun = false;
-		// Ambiguities will be called later if on a dedicated server and it is the first run
+		dispatcher.findAmbiguities(ambiguityConsumer);
 	}
 }
