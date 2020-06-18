@@ -29,7 +29,6 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 @Mixin(CommandManager.class)
 public abstract class MixinCommandManager {
-
 	/**
 	 * @reason Add commands before ambiguities are calculated.
 	 */
