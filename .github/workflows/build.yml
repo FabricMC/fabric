@@ -14,9 +14,9 @@ jobs:
           arguments: check build publishToMavenLocal --stacktrace
       - uses: actions/upload-artifact@v2
         with:
-          name: Main Artifacts
+          name: Artifacts
           path: build/libs/
       - uses: actions/upload-artifact@v2
         with:
-          name: Module Artifacts
+          name: Artifacts
           path: ./*/build/libs/
