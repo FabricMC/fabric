@@ -11,7 +11,7 @@ jobs:
       - uses: nikitasavinov/checkstyle-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
+          reporter: github-check
           level: warning
           checkstyle_config: ./checkstyle.xml
       - uses: eskatos/gradle-command-action@v1
@@ -25,4 +25,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Module Artifacts
-          path: /*/build/libs/
+          path: ./*/build/libs/
