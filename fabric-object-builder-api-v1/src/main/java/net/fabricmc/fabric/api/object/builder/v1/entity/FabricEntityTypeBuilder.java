@@ -16,15 +16,19 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
+import java.util.function.Supplier;
+
 import com.google.common.collect.ImmutableSet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.block.Block;
+import net.minecraft.entity.attribute.DefaultAttributeContainer;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
 
@@ -47,6 +51,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
 	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
+	/* @Nullable */
+	private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
 
 	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 		this.spawnGroup = spawnGroup;
@@ -149,6 +155,27 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
+	 * Sets the default attributes for a type of living entity.
+	 *
+	 * <p>This should not be called if your entity is not a {@link LivingEntity}.
+	 *
+	 * <p>This can be used in a fashion similar to this:
+	 * <blockquote><pre>
+	 * FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, MyCreature::new)
+	 * 	.defaultAttributes(LivingEntity::createLivingAttributes)
+	 * 	...
+	 * 	.build();
+	 * </pre></blockquote>
+	 *
+	 * @param defaultAttributeBuilder a function to generate the default attribute builder from the entity type
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+		this.defaultAttributeBuilder = defaultAttributeBuilder;
+		return this;
+	}
+
+	/**
 	 * Creates the entity type.
 	 *
 	 * @return a new {@link EntityType}
@@ -159,7 +186,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+
+		if (this.defaultAttributeBuilder != null) {
+			// TODO: Maybe there is a way to do some reflection intrinsics to fail hard if the entity type is not living.
+			FabricDefaultAttributeRegistry.register((EntityType<? extends LivingEntity>) type, this.defaultAttributeBuilder.get());
+		}
 
 		return type;
 	}
