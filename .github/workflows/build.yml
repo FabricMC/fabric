@@ -8,12 +8,6 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: 14
-      - uses: nikitasavinov/checkstyle-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-check
-          level: warning
-          checkstyle_config: ./checkstyle.xml
       - uses: eskatos/gradle-command-action@v1
         with:
           gradle-version: wrapper
