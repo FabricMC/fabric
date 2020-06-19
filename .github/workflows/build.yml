@@ -11,9 +11,9 @@ jobs:
       - uses: nikitasavinov/checkstyle-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-check
-          level: info
-          checkstyle_config: checkstyle.xml
+          reporter: github-pr-check
+          level: warning
+          checkstyle_config: ./checkstyle.xml
       - uses: eskatos/gradle-command-action@v1
         with:
           gradle-version: wrapper
