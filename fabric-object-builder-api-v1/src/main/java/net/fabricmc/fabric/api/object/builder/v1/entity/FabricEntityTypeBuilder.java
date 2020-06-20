@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableSet;
@@ -28,9 +29,14 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.block.Block;
+import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
+import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.object.builder.FabricEntityType;
+import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 
 /**
  * Extended version of {@link EntityType.Builder} with added registration for
@@ -51,13 +57,38 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
 	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
-	/* @Nullable */
-	private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
 
 	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 		this.spawnGroup = spawnGroup;
 		this.function = function;
 		this.spawnableFarFromPlayer = spawnGroup == SpawnGroup.CREATURE || spawnGroup == SpawnGroup.MISC;
+	}
+
+	/**
+	 * Creates an entity type builder.
+	 *
+	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
+	 *
+	 * @param <T> the type of entity
+	 *
+	 * @return a new entity type builder
+	 */
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create() {
+		return create(SpawnGroup.MISC);
+	}
+
+	/**
+	 * Creates an entity type builder.
+	 *
+	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
+	 *
+	 * @param function the entity function used to create this entity
+	 * @param <T> the type of entity
+	 *
+	 * @return a new entity type builder
+	 */
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityType.EntityFactory<T> function) {
+		return create(SpawnGroup.MISC, function);
 	}
 
 	/**
@@ -69,7 +100,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new entity type builder
 	 */
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup) {
-		return new FabricEntityTypeBuilder<>(spawnGroup, (t, w) -> null);
+		return create(spawnGroup, FabricEntityTypeBuilder::empty);
 	}
 
 	/**
@@ -83,6 +114,60 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 */
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 		return new FabricEntityTypeBuilder<>(spawnGroup, function);
+	}
+
+	/**
+	 * Creates an entity type builder for a living entity.
+	 *
+	 * @param spawnGroup the entity spawn group
+	 * @param factory the entity factory used to create this entity
+	 * @param <T> the type of entity
+	 *
+	 * @return a new living entity type builder
+	 */
+	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
+		return new FabricEntityTypeBuilder.Living<>(spawnGroup, factory);
+	}
+
+	/**
+	 * Creates an entity type builder for a living entity.
+	 *
+	 * @param spawnGroup the entity spawn group
+	 * @param <T> the type of entity
+	 *
+	 * @return a new living entity type builder
+	 */
+	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving(SpawnGroup spawnGroup) {
+		return new FabricEntityTypeBuilder.Living<>(spawnGroup, FabricEntityTypeBuilder::empty);
+	}
+
+	/**
+	 * Creates an entity type builder for a mob entity.
+	 *
+	 * @param spawnGroup the entity spawn group
+	 * @param factory the entity factory used to create this entity
+	 * @param <T> the type of entity
+	 *
+	 * @return a new mob entity type builder
+	 */
+	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
+		return new FabricEntityTypeBuilder.Mob<>(spawnGroup, factory);
+	}
+
+	/**
+	 * Creates an entity type builder for a mob entity.
+	 *
+	 * @param spawnGroup the entity spawn group
+	 * @param <T> the type of entity
+	 *
+	 * @return a new mob entity type builder
+	 */
+	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob(SpawnGroup spawnGroup) {
+		return new FabricEntityTypeBuilder.Mob<>(spawnGroup, FabricEntityTypeBuilder::empty);
+	}
+
+	private static <T extends Entity> T empty(EntityType<T> type, World world) {
+		return null;
 	}
 
 	/**
@@ -155,27 +240,6 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * Sets the default attributes for a type of living entity.
-	 *
-	 * <p>This should not be called if your entity is not a {@link LivingEntity}.
-	 *
-	 * <p>This can be used in a fashion similar to this:
-	 * <blockquote><pre>
-	 * FabricEntityTypeBuilder.create(SpawnGroup.CREATURE, MyCreature::new)
-	 * 	.defaultAttributes(LivingEntity::createLivingAttributes)
-	 * 	...
-	 * 	.build();
-	 * </pre></blockquote>
-	 *
-	 * @param defaultAttributeBuilder a function to generate the default attribute builder from the entity type
-	 * @return this builder for chaining
-	 */
-	public FabricEntityTypeBuilder<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
-		this.defaultAttributeBuilder = defaultAttributeBuilder;
-		return this;
-	}
-
-	/**
 	 * Creates the entity type.
 	 *
 	 * @return a new {@link EntityType}
@@ -188,11 +252,165 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		EntityType<T> type = new FabricEntityType<>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
-		if (this.defaultAttributeBuilder != null) {
-			// TODO: Maybe there is a way to do some reflection intrinsics to fail hard if the entity type is not living.
-			FabricDefaultAttributeRegistry.register((EntityType<? extends LivingEntity>) type, this.defaultAttributeBuilder.get());
+		return type;
+	}
+
+	public static class Living<T extends LivingEntity> extends FabricEntityTypeBuilder<T> {
+		/* @Nullable */
+		private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
+
+		protected Living(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+			super(spawnGroup, function);
 		}
 
-		return type;
+		@Override
+		public FabricEntityTypeBuilder.Living<T> disableSummon() {
+			return (Living<T>) super.disableSummon();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> disableSaving() {
+			return (Living<T>) super.disableSaving();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> fireImmune() {
+			return (Living<T>) super.fireImmune();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> spawnableFarFromPlayer() {
+			return (Living<T>) super.spawnableFarFromPlayer();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> dimensions(EntityDimensions dimensions) {
+			return (Living<T>) super.dimensions(dimensions);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
+			return (Living<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
+			return (Living<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> specificSpawnBlocks(Block... blocks) {
+			return (Living<T>) super.specificSpawnBlocks(blocks);
+		}
+
+		/**
+		 * Sets the default attributes for a type of living entity.
+		 *
+		 * <p>This can be used in a fashion similar to this:
+		 * <blockquote><pre>
+		 * FabricEntityTypeBuilder.createLiving(SpawnGroup.CREATURE, MyCreature::new)
+		 * 	.defaultAttributes(LivingEntity::createLivingAttributes)
+		 * 	...
+		 * 	.build();
+		 * </pre></blockquote>
+		 *
+		 * @param defaultAttributeBuilder a function to generate the default attribute builder from the entity type
+		 * @return this builder for chaining
+		 */
+		public FabricEntityTypeBuilder.Living<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+			this.defaultAttributeBuilder = defaultAttributeBuilder;
+			return this;
+		}
+
+		@Override
+		public EntityType<T> build() {
+			final EntityType<T> type = super.build();
+
+			if (this.defaultAttributeBuilder != null) {
+				FabricDefaultAttributeRegistry.register(type, this.defaultAttributeBuilder.get());
+			}
+
+			return type;
+		}
+	}
+
+	public static class Mob<T extends MobEntity> extends FabricEntityTypeBuilder.Living<T> {
+		private SpawnRestriction.Location restrictionLocation;
+		private Heightmap.Type restrictionHeightmap;
+		private SpawnRestriction.SpawnPredicate<T> spawnPredicate;
+
+		protected Mob(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+			super(spawnGroup, function);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> disableSummon() {
+			return (Mob<T>) super.disableSummon();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> disableSaving() {
+			return (Mob<T>) super.disableSaving();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> fireImmune() {
+			return (Mob<T>) super.fireImmune();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> spawnableFarFromPlayer() {
+			return (Mob<T>) super.spawnableFarFromPlayer();
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> dimensions(EntityDimensions dimensions) {
+			return (Mob<T>) super.dimensions(dimensions);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
+			return (Mob<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
+			return (Mob<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> specificSpawnBlocks(Block... blocks) {
+			return (Mob<T>) super.specificSpawnBlocks(blocks);
+		}
+
+		@Override
+		public Mob<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+			return (Mob<T>) super.defaultAttributes(defaultAttributeBuilder);
+		}
+
+		/**
+		 * Registers a spawn restriction for this entity.
+		 *
+		 * <p>This is used by mobs to determine whether Minecraft should spawn an entity within a certain context.
+		 *
+		 * @return this builder for chaining.
+		 */
+		public FabricEntityTypeBuilder.Mob<T> spawnRestriction(SpawnRestriction.Location location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> spawnPredicate) {
+			this.restrictionLocation = Objects.requireNonNull(location, "Location cannot be null.");
+			this.restrictionHeightmap = Objects.requireNonNull(heightmap, "Heightmap type cannot be null.");
+			this.spawnPredicate = Objects.requireNonNull(spawnPredicate, "Spawn predicate cannot be null.");
+			return this;
+		}
+
+		@Override
+		public EntityType<T> build() {
+			EntityType<T> type = super.build();
+
+			if (this.spawnPredicate != null) {
+				SpawnRestrictionAccessor.callRegister(type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
+			}
+
+			return type;
+		}
 	}
 }
