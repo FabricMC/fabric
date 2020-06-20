@@ -25,9 +25,10 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.DefaultBiomeCreator;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
-import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
-import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
+import net.fabricmc.fabric.api.biomes.v1.NetherBiomes;
+import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
+import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.fabricmc.fabric.api.biomes.v1.TheEndBiomes;
 
 /**
  * <b>NOTES FOR TESTING:</b>
@@ -62,6 +63,12 @@ public class FabricBiomeTest implements ModInitializer {
 
 		OverworldBiomes.addHillsBiome(BiomeKeys.BAMBOO_JUNGLE, BiomeKeys.BASALT_DELTAS, 0.9);
 
-		OverworldBiomes.addContinentalBiome(BiomeKeys.END_HIGHLANDS, OverworldClimate.DRY, 0.5);
+		OverworldBiomes.addContinentalBiome(BuiltInBiomes.END_HIGHLANDS, OverworldClimate.DRY, 0.5);
+
+		Registry.register(BuiltinRegistries.BIOME, TEST_CRIMSON_FOREST.getValue(), DefaultBiomeCreator.createPlains(false));
+
+		// TESTING HINT: to get to the end:
+		// /execute in minecraft:the_end run tp @s 0 90 0
+		TheEndBiomes.addHighlandsBiome(CUSTOM_PLAINS, 5.0);
 	}
 }

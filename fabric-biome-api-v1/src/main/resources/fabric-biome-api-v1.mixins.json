@@ -12,7 +12,8 @@
     "MultiNoiseBiomeSourceAccessor",
     "BiomeSourceAccessor",
     "BiomesAccessor",
-    "AddHillsLayerAccessor"
+    "AddHillsLayerAccessor",
+    "MixinTheEndBiomeSource"
   ],
   "injectors": {
     "defaultRequire": 1

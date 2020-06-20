@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -46,11 +47,29 @@ public final class InternalBiomeData {
 	}
 
 	private static final EnumMap<OverworldClimate, WeightedBiomePicker> OVERWORLD_MODDED_CONTINENTAL_BIOME_PICKERS = new EnumMap<>(OverworldClimate.class);
-	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_HILLS_MAP = new HashMap<>();
-	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_SHORE_MAP = new HashMap<>();
-	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
-	private static final Map<RegistryKey<Biome>, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
-	private static final Map<RegistryKey<Biome>, RegistryKey<Biome>> OVERWORLD_RIVER_MAP = new HashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_HILLS_MAP = new IdentityHashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_SHORE_MAP = new IdentityHashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new IdentityHashMap<>();
+	private static final Map<RegistryKey<Biome>, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new IdentityHashMap<>();
+	private static final Map<RegistryKey<Biome>, RegistryKey<Biome>> OVERWORLD_RIVER_MAP = new IdentityHashMap<>();
+
+	// Pre-populate with the biomes that correspond to the region's of the end
+	// See the constructor of TheEndBiomeSource for where these are hardcoded in Vanilla
+	private static final List<RegistryKey<Biome>> VANILLA_END_BIOMES = ImmutableList.of(
+			BuiltInBiomes.THE_END, BuiltInBiomes.END_HIGHLANDS, BuiltInBiomes.END_MIDLANDS,
+			BuiltInBiomes.SMALL_END_ISLANDS, BuiltInBiomes.END_BARRENS
+	);
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_VARIANTS;
+
+	static {
+		END_VARIANTS = new IdentityHashMap<>(VANILLA_END_BIOMES.size());
+
+		for (RegistryKey<Biome> biome : VANILLA_END_BIOMES) {
+			WeightedBiomePicker picker = new WeightedBiomePicker();
+			picker.addBiome(biome, 1.0f);
+			END_VARIANTS.put(biome, picker);
+		}
+	}
 
 	private static final Set<RegistryKey<Biome>> NETHER_BIOMES = new HashSet<>();
 	private static final Map<RegistryKey<Biome>, Biome.MixedNoisePoint> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
@@ -142,6 +161,13 @@ public final class InternalBiomeData {
 		NETHER_BIOME_NOISE_POINTS.put(biome, spawnNoisePoint);
 	}
 
+	public static void addEndBiomeReplacement(RegistryKey<Biome> replaced, RegistryKey<Biome> variant, double weight) {
+		Preconditions.checkNotNull(replaced, "replaced is null");
+		Preconditions.checkNotNull(variant, "replaced is null");
+		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
+		END_VARIANTS.computeIfAbsent(replaced, key -> new WeightedBiomePicker()).addBiome(variant, weight);
+	}
+
 	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getOverworldHills() {
 		return OVERWORLD_HILLS_MAP;
 	}
@@ -168,6 +194,10 @@ public final class InternalBiomeData {
 
 	public static Map<RegistryKey<Biome>, Biome.MixedNoisePoint> getNetherBiomeNoisePoints() {
 		return NETHER_BIOME_NOISE_POINTS;
+	}
+
+	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndVariants() {
+		return END_VARIANTS;
 	}
 
 	private static class DefaultHillsData {

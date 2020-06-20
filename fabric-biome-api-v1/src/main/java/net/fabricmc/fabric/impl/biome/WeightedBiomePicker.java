@@ -30,7 +30,7 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
  */
 public final class WeightedBiomePicker {
 	private double currentTotal;
-	private List<WeightedBiomeEntry> entries;
+	private final List<WeightedBiomeEntry> entries;
 
 	WeightedBiomePicker() {
 		currentTotal = 0;
@@ -53,7 +53,7 @@ public final class WeightedBiomePicker {
 		return search(target).getBiome();
 	}
 
-	public Biome pickFromNoise(LayerRandomnessSource source, double x, double y, double z) {
+	public RegistryKey<Biome> pickFromNoise(LayerRandomnessSource source, double x, double y, double z) {
 		double target = Math.abs(source.getNoiseSampler().sample(x, y, z, 0.0, 0.0)) * getCurrentWeightTotal();
 
 		return search(target).getBiome();
