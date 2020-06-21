@@ -42,7 +42,7 @@ public interface ContainerProviderRegistry {
 	 * Checks if a container factory has already been registered with the given identifier.
 	 *
 	 * @param identifier the identifier of the container factory.
-	 * @return           true if a container factory has already been registered for the given identifier.
+	 * @return true if a container factory has already been registered for the given identifier.
 	 */
 	boolean factoryExists(Identifier identifier);
 
