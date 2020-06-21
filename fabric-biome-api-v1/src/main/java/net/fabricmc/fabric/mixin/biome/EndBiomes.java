@@ -59,7 +59,7 @@ public final class TheEndBiomes {
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * Vanilla biomes have a weight of 1.0
 	 */
-	public static void addMidlandsiome(Biome biome, double weight) {
+	public static void addMidlandsBiome(Biome biome, double weight) {
 		InternalBiomeData.addEndBiome(biome, EndRegion.MAIN_ISLAND, weight);
 	}
 
