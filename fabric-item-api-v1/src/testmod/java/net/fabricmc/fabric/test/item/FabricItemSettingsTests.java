@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.fabricmc.fabric.api.biomes.v1.TheEndBiomes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.CrimsonForestBiome;
+import net.minecraft.world.biome.EndHighlandsBiome;
 
+import net.fabricmc.fabric.api.biomes.v1.TheEndBiomes;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biomes.v1.NetherBiomes;
-import net.minecraft.world.biome.EndHighlandsBiome;
 
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
