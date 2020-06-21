@@ -10,8 +10,9 @@
     "MixinAddRiversLayer",
     "MixinMultiNoiseBiomeSource",
     "MixinSetBaseBiomesLayer",
-    "MultiNoiseBiomeSourceAccessor",
-    "VanillaLayeredBiomeSourceAccessor"
+    "MixinTheEndBiomeSource",
+    "MixinTheNetherDimension",
+    "MixinVanillaLayeredBiomeSource"
   ],
   "injectors": {
     "defaultRequire": 1
