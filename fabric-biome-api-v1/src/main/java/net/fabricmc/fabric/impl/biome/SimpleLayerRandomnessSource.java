@@ -29,7 +29,7 @@ public class SimpleLayerRandomnessSource implements LayerRandomnessSource {
 	public SimpleLayerRandomnessSource(long seed) {
 		this.seed = seed;
 		this.random = new Random(seed);
-		this.sampler = new PerlinNoiseSampler(new Random(seed));
+		this.sampler = new PerlinNoiseSampler(random);
 	}
 
 	@Override
