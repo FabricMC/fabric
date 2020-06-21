@@ -29,7 +29,7 @@ public class MixinTheEndBiomeSource {
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void fabric_addDefaultEndBiomes(long l, CallbackInfo ci) {
-		BIOME_REGION_MAP.put(Biomes.THE_END, EndRegion.MAIN);
+		BIOME_REGION_MAP.put(Biomes.THE_END, EndRegion.MAIN_ISLAND);
 		BIOME_REGION_MAP.put(Biomes.END_HIGHLANDS, EndRegion.HIGHLANDS);
 		BIOME_REGION_MAP.put(Biomes.END_MIDLANDS, EndRegion.MIDLANDS);
 		BIOME_REGION_MAP.put(Biomes.END_BARRENS, EndRegion.BARRENS);
