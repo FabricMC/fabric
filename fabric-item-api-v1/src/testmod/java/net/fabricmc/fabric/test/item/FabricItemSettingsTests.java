@@ -19,17 +19,31 @@ package net.fabricmc.fabric.test.item;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.fabricmc.fabric.api.biomes.v1.EndBiomes;
+import net.fabricmc.fabric.api.biomes.v1.EndRegion;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.biomes.v1.NetherBiomes;
+import net.minecraft.world.biome.EndHighlandsBiome;
 
-public class FabricItemSettingsTests implements ModInitializer {
-	@Override
-	public void onInitialize() {
-		// Registers an item with a custom equipment slot.
-		Item testItem = new Item(new FabricItemSettings().group(ItemGroup.MISC).equipmentSlot(stack -> EquipmentSlot.CHEST));
-		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
+public class FabricBiomeTest implements ModInitializer {
+	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
+
+	@Override public void onInitialize() {
+		TestCrimsonForestBiome biome = Registry.register(Registry.BIOME, new Identifier(MOD_ID, "test_crimson_forest"), new TestCrimsonForestBiome());
+		NetherBiomes.addNetherBiome(Biomes.BEACH);
+		NetherBiomes.addNetherBiome(biome);
+
+		TestEndHighlandsBiome testEndBiome = Registry.register(Registry.BIOME, new Identifier(MOD_ID, "test_end_highlands"), new TestEndHighlandsBiome());
+		EndBiomes.addBiome(testEndBiome, EndRegion.HIGHLANDS, 5.0);
+	}
+
+	public class TestCrimsonForestBiome extends CrimsonForestBiome {
+	}
+
+	public class TestEndHighlandsBiome extends EndHighlandsBiome {
+
 	}
 }

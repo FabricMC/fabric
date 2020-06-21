@@ -42,7 +42,7 @@ public class MixinTheEndBiomeSource {
 		}
 	}
 
-	@Inject(method = "getBiomeForNoiseGen", at = @At("RETURN"))
+	@Inject(method = "getBiomeForNoiseGen", at = @At("RETURN"), cancellable = true)
 	private void fabric_getModdedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
 		if (BIOME_REGION_MAP.containsKey(vanillaBiome)) {
