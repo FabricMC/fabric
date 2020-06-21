@@ -32,7 +32,7 @@ import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.biome.source.TheEndBiomeSource;
 
-import net.fabricmc.fabric.api.biomes.v1.EndRegion;
+import net.fabricmc.fabric.impl.biome.EndRegion;
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
 import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;

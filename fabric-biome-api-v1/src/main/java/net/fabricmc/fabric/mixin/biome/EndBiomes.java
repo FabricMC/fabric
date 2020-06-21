@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
+import net.fabricmc.fabric.impl.biome.EndRegion;
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
@@ -27,6 +28,66 @@ public final class EndBiomes {
 	private EndBiomes() { }
 
 	/**
+	 * Ands the biome with the specified weight to the main end island region; note that this includes the main island and some of the land encircling the empty space.
+	 *
+	 * @param biome the biome to be added
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Vanilla biomes have a weight of 1.0
+	 */
+	public static void addMainIslandBiome(Biome biome, double weight) {
+		InternalBiomeData.addEndBiome(biome, EndRegion.MAIN_ISLAND, weight);
+	}
+
+	/**
+	 * Ands the biome to with the specified weight to the end highlands regions which correspond to the End Highlands biome.
+	 *
+	 * @param biome the biome to be added
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Vanilla biomes have a weight of 1.0
+	 */
+	public static void addHighlandsBiome(Biome biome, double weight) {
+		InternalBiomeData.addEndBiome(biome, EndRegion.MAIN_ISLAND, weight);
+	}
+
+	/**
+	 * Ands the biome to with the specified weight to the end midlands regions which correspond to the End Midlands biome.
+	 *
+	 * @param biome the biome to be added
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Vanilla biomes have a weight of 1.0
+	 */
+	public static void addMidlandsiome(Biome biome, double weight) {
+		InternalBiomeData.addEndBiome(biome, EndRegion.MAIN_ISLAND, weight);
+	}
+
+	/**
+	 * Ands the biome to with the specified weight to the end barrens regions which correspond to the End Barrens biome.
+	 *
+	 * @param biome the biome to be added
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Vanilla biomes have a weight of 1.0
+	 */
+	public static void addBarrensBiome(Biome biome, double weight) {
+		InternalBiomeData.addEndBiome(biome, EndRegion.MAIN_ISLAND, weight);
+	}
+
+	/**
+	 * Ands the biome to with the specified weight to the small end island regions which correspond to the Small End Islands biome.
+	 *
+	 * @param biome the biome to be added
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Vanilla biomes have a weight of 1.0
+	 */
+	public static void addSmallIslandsBiome(Biome biome, double weight) {
+		InternalBiomeData.addEndBiome(biome, EndRegion.MAIN_ISLAND, weight);
+	}
+
+	/**
 	 * Ands the biome to the specified end region with the specified weight.
 	 *
 	 * @param biome the biome to be added
@@ -34,7 +95,6 @@ public final class EndBiomes {
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * Vanilla biomes have a weight of 1.0
-	 * @see EndRegion for region descriptions.
 	 */
 	public static void addBiome(Biome biome, EndRegion region, double weight) {
 		InternalBiomeData.addEndBiome(biome, region, weight);
