@@ -53,6 +53,12 @@ public final class WeightedBiomePicker {
 		return search(target).getBiome();
 	}
 
+	public Biome pickFromNoise(LayerRandomnessSource source, double x, double y, double z) {
+		double target = Math.abs(source.getNoiseSampler().sample(x, y, z, 0.0, 0.0)) * getCurrentWeightTotal();
+
+		return search(target).getBiome();
+	}
+
 	/**
 	 * Searches with the specified target value.
 	 *

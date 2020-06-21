@@ -49,7 +49,7 @@ public class MixinTheEndBiomeSource {
 			EndRegion region = BIOME_REGION_MAP.get(vanillaBiome);
 			WeightedBiomePicker picker = InternalBiomeData.getEndRegionBiomePickers().get(region);
 
-			cir.setReturnValue(picker.pickRandom(randomnessSource));
+			cir.setReturnValue(picker.pickFromNoise(randomnessSource, biomeX, 0, biomeZ));
 		}
 	}
 }
