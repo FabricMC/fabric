@@ -61,14 +61,14 @@ public class MixinTheEndBiomeSource {
 	}
 
 	@Inject(method = "getBiomeForNoiseGen", at = @At("RETURN"), cancellable = true)
-	private void fabric_getModdedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
+	private void fabric_getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
 
 		if (BIOME_REGION_MAP.containsKey(vanillaBiome)) {
 			EndRegion region = BIOME_REGION_MAP.get(vanillaBiome);
 			WeightedBiomePicker picker = InternalBiomeData.getEndRegionBiomePickers().get(region);
 
-			cir.setReturnValue(picker.pickFromNoise(randomnessSource, biomeX, 0, biomeZ));
+			cir.setReturnValue(picker.pickFromNoise(randomnessSource, biomeX/16.0, 0, biomeZ/16.0));
 		}
 	}
 }
