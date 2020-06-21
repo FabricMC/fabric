@@ -16,14 +16,9 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import net.fabricmc.fabric.api.biomes.v1.EndRegion;
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
-import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import net.minecraft.world.biome.source.TheEndBiomeSource;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,8 +27,15 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.biome.source.TheEndBiomeSource;
+
+import net.fabricmc.fabric.api.biomes.v1.EndRegion;
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
+import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {
@@ -61,6 +63,7 @@ public class MixinTheEndBiomeSource {
 	@Inject(method = "getBiomeForNoiseGen", at = @At("RETURN"), cancellable = true)
 	private void fabric_getModdedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
+
 		if (BIOME_REGION_MAP.containsKey(vanillaBiome)) {
 			EndRegion region = BIOME_REGION_MAP.get(vanillaBiome);
 			WeightedBiomePicker picker = InternalBiomeData.getEndRegionBiomePickers().get(region);

@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.minecraft.world.biome.Biome;
+
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * API that allows for adding biomes to the biome source for The End.

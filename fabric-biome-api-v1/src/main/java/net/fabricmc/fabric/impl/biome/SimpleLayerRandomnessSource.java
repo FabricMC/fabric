@@ -16,10 +16,10 @@
 
 package net.fabricmc.fabric.impl.biome;
 
+import java.util.Random;
+
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-
-import java.util.Random;
 
 public class SimpleLayerRandomnessSource implements LayerRandomnessSource {
 	private final long seed;
