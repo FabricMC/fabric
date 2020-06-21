@@ -30,7 +30,7 @@ import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
  */
 public final class WeightedBiomePicker {
 	private double currentTotal;
-	private List<WeightedBiomeEntry> entries;
+	private List<ContinentalBiomeEntry> entries;
 
 	WeightedBiomePicker() {
 		currentTotal = 0;
@@ -40,7 +40,7 @@ public final class WeightedBiomePicker {
 	void addBiome(final RegistryKey<Biome> biome, final double weight) {
 		currentTotal += weight;
 
-		entries.add(new WeightedBiomeEntry(biome, weight, currentTotal));
+		entries.add(new ContinentalBiomeEntry(biome, weight, currentTotal));
 	}
 
 	double getCurrentWeightTotal() {
@@ -59,7 +59,7 @@ public final class WeightedBiomePicker {
 	 * @param target The target value, must satisfy the constraint 0 <= target <= currentTotal
 	 * @return The result of the search
 	 */
-	WeightedBiomeEntry search(final double target) {
+	ContinentalBiomeEntry search(final double target) {
 		// Sanity checks, fail fast if stuff is going wrong.
 		Preconditions.checkArgument(target <= currentTotal, "The provided target value for biome selection must be less than or equal to the weight total");
 		Preconditions.checkArgument(target >= 0, "The provided target value for biome selection cannot be negative");
