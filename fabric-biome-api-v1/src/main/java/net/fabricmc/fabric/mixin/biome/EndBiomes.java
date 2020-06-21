@@ -28,8 +28,10 @@ public final class TheEndBiomes {
 	private TheEndBiomes() { }
 
 	/**
-	 * Ands the biome with the specified weight to the main end island region; note that this includes the main island and some of the land encircling the empty space.
-	 *
+	 * <p>Ands the biome with the specified weight to the main end island region; note that this includes the main island
+	 * and some of the land encircling the empty space. Note that adding a biome to this region could potentially mess
+	 * with the generation of the center island and cause it to generate incorrectly.</p>
+	 * 
 	 * @param biome the biome to be added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
