@@ -16,10 +16,7 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.fabricmc.fabric.api.biomes.v1.EndBiomes;
+import net.fabricmc.fabric.api.biomes.v1.TheEndBiomes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -36,7 +33,7 @@ public class FabricBiomeTest implements ModInitializer {
 		NetherBiomes.addNetherBiome(biome);
 
 		TestEndHighlandsBiome testEndBiome = Registry.register(Registry.BIOME, new Identifier(MOD_ID, "test_end_highlands"), new TestEndHighlandsBiome());
-		EndBiomes.addHighlandsBiome(testEndBiome, 5.0);
+		TheEndBiomes.addHighlandsBiome(testEndBiome, 5.0);
 	}
 
 	public class TestCrimsonForestBiome extends CrimsonForestBiome {
