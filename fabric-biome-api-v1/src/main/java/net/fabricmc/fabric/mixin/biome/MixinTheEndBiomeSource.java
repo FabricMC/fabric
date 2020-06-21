@@ -69,6 +69,7 @@ public class MixinTheEndBiomeSource {
 
 		if (BIOME_REGION_MAP.containsKey(vanillaBiome)) {
 			EndRegion region = BIOME_REGION_MAP.get(vanillaBiome);
+			// Since the pickers are populated by this mixin, picker will never be null.
 			WeightedBiomePicker picker = InternalBiomeData.getEndRegionBiomePickers().get(region);
 
 			cir.setReturnValue(picker.pickFromNoise(randomnessSource, biomeX/16.0, 0, biomeZ/16.0));
