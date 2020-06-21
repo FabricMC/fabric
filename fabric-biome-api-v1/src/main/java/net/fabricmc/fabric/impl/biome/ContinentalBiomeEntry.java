@@ -22,8 +22,13 @@ import net.minecraft.world.biome.Biome;
 /**
  * Represents a biome and its corresponding weight.
  */
+<<<<<<< HEAD:fabric-biome-api-v1/src/main/java/net/fabricmc/fabric/impl/biome/ContinentalBiomeEntry.java
 final class ContinentalBiomeEntry {
 	private final RegistryKey<Biome> biome;
+=======
+final class WeightedBiomeEntry {
+	private final Biome biome;
+>>>>>>> 7c36835a... Revert "Revert "Rename ContinentalBiomeEntry to WeightedBiomeEntry"":fabric-biome-api-v1/src/main/java/net/fabricmc/fabric/impl/biome/WeightedBiomeEntry.java
 	private final double weight;
 	private final double upperWeightBound;
 
@@ -32,7 +37,11 @@ final class ContinentalBiomeEntry {
 	 * @param weight how often a biome will be chosen
 	 * @param upperWeightBound the upper weight bound within the context of the other entries, used for the binary search
 	 */
+<<<<<<< HEAD:fabric-biome-api-v1/src/main/java/net/fabricmc/fabric/impl/biome/ContinentalBiomeEntry.java
 	ContinentalBiomeEntry(final RegistryKey<Biome> biome, final double weight, final double upperWeightBound) {
+=======
+	WeightedBiomeEntry(final Biome biome, final double weight, final double upperWeightBound) {
+>>>>>>> 7c36835a... Revert "Revert "Rename ContinentalBiomeEntry to WeightedBiomeEntry"":fabric-biome-api-v1/src/main/java/net/fabricmc/fabric/impl/biome/WeightedBiomeEntry.java
 		this.biome = biome;
 		this.weight = weight;
 		this.upperWeightBound = upperWeightBound;
