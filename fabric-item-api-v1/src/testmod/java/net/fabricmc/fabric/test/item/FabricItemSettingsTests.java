@@ -40,6 +40,5 @@ public class FabricBiomeTest implements ModInitializer {
 	}
 
 	public class TestEndHighlandsBiome extends EndHighlandsBiome {
-
 	}
 }
