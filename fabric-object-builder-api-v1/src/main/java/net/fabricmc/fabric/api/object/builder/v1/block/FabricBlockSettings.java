@@ -243,6 +243,15 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		return this;
 	}
 
+	/**
+	 * Make the material require tool to drop and slows down mining speed if the incorrect tool is used.
+	 */
+	@Override
+	public FabricBlockSettings requiresTool() {
+		super.requiresTool();
+		return this;
+	}
+
 	/* FABRIC DELEGATE WRAPPERS */
 
 	public FabricBlockSettings materialColor(MaterialColor color) {
@@ -284,14 +293,5 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);
-	}
-
-	/**
-	 * Make the material require tool to drop and slows down mining speed if the incorrect tool is used.
-	 */
-	@Override
-	public FabricBlockSettings requiresTool() {
-		super.requiresTool();
-		return this;
 	}
 }
