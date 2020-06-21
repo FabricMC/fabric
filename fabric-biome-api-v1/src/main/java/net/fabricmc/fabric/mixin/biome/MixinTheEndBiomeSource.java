@@ -22,6 +22,7 @@ import java.util.Map;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -42,7 +43,9 @@ public class MixinTheEndBiomeSource {
 	@Shadow
 	@Final
 	private long field_24731;
+	@Unique
 	private final Map<Biome, EndRegion> BIOME_REGION_MAP = new HashMap<>();
+	@Unique
 	private final LayerRandomnessSource randomnessSource = new SimpleLayerRandomnessSource(field_24731);
 
 	@Inject(method = "<init>", at = @At("TAIL"))
