@@ -126,6 +126,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
+	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks) {
+		this.trackingDistance = trackingDistanceBlocks;
+		return this;
+	}
+
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
 		return trackable(trackingDistanceBlocks, updateIntervalTicks, true);
 	}
