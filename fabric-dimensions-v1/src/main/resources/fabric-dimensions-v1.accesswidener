@@ -1,0 +1,3 @@
+accessWidener v1 named
+Mutable field net/minecraft/world/dimension/DimensionOptions chunkGenerator Lnet/minecraft/world/gen/chunk/ChunkGenerator;
+Accessible field net/minecraft/world/dimension/DimensionOptions chunkGenerator Lnet/minecraft/world/gen/chunk/ChunkGenerator;

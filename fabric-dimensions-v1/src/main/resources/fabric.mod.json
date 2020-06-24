@@ -12,5 +12,6 @@
   },
   "mixins": [
     "fabric-dimensions-v1.mixins.json"
-  ]
+  ],
+  "accessWidener" : "fabric-dimensions-v1.accesswidener"
 }

@@ -4,7 +4,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EntityHooks",
+    "MixinChunkGenerator",
     "MixinEntity",
+    "MixinMinecraftServer",
     "MixinPortalForcer",
     "MixinWorld"
   ],
