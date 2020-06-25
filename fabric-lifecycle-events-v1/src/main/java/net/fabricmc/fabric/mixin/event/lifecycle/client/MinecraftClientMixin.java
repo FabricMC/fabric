@@ -47,7 +47,7 @@ public abstract class MinecraftClientMixin {
 	}
 
 	// We inject after the thread field is set so `ThreadExecutor#getThread` will work
-	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER), method = "run")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;init()V", shift = At.Shift.AFTER), method = "start")
 	private void onStart(CallbackInfo ci) {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
 	}
