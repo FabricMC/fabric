@@ -21,6 +21,10 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.DebugChunkGenerator;
+import net.minecraft.world.gen.chunk.FlatChunkGenerator;
+import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -42,11 +46,17 @@ public class MixinMinecraftServer {
 		SimpleRegistry<DimensionOptions> dimensionMap = generatorOptions.getDimensionMap();
 
 		dimensionMap.getIds().forEach(dimensionId -> {
-			if (!isVanillaDimension(dimensionId)) {
-				DimensionOptions dimensionOptions = dimensionMap.get(dimensionId);
-				dimensionOptions.chunkGenerator =
-						dimensionOptions.chunkGenerator.withSeed(generatorOptions.getSeed());
+			if (isVanillaDimension(dimensionId)) {
+				return;
 			}
+
+			DimensionOptions dimensionOptions = dimensionMap.get(dimensionId);
+
+			if (isVanillaChunkGenerator(dimensionOptions.chunkGenerator)) {
+				return;
+			}
+
+			dimensionOptions.chunkGenerator = dimensionOptions.chunkGenerator.withSeed(generatorOptions.getSeed());
 		});
 
 		return dimensionMap;
@@ -57,5 +67,12 @@ public class MixinMinecraftServer {
 		return identifier.equals(World.OVERWORLD.getValue())
 				|| identifier.equals(World.NETHER.getValue())
 				|| identifier.equals(World.END.getValue());
+	}
+
+	@Unique
+	private static boolean isVanillaChunkGenerator(ChunkGenerator chunkGenerator) {
+		return chunkGenerator instanceof SurfaceChunkGenerator
+				|| chunkGenerator instanceof FlatChunkGenerator
+				|| chunkGenerator instanceof DebugChunkGenerator;
 	}
 }
