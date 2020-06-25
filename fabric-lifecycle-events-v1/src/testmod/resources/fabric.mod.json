@@ -19,7 +19,7 @@
       "net.fabricmc.fabric.test.event.lifecycle.client.ClientBlockEntityLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.client.ClientEntityLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.client.ClientLifecycleTests",
-      "net.fabricmc.fabric.test.event.lifecycle.client.ClientTickTests",
+      "net.fabricmc.fabric.test.event.lifecycle.client.ClientTickTests"
     ]
   }
 }
