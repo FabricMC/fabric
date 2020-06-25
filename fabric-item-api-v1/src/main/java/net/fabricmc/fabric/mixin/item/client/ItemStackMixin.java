@@ -14,22 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.lifecycle;
+package net.fabricmc.fabric.mixin.item.client;
+
+import java.util.List;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.World;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.api.event.world.WorldTickCallback;
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 
-@Mixin(World.class)
-public class MixinWorld {
-	// TODO split into ClientWorld/ServerWorld ticks? mmm need more mappings
-	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
-	public void tickBlockEntitiesAfter(CallbackInfo info) {
-		WorldTickCallback.EVENT.invoker().tick((World) (Object) this);
+@Mixin(ItemStack.class)
+public abstract class ItemStackMixin {
+	@Inject(method = "getTooltip", at = @At("RETURN"))
+	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext, CallbackInfoReturnable<List<Text>> info) {
+		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext, info.getReturnValue());
 	}
 }
