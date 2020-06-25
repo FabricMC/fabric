@@ -22,6 +22,9 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(ChunkGenerator.class)
 public abstract class MixinChunkGenerator {
-	// Make This Method to Exist Both in Client and Dedicated Server
+	// Make this method to exist in dedicated servers
 	public abstract ChunkGenerator withSeed(long seed);
+
+	// Because that is not being remapped
+	public abstract ChunkGenerator method_27997(long seed);
 }
