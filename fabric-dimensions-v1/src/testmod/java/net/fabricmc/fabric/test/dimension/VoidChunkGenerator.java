@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.dimension;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.world.BlockView;
@@ -34,6 +36,8 @@ import net.minecraft.world.gen.chunk.VerticalBlockSample;
 public class VoidChunkGenerator extends ChunkGenerator {
 	// Just an example of adding a custom boolean
 	protected final boolean customBool;
+
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
 			instance.group(
@@ -57,7 +61,8 @@ public class VoidChunkGenerator extends ChunkGenerator {
 
 	@Override
 	public ChunkGenerator withSeed(long seed) {
-		return this;
+		LOGGER.info("Created VoidChunkGenerator with seed " + seed);
+		return new VoidChunkGenerator(getBiomeSource().withSeed(seed), customBool);
 	}
 
 	@Override
