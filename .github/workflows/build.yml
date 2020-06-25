@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-java@v1
         with:
           java-version: ${{ matrix.java-version }}
-      - uses: eskatos/gradle-command-action@v1
+      - uses: eskatos/gradle-command-action@v1.3.2
         with:
           gradle-version: wrapper
           arguments: check build publishToMavenLocal --stacktrace

@@ -13,8 +13,8 @@ def ENV = System.getenv()
 
 class Globals {
 	static def baseVersion = "0.13.1"
-	static def mcVersion = "1.16"
-	static def yarnVersion = "+build.1"
+	static def mcVersion = "1.16.1"
+	static def yarnVersion = "+build.5"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
@@ -262,8 +262,8 @@ curseforge {
 	project {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
-		releaseType = 'beta'
-		addGameVersion '1.16-Snapshot'
+		releaseType = 'release'
+		addGameVersion '1.16.1'
 		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
