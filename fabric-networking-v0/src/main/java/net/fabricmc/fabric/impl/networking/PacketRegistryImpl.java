@@ -112,7 +112,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 				c = (char) buf.readByte();
 
 				if (c == 0) {
-					if (sb.length() == 0) {
+					if (sb.length() != 0) {
 						try {
 							ids.add(new Identifier(sb.toString()));
 						} catch (InvalidIdentifierException e) {
@@ -130,7 +130,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 			buf.release();
 		}
 
-		if (sb.length() == 0) {
+		if (sb.length() != 0) {
 			try {
 				ids.add(new Identifier(sb.toString()));
 			} catch (InvalidIdentifierException e) {
