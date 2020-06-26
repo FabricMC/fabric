@@ -108,6 +108,7 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 		try {
 			char c;
+
 			while (buf.readerIndex() < buf.writerIndex()) {
 				c = (char) buf.readByte();
 

@@ -19,5 +19,5 @@ package net.fabricmc.fabric.impl.networking;
 public final class PacketDebugOptions {
 	public static final boolean DISABLE_BUFFER_RELEASES = Boolean.parseBoolean(System.getProperty("fabric.networking.broken.disableBufferReleases", "false"));
 
-	private PacketDebugOptions() {}
+	private PacketDebugOptions() { }
 }

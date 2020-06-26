@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
  * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
  */
 public final class PlayerStream {
-	private PlayerStream() {}
+	private PlayerStream() { }
 
 	public static Stream<ServerPlayerEntity> all(MinecraftServer server) {
 		return server.getPlayerManager() != null ? server.getPlayerManager().getPlayerList().stream() : Stream.empty();
