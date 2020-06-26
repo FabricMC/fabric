@@ -53,9 +53,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	}
 
 	protected void forEachHandler(Consumer<ServerPlayNetworkHandler> consumer) {
-		Iterator<WeakReference<ServerPlayNetworkHandler>> it = handlers.iterator();
-
-		while (it.hasNext()) {
+		for (Iterator<WeakReference<ServerPlayNetworkHandler>> it = handlers.iterator(); it.hasNext();) {
 			ServerPlayNetworkHandler server = it.next().get();
 
 			if (server != null) {
@@ -69,12 +67,7 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
 		Collection<Identifier> ids = playerPayloadIds.get(player);
-
-		if (ids != null) {
-			return ids.contains(id);
-		} else {
-			return false;
-		}
+		return ids != null && ids.contains(id);
 	}
 
 	@Override

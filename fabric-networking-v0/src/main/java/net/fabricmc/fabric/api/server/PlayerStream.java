@@ -40,33 +40,27 @@ import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
  * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
  */
 public final class PlayerStream {
-	private PlayerStream() { }
+	private PlayerStream() {}
 
 	public static Stream<ServerPlayerEntity> all(MinecraftServer server) {
-		if (server.getPlayerManager() != null) {
-			return server.getPlayerManager().getPlayerList().stream();
-		} else {
-			return Stream.empty();
-		}
+		return server.getPlayerManager() != null ? server.getPlayerManager().getPlayerList().stream() : Stream.empty();
 	}
 
-	public static Stream<PlayerEntity> world(World world) {
+	public static Stream<? extends PlayerEntity> world(World world) {
 		if (world instanceof ServerWorld) {
-			// noinspection unchecked
-			return ((Stream) ((ServerWorld) world).getPlayers().stream());
+			return (((ServerWorld) world).getPlayers().stream());
 		} else {
-			throw new RuntimeException("Only supported on ServerWorld!");
+			throw new UnsupportedOperationException("Only supported on ServerWorld!");
 		}
 	}
 
-	public static Stream<PlayerEntity> watching(World world, ChunkPos pos) {
+	public static Stream<? extends PlayerEntity> watching(World world, ChunkPos pos) {
 		ChunkManager manager = world.getChunkManager();
 
-		if (!(manager instanceof ServerChunkManager)) {
-			throw new RuntimeException("Only supported on ServerWorld!");
+		if (manager instanceof ServerChunkManager) {
+			return (((ServerChunkManager) manager).threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false));
 		} else {
-			//noinspection unchecked
-			return ((Stream) ((ServerChunkManager) manager).threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false));
+			throw new UnsupportedOperationException("Only supported on ServerWorld!");
 		}
 	}
 
@@ -76,36 +70,35 @@ public final class PlayerStream {
 	 * resulting stream.
 	 */
 	@SuppressWarnings("JavaDoc")
-	public static Stream<PlayerEntity> watching(Entity entity) {
+	public static Stream<? extends PlayerEntity> watching(Entity entity) {
 		ChunkManager manager = entity.getEntityWorld().getChunkManager();
 
 		if (manager instanceof ServerChunkManager) {
 			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;
 
 			if (storage instanceof EntityTrackerStorageAccessor) {
-				//noinspection unchecked
-				return ((Stream) ((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity));
+				return (((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity));
 			}
 		}
 
 		// fallback
-		return watching(entity.getEntityWorld(), new ChunkPos((int) (entity.getX() / 16.0D), (int) (entity.getZ() / 16.0D)));
+		return watching(entity.getEntityWorld(), new ChunkPos(entity.getBlockPos()));
 	}
 
-	public static Stream<PlayerEntity> watching(BlockEntity entity) {
+	public static Stream<? extends PlayerEntity> watching(BlockEntity entity) {
 		return watching(entity.getWorld(), entity.getPos());
 	}
 
-	public static Stream<PlayerEntity> watching(World world, BlockPos pos) {
+	public static Stream<? extends PlayerEntity> watching(World world, BlockPos pos) {
 		return watching(world, new ChunkPos(pos));
 	}
 
-	public static Stream<PlayerEntity> around(World world, Vec3d vector, double radius) {
+	public static Stream<? extends PlayerEntity> around(World world, Vec3d vector, double radius) {
 		double radiusSq = radius * radius;
 		return world(world).filter((p) -> p.squaredDistanceTo(vector) <= radiusSq);
 	}
 
-	public static Stream<PlayerEntity> around(World world, BlockPos pos, double radius) {
+	public static Stream<? extends PlayerEntity> around(World world, BlockPos pos, double radius) {
 		double radiusSq = radius * radius;
 		return world(world).filter((p) -> p.squaredDistanceTo(pos.getX(), pos.getY(), pos.getZ()) <= radiusSq);
 	}

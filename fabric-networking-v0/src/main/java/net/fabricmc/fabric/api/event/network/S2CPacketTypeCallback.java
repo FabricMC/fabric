@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Registrations received will be for <em>client -&gt; server</em> packets
  * that the sending server can understand.
  */
+@FunctionalInterface
 public interface S2CPacketTypeCallback {
 	Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
 			S2CPacketTypeCallback.class,

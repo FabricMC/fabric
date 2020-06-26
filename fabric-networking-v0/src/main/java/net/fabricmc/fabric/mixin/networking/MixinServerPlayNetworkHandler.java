@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.networking;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -39,9 +40,10 @@ import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 @Mixin(ServerPlayNetworkHandler.class)
 public class MixinServerPlayNetworkHandler implements PacketContext {
 	@Shadow
+	@Final
 	private MinecraftServer server;
 	@Shadow
-	private ServerPlayerEntity player;
+	public ServerPlayerEntity player;
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
 	public void onCustomPayload(CustomPayloadC2SPacket packet, CallbackInfo info) {
@@ -63,7 +65,7 @@ public class MixinServerPlayNetworkHandler implements PacketContext {
 	}
 
 	@Override
-	public ThreadExecutor getTaskQueue() {
+	public ThreadExecutor<?> getTaskQueue() {
 		return server;
 	}
 }

@@ -46,7 +46,6 @@ import net.fabricmc.fabric.impl.networking.PacketTypes;
 public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	@Shadow
 	private MinecraftClient client;
-
 	@Shadow
 	public abstract void sendPacket(Packet<?> var1);
 
@@ -90,7 +89,7 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	}
 
 	@Override
-	public ThreadExecutor getTaskQueue() {
+	public ThreadExecutor<?> getTaskQueue() {
 		return client;
 	}
 }

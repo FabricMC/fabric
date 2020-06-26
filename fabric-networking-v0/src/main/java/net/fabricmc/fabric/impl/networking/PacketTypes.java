@@ -19,9 +19,9 @@ package net.fabricmc.fabric.impl.networking;
 import net.minecraft.util.Identifier;
 
 public final class PacketTypes {
-	public static final Identifier BRAND = new Identifier("minecraft:brand");
-	public static final Identifier REGISTER = new Identifier("minecraft:register");
-	public static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
+	public static final Identifier BRAND = new Identifier("brand");
+	public static final Identifier REGISTER = new Identifier("register");
+	public static final Identifier UNREGISTER = new Identifier("unregister");
 
 	public static final Identifier OPEN_CONTAINER = new Identifier("fabric", "container/open");
 }
