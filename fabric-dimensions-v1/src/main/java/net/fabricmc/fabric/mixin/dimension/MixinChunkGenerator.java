@@ -25,6 +25,7 @@ public abstract class MixinChunkGenerator {
 	// Make this method to exist in dedicated servers
 	public abstract ChunkGenerator withSeed(long seed);
 
-	// Because that is not being remapped
+	// Because that is not remapped
+	// Provide another one for production environment
 	public abstract ChunkGenerator method_27997(long seed);
 }
