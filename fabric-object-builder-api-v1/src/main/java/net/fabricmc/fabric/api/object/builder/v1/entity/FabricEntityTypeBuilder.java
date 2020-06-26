@@ -240,6 +240,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return this builder for chaining
 	 */
 	public FabricEntityTypeBuilder<T> dimensions(EntityDimensions dimensions) {
+		Objects.requireNonNull(dimensions, "Cannot set null dimensions");
 		this.dimensions = dimensions;
 		return this;
 	}
@@ -353,6 +354,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 * @return this builder for chaining
 		 */
 		public FabricEntityTypeBuilder.Living<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+			Objects.requireNonNull(defaultAttributeBuilder, "Cannot set null attribute builder");
 			this.defaultAttributeBuilder = defaultAttributeBuilder;
 			return this;
 		}
