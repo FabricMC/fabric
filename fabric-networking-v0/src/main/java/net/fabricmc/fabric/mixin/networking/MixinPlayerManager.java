@@ -38,9 +38,9 @@ public abstract class MixinPlayerManager {
 	public void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
 		Optional<Packet<?>> optionalPacket = PacketRegistryImpl.createInitialRegisterPacket(ServerSidePacketRegistry.INSTANCE);
 
-		optionalPacket.ifPresent(packet -> {
-			player.networkHandler.sendPacket(packet);
+		if (optionalPacket.isPresent()) {
+			player.networkHandler.sendPacket(optionalPacket.get());
 			((ServerSidePacketRegistryImpl) ServerSidePacketRegistry.INSTANCE).addNetworkHandler(player.networkHandler);
-		});
+		}
 	}
 }
