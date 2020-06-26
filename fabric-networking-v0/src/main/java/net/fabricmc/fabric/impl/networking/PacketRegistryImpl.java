@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.networking;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -52,18 +53,11 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 
 	@Override
 	public void register(Identifier id, PacketConsumer consumer) {
-		boolean isNew = true;
-
-		if (consumerMap.containsKey(id)) {
+		if (consumerMap.put(id, consumer) == null) {
+			onRegister(id);
+		} else {
 			LOGGER.warn("Registered duplicate packet " + id + "!");
 			LOGGER.trace(new Throwable());
-			isNew = false;
-		}
-
-		consumerMap.put(id, consumer);
-
-		if (isNew) {
-			onRegister(id);
 		}
 	}
 
@@ -93,63 +87,55 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		}
 
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-		boolean first = true;
+		Iterator<Identifier> iter = ids.iterator();
 
-		for (Identifier a : ids) {
-			if (!first) {
-				buf.writeByte(0);
-			} else {
-				first = false;
-			}
+		// First value is always available. Unique treatment for first value.
+		buf.writeBytes(iter.next().toString().getBytes(StandardCharsets.US_ASCII));
 
-			buf.writeBytes(a.toString().getBytes(StandardCharsets.US_ASCII));
-		}
+		// Process remaining values.
+		iter.forEachRemaining(identifier -> {
+			buf.writeByte(0);
+			buf.writeBytes(identifier.toString().getBytes(StandardCharsets.US_ASCII));
+		});
 
 		return Optional.of(toPacket(id, buf));
 	}
 
 	private boolean acceptRegisterType(Identifier id, PacketContext context, Supplier<PacketByteBuf> bufSupplier) {
 		Collection<Identifier> ids = new HashSet<>();
+		PacketByteBuf buf = bufSupplier.get();
+		StringBuilder sb = new StringBuilder();
 
-		{
-			StringBuilder sb = new StringBuilder();
+		try {
 			char c;
-			PacketByteBuf buf = bufSupplier.get();
+			while (buf.readerIndex() < buf.writerIndex()) {
+				c = (char) buf.readByte();
 
-			try {
-				while (buf.readerIndex() < buf.writerIndex()) {
-					c = (char) buf.readByte();
-
-					if (c == 0) {
-						String s = sb.toString();
-
-						if (!s.isEmpty()) {
-							try {
-								ids.add(new Identifier(s));
-							} catch (InvalidIdentifierException e) {
-								LOGGER.warn("Received invalid identifier in " + id + ": " + s + " (" + e.getLocalizedMessage() + ")");
-								LOGGER.trace(e);
-							}
+				if (c == 0) {
+					if (sb.length() == 0) {
+						try {
+							ids.add(new Identifier(sb.toString()));
+						} catch (InvalidIdentifierException e) {
+							LOGGER.warn("Received invalid identifier in " + id + ": " + sb.toString() + " (" + e.getLocalizedMessage() + ")");
+							LOGGER.trace(e);
 						}
-
-						sb = new StringBuilder();
-					} else {
-						sb.append(c);
 					}
+
+					sb.setLength(0);
+				} else {
+					sb.append(c);
 				}
-			} finally {
-				buf.release();
 			}
+		} finally {
+			buf.release();
+		}
 
-			String s = sb.toString();
-
-			if (!s.isEmpty()) {
-				try {
-					ids.add(new Identifier(s));
-				} catch (InvalidIdentifierException e) {
-					LOGGER.warn("Received invalid identifier in " + id + ": " + s + " (" + e.getLocalizedMessage() + ")");
-					LOGGER.trace(e);
-				}
+		if (sb.length() == 0) {
+			try {
+				ids.add(new Identifier(sb.toString()));
+			} catch (InvalidIdentifierException e) {
+				LOGGER.warn("Received invalid identifier in " + id + ": " + sb.toString() + " (" + e.getLocalizedMessage() + ")");
+				LOGGER.trace(e);
 			}
 		}
 

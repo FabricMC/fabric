@@ -53,13 +53,13 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	}
 
 	protected void forEachHandler(Consumer<ServerPlayNetworkHandler> consumer) {
-		for (Iterator<WeakReference<ServerPlayNetworkHandler>> it = handlers.iterator(); it.hasNext();) {
-			ServerPlayNetworkHandler server = it.next().get();
+		for (Iterator<WeakReference<ServerPlayNetworkHandler>> iter = handlers.iterator(); iter.hasNext();) {
+			ServerPlayNetworkHandler server = iter.next().get();
 
 			if (server != null) {
 				consumer.accept(server);
 			} else {
-				it.remove();
+				iter.remove();
 			}
 		}
 	}
@@ -72,10 +72,10 @@ public class ServerSidePacketRegistryImpl extends PacketRegistryImpl implements 
 
 	@Override
 	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		if (!(player instanceof ServerPlayerEntity)) {
-			throw new RuntimeException("Can only send to ServerPlayerEntities!");
-		} else {
+		if (player instanceof ServerPlayerEntity) {
 			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, completionListener);
+		} else {
+			throw new UnsupportedOperationException("Can only send to ServerPlayerEntities!");
 		}
 	}
 

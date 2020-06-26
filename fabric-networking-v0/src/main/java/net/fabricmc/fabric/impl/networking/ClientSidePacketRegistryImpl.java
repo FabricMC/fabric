@@ -50,15 +50,16 @@ public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements 
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
 
-		if (handler != null) {
-			if (completionListener == null) {
-				// stay closer to the vanilla codepath
-				handler.sendPacket(packet);
-			} else {
-				handler.getConnection().send(packet, completionListener);
-			}
-		} else {
+		if (handler == null) {
 			LOGGER.warn("Sending packet " + packet + " to server failed, not connected!");
+			return;
+		}
+
+		if (completionListener == null) {
+			// stay closer to the vanilla codepath
+			handler.sendPacket(packet);
+		} else {
+			handler.getConnection().send(packet, completionListener);
 		}
 	}
 

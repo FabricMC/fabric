@@ -52,11 +52,7 @@ public abstract class MixinClientPlayNetworkHandler implements PacketContext {
 	@Inject(at = @At("RETURN"), method = "onGameJoin")
 	public void onGameJoin(GameJoinS2CPacket packet, CallbackInfo info) {
 		Optional<Packet<?>> optionalPacket = PacketRegistryImpl.createInitialRegisterPacket(ClientSidePacketRegistry.INSTANCE);
-
-		//noinspection OptionalIsPresent
-		if (optionalPacket.isPresent()) {
-			sendPacket(optionalPacket.get());
-		}
+		optionalPacket.ifPresent(this::sendPacket);
 	}
 
 	// Optional hook: it only removes a warning message.
