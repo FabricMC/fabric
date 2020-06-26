@@ -138,7 +138,34 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new living entity type builder
 	 */
 	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving(SpawnGroup spawnGroup) {
-		return new FabricEntityTypeBuilder.Living<>(spawnGroup, FabricEntityTypeBuilder::empty);
+		return createLiving(spawnGroup, FabricEntityTypeBuilder::empty);
+	}
+
+	/**
+	 * Creates an entity type builder for a living entity.
+	 *
+	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
+	 *
+	 * @param factory the entity factory used to create this entity
+	 * @param <T> the type of entity
+	 *
+	 * @return a new living entity type builder
+	 */
+	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving(EntityType.EntityFactory<T> factory) {
+		return createLiving(SpawnGroup.MISC, factory);
+	}
+
+	/**
+	 * Creates an entity type builder for a living entity.
+	 *
+	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
+	 *
+	 * @param <T> the type of entity
+	 *
+	 * @return a new living entity type builder
+	 */
+	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving() {
+		return createLiving(SpawnGroup.MISC, FabricEntityTypeBuilder::empty);
 	}
 
 	/**
