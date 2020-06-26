@@ -93,10 +93,11 @@ public abstract class PacketRegistryImpl implements PacketRegistry {
 		buf.writeBytes(iter.next().toString().getBytes(StandardCharsets.US_ASCII));
 
 		// Process remaining values.
-		iter.forEachRemaining(identifier -> {
+		while (iter.hasNext()) {
+			Identifier identifier = iter.next();
 			buf.writeByte(0);
 			buf.writeBytes(identifier.toString().getBytes(StandardCharsets.US_ASCII));
-		});
+		}
 
 		return Optional.of(toPacket(id, buf));
 	}
