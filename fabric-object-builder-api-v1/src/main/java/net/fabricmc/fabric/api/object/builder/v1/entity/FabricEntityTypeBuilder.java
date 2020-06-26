@@ -265,42 +265,50 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> disableSummon() {
-			return (Living<T>) super.disableSummon();
+			super.disableSummon();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> disableSaving() {
-			return (Living<T>) super.disableSaving();
+			super.disableSaving();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> fireImmune() {
-			return (Living<T>) super.fireImmune();
+			super.fireImmune();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> spawnableFarFromPlayer() {
-			return (Living<T>) super.spawnableFarFromPlayer();
+			super.spawnableFarFromPlayer();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> dimensions(EntityDimensions dimensions) {
-			return (Living<T>) super.dimensions(dimensions);
+			super.dimensions(dimensions);
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-			return (Living<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+			super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-			return (Living<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+			super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Living<T> specificSpawnBlocks(Block... blocks) {
-			return (Living<T>) super.specificSpawnBlocks(blocks);
+			super.specificSpawnBlocks(blocks);
+			return this;
 		}
 
 		/**
@@ -345,47 +353,56 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> disableSummon() {
-			return (Mob<T>) super.disableSummon();
+			super.disableSummon();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> disableSaving() {
-			return (Mob<T>) super.disableSaving();
+			super.disableSaving();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> fireImmune() {
-			return (Mob<T>) super.fireImmune();
+			super.fireImmune();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> spawnableFarFromPlayer() {
-			return (Mob<T>) super.spawnableFarFromPlayer();
+			super.spawnableFarFromPlayer();
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> dimensions(EntityDimensions dimensions) {
-			return (Mob<T>) super.dimensions(dimensions);
+			super.dimensions(dimensions);
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-			return (Mob<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+			super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-			return (Mob<T>) super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+			super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+			return this;
 		}
 
 		@Override
 		public FabricEntityTypeBuilder.Mob<T> specificSpawnBlocks(Block... blocks) {
-			return (Mob<T>) super.specificSpawnBlocks(blocks);
+			super.specificSpawnBlocks(blocks);
+			return this;
 		}
 
 		@Override
-		public Mob<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
-			return (Mob<T>) super.defaultAttributes(defaultAttributeBuilder);
+		public FabricEntityTypeBuilder.Mob<T> defaultAttributes(Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder) {
+			super.defaultAttributes(defaultAttributeBuilder);
+			return this;
 		}
 
 		/**
