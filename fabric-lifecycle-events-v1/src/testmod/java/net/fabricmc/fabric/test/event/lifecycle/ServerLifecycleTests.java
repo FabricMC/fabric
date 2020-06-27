@@ -45,5 +45,13 @@ public class ServerLifecycleTests implements ModInitializer {
 		ServerLifecycleEvents.LOAD_WORLD.register((server, world) -> {
 			LOGGER.info("Loaded world " + world.getRegistryKey().getValue().toString());
 		});
+
+		ServerLifecycleEvents.SAVE.register((server, flush) -> {
+			LOGGER.info("Fired Save event");
+
+			if (flush) {
+				LOGGER.info("This is a flush event");
+			}
+		});
 	}
 }

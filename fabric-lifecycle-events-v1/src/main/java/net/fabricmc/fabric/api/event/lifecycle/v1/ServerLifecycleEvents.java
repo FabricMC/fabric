@@ -107,6 +107,17 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called before a Minecraft server saves all worlds and world properties.
+	 *
+	 * <p>Mods can use this event to save cached data.
+	 */
+	public static final Event<Save> SAVE = EventFactory.createArrayBacked(Save.class, callbacks -> (server, flush) -> {
+		for (Save callback : callbacks) {
+			callback.onSave(server, flush);
+		}
+	});
+
 	public interface ServerStarting {
 		void onServerStarting(MinecraftServer server);
 	}
@@ -133,5 +144,15 @@ public final class ServerLifecycleEvents {
 
 	public interface AfterResourceReload {
 		void afterResourceReload(MinecraftServer server, ServerResourceManager serverResourceManager);
+	}
+
+	public interface Save {
+		/**
+		 * Called before worlds and world properties are saved.
+		 *
+		 * @param server the server
+		 * @param flush specifies whether the worlds should unload all chunks, typically during shutdown
+		 */
+		void onSave(MinecraftServer server, boolean flush);
 	}
 }

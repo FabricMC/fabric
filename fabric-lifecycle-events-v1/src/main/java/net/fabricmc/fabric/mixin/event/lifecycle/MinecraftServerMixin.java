@@ -108,4 +108,9 @@ public abstract class MinecraftServerMixin {
 	private void afterResourceReload(Collection<String> enabledPacks, ServerResourceManager serverResourceManager, CallbackInfo ci) {
 		ServerLifecycleEvents.AFTER_RESOURCE_RELOAD.invoker().afterResourceReload((MinecraftServer) (Object) this, this.serverResourceManager);
 	}
+
+	@Inject(method = "save", at = @At("HEAD"))
+	private void onSave(boolean bl, boolean flush, boolean bl3, CallbackInfoReturnable<Boolean> cir) {
+		ServerLifecycleEvents.SAVE.invoker().onSave((MinecraftServer) (Object) this, flush);
+	}
 }
