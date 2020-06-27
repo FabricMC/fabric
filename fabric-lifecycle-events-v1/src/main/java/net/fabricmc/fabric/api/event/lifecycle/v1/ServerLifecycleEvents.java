@@ -16,7 +16,11 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
+import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.PersistentState;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -24,6 +28,17 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ServerLifecycleEvents {
 	private ServerLifecycleEvents() {
 	}
+
+	/**
+	 * Called when a Minecraft server is starting.
+	 *
+	 * <p>This occurs before the {@link PlayerManager player manager} and any worlds are loaded.
+	 */
+	public static final Event<ServerStarting> SERVER_STARTING = EventFactory.createArrayBacked(ServerStarting.class, callbacks -> server -> {
+		for (ServerStarting callback : callbacks) {
+			callback.onServerStarting(server);
+		}
+	});
 
 	/**
 	 * Called when a Minecraft server has started and is about to tick for the first time.
@@ -63,6 +78,39 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when a world is loaded by a Minecraft server.
+	 *
+	 * <p>For example, this can be used to load world specific metadata or initialize a {@link PersistentState} on a server world.
+	 */
+	public static final Event<LoadWorld> LOAD_WORLD = EventFactory.createArrayBacked(LoadWorld.class, callbacks -> (server, world) -> {
+		for (LoadWorld callback : callbacks) {
+			callback.onWorldLoaded(server, world);
+		}
+	});
+
+	/**
+	 * Called before a Minecraft server reloads datapacks.
+	 */
+	public static final Event<BeforeResourceReload> BEFORE_RESOURCE_RELOAD = EventFactory.createArrayBacked(BeforeResourceReload.class, callbacks -> (server, serverResourceManager) -> {
+		for (BeforeResourceReload callback : callbacks) {
+			callback.beforeResourceReload(server, serverResourceManager);
+		}
+	});
+
+	/**
+	 * Called after a Minecraft server has reloaded datapacks.
+	 */
+	public static final Event<AfterResourceReload> AFTER_RESOURCE_RELOAD = EventFactory.createArrayBacked(AfterResourceReload.class, callbacks -> (server, serverResourceManager) -> {
+		for (AfterResourceReload callback : callbacks) {
+			callback.afterResourceReload(server, serverResourceManager);
+		}
+	});
+
+	public interface ServerStarting {
+		void onServerStarting(MinecraftServer server);
+	}
+
 	public interface ServerStarted {
 		void onServerStarted(MinecraftServer server);
 	}
@@ -73,5 +121,17 @@ public final class ServerLifecycleEvents {
 
 	public interface ServerStopped {
 		void onServerStopped(MinecraftServer server);
+	}
+
+	public interface LoadWorld {
+		void onWorldLoaded(MinecraftServer server, ServerWorld world);
+	}
+
+	public interface BeforeResourceReload {
+		void beforeResourceReload(MinecraftServer server, ServerResourceManager serverResourceManager);
+	}
+
+	public interface AfterResourceReload {
+		void afterResourceReload(MinecraftServer server, ServerResourceManager serverResourceManager);
 	}
 }

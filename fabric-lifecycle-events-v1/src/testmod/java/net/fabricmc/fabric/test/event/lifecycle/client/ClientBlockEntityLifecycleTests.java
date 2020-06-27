@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
+	private static boolean PRINT_CLIENT_BLOCKENTITY_MESSAGES = Boolean.parseBoolean(System.getProperty("fabric-lifecycle-events-testmod.printClientBlockEntityMessages", "false"));
 	private List<BlockEntity> clientBlockEntities = new ArrayList<>();
 	private int clientTicks;
 
@@ -40,22 +41,33 @@ public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 
 		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.clientBlockEntities.add(blockEntity);
-			logger.info("[CLIENT]" + " LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
+
+			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
+				logger.info("[CLIENT]" + " LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
+			}
 		});
 
 		ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
 			this.clientBlockEntities.remove(blockEntity);
-			logger.info("[CLIENT]" + " UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
+
+			if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
+				logger.info("[CLIENT]" + " UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.clientBlockEntities.size());
+			}
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (this.clientTicks++ % 200 == 0 && client.world != null) {
 				final int blockEntities = client.world.blockEntities.size();
-				logger.info("[CLIENT] Tracked BlockEntities:" + this.clientBlockEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
-				logger.info("[CLIENT] Actual BlockEntities: " + client.world.blockEntities.size());
+
+				if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
+					logger.info("[CLIENT] Tracked BlockEntities:" + this.clientBlockEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
+					logger.info("[CLIENT] Actual BlockEntities: " + client.world.blockEntities.size());
+				}
 
 				if (blockEntities != this.clientBlockEntities.size()) {
-					logger.error("[CLIENT] Mismatch in tracked blockentities and actual blockentities");
+					if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
+						logger.error("[CLIENT] Mismatch in tracked blockentities and actual blockentities");
+					}
 				}
 			}
 		});

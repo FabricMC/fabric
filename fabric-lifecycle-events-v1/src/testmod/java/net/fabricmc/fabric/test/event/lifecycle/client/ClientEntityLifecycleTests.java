@@ -38,6 +38,7 @@ import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
  */
 @Environment(EnvType.CLIENT)
 public class ClientEntityLifecycleTests implements ClientModInitializer {
+	private static boolean PRINT_CLIENT_ENTITY_MESSAGES = Boolean.parseBoolean(System.getProperty("fabric-lifecycle-events-testmod.printClientEntityMessages", "false"));
 	private List<Entity> clientEntities = new ArrayList<>();
 	private int clientTicks;
 
@@ -47,21 +48,31 @@ public class ClientEntityLifecycleTests implements ClientModInitializer {
 
 		ClientEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			this.clientEntities.add(entity);
-			logger.info("[CLIENT]" + " LOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+
+			if (PRINT_CLIENT_ENTITY_MESSAGES) {
+				logger.info("[CLIENT]" + " LOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+			}
 		});
 
 		ClientEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
 			this.clientEntities.remove(entity);
-			logger.info("[CLIENT]" + " UNLOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+
+			if (PRINT_CLIENT_ENTITY_MESSAGES) {
+				logger.info("[CLIENT]" + " UNLOADED " + Registry.ENTITY_TYPE.getId(entity.getType()).toString() + " - Entities: " + this.clientEntities.size());
+			}
 		});
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (this.clientTicks++ % 200 == 0 && client.world != null) {
 				final int entities = Iterables.toArray(client.world.getEntities(), Entity.class).length;
-				logger.info("[CLIENT] Tracked Entities:" + this.clientEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
-				logger.info("[CLIENT] Actual Entities: " + entities);
+
+				if (PRINT_CLIENT_ENTITY_MESSAGES) {
+					logger.info("[CLIENT] Tracked Entities:" + this.clientEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
+					logger.info("[CLIENT] Actual Entities: " + entities);
+				}
 
 				if (entities != this.clientEntities.size()) {
+					// Always print mismatches
 					logger.error("[CLIENT] Mismatch in tracked entities and actual entities");
 				}
 			}

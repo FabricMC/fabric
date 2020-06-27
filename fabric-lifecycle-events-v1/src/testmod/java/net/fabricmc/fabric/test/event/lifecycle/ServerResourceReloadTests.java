@@ -22,28 +22,17 @@ import org.apache.logging.log4j.Logger;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-/**
- * Tests related to the lifecycle of a server.
- */
-public class ServerLifecycleTests implements ModInitializer {
+public class ServerResourceReloadTests implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("LifecycleEventsTest");
 
 	@Override
 	public void onInitialize() {
-		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-			LOGGER.info("Started Server!");
+		ServerLifecycleEvents.BEFORE_RESOURCE_RELOAD.register((server, serverResourceManager) -> {
+			LOGGER.info("PREPARING FOR RELOAD");
 		});
 
-		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-			LOGGER.info("Stopping Server!");
-		});
-
-		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
-			LOGGER.info("Stopped Server!");
-		});
-
-		ServerLifecycleEvents.LOAD_WORLD.register((server, world) -> {
-			LOGGER.info("Loaded world " + world.getRegistryKey().getValue().toString());
+		ServerLifecycleEvents.AFTER_RESOURCE_RELOAD.register((server, serverResourceManager) -> {
+			LOGGER.info("FINISHED RELOAD");
 		});
 	}
 }
