@@ -25,9 +25,11 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Event for listening to packet type registrations and unregistrations
- * (also known as "minecraft:register" and "minecraft:unregister")
- * in the client -&gt; server direction.
+ * Event for listening to packet type registration and unregistration notifications
+ * (also known as "minecraft:register" and "minecraft:unregister") sent by a client.
+ *
+ * <p>Registrations received will be for <em>server -&gt; client</em> packets
+ * that the sending client can understand.
  */
 public interface C2SPacketTypeCallback {
 	Event<C2SPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(

@@ -20,8 +20,14 @@ import net.minecraft.server.MinecraftServer;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
+@Deprecated
 public interface ServerTickCallback {
+	/**
+	 * @deprecated Please use {@link ServerTickEvents#END_SERVER_TICK}
+	 */
+	@Deprecated
 	Event<ServerTickCallback> EVENT = EventFactory.createArrayBacked(ServerTickCallback.class,
 			(listeners) -> {
 				if (EventFactory.isProfilingEnabled()) {
