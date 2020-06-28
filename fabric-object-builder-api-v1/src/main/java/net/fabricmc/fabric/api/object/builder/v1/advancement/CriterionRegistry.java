@@ -35,9 +35,9 @@ public final class CriterionRegistry {
 	 *
 	 * @param <T> the criterion's type
 	 * @param criterion the criterion registered
+	 * @return the criterion registered, for chaining
 	 * @throws IllegalArgumentException if a criterion with the same {@link
 	 *                                  Criterion#getId() id} exists
-	 * @return the criterion registered, for chaining
 	 */
 	public static <T extends Criterion<?>> T register(T criterion) {
 		CriteriaAccessor.callRegister(criterion);
