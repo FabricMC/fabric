@@ -33,11 +33,14 @@ public final class CriterionRegistry {
 	/**
 	 * Registers a criterion for a trigger for advancements.
 	 *
+	 * @param <T> the criterion's type
 	 * @param criterion the criterion registered
 	 * @throws IllegalArgumentException if a criterion with the same {@link
 	 *                                  Criterion#getId() id} exists
+	 * @return the criterion registered, for chaining
 	 */
-	public static void register(Criterion<?> criterion) {
+	public static <T extends Criterion<?>> T register(T criterion) {
 		CriteriaAccessor.callRegister(criterion);
+		return criterion;
 	}
 }
