@@ -23,12 +23,14 @@ import java.util.function.Consumer;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
+import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
 public class ModResourcePackCreator implements ResourcePackProvider {
+	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod"));
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
@@ -48,7 +50,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 
 			T var3 = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
 					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
-					text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod")));
+					RESOURCE_PACK_SOURCE);
 
 			if (var3 != null) {
 				consumer.accept(var3);
