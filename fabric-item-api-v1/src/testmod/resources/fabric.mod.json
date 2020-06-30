@@ -10,7 +10,8 @@
   },
   "entrypoints": {
     "client": [
-      "net.fabricmc.fabric.test.item.client.TooltipTests"
+      "net.fabricmc.fabric.test.item.client.TooltipTests",
+      "net.fabricmc.fabric.test.item.client.UpdateAnimationTests"
     ]
   }
 }
