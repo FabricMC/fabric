@@ -37,7 +37,7 @@ import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 
 @Mixin(DataPackSettings.class)
-public class MixinClass_5359 {
+public class MixinDataPackSettings {
 	@Shadow
 	@Final
 	@Mutable
