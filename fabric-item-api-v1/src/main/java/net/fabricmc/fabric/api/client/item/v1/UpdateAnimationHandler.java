@@ -37,5 +37,6 @@ public interface UpdateAnimationHandler {
 	 * @param updated  updated {@link ItemStack} to check for updates on
 	 * @return  whether or not the item update animation should play
 	 */
+	@Environment(EnvType.CLIENT)
 	boolean shouldRunAnimationUpdate(ItemStack original, ItemStack updated);
 }
