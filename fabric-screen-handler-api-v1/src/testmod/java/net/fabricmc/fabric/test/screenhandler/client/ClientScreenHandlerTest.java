@@ -20,21 +20,13 @@ import net.minecraft.client.gui.screen.ingame.Generic3x3ContainerScreen;
 
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
-import net.fabricmc.fabric.test.screenhandler.screen.BoxScreenHandler;
-import net.fabricmc.fabric.test.screenhandler.screen.PositionedBagScreenHandler;
 import net.fabricmc.api.ClientModInitializer;
 
 public class ClientScreenHandlerTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ScreenRegistry.register(ScreenHandlerTest.BAG_SCREEN_HANDLER, Generic3x3ContainerScreen::new);
-		ScreenRegistry.<PositionedBagScreenHandler, PositionedScreen<PositionedBagScreenHandler>>register(
-				ScreenHandlerTest.POSITIONED_BAG_SCREEN_HANDLER,
-				PositionedScreen::new
-		);
-		ScreenRegistry.<BoxScreenHandler, PositionedScreen<BoxScreenHandler>>register(
-				ScreenHandlerTest.BOX_SCREEN_HANDLER,
-				PositionedScreen::new
-		);
+		ScreenRegistry.register(ScreenHandlerTest.POSITIONED_BAG_SCREEN_HANDLER, PositionedScreen::new);
+		ScreenRegistry.register(ScreenHandlerTest.BOX_SCREEN_HANDLER, PositionedScreen::new);
 	}
 }
