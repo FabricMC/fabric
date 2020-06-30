@@ -53,6 +53,18 @@ public final class ToolManager {
 	}
 
 	/**
+	 * Handles if the tool is effective on a block, ignores vanilla tools on vanilla blocks.
+	 *
+	 * @param state the block state to break
+	 * @param stack the item stack involved with breaking the block
+	 * @param user  the user involved in breaking the block, null if not applicable.
+	 * @return whether the tool is effective
+	 */
+	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+		return ToolManagerImpl.handleIsEffectiveOnIgnoresVanilla(state, stack, user, false);
+	}
+
+	/**
 	 * Handles the breaking speed breaking a block.
 	 *
 	 * @param state the block state to break
