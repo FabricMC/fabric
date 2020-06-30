@@ -28,8 +28,11 @@ public class UpdatingItem extends Item {
 
 	@Override
 	public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-		float currentTicks = stack.getOrCreateTag().getFloat("ticks");
-		stack.getOrCreateTag().putFloat("ticks", currentTicks + 1);
+		if (!world.isClient) {
+			float currentTicks = stack.getOrCreateTag().getFloat("ticks");
+			stack.getOrCreateTag().putFloat("ticks", currentTicks + 1);
+		}
+
 		super.inventoryTick(stack, world, entity, slot, selected);
 	}
 }
