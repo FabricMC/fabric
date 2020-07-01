@@ -45,9 +45,7 @@ public class MixinMinecraftServer {
 
 	// Replace the ChunkGenerator with the current seed
 	@Inject(method = "createWorlds", at = @At("HEAD"))
-	private void onCreateWorlds(
-			WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci
-	) {
+	private void onCreateWorlds(WorldGenerationProgressListener worldGenerationProgressListener, CallbackInfo ci) {
 		GeneratorOptions generatorOptions = saveProperties.getGeneratorOptions();
 
 		SimpleRegistry<DimensionOptions> dimensionMap = generatorOptions.getDimensionMap();
@@ -60,11 +58,12 @@ public class MixinMinecraftServer {
 			DimensionOptions dimensionOptions = dimensionMap.get(dimensionId);
 
 			// Vanilla datapacks can only use vanilla chunk generators
-			if (isVanillaChunkGenerator(dimensionOptions.chunkGenerator)) {
+			if (isVanillaChunkGenerator(dimensionOptions.getChunkGenerator())) {
 				return;
 			}
 
-			dimensionOptions.chunkGenerator = dimensionOptions.chunkGenerator.withSeed(generatorOptions.getSeed());
+			ChunkGenerator newChunkGenerator = dimensionOptions.getChunkGenerator().withSeed(generatorOptions.getSeed());
+			((DimensionOptionsAccessor) (Object) dimensionOptions).fabric_setChunkGenerator(newChunkGenerator);
 		});
 	}
 
