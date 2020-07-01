@@ -23,25 +23,28 @@ import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 class StopSoundButton extends ButtonWidget {
 	private final Screen screen;
 
 	StopSoundButton(Screen screen, int x, int y, int width, int height) {
-		super(x, y, width, height, "", null);
+		super(x, y, width, height, Text.method_30163(""), null);
 		this.screen = screen;
 	}
 
 	@Override
-	public void render(int mouseX, int mouseY, float tickDelta) {
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
 		MinecraftClient client = MinecraftClient.getInstance();
 		RenderSystem.pushMatrix();
 		// Render the armor icon to test
-		client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_LOCATION);
-		DrawableHelper.blit(this.x, this.y, this.width, this.height, 43, 27, 9, 9, 256, 256);
+		client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_TEXTURE);
+		DrawableHelper.drawTexture(matrices, this.x, this.y, this.width, this.height, 43, 27, 9, 9, 256, 256);
 
 		if (this.isMouseOver(mouseX, mouseY)) {
-			this.screen.renderTooltip("Click to stop all sounds", this.x, this.y);
+			this.screen.renderTooltip(matrices, new LiteralText("Click to stop all sounds"), this.x, this.y);
 		}
 
 		RenderSystem.popMatrix();

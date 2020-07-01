@@ -25,9 +25,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenRenderCallback;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
@@ -36,12 +38,8 @@ public abstract class GameRendererMixin {
 	private MinecraftClient client;
 
 	// This injection should end up in the try block so exceptions are caught
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(IIF)V", shift = At.Shift.AFTER))
-	private void onRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
-		// Copied from game renderer so we don't need a stupid amount of locals
-		final int mouseX = (int) (this.client.mouse.getX() * (double) this.client.getWindow().getScaledWidth() / (double) this.client.getWindow().getWidth());
-		final int mouseY = (int) (this.client.mouse.getY() * (double) this.client.getWindow().getScaledHeight() / (double) this.client.getWindow().getHeight());
-
-		ScreenRenderCallback.EVENT.invoker().onRender(this.client, this.client.currentScreen, (ScreenContext) this.client.currentScreen, mouseX, mouseY, this.client.getLastFrameDuration());
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.PRINT)
+	private void onRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrices) {
+		ScreenRenderCallback.EVENT.invoker().onRender(this.client, matrices, this.client.currentScreen, (ScreenContext) this.client.currentScreen, mouseX, mouseY, this.client.getLastFrameDuration());
 	}
 }

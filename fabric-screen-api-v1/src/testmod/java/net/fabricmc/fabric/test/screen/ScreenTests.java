@@ -28,6 +28,7 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
@@ -71,12 +72,12 @@ public class ScreenTests implements ClientModInitializer {
 		}
 	}
 
-	private void onRender(MinecraftClient client, Screen screen, ScreenContext context, int mouseX, int mouseY, float tickDelta) {
+	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenContext context, int mouseX, int mouseY, float tickDelta) {
 		if (screen instanceof TitleScreen) {
 			RenderSystem.pushMatrix();
 			// Render an armor icon to test
-			client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_LOCATION);
-			DrawableHelper.blit((screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
+			client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_TEXTURE);
+			DrawableHelper.drawTexture(matrices, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
 			RenderSystem.popMatrix();
 		}
 	}

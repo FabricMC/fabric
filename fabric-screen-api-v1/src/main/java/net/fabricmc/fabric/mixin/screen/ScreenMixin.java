@@ -42,7 +42,7 @@ public abstract class ScreenMixin implements ScreenContext {
 	@Shadow
 	protected ItemRenderer itemRenderer;
 	@Shadow
-	protected TextRenderer font;
+	protected TextRenderer textRenderer;
 	@Shadow
 	@Final
 	protected List<AbstractButtonWidget> buttons;
@@ -75,7 +75,7 @@ public abstract class ScreenMixin implements ScreenContext {
 
 	@Override
 	public TextRenderer getTextRenderer() {
-		return this.font;
+		return this.textRenderer;
 	}
 
 	@Override

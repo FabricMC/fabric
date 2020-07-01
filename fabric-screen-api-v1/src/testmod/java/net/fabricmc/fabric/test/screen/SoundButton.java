@@ -16,18 +16,30 @@
 
 package net.fabricmc.fabric.test.screen;
 
+import java.util.Random;
+
+import com.mojang.datafixers.DataFixUtils;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
 
 class SoundButton extends ButtonWidget {
+	private static final Random RANDOM = new Random();
+
 	SoundButton(int x, int y, int width, int height) {
-		super(x, y, width, height, "Sound Button", null);
+		super(x, y, width, height, Text.method_30163("Sound Button"), null);
 	}
 
 	@Override
 	public void onPress() {
-		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(Registry.SOUND_EVENT.getRandom(ScreenTests.RANDOM), 1.0F, 1.0F));
+		final int size = Registry.SOUND_EVENT.getIds().size();
+		final SoundEvent event = Registry.SOUND_EVENT.get(RANDOM.nextInt(size - 1));
+
+		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event != null ? event : SoundEvents.ENTITY_GENERIC_EXPLODE, 1.0F, 1.0F));
 	}
 }

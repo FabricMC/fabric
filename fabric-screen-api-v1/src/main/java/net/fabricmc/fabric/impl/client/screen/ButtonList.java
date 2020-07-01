@@ -80,18 +80,18 @@ public final class ButtonList<T extends AbstractButtonWidget> extends AbstractLi
 
 	private void rangeCheck(int index) {
 		if (index >= this.size()) {
-			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+			throw createOutOfBoundsException(index);
 		}
 	}
 
 	private void rangeCheckForAdd(int index) {
 		if (index > this.size() || index < 0) {
-			throw new IndexOutOfBoundsException(outOfBoundsMsg(index));
+			throw createOutOfBoundsException(index);
 		}
 	}
 
-	private String outOfBoundsMsg(int index) {
-		return "Index: " + index + ", Size: "+ size();
+	private IndexOutOfBoundsException createOutOfBoundsException(int index) {
+		return new IndexOutOfBoundsException("Index: " + index + ", Size: "+ this.size());
 	}
 }
 

@@ -18,30 +18,31 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public interface ScreenRenderCallback {
-	Event<ScreenRenderCallback> EVENT = EventFactory.createArrayBacked(ScreenRenderCallback.class, callbacks -> (client, screen, context, mouseX, mouseY, tickDelta) -> {
+	Event<ScreenRenderCallback> EVENT = EventFactory.createArrayBacked(ScreenRenderCallback.class, callbacks -> (client, matrices, screen, context, mouseX, mouseY, tickDelta) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = client.getProfiler();
 			profiler.push("fabricRenderScreen");
 
 			for (ScreenRenderCallback callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onRender(client, screen, context, mouseX, mouseY, tickDelta);
+				callback.onRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
 			for (ScreenRenderCallback callback : callbacks) {
-				callback.onRender(client, screen, context, mouseX, mouseY, tickDelta);
+				callback.onRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
 			}
 		}
 	});
 
-	void onRender(MinecraftClient client, Screen screen, ScreenContext context, int mouseX, int mouseY, float tickDelta);
+	void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenContext context, int mouseX, int mouseY, float tickDelta);
 }
