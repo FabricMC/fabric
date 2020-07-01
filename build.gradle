@@ -1,3 +1,9 @@
+buildscript {
+	dependencies {
+		classpath 'org.kohsuke:github-api:1.114'
+	}
+}
+
 plugins {
 	id 'java'
 	id 'eclipse'
@@ -278,3 +284,24 @@ curseforge {
 }
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
+
+import org.kohsuke.github.GHReleaseBuilder
+import org.kohsuke.github.GitHub
+
+task github(dependsOn: remapMavenJar) {
+	onlyIf {
+		project.hasProperty('github_api_key')
+	}
+	doLast {
+		def github = GitHub.connectUsingOAuth(project.getProperty('github_api_key') as String)
+		def repository = github.getRepository("FabricMC/fabric")
+
+		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
+		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER")
+		releaseBuilder.body('A changelog can be found at https://github.com/FabricMC/fabric/commits')
+		releaseBuilder.commitish(getBranch())
+
+		def ghRelease = releaseBuilder.create()
+		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
+	}
+}
