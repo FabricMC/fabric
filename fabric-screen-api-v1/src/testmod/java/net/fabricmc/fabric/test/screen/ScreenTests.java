@@ -32,8 +32,7 @@ import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenInitCallback;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenRenderCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 public class ScreenTests implements ClientModInitializer {
 	public static final Random RANDOM = new Random();
@@ -42,8 +41,8 @@ public class ScreenTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("Started Screen Testmod");
-		ScreenInitCallback.EVENT.register(this::onInit);
-		ScreenRenderCallback.EVENT.register(this::onRender);
+		ScreenEvents.INIT.register(this::onInit);
+		ScreenEvents.AFTER_RENDER.register(this::onRender);
 	}
 
 	private void onInit(MinecraftClient client, Screen screen, ScreenContext context, int windowWidth, int windowHeight) {

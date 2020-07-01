@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.mixin.screen;
 
 import java.util.function.Function;
@@ -17,27 +33,39 @@ import net.minecraft.resource.DataPackSettings;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.SaveProperties;
-import net.minecraft.world.level.LevelInfo;
 import net.minecraft.world.level.storage.LevelStorage;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenTickCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
 	@Shadow
 	public Screen currentScreen;
 
-	// Should be caught by "Screen#wrapScreenError" if anything fails
+	// These two should be caught by "Screen#wrapScreenError" if anything fails
+
+	@Inject(method = "method_1572", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;tick()V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	private void beforeScreenTick(CallbackInfo ci) {
+		ScreenEvents.BEFORE_TICK.invoker().beforeTick((MinecraftClient) (Object) this, this.currentScreen, (ScreenContext) this.currentScreen);
+	}
+
 	@Inject(method = "method_1572", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	private void onTickScreen(CallbackInfo ci) {
-		ScreenTickCallback.EVENT.invoker().onTick((MinecraftClient) (Object) this, this.currentScreen, (ScreenContext) this.currentScreen);
+	private void afterScreenTick(CallbackInfo ci) {
+		ScreenEvents.AFTER_TICK.invoker().afterTick((MinecraftClient) (Object) this, this.currentScreen, (ScreenContext) this.currentScreen);
 	}
 
 	// This is the odd screen that isn't ticked by the main tick loop, so we fire events for this screen.
-	@Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V"))
-	private void onTickLoadingScreen(String worldName, RegistryTracker.Modifiable registryTracker, Function<LevelStorage.Session, DataPackSettings> function, Function4<LevelStorage.Session, RegistryTracker.Modifiable, ResourceManager, DataPackSettings, SaveProperties> function4, boolean safeMode, @Coerce Object worldLoadAction, CallbackInfo ci) {
+
+	@Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;tick()V"))
+	private void beforeLoadingScreenTick(String worldName, RegistryTracker.Modifiable registryTracker, Function<LevelStorage.Session, DataPackSettings> function, Function4<LevelStorage.Session, RegistryTracker.Modifiable, ResourceManager, DataPackSettings, SaveProperties> function4, boolean safeMode, @Coerce Object worldLoadAction, CallbackInfo ci) {
 		final Screen currentScreen = this.currentScreen;
-		ScreenTickCallback.EVENT.invoker().onTick((MinecraftClient) (Object) this, currentScreen, (ScreenContext) currentScreen);
+		ScreenEvents.BEFORE_TICK.invoker().beforeTick((MinecraftClient) (Object) this, currentScreen, (ScreenContext) currentScreen);
+	}
+
+	@Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/RegistryTracker$Modifiable;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V"))
+	private void afterLoadingScreenTick(String worldName, RegistryTracker.Modifiable registryTracker, Function<LevelStorage.Session, DataPackSettings> function, Function4<LevelStorage.Session, RegistryTracker.Modifiable, ResourceManager, DataPackSettings, SaveProperties> function4, boolean safeMode, @Coerce Object worldLoadAction, CallbackInfo ci) {
+		final Screen currentScreen = this.currentScreen;
+		ScreenEvents.AFTER_TICK.invoker().afterTick((MinecraftClient) (Object) this, currentScreen, (ScreenContext) currentScreen);
 	}
 }

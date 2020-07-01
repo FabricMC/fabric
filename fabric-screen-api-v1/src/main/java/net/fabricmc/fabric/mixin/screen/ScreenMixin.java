@@ -34,7 +34,7 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.render.item.ItemRenderer;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenInitCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.impl.client.screen.ButtonList;
 
 @Mixin(Screen.class)
@@ -55,7 +55,7 @@ public abstract class ScreenMixin implements ScreenContext {
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
 	private void onInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		ScreenInitCallback.EVENT.invoker().onInit(client, (Screen) (Object) this, this, width, height);
+		ScreenEvents.INIT.invoker().onInit(client, (Screen) (Object) this, this, width, height);
 	}
 
 	@Override
