@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 
 @Environment(EnvType.CLIENT)
-public final class FloatRuleWidget extends EditGameRulesScreen.class_5400 {
+public final class FloatRuleWidget extends EditGameRulesScreen.NamedRuleWidget {
 	private final TextFieldWidget textFieldWidget;
 	private final Text name;
 
@@ -57,13 +57,13 @@ public final class FloatRuleWidget extends EditGameRulesScreen.class_5400 {
 			}
 		});
 
-		this.field_25630.add(this.textFieldWidget);
+		this.children.add(this.textFieldWidget);
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		// FIXME: Param names nightmare
-		this.method_29989(matrices, y, x);
+		this.drawName(matrices, y, x);
 
 		this.textFieldWidget.x = x + entryWidth - 44;
 		this.textFieldWidget.y = y;

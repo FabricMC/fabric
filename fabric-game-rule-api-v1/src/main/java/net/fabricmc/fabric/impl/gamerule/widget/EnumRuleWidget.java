@@ -33,7 +33,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
 @Environment(EnvType.CLIENT)
-public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.class_5400 {
+public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen.NamedRuleWidget {
 	private final ButtonWidget buttonWidget;
 	private final String rootTranslationKey;
 
@@ -51,7 +51,7 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 			buttonWidget.setMessage(this.getValueText(newValue));
 		});
 
-		this.field_25630.add(this.buttonWidget);
+		this.children.add(this.buttonWidget);
 	}
 
 	public Text getValueText(E value) {
@@ -66,7 +66,7 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 
 	public void render(MatrixStack matrices, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
 		// FIXME: Param names nightmare
-		this.method_29989(matrices, y, x);
+		this.drawName(matrices, y, x);
 
 		this.buttonWidget.x = x + entryWidth - 89;
 		this.buttonWidget.y = y;
