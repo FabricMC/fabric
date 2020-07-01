@@ -15,6 +15,8 @@ jobs:
         with:
           gradle-version: wrapper
           arguments: check build publishToMavenLocal --stacktrace
+          dependencies-cache-enabled: false
+          configuration-cache-enabled: false
       - uses: actions/upload-artifact@v2
         with:
           name: Artifacts
