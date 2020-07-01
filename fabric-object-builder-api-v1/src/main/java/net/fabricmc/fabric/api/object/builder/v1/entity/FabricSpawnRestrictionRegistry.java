@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
-import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.world.Heightmap;
+
+import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 
 /**
  * Allows registering spawn restrictions for mob entities.
@@ -31,10 +32,10 @@ public final class FabricSpawnRestrictionRegistry {
 	 *
 	 * <p>Example:
 	 * <pre>FabricSpawnRestrictionRegistry.register(
-	 *	EntityType.BAT,
-	 *	SpawnRestriction.Location.ON_GROUND,
-	 *	Type.MOTION_BLOCKING_NO_LEAVES,
-	 *	BatEntity::canSpawn);</pre>
+	 *  EntityType.BAT,
+	 *  SpawnRestriction.Location.ON_GROUND,
+	 *  Type.MOTION_BLOCKING_NO_LEAVES,
+	 *  BatEntity::canSpawn);</pre>
 	 * </p>
 	 *
 	 * @param type      the entity type
