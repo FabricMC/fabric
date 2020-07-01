@@ -42,7 +42,7 @@ public class MixinResourcePackManager<T extends ResourcePackProfile> {
 	private Set<ResourcePackProvider> providers;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
-	public void construct(ResourcePackProfile.Factory<T> arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
+	public void construct(ResourcePackProfile.Factory arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
 		providers = new HashSet<>(providers);
 		providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 	}

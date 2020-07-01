@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-lifecycle-events-v1"
-version = getSubprojectVersion(project, "1.0.0")
+version = getSubprojectVersion(project, "1.0.1")
 
 dependencies {
 	compile project(path: ':fabric-api-base', configuration: 'dev')

@@ -20,13 +20,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.GlobalTagAccessor;
 import net.minecraft.tag.SetTag;
 
 import net.fabricmc.fabric.api.tag.FabricTag;
 import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
 
-@Mixin(value = {GlobalTagAccessor.CachedTag.class, SetTag.class}, targets = {"net.minecraft.tag.Tag$1"})
+@Mixin(value = {SetTag.class}, targets = {"net.minecraft.tag.Tag$1", "net.minecraft.tag.GlobalTagAccessor$CachedTag"})
 public abstract class MixinTagImpl<T> implements FabricTag<T>, FabricTagHooks, Tag<T> {
 	@Unique
 	private int fabric_clearCount;
