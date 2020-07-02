@@ -38,6 +38,8 @@ public final class FabricSpawnRestrictionRegistry {
 	 *  BatEntity::canSpawn);</pre>
 	 * </p>
 	 *
+	 * <p>Note: A mob can only have one spawn restriction registration.</p>
+	 *
 	 * @param type      the entity type
 	 * @param location  the environment type where the mob can spawn
 	 * @param heightmap the heightmap type
