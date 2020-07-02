@@ -33,7 +33,9 @@ import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.chunk.VerticalBlockSample;
 
-public class VoidChunkGenerator extends ChunkGenerator {
+import net.fabricmc.fabric.api.dimension.v1.FabricChunkGenerator;
+
+public class VoidChunkGenerator extends FabricChunkGenerator {
 	// Just an example of adding a custom boolean
 	protected final boolean customBool;
 
@@ -60,8 +62,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public ChunkGenerator withSeed(long seed) {
-		LOGGER.info("Created VoidChunkGenerator with seed " + seed);
+	public ChunkGenerator fabricWithSeed(long seed) {
 		return new VoidChunkGenerator(getBiomeSource().withSeed(seed), customBool);
 	}
 

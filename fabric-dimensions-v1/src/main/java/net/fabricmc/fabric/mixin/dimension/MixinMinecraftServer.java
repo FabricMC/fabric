@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import net.fabricmc.fabric.api.dimension.v1.FabricChunkGenerator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -50,35 +51,13 @@ public class MixinMinecraftServer {
 
 		SimpleRegistry<DimensionOptions> dimensionMap = generatorOptions.getDimensionMap();
 
-		dimensionMap.getIds().forEach(dimensionId -> {
-			if (isVanillaDimension(dimensionId)) {
-				return;
+		dimensionMap.forEach(dimensionOptions -> {
+			ChunkGenerator chunkGenerator = dimensionOptions.getChunkGenerator();
+
+			if (chunkGenerator instanceof FabricChunkGenerator) {
+				ChunkGenerator newChunkGenerator = ((FabricChunkGenerator) chunkGenerator).fabricWithSeed(generatorOptions.getSeed());
+				((DimensionOptionsAccessor) (Object) dimensionOptions).fabric_setChunkGenerator(newChunkGenerator);
 			}
-
-			DimensionOptions dimensionOptions = dimensionMap.get(dimensionId);
-
-			// Vanilla datapacks can only use vanilla chunk generators
-			if (isVanillaChunkGenerator(dimensionOptions.getChunkGenerator())) {
-				return;
-			}
-
-			ChunkGenerator newChunkGenerator = dimensionOptions.getChunkGenerator().withSeed(generatorOptions.getSeed());
-			((DimensionOptionsAccessor) (Object) dimensionOptions).fabric_setChunkGenerator(newChunkGenerator);
 		});
-	}
-
-	@Unique
-	private static boolean isVanillaDimension(Identifier identifier) {
-		return identifier.equals(World.OVERWORLD.getValue())
-				|| identifier.equals(World.NETHER.getValue())
-				|| identifier.equals(World.END.getValue());
-	}
-
-	@Unique
-	private static boolean isVanillaChunkGenerator(ChunkGenerator chunkGenerator) {
-		Class<? extends ChunkGenerator> type = chunkGenerator.getClass();
-		return type == SurfaceChunkGenerator.class
-				|| type == FlatChunkGenerator.class
-				|| type == DebugChunkGenerator.class;
 	}
 }
