@@ -16,9 +16,13 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnRestriction;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 
 import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
@@ -27,6 +31,11 @@ import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
  * Allows registering spawn restrictions for mob entities.
  */
 public final class FabricSpawnRestrictionRegistry {
+	/**
+	 * Private logger, not exposed.
+	 */
+	private static final Logger LOGGER = LogManager.getLogger();
+
 	/**
 	 * Registers a spawn restriction entry for a type of mob entity.
 	 *
@@ -46,6 +55,10 @@ public final class FabricSpawnRestrictionRegistry {
 	 * @param predicate a spawn predicate
 	 */
 	public static <T extends MobEntity> void register(EntityType<T> type, SpawnRestriction.Location location, Heightmap.Type heightmap, SpawnRestriction.SpawnPredicate<T> predicate) {
-		SpawnRestrictionAccessor.callRegister(type, location, heightmap, predicate);
+		if (SpawnRestriction.getHeightmapType(type) != null) {
+			LOGGER.error("A spawn restriction already exists for entity type {}", Registry.ENTITY_TYPE.getId(type));
+		} else {
+			SpawnRestrictionAccessor.callRegister(type, location, heightmap, predicate);
+		}
 	}
 }
