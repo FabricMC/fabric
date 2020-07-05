@@ -18,8 +18,9 @@ package net.fabricmc.fabric.impl.loot.table;
 
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonSerializer;
 
-import net.fabricmc.fabric.mixin.loot.table.LootPoolEntryTypesHooks;
+import net.fabricmc.fabric.mixin.loot.table.LootPoolEntryTypesAccessor;
 
 public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
 	public static final LootEntryTypeRegistryImpl INSTANCE = new LootEntryTypeRegistryImpl();
@@ -27,7 +28,7 @@ public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.
 	private LootEntryTypeRegistryImpl() { }
 
 	@Override
-	public void register(Identifier id, LootPoolEntry.Serializer<?> serializer) {
-		LootPoolEntryTypesHooks.register(id.toString(), serializer);
+	public void register(Identifier id, JsonSerializer<? extends LootPoolEntry> serializer) {
+		LootPoolEntryTypesAccessor.register(id.toString(), serializer);
 	}
 }

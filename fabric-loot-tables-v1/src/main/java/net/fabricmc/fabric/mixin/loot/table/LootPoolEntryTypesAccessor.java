@@ -25,7 +25,7 @@ import net.minecraft.loot.entry.LootPoolEntryTypes;
 import net.minecraft.util.JsonSerializer;
 
 @Mixin(LootPoolEntryTypes.class)
-public interface LootPoolEntryTypesHooks {
+public interface LootPoolEntryTypesAccessor {
 	@Invoker("register")
 	static LootPoolEntryType register(String id, JsonSerializer<? extends LootPoolEntry> serializer) {
 		throw new UnsupportedOperationException("Mixin dummy");

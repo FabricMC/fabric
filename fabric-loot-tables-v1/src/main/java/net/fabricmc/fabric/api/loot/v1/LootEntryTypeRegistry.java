@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.JsonSerializer;
 
 import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
 
@@ -36,5 +37,5 @@ public interface LootEntryTypeRegistry {
 	 * @param id the loot entry's ID
 	 * @param serializer the loot entry serializer
 	 */
-	void register(Identifier id, LootPoolEntry.Serializer<?> serializer);
+	void register(Identifier id, JsonSerializer<? extends LootPoolEntry> serializer);
 }
