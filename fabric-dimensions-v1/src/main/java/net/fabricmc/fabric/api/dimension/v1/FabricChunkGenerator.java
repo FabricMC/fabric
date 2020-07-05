@@ -16,12 +16,17 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+/**
+ * This can be the base class of the custom dimension's chunk generator. Not mandatory.
+ * {@link FabricChunkGenerator#fabricWithSeed(long)} will be called during server startup.
+ */
 public abstract class FabricChunkGenerator extends ChunkGenerator {
 	public FabricChunkGenerator(BiomeSource biomeSource, StructuresConfig structuresConfig) {
 		super(biomeSource, structuresConfig);

@@ -16,27 +16,22 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
-import net.fabricmc.fabric.api.dimension.v1.FabricChunkGenerator;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.world.gen.chunk.ChunkGenerator;
-import net.minecraft.world.gen.chunk.DebugChunkGenerator;
-import net.minecraft.world.gen.chunk.FlatChunkGenerator;
-import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListener;
 import net.minecraft.world.SaveProperties;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.SimpleRegistry;
-import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.GeneratorOptions;
+
+import net.fabricmc.fabric.api.dimension.v1.FabricChunkGenerator;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
