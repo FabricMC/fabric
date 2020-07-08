@@ -21,6 +21,8 @@ import java.util.function.Consumer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.LivingEntity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -53,5 +55,5 @@ public interface RegisterFeatureRendererCallback {
 		}
 	});
 
-	void registerFeatureRenderers(LivingEntityRenderer<?, ?> entityRenderer, Consumer<FeatureRenderer<?, ?>> acceptor);
+	void registerFeatureRenderers(LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> entityRenderer, Consumer<FeatureRenderer<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>> acceptor);
 }
