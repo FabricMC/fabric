@@ -23,14 +23,18 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.test.item.client.item.PatchedUpdatingItem;
+import net.fabricmc.fabric.api.client.item.v1.FabricItemUpdateAnimationHandlers;
 import net.fabricmc.fabric.test.item.client.item.UpdatingItem;
 
 @Environment(EnvType.CLIENT)
 public class UpdateAnimationTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		Registry.register(Registry.ITEM, new Identifier("fabrictest", "patched"), new PatchedUpdatingItem(new Item.Settings()));
-		Registry.register(Registry.ITEM, new Identifier("fabrictest", "original"), new UpdatingItem(new Item.Settings()));
+		Item patchedItem = Registry.register(Registry.ITEM, new Identifier("fabrictest", "patched"), new UpdatingItem(new Item.Settings()));
+		Item originalItem = Registry.register(Registry.ITEM, new Identifier("fabrictest", "original"), new UpdatingItem(new Item.Settings()));
+		Item defaultItem = Registry.register(Registry.ITEM, new Identifier("fabrictest", "default"), new Item(new Item.Settings()));
+
+		FabricItemUpdateAnimationHandlers.register(patchedItem, (original, result) -> false);
+		FabricItemUpdateAnimationHandlers.register(defaultItem, (original, result) -> true);
 	}
 }

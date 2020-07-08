@@ -24,7 +24,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.item.ItemGroup;
 
-import net.fabricmc.fabric.impl.item.group.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.client.item.group.FabricCreativeGuiComponents;
 
 @Mixin(ItemGroup.class)
 public abstract class MixinItemGroup {

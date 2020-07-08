@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.item.client.item;
+package net.fabricmc.fabric.impl.client.item.group;
 
-import net.minecraft.item.ItemStack;
-
-import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
-
-public class PatchedUpdatingItem extends UpdatingItem implements UpdateAnimationHandler {
-	public PatchedUpdatingItem(Settings settings) {
-		super(settings);
-	}
-
-	@Override
-	public boolean shouldRunAnimationUpdate(ItemStack original, ItemStack updated) {
-		return false;
-	}
+public interface ItemGroupExtensions {
+	void fabric_expandArray();
 }

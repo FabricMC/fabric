@@ -25,7 +25,7 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
+import net.fabricmc.fabric.api.client.item.v1.FabricItemUpdateAnimationHandlers;
 
 @Environment(EnvType.CLIENT)
 @Mixin(HeldItemRenderer.class)
@@ -35,8 +35,8 @@ public class HeldItemRendererMixin {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z")
 	)
 	private boolean areStacksEqual(ItemStack original, ItemStack updated) {
-		if (updated.getItem().equals(original.getItem()) && updated.getItem() instanceof UpdateAnimationHandler) {
-			return !((UpdateAnimationHandler) updated.getItem()).shouldRunAnimationUpdate(original, updated);
+		if (updated.getItem().equals(original.getItem())) {
+			return !FabricItemUpdateAnimationHandlers.get(updated.getItem()).shouldRunAnimationUpdate(original, updated);
 		}
 
 		return ItemStack.areEqual(original, updated);

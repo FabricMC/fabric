@@ -31,8 +31,8 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.impl.item.group.CreativeGuiExtensions;
-import net.fabricmc.fabric.impl.item.group.FabricCreativeGuiComponents;
+import net.fabricmc.fabric.impl.client.item.group.CreativeGuiExtensions;
+import net.fabricmc.fabric.impl.client.item.group.FabricCreativeGuiComponents;
 
 @Mixin(CreativeInventoryScreen.class)
 public abstract class MixinCreativePlayerInventoryGui extends AbstractInventoryScreen implements CreativeGuiExtensions {
