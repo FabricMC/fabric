@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendering.v1;
+package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import java.util.function.Consumer;
+import java.util.Objects;
+import java.util.function.Function;
 
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
 import net.fabricmc.api.EnvType;
@@ -39,21 +41,41 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>For example, to register a feature renderer for a player model, the example below may used:
  * <blockquote><pre>
- * RegisterFeatureRendererCallback.EVENT.register((entityRenderer, acceptor) -> {
+ * RegisterFeatureRendererCallback.EVENT.register((entityType, entityRenderer, acceptor) -> {
  * 	if (entityRenderer instanceof PlayerEntityModel) {
  * 		acceptor.accept(new MyFeatureRenderer((PlayerEntityModel) entityRenderer));
- * 	}
+ *    }
  * });
  * </pre></blockquote>
  */
 @FunctionalInterface
 @Environment(EnvType.CLIENT)
 public interface RegisterFeatureRendererCallback {
-	Event<RegisterFeatureRendererCallback> EVENT = EventFactory.createArrayBacked(RegisterFeatureRendererCallback.class, callbacks -> (entityRenderer, acceptor) -> {
+	Event<RegisterFeatureRendererCallback> EVENT = EventFactory.createArrayBacked(RegisterFeatureRendererCallback.class, callbacks -> (entityType, entityRenderer, acceptor) -> {
 		for (RegisterFeatureRendererCallback callback : callbacks) {
-			callback.registerFeatureRenderers(entityRenderer, acceptor);
+			callback.registerFeatureRenderers(entityType, entityRenderer, acceptor);
 		}
 	});
 
-	void registerFeatureRenderers(LivingEntityRenderer<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> entityRenderer, Consumer<FeatureRenderer<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>>> acceptor);
+	/**
+	 * Called when feature renderers may be registered.
+	 *
+	 * @param entityType     the entity type of the renderer
+	 * @param entityRenderer the entity renderer
+	 * @param acceptor       the accepted used to register feature renderers
+	 */
+	void registerFeatureRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, FeatureAcceptor acceptor);
+
+	final class FeatureAcceptor {
+		private final Function<FeatureRenderer<?, ?>, Boolean> delegate;
+
+		public FeatureAcceptor(Function<FeatureRenderer<?, ?>, Boolean> delegate) {
+			this.delegate = delegate;
+		}
+
+		public <T extends LivingEntity, M extends EntityModel<T>, F extends FeatureRenderer<T, M>> boolean register(F featureRenderer) {
+			Objects.requireNonNull(featureRenderer, "Feature renderer cannot be null");
+			return this.delegate.apply(featureRenderer);
+		}
+	}
 }

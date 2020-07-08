@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.client.renderer.registry;
 
 import java.util.Map;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,20 +27,33 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.resource.ReloadableResourceManager;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.RegisterFeatureRendererCallback;
 
 @Mixin(EntityRenderDispatcher.class)
-public class MixinEntityRenderDispatcher {
+public abstract class MixinEntityRenderDispatcher {
 	@Shadow
-	Map<EntityType<?>, EntityRenderer<?>> renderers;
+	@Final
+	private Map<EntityType<?>, EntityRenderer<?>> renderers;
 
-	@Inject(method = "registerRenderers", at = @At(value = "RETURN"), require = 1)
-	public void on_method_23167(ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	@Inject(method = "registerRenderers", at = @At(value = "TAIL"))
+	public void onRegisterRenderers(ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
 		final EntityRenderDispatcher me = (EntityRenderDispatcher) (Object) this;
 		EntityRendererRegistry.INSTANCE.initialize(me, me.textureManager, manager, itemRenderer, renderers);
+
+		// Dispatch events to register feature renderers.
+		for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : this.renderers.entrySet()) {
+			if (entry.getValue() instanceof LivingEntityRenderer) { // Must be living for features
+				LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
+				RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegisterFeatureRendererCallback.FeatureAcceptor(accessor::callAddFeature));
+			}
+		}
 	}
 }
