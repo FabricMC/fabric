@@ -39,7 +39,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
-import net.minecraft.util.registry.RegistryTracker;
+import net.minecraft.class_5455;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
@@ -130,7 +130,7 @@ public class MixinLevelStorageSession {
 	}
 
 	@Inject(method = "method_27426", at = @At("HEAD"))
-	public void saveWorld(RegistryTracker registryTracker, SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
+	public void saveWorld(class_5455 registryTracker, SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!Files.exists(directory)) {
 			return;
 		}

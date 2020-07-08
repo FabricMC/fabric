@@ -14,14 +14,14 @@ rootProject.name = "fabric-api"
 
 include 'fabric-api-base'
 
-include 'fabric-biomes-v1'
+//include 'fabric-biomes-v1'
 include 'fabric-blockrenderlayer-v1'
 include 'fabric-commands-v0'
 include 'fabric-command-api-v1'
 include 'fabric-containers-v0'
 include 'fabric-content-registries-v0'
 include 'fabric-crash-report-info-v1'
-include 'fabric-dimensions-v1'
+//include 'fabric-dimensions-v1'
 include 'fabric-events-interaction-v0'
 include 'fabric-events-lifecycle-v0'
 include 'fabric-item-api-v1'

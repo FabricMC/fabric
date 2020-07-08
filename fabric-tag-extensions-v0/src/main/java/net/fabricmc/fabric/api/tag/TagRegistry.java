@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.tag;
 import java.util.function.Supplier;
 
 import net.minecraft.block.Block;
-import net.minecraft.class_5414;
+import net.minecraft.tag.TagGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
@@ -38,23 +38,23 @@ import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
 public final class TagRegistry {
 	private TagRegistry() { }
 
-	public static <T> Tag.Identified<T> create(Identifier id, Supplier<class_5414<T>> containerSupplier) {
+	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagGroup<T>> containerSupplier) {
 		return new TagDelegate<>(id, containerSupplier);
 	}
 
 	public static Tag<Block> block(Identifier id) {
-		return create(id, BlockTags::getContainer);
+		return create(id, BlockTags::getTagGroup);
 	}
 
 	public static Tag<EntityType<?>> entityType(Identifier id) {
-		return create(id, EntityTypeTags::getContainer);
+		return create(id, EntityTypeTags::getTagGroup);
 	}
 
 	public static Tag<Fluid> fluid(Identifier id) {
-		return create(id, FluidTags::getContainer);
+		return create(id, FluidTags::getTagGroup);
 	}
 
 	public static Tag<Item> item(Identifier id) {
-		return create(id, ItemTags::getContainer);
+		return create(id, ItemTags::getTagGroup);
 	}
 }
