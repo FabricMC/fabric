@@ -28,6 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -42,6 +43,10 @@ public abstract class MixinEntityRenderDispatcher {
 	@Final
 	private Map<EntityType<?>, EntityRenderer<?>> renderers;
 
+	@Shadow
+	@Final
+	private Map<String, PlayerEntityRenderer> modelRenderers;
+
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "registerRenderers", at = @At(value = "TAIL"))
 	public void onRegisterRenderers(ItemRenderer itemRenderer, ReloadableResourceManager manager, CallbackInfo info) {
@@ -54,6 +59,12 @@ public abstract class MixinEntityRenderDispatcher {
 				LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
 				RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegisterFeatureRendererCallback.FeatureAcceptor(accessor::callAddFeature));
 			}
+		}
+
+		// Players are a fun case, we need to do these separately.
+		for (Map.Entry<String, PlayerEntityRenderer> entry : this.modelRenderers.entrySet()) {
+			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
+			RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers(EntityType.PLAYER, entry.getValue(), new RegisterFeatureRendererCallback.FeatureAcceptor(accessor::callAddFeature));
 		}
 	}
 }
