@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 import java.util.function.Consumer;
 
 import net.minecraft.client.render.entity.LivingEntityRenderer;
+import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 
 import net.fabricmc.api.EnvType;
@@ -29,7 +30,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Called when {@link FeatureRenderer feature renderers} for a {@link LivingEntityRenderer living entity renderer} are registered.
  *
- * <p>Listeners should filter out the specific entity renderer they want to hook into, usually through {@code instanceof} checks.
+ * <p>Feature renderers are typically used for rendering additional objects on an entity, such as armor, an elytra or {@link Deadmau5FeatureRenderer Deadmau5's ears}.
+ * This callback lets developers add additional feature renderers for use in entity rendering.
+ * Listeners should filter out the specific entity renderer they want to hook into, usually through {@code instanceof} checks.
  * Once listeners find a suitable entity renderer, they should register their feature renderer via the acceptor.
  *
  * <p>For example, to register a feature renderer for a player model, the example below may used:
