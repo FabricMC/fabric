@@ -31,12 +31,12 @@ public final class ServerWorldEvents {
 	 */
 	public static final Event<Load> LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (server, world) -> {
 		for (Load callback : callbacks) {
-			callback.onWorldLoaded(server, world);
+			callback.onWorldLoad(server, world);
 		}
 	});
 
 	public interface Load {
-		void onWorldLoaded(MinecraftServer server, ServerWorld world);
+		void onWorldLoad(MinecraftServer server, ServerWorld world);
 	}
 
 	private ServerWorldEvents() {

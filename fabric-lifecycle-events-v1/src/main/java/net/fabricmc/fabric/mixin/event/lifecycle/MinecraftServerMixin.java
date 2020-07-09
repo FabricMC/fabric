@@ -95,7 +95,7 @@ public abstract class MinecraftServerMixin {
 	@Redirect(method = "createWorlds", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
 	private <K, V> V onLoadWorld(Map<K, V> worlds, K registryKey, V serverWorld) {
 		final V result = worlds.put(registryKey, serverWorld);
-		ServerWorldEvents.LOAD.invoker().onWorldLoaded((MinecraftServer) (Object) this, (ServerWorld) serverWorld);
+		ServerWorldEvents.LOAD.invoker().onWorldLoad((MinecraftServer) (Object) this, (ServerWorld) serverWorld);
 
 		return result;
 	}
