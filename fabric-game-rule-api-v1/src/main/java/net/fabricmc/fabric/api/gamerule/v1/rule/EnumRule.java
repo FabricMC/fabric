@@ -23,15 +23,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+import com.mojang.brigadier.context.CommandContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 
-public final class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> {
+public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E>> {
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
 	private final Class<E> classType;
@@ -55,6 +57,11 @@ public final class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> 
 		this.classType = value.getDeclaringClass();
 		this.value = value;
 		this.supportedValues = Collections.unmodifiableCollection(supportedValues);
+	}
+
+	@Override
+	protected void setFromArgument(CommandContext<ServerCommandSource> context, String name) {
+		// Do nothing. We use a different system for application with literals
 	}
 
 	@Override
@@ -99,7 +106,7 @@ public final class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> 
 
 	@Override
 	protected EnumRule<E> copy() {
-		return new EnumRule<E>(this.type, this.value, this.supportedValues);
+		return new EnumRule<>(this.type, this.value, this.supportedValues);
 	}
 
 	@Override
@@ -114,9 +121,7 @@ public final class EnumRule<E extends Enum<E>> extends LiteralRule<EnumRule<E>> 
 
 	public E cycle(E start) {
 		if (this.supportedValues.size() > 1) {
-			E value = getNext(this.supportedValues, start);
-
-			return value;
+			return getNext(this.supportedValues, start);
 		}
 
 		return start;

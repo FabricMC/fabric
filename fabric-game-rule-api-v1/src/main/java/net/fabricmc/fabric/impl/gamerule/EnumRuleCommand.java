@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.gamerule;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -26,9 +29,20 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
+import net.fabricmc.fabric.mixin.gamerule.GameRuleCommandAccessor;
 
-final class EnumRuleCommand {
-	public static <E extends Enum<E>> int executeEnumSet(CommandContext<ServerCommandSource> context, E value, GameRules.Key<EnumRule<E>> key) throws CommandSyntaxException {
+public final class EnumRuleCommand {
+	public static <E extends Enum<E>> void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.Key<EnumRule<E>> key, EnumRuleType<E> type) {
+		literalArgumentBuilder.then(literal(key.getName()).executes(context -> {
+			// We can use the vanilla query method
+			return GameRuleCommandAccessor.invokeExecuteQuery(context.getSource(), key);
+		}));
+
+		// The LiteralRuleType handles the executeSet
+		type.register(literalArgumentBuilder, key);
+	}
+
+	public static <E extends Enum<E>> int executeAndSetEnum(CommandContext<ServerCommandSource> context, E value, GameRules.Key<EnumRule<E>> key) throws CommandSyntaxException {
 		// Mostly copied from vanilla, but tweaked so we can use literals
 		ServerCommandSource serverCommandSource = context.getSource();
 		EnumRule<E> rule = serverCommandSource.getMinecraftServer().getGameRules().get(key);

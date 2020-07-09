@@ -22,6 +22,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +31,7 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 
-public final class EnumRuleType<E extends Enum<E>> extends LiteralRuleType<EnumRule<E>> {
+public final class EnumRuleType<E extends Enum<E>> extends GameRules.Type<EnumRule<E>> {
 	private final E[] supportedValues;
 
 	public EnumRuleType(Function<GameRules.Type<EnumRule<E>>, EnumRule<E>> ruleFactory, BiConsumer<MinecraftServer, EnumRule<E>> changeCallback, E[] supportedValues, GameRules.Acceptor<EnumRule<E>> acceptor) {
@@ -38,14 +39,19 @@ public final class EnumRuleType<E extends Enum<E>> extends LiteralRuleType<EnumR
 		this.supportedValues = supportedValues;
 	}
 
-	@Override
 	public void register(LiteralArgumentBuilder<ServerCommandSource> literalArgumentBuilder, GameRules.Key<EnumRule<E>> key) {
 		LiteralCommandNode<ServerCommandSource> ruleNode = literal(key.getName()).build();
 
 		for (E supportedValue : this.supportedValues) {
-			ruleNode.addChild(literal(supportedValue.toString()).executes(context -> EnumRuleCommand.executeEnumSet(context, supportedValue, key)).build());
+			ruleNode.addChild(literal(supportedValue.toString()).executes(context -> EnumRuleCommand.executeAndSetEnum(context, supportedValue, key)).build());
 		}
 
 		literalArgumentBuilder.then(ruleNode);
+	}
+
+	@Override
+	@Deprecated
+	public RequiredArgumentBuilder<ServerCommandSource, ?> argument(String name) {
+		return super.argument(name);
 	}
 }

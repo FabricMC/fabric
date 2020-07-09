@@ -23,15 +23,20 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 
 /**
- * An extended RuleTypeConsumer which supports Fabric's own rule types.
+ * An extended game rule visitor which supports Fabric's own rule types.
+ *
+ * <p>Rule type consumers are typically used iterating all game rules.
+ * In vanilla, the visitor is used to register game rule commands and populate the {@code Edit Game Rules} screen.
+ *
+ * <p>Rule types specified by this interface are not exhaustive, and new entries may be added in the future.
  */
-public interface FabricRuleTypeConsumer extends GameRules.TypeConsumer {
-	default void acceptDoubleRule(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
+public interface FabricGameRuleVisitor extends GameRules.TypeConsumer {
+	default void visitDouble(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
 	}
 
-	default void acceptFloatRule(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
+	default void visitFloat(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
 	}
 
-	default <E extends Enum<E>> void acceptEnumRule(GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
+	default <E extends Enum<E>> void visitEnum(GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
 	}
 }

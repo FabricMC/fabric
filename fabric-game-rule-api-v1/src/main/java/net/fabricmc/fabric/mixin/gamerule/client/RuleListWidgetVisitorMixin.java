@@ -30,7 +30,7 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.gamerule.v1.FabricRuleTypeConsumer;
+import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
@@ -40,29 +40,29 @@ import net.fabricmc.fabric.impl.gamerule.widget.FloatRuleWidget;
 
 @Environment(EnvType.CLIENT)
 @Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
-public abstract class RuleListWidgetRuleTypeConsumerMixin implements GameRules.TypeConsumer, FabricRuleTypeConsumer {
+public abstract class RuleListWidgetVisitorMixin implements GameRules.TypeConsumer, FabricGameRuleVisitor {
 	@Final
 	@Shadow
 	private EditGameRulesScreen field_24314;
 	@Shadow
-	protected abstract <T extends GameRules.Rule<T>> void createRuleWidget(GameRules.Key<T> key, EditGameRulesScreen.RuleWidgetFactory<T> ruleWidgetFactory); // createRuleWidget
+	protected abstract <T extends GameRules.Rule<T>> void createRuleWidget(GameRules.Key<T> key, EditGameRulesScreen.RuleWidgetFactory<T> ruleWidgetFactory);
 
 	@Override
-	public void acceptDoubleRule(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
+	public void visitDouble(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
 		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
 			return new DoubleRuleWidget(this.field_24314, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
-	public void acceptFloatRule(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
+	public void visitFloat(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
 		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
 			return new FloatRuleWidget(this.field_24314, name, description, ruleName, rule);
 		});
 	}
 
 	@Override
-	public <E extends Enum<E>> void acceptEnumRule(GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
+	public <E extends Enum<E>> void visitEnum(GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
 		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
 			return new EnumRuleWidget<>(this.field_24314, name, description, ruleName, rule, key.getTranslationKey());
 		});

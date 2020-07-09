@@ -107,7 +107,7 @@ public final class RuleFactory {
 				() -> DoubleArgumentType.doubleArg(lowerBound, upperBound),
 				type -> new DoubleRule(type, defaultValue, lowerBound, upperBound),
 				changedCallback,
-				RuleFactory::acceptDouble
+				RuleFactory::visitDouble
 		);
 	}
 
@@ -139,7 +139,7 @@ public final class RuleFactory {
 				() -> FloatArgumentType.floatArg(lowerBound, upperBound),
 				type -> new FloatRule(type, defaultValue, lowerBound, upperBound),
 				changedCallback,
-				RuleFactory::acceptFloat
+				RuleFactory::visitFloat
 		);
 	}
 
@@ -169,33 +169,33 @@ public final class RuleFactory {
 				type -> new EnumRule<>(type, defaultValue, supportedValues),
 				changedCallback,
 				supportedValues,
-				RuleFactory::acceptEnum
+				RuleFactory::visitEnum
 		);
 	}
 
-	// RULE ACCEPTORS
+	// RULE VISITORS
 
-	private static void acceptDouble(GameRules.TypeConsumer consumer, GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
-		if (consumer instanceof FabricRuleTypeConsumer) {
-			((FabricRuleTypeConsumer) consumer).acceptDoubleRule(key, type);
+	private static void visitDouble(GameRules.TypeConsumer visitor, GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
+		if (visitor instanceof FabricGameRuleVisitor) {
+			((FabricGameRuleVisitor) visitor).visitDouble(key, type);
 		}
 
-		// If we don't have a FabricTypeConsumer, do nothing
+		// do nothing otherwise
 	}
 
-	private static void acceptFloat(GameRules.TypeConsumer consumer, GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
-		if (consumer instanceof FabricRuleTypeConsumer) {
-			((FabricRuleTypeConsumer) consumer).acceptFloatRule(key, type);
+	private static void visitFloat(GameRules.TypeConsumer visitor, GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
+		if (visitor instanceof FabricGameRuleVisitor) {
+			((FabricGameRuleVisitor) visitor).visitFloat(key, type);
 		}
 
-		// If we don't have a FabricTypeConsumer, do nothing
+		// do nothing otherwise
 	}
 
-	private static <E extends Enum<E>> void acceptEnum(GameRules.TypeConsumer consumer, GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
-		if (consumer instanceof FabricRuleTypeConsumer) {
-			((FabricRuleTypeConsumer) consumer).acceptEnumRule(key, type);
+	private static <E extends Enum<E>> void visitEnum(GameRules.TypeConsumer visitor, GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
+		if (visitor instanceof FabricGameRuleVisitor) {
+			((FabricGameRuleVisitor) visitor).visitEnum(key, type);
 		}
 
-		// If we don't have a FabricTypeConsumer, do nothing
+		// do nothing otherwise
 	}
 }

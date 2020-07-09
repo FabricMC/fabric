@@ -26,20 +26,20 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.GameRules;
 
-import net.fabricmc.fabric.impl.gamerule.LiteralRuleCommand;
-import net.fabricmc.fabric.impl.gamerule.LiteralRuleType;
+import net.fabricmc.fabric.impl.gamerule.EnumRuleCommand;
+import net.fabricmc.fabric.impl.gamerule.EnumRuleType;
 
 @Mixin(targets = "net/minecraft/server/command/GameRuleCommand$1")
-public abstract class GameRuleCommandRuleConsumerMixin {
+public abstract class GameRuleCommandVisitorMixin {
 	@Shadow
 	private LiteralArgumentBuilder<ServerCommandSource> field_19419;
 
 	@Inject(at = @At("HEAD"), method = "accept(Lnet/minecraft/world/GameRules$Key;Lnet/minecraft/world/GameRules$Type;)V", cancellable = true)
 	private <T extends GameRules.Rule<T>> void onRegisterCommand(GameRules.Key<T> key, GameRules.Type<T> type, CallbackInfo ci) {
-		// Check if our type is a LiteralRuleType
-		if (type instanceof LiteralRuleType) {
+		// Check if our type is a EnumRuleType
+		if (type instanceof EnumRuleType) {
 			//noinspection rawtypes,unchecked
-			LiteralRuleCommand.register(this.field_19419, (GameRules.Key) key, (LiteralRuleType) type);
+			EnumRuleCommand.register(this.field_19419, (GameRules.Key) key, (EnumRuleType) type);
 			ci.cancel();
 		}
 	}

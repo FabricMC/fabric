@@ -6,8 +6,8 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-events-lifecycle-v0":"*",
     "fabric-game-rule-api-v1": "*",
+    "fabric-lifecycle-events-v1":"*",
     "fabric-resource-loader-v0": "*"
   },
   "entrypoints": {

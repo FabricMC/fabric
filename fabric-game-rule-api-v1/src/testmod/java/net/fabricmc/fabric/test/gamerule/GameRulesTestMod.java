@@ -34,7 +34,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.GameRules;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.server.ServerStartCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.gamerule.v1.RuleFactory;
@@ -90,7 +90,7 @@ public class GameRulesTestMod implements ModInitializer {
 		LOGGER.info("Loaded GameRules test mod.");
 
 		// Validate the EnumRule has registered it's commands
-		ServerStartCallback.EVENT.register(server -> {
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
 			RootCommandNode<ServerCommandSource> dispatcher = server.getCommandManager().getDispatcher().getRoot();
 			// Find the GameRule node
 			CommandNode<ServerCommandSource> gamerule = dispatcher.getChild("gamerule");
