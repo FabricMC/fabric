@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
-	private static boolean PRINT_CLIENT_BLOCKENTITY_MESSAGES = Boolean.parseBoolean(System.getProperty("fabric-lifecycle-events-testmod.printClientBlockEntityMessages", "false"));
+	private static boolean PRINT_CLIENT_BLOCKENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printClientBlockEntityMessages") != null;
 	private List<BlockEntity> clientBlockEntities = new ArrayList<>();
 	private int clientTicks;
 
