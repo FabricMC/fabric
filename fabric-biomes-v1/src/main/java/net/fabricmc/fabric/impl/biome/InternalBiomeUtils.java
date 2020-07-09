@@ -20,12 +20,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
 
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.gen.GeneratorOptions;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biome.DimensionOptionsAccessor;
+import net.fabricmc.fabric.mixin.biome.DimensionTypeAccessor;
 
 /**
  * Internal utilities used for biome sampling.
@@ -54,11 +58,11 @@ public final class InternalBiomeUtils {
 		if (mainBiomeId == secondaryBiomeId) { // for efficiency, determine if the ids are equal first
 			return false;
 		} else {
-			Biome secondaryBiome = Registry.BIOME.get(secondaryBiomeId);
-			Biome mainBiome = Registry.BIOME.get(mainBiomeId);
+			Biome secondaryBiome = BuiltinRegistries.BIOME.get(secondaryBiomeId);
+			Biome mainBiome = BuiltinRegistries.BIOME.get(mainBiomeId);
 
-			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(secondaryBiome.getParent())))) : true;
-			isUnsimilar = isUnsimilar && (mainBiome.hasParent() ? !(secondaryBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(mainBiome.getParent())))) : true);
+			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(new Identifier(secondaryBiome.getParent())))) : true;
+			isUnsimilar = isUnsimilar && (mainBiome.hasParent() ? !(secondaryBiomeId == BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(new Identifier(mainBiome.getParent())))) : true);
 
 			return isUnsimilar;
 		}
@@ -76,7 +80,7 @@ public final class InternalBiomeUtils {
 	}
 
 	private static boolean isOceanBiome(int id) {
-		Biome biome = Registry.BIOME.get(id);
+		Biome biome = BuiltinRegistries.BIOME.get(id);
 		return biome != null && biome.getCategory() == Biome.Category.OCEAN;
 	}
 
@@ -111,10 +115,10 @@ public final class InternalBiomeUtils {
 		VariantTransformer transformer = overworldVariantTransformers.get(existing);
 
 		if (transformer != null) {
-			return Registry.BIOME.getRawId(transformer.transformBiome(existing, random, climate));
+			return BuiltinRegistries.BIOME.getRawId(transformer.transformBiome(existing, random, climate));
 		}
 
-		return Registry.BIOME.getRawId(existing);
+		return BuiltinRegistries.BIOME.getRawId(existing);
 	}
 
 	public static void injectBiomesIntoClimate(LayerRandomnessSource random, int[] vanillaArray, OverworldClimate climate, IntConsumer result) {
@@ -134,7 +138,7 @@ public final class InternalBiomeUtils {
 		if (reqWeightSum < vanillaArray.length) {
 			// Vanilla biome; look it up from the vanilla array and transform accordingly.
 
-			result.accept(transformBiome(random, Registry.BIOME.get(vanillaArray[(int) reqWeightSum]), climate));
+			result.accept(transformBiome(random, BuiltinRegistries.BIOME.get(vanillaArray[(int) reqWeightSum]), climate));
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 
@@ -142,5 +146,9 @@ public final class InternalBiomeUtils {
 
 			result.accept(transformBiome(random, found.getBiome(), climate));
 		}
+	}
+
+	public static void recreateChunkGenerators(GeneratorOptions generatorOptions) {
+		((DimensionOptionsAccessor) (Object) generatorOptions.getDimensionMap().get(DimensionOptions.NETHER)).setChunkGenerator(DimensionTypeAccessor.createNetherGenerator(generatorOptions.getSeed()));
 	}
 }
