@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.biome",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AccessorDimensionOptions",
-    "AccessorDimensionType",
+    "DimensionOptionsAccessor",
+    "DimensionTypeAccessor",
     "MixinAddEdgeBiomesLayer",
     "MixinAddHillsLayer",
     "MixinAddRiversLayer",

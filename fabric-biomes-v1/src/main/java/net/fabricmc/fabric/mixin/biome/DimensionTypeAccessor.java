@@ -23,7 +23,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(DimensionType.class)
-public interface AccessorDimensionType {
+public interface DimensionTypeAccessor {
 	@Invoker("createNetherGenerator")
 	static ChunkGenerator createNetherGenerator(long seed) {
 		throw new UnsupportedOperationException();

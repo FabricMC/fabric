@@ -28,8 +28,8 @@ import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.GeneratorOptions;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.fabricmc.fabric.mixin.biome.AccessorDimensionOptions;
-import net.fabricmc.fabric.mixin.biome.AccessorDimensionType;
+import net.fabricmc.fabric.mixin.biome.DimensionOptionsAccessor;
+import net.fabricmc.fabric.mixin.biome.DimensionTypeAccessor;
 
 /**
  * Internal utilities used for biome sampling.
@@ -149,6 +149,6 @@ public final class InternalBiomeUtils {
 	}
 
 	public static void recreateChunkGenerators(GeneratorOptions generatorOptions) {
-		((AccessorDimensionOptions) (Object) generatorOptions.getDimensionMap().get(DimensionOptions.NETHER)).setChunkGenerator(AccessorDimensionType.createNetherGenerator(generatorOptions.getSeed()));
+		((DimensionOptionsAccessor) (Object) generatorOptions.getDimensionMap().get(DimensionOptions.NETHER)).setChunkGenerator(DimensionTypeAccessor.createNetherGenerator(generatorOptions.getSeed()));
 	}
 }

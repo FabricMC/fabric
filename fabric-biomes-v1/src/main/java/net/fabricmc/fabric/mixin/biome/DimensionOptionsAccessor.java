@@ -23,7 +23,7 @@ import net.minecraft.world.dimension.DimensionOptions;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
 @Mixin(DimensionOptions.class)
-public interface AccessorDimensionOptions {
+public interface DimensionOptionsAccessor {
 	@Accessor
 	void setChunkGenerator(ChunkGenerator generatorOptions);
 }
