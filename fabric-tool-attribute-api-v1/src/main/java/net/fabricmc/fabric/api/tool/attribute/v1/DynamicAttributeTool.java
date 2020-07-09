@@ -93,7 +93,7 @@ public interface DynamicAttributeTool {
 	/**
 	 * Post process the mining speed, this takes place after the mining speed has been calculated.
 	 *
-	 * <p>This allows bypassing the regular computation formula.<p/>
+	 * <p>This allows bypassing the regular computation formula.
 	 *
 	 * @param tag          The tool tag the item stack is handled by
 	 * @param state        The block to mine
