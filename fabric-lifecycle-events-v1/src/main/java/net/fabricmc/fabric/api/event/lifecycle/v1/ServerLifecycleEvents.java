@@ -78,35 +78,21 @@ public final class ServerLifecycleEvents {
 
 	/**
 	 * Called before a Minecraft server reloads data packs.
-	 *
-	 * <p>This event will be followed by {@link #END_DATA_PACK_RELOAD} if the reload was successful.
-	 * If the data pack reload failed, then {@link #DATA_PACK_RELOAD_FAIL} will be fired.
 	 */
-	public static final Event<BeforeDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(BeforeDataPackReload.class, callbacks -> (server, serverResourceManager) -> {
-		for (BeforeDataPackReload callback : callbacks) {
-			callback.beforeDataPackReload(server, serverResourceManager);
+	public static final Event<StartDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(StartDataPackReload.class, callbacks -> (server, serverResourceManager) -> {
+		for (StartDataPackReload callback : callbacks) {
+			callback.startDataPackReload(server, serverResourceManager);
 		}
 	});
 
 	/**
 	 * Called after a Minecraft server has reloaded data packs.
 	 *
-	 * <p>When this event is fired, the reloaded data packs will be applied.
+	 * <p>If reloading data packs was unsuccessful, the current data packs will be kept.
 	 */
-	public static final Event<AfterDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(AfterDataPackReload.class, callbacks -> (server, serverResourceManager) -> {
-		for (AfterDataPackReload callback : callbacks) {
-			callback.afterDataPackReload(server, serverResourceManager);
-		}
-	});
-
-	/**
-	 * Called when reloading data packs on a Minecraft server has failed.
-	 *
-	 * <p>When this event is fired, the currently loaded data packs will not be replaced.
-	 */
-	public static final Event<FailDataPackReload> DATA_PACK_RELOAD_FAIL = EventFactory.createArrayBacked(FailDataPackReload.class, callbacks -> (cause, server, serverResourceManager) -> {
-		for (FailDataPackReload callback : callbacks) {
-			callback.failDataPackReload(cause, server, serverResourceManager);
+	public static final Event<EndDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(EndDataPackReload.class, callbacks -> (server, serverResourceManager, success) -> {
+		for (EndDataPackReload callback : callbacks) {
+			callback.endDataPackReload(server, serverResourceManager, success);
 		}
 	});
 
@@ -126,15 +112,20 @@ public final class ServerLifecycleEvents {
 		void onServerStopped(MinecraftServer server);
 	}
 
-	public interface BeforeDataPackReload {
-		void beforeDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager);
+	public interface StartDataPackReload {
+		void startDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager);
 	}
 
-	public interface AfterDataPackReload {
-		void afterDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager);
-	}
-
-	public interface FailDataPackReload {
-		void failDataPackReload(Throwable cause, MinecraftServer server, ServerResourceManager serverResourceManager);
+	public interface EndDataPackReload {
+		/**
+		 * Called after data packs on a Minecraft server have been reloaded.
+		 *
+		 * <p>If the reload was not successful, the old data packs will be kept.
+		 *
+		 * @param server the server
+		 * @param serverResourceManager the server resource manager
+		 * @param success if the reload was successful
+		 */
+		void endDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager, boolean success);
 	}
 }
