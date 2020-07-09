@@ -41,13 +41,14 @@ import net.minecraft.server.world.ServerWorld;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
 	@Shadow
 	private ServerResourceManager serverResourceManager;
 
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "method_29741")
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;setupServer()Z"), method = "runServer")
 	private void beforeSetupServer(CallbackInfo info) {
 		ServerLifecycleEvents.SERVER_STARTING.invoker().onServerStarting((MinecraftServer) (Object) this);
 	}
@@ -94,23 +95,27 @@ public abstract class MinecraftServerMixin {
 	@Redirect(method = "createWorlds", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"))
 	private <K, V> V onLoadWorld(Map<K, V> worlds, K registryKey, V serverWorld) {
 		final V result = worlds.put(registryKey, serverWorld);
-		ServerLifecycleEvents.LOAD_WORLD.invoker().onWorldLoaded((MinecraftServer) (Object) this, (ServerWorld) serverWorld);
+		ServerWorldEvents.LOAD.invoker().onWorldLoaded((MinecraftServer) (Object) this, (ServerWorld) serverWorld);
 
 		return result;
 	}
 
 	@Inject(method = "reloadResources", at = @At("HEAD"))
 	private void beforeResourceReload(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
-		ServerLifecycleEvents.BEFORE_RESOURCE_RELOAD.invoker().beforeResourceReload((MinecraftServer) (Object) this, this.serverResourceManager);
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.invoker().beforeDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager);
 	}
 
 	@Inject(method = "method_29440(Ljava/util/Collection;Lnet/minecraft/resource/ServerResourceManager;)V", at = @At("TAIL"))
 	private void afterResourceReload(Collection<String> enabledPacks, ServerResourceManager serverResourceManager, CallbackInfo ci) {
-		ServerLifecycleEvents.AFTER_RESOURCE_RELOAD.invoker().afterResourceReload((MinecraftServer) (Object) this, this.serverResourceManager);
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.invoker().afterDataPackReload((MinecraftServer) (Object) this, this.serverResourceManager);
 	}
 
-	@Inject(method = "save", at = @At("HEAD"))
-	private void onSave(boolean bl, boolean flush, boolean bl3, CallbackInfoReturnable<Boolean> cir) {
-		ServerLifecycleEvents.SAVE.invoker().onSave((MinecraftServer) (Object) this, flush);
+	@Inject(method = "reloadResources", at = @At("TAIL"))
+	private void addResourceReloadFailureCallback(Collection<String> collection, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+		// Hook into fail
+		cir.getReturnValue().exceptionally(throwable -> {
+			ServerLifecycleEvents.DATA_PACK_RELOAD_FAIL.invoker().failDataPackReload(throwable, (MinecraftServer) (Object) this, this.serverResourceManager);
+			return null;
+		});
 	}
 }

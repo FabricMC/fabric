@@ -19,8 +19,6 @@ package net.fabricmc.fabric.api.event.lifecycle.v1;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.world.PersistentState;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -79,42 +77,36 @@ public final class ServerLifecycleEvents {
 	});
 
 	/**
-	 * Called when a world is loaded by a Minecraft server.
+	 * Called before a Minecraft server reloads data packs.
 	 *
-	 * <p>For example, this can be used to load world specific metadata or initialize a {@link PersistentState} on a server world.
+	 * <p>This event will be followed by {@link #END_DATA_PACK_RELOAD} if the reload was successful.
+	 * If the data pack reload failed, then {@link #DATA_PACK_RELOAD_FAIL} will be fired.
 	 */
-	public static final Event<LoadWorld> LOAD_WORLD = EventFactory.createArrayBacked(LoadWorld.class, callbacks -> (server, world) -> {
-		for (LoadWorld callback : callbacks) {
-			callback.onWorldLoaded(server, world);
+	public static final Event<BeforeDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(BeforeDataPackReload.class, callbacks -> (server, serverResourceManager) -> {
+		for (BeforeDataPackReload callback : callbacks) {
+			callback.beforeDataPackReload(server, serverResourceManager);
 		}
 	});
 
 	/**
-	 * Called before a Minecraft server reloads datapacks.
-	 */
-	public static final Event<BeforeResourceReload> BEFORE_RESOURCE_RELOAD = EventFactory.createArrayBacked(BeforeResourceReload.class, callbacks -> (server, serverResourceManager) -> {
-		for (BeforeResourceReload callback : callbacks) {
-			callback.beforeResourceReload(server, serverResourceManager);
-		}
-	});
-
-	/**
-	 * Called after a Minecraft server has reloaded datapacks.
-	 */
-	public static final Event<AfterResourceReload> AFTER_RESOURCE_RELOAD = EventFactory.createArrayBacked(AfterResourceReload.class, callbacks -> (server, serverResourceManager) -> {
-		for (AfterResourceReload callback : callbacks) {
-			callback.afterResourceReload(server, serverResourceManager);
-		}
-	});
-
-	/**
-	 * Called before a Minecraft server saves all worlds and world properties.
+	 * Called after a Minecraft server has reloaded data packs.
 	 *
-	 * <p>Mods can use this event to save cached data.
+	 * <p>When this event is fired, the reloaded data packs will be applied.
 	 */
-	public static final Event<Save> SAVE = EventFactory.createArrayBacked(Save.class, callbacks -> (server, flush) -> {
-		for (Save callback : callbacks) {
-			callback.onSave(server, flush);
+	public static final Event<AfterDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(AfterDataPackReload.class, callbacks -> (server, serverResourceManager) -> {
+		for (AfterDataPackReload callback : callbacks) {
+			callback.afterDataPackReload(server, serverResourceManager);
+		}
+	});
+
+	/**
+	 * Called when reloading data packs on a Minecraft server has failed.
+	 *
+	 * <p>When this event is fired, the currently loaded data packs will not be replaced.
+	 */
+	public static final Event<FailDataPackReload> DATA_PACK_RELOAD_FAIL = EventFactory.createArrayBacked(FailDataPackReload.class, callbacks -> (throwable, server, serverResourceManager) -> {
+		for (FailDataPackReload callback : callbacks) {
+			callback.failDataPackReload(throwable, server, serverResourceManager);
 		}
 	});
 
@@ -134,25 +126,15 @@ public final class ServerLifecycleEvents {
 		void onServerStopped(MinecraftServer server);
 	}
 
-	public interface LoadWorld {
-		void onWorldLoaded(MinecraftServer server, ServerWorld world);
+	public interface BeforeDataPackReload {
+		void beforeDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager);
 	}
 
-	public interface BeforeResourceReload {
-		void beforeResourceReload(MinecraftServer server, ServerResourceManager serverResourceManager);
+	public interface AfterDataPackReload {
+		void afterDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager);
 	}
 
-	public interface AfterResourceReload {
-		void afterResourceReload(MinecraftServer server, ServerResourceManager serverResourceManager);
-	}
-
-	public interface Save {
-		/**
-		 * Called before worlds and world properties are saved.
-		 *
-		 * @param server the server
-		 * @param flush specifies whether the worlds should unload all chunks, typically during shutdown
-		 */
-		void onSave(MinecraftServer server, boolean flush);
+	public interface FailDataPackReload {
+		void failDataPackReload(Throwable throwable, MinecraftServer server, ServerResourceManager serverResourceManager);
 	}
 }

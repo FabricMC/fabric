@@ -27,12 +27,17 @@ public class ServerResourceReloadTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerLifecycleEvents.BEFORE_RESOURCE_RELOAD.register((server, serverResourceManager) -> {
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, serverResourceManager) -> {
 			LOGGER.info("PREPARING FOR RELOAD");
 		});
 
-		ServerLifecycleEvents.AFTER_RESOURCE_RELOAD.register((server, serverResourceManager) -> {
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager) -> {
 			LOGGER.info("FINISHED RELOAD");
+		});
+
+		// Failure callback can be tested by trying to disable the vanilla datapack
+		ServerLifecycleEvents.DATA_PACK_RELOAD_FAIL.register((throwable, server, serverResourceManager) -> {
+			LOGGER.error("FAILED TO RELOAD");
 		});
 	}
 }
