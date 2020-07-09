@@ -168,7 +168,7 @@ public final class ToolManagerImpl {
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 */
 	//TODO: nullable on user once we have an official @Nullable annotation in
-	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, LivingEntity user, boolean current) {
+	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, LivingEntity user, boolean vanillaResult) {
 		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
 				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
@@ -180,7 +180,7 @@ public final class ToolManagerImpl {
 
 		EntryImpl entry = (EntryImpl) entryNullable(state.getBlock());
 
-		return (entry != null && entry.defaultValue.get()) || (entry == null && current);
+		return (entry != null && entry.defaultValue.get()) || (entry == null && vanillaResult);
 	}
 
 	public static float handleBreakingSpeedIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {

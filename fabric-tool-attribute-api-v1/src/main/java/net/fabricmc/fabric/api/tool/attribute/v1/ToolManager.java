@@ -45,11 +45,11 @@ public final class ToolManager {
 	 * @param state the block state to break
 	 * @param stack the item stack involved with breaking the block
 	 * @param user  the user involved in breaking the block, null if not applicable.
-	 * @param current whether the tool is considered effective by vanilla
+	 * @param vanillaResult whether the tool is considered effective by vanilla
 	 * @return whether the tool is effective
 	 */
-	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user, boolean current) {
-		return ToolManagerImpl.handleIsEffectiveOnIgnoresVanilla(state, stack, user, current);
+	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user, boolean vanillaResult) {
+		return ToolManagerImpl.handleIsEffectiveOnIgnoresVanilla(state, stack, user, vanillaResult);
 	}
 
 	/**
