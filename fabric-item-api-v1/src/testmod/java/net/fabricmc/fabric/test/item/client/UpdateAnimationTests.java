@@ -30,11 +30,10 @@ import net.fabricmc.fabric.test.item.client.item.UpdatingItem;
 public class UpdateAnimationTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		Item oldItem = Registry.register(Registry.ITEM, new Identifier("fabrictest", "old"), new UpdatingItem(new Item.Settings()));
 		Item patchedItem = Registry.register(Registry.ITEM, new Identifier("fabrictest", "patched"), new UpdatingItem(new Item.Settings()));
-		Item originalItem = Registry.register(Registry.ITEM, new Identifier("fabrictest", "original"), new UpdatingItem(new Item.Settings()));
-		Item defaultItem = Registry.register(Registry.ITEM, new Identifier("fabrictest", "default"), new Item(new Item.Settings()));
 
-		FabricItemUpdateAnimationHandlers.register(patchedItem, (original, result) -> false);
-		FabricItemUpdateAnimationHandlers.register(defaultItem, (original, result) -> true);
+		FabricItemUpdateAnimationHandlers.register(oldItem, (originalStack, resultStack) -> true);
+		FabricItemUpdateAnimationHandlers.register(patchedItem, (originalStack, resultStack) -> false);
 	}
 }
