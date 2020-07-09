@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 /**
  * An extended game rule visitor which supports Fabric's own rule types.
  *
- * <p>Rule type consumers are typically used iterating all game rules.
+ * <p>Game rule visitors are typically used iterating all game rules.
  * In vanilla, the visitor is used to register game rule commands and populate the {@code Edit Game Rules} screen.
  *
  * <p>Rule types specified by this interface are not exhaustive, and new entries may be added in the future.
