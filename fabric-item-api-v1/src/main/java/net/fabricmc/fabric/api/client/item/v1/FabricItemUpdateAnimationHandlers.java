@@ -7,6 +7,10 @@ import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
 public class FabricItemUpdateAnimationHandlers {
 	private static final Map<Item, UpdateAnimationHandler> handlers = new HashMap<>();
 	private static final UpdateAnimationHandler DEFAULT = (original, updated) -> true;
