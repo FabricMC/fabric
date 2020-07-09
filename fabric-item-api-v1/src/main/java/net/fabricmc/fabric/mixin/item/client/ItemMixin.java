@@ -17,23 +17,25 @@
 package net.fabricmc.fabric.mixin.item.client;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
-import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerAccessor;
+import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerExtensions;
 
 @Mixin(Item.class)
-public class ItemMixin implements ItemUpdateAnimationHandlerAccessor {
+public class ItemMixin implements ItemUpdateAnimationHandlerExtensions {
+	@Unique
 	private UpdateAnimationHandler fabric_updateAnimationHandler = null;
 
 	@Override
-	public UpdateAnimationHandler get() {
+	public UpdateAnimationHandler fabric_getUpdateAnimationHandler() {
 		return fabric_updateAnimationHandler;
 	}
 
 	@Override
-	public void set(UpdateAnimationHandler handler) {
+	public void fabric_setUpdateAnimationHandler(UpdateAnimationHandler handler) {
 		this.fabric_updateAnimationHandler = handler;
 	}
 }

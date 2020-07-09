@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client;
 
 import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
 
-public interface ItemUpdateAnimationHandlerAccessor {
-	UpdateAnimationHandler get();
-	void set(UpdateAnimationHandler handler);
+public interface ItemUpdateAnimationHandlerExtensions {
+	UpdateAnimationHandler fabric_getUpdateAnimationHandler();
+	void fabric_setUpdateAnimationHandler(UpdateAnimationHandler handler);
 }

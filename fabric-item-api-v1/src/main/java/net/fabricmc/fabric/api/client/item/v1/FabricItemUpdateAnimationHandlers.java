@@ -22,20 +22,20 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerAccessor;
+import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerExtensions;
 
 @Environment(EnvType.CLIENT)
 public class FabricItemUpdateAnimationHandlers {
 	public static void register(Item item, UpdateAnimationHandler handler) {
-		if (((ItemUpdateAnimationHandlerAccessor) item).get() != null) {
+		if (((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler() != null) {
 			Identifier registryID = Registry.ITEM.getId(item);
 			throw new UnsupportedOperationException(String.format("Attempted to register an Item Update Animation Handler for %s, but one was already registered!", registryID.toString()));
 		} else {
-			((ItemUpdateAnimationHandlerAccessor) item).set(handler);
+			((ItemUpdateAnimationHandlerExtensions) item).fabric_setUpdateAnimationHandler(handler);
 		}
 	}
 
 	public static UpdateAnimationHandler get(Item item) {
-		return ((ItemUpdateAnimationHandlerAccessor) item).get();
+		return ((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler();
 	}
 }
