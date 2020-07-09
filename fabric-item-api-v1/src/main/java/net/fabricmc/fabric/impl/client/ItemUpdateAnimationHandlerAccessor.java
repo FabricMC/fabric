@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.item.group;
+package net.fabricmc.fabric.impl.client;
 
-public interface CreativeGuiExtensions {
-	void fabric_nextPage();
+import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
 
-	void fabric_previousPage();
-
-	int fabric_currentPage();
-
-	boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type);
-
-	boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type);
+public interface ItemUpdateAnimationHandlerAccessor {
+	UpdateAnimationHandler get();
+	void set(UpdateAnimationHandler handler);
 }

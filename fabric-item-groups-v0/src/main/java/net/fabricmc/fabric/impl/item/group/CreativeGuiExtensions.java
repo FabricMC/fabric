@@ -14,8 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.item.group;
+package net.fabricmc.fabric.impl.item.group;
 
-public interface ItemGroupExtensions {
-	void fabric_expandArray();
+public interface CreativeGuiExtensions {
+	void fabric_nextPage();
+
+	void fabric_previousPage();
+
+	int fabric_currentPage();
+
+	boolean fabric_isButtonVisible(FabricCreativeGuiComponents.Type type);
+
+	boolean fabric_isButtonEnabled(FabricCreativeGuiComponents.Type type);
 }

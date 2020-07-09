@@ -3,8 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.item",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "client.HeldItemRendererMixin",
     "client.ItemStackMixin",
-    "client.HeldItemRendererMixin"
+    "client.ItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

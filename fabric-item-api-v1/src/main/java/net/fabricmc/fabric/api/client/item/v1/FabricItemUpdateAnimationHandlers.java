@@ -16,31 +16,26 @@
 
 package net.fabricmc.fabric.api.client.item.v1;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerAccessor;
 
 @Environment(EnvType.CLIENT)
 public class FabricItemUpdateAnimationHandlers {
-	private static final Map<Item, UpdateAnimationHandler> handlers = new HashMap<>();
-	private static final UpdateAnimationHandler DEFAULT = (original, updated) -> true;
-
 	public static void register(Item item, UpdateAnimationHandler handler) {
-		if (handlers.containsKey(item)) {
+		if (((ItemUpdateAnimationHandlerAccessor) item).get() != null) {
 			Identifier registryID = Registry.ITEM.getId(item);
 			throw new UnsupportedOperationException(String.format("Attempted to register an Item Update Animation Handler for %s, but one was already registered!", registryID.toString()));
 		} else {
-			handlers.put(item, handler);
+			((ItemUpdateAnimationHandlerAccessor) item).set(handler);
 		}
 	}
 
 	public static UpdateAnimationHandler get(Item item) {
-		return handlers.getOrDefault(item, DEFAULT);
+		return ((ItemUpdateAnimationHandlerAccessor) item).get();
 	}
 }

@@ -14,31 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.item.group;
+package net.fabricmc.fabric.mixin.item.client;
 
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
-import org.spongepowered.asm.mixin.Shadow;
 
-import net.minecraft.item.ItemGroup;
+import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
+import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
+import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerAccessor;
 
-@Mixin(ItemGroup.class)
-public abstract class MixinItemGroup implements ItemGroupExtensions {
-	@Shadow
-	@Final
-	@Mutable
-	public static ItemGroup[] GROUPS;
+@Mixin(Item.class)
+public class ItemMixin implements ItemUpdateAnimationHandlerAccessor {
+	private UpdateAnimationHandler fabric_updateAnimationHandler = null;
 
 	@Override
-	public void fabric_expandArray() {
-		ItemGroup[] tempGroups = GROUPS;
-		GROUPS = new ItemGroup[GROUPS.length + 1];
+	public UpdateAnimationHandler get() {
+		return fabric_updateAnimationHandler;
+	}
 
-		for (int i = 0; i < tempGroups.length; i++) {
-			GROUPS[i] = tempGroups[i];
-		}
+	@Override
+	public void set(UpdateAnimationHandler handler) {
+		this.fabric_updateAnimationHandler = handler;
 	}
 }

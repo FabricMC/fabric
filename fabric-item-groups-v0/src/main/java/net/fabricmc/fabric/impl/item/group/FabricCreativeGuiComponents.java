@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.item.group;
+package net.fabricmc.fabric.impl.item.group;
 
 import java.util.HashSet;
 import java.util.Set;

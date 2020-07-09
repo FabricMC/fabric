@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.item.v1.FabricItemUpdateAnimationHandlers;
+import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
 
 @Environment(EnvType.CLIENT)
 @Mixin(HeldItemRenderer.class)
@@ -36,7 +37,11 @@ public class HeldItemRendererMixin {
 	)
 	private boolean areStacksEqual(ItemStack original, ItemStack updated) {
 		if (updated.getItem().equals(original.getItem())) {
-			return !FabricItemUpdateAnimationHandlers.get(updated.getItem()).shouldRunAnimationUpdate(original, updated);
+			UpdateAnimationHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(updated.getItem());
+
+			if (updateAnimationHandler != null) {
+				return !updateAnimationHandler.shouldRunAnimationUpdate(original, updated);
+			}
 		}
 
 		return ItemStack.areEqual(original, updated);
