@@ -31,6 +31,12 @@ public final class CustomGameRuleCategory {
 	private final Identifier id;
 	private final Text name;
 
+	/**
+	 * Creates a custom game rule category.
+	 *
+	 * @param id the id of this category
+	 * @param name the name of this category
+	 */
 	public CustomGameRuleCategory(Identifier id, Text name) {
 		this.id = id;
 		this.name = name;

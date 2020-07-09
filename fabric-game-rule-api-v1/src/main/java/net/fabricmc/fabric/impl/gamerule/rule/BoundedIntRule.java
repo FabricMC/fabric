@@ -29,21 +29,21 @@ import net.fabricmc.fabric.mixin.gamerule.IntRuleAccessor;
 public final class BoundedIntRule extends GameRules.IntRule {
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
-	private final int lowerBound;
-	private final int upperBound;
+	private final int minimumValue;
+	private final int maximumValue;
 
-	public BoundedIntRule(GameRules.Type<GameRules.IntRule> type, int initialValue, int lowerBound, int upperBound) {
+	public BoundedIntRule(GameRules.Type<GameRules.IntRule> type, int initialValue, int minimumValue, int maximumValue) {
 		super(type, initialValue);
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.minimumValue = minimumValue;
+		this.maximumValue = maximumValue;
 	}
 
 	@Override
 	protected void deserialize(String value) {
 		final int i = BoundedIntRule.parseInt(value);
 
-		if (this.lowerBound > i || this.upperBound < i) {
-			LOGGER.warn("Failed to parse integer {}. Was out of bounds {} - {}", value, this.lowerBound, this.upperBound);
+		if (this.minimumValue > i || this.maximumValue < i) {
+			LOGGER.warn("Failed to parse integer {}. Was out of bounds {} - {}", value, this.minimumValue, this.maximumValue);
 			return;
 		}
 
@@ -56,7 +56,7 @@ public final class BoundedIntRule extends GameRules.IntRule {
 		try {
 			int value = Integer.parseInt(input);
 
-			if (this.lowerBound > value || this.upperBound < value) {
+			if (this.minimumValue > value || this.maximumValue < value) {
 				return false;
 			}
 
@@ -69,7 +69,7 @@ public final class BoundedIntRule extends GameRules.IntRule {
 
 	@Override
 	protected GameRules.IntRule copy() {
-		return new BoundedIntRule(this.type, ((IntRuleAccessor) (Object) this).getValue(), this.lowerBound, this.upperBound);
+		return new BoundedIntRule(this.type, ((IntRuleAccessor) (Object) this).getValue(), this.minimumValue, this.maximumValue);
 	}
 
 	private static int parseInt(String input) {

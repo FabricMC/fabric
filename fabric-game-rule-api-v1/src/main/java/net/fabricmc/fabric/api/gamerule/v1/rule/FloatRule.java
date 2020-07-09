@@ -29,19 +29,19 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 public final class FloatRule extends GameRules.Rule<FloatRule> implements ValidateableRule {
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
-	private final float lowerBound;
-	private final float upperBound;
+	private final float minimumValue;
+	private final float maximumValue;
 	private float value;
 
 	/**
-	 * You should not be calling this constructor!
+	 * @deprecated You should not be calling this constructor!
 	 */
 	@Deprecated
-	public FloatRule(GameRules.Type<FloatRule> type, float value, float lowerBound, float upperBound) {
+	public FloatRule(GameRules.Type<FloatRule> type, float value, float minimumValue, float maximumValue) {
 		super(type);
 		this.value = value;
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.minimumValue = minimumValue;
+		this.maximumValue = maximumValue;
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public final class FloatRule extends GameRules.Rule<FloatRule> implements Valida
 	protected void deserialize(String value) {
 		final float f = FloatRule.parseFloat(value);
 
-		if (this.lowerBound > f || this.upperBound < f) {
-			LOGGER.warn("Failed to parse float {}. Was out of bounds {} - {}", value, this.lowerBound, this.upperBound);
+		if (this.minimumValue > f || this.maximumValue < f) {
+			LOGGER.warn("Failed to parse float {}. Was out of bounds {} - {}", value, this.minimumValue, this.maximumValue);
 			return;
 		}
 
@@ -90,7 +90,7 @@ public final class FloatRule extends GameRules.Rule<FloatRule> implements Valida
 
 	@Override
 	protected FloatRule copy() {
-		return new FloatRule(this.type, this.value, this.lowerBound, this.upperBound);
+		return new FloatRule(this.type, this.value, this.minimumValue, this.maximumValue);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public final class FloatRule extends GameRules.Rule<FloatRule> implements Valida
 		try {
 			final float f = Float.parseFloat(value);
 
-			return !(this.lowerBound > f) && !(this.upperBound < f);
+			return !(this.minimumValue > f) && !(this.maximumValue < f);
 		} catch (NumberFormatException ignored) {
 			return false;
 		}

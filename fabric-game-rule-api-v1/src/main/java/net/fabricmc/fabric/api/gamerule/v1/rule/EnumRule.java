@@ -41,7 +41,7 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 	private E value;
 
 	/**
-	 * You should not be calling this constructor!
+	 * @deprecated You should not be calling this constructor!
 	 */
 	@Deprecated
 	public EnumRule(GameRules.Type<EnumRule<E>> type, E value, E[] supportedValues) {

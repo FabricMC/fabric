@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.gamerule.v1.rule;
 
 /**
- * Represents a type of game rule which can validate an input.
+ * A type of game rule which can validate an input.
  * This can be used to enforce syntax or clamp values.
  */
 public interface ValidateableRule {

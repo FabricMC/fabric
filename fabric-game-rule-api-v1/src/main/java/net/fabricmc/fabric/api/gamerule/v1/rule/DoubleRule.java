@@ -29,19 +29,19 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 public final class DoubleRule extends GameRules.Rule<DoubleRule> implements ValidateableRule {
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
-	private final double lowerBound;
-	private final double upperBound;
+	private final double minimumValue;
+	private final double maximumValue;
 	private double value;
 
 	/**
-	 * You should not be calling this constructor!
+	 * @deprecated You should not be calling this constructor!
 	 */
 	@Deprecated
-	public DoubleRule(GameRules.Type<DoubleRule> type, double value, double lowerBound, double upperBound) {
+	public DoubleRule(GameRules.Type<DoubleRule> type, double value, double minimumValue, double maximumValue) {
 		super(type);
 		this.value = value;
-		this.lowerBound = lowerBound;
-		this.upperBound = upperBound;
+		this.minimumValue = minimumValue;
+		this.maximumValue = maximumValue;
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 	protected void deserialize(String value) {
 		final double d = DoubleRule.parseDouble(value);
 
-		if (this.lowerBound > d || this.upperBound < d) {
-			LOGGER.warn("Failed to parse double {}. Was out of bounds {} - {}", value, this.lowerBound, this.upperBound);
+		if (this.minimumValue > d || this.maximumValue < d) {
+			LOGGER.warn("Failed to parse double {}. Was out of bounds {} - {}", value, this.minimumValue, this.maximumValue);
 			return;
 		}
 
@@ -90,7 +90,7 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 
 	@Override
 	protected DoubleRule copy() {
-		return new DoubleRule(this.type, this.value, this.lowerBound, this.upperBound);
+		return new DoubleRule(this.type, this.value, this.minimumValue, this.maximumValue);
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 		try {
 			final double d = Double.parseDouble(value);
 
-			return !(this.lowerBound > d) && !(this.upperBound < d);
+			return !(this.minimumValue > d) && !(this.maximumValue < d);
 		} catch (NumberFormatException ignored) {
 			return false;
 		}

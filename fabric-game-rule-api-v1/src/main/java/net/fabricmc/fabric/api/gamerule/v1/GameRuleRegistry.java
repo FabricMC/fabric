@@ -21,6 +21,13 @@ import net.minecraft.world.GameRules;
 import net.fabricmc.fabric.impl.gamerule.RuleKeyInternals;
 import net.fabricmc.fabric.mixin.gamerule.GameRulesAccessor;
 
+/**
+ * A utility class which allows for registration of game rules.
+ *
+ * <p>Creation of rule types is done using {@link GameRuleFactory}.
+ *
+ * @see GameRuleFactory
+ */
 public final class GameRuleRegistry {
 	private GameRuleRegistry() {
 	}
@@ -56,12 +63,12 @@ public final class GameRuleRegistry {
 	}
 
 	/**
-	 * Checks if a name for a rule is already registered.
+	 * Checks if a name for a game rule is already registered.
 	 *
 	 * @param ruleName the rule name to test
 	 * @return true if the name is taken.
 	 */
-	public static boolean isRegistered(String ruleName) {
+	public static boolean hasRegistration(String ruleName) {
 		return GameRulesAccessor.getRuleTypes().keySet().stream().anyMatch(key -> key.getName().equals(ruleName));
 	}
 }
