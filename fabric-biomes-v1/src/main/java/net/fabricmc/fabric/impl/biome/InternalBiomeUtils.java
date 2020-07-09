@@ -24,8 +24,12 @@ import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.gen.GeneratorOptions;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biome.AccessorDimensionOptions;
+import net.fabricmc.fabric.mixin.biome.AccessorDimensionType;
 
 /**
  * Internal utilities used for biome sampling.
@@ -142,5 +146,9 @@ public final class InternalBiomeUtils {
 
 			result.accept(transformBiome(random, found.getBiome(), climate));
 		}
+	}
+
+	public static void recreateChunkGenerators(GeneratorOptions generatorOptions) {
+		((AccessorDimensionOptions) (Object) generatorOptions.getDimensionMap().get(DimensionOptions.NETHER)).setChunkGenerator(AccessorDimensionType.createNetherGenerator(generatorOptions.getSeed()));
 	}
 }
