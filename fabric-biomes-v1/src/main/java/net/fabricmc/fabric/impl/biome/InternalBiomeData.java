@@ -28,7 +28,7 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.class_5458;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
@@ -178,7 +178,7 @@ public final class InternalBiomeData {
 
 			if (defaultHill != null) {
 				picker.addBiome(defaultHill, 1);
-			} else if (BiomeLayers.areSimilar(class_5458.field_25933.getRawId(base), class_5458.field_25933.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
+			} else if (BiomeLayers.areSimilar(BuiltinRegistries.BIOME.getRawId(base), BuiltinRegistries.BIOME.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
 				picker.addBiome(Biomes.BADLANDS, 1);
 			} else if (base == Biomes.DEEP_OCEAN || base == Biomes.DEEP_LUKEWARM_OCEAN || base == Biomes.DEEP_COLD_OCEAN) {
 				picker.addBiome(Biomes.PLAINS, 1);
