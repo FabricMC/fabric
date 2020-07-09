@@ -36,7 +36,7 @@ public class ServerResourceReloadTests implements ModInitializer {
 		});
 
 		// Failure callback can be tested by trying to disable the vanilla datapack
-		ServerLifecycleEvents.DATA_PACK_RELOAD_FAIL.register((throwable, server, serverResourceManager) -> {
+		ServerLifecycleEvents.DATA_PACK_RELOAD_FAIL.register((cause, server, serverResourceManager) -> {
 			LOGGER.error("FAILED TO RELOAD");
 		});
 	}

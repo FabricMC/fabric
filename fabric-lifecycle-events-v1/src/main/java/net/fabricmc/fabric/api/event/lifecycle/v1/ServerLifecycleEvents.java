@@ -104,9 +104,9 @@ public final class ServerLifecycleEvents {
 	 *
 	 * <p>When this event is fired, the currently loaded data packs will not be replaced.
 	 */
-	public static final Event<FailDataPackReload> DATA_PACK_RELOAD_FAIL = EventFactory.createArrayBacked(FailDataPackReload.class, callbacks -> (throwable, server, serverResourceManager) -> {
+	public static final Event<FailDataPackReload> DATA_PACK_RELOAD_FAIL = EventFactory.createArrayBacked(FailDataPackReload.class, callbacks -> (cause, server, serverResourceManager) -> {
 		for (FailDataPackReload callback : callbacks) {
-			callback.failDataPackReload(throwable, server, serverResourceManager);
+			callback.failDataPackReload(cause, server, serverResourceManager);
 		}
 	});
 
@@ -135,6 +135,6 @@ public final class ServerLifecycleEvents {
 	}
 
 	public interface FailDataPackReload {
-		void failDataPackReload(Throwable throwable, MinecraftServer server, ServerResourceManager serverResourceManager);
+		void failDataPackReload(Throwable cause, MinecraftServer server, ServerResourceManager serverResourceManager);
 	}
 }
