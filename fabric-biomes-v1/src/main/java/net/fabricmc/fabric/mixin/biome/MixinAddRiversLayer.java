@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.registry.Registry;
+import net.minecraft.class_5458;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddRiversLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
@@ -46,14 +46,14 @@ public class MixinAddRiversLayer {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler landSampler, LayerSampler riverSampler, int x, int z, CallbackInfoReturnable<Integer> info) {
 		int landBiomeId = landSampler.sample(x, z);
-		Biome landBiome = Registry.BIOME.get(landBiomeId);
+		Biome landBiome = class_5458.field_25933.get(landBiomeId);
 
 		int riverBiomeId = riverSampler.sample(x, z);
 		Map<Biome, Biome> overworldRivers = InternalBiomeData.getOverworldRivers();
 
 		if (overworldRivers.containsKey(landBiome) && riverBiomeId == RIVER_ID) {
 			Biome riverBiome = overworldRivers.get(landBiome);
-			info.setReturnValue(riverBiome == null ? landBiomeId : Registry.BIOME.getRawId(riverBiome));
+			info.setReturnValue(riverBiome == null ? landBiomeId : class_5458.field_25933.getRawId(riverBiome));
 		}
 	}
 }

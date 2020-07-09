@@ -24,10 +24,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.registry.Registry;
+import net.minecraft.class_5458;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
@@ -96,7 +96,7 @@ public class MixinSetBaseBiomesLayer {
 	@Inject(at = @At("RETURN"), method = "sample", cancellable = true)
 	private void transformVariants(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int biomeId = info.getReturnValueI();
-		Biome biome = Registry.BIOME.get(biomeId);
+		Biome biome = class_5458.field_25933.get(biomeId);
 
 		// Determine what special case this is...
 		OverworldClimate climate;

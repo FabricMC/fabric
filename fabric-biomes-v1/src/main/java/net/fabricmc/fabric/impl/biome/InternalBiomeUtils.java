@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
 
+import net.minecraft.class_5458;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -54,11 +54,11 @@ public final class InternalBiomeUtils {
 		if (mainBiomeId == secondaryBiomeId) { // for efficiency, determine if the ids are equal first
 			return false;
 		} else {
-			Biome secondaryBiome = Registry.BIOME.get(secondaryBiomeId);
-			Biome mainBiome = Registry.BIOME.get(mainBiomeId);
+			Biome secondaryBiome = class_5458.field_25933.get(secondaryBiomeId);
+			Biome mainBiome = class_5458.field_25933.get(mainBiomeId);
 
-			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(secondaryBiome.getParent())))) : true;
-			isUnsimilar = isUnsimilar && (mainBiome.hasParent() ? !(secondaryBiomeId == Registry.BIOME.getRawId(Registry.BIOME.get(new Identifier(mainBiome.getParent())))) : true);
+			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == class_5458.field_25933.getRawId(class_5458.field_25933.get(new Identifier(secondaryBiome.getParent())))) : true;
+			isUnsimilar = isUnsimilar && (mainBiome.hasParent() ? !(secondaryBiomeId == class_5458.field_25933.getRawId(class_5458.field_25933.get(new Identifier(mainBiome.getParent())))) : true);
 
 			return isUnsimilar;
 		}
@@ -76,7 +76,7 @@ public final class InternalBiomeUtils {
 	}
 
 	private static boolean isOceanBiome(int id) {
-		Biome biome = Registry.BIOME.get(id);
+		Biome biome = class_5458.field_25933.get(id);
 		return biome != null && biome.getCategory() == Biome.Category.OCEAN;
 	}
 
@@ -111,10 +111,10 @@ public final class InternalBiomeUtils {
 		VariantTransformer transformer = overworldVariantTransformers.get(existing);
 
 		if (transformer != null) {
-			return Registry.BIOME.getRawId(transformer.transformBiome(existing, random, climate));
+			return class_5458.field_25933.getRawId(transformer.transformBiome(existing, random, climate));
 		}
 
-		return Registry.BIOME.getRawId(existing);
+		return class_5458.field_25933.getRawId(existing);
 	}
 
 	public static void injectBiomesIntoClimate(LayerRandomnessSource random, int[] vanillaArray, OverworldClimate climate, IntConsumer result) {
@@ -134,7 +134,7 @@ public final class InternalBiomeUtils {
 		if (reqWeightSum < vanillaArray.length) {
 			// Vanilla biome; look it up from the vanilla array and transform accordingly.
 
-			result.accept(transformBiome(random, Registry.BIOME.get(vanillaArray[(int) reqWeightSum]), climate));
+			result.accept(transformBiome(random, class_5458.field_25933.get(vanillaArray[(int) reqWeightSum]), climate));
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 

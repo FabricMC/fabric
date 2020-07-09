@@ -28,7 +28,7 @@ import java.util.Set;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.util.registry.Registry;
+import net.minecraft.class_5458;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
@@ -50,6 +50,7 @@ public final class InternalBiomeData {
 	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
 
 	private static final Set<Biome> NETHER_BIOMES = new HashSet<>();
+	private static final Map<Biome, Biome.MixedNoisePoint> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
 
 	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
 
@@ -126,9 +127,11 @@ public final class InternalBiomeData {
 		}
 	}
 
-	public static void addNetherBiome(Biome biome) {
+	public static void addNetherBiome(Biome biome, Biome.MixedNoisePoint spawnNoisePoint) {
 		Preconditions.checkArgument(biome != null, "Biome is null");
+		Preconditions.checkArgument(spawnNoisePoint != null, "Biome.MixedNoisePoint is null");
 		NETHER_BIOMES.add(biome);
+		NETHER_BIOME_NOISE_POINTS.put(biome, spawnNoisePoint);
 	}
 
 	public static Set<Biome> getSpawnBiomes() {
@@ -163,6 +166,10 @@ public final class InternalBiomeData {
 		return Collections.unmodifiableSet(NETHER_BIOMES);
 	}
 
+	public static Map<Biome, Biome.MixedNoisePoint> getNetherBiomeNoisePoints() {
+		return NETHER_BIOME_NOISE_POINTS;
+	}
+
 	private static class DefaultHillsData {
 		private static final ImmutableMap<Biome, Biome> DEFAULT_HILLS;
 
@@ -171,7 +178,7 @@ public final class InternalBiomeData {
 
 			if (defaultHill != null) {
 				picker.addBiome(defaultHill, 1);
-			} else if (BiomeLayers.areSimilar(Registry.BIOME.getRawId(base), Registry.BIOME.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
+			} else if (BiomeLayers.areSimilar(class_5458.field_25933.getRawId(base), class_5458.field_25933.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
 				picker.addBiome(Biomes.BADLANDS, 1);
 			} else if (base == Biomes.DEEP_OCEAN || base == Biomes.DEEP_LUKEWARM_OCEAN || base == Biomes.DEEP_COLD_OCEAN) {
 				picker.addBiome(Biomes.PLAINS, 1);

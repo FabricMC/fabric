@@ -18,9 +18,8 @@ package net.fabricmc.fabric.mixin.biome;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.function.Supplier;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,12 +32,21 @@ import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 @Mixin(MultiNoiseBiomeSource.class)
-public class MixinTheNetherDimension {
-	@Inject(method = "method_28467", at = @At("RETURN"), cancellable = true)
-	private static void method_28467(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> info) {
-		List<Biome> newList = new ArrayList<>(info.getReturnValue().method_28443());
-		newList.addAll(InternalBiomeData.getNetherBiomes());
-		MultiNoiseBiomeSource multiNoiseBiomeSource = new MultiNoiseBiomeSource(l, newList.stream().flatMap((biome) -> biome.streamNoises().map((point) -> Pair.of(point, biome))).collect(ImmutableList.toImmutableList()), Optional.of(MultiNoiseBiomeSource.Preset.NETHER));
-		info.setReturnValue(multiNoiseBiomeSource);
+public class MixinMultiNoiseBiomeSource {
+	@Inject(method = "method_28467", at = @At("RETURN"))
+	private static void modifyNoisePoints(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> cir) {
+		MultiNoiseBiomeSource returnedSource = cir.getReturnValue();
+
+		// collect existing noise points in non-immutable map
+		List<Pair<Biome.MixedNoisePoint, Supplier<Biome>>> existingPoints = new ArrayList<>(((MultiNoiseBiomeSourceAccessor) returnedSource).getBiomePoints());
+
+		// add fabric biome noise point data to list && BiomeSource biome list
+		InternalBiomeData.getNetherBiomeNoisePoints().forEach((biome, noisePoint) -> {
+			existingPoints.add(Pair.of(noisePoint, () -> biome));
+			returnedSource.getBiomes().add(biome);
+		});
+
+		// modify MultiNoiseBiomeSource list with updated data
+		((MultiNoiseBiomeSourceAccessor) returnedSource).setBiomePoints(existingPoints);
 	}
 }
