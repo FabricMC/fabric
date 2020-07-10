@@ -16,15 +16,25 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayRendererRegistryImpl;
+import net.fabricmc.fabric.impl.client.renderer.registry.ItemHooks;
+
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
 public interface ItemOverlayRendererRegistry {
-    ItemOverlayRendererRegistry INSTANCE = new ItemOverlayRendererRegistryImpl();
+	static ItemOverlayRenderer get(Item item) {
+		return ((ItemHooks) item).getItemOverlayRenderer();
+	}
 
-    ItemOverlayRenderer get(ItemConvertible item);
+	static void add(Item item, ItemOverlayRenderer overlayRenderer) {
+		((ItemHooks) item).setItemOverlayRenderer(overlayRenderer);
+	}
 
-    void add(ItemConvertible item, ItemOverlayRenderer overlayRenderer);
+	static ItemOverlayRenderer get(ItemConvertible itemConvertible) {
+		return get(itemConvertible.asItem());
+	}
 
-    void remove(ItemConvertible item, ItemOverlayRenderer overlayRenderer);
+	static void add(ItemConvertible itemConvertible, ItemOverlayRenderer overlayRenderer) {
+		add(itemConvertible.asItem(), overlayRenderer);
+	}
 }

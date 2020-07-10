@@ -5,6 +5,7 @@
   "client": [
     "MixinBlockEntityRenderDispatcher",
     "MixinEntityRenderDispatcher",
+    "MixinItem",
     "MixinItemRenderer"
   ],
   "injectors": {
