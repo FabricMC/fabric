@@ -20,9 +20,11 @@ import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayRendererRegi
 import net.minecraft.item.ItemConvertible;
 
 public interface ItemOverlayRendererRegistry {
-	ItemOverlayRendererRegistry INSTANCE = new ItemOverlayRendererRegistryImpl();
+    ItemOverlayRendererRegistry INSTANCE = new ItemOverlayRendererRegistryImpl();
 
-	ItemOverlayRenderer get(ItemConvertible item);
-	void add(ItemConvertible item, ItemOverlayRenderer overlayRenderer);
-	void remove(ItemConvertible item, ItemOverlayRenderer overlayRenderer);
+    ItemOverlayRenderer get(ItemConvertible item);
+
+    void add(ItemConvertible item, ItemOverlayRenderer overlayRenderer);
+
+    void remove(ItemConvertible item, ItemOverlayRenderer overlayRenderer);
 }

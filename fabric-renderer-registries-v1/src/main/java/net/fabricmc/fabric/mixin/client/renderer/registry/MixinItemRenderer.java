@@ -31,15 +31,16 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ItemRenderer.class)
 public class MixinItemRenderer {
-	@Shadow public float zOffset;
+    @Shadow
+    public float zOffset;
 
-	@Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0),
-			locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	public void on_renderGuiItemOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel,
-										   CallbackInfo ci, MatrixStack matrixStack) {
-		ItemOverlayRenderer ior = ItemOverlayRendererRegistry.INSTANCE.get(stack.getItem());
-		if (ior != null && ior.renderOverlay(matrixStack, zOffset, renderer, stack, x, y, countLabel))
-			ci.cancel();
-	}
+    @Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0),
+            locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    public void on_renderGuiItemOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel,
+                                        CallbackInfo ci, MatrixStack matrixStack) {
+        ItemOverlayRenderer ior = ItemOverlayRendererRegistry.INSTANCE.get(stack.getItem());
+        if (ior != null && ior.renderOverlay(matrixStack, zOffset, renderer, stack, x, y, countLabel))
+            ci.cancel();
+    }
 }
