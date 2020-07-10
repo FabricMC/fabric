@@ -23,11 +23,11 @@ import net.minecraft.item.ItemConvertible;
 
 public interface ItemOverlayRendererRegistry {
 	static ItemOverlayRenderer get(Item item) {
-		return ((ItemHooks) item).getItemOverlayRenderer();
+		return ((ItemHooks) item).fabric_getItemOverlayRenderer();
 	}
 
 	static void add(Item item, ItemOverlayRenderer overlayRenderer) {
-		((ItemHooks) item).setItemOverlayRenderer(overlayRenderer);
+		((ItemHooks) item).fabric_setItemOverlayRenderer(overlayRenderer);
 	}
 
 	static ItemOverlayRenderer get(ItemConvertible itemConvertible) {
