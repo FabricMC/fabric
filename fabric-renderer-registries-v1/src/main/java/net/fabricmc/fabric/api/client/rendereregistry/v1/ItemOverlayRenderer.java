@@ -18,12 +18,11 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-
 import net.minecraft.item.ItemStack;
 
 public interface ItemOverlayRenderer {
 	/**
-     * Called before Vanilla's overlay rendering.
+	 * Called before Vanilla's overlay rendering.
 	 * @return <code>true</code> to cancel Vanilla's overlay rendering.
 	 */
 	boolean renderOverlay(MatrixStack matrixStack, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel);

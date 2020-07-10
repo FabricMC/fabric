@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.renderer.registry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.ItemOverlayRenderer;
 
 public interface ItemHooks {
-	ItemOverlayRenderer fabric_getItemOverlayRenderer();
+	ItemOverlayRenderer fabric_getOverlayRenderer();
 
-	void fabric_setItemOverlayRenderer(ItemOverlayRenderer ior);
+	void fabric_setOverlayRenderer(ItemOverlayRenderer ior);
 }

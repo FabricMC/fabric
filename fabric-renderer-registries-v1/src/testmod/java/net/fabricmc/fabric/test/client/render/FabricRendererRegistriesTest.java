@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer_registries;
+package net.fabricmc.fabric.test.client.render;
+
+import net.minecraft.item.Items;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.ItemOverlayRendererRegistry;
-import net.minecraft.item.Items;
 
 public class FabricRendererRegistriesTest implements ClientModInitializer {
 	@Override

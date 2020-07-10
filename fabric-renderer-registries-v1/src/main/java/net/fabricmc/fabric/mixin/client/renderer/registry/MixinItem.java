@@ -16,26 +16,26 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.registry;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.ItemOverlayRenderer;
-import net.fabricmc.fabric.impl.client.renderer.registry.ItemHooks;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.item.Item;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.ItemOverlayRenderer;
+import net.fabricmc.fabric.impl.client.renderer.registry.ItemHooks;
 
 @Mixin(Item.class)
 public class MixinItem implements ItemHooks {
 	@Unique
-	private ItemOverlayRenderer ior;
+	private ItemOverlayRenderer overlayRenderer;
 
 	@Override
-	public ItemOverlayRenderer fabric_getItemOverlayRenderer() {
-		return ior;
+	public ItemOverlayRenderer fabric_getOverlayRenderer() {
+		return overlayRenderer;
 	}
 
 	@Override
-	public void fabric_setItemOverlayRenderer(ItemOverlayRenderer ior) {
-		this.ior = ior;
+	public void fabric_setOverlayRenderer(ItemOverlayRenderer ior) {
+		this.overlayRenderer = ior;
 	}
 }
