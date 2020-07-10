@@ -73,7 +73,7 @@ public interface RegisterFeatureRendererCallback {
 			this.delegate = delegate;
 		}
 
-		public <T extends LivingEntity, M extends EntityModel<T>, F extends FeatureRenderer<T, M>> boolean register(F featureRenderer) {
+		public <T extends LivingEntity> boolean register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer) {
 			Objects.requireNonNull(featureRenderer, "Feature renderer cannot be null");
 			return this.delegate.apply(featureRenderer);
 		}
