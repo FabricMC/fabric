@@ -33,10 +33,10 @@ public class ServerResourceReloadTests implements ModInitializer {
 
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
 			if (success) {
-				LOGGER.info("FINISHED RELOAD");
+				LOGGER.info("FINISHED RELOAD on {}", Thread.currentThread());
 			} else {
 				// Failure can be tested by trying to disable the vanilla datapack
-				LOGGER.error("FAILED TO RELOAD");
+				LOGGER.error("FAILED TO RELOAD on {}", Thread.currentThread());
 			}
 		});
 	}
