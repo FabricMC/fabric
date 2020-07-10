@@ -36,13 +36,20 @@ import net.fabricmc.fabric.mixin.gamerule.BooleanRuleAccessor;
 
 /**
  * A utility class containing factory methods to create game rule types.
- *
- * A <p>game rule is a persisted, per server data value which may control gameplay aspects.
+ * A game rule is a persisted, per server data value which may control gameplay aspects.
  *
  * <p>Some factory methods allow specification ofa callback that is invoked when the value of a game rule has changed.
- * Typically the callback is used for game rules which may influence game logic, such as {@link GameRules#DISABLE_RAIDS disabling raids} or disabling extra debug information.
+ * Typically the callback is used for game rules which may influence game logic, such as {@link GameRules#DISABLE_RAIDS disabling raids}.
  *
- * <p>To register a game rule, you need to
+ * <p>To register a game rule, you can use {@link GameRuleRegistry#register(String, GameRules.Category, GameRules.Type)}.
+ * For example, to register a game rule that is an integer where the acceptable values are between 0 and 10, one would use the following:
+ * <blockquote><pre>
+ * public static final GameRules.Key&lt;GameRules.IntRule&gt; EXAMPLE_INT_RULE = GameRuleRegistry.register("exampleIntRule", GameRules.Category.UPDATES, GameRuleFactory.createIntRule(1, 10));
+ * </pre></blockquote>
+ *
+ * <p>To register a game rule in a custom category, {@link GameRuleRegistry#register(String, CustomGameRuleCategory, GameRules.Type)} should be used.
+ *
+ * @see GameRuleRegistry
  */
 public final class GameRuleFactory {
 	/**
@@ -127,7 +134,7 @@ public final class GameRuleFactory {
 	}
 
 	/**
-	 * Creates an integer rule type
+	 * Creates an integer rule type.
 	 *
 	 * @param defaultValue the default value of the game rule
 	 * @param minimumValue the minimum value the game rule may accept
@@ -159,7 +166,7 @@ public final class GameRuleFactory {
 	 * Creates a double rule type.
 	 *
 	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept  
+	 * @param minimumValue the minimum value the game rule may accept
 	 * @return a double rule type
 	 */
 	public static GameRules.Type<DoubleRule> createDoubleRule(double defaultValue, double minimumValue) {
@@ -171,7 +178,7 @@ public final class GameRuleFactory {
 	 * Creates a double rule type.
 	 *
 	 * @param defaultValue the default value of the game rule
-	 * @param minimumValue the minimum value the game rule may accept  
+	 * @param minimumValue the minimum value the game rule may accept
 	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
 	 * @return a double rule type
 	 */

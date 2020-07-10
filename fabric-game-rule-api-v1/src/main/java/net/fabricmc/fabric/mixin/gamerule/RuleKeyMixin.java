@@ -22,10 +22,10 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
-import net.fabricmc.fabric.impl.gamerule.RuleKeyInternals;
+import net.fabricmc.fabric.impl.gamerule.RuleKeyExtensions;
 
 @Mixin(GameRules.Key.class)
-public abstract class RuleKeyMixin implements RuleKeyInternals {
+public abstract class RuleKeyMixin implements RuleKeyExtensions {
 	/* @Nullable */
 	@Unique
 	private CustomGameRuleCategory customCategory;

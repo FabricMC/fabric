@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.gamerule;
 
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 
-public interface RuleKeyInternals {
+public interface RuleKeyExtensions {
 	/* @Nullable */
 	CustomGameRuleCategory fabric_getCustomCategory();
 

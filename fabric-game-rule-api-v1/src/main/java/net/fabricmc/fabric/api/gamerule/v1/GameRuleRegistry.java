@@ -18,11 +18,13 @@ package net.fabricmc.fabric.api.gamerule.v1;
 
 import net.minecraft.world.GameRules;
 
-import net.fabricmc.fabric.impl.gamerule.RuleKeyInternals;
+import net.fabricmc.fabric.impl.gamerule.RuleKeyExtensions;
 import net.fabricmc.fabric.mixin.gamerule.GameRulesAccessor;
 
 /**
  * A utility class which allows for registration of game rules.
+ * Note game rules with duplicate keys are not allowed.
+ * Checking if a game rule key is already taken can be done using {@link GameRuleRegistry#hasRegistration(String)}.
  *
  * <p>Creation of rule types is done using {@link GameRuleFactory}.
  *
@@ -58,7 +60,7 @@ public final class GameRuleRegistry {
 	 */
 	public static <T extends GameRules.Rule<T>> GameRules.Key<T> register(String name, CustomGameRuleCategory category, GameRules.Type<T> type) {
 		final GameRules.Key<T> key = GameRulesAccessor.callRegister(name, GameRules.Category.MISC, type);
-		((RuleKeyInternals) (Object) key).fabric_setCustomCategory(category);
+		((RuleKeyExtensions) (Object) key).fabric_setCustomCategory(category);
 		return key;
 	}
 

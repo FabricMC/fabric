@@ -22,10 +22,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.GameRules;
 
-import net.fabricmc.fabric.impl.gamerule.RuleKeyInternals;
+import net.fabricmc.fabric.impl.gamerule.RuleKeyExtensions;
 
 /**
- * Utility class for registering GameRule objects with custom categories outside of the categories Minecraft provides.
+ * Utility class for creating custom game rule categories outside of the categories {@link GameRules.Category Minecraft provides}.
  */
 public final class CustomGameRuleCategory {
 	private final Identifier id;
@@ -66,13 +66,13 @@ public final class CustomGameRuleCategory {
 	}
 
 	/**
-	 * Gets the custom category a {@link GameRules.Key game rule key} is registered under.
+	 * Gets the custom category a {@link GameRules.Key game rule key} is registered to.
 	 *
 	 * @param key the rule key
 	 * @param <T> the type of value the rule holds
 	 * @return the custom category this rule belongs to. Otherwise {@link Optional#empty() empty}
 	 */
 	public static <T extends GameRules.Rule<T>> Optional<CustomGameRuleCategory> getCategory(GameRules.Key<T> key) {
-		return Optional.ofNullable(((RuleKeyInternals) (Object) key).fabric_getCustomCategory());
+		return Optional.ofNullable(((RuleKeyExtensions) (Object) key).fabric_getCustomCategory());
 	}
 }
