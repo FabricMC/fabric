@@ -14,28 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.loot.v1;
+package net.fabricmc.fabric.mixin.loot.table;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.loot.entry.LootPoolEntryType;
+import net.minecraft.loot.entry.LootPoolEntryTypes;
 import net.minecraft.util.JsonSerializer;
 
-import net.fabricmc.fabric.impl.loot.table.LootEntryTypeRegistryImpl;
-
-/**
- * Fabric's extensions to {@code net.minecraft.loot.entry.LootEntries} for registering
- * custom loot entry types.
- *
- * @see #register
- */
-public interface LootEntryTypeRegistry {
-	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
-
-	/**
-	 * Registers a loot entry type serializer by its ID.
-	 *
-	 * @param id the loot entry's ID
-	 * @param serializer the loot entry serializer
-	 */
-	void register(Identifier id, JsonSerializer<? extends LootPoolEntry> serializer);
+@Mixin(LootPoolEntryTypes.class)
+public interface LootPoolEntryTypesAccessor {
+	@Invoker("register")
+	static LootPoolEntryType register(String id, JsonSerializer<? extends LootPoolEntry> serializer) {
+		throw new UnsupportedOperationException("Mixin dummy");
+	}
 }
