@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import java.util.Objects;
-import java.util.function.Function;
-
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -66,16 +63,18 @@ public interface RegisterFeatureRendererCallback {
 	 */
 	void registerFeatureRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, FeatureAcceptor acceptor);
 
-	final class FeatureAcceptor {
-		private final Function<FeatureRenderer<?, ?>, Boolean> delegate;
-
-		public FeatureAcceptor(Function<FeatureRenderer<?, ?>, Boolean> delegate) {
-			this.delegate = delegate;
-		}
-
-		public <T extends LivingEntity> boolean register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer) {
-			Objects.requireNonNull(featureRenderer, "Feature renderer cannot be null");
-			return this.delegate.apply(featureRenderer);
-		}
+	/**
+	 * A delegate object used to register feature renderers for an entity renderer.
+	 *
+	 * <p>This is not meant for implementation by users of the API.
+	 */
+	interface FeatureAcceptor {
+		/**
+		 * Adds a feature renderer to the entity renderer.
+		 *
+		 * @param featureRenderer the feature renderer
+		 * @param <T> the type of entity
+		 */
+		<T extends LivingEntity> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer);
 	}
 }

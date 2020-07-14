@@ -36,6 +36,7 @@ import net.minecraft.resource.ReloadableResourceManager;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.RegisterFeatureRendererCallback;
+import net.fabricmc.fabric.impl.client.renderer.registry.FeatureAcceptorImpl;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class MixinEntityRenderDispatcher {
@@ -57,14 +58,14 @@ public abstract class MixinEntityRenderDispatcher {
 		for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : this.renderers.entrySet()) {
 			if (entry.getValue() instanceof LivingEntityRenderer) { // Must be living for features
 				LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
-				RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegisterFeatureRendererCallback.FeatureAcceptor(accessor::callAddFeature));
+				RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new FeatureAcceptorImpl(accessor::callAddFeature));
 			}
 		}
 
 		// Players are a fun case, we need to do these separately.
 		for (Map.Entry<String, PlayerEntityRenderer> entry : this.modelRenderers.entrySet()) {
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
-			RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers(EntityType.PLAYER, entry.getValue(), new RegisterFeatureRendererCallback.FeatureAcceptor(accessor::callAddFeature));
+			RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers(EntityType.PLAYER, entry.getValue(), new FeatureAcceptorImpl(accessor::callAddFeature));
 		}
 	}
 }
