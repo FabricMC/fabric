@@ -42,6 +42,18 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 		this.value = value;
 		this.minimumValue = minimumValue;
 		this.maximumValue = maximumValue;
+
+		if (Double.isInfinite(value) || Double.isNaN(value)) {
+			throw new IllegalArgumentException("Value cannot be infinite or NaN");
+		}
+
+		if (Double.isInfinite(minimumValue) || Double.isNaN(minimumValue)) {
+			throw new IllegalArgumentException("Minimum value cannot be infinite or NaN");
+		}
+
+		if (Double.isInfinite(maximumValue) || Double.isNaN(maximumValue)) {
+			throw new IllegalArgumentException("Maximum value cannot be infinite or NaN");
+		}
 	}
 
 	@Override
@@ -51,26 +63,19 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 
 	@Override
 	protected void deserialize(String value) {
-		final double d = DoubleRule.parseDouble(value);
-
-		if (this.minimumValue > d || this.maximumValue < d) {
-			LOGGER.warn("Failed to parse double {}. Was out of bounds {} - {}", value, this.minimumValue, this.maximumValue);
-			return;
-		}
-
-		this.value = d;
-	}
-
-	private static double parseDouble(String string) {
-		if (!string.isEmpty()) {
+		if (!value.isEmpty()) {
 			try {
-				return Double.parseDouble(string);
+				final double d = Double.parseDouble(value);
+
+				if (this.inBounds(d)) {
+					this.value = d;
+				} else {
+					LOGGER.warn("Failed to parse double {}. Was out of bounds {} - {}", value, this.minimumValue, this.maximumValue);
+				}
 			} catch (NumberFormatException e) {
-				LOGGER.warn("Failed to parse double {}", string);
+				LOGGER.warn("Failed to parse double {}", value);
 			}
 		}
-
-		return 0.0D;
 	}
 
 	@Override
@@ -80,7 +85,7 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 
 	@Override
 	public int getCommandResult() {
-		return Double.compare(this.value, 0.0);
+		return Double.compare(this.value, 0.0D);
 	}
 
 	@Override
@@ -95,6 +100,10 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 
 	@Override
 	public void setValue(DoubleRule rule, MinecraftServer minecraftServer) {
+		if (!this.inBounds(rule.value)) {
+			throw new IllegalArgumentException(String.format("Could not set value to %s. Was out of bounds %s - %s", rule.value, this.minimumValue, this.maximumValue));
+		}
+
 		this.value = rule.value;
 		this.changed(minecraftServer);
 	}
@@ -104,7 +113,7 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 		try {
 			final double d = Double.parseDouble(value);
 
-			return !(this.minimumValue > d) && !(this.maximumValue < d);
+			return this.inBounds(d);
 		} catch (NumberFormatException ignored) {
 			return false;
 		}
@@ -112,5 +121,9 @@ public final class DoubleRule extends GameRules.Rule<DoubleRule> implements Vali
 
 	public double get() {
 		return this.value;
+	}
+
+	private boolean inBounds(double value) {
+		return value >= this.minimumValue && value <= this.maximumValue;
 	}
 }

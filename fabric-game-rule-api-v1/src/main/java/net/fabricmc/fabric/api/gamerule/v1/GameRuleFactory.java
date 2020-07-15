@@ -38,7 +38,7 @@ import net.fabricmc.fabric.mixin.gamerule.BooleanRuleAccessor;
  * A utility class containing factory methods to create game rule types.
  * A game rule is a persisted, per server data value which may control gameplay aspects.
  *
- * <p>Some factory methods allow specification ofa callback that is invoked when the value of a game rule has changed.
+ * <p>Some factory methods allow specification of a callback that is invoked when the value of a game rule has changed.
  * Typically the callback is used for game rules which may influence game logic, such as {@link GameRules#DISABLE_RAIDS disabling raids}.
  *
  * <p>To register a game rule, you can use {@link GameRuleRegistry#register(String, GameRules.Category, GameRules.Type)}.

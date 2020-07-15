@@ -18,10 +18,10 @@ package net.fabricmc.fabric.api.gamerule.v1.rule;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.List;
 
 import com.mojang.brigadier.context.CommandContext;
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +37,7 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 	private static final Logger LOGGER = LogManager.getLogger(GameRuleRegistry.class);
 
 	private final Class<E> classType;
-	private final Collection<E> supportedValues;
+	private final List<E> supportedValues;
 	private E value;
 
 	/**
@@ -56,7 +56,11 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 		super(type);
 		this.classType = value.getDeclaringClass();
 		this.value = value;
-		this.supportedValues = Collections.unmodifiableCollection(supportedValues);
+		this.supportedValues = new ArrayList<>(supportedValues);
+
+		if (!this.supports(value)) {
+			throw new IllegalArgumentException("Cannot set default value");
+		}
 	}
 
 	@Override
@@ -111,6 +115,10 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 
 	@Override
 	public void setValue(EnumRule<E> rule, MinecraftServer minecraftServer) {
+		if (!this.supports(rule.value)) {
+			throw new IllegalArgumentException(String.format("Rule does not support value: %s", rule.value));
+		}
+
 		this.value = rule.value;
 		this.changed(minecraftServer);
 	}
@@ -120,33 +128,17 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 	}
 
 	public E cycle(E start) {
-		if (this.supportedValues.size() > 1) {
-			return getNext(this.supportedValues, start);
+		int index = this.supportedValues.indexOf(start);
+
+		if (index < 0) {
+			throw new IllegalArgumentException(String.format("Invalid value: %s", start));
 		}
 
-		return start;
-	}
-
-	protected static <T> T getNext(Collection<T> values, T value) {
-		Iterator<T> iterator = values.iterator();
-
-		do {
-			if (!iterator.hasNext()) {
-				return iterator.next();
-			}
-		} while (!iterator.next().equals(value));
-
-		return iterator.hasNext() ? iterator.next() : values.iterator().next();
+		return this.supportedValues.get((index + 1) % this.supportedValues.size());
 	}
 
 	public boolean supports(E value) {
-		for (E supportedValue : this.supportedValues) {
-			if (value == supportedValue) {
-				return true;
-			}
-		}
-
-		return false;
+		return this.supportedValues.contains(value);
 	}
 
 	public void set(E value, /* @Nullable */ MinecraftServer server) throws IllegalArgumentException {
