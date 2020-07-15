@@ -18,9 +18,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.14.5"
-	static def mcVersion = "20w28a"
-	static def yarnVersion = "+build.11"
+	static def baseVersion = "0.14.6"
+	static def mcVersion = "20w29a"
+	static def yarnVersion = "+build.1"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
