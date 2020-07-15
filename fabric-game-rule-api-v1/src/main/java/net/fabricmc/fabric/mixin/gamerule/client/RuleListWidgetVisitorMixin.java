@@ -33,14 +33,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.gamerule.v1.FabricGameRuleVisitor;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 import net.fabricmc.fabric.impl.gamerule.widget.DoubleRuleWidget;
 import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
-import net.fabricmc.fabric.impl.gamerule.widget.FloatRuleWidget;
 
 @Environment(EnvType.CLIENT)
 @Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
-public abstract class RuleListWidgetVisitorMixin implements GameRules.TypeConsumer, FabricGameRuleVisitor {
+public abstract class RuleListWidgetVisitorMixin implements GameRules.Visitor, FabricGameRuleVisitor {
 	@Final
 	@Shadow
 	private EditGameRulesScreen field_24314;
@@ -51,13 +49,6 @@ public abstract class RuleListWidgetVisitorMixin implements GameRules.TypeConsum
 	public void visitDouble(GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
 		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
 			return new DoubleRuleWidget(this.field_24314, name, description, ruleName, rule);
-		});
-	}
-
-	@Override
-	public void visitFloat(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
-		this.createRuleWidget(key, (name, description, ruleName, rule) -> {
-			return new FloatRuleWidget(this.field_24314, name, description, ruleName, rule);
 		});
 	}
 

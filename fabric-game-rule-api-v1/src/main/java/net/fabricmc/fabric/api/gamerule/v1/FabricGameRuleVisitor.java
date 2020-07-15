@@ -20,7 +20,6 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 
 /**
  * An extended game rule visitor which supports Fabric's own rule types.
@@ -31,11 +30,11 @@ import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
  * <p>Rule types specified by this interface are not exhaustive.
  * New entries may be added in the future.
  */
-public interface FabricGameRuleVisitor extends GameRules.TypeConsumer {
+public interface FabricGameRuleVisitor extends GameRules.Visitor {
 	/**
 	 * Visit a double rule.
 	 *
-	 * <p>Note {@link #accept(GameRules.Key, GameRules.Type)} will be called before this method is visited.
+	 * <p>Note {@link #visit(GameRules.Key, GameRules.Type)} will be called before this method is visited.
 	 *
 	 * @param key the rule key
 	 * @param type the rule type
@@ -44,20 +43,9 @@ public interface FabricGameRuleVisitor extends GameRules.TypeConsumer {
 	}
 
 	/**
-	 * Visit a float rule.
-	 *
-	 * <p>Note {@link #accept(GameRules.Key, GameRules.Type)} will be called before this method is visited.
-	 *
-	 * @param key the rule key
-	 * @param type the rule type
-	 */
-	default void visitFloat(GameRules.Key<FloatRule> key, GameRules.Type<FloatRule> type) {
-	}
-
-	/**
 	 * Visit an enum rule.
 	 *
-	 * <p>Note {@link #accept(GameRules.Key, GameRules.Type)} will be called before this method is visited.
+	 * <p>Note {@link #visit(GameRules.Key, GameRules.Type)} will be called before this method is visited.
 	 *
 	 * @param key the rule key
 	 * @param type the rule type

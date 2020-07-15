@@ -40,7 +40,6 @@ import net.fabricmc.fabric.api.gamerule.v1.GameRuleRegistry;
 import net.fabricmc.fabric.api.gamerule.v1.GameRuleFactory;
 import net.fabricmc.fabric.api.gamerule.v1.rule.DoubleRule;
 import net.fabricmc.fabric.api.gamerule.v1.rule.EnumRule;
-import net.fabricmc.fabric.api.gamerule.v1.rule.FloatRule;
 
 public class GameRulesTestMod implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(GameRulesTestMod.class);
@@ -51,7 +50,6 @@ public class GameRulesTestMod implements ModInitializer {
 	// Bounded, Integer, Double and Float rules
 	public static final GameRules.Key<GameRules.IntRule> POSITIVE_ONLY_TEST_INT = register("positiveOnlyTestInteger", GameRules.Category.UPDATES, GameRuleFactory.createIntRule(2, 0));
 	public static final GameRules.Key<DoubleRule> ONE_TO_TEN_DOUBLE = register("oneToTenDouble", GameRules.Category.MISC, GameRuleFactory.createDoubleRule(1.0D, 1.0D, 10.0D));
-	public static final GameRules.Key<FloatRule> ZERO_TO_ONE_FLOAT = register("zeroToOneFloat", GameRules.Category.MISC, GameRuleFactory.createFloatRule(0.0F, 0.0F, 1.0F));
 
 	// Test enum rule, with only some supported values.
 	public static final GameRules.Key<EnumRule<Direction>> CARDINAL_DIRECTION_ENUM = register("cardinalDirection", GameRules.Category.MISC, GameRuleFactory.createEnumRule(Direction.NORTH, CARDINAL_DIRECTIONS, (server, rule) -> {
