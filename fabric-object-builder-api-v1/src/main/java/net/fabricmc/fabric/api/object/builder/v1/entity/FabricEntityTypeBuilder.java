@@ -47,7 +47,7 @@ import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final SpawnGroup spawnGroup;
-	private final EntityType.EntityFactory<T> function;
+	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
 	private boolean summonable = true;
 	private int trackingDistance = 5;
@@ -58,9 +58,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
 	private ImmutableSet<Block> specificSpawnBlocks = ImmutableSet.of();
 
-	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
+	protected FabricEntityTypeBuilder(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
 		this.spawnGroup = spawnGroup;
-		this.function = function;
+		this.factory = factory;
 		this.spawnableFarFromPlayer = spawnGroup == SpawnGroup.CREATURE || spawnGroup == SpawnGroup.MISC;
 	}
 
@@ -82,13 +82,13 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 *
 	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
 	 *
-	 * @param function the entity function used to create this entity
+	 * @param factory the entity factory used to create this entity
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
 	 */
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityType.EntityFactory<T> function) {
-		return create(SpawnGroup.MISC, function);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityType.EntityFactory<T> factory) {
+		return create(SpawnGroup.MISC, factory);
 	}
 
 	/**
@@ -107,13 +107,13 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * Creates an entity type builder.
 	 *
 	 * @param spawnGroup the entity spawn group
-	 * @param function the entity function used to create this entity
+	 * @param factory the entity factory used to create this entity
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
 	 */
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
-		return new FabricEntityTypeBuilder<>(spawnGroup, function);
+	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
+		return new FabricEntityTypeBuilder<>(spawnGroup, factory);
 	}
 
 	/**
@@ -197,6 +197,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return null;
 	}
 
+	public FabricEntityTypeBuilder<T> entityFactory(EntityType.EntityFactory<T> factory) {
+		Objects.requireNonNull(factory, "Entity Factory cannot be null");
+		this.factory = factory;
+		return this;
+	}
+
 	/**
 	 * Whether this entity type is summonable using the {@code /summon} command.
 	 *
@@ -278,7 +284,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
 
 		return type;
 	}
@@ -289,6 +295,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		protected Living(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 			super(spawnGroup, function);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> entityFactory(EntityType.EntityFactory<T> factory) {
+			super.entityFactory(factory);
+			return this;
 		}
 
 		@Override
@@ -378,6 +390,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		protected Mob(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 			super(spawnGroup, function);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> entityFactory(EntityType.EntityFactory<T> factory) {
+			super.entityFactory(factory);
+			return this;
 		}
 
 		@Override
