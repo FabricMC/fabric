@@ -127,14 +127,17 @@ public final class EnumRule<E extends Enum<E>> extends GameRules.Rule<EnumRule<E
 		return this.value;
 	}
 
-	public E cycle(E start) {
-		int index = this.supportedValues.indexOf(start);
+	/**
+	 * Cycles the value of this enum rule to the next supported value.
+	 */
+	public void cycle() {
+		int index = this.supportedValues.indexOf(this.value);
 
 		if (index < 0) {
-			throw new IllegalArgumentException(String.format("Invalid value: %s", start));
+			throw new IllegalArgumentException(String.format("Invalid value: %s", this.value));
 		}
 
-		return this.supportedValues.get((index + 1) % this.supportedValues.size());
+		this.set(this.supportedValues.get((index + 1) % this.supportedValues.size()), null);
 	}
 
 	public boolean supports(E value) {

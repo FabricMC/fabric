@@ -43,12 +43,8 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 		// Base translation key needs to be set before the button widget is created.
 		this.rootTranslationKey = translationKey;
 		this.buttonWidget = new ButtonWidget(10, 5, 88, 20, this.getValueText(rule.get()), (buttonWidget) -> {
-			E value = rule.get();
-
-			// Cycle to the next value
-			E newValue = rule.cycle(value);
-			rule.set(newValue, null);
-			buttonWidget.setMessage(this.getValueText(newValue));
+			rule.cycle();
+			buttonWidget.setMessage(this.getValueText(rule.get()));
 		});
 
 		this.children.add(this.buttonWidget);
