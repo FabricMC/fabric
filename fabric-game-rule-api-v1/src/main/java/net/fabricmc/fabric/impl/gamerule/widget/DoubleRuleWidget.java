@@ -48,10 +48,10 @@ public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget 
 		this.textFieldWidget.setText(Double.toString(rule.get()));
 		this.textFieldWidget.setChangedListener(value -> {
 			if (rule.validate(value)) {
-				this.textFieldWidget.setEditableColor(14737632);
+				this.textFieldWidget.setEditableColor(0xE0E0E0);
 				accessor.callMarkValid(this);
 			} else {
-				this.textFieldWidget.setEditableColor(16711680);
+				this.textFieldWidget.setEditableColor(0xFF0000);
 				accessor.callMarkInvalid(this);
 			}
 		});
