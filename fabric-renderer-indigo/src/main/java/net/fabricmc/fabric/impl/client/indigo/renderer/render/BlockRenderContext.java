@@ -19,12 +19,12 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.render;
 import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.block.BlockModelRenderer;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.util.math.Matrix4f;
 import net.minecraft.client.util.math.Matrix3f;
@@ -46,17 +46,37 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 	private final BlockRenderInfo blockInfo = new BlockRenderInfo();
 	private final AoCalculator aoCalc = new AoCalculator(blockInfo, this::brightness, this::aoLevel);
 	private final MeshConsumer meshConsumer = new MeshConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform);
-	private final Random random = new Random();
-	private BlockModelRenderer vanillaRenderer;
 	private VertexConsumer bufferBuilder;
-	private long seed;
-	private boolean isCallingVanilla = false;
 	private boolean didOutput = false;
-	private MatrixStack matrixStack;
+	// These are kept as fields to avoid avoid the heap allocation for a supplier.
+	// BlockModelRenderer allows the caller to supply both the random object and seed.
+	private Random random;
+	private long seed;
+	private final Supplier<Random> randomSupplier = () -> {
+		random.setSeed(seed);
+		return random;
+	};
 
-	public boolean isCallingVanilla() {
-		return isCallingVanilla;
-	}
+	/**
+	 * Reuse the fallback consumer from the render context used during chunk rebuild to make it properly
+	 * apply the current transforms to vanilla models.
+	 */
+	private final TerrainFallbackConsumer fallbackConsumer = new TerrainFallbackConsumer(blockInfo, this::outputBuffer, aoCalc, this::transform) {
+		@Override
+		protected int overlay() {
+			return overlay;
+		}
+
+		@Override
+		protected Matrix4f matrix() {
+			return matrix;
+		}
+
+		@Override
+		protected Matrix3f normalMatrix() {
+			return normalMatrix;
+		}
+	};
 
 	private int brightness(BlockPos pos) {
 		if (blockInfo.blockView == null) {
@@ -76,33 +96,27 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 		return bufferBuilder;
 	}
 
-	public boolean tesselate(BlockModelRenderer vanillaRenderer, BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, boolean checkSides, long seed, int overlay) {
-		this.vanillaRenderer = vanillaRenderer;
+	public boolean render(BlockRenderView blockView, BakedModel model, BlockState state, BlockPos pos, MatrixStack matrixStack, VertexConsumer buffer, Random random, long seed, int overlay) {
 		this.bufferBuilder = buffer;
-		this.matrixStack = matrixStack;
 		this.matrix = matrixStack.peek().getModel();
 		this.normalMatrix = matrixStack.peek().getNormal();
-
+		this.random = random;
 		this.seed = seed;
+
 		this.overlay = overlay;
 		this.didOutput = false;
 		aoCalc.clear();
 		blockInfo.setBlockView(blockView);
 		blockInfo.prepareForBlock(state, pos, model.useAmbientOcclusion());
 
-		((FabricBakedModel) model).emitBlockQuads(blockView, state, pos, blockInfo.randomSupplier, this);
+		((FabricBakedModel) model).emitBlockQuads(blockView, state, pos, randomSupplier, this);
 
-		this.vanillaRenderer = null;
 		blockInfo.release();
 		this.bufferBuilder = null;
+		this.random = null;
+		this.seed = seed;
 
 		return didOutput;
-	}
-
-	protected void acceptVanillaModel(BakedModel model) {
-		isCallingVanilla = true;
-		didOutput = didOutput && vanillaRenderer.render(blockInfo.blockView, model, blockInfo.blockState, blockInfo.blockPos, matrixStack, bufferBuilder, false, random, seed, overlay);
-		isCallingVanilla = false;
 	}
 
 	private class MeshConsumer extends AbstractMeshConsumer {
@@ -133,7 +147,7 @@ public class BlockRenderContext extends AbstractRenderContext implements RenderC
 
 	@Override
 	public Consumer<BakedModel> fallbackConsumer() {
-		return this::acceptVanillaModel;
+		return fallbackConsumer;
 	}
 
 	@Override
