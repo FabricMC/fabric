@@ -83,8 +83,6 @@ public abstract class MinecraftServerMixin {
 	 */
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;close()V"), method = "shutdown", locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void closeWorld(CallbackInfo ci, Iterator<ServerWorld> worlds, ServerWorld serverWorld) {
-		final List<Entity> entities = serverWorld.getEntities(null, entity -> true); // Get every single entity in the world
-
 		for (BlockEntity blockEntity : serverWorld.blockEntities) {
 			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, serverWorld);
 		}
