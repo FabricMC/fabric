@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
-import net.minecraft.resource.ServerResourceManager;
+import net.minecraft.resource.ReloadableResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 
@@ -113,7 +113,7 @@ public final class ServerLifecycleEvents {
 	}
 
 	public interface StartDataPackReload {
-		void startDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager);
+		void startDataPackReload(MinecraftServer server, ReloadableResourceManager serverResourceManager);
 	}
 
 	public interface EndDataPackReload {
@@ -126,6 +126,6 @@ public final class ServerLifecycleEvents {
 		 * @param serverResourceManager the server resource manager
 		 * @param success if the reload was successful
 		 */
-		void endDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager, boolean success);
+		void endDataPackReload(MinecraftServer server, ReloadableResourceManager serverResourceManager, boolean success);
 	}
 }
