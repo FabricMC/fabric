@@ -13,7 +13,8 @@
       "net.fabricmc.fabric.test.event.lifecycle.ServerBlockEntityLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.ServerEntityLifecycleTests",
       "net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests",
-      "net.fabricmc.fabric.test.event.lifecycle.ServerTickTests"
+      "net.fabricmc.fabric.test.event.lifecycle.ServerTickTests",
+      "net.fabricmc.fabric.test.event.lifecycle.ServerResourceReloadTests"
     ],
     "client": [
       "net.fabricmc.fabric.test.event.lifecycle.client.ClientBlockEntityLifecycleTests",

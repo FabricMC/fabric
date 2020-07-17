@@ -16,32 +16,27 @@
 
 package net.fabricmc.fabric.test.event.lifecycle;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.entity.Entity;
-
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-/**
- * Tests related to the lifecycle of entities.
- */
-public class ServerEntityLifecycleTests implements ModInitializer {
-	private static boolean PRINT_SERVER_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerEntityMessages") != null;
-	private List<Entity> serverEntities = new ArrayList<>();
+public class ServerResourceReloadTests implements ModInitializer {
+	public static final Logger LOGGER = LogManager.getLogger("LifecycleEventsTest");
 
 	@Override
 	public void onInitialize() {
-		final Logger logger = ServerLifecycleTests.LOGGER;
+		ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((server, serverResourceManager) -> {
+			LOGGER.info("PREPARING FOR RELOAD");
+		});
 
-		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-			this.serverEntities.add(entity);
-
-			if (PRINT_SERVER_ENTITY_MESSAGES) {
-				logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
+			if (success) {
+				LOGGER.info("FINISHED RELOAD on {}", Thread.currentThread());
+			} else {
+				// Failure can be tested by trying to disable the vanilla datapack
+				LOGGER.error("FAILED TO RELOAD on {}", Thread.currentThread());
 			}
 		});
 	}
