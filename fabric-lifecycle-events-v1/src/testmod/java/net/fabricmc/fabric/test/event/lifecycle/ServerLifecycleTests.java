@@ -21,6 +21,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 
 /**
  * Tests related to the lifecycle of a server.
@@ -40,6 +41,10 @@ public class ServerLifecycleTests implements ModInitializer {
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
 			LOGGER.info("Stopped Server!");
+		});
+
+		ServerWorldEvents.LOAD.register((server, world) -> {
+			LOGGER.info("Loaded world " + world.getRegistryKey().getValue().toString());
 		});
 	}
 }
