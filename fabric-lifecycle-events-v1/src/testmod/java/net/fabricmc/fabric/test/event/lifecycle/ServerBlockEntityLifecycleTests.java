@@ -31,6 +31,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class ServerBlockEntityLifecycleTests implements ModInitializer {
+	private static boolean PRINT_SERVER_BLOCKENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerBlockEntityMessages") != null;
 	private List<BlockEntity> serverBlockEntities = new ArrayList<>();
 
 	@Override
@@ -39,28 +40,44 @@ public class ServerBlockEntityLifecycleTests implements ModInitializer {
 
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.serverBlockEntities.add(blockEntity);
-			logger.info("[SERVER] LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.serverBlockEntities.size());
+
+			if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
+				logger.info("[SERVER] LOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.serverBlockEntities.size());
+			}
 		});
 
 		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
 			this.serverBlockEntities.remove(blockEntity);
-			logger.info("[SERVER] UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.serverBlockEntities.size());
+
+			if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
+				logger.info("[SERVER] UNLOADED " + Registry.BLOCK_ENTITY_TYPE.getId(blockEntity.getType()).toString() + " - BlockEntities: " + this.serverBlockEntities.size());
+			}
 		});
 
 		ServerTickEvents.END_SERVER_TICK.register(minecraftServer -> {
 			if (minecraftServer.getTicks() % 200 == 0) {
 				int entities = 0;
-				logger.info("[SERVER] Tracked BlockEntities:" + this.serverBlockEntities.size() + " Ticked at: " + minecraftServer.getTicks() + "ticks");
+
+				if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
+					logger.info("[SERVER] Tracked BlockEntities:" + this.serverBlockEntities.size() + " Ticked at: " + minecraftServer.getTicks() + "ticks");
+				}
 
 				for (ServerWorld world : minecraftServer.getWorlds()) {
 					int worldEntities = world.blockEntities.size();
-					logger.info("[SERVER] Tracked BlockEntities in " + world.dimension.getType().toString() + " - " + worldEntities);
+
+					if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
+						logger.info("[SERVER] Tracked BlockEntities in " + world.dimension.getType().toString() + " - " + worldEntities);
+					}
+
 					entities += worldEntities;
 				}
 
-				logger.info("[SERVER] Actual Total BlockEntities: " + entities);
+				if (PRINT_SERVER_BLOCKENTITY_MESSAGES) {
+					logger.info("[SERVER] Actual Total BlockEntities: " + entities);
+				}
 
 				if (entities != this.serverBlockEntities.size()) {
+					// Always print mismatches
 					logger.error("[SERVER] Mismatch in tracked blockentities and actual blockentities");
 				}
 			}
