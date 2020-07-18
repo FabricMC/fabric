@@ -53,6 +53,6 @@ public final class KeyBindingHelper {
 	 * @return configured KeyCode
 	 */
 	public static InputUtil.Key getBoundKeyOf(KeyBinding keyBinding) {
-		return ((KeyCodeAccessor) keyBinding).getBoundKey();
+		return ((KeyCodeAccessor) keyBinding).fabric$getBoundKey();
 	}
 }

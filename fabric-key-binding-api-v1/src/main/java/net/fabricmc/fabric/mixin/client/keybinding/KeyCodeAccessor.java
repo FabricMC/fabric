@@ -24,6 +24,6 @@ import net.minecraft.client.util.InputUtil;
 
 @Mixin(KeyBinding.class)
 public interface KeyCodeAccessor {
-	@Accessor
-	InputUtil.Key getBoundKey();
+	@Accessor("boundKey")
+	InputUtil.Key fabric$getBoundKey();
 }
