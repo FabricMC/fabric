@@ -35,8 +35,24 @@ public final class ServerWorldEvents {
 		}
 	});
 
+	/**
+	 * Called before a world is unloaded by a Minecraft server.
+	 *
+	 * <p>This typically occurs after a server has {@link ServerLifecycleEvents#SERVER_STOPPING started shutting down}.
+	 * Mods which allow dynamic world (un)registration should use this event so mods can let go of world handles when a world is removed.
+	 */
+	public static final Event<Unload> UNLOAD = EventFactory.createArrayBacked(Unload.class, callbacks -> (server, world) -> {
+		for (Unload callback : callbacks) {
+			callback.onWorldUnload(server, world);
+		}
+	});
+
 	public interface Load {
 		void onWorldLoad(MinecraftServer server, ServerWorld world);
+	}
+
+	public interface Unload {
+		void onWorldUnload(MinecraftServer server, ServerWorld world);
 	}
 
 	private ServerWorldEvents() {
