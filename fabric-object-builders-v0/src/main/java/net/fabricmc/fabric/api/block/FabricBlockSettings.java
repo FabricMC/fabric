@@ -77,8 +77,8 @@ public class FabricBlockSettings {
 	}
 
 	/**
-	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder#requiresTool()}.
+	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings#requiresTool()}.
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		this.delegate.breakByTool(tag, miningLevel);
@@ -86,8 +86,8 @@ public class FabricBlockSettings {
 	}
 
 	/**
-	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder#requiresTool()}.
+	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings#requiresTool()}.
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		this.delegate.breakByTool(tag);
