@@ -51,10 +51,12 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface ClientStarted {
 		void onClientStarted(MinecraftClient client);
 	}
 
+	@FunctionalInterface
 	public interface ClientStopping {
 		void onClientStopping(MinecraftClient client);
 	}

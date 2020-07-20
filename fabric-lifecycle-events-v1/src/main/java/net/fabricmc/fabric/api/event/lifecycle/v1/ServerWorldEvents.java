@@ -47,10 +47,12 @@ public final class ServerWorldEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface Load {
 		void onWorldLoad(MinecraftServer server, ServerWorld world);
 	}
 
+	@FunctionalInterface
 	public interface Unload {
 		void onWorldUnload(MinecraftServer server, ServerWorld world);
 	}
