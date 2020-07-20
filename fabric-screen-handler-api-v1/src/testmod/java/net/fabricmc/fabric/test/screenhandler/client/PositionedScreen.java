@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.screenhandler.client;
 
+import java.util.Optional;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -29,11 +31,20 @@ import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.test.screenhandler.screen.PositionedScreenHandler;
 
-public class PositionedScreen<T extends ScreenHandler & PositionedScreenHandler> extends HandledScreen<T> {
+public class PositionedScreen extends HandledScreen<ScreenHandler> {
 	private static final Identifier TEXTURE = new Identifier("minecraft", "textures/gui/container/dispenser.png");
 
-	public PositionedScreen(T handler, PlayerInventory inventory, Text title) {
-		super(handler, inventory, title);
+	public PositionedScreen(ScreenHandler handler, PlayerInventory inventory, Text title) {
+		super(handler, inventory, getPositionText(handler).orElse(title));
+	}
+
+	private static Optional<Text> getPositionText(ScreenHandler handler) {
+		if (handler instanceof PositionedScreenHandler) {
+			BlockPos pos = ((PositionedScreenHandler) handler).getPos();
+			return pos != null ? Optional.of(new LiteralText("(" + pos.toShortString() + ")")) : Optional.empty();
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	@Override
@@ -44,11 +55,10 @@ public class PositionedScreen<T extends ScreenHandler & PositionedScreenHandler>
 	}
 
 	@Override
-	protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {
-		BlockPos pos = handler.getPos();
-		Text usedTitle = pos != null ? new LiteralText("(" + pos.toShortString() + ")") : title;
-		textRenderer.draw(matrices, usedTitle, (float) (backgroundWidth / 2 - textRenderer.getWidth(usedTitle) / 2), 6.0F, 0x404040);
-		textRenderer.draw(matrices, playerInventory.getDisplayName(), 8.0F, backgroundHeight - 96 + 2, 0x404040);
+	protected void init() {
+		super.init();
+		// Center the title
+		titleX = (backgroundWidth - textRenderer.getWidth(title)) / 2;
 	}
 
 	@Override
