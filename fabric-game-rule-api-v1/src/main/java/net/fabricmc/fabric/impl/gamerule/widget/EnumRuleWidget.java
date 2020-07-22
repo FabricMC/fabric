@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 import java.util.List;
 import java.util.Locale;
 
+import net.minecraft.class_5481;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.resource.language.I18n;
@@ -37,7 +38,7 @@ public final class EnumRuleWidget<E extends Enum<E>> extends EditGameRulesScreen
 	private final ButtonWidget buttonWidget;
 	private final String rootTranslationKey;
 
-	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<StringRenderable> description, final String ruleName, EnumRule<E> rule, String translationKey) {
+	public EnumRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<class_5481> description, final String ruleName, EnumRule<E> rule, String translationKey) {
 		gameRuleScreen.super(description, name);
 
 		// Base translation key needs to be set before the button widget is created.
