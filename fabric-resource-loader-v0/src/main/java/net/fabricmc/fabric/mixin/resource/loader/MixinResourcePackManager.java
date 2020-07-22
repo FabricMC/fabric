@@ -16,25 +16,34 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourcePackProvider;
+import net.minecraft.resource.ResourceType;
 
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
+import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(ResourcePackManager.class)
-public class MixinResourcePackManager {
-	@Inject(method = "method_29211", at = @At("RETURN"), cancellable = true)
-	public void method_29211(CallbackInfoReturnable<List<ResourcePack>> infoReturnable) {
-		List<ResourcePack> list = new ArrayList<>(infoReturnable.getReturnValue());
-		ModResourcePackUtil.modifyResourcePackList(list);
-		infoReturnable.setReturnValue(list);
+public class MixinResourcePackManager<T extends ResourcePackProfile> {
+	@Shadow
+	@Final
+	@Mutable
+	private Set<ResourcePackProvider> providers;
+
+	@Inject(method = "<init>", at = @At("RETURN"))
+	public void construct(ResourcePackProfile.Factory arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
+		providers = new HashSet<>(providers);
+		providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 	}
 }

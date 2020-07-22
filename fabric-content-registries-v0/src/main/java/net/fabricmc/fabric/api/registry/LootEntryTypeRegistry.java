@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import net.minecraft.loot.entry.LootEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 
 import net.fabricmc.fabric.impl.content.registry.LootEntryTypeRegistryImpl;
 
@@ -29,5 +29,5 @@ public interface LootEntryTypeRegistry {
 	LootEntryTypeRegistry INSTANCE = LootEntryTypeRegistryImpl.INSTANCE;
 
 	@Deprecated
-	void register(LootEntry.class_5337<?> serializer);
+	void register(LootPoolEntry.Serializer<?> serializer);
 }

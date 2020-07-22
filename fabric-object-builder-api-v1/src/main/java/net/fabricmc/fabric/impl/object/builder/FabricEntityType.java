@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.object.builder;
 
+import com.google.common.collect.ImmutableSet;
+
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.EntityDimensions;
@@ -24,8 +27,8 @@ import net.minecraft.entity.EntityType;
 public class FabricEntityType<T extends Entity> extends EntityType<T> {
 	private final Boolean alwaysUpdateVelocity;
 
-	public FabricEntityType(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, boolean bl, boolean summonable, boolean fireImmune, boolean spawnableFarFromPlayer, EntityDimensions entityDimensions, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
-		super(factory, spawnGroup, bl, summonable, fireImmune, spawnableFarFromPlayer, entityDimensions, (maxTrackDistance + 15) / 16, trackTickInterval);
+	public FabricEntityType(EntityType.EntityFactory<T> factory, SpawnGroup spawnGroup, boolean bl, boolean summonable, boolean fireImmune, boolean spawnableFarFromPlayer, ImmutableSet<Block> spawnBlocks, EntityDimensions entityDimensions, int maxTrackDistance, int trackTickInterval, Boolean alwaysUpdateVelocity) {
+		super(factory, spawnGroup, bl, summonable, fireImmune, spawnableFarFromPlayer, spawnBlocks, entityDimensions, (maxTrackDistance + 15) / 16, trackTickInterval);
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
 	}
 

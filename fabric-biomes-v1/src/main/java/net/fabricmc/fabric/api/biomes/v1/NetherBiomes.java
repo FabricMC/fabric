@@ -27,14 +27,13 @@ public final class NetherBiomes {
 	private NetherBiomes() { }
 
 	/**
-	 * Adds a biome to the Nether generator. Biomes must set their own noise values in the {@link Biome.MixedNoisePoint} class for the biome to properly generate.
+	 * Adds a biome to the Nether generator.
 	 *
-	 * @deprecated Experimental feature, may be removed or changed without further notice due to potential changes to Nether biomes in subsequent snapshots.
 	 * @param biome The biome to add. Must not be null.
+	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
 	 * @see Biome.MixedNoisePoint
 	 */
-	@Deprecated
-	public static void addNetherBiome(Biome biome) {
-		InternalBiomeData.addNetherBiome(biome);
+	public static void addNetherBiome(Biome biome, Biome.MixedNoisePoint mixedNoisePoint) {
+		InternalBiomeData.addNetherBiome(biome, mixedNoisePoint);
 	}
 }

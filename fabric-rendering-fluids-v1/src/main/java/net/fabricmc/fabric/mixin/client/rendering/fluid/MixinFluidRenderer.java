@@ -85,7 +85,7 @@ public class MixinFluidRenderer {
 
 		// Has other uses but those have already happened by the time the hook is called.
 		final FluidRendererHookContainer ctr = fabric_renderHandler.get();
-		return chk || !ctr.state.matches(FluidTags.WATER);
+		return chk || !ctr.state.isIn(FluidTags.WATER);
 	}
 
 	@ModifyVariable(at = @At(value = "INVOKE", target = "net/minecraft/client/render/block/FluidRenderer.isSameFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)Z"), method = "render", ordinal = 0)

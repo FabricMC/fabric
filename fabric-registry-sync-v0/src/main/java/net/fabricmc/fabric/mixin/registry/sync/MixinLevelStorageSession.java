@@ -39,6 +39,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
+import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
@@ -52,6 +53,8 @@ public class MixinLevelStorageSession {
 	private static Logger FABRIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
 	@Unique
 	private CompoundTag fabric_lastSavedIdMap = null;
+	@Unique
+	private CompoundTag fabric_activeTag = null;
 
 	@Shadow
 	@Final
@@ -67,7 +70,7 @@ public class MixinLevelStorageSession {
 			fileInputStream.close();
 
 			if (tag != null) {
-				RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
+				fabric_activeTag = RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
 				return true;
 			}
 		}
@@ -82,7 +85,13 @@ public class MixinLevelStorageSession {
 
 	@Unique
 	private void fabric_saveRegistryData() {
-		CompoundTag newIdMap = RegistrySyncManager.toTag(false);
+		FABRIC_LOGGER.debug("Starting registry save");
+		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeTag);
+
+		if (newIdMap == null) {
+			FABRIC_LOGGER.debug("Not saving empty registry data");
+			return;
+		}
 
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
@@ -121,7 +130,7 @@ public class MixinLevelStorageSession {
 	}
 
 	@Inject(method = "method_27426", at = @At("HEAD"))
-	public void saveWorld(SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
+	public void saveWorld(DynamicRegistryManager registryTracker, SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!Files.exists(directory)) {
 			return;
 		}
