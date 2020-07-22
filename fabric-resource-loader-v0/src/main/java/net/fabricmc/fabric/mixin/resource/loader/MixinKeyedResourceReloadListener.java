@@ -33,7 +33,7 @@ import net.minecraft.client.texture.TextureManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.CommandFunctionManager;
-import net.minecraft.tag.RegistryTagManager;
+import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.loot.LootManager;
 
@@ -96,7 +96,7 @@ public class MixinKeyedResourceReloadListener {
 
 	@Mixin({
 			/* public */
-			RecipeManager.class, ServerAdvancementLoader.class, CommandFunctionManager.class, LootManager.class, RegistryTagManager.class
+			RecipeManager.class, ServerAdvancementLoader.class, CommandFunctionManager.class, LootManager.class, TagManagerLoader.class
 			/* private */
 	})
 	public abstract static class Server implements IdentifiableResourceReloadListener {
@@ -109,7 +109,7 @@ public class MixinKeyedResourceReloadListener {
 			if (fabric_idDeps == null) {
 				Object self = this;
 
-				if (self instanceof RegistryTagManager) {
+				if (self instanceof TagManagerLoader) {
 					fabric_idDeps = Collections.emptyList();
 				} else {
 					fabric_idDeps = Collections.singletonList(ResourceReloadListenerKeys.TAGS);
@@ -133,7 +133,7 @@ public class MixinKeyedResourceReloadListener {
 					fabric_id = ResourceReloadListenerKeys.FUNCTIONS;
 				} else if (self instanceof LootManager) {
 					fabric_id = ResourceReloadListenerKeys.LOOT_TABLES;
-				} else if (self instanceof RegistryTagManager) {
+				} else if (self instanceof TagManagerLoader) {
 					fabric_id = ResourceReloadListenerKeys.TAGS;
 				} else {
 					fabric_id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));

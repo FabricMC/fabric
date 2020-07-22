@@ -61,9 +61,9 @@ public final class ScreenRegistry {
 	 * @param <H>           the screen handler type
 	 * @param <S>           the screen type
 	 */
-	public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, Factory<? super H, ? extends S> screenFactory) {
+	public static <H extends ScreenHandler, S extends Screen & ScreenHandlerProvider<H>> void register(ScreenHandlerType<? extends H> type, Factory<H, S> screenFactory) {
 		// Convert our factory to the vanilla provider here as the vanilla interface won't be available to modders.
-		HandledScreens.<H, S>register(type, screenFactory::create);
+		HandledScreens.register(type, screenFactory::create);
 	}
 
 	/**

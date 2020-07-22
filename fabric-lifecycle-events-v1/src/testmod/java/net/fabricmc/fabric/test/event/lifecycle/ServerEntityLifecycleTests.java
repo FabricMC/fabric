@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
  * Tests related to the lifecycle of entities.
  */
 public class ServerEntityLifecycleTests implements ModInitializer {
+	private static boolean PRINT_SERVER_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerEntityMessages") != null;
 	private List<Entity> serverEntities = new ArrayList<>();
 
 	@Override
@@ -38,7 +39,10 @@ public class ServerEntityLifecycleTests implements ModInitializer {
 
 		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
 			this.serverEntities.add(entity);
-			logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+
+			if (PRINT_SERVER_ENTITY_MESSAGES) {
+				logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+			}
 		});
 	}
 }

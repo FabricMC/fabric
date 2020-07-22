@@ -1,3 +1,9 @@
+buildscript {
+	dependencies {
+		classpath 'org.kohsuke:github-api:1.114'
+	}
+}
+
 plugins {
 	id 'java'
 	id 'eclipse'
@@ -12,9 +18,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.14.1"
-	static def mcVersion = "1.16.1"
-	static def yarnVersion = "+build.5"
+	static def baseVersion = "0.15.1"
+	static def mcVersion = "20w29a"
+	static def yarnVersion = "+build.1"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
@@ -67,7 +73,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:0.8.8+build.202"
+		modCompile "net.fabricmc:fabric-loader:0.8.9+build.203"
 	}
 
 	configurations {
@@ -262,8 +268,8 @@ curseforge {
 	project {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
-		releaseType = 'release'
-		addGameVersion '1.16.1'
+		releaseType = 'beta'
+		addGameVersion '1.16-Snapshot'
 		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
@@ -278,3 +284,24 @@ curseforge {
 }
 
 apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
+
+import org.kohsuke.github.GHReleaseBuilder
+import org.kohsuke.github.GitHub
+
+task github(dependsOn: remapMavenJar) {
+	onlyIf {
+		project.hasProperty('github_api_key')
+	}
+	doLast {
+		def github = GitHub.connectUsingOAuth(project.getProperty('github_api_key') as String)
+		def repository = github.getRepository("FabricMC/fabric")
+
+		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
+		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER")
+		releaseBuilder.body('A changelog can be found at https://github.com/FabricMC/fabric/commits')
+		releaseBuilder.commitish(getBranch())
+
+		def ghRelease = releaseBuilder.create()
+		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
+	}
+}
