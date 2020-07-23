@@ -26,7 +26,7 @@ public interface ItemOverlayRendererRegistry {
 		return ((ItemHooks) item).fabric_getOverlayRenderer();
 	}
 
-	static void add(Item item, ItemOverlayRenderer overlayRenderer) {
+	static void set(Item item, ItemOverlayRenderer overlayRenderer) {
 		((ItemHooks) item).fabric_setOverlayRenderer(overlayRenderer);
 	}
 
@@ -34,7 +34,7 @@ public interface ItemOverlayRendererRegistry {
 		return get(itemConvertible.asItem());
 	}
 
-	static void add(ItemConvertible itemConvertible, ItemOverlayRenderer overlayRenderer) {
-		add(itemConvertible.asItem(), overlayRenderer);
+	static void set(ItemConvertible itemConvertible, ItemOverlayRenderer overlayRenderer) {
+		set(itemConvertible.asItem(), overlayRenderer);
 	}
 }
