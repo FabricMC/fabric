@@ -23,9 +23,24 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+/**
+ * This interface allows you to override Minecraft's GUI item overlay rendering (durability bars, item counts
+ * and cooldown overlays).<p>
+ *
+ * With this interface, you could customize this overlay to your heart's content.<p>
+ *
+ * Example:
+ * <blockquote><pre>
+ * ItemOverlayRendererRegistry.set(Items.DIAMOND, (matrixStack, renderer, stack, x, y, countLabel) -> {
+ * 	renderer.drawWithShadow(matrixStack, "?", x + 17 - renderer.getWidth("?"), y + 9, 0xFFFFFF);
+ * 	return true;
+ * });
+ * </pre></blockquote>
+ */
 public interface ItemOverlayRenderer {
 	/**
-	 * Called before Vanilla's overlay rendering.
+	 * Called before Vanilla's overlay rendering. Note that overlay rendering occurs <em>after</em> the enchanted glint
+	 * is rendered.
 	 * @return <code>true</code> to cancel Vanilla's overlay rendering.
 	 */
 	@Environment(EnvType.CLIENT)
