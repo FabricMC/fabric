@@ -22,10 +22,10 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.ItemOverlayRenderer;
-import net.fabricmc.fabric.impl.client.renderer.registry.ItemHooks;
+import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
 
 @Mixin(Item.class)
-public class MixinItem implements ItemHooks {
+public abstract class MixinItem implements ItemOverlayExtensions {
 	@Unique
 	private ItemOverlayRenderer overlayRenderer;
 

@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.ItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.ItemOverlayRendererRegistry;
 
 @Mixin(ItemRenderer.class)
-public class MixinItemRenderer {
+public abstract class MixinItemRenderer {
 	@Shadow
 	public float zOffset;
 

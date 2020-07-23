@@ -19,22 +19,22 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.ItemHooks;
+import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
 
-public interface ItemOverlayRendererRegistry {
-	static ItemOverlayRenderer get(Item item) {
-		return ((ItemHooks) item).fabric_getOverlayRenderer();
+public final class ItemOverlayRendererRegistry {
+	public static ItemOverlayRenderer get(Item item) {
+		return ((ItemOverlayExtensions) item).fabric_getOverlayRenderer();
 	}
 
-	static void set(Item item, ItemOverlayRenderer overlayRenderer) {
-		((ItemHooks) item).fabric_setOverlayRenderer(overlayRenderer);
+	public static void set(Item item, ItemOverlayRenderer overlayRenderer) {
+		((ItemOverlayExtensions) item).fabric_setOverlayRenderer(overlayRenderer);
 	}
 
-	static ItemOverlayRenderer get(ItemConvertible itemConvertible) {
+	public static ItemOverlayRenderer get(ItemConvertible itemConvertible) {
 		return get(itemConvertible.asItem());
 	}
 
-	static void set(ItemConvertible itemConvertible, ItemOverlayRenderer overlayRenderer) {
+	public static void set(ItemConvertible itemConvertible, ItemOverlayRenderer overlayRenderer) {
 		set(itemConvertible.asItem(), overlayRenderer);
 	}
 }
