@@ -25,11 +25,11 @@ import net.fabricmc.api.Environment;
 
 /**
  * This interface allows you to override Minecraft's GUI item overlay rendering (durability bars, item counts
- * and cooldown overlays).<p>
+ * and cooldown overlays).
  *
- * With this interface, you could customize this overlay to your heart's content.<p>
+ * <p>With this interface, you could customize this overlay to your heart's content.
  *
- * Example:
+ * <p>Example:
  * <blockquote><pre>
  * ItemOverlayRendererRegistry.set(Items.DIAMOND, (matrixStack, renderer, stack, x, y, countLabel) -> {
  * 	renderer.drawWithShadow(matrixStack, "?", x + 17 - renderer.getWidth("?"), y + 9, 0xFFFFFF);
