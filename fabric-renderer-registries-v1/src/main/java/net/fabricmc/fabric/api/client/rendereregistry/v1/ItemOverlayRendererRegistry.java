@@ -22,6 +22,8 @@ import net.minecraft.item.ItemConvertible;
 import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
 
 public final class ItemOverlayRendererRegistry {
+	private ItemOverlayRendererRegistry() { }
+
 	public static ItemOverlayRenderer get(Item item) {
 		return ((ItemOverlayExtensions) item).fabric_getOverlayRenderer();
 	}
