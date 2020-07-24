@@ -42,7 +42,7 @@ public abstract class RuleListWidgetMixin extends net.minecraft.client.gui.widge
 		super(client, width, height, top, bottom, itemHeight);
 	}
 
-	@Inject(method = "<init>(Lnet/minecraft/world/GameRules;)V", at = @At("TAIL"))
+	@Inject(method = "<init>(Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen;Lnet/minecraft/world/GameRules;)V", at = @At("TAIL"))
 	private void initializeFabricGameruleCategories(EditGameRulesScreen screen, GameRules gameRules, CallbackInfo ci) {
 		this.fabricCategories.forEach((category, widgetList) -> {
 			this.addEntry(screen.new RuleCategoryWidget(category.getName()));
