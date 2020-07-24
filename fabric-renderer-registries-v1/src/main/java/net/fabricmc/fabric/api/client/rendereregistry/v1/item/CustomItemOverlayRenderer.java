@@ -31,12 +31,13 @@ import net.fabricmc.api.Environment;
  *
  * <p>Example:
  * <blockquote><pre>
- * ItemOverlayRendererRegistry.set(Items.DIAMOND, (matrixStack, renderer, stack, x, y, countLabel) -> {
+ * ItemOverlayRendererRegistry.setCustom(Items.DIAMOND, (matrixStack, renderer, stack, x, y, countLabel) -> {
  * 	renderer.drawWithShadow(matrixStack, "?", x + 17 - renderer.getWidth("?"), y + 9, 0xFFFFFF);
  * 	return true;
  * });
  * </pre></blockquote>
  */
+@FunctionalInterface
 public interface CustomItemOverlayRenderer {
 	/**
 	 * Called instead of Vanilla's overlay rendering. Note that overlay rendering occurs <em>after</em> the
