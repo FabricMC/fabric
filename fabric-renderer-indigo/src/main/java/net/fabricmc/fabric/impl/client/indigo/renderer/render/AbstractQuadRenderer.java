@@ -168,7 +168,12 @@ public abstract class AbstractQuadRenderer {
 	int flatBrightness(MutableQuadViewImpl quad, BlockState blockState, BlockPos pos) {
 		mpos.set(pos);
 
-		if ((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
+		// To mirror Vanilla's behavior, if the face has a cull-face, always sample the light value
+		// offset in that direction. See net.minecraft.client.render.block.BlockModelRenderer.renderQuadsFlat
+		// for reference.
+		if (quad.cullFace() != null) {
+			mpos.setOffset(quad.cullFace());
+		} else if ((quad.geometryFlags() & LIGHT_FACE_FLAG) != 0 || Block.isShapeFullCube(blockState.getCollisionShape(blockInfo.blockView, pos))) {
 			mpos.setOffset(quad.lightFace());
 		}
 
