@@ -59,8 +59,8 @@ public abstract class MixinItemRenderer {
 			CustomItemOverlayRenderer cior = ItemOverlayRendererRegistry.getCustom(stack.getItem());
 
 			if (cior != null) {
-				cior.renderOverlay(matrixStack, renderer, stack, x, y, countLabel);
-				return;
+				if (cior.renderOverlay(matrixStack, renderer, stack, x, y, countLabel))
+					return;
 			}
 
 			CountLabelProperties clp = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
