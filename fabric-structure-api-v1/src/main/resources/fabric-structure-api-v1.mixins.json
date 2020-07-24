@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.structure",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "FlatChunkGeneratorConfigAccessor",
+    "MixinChunkGeneratorType",
+    "MixinStructuresConfig",
+    "StructureFeatureAccessor",
+    "StructuresConfigAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
