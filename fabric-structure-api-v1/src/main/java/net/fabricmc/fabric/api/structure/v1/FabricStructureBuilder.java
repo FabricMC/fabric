@@ -33,48 +33,52 @@ import net.fabricmc.fabric.mixin.structure.FlatChunkGeneratorConfigAccessor;
 import net.fabricmc.fabric.mixin.structure.StructureFeatureAccessor;
 import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
 
-public class FabricStructureBuilder<T extends StructureFeature<?>> {
+public class FabricStructureBuilder<FC extends FeatureConfig, S extends StructureFeature<FC>> {
 	private final Identifier id;
-	private final T structure;
+	private final S structure;
 	private GenerationStep.Feature step;
 	private StructureConfig defaultConfig;
-	private ConfiguredStructureFeature<?, ?> superflatFeature;
+	private ConfiguredStructureFeature<FC, ? extends StructureFeature<FC>> superflatFeature;
 	private boolean adjustsSurface = false;
 
-	private FabricStructureBuilder(Identifier id, T structure) {
+	private FabricStructureBuilder(Identifier id, S structure) {
 		this.id = id;
 		this.structure = structure;
 	}
 
-	public static <T extends StructureFeature<?>> FabricStructureBuilder<T> create(Identifier id, T structure) {
+	public static <FC extends FeatureConfig, S extends StructureFeature<FC>> FabricStructureBuilder<FC, S> create(Identifier id, S structure) {
 		return new FabricStructureBuilder<>(id, structure);
 	}
 
-	public FabricStructureBuilder<T> step(GenerationStep.Feature step) {
+	public FabricStructureBuilder<FC, S> step(GenerationStep.Feature step) {
 		this.step = step;
 		return this;
 	}
 
-	public FabricStructureBuilder<T> defaultConfig(StructureConfig config) {
+	public FabricStructureBuilder<FC, S> defaultConfig(StructureConfig config) {
 		this.defaultConfig = config;
 		return this;
 	}
 
-	public FabricStructureBuilder<T> defaultConfig(int spacing, int separation, int salt) {
+	public FabricStructureBuilder<FC, S> defaultConfig(int spacing, int separation, int salt) {
 		return defaultConfig(new StructureConfig(spacing, separation, salt));
 	}
 
-	public <FC extends FeatureConfig> FabricStructureBuilder<T> superflatFeature(ConfiguredStructureFeature<FC, ? extends StructureFeature<FC>> superflatFeature) {
+	public FabricStructureBuilder<FC, S> superflatFeature(ConfiguredStructureFeature<FC, ? extends StructureFeature<FC>> superflatFeature) {
 		this.superflatFeature = superflatFeature;
 		return this;
 	}
 
-	public FabricStructureBuilder<T> adjustsSurface() {
+	public FabricStructureBuilder<FC, S> superflatFeature(FC config) {
+		return superflatFeature(structure.configure(config));
+	}
+
+	public FabricStructureBuilder<FC, S> adjustsSurface() {
 		this.adjustsSurface = true;
 		return this;
 	}
 
-	public T register() {
+	public S register() {
 		if (step == null) {
 			throw new IllegalStateException("Structure \"" + id + "\" is missing a generation step");
 		}
