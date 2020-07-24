@@ -22,9 +22,7 @@ import net.minecraft.util.math.MathHelper;
 public interface DurabilityBarProperties {
 	DurabilityBarProperties DEFAULT = new SingleDurabilityBarProperties() {
 		private float getDamageValue(ItemStack stack) {
-			float f = (float)stack.getDamage();
-			float g = (float)stack.getMaxDamage();
-			return Math.max(0.0F, (g - f) / g);
+			return Math.max(0, (stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage());
 		}
 
 		@Override
@@ -44,7 +42,10 @@ public interface DurabilityBarProperties {
 	};
 
 	int getCount(ItemStack stack);
+
 	boolean isVisible(ItemStack stack, int index);
+
 	float getFillFactor(ItemStack stack, int index);
+
 	int getColor(ItemStack stack, int index);
 }

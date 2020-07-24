@@ -31,8 +31,11 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.*;
-import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CustomItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
@@ -59,8 +62,9 @@ public abstract class MixinItemRenderer {
 			CustomItemOverlayRenderer cior = ItemOverlayRendererRegistry.getCustom(stack.getItem());
 
 			if (cior != null) {
-				if (cior.renderOverlay(matrixStack, renderer, stack, x, y, countLabel))
+				if (cior.renderOverlay(matrixStack, renderer, stack, x, y, countLabel)) {
 					return;
+				}
 			}
 
 			CountLabelProperties clp = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
