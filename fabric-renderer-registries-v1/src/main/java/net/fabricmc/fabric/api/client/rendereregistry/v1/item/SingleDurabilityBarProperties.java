@@ -25,7 +25,7 @@ public abstract class SingleDurabilityBarProperties implements DurabilityBarProp
 
 	@Override
 	public int getCount(ItemStack stack) {
-		return 1;
+		return isVisible(stack) ? 1 : 0;
 	}
 
 	@Override
