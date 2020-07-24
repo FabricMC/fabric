@@ -34,7 +34,7 @@ public abstract class GameRuleCommandVisitorMixin {
 	@Shadow
 	private LiteralArgumentBuilder<ServerCommandSource> field_19419;
 
-	@Inject(at = @At("HEAD"), method = "visit(Lnet/minecraft/world/GameRules$Key;Lnet/minecraft/world/GameRules$Type;)V", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "accept(Lnet/minecraft/world/GameRules$Key;Lnet/minecraft/world/GameRules$Type;)V", cancellable = true)
 	private <T extends GameRules.Rule<T>> void onRegisterCommand(GameRules.Key<T> key, GameRules.Type<T> type, CallbackInfo ci) {
 		// Check if our type is a EnumRuleType
 		if (type instanceof EnumRuleType) {
