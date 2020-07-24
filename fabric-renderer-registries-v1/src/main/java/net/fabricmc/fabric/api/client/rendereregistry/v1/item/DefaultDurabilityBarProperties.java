@@ -17,10 +17,29 @@
 package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 
-public interface DurabilityBarProperties {
-	int getCount(ItemStack stack);
-	boolean isVisible(ItemStack stack, int index);
-	float getFillFactor(ItemStack stack, int index);
-	int getColor(ItemStack stack, int index);
+public class DefaultDurabilityBarProperties extends SingleDurabilityBarProperties {
+	public static final DurabilityBarProperties INSTANCE = new DefaultDurabilityBarProperties();
+
+	private DefaultDurabilityBarProperties() { }
+
+	private float getDamageValue(ItemStack stack) {
+		return Math.max(0, (stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage());
+	}
+
+	@Override
+	public boolean isVisible(ItemStack stack) {
+		return stack.isDamaged();
+	}
+
+	@Override
+	public float getFillFactor(ItemStack stack) {
+		return getDamageValue(stack);
+	}
+
+	@Override
+	public int getColor(ItemStack stack) {
+		return MathHelper.hsvToRgb(getDamageValue(stack) / 3, 1, 1);
+	}
 }

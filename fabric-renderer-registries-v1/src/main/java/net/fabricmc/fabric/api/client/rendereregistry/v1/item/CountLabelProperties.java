@@ -19,23 +19,6 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 import net.minecraft.item.ItemStack;
 
 public interface CountLabelProperties {
-	CountLabelProperties DEFAULT = new CountLabelProperties() {
-		@Override
-		public boolean isVisible(ItemStack stack, String override) {
-			return override != null && stack.getCount() != 1;
-		}
-
-		@Override
-		public String getContents(ItemStack stack, String override) {
-			return override == null ? Integer.toString(stack.getCount()) : override;
-		}
-
-		@Override
-		public int getColor(ItemStack stack, String override) {
-			return 0xFFFFFF;
-		}
-	};
-
 	boolean isVisible(ItemStack stack, String override);
 	String getContents(ItemStack stack, String override);
 	int getColor(ItemStack stack, String override);

@@ -18,9 +18,23 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.ItemStack;
 
-public interface DurabilityBarProperties {
-	int getCount(ItemStack stack);
-	boolean isVisible(ItemStack stack, int index);
-	float getFillFactor(ItemStack stack, int index);
-	int getColor(ItemStack stack, int index);
+public class DefaultCountLabelProperties implements CountLabelProperties {
+	public static final CountLabelProperties INSTANCE = new DefaultCountLabelProperties();
+
+	private DefaultCountLabelProperties() { }
+
+	@Override
+	public boolean isVisible(ItemStack stack, String override) {
+		return override != null && stack.getCount() != 1;
+	}
+
+	@Override
+	public String getContents(ItemStack stack, String override) {
+		return override == null ? Integer.toString(stack.getCount()) : override;
+	}
+
+	@Override
+	public int getColor(ItemStack stack, String override) {
+		return 0xFFFFFF;
+	}
 }

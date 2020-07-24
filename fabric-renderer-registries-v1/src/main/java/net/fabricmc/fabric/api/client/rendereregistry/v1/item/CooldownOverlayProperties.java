@@ -16,33 +16,9 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public interface CooldownOverlayProperties {
-	CooldownOverlayProperties DEFAULT = new CooldownOverlayProperties() {
-		private float getCooldownAmount(ItemStack stack) {
-			ClientPlayerEntity player = MinecraftClient.getInstance().player;
-			return player == null ? 0.0F : player.getItemCooldownManager().getCooldownProgress(stack.getItem(), MinecraftClient.getInstance().getTickDelta());
-		}
-
-		@Override
-		public boolean isVisible(ItemStack stack) {
-			return getCooldownAmount(stack) > 0;
-		}
-
-		@Override
-		public float getFillFactor(ItemStack stack) {
-			return getCooldownAmount(stack);
-		}
-
-		@Override
-		public int getColor(ItemStack stack) {
-			return 0x7FFFFFFF;
-		}
-	};
-
 	boolean isVisible(ItemStack stack);
 	float getFillFactor(ItemStack stack);
 	int getColor(ItemStack stack);
