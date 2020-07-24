@@ -50,9 +50,9 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 			if (!(stack.getItem() instanceof ShearsItem)) {
-				return vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeed(new ItemStack(vanillaItem), state) != 1.0F ? ActionResult.SUCCESS : ActionResult.PASS;
+				return vanillaItem.isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 			} else {
-				return stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeed(stack, state) != 1.0F ? ActionResult.SUCCESS : ActionResult.PASS;
+				return stack.getItem().isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 		}
 

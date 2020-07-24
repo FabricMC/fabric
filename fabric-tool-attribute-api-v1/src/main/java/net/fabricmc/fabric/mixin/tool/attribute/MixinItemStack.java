@@ -41,9 +41,7 @@ public abstract class MixinItemStack {
 
 	@Inject(at = @At("RETURN"), method = "isEffectiveOn", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
-		if (!info.getReturnValueZ()) {
-			info.setReturnValue(ToolManager.handleIsEffectiveOnIgnoresVanilla(state, (ItemStack) (Object) this, null));
-		}
+		info.setReturnValue(ToolManager.handleIsEffectiveOnIgnoresVanilla(state, (ItemStack) (Object) this, null, info.getReturnValueZ()));
 	}
 
 	@Inject(at = @At("RETURN"), method = "getMiningSpeed", cancellable = true)
