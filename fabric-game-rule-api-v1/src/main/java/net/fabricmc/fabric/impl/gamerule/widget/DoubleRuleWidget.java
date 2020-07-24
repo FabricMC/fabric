@@ -18,11 +18,11 @@ package net.fabricmc.fabric.impl.gamerule.widget;
 
 import java.util.List;
 
-import net.minecraft.class_5481;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.world.EditGameRulesScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.StringRenderable;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
@@ -34,7 +34,7 @@ import net.fabricmc.fabric.mixin.gamerule.client.EditGameRulesScreenAccessor;
 public final class DoubleRuleWidget extends EditGameRulesScreen.NamedRuleWidget {
 	private final TextFieldWidget textFieldWidget;
 
-	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<class_5481> description, final String ruleName, DoubleRule rule) {
+	public DoubleRuleWidget(EditGameRulesScreen gameRuleScreen, Text name, List<StringRenderable> description, final String ruleName, DoubleRule rule) {
 		gameRuleScreen.super(description, name);
 		EditGameRulesScreenAccessor accessor = (EditGameRulesScreenAccessor) gameRuleScreen;
 

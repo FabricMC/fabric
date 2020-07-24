@@ -145,7 +145,7 @@ public final class GameRuleFactory {
 				() -> IntegerArgumentType.integer(minimumValue, maximumValue),
 				type -> new BoundedIntRule(type, defaultValue, minimumValue, maximumValue), // Internally use a bounded int rule
 				changedCallback,
-				GameRules.Visitor::visitInt
+				GameRules.TypeConsumer::acceptInt
 		);
 	}
 
@@ -294,13 +294,13 @@ public final class GameRuleFactory {
 
 	// RULE VISITORS - INTERNAL
 
-	private static void visitDouble(GameRules.Visitor visitor, GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
+	private static void visitDouble(GameRules.TypeConsumer visitor, GameRules.Key<DoubleRule> key, GameRules.Type<DoubleRule> type) {
 		if (visitor instanceof FabricGameRuleVisitor) {
 			((FabricGameRuleVisitor) visitor).visitDouble(key, type);
 		}
 	}
 
-	private static <E extends Enum<E>> void visitEnum(GameRules.Visitor visitor, GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
+	private static <E extends Enum<E>> void visitEnum(GameRules.TypeConsumer visitor, GameRules.Key<EnumRule<E>> key, GameRules.Type<EnumRule<E>> type) {
 		if (visitor instanceof FabricGameRuleVisitor) {
 			((FabricGameRuleVisitor) visitor).visitEnum(key, type);
 		}

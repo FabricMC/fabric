@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.gamerule.widget.EnumRuleWidget;
 
 @Environment(EnvType.CLIENT)
 @Mixin(targets = "net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleListWidget$1")
-public abstract class RuleListWidgetVisitorMixin implements GameRules.Visitor, FabricGameRuleVisitor {
+public abstract class RuleListWidgetVisitorMixin implements GameRules.TypeConsumer, FabricGameRuleVisitor {
 	@Final
 	@Shadow
 	private EditGameRulesScreen field_24314;
