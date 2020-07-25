@@ -19,5 +19,5 @@ package net.fabricmc.fabric.impl.item;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
 public interface ItemExtensions {
-	EquipmentSlotProvider getEquipmentSlotProvider();
+	EquipmentSlotProvider fabric_getEquipmentSlotProvider();
 }

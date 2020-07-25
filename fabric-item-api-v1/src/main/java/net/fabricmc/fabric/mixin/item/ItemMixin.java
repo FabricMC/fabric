@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,6 +30,7 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(Item.class)
 abstract class ItemMixin implements ItemExtensions {
+	@Unique
 	private EquipmentSlotProvider equipmentSlotProvider;
 
 	@SuppressWarnings("deprecation")
@@ -40,7 +42,7 @@ abstract class ItemMixin implements ItemExtensions {
 	}
 
 	@Override
-	public EquipmentSlotProvider getEquipmentSlotProvider() {
+	public EquipmentSlotProvider fabric_getEquipmentSlotProvider() {
 		return equipmentSlotProvider;
 	}
 }

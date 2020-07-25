@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
 abstract class MobEntityMixin {
 	@Inject(method = "getPreferredEquipmentSlot", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void onGetPreferredEquipmentSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info, Item item) {
-		EquipmentSlotProvider equipmentSlotProvider = ((ItemExtensions) item).getEquipmentSlotProvider();
+		EquipmentSlotProvider equipmentSlotProvider = ((ItemExtensions) item).fabric_getEquipmentSlotProvider();
 
 		if (equipmentSlotProvider != null) {
 			info.setReturnValue(equipmentSlotProvider.getPreferredEquipmentSlot(stack));
