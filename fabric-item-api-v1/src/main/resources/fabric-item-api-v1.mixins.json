@@ -2,6 +2,10 @@
   "required": true,
   "package": "net.fabricmc.fabric.mixin.item",
   "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ItemMixin",
+    "MobEntityMixin"
+  ],
   "client": [
     "client.ItemStackMixin"
   ],
