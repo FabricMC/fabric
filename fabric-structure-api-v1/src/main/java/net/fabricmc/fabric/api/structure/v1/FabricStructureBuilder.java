@@ -87,6 +87,9 @@ public class FabricStructureBuilder<FC extends FeatureConfig, S extends Structur
 			throw new IllegalStateException("Structure \"" + id + "\" is missing a default config");
 		}
 
+		// Ensure StructuresConfig class is initialized, so the assertion in its static {} block doesn't fail
+		StructuresConfig.DEFAULT_STRUCTURES.size();
+
 		StructureFeatureAccessor.callRegister(id.toString(), structure, step);
 
 		if (!id.toString().equals(structure.getName())) {
