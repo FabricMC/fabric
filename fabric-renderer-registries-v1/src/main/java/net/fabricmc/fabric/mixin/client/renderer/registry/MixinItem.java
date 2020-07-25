@@ -24,17 +24,14 @@ import net.minecraft.item.Item;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CustomItemOverlayRenderer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DefaultCooldownOverlayProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DefaultCountLabelProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DefaultDurabilityBarProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
 
 @Mixin(Item.class)
 public abstract class MixinItem implements ItemOverlayExtensions {
-	@Unique private CountLabelProperties clp = DefaultCountLabelProperties.INSTANCE;
-	@Unique private DurabilityBarProperties dbp = DefaultDurabilityBarProperties.INSTANCE;
-	@Unique private CooldownOverlayProperties cop = DefaultCooldownOverlayProperties.INSTANCE;
+	@Unique private CountLabelProperties clp = CountLabelProperties.DEFAULT;
+	@Unique private DurabilityBarProperties dbp = DurabilityBarProperties.DEFAULT;
+	@Unique private CooldownOverlayProperties cop = CooldownOverlayProperties.DEFAULT;
 	@Unique private CustomItemOverlayRenderer cior;
 
 	@Override

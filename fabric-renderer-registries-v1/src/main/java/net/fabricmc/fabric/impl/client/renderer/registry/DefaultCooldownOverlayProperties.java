@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
+package net.fabricmc.fabric.impl.client.renderer.registry;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 
-public class DefaultDurabilityBarProperties extends SingleDurabilityBarProperties {
-	public static final DurabilityBarProperties INSTANCE = new DefaultDurabilityBarProperties();
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
 
-	private DefaultDurabilityBarProperties() { }
-
-	private float getDamageValue(ItemStack stack) {
-		return Math.max(0, (stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage());
+public class DefaultCooldownOverlayProperties implements CooldownOverlayProperties {
+	protected float getCooldownAmount(ItemStack stack) {
+		ClientPlayerEntity player = MinecraftClient.getInstance().player;
+		return player == null ? 0.0F : player.getItemCooldownManager().getCooldownProgress(stack.getItem(), MinecraftClient.getInstance().getTickDelta());
 	}
 
 	@Override
 	public boolean isVisible(ItemStack stack) {
-		return stack.isDamaged();
+		return getCooldownAmount(stack) > 0;
 	}
 
 	@Override
 	public float getFillFactor(ItemStack stack) {
-		return getDamageValue(stack);
+		return getCooldownAmount(stack);
 	}
 
 	@Override
 	public int getColor(ItemStack stack) {
-		return MathHelper.hsvToRgb(getDamageValue(stack) / 3, 1, 1);
+		return 0x7FFFFFFF;
 	}
 }

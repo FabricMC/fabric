@@ -14,16 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
+package net.fabricmc.fabric.impl.client.renderer.registry;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.DefaultCountLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
 
-public interface CountLabelProperties {
-	CountLabelProperties DEFAULT = new DefaultCountLabelProperties();
+public class DefaultCountLabelProperties implements CountLabelProperties {
+	@Override
+	public boolean isVisible(ItemStack stack, String override) {
+		return override != null && stack.getCount() != 1;
+	}
 
-	boolean isVisible(ItemStack stack, String override);
-	String getContents(ItemStack stack, String override);
-	int getColor(ItemStack stack, String override);
+	@Override
+	public String getContents(ItemStack stack, String override) {
+		return override == null ? Integer.toString(stack.getCount()) : override;
+	}
+
+	@Override
+	public int getColor(ItemStack stack, String override) {
+		return 0xFFFFFF;
+	}
 }

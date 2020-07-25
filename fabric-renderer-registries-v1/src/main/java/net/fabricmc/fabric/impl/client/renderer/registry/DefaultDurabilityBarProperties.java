@@ -14,27 +14,30 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
+package net.fabricmc.fabric.impl.client.renderer.registry;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 
-public class DefaultCountLabelProperties implements CountLabelProperties {
-	public static final CountLabelProperties INSTANCE = new DefaultCountLabelProperties();
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.SingleDurabilityBarProperties;
 
-	private DefaultCountLabelProperties() { }
-
-	@Override
-	public boolean isVisible(ItemStack stack, String override) {
-		return override != null && stack.getCount() != 1;
+public class DefaultDurabilityBarProperties extends SingleDurabilityBarProperties {
+	protected float getDamageValue(ItemStack stack) {
+		return Math.max(0, (stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage());
 	}
 
 	@Override
-	public String getContents(ItemStack stack, String override) {
-		return override == null ? Integer.toString(stack.getCount()) : override;
+	public boolean isVisible(ItemStack stack) {
+		return stack.isDamaged();
 	}
 
 	@Override
-	public int getColor(ItemStack stack, String override) {
-		return 0xFFFFFF;
+	public float getFillFactor(ItemStack stack) {
+		return getDamageValue(stack);
+	}
+
+	@Override
+	public int getColor(ItemStack stack) {
+		return MathHelper.hsvToRgb(getDamageValue(stack) / 3, 1, 1);
 	}
 }
