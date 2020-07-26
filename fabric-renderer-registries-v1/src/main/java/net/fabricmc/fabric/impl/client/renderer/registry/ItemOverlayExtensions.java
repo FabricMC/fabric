@@ -18,7 +18,8 @@ package net.fabricmc.fabric.impl.client.renderer.registry;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CustomItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PreItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 
 public interface ItemOverlayExtensions {
@@ -31,6 +32,9 @@ public interface ItemOverlayExtensions {
 	CooldownOverlayProperties fabric_getCooldownOverlayProperties();
 	void fabric_setCooldownOverlayProperties(CooldownOverlayProperties cop);
 
-	CustomItemOverlayRenderer fabric_getCustomItemOverlayRenderer();
-	void fabric_setCustomOverlayRenderer(CustomItemOverlayRenderer cior);
+	PreItemOverlayRenderer fabric_getPreItemOverlayRenderer();
+	void fabric_setPreOverlayRenderer(PreItemOverlayRenderer pior);
+
+	PostItemOverlayRenderer fabric_getPostItemOveralyRenderer();
+	void fabric_setPostOverlayRenderer(PostItemOverlayRenderer pior);
 }

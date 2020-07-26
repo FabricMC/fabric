@@ -23,7 +23,8 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CustomItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PreItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
 
@@ -32,7 +33,8 @@ public abstract class MixinItem implements ItemOverlayExtensions {
 	@Unique private CountLabelProperties countLabelProperties = CountLabelProperties.DEFAULT;
 	@Unique private DurabilityBarProperties durabilityBarProperties = DurabilityBarProperties.DEFAULT;
 	@Unique private CooldownOverlayProperties cooldownOverlayProperties = CooldownOverlayProperties.DEFAULT;
-	@Unique private CustomItemOverlayRenderer customItemOverlayRenderer;
+	@Unique private PreItemOverlayRenderer preItemOverlayRenderer = PreItemOverlayRenderer.NO_OP;
+	@Unique private PostItemOverlayRenderer postItemOverlayRenderer = PostItemOverlayRenderer.NO_OP;
 
 	@Override
 	public CountLabelProperties fabric_getCountLabelProperties() {
@@ -65,12 +67,22 @@ public abstract class MixinItem implements ItemOverlayExtensions {
 	}
 
 	@Override
-	public CustomItemOverlayRenderer fabric_getCustomItemOverlayRenderer() {
-		return customItemOverlayRenderer;
+	public PreItemOverlayRenderer fabric_getPreItemOverlayRenderer() {
+		return preItemOverlayRenderer;
 	}
 
 	@Override
-	public void fabric_setCustomOverlayRenderer(CustomItemOverlayRenderer cior) {
-		this.customItemOverlayRenderer = cior;
+	public void fabric_setPreOverlayRenderer(PreItemOverlayRenderer pior) {
+		this.preItemOverlayRenderer = pior;
+	}
+
+	@Override
+	public PostItemOverlayRenderer fabric_getPostItemOveralyRenderer() {
+		return postItemOverlayRenderer;
+	}
+
+	@Override
+	public void fabric_setPostOverlayRenderer(PostItemOverlayRenderer pior) {
+		this.postItemOverlayRenderer = pior;
 	}
 }

@@ -38,7 +38,12 @@ import net.fabricmc.api.Environment;
  * </pre></blockquote>
  */
 @FunctionalInterface
-public interface CustomItemOverlayRenderer {
+public interface PreItemOverlayRenderer {
+	/**
+	 * No-operation implementation. Used as the default implementation.
+	 */
+	PreItemOverlayRenderer NO_OP = (matrixStack, renderer, stack, x, y, countLabel) -> false;
+
 	/**
 	 * Called before Vanilla's overlay rendering. Note that overlay rendering occurs <em>after</em> the
 	 * enchanted glint is rendered.

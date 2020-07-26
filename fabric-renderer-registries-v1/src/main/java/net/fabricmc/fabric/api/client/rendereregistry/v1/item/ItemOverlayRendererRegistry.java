@@ -47,11 +47,19 @@ public final class ItemOverlayRendererRegistry {
 		((ItemOverlayExtensions) item).fabric_setCooldownOverlayProperties(cop);
 	}
 
-	public static CustomItemOverlayRenderer getCustom(Item item) {
-		return ((ItemOverlayExtensions) item).fabric_getCustomItemOverlayRenderer();
+	public static PreItemOverlayRenderer getPreRenderer(Item item) {
+		return ((ItemOverlayExtensions) item).fabric_getPreItemOverlayRenderer();
 	}
 
-	public static void setCustom(Item item, CustomItemOverlayRenderer cior) {
-		((ItemOverlayExtensions) item).fabric_setCustomOverlayRenderer(cior);
+	public static void setPreRenderer(Item item, PreItemOverlayRenderer pior) {
+		((ItemOverlayExtensions) item).fabric_setPreOverlayRenderer(pior);
+	}
+
+	public static PostItemOverlayRenderer getPostRenderer(Item item) {
+		return ((ItemOverlayExtensions) item).fabric_getPostItemOveralyRenderer();
+	}
+
+	public static void setPostRenderer(Item item, PostItemOverlayRenderer pior) {
+		((ItemOverlayExtensions) item).fabric_setPostOverlayRenderer(pior);
 	}
 }

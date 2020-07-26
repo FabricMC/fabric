@@ -33,7 +33,6 @@ import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CustomItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
 
@@ -61,21 +60,17 @@ public abstract class MixinItemRenderer {
 			matrixStack.push();
 			matrixStack.translate(0.0D, 0.0D, this.zOffset + 200.0F);
 
-			CustomItemOverlayRenderer overlayRenderer = ItemOverlayRendererRegistry.getCustom(stack.getItem());
-
-			if (overlayRenderer != null) {
-				if (overlayRenderer.renderOverlay(matrixStack, renderer, stack, x, y, countLabel)) {
-					return;
-				}
+			if (ItemOverlayRendererRegistry.getPreRenderer(stack.getItem()).renderOverlay(matrixStack, renderer, stack, x, y, countLabel)) {
+				return;
 			}
 
 			CountLabelProperties countProps = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
 
 			if (countProps.isVisible(stack, countLabel)) {
+				String string = countProps.getContents(stack, countLabel);
 				int color = countProps.getColor(stack, countLabel);
-				countLabel = countProps.getContents(stack, countLabel);
 				VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-				renderer.draw(countLabel, x + 17 - renderer.getWidth(countLabel), y + 9, color, true, matrixStack.peek().getModel(), immediate, false, 0, 0xF000F0);
+				renderer.draw(string, x + 17 - renderer.getWidth(string), y + 9, color, true, matrixStack.peek().getModel(), immediate, false, 0, 0xF000F0);
 				immediate.draw();
 			}
 
@@ -122,6 +117,8 @@ public abstract class MixinItemRenderer {
 				RenderSystem.enableTexture();
 				RenderSystem.enableDepthTest();
 			}
+
+			ItemOverlayRendererRegistry.getPostRenderer(stack.getItem()).renderOverlay(matrixStack, renderer, stack, x, y, countLabel);
 
 			matrixStack.pop();
 		}
