@@ -24,12 +24,14 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayPro
 
 public class DefaultCooldownOverlayProperties implements CooldownOverlayProperties {
 	protected float getCooldownAmount(ItemStack stack) {
+		// copied from ItemRenderer.renderGuiItemOverlay, lines 355-356 (player was local "clientPlayerEntity")
 		ClientPlayerEntity player = MinecraftClient.getInstance().player;
 		return player == null ? 0.0F : player.getItemCooldownManager().getCooldownProgress(stack.getItem(), MinecraftClient.getInstance().getTickDelta());
 	}
 
 	@Override
 	public boolean isVisible(ItemStack stack) {
+		// copied from ItemRenderer.renderGuiItemOverlay, line 357 (getCooldownAmount call was local "k")
 		return getCooldownAmount(stack) > 0;
 	}
 

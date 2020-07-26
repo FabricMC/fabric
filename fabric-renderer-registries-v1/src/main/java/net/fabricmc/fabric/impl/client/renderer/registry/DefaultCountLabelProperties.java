@@ -23,16 +23,19 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperti
 public class DefaultCountLabelProperties implements CountLabelProperties {
 	@Override
 	public boolean isVisible(ItemStack stack, String override) {
+		// copied from ItemRenderer.renderGuiItemOverlay, line 327 (override was method param "countLabel")
 		return override != null && stack.getCount() != 1;
 	}
 
 	@Override
 	public String getContents(ItemStack stack, String override) {
+		// copied from ItemRenderer.renderGuiItemOverlay, line 328 (override was method param "countLabel")
 		return override == null ? Integer.toString(stack.getCount()) : override;
 	}
 
 	@Override
 	public int getColor(ItemStack stack, String override) {
+		// copied from ItemRenderer.renderGuiItemOverlay, line 331 (was method call param "color", converted from dec)
 		return 0xFFFFFF;
 	}
 }
