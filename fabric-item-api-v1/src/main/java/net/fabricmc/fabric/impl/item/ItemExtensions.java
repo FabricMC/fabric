@@ -20,4 +20,5 @@ import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
 public interface ItemExtensions {
 	EquipmentSlotProvider fabric_getEquipmentSlotProvider();
+	void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider);
 }

@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(Item.class)
@@ -33,16 +33,18 @@ abstract class ItemMixin implements ItemExtensions {
 	@Unique
 	private EquipmentSlotProvider equipmentSlotProvider;
 
-	@SuppressWarnings("deprecation")
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
-		if (settings instanceof FabricItemSettings) {
-			this.equipmentSlotProvider = ((FabricItemSettings) settings).getEquipmentSlotProvider();
-		}
+		FabricItemInternals.onBuild(settings, (Item) (Object) this);
 	}
 
 	@Override
 	public EquipmentSlotProvider fabric_getEquipmentSlotProvider() {
 		return equipmentSlotProvider;
+	}
+
+	@Override
+	public void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider) {
+		this.equipmentSlotProvider = equipmentSlotProvider;
 	}
 }

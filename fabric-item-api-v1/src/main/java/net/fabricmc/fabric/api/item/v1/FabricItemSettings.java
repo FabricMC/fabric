@@ -21,6 +21,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Rarity;
 
+import net.fabricmc.fabric.impl.item.FabricItemInternals;
+
 /**
  * Fabric's version of Item.Settings. Adds additional methods and hooks
  * not found in the original class.
@@ -29,8 +31,6 @@ import net.minecraft.util.Rarity;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
-	private EquipmentSlotProvider equipmentSlotProvider;
-
 	/**
 	 * Sets the equipment slot provider of the item.
 	 *
@@ -38,16 +38,8 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		this.equipmentSlotProvider = equipmentSlotProvider;
+		FabricItemInternals.computeExtraData(this).equipmentSlot(equipmentSlotProvider);
 		return this;
-	}
-
-	/**
-	 * @deprecated Internal method.
-	 */
-	@Deprecated
-	public EquipmentSlotProvider getEquipmentSlotProvider() {
-		return equipmentSlotProvider;
 	}
 
 	// Overrides of vanilla methods
