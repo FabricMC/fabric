@@ -48,6 +48,8 @@ public abstract class MixinItemRenderer {
 		renderGuiQuad(buffer, x, y, width, height, color >> 16 & 255, color >> 8 & 255, color & 255, color >> 24 & 255);
 	}
 
+	@Unique private final MatrixStack matrixStack = new MatrixStack();
+
 	/**
 	 * @reason Implement custom item overlay API
 	 * @author ADudeCalledLeo
@@ -56,7 +58,7 @@ public abstract class MixinItemRenderer {
 	@Overwrite
 	public void renderGuiItemOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
 		if (!stack.isEmpty()) {
-			MatrixStack matrixStack = new MatrixStack();
+			matrixStack.push();
 			matrixStack.translate(0.0D, 0.0D, this.zOffset + 200.0F);
 
 			CustomItemOverlayRenderer overlayRenderer = ItemOverlayRendererRegistry.getCustom(stack.getItem());
@@ -120,6 +122,8 @@ public abstract class MixinItemRenderer {
 				RenderSystem.enableTexture();
 				RenderSystem.enableDepthTest();
 			}
+
+			matrixStack.pop();
 		}
 	}
 }
