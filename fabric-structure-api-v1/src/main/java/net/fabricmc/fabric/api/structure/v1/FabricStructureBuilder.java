@@ -29,7 +29,7 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.FeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import net.fabricmc.fabric.impl.structure.FabricStructuresImpl;
+import net.fabricmc.fabric.impl.structure.FabricStructureUtil;
 import net.fabricmc.fabric.impl.structure.StructuresConfigHooks;
 import net.fabricmc.fabric.mixin.structure.FlatChunkGeneratorConfigAccessor;
 import net.fabricmc.fabric.mixin.structure.StructureFeatureAccessor;
@@ -53,7 +53,7 @@ import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
  * <p>This class does <i>not</i> add structures to biomes for you, you have to do that yourself. You may also need to
  * register custom structure pieces yourself.</p>
  */
-public class FabricStructureBuilder<FC extends FeatureConfig, S extends StructureFeature<FC>> {
+public final class FabricStructureBuilder<FC extends FeatureConfig, S extends StructureFeature<FC>> {
 	private final Identifier id;
 	private final S structure;
 	private GenerationStep.Feature step;
@@ -172,7 +172,7 @@ public class FabricStructureBuilder<FC extends FeatureConfig, S extends Structur
 
 		if (!id.toString().equals(structure.getName())) {
 			// mods should not be overriding getName, but if they do and it's incorrect, this gives an error
-			throw new IllegalStateException("Structure " + id + " has mismatching name " + structure.getName() + ". Structures should not override getName.");
+			throw new IllegalStateException(String.format("Structure \"%s\" has mismatching name \"%s\". Structures should not override \"getName\".", id, structure.getName()));
 		}
 
 		StructuresConfigAccessor.setDefaultStructures(ImmutableMap.<StructureFeature<?>, StructureConfig>builder()
@@ -192,7 +192,7 @@ public class FabricStructureBuilder<FC extends FeatureConfig, S extends Structur
 		}
 
 		// update existing structure configs
-		for (StructuresConfig structuresConfig : FabricStructuresImpl.defaultStructuresConfigs) {
+		for (StructuresConfig structuresConfig : FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS) {
 			((StructuresConfigHooks) structuresConfig).fabric_updateDefaultEntries();
 		}
 

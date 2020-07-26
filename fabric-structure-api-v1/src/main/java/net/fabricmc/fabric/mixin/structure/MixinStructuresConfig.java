@@ -29,7 +29,7 @@ import net.minecraft.world.gen.chunk.StructureConfig;
 import net.minecraft.world.gen.chunk.StructuresConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import net.fabricmc.fabric.impl.structure.FabricStructuresImpl;
+import net.fabricmc.fabric.impl.structure.FabricStructureUtil;
 import net.fabricmc.fabric.impl.structure.StructuresConfigHooks;
 
 @Mixin(StructuresConfig.class)
@@ -40,7 +40,7 @@ public class MixinStructuresConfig implements StructuresConfigHooks {
 
 	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
 	private void onDefaultInit(CallbackInfo ci) {
-		FabricStructuresImpl.defaultStructuresConfigs.add((StructuresConfig) (Object) this);
+		FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS.add((StructuresConfig) (Object) this);
 	}
 
 	@Override

@@ -29,6 +29,6 @@ import net.minecraft.world.gen.feature.StructureFeature;
 public interface FlatChunkGeneratorConfigAccessor {
 	@Accessor("STRUCTURE_TO_FEATURES")
 	static Map<StructureFeature<?>, ConfiguredStructureFeature<?, ?>> getStructureToFeatures() {
-		throw new UnsupportedOperationException();
+		throw new AssertionError("Untransformed accessor");
 	}
 }

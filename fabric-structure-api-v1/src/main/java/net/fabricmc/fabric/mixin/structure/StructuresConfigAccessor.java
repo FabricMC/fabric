@@ -30,6 +30,6 @@ public interface StructuresConfigAccessor {
 	@Mutable
 	@Accessor("DEFAULT_STRUCTURES")
 	static void setDefaultStructures(ImmutableMap<StructureFeature<?>, StructureConfig> defaultStructures) {
-		throw new UnsupportedOperationException();
+		throw new AssertionError("Untransformed accessor");
 	}
 }

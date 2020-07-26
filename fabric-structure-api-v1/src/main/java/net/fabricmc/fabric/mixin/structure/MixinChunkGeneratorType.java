@@ -23,12 +23,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.world.gen.chunk.ChunkGeneratorType;
 
-import net.fabricmc.fabric.impl.structure.FabricStructuresImpl;
+import net.fabricmc.fabric.impl.structure.FabricStructureUtil;
 
 @Mixin(ChunkGeneratorType.class)
 public class MixinChunkGeneratorType {
 	@Inject(method = "method_30641", at = @At("RETURN"))
 	private static void onCreateCavesType(CallbackInfoReturnable<ChunkGeneratorType> cir) {
-		FabricStructuresImpl.defaultStructuresConfigs.add(cir.getReturnValue().getConfig());
+		FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS.add(cir.getReturnValue().getConfig());
 	}
 }

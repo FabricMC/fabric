@@ -31,11 +31,11 @@ public interface StructureFeatureAccessor {
 	@Accessor("field_24861")
 	@Mutable
 	static void setSurfaceAdjustingStructures(List<StructureFeature<?>> surfaceAdjustingStructures) {
-		throw new UnsupportedOperationException();
+		throw new AssertionError("Untransformed accessor");
 	}
 
 	@Invoker
 	static <F extends StructureFeature<?>> F callRegister(String name, F structureFeature, GenerationStep.Feature step) {
-		throw new UnsupportedOperationException();
+		throw new AssertionError("Untransformed accessor");
 	}
 }

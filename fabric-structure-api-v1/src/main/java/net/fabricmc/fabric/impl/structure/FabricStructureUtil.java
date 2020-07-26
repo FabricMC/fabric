@@ -22,6 +22,8 @@ import java.util.WeakHashMap;
 
 import net.minecraft.world.gen.chunk.StructuresConfig;
 
-public class FabricStructuresImpl {
-	public static final Set<StructuresConfig> defaultStructuresConfigs = Collections.newSetFromMap(new WeakHashMap<>());
+public final class FabricStructureUtil {
+	private FabricStructureUtil() { }
+
+	public static final Set<StructuresConfig> DEFAULT_STRUCTURES_CONFIGS = Collections.newSetFromMap(new WeakHashMap<>());
 }
