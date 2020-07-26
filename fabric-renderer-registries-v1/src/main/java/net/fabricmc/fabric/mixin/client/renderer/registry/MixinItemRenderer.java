@@ -92,7 +92,7 @@ public abstract class MixinItemRenderer {
 					if (dbp.isVisible(stack, dbI)) {
 						Tessellator tessellator = Tessellator.getInstance();
 						BufferBuilder bufferBuilder = tessellator.getBuffer();
-						int i = Math.round(13.0F - dbp.getFillFactor(stack, dbI) * 13.0F);
+						int i = Math.round(dbp.getFillFactor(stack, dbI) * 13.0F);
 						int j = dbp.getColor(stack, dbI);
 						this.renderGuiQuad(bufferBuilder, x + 2, y + dbY, 13, 2, 0xFF000000);
 						this.renderGuiQuad(bufferBuilder, x + 2, y + dbY, i, 1, j);
