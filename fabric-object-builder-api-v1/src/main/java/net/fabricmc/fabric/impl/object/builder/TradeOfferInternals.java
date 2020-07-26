@@ -91,7 +91,8 @@ public final class TradeOfferInternals {
 				final TradeOffers.Factory[] factories = value.get(level);
 
 				if (factories != null) {
-					ArrayUtils.addAll(leveledFactoryMap.computeIfAbsent(level, key -> new TradeOffers.Factory[0]), factories);
+					final Int2ObjectMap<TradeOffers.Factory[]> resultMap = trades.computeIfAbsent(tradeFactoryEntry.getKey(), key -> new Int2ObjectOpenHashMap<>());
+					resultMap.put(level, ArrayUtils.addAll(leveledFactoryMap.computeIfAbsent(level, key -> new TradeOffers.Factory[0]), factories));
 				}
 			}
 		}
