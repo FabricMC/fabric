@@ -43,7 +43,7 @@ import net.fabricmc.fabric.mixin.structure.StructuresConfigAccessor;
  * StructureFeature structure = new MyStructure(DefaultFeatureConfig.CODEC);
  * ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> configuredStructure
  *     = structure.configure(new DefaultFeatureConfig());
- * FabricStructureBuilder.create()
+ * FabricStructureBuilder.create(new Identifier("mymod:mystructure"), structure)
  *     .step(GenerationStep.Feature.SURFACE_STRUCTURES) // required
  *     .defaultConfig(32, 8, 12345) // required
  *     .superflatFeature(configuredStructure)
