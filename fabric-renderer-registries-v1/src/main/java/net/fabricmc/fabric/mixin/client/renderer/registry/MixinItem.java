@@ -29,48 +29,48 @@ import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
 
 @Mixin(Item.class)
 public abstract class MixinItem implements ItemOverlayExtensions {
-	@Unique private CountLabelProperties clp = CountLabelProperties.DEFAULT;
-	@Unique private DurabilityBarProperties dbp = DurabilityBarProperties.DEFAULT;
-	@Unique private CooldownOverlayProperties cop = CooldownOverlayProperties.DEFAULT;
-	@Unique private CustomItemOverlayRenderer cior;
+	@Unique private CountLabelProperties countLabelProperties = CountLabelProperties.DEFAULT;
+	@Unique private DurabilityBarProperties durabilityBarProperties = DurabilityBarProperties.DEFAULT;
+	@Unique private CooldownOverlayProperties cooldownOverlayProperties = CooldownOverlayProperties.DEFAULT;
+	@Unique private CustomItemOverlayRenderer customItemOverlayRenderer;
 
 	@Override
 	public CountLabelProperties fabric_getCountLabelProperties() {
-		return clp;
+		return countLabelProperties;
 	}
 
 	@Override
 	public void fabric_setCountLabelProperties(CountLabelProperties clp) {
-		this.clp = clp;
+		this.countLabelProperties = clp;
 	}
 
 	@Override
 	public DurabilityBarProperties fabric_getDurabilityBarProperties() {
-		return dbp;
+		return durabilityBarProperties;
 	}
 
 	@Override
 	public void fabric_setDurabilityBarProperties(DurabilityBarProperties dbp) {
-		this.dbp = dbp;
+		this.durabilityBarProperties = dbp;
 	}
 
 	@Override
 	public CooldownOverlayProperties fabric_getCooldownOverlayProperties() {
-		return cop;
+		return cooldownOverlayProperties;
 	}
 
 	@Override
 	public void fabric_setCooldownOverlayProperties(CooldownOverlayProperties cop) {
-		this.cop = cop;
+		this.cooldownOverlayProperties = cop;
 	}
 
 	@Override
 	public CustomItemOverlayRenderer fabric_getCustomItemOverlayRenderer() {
-		return cior;
+		return customItemOverlayRenderer;
 	}
 
 	@Override
 	public void fabric_setCustomOverlayRenderer(CustomItemOverlayRenderer cior) {
-		this.cior = cior;
+		this.customItemOverlayRenderer = cior;
 	}
 }

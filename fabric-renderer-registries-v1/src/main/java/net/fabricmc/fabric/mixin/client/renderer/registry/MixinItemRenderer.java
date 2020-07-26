@@ -59,44 +59,44 @@ public abstract class MixinItemRenderer {
 			MatrixStack matrixStack = new MatrixStack();
 			matrixStack.translate(0.0D, 0.0D, this.zOffset + 200.0F);
 
-			CustomItemOverlayRenderer cior = ItemOverlayRendererRegistry.getCustom(stack.getItem());
+			CustomItemOverlayRenderer overlayRenderer = ItemOverlayRendererRegistry.getCustom(stack.getItem());
 
-			if (cior != null) {
-				if (cior.renderOverlay(matrixStack, renderer, stack, x, y, countLabel)) {
+			if (overlayRenderer != null) {
+				if (overlayRenderer.renderOverlay(matrixStack, renderer, stack, x, y, countLabel)) {
 					return;
 				}
 			}
 
-			CountLabelProperties clp = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
+			CountLabelProperties countProps = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
 
-			if (clp.isVisible(stack, countLabel)) {
-				int color = clp.getColor(stack, countLabel);
-				countLabel = clp.getContents(stack, countLabel);
+			if (countProps.isVisible(stack, countLabel)) {
+				int color = countProps.getColor(stack, countLabel);
+				countLabel = countProps.getContents(stack, countLabel);
 				VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
 				renderer.draw(countLabel, x + 17 - renderer.getWidth(countLabel), y + 9, color, true, matrixStack.peek().getModel(), immediate, false, 0, 0xF000F0);
 				immediate.draw();
 			}
 
-			DurabilityBarProperties dbp = ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem());
+			DurabilityBarProperties barProps = ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem());
 
-			final int dbCount = dbp.getCount(stack);
+			final int barCount = barProps.getCount(stack);
 
-			if (dbCount > 0) {
-				int dbY = 13 - (dbCount - 1) * 2;
+			if (barCount > 0) {
+				int barY = 13 - (barCount - 1) * 2;
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableTexture();
 				RenderSystem.disableAlphaTest();
 				RenderSystem.disableBlend();
 
-				for (int dbI = 0; dbI < dbCount; dbI++) {
-					if (dbp.isVisible(stack, dbI)) {
+				for (int barI = 0; barI < barCount; barI++) {
+					if (barProps.isVisible(stack, barI)) {
 						Tessellator tessellator = Tessellator.getInstance();
 						BufferBuilder bufferBuilder = tessellator.getBuffer();
-						int i = Math.round(dbp.getFillFactor(stack, dbI) * 13.0F);
-						int j = dbp.getColor(stack, dbI);
-						this.renderGuiQuad(bufferBuilder, x + 2, y + dbY, 13, 2, 0xFF000000);
-						this.renderGuiQuad(bufferBuilder, x + 2, y + dbY, i, 1, j);
-						dbY += 2;
+						int i = Math.round(barProps.getFillFactor(stack, barI) * 13.0F);
+						int j = barProps.getColor(stack, barI);
+						this.renderGuiQuad(bufferBuilder, x + 2, y + barY, 13, 2, 0xFF000000);
+						this.renderGuiQuad(bufferBuilder, x + 2, y + barY, i, 1, j);
+						barY += 2;
 					}
 				}
 
@@ -106,17 +106,17 @@ public abstract class MixinItemRenderer {
 				RenderSystem.enableDepthTest();
 			}
 
-			CooldownOverlayProperties cop = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem());
+			CooldownOverlayProperties coolProps = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem());
 
-			if (cop.isVisible(stack)) {
-				float k = cop.getFillFactor(stack);
+			if (coolProps.isVisible(stack)) {
+				float k = coolProps.getFillFactor(stack);
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableTexture();
 				RenderSystem.enableBlend();
 				RenderSystem.defaultBlendFunc();
 				Tessellator tessellator2 = Tessellator.getInstance();
 				BufferBuilder bufferBuilder2 = tessellator2.getBuffer();
-				this.renderGuiQuad(bufferBuilder2, x, y + MathHelper.floor(16.0F * (1.0F - k)), 16, MathHelper.ceil(16.0F * k), cop.getColor(stack));
+				this.renderGuiQuad(bufferBuilder2, x, y + MathHelper.floor(16.0F * (1.0F - k)), 16, MathHelper.ceil(16.0F * k), coolProps.getColor(stack));
 				RenderSystem.enableTexture();
 				RenderSystem.enableDepthTest();
 			}
