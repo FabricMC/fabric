@@ -14,28 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry;
+package net.fabricmc.fabric.test.renderregistry.client.countlabel;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Formatting;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
 
-public class DefaultCountLabelProperties implements CountLabelProperties {
+public class ObfuscatedCountLabelProperties implements CountLabelProperties {
 	@Override
 	public boolean isVisible(ItemStack stack, String override) {
-		// copied from ItemRenderer.renderGuiItemOverlay, line 327 (override was method param "countLabel")
-		return override != null || stack.getCount() != 1;
+		return true;
 	}
 
 	@Override
 	public String getContents(ItemStack stack, String override) {
-		// copied from ItemRenderer.renderGuiItemOverlay, line 328 (override was method param "countLabel")
-		return override == null ? Integer.toString(stack.getCount()) : override;
+		return Formatting.OBFUSCATED.toString() + (override == null ? Integer.toString(stack.getCount()) : override);
 	}
 
 	@Override
 	public int getColor(ItemStack stack, String override) {
-		// copied from ItemRenderer.renderGuiItemOverlay, line 331 (was method call param "color", converted from dec)
 		return 0xFFFFFF;
 	}
 }

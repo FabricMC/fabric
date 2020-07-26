@@ -29,6 +29,9 @@ import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.WaterLavaBuc
 public class RendererRegistriesTest implements ModInitializer {
 	public static final String ID = "fabric-renderer-registries-v1-testmod";
 
+	// Count Label related items
+	public static final Item OBFUSCATED_COUNT = new StorageItem(new Item.Settings().group(ItemGroup.MISC));
+
 	// Durability Bar related items
 	public static final Item ENERGY_STORAGE = new StorageItem(new Item.Settings().group(ItemGroup.MISC));
 	public static final Item MANA_STORAGE = new StorageItem(new Item.Settings().group(ItemGroup.MISC));
@@ -45,6 +48,9 @@ public class RendererRegistriesTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		// Items used to demonstrate custom count labels
+		Registry.register(Registry.ITEM, id("obfuscated_count"), OBFUSCATED_COUNT);
+
 		// Items used to demonstrate custom durability bars
 		Registry.register(Registry.ITEM, id("energy_storage"), ENERGY_STORAGE);
 		Registry.register(Registry.ITEM, id("mana_storage"), MANA_STORAGE);
