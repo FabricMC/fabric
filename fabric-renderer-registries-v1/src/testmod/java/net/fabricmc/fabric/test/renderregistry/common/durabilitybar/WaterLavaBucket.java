@@ -47,7 +47,7 @@ public class WaterLavaBucket extends Item {
 			return 0;
 		}
 
-		return tag.getInt(TAG_WATER) / (float) CAPACITY;
+		return (CAPACITY - tag.getInt(TAG_WATER)) / (float) CAPACITY;
 	}
 
 	public float getLavaFillLevel(ItemStack stack) {
@@ -57,7 +57,7 @@ public class WaterLavaBucket extends Item {
 			return 0;
 		}
 
-		return tag.getInt(TAG_LAVA) / (float) CAPACITY;
+		return (CAPACITY - tag.getInt(TAG_LAVA)) / (float) CAPACITY;
 	}
 
 	@Override

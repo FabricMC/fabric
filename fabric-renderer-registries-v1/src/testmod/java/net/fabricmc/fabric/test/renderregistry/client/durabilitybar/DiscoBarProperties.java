@@ -36,7 +36,7 @@ public class DiscoBarProperties implements DurabilityBarProperties {
 
 	@Override
 	public float getFillFactor(ItemStack stack, int index) {
-		return 0;
+		return 1;
 	}
 
 	@Override

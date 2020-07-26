@@ -42,7 +42,7 @@ public class StorageItem extends Item {
 			return 0;
 		}
 
-		return tag.getInt("current") / (float) CAPACITY;
+		return (CAPACITY - tag.getInt("current")) / (float) CAPACITY;
 	}
 
 	@Override
