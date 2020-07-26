@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-entity-events-v1-testmod",
+  "name": "Fabric Entity Events (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-entity-events-v1": "*",
+    "fabric-command-api-v1":"*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.entity.event.EntityEventTests"
+    ]
+  }
+}
