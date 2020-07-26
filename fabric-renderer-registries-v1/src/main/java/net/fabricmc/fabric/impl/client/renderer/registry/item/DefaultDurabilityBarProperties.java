@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry;
+package net.fabricmc.fabric.impl.client.renderer.registry.item;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;

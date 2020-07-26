@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry;
+package net.fabricmc.fabric.impl.client.renderer.registry.item;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;

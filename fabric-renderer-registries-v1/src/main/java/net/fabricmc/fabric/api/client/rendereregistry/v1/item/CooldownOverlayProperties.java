@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.DefaultCooldownOverlayProperties;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOverlayProperties;
 
 public interface CooldownOverlayProperties {
 	CooldownOverlayProperties DEFAULT = new DefaultCooldownOverlayProperties();

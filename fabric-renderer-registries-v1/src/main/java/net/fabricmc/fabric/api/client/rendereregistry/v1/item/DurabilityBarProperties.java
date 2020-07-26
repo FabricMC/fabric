@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.DefaultDurabilityBarProperties;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultDurabilityBarProperties;
 
 public interface DurabilityBarProperties {
 	DurabilityBarProperties DEFAULT = new DefaultDurabilityBarProperties();

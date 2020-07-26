@@ -26,15 +26,15 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperti
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PreItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
-import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensions;
 
 @Mixin(Item.class)
 public abstract class MixinItem implements ItemOverlayExtensions {
 	@Unique private CountLabelProperties countLabelProperties = CountLabelProperties.DEFAULT;
 	@Unique private DurabilityBarProperties durabilityBarProperties = DurabilityBarProperties.DEFAULT;
 	@Unique private CooldownOverlayProperties cooldownOverlayProperties = CooldownOverlayProperties.DEFAULT;
-	@Unique private PreItemOverlayRenderer preItemOverlayRenderer = PreItemOverlayRenderer.NO_OP;
-	@Unique private PostItemOverlayRenderer postItemOverlayRenderer = PostItemOverlayRenderer.NO_OP;
+	@Unique private PreItemOverlayRenderer preItemOverlayRenderer = PreItemOverlayRenderer.DEFAULT;
+	@Unique private PostItemOverlayRenderer postItemOverlayRenderer = PostItemOverlayRenderer.DEFAULT;
 
 	@Override
 	public CountLabelProperties fabric_getCountLabelProperties() {

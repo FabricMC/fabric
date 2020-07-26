@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayExtensions;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensions;
 
 public final class ItemOverlayRendererRegistry {
 	private ItemOverlayRendererRegistry() { }

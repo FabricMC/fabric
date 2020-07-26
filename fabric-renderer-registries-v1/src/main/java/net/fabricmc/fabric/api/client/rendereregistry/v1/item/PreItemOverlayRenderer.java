@@ -22,6 +22,7 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultPreItemOverlayRenderer;
 
 /**
  * This interface allows you to override Minecraft's GUI item overlay rendering (durability bars, item counts
@@ -39,10 +40,7 @@ import net.fabricmc.api.Environment;
  */
 @FunctionalInterface
 public interface PreItemOverlayRenderer {
-	/**
-	 * No-operation implementation. Used as the default implementation.
-	 */
-	PreItemOverlayRenderer NO_OP = (matrixStack, renderer, stack, x, y, countLabel) -> false;
+	PreItemOverlayRenderer DEFAULT = new DefaultPreItemOverlayRenderer();
 
 	/**
 	 * Called before Vanilla's overlay rendering. Note that overlay rendering occurs <em>after</em> the

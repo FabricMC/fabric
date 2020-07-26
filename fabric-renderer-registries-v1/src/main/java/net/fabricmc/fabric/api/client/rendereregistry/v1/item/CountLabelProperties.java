@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.DefaultCountLabelProperties;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCountLabelProperties;
 
 public interface CountLabelProperties {
 	CountLabelProperties DEFAULT = new DefaultCountLabelProperties();

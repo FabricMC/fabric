@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
+package net.fabricmc.fabric.impl.client.renderer.registry.item;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultPostItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRenderer;
 
-/**
- * This interface allows you to append to Minecraft's GUI item overlay rendering (durability bars, item counts
- * and cooldown overlays).
- */
-@FunctionalInterface
-public interface PostItemOverlayRenderer {
-	PostItemOverlayRenderer DEFAULT = new DefaultPostItemOverlayRenderer();
-
-	/**
-	 * Called after Vanilla's overlay rendering.
-	 */
-	void renderOverlay(MatrixStack matrixStack, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel);
+public class DefaultPostItemOverlayRenderer implements PostItemOverlayRenderer {
+	@Override
+	public void renderOverlay(MatrixStack matrixStack, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) { }
 }

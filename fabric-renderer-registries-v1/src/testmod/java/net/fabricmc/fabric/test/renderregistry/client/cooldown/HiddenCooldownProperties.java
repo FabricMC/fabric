@@ -18,7 +18,7 @@ package net.fabricmc.fabric.test.renderregistry.client.cooldown;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.DefaultCooldownOverlayProperties;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOverlayProperties;
 
 /**
  * Hides the cooldown overlay, even if there is a cooldown, as long as it has more than 20% remaining.
