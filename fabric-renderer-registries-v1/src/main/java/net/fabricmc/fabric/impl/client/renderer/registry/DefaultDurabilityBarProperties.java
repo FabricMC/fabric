@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.SingleDurabilityBa
 public class DefaultDurabilityBarProperties extends SingleDurabilityBarProperties {
 	protected float getDamageValue(ItemStack stack) {
 		// copied from ItemRenderer.renderGuiItemOverlay, lines 342-344 (locals were inlined)
-		return Math.max(0, (stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage());
+		return Math.max(0, stack.getDamage() / (float) stack.getMaxDamage());
 	}
 
 	@Override
