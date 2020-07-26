@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-renderer-registries-v1-testmod",
+  "name": "Fabric Renderer Registries API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-resource-loader-v0": "*",
+    "fabric-renderer-registries-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.renderregistry.client.ClientRendererRegistriesTest"
+    ]
+  }
+}
