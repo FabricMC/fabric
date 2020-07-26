@@ -88,14 +88,14 @@ public abstract class MixinItemRenderer {
 				RenderSystem.disableAlphaTest();
 				RenderSystem.disableBlend();
 
-				for (int barI = 0; barI < barCount; barI++) {
-					if (barProps.isVisible(stack, barI)) {
+				for (int i = 0; i < barCount; i++) {
+					if (barProps.isVisible(stack, i)) {
 						Tessellator tessellator = Tessellator.getInstance();
 						BufferBuilder bufferBuilder = tessellator.getBuffer();
-						int i = Math.round(barProps.getFillFactor(stack, barI) * 13.0F);
-						int j = barProps.getColor(stack, barI);
+						int width = Math.round(barProps.getFillFactor(stack, i) * 13.0F);
+						int color = barProps.getColor(stack, i);
 						this.renderGuiQuad(bufferBuilder, x + 2, y + barY, 13, 2, 0xFF000000);
-						this.renderGuiQuad(bufferBuilder, x + 2, y + barY, i, 1, j);
+						this.renderGuiQuad(bufferBuilder, x + 2, y + barY, width, 1, color);
 						barY += 2;
 					}
 				}
@@ -109,14 +109,14 @@ public abstract class MixinItemRenderer {
 			CooldownOverlayProperties coolProps = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem());
 
 			if (coolProps.isVisible(stack)) {
-				float k = coolProps.getFillFactor(stack);
+				float fillFactor = coolProps.getFillFactor(stack);
 				RenderSystem.disableDepthTest();
 				RenderSystem.disableTexture();
 				RenderSystem.enableBlend();
 				RenderSystem.defaultBlendFunc();
 				Tessellator tessellator2 = Tessellator.getInstance();
 				BufferBuilder bufferBuilder2 = tessellator2.getBuffer();
-				this.renderGuiQuad(bufferBuilder2, x, y + MathHelper.floor(16.0F * (1.0F - k)), 16, MathHelper.ceil(16.0F * k), coolProps.getColor(stack));
+				this.renderGuiQuad(bufferBuilder2, x, y + MathHelper.floor(16.0F * (1.0F - fillFactor)), 16, MathHelper.ceil(16.0F * fillFactor), coolProps.getColor(stack));
 				RenderSystem.enableTexture();
 				RenderSystem.enableDepthTest();
 			}
