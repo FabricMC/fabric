@@ -28,7 +28,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
-import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
+import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 @Mixin(GameRenderer.class)
@@ -37,14 +37,14 @@ public abstract class GameRendererMixin {
 	@Final
 	private MinecraftClient client;
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V"), locals = LocalCapture.PRINT)
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrices) {
-		ScreenEvents.BEFORE_RENDER.invoker().beforeRender(this.client, matrices, this.client.currentScreen, (ScreenContext) this.client.currentScreen, mouseX, mouseY, tickDelta);
+		ScreenEvents.BEFORE_RENDER.invoker().beforeRender(this.client, matrices, this.client.currentScreen, (FabricScreen) this.client.currentScreen, mouseX, mouseY, tickDelta);
 	}
 
 	// This injection should end up in the try block so exceptions are caught
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.PRINT)
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrices) {
-		ScreenEvents.AFTER_RENDER.invoker().afterRender(this.client, matrices, this.client.currentScreen, (ScreenContext) this.client.currentScreen, mouseX, mouseY, tickDelta);
+		ScreenEvents.AFTER_RENDER.invoker().afterRender(this.client, matrices, this.client.currentScreen, (FabricScreen) this.client.currentScreen, mouseX, mouseY, tickDelta);
 	}
 }

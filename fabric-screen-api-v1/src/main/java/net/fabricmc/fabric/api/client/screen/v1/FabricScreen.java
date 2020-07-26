@@ -30,15 +30,15 @@ import net.fabricmc.api.Environment;
  * Provides access to additional context a screen can hold.
  */
 @Environment(EnvType.CLIENT)
-public interface ScreenContext {
+public interface FabricScreen {
 	/**
-	 * Gets the screen's context.
+	 * Gets the screen's additional info.
 	 *
 	 * @param screen the screen
 	 * @return the screen's context
 	 */
-	static ScreenContext from(Screen screen) {
-		return (ScreenContext) screen;
+	static FabricScreen getInfo(Screen screen) {
+		return (FabricScreen) screen;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public interface ScreenContext {
 	TextRenderer getTextRenderer();
 
 	/**
-	 * Gets the screen which owns this context.
+	 * Gets the backing screen.
 	 *
 	 * @return the screen
 	 */

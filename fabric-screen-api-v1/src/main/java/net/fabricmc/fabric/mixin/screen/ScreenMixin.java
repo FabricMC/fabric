@@ -33,12 +33,12 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.render.item.ItemRenderer;
 
-import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
+import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.impl.client.screen.ButtonList;
 
 @Mixin(Screen.class)
-public abstract class ScreenMixin implements ScreenContext {
+public abstract class ScreenMixin implements FabricScreen {
 	@Shadow
 	protected ItemRenderer itemRenderer;
 	@Shadow

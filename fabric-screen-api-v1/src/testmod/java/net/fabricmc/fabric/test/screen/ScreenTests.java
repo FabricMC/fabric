@@ -31,7 +31,7 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenContext;
+import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 public class ScreenTests implements ClientModInitializer {
@@ -45,7 +45,7 @@ public class ScreenTests implements ClientModInitializer {
 		ScreenEvents.AFTER_RENDER.register(this::onRender);
 	}
 
-	private void onInit(MinecraftClient client, Screen screen, ScreenContext context, int windowWidth, int windowHeight) {
+	private void onInit(MinecraftClient client, Screen screen, FabricScreen context, int windowWidth, int windowHeight) {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
@@ -71,7 +71,7 @@ public class ScreenTests implements ClientModInitializer {
 		}
 	}
 
-	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenContext context, int mouseX, int mouseY, float tickDelta) {
+	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen context, int mouseX, int mouseY, float tickDelta) {
 		if (screen instanceof TitleScreen) {
 			RenderSystem.pushMatrix();
 			// Render an armor icon to test

@@ -126,23 +126,23 @@ public final class ScreenEvents {
 	});
 
 	public interface Init {
-		void onInit(MinecraftClient client, Screen screen, ScreenContext context, int scaledWidth, int scaledHeight);
+		void onInit(MinecraftClient client, Screen screen, FabricScreen context, int scaledWidth, int scaledHeight);
 	}
 
 	public interface BeforeRender {
-		void beforeRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenContext context, int mouseX, int mouseY, float tickDelta);
+		void beforeRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen context, int mouseX, int mouseY, float tickDelta);
 	}
 
 	public interface AfterRender {
-		void afterRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenContext context, int mouseX, int mouseY, float tickDelta);
+		void afterRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen context, int mouseX, int mouseY, float tickDelta);
 	}
 
 	public interface BeforeTick {
-		void beforeTick(MinecraftClient client, Screen screen, ScreenContext context);
+		void beforeTick(MinecraftClient client, Screen screen, FabricScreen context);
 	}
 
 	public interface AfterTick {
-		void afterTick(MinecraftClient client, Screen screen, ScreenContext context);
+		void afterTick(MinecraftClient client, Screen screen, FabricScreen context);
 	}
 
 	private ScreenEvents() {
