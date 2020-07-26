@@ -40,7 +40,7 @@ import net.fabricmc.api.Environment;
 @FunctionalInterface
 public interface CustomItemOverlayRenderer {
 	/**
-	 * Called before instead of Vanilla's overlay rendering. Note that overlay rendering occurs <em>after</em> the
+	 * Called before Vanilla's overlay rendering. Note that overlay rendering occurs <em>after</em> the
 	 * enchanted glint is rendered.
 	 * @return {@code true} to cancel Vanilla's overlay rendering.
 	 */
