@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.screen;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -29,7 +30,6 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
@@ -37,14 +37,22 @@ public abstract class GameRendererMixin {
 	@Final
 	private MinecraftClient client;
 
+	@Unique
+	private FabricScreen renderingScreen;
+
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrices) {
-		ScreenEvents.BEFORE_RENDER.invoker().beforeRender(this.client, matrices, this.client.currentScreen, (FabricScreen) this.client.currentScreen, mouseX, mouseY, tickDelta);
+		// Store the screen in a variable in case someone tries to change the screen during this before render event.
+		// If someone changes the screen, the after render event will likely have class cast exceptions or an NPE.
+		this.renderingScreen = (FabricScreen) this.client.currentScreen;
+		this.renderingScreen.getBeforeRenderEvent().invoker().beforeRender(this.client, matrices, this.renderingScreen.getScreen(), this.renderingScreen, mouseX, mouseY, tickDelta);
 	}
 
 	// This injection should end up in the try block so exceptions are caught
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onAfterRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrices) {
-		ScreenEvents.AFTER_RENDER.invoker().afterRender(this.client, matrices, this.client.currentScreen, (FabricScreen) this.client.currentScreen, mouseX, mouseY, tickDelta);
+		this.renderingScreen.getAfterRenderEvent().invoker().afterRender(this.client, matrices, this.renderingScreen.getScreen(), this.renderingScreen, mouseX, mouseY, tickDelta);
+		// Finally set the currently rendering screen to null
+		this.renderingScreen = null;
 	}
 }

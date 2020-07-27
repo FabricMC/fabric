@@ -41,22 +41,21 @@ public class ScreenTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("Started Screen Testmod");
-		ScreenEvents.AFTER_INIT.register(this::onInit);
-		ScreenEvents.AFTER_RENDER.register(this::onRender);
+		ScreenEvents.AFTER_INIT.register(this::onInitScreen);
 	}
 
-	private void onInit(MinecraftClient client, Screen screen, FabricScreen context, int windowWidth, int windowHeight) {
+	private void onInitScreen(MinecraftClient client, Screen screen, FabricScreen info, int windowWidth, int windowHeight) {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
 			// Shrink the realms button, should be the third button on the list
-			final AbstractButtonWidget optionsButton = context.getButtons().get(2);
+			final AbstractButtonWidget optionsButton = info.getButtons().get(2);
 			optionsButton.setWidth(98);
 
 			// Add a new button
-			context.getButtons().add(new SoundButton((screen.width / 2) + 2, ((screen.height / 4) + 96), 72, 20));
+			info.getButtons().add(new SoundButton((screen.width / 2) + 2, ((screen.height / 4) + 96), 72, 20));
 			// And another button
-			context.getButtons().add(new StopSoundButton(screen, (screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
+			info.getButtons().add(new StopSoundButton(screen, (screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
 
 			// And some automatic validation, make sure the buttons we added are on the list of child elements
 			screen.children().stream()
@@ -68,6 +67,9 @@ public class ScreenTests implements ClientModInitializer {
 					.filter(element -> element instanceof StopSoundButton)
 					.findAny()
 					.orElseThrow(() -> new AssertionError("Failed to find the \"Stop Sound\" button in the screen's elements"));
+
+			// Register render event to draw an icon on the screen
+			info.getAfterRenderEvent().register(this::onRender);
 		}
 	}
 

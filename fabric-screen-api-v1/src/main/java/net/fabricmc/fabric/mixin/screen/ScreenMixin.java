@@ -32,10 +32,13 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ButtonList;
+import net.fabricmc.fabric.impl.client.screen.ScreenEventFactory;
 
 @Mixin(Screen.class)
 public abstract class ScreenMixin implements FabricScreen {
@@ -52,15 +55,31 @@ public abstract class ScreenMixin implements FabricScreen {
 
 	@Unique
 	private ButtonList<AbstractButtonWidget> fabricButtons;
+	@Unique
+	private Event<ScreenEvents.BeforeTick> beforeTickEvent;
+	@Unique
+	private Event<ScreenEvents.AfterTick> afterTickEvent;
+	@Unique
+	private Event<ScreenEvents.BeforeRender> beforeRenderEvent;
+	@Unique
+	private Event<ScreenEvents.AfterRender> afterRenderEvent;
+
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void initializeEvents(Text title, CallbackInfo ci) {
+		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
+		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
+		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
+		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
+	}
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
-	private void onInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
+	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
 		ScreenEvents.AFTER_INIT.invoker().onInit(client, (Screen) (Object) this, this, width, height);
 	}
 
 	@Override
 	public List<AbstractButtonWidget> getButtons() {
-		// Lazy init to handle class init
+		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
 			this.fabricButtons = new ButtonList<>(this.buttons, this.children);
 		}
@@ -76,6 +95,26 @@ public abstract class ScreenMixin implements FabricScreen {
 	@Override
 	public TextRenderer getTextRenderer() {
 		return this.textRenderer;
+	}
+
+	@Override
+	public Event<ScreenEvents.BeforeTick> getBeforeTickEvent() {
+		return this.beforeTickEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterTick> getAfterTickEvent() {
+		return this.afterTickEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.BeforeRender> getBeforeRenderEvent() {
+		return this.beforeRenderEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterRender> getAfterRenderEvent() {
+		return this.afterRenderEvent;
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import net.minecraft.client.render.item.ItemRenderer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.Event;
 
 /**
  * Provides access to additional context a screen can hold.
@@ -61,6 +62,26 @@ public interface FabricScreen {
 	 * @return a text renderer.
 	 */
 	TextRenderer getTextRenderer();
+
+	/**
+	 * An event that is called before a screen is ticked.
+	 */
+	Event<ScreenEvents.BeforeTick> getBeforeTickEvent();
+
+	/**
+	 * An event that is called after a screen is ticked.
+	 */
+	Event<ScreenEvents.AfterTick> getAfterTickEvent();
+
+	/**
+	 * An event that is called before a screen is rendered.
+	 */
+	Event<ScreenEvents.BeforeRender> getBeforeRenderEvent();
+
+	/**
+	 * An event that is called after a screen is rendered.
+	 */
+	Event<ScreenEvents.AfterRender> getAfterRenderEvent();
 
 	/**
 	 * Gets the backing screen.

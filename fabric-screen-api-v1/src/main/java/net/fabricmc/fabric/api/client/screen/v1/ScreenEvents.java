@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.client.screen.v1;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -36,133 +35,61 @@ public final class ScreenEvents {
 	 *
 	 * <p>For example, to add a button to the title screen, the following code could be used:
 	 * <blockquote><pre>
-	 * ScreenEvents.AFTER_INIT.register((client, screen, context, scaledWidth, scaledHeight) -> {
+	 * ScreenEvents.AFTER_INIT.register((client, screen, info, scaledWidth, scaledHeight) -> {
 	 * 	if (screen instanceof TitleScreen) {
 	 * 		context.getButtons().add(new ButtonWidget(...));
 	 * 	}
 	 * });
 	 * </pre></blockquote>
 	 *
-	 * <p>This event also indicates that the previous screen has been closed.
-	 * Mods may also use this callback to clear their current screen state
+	 * <p>The {@link FabricScreen} provided by the {@code info} parameter may be used to register tick and render events.
+	 * For example, to register an event on inventory like screens after render, the following code could be used:
+	 * <blockquote><pre>
+	 * &#64;Override
+	 * public void onInitializeClient() {
+	 * 	ScreenEvents.AFTER_INIT.register((client, screen, info, scaledWidth, scaledHeight) -> {
+	 * 		if (screen instanceof AbstractInventoryScreen) {
+	 * 			info.getAfterRenderEvent().register(this::onRenderInventoryScreen);
+	 * 		}
+	 * 	});
+	 * }
+	 *
+	 * private void onRenderInventoryScreen(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta) {
+	 * 	...
+	 * }
+	 * </pre></blockquote>
+	 *
+	 * <p>This event also indicates that the previous screen has been closed, and as such can be used to clear a mod's current screen state.
 	 */
-	public static final Event<AfterInit> AFTER_INIT = EventFactory.createArrayBacked(AfterInit.class, callbacks -> (client, screen, context, scaledWidth, scaledHeight) -> {
+	public static final Event<AfterInit> AFTER_INIT = EventFactory.createArrayBacked(AfterInit.class, callbacks -> (client, screen, info, scaledWidth, scaledHeight) -> {
 		for (AfterInit callback : callbacks) {
-			callback.onInit(client, screen, context, scaledWidth, scaledHeight);
-		}
-	});
-
-	/**
-	 * An event that is called before a screen is rendered.
-	 */
-	public static final Event<BeforeRender> BEFORE_RENDER = EventFactory.createArrayBacked(BeforeRender.class, callbacks -> (client, matrices, screen, context, mouseX, mouseY, tickDelta) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = client.getProfiler();
-			profiler.push("beforeFabricRenderScreen");
-
-			for (BeforeRender callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.beforeRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (BeforeRender callback : callbacks) {
-				callback.beforeRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
-			}
-		}
-	});
-
-	/**
-	 * An event that is called after a screen is rendered.
-	 */
-	public static final Event<AfterRender> AFTER_RENDER = EventFactory.createArrayBacked(AfterRender.class, callbacks -> (client, matrices, screen, context, mouseX, mouseY, tickDelta) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = client.getProfiler();
-			profiler.push("afterFabricRenderScreen");
-
-			for (AfterRender callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.afterRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (AfterRender callback : callbacks) {
-				callback.afterRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
-			}
-		}
-	});
-
-	/**
-	 * An event that is called before a screen is ticked.
-	 */
-	public static final Event<BeforeTick> BEFORE_TICK = EventFactory.createArrayBacked(BeforeTick.class, callbacks -> (client, screen, context) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = client.getProfiler();
-			profiler.push("beforeFabricScreenTick");
-
-			for (BeforeTick callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.beforeTick(client, screen, context);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (BeforeTick callback : callbacks) {
-				callback.beforeTick(client, screen, context);
-			}
-		}
-	});
-
-	/**
-	 * An event that is called after a screen is ticked.
-	 */
-	public static final Event<AfterTick> AFTER_TICK = EventFactory.createArrayBacked(AfterTick.class, callbacks -> (client, screen, context) -> {
-		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = client.getProfiler();
-			profiler.push("afterFabricScreenTick");
-
-			for (AfterTick callback : callbacks) {
-				profiler.push(EventFactory.getHandlerName(callback));
-				callback.afterTick(client, screen, context);
-				profiler.pop();
-			}
-
-			profiler.pop();
-		} else {
-			for (AfterTick callback : callbacks) {
-				callback.afterTick(client, screen, context);
-			}
+			callback.onInit(client, screen, info, scaledWidth, scaledHeight);
 		}
 	});
 
 	@FunctionalInterface
 	public interface AfterInit {
-		void onInit(MinecraftClient client, Screen screen, FabricScreen context, int scaledWidth, int scaledHeight);
+		void onInit(MinecraftClient client, Screen screen, FabricScreen info, int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface
 	public interface BeforeRender {
-		void beforeRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen context, int mouseX, int mouseY, float tickDelta);
+		void beforeRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta);
 	}
 
 	@FunctionalInterface
 	public interface AfterRender {
-		void afterRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen context, int mouseX, int mouseY, float tickDelta);
+		void afterRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta);
 	}
 
 	@FunctionalInterface
 	public interface BeforeTick {
-		void beforeTick(MinecraftClient client, Screen screen, FabricScreen context);
+		void beforeTick(MinecraftClient client, Screen screen, FabricScreen info);
 	}
 
 	@FunctionalInterface
 	public interface AfterTick {
-		void afterTick(MinecraftClient client, Screen screen, FabricScreen context);
+		void afterTick(MinecraftClient client, Screen screen, FabricScreen info);
 	}
 
 	private ScreenEvents() {
