@@ -19,18 +19,18 @@ package net.fabricmc.fabric.test.screen;
 import java.util.Random;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
 
-class SoundButton extends ButtonWidget {
+class SoundButton extends AbstractPressableButtonWidget {
 	private static final Random RANDOM = new Random();
 
 	SoundButton(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.method_30163("Sound Button"), null);
+		super(x, y, width, height, Text.method_30163("Sound Button"));
 	}
 
 	@Override

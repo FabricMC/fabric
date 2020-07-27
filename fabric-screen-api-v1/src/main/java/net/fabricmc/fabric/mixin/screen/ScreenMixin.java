@@ -55,7 +55,7 @@ public abstract class ScreenMixin implements FabricScreen {
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
 	private void onInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		ScreenEvents.INIT.invoker().onInit(client, (Screen) (Object) this, this, width, height);
+		ScreenEvents.AFTER_INIT.invoker().onInit(client, (Screen) (Object) this, this, width, height);
 	}
 
 	@Override

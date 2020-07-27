@@ -64,11 +64,7 @@ public final class ButtonList<T extends AbstractButtonWidget> extends AbstractLi
 		this.rangeCheck(index); // verify index bounds
 
 		final T removedButton = this.buttons.remove(index);
-		index = this.children.indexOf(removedButton);
-
-		if (index > -1) {
-			this.children.remove(index);
-		}
+		this.children.remove(removedButton);
 
 		return removedButton;
 	}

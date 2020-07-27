@@ -22,16 +22,16 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
-class StopSoundButton extends ButtonWidget {
+class StopSoundButton extends AbstractPressableButtonWidget {
 	private final Screen screen;
 
 	StopSoundButton(Screen screen, int x, int y, int width, int height) {
-		super(x, y, width, height, Text.method_30163(""), null);
+		super(x, y, width, height, Text.method_30163(""));
 		this.screen = screen;
 	}
 

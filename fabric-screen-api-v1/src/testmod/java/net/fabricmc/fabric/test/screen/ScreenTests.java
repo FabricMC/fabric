@@ -41,7 +41,7 @@ public class ScreenTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("Started Screen Testmod");
-		ScreenEvents.INIT.register(this::onInit);
+		ScreenEvents.AFTER_INIT.register(this::onInit);
 		ScreenEvents.AFTER_RENDER.register(this::onRender);
 	}
 
