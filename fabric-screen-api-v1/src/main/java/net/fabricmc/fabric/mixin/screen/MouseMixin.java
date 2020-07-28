@@ -81,7 +81,7 @@ public abstract class MouseMixin {
 		// Apply same calculations to horizontal scroll as vertical scroll amount has
 		this.horizontalScrollAmount = this.client.options.discreteMouseScroll ? Math.signum(horizontal) : horizontal * this.client.options.mouseWheelSensitivity;
 
-		if (this.currentScreen.getMouseEvents().getBeforeMouseScrolledEvent().invoker().beforeMouseScrolled(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX ,mouseY, this.horizontalScrollAmount, verticalAmount)) {
+		if (this.currentScreen.getMouseEvents().getBeforeMouseScrolledEvent().invoker().beforeMouseScrolled(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, this.horizontalScrollAmount, verticalAmount)) {
 			this.currentScreen = null;
 			this.horizontalScrollAmount = null;
 			ci.cancel();
