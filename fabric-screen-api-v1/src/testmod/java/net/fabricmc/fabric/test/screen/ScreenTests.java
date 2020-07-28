@@ -42,10 +42,15 @@ public class ScreenTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("Started Screen Testmod");
-		ScreenEvents.AFTER_INIT.register(this::onInitScreen);
+		ScreenEvents.BEFORE_INIT.register(this::beforeInitScreen);
+		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
 	}
 
-	private void onInitScreen(MinecraftClient client, Screen screen, FabricScreen info, int windowWidth, int windowHeight) {
+	private void beforeInitScreen(MinecraftClient client, Screen screen, FabricScreen info, int windowWidth, int windowHeight) {
+		// TODO: Write tests listening to addition of child elements
+	}
+
+	private void afterInitScreen(MinecraftClient client, Screen screen, FabricScreen info, int windowWidth, int windowHeight) {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {

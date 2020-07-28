@@ -27,28 +27,19 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 // TODO:
 // Char typed
-// Mouse scrolled (Vertically and Horizontally) (have both fields actually)
 // Add Child
 // Add button
 // Change ButtonList to fire add child and button events
 @Environment(EnvType.CLIENT)
 public final class ScreenEvents {
 	/**
-	 * An event that is called after a {@link Screen#init(MinecraftClient, int, int) screen is initialized} to it's default state.
+	 * An event that is called before a {@link Screen#init(MinecraftClient, int, int) screen is initialized} to it's default state.
+	 * It should be noted many of the methods in {@link FabricScreen} such as the screen's text renderer may not be initialized yet, and as such their use is discouraged.
 	 *
-	 * <p>Typically this event is used to modify a screen after the screen has been initialized.
-	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this callback.
+	 * <p>Typically this event is used to register screen events such as listening to when child elements are added to the screen.
+	 * You can still use {@link ScreenEvents#AFTER_INIT} to register events such as keyboard and mouse events.
 	 *
-	 * <p>For example, to add a button to the title screen, the following code could be used:
-	 * <blockquote><pre>
-	 * ScreenEvents.AFTER_INIT.register((client, screen, info, scaledWidth, scaledHeight) -> {
-	 * 	if (screen instanceof TitleScreen) {
-	 * 		context.getButtons().add(new ButtonWidget(...));
-	 * 	}
-	 * });
-	 * </pre></blockquote>
-	 *
-	 * <p>The {@link FabricScreen} provided by the {@code info} parameter may be used to register tick and render events.
+	 * <p>The {@link FabricScreen} provided by the {@code info} parameter may be used to register tick, render events, keyboard, mouse, additional and removal of child elements (including buttons).
 	 * For example, to register an event on inventory like screens after render, the following code could be used:
 	 * <blockquote><pre>
 	 * &#64;Override
@@ -66,18 +57,48 @@ public final class ScreenEvents {
 	 * </pre></blockquote>
 	 *
 	 * <p>This event indicates a screen has been resized, and therefore is being re-initialized.
+	 * This event can also indicate that the previous screen has been closed.
+	 * @see ScreenEvents#AFTER_INIT
+	 */
+	public static final Event<ScreenEvents.BeforeInit> BEFORE_INIT = EventFactory.createArrayBacked(ScreenEvents.BeforeInit.class, callbacks -> (client, screen, info, scaledWidth, scaledHeight) -> {
+		for (BeforeInit callback : callbacks) {
+			callback.beforeInit(client, screen, info, scaledWidth, scaledHeight);
+		}
+	});
+
+	/**
+	 * An event that is called after a {@link Screen#init(MinecraftClient, int, int) screen is initialized} to it's default state.
+	 * Since this event is fired after a screen has been initialized,
+	 *
+	 * <p>Typically this event is used to modify a screen after the screen has been initialized.
+	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this callback.
+	 *
+	 * <p>For example, to add a button to the title screen, the following code could be used:
+	 * <blockquote><pre>
+	 * ScreenEvents.AFTER_INIT.register((client, screen, info, scaledWidth, scaledHeight) -> {
+	 * 	if (screen instanceof TitleScreen) {
+	 * 		context.getButtons().add(new ButtonWidget(...));
+	 * 	}
+	 * });
+	 * </pre></blockquote>
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
+	 * @see ScreenEvents#BEFORE_INIT
 	 */
 	public static final Event<AfterInit> AFTER_INIT = EventFactory.createArrayBacked(AfterInit.class, callbacks -> (client, screen, info, scaledWidth, scaledHeight) -> {
 		for (AfterInit callback : callbacks) {
-			callback.onInit(client, screen, info, scaledWidth, scaledHeight);
+			callback.afterInit(client, screen, info, scaledWidth, scaledHeight);
 		}
 	});
 
 	@FunctionalInterface
+	public interface BeforeInit {
+		void beforeInit(MinecraftClient client, Screen screen, FabricScreen info, int scaledWidth, int scaledHeight);
+	}
+
+	@FunctionalInterface
 	public interface AfterInit {
-		void onInit(MinecraftClient client, Screen screen, FabricScreen info, int scaledWidth, int scaledHeight);
+		void afterInit(MinecraftClient client, Screen screen, FabricScreen info, int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface

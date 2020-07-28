@@ -32,7 +32,6 @@ import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -70,8 +69,8 @@ public abstract class ScreenMixin implements FabricScreen {
 	@Unique
 	private KeyboardEvents keyboardEvents;
 
-	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
-	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
+	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"))
+	private void beforeInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
 		// All elements are repopulated on the screen, so we need to reinitialize all events
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
@@ -79,7 +78,12 @@ public abstract class ScreenMixin implements FabricScreen {
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
 		this.mouseEvents = new MouseEventsImpl();
 		this.keyboardEvents = new KeyboardEventsImpl();
-		ScreenEvents.AFTER_INIT.invoker().onInit(client, (Screen) (Object) this, this, width, height);
+		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, this, width, height);
+	}
+
+	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
+	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
+		ScreenEvents.AFTER_INIT.invoker().afterInit(client, (Screen) (Object) this, this, width, height);
 	}
 
 	@Override
