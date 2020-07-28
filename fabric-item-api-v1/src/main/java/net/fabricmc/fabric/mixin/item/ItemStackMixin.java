@@ -42,26 +42,24 @@ public abstract class ItemStackMixin {
 	@Unique
 	private Consumer<LivingEntity> fabric_breakCallback;
 
-	@Inject(method = "damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V",
-			at = @At("HEAD"))
+	@Inject(method = "damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V", at = @At("HEAD"))
 	private void saveDamager(int amount, LivingEntity entity, Consumer<LivingEntity> breakCallback, CallbackInfo ci) {
 		this.fabric_damagingEntity = entity;
 		this.fabric_breakCallback = breakCallback;
 	}
 
-	@ModifyArg(method = "damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILjava/util/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z"),
-			index = 0)
+	@ModifyArg(method = "damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILjava/util/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z"), index = 0)
 	private int hookDamage(int amount) {
-		if (getItem() instanceof CustomDamageHandler) {
-			return ((CustomDamageHandler) getItem()).damage((ItemStack) (Object) this, amount, fabric_damagingEntity, fabric_breakCallback);
-		} else {
-			return amount;
+		Item item = getItem();
+
+		if (item instanceof CustomDamageHandler) {
+			return ((CustomDamageHandler) item).damage((ItemStack) (Object) this, amount, fabric_damagingEntity, fabric_breakCallback);
 		}
+
+		return amount;
 	}
 
-	@Inject(method = "damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V",
-			at = @At("RETURN"))
+	@Inject(method = "damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V", at = @At("RETURN"))
 	private <T extends LivingEntity> void clearDamager(int amount, T entity, Consumer<T> breakCallback, CallbackInfo ci) {
 		this.fabric_damagingEntity = null;
 		this.fabric_breakCallback = null;
