@@ -9,6 +9,9 @@
   "client": [
     "client.ItemStackMixin"
   ],
+  "mixins": [
+    "ItemStackMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
