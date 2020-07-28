@@ -21,8 +21,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.AddHillsLayer;
 import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
@@ -47,7 +48,7 @@ public class MixinAddHillsLayer {
 		final int biomeId = biomeSampler.sample(chunkX, chunkZ);
 		int noiseSample = noiseSampler.sample(chunkX, chunkZ);
 		int processedNoiseSample = (noiseSample - 2) % 29;
-		final Biome biome = Registry.BIOME.get(biomeId);
+		final Biome biome = BuiltinRegistries.BIOME.get(biomeId);
 
 		WeightedBiomePicker hillPicker = InternalBiomeData.getOverworldHills().get(biome);
 
@@ -58,12 +59,12 @@ public class MixinAddHillsLayer {
 		}
 
 		if (rand.nextInt(3) == 0 || processedNoiseSample == 0) {
-			int biomeReturn = Registry.BIOME.getRawId(hillPicker.pickRandom(rand));
+			int biomeReturn = BuiltinRegistries.BIOME.getRawId(hillPicker.pickRandom(rand));
 			Biome parent;
 
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
-				parent = Biome.getModifiedBiome(Registry.BIOME.get(biomeReturn));
-				biomeReturn = parent == null ? biomeId : Registry.BIOME.getRawId(parent);
+				parent = Biomes.getMutated(BuiltinRegistries.BIOME.get(biomeReturn));
+				biomeReturn = parent == null ? biomeId : BuiltinRegistries.BIOME.getRawId(parent);
 			}
 
 			if (biomeReturn != biomeId) {

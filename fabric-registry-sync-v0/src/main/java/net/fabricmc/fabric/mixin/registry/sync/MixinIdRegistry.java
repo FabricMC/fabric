@@ -129,7 +129,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
 	public void setPre(int id, RegistryKey<T> registryId, Object object, CallbackInfoReturnable info) {
-		int indexedEntriesId = indexedEntries.getId((T) object);
+		int indexedEntriesId = indexedEntries.getRawId((T) object);
 
 		if (indexedEntriesId >= 0) {
 			throw new RuntimeException("Attempted to register object " + object + " twice! (at raw IDs " + indexedEntriesId + " and " + id + " )");
@@ -141,7 +141,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			T oldObject = entriesById.get(registryId.getValue());
 
 			if (oldObject != null && oldObject != object) {
-				int oldId = indexedEntries.getId(oldObject);
+				int oldId = indexedEntries.getRawId(oldObject);
 
 				if (oldId != id) {
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
@@ -370,7 +370,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
 
 			for (Identifier id : addedIds) {
-				fabric_getAddObjectEvent().invoker().onEntryAdded(indexedEntries.getId(entriesById.get(id)), id, entriesById.get(id));
+				fabric_getAddObjectEvent().invoker().onEntryAdded(indexedEntries.getRawId(entriesById.get(id)), id, entriesById.get(id));
 			}
 
 			fabric_prevIndexedEntries = null;

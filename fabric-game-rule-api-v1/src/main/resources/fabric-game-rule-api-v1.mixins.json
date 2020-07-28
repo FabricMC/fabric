@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.gamerule",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "BooleanRuleAccessor",
+    "GameRuleCommandAccessor",
+    "GameRuleCommandVisitorMixin",
+    "GameRulesAccessor",
+    "IntRuleAccessor",
+    "RuleKeyMixin"
+  ],
+  "client": [
+    "client.EditGameRulesScreenAccessor",
+    "client.RuleListWidgetMixin",
+    "client.RuleListWidgetVisitorMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

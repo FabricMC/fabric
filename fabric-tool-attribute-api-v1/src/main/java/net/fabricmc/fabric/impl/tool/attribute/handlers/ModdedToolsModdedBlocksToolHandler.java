@@ -53,8 +53,12 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 	@Override
 	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
-			float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
-			if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
+			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
+
+			if (entry != null && entry.getMiningLevel(tag) > 0) {
+				float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
+				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
+			}
 		}
 
 		return TypedActionResult.pass(1.0F);

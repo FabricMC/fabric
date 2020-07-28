@@ -16,23 +16,26 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import net.minecraft.world.biome.DefaultBiomeCreator;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.CrimsonForestBiome;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biomes.v1.NetherBiomes;
+import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
 
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
 
 	@Override public void onInitialize() {
-		TestCrimsonForestBiome biome = Registry.register(Registry.BIOME, new Identifier(MOD_ID, "test_crimson_forest"), new TestCrimsonForestBiome());
-		NetherBiomes.addNetherBiome(Biomes.BEACH);
-		NetherBiomes.addNetherBiome(biome);
-	}
+		Biome biome = Registry.register(BuiltinRegistries.BIOME, new Identifier(MOD_ID, "test_crimson_forest"), DefaultBiomeCreator.createCrimsonForest());
+		NetherBiomes.addNetherBiome(Biomes.BEACH, new Biome.MixedNoisePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.1F));
+		NetherBiomes.addNetherBiome(biome, new Biome.MixedNoisePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.275F));
 
-	public class TestCrimsonForestBiome extends CrimsonForestBiome {
+		Biome customPlains = Registry.register(BuiltinRegistries.BIOME, new Identifier(MOD_ID, "custom_plains"), DefaultBiomeCreator.createPlains(null, false));
+		OverworldBiomes.addBiomeVariant(Biomes.PLAINS, customPlains, 1);
 	}
 }

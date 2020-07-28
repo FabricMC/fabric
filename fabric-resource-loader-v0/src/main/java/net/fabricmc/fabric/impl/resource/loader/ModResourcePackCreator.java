@@ -23,12 +23,14 @@ import java.util.function.Consumer;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
+import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
 public class ModResourcePackCreator implements ResourcePackProvider {
+	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod"));
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
@@ -36,7 +38,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	}
 
 	@Override
-	public <T extends ResourcePackProfile> void register(Consumer<T> consumer, ResourcePackProfile.Factory<T> factory) {
+	public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
 		// TODO: "vanilla" does not emit a message; neither should a modded datapack
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
@@ -46,12 +48,12 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 				throw new RuntimeException("Not a ModResourcePack!");
 			}
 
-			T var3 = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
+			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
 					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
-					text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod")));
+					RESOURCE_PACK_SOURCE);
 
-			if (var3 != null) {
-				consumer.accept(var3);
+			if (resourcePackProfile != null) {
+				consumer.accept(resourcePackProfile);
 			}
 		}
 	}
