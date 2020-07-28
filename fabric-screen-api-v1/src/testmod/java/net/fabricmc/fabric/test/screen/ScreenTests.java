@@ -71,8 +71,8 @@ public class ScreenTests implements ClientModInitializer {
 
 			// Register render event to draw an icon on the screen
 			info.getAfterRenderEvent().register(this::onRender);
-			info.getBeforeKeyPressedEvent().register(this::beforeKeyPress);
-			info.getAfterKeyPressedEvent().register(this::afterKeyPress);
+			info.getKeyboardEvents().getBeforeKeyPressedEvent().register(this::beforeKeyPress);
+			info.getKeyboardEvents().getAfterKeyPressedEvent().register(this::afterKeyPress);
 		}
 
 		// Say something when the screen is resized

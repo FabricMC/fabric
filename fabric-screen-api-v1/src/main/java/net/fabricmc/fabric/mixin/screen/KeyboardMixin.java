@@ -39,7 +39,7 @@ public abstract class KeyboardMixin {
 	private void beforeKeyPressedEvent(int code, boolean[] resultHack, ParentElement parentElement, int key, int scancode, int modifiers, CallbackInfo ci) {
 		final FabricScreen screen = (FabricScreen) parentElement;
 
-		if (screen.getBeforeKeyPressedEvent().invoker().beforeKeyPress(this.client, screen.getScreen(), screen, key, scancode, modifiers)) {
+		if (screen.getKeyboardEvents().getBeforeKeyPressedEvent().invoker().beforeKeyPress(this.client, screen.getScreen(), screen, key, scancode, modifiers)) {
 			resultHack[0] = true; // Set this press action as handled.
 			ci.cancel(); // Exit the lambda
 		}
@@ -48,14 +48,14 @@ public abstract class KeyboardMixin {
 	@Inject(method = "method_1454(I[ZLnet/minecraft/client/gui/ParentElement;III)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ParentElement;keyPressed(III)Z", shift = At.Shift.AFTER))
 	private void afterKeyPressedEvent(int code, boolean[] resultHack, ParentElement parentElement, int key, int scancode, int modifiers, CallbackInfo ci) {
 		final FabricScreen screen = (FabricScreen) parentElement;
-		screen.getAfterKeyPressedEvent().invoker().afterKeyPress(this.client, screen.getScreen(), screen, key, scancode, modifiers);
+		screen.getKeyboardEvents().getAfterKeyPressedEvent().invoker().afterKeyPress(this.client, screen.getScreen(), screen, key, scancode, modifiers);
 	}
 
 	@Inject(method = "method_1454(I[ZLnet/minecraft/client/gui/ParentElement;III)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ParentElement;keyReleased(III)Z"), cancellable = true)
 	private void beforeKeyReleasedEvent(int code, boolean[] resultHack, ParentElement parentElement, int key, int scancode, int modifiers, CallbackInfo ci) {
 		final FabricScreen screen = (FabricScreen) parentElement;
 
-		if (screen.getBeforeKeyReleasedEvent().invoker().beforeKeyReleased(this.client, screen.getScreen(), screen, key, scancode, modifiers)) {
+		if (screen.getKeyboardEvents().getBeforeKeyReleasedEvent().invoker().beforeKeyReleased(this.client, screen.getScreen(), screen, key, scancode, modifiers)) {
 			resultHack[0] = true; // Set this press action as handled.
 			ci.cancel(); // Exit the lambda
 		}
@@ -64,6 +64,6 @@ public abstract class KeyboardMixin {
 	@Inject(method = "method_1454(I[ZLnet/minecraft/client/gui/ParentElement;III)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/ParentElement;keyReleased(III)Z", shift = At.Shift.AFTER))
 	private void afterKeyReleasedEvent(int code, boolean[] resultHack, ParentElement parentElement, int key, int scancode, int modifiers, CallbackInfo ci) {
 		final FabricScreen screen = (FabricScreen) parentElement;
-		screen.getAfterKeyReleasedEvent().invoker().afterKeyReleased(this.client, screen.getScreen(), screen, key, scancode, modifiers);
+		screen.getKeyboardEvents().getAfterKeyReleasedEvent().invoker().afterKeyReleased(this.client, screen.getScreen(), screen, key, scancode, modifiers);
 	}
 }

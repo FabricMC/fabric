@@ -25,6 +25,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+// TODO:
+// Char typed
+// Mouse scrolled (Vertically and Horizontally) (have both fields actually)
+// Add Child
+// Add button
+// Change ButtonList to fire add child and button events
 @Environment(EnvType.CLIENT)
 public final class ScreenEvents {
 	/**

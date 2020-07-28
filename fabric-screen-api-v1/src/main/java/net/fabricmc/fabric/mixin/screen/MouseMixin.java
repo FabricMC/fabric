@@ -41,7 +41,7 @@ public abstract class MouseMixin {
 	private void beforeMouseClickedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
 		this.currentScreen = ((FabricScreen) this.client.currentScreen);
 
-		if (this.currentScreen.getBeforeMouseClickedEvent().invoker().beforeMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
+		if (this.currentScreen.getMouseEvents().getBeforeMouseClickedEvent().invoker().beforeMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
@@ -50,7 +50,7 @@ public abstract class MouseMixin {
 
 	@Inject(method = "method_1611([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseClickedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen.getAfterMouseClickedEvent().invoker().afterMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
+		this.currentScreen.getMouseEvents().getAfterMouseClickedEvent().invoker().afterMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
@@ -58,7 +58,7 @@ public abstract class MouseMixin {
 	private void beforeMouseReleasedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
 		this.currentScreen = ((FabricScreen) this.client.currentScreen);
 
-		if (this.currentScreen.getBeforeMouseReleasedEvent().invoker().beforeMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
+		if (this.currentScreen.getMouseEvents().getBeforeMouseReleasedEvent().invoker().beforeMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
@@ -67,7 +67,7 @@ public abstract class MouseMixin {
 
 	@Inject(method = "method_1605([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseReleasedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen.getAfterMouseReleasedEvent().invoker().afterMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
+		this.currentScreen.getMouseEvents().getAfterMouseReleasedEvent().invoker().afterMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 }

@@ -88,21 +88,9 @@ public interface FabricScreen {
 	 */
 	Event<ScreenEvents.AfterResize> getAfterResizeEvent();
 
-	Event<ScreenEvents.BeforeKeyPressed> getBeforeKeyPressedEvent();
+	KeyboardEvents getKeyboardEvents();
 
-	Event<ScreenEvents.AfterKeyPressed> getAfterKeyPressedEvent();
-
-	Event<ScreenEvents.BeforeKeyReleased> getBeforeKeyReleasedEvent();
-
-	Event<ScreenEvents.AfterKeyReleased> getAfterKeyReleasedEvent();
-
-	Event<ScreenEvents.BeforeMouseClicked> getBeforeMouseClickedEvent();
-
-	Event<ScreenEvents.AfterMouseClicked> getAfterMouseClickedEvent();
-
-	Event<ScreenEvents.BeforeMouseReleased> getBeforeMouseReleasedEvent();
-
-	Event<ScreenEvents.AfterMouseReleased> getAfterMouseReleasedEvent();
+	MouseEvents getMouseEvents();
 
 	/**
 	 * Gets the backing screen.
@@ -110,5 +98,25 @@ public interface FabricScreen {
 	 * @return the screen
 	 */
 	Screen getScreen();
+
+	interface KeyboardEvents {
+		Event<ScreenEvents.BeforeKeyPressed> getBeforeKeyPressedEvent();
+
+		Event<ScreenEvents.AfterKeyPressed> getAfterKeyPressedEvent();
+
+		Event<ScreenEvents.BeforeKeyReleased> getBeforeKeyReleasedEvent();
+
+		Event<ScreenEvents.AfterKeyReleased> getAfterKeyReleasedEvent();
+	}
+
+	interface MouseEvents {
+		Event<ScreenEvents.BeforeMouseClicked> getBeforeMouseClickedEvent();
+
+		Event<ScreenEvents.AfterMouseClicked> getAfterMouseClickedEvent();
+
+		Event<ScreenEvents.BeforeMouseReleased> getBeforeMouseReleasedEvent();
+
+		Event<ScreenEvents.AfterMouseReleased> getAfterMouseReleasedEvent();
+	}
 }
 
