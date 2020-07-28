@@ -71,11 +71,22 @@ public class ScreenTests implements ClientModInitializer {
 
 			// Register render event to draw an icon on the screen
 			info.getAfterRenderEvent().register(this::onRender);
+			info.getBeforeKeyPressedEvent().register(this::beforeKeyPress);
+			info.getAfterKeyPressedEvent().register(this::afterKeyPress);
 		}
 
 		// Say something when the screen is resized
 		LOGGER.info("Registered resize event");
 		info.getAfterResizeEvent().register(this::onResizeScreen);
+	}
+
+	private void afterKeyPress(MinecraftClient client, Screen screen, FabricScreen fabricScreen, int key, int scancode, int modifiers) {
+		LOGGER.info("After Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+	}
+
+	private boolean beforeKeyPress(MinecraftClient client, Screen screen, FabricScreen fabricScreen, int key, int scancode, int modifiers) {
+		LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+		return false; // Let actions continue
 	}
 
 	private void onResizeScreen(MinecraftClient client, Screen screen, FabricScreen info) {

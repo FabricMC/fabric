@@ -65,6 +65,22 @@ public abstract class ScreenMixin implements FabricScreen {
 	private Event<ScreenEvents.AfterRender> afterRenderEvent;
 	@Unique
 	private Event<ScreenEvents.AfterResize> afterResizeEvent;
+	@Unique
+	private Event<ScreenEvents.BeforeKeyPressed> beforeKeyPressedEvent;
+	@Unique
+	private Event<ScreenEvents.AfterKeyPressed> afterKeyPressedEvent;
+	@Unique
+	private Event<ScreenEvents.BeforeKeyReleased> beforeKeyReleasedEvent;
+	@Unique
+	private Event<ScreenEvents.AfterKeyReleased> afterKeyReleasedEvent;
+	@Unique
+	private Event<ScreenEvents.BeforeMouseClicked> beforeMouseClickedEvent;
+	@Unique
+	private Event<ScreenEvents.AfterMouseClicked> afterMouseClickedEvent;
+	@Unique
+	private Event<ScreenEvents.BeforeMouseReleased> beforeMouseReleasedEvent;
+	@Unique
+	private Event<ScreenEvents.AfterMouseReleased> afterMouseReleasedEvent;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initializeEvents(Text title, CallbackInfo ci) {
@@ -73,6 +89,14 @@ public abstract class ScreenMixin implements FabricScreen {
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
 		this.afterResizeEvent = ScreenEventFactory.createAfterResizeEvent();
+		this.beforeKeyPressedEvent = ScreenEventFactory.createBeforeKeyPressedEvent();
+		this.afterKeyPressedEvent = ScreenEventFactory.createAfterKeyPressedEvent();
+		this.beforeKeyReleasedEvent = ScreenEventFactory.createBeforeKeyReleasedEvent();
+		this.afterKeyReleasedEvent = ScreenEventFactory.createAfterKeyReleasedEvent();
+		this.beforeMouseClickedEvent = ScreenEventFactory.createBeforeMouseClickedEvent();
+		this.afterMouseClickedEvent = ScreenEventFactory.createAfterMouseClickedEvent();
+		this.beforeMouseReleasedEvent = ScreenEventFactory.createBeforeMouseReleasedEvent();
+		this.afterMouseReleasedEvent = ScreenEventFactory.createAfterMouseReleasedEvent();
 	}
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
@@ -123,6 +147,46 @@ public abstract class ScreenMixin implements FabricScreen {
 	@Override
 	public Event<ScreenEvents.AfterResize> getAfterResizeEvent() {
 		return this.afterResizeEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.BeforeKeyPressed> getBeforeKeyPressedEvent() {
+		return this.beforeKeyPressedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterKeyPressed> getAfterKeyPressedEvent() {
+		return this.afterKeyPressedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.BeforeKeyReleased> getBeforeKeyReleasedEvent() {
+		return this.beforeKeyReleasedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterKeyReleased> getAfterKeyReleasedEvent() {
+		return this.afterKeyReleasedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.BeforeMouseClicked> getBeforeMouseClickedEvent() {
+		return this.beforeMouseClickedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterMouseClicked> getAfterMouseClickedEvent() {
+		return this.afterMouseClickedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.BeforeMouseReleased> getBeforeMouseReleasedEvent() {
+		return this.beforeMouseReleasedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterMouseReleased> getAfterMouseReleasedEvent() {
+		return this.afterMouseReleasedEvent;
 	}
 
 	@Override

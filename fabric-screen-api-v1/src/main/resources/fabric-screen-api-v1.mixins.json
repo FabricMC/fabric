@@ -9,5 +9,9 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "KeyboardMixin",
+    "MouseMixin"
+  ]
 }

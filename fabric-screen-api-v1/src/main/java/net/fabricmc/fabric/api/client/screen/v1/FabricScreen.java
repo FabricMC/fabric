@@ -88,6 +88,22 @@ public interface FabricScreen {
 	 */
 	Event<ScreenEvents.AfterResize> getAfterResizeEvent();
 
+	Event<ScreenEvents.BeforeKeyPressed> getBeforeKeyPressedEvent();
+
+	Event<ScreenEvents.AfterKeyPressed> getAfterKeyPressedEvent();
+
+	Event<ScreenEvents.BeforeKeyReleased> getBeforeKeyReleasedEvent();
+
+	Event<ScreenEvents.AfterKeyReleased> getAfterKeyReleasedEvent();
+
+	Event<ScreenEvents.BeforeMouseClicked> getBeforeMouseClickedEvent();
+
+	Event<ScreenEvents.AfterMouseClicked> getAfterMouseClickedEvent();
+
+	Event<ScreenEvents.BeforeMouseReleased> getBeforeMouseReleasedEvent();
+
+	Event<ScreenEvents.AfterMouseReleased> getAfterMouseReleasedEvent();
+
 	/**
 	 * Gets the backing screen.
 	 *

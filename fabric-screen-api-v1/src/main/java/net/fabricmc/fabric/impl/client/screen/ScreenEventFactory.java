@@ -132,6 +132,88 @@ public final class ScreenEventFactory {
 		});
 	}
 
+	public static Event<ScreenEvents.BeforeKeyPressed> createBeforeKeyPressedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeKeyPressed.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
+			for (ScreenEvents.BeforeKeyPressed callback : callbacks) {
+				if (callback.beforeKeyPress(client, screen, info, key, scancode, modifiers)) {
+					return true;
+				}
+			}
+
+			return false;
+		});
+	}
+
+	public static Event<ScreenEvents.AfterKeyPressed> createAfterKeyPressedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterKeyPressed.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
+			for (ScreenEvents.AfterKeyPressed callback : callbacks) {
+				callback.afterKeyPress(client, screen, info, key, scancode, modifiers);
+			}
+		});
+	}
+
+	public static Event<ScreenEvents.BeforeKeyReleased> createBeforeKeyReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeKeyReleased.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
+			for (ScreenEvents.BeforeKeyReleased callback : callbacks) {
+				if (callback.beforeKeyReleased(client, screen, info, key, scancode, modifiers)) {
+					return true;
+				}
+			}
+
+			return false;
+		});
+	}
+
+	public static Event<ScreenEvents.AfterKeyReleased> createAfterKeyReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterKeyReleased.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
+			for (ScreenEvents.AfterKeyReleased callback : callbacks) {
+				callback.afterKeyReleased(client, screen, info, key, scancode, modifiers);
+			}
+		});
+	}
+
+	//
+
+	public static Event<ScreenEvents.BeforeMouseClicked> createBeforeMouseClickedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeMouseClicked.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
+			for (ScreenEvents.BeforeMouseClicked callback : callbacks) {
+				if (callback.beforeMouseClicked(client, screen, info, mouseX, mouseY, button)) {
+					return true;
+				}
+			}
+
+			return false;
+		});
+	}
+
+	public static Event<ScreenEvents.AfterMouseClicked> createAfterMouseClickedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterMouseClicked.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
+			for (ScreenEvents.AfterMouseClicked callback : callbacks) {
+				callback.afterMouseClicked(client, screen, info, mouseX, mouseY, button);
+			}
+		});
+	}
+
+	public static Event<ScreenEvents.BeforeMouseReleased> createBeforeMouseReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeMouseReleased.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
+			for (ScreenEvents.BeforeMouseReleased callback : callbacks) {
+				if (callback.beforeMouseReleased(client, screen, info, mouseX, mouseY, button)) {
+					return true;
+				}
+			}
+
+			return false;
+		});
+	}
+
+	public static Event<ScreenEvents.AfterMouseReleased> createAfterMouseReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterMouseReleased.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
+			for (ScreenEvents.AfterMouseReleased callback : callbacks) {
+				callback.afterMouseReleased(client, screen, info, mouseX, mouseY, button);
+			}
+		});
+	}
+
 	private ScreenEventFactory() {
 	}
 }

@@ -97,6 +97,46 @@ public final class ScreenEvents {
 		void onResize(MinecraftClient client, Screen screen, FabricScreen info);
 	}
 
+	@FunctionalInterface
+	public interface BeforeKeyPressed {
+		boolean beforeKeyPress(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+	}
+
+	@FunctionalInterface
+	public interface AfterKeyPressed {
+		void afterKeyPress(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+	}
+
+	@FunctionalInterface
+	public interface BeforeKeyReleased {
+		boolean beforeKeyReleased(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+	}
+
+	@FunctionalInterface
+	public interface AfterKeyReleased {
+		void afterKeyReleased(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+	}
+
+	@FunctionalInterface
+	public interface BeforeMouseClicked {
+		boolean beforeMouseClicked(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+	}
+
+	@FunctionalInterface
+	public interface AfterMouseClicked {
+		void afterMouseClicked(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+	}
+
+	@FunctionalInterface
+	public interface BeforeMouseReleased {
+		boolean beforeMouseReleased(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+	}
+
+	@FunctionalInterface
+	public interface AfterMouseReleased {
+		void afterMouseReleased(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+	}
+
 	private ScreenEvents() {
 	}
 }
