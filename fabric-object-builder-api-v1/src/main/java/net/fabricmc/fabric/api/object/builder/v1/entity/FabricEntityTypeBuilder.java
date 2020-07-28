@@ -40,9 +40,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private final EntityType.EntityFactory<T> function;
 	private boolean saveable = true;
 	private boolean summonable = true;
-	private int trackingDistance = 5;
-	private int updateIntervalTicks = 3;
-	private Boolean alwaysUpdateVelocity;
+	private int trackRange = 5;
+	private int trackedUpdateRate = 3;
+	private Boolean forceTrackedVelocityUpdates;
 	private boolean fireImmune = false;
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
@@ -127,35 +127,35 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	/**
-	 * Sets the maximum chunk tracking distance of this entity type.
+	 * Sets the maximum chunk tracking range of this entity type.
 	 *
-	 * @param chunksDistance the tracking distance in blocks
+	 * @param range the tracking range in chunks
 	 *
 	 * @return this builder for chaining
 	 */
-	public FabricEntityTypeBuilder<T> trackChunkDistance(int chunksDistance) {
-		this.trackingDistance = chunksDistance;
+	public FabricEntityTypeBuilder<T> trackRangeChunks(int range) {
+		this.trackRange = range;
 		return this;
 	}
 
 	/**
-	 * Sets the maximum block tracking distance of this entity type.
+	 * Sets the maximum block range at which players can see this entity type.
 	 *
-	 * @param blockDistance the tracking distance in blocks
+	 * @param range the tracking range in blocks
 	 *
 	 * @return this builder for chaining
 	 */
-	public FabricEntityTypeBuilder<T> trackBlockDistance(int blockDistance) {
-		return trackChunkDistance(blockDistance + 15 / 16);
+	public FabricEntityTypeBuilder<T> trackRangeBlocks(int range) {
+		return trackRangeChunks(range + 15 / 16);
 	}
 
-	public FabricEntityTypeBuilder<T> updateIntervalTicks(int updateIntervalTicks) {
-		this.updateIntervalTicks = updateIntervalTicks;
+	public FabricEntityTypeBuilder<T> trackedUpdateRate(int trackedUpdateRate) {
+		this.trackedUpdateRate = trackedUpdateRate;
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> alwaysUpdateVelocity(boolean alwaysUpdateVelocity) {
-		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+	public FabricEntityTypeBuilder<T> forceTrackedVelocityUpdates(boolean forceTrackedVelocityUpdates) {
+		this.forceTrackedVelocityUpdates = forceTrackedVelocityUpdates;
 		return this;
 	}
 
@@ -181,7 +181,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<T>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<T>(this.function, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates);
 
 		return type;
 	}

@@ -81,12 +81,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	}
 
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-		this.delegate.trackBlockDistance(trackingDistanceBlocks).updateIntervalTicks(updateIntervalTicks).alwaysUpdateVelocity(true);
+		this.delegate.trackRangeBlocks(trackingDistanceBlocks).trackedUpdateRate(updateIntervalTicks).forceTrackedVelocityUpdates(true);
 		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-		this.delegate.trackBlockDistance(trackingDistanceBlocks).updateIntervalTicks(updateIntervalTicks).alwaysUpdateVelocity(alwaysUpdateVelocity);
+		this.delegate.trackRangeBlocks(trackingDistanceBlocks).trackedUpdateRate(updateIntervalTicks).forceTrackedVelocityUpdates(alwaysUpdateVelocity);
 		return this;
 	}
 
