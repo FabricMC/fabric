@@ -84,6 +84,11 @@ public interface FabricScreen {
 	Event<ScreenEvents.AfterRender> getAfterRenderEvent();
 
 	/**
+	 * An event that is called when a screen is resized due to the Minecraft client's resolution changing.
+	 */
+	Event<ScreenEvents.AfterResize> getAfterResizeEvent();
+
+	/**
 	 * Gets the backing screen.
 	 *
 	 * @return the screen

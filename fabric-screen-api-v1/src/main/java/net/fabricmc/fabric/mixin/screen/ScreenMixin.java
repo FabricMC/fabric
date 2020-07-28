@@ -63,6 +63,8 @@ public abstract class ScreenMixin implements FabricScreen {
 	private Event<ScreenEvents.BeforeRender> beforeRenderEvent;
 	@Unique
 	private Event<ScreenEvents.AfterRender> afterRenderEvent;
+	@Unique
+	private Event<ScreenEvents.AfterResize> afterResizeEvent;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void initializeEvents(Text title, CallbackInfo ci) {
@@ -70,6 +72,7 @@ public abstract class ScreenMixin implements FabricScreen {
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
+		this.afterResizeEvent = ScreenEventFactory.createAfterResizeEvent();
 	}
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
@@ -115,6 +118,11 @@ public abstract class ScreenMixin implements FabricScreen {
 	@Override
 	public Event<ScreenEvents.AfterRender> getAfterRenderEvent() {
 		return this.afterRenderEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterResize> getAfterResizeEvent() {
+		return this.afterResizeEvent;
 	}
 
 	@Override

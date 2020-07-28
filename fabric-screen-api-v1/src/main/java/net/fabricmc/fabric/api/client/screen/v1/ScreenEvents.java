@@ -92,6 +92,11 @@ public final class ScreenEvents {
 		void afterTick(MinecraftClient client, Screen screen, FabricScreen info);
 	}
 
+	@FunctionalInterface
+	public interface AfterResize {
+		void onResize(MinecraftClient client, Screen screen, FabricScreen info);
+	}
+
 	private ScreenEvents() {
 	}
 }

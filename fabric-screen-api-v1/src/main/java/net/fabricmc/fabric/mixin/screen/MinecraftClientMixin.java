@@ -77,4 +77,10 @@ public abstract class MinecraftClientMixin {
 		// Finally set the currently ticking screen to null
 		this.tickingScreen = null;
 	}
+
+	@Inject(method = "onResolutionChanged", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;resize(Lnet/minecraft/client/MinecraftClient;II)V", shift = At.Shift.AFTER))
+	private void afterResize(CallbackInfo ci) {
+		final FabricScreen fabricScreen = (FabricScreen) this.currentScreen;
+		fabricScreen.getAfterResizeEvent().invoker().onResize((MinecraftClient) (Object) this, fabricScreen.getScreen(), fabricScreen);
+	}
 }

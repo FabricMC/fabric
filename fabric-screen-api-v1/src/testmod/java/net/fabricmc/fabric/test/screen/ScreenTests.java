@@ -37,6 +37,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 public class ScreenTests implements ClientModInitializer {
 	public static final Random RANDOM = new Random();
 	private static final Logger LOGGER = LogManager.getLogger("FabricScreenApiTests");
+	private static boolean PRINT_RESIZE_SCREEN_EVENTS = System.getProperty("fabric-screen-api-testmod.printResizeScreenEvents") != null;
 
 	@Override
 	public void onInitializeClient() {
@@ -71,9 +72,19 @@ public class ScreenTests implements ClientModInitializer {
 			// Register render event to draw an icon on the screen
 			info.getAfterRenderEvent().register(this::onRender);
 		}
+
+		// Say something when the screen is resized
+		LOGGER.info("Registered resize event");
+		info.getAfterResizeEvent().register(this::onResizeScreen);
 	}
 
-	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen context, int mouseX, int mouseY, float tickDelta) {
+	private void onResizeScreen(MinecraftClient client, Screen screen, FabricScreen info) {
+		if (PRINT_RESIZE_SCREEN_EVENTS) {
+			LOGGER.info("Resized screen {} to {}, {}", screen.getClass().getName(), screen.width, screen.height);
+		}
+	}
+
+	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta) {
 		if (screen instanceof TitleScreen) {
 			RenderSystem.pushMatrix();
 			// Render an armor icon to test

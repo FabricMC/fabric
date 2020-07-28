@@ -28,84 +28,105 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public final class ScreenEventFactory {
 	public static Event<ScreenEvents.BeforeRender> createBeforeRenderEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeRender.class, callbacks -> (client, matrices, screen, context, mouseX, mouseY, tickDelta) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeRender.class, callbacks -> (client, matrices, screen, info, mouseX, mouseY, tickDelta) -> {
 			if (EventFactory.isProfilingEnabled()) {
 				final Profiler profiler = client.getProfiler();
 				profiler.push("beforeFabricRenderScreen");
 
 				for (ScreenEvents.BeforeRender callback : callbacks) {
 					profiler.push(EventFactory.getHandlerName(callback));
-					callback.beforeRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
+					callback.beforeRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
 					profiler.pop();
 				}
 
 				profiler.pop();
 			} else {
 				for (ScreenEvents.BeforeRender callback : callbacks) {
-					callback.beforeRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
+					callback.beforeRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
 				}
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.AfterRender> createAfterRenderEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterRender.class, callbacks -> (client, matrices, screen, context, mouseX, mouseY, tickDelta) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterRender.class, callbacks -> (client, matrices, screen, info, mouseX, mouseY, tickDelta) -> {
 			if (EventFactory.isProfilingEnabled()) {
 				final Profiler profiler = client.getProfiler();
 				profiler.push("afterFabricRenderScreen");
 
 				for (ScreenEvents.AfterRender callback : callbacks) {
 					profiler.push(EventFactory.getHandlerName(callback));
-					callback.afterRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
+					callback.afterRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
 					profiler.pop();
 				}
 
 				profiler.pop();
 			} else {
 				for (ScreenEvents.AfterRender callback : callbacks) {
-					callback.afterRender(client, matrices, screen, context, mouseX, mouseY, tickDelta);
+					callback.afterRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
 				}
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.BeforeTick> createBeforeTickEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeTick.class, callbacks -> (client, screen, context) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeTick.class, callbacks -> (client, screen, info) -> {
 			if (EventFactory.isProfilingEnabled()) {
 				final Profiler profiler = client.getProfiler();
 				profiler.push("beforeFabricScreenTick");
 
 				for (ScreenEvents.BeforeTick callback : callbacks) {
 					profiler.push(EventFactory.getHandlerName(callback));
-					callback.beforeTick(client, screen, context);
+					callback.beforeTick(client, screen, info);
 					profiler.pop();
 				}
 
 				profiler.pop();
 			} else {
 				for (ScreenEvents.BeforeTick callback : callbacks) {
-					callback.beforeTick(client, screen, context);
+					callback.beforeTick(client, screen, info);
 				}
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.AfterTick> createAfterTickEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterTick.class, callbacks -> (client, screen, context) -> {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterTick.class, callbacks -> (client, screen, info) -> {
 			if (EventFactory.isProfilingEnabled()) {
 				final Profiler profiler = client.getProfiler();
 				profiler.push("afterFabricScreenTick");
 
 				for (ScreenEvents.AfterTick callback : callbacks) {
 					profiler.push(EventFactory.getHandlerName(callback));
-					callback.afterTick(client, screen, context);
+					callback.afterTick(client, screen, info);
 					profiler.pop();
 				}
 
 				profiler.pop();
 			} else {
 				for (ScreenEvents.AfterTick callback : callbacks) {
-					callback.afterTick(client, screen, context);
+					callback.afterTick(client, screen, info);
+				}
+			}
+		});
+	}
+
+	public static Event<ScreenEvents.AfterResize> createAfterResizeEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterResize.class, callbacks -> (client, screen, info) -> {
+			if (EventFactory.isProfilingEnabled()) {
+				final Profiler profiler = client.getProfiler();
+				profiler.push("afterFabricScreenResize");
+
+				for (ScreenEvents.AfterResize callback : callbacks) {
+					profiler.push(EventFactory.getHandlerName(callback));
+					callback.onResize(client, screen, info);
+					profiler.pop();
+				}
+
+				profiler.pop();
+			} else {
+				for (ScreenEvents.AfterResize callback : callbacks) {
+					callback.onResize(client, screen, info);
 				}
 			}
 		});
