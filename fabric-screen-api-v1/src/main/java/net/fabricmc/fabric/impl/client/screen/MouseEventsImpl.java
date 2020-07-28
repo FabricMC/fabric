@@ -23,8 +23,10 @@ import net.fabricmc.fabric.api.event.Event;
 public final class MouseEventsImpl implements FabricScreen.MouseEvents {
 	private final Event<ScreenEvents.BeforeMouseClicked> beforeMouseClickedEvent = ScreenEventFactory.createBeforeMouseClickedEvent();
 	private final Event<ScreenEvents.AfterMouseClicked> afterMouseClickedEvent = ScreenEventFactory.createAfterMouseClickedEvent();
-	private final Event<ScreenEvents.BeforeMouseReleased> beforeMouseReleasedEvent = ScreenEventFactory.createBeforeMouseReleasedEvent();;
+	private final Event<ScreenEvents.BeforeMouseReleased> beforeMouseReleasedEvent = ScreenEventFactory.createBeforeMouseReleasedEvent();
 	private final Event<ScreenEvents.AfterMouseReleased> afterMouseReleasedEvent = ScreenEventFactory.createAfterMouseReleasedEvent();
+	private final Event<ScreenEvents.BeforeMouseScrolled> beforeMouseScrolledEvent = ScreenEventFactory.createBeforeMouseScrolledEvent();
+	private final Event<ScreenEvents.AfterMouseScrolled> afterMouseScrolledEvent = ScreenEventFactory.createAfterMouseScrolledEvent();
 
 	@Override
 	public Event<ScreenEvents.BeforeMouseClicked> getBeforeMouseClickedEvent() {
@@ -44,5 +46,15 @@ public final class MouseEventsImpl implements FabricScreen.MouseEvents {
 	@Override
 	public Event<ScreenEvents.AfterMouseReleased> getAfterMouseReleasedEvent() {
 		return this.afterMouseReleasedEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.BeforeMouseScrolled> getBeforeMouseScrolledEvent() {
+		return this.beforeMouseScrolledEvent;
+	}
+
+	@Override
+	public Event<ScreenEvents.AfterMouseScrolled> getAfterMouseScrolledEvent() {
+		return this.afterMouseScrolledEvent;
 	}
 }

@@ -140,6 +140,16 @@ public final class ScreenEvents {
 		void afterMouseReleased(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
 	}
 
+	@FunctionalInterface
+	public interface BeforeMouseScrolled {
+		boolean beforeMouseScrolled(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+	}
+
+	@FunctionalInterface
+	public interface AfterMouseScrolled {
+		void afterMouseScrolled(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+	}
+
 	private ScreenEvents() {
 	}
 }

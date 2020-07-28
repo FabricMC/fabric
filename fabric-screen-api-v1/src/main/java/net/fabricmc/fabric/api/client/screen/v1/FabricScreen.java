@@ -112,6 +112,10 @@ public interface FabricScreen {
 		Event<ScreenEvents.BeforeMouseReleased> getBeforeMouseReleasedEvent();
 
 		Event<ScreenEvents.AfterMouseReleased> getAfterMouseReleasedEvent();
+
+		Event<ScreenEvents.BeforeMouseScrolled> getBeforeMouseScrolledEvent();
+
+		Event<ScreenEvents.AfterMouseScrolled> getAfterMouseScrolledEvent();
 	}
 }
 

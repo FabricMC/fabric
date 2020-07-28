@@ -193,6 +193,26 @@ public final class ScreenEventFactory {
 		});
 	}
 
+	public static Event<ScreenEvents.BeforeMouseScrolled> createBeforeMouseScrolledEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeMouseScrolled.class, callbacks -> (client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+			for (ScreenEvents.BeforeMouseScrolled callback : callbacks) {
+				if (callback.beforeMouseScrolled(client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount)) {
+					return true;
+				}
+			}
+
+			return false;
+		});
+	}
+
+	public static Event<ScreenEvents.AfterMouseScrolled> createAfterMouseScrolledEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.AfterMouseScrolled.class, callbacks -> (client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+			for (ScreenEvents.AfterMouseScrolled callback : callbacks) {
+				callback.afterMouseScrolled(client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount);
+			}
+		});
+	}
+
 	private ScreenEventFactory() {
 	}
 }
