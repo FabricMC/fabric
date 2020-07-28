@@ -126,18 +126,35 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> trackable(int trackingDistance) {
-		this.trackingDistance = trackingDistance;
+	/**
+	 * Sets the maximum chunk tracking distance of this entity type.
+	 *
+	 * @param chunksDistance the tracking distance in blocks
+	 *
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> trackChunkDistance(int chunksDistance) {
+		this.trackingDistance = chunksDistance;
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> trackable(int trackingDistance, int updateIntervalTicks) {
-		return trackable(trackingDistance, updateIntervalTicks, true);
+	/**
+	 * Sets the maximum block tracking distance of this entity type.
+	 *
+	 * @param blockDistance the tracking distance in blocks
+	 *
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> trackBlockDistance(int blockDistance) {
+		return trackChunkDistance(blockDistance + 15 / 16);
 	}
 
-	public FabricEntityTypeBuilder<T> trackable(int trackingDistance, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-		this.trackingDistance = trackingDistance;
+	public FabricEntityTypeBuilder<T> updateIntervalTicks(int updateIntervalTicks) {
 		this.updateIntervalTicks = updateIntervalTicks;
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> alwaysUpdateVelocity(boolean alwaysUpdateVelocity) {
 		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
 		return this;
 	}
