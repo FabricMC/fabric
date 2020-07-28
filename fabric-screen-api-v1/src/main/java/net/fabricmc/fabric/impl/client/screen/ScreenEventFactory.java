@@ -111,27 +111,6 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.AfterResize> createAfterResizeEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterResize.class, callbacks -> (client, screen, info) -> {
-			if (EventFactory.isProfilingEnabled()) {
-				final Profiler profiler = client.getProfiler();
-				profiler.push("afterFabricScreenResize");
-
-				for (ScreenEvents.AfterResize callback : callbacks) {
-					profiler.push(EventFactory.getHandlerName(callback));
-					callback.onResize(client, screen, info);
-					profiler.pop();
-				}
-
-				profiler.pop();
-			} else {
-				for (ScreenEvents.AfterResize callback : callbacks) {
-					callback.onResize(client, screen, info);
-				}
-			}
-		});
-	}
-
 	public static Event<ScreenEvents.BeforeKeyPressed> createBeforeKeyPressedEvent() {
 		return EventFactory.createArrayBacked(ScreenEvents.BeforeKeyPressed.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
 			for (ScreenEvents.BeforeKeyPressed callback : callbacks) {

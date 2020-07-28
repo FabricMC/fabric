@@ -65,7 +65,9 @@ public final class ScreenEvents {
 	 * }
 	 * </pre></blockquote>
 	 *
-	 * <p>This event also indicates that the previous screen has been closed, and as such can be used to clear a mod's current screen state.
+	 * <p>This event indicates a screen has been resized, and therefore is being re-initialized.
+	 *
+	 * <p>This event can also indicate that the previous screen has been closed.
 	 */
 	public static final Event<AfterInit> AFTER_INIT = EventFactory.createArrayBacked(AfterInit.class, callbacks -> (client, screen, info, scaledWidth, scaledHeight) -> {
 		for (AfterInit callback : callbacks) {
@@ -96,11 +98,6 @@ public final class ScreenEvents {
 	@FunctionalInterface
 	public interface AfterTick {
 		void afterTick(MinecraftClient client, Screen screen, FabricScreen info);
-	}
-
-	@FunctionalInterface
-	public interface AfterResize {
-		void onResize(MinecraftClient client, Screen screen, FabricScreen info);
 	}
 
 	@FunctionalInterface

@@ -74,10 +74,6 @@ public class ScreenTests implements ClientModInitializer {
 			info.getKeyboardEvents().getBeforeKeyPressedEvent().register(this::beforeKeyPress);
 			info.getKeyboardEvents().getAfterKeyPressedEvent().register(this::afterKeyPress);
 		}
-
-		// Say something when the screen is resized
-		LOGGER.info("Registered resize event");
-		info.getAfterResizeEvent().register(this::onResizeScreen);
 	}
 
 	private void afterKeyPress(MinecraftClient client, Screen screen, FabricScreen fabricScreen, int key, int scancode, int modifiers) {
@@ -87,12 +83,6 @@ public class ScreenTests implements ClientModInitializer {
 	private boolean beforeKeyPress(MinecraftClient client, Screen screen, FabricScreen fabricScreen, int key, int scancode, int modifiers) {
 		LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
 		return false; // Let actions continue
-	}
-
-	private void onResizeScreen(MinecraftClient client, Screen screen, FabricScreen info) {
-		if (PRINT_RESIZE_SCREEN_EVENTS) {
-			LOGGER.info("Resized screen {} to {}, {}", screen.getClass().getName(), screen.width, screen.height);
-		}
 	}
 
 	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta) {

@@ -66,8 +66,6 @@ public abstract class ScreenMixin implements FabricScreen {
 	@Unique
 	private Event<ScreenEvents.AfterRender> afterRenderEvent;
 	@Unique
-	private Event<ScreenEvents.AfterResize> afterResizeEvent;
-	@Unique
 	private MouseEvents mouseEvents;
 	@Unique
 	private KeyboardEvents keyboardEvents;
@@ -78,7 +76,6 @@ public abstract class ScreenMixin implements FabricScreen {
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
-		this.afterResizeEvent = ScreenEventFactory.createAfterResizeEvent();
 		this.mouseEvents = new MouseEventsImpl();
 		this.keyboardEvents = new KeyboardEventsImpl();
 	}
@@ -126,11 +123,6 @@ public abstract class ScreenMixin implements FabricScreen {
 	@Override
 	public Event<ScreenEvents.AfterRender> getAfterRenderEvent() {
 		return this.afterRenderEvent;
-	}
-
-	@Override
-	public Event<ScreenEvents.AfterResize> getAfterResizeEvent() {
-		return this.afterResizeEvent;
 	}
 
 	@Override
