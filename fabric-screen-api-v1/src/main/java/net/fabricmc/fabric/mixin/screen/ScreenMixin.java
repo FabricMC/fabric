@@ -70,18 +70,15 @@ public abstract class ScreenMixin implements FabricScreen {
 	@Unique
 	private KeyboardEvents keyboardEvents;
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void initializeEvents(Text title, CallbackInfo ci) {
+	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
+	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
+		// All elements are repopulated on the screen, so we need to reinitialize all events
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
 		this.mouseEvents = new MouseEventsImpl();
 		this.keyboardEvents = new KeyboardEventsImpl();
-	}
-
-	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
-	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
 		ScreenEvents.AFTER_INIT.invoker().onInit(client, (Screen) (Object) this, this, width, height);
 	}
 
