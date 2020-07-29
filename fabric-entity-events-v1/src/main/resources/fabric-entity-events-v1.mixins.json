@@ -3,7 +3,12 @@
   "package": "net.fabricmc.fabric.mixin.entity.event",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "DamageTrackerMixin"
+    "DamageTrackerMixin",
+    "EntityMixin",
+    "LivingEntityMixin",
+    "PlayerManagerMixin",
+    "ServerPlayerEntityMixin",
+    "TeleportCommandMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -31,13 +31,22 @@ public final class LivingEntityEvents {
 	/**
 	 * Called after a living entity has taken damage and the entity's new health has been set.
 	 *
-	 * <p>This is called before any {@link Items#TOTEM_OF_UNDYING} is applied.
+	 * <p>This is called before any {@link Items#TOTEM_OF_UNDYING} are applied.
 	 *
 	 * <p>Note this method does not work on {@link ArmorStandEntity armor stands} right now.
 	 */
 	public static final Event<AfterDamaged> AFTER_DAMAGED = EventFactory.createArrayBacked(AfterDamaged.class, callbacks -> (entity, damageSource, damageAmount, originalHeath) -> {
 		for (AfterDamaged callback : callbacks) {
 			callback.afterDamaged(entity, damageSource, damageAmount, originalHeath);
+		}
+	});
+
+	/**
+	 * Called after a living entity is killed by an adversary.
+	 */
+	public static final Event<AfterKilledByAdversary> AFTER_KILLED_BY_ADVERSARY = EventFactory.createArrayBacked(AfterKilledByAdversary.class, callbacks -> (deadEntity, adversary) -> {
+		for (AfterKilledByAdversary callback : callbacks) {
+			callback.afterKilledBy(deadEntity, adversary);
 		}
 	});
 
@@ -51,6 +60,16 @@ public final class LivingEntityEvents {
 		 * @param originalHeath the original health of the entity
 		 */
 		void afterDamaged(LivingEntity entity, DamageSource damageSource, float damageAmount, float originalHeath);
+	}
+
+	public interface AfterKilledByAdversary {
+		/**
+		 * Called when a living entity is killed by an adversary.
+		 *
+		 * @param deadEntity the entity which has been killed
+		 * @param adversary the adversary
+		 */
+		void afterKilledBy(LivingEntity deadEntity, LivingEntity adversary);
 	}
 
 	private LivingEntityEvents() {
