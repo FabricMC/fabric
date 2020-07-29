@@ -35,7 +35,7 @@ public final class EntityEvents {
 
 	public interface AfterKilledOther {
 		/**
-		 * Called after an entity has killed another entity
+		 * Called after an entity has killed another entity.
 		 *
 		 * @param world the world
 		 * @param entity the entity
