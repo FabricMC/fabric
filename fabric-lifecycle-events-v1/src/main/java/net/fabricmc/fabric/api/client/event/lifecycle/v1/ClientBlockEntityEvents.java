@@ -78,10 +78,12 @@ public final class ClientBlockEntityEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface Load {
 		void onLoad(BlockEntity blockEntity, ClientWorld world);
 	}
 
+	@FunctionalInterface
 	public interface Unload {
 		void onUnload(BlockEntity blockEntity, ClientWorld world);
 	}

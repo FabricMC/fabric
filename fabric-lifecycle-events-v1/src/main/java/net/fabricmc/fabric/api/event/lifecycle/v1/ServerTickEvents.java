@@ -117,18 +117,22 @@ public final class ServerTickEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface StartTick {
 		void onStartTick(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface EndTick {
 		void onEndTick(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface StartWorldTick {
 		void onStartTick(ServerWorld world);
 	}
 
+	@FunctionalInterface
 	public interface EndWorldTick {
 		void onEndTick(ServerWorld world);
 	}
