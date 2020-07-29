@@ -341,6 +341,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			}
 
 			// Add the new object, increment nextId to match.
+			field_26682.size(Math.max(this.field_26682.size(), id + 1));
 			field_26682.set(id, object);
 			field_26683.put(object, id);
 
