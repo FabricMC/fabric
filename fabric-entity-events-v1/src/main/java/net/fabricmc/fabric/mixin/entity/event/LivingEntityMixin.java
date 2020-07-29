@@ -28,21 +28,9 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.entity.event.v1.EntityEvents;
-import net.fabricmc.fabric.api.entity.event.v1.LivingEntityEvents;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin {
-	@Inject(method = "onKilledBy", at = @At("TAIL"))
-	private void afterKilledBy(/* @Nullable */ LivingEntity adversary, CallbackInfo ci) {
-		// Only fire on logical server
-		if (!this.world.isClient()) {
-			// Check if the adversary caused the death
-			if (adversary != null) {
-				LivingEntityEvents.AFTER_KILLED_BY_ADVERSARY.invoker().afterKilledBy((LivingEntity) (Object) this, adversary);
-			}
-		}
-	}
-
 	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onKilledOther(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onEntityKilledOther(DamageSource source, CallbackInfo ci, Entity attacker) {
 		EntityEvents.AFTER_KILLED_OTHER.invoker().afterKilledOther(((ServerWorld) this.world), attacker, (LivingEntity) (Object) this);

@@ -41,15 +41,6 @@ public final class LivingEntityEvents {
 		}
 	});
 
-	/**
-	 * Called after a living entity is killed by an adversary.
-	 */
-	public static final Event<AfterKilledByAdversary> AFTER_KILLED_BY_ADVERSARY = EventFactory.createArrayBacked(AfterKilledByAdversary.class, callbacks -> (deadEntity, adversary) -> {
-		for (AfterKilledByAdversary callback : callbacks) {
-			callback.afterKilledBy(deadEntity, adversary);
-		}
-	});
-
 	public interface AfterDamaged {
 		/**
 		 * Called after a living entity is damaged.
@@ -60,16 +51,6 @@ public final class LivingEntityEvents {
 		 * @param originalHeath the original health of the entity
 		 */
 		void afterDamaged(LivingEntity entity, DamageSource damageSource, float damageAmount, float originalHeath);
-	}
-
-	public interface AfterKilledByAdversary {
-		/**
-		 * Called when a living entity is killed by an adversary.
-		 *
-		 * @param deadEntity the entity which has been killed
-		 * @param adversary the adversary
-		 */
-		void afterKilledBy(LivingEntity deadEntity, LivingEntity adversary);
 	}
 
 	private LivingEntityEvents() {

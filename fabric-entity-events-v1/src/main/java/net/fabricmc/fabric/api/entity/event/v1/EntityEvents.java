@@ -24,6 +24,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class EntityEvents {
+	/**
+	 * An event that is called after an entity is directly responsible for killing another entity.
+	 */
 	public static final Event<EntityEvents.AfterKilledOther> AFTER_KILLED_OTHER = EventFactory.createArrayBacked(AfterKilledOther.class, callbacks -> (world, entity, killed) -> {
 		for (AfterKilledOther callback : callbacks) {
 			callback.afterKilledOther(world, entity, killed);
@@ -31,6 +34,13 @@ public final class EntityEvents {
 	});
 
 	public interface AfterKilledOther {
+		/**
+		 * Called after an entity has killed another entity
+		 *
+		 * @param world the world
+		 * @param entity the entity
+		 * @param killed the entity which was killed
+		 */
 		void afterKilledOther(ServerWorld world, Entity entity, LivingEntity killed);
 	}
 
