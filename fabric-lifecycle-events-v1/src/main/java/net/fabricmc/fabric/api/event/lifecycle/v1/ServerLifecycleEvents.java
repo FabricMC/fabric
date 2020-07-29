@@ -96,26 +96,32 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface ServerStarting {
 		void onServerStarting(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface ServerStarted {
 		void onServerStarted(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface ServerStopping {
 		void onServerStopping(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface ServerStopped {
 		void onServerStopped(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface StartDataPackReload {
 		void startDataPackReload(MinecraftServer server, ReloadableResourceManager serverResourceManager);
 	}
 
+	@FunctionalInterface
 	public interface EndDataPackReload {
 		/**
 		 * Called after data packs on a Minecraft server have been reloaded.
