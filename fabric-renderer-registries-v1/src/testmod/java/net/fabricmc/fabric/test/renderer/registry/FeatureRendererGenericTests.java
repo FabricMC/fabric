@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.test.renderer.registry;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
@@ -34,55 +38,67 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.decoration.ArmorStandEntity;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.RegisterFeatureRendererCallback;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityFeatureRendererRegistrationCallback;
 
-public class FeatureRendererTests implements ClientModInitializer {
+/**
+ * This test exists solely for testing generics.
+ * As such it is not in the mod json
+ */
+public class FeatureRendererGenericTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// These aren't tests in the normal sense. These exist to test that generics are sane.
-		RegisterFeatureRendererCallback.EVENT.register((entityType, entityRenderer, acceptor) -> {
+		EntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer) -> {
+			final ImmutableList.Builder<FeatureRenderer<?, ?>> builder = ImmutableList.builder();
+
 			if (entityRenderer instanceof PlayerEntityRenderer) {
-				acceptor.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
+				builder.add(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
 
 				// This is T extends AbstractClientPlayerEntity
-				acceptor.register(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
+				builder.add(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
 			}
 
 			if (entityRenderer instanceof ArmorStandEntityRenderer) {
-				acceptor.register(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
+				builder.add(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
 			}
 
 			// Obviously not recommended, just used for testing generics
-			acceptor.register(new ElytraFeatureRenderer<>(entityRenderer));
+			builder.add(new ElytraFeatureRenderer<>(entityRenderer));
 
 			if (entityRenderer instanceof BipedEntityRenderer) {
 				// It works, method ref is encouraged
-				acceptor.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
+				builder.add(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
 			}
+
+			return builder.build();
 		});
 
-		RegisterFeatureRendererCallback.EVENT.register(this::registerFeatures);
+		EntityFeatureRendererRegistrationCallback.EVENT.register(this::registerFeatures);
 	}
 
-	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegisterFeatureRendererCallback.FeatureAcceptor acceptor) {
+	private List<FeatureRenderer<?, ?>> registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer) {
+		final ImmutableList.Builder<FeatureRenderer<?, ?>> builder = ImmutableList.builder();
+
 		if (entityRenderer instanceof PlayerEntityRenderer) {
-			acceptor.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
+			builder.add(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
 
 			// This is T extends AbstractClientPlayerEntity
-			acceptor.register(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
+			builder.add(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
 		}
 
 		if (entityRenderer instanceof ArmorStandEntityRenderer) {
-			acceptor.register(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
+			builder.add(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
 		}
 
 		// Obviously not recommended, just used for testing generics.
-		acceptor.register(new ElytraFeatureRenderer<>(entityRenderer));
+		builder.add(new ElytraFeatureRenderer<>(entityRenderer));
 
 		if (entityRenderer instanceof BipedEntityRenderer) {
 			// It works, method ref is encouraged
-			acceptor.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
+			builder.add(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
 		}
+
+		return builder.build();
 	}
 
 	static class TestPlayerFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {

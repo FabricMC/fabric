@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
+import java.util.List;
+
+import com.google.common.collect.ImmutableList;
+
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 
@@ -38,20 +41,28 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>For example, to register a feature renderer for a player model, the example below may used:
  * <blockquote><pre>
- * RegisterFeatureRendererCallback.EVENT.register((entityType, entityRenderer, acceptor) -> {
+ * RegisterFeatureRendererCallback.EVENT.register((entityType, entityRenderer) -> {
+ * 	List&lt;FeatureRenderer&lt;?, ?&gt;&gt; renderers = new ArrayList&lt;&gt;();
+ *
  * 	if (entityRenderer instanceof PlayerEntityModel) {
- * 		acceptor.accept(new MyFeatureRenderer((PlayerEntityModel) entityRenderer));
- *    }
+ * 		renderers.add(new MyFeatureRenderer((PlayerEntityModel) entityRenderer));
+ * 	}
+ *
+ * 	return renderers;
  * });
  * </pre></blockquote>
  */
 @FunctionalInterface
 @Environment(EnvType.CLIENT)
-public interface RegisterFeatureRendererCallback {
-	Event<RegisterFeatureRendererCallback> EVENT = EventFactory.createArrayBacked(RegisterFeatureRendererCallback.class, callbacks -> (entityType, entityRenderer, acceptor) -> {
-		for (RegisterFeatureRendererCallback callback : callbacks) {
-			callback.registerFeatureRenderers(entityType, entityRenderer, acceptor);
+public interface EntityFeatureRendererRegistrationCallback {
+	Event<EntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(EntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer) -> {
+		final ImmutableList.Builder<FeatureRenderer<?, ?>> builder = ImmutableList.builder();
+
+		for (EntityFeatureRendererRegistrationCallback callback : callbacks) {
+			builder.addAll(callback.gatherRenderers(entityType, entityRenderer));
 		}
+
+		return builder.build();
 	});
 
 	/**
@@ -59,22 +70,6 @@ public interface RegisterFeatureRendererCallback {
 	 *
 	 * @param entityType     the entity type of the renderer
 	 * @param entityRenderer the entity renderer
-	 * @param acceptor       the accepted used to register feature renderers
 	 */
-	void registerFeatureRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, FeatureAcceptor acceptor);
-
-	/**
-	 * A delegate object used to register feature renderers for an entity renderer.
-	 *
-	 * <p>This is not meant for implementation by users of the API.
-	 */
-	interface FeatureAcceptor {
-		/**
-		 * Adds a feature renderer to the entity renderer.
-		 *
-		 * @param featureRenderer the feature renderer
-		 * @param <T> the type of entity
-		 */
-		<T extends LivingEntity> void register(FeatureRenderer<T, ? extends EntityModel<T>> featureRenderer);
-	}
+	List<FeatureRenderer<?, ?>> gatherRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer);
 }

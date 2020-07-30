@@ -29,14 +29,14 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.resource.ReloadableResourceManager;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.RegisterFeatureRendererCallback;
-import net.fabricmc.fabric.impl.client.renderer.registry.FeatureAcceptorImpl;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityFeatureRendererRegistrationCallback;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class MixinEntityRenderDispatcher {
@@ -58,14 +58,24 @@ public abstract class MixinEntityRenderDispatcher {
 		for (Map.Entry<EntityType<?>, EntityRenderer<?>> entry : this.renderers.entrySet()) {
 			if (entry.getValue() instanceof LivingEntityRenderer) { // Must be living for features
 				LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
-				RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new FeatureAcceptorImpl(accessor::callAddFeature));
+
+				for (FeatureRenderer<?, ?> renderer : EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue())) {
+					accessor.callAddFeature(renderer);
+				}
 			}
 		}
+	}
 
-		// Players are a fun case, we need to do these separately.
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void afterRegisterPlayerModels(CallbackInfo ci) {
+		// Players are a fun case, we need to do these separately and per model type
 		for (Map.Entry<String, PlayerEntityRenderer> entry : this.modelRenderers.entrySet()) {
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
-			RegisterFeatureRendererCallback.EVENT.invoker().registerFeatureRenderers(EntityType.PLAYER, entry.getValue(), new FeatureAcceptorImpl(accessor::callAddFeature));
+
+			for (FeatureRenderer<?, ?> renderer : EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers(EntityType.PLAYER, entry.getValue())) {
+				accessor.callAddFeature(renderer);
+			}
 		}
 	}
 }
