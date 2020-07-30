@@ -16,10 +16,6 @@
 
 package net.fabricmc.fabric.test.renderer.registry;
 
-import java.util.List;
-
-import com.google.common.collect.ImmutableList;
-
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
@@ -48,57 +44,49 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// These aren't tests in the normal sense. These exist to test that generics are sane.
-		EntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer) -> {
-			final ImmutableList.Builder<FeatureRenderer<?, ?>> builder = ImmutableList.builder();
-
+		EntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
 			if (entityRenderer instanceof PlayerEntityRenderer) {
-				builder.add(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
+				registrationHelper.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
 
 				// This is T extends AbstractClientPlayerEntity
-				builder.add(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
+				registrationHelper.register(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
 			}
 
 			if (entityRenderer instanceof ArmorStandEntityRenderer) {
-				builder.add(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
+				registrationHelper.register(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
 			}
 
 			// Obviously not recommended, just used for testing generics
-			builder.add(new ElytraFeatureRenderer<>(entityRenderer));
+			registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer));
 
 			if (entityRenderer instanceof BipedEntityRenderer) {
 				// It works, method ref is encouraged
-				builder.add(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
+				registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
 			}
-
-			return builder.build();
 		});
 
 		EntityFeatureRendererRegistrationCallback.EVENT.register(this::registerFeatures);
 	}
 
-	private List<FeatureRenderer<?, ?>> registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer) {
-		final ImmutableList.Builder<FeatureRenderer<?, ?>> builder = ImmutableList.builder();
-
+	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, EntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper) {
 		if (entityRenderer instanceof PlayerEntityRenderer) {
-			builder.add(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
+			registrationHelper.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
 
 			// This is T extends AbstractClientPlayerEntity
-			builder.add(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
+			registrationHelper.register(new GenericTestPlayerFeature<>((PlayerEntityRenderer) entityRenderer));
 		}
 
 		if (entityRenderer instanceof ArmorStandEntityRenderer) {
-			builder.add(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
+			registrationHelper.register(new TestArmorStandFeature((ArmorStandEntityRenderer) entityRenderer));
 		}
 
 		// Obviously not recommended, just used for testing generics.
-		builder.add(new ElytraFeatureRenderer<>(entityRenderer));
+		registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer));
 
 		if (entityRenderer instanceof BipedEntityRenderer) {
 			// It works, method ref is encouraged
-			builder.add(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
+			registrationHelper.register(new HeldItemFeatureRenderer<>((BipedEntityRenderer<?, ?>) entityRenderer));
 		}
-
-		return builder.build();
 	}
 
 	static class TestPlayerFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {

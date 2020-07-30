@@ -29,7 +29,6 @@ import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -37,6 +36,7 @@ import net.minecraft.resource.ReloadableResourceManager;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.impl.client.renderer.registry.RegistrationHelperImpl;
 
 @Mixin(EntityRenderDispatcher.class)
 public abstract class MixinEntityRenderDispatcher {
@@ -59,9 +59,7 @@ public abstract class MixinEntityRenderDispatcher {
 			if (entry.getValue() instanceof LivingEntityRenderer) { // Must be living for features
 				LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
 
-				for (FeatureRenderer<?, ?> renderer : EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue())) {
-					accessor.callAddFeature(renderer);
-				}
+				EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
 			}
 		}
 	}
@@ -73,9 +71,7 @@ public abstract class MixinEntityRenderDispatcher {
 		for (Map.Entry<String, PlayerEntityRenderer> entry : this.modelRenderers.entrySet()) {
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
 
-			for (FeatureRenderer<?, ?> renderer : EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers(EntityType.PLAYER, entry.getValue())) {
-				accessor.callAddFeature(renderer);
-			}
+			EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers(EntityType.PLAYER, entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
 		}
 	}
 }
