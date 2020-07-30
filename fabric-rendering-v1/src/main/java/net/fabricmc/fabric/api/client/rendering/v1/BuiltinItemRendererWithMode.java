@@ -36,7 +36,7 @@ public interface BuiltinItemRendererWithMode {
 	 * @param mode            the model transformation mode
 	 * @param matrices        the matrix stack
 	 * @param vertexConsumers the vertex consumer provider
-	 * @param light           the color light multiplier at the rendering position
+	 * @param light           packed lightmap coordinates
 	 * @param overlay         the overlay UV passed to {@link net.minecraft.client.render.VertexConsumer#overlay(int)}
 	 */
 	void render(ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay);
