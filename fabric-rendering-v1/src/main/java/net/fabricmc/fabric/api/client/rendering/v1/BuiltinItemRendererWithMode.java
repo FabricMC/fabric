@@ -17,11 +17,9 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 /**
  * Builtin item renderers render items with custom code.
@@ -29,21 +27,17 @@ import net.fabricmc.api.Environment;
  *
  * <p>An item with a builtin renderer must have a model extending {@code minecraft:builtin/entity}.
  * The renderers are registered with {@link BuiltinItemRendererRegistry#register}.
- *
- * @deprecated Please use {@link BuiltinItemRendererWithMode} instead.
  */
-@Deprecated
-@Environment(EnvType.CLIENT)
-@FunctionalInterface
-public interface BuiltinItemRenderer {
+public interface BuiltinItemRendererWithMode {
 	/**
 	 * Renders an item stack.
 	 *
 	 * @param stack           the rendered item stack
+	 * @param mode            the model transformation mode
 	 * @param matrices        the matrix stack
 	 * @param vertexConsumers the vertex consumer provider
 	 * @param light           the color light multiplier at the rendering position
 	 * @param overlay         the overlay UV passed to {@link net.minecraft.client.render.VertexConsumer#overlay(int)}
 	 */
-	void render(ItemStack stack, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay);
+	void render(ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay);
 }

@@ -20,26 +20,43 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererWithMode;
 
 @Environment(EnvType.CLIENT)
 public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
 	public static final BuiltinItemRendererRegistryImpl INSTANCE = new BuiltinItemRendererRegistryImpl();
 
-	private static final Map<Item, BuiltinItemRenderer> RENDERERS = new HashMap<>();
+	private static final Map<Item, BuiltinItemRendererWithMode> RENDERERS = new HashMap<>();
 
 	private BuiltinItemRendererRegistryImpl() {
 	}
 
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
+		Objects.requireNonNull(item, "item is null");
+		Objects.requireNonNull(renderer, "renderer is null");
+
+		if (RENDERERS.containsKey(item)) {
+			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item) + " already has a builtin renderer!");
+		}
+
+		RENDERERS.put(item, new OldRendererImpl(renderer));
+	}
+
+	@Override
+	public void register(Item item, BuiltinItemRendererWithMode renderer) {
 		Objects.requireNonNull(item, "item is null");
 		Objects.requireNonNull(renderer, "renderer is null");
 
@@ -57,7 +74,23 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 	}
 
 	/* @Nullable */
-	public static BuiltinItemRenderer getRenderer(Item item) {
+	public static BuiltinItemRendererWithMode getRenderer(Item item) {
 		return RENDERERS.get(item);
+	}
+
+	/**
+	 * An implementation of the new renderer that forwards calls to an old renderer.
+	 */
+	static class OldRendererImpl implements BuiltinItemRendererWithMode {
+		private final BuiltinItemRenderer renderer;
+
+		private OldRendererImpl(BuiltinItemRenderer renderer) {
+			this.renderer = renderer;
+		}
+
+		@Override
+		public void render(ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+			this.renderer.render(stack, matrices, vertexConsumers, light, overlay);
+		}
 	}
 }

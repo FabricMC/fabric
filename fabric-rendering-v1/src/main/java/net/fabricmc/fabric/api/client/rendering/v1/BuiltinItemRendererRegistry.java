@@ -24,7 +24,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.BuiltinItemRendererRegistryImpl;
 
 /**
- * This registry holds {@linkplain BuiltinItemRenderer builtin item renderers} for items.
+ * This registry holds {@linkplain BuiltinItemRendererWithMode builtin item renderers} for items.
  */
 @Environment(EnvType.CLIENT)
 public interface BuiltinItemRendererRegistry {
@@ -43,7 +43,9 @@ public interface BuiltinItemRendererRegistry {
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
+	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, BuiltinItemRendererWithMode)} instead.
 	 */
+	@Deprecated
 	void register(Item item, BuiltinItemRenderer renderer);
 
 	/**
@@ -55,6 +57,20 @@ public interface BuiltinItemRendererRegistry {
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
+	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, BuiltinItemRendererWithMode)} instead.
 	 */
+	@Deprecated
 	void register(ItemConvertible item, BuiltinItemRenderer renderer);
+
+	/**
+	 * Registers the renderer for the item.
+	 *
+	 * <p>Note that the item's JSON model must also extend {@code minecraft:builtin/entity}.
+	 *
+	 * @param item     the item
+	 * @param renderer the renderer
+	 * @throws IllegalArgumentException if the item already has a registered renderer
+	 * @throws NullPointerException if either the item or the renderer is null
+	 */
+	void register(Item item, BuiltinItemRendererWithMode renderer);
 }
