@@ -47,9 +47,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 @FunctionalInterface
 @Environment(EnvType.CLIENT)
-public interface EntityFeatureRendererRegistrationCallback {
-	Event<EntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(EntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper) -> {
-		for (EntityFeatureRendererRegistrationCallback callback : callbacks) {
+public interface LivingEntityFeatureRendererRegistrationCallback {
+	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper) -> {
+		for (LivingEntityFeatureRendererRegistrationCallback callback : callbacks) {
 			callback.registerRenderers(entityType, entityRenderer, registrationHelper);
 		}
 	});

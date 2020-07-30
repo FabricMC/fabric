@@ -35,7 +35,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.resource.ReloadableResourceManager;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.impl.client.renderer.registry.RegistrationHelperImpl;
 
 @Mixin(EntityRenderDispatcher.class)
@@ -59,7 +59,7 @@ public abstract class MixinEntityRenderDispatcher {
 			if (entry.getValue() instanceof LivingEntityRenderer) { // Must be living for features
 				LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
 
-				EntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
+				LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public abstract class MixinEntityRenderDispatcher {
 		for (Map.Entry<String, PlayerEntityRenderer> entry : this.modelRenderers.entrySet()) {
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
 
-			EntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(EntityType.PLAYER, entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
+			LivingEntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(EntityType.PLAYER, entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
 		}
 	}
 }

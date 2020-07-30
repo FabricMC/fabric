@@ -23,9 +23,9 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.EntityModel;
 import net.minecraft.entity.LivingEntity;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
 
-public final class RegistrationHelperImpl implements EntityFeatureRendererRegistrationCallback.RegistrationHelper {
+public final class RegistrationHelperImpl implements LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper {
 	private final Function<FeatureRenderer<?, ?>, Boolean> delegate;
 
 	public RegistrationHelperImpl(Function<FeatureRenderer<?, ?>, Boolean> delegate) {

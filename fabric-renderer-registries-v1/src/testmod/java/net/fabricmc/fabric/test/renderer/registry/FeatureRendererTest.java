@@ -34,7 +34,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
 
 public final class FeatureRendererTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(FeatureRendererTest.class);
@@ -43,7 +43,7 @@ public final class FeatureRendererTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("Registering test feature renderer");
-		EntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
+		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
 			// minecraft:player SHOULD be printed twice
 			LOGGER.info(String.format("Received registration for %s", Registry.ENTITY_TYPE.getId(entityType)));
 
