@@ -50,7 +50,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public interface EntityFeatureRendererRegistrationCallback {
 	Event<EntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(EntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper) -> {
 		for (EntityFeatureRendererRegistrationCallback callback : callbacks) {
-			callback.gatherRenderers(entityType, entityRenderer, registrationHelper);
+			callback.registerRenderers(entityType, entityRenderer, registrationHelper);
 		}
 	});
 
@@ -60,7 +60,7 @@ public interface EntityFeatureRendererRegistrationCallback {
 	 * @param entityType     the entity type of the renderer
 	 * @param entityRenderer the entity renderer
 	 */
-	void gatherRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegistrationHelper registrationHelper);
+	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegistrationHelper registrationHelper);
 
 	/**
 	 * A delegate object used to help register feature renderers for an entity renderer.

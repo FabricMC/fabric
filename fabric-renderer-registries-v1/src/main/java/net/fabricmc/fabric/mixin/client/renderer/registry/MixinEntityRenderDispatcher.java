@@ -59,7 +59,7 @@ public abstract class MixinEntityRenderDispatcher {
 			if (entry.getValue() instanceof LivingEntityRenderer) { // Must be living for features
 				LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
 
-				EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
+				EntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers((EntityType<? extends LivingEntity>) entry.getKey(), (LivingEntityRenderer) entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
 			}
 		}
 	}
@@ -71,7 +71,7 @@ public abstract class MixinEntityRenderDispatcher {
 		for (Map.Entry<String, PlayerEntityRenderer> entry : this.modelRenderers.entrySet()) {
 			LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entry.getValue();
 
-			EntityFeatureRendererRegistrationCallback.EVENT.invoker().gatherRenderers(EntityType.PLAYER, entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
+			EntityFeatureRendererRegistrationCallback.EVENT.invoker().registerRenderers(EntityType.PLAYER, entry.getValue(), new RegistrationHelperImpl(accessor::callAddFeature));
 		}
 	}
 }
