@@ -35,11 +35,16 @@ public class ObjectBuilderTest implements ModInitializer {
 		@Override
 		public int spawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals) {
 			int amount = 0;
+
 			for (Entity egg : world.getEntitiesByType(EntityType.EGG, Entity::isAlive)) {
 				ChickenEntity chickenEntity = new ChickenEntity(EntityType.CHICKEN, world);
 				chickenEntity.refreshPositionAndAngles(egg.getX(), egg.getY(), egg.getZ(), world.random.nextFloat(), world.random.nextFloat());
-				if (world.spawnEntity(chickenEntity)) amount++;
+
+				if (world.spawnEntity(chickenEntity)) {
+					amount++;
+				}
 			}
+
 			return amount;
 		}
 	}
