@@ -33,7 +33,7 @@ public class StructureEventTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		StructureFeatureEvents.register((structureStart, serverWorld) -> LOGGER.info("Structure {} added to {}", structureStart.getFeature().getName(), serverWorld.getRegistryKey().getValue()));
-		StructureFeatureEvents.register(new Identifier("fabric", "structure_feature"), ((structureStart, serverWorld) -> {}));
+		StructureFeatureEvents.register(new Identifier("fabric", "structure_feature"), ((structureStart, serverWorld) -> LOGGER.info("This should never be called.")));
 
 		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, serverWorld) -> LOGGER.info("Placing Jigsaw structure piece {} in {}", piece.toString(), serverWorld.getRegistryKey().getValue())));
 		StructurePieceEvents.register(new Identifier("fabric", "structure_feature_piece"), ((piece, serverWorld) -> LOGGER.info("This should never be called.")));
