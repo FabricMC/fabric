@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.entity.event;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -31,6 +32,9 @@ import net.fabricmc.fabric.api.entity.event.v1.EntityEvents;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends EntityMixin {
+	@Shadow
+	public abstract LivingEntity getAttacker();
+
 	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onKilledOther(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onEntityKilledOther(DamageSource source, CallbackInfo ci, Entity attacker) {
 		EntityEvents.AFTER_KILLED_OTHER.invoker().afterKilledOther(((ServerWorld) this.world), attacker, (LivingEntity) (Object) this);

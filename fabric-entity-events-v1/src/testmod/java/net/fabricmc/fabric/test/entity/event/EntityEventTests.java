@@ -31,12 +31,14 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.entity.event.v1.EntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.LivingEntityEvents;
 
 public final class EntityEventTests implements ModInitializer {
@@ -56,6 +58,10 @@ public final class EntityEventTests implements ModInitializer {
 			}
 
 			LOGGER.info("Damaged {}", entity);
+		});
+
+		EntityEvents.AFTER_KILLED_OTHER.register((world, entity, killed) -> {
+			LOGGER.info("[Killed]: {}", killed);
 		});
 	}
 

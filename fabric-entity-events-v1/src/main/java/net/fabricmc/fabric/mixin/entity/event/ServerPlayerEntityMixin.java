@@ -22,14 +22,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
+import net.fabricmc.fabric.api.entity.event.v1.EntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin {
+public abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Shadow
 	public abstract ServerWorld getServerWorld();
 
@@ -42,5 +45,18 @@ public abstract class ServerPlayerEntityMixin {
 	@Inject(method = "copyFrom", at = @At("TAIL"))
 	private void onCopyFrom(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
 		ServerPlayerEvents.COPY_FROM.invoker().copyFromPlayer(oldPlayer, (ServerPlayerEntity) (Object) this, alive);
+	}
+
+	/**
+	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity, this is implements it on the server player entity.
+	 */
+	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getPrimeAdversary()Lnet/minecraft/entity/LivingEntity;"))
+	private void callOnKillForPlayer(DamageSource source, CallbackInfo ci) {
+		final Entity attacker = source.getAttacker();
+
+		if (attacker != null) {
+			attacker.onKilledOther(this.getServerWorld(), (ServerPlayerEntity) (Object) this);
+			EntityEvents.AFTER_KILLED_OTHER.invoker().afterKilledOther(this.getServerWorld(), attacker, (ServerPlayerEntity) (Object) this);
+		}
 	}
 }
