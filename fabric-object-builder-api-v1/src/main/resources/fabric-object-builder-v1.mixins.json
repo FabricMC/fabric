@@ -9,6 +9,7 @@
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "MaterialBuilderAccessor",
+    "MinecraftServerMixin",
     "MixinBlock",
     "PointOfInterestTypeAccessor",
     "VillagerProfessionAccessor"
