@@ -29,15 +29,15 @@ import java.util.stream.Collectors;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
-    @SuppressWarnings({"unchecked", "RedundantCast"})
+	@SuppressWarnings({"unchecked", "RedundantCast"})
 	@Redirect(method = "createWorlds", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;"))
-    <E> ImmutableList<E> fabric_addCustomSpawners(E e1, E e2, E e3, E e4, E e5) {
+	<E> ImmutableList<E> fabric_addCustomSpawners(E e1, E e2, E e3, E e4, E e5) {
 		List<E> spawners = (List<E>) FabricSpawnerRegistry.getAll().stream().map(Supplier::get).collect(Collectors.toList());
 		spawners.add(e1);
 		spawners.add(e2);
 		spawners.add(e3);
 		spawners.add(e4);
 		spawners.add(e5);
-    	return ImmutableList.copyOf(spawners);
-    }
+		return ImmutableList.copyOf(spawners);
+	}
 }

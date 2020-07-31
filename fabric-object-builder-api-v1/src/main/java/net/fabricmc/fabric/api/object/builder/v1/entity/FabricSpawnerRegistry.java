@@ -35,7 +35,6 @@ import java.util.function.Supplier;
  * @see net.minecraft.world.gen.Spawner
  */
 public final class FabricSpawnerRegistry {
-
 	/**
 	 * Registers an entity spawner.
 	 *
