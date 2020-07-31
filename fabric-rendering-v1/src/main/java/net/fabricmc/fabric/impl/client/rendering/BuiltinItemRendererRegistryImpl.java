@@ -32,31 +32,23 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererWithMode;
 
 @Environment(EnvType.CLIENT)
 public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
 	public static final BuiltinItemRendererRegistryImpl INSTANCE = new BuiltinItemRendererRegistryImpl();
 
-	private static final Map<Item, BuiltinItemRendererWithMode> RENDERERS = new HashMap<>();
+	private static final Map<Item, DynamicItemRenderer> RENDERERS = new HashMap<>();
 
 	private BuiltinItemRendererRegistryImpl() {
 	}
 
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
-		Objects.requireNonNull(item, "item is null");
-		Objects.requireNonNull(renderer, "renderer is null");
-
-		if (RENDERERS.containsKey(item)) {
-			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item) + " already has a builtin renderer!");
-		}
-
-		RENDERERS.put(item, new OldRendererImpl(renderer));
+		this.register(item, new OldRendererImpl(Objects.requireNonNull(renderer, "renderer is null")));
 	}
 
 	@Override
-	public void register(Item item, BuiltinItemRendererWithMode renderer) {
+	public void register(Item item, DynamicItemRenderer renderer) {
 		Objects.requireNonNull(item, "item is null");
 		Objects.requireNonNull(renderer, "renderer is null");
 
@@ -74,14 +66,14 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 	}
 
 	/* @Nullable */
-	public static BuiltinItemRendererWithMode getRenderer(Item item) {
+	public static DynamicItemRenderer getRenderer(Item item) {
 		return RENDERERS.get(item);
 	}
 
 	/**
 	 * An implementation of the new renderer that forwards calls to an old renderer.
 	 */
-	static class OldRendererImpl implements BuiltinItemRendererWithMode {
+	static class OldRendererImpl implements DynamicItemRenderer {
 		private final BuiltinItemRenderer renderer;
 
 		private OldRendererImpl(BuiltinItemRenderer renderer) {

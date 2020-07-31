@@ -16,15 +16,19 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.rendering.BuiltinItemRendererRegistryImpl;
 
 /**
- * This registry holds {@linkplain BuiltinItemRendererWithMode builtin item renderers} for items.
+ * This registry holds {@linkplain DynamicItemRenderer builtin item renderers} for items.
  */
 @Environment(EnvType.CLIENT)
 public interface BuiltinItemRendererRegistry {
@@ -43,7 +47,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
-	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, BuiltinItemRendererWithMode)} instead.
+	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, DynamicItemRenderer)} instead.
 	 */
 	@Deprecated
 	void register(Item item, BuiltinItemRenderer renderer);
@@ -57,7 +61,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
-	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, BuiltinItemRendererWithMode)} instead.
+	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, DynamicItemRenderer)} instead.
 	 */
 	@Deprecated
 	void register(ItemConvertible item, BuiltinItemRenderer renderer);
@@ -72,5 +76,28 @@ public interface BuiltinItemRendererRegistry {
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
 	 */
-	void register(Item item, BuiltinItemRendererWithMode renderer);
+	void register(Item item, DynamicItemRenderer renderer);
+
+	/**
+	 * Dynamic item renderers render items with custom code.
+	 * They allow using non-model rendering, such as BERs, for items.
+	 *
+	 * <p>An item with a dynamic renderer must have a model extending {@code minecraft:builtin/entity}.
+	 * The renderers are registered with {@link BuiltinItemRendererRegistry#register(Item, DynamicItemRenderer)}.
+	 */
+	@FunctionalInterface
+	@Environment(EnvType.CLIENT)
+	interface DynamicItemRenderer {
+		/**
+		 * Renders an item stack.
+		 *
+		 * @param stack           the rendered item stack
+		 * @param mode            the model transformation mode
+		 * @param matrices        the matrix stack
+		 * @param vertexConsumers the vertex consumer provider
+		 * @param light           packed lightmap coordinates
+		 * @param overlay         the overlay UV passed to {@link net.minecraft.client.render.VertexConsumer#overlay(int)}
+		 */
+		void render(ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay);
+	}
 }

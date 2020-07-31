@@ -27,14 +27,14 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererWithMode;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.impl.client.rendering.BuiltinItemRendererRegistryImpl;
 
 @Mixin(BuiltinModelItemRenderer.class)
 abstract class MixinBuiltinModelItemRenderer {
 	@Inject(method = "render", at = @At("HEAD"), cancellable = true)
 	private void fabric_onRender(ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay, CallbackInfo info) {
-		/* @Nullable */ BuiltinItemRendererWithMode renderer = BuiltinItemRendererRegistryImpl.getRenderer(stack.getItem());
+		/* @Nullable */ BuiltinItemRendererRegistry.DynamicItemRenderer renderer = BuiltinItemRendererRegistryImpl.getRenderer(stack.getItem());
 
 		if (renderer != null) {
 			renderer.render(stack, mode, matrices, vertexConsumers, light, overlay);
