@@ -27,6 +27,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 
+import net.fabricmc.fabric.mixin.event.structure.FeaturePoolElementAccessor;
+import net.fabricmc.fabric.mixin.event.structure.SinglePoolElementAccessor;
+
 public final class JigsawPieceEvents {
 	private static final HashMultimap<Identifier, StructurePieceEvents.StructurePieceAdded> JIGSAW_PIECE_ADDED_EVENTS = HashMultimap.create();
 
@@ -44,13 +47,13 @@ public final class JigsawPieceEvents {
 			StructurePoolElement element = ((PoolStructurePiece) piece).getPoolElement();
 
 			if (element instanceof SinglePoolElement) {
-				((SinglePoolElement) element).field_24015.ifLeft((identifier -> {
+				((SinglePoolElementAccessor) element).structureId().ifLeft((identifier -> {
 					for (StructurePieceEvents.StructurePieceAdded callback : JIGSAW_PIECE_ADDED_EVENTS.get(identifier)) {
 						callback.onStructurePieceAdded(piece, structureWorldAccess);
 					}
 				}));
 			} else if (element instanceof FeaturePoolElement) {
-				Identifier identifier = Registry.FEATURE.getId(((ConfiguredFeature<?, ?>) ((FeaturePoolElement) element).feature.get()).getFeature());
+				Identifier identifier = Registry.FEATURE.getId(((ConfiguredFeature<?, ?>) ((FeaturePoolElementAccessor) element).getFeature().get()).getFeature());
 
 				for (StructurePieceEvents.StructurePieceAdded callback : JIGSAW_PIECE_ADDED_EVENTS.get(identifier)) {
 					callback.onStructurePieceAdded(piece, structureWorldAccess);

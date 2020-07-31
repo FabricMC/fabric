@@ -22,6 +22,5 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "description": "Events for structure generation.",
-  "accessWidener": "fabric-structure-events-v1.accesswidener"
+  "description": "Events for structure generation."
 }

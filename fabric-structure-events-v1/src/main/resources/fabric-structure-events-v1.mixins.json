@@ -3,6 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.event.structure",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "FeaturePoolElementAccessor",
+    "SinglePoolElementAccessor",
     "StructureStartMixin"
   ],
   "injectors": {

@@ -1,3 +1,0 @@
-accessWidener	v1	named
-accessible	field	net/minecraft/structure/pool/SinglePoolElement  field_24015 Lcom/mojang/datafixers/util/Either;
-accessible  field   net/minecraft/structure/pool/FeaturePoolElement feature     Ljava/util/function/Supplier;
