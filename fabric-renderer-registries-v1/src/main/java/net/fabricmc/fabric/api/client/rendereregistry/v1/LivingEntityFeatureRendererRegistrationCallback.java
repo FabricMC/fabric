@@ -33,12 +33,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>Feature renderers are typically used for rendering additional objects on an entity, such as armor, an elytra or {@link Deadmau5FeatureRenderer Deadmau5's ears}.
  * This callback lets developers add additional feature renderers for use in entity rendering.
- * Listeners should filter out the specific entity renderer they want to hook into, usually through {@code instanceof} checks.
- * Once listeners find a suitable entity renderer, they should register their feature renderer via the acceptor.
+ * Listeners should filter out the specific entity renderer they want to hook into, usually through {@code instanceof} checks or filtering by entity type.
+ * Once listeners find a suitable entity renderer, they should register their feature renderer via the registration helper.
  *
  * <p>For example, to register a feature renderer for a player model, the example below may used:
  * <blockquote><pre>
- * RegisterFeatureRendererCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
+ * LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
  * 	if (entityRenderer instanceof PlayerEntityModel) {
  * 		registrationHelper.register(new MyFeatureRenderer((PlayerEntityModel) entityRenderer));
  * 	}
