@@ -30,6 +30,11 @@ import net.minecraft.world.gen.feature.ConfiguredFeature;
 public final class JigsawPieceEvents {
 	private static final HashMultimap<Identifier, StructurePieceEvents.StructurePieceAdded> JIGSAW_PIECE_ADDED_EVENTS = HashMultimap.create();
 
+	/**
+	 * Registers a listener for a specific jigsaw structure piece
+	 * @param jigsawPieceIdentifier the identifier of the jigsaw piece that was generated
+	 * @param listener the listener itself
+	 */
 	public static void register(Identifier jigsawPieceIdentifier, StructurePieceEvents.StructurePieceAdded listener) {
 		JIGSAW_PIECE_ADDED_EVENTS.put(jigsawPieceIdentifier, listener);
 	}

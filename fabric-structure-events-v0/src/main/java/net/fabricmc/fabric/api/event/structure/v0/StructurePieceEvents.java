@@ -29,6 +29,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class StructurePieceEvents {
+	/**
+	 * Called when a structure piece is generated in the world.
+	 */
 	public static final Event<StructurePieceAdded> PIECE_ADDED = EventFactory.createArrayBacked(StructurePieceAdded.class, callbacks -> (piece, serverWorld) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = serverWorld.getProfiler();
@@ -47,17 +50,33 @@ public final class StructurePieceEvents {
 			}
 		}
 	});
-
+	
 	private static final HashMultimap<Identifier, StructurePieceAdded> STRUCTURE_PIECE_ADDED_EVENTS = HashMultimap.create();
 
+	/**
+	 * Registers a listener for a specific {@link StructurePieceType}
+	 * @param structurePieceType the type of the structure to listen for
+	 * @param listener the listener itself
+	 */
 	public static void register(StructurePieceType structurePieceType, StructurePieceAdded listener) {
 		register(Registry.STRUCTURE_PIECE.getId(structurePieceType), listener);
 	}
 
+	/**
+	 * Registers a listener for a specific {@link StructurePieceType}, by {@link Identifier}.
+	 * This method is useful for adding support for structures added by outside mods without needing a
+	 * dependency on them, as the event will simply never be called if a matching structure doesn't exist.
+	 * @param id the identifier of the structure piece to listen for
+	 * @param listener the listener itself
+	 */
 	public static void register(Identifier id, StructurePieceAdded listener) {
 		STRUCTURE_PIECE_ADDED_EVENTS.put(id, listener);
 	}
 
+	/**
+	 * Registers a generic listener that gets called for every structure piece that gets added to the world.
+	 * @param listener the listener itself
+	 */
 	public static void register(StructurePieceAdded listener) {
 		PIECE_ADDED.register(listener);
 	}

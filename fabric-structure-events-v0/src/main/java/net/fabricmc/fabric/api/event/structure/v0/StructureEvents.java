@@ -27,6 +27,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class StructureEvents {
+	/**
+	 * Called when a structure is added to the world, after the bounding box has been updated to reflect its children.
+	 */
 	public static final Event<StructureAdded> STRUCTURE_ADDED = EventFactory.createArrayBacked(StructureAdded.class, callbacks -> (structureStart, serverWorld) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = serverWorld.getProfiler();
@@ -48,10 +51,19 @@ public final class StructureEvents {
 
 	private static final HashMultimap<StructureFeature<?>, StructureAdded> STRUCTURE_ADDED_EVENTS = HashMultimap.create();
 
+	/**
+	 * Registers a listener for a specific {@link StructureFeature}
+	 * @param structureFeature the feature to listen for
+	 * @param listener the listener itself
+	 */
 	public static void register(StructureFeature<?> structureFeature, StructureAdded listener) {
 		STRUCTURE_ADDED_EVENTS.put(structureFeature, listener);
 	}
 
+	/**
+	 * Registers a generic listener that gets called for every structure added to the world.
+	 * @param listener the listener itself
+	 */
 	public static void register(StructureAdded listener) {
 		STRUCTURE_ADDED.register(listener);
 	}
