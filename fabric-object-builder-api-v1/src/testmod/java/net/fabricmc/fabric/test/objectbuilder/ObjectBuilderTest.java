@@ -31,7 +31,7 @@ public class ObjectBuilderTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		FabricSpawnerRegistry.register(new TestSpawner());
+		FabricSpawnerRegistry.register(TestSpawner::new);
 	}
 
 	private static class TestSpawner implements Spawner {

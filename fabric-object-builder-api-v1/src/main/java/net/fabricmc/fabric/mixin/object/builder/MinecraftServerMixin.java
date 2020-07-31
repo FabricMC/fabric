@@ -19,25 +19,25 @@ package net.fabricmc.fabric.mixin.object.builder;
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricSpawnerRegistry;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.gen.Spawner;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "RedundantCast"})
 	@Redirect(method = "createWorlds", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableList;of(Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Lcom/google/common/collect/ImmutableList;"))
     <E> ImmutableList<E> fabric_addCustomSpawners(E e1, E e2, E e3, E e4, E e5) {
-    	FabricSpawnerRegistry.register((Spawner) e1);
-    	FabricSpawnerRegistry.register((Spawner) e2);
-		FabricSpawnerRegistry.register((Spawner) e3);
-		FabricSpawnerRegistry.register((Spawner) e4);
-		FabricSpawnerRegistry.register((Spawner) e5);
-
-		List<E> spawners = (List<E>) FabricSpawnerRegistry.getAll();
+		List<E> spawners = (List<E>) FabricSpawnerRegistry.getAll().stream().map(Supplier::get).collect(Collectors.toList());
+		spawners.add(e1);
+		spawners.add(e2);
+		spawners.add(e3);
+		spawners.add(e4);
+		spawners.add(e5);
     	return ImmutableList.copyOf(spawners);
     }
 }

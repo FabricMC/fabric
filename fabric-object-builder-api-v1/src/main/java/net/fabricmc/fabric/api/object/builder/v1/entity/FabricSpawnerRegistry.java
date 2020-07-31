@@ -20,12 +20,17 @@ import net.minecraft.world.gen.Spawner;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Allows registering custom spawners for entities.
  *
  * <p>Entities that need custom spawning logic use {@link Spawner}s. These are run
  * every tick by the server, and are used for entities such as Wandering Traders.</p>
+ *
+ * <p>Note: The registry handles <em>suppliers</em> for spawners, not spawners themselves.
+ * This is because the spawners themselves are recreated every time a (dedicated/integrated)
+ * server starts, but this registry does not.</p>
  *
  * @see net.minecraft.world.gen.Spawner
  */
@@ -34,10 +39,10 @@ public final class FabricSpawnerRegistry {
 	/**
 	 * Registers an entity spawner.
 	 *
-	 * @param spawner the spawner to register
+	 * @param factory the spawner supplier to register
 	 */
-	public static void register(Spawner spawner) {
-		SPAWNERS.add(spawner);
+	public static void register(Supplier<Spawner> factory) {
+		SPAWNERS.add(factory);
 	}
 
 	/**
@@ -45,12 +50,12 @@ public final class FabricSpawnerRegistry {
 	 *
 	 * @return a list of all registered spawners.
 	 */
-	public static List<Spawner> getAll() {
+	public static List<Supplier<Spawner>> getAll() {
 		return new ArrayList<>(SPAWNERS);
 	}
 
 	/**
 	 * Internal spawner list, not exposed.
 	 */
-	private static final List<Spawner> SPAWNERS = new ArrayList<>();
+	private static final List<Supplier<Spawner>> SPAWNERS = new ArrayList<>();
 }
