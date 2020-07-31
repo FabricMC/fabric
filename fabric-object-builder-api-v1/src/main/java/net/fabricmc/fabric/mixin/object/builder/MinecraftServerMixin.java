@@ -16,16 +16,18 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.ImmutableList;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricSpawnerRegistry;
-import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import net.minecraft.server.MinecraftServer;
+
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricSpawnerRegistry;
 
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {

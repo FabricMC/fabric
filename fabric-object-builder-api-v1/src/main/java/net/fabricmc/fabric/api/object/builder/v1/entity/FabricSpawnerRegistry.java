@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.entity;
 
-import net.minecraft.world.gen.Spawner;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+
+import net.minecraft.world.gen.Spawner;
 
 /**
  * Allows registering custom spawners for entities.
