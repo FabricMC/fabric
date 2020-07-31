@@ -16,19 +16,16 @@
 
 package net.fabricmc.fabric.test.objectbuilder;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.entity.FabricSpawnerRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.gen.Spawner;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricSpawnerRegistry;
 
 public class ObjectBuilderTest implements ModInitializer {
-	private static final Logger LOGGER = LogManager.getLogger();
-
 	@Override
 	public void onInitialize() {
 		FabricSpawnerRegistry.register(TestSpawner::new);
