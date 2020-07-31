@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.event.structure.v0;
 
 import com.google.common.collect.HashMultimap;
 
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
@@ -27,26 +26,27 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.minecraft.world.StructureWorldAccess;
 
 public final class StructurePieceEvents {
 	/**
-	 * Called when a structure piece is generated in the world.
+	 * Called prior to a structure piece being generated in the world.
 	 */
-	public static final Event<StructurePieceAdded> PIECE_ADDED = EventFactory.createArrayBacked(StructurePieceAdded.class, callbacks -> (piece, serverWorld) -> {
+	public static final Event<StructurePieceAdded> PIECE_ADDED = EventFactory.createArrayBacked(StructurePieceAdded.class, callbacks -> (piece, structureWorldAccess) -> {
 		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = serverWorld.getProfiler();
+			final Profiler profiler = structureWorldAccess.toServerWorld().getProfiler();
 			profiler.push("fabricStructurePieceAdded");
 
 			for (StructurePieceAdded callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onStructurePieceAdded(piece, serverWorld);
+				callback.onStructurePieceAdded(piece, structureWorldAccess);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
 			for (StructurePieceAdded callback : callbacks) {
-				callback.onStructurePieceAdded(piece, serverWorld);
+				callback.onStructurePieceAdded(piece, structureWorldAccess);
 			}
 		}
 	});
@@ -83,7 +83,14 @@ public final class StructurePieceEvents {
 
 	@FunctionalInterface
 	public interface StructurePieceAdded {
-		void onStructurePieceAdded(StructurePiece piece, ServerWorld serverWorld);
+		/**
+		 * Called prior to a structure piece being generated in the world.
+		 * Note that the world itself is not available at this time, and is exposed for context purposes only.
+		 * Attempting to modify the world directly will result in deadlocking the server.
+		 * @param piece the structure piece that will be generated
+		 * @param structureWorldAccess the world the structure piece will be added to
+		 */
+		void onStructurePieceAdded(StructurePiece piece, StructureWorldAccess structureWorldAccess);
 	}
 
 	static {

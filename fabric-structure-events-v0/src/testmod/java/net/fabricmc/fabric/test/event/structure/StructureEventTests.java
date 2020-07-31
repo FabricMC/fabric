@@ -32,12 +32,12 @@ public class StructureEventTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		StructureFeatureEvents.register((structureStart, serverWorld) -> LOGGER.info("Structure {} added to {}", structureStart.getFeature().getName(), serverWorld.getRegistryKey().getValue()));
-		StructureFeatureEvents.register(new Identifier("fabric", "structure_feature"), ((structureStart, serverWorld) -> LOGGER.info("This should never be called.")));
+		StructureFeatureEvents.register((structureStart, structureWorldAccess) -> LOGGER.info("Structure {} added to {}", structureStart.getFeature().getName(), structureWorldAccess.toServerWorld().getRegistryKey().getValue()));
+		StructureFeatureEvents.register(new Identifier("fabric", "structure_feature"), ((structureStart, structureWorldAccess) -> LOGGER.info("This should never be called.")));
 
-		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, serverWorld) -> LOGGER.info("Placing Jigsaw structure piece {} in {}", piece.toString(), serverWorld.getRegistryKey().getValue())));
-		StructurePieceEvents.register(new Identifier("fabric", "structure_feature_piece"), ((piece, serverWorld) -> LOGGER.info("This should never be called.")));
+		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, structureWorldAccess) -> LOGGER.info("Placing Jigsaw structure piece {} in {}", piece.toString(), structureWorldAccess.toServerWorld().getRegistryKey().getValue())));
+		StructurePieceEvents.register(new Identifier("fabric", "structure_feature_piece"), ((piece, structureWorldAccess) -> LOGGER.info("This should never be called.")));
 
-		JigsawPieceEvents.register(new Identifier("village/plains/terminators/terminator_01"), ((piece, serverWorld) -> LOGGER.info("Placing minecraft:village/plains/terminators/terminator_01")));
+		JigsawPieceEvents.register(new Identifier("village/plains/terminators/terminator_01"), ((piece, structureWorldAccess) -> LOGGER.info("Placing minecraft:village/plains/terminators/terminator_01")));
 	}
 }

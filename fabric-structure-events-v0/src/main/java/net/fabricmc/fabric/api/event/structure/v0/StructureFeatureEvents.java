@@ -18,11 +18,11 @@ package net.fabricmc.fabric.api.event.structure.v0;
 
 import com.google.common.collect.HashMultimap;
 
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -32,21 +32,21 @@ public final class StructureFeatureEvents {
 	/**
 	 * Called when a structure is added to the world, after the bounding box has been updated to reflect its children.
 	 */
-	public static final Event<StructureAdded> STRUCTURE_FEATURE_ADDED = EventFactory.createArrayBacked(StructureAdded.class, callbacks -> (structureStart, serverWorld) -> {
+	public static final Event<StructureAdded> STRUCTURE_FEATURE_ADDED = EventFactory.createArrayBacked(StructureAdded.class, callbacks -> (structureStart, structureWorldAccess) -> {
 		if (EventFactory.isProfilingEnabled()) {
-			final Profiler profiler = serverWorld.getProfiler();
+			final Profiler profiler = structureWorldAccess.toServerWorld().getProfiler();
 			profiler.push("fabricStructureAdded");
 
 			for (StructureAdded callback : callbacks) {
 				profiler.push(EventFactory.getHandlerName(callback));
-				callback.onStructureAdded(structureStart, serverWorld);
+				callback.onStructureAdded(structureStart, structureWorldAccess);
 				profiler.pop();
 			}
 
 			profiler.pop();
 		} else {
 			for (StructureAdded callback : callbacks) {
-				callback.onStructureAdded(structureStart, serverWorld);
+				callback.onStructureAdded(structureStart, structureWorldAccess);
 			}
 		}
 	});
@@ -83,7 +83,14 @@ public final class StructureFeatureEvents {
 
 	@FunctionalInterface
 	public interface StructureAdded {
-		void onStructureAdded(StructureStart<?> structureStart, ServerWorld serverWorld);
+		/**
+		 * Called prior to a structure feature being generated in the world.
+		 * Note that the world itself is not available at this time, and is exposed for context purposes only.
+		 * Attempting to modify the world directly will result in deadlocking the server.
+		 * @param structureStart the start of the structure being generated
+		 * @param structureWorldAccess the world that the structure will be added to
+		 */
+		void onStructureAdded(StructureStart<?> structureStart, StructureWorldAccess structureWorldAccess);
 	}
 
 	static {

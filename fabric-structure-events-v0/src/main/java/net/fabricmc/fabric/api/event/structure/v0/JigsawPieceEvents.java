@@ -40,20 +40,20 @@ public final class JigsawPieceEvents {
 	}
 
 	static {
-		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, serverWorld) -> {
+		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, structureWorldAccess) -> {
 			StructurePoolElement element = ((PoolStructurePiece) piece).getPoolElement();
 
 			if (element instanceof SinglePoolElement) {
 				((SinglePoolElement) element).field_24015.ifLeft((identifier -> {
 					for (StructurePieceEvents.StructurePieceAdded callback : JIGSAW_PIECE_ADDED_EVENTS.get(identifier)) {
-						callback.onStructurePieceAdded(piece, serverWorld);
+						callback.onStructurePieceAdded(piece, structureWorldAccess);
 					}
 				}));
 			} else if (element instanceof FeaturePoolElement) {
 				Identifier identifier = Registry.FEATURE.getId(((ConfiguredFeature<?, ?>) ((FeaturePoolElement) element).feature.get()).getFeature());
 
 				for (StructurePieceEvents.StructurePieceAdded callback : JIGSAW_PIECE_ADDED_EVENTS.get(identifier)) {
-					callback.onStructurePieceAdded(piece, serverWorld);
+					callback.onStructurePieceAdded(piece, structureWorldAccess);
 				}
 			}
 		}));
