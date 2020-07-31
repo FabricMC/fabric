@@ -46,8 +46,8 @@ public final class JigsawPieceEvents {
 	}
 
 	static {
-		// Here, we register an event that fires for all jigsaw structures. This event checks the Identifier associated
-		// with the structure piece and executes all callbacks associated with it.
+		// Here, we register an event that fires for all jigsaw structure pieces. This event checks the Identifier associated
+		// with the structure piece and executes all callbacks registered for it.
 		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, structureWorldAccess) -> {
 			StructurePoolElement element = ((PoolStructurePiece) piece).getPoolElement();
 

@@ -33,10 +33,10 @@ public class StructureEventTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		StructureFeatureEvents.register((structureStart, structureWorldAccess) -> LOGGER.info("Structure {} added to {}", structureStart.getFeature().getName(), structureWorldAccess.toServerWorld().getRegistryKey().getValue()));
-		StructureFeatureEvents.register(new Identifier("fabric", "structure_feature"), ((structureStart, structureWorldAccess) -> LOGGER.info("This should never be called.")));
+		StructureFeatureEvents.register(new Identifier("fabric", "structure_feature"), ((structureStart, structureWorldAccess) -> LOGGER.info("This structure shouldn't exist!")));
 
 		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, structureWorldAccess) -> LOGGER.info("Placing Jigsaw structure piece {} in {}", piece.toString(), structureWorldAccess.toServerWorld().getRegistryKey().getValue())));
-		StructurePieceEvents.register(new Identifier("fabric", "structure_feature_piece"), ((piece, structureWorldAccess) -> LOGGER.info("This should never be called.")));
+		StructurePieceEvents.register(new Identifier("fabric", "structure_feature_piece"), ((piece, structureWorldAccess) -> LOGGER.info("This structure shouldn't exist!")));
 
 		JigsawPieceEvents.register(new Identifier("village/plains/terminators/terminator_01"), ((piece, structureWorldAccess) -> LOGGER.info("Placing minecraft:village/plains/terminators/terminator_01")));
 	}
