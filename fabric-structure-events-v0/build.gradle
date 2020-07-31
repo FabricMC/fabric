@@ -1,0 +1,10 @@
+archivesBaseName = "fabric-structure-events-v0"
+version = getSubprojectVersion(project, "0.1.0")
+
+minecraft {
+	accessWidener = file('src/main/resources/fabric-structure-events-v0.accesswidener')
+}
+
+dependencies {
+	compile project(path: ':fabric-api-base', configuration: 'dev')
+}
