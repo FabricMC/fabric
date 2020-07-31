@@ -50,11 +50,11 @@ public final class StructurePieceEvents {
 			}
 		}
 	});
-	
+
 	private static final HashMultimap<Identifier, StructurePieceAdded> STRUCTURE_PIECE_ADDED_EVENTS = HashMultimap.create();
 
 	/**
-	 * Registers a listener for a specific {@link StructurePieceType}
+	 * Registers a listener for a specific {@link StructurePieceType}.
 	 * @param structurePieceType the type of the structure to listen for
 	 * @param listener the listener itself
 	 */

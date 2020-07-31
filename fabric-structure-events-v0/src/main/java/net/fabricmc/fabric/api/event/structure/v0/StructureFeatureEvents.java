@@ -20,17 +20,19 @@ import com.google.common.collect.HashMultimap;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureStart;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class StructureEvents {
+public final class StructureFeatureEvents {
 	/**
 	 * Called when a structure is added to the world, after the bounding box has been updated to reflect its children.
 	 */
-	public static final Event<StructureAdded> STRUCTURE_ADDED = EventFactory.createArrayBacked(StructureAdded.class, callbacks -> (structureStart, serverWorld) -> {
+	public static final Event<StructureAdded> STRUCTURE_FEATURE_ADDED = EventFactory.createArrayBacked(StructureAdded.class, callbacks -> (structureStart, serverWorld) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = serverWorld.getProfiler();
 			profiler.push("fabricStructureAdded");
@@ -49,15 +51,26 @@ public final class StructureEvents {
 		}
 	});
 
-	private static final HashMultimap<StructureFeature<?>, StructureAdded> STRUCTURE_ADDED_EVENTS = HashMultimap.create();
+	private static final HashMultimap<Identifier, StructureAdded> STRUCTURE_FEATURE_ADDED_EVENTS = HashMultimap.create();
 
 	/**
-	 * Registers a listener for a specific {@link StructureFeature}
+	 * Registers a listener for a specific {@link StructureFeature}.
 	 * @param structureFeature the feature to listen for
 	 * @param listener the listener itself
 	 */
 	public static void register(StructureFeature<?> structureFeature, StructureAdded listener) {
-		STRUCTURE_ADDED_EVENTS.put(structureFeature, listener);
+		register(Registry.STRUCTURE_FEATURE.getId(structureFeature), listener);
+	}
+
+	/**
+	 * Registers a listener for a specific {@link StructureFeature}, by {@link Identifier}.
+	 * This method is useful for adding support for structures added by outside mods without needing a
+	 * dependency on them, as the event will simply never be called if a matching structure doesn't exist.
+	 * @param id the identifier of the structure feature to listen for
+	 * @param listener the listener itself
+	 */
+	public static void register(Identifier id, StructureAdded listener) {
+		STRUCTURE_FEATURE_ADDED_EVENTS.put(id, listener);
 	}
 
 	/**
@@ -65,7 +78,7 @@ public final class StructureEvents {
 	 * @param listener the listener itself
 	 */
 	public static void register(StructureAdded listener) {
-		STRUCTURE_ADDED.register(listener);
+		STRUCTURE_FEATURE_ADDED.register(listener);
 	}
 
 	@FunctionalInterface
@@ -74,8 +87,8 @@ public final class StructureEvents {
 	}
 
 	static {
-		STRUCTURE_ADDED.register(((structureStart, world) -> {
-			for (StructureAdded callback : STRUCTURE_ADDED_EVENTS.get(structureStart.getFeature())) {
+		STRUCTURE_FEATURE_ADDED.register(((structureStart, world) -> {
+			for (StructureAdded callback : STRUCTURE_FEATURE_ADDED_EVENTS.get(Registry.STRUCTURE_FEATURE.getId(structureStart.getFeature()))) {
 				callback.onStructureAdded(structureStart, world);
 			}
 		}));

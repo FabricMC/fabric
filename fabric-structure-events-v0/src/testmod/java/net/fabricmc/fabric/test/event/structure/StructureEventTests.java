@@ -24,7 +24,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.structure.v0.JigsawPieceEvents;
-import net.fabricmc.fabric.api.event.structure.v0.StructureEvents;
+import net.fabricmc.fabric.api.event.structure.v0.StructureFeatureEvents;
 import net.fabricmc.fabric.api.event.structure.v0.StructurePieceEvents;
 
 public class StructureEventTests implements ModInitializer {
@@ -32,8 +32,12 @@ public class StructureEventTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		StructureEvents.register((structureStart, serverWorld) -> LOGGER.info("Structure {} added to {}", structureStart.getFeature().getName(), serverWorld.getRegistryKey().getValue()));
+		StructureFeatureEvents.register((structureStart, serverWorld) -> LOGGER.info("Structure {} added to {}", structureStart.getFeature().getName(), serverWorld.getRegistryKey().getValue()));
+		StructureFeatureEvents.register(new Identifier("fabric", "structure_feature"), ((structureStart, serverWorld) -> {}));
+
 		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, serverWorld) -> LOGGER.info("Placing Jigsaw structure piece {} in {}", piece.toString(), serverWorld.getRegistryKey().getValue())));
-		JigsawPieceEvents.register(new Identifier("minecraft:village/plains/terminators/terminator_01"), ((piece, serverWorld) -> LOGGER.info("Placing minecraft:village/plains/terminators/terminator_01")));
+		StructurePieceEvents.register(new Identifier("fabric", "structure_feature_piece"), ((piece, serverWorld) -> LOGGER.info("This should never be called.")));
+
+		JigsawPieceEvents.register(new Identifier("village/plains/terminators/terminator_01"), ((piece, serverWorld) -> LOGGER.info("Placing minecraft:village/plains/terminators/terminator_01")));
 	}
 }

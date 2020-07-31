@@ -33,7 +33,7 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
-import net.fabricmc.fabric.api.event.structure.v0.StructureEvents;
+import net.fabricmc.fabric.api.event.structure.v0.StructureFeatureEvents;
 import net.fabricmc.fabric.api.event.structure.v0.StructurePieceEvents;
 
 @Mixin(StructureStart.class)
@@ -47,6 +47,6 @@ public class StructureStartMixin {
 	@SuppressWarnings("ConstantConditions")
 	@Inject(method = "generateStructure", at = @At(value = "INVOKE", target = "Lnet/minecraft/structure/StructureStart;setBoundingBoxFromChildren()V", shift = At.Shift.AFTER))
 	private void onStructureGenerated(StructureWorldAccess structureWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox blockBox, ChunkPos chunkPos, CallbackInfo ci) {
-		StructureEvents.STRUCTURE_ADDED.invoker().onStructureAdded((StructureStart<?>) (Object) this, structureWorldAccess.toServerWorld());
+		StructureFeatureEvents.STRUCTURE_FEATURE_ADDED.invoker().onStructureAdded((StructureStart<?>) (Object) this, structureWorldAccess.toServerWorld());
 	}
 }
