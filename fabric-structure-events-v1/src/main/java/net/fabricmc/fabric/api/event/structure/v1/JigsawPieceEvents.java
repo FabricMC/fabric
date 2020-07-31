@@ -31,6 +31,9 @@ import net.fabricmc.fabric.mixin.event.structure.FeaturePoolElementAccessor;
 import net.fabricmc.fabric.mixin.event.structure.SinglePoolElementAccessor;
 
 public final class JigsawPieceEvents {
+	private JigsawPieceEvents() {
+	}
+
 	private static final HashMultimap<Identifier, StructurePieceEvents.StructurePieceAdded> JIGSAW_PIECE_ADDED_EVENTS = HashMultimap.create();
 
 	/**
@@ -43,9 +46,12 @@ public final class JigsawPieceEvents {
 	}
 
 	static {
+		// Here, we register an event that fires for all jigsaw structures. This event checks the Identifier associated
+		// with the structure piece and executes all callbacks associated with it.
 		StructurePieceEvents.register(StructurePieceType.JIGSAW, ((piece, structureWorldAccess) -> {
 			StructurePoolElement element = ((PoolStructurePiece) piece).getPoolElement();
 
+			// There are two kinds of structure pieces that can generate in jigsaw structures, and we have to handle each individually
 			if (element instanceof SinglePoolElement) {
 				((SinglePoolElementAccessor) element).structureId().ifLeft((identifier -> {
 					for (StructurePieceEvents.StructurePieceAdded callback : JIGSAW_PIECE_ADDED_EVENTS.get(identifier)) {

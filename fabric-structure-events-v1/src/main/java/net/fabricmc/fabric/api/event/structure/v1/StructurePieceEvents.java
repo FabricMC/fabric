@@ -29,6 +29,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class StructurePieceEvents {
+	private StructurePieceEvents() {
+	}
+
 	/**
 	 * Called prior to a structure piece being generated in the world.
 	 */

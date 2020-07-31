@@ -29,6 +29,9 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class StructureFeatureEvents {
+	private StructureFeatureEvents() {
+	}
+
 	/**
 	 * Called when a structure is added to the world, after the bounding box has been updated to reflect its children.
 	 */
