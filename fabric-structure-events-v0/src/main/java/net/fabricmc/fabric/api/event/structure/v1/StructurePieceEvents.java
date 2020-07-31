@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.structure.v0;
+package net.fabricmc.fabric.api.event.structure.v1;
 
 import com.google.common.collect.HashMultimap;
 
@@ -32,7 +32,7 @@ public final class StructurePieceEvents {
 	/**
 	 * Called prior to a structure piece being generated in the world.
 	 */
-	public static final Event<StructurePieceAdded> PIECE_ADDED = EventFactory.createArrayBacked(StructurePieceAdded.class, callbacks -> (piece, structureWorldAccess) -> {
+	public static final Event<StructurePieceAdded> STRUCTURE_PIECE_ADDED = EventFactory.createArrayBacked(StructurePieceAdded.class, callbacks -> (piece, structureWorldAccess) -> {
 		if (EventFactory.isProfilingEnabled()) {
 			final Profiler profiler = structureWorldAccess.toServerWorld().getProfiler();
 			profiler.push("fabricStructurePieceAdded");
@@ -78,7 +78,7 @@ public final class StructurePieceEvents {
 	 * @param listener the listener itself
 	 */
 	public static void register(StructurePieceAdded listener) {
-		PIECE_ADDED.register(listener);
+		STRUCTURE_PIECE_ADDED.register(listener);
 	}
 
 	@FunctionalInterface
@@ -94,7 +94,7 @@ public final class StructurePieceEvents {
 	}
 
 	static {
-		PIECE_ADDED.register(((piece, world) -> {
+		STRUCTURE_PIECE_ADDED.register(((piece, world) -> {
 			for (StructurePieceAdded callback : STRUCTURE_PIECE_ADDED_EVENTS.get(Registry.STRUCTURE_PIECE.getId(piece.getType()))) {
 				callback.onStructurePieceAdded(piece, world);
 			}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.event.structure.v0;
+package net.fabricmc.fabric.api.event.structure.v1;
 
 import com.google.common.collect.HashMultimap;
 

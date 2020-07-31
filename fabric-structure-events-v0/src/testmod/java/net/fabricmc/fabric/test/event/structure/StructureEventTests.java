@@ -23,9 +23,9 @@ import net.minecraft.structure.StructurePieceType;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.structure.v0.JigsawPieceEvents;
-import net.fabricmc.fabric.api.event.structure.v0.StructureFeatureEvents;
-import net.fabricmc.fabric.api.event.structure.v0.StructurePieceEvents;
+import net.fabricmc.fabric.api.event.structure.v1.JigsawPieceEvents;
+import net.fabricmc.fabric.api.event.structure.v1.StructureFeatureEvents;
+import net.fabricmc.fabric.api.event.structure.v1.StructurePieceEvents;
 
 public class StructureEventTests implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("StructureEventsTest");

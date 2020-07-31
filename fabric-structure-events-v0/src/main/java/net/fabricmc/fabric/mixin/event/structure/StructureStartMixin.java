@@ -33,14 +33,14 @@ import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.gen.StructureAccessor;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
 
-import net.fabricmc.fabric.api.event.structure.v0.StructureFeatureEvents;
-import net.fabricmc.fabric.api.event.structure.v0.StructurePieceEvents;
+import net.fabricmc.fabric.api.event.structure.v1.StructureFeatureEvents;
+import net.fabricmc.fabric.api.event.structure.v1.StructurePieceEvents;
 
 @Mixin(StructureStart.class)
 public class StructureStartMixin {
 	@Redirect(method = "generateStructure", at = @At(value = "INVOKE", target = "Lnet/minecraft/structure/StructurePiece;generate(Lnet/minecraft/world/StructureWorldAccess;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/gen/chunk/ChunkGenerator;Ljava/util/Random;Lnet/minecraft/util/math/BlockBox;Lnet/minecraft/util/math/ChunkPos;Lnet/minecraft/util/math/BlockPos;)Z"))
 	private boolean onStructurePieceAdded(StructurePiece structurePiece, StructureWorldAccess structureWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
-		StructurePieceEvents.PIECE_ADDED.invoker().onStructurePieceAdded(structurePiece, structureWorldAccess);
+		StructurePieceEvents.STRUCTURE_PIECE_ADDED.invoker().onStructurePieceAdded(structurePiece, structureWorldAccess);
 		return structurePiece.generate(structureWorldAccess, structureAccessor, chunkGenerator, random, boundingBox, chunkPos, blockPos);
 	}
 
