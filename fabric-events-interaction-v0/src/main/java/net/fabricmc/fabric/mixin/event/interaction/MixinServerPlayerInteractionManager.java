@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
+import net.fabricmc.fabric.api.event.player.BreakBlockCallback;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,6 +44,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ServerPlayerInteractionManager.class)
 public class MixinServerPlayerInteractionManager {
@@ -79,6 +84,25 @@ public class MixinServerPlayerInteractionManager {
 			info.setReturnValue(result.getResult());
 			info.cancel();
 			return;
+		}
+	}
+
+
+	@Inject (method = "tryBreakBlock", at = @At (value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block) {
+		ActionResult result = BreakBlockCallback.EVENT.invoker().interact(pos, state, entity, block);
+
+		if (result == ActionResult.FAIL) {
+			BlockPos cornerPos = pos.add(-1, -1, -1);
+			for (int x = 0; x < 3; x++) {
+				for (int y = 0; y < 3; y++) {
+					for (int z = 0; z < 3; z++) {
+						this.player.networkHandler.sendPacket(new BlockUpdateS2CPacket(world, cornerPos.add(x, y, z)));
+					}
+				}
+			}
+
+			cir.setReturnValue(false);
 		}
 	}
 }
