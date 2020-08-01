@@ -42,8 +42,8 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.BeforeBreakBlockCallback;
-import net.fabricmc.fabric.api.event.player.AfterBreakBlockCallback;
+import net.fabricmc.fabric.api.event.player.PostBreakBlockCallback;
+import net.fabricmc.fabric.api.event.player.PreBreakBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 
@@ -90,7 +90,7 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block) {
-		ActionResult result = BeforeBreakBlockCallback.EVENT.invoker().beforeBlockBreak(pos, state, entity, block);
+		ActionResult result = PostBreakBlockCallback.EVENT.invoker().beforeBlockBreak(pos, state, entity, block);
 
 		if (result == ActionResult.FAIL) {
 			BlockPos cornerPos = pos.add(-1, -1, -1);
@@ -109,6 +109,6 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD)
 	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block, boolean b1) {
-		AfterBreakBlockCallback.EVENT.invoker().afterBlockBreak(pos, state, entity, block);
+		PreBreakBlockCallback.EVENT.invoker().afterBlockBreak(pos, state, entity, block);
 	}
 }

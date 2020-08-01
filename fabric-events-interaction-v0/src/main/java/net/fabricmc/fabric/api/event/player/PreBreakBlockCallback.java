@@ -28,10 +28,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * Callback after a block is broken.
  * Only called on the server, however updates are synced with the client.
  */
-public interface AfterBreakBlockCallback {
-	Event<AfterBreakBlockCallback> EVENT = EventFactory.createArrayBacked(AfterBreakBlockCallback.class,
+public interface PreBreakBlockCallback {
+	Event<PreBreakBlockCallback> EVENT = EventFactory.createArrayBacked(PreBreakBlockCallback.class,
 			(listeners) -> (pos, state, entity, block) -> {
-				for (AfterBreakBlockCallback event : listeners) {
+				for (PreBreakBlockCallback event : listeners) {
 					event.afterBlockBreak(pos, state, entity, block);
 				}
 			}

@@ -23,20 +23,20 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.ActionResult;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.player.AfterBreakBlockCallback;
-import net.fabricmc.fabric.api.event.player.BeforeBreakBlockCallback;
+import net.fabricmc.fabric.api.event.player.PreBreakBlockCallback;
+import net.fabricmc.fabric.api.event.player.PostBreakBlockCallback;
 
 public class InteractionEventsTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("InteractionEventsTest");
 
 	@Override
 	public void onInitialize() {
-		BeforeBreakBlockCallback.EVENT.register(((pos, state, entity, block) -> {
+		PostBreakBlockCallback.EVENT.register(((pos, state, entity, block) -> {
 			return block == Blocks.BEDROCK ? ActionResult.FAIL : ActionResult.PASS;
 		}));
 
-		AfterBreakBlockCallback.EVENT.register(((pos, state, entity, block) -> {
-			LOGGER.info("Block broken at " + pos.toShortString());
+		PreBreakBlockCallback.EVENT.register(((pos, state, entity, block) -> {
+			LOGGER.info("Block broken at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 		}));
 	}
 }

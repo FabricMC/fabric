@@ -33,10 +33,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <ul><li>SUCCESS/PASS/CONSUME continues the default code for breaking the block
  * <li>FAIL cancels the block breaking action</ul>
  */
-public interface BeforeBreakBlockCallback {
-	Event<BeforeBreakBlockCallback> EVENT = EventFactory.createArrayBacked(BeforeBreakBlockCallback.class,
+public interface PostBreakBlockCallback {
+	Event<PostBreakBlockCallback> EVENT = EventFactory.createArrayBacked(PostBreakBlockCallback.class,
 			(listeners) -> (pos, state, entity, block) -> {
-				for (BeforeBreakBlockCallback event : listeners) {
+				for (PostBreakBlockCallback event : listeners) {
 					ActionResult result = event.beforeBlockBreak(pos, state, entity, block);
 
 					if (result != ActionResult.PASS) {
