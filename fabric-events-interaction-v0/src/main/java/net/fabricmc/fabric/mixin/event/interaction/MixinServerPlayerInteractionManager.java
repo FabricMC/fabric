@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
-import net.fabricmc.fabric.api.event.player.BreakBlockCallback;
+import net.fabricmc.fabric.api.event.player.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -41,9 +41,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
-import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(ServerPlayerInteractionManager.class)
@@ -88,9 +85,9 @@ public class MixinServerPlayerInteractionManager {
 	}
 
 
-	@Inject (method = "tryBreakBlock", at = @At (value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block) {
-		ActionResult result = BreakBlockCallback.EVENT.invoker().interact(pos, state, entity, block);
+		ActionResult result = BeforeBreakBlockCallback.EVENT.invoker().beforeBlockBreak(pos, state, entity, block);
 
 		if (result == ActionResult.FAIL) {
 			BlockPos cornerPos = pos.add(-1, -1, -1);
@@ -104,5 +101,10 @@ public class MixinServerPlayerInteractionManager {
 
 			cir.setReturnValue(false);
 		}
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD)
+	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block, boolean b1) {
+		AfterBreakBlockCallback.EVENT.invoker().afterBlockBreak(pos, state, entity, block);
 	}
 }
