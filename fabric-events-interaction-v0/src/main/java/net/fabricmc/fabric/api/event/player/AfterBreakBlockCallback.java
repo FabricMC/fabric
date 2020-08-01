@@ -16,13 +16,13 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Callback after a block is broken.
@@ -34,7 +34,7 @@ public interface AfterBreakBlockCallback {
 				for (AfterBreakBlockCallback event : listeners) {
 					event.afterBlockBreak(pos, state, entity, block);
 				}
-		}
+			}
 	);
 
 	void afterBlockBreak(BlockPos pos, BlockState state, BlockEntity entity, Block block);

@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import net.minecraft.block.Blocks;
+import net.minecraft.util.ActionResult;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.AfterBreakBlockCallback;
 import net.fabricmc.fabric.api.event.player.BeforeBreakBlockCallback;
-import net.minecraft.block.Blocks;
-import net.minecraft.util.ActionResult;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class InteractionEventsTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("InteractionEventsTest");

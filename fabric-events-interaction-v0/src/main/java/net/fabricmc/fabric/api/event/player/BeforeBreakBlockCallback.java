@@ -16,13 +16,14 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
+
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Callback before a block is broken.
@@ -30,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
  *
  * <p>Upon return:
  * <ul><li>SUCCESS/PASS/CONSUME continues the default code for breaking the block
- * <li>FAIL cancels the block breaking action
+ * <li>FAIL cancels the block breaking action</ul>
  */
 public interface BeforeBreakBlockCallback {
 	Event<BeforeBreakBlockCallback> EVENT = EventFactory.createArrayBacked(BeforeBreakBlockCallback.class,
