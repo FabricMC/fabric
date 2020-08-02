@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.api.biomes.v1;
 
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
@@ -33,5 +35,16 @@ public final class FabricBiomes {
 	 */
 	public static void addSpawnBiome(Biome biome) {
 		InternalBiomeData.addSpawnBiome(biome);
+	}
+
+	/**
+	 * Used to add a feature to an existing biome.
+	 *
+	 * @param biome The target biome
+	 * @param generationStep The generation step
+	 * @param configuredFeature The feature to add to the biome
+	 */
+	public static void addFeatureToBiome(Biome biome, GenerationStep.Feature generationStep, ConfiguredFeature<?, ?> configuredFeature) {
+		InternalBiomeData.addFeatureToBiome(biome, generationStep, configuredFeature);
 	}
 }

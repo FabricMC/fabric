@@ -1,2 +1,7 @@
 archivesBaseName = "fabric-biomes-v1"
-version = getSubprojectVersion(project, "1.0.2")
+version = getSubprojectVersion(project, "1.2.0")
+
+dependencies {
+	testmodCompile project(path: ':fabric-registry-sync-v0', configuration: 'dev')
+	testmodCompile project(path: ':fabric-api-base', configuration: 'dev')
+}

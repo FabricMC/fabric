@@ -18,21 +18,28 @@ package net.fabricmc.fabric.impl.biome;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
+import net.minecraft.world.gen.GenerationStep;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
 
@@ -132,6 +139,24 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(spawnNoisePoint != null, "Biome.MixedNoisePoint is null");
 		NETHER_BIOMES.add(biome);
 		NETHER_BIOME_NOISE_POINTS.put(biome, spawnNoisePoint);
+	}
+
+	public static void addFeatureToBiome(Biome biome, GenerationStep.Feature generationStep, ConfiguredFeature<?, ?> configuredFeature) {
+		List<List<Supplier<ConfiguredFeature<?, ?>>>> features = biome.method_30970().method_30983();
+
+		int generationStepIndex = generationStep.ordinal();
+
+		while (features.size() <= generationStepIndex) {
+			features.add(Lists.newArrayList());
+		}
+
+		List<Supplier<ConfiguredFeature<?, ?>>> stepList = features.get(generationStepIndex);
+
+		if (stepList instanceof ImmutableList) {
+			features.set(generationStepIndex, stepList = new ArrayList<>(stepList));
+		}
+
+		stepList.add(() -> configuredFeature);
 	}
 
 	public static Set<Biome> getSpawnBiomes() {

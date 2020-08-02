@@ -9,6 +9,7 @@
     "MixinAddHillsLayer",
     "MixinAddRiversLayer",
     "MixinBiomeSource",
+    "MixinGenerationSettings",
     "MixinSetBaseBiomesLayer",
     "MixinMinecraftDedicatedServer",
     "MixinMultiNoiseBiomeSource",
