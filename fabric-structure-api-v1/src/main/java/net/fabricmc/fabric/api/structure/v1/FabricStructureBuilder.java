@@ -116,8 +116,8 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 	 *
 	 * <p>This is a required option. Vanilla needs it to function.</p>
 	 *
-	 * @param spacing The minimum distance between 2 structures of this type.
-	 * @param separation The average distance between 2 structures of this type along the X and Z axes.
+	 * @param spacing The average distance between 2 structures of this type along the X and Z axes.
+	 * @param separation The minimum distance between 2 structures of this type.
 	 * @param salt The random salt of the structure. This does not affect how common the structure is, but every
 	 *                structure must have an unique {@code salt} in order to spawn in different places.
 	 *
@@ -191,7 +191,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 					.build());
 		}
 
-		// update existing structure configs
+		// update existing structures configs
 		for (StructuresConfig structuresConfig : FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS) {
 			((StructuresConfigHooks) structuresConfig).fabric_updateDefaultEntries();
 		}

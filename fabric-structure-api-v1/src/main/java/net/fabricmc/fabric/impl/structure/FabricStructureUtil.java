@@ -25,5 +25,7 @@ import net.minecraft.world.gen.chunk.StructuresConfig;
 public final class FabricStructureUtil {
 	private FabricStructureUtil() { }
 
+	// This tracks all StructuresConfig objects that have been created with the default set of structures
+	// in order to add mod-created structures that are registered later
 	public static final Set<StructuresConfig> DEFAULT_STRUCTURES_CONFIGS = Collections.newSetFromMap(new WeakHashMap<>());
 }

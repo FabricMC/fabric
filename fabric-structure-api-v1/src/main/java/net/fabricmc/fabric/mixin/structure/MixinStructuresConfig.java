@@ -38,6 +38,9 @@ public class MixinStructuresConfig implements StructuresConfigHooks {
 	@Final
 	private Map<StructureFeature<?>, StructureConfig> structures;
 
+	// This constructor of StructuresConfig initializes it with the default set of structures.
+	// Since a mod can register its structures later, we need to keep track of the object created
+	// here, so that we can add new structures to it later.
 	@Inject(method = "<init>(Z)V", at = @At("RETURN"))
 	private void onDefaultInit(CallbackInfo ci) {
 		FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS.add((StructuresConfig) (Object) this);
