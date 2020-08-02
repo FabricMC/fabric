@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
+import net.fabricmc.fabric.api.event.player.BlockBreakEvents;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,19 +24,17 @@ import net.minecraft.block.Blocks;
 import net.minecraft.util.ActionResult;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.player.PreBreakBlockCallback;
-import net.fabricmc.fabric.api.event.player.PostBreakBlockCallback;
 
 public class InteractionEventsTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("InteractionEventsTest");
 
 	@Override
 	public void onInitialize() {
-		PostBreakBlockCallback.EVENT.register(((pos, state, entity, block) -> {
+		BlockBreakEvents.BEFORE.register(((player, pos, state, entity, block) -> {
 			return block == Blocks.BEDROCK ? ActionResult.FAIL : ActionResult.PASS;
 		}));
 
-		PreBreakBlockCallback.EVENT.register(((pos, state, entity, block) -> {
+		BlockBreakEvents.AFTER.register(((player, pos, state, entity, block) -> {
 			LOGGER.info("Block broken at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 		}));
 	}
