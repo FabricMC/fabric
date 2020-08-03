@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.event.player;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -34,21 +33,20 @@ public final class BlockBreakEvents {
 	 * Only called on the server, however updates are synced with the client.
 	 *
 	 * <p>Upon return:
-	 * <ul><li>SUCCESS/PASS passes on the callback to the next listener
-	 * <li>CONSUME continues the default code for breaking the block and ignores all other listeners
-	 * <li>FAIL cancels the block breaking action</ul>
+	 * <ul><li>`true` passes on the callback to the next listener
+	 * <li>`false` cancels the block breaking action</ul>
 	 */
 	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
 			(listeners) -> (world, player, pos, state, entity) -> {
 				for (Before event : listeners) {
-					ActionResult result = event.beforeBlockBreak(world, player, pos, state, entity);
+					boolean result = event.beforeBlockBreak(world, player, pos, state, entity);
 
-					if (result != ActionResult.PASS && result != ActionResult.SUCCESS) {
-						return result;
+					if (!result) {
+						return false;
 					}
 				}
 
-				return ActionResult.PASS;
+				return true;
 			}
 	);
 
@@ -87,7 +85,7 @@ public final class BlockBreakEvents {
 		 * <li> state - The block state from BEFORE the block is broken
 		 * <li> entity - The block entity from BEFORE the block is broken (can be null)
 		 */
-		ActionResult beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
+		boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}
 
 	@FunctionalInterface
@@ -100,7 +98,6 @@ public final class BlockBreakEvents {
 		 * <li> pos - The position where the block was broken
 		 * <li> state - The block state from AFTER the block was broken
 		 * <li> entity - The block entity of the broken block (can be null)
-		 * <li> block - The block instance of the block that was broken</ul>
 		 */
 		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}
@@ -115,7 +112,6 @@ public final class BlockBreakEvents {
 		 * <li> pos - The position where the block was going to be broken
 		 * <li> state - The block state of the block that was going to be broken
 		 * <li> entity - The block entity of the block that was going to be broken (can be null)
-		 * <li> block - The block instance of the block that was going to be broken</ul>
 		 */
 		void onBlockBreakCancel(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}

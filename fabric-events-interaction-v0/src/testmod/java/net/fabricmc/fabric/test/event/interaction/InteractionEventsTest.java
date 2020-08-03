@@ -31,7 +31,7 @@ public class InteractionEventsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		BlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> {
-			return state.getBlock() == Blocks.BEDROCK ? ActionResult.FAIL : ActionResult.PASS;
+			return state.getBlock() == Blocks.BEDROCK;
 		}));
 
 		BlockBreakEvents.CANCEL.register(((world, player, pos, state, entity) -> {
