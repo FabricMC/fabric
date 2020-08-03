@@ -46,7 +46,7 @@ import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
  */
 public class FabricEntityTypeBuilder<T extends Entity> {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final SpawnGroup spawnGroup;
+	private SpawnGroup spawnGroup;
 	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
 	private boolean summonable = true;
@@ -80,27 +80,13 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/**
 	 * Creates an entity type builder.
 	 *
-	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
-	 *
-	 * @param factory the entity factory used to create this entity
-	 * @param <T> the type of entity
-	 *
-	 * @return a new entity type builder
-	 */
-	public static <T extends Entity> FabricEntityTypeBuilder<T> create(EntityType.EntityFactory<T> factory) {
-		return create(SpawnGroup.MISC, factory);
-	}
-
-	/**
-	 * Creates an entity type builder.
-	 *
 	 * @param spawnGroup the entity spawn group
 	 * @param <T> the type of entity
 	 *
 	 * @return a new entity type builder
 	 */
 	public static <T extends Entity> FabricEntityTypeBuilder<T> create(SpawnGroup spawnGroup) {
-		return create(spawnGroup, FabricEntityTypeBuilder::empty);
+		return create(spawnGroup, FabricEntityTypeBuilder::emptyFactory);
 	}
 
 	/**
@@ -119,45 +105,6 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	/**
 	 * Creates an entity type builder for a living entity.
 	 *
-	 * @param spawnGroup the entity spawn group
-	 * @param factory the entity factory used to create this entity
-	 * @param <T> the type of entity
-	 *
-	 * @return a new living entity type builder
-	 */
-	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
-		return new FabricEntityTypeBuilder.Living<>(spawnGroup, factory);
-	}
-
-	/**
-	 * Creates an entity type builder for a living entity.
-	 *
-	 * @param spawnGroup the entity spawn group
-	 * @param <T> the type of entity
-	 *
-	 * @return a new living entity type builder
-	 */
-	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving(SpawnGroup spawnGroup) {
-		return createLiving(spawnGroup, FabricEntityTypeBuilder::empty);
-	}
-
-	/**
-	 * Creates an entity type builder for a living entity.
-	 *
-	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
-	 *
-	 * @param factory the entity factory used to create this entity
-	 * @param <T> the type of entity
-	 *
-	 * @return a new living entity type builder
-	 */
-	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving(EntityType.EntityFactory<T> factory) {
-		return createLiving(SpawnGroup.MISC, factory);
-	}
-
-	/**
-	 * Creates an entity type builder for a living entity.
-	 *
 	 * <p>This entity's spawn group will automatically be set to {@link SpawnGroup#MISC}.
 	 *
 	 * @param <T> the type of entity
@@ -165,36 +112,28 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 * @return a new living entity type builder
 	 */
 	public static <T extends LivingEntity> FabricEntityTypeBuilder.Living<T> createLiving() {
-		return createLiving(SpawnGroup.MISC, FabricEntityTypeBuilder::empty);
+		return new FabricEntityTypeBuilder.Living<>(SpawnGroup.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
 	/**
 	 * Creates an entity type builder for a mob entity.
 	 *
-	 * @param spawnGroup the entity spawn group
-	 * @param factory the entity factory used to create this entity
 	 * @param <T> the type of entity
 	 *
 	 * @return a new mob entity type builder
 	 */
-	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob(SpawnGroup spawnGroup, EntityType.EntityFactory<T> factory) {
-		return new FabricEntityTypeBuilder.Mob<>(spawnGroup, factory);
+	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob() {
+		return new FabricEntityTypeBuilder.Mob<>(SpawnGroup.MISC, FabricEntityTypeBuilder::emptyFactory);
 	}
 
-	/**
-	 * Creates an entity type builder for a mob entity.
-	 *
-	 * @param spawnGroup the entity spawn group
-	 * @param <T> the type of entity
-	 *
-	 * @return a new mob entity type builder
-	 */
-	public static <T extends MobEntity> FabricEntityTypeBuilder.Mob<T> createMob(SpawnGroup spawnGroup) {
-		return new FabricEntityTypeBuilder.Mob<>(spawnGroup, FabricEntityTypeBuilder::empty);
-	}
-
-	private static <T extends Entity> T empty(EntityType<T> type, World world) {
+	private static <T extends Entity> T emptyFactory(EntityType<T> type, World world) {
 		return null;
+	}
+
+	public FabricEntityTypeBuilder<T> spawnGroup(SpawnGroup group) {
+		Objects.requireNonNull(group, "Spawn group cannot be null");
+		this.spawnGroup = group;
+		return this;
 	}
 
 	public FabricEntityTypeBuilder<T> entityFactory(EntityType.EntityFactory<T> factory) {
@@ -289,12 +228,23 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return type;
 	}
 
+	/**
+	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link LivingEntity living entities}, such as default attributes.
+	 *
+	 * @param <T> Entity class.
+	 */
 	public static class Living<T extends LivingEntity> extends FabricEntityTypeBuilder<T> {
 		/* @Nullable */
 		private Supplier<DefaultAttributeContainer.Builder> defaultAttributeBuilder;
 
 		protected Living(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 			super(spawnGroup, function);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> spawnGroup(SpawnGroup group) {
+			super.spawnGroup(group);
+			return this;
 		}
 
 		@Override
@@ -356,7 +306,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		 *
 		 * <p>This can be used in a fashion similar to this:
 		 * <blockquote><pre>
-		 * FabricEntityTypeBuilder.createLiving(SpawnGroup.CREATURE, MyCreature::new)
+		 * FabricEntityTypeBuilder.createLiving()
+		 * 	.spawnGroup(SpawnGroup.CREATURE)
+		 * 	.entityFactory(MyCreature::new)
 		 * 	.defaultAttributes(LivingEntity::createLivingAttributes)
 		 * 	...
 		 * 	.build();
@@ -383,6 +335,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 	}
 
+	/**
+	 * An extended version of {@link FabricEntityTypeBuilder} with support for features on present on {@link MobEntity mob entities}, such as spawn restrictions.
+	 *
+	 * @param <T> Entity class.
+	 */
 	public static class Mob<T extends MobEntity> extends FabricEntityTypeBuilder.Living<T> {
 		private SpawnRestriction.Location restrictionLocation;
 		private Heightmap.Type restrictionHeightmap;
@@ -390,6 +347,12 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 
 		protected Mob(SpawnGroup spawnGroup, EntityType.EntityFactory<T> function) {
 			super(spawnGroup, function);
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> spawnGroup(SpawnGroup group) {
+			super.spawnGroup(group);
+			return this;
 		}
 
 		@Override
