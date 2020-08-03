@@ -30,11 +30,15 @@ public class InteractionEventsTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		BlockBreakEvents.BEFORE.register(((world, player, pos, state, entity, block) -> {
-			return block == Blocks.BEDROCK ? ActionResult.FAIL : ActionResult.PASS;
+		BlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> {
+			return state.getBlock() == Blocks.BEDROCK ? ActionResult.FAIL : ActionResult.PASS;
 		}));
 
-		BlockBreakEvents.AFTER.register(((world, player, pos, state, entity, block) -> {
+		BlockBreakEvents.CANCEL.register(((world, player, pos, state, entity) -> {
+			LOGGER.info("Block break event canceled at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
+		}));
+
+		BlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> {
 			LOGGER.info("Block broken at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 		}));
 	}

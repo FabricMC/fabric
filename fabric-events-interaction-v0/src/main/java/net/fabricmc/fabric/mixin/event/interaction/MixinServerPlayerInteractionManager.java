@@ -89,9 +89,11 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	private void breakBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block) {
-		ActionResult result = BlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.world, this.player, pos, state, entity, block);
+		ActionResult result = BlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.world, this.player, pos, state, entity);
 
 		if (result == ActionResult.FAIL) {
+			BlockBreakEvents.CANCEL.invoker().onBlockBreakCancel(this.world, this.player, pos, state, entity);
+
 			BlockPos cornerPos = pos.add(-1, -1, -1);
 
 			for (int x = 0; x < 3; x++) {
@@ -108,6 +110,6 @@ public class MixinServerPlayerInteractionManager {
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD)
 	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block, boolean b1) {
-		BlockBreakEvents.AFTER.invoker().afterBlockBreak(this.world, this.player, pos, state, entity, block);
+		BlockBreakEvents.AFTER.invoker().afterBlockBreak(this.world, this.player, pos, state, entity);
 	}
 }

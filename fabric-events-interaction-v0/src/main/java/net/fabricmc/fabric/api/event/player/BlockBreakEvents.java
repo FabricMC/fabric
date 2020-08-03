@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,14 +26,57 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public class BlockBreakEvents {
+public final class BlockBreakEvents {
+	private BlockBreakEvents() { }
+
 	/**
 	 * Callback before a block is broken.
 	 * Only called on the server, however updates are synced with the client.
 	 *
 	 * <p>Upon return:
-	 * <ul><li>SUCCESS/PASS/CONSUME continues the default code for breaking the block
+	 * <ul><li>SUCCESS/CONSUME continues the default code for breaking the block
+	 * <li>PASS passes on the callback to the next listener
 	 * <li>FAIL cancels the block breaking action</ul>
+	 */
+	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
+			(listeners) -> (world, player, pos, state, entity) -> {
+				for (Before event : listeners) {
+					ActionResult result = event.beforeBlockBreak(world, player, pos, state, entity);
+
+					if (result != ActionResult.PASS) {
+						return result;
+					}
+				}
+
+				return ActionResult.PASS;
+			}
+	);
+
+	/*
+	 * Callback after a block is broken.
+	 * Called on the Server only
+	 */
+	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
+			(listeners) -> (world, player, pos, state, entity) -> {
+				for (After event : listeners) {
+					event.afterBlockBreak(world, player, pos, state, entity);
+				}
+			}
+	);
+
+	/*
+	 * Callback when a block break has been canceled
+	 * Called on the Server only
+	 */
+	public static final Event<Cancel> CANCEL = EventFactory.createArrayBacked(Cancel.class,
+			(listeners) -> (world, player, pos, state, entity) -> {
+				for (Cancel event : listeners) {
+					event.onBlockBreakCancel(world, player, pos, state, entity);
+				}
+			}
+	);
+
+	/* Called before a block is broken
 	 *
 	 * <p>Fields:
 	 * <ul><li> world - The world at which the block is being broken
@@ -42,25 +84,13 @@ public class BlockBreakEvents {
 	 * <li> pos - The position at which the block is being broken
 	 * <li> state - The block state from BEFORE the block is broken
 	 * <li> entity - The block entity from BEFORE the block is broken (can be null)
-	 * <li> block - The block instance of the block that is being broken</ul>
 	 */
-	public static final Event<BeforeBreakBlockCallback> BEFORE = EventFactory.createArrayBacked(BeforeBreakBlockCallback.class,
-			(listeners) -> (world, player, pos, state, entity, block) -> {
-				for (BeforeBreakBlockCallback event : listeners) {
-					ActionResult result = event.beforeBlockBreak(world, player, pos, state, entity, block);
+	@FunctionalInterface
+	public interface Before {
+		ActionResult beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
+	}
 
-					if (result != ActionResult.FAIL) {
-						return result;
-					}
-				}
-
-				return ActionResult.FAIL;
-			}
-	);
-
-	/**
-	 * Callback after a block is broken.
-	 * Called on both Client and Server
+	/* Called after a block is broken
 	 *
 	 * <p>Fields:
 	 * <ul><li> world - The world where the block was broken
@@ -70,21 +100,23 @@ public class BlockBreakEvents {
 	 * <li> entity - The block entity of the broken block (can be null)
 	 * <li> block - The block instance of the block that was broken</ul>
 	 */
-	public static final Event<AfterBreakBlockCallback> AFTER = EventFactory.createArrayBacked(AfterBreakBlockCallback.class,
-			(listeners) -> (world, player, pos, state, entity, block) -> {
-				for (AfterBreakBlockCallback event : listeners) {
-					event.afterBlockBreak(world, player, pos, state, entity, block);
-				}
-			}
-	);
-
 	@FunctionalInterface
-	public interface BeforeBreakBlockCallback {
-		ActionResult beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity, Block block);
+	public interface After {
+		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}
 
+	/* Called when a block break has been canceled
+	 *
+	 * <p>Fields:
+	 * <ul><li> world - The world where the block was going to be broken
+	 * <li> player - The player was going to break the block
+	 * <li> pos - The position where the block was going to be broken
+	 * <li> state - The block state of the block that was going to be broken
+	 * <li> entity - The block entity of the block that was going to be broken (can be null)
+	 * <li> block - The block instance of the block that was going to be broken</ul>
+	 */
 	@FunctionalInterface
-	public interface AfterBreakBlockCallback {
-		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity, Block block);
+	public interface Cancel {
+		void onBlockBreakCancel(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}
 }
