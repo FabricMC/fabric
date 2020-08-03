@@ -43,7 +43,7 @@ public final class BlockBreakEvents {
 				for (Before event : listeners) {
 					ActionResult result = event.beforeBlockBreak(world, player, pos, state, entity);
 
-					if (result != ActionResult.PASS) {
+					if (result != ActionResult.PASS && result != ActionResult.SUCCESS) {
 						return result;
 					}
 				}
