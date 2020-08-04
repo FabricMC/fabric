@@ -52,7 +52,7 @@ public final class BlockBreakEvents {
 
 	/**
 	 * Callback after a block is broken.
-	 * 
+	 *
 	 * <p>Called on the Server only.</p>
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
@@ -65,7 +65,7 @@ public final class BlockBreakEvents {
 
 	/**
 	 * Callback when a block break has been canceled.
-	 * 
+	 *
 	 * <p>Called on the logical server only. May be used to send packets to revert client-side block changes.</p>
 	 */
 	public static final Event<Cancel> CANCEL = EventFactory.createArrayBacked(Cancel.class,
