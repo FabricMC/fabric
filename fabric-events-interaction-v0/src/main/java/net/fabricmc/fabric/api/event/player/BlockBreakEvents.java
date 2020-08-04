@@ -50,9 +50,10 @@ public final class BlockBreakEvents {
 			}
 	);
 
-	/*
+	/**
 	 * Callback after a block is broken.
-	 * Called on the Server only
+	 * 
+	 * <p>Called on the Server only.</p>
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
 			(listeners) -> (world, player, pos, state, entity) -> {
