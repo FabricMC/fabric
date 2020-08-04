@@ -78,14 +78,17 @@ public final class BlockBreakEvents {
 
 	@FunctionalInterface
 	public interface Before {
-		/* Called before a block is broken
+		/**
+		 * Called before a block is broken and allows cancelling the block breaking.
 		 *
-		 * <p>Fields:
-		 * <ul><li> world - The world at which the block is being broken
-		 * <li> player - The player who is breaking the block
-		 * <li> pos - The position at which the block is being broken
-		 * <li> state - The block state from BEFORE the block is broken
-		 * <li> entity - The block entity from BEFORE the block is broken (can be null)
+		 * <p>Implementations should not modify the world or assume the block break has completed or failed.</p>
+		 *
+		 * @param world the world in which the block is broken
+		 * @param player the player breaking the block
+		 * @param pos the position at which the block is broken
+		 * @param state the block state <strong>before</strong> the block is broken
+		 * @param entity the block entity <strong>before</strong> the block is broken, can be {@code null}
+		 * @return {@code false} to cancel block breaking action, or {@code true} to pass to next listener
 		 */
 		boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}
