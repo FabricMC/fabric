@@ -92,14 +92,14 @@ public final class BlockBreakEvents {
 
 	@FunctionalInterface
 	public interface After {
-		/* Called after a block is broken
+		/**
+		 * Called after a block is successfully broken.
 		 *
-		 * <p>Fields:
-		 * <ul><li> world - The world where the block was broken
-		 * <li> player - The player who broke the block
-		 * <li> pos - The position where the block was broken
-		 * <li> state - The block state from AFTER the block was broken
-		 * <li> entity - The block entity of the broken block (can be null)
+		 * @param world the world where the block was broken
+		 * @param player the player who broke the block
+		 * @param pos the position where the block was broken
+		 * @param state the block state <strong>after</strong> the block was broken
+		 * @param entity the block entity of the broken block, can be {@code null}
 		 */
 		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}
