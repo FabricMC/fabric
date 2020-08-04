@@ -62,9 +62,10 @@ public final class BlockBreakEvents {
 			}
 	);
 
-	/*
-	 * Callback when a block break has been canceled
-	 * Called on the Server only
+	/**
+	 * Callback when a block break has been canceled.
+	 * 
+	 * <p>Called on the logical server only. May be used to send packets to revert client-side block changes.</p>
 	 */
 	public static final Event<Cancel> CANCEL = EventFactory.createArrayBacked(Cancel.class,
 			(listeners) -> (world, player, pos, state, entity) -> {
