@@ -104,14 +104,14 @@ public final class BlockBreakEvents {
 
 	@FunctionalInterface
 	public interface Cancel {
-		/* Called when a block break has been canceled
+		/**
+		 * Called when a block break has been canceled.
 		 *
-		 * <p>Fields:
-		 * <ul><li> world - The world where the block was going to be broken
-		 * <li> player - The player was going to break the block
-		 * <li> pos - The position where the block was going to be broken
-		 * <li> state - The block state of the block that was going to be broken
-		 * <li> entity - The block entity of the block that was going to be broken (can be null)
+		 * @param world the world where the block was going to be broken
+		 * @param player the player who was going to break the block
+		 * @param pos the position where the block was going to be broken
+		 * @param state the block state of the block that was going to be broken
+		 * @param entity the block entity of the block that was going to be broken, can be {@code null}
 		 */
 		void onBlockBreakCancel(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
 	}
