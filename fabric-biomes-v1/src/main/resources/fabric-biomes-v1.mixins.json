@@ -8,12 +8,12 @@
     "MixinAddEdgeBiomesLayer",
     "MixinAddHillsLayer",
     "MixinAddRiversLayer",
-    "MixinBiomeSource",
-    "MixinSetBaseBiomesLayer",
     "MixinMinecraftDedicatedServer",
     "MixinMultiNoiseBiomeSource",
+    "MixinSetBaseBiomesLayer",
     "MixinVanillaLayeredBiomeSource",
-    "MultiNoiseBiomeSourceAccessor"
+    "MultiNoiseBiomeSourceAccessor",
+    "VanillaLayeredBiomeSourceAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

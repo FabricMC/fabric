@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
@@ -33,7 +34,7 @@ public final class NetherBiomes {
 	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
 	 * @see Biome.MixedNoisePoint
 	 */
-	public static void addNetherBiome(Biome biome, Biome.MixedNoisePoint mixedNoisePoint) {
+	public static void addNetherBiome(RegistryKey<Biome> biome, Biome.MixedNoisePoint mixedNoisePoint) {
 		InternalBiomeData.addNetherBiome(biome, mixedNoisePoint);
 	}
 }

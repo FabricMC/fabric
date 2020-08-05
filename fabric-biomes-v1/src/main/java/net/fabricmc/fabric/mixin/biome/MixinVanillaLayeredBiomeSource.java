@@ -27,6 +27,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
@@ -40,15 +41,10 @@ public class MixinVanillaLayeredBiomeSource {
 	@Shadow
 	@Final
 	@Mutable
-	private static List<Biome> BIOMES;
+	private static List<RegistryKey<Biome>> BIOMES;
 
 	@Inject(method = "<clinit>", at = @At("RETURN"))
 	private static void cinit(CallbackInfo info) {
 		BIOMES = new ArrayList<>(BIOMES);
-	}
-
-	//Called via reflection
-	private static void fabric_injectBiome(Biome biome) {
-		BIOMES.add(biome);
 	}
 }

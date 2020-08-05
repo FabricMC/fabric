@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.biomes.v1;
 
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
@@ -35,7 +36,7 @@ public final class OverworldBiomes {
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * @see OverworldClimate for a list of vanilla biome weights
 	 */
-	public static void addContinentalBiome(Biome biome, OverworldClimate climate, double weight) {
+	public static void addContinentalBiome(RegistryKey<Biome> biome, OverworldClimate climate, double weight) {
 		InternalBiomeData.addOverworldContinentalBiome(climate, biome, weight);
 	}
 
@@ -48,7 +49,7 @@ public final class OverworldBiomes {
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * Mods should use 1.0 as the default/normal weight.
 	 */
-	public static void addHillsBiome(Biome parent, Biome hills, double weight) {
+	public static void addHillsBiome(RegistryKey<Biome> parent, RegistryKey<Biome> hills, double weight) {
 		InternalBiomeData.addOverworldHillsBiome(parent, hills, weight);
 	}
 
@@ -61,7 +62,7 @@ public final class OverworldBiomes {
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * Mods should use 1.0 as the default/normal weight.
 	 */
-	public static void addShoreBiome(Biome parent, Biome shore, double weight) {
+	public static void addShoreBiome(RegistryKey<Biome> parent, RegistryKey<Biome> shore, double weight) {
 		InternalBiomeData.addOverworldShoreBiome(parent, shore, weight);
 	}
 
@@ -74,7 +75,7 @@ public final class OverworldBiomes {
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
 	 * Mods should use 1.0 as the default/normal weight.
 	 */
-	public static void addEdgeBiome(Biome parent, Biome edge, double weight) {
+	public static void addEdgeBiome(RegistryKey<Biome> parent, RegistryKey<Biome> edge, double weight) {
 		InternalBiomeData.addOverworldEdgeBiome(parent, edge, weight);
 	}
 
@@ -93,7 +94,7 @@ public final class OverworldBiomes {
 	 * @param chance the chance of replacement of the biome into the variant
 	 * @param climates the climates in which the variants will occur in (none listed = add variant to all climates)
 	 */
-	public static void addBiomeVariant(Biome replaced, Biome variant, double chance, OverworldClimate... climates) {
+	public static void addBiomeVariant(RegistryKey<Biome> replaced, RegistryKey<Biome> variant, double chance, OverworldClimate... climates) {
 		InternalBiomeData.addOverworldBiomeReplacement(replaced, variant, chance, climates);
 	}
 
@@ -104,7 +105,7 @@ public final class OverworldBiomes {
 	 * @param parent the base biome in which the river biome is to be set
 	 * @param river the river biome for this biome
 	 */
-	public static void setRiverBiome(Biome parent, Biome river) {
+	public static void setRiverBiome(RegistryKey<Biome> parent, RegistryKey<Biome> river) {
 		InternalBiomeData.setOverworldRiverBiome(parent, river);
 	}
 }

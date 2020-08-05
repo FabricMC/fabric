@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 
@@ -33,6 +34,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 @Mixin(MultiNoiseBiomeSource.class)
 public class MixinMultiNoiseBiomeSource {
+	// FIXME: Synthetic? Method is gone
 	@Inject(method = "method_28467", at = @At("RETURN"))
 	private static void modifyNoisePoints(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> cir) {
 		MultiNoiseBiomeSource returnedSource = cir.getReturnValue();
@@ -42,8 +44,8 @@ public class MixinMultiNoiseBiomeSource {
 
 		// add fabric biome noise point data to list && BiomeSource biome list
 		InternalBiomeData.getNetherBiomeNoisePoints().forEach((biome, noisePoint) -> {
-			existingPoints.add(Pair.of(noisePoint, () -> biome));
-			returnedSource.getBiomes().add(biome);
+			existingPoints.add(Pair.of(noisePoint, () -> BuiltinRegistries.BIOME.get(biome)));
+			returnedSource.getBiomes().add(BuiltinRegistries.BIOME.get(biome));
 		});
 
 		// modify MultiNoiseBiomeSource list with updated data

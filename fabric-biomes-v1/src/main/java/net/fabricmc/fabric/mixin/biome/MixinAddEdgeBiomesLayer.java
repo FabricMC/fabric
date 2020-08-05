@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddEdgeBiomesLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
@@ -31,13 +32,16 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 
 /**
- * Adds edges and shores specified in {@link OverworldBiomes#addEdgeBiome(Biome, Biome, double)} and {@link OverworldBiomes#addShoreBiome(Biome, Biome, double)} to the edges layer.
+ * Adds edges and shores specified in {@link OverworldBiomes#addEdgeBiome(RegistryKey, RegistryKey, double)} and {@link OverworldBiomes#addShoreBiome(RegistryKey, RegistryKey, double)} to the edges layer.
  */
 @Mixin(AddEdgeBiomesLayer.class)
 public class MixinAddEdgeBiomesLayer {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info) {
-		Biome centerBiome = BuiltinRegistries.BIOME.get(center);
+		final Biome biome = BuiltinRegistries.BIOME.get(center);
+		RegistryKey<Biome> centerBiome = BuiltinRegistries.BIOME.getKey(biome).orElseThrow(() -> {
+			return new RuntimeException(String.format("Failed to get biome of id %s", BuiltinRegistries.BIOME.getId(biome)));
+		});
 
 		if (InternalBiomeData.getOverworldShores().containsKey(centerBiome) && InternalBiomeUtils.neighborsOcean(north, east, south, west)) {
 			info.setReturnValue(BuiltinRegistries.BIOME.getRawId(InternalBiomeData.getOverworldShores().get(centerBiome).pickRandom(rand)));

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -29,13 +28,23 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.BiomeLayers;
-import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
 
+/*
+ * A general TODO for biomes API
+ *
+ * `addSpawnBiomes` is gone as spawn biomes are per biome (see Biomes#method_31082)
+ *
+ * Biomes#getMutated and Biome#has/getParent is gone
+ *
+ * Some of the constant int ids are gone around the place
+ */
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation
  */
@@ -43,64 +52,62 @@ public final class InternalBiomeData {
 	private InternalBiomeData() { }
 
 	private static final EnumMap<OverworldClimate, WeightedBiomePicker> OVERWORLD_MODDED_CONTINENTAL_BIOME_PICKERS = new EnumMap<>(OverworldClimate.class);
-	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_HILLS_MAP = new HashMap<>();
-	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_SHORE_MAP = new HashMap<>();
-	private static final Map<Biome, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
-	private static final Map<Biome, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
-	private static final Map<Biome, Biome> OVERWORLD_RIVER_MAP = new HashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_HILLS_MAP = new HashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_SHORE_MAP = new HashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> OVERWORLD_EDGE_MAP = new HashMap<>();
+	private static final Map<RegistryKey<Biome>, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new HashMap<>();
+	private static final Map<RegistryKey<Biome>, RegistryKey<Biome>> OVERWORLD_RIVER_MAP = new HashMap<>();
 
-	private static final Set<Biome> NETHER_BIOMES = new HashSet<>();
-	private static final Map<Biome, Biome.MixedNoisePoint> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
-
-	private static final Set<Biome> SPAWN_BIOMES = new HashSet<>();
+	private static final Set<RegistryKey<Biome>> NETHER_BIOMES = new HashSet<>();
+	private static final Map<RegistryKey<Biome>, Biome.MixedNoisePoint> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
 
 	private static Method injectBiomeMethod = null;
 
-	public static void addOverworldContinentalBiome(OverworldClimate climate, Biome biome, double weight) {
+	public static void addOverworldContinentalBiome(OverworldClimate climate, RegistryKey<Biome> biome, double weight) {
 		Preconditions.checkArgument(climate != null, "Climate is null");
 		Preconditions.checkArgument(biome != null, "Biome is null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
-		OVERWORLD_MODDED_CONTINENTAL_BIOME_PICKERS.computeIfAbsent(climate, k -> new WeightedBiomePicker()).addBiome(biome, weight);
+		OVERWORLD_MODDED_CONTINENTAL_BIOME_PICKERS.computeIfAbsent(climate, k -> new WeightedBiomePicker()).addBiome(BuiltinRegistries.BIOME.get(biome), weight);
 		injectOverworldBiome(biome);
 	}
 
-	public static void addOverworldHillsBiome(Biome primary, Biome hills, double weight) {
+	public static void addOverworldHillsBiome(RegistryKey<Biome> primary, RegistryKey<Biome> hills, double weight) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(hills != null, "Hills biome is null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
-		OVERWORLD_HILLS_MAP.computeIfAbsent(primary, biome -> DefaultHillsData.injectDefaultHills(primary, new WeightedBiomePicker())).addBiome(hills, weight);
+		OVERWORLD_HILLS_MAP.computeIfAbsent(primary, biome -> DefaultHillsData.injectDefaultHills(primary, new WeightedBiomePicker())).addBiome(BuiltinRegistries.BIOME.get(hills), weight);
 		injectOverworldBiome(hills);
 	}
 
-	public static void addOverworldShoreBiome(Biome primary, Biome shore, double weight) {
+	public static void addOverworldShoreBiome(RegistryKey<Biome> primary, RegistryKey<Biome> shore, double weight) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(shore != null, "Shore biome is null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
-		OVERWORLD_SHORE_MAP.computeIfAbsent(primary, biome -> new WeightedBiomePicker()).addBiome(shore, weight);
+		OVERWORLD_SHORE_MAP.computeIfAbsent(primary, biome -> new WeightedBiomePicker()).addBiome(BuiltinRegistries.BIOME.get(shore), weight);
 		injectOverworldBiome(shore);
 	}
 
-	public static void addOverworldEdgeBiome(Biome primary, Biome edge, double weight) {
+	public static void addOverworldEdgeBiome(RegistryKey<Biome> primary, RegistryKey<Biome> edge, double weight) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		Preconditions.checkArgument(edge != null, "Edge biome is null");
 		Preconditions.checkArgument(!Double.isNaN(weight), "Weight is NaN");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (%s)", weight);
-		OVERWORLD_EDGE_MAP.computeIfAbsent(primary, biome -> new WeightedBiomePicker()).addBiome(edge, weight);
+		OVERWORLD_EDGE_MAP.computeIfAbsent(primary, biome -> new WeightedBiomePicker()).addBiome(BuiltinRegistries.BIOME.get(edge), weight);
 		injectOverworldBiome(edge);
 	}
 
-	public static void addOverworldBiomeReplacement(Biome replaced, Biome variant, double chance, OverworldClimate[] climates) {
+	public static void addOverworldBiomeReplacement(RegistryKey<Biome> replaced, RegistryKey<Biome> variant, double chance, OverworldClimate[] climates) {
 		Preconditions.checkArgument(replaced != null, "Replaced biome is null");
 		Preconditions.checkArgument(variant != null, "Variant biome is null");
 		Preconditions.checkArgument(chance > 0 && chance <= 1, "Chance is not greater than 0 or less than or equal to 1");
-		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(variant, chance, climates);
+		OVERWORLD_VARIANT_TRANSFORMERS.computeIfAbsent(replaced, biome -> new VariantTransformer()).addBiome(BuiltinRegistries.BIOME.get(variant), chance, climates);
 		injectOverworldBiome(variant);
 	}
 
-	public static void setOverworldRiverBiome(Biome primary, Biome river) {
+	public static void setOverworldRiverBiome(RegistryKey<Biome> primary, RegistryKey<Biome> river) {
 		Preconditions.checkArgument(primary != null, "Primary biome is null");
 		OVERWORLD_RIVER_MAP.put(primary, river);
 
@@ -109,48 +116,30 @@ public final class InternalBiomeData {
 		}
 	}
 
-	public static void addSpawnBiome(Biome biome) {
-		Preconditions.checkArgument(biome != null, "Biome is null");
-		SPAWN_BIOMES.add(biome);
+	private static void injectOverworldBiome(RegistryKey<Biome> biome) {
+		VanillaLayeredBiomeSourceAccessor.getBiomes().add(biome);
 	}
 
-	private static void injectOverworldBiome(Biome biome) {
-		try {
-			if (injectBiomeMethod == null) {
-				injectBiomeMethod = VanillaLayeredBiomeSource.class.getDeclaredMethod("fabric_injectBiome", Biome.class);
-				injectBiomeMethod.setAccessible(true);
-			}
-
-			injectBiomeMethod.invoke(null, biome);
-		} catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	public static void addNetherBiome(Biome biome, Biome.MixedNoisePoint spawnNoisePoint) {
+	public static void addNetherBiome(RegistryKey<Biome> biome, Biome.MixedNoisePoint spawnNoisePoint) {
 		Preconditions.checkArgument(biome != null, "Biome is null");
 		Preconditions.checkArgument(spawnNoisePoint != null, "Biome.MixedNoisePoint is null");
 		NETHER_BIOMES.add(biome);
 		NETHER_BIOME_NOISE_POINTS.put(biome, spawnNoisePoint);
 	}
 
-	public static Set<Biome> getSpawnBiomes() {
-		return SPAWN_BIOMES;
-	}
-
-	public static Map<Biome, WeightedBiomePicker> getOverworldHills() {
+	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getOverworldHills() {
 		return OVERWORLD_HILLS_MAP;
 	}
 
-	public static Map<Biome, WeightedBiomePicker> getOverworldShores() {
+	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getOverworldShores() {
 		return OVERWORLD_SHORE_MAP;
 	}
 
-	public static Map<Biome, WeightedBiomePicker> getOverworldEdges() {
+	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getOverworldEdges() {
 		return OVERWORLD_EDGE_MAP;
 	}
 
-	public static Map<Biome, Biome> getOverworldRivers() {
+	public static Map<RegistryKey<Biome>, RegistryKey<Biome>> getOverworldRivers() {
 		return OVERWORLD_RIVER_MAP;
 	}
 
@@ -158,48 +147,48 @@ public final class InternalBiomeData {
 		return OVERWORLD_MODDED_CONTINENTAL_BIOME_PICKERS;
 	}
 
-	public static Map<Biome, VariantTransformer> getOverworldVariantTransformers() {
+	public static Map<RegistryKey<Biome>, VariantTransformer> getOverworldVariantTransformers() {
 		return OVERWORLD_VARIANT_TRANSFORMERS;
 	}
 
-	public static Set<Biome> getNetherBiomes() {
+	public static Set<RegistryKey<Biome>> getNetherBiomes() {
 		return Collections.unmodifiableSet(NETHER_BIOMES);
 	}
 
-	public static Map<Biome, Biome.MixedNoisePoint> getNetherBiomeNoisePoints() {
+	public static Map<RegistryKey<Biome>, Biome.MixedNoisePoint> getNetherBiomeNoisePoints() {
 		return NETHER_BIOME_NOISE_POINTS;
 	}
 
 	private static class DefaultHillsData {
-		private static final ImmutableMap<Biome, Biome> DEFAULT_HILLS;
+		private static final ImmutableMap<RegistryKey<Biome>, RegistryKey<Biome>> DEFAULT_HILLS;
 
-		static WeightedBiomePicker injectDefaultHills(Biome base, WeightedBiomePicker picker) {
-			Biome defaultHill = DEFAULT_HILLS.get(base);
+		static WeightedBiomePicker injectDefaultHills(RegistryKey<Biome> base, WeightedBiomePicker picker) {
+			RegistryKey<Biome> defaultHill = DEFAULT_HILLS.get(base);
 
 			if (defaultHill != null) {
-				picker.addBiome(defaultHill, 1);
-			} else if (BiomeLayers.areSimilar(BuiltinRegistries.BIOME.getRawId(base), BuiltinRegistries.BIOME.getRawId(Biomes.WOODED_BADLANDS_PLATEAU))) {
-				picker.addBiome(Biomes.BADLANDS, 1);
+				picker.addBiome(BuiltinRegistries.BIOME.get(defaultHill), 1);
+			} else if (BiomeLayers.areSimilar(BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(base)), BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(Biomes.WOODED_BADLANDS_PLATEAU)))) {
+				picker.addBiome(BuiltinRegistries.BIOME.get(Biomes.BADLANDS), 1);
 			} else if (base == Biomes.DEEP_OCEAN || base == Biomes.DEEP_LUKEWARM_OCEAN || base == Biomes.DEEP_COLD_OCEAN) {
-				picker.addBiome(Biomes.PLAINS, 1);
-				picker.addBiome(Biomes.FOREST, 1);
+				picker.addBiome(BuiltinRegistries.BIOME.get(Biomes.PLAINS), 1);
+				picker.addBiome(BuiltinRegistries.BIOME.get(Biomes.FOREST), 1);
 			} else if (base == Biomes.DEEP_FROZEN_OCEAN) {
 				// Note: Vanilla Deep Frozen Oceans only have a 1/3 chance of having default hills.
 				// This is a clever trick that ensures that when a mod adds hills with a weight of 1, the 1/3 chance is fulfilled.
 				// 0.5 + 1.0 = 1.5, and 0.5 / 1.5 = 1/3.
 
-				picker.addBiome(Biomes.PLAINS, 0.25);
-				picker.addBiome(Biomes.FOREST, 0.25);
+				picker.addBiome(BuiltinRegistries.BIOME.get(Biomes.PLAINS), 0.25);
+				picker.addBiome(BuiltinRegistries.BIOME.get(Biomes.FOREST), 0.25);
 			} else if (base == Biomes.PLAINS) {
-				picker.addBiome(Biomes.WOODED_HILLS, 1);
-				picker.addBiome(Biomes.FOREST, 2);
+				picker.addBiome(BuiltinRegistries.BIOME.get(Biomes.WOODED_HILLS), 1);
+				picker.addBiome(BuiltinRegistries.BIOME.get(Biomes.FOREST), 2);
 			}
 
 			return picker;
 		}
 
 		static {
-			ImmutableMap.Builder<Biome, Biome> builder = ImmutableMap.builder();
+			ImmutableMap.Builder<RegistryKey<Biome>, RegistryKey<Biome>> builder = ImmutableMap.builder();
 			builder.put(Biomes.DESERT, Biomes.DESERT_HILLS);
 			builder.put(Biomes.FOREST, Biomes.WOODED_HILLS);
 			builder.put(Biomes.BIRCH_FOREST, Biomes.BIRCH_FOREST_HILLS);

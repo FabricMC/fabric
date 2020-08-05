@@ -22,6 +22,7 @@ import java.util.function.IntConsumer;
 
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.dimension.DimensionOptions;
@@ -61,6 +62,7 @@ public final class InternalBiomeUtils {
 			Biome secondaryBiome = BuiltinRegistries.BIOME.get(secondaryBiomeId);
 			Biome mainBiome = BuiltinRegistries.BIOME.get(mainBiomeId);
 
+			// FIXME: parent biomes are gone?
 			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(new Identifier(secondaryBiome.getParent())))) : true;
 			isUnsimilar = isUnsimilar && (mainBiome.hasParent() ? !(secondaryBiomeId == BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(new Identifier(mainBiome.getParent())))) : true);
 
@@ -111,7 +113,7 @@ public final class InternalBiomeUtils {
 	 * @return The potentially transformed biome
 	 */
 	public static int transformBiome(LayerRandomnessSource random, Biome existing, OverworldClimate climate) {
-		Map<Biome, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
+		Map<RegistryKey<Biome>, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
 		VariantTransformer transformer = overworldVariantTransformers.get(existing);
 
 		if (transformer != null) {
@@ -149,6 +151,6 @@ public final class InternalBiomeUtils {
 	}
 
 	public static void recreateChunkGenerators(GeneratorOptions generatorOptions) {
-		((DimensionOptionsAccessor) (Object) generatorOptions.getDimensionMap().get(DimensionOptions.NETHER)).setChunkGenerator(DimensionTypeAccessor.createNetherGenerator(generatorOptions.getSeed()));
+		((DimensionOptionsAccessor) (Object) generatorOptions.getDimensionMap().get(DimensionOptions.NETHER)).setChunkGenerator(DimensionTypeAccessor.createNetherGenerator(BuiltinRegistries.BIOME, BuiltinRegistries.CHUNK_GENERATOR_SETTINGS, generatorOptions.getSeed()));
 	}
 }

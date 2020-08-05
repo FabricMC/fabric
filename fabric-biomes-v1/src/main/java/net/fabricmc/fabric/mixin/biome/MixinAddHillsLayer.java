@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.AddHillsLayer;
@@ -34,7 +35,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
 
 /**
- * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(Biome, Biome, double)}into the default hills layer.
+ * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(RegistryKey, RegistryKey, double)} into the default hills layer.
  */
 @Mixin(AddHillsLayer.class)
 public class MixinAddHillsLayer {
@@ -63,6 +64,7 @@ public class MixinAddHillsLayer {
 			Biome parent;
 
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
+				// FIXME: Figure out what to do since getMutated is gone
 				parent = Biomes.getMutated(BuiltinRegistries.BIOME.get(biomeReturn));
 				biomeReturn = parent == null ? biomeId : BuiltinRegistries.BIOME.getRawId(parent);
 			}

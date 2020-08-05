@@ -57,6 +57,7 @@ public class MixinSetBaseBiomesLayer {
 	@Mutable
 	private static int[] DRY_BIOMES;
 
+	// FIXME: 4 below are gone
 	@Shadow
 	@Final
 	private static int WOODED_BADLANDS_PLATEAU_ID;

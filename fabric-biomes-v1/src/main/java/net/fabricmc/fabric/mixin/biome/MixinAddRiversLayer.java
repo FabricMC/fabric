@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.AddRiversLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
@@ -35,10 +36,11 @@ import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
- * Sets river biomes specified with {@link OverworldBiomes#setRiverBiome(Biome, Biome)}.
+ * Sets river biomes specified with {@link OverworldBiomes#setRiverBiome(RegistryKey, RegistryKey)}.
  */
 @Mixin(AddRiversLayer.class)
 public class MixinAddRiversLayer {
+	// FIXME: Gone
 	@Shadow
 	@Final
 	private static int RIVER_ID;
@@ -46,13 +48,17 @@ public class MixinAddRiversLayer {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler landSampler, LayerSampler riverSampler, int x, int z, CallbackInfoReturnable<Integer> info) {
 		int landBiomeId = landSampler.sample(x, z);
-		Biome landBiome = BuiltinRegistries.BIOME.get(landBiomeId);
+		final Biome biome = BuiltinRegistries.BIOME.get(landBiomeId);
+		RegistryKey<Biome> landBiome = BuiltinRegistries.BIOME.getKey(biome).orElseThrow(() -> {
+			// TODO: Is this the right way to approach this?
+			return new RuntimeException(String.format("Failed to get biome of id %s", BuiltinRegistries.BIOME.getId(biome)));
+		});
 
 		int riverBiomeId = riverSampler.sample(x, z);
-		Map<Biome, Biome> overworldRivers = InternalBiomeData.getOverworldRivers();
+		Map<RegistryKey<Biome>, RegistryKey<Biome>> overworldRivers = InternalBiomeData.getOverworldRivers();
 
 		if (overworldRivers.containsKey(landBiome) && riverBiomeId == RIVER_ID) {
-			Biome riverBiome = overworldRivers.get(landBiome);
+			Biome riverBiome = BuiltinRegistries.BIOME.get(overworldRivers.get(landBiome));
 			info.setReturnValue(riverBiome == null ? landBiomeId : BuiltinRegistries.BIOME.getRawId(riverBiome));
 		}
 	}

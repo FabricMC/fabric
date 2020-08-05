@@ -19,13 +19,16 @@ package net.fabricmc.fabric.mixin.biome;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.chunk.ChunkGenerator;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 @Mixin(DimensionType.class)
 public interface DimensionTypeAccessor {
 	@Invoker("createNetherGenerator")
-	static ChunkGenerator createNetherGenerator(long seed) {
+	static ChunkGenerator createNetherGenerator(Registry<Biome> biomeRegistry, Registry<ChunkGeneratorSettings> chunkGeneratorSettingsRegistry, long seed) {
 		throw new UnsupportedOperationException();
 	}
 }
