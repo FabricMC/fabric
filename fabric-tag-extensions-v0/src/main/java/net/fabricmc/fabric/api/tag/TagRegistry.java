@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.tag;
 
 import java.util.function.Supplier;
 
+import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
 import net.minecraft.block.Block;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.entity.EntityType;
@@ -51,7 +52,7 @@ public final class TagRegistry {
 	}
 
 	public static Tag<Fluid> fluid(Identifier id) {
-		return create(id, FluidTags::getTagGroup);
+		return create(id, () -> AccessorFluidTags.getRequiredTags().getGroup());
 	}
 
 	public static Tag<Item> item(Identifier id) {
