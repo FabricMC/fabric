@@ -63,7 +63,7 @@ public class MixinAddHillsLayer {
 			Biome parent;
 
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
-				parent = Biomes.method_30360(BuiltinRegistries.BIOME.get(biomeReturn));
+				parent = Biomes.getMutated(BuiltinRegistries.BIOME.get(biomeReturn));
 				biomeReturn = parent == null ? biomeId : BuiltinRegistries.BIOME.getRawId(parent);
 			}
 

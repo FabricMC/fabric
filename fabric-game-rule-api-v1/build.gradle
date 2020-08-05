@@ -1,0 +1,16 @@
+archivesBaseName = "fabric-game-rule-api-v1"
+version = getSubprojectVersion(project, "1.0.0")
+
+minecraft {
+	accessWidener = file("src/main/resources/fabric-game-rule-api-v1.accesswidener")
+}
+
+dependencies {
+	// MUST BE A DEPENDENCY, OTHERWISE COMPILE WILL FAIL IN "RuleListWidgetMixin"
+	// YOU'VE BEEN WARNED
+	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+
+	testmodCompile project(path: ':fabric-api-base', configuration: 'dev')
+	testmodCompile project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
+	testmodCompile project(path: ':fabric-resource-loader-v0', configuration: 'dev')
+}
