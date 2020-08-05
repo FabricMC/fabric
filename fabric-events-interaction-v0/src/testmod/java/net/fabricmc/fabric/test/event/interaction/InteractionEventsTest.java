@@ -22,22 +22,22 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.block.Blocks;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.player.BlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 
 public class InteractionEventsTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("InteractionEventsTest");
 
 	@Override
 	public void onInitialize() {
-		BlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> {
+		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> {
 			return state.getBlock() == Blocks.BEDROCK;
 		}));
 
-		BlockBreakEvents.CANCEL.register(((world, player, pos, state, entity) -> {
+		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, entity) -> {
 			LOGGER.info("Block break event canceled at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 		}));
 
-		BlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> {
+		PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> {
 			LOGGER.info("Block broken at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 		}));
 	}

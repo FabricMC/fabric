@@ -25,15 +25,15 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class BlockBreakEvents {
-	private BlockBreakEvents() { }
+public final class PlayerBlockBreakEvents {
+	private PlayerBlockBreakEvents() { }
 
 	/**
 	 * Callback before a block is broken.
 	 * Only called on the server, however updates are synced with the client.
 	 *
 	 * <p>If any listener cancels a block breaking action, that block breaking
-	 * action is cancelled and {@link CANCEL} event is fired. Otherwise, the
+	 * action is cancelled and {@link CANCELED} event is fired. Otherwise, the
 	 * {@link AFTER} event is fired.</p>
 	 */
 	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
@@ -68,9 +68,9 @@ public final class BlockBreakEvents {
 	 *
 	 * <p>Called on the logical server only. May be used to send packets to revert client-side block changes.</p>
 	 */
-	public static final Event<Cancel> CANCEL = EventFactory.createArrayBacked(Cancel.class,
+	public static final Event<Canceled> CANCELED = EventFactory.createArrayBacked(Canceled.class,
 			(listeners) -> (world, player, pos, state, entity) -> {
-				for (Cancel event : listeners) {
+				for (Canceled event : listeners) {
 					event.onBlockBreakCancel(world, player, pos, state, entity);
 				}
 			}
@@ -108,7 +108,7 @@ public final class BlockBreakEvents {
 	}
 
 	@FunctionalInterface
-	public interface Cancel {
+	public interface Canceled {
 		/**
 		 * Called when a block break has been canceled.
 		 *
