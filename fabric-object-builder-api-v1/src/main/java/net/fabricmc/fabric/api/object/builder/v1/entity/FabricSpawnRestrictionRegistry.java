@@ -29,28 +29,28 @@ import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 
 /**
  * Allows registering spawn restrictions for mob entities.
+ *
+ * <p>Example:
+ * <pre>FabricSpawnRestrictionRegistry.register(
+ *  EntityType.BAT,
+ *  SpawnRestriction.Location.ON_GROUND,
+ *  Type.MOTION_BLOCKING_NO_LEAVES,
+ *  BatEntity::canSpawn);</pre>
+ * </p>
  */
 public final class FabricSpawnRestrictionRegistry {
-	/**
-	 * Private logger, not exposed.
-	 */
 	private static final Logger LOGGER = LogManager.getLogger();
+
+	private FabricSpawnRestrictionRegistry() {
+	}
 
 	/**
 	 * Registers a spawn restriction entry for a type of mob entity.
 	 *
-	 * <p>Example:
-	 * <pre>FabricSpawnRestrictionRegistry.register(
-	 *  EntityType.BAT,
-	 *  SpawnRestriction.Location.ON_GROUND,
-	 *  Type.MOTION_BLOCKING_NO_LEAVES,
-	 *  BatEntity::canSpawn);</pre>
-	 * </p>
-	 *
 	 * <p>Note: A mob can only have one spawn restriction registration.</p>
 	 *
 	 * @param type      the entity type
-	 * @param location  the environment type where the mob can spawn
+	 * @param location  the environment where the mob can spawn
 	 * @param heightmap the heightmap type
 	 * @param predicate a spawn predicate
 	 */
