@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.tag;
 
 import java.util.function.Supplier;
 
-import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
 import net.minecraft.block.Block;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.entity.EntityType;
@@ -26,12 +25,12 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.EntityTypeTags;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
+import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
 
 /**
  * Helper methods for registering Tags.
