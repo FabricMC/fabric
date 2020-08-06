@@ -44,7 +44,7 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
-		Objects.requireNonNull(renderer, "renderer is null")
+		Objects.requireNonNull(renderer, "renderer is null");
 		this.register(item, (stack, mode, matrices, vertexConsumers, light, overlay) -> renderer.render(stack, matrices, vertexConsumers, light, overlay));
 	}
 
