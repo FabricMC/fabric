@@ -1,12 +1,29 @@
-package net.fabricmc.fabric.enchanting;
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.fabricmc.fabric.test.enchanting;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
+import net.fabricmc.fabric.api.enchanting.v1.EnchantmentTargetRegistry;
 import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
 import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantmentTarget;
 import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
@@ -17,7 +34,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class EnchantingMod implements ModInitializer {
+public class EnchantingTests implements ModInitializer {
 	public static final TestTarget TEST_ENCHANTMENT_TARGET = new TestTarget();
 
 	@Override
@@ -46,7 +63,7 @@ public class EnchantingMod implements ModInitializer {
 	}
 
 	static class TestBlock extends Block implements EnchantingPowerProvider {
-		public TestBlock(Settings settings) {
+		TestBlock(Settings settings) {
 			super(settings);
 		}
 
