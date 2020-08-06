@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.container.EnchantingTableContainer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -33,7 +34,7 @@ import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
 public abstract class MixinEnchantingTableContainer {
 	@SuppressWarnings("UnresolvedMixinReference")
 	@ModifyVariable(method = "method_17411(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V", at = @At(value = "INVOKE", target = "Ljava/util/Random;setSeed(J)V", shift = At.Shift.BEFORE), ordinal = 0)
-	private int changeEnchantingPower(int power, World world, BlockPos blockPos) {
+	private int changeEnchantingPower(int power, ItemStack stack, World world, BlockPos blockPos) {
 		BlockPos.Mutable position = new BlockPos.Mutable();
 
 		for (int offsetZ = -1; offsetZ <= 1; ++offsetZ) {
