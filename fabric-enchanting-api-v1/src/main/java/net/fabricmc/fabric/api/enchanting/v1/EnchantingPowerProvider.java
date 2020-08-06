@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 
 /**
  * To be used on blocks which increase the power of an enchanting table.
+ * In the vanilla game one bookshelf gives exactly one "power unit" that's used to calculate the maximum level for enchantments.
  */
 public interface EnchantingPowerProvider {
 	/**
@@ -31,6 +32,8 @@ public interface EnchantingPowerProvider {
 	 * @param world The world of the block
 	 * @param blockPos The block position of the block
 	 * @return The power amount provided by this block
+	 *
+	 * @see EnchantingPowerProvider
 	 */
 	int getEnchantingPower(BlockState blockState, World world, BlockPos blockPos);
 }
