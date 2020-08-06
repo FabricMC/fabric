@@ -70,20 +70,4 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 	public static DynamicItemRenderer getRenderer(Item item) {
 		return RENDERERS.get(item);
 	}
-
-	/**
-	 * An implementation of the new renderer that forwards calls to an old renderer.
-	 */
-	static class OldRendererImpl implements DynamicItemRenderer {
-		private final BuiltinItemRenderer renderer;
-
-		private OldRendererImpl(BuiltinItemRenderer renderer) {
-			this.renderer = renderer;
-		}
-
-		@Override
-		public void render(ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-			this.renderer.render(stack, matrices, vertexConsumers, light, overlay);
-		}
-	}
 }
