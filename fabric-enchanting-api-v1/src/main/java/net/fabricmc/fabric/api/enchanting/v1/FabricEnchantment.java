@@ -27,7 +27,7 @@ public interface FabricEnchantment {
 	/**
 	 * Returns whether the player can enchant the given stack with this enchantment in an enchanting table.
 	 * Note that the stack must also be {@link ItemStack#isEnchantable()} and the {@link Item#getEnchantability()} must be greater than 0.
-	 * The similar sounding method {@link net.minecraft.enchantment.Enchantment#isAcceptableItem(ItemStack)} is used by vanilla to determine whether an is <b>generally</b> allowed to be on a stack.
+	 * The similar sounding method {@link net.minecraft.enchantment.Enchantment#isAcceptableItem(ItemStack)} is used by vanilla to determine whether an enchantment is <b>generally</b> allowed to be on a stack.
 	 * @param stack The current stack
 	 * @return Whether this enchantment will be shown
 	 */
