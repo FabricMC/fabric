@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.test.enchanting;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
-import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,6 +28,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
+import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
 
 public class EnchantingTests implements ModInitializer {
 	@Override

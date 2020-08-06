@@ -16,13 +16,9 @@
 
 package net.fabricmc.fabric.mixin.enchanting;
 
-import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.EnchantmentTarget;
-import net.minecraft.enchantment.InfoEnchantment;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import java.util.Iterator;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,8 +27,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.Iterator;
-import java.util.List;
+import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.InfoEnchantment;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+
+import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
 
 @Mixin(EnchantmentHelper.class)
 public class MixinEnchantmentHelper {

@@ -16,19 +16,21 @@
 
 package net.fabricmc.fabric.mixin.enchanting;
 
-import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
-import net.minecraft.block.BlockState;
-import net.minecraft.container.EnchantingTableContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.block.BlockState;
+import net.minecraft.container.EnchantingTableContainer;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+
+import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
 
 @Mixin(EnchantingTableContainer.class)
 public abstract class MixinEnchantingTableContainer {
