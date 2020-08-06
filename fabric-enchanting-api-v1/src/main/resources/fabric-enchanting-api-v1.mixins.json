@@ -4,8 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinEnchantingTableContainer",
-    "MixinEnchantmentHelper",
-    "MixinEnchantmentTargetAll"
+    "MixinEnchantmentHelper"
   ],
   "injectors": {
     "defaultRequire": 1

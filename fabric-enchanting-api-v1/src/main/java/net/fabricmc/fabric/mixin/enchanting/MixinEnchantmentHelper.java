@@ -47,7 +47,7 @@ public class MixinEnchantmentHelper {
 	@Redirect(method = "getHighestApplicableEnchantmentsAtPower", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentTarget;isAcceptableItem(Lnet/minecraft/item/Item;)Z"))
 	private static boolean isEnchantmentApplicable(EnchantmentTarget enchantmentTarget, Item item, int level, ItemStack itemStack, boolean allowTreasure) {
 		if (currentEnchantment instanceof FabricEnchantment) {
-			return ((FabricEnchantment) currentEnchantment).getEnchantmentTarget().isAcceptableItem(item);
+			return ((FabricEnchantment) currentEnchantment).canPlayerEnchant(itemStack);
 		}
 
 		return enchantmentTarget.isAcceptableItem(item);

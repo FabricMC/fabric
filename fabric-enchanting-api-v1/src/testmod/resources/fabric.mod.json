@@ -6,7 +6,7 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-item-api-v1": "*"
+    "fabric-enchanting-api-v1": "*"
   },
   "entrypoints": {
     "main": [

@@ -16,16 +16,20 @@
 
 package net.fabricmc.fabric.api.enchanting.v1;
 
-import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 /**
- * Implement this interface on your enchantments if you want them to use a custom enchantment target.
- * Your enchantments should have a vanilla enchantment target of {@link EnchantmentTarget#ALL}.
+ * Implement this interface on your enchantments if you want the player to use them on an enchanting table.
+ * Your enchantment's target will be ignored if you use this interface.
  */
 public interface FabricEnchantment {
 	/**
-	 * Returns the {@link FabricEnchantmentTarget} for this enchantment.
-	 * @return a {@link FabricEnchantmentTarget} that specifies the the items that this enchantment can apply to
+	 * Returns whether the player can enchant the given stack with this enchantment in an enchanting table.
+	 * Note that the stack must also be {@link ItemStack#isEnchantable()} and the {@link Item#getEnchantability()} must be greater than 0.
+	 * The similar sounding method {@link net.minecraft.enchantment.Enchantment#isAcceptableItem(ItemStack)} is used by vanilla to determine whether an is <b>generally</b> allowed to be on a stack.
+	 * @param stack The current stack
+	 * @return Whether this enchantment will be shown
 	 */
-	FabricEnchantmentTarget getEnchantmentTarget();
+	boolean canPlayerEnchant(ItemStack stack);
 }

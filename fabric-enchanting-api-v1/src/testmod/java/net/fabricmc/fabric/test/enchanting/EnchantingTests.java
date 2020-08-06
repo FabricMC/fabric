@@ -18,16 +18,14 @@ package net.fabricmc.fabric.test.enchanting;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
-import net.fabricmc.fabric.api.enchanting.v1.EnchantmentTargetRegistry;
 import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
-import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantmentTarget;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -35,12 +33,9 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class EnchantingTests implements ModInitializer {
-	public static final TestTarget TEST_ENCHANTMENT_TARGET = new TestTarget();
-
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.ENCHANTMENT, new Identifier("fabric", "test"), new TestEnchantment(Enchantment.Weight.COMMON, EquipmentSlot.values()));
-		EnchantmentTargetRegistry.INSTANCE.register(TEST_ENCHANTMENT_TARGET);
 		Registry.register(Registry.BLOCK, new Identifier("fabric", "enchanting_power_block"), new TestBlock(Block.Settings.copy(Blocks.STONE)));
 	}
 
@@ -50,15 +45,13 @@ public class EnchantingTests implements ModInitializer {
 		}
 
 		@Override
-		public FabricEnchantmentTarget getEnchantmentTarget() {
-			return TEST_ENCHANTMENT_TARGET;
+		public boolean canPlayerEnchant(ItemStack stack) {
+			return isAcceptableItem(stack);
 		}
-	}
 
-	static class TestTarget implements FabricEnchantmentTarget {
 		@Override
-		public boolean isAcceptableItem(Item item) {
-			return item == Items.STONE_SWORD;
+		public boolean isAcceptableItem(ItemStack stack) {
+			return stack.getItem() == Items.GOLDEN_HOE;
 		}
 	}
 
