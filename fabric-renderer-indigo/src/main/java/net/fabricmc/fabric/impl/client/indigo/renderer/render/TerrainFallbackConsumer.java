@@ -35,7 +35,6 @@ import net.fabricmc.fabric.api.renderer.v1.render.RenderContext.QuadTransform;
 import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl.Value;
 import net.fabricmc.fabric.impl.client.indigo.renderer.aocalc.AoCalculator;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
 
@@ -143,15 +142,12 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 			aoCalc.compute(editorQuad, true);
 			tesselateSmooth(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());
 		} else {
-			// vanilla compatibility hack
-			// For flat lighting, cull face drives everything and light face is ignored.
+			// Recomputing whether the quad has a light face is only needed if it doesn't also have a cull face,
+			// as in those cases, the cull face will always be used to offset the light sampling position
 			if (cullFace == null) {
 				editorQuad.invalidateShape();
 				// Can't rely on lazy computation in tesselateFlat() because needs to happen before offsets are applied
 				editorQuad.geometryFlags();
-			} else {
-				editorQuad.geometryFlags(GeometryHelper.LIGHT_FACE_FLAG);
-				editorQuad.lightFace(cullFace);
 			}
 
 			tesselateFlat(editorQuad, blockInfo.defaultLayer, editorQuad.colorIndex());

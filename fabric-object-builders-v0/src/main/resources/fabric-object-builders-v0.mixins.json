@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.object.builder",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinBlock",
-    "MixinItem"
+    "OldMixinBlock",
+    "OldMixinItem"
   ],
   "injectors": {
     "defaultRequire": 1

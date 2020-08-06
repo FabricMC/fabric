@@ -233,16 +233,27 @@ public class FabricBlockSettings extends Block.Settings {
 
 	/* FABRIC HELPERS */
 
+	/**
+	 * Makes the block breakable by any tool if {@code breakByHand} is set to true.
+	 */
 	public FabricBlockSettings breakByHand(boolean breakByHand) {
 		FabricBlockInternals.computeExtraData(this).breakByHand(breakByHand);
 		return this;
 	}
 
+	/**
+	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link FabricMaterialBuilder#requiresTool()}.
+	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		FabricBlockInternals.computeExtraData(this).addMiningLevel(tag, miningLevel);
 		return this;
 	}
 
+	/**
+	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link FabricMaterialBuilder#requiresTool()}.
+	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);
 	}
