@@ -19,7 +19,7 @@ def ENV = System.getenv()
 
 class Globals {
 	static def baseVersion = "0.16.4"
-	static def mcVersion = "1.16.2-pre2"
+	static def mcVersion = "1.16.2-pre3"
 	static def yarnVersion = "+build.1"
 }
 
