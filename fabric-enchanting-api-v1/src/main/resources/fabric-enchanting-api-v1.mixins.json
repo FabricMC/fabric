@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.enchantment",
+  "package": "net.fabricmc.fabric.mixin.enchanting",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinEnchantingTableContainer",

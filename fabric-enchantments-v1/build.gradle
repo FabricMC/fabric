@@ -1,2 +1,0 @@
-archivesBaseName = "fabric-enchantments-v1"
-version = getSubprojectVersion(project, "0.1.0")

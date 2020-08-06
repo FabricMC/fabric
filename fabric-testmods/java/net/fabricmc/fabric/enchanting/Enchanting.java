@@ -1,9 +1,9 @@
-package net.fabricmc.fabric;
+package net.fabricmc.fabric.enchanting;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.enchantment.enchantment.EnchantingPowerProvider;
-import net.fabricmc.fabric.api.enchantment.enchantment.FabricEnchantment;
-import net.fabricmc.fabric.api.enchantment.enchantment.FabricEnchantmentTarget;
+import net.fabricmc.fabric.api.enchanting.v1.EnchantingPowerProvider;
+import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
+import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantmentTarget;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.BlockState;
@@ -17,7 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-public class EnchantmentMod implements ModInitializer {
+public class EnchantingMod implements ModInitializer {
 	public static final TestTarget TEST_ENCHANTMENT_TARGET = new TestTarget();
 
 	@Override

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.enchantment;
+package net.fabricmc.fabric.mixin.enchanting;
 
-import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment;
+import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantment;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentTarget;

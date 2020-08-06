@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.enchantment;
+package net.fabricmc.fabric.mixin.enchanting;
 
-import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantmentTarget;
-import net.fabricmc.fabric.impl.enchantment.EnchantmentTargetRegistryImpl;
+import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantmentTarget;
+import net.fabricmc.fabric.impl.enchanting.EnchantmentTargetRegistryImpl;
 import net.minecraft.item.Item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,7 +28,7 @@ import java.util.Iterator;
 
 @Mixin(targets = "net/minecraft/enchantment/EnchantmentTarget$1")
 public class MixinEnchantmentTargetAll {
-	@SuppressWarnings({"UnresolvedMixinReference", "WeakerAccess", "UnnecessaryQualifiedMemberReference"})
+	@SuppressWarnings({"WeakerAccess", "UnnecessaryQualifiedMemberReference"})
 	@Inject(method = "Lnet/minecraft/enchantment/EnchantmentTarget$1;isAcceptableItem(Lnet/minecraft/item/Item;)Z", at = @At("TAIL"), cancellable = true)
 	public void isAcceptableItem(Item item, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
 		for (Iterator<FabricEnchantmentTarget> it = EnchantmentTargetRegistryImpl.INSTANCE.getIterator(); it.hasNext(); ) {

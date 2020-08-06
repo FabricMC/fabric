@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.enchantment.v1;
+package net.fabricmc.fabric.api.enchanting.v1;
 
 import net.minecraft.item.Item;
 

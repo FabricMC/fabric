@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.enchantment;
+package net.fabricmc.fabric.impl.enchanting;
 
-import net.fabricmc.fabric.api.enchantment.v1.EnchantmentTargetRegistry;
-import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantmentTarget;
+import net.fabricmc.fabric.api.enchanting.v1.EnchantmentTargetRegistry;
+import net.fabricmc.fabric.api.enchanting.v1.FabricEnchantmentTarget;
 
 import java.util.Collection;
 import java.util.HashSet;
