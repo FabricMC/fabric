@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
@@ -44,15 +45,16 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 	}
 
 	@Override
-	public void register(Item item, DynamicItemRenderer renderer) {
+	public void register(ItemConvertible item, DynamicItemRenderer renderer) {
 		Objects.requireNonNull(item, "item is null");
+		Objects.requireNonNull(item.asItem(), "item is null");
 		Objects.requireNonNull(renderer, "renderer is null");
 
-		if (RENDERERS.containsKey(item)) {
-			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item) + " already has a builtin renderer!");
+		if (RENDERERS.containsKey(item.asItem())) {
+			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item.asItem()) + " already has a builtin renderer!");
 		}
 
-		RENDERERS.put(item, renderer);
+		RENDERERS.put(item.asItem(), renderer);
 	}
 
 	@Override

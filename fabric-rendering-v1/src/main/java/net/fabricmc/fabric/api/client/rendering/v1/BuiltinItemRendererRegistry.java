@@ -76,7 +76,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
 	 */
-	void register(Item item, DynamicItemRenderer renderer);
+	void register(ItemConvertible item, DynamicItemRenderer renderer);
 
 	/**
 	 * Dynamic item renderers render items with custom code.
