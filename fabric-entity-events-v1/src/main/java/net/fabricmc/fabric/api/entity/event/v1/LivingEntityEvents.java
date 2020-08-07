@@ -41,6 +41,7 @@ public final class LivingEntityEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface AfterDamaged {
 		/**
 		 * Called after a living entity is damaged.

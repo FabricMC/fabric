@@ -27,13 +27,14 @@ public final class EntityEvents {
 	/**
 	 * An event that is called after an entity is directly responsible for killing another entity.
 	 */
-	public static final Event<EntityEvents.AfterKilledOther> AFTER_KILLED_OTHER = EventFactory.createArrayBacked(AfterKilledOther.class, callbacks -> (world, entity, killed) -> {
-		for (AfterKilledOther callback : callbacks) {
-			callback.afterKilledOther(world, entity, killed);
+	public static final Event<AfterKilledOtherEntity> AFTER_KILLED_OTHER_ENTITY = EventFactory.createArrayBacked(AfterKilledOtherEntity.class, callbacks -> (world, entity, killed) -> {
+		for (AfterKilledOtherEntity callback : callbacks) {
+			callback.afterKilledOtherEntity(world, entity, killed);
 		}
 	});
 
-	public interface AfterKilledOther {
+	@FunctionalInterface
+	public interface AfterKilledOtherEntity {
 		/**
 		 * Called after an entity has killed another entity.
 		 *
@@ -41,7 +42,7 @@ public final class EntityEvents {
 		 * @param entity the entity
 		 * @param killed the entity which was killed
 		 */
-		void afterKilledOther(ServerWorld world, Entity entity, LivingEntity killed);
+		void afterKilledOtherEntity(ServerWorld world, Entity entity, LivingEntity killed);
 	}
 
 	private EntityEvents() {

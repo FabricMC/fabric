@@ -36,7 +36,10 @@ public abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Shadow
 	public abstract ServerWorld getServerWorld();
 
-	// This is called by both "moveToWorld" and "teleport", and is suitable as an after event
+	/**
+	 * This is called by both "moveToWorld" and "teleport".
+	 * So this is suitable to handle the after event from both call sites.
+	 */
 	@Inject(method = "worldChanged(Lnet/minecraft/server/world/ServerWorld;)V", at = @At("TAIL"))
 	private void afterWorldChanged(ServerWorld origin, CallbackInfo ci) {
 		EntityWorldChangeEvents.AFTER_PLAYER_CHANGED_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.getServerWorld());
@@ -48,15 +51,17 @@ public abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	}
 
 	/**
-	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity, this is implements it on the server player entity.
+	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity being killed. So a mojang bug
+	 * This is implements it on the server player entity and then calls the corresponding event.
 	 */
 	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getPrimeAdversary()Lnet/minecraft/entity/LivingEntity;"))
 	private void callOnKillForPlayer(DamageSource source, CallbackInfo ci) {
 		final Entity attacker = source.getAttacker();
 
+		// If the damage source that killed the player was an entity, then fire the event.
 		if (attacker != null) {
 			attacker.onKilledOther(this.getServerWorld(), (ServerPlayerEntity) (Object) this);
-			EntityEvents.AFTER_KILLED_OTHER.invoker().afterKilledOther(this.getServerWorld(), attacker, (ServerPlayerEntity) (Object) this);
+			EntityEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getServerWorld(), attacker, (ServerPlayerEntity) (Object) this);
 		}
 	}
 }

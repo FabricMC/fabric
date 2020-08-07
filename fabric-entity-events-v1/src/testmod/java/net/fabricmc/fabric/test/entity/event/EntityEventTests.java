@@ -31,7 +31,6 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.registry.Registry;
@@ -60,7 +59,7 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Damaged {}", entity);
 		});
 
-		EntityEvents.AFTER_KILLED_OTHER.register((world, entity, killed) -> {
+		EntityEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
 			LOGGER.info("[Killed]: {}", killed);
 		});
 	}

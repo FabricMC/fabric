@@ -45,6 +45,17 @@ public final class ServerPlayerEvents {
 		}
 	});
 
+	/**
+	 * An event that is called when a player has first joined a Minecraft server.
+	 * A player is considered to be first joining if the player has no existing player data.
+	 */
+	public static final Event<ServerPlayerEvents.FirstJoin> FIRST_JOIN = EventFactory.createArrayBacked(ServerPlayerEvents.FirstJoin.class, callbacks -> player -> {
+		for (FirstJoin callback : callbacks) {
+			callback.firstJoined(player);
+		}
+	});
+
+	@FunctionalInterface
 	public interface CopyFrom {
 		/**
 		 * Called when player data is copied to a new player.
@@ -56,6 +67,7 @@ public final class ServerPlayerEvents {
 		void copyFromPlayer(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
 	}
 
+	@FunctionalInterface
 	public interface AfterRespawn {
 		/**
 		 * Called after player a has been respawned.
@@ -65,6 +77,11 @@ public final class ServerPlayerEvents {
 		 * @param alive whether the old player is still alive
 		 */
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
+	}
+
+	@FunctionalInterface
+	public interface FirstJoin {
+		void firstJoined(ServerPlayerEntity player);
 	}
 
 	private ServerPlayerEvents() {

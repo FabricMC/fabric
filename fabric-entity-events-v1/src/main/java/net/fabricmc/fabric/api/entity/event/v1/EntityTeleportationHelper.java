@@ -18,7 +18,9 @@ package net.fabricmc.fabric.api.entity.event.v1;
 
 import java.util.Optional;
 
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -29,6 +31,31 @@ import net.minecraft.util.math.MathHelper;
  * A utility class providing methods to help teleport entities to other server worlds.
  */
 public final class EntityTeleportationHelper {
+	/**
+	 * Teleports an entity to a different world.
+	 *
+	 * @param destination the world to teleport the entity to
+	 * @param entity the entity to teleport
+	 * @param x the x position to teleport the entity to
+	 * @param y the y position to teleport the entity to
+	 * @param z the z position to teleport the entity to
+	 * @param yaw the entity's yaw after teleportation
+	 * @param pitch the entity's pitch after teleportation
+	 *
+	 * @return {@link Optional#empty()} if:
+	 * <ul>
+	 * <li>The entity is {@code null}.</li>
+	 * <li>The entity is in a {@link ClientWorld}.</li>
+	 * <li>The entity couldn't be created in the new world. Usually because it is {@link EntityType#isSummonable() not summonable}.</li>
+	 * </ul>
+	 *
+	 * The return value will contain an entity in the following cases:
+	 * <ul>
+	 * <li>The entity is a {@link ServerPlayerEntity}. In this case the return value is the same player.</li>
+	 * <li>The entity's {@link Entity#world current world} is the same as the destination world. As a result, the entity will be moved to the new location.</li>
+	 * <li>The entity was successfully moved to the new world.</li>
+	 * </ul>
+	 */
 	public static Optional<Entity> teleportToWorld(ServerWorld destination, Entity entity, double x, double y, double z, float yaw, float pitch) {
 		// Logic here is the same as TeleportCommand, just without teleport flags or package-private facing location.
 		// Server players are moved to the other world and not copied, so fall to builtin logic for player entities.
@@ -52,14 +79,14 @@ public final class EntityTeleportationHelper {
 			return Optional.of(entity);
 		}
 
-		// The entity is being moved to another world
-		// Detach the entity and create it in the new world
-		entity.detach();
 		final Entity newEntity = entity.getType().create(destination);
 
 		if (newEntity == null) {
-			return Optional.empty(); // Entity is not summonable, so return now new entity and keep the old entity
+			return Optional.empty(); // Entity is not summonable, so return and keep the old entity in the world
 		}
+
+		// The entity is garunteed to be moved to another world
+		entity.detach();
 
 		// Copy old entity to this new entity
 		newEntity.copyFrom(entity);
