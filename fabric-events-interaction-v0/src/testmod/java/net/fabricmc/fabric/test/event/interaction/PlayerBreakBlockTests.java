@@ -24,13 +24,13 @@ import net.minecraft.block.Blocks;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 
-public class InteractionEventsTest implements ModInitializer {
+public class PlayerBreakBlockTests implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("InteractionEventsTest");
 
 	@Override
 	public void onInitialize() {
 		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> {
-			return state.getBlock() == Blocks.BEDROCK;
+			return state.getBlock() != Blocks.BEDROCK;
 		}));
 
 		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, entity) -> {

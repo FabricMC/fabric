@@ -94,16 +94,6 @@ public class MixinServerPlayerInteractionManager {
 		if (!result) {
 			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCancel(this.world, this.player, pos, state, entity);
 
-			BlockPos cornerPos = pos.add(-1, -1, -1);
-
-			for (int x = 0; x < 3; x++) {
-				for (int y = 0; y < 3; y++) {
-					for (int z = 0; z < 3; z++) {
-						this.player.networkHandler.sendPacket(new BlockUpdateS2CPacket(world, cornerPos.add(x, y, z)));
-					}
-				}
-			}
-
 			cir.setReturnValue(false);
 		}
 	}

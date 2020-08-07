@@ -87,10 +87,10 @@ public final class PlayerBlockBreakEvents {
 		 * @param player the player breaking the block
 		 * @param pos the position at which the block is broken
 		 * @param state the block state <strong>before</strong> the block is broken
-		 * @param entity the block entity <strong>before</strong> the block is broken, can be {@code null}
+		 * @param blockEntity the block entity <strong>before</strong> the block is broken, can be {@code null}
 		 * @return {@code false} to cancel block breaking action, or {@code true} to pass to next listener
 		 */
-		boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
+		boolean beforeBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -101,10 +101,10 @@ public final class PlayerBlockBreakEvents {
 		 * @param world the world where the block was broken
 		 * @param player the player who broke the block
 		 * @param pos the position where the block was broken
-		 * @param state the block state <strong>after</strong> the block was broken
-		 * @param entity the block entity of the broken block, can be {@code null}
+		 * @param state the block state <strong>before</strong> the block was broken
+		 * @param blockEntity the block entity of the broken block, can be {@code null}
 		 */
-		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
+		void afterBlockBreak(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
 	}
 
 	@FunctionalInterface
@@ -116,8 +116,8 @@ public final class PlayerBlockBreakEvents {
 		 * @param player the player who was going to break the block
 		 * @param pos the position where the block was going to be broken
 		 * @param state the block state of the block that was going to be broken
-		 * @param entity the block entity of the block that was going to be broken, can be {@code null}
+		 * @param blockEntity  entity the block entity of the block that was going to be broken, can be {@code null}
 		 */
-		void onBlockBreakCancel(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity entity);
+		void onBlockBreakCancel(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
 	}
 }
