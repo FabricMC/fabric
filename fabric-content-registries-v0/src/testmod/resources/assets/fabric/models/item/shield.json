@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/dirt",
+  "overrides": [
+    {
+      "predicate": {
+        "blocking": 1
+      },
+      "model": "minecraft:block/stone"
+    }
+  ]
+}
