@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.renderer.registry",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderDispatcher",
     "MixinEntityRenderDispatcher"
   ],
