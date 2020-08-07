@@ -18,7 +18,7 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.16.2"
+	static def baseVersion = "0.17.0"
 	static def mcVersion = "1.16.1"
 	static def yarnVersion = "+build.5"
 }
@@ -73,7 +73,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:0.8.8+build.202"
+		modCompile "net.fabricmc:fabric-loader:0.8.9+build.203"
 	}
 
 	configurations {
