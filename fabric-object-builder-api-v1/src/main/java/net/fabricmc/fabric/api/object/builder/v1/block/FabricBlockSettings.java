@@ -66,6 +66,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		thisAccessor.setDynamicBounds(otherAccessor.getDynamicBounds());
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
+		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
 
 		// Now attempt to copy fabric specific data
 		BlockSettingsInternals otherInternals = (BlockSettingsInternals) settings;
