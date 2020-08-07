@@ -16,38 +16,36 @@
 
 package net.fabricmc.fabric.api.registry;
 
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.impl.content.registry.ShieldRegistryImpl;
+import net.fabricmc.fabric.api.util.Item2ObjectMap;
 
 /**
  * Registry for defining an item as a shield.
- * Shields should also override serveral {@code use} methods to work properly (see {@link net.minecraft.item.ShieldItem} for reference).
+ * Shields should also override several {@code use} methods to work properly (see {@link net.minecraft.item.ShieldItem} for reference).
  */
-public interface ShieldRegistry {
+public interface ShieldRegistry extends Item2ObjectMap<Integer> {
 	ShieldRegistry INSTANCE = ShieldRegistryImpl.INSTANCE;
 
 	/**
 	 * @param item the item to define as shield
 	 */
-	void add(ItemConvertible item);
+	default void add(ItemConvertible item) {
+		add(item, 100);
+	}
 
 	/**
-	 * @param tag the tag to define as shields
+	 * @param item the item to define as shield
+	 * @param axeDisableDuration how long the cooldown lasts when the shield gets hit by an axe (0 to disable)
 	 */
-	void add(Tag<Item> tag);
+	@Override
+	void add(ItemConvertible item, Integer axeDisableDuration);
 
 	/**
-	 * @param item the item to remove from the registry
+	 * @param item the item to get from the registry
+	 * @return the axe cooldown duration for the shield or null if it is not registered
 	 */
-	void clear(ItemConvertible item);
-
-	/**
-	 * @param tag the tag to remove from the registry
-	 */
-	void clear(Tag<Item> tag);
-
-	boolean isShield(Item item);
+	@Override
+	Integer get(ItemConvertible item);
 }

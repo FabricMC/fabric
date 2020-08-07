@@ -24,7 +24,8 @@ import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredica
 public class ShieldTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		FabricModelPredicateProviderRegistry.register(ShieldTest.SHIELD, new Identifier("blocking"),
-				(stack, world, entity) -> entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1 : 0);
+		FabricModelPredicateProviderRegistry.register(ShieldTest.SHIELD, new Identifier("blocking"), (stack, world, entity) -> {
+			return entity != null && entity.isUsingItem() && entity.getActiveItem() == stack ? 1 : 0;
+		});
 	}
 }

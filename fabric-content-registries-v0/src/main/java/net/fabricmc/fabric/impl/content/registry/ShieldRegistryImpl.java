@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import java.util.HashSet;
-import java.util.Set;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
@@ -28,40 +28,44 @@ import net.fabricmc.fabric.api.registry.ShieldRegistry;
 public class ShieldRegistryImpl implements ShieldRegistry {
 	public static final ShieldRegistryImpl INSTANCE = new ShieldRegistryImpl();
 
-	private final Set<ItemConvertible> registeredItemEntries = new HashSet<>();
-	private final Set<Tag<Item>> registeredTagEntries = new HashSet<>();
+	private final Object2IntMap<ItemConvertible> registeredItemEntries = new Object2IntLinkedOpenHashMap<>();
 
 	@Override
-	public void add(ItemConvertible item) {
-		registeredItemEntries.add(item);
+	public Integer get(ItemConvertible item) {
+		if (registeredItemEntries.containsKey(item.asItem())) {
+			return registeredItemEntries.getInt(item.asItem());
+		}
+
+		return null;
 	}
 
 	@Override
-	public void add(Tag<Item> tag) {
-		registeredTagEntries.add(tag);
+	public void add(ItemConvertible item, Integer axeDisableDuration) {
+		registeredItemEntries.put(item, axeDisableDuration);
+	}
+
+	@Override
+	public void add(Tag<Item> tag, Integer axeDisableDuration) {
+		throw new UnsupportedOperationException("Tags are not supported here.");
 	}
 
 	@Override
 	public void clear(ItemConvertible item) {
-		registeredItemEntries.remove(item);
+		throw new UnsupportedOperationException("Cannot clear from the shield registry.");
 	}
 
 	@Override
 	public void clear(Tag<Item> tag) {
-		registeredTagEntries.remove(tag);
+		throw new UnsupportedOperationException("Cannot clear from the shield registry.");
 	}
 
-	public boolean isShield(Item item) {
-		if (registeredItemEntries.contains(item)) {
-			return true;
-		}
+	@Override
+	public void remove(ItemConvertible item) {
+		throw new UnsupportedOperationException("Cannot remove from the shield registry.");
+	}
 
-		for (Tag<Item> entry : registeredTagEntries) {
-			if (entry.contains(item)) {
-				return true;
-			}
-		}
-
-		return false;
+	@Override
+	public void remove(Tag<Item> tag) {
+		throw new UnsupportedOperationException("Cannot remove from the shield registry.");
 	}
 }

@@ -39,8 +39,13 @@ public abstract class MixinMobEntity {
 	 */
 	@Redirect(method = "disablePlayerShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item disableFabricShields(ItemStack itemStack) {
-		if (itemStack.getItem() == Items.SHIELD || ShieldRegistry.INSTANCE.isShield(itemStack.getItem())) {
-			return Items.SHIELD;
+		if (itemStack.getItem() == Items.SHIELD) {
+			Integer entry = ShieldRegistry.INSTANCE.get(itemStack.getItem());
+
+			if (entry != null && entry > 0) {
+				// Makes condition in target method return true
+				return Items.SHIELD;
+			}
 		}
 
 		return itemStack.getItem();
@@ -55,8 +60,10 @@ public abstract class MixinMobEntity {
 			cooldownManager.set(item, duration);
 		}
 
-		if (ShieldRegistry.INSTANCE.isShield(playerStack.getItem())) {
-			cooldownManager.set(playerStack.getItem(), 100);
+		Integer entry = ShieldRegistry.INSTANCE.get(playerStack.getItem());
+
+		if (entry != null) {
+			cooldownManager.set(playerStack.getItem(), entry);
 		}
 	}
 
@@ -65,7 +72,7 @@ public abstract class MixinMobEntity {
 	 */
 	@Inject(method = "getPreferredEquipmentSlot", at = @At("HEAD"), cancellable = true)
 	private static void addPreferredShieldsSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info) {
-		if (ShieldRegistry.INSTANCE.isShield(stack.getItem())) {
+		if (ShieldRegistry.INSTANCE.get(stack.getItem()) != null) {
 			info.setReturnValue(EquipmentSlot.OFFHAND);
 		}
 	}

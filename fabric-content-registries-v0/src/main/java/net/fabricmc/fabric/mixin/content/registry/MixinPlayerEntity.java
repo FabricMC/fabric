@@ -42,7 +42,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 	 */
 	@Redirect(method = "damageShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item damageFabricShields(ItemStack itemStack) {
-		if (itemStack.getItem() == Items.SHIELD || ShieldRegistry.INSTANCE.isShield(itemStack.getItem())) {
+		if (itemStack.getItem() == Items.SHIELD || ShieldRegistry.INSTANCE.get(itemStack.getItem()) != null) {
 			return Items.SHIELD;
 		}
 
@@ -56,8 +56,12 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 	private void setCooldownForShields(ItemCooldownManager cooldownManager, Item item, int duration) {
 		if (this.activeItemStack.getItem() == Items.SHIELD) {
 			cooldownManager.set(Items.SHIELD, duration);
-		} else if (ShieldRegistry.INSTANCE.isShield(this.activeItemStack.getItem())) {
-			cooldownManager.set(this.activeItemStack.getItem(), 100);
+		} else {
+			Integer entry = ShieldRegistry.INSTANCE.get(this.activeItemStack.getItem());
+
+			if (entry != null && entry > 0) {
+				cooldownManager.set(this.activeItemStack.getItem(), 100);
+			}
 		}
 	}
 }
