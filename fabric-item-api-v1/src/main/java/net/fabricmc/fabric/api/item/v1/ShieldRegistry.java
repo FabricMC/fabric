@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry;
+package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.item.ItemConvertible;
 
-import net.fabricmc.fabric.impl.content.registry.ShieldRegistryImpl;
+import net.fabricmc.fabric.impl.item.ShieldRegistryImpl;
 
 /**
  * Registry for defining an item as a shield.

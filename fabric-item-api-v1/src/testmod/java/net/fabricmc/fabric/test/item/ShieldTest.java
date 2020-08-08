@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.shield;
+package net.fabricmc.fabric.test.item;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -27,7 +27,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.registry.ShieldRegistry;
+import net.fabricmc.fabric.api.item.v1.ShieldRegistry;
 
 public class ShieldTest implements ModInitializer {
 	public static final Item SHIELD = new Item(new Item.Settings().maxDamage(200)) {

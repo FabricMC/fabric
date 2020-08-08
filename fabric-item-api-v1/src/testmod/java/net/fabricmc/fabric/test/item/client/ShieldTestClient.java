@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.shield;
+package net.fabricmc.fabric.test.item.client;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.test.item.ShieldTest;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 

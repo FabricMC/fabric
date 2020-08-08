@@ -4,10 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinAbstractFurnaceBlockEntity",
-    "MixinFireBlock",
-    "MixinMobEntity",
-    "MixinPlayerEntity",
-    "MixinRemoveOffHandItemTask"
+    "MixinFireBlock"
   ],
   "injectors": {
     "defaultRequire": 1

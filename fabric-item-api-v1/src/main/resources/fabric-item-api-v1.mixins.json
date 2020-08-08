@@ -2,6 +2,11 @@
   "required": true,
   "package": "net.fabricmc.fabric.mixin.item",
   "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinMobEntity",
+    "MixinPlayerEntity",
+    "MixinRemoveOffHandItemTask"
+  ],
   "client": [
     "client.ItemStackMixin"
   ],

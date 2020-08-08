@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
+package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.registry.ShieldRegistry;
+import net.fabricmc.fabric.api.item.v1.ShieldRegistry;
 
 @Mixin(RemoveOffHandItemTask.class)
 public abstract class MixinRemoveOffHandItemTask {
