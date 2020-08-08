@@ -42,7 +42,7 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 	 */
 	@Redirect(method = "damageShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item damageFabricShields(ItemStack itemStack) {
-		if (itemStack.getItem() == Items.SHIELD || ShieldRegistry.INSTANCE.get(itemStack.getItem()) != null) {
+		if (itemStack.getItem() == Items.SHIELD || ShieldRegistry.isShield(itemStack.getItem())) {
 			return Items.SHIELD;
 		}
 
@@ -54,13 +54,13 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 	 */
 	@Redirect(method = "disableShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;set(Lnet/minecraft/item/Item;I)V"))
 	private void setCooldownForShields(ItemCooldownManager cooldownManager, Item item, int duration) {
+		Item heldItem = this.activeItemStack.getItem();
+
 		if (this.activeItemStack.getItem() == Items.SHIELD) {
 			cooldownManager.set(Items.SHIELD, duration);
 		} else {
-			Integer entry = ShieldRegistry.INSTANCE.get(this.activeItemStack.getItem());
-
-			if (entry != null && entry > 0) {
-				cooldownManager.set(this.activeItemStack.getItem(), 100);
+			if (ShieldRegistry.isShield(heldItem) && ShieldRegistry.getAxeDisableDuration(heldItem) > 0) {
+				cooldownManager.set(heldItem, ShieldRegistry.getAxeDisableDuration(heldItem));
 			}
 		}
 	}

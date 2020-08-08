@@ -16,56 +16,24 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.api.registry.ShieldRegistry;
+public class ShieldRegistryImpl {
+	private static final Map<Item, Integer> registeredItemEntries = new HashMap<>();
 
-public class ShieldRegistryImpl implements ShieldRegistry {
-	public static final ShieldRegistryImpl INSTANCE = new ShieldRegistryImpl();
-
-	private final Object2IntMap<ItemConvertible> registeredItemEntries = new Object2IntLinkedOpenHashMap<>();
-
-	@Override
-	public Integer get(ItemConvertible item) {
-		if (registeredItemEntries.containsKey(item.asItem())) {
-			return registeredItemEntries.getInt(item.asItem());
-		}
-
-		return null;
+	public static void add(ItemConvertible item, int axeDisableDuration) {
+		registeredItemEntries.put(item.asItem(), axeDisableDuration);
 	}
 
-	@Override
-	public void add(ItemConvertible item, Integer axeDisableDuration) {
-		registeredItemEntries.put(item, axeDisableDuration);
+	public static boolean isShield(ItemConvertible item) {
+		return registeredItemEntries.containsKey(item.asItem());
 	}
 
-	@Override
-	public void add(Tag<Item> tag, Integer axeDisableDuration) {
-		throw new UnsupportedOperationException("Tags are not supported here.");
-	}
-
-	@Override
-	public void clear(ItemConvertible item) {
-		throw new UnsupportedOperationException("Cannot clear from the shield registry.");
-	}
-
-	@Override
-	public void clear(Tag<Item> tag) {
-		throw new UnsupportedOperationException("Cannot clear from the shield registry.");
-	}
-
-	@Override
-	public void remove(ItemConvertible item) {
-		throw new UnsupportedOperationException("Cannot remove from the shield registry.");
-	}
-
-	@Override
-	public void remove(Tag<Item> tag) {
-		throw new UnsupportedOperationException("Cannot remove from the shield registry.");
+	public static int getAxeDisableDuration(ItemConvertible item) {
+		return registeredItemEntries.get(item.asItem());
 	}
 }

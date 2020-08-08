@@ -54,6 +54,6 @@ public class ShieldTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		Registry.register(Registry.ITEM, new Identifier("fabric", "shield"), SHIELD);
-		ShieldRegistry.INSTANCE.add(SHIELD, 50);
+		ShieldRegistry.add(SHIELD, 50);
 	}
 }

@@ -34,7 +34,8 @@ public abstract class MixinRemoveOffHandItemTask {
 	 */
 	@Redirect(method = "shouldRun", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item dontDropShields(ItemStack stack) {
-		if (stack.getItem() == Items.SHIELD || ShieldRegistry.INSTANCE.get(stack.getItem()) != null) {
+		if (stack.getItem() == Items.SHIELD || ShieldRegistry.isShield(stack.getItem())) {
+			// Makes condition in target method return true
 			return Items.SHIELD;
 		}
 

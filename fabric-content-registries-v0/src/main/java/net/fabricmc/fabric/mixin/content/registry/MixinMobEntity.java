@@ -39,16 +39,14 @@ public abstract class MixinMobEntity {
 	 */
 	@Redirect(method = "disablePlayerShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item disableFabricShields(ItemStack itemStack) {
-		if (itemStack.getItem() == Items.SHIELD) {
-			Integer entry = ShieldRegistry.INSTANCE.get(itemStack.getItem());
+		Item item = itemStack.getItem();
 
-			if (entry != null && entry > 0) {
-				// Makes condition in target method return true
-				return Items.SHIELD;
-			}
+		if (item != Items.SHIELD && ShieldRegistry.isShield(item) && ShieldRegistry.getAxeDisableDuration(item) > 0) {
+			// Makes condition in target method return true
+			return Items.SHIELD;
 		}
 
-		return itemStack.getItem();
+		return item;
 	}
 
 	/**
@@ -56,14 +54,15 @@ public abstract class MixinMobEntity {
 	 */
 	@Redirect(method = "disablePlayerShield", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;set(Lnet/minecraft/item/Item;I)V"))
 	private void setCooldownForShields(ItemCooldownManager cooldownManager, Item item, int duration, PlayerEntity player, ItemStack mobStack, ItemStack playerStack) {
-		if (playerStack.getItem() == Items.SHIELD) {
+		Item heldItem = playerStack.getItem();
+
+		if (heldItem == Items.SHIELD) {
 			cooldownManager.set(item, duration);
 		}
 
-		Integer entry = ShieldRegistry.INSTANCE.get(playerStack.getItem());
-
-		if (entry != null) {
-			cooldownManager.set(playerStack.getItem(), entry);
+		// At this point if the item is a shield it has already been checked if cooldown > 0 by disableFabricShields
+		if (ShieldRegistry.isShield(heldItem)) {
+			cooldownManager.set(heldItem, ShieldRegistry.getAxeDisableDuration(heldItem));
 		}
 	}
 
@@ -72,7 +71,7 @@ public abstract class MixinMobEntity {
 	 */
 	@Inject(method = "getPreferredEquipmentSlot", at = @At("HEAD"), cancellable = true)
 	private static void addPreferredShieldsSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info) {
-		if (ShieldRegistry.INSTANCE.get(stack.getItem()) != null) {
+		if (ShieldRegistry.isShield(stack.getItem())) {
 			info.setReturnValue(EquipmentSlot.OFFHAND);
 		}
 	}
