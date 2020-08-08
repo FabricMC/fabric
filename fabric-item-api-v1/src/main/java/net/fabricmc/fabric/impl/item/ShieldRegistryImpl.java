@@ -19,9 +19,10 @@ package net.fabricmc.fabric.impl.item;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.fabricmc.fabric.api.item.v1.ShieldRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
+
+import net.fabricmc.fabric.api.item.v1.ShieldRegistry;
 
 public class ShieldRegistryImpl {
 	private static final Map<Item, ShieldRegistry.Entry> registeredItemEntries = new HashMap<>();

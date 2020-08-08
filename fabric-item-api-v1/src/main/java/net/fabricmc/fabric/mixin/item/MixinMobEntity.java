@@ -66,6 +66,7 @@ public abstract class MixinMobEntity {
 
 		// At this point if the item is a shield it has already been checked if cooldown > 0 by disableFabricShields
 		ShieldRegistry.Entry entry = ShieldRegistry.get(heldItem);
+
 		if (entry != null) {
 			cooldownManager.set(heldItem, entry.getAxeDisableDuration());
 		}
