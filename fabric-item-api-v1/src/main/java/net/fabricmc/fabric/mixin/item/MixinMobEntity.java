@@ -41,9 +41,13 @@ public abstract class MixinMobEntity {
 	private Item disableFabricShields(ItemStack itemStack) {
 		Item item = itemStack.getItem();
 
-		if (item != Items.SHIELD && ShieldRegistry.isShield(item) && ShieldRegistry.getAxeDisableDuration(item) > 0) {
-			// Makes condition in target method return true
-			return Items.SHIELD;
+		if (item != Items.SHIELD) {
+			ShieldRegistry.Entry entry = ShieldRegistry.get(item);
+
+			if (entry != null && entry.getAxeDisableDuration() > 0) {
+				// Makes condition in target method return true
+				return Items.SHIELD;
+			}
 		}
 
 		return item;
@@ -61,8 +65,9 @@ public abstract class MixinMobEntity {
 		}
 
 		// At this point if the item is a shield it has already been checked if cooldown > 0 by disableFabricShields
-		if (ShieldRegistry.isShield(heldItem)) {
-			cooldownManager.set(heldItem, ShieldRegistry.getAxeDisableDuration(heldItem));
+		ShieldRegistry.Entry entry = ShieldRegistry.get(heldItem);
+		if (entry != null) {
+			cooldownManager.set(heldItem, entry.getAxeDisableDuration());
 		}
 	}
 
@@ -71,7 +76,7 @@ public abstract class MixinMobEntity {
 	 */
 	@Inject(method = "getPreferredEquipmentSlot", at = @At("HEAD"), cancellable = true)
 	private static void addPreferredShieldsSlot(ItemStack stack, CallbackInfoReturnable<EquipmentSlot> info) {
-		if (ShieldRegistry.isShield(stack.getItem())) {
+		if (ShieldRegistry.get(stack.getItem()) != null) {
 			info.setReturnValue(EquipmentSlot.OFFHAND);
 		}
 	}

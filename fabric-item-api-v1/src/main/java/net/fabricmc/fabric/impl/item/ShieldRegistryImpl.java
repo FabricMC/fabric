@@ -19,21 +19,18 @@ package net.fabricmc.fabric.impl.item;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.fabricmc.fabric.api.item.v1.ShieldRegistry;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
 public class ShieldRegistryImpl {
-	private static final Map<Item, Integer> registeredItemEntries = new HashMap<>();
+	private static final Map<Item, ShieldRegistry.Entry> registeredItemEntries = new HashMap<>();
 
-	public static void add(ItemConvertible item, int axeDisableDuration) {
-		registeredItemEntries.put(item.asItem(), axeDisableDuration);
+	public static void add(ItemConvertible item, ShieldRegistry.Entry entry) {
+		registeredItemEntries.put(item.asItem(), entry);
 	}
 
-	public static boolean isShield(ItemConvertible item) {
-		return registeredItemEntries.containsKey(item.asItem());
-	}
-
-	public static int getAxeDisableDuration(ItemConvertible item) {
+	public static ShieldRegistry.Entry get(ItemConvertible item) {
 		return registeredItemEntries.get(item.asItem());
 	}
 }

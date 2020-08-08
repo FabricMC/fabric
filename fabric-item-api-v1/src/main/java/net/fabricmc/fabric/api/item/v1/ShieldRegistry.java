@@ -37,22 +37,26 @@ public interface ShieldRegistry {
 	 * @param axeDisableDuration how long the cooldown lasts when the shield gets hit by an axe (0 to disable)
 	 */
 	static void add(ItemConvertible item, int axeDisableDuration) {
-		ShieldRegistryImpl.add(item, axeDisableDuration);
+		ShieldRegistryImpl.add(item, new Entry(axeDisableDuration));
 	}
 
 	/**
 	 * @param item the item to get from the registry
-	 * @return whether or not the item is registered as a shield
+	 * @return the {@link Entry} from the shield registry or null if the item is not registered
 	 */
-	static boolean isShield(ItemConvertible item) {
-		return ShieldRegistryImpl.isShield(item);
+	static Entry get(ItemConvertible item) {
+		return ShieldRegistryImpl.get(item);
 	}
 
-	/**
-	 * @param item the item to get from the registry
-	 * @return the axe cooldown duration for the shield or null if it is not registered
-	 */
-	static int getAxeDisableDuration(ItemConvertible item) {
-		return ShieldRegistryImpl.getAxeDisableDuration(item);
+	final class Entry {
+		private final int axeDisableDuration;
+
+		public Entry(int axeDisableDuration) {
+			this.axeDisableDuration = axeDisableDuration;
+		}
+
+		public int getAxeDisableDuration() {
+			return axeDisableDuration;
+		}
 	}
 }
