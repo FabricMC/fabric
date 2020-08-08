@@ -23,12 +23,15 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.gen.Spawner;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricSpawnerRegistry;
 
 public class ObjectBuilderTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		FabricSpawnerRegistry.register(TestSpawner::new);
+		ServerWorldEvents.LOAD.register(((server, world) -> {
+			FabricSpawnerRegistry.register(world, new TestSpawner());
+		}));
 	}
 
 	private static class TestSpawner implements Spawner {
