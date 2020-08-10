@@ -53,7 +53,7 @@ public final class PlayerBlockBreakEvents {
 	/**
 	 * Callback after a block is broken.
 	 *
-	 * <p>Called on the Server only.</p>
+	 * <p>Only called on a logical server.
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
 			(listeners) -> (world, player, pos, state, entity) -> {
