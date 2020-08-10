@@ -116,7 +116,7 @@ public final class PlayerBlockBreakEvents {
 		 * @param player the player who was going to break the block
 		 * @param pos the position where the block was going to be broken
 		 * @param state the block state of the block that was going to be broken
-		 * @param blockEntity  entity the block entity of the block that was going to be broken, can be {@code null}
+		 * @param blockEntity the block entity of the block that was going to be broken, can be {@code null}
 		 */
 		void onBlockBreakCancel(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
 	}
