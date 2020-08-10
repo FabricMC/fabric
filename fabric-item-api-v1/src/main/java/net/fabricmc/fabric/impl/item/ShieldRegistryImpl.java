@@ -16,22 +16,16 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.fabric.api.item.v1.ShieldRegistry;
 
 public class ShieldRegistryImpl {
-	private static final Map<Item, ShieldRegistry.Entry> registeredItemEntries = new HashMap<>();
-
 	public static void add(ItemConvertible item, ShieldRegistry.Entry entry) {
-		registeredItemEntries.put(item.asItem(), entry);
+		((ItemExtensions) item.asItem()).fabric_setShieldEntry(entry);
 	}
 
 	public static ShieldRegistry.Entry get(ItemConvertible item) {
-		return registeredItemEntries.get(item.asItem());
+		return ((ItemExtensions) item.asItem()).fabric_getShieldEntry();
 	}
 }

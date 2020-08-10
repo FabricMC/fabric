@@ -24,11 +24,13 @@ import net.fabricmc.fabric.impl.item.ShieldRegistryImpl;
  * Registry for defining an item as a shield.
  * Shields should also override several {@code use} methods to work properly (see {@link net.minecraft.item.ShieldItem} for reference).
  */
-public interface ShieldRegistry {
+public final class ShieldRegistry {
+	private ShieldRegistry() { }
+
 	/**
 	 * @param item the item to define as shield
 	 */
-	default void add(ItemConvertible item) {
+	public static void add(ItemConvertible item) {
 		add(item, 100);
 	}
 
@@ -36,7 +38,7 @@ public interface ShieldRegistry {
 	 * @param item the item to define as shield
 	 * @param axeDisableDuration how long the cooldown lasts when the shield gets hit by an axe (0 to disable)
 	 */
-	static void add(ItemConvertible item, int axeDisableDuration) {
+	public static void add(ItemConvertible item, int axeDisableDuration) {
 		ShieldRegistryImpl.add(item, new Entry(axeDisableDuration));
 	}
 
@@ -44,11 +46,11 @@ public interface ShieldRegistry {
 	 * @param item the item to get from the registry
 	 * @return the {@link Entry} from the shield registry or null if the item is not registered
 	 */
-	static Entry get(ItemConvertible item) {
+	public static Entry get(ItemConvertible item) {
 		return ShieldRegistryImpl.get(item);
 	}
 
-	final class Entry {
+	public static final class Entry {
 		private final int axeDisableDuration;
 
 		public Entry(int axeDisableDuration) {
