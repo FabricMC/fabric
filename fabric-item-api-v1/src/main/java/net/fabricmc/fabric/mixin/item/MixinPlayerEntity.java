@@ -61,8 +61,13 @@ public abstract class MixinPlayerEntity extends LivingEntity {
 		} else {
 			ShieldRegistry.Entry entry = ShieldRegistry.get(heldItem);
 
-			if (entry != null && entry.getAxeDisableDuration() > 0) {
-				cooldownManager.set(heldItem, entry.getAxeDisableDuration());
+			if (entry != null) {
+				// > 0 -> custom duration, == 0 -> disabled, < 0 vanilla duration
+				if (entry.getAxeDisableDuration() > 0) {
+					cooldownManager.set(heldItem, entry.getAxeDisableDuration());
+				} else if (entry.getAxeDisableDuration() < 0) {
+					cooldownManager.set(heldItem, duration);
+				}
 			}
 		}
 	}

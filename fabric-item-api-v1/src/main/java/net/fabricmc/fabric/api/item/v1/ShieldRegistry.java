@@ -31,12 +31,12 @@ public final class ShieldRegistry {
 	 * @param item the item to define as shield
 	 */
 	public static void add(ItemConvertible item) {
-		add(item, 100);
+		add(item, -1);
 	}
 
 	/**
 	 * @param item the item to define as shield
-	 * @param axeDisableDuration how long the cooldown lasts when the shield gets hit by an axe (0 to disable)
+	 * @param axeDisableDuration how long the cooldown lasts when the shield gets hit by an axe (0 to disable, -1 for vanilla duration)
 	 */
 	public static void add(ItemConvertible item, int axeDisableDuration) {
 		ShieldRegistryImpl.add(item, new Entry(axeDisableDuration));

@@ -44,7 +44,7 @@ public abstract class MixinMobEntity {
 		if (item != Items.SHIELD) {
 			ShieldRegistry.Entry entry = ShieldRegistry.get(item);
 
-			if (entry != null && entry.getAxeDisableDuration() > 0) {
+			if (entry != null && entry.getAxeDisableDuration() != 0) {
 				// Makes condition in target method return true
 				return Items.SHIELD;
 			}
@@ -68,7 +68,13 @@ public abstract class MixinMobEntity {
 		ShieldRegistry.Entry entry = ShieldRegistry.get(heldItem);
 
 		if (entry != null) {
-			cooldownManager.set(heldItem, entry.getAxeDisableDuration());
+			if (entry.getAxeDisableDuration() > 0) {
+				// Use custom cooldown duration
+				cooldownManager.set(heldItem, entry.getAxeDisableDuration());
+			} else {
+				// Use vanilla cooldown duration
+				cooldownManager.set(heldItem, duration);
+			}
 		}
 	}
 
