@@ -48,7 +48,7 @@ public class InteractionEventsRouter implements ModInitializer {
 
 		/*
 		* This code is for telling the client that the block wasn't actually broken.
-		* It is in a 3x3 area due to how vanilla redstone handles updates, as it considers
+		* This covers a 3x3 area due to how vanilla redstone handles updates, as it considers
 		* important functions like quasi-connectivity and redstone dust logic
 		 */
 		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, blockEntity) -> {
