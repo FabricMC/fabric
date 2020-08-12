@@ -92,7 +92,7 @@ public class MixinServerPlayerInteractionManager {
 		boolean result = PlayerBlockBreakEvents.BEFORE.invoker().beforeBlockBreak(this.world, this.player, pos, state, entity);
 
 		if (!result) {
-			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCancel(this.world, this.player, pos, state, entity);
+			PlayerBlockBreakEvents.CANCELED.invoker().onBlockBreakCanceled(this.world, this.player, pos, state, entity);
 
 			cir.setReturnValue(false);
 		}

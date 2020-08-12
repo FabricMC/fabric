@@ -71,7 +71,7 @@ public final class PlayerBlockBreakEvents {
 	public static final Event<Canceled> CANCELED = EventFactory.createArrayBacked(Canceled.class,
 			(listeners) -> (world, player, pos, state, entity) -> {
 				for (Canceled event : listeners) {
-					event.onBlockBreakCancel(world, player, pos, state, entity);
+					event.onBlockBreakCanceled(world, player, pos, state, entity);
 				}
 			}
 	);
@@ -118,6 +118,6 @@ public final class PlayerBlockBreakEvents {
 		 * @param state the block state of the block that was going to be broken
 		 * @param blockEntity the block entity of the block that was going to be broken, can be {@code null}
 		 */
-		void onBlockBreakCancel(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
+		void onBlockBreakCanceled(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
 	}
 }
