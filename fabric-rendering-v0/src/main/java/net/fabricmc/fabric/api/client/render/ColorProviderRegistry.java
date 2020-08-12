@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.render;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.color.block.BlockColorProvider;
 import net.minecraft.client.color.item.ItemColorProvider;
@@ -67,5 +69,5 @@ public interface ColorProviderRegistry<T, Provider> {
 	 * @param object The object to acquire the provide for.
 	 * @return The registered mapper for this provider, or {@code null} if none is registered or available.
 	 */
-	Provider get(T object);
+	@Nullable Provider get(T object);
 }

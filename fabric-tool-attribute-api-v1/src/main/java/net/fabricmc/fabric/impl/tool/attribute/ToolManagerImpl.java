@@ -22,6 +22,8 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -167,7 +169,7 @@ public final class ToolManagerImpl {
 	/**
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 */
-	//TODO: nullable on user once we have an official @Nullable annotation in
+	@Nullable
 	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, LivingEntity user, boolean vanillaResult) {
 		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
 			if (stack.getItem().isIn(eventEntry.getKey())) {
@@ -183,7 +185,7 @@ public final class ToolManagerImpl {
 		return (entry != null && entry.defaultValue.get()) || (entry == null && vanillaResult);
 	}
 
-	public static float handleBreakingSpeedIgnoresVanilla(BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+	public static float handleBreakingSpeedIgnoresVanilla(BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		float breakingSpeed = 0f;
 		Tag<Item> handledTag = null;
 		boolean handled = false;
@@ -239,7 +241,7 @@ public final class ToolManagerImpl {
 		 * @param user  the user involved in breaking the block, null if not applicable.
 		 * @return the result of effectiveness
 		 */
-		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 			return ActionResult.PASS;
 		}
 
@@ -252,7 +254,7 @@ public final class ToolManagerImpl {
 		 * @param user  the user involved in breaking the block, null if not applicable.
 		 * @return the result of mining speed.
 		 */
-		default TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		default TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 			return null;
 		}
 	}

@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.item.Item;
 import net.minecraft.util.registry.Registry;
 
@@ -49,8 +51,7 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		RENDERERS.put(item, renderer);
 	}
 
-	/* @Nullable */
-	public static BuiltinItemRenderer getRenderer(Item item) {
+	@Nullable public static BuiltinItemRenderer getRenderer(Item item) {
 		return RENDERERS.get(item);
 	}
 }

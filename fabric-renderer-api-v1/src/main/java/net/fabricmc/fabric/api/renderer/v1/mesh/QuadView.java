@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
@@ -77,7 +80,7 @@ public interface QuadView {
 	 * calculations and will be the block face to which the quad is most closely aligned. Always
 	 * the same as cull face for quads that are on a block face, but never null.
 	 */
-	Direction lightFace();
+	@NotNull Direction lightFace();
 
 	/**
 	 * If non-null, quad should not be rendered in-world if the
@@ -85,7 +88,7 @@ public interface QuadView {
 	 *
 	 * @see MutableQuadView#cullFace(Direction)
 	 */
-	Direction cullFace();
+	@Nullable Direction cullFace();
 
 	/**
 	 * See {@link MutableQuadView#nominalFace(Direction)}.
@@ -135,7 +138,7 @@ public interface QuadView {
 	 * Pass a non-null target to avoid allocation - will be returned with values.
 	 * Otherwise returns a new instance.
 	 */
-	Vector3f copyPos(int vertexIndex, Vector3f target);
+	Vector3f copyPos(int vertexIndex, @Nullable Vector3f target);
 
 	/**
 	 * Convenience: access x, y, z by index 0-2.
@@ -167,7 +170,7 @@ public interface QuadView {
 	 * Pass a non-null target to avoid allocation - will be returned with values.
 	 * Otherwise returns a new instance. Returns null if normal not present.
 	 */
-	Vector3f copyNormal(int vertexIndex, Vector3f target);
+	@Nullable Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target);
 
 	/**
 	 * Will return {@link Float#NaN} if normal not present.

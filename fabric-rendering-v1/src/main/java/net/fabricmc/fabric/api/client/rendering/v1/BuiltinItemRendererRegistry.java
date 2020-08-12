@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import org.jetbrains.annotations.Contract;
+
 import net.minecraft.item.Item;
 
 import net.fabricmc.api.EnvType;
@@ -41,7 +43,8 @@ public interface BuiltinItemRendererRegistry {
 	 * @param item     the item
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
-	 * @throws NullPointerException if either the item or the renderer is null
+	 * @throws NullPointerException     if either the item or the renderer is null
 	 */
+	@Contract("null, _ -> fail; _, null -> fail")
 	void register(Item item, BuiltinItemRenderer renderer);
 }
