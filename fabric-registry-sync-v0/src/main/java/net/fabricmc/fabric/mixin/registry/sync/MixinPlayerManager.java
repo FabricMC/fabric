@@ -46,7 +46,6 @@ public abstract class MixinPlayerManager {
 		// TODO: If integrated and local, don't send the packet (it's ignored)
 		// TODO: Refactor out into network + move registry hook to event
 		if (this.currentSyncPacket != null) {
-			// Shallow copy the buffer
 			player.networkHandler.sendPacket(new CustomPayloadS2CPacket(RegistrySyncManager.ID, new PacketByteBuf(this.currentSyncPacket.duplicate())));
 		}
 	}
