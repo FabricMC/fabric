@@ -107,7 +107,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 		fabricRegistry.build(attributes);
 
 		//noinspection unchecked
-		AccessorRegistry.getROOT().add(((AccessorRegistry) registry).getRegistryKey(), registry);
+		AccessorRegistry.getROOT().add(((AccessorRegistry) registry).getRegistryKey(), registry, Lifecycle.stable());
 
 		return registry;
 	}

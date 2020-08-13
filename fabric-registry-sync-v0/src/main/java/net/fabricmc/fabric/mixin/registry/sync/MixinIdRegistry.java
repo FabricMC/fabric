@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -135,7 +136,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, Object object, CallbackInfoReturnable info) {
+	public void setPre(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, CallbackInfoReturnable info) {
 		int indexedEntriesId = field_26683.getInt((T) object);
 
 		if (indexedEntriesId >= 0) {
@@ -164,7 +165,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "set", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, Object object, CallbackInfoReturnable info) {
+	public void setPost(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, CallbackInfoReturnable info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
 		}

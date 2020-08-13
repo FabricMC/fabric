@@ -17,26 +17,16 @@
 package net.fabricmc.fabric.mixin.tag.extension;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.tag.Tag;
-import net.minecraft.tag.SetTag;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.tag.RequiredTagList;
 
-import net.fabricmc.fabric.api.tag.FabricTag;
-import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
-
-@Mixin(value = {SetTag.class}, targets = {"net.minecraft.tag.Tag$1", "net.minecraft.tag.RequiredTagList$TagWrapper"})
-public abstract class MixinTagImpl<T> implements FabricTag<T>, FabricTagHooks, Tag<T> {
-	@Unique
-	private int fabric_clearCount;
-
-	@Override
-	public boolean hasBeenReplaced() {
-		return fabric_clearCount > 0;
-	}
-
-	@Override
-	public void fabric_setExtraData(int clearCount) {
-		this.fabric_clearCount = clearCount;
+@Mixin(FluidTags.class)
+public interface AccessorFluidTags {
+	@Accessor("REQUIRED_TAGS")
+	static RequiredTagList<Fluid> getRequiredTags() {
+		throw new UnsupportedOperationException();
 	}
 }
