@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.EnvType;
@@ -47,6 +48,12 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		}
 
 		RENDERERS.put(item, renderer);
+	}
+
+	@Override
+	public void register(ItemConvertible item, BuiltinItemRenderer renderer) {
+		Objects.requireNonNull(item, "item is null");
+		register(item.asItem(), renderer);
 	}
 
 	/* @Nullable */
