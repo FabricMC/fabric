@@ -50,7 +50,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
-	static final Identifier ID = new Identifier("fabric", "registry/sync");
+	public static final Identifier ID = new Identifier("fabric", "registry/sync");
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
 
@@ -59,7 +59,7 @@ public final class RegistrySyncManager {
 
 	private RegistrySyncManager() { }
 
-	public static Packet<?> createPacket() {
+	public static PacketByteBuf createPacket() {
 		LOGGER.debug("Creating registry sync packet");
 
 		CompoundTag tag = toTag(true, null);
