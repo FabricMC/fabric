@@ -85,7 +85,7 @@ public final class EntityTeleportationHelper {
 			return Optional.empty(); // Entity is not summonable, so return and keep the old entity in the world
 		}
 
-		// The entity is garunteed to be moved to another world
+		// The entity is guaranteed to be moved to another world
 		entity.detach();
 
 		// Copy old entity to this new entity
