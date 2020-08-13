@@ -59,7 +59,7 @@ public final class RegistrySyncManager {
 
 	private RegistrySyncManager() { }
 
-	public static PacketByteBuf createPacket() {
+	public static PacketByteBuf createData() {
 		LOGGER.debug("Creating registry sync packet");
 
 		CompoundTag tag = toTag(true, null);
