@@ -80,7 +80,8 @@ public interface QuadView {
 	 * calculations and will be the block face to which the quad is most closely aligned. Always
 	 * the same as cull face for quads that are on a block face, but never null.
 	 */
-	@NotNull Direction lightFace();
+	@NotNull
+	Direction lightFace();
 
 	/**
 	 * If non-null, quad should not be rendered in-world if the
@@ -170,7 +171,8 @@ public interface QuadView {
 	 * Pass a non-null target to avoid allocation - will be returned with values.
 	 * Otherwise returns a new instance. Returns null if normal not present.
 	 */
-	@Nullable Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target);
+	@Nullable
+	Vector3f copyNormal(int vertexIndex, @Nullable Vector3f target);
 
 	/**
 	 * Will return {@link Float#NaN} if normal not present.

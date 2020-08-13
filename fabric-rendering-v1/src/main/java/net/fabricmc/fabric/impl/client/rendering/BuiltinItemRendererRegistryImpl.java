@@ -51,7 +51,8 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		RENDERERS.put(item, renderer);
 	}
 
-	@Nullable public static BuiltinItemRenderer getRenderer(Item item) {
+	@Nullable
+	public static BuiltinItemRenderer getRenderer(Item item) {
 		return RENDERERS.get(item);
 	}
 }

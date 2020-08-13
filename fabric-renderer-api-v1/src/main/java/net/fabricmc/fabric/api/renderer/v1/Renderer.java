@@ -52,7 +52,8 @@ public interface Renderer {
 	 * Return a material previously registered via {@link #registerMaterial(Identifier, RenderMaterial)}.
 	 * Will return null if no material was found matching the given identifier.
 	 */
-	@Nullable RenderMaterial materialById(Identifier id);
+	@Nullable
+	RenderMaterial materialById(Identifier id);
 
 	/**
 	 * Register a material for re-use by other mods or models within a mod.

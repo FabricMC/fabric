@@ -69,5 +69,6 @@ public interface ColorProviderRegistry<T, Provider> {
 	 * @param object The object to acquire the provide for.
 	 * @return The registered mapper for this provider, or {@code null} if none is registered or available.
 	 */
-	@Nullable Provider get(T object);
+	@Nullable
+	Provider get(T object);
 }

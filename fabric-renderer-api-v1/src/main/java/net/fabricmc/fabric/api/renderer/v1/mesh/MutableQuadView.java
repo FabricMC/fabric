@@ -117,7 +117,8 @@ public interface MutableQuadView extends QuadView {
 	 * is computed based on face geometry and must be non-null in vanilla quads.
 	 * That computed value is returned by {@link #lightFace()}.
 	 */
-	@Nullable MutableQuadView cullFace(@Nullable Direction face);
+	@Nullable
+	MutableQuadView cullFace(@Nullable Direction face);
 
 	/**
 	 * Provides a hint to renderer about the facing of this quad. Not required,
@@ -132,7 +133,8 @@ public interface MutableQuadView extends QuadView {
 	 * <p>Note: This value is not persisted independently when the quad is encoded.
 	 * When reading encoded quads, this value will always be the same as {@link #lightFace()}.
 	 */
-	@Nullable MutableQuadView nominalFace(Direction face);
+	@Nullable
+	MutableQuadView nominalFace(Direction face);
 
 	/**
 	 * Value functions identically to {@link BakedQuad#getColorIndex()} and is

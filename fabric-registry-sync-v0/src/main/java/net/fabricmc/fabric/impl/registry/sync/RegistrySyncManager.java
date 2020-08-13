@@ -106,7 +106,8 @@ public final class RegistrySyncManager {
 	 * @param activeTag contains the registry ids that were previously read and applied, can be null.
 	 * @return a {@link CompoundTag} to save or sync, null when empty
 	 */
-	@Nullable public static CompoundTag toTag(boolean isClientSync, @Nullable CompoundTag activeTag) {
+	@Nullable
+	public static CompoundTag toTag(boolean isClientSync, @Nullable CompoundTag activeTag) {
 		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {

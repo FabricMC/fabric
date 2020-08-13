@@ -48,5 +48,6 @@ public interface ModelResourceProvider {
 	 * @return The loaded UnbakedModel, or null if this ModelResourceProvider doesn't handle a specific Identifier
 	 * (or if there was no error!).
 	 */
-	@Nullable UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException;
+	@Nullable
+	UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException;
 }

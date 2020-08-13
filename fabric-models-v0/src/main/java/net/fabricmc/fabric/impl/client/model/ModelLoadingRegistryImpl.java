@@ -140,11 +140,13 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 		}
 
-		public @Nullable UnbakedModel loadModelFromResource(Identifier resourceId) {
+		@Nullable
+		public UnbakedModel loadModelFromResource(Identifier resourceId) {
 			return loadCustomModel((r) -> r.loadModelResource(resourceId, this), modelResourceProviders, "resource provider");
 		}
 
-		public @Nullable UnbakedModel loadModelFromVariant(Identifier variantId) {
+		@Nullable
+		public UnbakedModel loadModelFromVariant(Identifier variantId) {
 			if (!(variantId instanceof ModelIdentifier)) {
 				return loadModelFromResource(variantId);
 			} else {

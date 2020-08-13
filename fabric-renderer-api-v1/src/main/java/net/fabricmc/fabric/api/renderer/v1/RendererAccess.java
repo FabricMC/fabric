@@ -39,7 +39,8 @@ public interface RendererAccess {
 	 * Access to the current {@link Renderer} for creating and retrieving model builders
 	 * and materials. Will return null if no render plug in is active.
 	 */
-	@Nullable Renderer getRenderer();
+	@Nullable
+	Renderer getRenderer();
 
 	/**
 	 * Performant test for {@link #getRenderer()} != null.
