@@ -31,6 +31,7 @@ import com.google.common.collect.Lists;
 import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
+import net.minecraft.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -43,7 +44,7 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap          = new HashMap<>();
-	private static final Set<BuiltinResourcePackEntry>                builtinResourcePacks = new HashSet<>();
+	private static final Set<Pair<String, ModNioResourcePack>>        builtinResourcePacks = new HashSet<>();
 	private static final Logger                                       LOGGER               = LogManager.getLogger();
 
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
@@ -53,7 +54,17 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
 	}
 
-	public static boolean registerBuiltinResourcePack(String name, String subPath, ModContainer container) {
+	/**
+	 * Registers a built-in resource pack. Internal implementation.
+	 *
+	 * @param id The identifier of the resource pack.
+	 * @param subPath The sub path in the mod resources.
+	 * @param container The mod container.
+	 * @return True if successfully registered the resource pack, else false.
+	 *
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer)
+	 */
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container) {
 		String separator = container.getRootPath().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 
@@ -62,16 +73,19 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		if (!Files.exists(resourcePackPath))
 			return false;
 
-		builtinResourcePacks.add(new BuiltinResourcePackEntry(name, resourcePackPath, container));
+		String name = id.getNamespace() + "/" + id.getPath();
+		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, name)));
 
 		return true;
 	}
 
-	public static void registerBuiltinResourcePacks(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
-		for (BuiltinResourcePackEntry entry : builtinResourcePacks) {
-			ResourcePackProfile profile = ResourcePackProfile.of(entry.name, false,
-					() -> new ModNioResourcePack(entry.container.getMetadata(), entry.path, null, entry.name),
-					factory, ResourcePackProfile.InsertionPosition.BOTTOM, ResourcePackSource.PACK_SOURCE_BUILTIN);
+	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
+		for (Pair<String, ModNioResourcePack> entry : builtinResourcePacks) {
+			if (entry.getRight().getNamespaces(resourceType).isEmpty())
+				continue;
+
+			ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(), false,
+					entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN);
 			if (profile != null) {
 				consumer.accept(profile);
 			}

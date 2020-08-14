@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.resource.loader;
 import java.util.HashSet;
 import java.util.Set;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -45,5 +47,8 @@ public class MixinResourcePackManager<T extends ResourcePackProfile> {
 	public void construct(ResourcePackProfile.Factory arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
 		providers = new HashSet<>(providers);
 		providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
+		// If on client, register the client resource pack provider too.
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
+			providers.add(new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES));
 	}
 }

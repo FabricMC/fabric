@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.resource.loader;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -30,7 +31,7 @@ public class BuiltinResourcePackTestMod implements ClientModInitializer {
 	public void onInitializeClient() {
 		// Should always be present as it's **this** mod.
 		FabricLoader.getInstance().getModContainer(MODID)
-				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack("fabric_test_builtin_resource_pack", "resourcepacks/test", container))
+				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test"), "resourcepacks/test", container))
 				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
 	}
 }

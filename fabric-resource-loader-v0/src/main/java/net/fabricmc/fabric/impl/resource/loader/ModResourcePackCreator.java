@@ -29,6 +29,9 @@ import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
+/**
+ * Represents a resource pack provider for mods and built-in mods resource packs.
+ */
 public class ModResourcePackCreator implements ResourcePackProvider {
 	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod"));
 	private final ResourceType type;
@@ -39,7 +42,6 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 
 	@Override
 	public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
-		// TODO: "vanilla" does not emit a message; neither should a modded datapack
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
 
@@ -49,7 +51,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			}
 
 			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
+					true, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);
 
 			if (resourcePackProfile != null) {
@@ -57,6 +59,6 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			}
 		}
 
-		ResourceManagerHelperImpl.registerBuiltinResourcePacks(consumer, factory);
+		ResourceManagerHelperImpl.registerBuiltinResourcePacks(this.type, consumer, factory);
 	}
 }

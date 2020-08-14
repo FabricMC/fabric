@@ -76,9 +76,6 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	protected InputStream openFile(String filename) throws IOException {
 		InputStream stream;
 
-		if (name != null)
-			LOGGER.info("HI, TRY OPEN " + filename + "?");
-
 		if (DeferredNioExecutionHandler.shouldDefer()) {
 			stream = DeferredNioExecutionHandler.submit(() -> {
 				Path path = getPath(filename);
@@ -116,9 +113,6 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
 			return true;
 		}
-
-		if (name != null)
-			LOGGER.info("HI, DOES CONTAINS " + filename + "?");
 
 		if (DeferredNioExecutionHandler.shouldDefer()) {
 			try {
@@ -166,9 +160,6 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 					LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + modInfo.getId() + " failed!", e);
 				}
 			}
-
-			if (name != null)
-				LOGGER.info("HI " + searchPath + " IDS: " + ids);
 		}
 
 		return ids;

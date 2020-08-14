@@ -21,6 +21,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
+import net.minecraft.util.Identifier;
 
 /**
  * Helper for working with {@link ResourceManager} instances.
@@ -56,12 +57,13 @@ public interface ResourceManagerHelper {
 
 	/**
 	 * Registers a built-in resource pack.
-	 * @param name The name of the resource pack.
+	 *
+	 * @param id The identifier of the resource pack.
 	 * @param subPath The sub path in the mod resources.
 	 * @param container The mod container.
 	 * @return True if successfully registered the resource pack, else false.
 	 */
-	static boolean registerBuiltinResourcePack(String name, String subPath, ModContainer container) {
-		return ResourceManagerHelperImpl.registerBuiltinResourcePack(name, subPath, container);
+	static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container) {
+		return ResourceManagerHelperImpl.registerBuiltinResourcePack(id, subPath, container);
 	}
 }
