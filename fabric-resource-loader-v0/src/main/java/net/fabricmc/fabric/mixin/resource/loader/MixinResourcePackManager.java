@@ -48,7 +48,8 @@ public class MixinResourcePackManager<T extends ResourcePackProfile> {
 		providers = new HashSet<>(providers);
 		providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 		// If on client, register the client resource pack provider too.
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT)
+		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
 			providers.add(new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES));
+		}
 	}
 }

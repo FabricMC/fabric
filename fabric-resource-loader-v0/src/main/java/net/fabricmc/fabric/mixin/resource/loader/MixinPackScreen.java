@@ -28,8 +28,7 @@ import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(PackScreen.class)
-public class MixinPackScreen
-{
+public class MixinPackScreen {
 	@Inject(method = "method_29672", at = @At("HEAD"), cancellable = true)
 	private void addPackEntry(PackListWidget packListWidget, ResourcePackOrganizer.Pack pack, CallbackInfo info) {
 		if (pack.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
