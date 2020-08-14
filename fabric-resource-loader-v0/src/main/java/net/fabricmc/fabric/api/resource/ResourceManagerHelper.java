@@ -16,12 +16,12 @@
 
 package net.fabricmc.fabric.api.resource;
 
-import net.fabricmc.loader.api.ModContainer;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
-
-import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 
 /**
  * Helper for working with {@link ResourceManager} instances.

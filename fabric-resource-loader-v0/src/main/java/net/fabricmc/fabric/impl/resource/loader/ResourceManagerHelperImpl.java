@@ -28,24 +28,24 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import com.google.common.collect.Lists;
-import net.fabricmc.loader.api.ModContainer;
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.resource.ResourcePackSource;
-import net.minecraft.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.resource.ResourcePackProfile;
+import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 
+import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
-	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap          = new HashMap<>();
-	private static final Set<Pair<String, ModNioResourcePack>>        builtinResourcePacks = new HashSet<>();
-	private static final Logger                                       LOGGER               = LogManager.getLogger();
+	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
+	private static final Set<Pair<String, ModNioResourcePack>> builtinResourcePacks = new HashSet<>();
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
 	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();
@@ -70,8 +70,9 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 		Path resourcePackPath = container.getRootPath().resolve(subPath).toAbsolutePath().normalize();
 
-		if (!Files.exists(resourcePackPath))
+		if (!Files.exists(resourcePackPath)) {
 			return false;
+		}
 
 		String name = id.getNamespace() + "/" + id.getPath();
 		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, name)));
@@ -81,13 +82,12 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
 		for (Pair<String, ModNioResourcePack> entry : builtinResourcePacks) {
-			if (entry.getRight().getNamespaces(resourceType).isEmpty())
-				continue;
-
-			ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(), false,
-					entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN);
-			if (profile != null) {
-				consumer.accept(profile);
+			if (!entry.getRight().getNamespaces(resourceType).isEmpty()) {
+				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(), false,
+						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN);
+				if (profile != null) {
+					consumer.accept(profile);
+				}
 			}
 		}
 	}

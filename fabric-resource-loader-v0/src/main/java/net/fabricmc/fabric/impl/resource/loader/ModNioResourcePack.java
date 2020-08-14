@@ -229,8 +229,10 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 
 	@Override
 	public String getName() {
-		if (this.name != null)
+		if (this.name != null) {
 			return this.name; // Builtin resource pack provided by a mod, the name is overriden.
-		return ModResourcePackUtil.getName(modInfo);
+		} else {
+			return ModResourcePackUtil.getName(modInfo);
+		}
 	}
 }
