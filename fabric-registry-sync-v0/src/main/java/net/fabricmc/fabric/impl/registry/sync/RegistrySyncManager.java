@@ -59,6 +59,7 @@ public final class RegistrySyncManager {
 
 	private RegistrySyncManager() { }
 
+	/* @Nullable */
 	public static PacketByteBuf createData() {
 		LOGGER.debug("Creating registry sync packet");
 
