@@ -50,7 +50,7 @@ public final class ModResourcePackUtil {
 			}
 
 			Path path = container.getRootPath();
-			ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null);
+			ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null, null);
 
 			if (!pack.getNamespaces(type).isEmpty()) {
 				packList.add(pack);

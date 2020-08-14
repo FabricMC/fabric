@@ -10,10 +10,11 @@
     "MixinResourcePackManager"
   ],
   "client": [
-    "MixinAbstractPackScreen",
+    "MixinClientBuiltinResourcePackProvider",
     "MixinFormat4ResourcePack",
     "MixinKeyedResourceReloadListener$Client",
     "MixinMinecraftGame",
+    "MixinPackScreen",
     "MixinResourcePackManagerClient"
   ],
   "injectors": {

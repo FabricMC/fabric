@@ -60,7 +60,7 @@ public class MixinDataPackSettings {
 
 				Path path = container.getRootPath();
 
-				try (ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null)) {
+				try (ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null, null)) {
 					if (!pack.getNamespaces(ResourceType.SERVER_DATA).isEmpty()) {
 						newEnabled.add("fabric/" + container.getMetadata().getId());
 					}

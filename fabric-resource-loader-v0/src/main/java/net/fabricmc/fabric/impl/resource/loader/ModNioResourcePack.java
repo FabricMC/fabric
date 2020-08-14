@@ -50,14 +50,16 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final boolean cacheable;
 	private final AutoCloseable closer;
 	private final String separator;
+	private final String name;
 
-	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer) {
+	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer, String name) {
 		super(null);
 		this.modInfo = modInfo;
 		this.basePath = path.toAbsolutePath().normalize();
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
+		this.name = name;
 	}
 
 	private Path getPath(String filename) {
@@ -73,6 +75,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	protected InputStream openFile(String filename) throws IOException {
 		InputStream stream;
+
+		if (name != null)
+			LOGGER.info("HI, TRY OPEN " + filename + "?");
 
 		if (DeferredNioExecutionHandler.shouldDefer()) {
 			stream = DeferredNioExecutionHandler.submit(() -> {
@@ -111,6 +116,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		if (ModResourcePackUtil.containsDefault(modInfo, filename)) {
 			return true;
 		}
+
+		if (name != null)
+			LOGGER.info("HI, DOES CONTAINS " + filename + "?");
 
 		if (DeferredNioExecutionHandler.shouldDefer()) {
 			try {
@@ -158,6 +166,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 					LOGGER.warn("findResources at " + path + " in namespace " + namespace + ", mod " + modInfo.getId() + " failed!", e);
 				}
 			}
+
+			if (name != null)
+				LOGGER.info("HI " + searchPath + " IDS: " + ids);
 		}
 
 		return ids;
@@ -227,6 +238,8 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 
 	@Override
 	public String getName() {
+		if (this.name != null)
+			return this.name; // Builtin resource pack provided by a mod, the name is overriden.
 		return ModResourcePackUtil.getName(modInfo);
 	}
 }

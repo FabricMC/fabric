@@ -56,5 +56,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 				consumer.accept(resourcePackProfile);
 			}
 		}
+
+		ResourceManagerHelperImpl.registerBuiltinResourcePacks(consumer, factory);
 	}
 }
