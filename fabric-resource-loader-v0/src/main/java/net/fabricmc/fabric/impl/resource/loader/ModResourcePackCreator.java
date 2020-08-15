@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
  */
 public class ModResourcePackCreator implements ResourcePackProvider {
 	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod"));
+	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
@@ -51,7 +52,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			}
 
 			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					true, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
+					type == ResourceType.CLIENT_RESOURCES, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);
 
 			if (resourcePackProfile != null) {

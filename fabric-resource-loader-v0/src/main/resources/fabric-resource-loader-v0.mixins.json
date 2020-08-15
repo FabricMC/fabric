@@ -3,12 +3,16 @@
   "package": "net.fabricmc.fabric.mixin.resource.loader",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "FileResourcePackProviderAccessor",
     "MixinDefaultResourcePack",
     "MixinKeyedResourceReloadListener$Server",
+    "MixinMinecraftServer",
     "MixinReloadableResourceManagerImpl",
     "MixinResourcePackManager"
   ],
   "client": [
+    "MixinClientBuiltinResourcePackProvider",
+    "MixinCreateWorldScreen",
     "MixinKeyedResourceReloadListener$Client",
     "MixinPackScreen"
   ],

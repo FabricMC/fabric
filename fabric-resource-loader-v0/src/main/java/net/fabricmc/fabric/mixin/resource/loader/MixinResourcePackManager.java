@@ -27,17 +27,18 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.resource.FileResourcePackProvider;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
+import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.impl.resource.loader.ResourcePackManagerAccessor;
 
 @Mixin(ResourcePackManager.class)
-public class MixinResourcePackManager<T extends ResourcePackProfile> {
+public abstract class MixinResourcePackManager<T extends ResourcePackProfile> implements ResourcePackManagerAccessor {
 	@Shadow
 	@Final
 	@Mutable
@@ -46,11 +47,25 @@ public class MixinResourcePackManager<T extends ResourcePackProfile> {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void construct(ResourcePackProfile.Factory arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
 		providers = new HashSet<>(providers);
-		providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 
-		// If on client, register the client resource pack provider too.
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
-			providers.add(new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES));
+		boolean shouldAddServerProvider = false;
+
+		for (ResourcePackProvider provider : this.providers) {
+			if (provider instanceof FileResourcePackProvider
+					&& (((FileResourcePackProviderAccessor) provider).getResourcePackSource() == ResourcePackSource.PACK_SOURCE_WORLD
+					|| ((FileResourcePackProviderAccessor) provider).getResourcePackSource() == ResourcePackSource.PACK_SOURCE_SERVER)) {
+				shouldAddServerProvider = true;
+				break;
+			}
 		}
+
+		if (shouldAddServerProvider) {
+			providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
+		}
+	}
+
+	@Override
+	public Set<ResourcePackProvider> getProviders() {
+		return this.providers;
 	}
 }
