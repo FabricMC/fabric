@@ -78,10 +78,12 @@ public final class ClientChunkEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface Load {
 		void onChunkLoad(ClientWorld world, WorldChunk chunk);
 	}
 
+	@FunctionalInterface
 	public interface Unload {
 		void onChunkUnload(ClientWorld world, WorldChunk chunk);
 	}

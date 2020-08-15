@@ -75,10 +75,12 @@ public final class ServerChunkEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface Load {
 		void onChunkLoad(ServerWorld world, WorldChunk chunk);
 	}
 
+	@FunctionalInterface
 	public interface Unload {
 		void onChunkUnload(ServerWorld world, WorldChunk chunk);
 	}

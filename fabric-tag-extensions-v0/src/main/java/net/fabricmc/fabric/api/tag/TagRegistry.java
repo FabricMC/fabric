@@ -25,12 +25,12 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.EntityTypeTags;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
+import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
 
 /**
  * Helper methods for registering Tags.
@@ -51,7 +51,7 @@ public final class TagRegistry {
 	}
 
 	public static Tag<Fluid> fluid(Identifier id) {
-		return create(id, FluidTags::getTagGroup);
+		return create(id, () -> AccessorFluidTags.getRequiredTags().getGroup());
 	}
 
 	public static Tag<Item> item(Identifier id) {

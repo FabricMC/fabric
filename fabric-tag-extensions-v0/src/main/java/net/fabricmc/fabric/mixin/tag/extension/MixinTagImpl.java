@@ -25,7 +25,7 @@ import net.minecraft.tag.SetTag;
 import net.fabricmc.fabric.api.tag.FabricTag;
 import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
 
-@Mixin(value = {SetTag.class}, targets = {"net.minecraft.tag.Tag$1", "net.minecraft.tag.GlobalTagAccessor$CachedTag"})
+@Mixin(value = {SetTag.class}, targets = {"net.minecraft.tag.Tag$1", "net.minecraft.tag.RequiredTagList$TagWrapper"})
 public abstract class MixinTagImpl<T> implements FabricTag<T>, FabricTagHooks, Tag<T> {
 	@Unique
 	private int fabric_clearCount;

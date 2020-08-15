@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "fabric-tool-attribute-api-v1-testmod:hardened_block"
+          "name": "fabric-tool-attribute-api-v1-testmod:hardened_gravel_block"
         }
       ],
       "conditions": [

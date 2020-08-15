@@ -63,8 +63,7 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 			if (miningLevel < 0) return ActionResult.PASS;
 
 			ToolItem vanillaItem = getVanillaItem(miningLevel);
-			boolean effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeedMultiplier(new ItemStack(vanillaItem), state) != 1.0F;
-			return effective ? ActionResult.SUCCESS : ActionResult.PASS;
+			return vanillaItem.isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 		}
 
 		return ActionResult.PASS;

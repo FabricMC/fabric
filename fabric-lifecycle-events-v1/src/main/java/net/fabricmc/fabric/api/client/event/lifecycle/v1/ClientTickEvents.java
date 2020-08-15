@@ -120,18 +120,22 @@ public final class ClientTickEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface StartTick {
 		void onStartTick(MinecraftClient client);
 	}
 
+	@FunctionalInterface
 	public interface EndTick {
 		void onEndTick(MinecraftClient client);
 	}
 
+	@FunctionalInterface
 	public interface StartWorldTick {
 		void onStartTick(ClientWorld world);
 	}
 
+	@FunctionalInterface
 	public interface EndWorldTick {
 		void onEndTick(ClientWorld world);
 	}
