@@ -47,7 +47,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
-	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, DynamicItemRenderer)} instead.
+	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(ItemConvertible, DynamicItemRenderer)} instead.
 	 */
 	@Deprecated
 	void register(Item item, BuiltinItemRenderer renderer);
@@ -61,7 +61,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @param renderer the renderer
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
-	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(Item, DynamicItemRenderer)} instead.
+	 * @deprecated Please use {@link BuiltinItemRendererRegistry#register(ItemConvertible, DynamicItemRenderer)} instead.
 	 */
 	@Deprecated
 	void register(ItemConvertible item, BuiltinItemRenderer renderer);
@@ -83,7 +83,7 @@ public interface BuiltinItemRendererRegistry {
 	 * They allow using non-model rendering, such as BERs, for items.
 	 *
 	 * <p>An item with a dynamic renderer must have a model extending {@code minecraft:builtin/entity}.
-	 * The renderers are registered with {@link BuiltinItemRendererRegistry#register(Item, DynamicItemRenderer)}.
+	 * The renderers are registered with {@link BuiltinItemRendererRegistry#register(ItemConvertible, DynamicItemRenderer)}.
 	 */
 	@FunctionalInterface
 	@Environment(EnvType.CLIENT)

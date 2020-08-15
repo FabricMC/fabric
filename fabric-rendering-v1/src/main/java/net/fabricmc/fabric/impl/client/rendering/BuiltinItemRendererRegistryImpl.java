@@ -45,6 +45,12 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 	}
 
 	@Override
+	public void register(ItemConvertible item, BuiltinItemRenderer renderer) {
+		Objects.requireNonNull(item, "item is null");
+		register(item.asItem(), renderer);
+	}
+
+	@Override
 	public void register(ItemConvertible item, DynamicItemRenderer renderer) {
 		Objects.requireNonNull(item, "item is null");
 		Objects.requireNonNull(item.asItem(), "item is null");
@@ -55,12 +61,6 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		}
 
 		RENDERERS.put(item.asItem(), renderer);
-	}
-
-	@Override
-	public void register(ItemConvertible item, BuiltinItemRenderer renderer) {
-		Objects.requireNonNull(item, "item is null");
-		register(item.asItem(), renderer);
 	}
 
 	/* @Nullable */
