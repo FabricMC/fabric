@@ -21,14 +21,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.gen.chunk.ChunkGeneratorType;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
 import net.fabricmc.fabric.impl.structure.FabricStructureUtil;
 
-@Mixin(ChunkGeneratorType.class)
-public class MixinChunkGeneratorType {
-	@Inject(method = "method_30641", at = @At("RETURN"))
-	private static void onCreateCavesType(CallbackInfoReturnable<ChunkGeneratorType> cir) {
-		FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS.add(cir.getReturnValue().getConfig());
+@Mixin(ChunkGeneratorSettings.class)
+public class MixinChunkGeneratorSettings {
+	@Inject(method = "createUndergroundSettings", at = @At("RETURN"))
+	private static void onCreateCavesType(CallbackInfoReturnable<ChunkGeneratorSettings> cir) {
+		FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS.add(cir.getReturnValue().getStructuresConfig());
 	}
 }

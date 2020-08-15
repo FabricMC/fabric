@@ -35,7 +35,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
-import net.minecraft.world.ServerWorldAccess;
+import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.StructureAccessor;
@@ -102,11 +102,11 @@ public class StructureTest {
 		}
 
 		@Override
-		public boolean generate(ServerWorldAccess serverWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
+		public boolean generate(StructureWorldAccess structureWorldAccess, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, Random random, BlockBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
 			for (int x = 0; x < 48; x++) {
 				for (int z = 0; z < 48; z++) {
 					for (int y = 0; y < 16; y++) {
-						this.addBlock(serverWorldAccess, Blocks.DIAMOND_BLOCK.getDefaultState(), x, y, z, boundingBox);
+						this.addBlock(structureWorldAccess, Blocks.DIAMOND_BLOCK.getDefaultState(), x, y, z, boundingBox);
 					}
 				}
 			}

@@ -18,20 +18,21 @@ package net.fabricmc.fabric.test.structure.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.DefaultBiomeCreator;
+import net.minecraft.world.biome.GenerationSettings;
 
 import net.fabricmc.fabric.test.structure.StructureTest;
 
 @Mixin(DefaultBiomeCreator.class)
 public class MixinDefaultBiomeCreator {
-	@Inject(method = "createPlains", at = @At("RETURN"))
-	private static void addCustomStructure(String parent, boolean sunflower, CallbackInfoReturnable<Biome> cir) {
+	@ModifyVariable(method = "createPlains", ordinal = 0, at = @At(value = "STORE", ordinal = 0))
+	private static GenerationSettings.Builder addCustomStructure(GenerationSettings.Builder builder, boolean sunflower) {
 		if (!sunflower) {
-			cir.getReturnValue().addStructureFeature(StructureTest.CONFIGURED_STRUCTURE);
+			builder.structureFeature(StructureTest.CONFIGURED_STRUCTURE);
 		}
+
+		return builder;
 	}
 }
