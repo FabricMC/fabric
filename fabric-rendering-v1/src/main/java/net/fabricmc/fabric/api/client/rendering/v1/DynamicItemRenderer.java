@@ -18,8 +18,7 @@ import net.fabricmc.api.Environment;
  */
 @FunctionalInterface
 @Environment(EnvType.CLIENT)
-public
-interface DynamicItemRenderer {
+public interface DynamicItemRenderer {
 	/**
 	 * Renders an item stack.
 	 *
