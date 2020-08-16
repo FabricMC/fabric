@@ -28,6 +28,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRenderer;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.DynamicItemRenderer;
 
 @Environment(EnvType.CLIENT)
 public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
