@@ -9,7 +9,7 @@
     "fabric-resource-loader-v0": "*"
   },
   "entrypoints": {
-    "client": [
+    "main": [
       "net.fabricmc.fabric.test.resource.loader.BuiltinResourcePackTestMod"
     ]
   }

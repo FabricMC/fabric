@@ -21,17 +21,17 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
-public class BuiltinResourcePackTestMod implements ClientModInitializer {
+public class BuiltinResourcePackTestMod implements ModInitializer {
 	public static final String MODID = "fabric-resource-loader-v0-testmod";
 
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	@Override
-	public void onInitializeClient() {
+	public void onInitialize() {
 		// Should always be present as it's **this** mod.
 		FabricLoader.getInstance().getModContainer(MODID)
 				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test"), "resourcepacks/test", container))
