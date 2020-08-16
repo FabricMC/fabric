@@ -35,10 +35,9 @@ import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
-import net.fabricmc.fabric.impl.resource.loader.ResourcePackManagerAccessor;
 
 @Mixin(ResourcePackManager.class)
-public abstract class MixinResourcePackManager<T extends ResourcePackProfile> implements ResourcePackManagerAccessor {
+public abstract class MixinResourcePackManager<T extends ResourcePackProfile> {
 	@Shadow
 	@Final
 	@Mutable
@@ -62,10 +61,5 @@ public abstract class MixinResourcePackManager<T extends ResourcePackProfile> im
 		if (shouldAddServerProvider) {
 			providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 		}
-	}
-
-	@Override
-	public Set<ResourcePackProvider> getProviders() {
-		return this.providers;
 	}
 }

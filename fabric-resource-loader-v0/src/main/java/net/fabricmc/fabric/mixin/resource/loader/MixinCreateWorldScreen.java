@@ -30,7 +30,6 @@ import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
-import net.fabricmc.fabric.impl.resource.loader.ResourcePackManagerAccessor;
 
 @Mixin(CreateWorldScreen.class)
 public class MixinCreateWorldScreen {

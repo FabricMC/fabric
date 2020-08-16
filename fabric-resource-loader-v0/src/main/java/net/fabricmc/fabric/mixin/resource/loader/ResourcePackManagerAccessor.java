@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.resource.loader;
+package net.fabricmc.fabric.mixin.resource.loader;
 
 import java.util.Set;
 
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProvider;
 
-/**
- * Represents an accessor to {@code ResourcePackManager}.
- */
+@Mixin(ResourcePackManager.class)
 public interface ResourcePackManagerAccessor {
 	/**
 	 * Returns the resource pack providers of this resource pack manager.
 	 *
 	 * @return The resource pack providers.
 	 */
+	@Accessor("providers")
 	Set<ResourcePackProvider> getProviders();
 }
