@@ -29,11 +29,6 @@ import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.resource.language.LanguageManager;
 import net.minecraft.client.sound.SoundLoader;
 import net.minecraft.client.texture.TextureManager;
-import net.minecraft.loot.LootManager;
-import net.minecraft.recipe.RecipeManager;
-import net.minecraft.server.ServerAdvancementLoader;
-import net.minecraft.server.function.CommandFunctionManager;
-import net.minecraft.tag.TagManagerLoader;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;

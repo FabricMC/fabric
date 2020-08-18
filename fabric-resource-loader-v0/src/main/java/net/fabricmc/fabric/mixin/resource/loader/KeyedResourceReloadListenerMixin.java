@@ -22,14 +22,6 @@ import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.client.font.FontManager;
-import net.minecraft.client.render.WorldRenderer;
-import net.minecraft.client.render.block.BlockRenderManager;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.render.model.BakedModelManager;
-import net.minecraft.client.resource.language.LanguageManager;
-import net.minecraft.client.sound.SoundLoader;
-import net.minecraft.client.texture.TextureManager;
 import net.minecraft.recipe.RecipeManager;
 import net.minecraft.server.ServerAdvancementLoader;
 import net.minecraft.server.function.CommandFunctionManager;
