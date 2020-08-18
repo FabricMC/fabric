@@ -4,9 +4,9 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EntityHooks",
-    "MixinEntity",
-    "MixinPortalForcer",
-    "MixinWorld"
+    "EntityMixin",
+    "PortalForcerMixin",
+    "WorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -62,7 +62,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
-public abstract class SimpleRegistryMixin<T>  extends Registry<T> implements RemappableRegistry, ListenableRegistry {
+public abstract class SimpleRegistryMixin<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry {
 	@Shadow
 	@Final
 	private ObjectList<T> field_26682;
@@ -176,6 +176,7 @@ public abstract class SimpleRegistryMixin<T>  extends Registry<T> implements Rem
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryKey.getValue(), entry);
 		}
+
 		onChange(registryKey);
 	}
 

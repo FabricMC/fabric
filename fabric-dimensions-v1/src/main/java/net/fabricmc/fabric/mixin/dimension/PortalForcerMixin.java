@@ -34,7 +34,7 @@ import net.minecraft.world.PortalForcer;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 @Mixin(PortalForcer.class)
-public abstract class MixinPortalForcer {
+public abstract class PortalForcerMixin {
 	@Shadow
 	@Final
 	private ServerWorld world;

@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
  * Adds spawn biomes to the base {@link BiomeSource} class.
  */
 @Mixin(BiomeSource.class)
-public class MixinBiomeSource {
+public class BiomeSourceMixin {
 	@Shadow
 	@Final
 	private static List<Biome> SPAWN_BIOMES;

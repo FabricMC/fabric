@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 
 @Mixin(World.class)
-public abstract class MixinWorld {
+public abstract class WorldMixin {
 	@Shadow
 	public abstract DimensionType getDimension();
 

@@ -27,7 +27,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 @Mixin(Entity.class)
-public abstract class MixinEntity {
+public abstract class EntityMixin {
 	// Inject right before the direction vector is retrieved by the game
 	@Inject(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastNetherPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
 	private void onGetPortal(ServerWorld targetWorld, CallbackInfoReturnable<Entity> cir) {

@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
  * Injects biomes into the arrays of biomes in the {@link SetBaseBiomesLayer}.
  */
 @Mixin(SetBaseBiomesLayer.class)
-public class MixinSetBaseBiomesLayer {
+public class SetBaseBiomesLayerMixin {
 	@Shadow
 	@Final
 	@Mutable

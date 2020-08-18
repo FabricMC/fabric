@@ -36,7 +36,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
  * This helps with {@link VanillaLayeredBiomeSource#hasStructureFeature(StructureFeature)} returning correctly for modded biomes as well as in {@link VanillaLayeredBiomeSource#getTopMaterials()}}
  */
 @Mixin(VanillaLayeredBiomeSource.class)
-public class MixinVanillaLayeredBiomeSource {
+public class VanillaLayeredBiomeSourceMixin {
 	@Shadow
 	@Final
 	@Mutable

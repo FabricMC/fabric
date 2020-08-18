@@ -37,7 +37,7 @@ import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
  * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(Biome, Biome, double)}into the default hills layer.
  */
 @Mixin(AddHillsLayer.class)
-public class MixinAddHillsLayer {
+public class AddHillsLayerMixin {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseSampler, int chunkX, int chunkZ, CallbackInfoReturnable<Integer> info) {
 		if (InternalBiomeData.getOverworldHills().isEmpty()) {

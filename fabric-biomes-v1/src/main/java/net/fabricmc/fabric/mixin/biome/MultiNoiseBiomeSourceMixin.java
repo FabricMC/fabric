@@ -32,7 +32,7 @@ import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 @Mixin(MultiNoiseBiomeSource.class)
-public class MixinMultiNoiseBiomeSource {
+public class MultiNoiseBiomeSourceMixin {
 	@Inject(method = "method_28467", at = @At("RETURN"))
 	private static void modifyNoisePoints(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> cir) {
 		MultiNoiseBiomeSource returnedSource = cir.getReturnValue();

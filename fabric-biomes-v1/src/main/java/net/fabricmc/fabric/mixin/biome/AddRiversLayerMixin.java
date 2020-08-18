@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
  * Sets river biomes specified with {@link OverworldBiomes#setRiverBiome(Biome, Biome)}.
  */
 @Mixin(AddRiversLayer.class)
-public class MixinAddRiversLayer {
+public class AddRiversLayerMixin {
 	@Shadow
 	@Final
 	private static int RIVER_ID;

@@ -29,7 +29,7 @@ import net.minecraft.server.dedicated.ServerPropertiesLoader;
 import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 
 @Mixin(MinecraftDedicatedServer.class)
-public class MixinMinecraftDedicatedServer {
+public class MinecraftDedicatedServerMixin {
 	@Shadow
 	@Final
 	private ServerPropertiesLoader propertiesLoader;

@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
  * Adds edges and shores specified in {@link OverworldBiomes#addEdgeBiome(Biome, Biome, double)} and {@link OverworldBiomes#addShoreBiome(Biome, Biome, double)} to the edges layer.
  */
 @Mixin(AddEdgeBiomesLayer.class)
-public class MixinAddEdgeBiomesLayer {
+public class AddEdgeBiomesLayerMixin {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info) {
 		Biome centerBiome = BuiltinRegistries.BIOME.get(center);
