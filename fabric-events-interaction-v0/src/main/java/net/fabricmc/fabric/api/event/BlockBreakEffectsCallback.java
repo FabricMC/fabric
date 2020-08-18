@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.event;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -25,24 +24,25 @@ import net.minecraft.world.World;
  * Callback for the effects displayed when a block is broken (particles and sounds)
  *
  * <p>Upon return:
- * <ul><li>SUCCESS cancels further processing.
- * <li>PASS falls back to further processing.
- * <li>FAIL cancels further processing and prevents the block break effects from being displayed.</ul>
+ * <ul><li><code>true</code> falls back to further processing.
+ * <li><code>false</code> cancels further processing and prevents the block break effects from being displayed.</ul>
  */
 public interface BlockBreakEffectsCallback {
 	Event<BlockBreakEffectsCallback> EVENT = EventFactory.createArrayBacked(BlockBreakEffectsCallback.class,
 			(listeners) -> (world, breakingEntity, pos) -> {
-				for (BlockBreakEffectsCallback event : listeners) {
-					ActionResult result = event.run(world, breakingEntity, pos);
+				boolean result = true;
 
-					if (result != ActionResult.PASS) {
-						return result;
+				for (BlockBreakEffectsCallback event : listeners) {
+					result = event.run(world, breakingEntity, pos);
+
+					if (!result) {
+						break;
 					}
 				}
 
-				return ActionResult.PASS;
+				return result;
 			}
 	);
 
-	ActionResult run(World world, /* nullable */ Entity breakingEntity, BlockPos pos);
+	boolean run(World world, /* nullable */ Entity breakingEntity, BlockPos pos);
 }
