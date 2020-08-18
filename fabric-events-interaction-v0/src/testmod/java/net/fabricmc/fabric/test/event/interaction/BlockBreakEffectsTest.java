@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 
 import net.fabricmc.api.ModInitializer;
@@ -25,9 +24,6 @@ import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 public class BlockBreakEffectsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		BlockBreakEffectsCallback.EVENT.register((world, breakingEntity, pos) -> {
-			BlockState state = world.getBlockState(pos);
-			return state.getBlock() != Blocks.BEDROCK;
-		});
+		BlockBreakEffectsCallback.EVENT.register((world, pos, state, breakingEntity) -> state.getBlock() != Blocks.BEDROCK);
 	}
 }

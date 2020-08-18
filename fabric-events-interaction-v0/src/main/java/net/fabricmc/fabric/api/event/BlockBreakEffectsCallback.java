@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.event;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -29,11 +30,11 @@ import net.minecraft.world.World;
  */
 public interface BlockBreakEffectsCallback {
 	Event<BlockBreakEffectsCallback> EVENT = EventFactory.createArrayBacked(BlockBreakEffectsCallback.class,
-			(listeners) -> (world, breakingEntity, pos) -> {
+			(listeners) -> (world, pos, state, breakingEntity) -> {
 				boolean result = true;
 
 				for (BlockBreakEffectsCallback event : listeners) {
-					result = event.run(world, breakingEntity, pos);
+					result = event.run(world, pos, state, breakingEntity);
 
 					if (!result) {
 						break;
@@ -44,5 +45,5 @@ public interface BlockBreakEffectsCallback {
 			}
 	);
 
-	boolean run(World world, /* nullable */ Entity breakingEntity, BlockPos pos);
+	boolean run(World world, BlockPos pos, BlockState state, /* nullable */ Entity breakingEntity);
 }

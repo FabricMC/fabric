@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 public class MixinWorld {
 	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;syncWorldEvent(ILnet/minecraft/util/math/BlockPos;I)V"), method = "breakBlock")
 	public void breakBlock(World world, int eventId, BlockPos pos, int data, BlockPos pos2, boolean drop, Entity breakingEntity, int maxUpdateDepth) {
-		if (BlockBreakEffectsCallback.EVENT.invoker().run(world, breakingEntity, pos)) {
+		if (BlockBreakEffectsCallback.EVENT.invoker().run(world, pos, world.getBlockState(pos), breakingEntity)) {
 			world.syncWorldEvent(eventId, pos, data);
 		}
 	}
