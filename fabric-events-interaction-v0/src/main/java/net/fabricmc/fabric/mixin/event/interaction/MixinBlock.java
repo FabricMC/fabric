@@ -20,18 +20,20 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 
-@Mixin(World.class)
-public class MixinWorld {
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;syncWorldEvent(ILnet/minecraft/util/math/BlockPos;I)V"), method = "breakBlock")
-	public void breakBlock(World world, int eventId, BlockPos pos, int data, BlockPos pos2, boolean drop, Entity breakingEntity, int maxUpdateDepth) {
-		if (BlockBreakEffectsCallback.EVENT.invoker().run(world, breakingEntity, pos) != ActionResult.FAIL) {
+@Mixin(Block.class)
+public class MixinBlock {
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;syncWorldEvent(ILnet/minecraft/util/math/BlockPos;I)V"), method = "onBreak")
+	public void breakBlock(World world, int eventId, BlockPos pos, int data, World world2, BlockPos pos2, BlockState state, PlayerEntity player) {
+		if (BlockBreakEffectsCallback.EVENT.invoker().run(world, player, pos) != ActionResult.FAIL) {
 			world.syncWorldEvent(eventId, pos, data);
 		}
 	}

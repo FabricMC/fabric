@@ -44,5 +44,5 @@ public interface BlockBreakEffectsCallback {
 			}
 	);
 
-	ActionResult run(World world, Entity breakingEntity, BlockPos pos);
+	ActionResult run(World world, /* nullable */ Entity breakingEntity, BlockPos pos);
 }
