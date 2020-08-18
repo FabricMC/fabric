@@ -3,11 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.rendering.data.attachment",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinBlockEntity",
-    "MixinViewableWorld"
+    "BlockEntityMixin",
+    "WorldViewMixin"
   ],
   "client": [
-    "client.MixinChunkRendererRegion"
+    "client.ChunkRendererRegionMixin"
   ],
   "injectors": {
     "defaultRequire": 1

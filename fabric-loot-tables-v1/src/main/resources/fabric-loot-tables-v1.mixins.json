@@ -6,9 +6,9 @@
     "LootPoolBuilderHooks",
     "LootPoolEntryTypesAccessor",
     "LootSupplierBuilderHooks",
-    "MixinLootManager",
-    "MixinLootPool",
-    "MixinLootSupplier"
+    "LootManagerMixin",
+    "LootPoolMixin",
+    "LootSupplierMixin"
   ],
   "injectors": {
     "defaultRequire": 1

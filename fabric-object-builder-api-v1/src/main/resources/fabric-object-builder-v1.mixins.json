@@ -9,7 +9,7 @@
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "MaterialBuilderAccessor",
-    "MixinBlock",
+    "BlockMixin",
     "PointOfInterestTypeAccessor",
     "SpawnRestrictionAccessor",
     "VillagerProfessionAccessor"

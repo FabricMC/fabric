@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.renderer",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "client.MixinDebugHud"
+    "client.DebugHudMixin"
   ],
   "injectors": {
     "defaultRequire": 1

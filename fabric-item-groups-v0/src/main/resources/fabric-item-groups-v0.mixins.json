@@ -3,11 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.item.group",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinItemGroup"
+    "ItemGroupMixin"
   ],
   "client": [
-    "client.MixinItemGroup",
-    "client.MixinCreativePlayerInventoryGui"
+    "client.ItemGroupMixin",
+    "client.CreativeInventoryScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.texture",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "MixinSpriteAtlasTexture"
+    "SpriteAtlasTextureMixin"
   ],
   "injectors": {
     "defaultRequire": 1

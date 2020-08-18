@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.client.rendering.fluid",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "MixinFluidRenderer"
+    "FluidRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

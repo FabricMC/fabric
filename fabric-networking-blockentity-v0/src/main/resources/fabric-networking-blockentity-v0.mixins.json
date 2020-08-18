@@ -3,10 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.networking.blockentity",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinBlockEntity"
+    "BlockEntityMixin"
   ],
   "client": [
-    "MixinClientPlayNetworkHandler"
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

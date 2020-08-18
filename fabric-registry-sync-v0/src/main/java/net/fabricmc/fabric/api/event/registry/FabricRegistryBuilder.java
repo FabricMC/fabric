@@ -27,7 +27,7 @@ import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
-import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
+import net.fabricmc.fabric.mixin.registry.sync.RegistryAccessor;
 
 /**
  * Used to create custom registries, with specified registry attributes.
@@ -107,7 +107,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 		fabricRegistry.build(attributes);
 
 		//noinspection unchecked
-		AccessorRegistry.getROOT().add(((AccessorRegistry) registry).getRegistryKey(), registry, Lifecycle.stable());
+		RegistryAccessor.getROOT().add(((RegistryAccessor) registry).getRegistryKey(), registry, Lifecycle.stable());
 
 		return registry;
 	}

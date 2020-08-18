@@ -30,7 +30,7 @@ import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.DefaultResourcePack;
 
-import net.fabricmc.fabric.mixin.resource.loader.MixinFormat4ResourcePack;
+import net.fabricmc.fabric.mixin.resource.loader.client.Format4ResourcePackAccessor;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.ModMetadata;
@@ -101,7 +101,7 @@ public final class ModResourcePackUtil {
 			boolean isDefaultResources = pack instanceof DefaultResourcePack;
 
 			if (!isDefaultResources && pack instanceof Format4ResourcePack) {
-				MixinFormat4ResourcePack fixer = (MixinFormat4ResourcePack) pack;
+				Format4ResourcePackAccessor fixer = (Format4ResourcePackAccessor) pack;
 				isDefaultResources = fixer.getParent() instanceof DefaultResourcePack;
 			}
 

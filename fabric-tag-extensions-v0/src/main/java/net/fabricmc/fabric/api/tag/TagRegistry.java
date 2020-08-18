@@ -30,7 +30,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.tag.extension.TagDelegate;
-import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
+import net.fabricmc.fabric.mixin.tag.extension.FluidTagsAccessor;
 
 /**
  * Helper methods for registering Tags.
@@ -51,7 +51,7 @@ public final class TagRegistry {
 	}
 
 	public static Tag<Fluid> fluid(Identifier id) {
-		return create(id, () -> AccessorFluidTags.getRequiredTags().getGroup());
+		return create(id, () -> FluidTagsAccessor.getRequiredTags().getGroup());
 	}
 
 	public static Tag<Item> item(Identifier id) {
