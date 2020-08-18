@@ -31,8 +31,8 @@ import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 
 @Mixin(Block.class)
 public class MixinBlock {
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;syncWorldEvent(ILnet/minecraft/util/math/BlockPos;I)V"), method = "onBreak")
-	public void breakBlock(World world, int eventId, BlockPos pos, int data, World world2, BlockPos pos2, BlockState state, PlayerEntity player) {
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;syncWorldEvent(Lnet/minecraft/entity/player/PlayerEntity;ILnet/minecraft/util/math/BlockPos;I)V"), method = "onBreak")
+	public void onBreak(World world, PlayerEntity player, int eventId, BlockPos pos, int data, World world2, BlockPos pos2, BlockState state, PlayerEntity player2) {
 		if (BlockBreakEffectsCallback.EVENT.invoker().run(world, player, pos) != ActionResult.FAIL) {
 			world.syncWorldEvent(eventId, pos, data);
 		}
