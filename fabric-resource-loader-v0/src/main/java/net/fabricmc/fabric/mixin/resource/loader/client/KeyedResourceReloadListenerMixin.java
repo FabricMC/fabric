@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.mixin.resource.loader.client;
 
-import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
-import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Locale;
 
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -31,9 +32,8 @@ import net.minecraft.client.sound.SoundLoader;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
+import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
+import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 @Mixin({
 		/* public */
