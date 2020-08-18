@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.mixin.event.interaction;
 
-import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Redirect;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+
+import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 
 @Mixin(World.class)
 public class MixinWorld {

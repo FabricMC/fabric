@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,12 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.util.ActionResult;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 
 public class BlockBreakEffectsTest implements ModInitializer {
 	@Override
