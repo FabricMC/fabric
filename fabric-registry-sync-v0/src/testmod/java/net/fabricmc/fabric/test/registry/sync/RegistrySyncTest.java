@@ -28,9 +28,10 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -65,8 +66,14 @@ public class RegistrySyncTest implements ModInitializer {
 
 		Registry.register(fabricRegistry, new Identifier("registry_sync", "test"), "test");
 
+		Validate.isTrue(Registry.REGISTRIES.getIds().contains(new Identifier("registry_sync", "fabric_registry")));
+
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
+
+		DynamicRegistryEntryAddedCallback.event(Registry.BIOME_KEY).register((rawId, key, object, registry) -> {
+			System.out.println(key);
+		});
 	}
 }
