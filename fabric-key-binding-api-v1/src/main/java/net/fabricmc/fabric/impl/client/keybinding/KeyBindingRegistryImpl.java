@@ -16,15 +16,18 @@
 
 package net.fabricmc.fabric.impl.client.keybinding;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.options.GameOptions;
+import net.minecraft.client.MinecraftClient;
+
 import net.fabricmc.fabric.mixin.client.keybinding.GameOptionsAccessor;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.options.KeyBinding;
 
 public final class KeyBindingRegistryImpl {
 	private static final ReferenceArrayList<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>();
