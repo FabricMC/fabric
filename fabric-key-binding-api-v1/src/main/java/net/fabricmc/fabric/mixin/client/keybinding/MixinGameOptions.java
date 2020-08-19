@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.client.keybinding;
 
+import java.util.Arrays;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -30,15 +32,41 @@ import net.minecraft.client.options.KeyBinding;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 
 @Mixin(GameOptions.class)
-public class MixinGameOptions {
+public abstract class MixinGameOptions implements GameOptionsAccessor {
 	@Mutable
 	@Final
 	@Shadow
 	public KeyBinding[] keysAll;
 
+	private static KeyBinding[] registered;
+
 	@Inject(at = @At("HEAD"), method = "load()V")
 	public void loadHook(CallbackInfo info) {
-		KeyBindingRegistryImpl.init((GameOptions) (Object) this);
+		KeyBindingRegistryImpl.init(this, keysAll);
 		this.keysAll = KeyBindingRegistryImpl.process();
+	}
+
+	@Inject(at = @At("HEAD"), method = {"write", "load"})
+	public void writeUnregistered(final CallbackInfo info) {
+		this.addUnregistered();
+	}
+
+	@Inject(at = @At("RETURN"), method = "write")
+	public void cleanUpWrite(final CallbackInfo info) {
+		this.keysAll = registered;
+	}
+
+	@Inject(at = @At("RETURN"), method = "load")
+	public void cleanUpRead(final CallbackInfo info) {
+		this.keysAll = registered;
+	}
+
+	private void addUnregistered() {
+		int size = KeyBindingRegistryImpl.unregisteredKeyBindings.size();
+		KeyBinding[] unregistered = KeyBindingRegistryImpl.unregisteredKeyBindings.elements();
+
+		registered = this.keysAll;
+		this.keysAll = Arrays.copyOf(registered, registered.length + size);
+		System.arraycopy(unregistered, 0, this.keysAll, registered.length, size);
 	}
 }

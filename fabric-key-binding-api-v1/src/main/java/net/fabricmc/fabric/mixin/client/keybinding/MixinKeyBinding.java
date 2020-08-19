@@ -16,37 +16,20 @@
 
 package net.fabricmc.fabric.mixin.client.keybinding;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
+import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
+
 @Mixin(KeyBinding.class)
-public interface KeyBindingAccessor {
-	@Accessor("keysById")
-	static Map<String, KeyBinding> fabric_getKeysById() {
-		throw new AssertionError();
+public class MixinKeyBinding {
+	@Inject(at = @At("RETURN"), method = "<init>(Ljava/lang/String;Lnet/minecraft/client/util/InputUtil$Type;ILjava/lang/String;)V")
+	public void addToUnregisteredList(final String translationKey, final InputUtil.Type type, final int code, final String category, final CallbackInfo info) {
+		KeyBindingRegistryImpl.unregisteredKeyBindings.add((KeyBinding) (Object) this);
 	}
-
-	@Accessor("keyToBindings")
-	static Map<InputUtil.Key, KeyBinding> fabric_getKeysToBindings() {
-		throw new AssertionError();
-	}
-
-	@Accessor("keyCategories")
-	static Set<String> fabric_getKeyCategories() {
-		throw new AssertionError();
-	}
-
-	@Accessor("categoryOrderMap")
-	static Map<String, Integer> fabric_getCategoryMap() {
-		throw new AssertionError();
-	}
-
-	@Accessor("boundKey")
-	InputUtil.Key fabric_getBoundKey();
 }

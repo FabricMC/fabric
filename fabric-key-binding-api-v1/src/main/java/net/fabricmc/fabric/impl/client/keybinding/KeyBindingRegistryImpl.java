@@ -22,17 +22,18 @@ import java.util.Optional;
 
 import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.KeyBinding;
 
 import net.fabricmc.fabric.mixin.client.keybinding.GameOptionsAccessor;
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 
 public final class KeyBindingRegistryImpl {
+	public static final ReferenceArrayList<KeyBinding> unregisteredKeyBindings = ReferenceArrayList.wrap(new KeyBinding[40], 0);
+
 	private static final ReferenceArrayList<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>();
 	private static ReferenceArrayList<KeyBinding> originalKeyBindings;
-	private static GameOptions options;
+	private static GameOptionsAccessor options;
 
 	private KeyBindingRegistryImpl() {
 	}
@@ -58,41 +59,60 @@ public final class KeyBindingRegistryImpl {
 		return true;
 	}
 
-	public static boolean removeCategory(String categoryTranslationKey) {
-		Map<String, Integer> categories = getCategoryMap();
+	public static void removeCategory(String categoryTranslationKey) {
+		KeyBindingAccessor.fabric_getKeyCategories().remove(categoryTranslationKey);
 
-		return categories.remove(categoryTranslationKey) != null;
+		Integer order = getCategoryMap().remove(categoryTranslationKey);
+
+		if (order != null) {
+			for (Map.Entry<String, Integer> entry : getCategoryMap().entrySet()) {
+				Integer value = entry.getValue();
+
+				if (value > order) {
+					entry.setValue(value - 1);
+				}
+			}
+		}
 	}
 
-	public static KeyBinding registerKeyBinding(KeyBinding binding) {
+	public static KeyBinding registerKeyBinding(KeyBinding keyBinding) {
 		for (KeyBinding existingKeyBinding : moddedKeyBindings) {
-			if (existingKeyBinding == binding) {
+			if (existingKeyBinding == keyBinding) {
 				throw new IllegalArgumentException("Attempted to register the same key binding twice.");
-			} else if (existingKeyBinding.getTranslationKey().equals(binding.getTranslationKey())) {
-				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + binding.getTranslationKey() + "!");
+			} else if (existingKeyBinding.getTranslationKey().equals(keyBinding.getTranslationKey())) {
+				throw new RuntimeException("Attempted to register two key bindings with equal ID: " + keyBinding.getTranslationKey() + "!");
 			}
 		}
 
-		if (!hasCategory(binding.getCategory())) {
-			addCategory(binding.getCategory());
+		if (!hasCategory(keyBinding.getCategory())) {
+			addCategory(keyBinding.getCategory());
 		}
 
-		moddedKeyBindings.add(binding);
+		moddedKeyBindings.add(keyBinding);
+		unregisteredKeyBindings.remove(keyBinding);
 
-		return binding;
+		if (options != null) {
+			KeyBindingAccessor.fabric_getKeysToBindings().put(((KeyBindingAccessor) keyBinding).fabric_getBoundKey(), keyBinding);
+			KeyBindingAccessor.fabric_getKeysById().put(keyBinding.getTranslationKey(), keyBinding);
+
+			options.setKeyBindings(process());
+		}
+
+		return keyBinding;
 	}
 
-	public static boolean unregisterKeyBinding(KeyBinding binding) {
-		if (moddedKeyBindings.remove(binding)) {
+	public static boolean unregisterKeyBinding(KeyBinding keyBinding) {
+		if (removeKeyBinding(keyBinding)) {
+			unregisteredKeyBindings.add(keyBinding);
 			((GameOptionsAccessor) MinecraftClient.getInstance().options).setKeyBindings(process());
 
 			for (KeyBinding other : moddedKeyBindings) {
-				if (Objects.equals(other.getCategory(), binding.getCategory())) {
+				if (Objects.equals(other.getCategory(), keyBinding.getCategory())) {
 					return true;
 				}
 			}
 
-			removeCategory(binding.getCategory());
+			removeCategory(keyBinding.getCategory());
 
 			return true;
 		}
@@ -104,6 +124,13 @@ public final class KeyBindingRegistryImpl {
 		return moddedKeyBindings.contains(keyBinding);
 	}
 
+	private static boolean removeKeyBinding(KeyBinding keyBinding) {
+		KeyBindingAccessor.fabric_getKeysById().remove(keyBinding.getTranslationKey());
+		KeyBindingAccessor.fabric_getKeysToBindings().remove(((KeyBindingAccessor) keyBinding).fabric_getBoundKey());
+
+		return moddedKeyBindings.remove(keyBinding);
+	}
+
 	/**
 	 * Processes the key bindings array for our modded ones.
 	 */
@@ -113,10 +140,10 @@ public final class KeyBindingRegistryImpl {
 		return newKeysAll.toArray(new KeyBinding[0]);
 	}
 
-	public static void init(GameOptions options) {
+	public static void init(GameOptionsAccessor options, KeyBinding[] keysAll) {
 		if (KeyBindingRegistryImpl.options == null) {
 			KeyBindingRegistryImpl.options = options;
-			originalKeyBindings = ReferenceArrayList.wrap(options.keysAll);
+			originalKeyBindings = ReferenceArrayList.wrap(keysAll);
 		}
 	}
 }

@@ -6,7 +6,8 @@
     "GameOptionsAccessor",
     "KeyBindingAccessor",
     "KeyCodeAccessor",
-    "MixinGameOptions"
+    "MixinGameOptions",
+    "MixinKeyBinding"
   ],
   "injectors": {
     "defaultRequire": 1
