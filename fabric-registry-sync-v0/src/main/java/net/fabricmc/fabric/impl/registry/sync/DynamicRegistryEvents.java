@@ -28,8 +28,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistryEntryAddedCallback;
 import net.fabricmc.fabric.mixin.registry.sync.DynamicRegistryManagerAccessor;
 
-public abstract class DynamicRegistryEvents {
+public final class DynamicRegistryEvents {
 	public static Map<RegistryKey<? extends Registry<?>>, Event<DynamicRegistryEntryAddedCallback>> ADD_ENTRY_EVENTS;
+
+	private DynamicRegistryEvents() {
+	}
 
 	static {
 		ADD_ENTRY_EVENTS = Maps.newLinkedHashMap();
