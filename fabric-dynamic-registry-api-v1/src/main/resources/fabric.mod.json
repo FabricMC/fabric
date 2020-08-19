@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-dynamic-registry-api-v1",
+  "name": "Fabric Dynamic Registry API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-dynamic-registry-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.8.2"
+  },
+  "description": "Allows registration of custom dynamic registries.",
+  "mixins": [
+    "fabric-dynamic-registry-api-v1.mixins.json"
+  ],
+  "accessWidener": "fabric-dynamic-registry-api-v1.accesswidener"
+}
