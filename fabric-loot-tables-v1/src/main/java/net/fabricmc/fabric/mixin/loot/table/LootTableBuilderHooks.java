@@ -26,7 +26,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.function.LootFunction;
 
 @Mixin(LootTable.Builder.class)
-public interface LootSupplierBuilderHooks {
+public interface LootTableBuilderHooks {
 	@Accessor
 	List<LootPool> getPools();
 	@Accessor
