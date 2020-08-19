@@ -28,24 +28,22 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.event.registry.DynamicRegistryEntryAddedCallback;
 import net.fabricmc.fabric.mixin.registry.sync.DynamicRegistryManagerAccessor;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public final class DynamicRegistryEvents {
-	public static Map<RegistryKey<? extends Registry<?>>, Event<DynamicRegistryEntryAddedCallback>> ADD_ENTRY_EVENTS;
-
-	private DynamicRegistryEvents() {
-	}
+	public static final Map<RegistryKey<? extends Registry<?>>, Event<?>> ADD_ENTRY_EVENTS;
 
 	static {
 		ADD_ENTRY_EVENTS = Maps.newLinkedHashMap();
 
 		for (RegistryKey<? extends Registry<?>> registryKey : DynamicRegistryManagerAccessor.getInfos().keySet()) {
-			ADD_ENTRY_EVENTS.put(registryKey,
-					EventFactory.createArrayBacked(
-					DynamicRegistryEntryAddedCallback.class,
-						callbacks -> (rawId, key, object, registry) -> {
-							for (DynamicRegistryEntryAddedCallback callback : callbacks) {
-								callback.onEntryAdded(rawId, key, object, registry);
-							}
-						}));
+			ADD_ENTRY_EVENTS.put(registryKey, EventFactory.createArrayBacked(DynamicRegistryEntryAddedCallback.class,
+					callbacks -> (rawId, key, object, registry) -> {
+						for (DynamicRegistryEntryAddedCallback callback : callbacks) {
+							callback.onEntryAdded(rawId, key, object, registry);
+						}
+					}));
 		}
 	}
+
+	private DynamicRegistryEvents() { }
 }
