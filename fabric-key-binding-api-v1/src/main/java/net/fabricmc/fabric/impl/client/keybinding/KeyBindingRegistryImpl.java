@@ -16,22 +16,20 @@
 
 package net.fabricmc.fabric.impl.client.keybinding;
 
-import java.util.List;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-
-import com.google.common.collect.Lists;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.fabricmc.fabric.mixin.client.keybinding.GameOptionsAccessor;
+import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.options.GameOptions;
 import net.minecraft.client.options.KeyBinding;
 
-import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
-
 public final class KeyBindingRegistryImpl {
-	private static final Logger LOGGER = LogManager.getLogger();
-
-	private static final List<KeyBinding> moddedKeyBindings = Lists.newArrayList();
+	private static final ReferenceArrayList<KeyBinding> moddedKeyBindings = new ReferenceArrayList<>();
+	private static ReferenceArrayList<KeyBinding> originalKeyBindings;
+	private static GameOptions options;
 
 	private KeyBindingRegistryImpl() {
 	}
@@ -57,6 +55,12 @@ public final class KeyBindingRegistryImpl {
 		return true;
 	}
 
+	public static boolean removeCategory(String categoryTranslationKey) {
+		Map<String, Integer> categories = getCategoryMap();
+
+		return categories.remove(categoryTranslationKey) != null;
+	}
+
 	public static KeyBinding registerKeyBinding(KeyBinding binding) {
 		for (KeyBinding existingKeyBinding : moddedKeyBindings) {
 			if (existingKeyBinding == binding) {
@@ -75,14 +79,41 @@ public final class KeyBindingRegistryImpl {
 		return binding;
 	}
 
+	public static boolean unregisterKeyBinding(KeyBinding binding) {
+		if (moddedKeyBindings.remove(binding)) {
+			((GameOptionsAccessor) MinecraftClient.getInstance().options).setKeyBindings(process());
+
+			for (KeyBinding other : moddedKeyBindings) {
+				if (Objects.equals(other.getCategory(), binding.getCategory())) {
+					return true;
+				}
+			}
+
+			removeCategory(binding.getCategory());
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static boolean isRegistered(KeyBinding keyBinding) {
+		return moddedKeyBindings.contains(keyBinding);
+	}
+
 	/**
-	 * Processes the keybindings array for our modded ones by first removing existing modded keybindings and readding them,
-	 * we can make sure that there are no duplicates this way.
+	 * Processes the key bindings array for our modded ones.
 	 */
-	public static KeyBinding[] process(KeyBinding[] keysAll) {
-		List<KeyBinding> newKeysAll = Lists.newArrayList(keysAll);
-		newKeysAll.removeAll(moddedKeyBindings);
+	public static KeyBinding[] process() {
+		ReferenceArrayList<KeyBinding> newKeysAll = originalKeyBindings.clone();
 		newKeysAll.addAll(moddedKeyBindings);
 		return newKeysAll.toArray(new KeyBinding[0]);
+	}
+
+	public static void init(GameOptions options) {
+		if (KeyBindingRegistryImpl.options == null) {
+			KeyBindingRegistryImpl.options = options;
+			originalKeyBindings = ReferenceArrayList.wrap(options.keysAll);
+		}
 	}
 }

@@ -37,9 +37,9 @@ public final class KeyBindingHelper {
 	}
 
 	/**
-	 * Registers the keybinding and add the keybinding category if required.
+	 * Registers the key binding and adds the key binding category if required.
 	 *
-	 * @param keyBinding the keybinding
+	 * @param keyBinding the key binding
 	 * @return the keybinding itself
 	 */
 	public static KeyBinding registerKeyBinding(KeyBinding keyBinding) {
@@ -47,9 +47,29 @@ public final class KeyBindingHelper {
 	}
 
 	/**
+	 * Attempts to nregister the key binding and removes the key binding category if empty.
+	 *
+	 * @param keyBinding the key binding
+	 * @return {@code true} if previously registered; {@code false} otherwise
+	 */
+	public static boolean unregisterKeyBinding(KeyBinding keyBinding) {
+		return KeyBindingRegistryImpl.unregisterKeyBinding(keyBinding);
+	}
+
+	/**
+	 * Return a {@code boolean} indicating whether a key binding is registered or not.
+	 *
+	 * @param keyBinding the key binding
+	 * @return {@code true} if {@code keyBinding} is registered; {@code false} otherwise
+	 */
+	public static boolean isRegistered(KeyBinding keyBinding) {
+		return KeyBindingRegistryImpl.isRegistered(keyBinding);
+	}
+
+	/**
 	 * Returns the configured KeyCode bound to the KeyBinding from the player's settings.
 	 *
-	 * @param keyBinding the keybinding
+	 * @param keyBinding the key binding
 	 * @return configured KeyCode
 	 */
 	public static InputUtil.Key getBoundKeyOf(KeyBinding keyBinding) {
