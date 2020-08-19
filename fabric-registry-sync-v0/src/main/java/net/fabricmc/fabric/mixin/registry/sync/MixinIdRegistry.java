@@ -45,8 +45,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -135,8 +135,8 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	private boolean fabric_isObjectNew = false;
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
-	@Inject(method = "set", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, CallbackInfoReturnable info) {
+	@Inject(method = "method_31051", at = @At("HEAD"))
+	public void setPre(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable info) {
 		int indexedEntriesId = field_26683.getInt((T) object);
 
 		if (indexedEntriesId >= 0) {
@@ -151,7 +151,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			if (oldObject != null && oldObject != object) {
 				int oldId = field_26683.getInt(oldObject);
 
-				if (oldId != id) {
+				if (oldId != id && checkDuplicateKeys) {
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
 				}
 
@@ -164,8 +164,8 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 	}
 
 	@SuppressWarnings("unchecked")
-	@Inject(method = "set", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, CallbackInfoReturnable info) {
+	@Inject(method = "method_31051", at = @At("RETURN"))
+	public void setPost(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
 		}
