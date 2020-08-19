@@ -70,7 +70,9 @@ public final class KeyBindingRegistryImpl {
 			addCategory(binding.getCategory());
 		}
 
-		return moddedKeyBindings.add(binding) ? binding : null;
+		moddedKeyBindings.add(binding);
+
+		return binding;
 	}
 
 	/**
