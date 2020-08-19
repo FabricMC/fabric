@@ -24,14 +24,15 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryEvents;
 
 @FunctionalInterface
-public interface DynamicRegistryEntryAddedCallback {
-	void onEntryAdded(int rawId, RegistryKey<?> key, Object object, MutableRegistry<?> registry);
+public interface DynamicRegistryEntryAddedCallback<T> {
+	void onEntryAdded(int rawId, RegistryKey<T> key, T object, MutableRegistry<T> registry);
 
-	static Event<DynamicRegistryEntryAddedCallback> event(RegistryKey<? extends Registry<?>> registryKey) {
+	@SuppressWarnings("unchecked")
+	static <T> Event<DynamicRegistryEntryAddedCallback<T>> event(RegistryKey<? extends Registry<T>> registryKey) {
 		if (!DynamicRegistryEvents.ADD_ENTRY_EVENTS.containsKey(registryKey)) {
 			throw new IllegalArgumentException("Unsupported registry: " + registryKey);
 		}
 
-		return DynamicRegistryEvents.ADD_ENTRY_EVENTS.get(registryKey);
+		return (Event<DynamicRegistryEntryAddedCallback<T>>) DynamicRegistryEvents.ADD_ENTRY_EVENTS.get(registryKey);
 	}
 }
