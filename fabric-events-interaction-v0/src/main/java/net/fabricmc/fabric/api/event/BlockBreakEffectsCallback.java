@@ -31,17 +31,15 @@ import net.minecraft.world.World;
  * <li><code>false</code> cancels further processing and prevents the block break effects from being displayed.</ul>
  */
 public interface BlockBreakEffectsCallback {
-	Event<BlockBreakEffectsCallback> EVENT = EventFactory.createArrayBacked(BlockBreakEffectsCallback.class,
-			(listeners) -> (world, pos, state, breakingEntity) -> {
-				for (BlockBreakEffectsCallback event : listeners) {
-					if (!event.run(world, pos, state, breakingEntity)) {
-						return false;
-					}
-				}
-
-				return true;
+	Event<BlockBreakEffectsCallback> EVENT = EventFactory.createArrayBacked(BlockBreakEffectsCallback.class, (listeners) -> (world, pos, state, breakingEntity) -> {
+		for (BlockBreakEffectsCallback event : listeners) {
+			if (!event.run(world, pos, state, breakingEntity)) {
+				return false;
 			}
-	);
+		}
+
+		return true;
+	});
 
 	boolean run(World world, BlockPos pos, BlockState state, /* nullable */ Entity breakingEntity);
 }
