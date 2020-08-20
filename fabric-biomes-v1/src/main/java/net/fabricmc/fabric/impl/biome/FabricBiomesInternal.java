@@ -16,25 +16,18 @@ public class FabricBiomesInternal {
 	private static final Set<RegistryKey<Biome>> OVERWORLD_BIOMES = Sets.newHashSet();
 	private static final Map<RegistryKey<Biome>, Biome.MixedNoisePoint> NETHER_BIOMES = Maps.newHashMap();
 
-	/**
-	 * Intended only for use within {@link net.minecraft.world.biome.layer.BiomeLayers}.
-	 */
-	public static Registry<Biome> lastBiomeRegistry;
-
 	public static RegistryKey<Biome> register(RegistryKey<Biome> key, Biome biome) {
 		Registry<Biome> registry = DynamicRegistryManagerAccessor.getBuiltin().get(Registry.BIOME_KEY);
 		Registry.register(registry, key.getValue(), biome);
 		return key;
 	}
 
-	public static RegistryKey<Biome> addToOverworld(RegistryKey<Biome> key) {
+	public static void addToOverworld(RegistryKey<Biome> key) {
 		OVERWORLD_BIOMES.add(key);
-		return key;
 	}
 
-	public static RegistryKey<Biome> addToNether(RegistryKey<Biome> key, Biome.MixedNoisePoint mixedNoisePoint) {
+	public static void addToNether(RegistryKey<Biome> key, Biome.MixedNoisePoint mixedNoisePoint) {
 		NETHER_BIOMES.put(key, mixedNoisePoint);
-		return key;
 	}
 
 	public static Set<RegistryKey<Biome>> getOverworldBiomes() {

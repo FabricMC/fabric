@@ -1,40 +1,29 @@
 package net.fabricmc.fabric.api.biomes.v1;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-
+import net.fabricmc.fabric.mixin.biome.BiomeEffectsAccessor;
+import net.fabricmc.fabric.mixin.biome.SpawnDensityAccessor;
+import net.fabricmc.fabric.mixin.biome.SpawnSettingsAccessor;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeEffects;
-import net.minecraft.world.biome.BiomeParticleConfig;
-import net.minecraft.world.biome.GenerationSettings;
-import net.minecraft.world.biome.SpawnSettings;
+import net.minecraft.world.biome.*;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 
-import net.fabricmc.fabric.mixin.biome.BiomeEffectsAccessor;
-import net.fabricmc.fabric.mixin.biome.SpawnDensityAccessor;
-import net.fabricmc.fabric.mixin.biome.SpawnSettingsAccessor;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class FabricBiomeBuilder {
-	// DynamicRegistryManager
-	private DynamicRegistryManager registryManager;
 
 	// Biome settings
 	private float depth;
@@ -71,12 +60,8 @@ public class FabricBiomeBuilder {
 	private Optional<BiomeAdditionsSound> additionsSound = Optional.empty();
 	private Optional<MusicSound> musicSound = Optional.empty();
 
-	private FabricBiomeBuilder(DynamicRegistryManager registryManager) {
-		this.registryManager = registryManager;
-	}
-
-	public static FabricBiomeBuilder of(Biome biome, DynamicRegistryManager registryManager) {
-		FabricBiomeBuilder builder = new FabricBiomeBuilder(registryManager);
+	public static FabricBiomeBuilder of(Biome biome) {
+		FabricBiomeBuilder builder = new FabricBiomeBuilder();
 		builder.depth(biome.getDepth());
 		builder.category(biome.getCategory());
 		builder.precipitation(biome.getPrecipitation());
@@ -87,38 +72,33 @@ public class FabricBiomeBuilder {
 		//TODO: temperatureModifier
 
 		GenerationSettings generationSettings = biome.getGenerationSettings();
-
-		for (GenerationStep.Carver step : GenerationStep.Carver.values()) {
-			for (Supplier<ConfiguredCarver<?>> carver : generationSettings.getCarversForStep(step)) {
+		for(GenerationStep.Carver step : GenerationStep.Carver.values()) {
+			for(Supplier<ConfiguredCarver<?>> carver : generationSettings.getCarversForStep(step)) {
 				builder.carver(step, carver);
 			}
 		}
 
-		for (GenerationStep.Feature step : GenerationStep.Feature.values()) {
-			if (step.ordinal() < generationSettings.getFeatures().size()) {
+		for(GenerationStep.Feature step : GenerationStep.Feature.values()) {
+			if(step.ordinal() < generationSettings.getFeatures().size()) {
 				for (Supplier<ConfiguredFeature<?, ?>> feature : generationSettings.getFeatures().get(step.ordinal())) {
 					builder.feature(step, feature);
 				}
 			}
 		}
-
-		for (Supplier<ConfiguredStructureFeature<?, ?>> structureFeature : generationSettings.getStructureFeatures()) {
+		for(Supplier<ConfiguredStructureFeature<?, ?>> structureFeature : generationSettings.getStructureFeatures()) {
 			builder.structureFeature(structureFeature);
 		}
-
 		builder.surfaceBuilder(generationSettings.getSurfaceBuilder());
 
 		SpawnSettings spawnSettings = biome.getSpawnSettings();
 		builder.playerSpawnFriendly(spawnSettings.isPlayerSpawnFriendly());
 		builder.creatureSpawnProbability(spawnSettings.getCreatureSpawnProbability());
-
-		for (SpawnGroup group : SpawnGroup.values()) {
-			for (SpawnSettings.SpawnEntry entry : spawnSettings.getSpawnEntry(group)) {
+		for(SpawnGroup group : SpawnGroup.values()) {
+			for(SpawnSettings.SpawnEntry entry : spawnSettings.getSpawnEntry(group)) {
 				builder.spawn(group, entry);
 			}
 		}
-
-		for (Map.Entry<EntityType<?>, SpawnSettings.SpawnDensity> entry : ((SpawnSettingsAccessor) spawnSettings).getSpawnCosts().entrySet()) {
+		for(Map.Entry<EntityType<?>, SpawnSettings.SpawnDensity> entry : ((SpawnSettingsAccessor)spawnSettings).getSpawnCosts().entrySet()) {
 			builder.spawnDensity(entry.getKey(), entry.getValue().getMass(), entry.getValue().getGravityLimit());
 		}
 
@@ -151,42 +131,34 @@ public class FabricBiomeBuilder {
 
 		GenerationSettings.Builder generationSettingsBuilder = new GenerationSettings.Builder();
 		generationSettingsBuilder.surfaceBuilder(surfaceBuilder);
-
 		for (Map.Entry<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> entry : carvers.entrySet()) {
 			for (Supplier<ConfiguredCarver<?>> carver : entry.getValue()) {
 				generationSettingsBuilder.carver(entry.getKey(), carver.get());
 			}
 		}
-
 		for (Map.Entry<GenerationStep.Feature, List<Supplier<ConfiguredFeature<?, ?>>>> entry : features.entrySet()) {
 			for (Supplier<ConfiguredFeature<?, ?>> feature : entry.getValue()) {
 				generationSettingsBuilder.feature(entry.getKey().ordinal(), feature);
 			}
 		}
-
 		for (Supplier<ConfiguredStructureFeature<?, ?>> structureFeature : structureFeatures) {
 			generationSettingsBuilder.structureFeature(structureFeature.get());
 		}
-
 		biomeBuilder.generationSettings(generationSettingsBuilder.build());
 
 		SpawnSettings.Builder spawnSettingsBuilder = new SpawnSettings.Builder();
 		spawnSettingsBuilder.creatureSpawnProbability(creatureSpawnProbability);
-
 		if (playerSpawnFriendly) {
 			spawnSettingsBuilder.playerSpawnFriendly();
 		}
-
 		for (Map.Entry<SpawnGroup, List<SpawnSettings.SpawnEntry>> entry : spawners.entrySet()) {
 			for (SpawnSettings.SpawnEntry spawnEntry : entry.getValue()) {
 				spawnSettingsBuilder.spawn(entry.getKey(), spawnEntry);
 			}
 		}
-
 		for (Map.Entry<EntityType<?>, SpawnSettings.SpawnDensity> entry : spawnDensities.entrySet()) {
 			spawnSettingsBuilder.spawnCost(entry.getKey(), entry.getValue().getMass(), entry.getValue().getGravityLimit());
 		}
-
 		biomeBuilder.spawnSettings(spawnSettingsBuilder.build());
 
 		BiomeEffects.Builder biomeEffectsBuilder = new BiomeEffects.Builder();
@@ -247,18 +219,8 @@ public class FabricBiomeBuilder {
 		return this;
 	}
 
-	public FabricBiomeBuilder carver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> carver) {
-		carver(step, () -> registryManager.get(Registry.CONFIGURED_CARVER_WORLDGEN).get(carver));
-		return this;
-	}
-
 	public FabricBiomeBuilder feature(GenerationStep.Feature step, Supplier<ConfiguredFeature<?, ?>> feature) {
 		this.features.computeIfAbsent(step, (s) -> Lists.newArrayList()).add(feature);
-		return this;
-	}
-
-	public FabricBiomeBuilder feature(GenerationStep.Feature step, RegistryKey<ConfiguredFeature<?, ?>> feature) {
-		feature(step, () -> registryManager.get(Registry.CONFIGURED_FEATURE_WORLDGEN).get(feature));
 		return this;
 	}
 
@@ -267,18 +229,8 @@ public class FabricBiomeBuilder {
 		return this;
 	}
 
-	public FabricBiomeBuilder structureFeature(RegistryKey<ConfiguredStructureFeature<?, ?>> structureFeature) {
-		structureFeature(() -> registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN).get(structureFeature));
-		return this;
-	}
-
 	public FabricBiomeBuilder surfaceBuilder(Supplier<ConfiguredSurfaceBuilder<?>> surfaceBuilder) {
 		this.surfaceBuilder = surfaceBuilder;
-		return this;
-	}
-
-	public FabricBiomeBuilder surfaceBuilder(RegistryKey<ConfiguredSurfaceBuilder<?>> surfaceBuilder) {
-		surfaceBuilder(() -> registryManager.get(Registry.CONFIGURED_SURFACE_BUILDER_WORLDGEN).get(surfaceBuilder));
 		return this;
 	}
 

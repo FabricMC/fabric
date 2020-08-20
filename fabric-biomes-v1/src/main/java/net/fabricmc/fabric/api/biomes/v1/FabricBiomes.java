@@ -12,11 +12,11 @@ public final class FabricBiomes {
 		return FabricBiomesInternal.register(key, biome);
 	}
 
-	public static RegistryKey<Biome> addToOverworld(RegistryKey<Biome> key) {
-		return FabricBiomesInternal.addToOverworld(key);
+	public static void addToOverworld(RegistryKey<Biome> key) {
+		FabricBiomesInternal.addToOverworld(key);
 	}
 
-	public static RegistryKey<Biome> addToNether(RegistryKey<Biome> key, Biome.MixedNoisePoint mixedNoisePoint) {
-		return FabricBiomesInternal.addToNether(key, mixedNoisePoint);
+	public static void addToNether(RegistryKey<Biome> key, Biome.MixedNoisePoint mixedNoisePoint) {
+		FabricBiomesInternal.addToNether(key, mixedNoisePoint);
 	}
 }
