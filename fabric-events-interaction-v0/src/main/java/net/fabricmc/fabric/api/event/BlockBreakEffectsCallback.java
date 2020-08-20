@@ -31,17 +31,13 @@ import net.minecraft.world.World;
 public interface BlockBreakEffectsCallback {
 	Event<BlockBreakEffectsCallback> EVENT = EventFactory.createArrayBacked(BlockBreakEffectsCallback.class,
 			(listeners) -> (world, pos, state, breakingEntity) -> {
-				boolean result = true;
-
 				for (BlockBreakEffectsCallback event : listeners) {
-					result = event.run(world, pos, state, breakingEntity);
-
-					if (!result) {
-						break;
+					if (!event.run(world, pos, state, breakingEntity)) {
+						return false;
 					}
 				}
 
-				return result;
+				return true;
 			}
 	);
 
