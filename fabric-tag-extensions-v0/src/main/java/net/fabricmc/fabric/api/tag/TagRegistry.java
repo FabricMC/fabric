@@ -37,7 +37,7 @@ import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
  *
  * <p>The convention for namespaces of common tags (e.g. ingots) is {@code c}.
  *
- * <p>The convention for paths is plural terms, e.g. {@code c:iron_ingots}, following the majority of vanilla's tags, e.g. {@code minecraft:slabs}, {@code minecraft:gold_ores}
+ * <p>The convention for paths is to use plural terms, such as {@code c:iron_ingots}, keeping in line with the majority of vanilla tags such as {@code minecraft:slabs} and {@code minecraft:gold_ores}.
  */
 public final class TagRegistry {
 	private TagRegistry() { }
