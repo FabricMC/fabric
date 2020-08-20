@@ -12,6 +12,7 @@
     "MixinBlock",
     "PointOfInterestTypeAccessor",
     "ServerWorldAccessor",
+    "SpawnRestrictionAccessor",
     "VillagerProfessionAccessor"
   ],
   "client": [

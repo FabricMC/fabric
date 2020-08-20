@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -44,4 +45,16 @@ public interface BuiltinItemRendererRegistry {
 	 * @throws NullPointerException if either the item or the renderer is null
 	 */
 	void register(Item item, BuiltinItemRenderer renderer);
+
+	/**
+	 * Registers the renderer for the item.
+	 *
+	 * <p>Note that the item's JSON model must also extend {@code minecraft:builtin/entity}.
+	 *
+	 * @param item     the item
+	 * @param renderer the renderer
+	 * @throws IllegalArgumentException if the item already has a registered renderer
+	 * @throws NullPointerException if either the item or the renderer is null
+	 */
+	void register(ItemConvertible item, BuiltinItemRenderer renderer);
 }
