@@ -40,14 +40,14 @@ public final class FabricSpawnerRegistryInternals {
 		((ServerWorldAccessor) world).setSpawners(spawnerList);
 	}
 
-	public static void deregister(ServerWorld world, Spawner spawner) {
+	public static void unregister(ServerWorld world, Spawner spawner) {
 		//Copy the list, because it may be immutable
 		List<Spawner> spawnerList = new ArrayList<>(((ServerWorldAccessor) world).getSpawners());
 		spawnerList.remove(spawner);
 		((ServerWorldAccessor) world).setSpawners(spawnerList);
 	}
 
-	public static void deregister(ServerWorld world, Collection<Spawner> spawners) {
+	public static void unregister(ServerWorld world, Collection<Spawner> spawners) {
 		//Copy the list, because it may be immutable
 		List<Spawner> spawnerList = new ArrayList<>(((ServerWorldAccessor) world).getSpawners());
 		spawnerList.removeAll(spawners);

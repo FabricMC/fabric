@@ -61,8 +61,8 @@ public final class FabricSpawnerRegistry {
 	 * @param world the world to remove the spawner from
 	 * @param spawner the spawner to remove
 	 */
-	public static void deregister(ServerWorld world, Spawner spawner) {
-		FabricSpawnerRegistryInternals.deregister(world, spawner);
+	public static void unregister(ServerWorld world, Spawner spawner) {
+		FabricSpawnerRegistryInternals.unregister(world, spawner);
 	}
 
 	/**
@@ -71,7 +71,7 @@ public final class FabricSpawnerRegistry {
 	 * @param world the world to remove the spawners from
 	 * @param spawners the spawners to remove
 	 */
-	public static void deregister(ServerWorld world, Collection<Spawner> spawners) {
-		FabricSpawnerRegistryInternals.deregister(world, spawners);
+	public static void unregister(ServerWorld world, Collection<Spawner> spawners) {
+		FabricSpawnerRegistryInternals.unregister(world, spawners);
 	}
 }
