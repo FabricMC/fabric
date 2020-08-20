@@ -20,20 +20,18 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.BlockBreakEffectsCallback;
 
-@Mixin(Block.class)
-public class MixinBlock {
-	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;syncWorldEvent(Lnet/minecraft/entity/player/PlayerEntity;ILnet/minecraft/util/math/BlockPos;I)V"), method = "onBreak")
-	public void onBreak(World world, PlayerEntity player, int eventId, BlockPos pos, int data, World world2, BlockPos pos2, BlockState state, PlayerEntity player2) {
-		if (BlockBreakEffectsCallback.EVENT.invoker().run(world, pos, state, player2)) {
-			world.syncWorldEvent(player, eventId, pos, data);
+@Mixin(World.class)
+public class WorldMixin {
+	@Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;syncWorldEvent(ILnet/minecraft/util/math/BlockPos;I)V"), method = "breakBlock")
+	public void breakBlock(World world, int eventId, BlockPos pos, int data, BlockPos pos2, boolean drop, Entity breakingEntity, int maxUpdateDepth) {
+		if (BlockBreakEffectsCallback.EVENT.invoker().run(world, pos, world.getBlockState(pos), breakingEntity)) {
+			world.syncWorldEvent(eventId, pos, data);
 		}
 	}
 }
