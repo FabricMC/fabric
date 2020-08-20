@@ -16,26 +16,43 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import net.minecraft.world.biome.DefaultBiomeCreator;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.BuiltInBiomes;
+import net.minecraft.world.biome.DefaultBiomeCreator;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biomes.v1.NetherBiomes;
-import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
+import net.fabricmc.fabric.api.biomes.v1.FabricBiomes;
+import net.fabricmc.fabric.api.biomes.v1.event.BiomeLoadingCallback;
 
 public class FabricBiomeTest implements ModInitializer {
 	public static final String MOD_ID = "fabric-biome-api-v1-testmod";
 
-	@Override public void onInitialize() {
-		Biome biome = Registry.register(BuiltinRegistries.BIOME, new Identifier(MOD_ID, "test_crimson_forest"), DefaultBiomeCreator.createCrimsonForest());
-		NetherBiomes.addNetherBiome(Biomes.BEACH, new Biome.MixedNoisePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.1F));
-		NetherBiomes.addNetherBiome(biome, new Biome.MixedNoisePoint(0.0F, 0.5F, 0.0F, 0.0F, 0.275F));
+	public static final RegistryKey<Biome> TEST_CRIMSON_FOREST = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_crimson_forest"));
+	public static final RegistryKey<Biome> TEST_PLAINS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_plains"));
 
-		Biome customPlains = Registry.register(BuiltinRegistries.BIOME, new Identifier(MOD_ID, "custom_plains"), DefaultBiomeCreator.createPlains(null, false));
-		OverworldBiomes.addBiomeVariant(Biomes.PLAINS, customPlains, 1);
+	@Override public void onInitialize() {
+		// Works fine
+		FabricBiomes.register(TEST_PLAINS, DefaultBiomeCreator.createPlains(false));
+		FabricBiomes.register(TEST_CRIMSON_FOREST, DefaultBiomeCreator.createCrimsonForest());
+
+		// TODO: Not working
+		FabricBiomes.addToOverworld(TEST_PLAINS);
+
+		// Works fine
+		FabricBiomes.addToNether(TEST_CRIMSON_FOREST, new Biome.MixedNoisePoint(0.0f, 0.5f, 0.0f, 0.0f, 0.1f));
+
+		// TODO: Not working (should this work?)
+		FabricBiomes.addToNether(BuiltInBiomes.BEACH, new Biome.MixedNoisePoint(0.0f, 0.5f, 0.0f, 0.0f, 0.275f));
+
+		// Works fine
+		BiomeLoadingCallback.EVENT.register((biomeRegistryKey, biomeBuilder) -> {
+			if (biomeRegistryKey.equals(BuiltInBiomes.PLAINS)) {
+				biomeBuilder.structureFeature(() -> ConfiguredStructureFeatures.DESERT_PYRAMID);
+			}
+		});
 	}
 }

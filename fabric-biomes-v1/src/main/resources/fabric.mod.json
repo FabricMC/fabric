@@ -22,5 +22,10 @@
   "description": "Hooks for adding biomes to the default world generator.",
   "mixins": [
     "fabric-biomes-v1.mixins.json"
-  ]
+  ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.biome.FabricBiomesEntrypoint"
+    ]
+  }
 }
