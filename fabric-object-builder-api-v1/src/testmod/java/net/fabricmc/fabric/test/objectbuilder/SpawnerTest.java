@@ -26,7 +26,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricSpawnerRegistry;
 
-public class ObjectBuilderTest implements ModInitializer {
+public class SpawnerTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerWorldEvents.LOAD.register(((server, world) -> {
