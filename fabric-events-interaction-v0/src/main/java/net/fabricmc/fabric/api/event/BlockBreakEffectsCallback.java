@@ -24,7 +24,7 @@ import net.minecraft.world.World;
 /**
  * Callback for the effects displayed when a block is broken (particles and sounds)
  *
- * This is invoked on both the logical-client and logical-server
+ * <p>This is invoked on both the logical-client and logical-server
  *
  * <p>Upon return:
  * <ul><li><code>true</code> falls back to further processing.
