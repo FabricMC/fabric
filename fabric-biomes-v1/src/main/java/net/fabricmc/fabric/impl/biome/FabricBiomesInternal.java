@@ -22,12 +22,14 @@ public class FabricBiomesInternal {
 		return key;
 	}
 
-	public static void addToOverworld(RegistryKey<Biome> key) {
+	public static RegistryKey<Biome> addToOverworld(RegistryKey<Biome> key) {
 		OVERWORLD_BIOMES.add(key);
+		return key;
 	}
 
-	public static void addToNether(RegistryKey<Biome> key, Biome.MixedNoisePoint mixedNoisePoint) {
+	public static RegistryKey<Biome> addToNether(RegistryKey<Biome> key, Biome.MixedNoisePoint mixedNoisePoint) {
 		NETHER_BIOMES.put(key, mixedNoisePoint);
+		return key;
 	}
 
 	public static Set<RegistryKey<Biome>> getOverworldBiomes() {
