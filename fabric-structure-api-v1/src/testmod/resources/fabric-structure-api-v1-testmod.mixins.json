@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.structure.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinDefaultBiomeCreator"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
