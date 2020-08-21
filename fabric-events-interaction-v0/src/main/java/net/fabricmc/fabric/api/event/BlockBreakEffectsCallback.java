@@ -38,11 +38,13 @@ public interface BlockBreakEffectsCallback {
 	});
 
 	/**
-	 * @param world World
-	 * @param pos Position Of Broken Block
-	 * @param state Block State of Broken Block
-	 * @param breakingEntity Entity That Broke The Block
-	 * @return <code>true</code> falls back to further processing, <code>false</code> cancels further processing and prevents the block break effects from being displayed.
+	 * Determines if a block break effect should be displayed.
+	 *
+	 * @param world the world
+	 * @param pos the position of broken block
+	 * @param state the broken block state
+	 * @param breakingEntity the entity that broke the block
+	 * @return {@code false} to cancel prevents the block break effects from being displayed, {@code true} to pass on to other callbacks
 	 */
 	boolean run(World world, BlockPos pos, BlockState state, /* nullable */ Entity breakingEntity);
 }
