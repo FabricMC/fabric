@@ -1,13 +1,11 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.item",
+  "package": "net.fabricmc.fabric.test.structure.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ItemMixin",
-    "MobEntityMixin"
+    "MixinDefaultBiomeCreator"
   ],
   "client": [
-    "client.ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1
