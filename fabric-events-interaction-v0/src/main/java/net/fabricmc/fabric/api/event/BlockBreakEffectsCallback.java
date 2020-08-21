@@ -25,10 +25,6 @@ import net.minecraft.world.World;
  * Callback for the effects displayed when a block is broken (particles and sounds)
  *
  * <p>This is invoked on both the logical-client and logical-server
- *
- * <p>Upon return:
- * <ul><li><code>true</code> falls back to further processing.
- * <li><code>false</code> cancels further processing and prevents the block break effects from being displayed.</ul>
  */
 public interface BlockBreakEffectsCallback {
 	Event<BlockBreakEffectsCallback> EVENT = EventFactory.createArrayBacked(BlockBreakEffectsCallback.class, (listeners) -> (world, pos, state, breakingEntity) -> {
@@ -41,5 +37,12 @@ public interface BlockBreakEffectsCallback {
 		return true;
 	});
 
+	/**
+	 * @param world World
+	 * @param pos Position Of Broken Block
+	 * @param state Block State of Broken Block
+	 * @param breakingEntity Entity That Broke The Block
+	 * @return <code>true</code> falls back to further processing, <code>false</code> cancels further processing and prevents the block break effects from being displayed.
+	 */
 	boolean run(World world, BlockPos pos, BlockState state, /* nullable */ Entity breakingEntity);
 }
