@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
-import java.util.Map;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,25 +23,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.registry.DynamicRegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.impl.registry.sync.DynamicRegistryEvents;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 
 @Mixin(DynamicRegistryManager.class)
 public class DynamicRegistryManagerMixin {
-	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps$class_5506$class_5507;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.Impl> cir, DynamicRegistryManager.Impl registryManager) {
-		for (Map.Entry<RegistryKey<? extends Registry<?>>, Event<?>> event : DynamicRegistryEvents.ADD_ENTRY_EVENTS.entrySet()) {
-			RegistryKey<? extends Registry<Object>> registryKey = (RegistryKey<? extends Registry<Object>>) event.getKey();
-			RegistryEntryAddedCallback.event(registryManager.get(registryKey)).register((rawId, id, object) -> {
-				RegistryKey<?> key = RegistryKey.of(registryKey, id);
-				((DynamicRegistryEntryAddedCallback) event.getValue().invoker()).onEntryAdded(rawId, key, object, registryManager.get(registryKey));
-			});
-		}
+		DynamicRegistrySetupCallback.EVENT.invoker().onSetupRegistry(registryManager);
 	}
 }
