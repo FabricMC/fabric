@@ -52,7 +52,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			}
 
 			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					type == ResourceType.CLIENT_RESOURCES, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
+					true, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);
 
 			if (resourcePackProfile != null) {

@@ -17,18 +17,25 @@
 package net.fabricmc.fabric.mixin.resource.loader;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.gui.screen.world.CreateWorldScreen;
+import net.minecraft.resource.DataPackSettings;
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourceType;
 
+import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(CreateWorldScreen.class)
@@ -40,5 +47,27 @@ public class MixinCreateWorldScreen {
 	private void onScanPacks(CallbackInfoReturnable<Pair<File, ResourcePackManager>> cir) {
 		// Allow to display built-in data packs in the data pack selection screen at world creation.
 		((ResourcePackManagerAccessor) this.field_25792).getProviders().add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
+	}
+
+	@ModifyArg(method = "method_31130", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/resource/DataPackSettings;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
+	private static DataPackSettings onNew(DataPackSettings settings) {
+		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
+		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();
+		modResourcePackCreator.register(moddedResourcePacks::add, ResourcePackProfile::new);
+
+		List<String> enabled = new ArrayList<>(settings.getEnabled());
+		List<String> disabled = new ArrayList<>(settings.getDisabled());
+
+		for (ResourcePackProfile profile : moddedResourcePacks) {
+			ResourcePack pack = profile.createResourcePack();
+
+			if (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).shouldBeEnabledByDefault()) {
+				enabled.add(profile.getName());
+			} else {
+				disabled.add(profile.getName());
+			}
+		}
+
+		return new DataPackSettings(enabled, disabled);
 	}
 }

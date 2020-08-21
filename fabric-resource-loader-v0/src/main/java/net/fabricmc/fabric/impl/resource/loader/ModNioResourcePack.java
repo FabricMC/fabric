@@ -51,8 +51,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final AutoCloseable closer;
 	private final String separator;
 	private final String name;
+	private final boolean defaultEnabled;
 
-	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer, String name) {
+	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer, String name, boolean defaultEnabled) {
 		super(null);
 		this.modInfo = modInfo;
 		this.basePath = path.toAbsolutePath().normalize();
@@ -60,6 +61,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
 		this.name = name;
+		this.defaultEnabled = defaultEnabled;
 	}
 
 	private Path getPath(String filename) {
@@ -225,6 +227,10 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	public ModMetadata getFabricModMetadata() {
 		return modInfo;
+	}
+
+	public boolean shouldBeEnabledByDefault() {
+		return this.defaultEnabled;
 	}
 
 	@Override

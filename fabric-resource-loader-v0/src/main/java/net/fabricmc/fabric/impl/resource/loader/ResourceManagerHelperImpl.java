@@ -54,17 +54,22 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
 	}
 
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container) {
+		return registerBuiltinResourcePack(id, subPath, container, false);
+	}
+
 	/**
 	 * Registers a built-in resource pack. Internal implementation.
 	 *
 	 * @param id The identifier of the resource pack.
 	 * @param subPath The sub path in the mod resources.
 	 * @param container The mod container.
+	 * @param enabledByDefault True if enabled by default, else false.
 	 * @return True if successfully registered the resource pack, else false.
 	 *
-	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer)
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container) {
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, boolean enabledByDefault) {
 		String separator = container.getRootPath().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 
@@ -75,7 +80,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 
 		String name = id.getNamespace() + "/" + id.getPath();
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, name)));
+		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, name, enabledByDefault)));
 
 		return true;
 	}

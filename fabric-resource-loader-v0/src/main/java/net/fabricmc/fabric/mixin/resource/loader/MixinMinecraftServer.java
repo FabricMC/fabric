@@ -22,10 +22,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.server.MinecraftServer;
+
+import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 
 @Mixin(MinecraftServer.class)
 public class MixinMinecraftServer {
@@ -39,7 +42,13 @@ public class MixinMinecraftServer {
 		}
 
 		ResourcePackProfile profile = resourcePackManager.getProfile(profileName);
-		// Prevents automatic load for built-in data packs provided by mods.
-		return profile.getSource() == ResourcePackSource.PACK_SOURCE_BUILTIN && !profileName.equals("vanilla");
+
+		if (profile.getSource() == ResourcePackSource.PACK_SOURCE_BUILTIN && !profileName.equals("vanilla")) {
+			ResourcePack pack = profile.createResourcePack();
+			// Prevents automatic load for built-in data packs provided by mods.
+			return pack instanceof ModNioResourcePack && !((ModNioResourcePack) pack).shouldBeEnabledByDefault();
+		}
+
+		return false;
 	}
 }

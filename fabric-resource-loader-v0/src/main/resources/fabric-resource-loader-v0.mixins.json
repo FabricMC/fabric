@@ -14,6 +14,7 @@
   "client": [
     "MixinClientBuiltinResourcePackProvider",
     "MixinCreateWorldScreen",
+    "MixinGameOptions",
     "MixinKeyedResourceReloadListener$Client",
     "MixinPackScreen"
   ],
