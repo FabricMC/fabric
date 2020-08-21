@@ -85,10 +85,4 @@ public class FabricItemSettings extends Item.Settings {
 		super.rarity(rarity);
 		return this;
 	}
-
-	@Override
-	public FabricItemSettings fireproof() {
-		super.fireproof();
-		return this;
-	}
 }
