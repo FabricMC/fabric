@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 /**
- * Callback for the effects displayed when a block is broken (particles and sounds)
+ * Callback for the effects displayed when a block is broken (particles and sounds).
  *
  * <p>This is invoked on both the logical-client and logical-server
  */
