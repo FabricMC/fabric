@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.event.interaction;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.BlockState;
-import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
+import net.minecraft.client.network.packet.BlockUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
 
