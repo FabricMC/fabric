@@ -16,111 +16,136 @@
 
 package net.fabricmc.fabric.mixin.client.renderer.registry;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.Tessellator;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.ItemCooldownManager;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Matrix4f;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
-	@Shadow public float zOffset;
-	@Shadow
-	protected abstract void renderGuiQuad(BufferBuilder buffer, int x, int y, int width, int height, int red, int green, int blue, int alpha);
-
-	@Unique
-	protected void renderGuiQuad(BufferBuilder buffer, int x, int y, int width, int height, int color) {
-		renderGuiQuad(buffer, x, y, width, height, color >> 16 & 255, color >> 8 & 255, color & 255, color >> 24 & 255);
-	}
+	// This design means multiple durability bars are impossible. Too bad!
 
 	@Unique private final MatrixStack matrixStack = new MatrixStack();
+	@Unique private boolean needPopping = false;
 
-	/**
-	 * @reason Implement custom item overlay API
-	 * @author ADudeCalledLeo
-	 */
-	@SuppressWarnings("deprecation")
-	@Overwrite
-	public void renderGuiItemOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
-		if (!stack.isEmpty()) {
-			matrixStack.push();
-			matrixStack.translate(0.0D, 0.0D, this.zOffset + 200.0F);
+	@Unique private void setGuiQuadColor(Args args, int color) {
+		// renderGuiQuad takes each component separately, for some reason
+		args.set(5, (color >> 16) & 0xFF);
+		args.set(6, (color >> 8) & 0xFF);
+		args.set(7, color & 0xFF);
+		args.set(8, (color >> 24) & 0xFF);
+	}
 
-			if (ItemOverlayRendererRegistry.getPreRenderer(stack.getItem()).renderOverlay(matrixStack, renderer, stack, x, y, countLabel)) {
-				return;
-			}
-
-			CountLabelProperties countProps = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
-
-			if (countProps.isVisible(stack, countLabel)) {
-				String string = countProps.getContents(stack, countLabel);
-				int color = countProps.getColor(stack, countLabel);
-				VertexConsumerProvider.Immediate immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().getBuffer());
-				renderer.draw(string, x + 17 - renderer.getWidth(string), y + 9, color, true, matrixStack.peek().getModel(), immediate, false, 0, 0xF000F0);
-				immediate.draw();
-			}
-
-			DurabilityBarProperties barProps = ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem());
-
-			final int barCount = barProps.getCount(stack);
-
-			if (barCount > 0) {
-				int barY = 13 - (barCount - 1) * 2;
-				RenderSystem.disableDepthTest();
-				RenderSystem.disableTexture();
-				RenderSystem.disableAlphaTest();
-				RenderSystem.disableBlend();
-
-				for (int i = 0; i < barCount; i++) {
-					if (barProps.isVisible(stack, i)) {
-						Tessellator tessellator = Tessellator.getInstance();
-						BufferBuilder bufferBuilder = tessellator.getBuffer();
-						int width = Math.round(barProps.getFillFactor(stack, i) * 13.0F);
-						int color = barProps.getColor(stack, i);
-						this.renderGuiQuad(bufferBuilder, x + 2, y + barY, 13, 2, 0xFF000000);
-						this.renderGuiQuad(bufferBuilder, x + 2, y + barY, width, 1, color);
-						barY += 2;
-					}
-				}
-
-				RenderSystem.enableBlend();
-				RenderSystem.enableAlphaTest();
-				RenderSystem.enableTexture();
-				RenderSystem.enableDepthTest();
-			}
-
-			CooldownOverlayProperties coolProps = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem());
-
-			if (coolProps.isVisible(stack)) {
-				float fillFactor = coolProps.getFillFactor(stack);
-				RenderSystem.disableDepthTest();
-				RenderSystem.disableTexture();
-				RenderSystem.enableBlend();
-				RenderSystem.defaultBlendFunc();
-				Tessellator tessellator2 = Tessellator.getInstance();
-				BufferBuilder bufferBuilder2 = tessellator2.getBuffer();
-				this.renderGuiQuad(bufferBuilder2, x, y + MathHelper.floor(16.0F * (1.0F - fillFactor)), 16, MathHelper.ceil(16.0F * fillFactor), coolProps.getColor(stack));
-				RenderSystem.enableTexture();
-				RenderSystem.enableDepthTest();
-			}
-
-			ItemOverlayRendererRegistry.getPostRenderer(stack.getItem()).renderOverlay(matrixStack, renderer, stack, x, y, countLabel);
-
-			matrixStack.pop();
+	@Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At("HEAD"), cancellable = true)
+	public void preOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
+		if (stack.isEmpty()) {
+			return;
 		}
+
+		matrixStack.push();
+		boolean cancel = ItemOverlayRendererRegistry.getPreRenderer(stack.getItem()).renderOverlay(new MatrixStack(), renderer, stack, x, y, countLabel);
+		matrixStack.pop();
+
+		if (cancel) {
+			ci.cancel();
+		}
+	}
+
+	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack"))
+	public MatrixStack reuseMatrixStack() {
+		matrixStack.push();
+		needPopping = true;
+		return matrixStack;
+	}
+
+	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0))
+	public int countVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
+		return ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).isVisible(stack, countLabel) ? 2 : 1;
+	}
+
+	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Ljava/lang/String;valueOf(I)Ljava/lang/String;"))
+	public String countLabel(int stackCount, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
+		return ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getContents(stack, countLabel);
+	}
+
+	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Ljava/lang/String;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"))
+	public int countColor(TextRenderer textRenderer, String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, boolean seeThrough, int backgroundColor, int light,
+						TextRenderer textRenderer2, ItemStack stack, int x2, int y2, String countLabel) {
+		return textRenderer.draw(text, x, y, ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getColor(stack, countLabel),
+				shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
+	}
+
+	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z"))
+	public boolean barVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack) {
+		return ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).isVisible(stack, 0);
+	}
+
+	@ModifyArgs(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
+					ordinal = 1))
+	public void barFillAndColor(Args args, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
+		// set width
+		args.set(3, Math.round(ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).getFillFactor(stack, 0) * 13));
+		// set color
+		setGuiQuadColor(args, ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).getColor(stack, 0));
+	}
+
+	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/Item;F)F"))
+	public float cooldownVisible(ItemCooldownManager itemCooldownManager, Item item, float partialTicks,
+			TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
+		return ItemOverlayRendererRegistry.getCooldownOverlayProperties(item).isVisible(stack) ? 1 : 0;
+	}
+
+	@ModifyArgs(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
+					ordinal = 2))
+	public void cooldownFillAndColor(Args args, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
+		float fill = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem()).getFillFactor(stack);
+		// set y position
+		args.set(2, y + MathHelper.floor(16 * (1 - fill)));
+		// set height
+		args.set(4, MathHelper.ceil(16 * fill));
+		// set color
+		setGuiQuadColor(args, ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem()).getColor(stack));
+	}
+
+	@Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At("TAIL"))
+	public void postOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
+		if (stack.isEmpty()) {
+			return;
+		}
+
+		if (needPopping) {
+			matrixStack.pop();
+			needPopping = false;
+		}
+
+		matrixStack.push();
+		ItemOverlayRendererRegistry.getPostRenderer(stack.getItem()).renderOverlay(matrixStack, renderer, stack, x, y, countLabel);
+		matrixStack.pop();
 	}
 }
