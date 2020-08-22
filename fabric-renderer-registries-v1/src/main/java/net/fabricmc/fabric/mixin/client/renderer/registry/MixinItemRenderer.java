@@ -52,6 +52,7 @@ public abstract class MixinItemRenderer {
 		args.set(8, (color >> 24) & 0xFF);
 	}
 
+	// calls the pre-renderer, allows for cancelling the rest of the overlay
 	@Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At("HEAD"), cancellable = true)
 	public void preOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
@@ -68,6 +69,7 @@ public abstract class MixinItemRenderer {
 		}
 	}
 
+	// why didn't Mojang just add a MatrixStack parameter? beats me
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "NEW", target = "net/minecraft/client/util/math/MatrixStack"))
 	public MatrixStack reuseMatrixStack() {
@@ -76,18 +78,23 @@ public abstract class MixinItemRenderer {
 		return matrixStack;
 	}
 
+	// changes "is count label visible" condition
+	// note - countLabel being non-null will *force* the label to be displayed
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0))
 	public int countVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
 		return ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).isVisible(stack, countLabel) ? 2 : 1;
 	}
 
+	// changes contents of the count label
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Ljava/lang/String;valueOf(I)Ljava/lang/String;"))
 	public String countLabel(int stackCount, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
 		return ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getContents(stack, countLabel);
 	}
 
+	// changes count label color
+	// this gross redirect was brought to you by @ModifyArg not supporting capturing the calling method's parameters
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Ljava/lang/String;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"))
 	public int countColor(TextRenderer textRenderer, String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, boolean seeThrough, int backgroundColor, int light,
@@ -96,12 +103,14 @@ public abstract class MixinItemRenderer {
 				shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
 	}
 
+	// changes "is durability bar visible" condition
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z"))
 	public boolean barVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack) {
 		return ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).isVisible(stack, 0);
 	}
 
+	// changes durability bar fill factor and color
 	@ModifyArgs(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
 					ordinal = 1))
@@ -112,6 +121,7 @@ public abstract class MixinItemRenderer {
 		setGuiQuadColor(args, ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).getColor(stack, 0));
 	}
 
+	// changes "is cooldown overlay visible" condition
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/Item;F)F"))
 	public float cooldownVisible(ItemCooldownManager itemCooldownManager, Item item, float partialTicks,
@@ -119,6 +129,7 @@ public abstract class MixinItemRenderer {
 		return ItemOverlayRendererRegistry.getCooldownOverlayProperties(item).isVisible(stack) ? 1 : 0;
 	}
 
+	// changes cooldown fill factor and color
 	@ModifyArgs(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
 					ordinal = 2))
@@ -132,6 +143,7 @@ public abstract class MixinItemRenderer {
 		setGuiQuadColor(args, ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem()).getColor(stack));
 	}
 
+	// calls the post-renderer
 	@Inject(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At("TAIL"))
 	public void postOverlay(TextRenderer renderer, ItemStack stack, int x, int y, String countLabel, CallbackInfo ci) {
