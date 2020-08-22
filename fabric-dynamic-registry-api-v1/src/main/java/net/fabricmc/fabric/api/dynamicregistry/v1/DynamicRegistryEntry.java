@@ -26,6 +26,11 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
+/**
+ * A nicer wrapper around {@link net.minecraft.util.registry.DynamicRegistryManager}.
+ *
+ * @param <T> the type that the registry holds
+ */
 public class DynamicRegistryEntry<T> {
 	private final SimpleRegistry<T> registry;
 	private final Supplier<T> defaultValueSupplier;

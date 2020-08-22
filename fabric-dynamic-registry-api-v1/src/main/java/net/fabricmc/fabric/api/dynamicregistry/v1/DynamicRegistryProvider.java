@@ -18,6 +18,23 @@ package net.fabricmc.fabric.api.dynamicregistry.v1;
 
 import java.util.List;
 
+/**
+ * An entrypoint for developers to modify custom dynamic registries.
+ *
+ * <p>Registries added to this list can be changed from within datapacks.</p>
+ *
+ * <p>In {@code fabric.mod.json}, the entrypoint is defined with the {@code dynamic-registry-provider} key.</p>
+ *
+ * <pre><code>
+ * public class ExampleDynamicRegistryProvider implements DynamicRegistryProvider {
+ * 	public void getDynamicRegistries(List&lt;DynamicRegistryEntry&lt;?&gt;&gt; entries) {
+ * 		entries.add(new DynamicRegistryEntry&lt;&gt;(CUSTOM_REGISTRY, () -> DEFAULT_VALUE, RegistryItem.CODEC));
+ * 	}
+ * }
+ * </code></pre>
+ *
+ * @see net.fabricmc.loader.api.FabricLoader#getEntrypointContainers(String, Class)
+ */
 public interface DynamicRegistryProvider {
 	void getDynamicRegistries(List<DynamicRegistryEntry<?>> entries);
 }
