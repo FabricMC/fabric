@@ -3,10 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.dimension",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "EntityHooks",
-    "MixinEntity",
-    "MixinPortalForcer",
-    "MixinWorld"
+    "EntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

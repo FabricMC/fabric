@@ -21,6 +21,7 @@ import com.google.common.base.Preconditions;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.TeleportTarget;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
@@ -58,7 +59,7 @@ public final class FabricDimensions {
 	 * @see #teleport(Entity, ServerWorld)
 	 */
 	public static <E extends Entity> E teleport(E teleported, ServerWorld destination) {
-		return teleport(teleported, destination, null);
+		return teleport(teleported, destination, UntargetedTeleportationAttributes.empty());
 	}
 
 	/**
@@ -81,30 +82,43 @@ public final class FabricDimensions {
 	 *
 	 * @param teleported   the entity to teleport
 	 * @param destination  the dimension the entity will be teleported to
-	 * @param customPlacer custom placement logic that will run before the default one,
+	 * @param target       where the entity will be placed in the target world
 	 *                     or {@code null} to use the dimension's default behavior.
 	 * @param <E>          the type of the teleported entity
 	 * @return the teleported entity, or a clone of it
 	 * @throws IllegalStateException if this method is called on a client entity
 	 * @apiNote this method must be called from the main server thread
 	 */
-	public static <E extends Entity> E teleport(E teleported, ServerWorld destination, /*Nullable*/ EntityPlacer customPlacer) {
+	public static <E extends Entity> E teleport(E teleported, ServerWorld destination, TeleportTarget target) {
 		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");
 
-		return FabricDimensionInternals.changeDimension(teleported, destination, customPlacer);
+		return FabricDimensionInternals.changeDimension(teleported, destination, target, null);
 	}
 
 	/**
-	 * Register a default placer for a dimension, this is used when an entity is teleported to a dimension without
-	 * a specified {@link EntityPlacer}.
+	 * Performs an untargetted teleportation of the given entity into the given world, and passes the given
+	 * attributes on to the target dimension's {@link UntargetedTeleportationHandler}.
+	 *
+	 * @return The entity in the target world or the original <code>teleported</code> if teleportation
+	 * 		   was not possible
+	 */
+	public static <E extends Entity> E teleport(E teleported, ServerWorld destination, UntargetedTeleportationAttributes attributes) {
+		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");
+
+		return FabricDimensionInternals.changeDimension(teleported, destination, null, attributes);
+	}
+
+	/**
+	 * Register a handler for untargetted teleportations for a dimension, this is used when an entity is teleported to a dimension without
+	 * specifying a specific target location.
 	 *
 	 * @param registryKey The dimension {@link RegistryKey}
-	 * @param entityPlacer The {@link EntityPlacer}
+	 * @param handler The {@link UntargetedTeleportationHandler}
 	 */
-	public static void registerDefaultPlacer(RegistryKey<World> registryKey, EntityPlacer entityPlacer) {
-		Preconditions.checkState(!FabricDimensionInternals.DEFAULT_PLACERS.containsKey(registryKey), "Only 1 EntityPlacer can be registered per dimension");
-		Preconditions.checkState(!registryKey.getValue().getNamespace().equals("minecraft"), "Minecraft dimensions cannot have a default placer");
+	public static void registerUntargetedHandler(RegistryKey<World> registryKey, UntargetedTeleportationHandler handler) {
+		Preconditions.checkState(!FabricDimensionInternals.UNTARGETED_HANDLERS.containsKey(registryKey), "Only 1 untargeted handler can be registered per dimension");
+		Preconditions.checkState(!registryKey.getValue().getNamespace().equals("minecraft"), "Minecraft dimensions cannot have an untargeted handler");
 
-		FabricDimensionInternals.DEFAULT_PLACERS.put(registryKey, entityPlacer);
+		FabricDimensionInternals.UNTARGETED_HANDLERS.put(registryKey, handler);
 	}
 }

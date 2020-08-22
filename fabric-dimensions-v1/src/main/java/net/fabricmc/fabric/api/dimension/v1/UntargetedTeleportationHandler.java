@@ -16,14 +16,18 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
-import net.minecraft.block.pattern.BlockPattern;
+import java.util.Map;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.TeleportTarget;
 
 /**
- * Responsible for placing an Entity once they have entered a dimension.
- * used in Entity::changeDimension.
+ * Implementing this interface allows a dimension to handle teleportation attempts that have no specific target
+ * point in the target dimension.
+ *
+ * <p>It allows the dimension to support deriving the teleportation target from the entities current position,
+ * and gives the dimension a chance to place a portal at the target position.
  *
  * @deprecated Experimental feature, may be removed or changed without further notice due to potential changes to Dimensions in subsequent versions.
  *
@@ -31,20 +35,23 @@ import net.minecraft.util.math.Direction;
  */
 @Deprecated
 @FunctionalInterface
-public interface EntityPlacer {
+public interface UntargetedTeleportationHandler {
 	/**
-	 * Handles the placement of an entity going to a dimension.
-	 * Utilized by {@link FabricDimensions#teleport(Entity, ServerWorld, EntityPlacer)} to specify placement logic when needed.
+	 * Handles the placement of an entity going to a dimension without a specific target point.
 	 *
 	 * <p>This method may have side effects such as the creation of a portal in the target dimension,
 	 * or the creation of a chunk loading ticket.
 	 *
-	 * @param portalDir        the direction the portal is facing, meaningless if no portal was used
-	 * @param horizontalOffset the horizontal offset of the entity relative to the front top left corner of the portal, meaningless if no portal was used
-	 * @param verticalOffset   the vertical offset of the entity relative to the front top left corner of the portal, meaningless if no portal was used
-	 * @return a teleportation target, or {@code null} to fall back to further handling
+	 * @param teleported The entity that is being teleported.
+	 * @param destination The destination world.
+	 * @param attributes This map may contain additional attributes for the teleportation attempt, such as
+	 *                   a request to not spawn a portal. See {@link UntargetedTeleportationAttributes} for
+	 *                   standard attributes.
+	 *
+	 * @return a teleportation target, or {@code null} to delegate to vanilla, which will cancel the teleportation
+	 * for custom dimensions.
 	 * @apiNote When this method is called, the entity's world is its source dimension.
 	 */
 	/* @Nullable */
-	BlockPattern.TeleportTarget placeEntity(Entity teleported, ServerWorld destination, Direction portalDir, double horizontalOffset, double verticalOffset);
+	TeleportTarget handleTeleport(Entity teleported, ServerWorld destination, UntargetedTeleportationAttributes attributes);
 }
