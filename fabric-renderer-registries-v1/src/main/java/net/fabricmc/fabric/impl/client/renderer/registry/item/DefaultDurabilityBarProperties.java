@@ -19,9 +19,9 @@ package net.fabricmc.fabric.impl.client.renderer.registry.item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.SingleDurabilityBarProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 
-public class DefaultDurabilityBarProperties extends SingleDurabilityBarProperties {
+public class DefaultDurabilityBarProperties implements DurabilityBarProperties {
 	protected float getDamageValue(ItemStack stack) {
 		// copied from ItemRenderer.renderGuiItemOverlay, lines 342-344 (locals were inlined)
 		return Math.max(0, (stack.getMaxDamage() - stack.getDamage()) / (float) stack.getMaxDamage());

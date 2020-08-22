@@ -24,7 +24,6 @@ import net.fabricmc.fabric.test.renderregistry.client.countlabel.ObfuscatedCount
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.DiscoBarProperties;
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.EnergyBarProperties;
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.ManaBarProperties;
-import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.WaterLavaBarProperties;
 import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
 
 public class ClientRendererRegistriesTest implements ClientModInitializer {
@@ -34,7 +33,6 @@ public class ClientRendererRegistriesTest implements ClientModInitializer {
 
 		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.ENERGY_STORAGE, new EnergyBarProperties());
 		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.MANA_STORAGE, new ManaBarProperties());
-		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.WATER_LAVA_BUCKET, new WaterLavaBarProperties());
 		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.DISCO_BALL, new DiscoBarProperties());
 
 		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownProperties());

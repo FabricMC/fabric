@@ -18,10 +18,10 @@ package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.SingleDurabilityBarProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.StorageItem;
 
-public class ManaBarProperties extends SingleDurabilityBarProperties {
+public class ManaBarProperties implements DurabilityBarProperties {
 	@Override
 	public boolean isVisible(ItemStack stack) {
 		// Let's make this only visible if anything is stored

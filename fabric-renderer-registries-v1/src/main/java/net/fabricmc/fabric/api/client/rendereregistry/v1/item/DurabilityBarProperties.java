@@ -23,8 +23,7 @@ import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultDurabilityB
 public interface DurabilityBarProperties {
 	DurabilityBarProperties DEFAULT = new DefaultDurabilityBarProperties();
 
-	int getCount(ItemStack stack);
-	boolean isVisible(ItemStack stack, int index);
-	float getFillFactor(ItemStack stack, int index);
-	int getColor(ItemStack stack, int index);
+	boolean isVisible(ItemStack stack);
+	float getFillFactor(ItemStack stack);
+	int getColor(ItemStack stack);
 }

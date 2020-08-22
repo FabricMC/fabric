@@ -24,7 +24,6 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.test.renderregistry.common.cooldown.CooldownItem;
 import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.StorageItem;
-import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.WaterLavaBucket;
 
 public class RendererRegistriesTest implements ModInitializer {
 	public static final String ID = "fabric-renderer-registries-v1-testmod";
@@ -35,7 +34,6 @@ public class RendererRegistriesTest implements ModInitializer {
 	// Durability Bar related items
 	public static final Item ENERGY_STORAGE = new StorageItem(new Item.Settings().group(ItemGroup.MISC));
 	public static final Item MANA_STORAGE = new StorageItem(new Item.Settings().group(ItemGroup.MISC));
-	public static final Item WATER_LAVA_BUCKET = new WaterLavaBucket(new Item.Settings().group(ItemGroup.MISC));
 	public static final Item DISCO_BALL = new Item(new Item.Settings().group(ItemGroup.MISC));
 
 	// Custom Cooldown Overlay items
@@ -54,7 +52,6 @@ public class RendererRegistriesTest implements ModInitializer {
 		// Items used to demonstrate custom durability bars
 		Registry.register(Registry.ITEM, id("energy_storage"), ENERGY_STORAGE);
 		Registry.register(Registry.ITEM, id("mana_storage"), MANA_STORAGE);
-		Registry.register(Registry.ITEM, id("water_lava_bucket"), WATER_LAVA_BUCKET);
 		Registry.register(Registry.ITEM, id("disco_ball"), DISCO_BALL);
 
 		// Items used to demonstrate custom cooldown overlays

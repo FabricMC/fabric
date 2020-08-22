@@ -107,7 +107,7 @@ public abstract class MixinItemRenderer {
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z"))
 	public boolean barVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack) {
-		return ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).isVisible(stack, 0);
+		return ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).isVisible(stack);
 	}
 
 	// changes durability bar fill factor and color
@@ -116,9 +116,9 @@ public abstract class MixinItemRenderer {
 					ordinal = 1))
 	public void barFillAndColor(Args args, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
 		// set width
-		args.set(3, Math.round(ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).getFillFactor(stack, 0) * 13));
+		args.set(3, Math.round(ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).getFillFactor(stack) * 13));
 		// set color
-		setGuiQuadColor(args, ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).getColor(stack, 0));
+		setGuiQuadColor(args, ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem()).getColor(stack));
 	}
 
 	// changes "is cooldown overlay visible" condition

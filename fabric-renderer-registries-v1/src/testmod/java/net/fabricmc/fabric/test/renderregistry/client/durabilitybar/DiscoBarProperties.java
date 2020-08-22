@@ -16,36 +16,30 @@
 
 package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
 
-import java.awt.Color;
-
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
 
 public class DiscoBarProperties implements DurabilityBarProperties {
 	@Override
-	public int getCount(ItemStack stack) {
-		return 1;
-	}
-
-	@Override
-	public boolean isVisible(ItemStack stack, int index) {
+	public boolean isVisible(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public float getFillFactor(ItemStack stack, int index) {
+	public float getFillFactor(ItemStack stack) {
 		return 1;
 	}
 
 	@Override
-	public int getColor(ItemStack stack, int index) {
+	public int getColor(ItemStack stack) {
 		// This doesn't need to be pretty, but it shows that
 		// one can get fancy with durability bars by taking
 		// the current time into account when calculating fill factor
 		// or color.
-		float c = (Util.getMeasuringTimeMs() % 500) / 500f;
-		return Color.HSBtoRGB(c, 1.0f, 1.0f);
+		float c = (Util.getMeasuringTimeMs() % 360) / 360f;
+		return MathHelper.hsvToRgb(c, 1.0f, 1.0f);
 	}
 }
