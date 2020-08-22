@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.item.ItemRenderer;
@@ -126,7 +127,7 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/Item;F)F"))
 	public float cooldownVisible(ItemCooldownManager itemCooldownManager, Item item, float partialTicks,
 			TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
-		return ItemOverlayRendererRegistry.getCooldownOverlayProperties(item).isVisible(stack) ? 1 : 0;
+		return ItemOverlayRendererRegistry.getCooldownOverlayProperties(item).isVisible(stack, MinecraftClient.getInstance()) ? 1 : 0;
 	}
 
 	// changes cooldown fill factor and color
@@ -134,13 +135,13 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
 					ordinal = 2))
 	public void cooldownFillAndColor(Args args, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
-		float fill = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem()).getFillFactor(stack);
+		float fill = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem()).getFillFactor(stack, MinecraftClient.getInstance());
 		// set y position
 		args.set(2, y + MathHelper.floor(16 * (1 - fill)));
 		// set height
 		args.set(4, MathHelper.ceil(16 * fill));
 		// set color
-		setGuiQuadColor(args, ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem()).getColor(stack));
+		setGuiQuadColor(args, ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem()).getColor(stack, MinecraftClient.getInstance()));
 	}
 
 	// calls the post-renderer

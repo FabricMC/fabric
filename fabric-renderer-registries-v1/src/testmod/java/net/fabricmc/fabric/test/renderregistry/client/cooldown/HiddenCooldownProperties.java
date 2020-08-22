@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.renderregistry.client.cooldown;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOverlayProperties;
@@ -25,7 +26,7 @@ import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOve
  */
 public class HiddenCooldownProperties extends DefaultCooldownOverlayProperties {
 	@Override
-	public boolean isVisible(ItemStack stack) {
-		return getCooldownAmount(stack) <= 0.2f;
+	public boolean isVisible(ItemStack stack, MinecraftClient client) {
+		return getCooldownAmount(stack, client) <= 0.2f;
 	}
 }

@@ -23,25 +23,25 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
 
 public class DefaultCooldownOverlayProperties implements CooldownOverlayProperties {
-	protected float getCooldownAmount(ItemStack stack) {
-		// copied from ItemRenderer.renderGuiItemOverlay, lines 355-356 (player was local "clientPlayerEntity")
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-		return player == null ? 0.0F : player.getItemCooldownManager().getCooldownProgress(stack.getItem(), MinecraftClient.getInstance().getTickDelta());
+	protected float getCooldownAmount(ItemStack stack, MinecraftClient client) {
+		// copied from ItemRenderer.renderGuiItemOverlay, lines 355-356 (player was local "clientPlayerEntity", client was MinecraftClient.getInstance())
+		ClientPlayerEntity player = client.player;
+		return player == null ? 0.0F : player.getItemCooldownManager().getCooldownProgress(stack.getItem(), client.getTickDelta());
 	}
 
 	@Override
-	public boolean isVisible(ItemStack stack) {
+	public boolean isVisible(ItemStack stack, MinecraftClient client) {
 		// copied from ItemRenderer.renderGuiItemOverlay, line 357 (getCooldownAmount call was local "k")
-		return getCooldownAmount(stack) > 0;
+		return getCooldownAmount(stack, client) > 0;
 	}
 
 	@Override
-	public float getFillFactor(ItemStack stack) {
-		return getCooldownAmount(stack);
+	public float getFillFactor(ItemStack stack, MinecraftClient client) {
+		return getCooldownAmount(stack, client);
 	}
 
 	@Override
-	public int getColor(ItemStack stack) {
+	public int getColor(ItemStack stack, MinecraftClient client) {
 		return 0x7FFFFFFF;
 	}
 }

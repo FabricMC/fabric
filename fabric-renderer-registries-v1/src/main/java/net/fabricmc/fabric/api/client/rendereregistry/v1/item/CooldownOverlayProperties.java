@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOverlayProperties;
@@ -23,7 +24,7 @@ import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOve
 public interface CooldownOverlayProperties {
 	CooldownOverlayProperties DEFAULT = new DefaultCooldownOverlayProperties();
 
-	boolean isVisible(ItemStack stack);
-	float getFillFactor(ItemStack stack);
-	int getColor(ItemStack stack);
+	boolean isVisible(ItemStack stack, MinecraftClient client);
+	float getFillFactor(ItemStack stack, MinecraftClient client);
+	int getColor(ItemStack stack, MinecraftClient client);
 }
