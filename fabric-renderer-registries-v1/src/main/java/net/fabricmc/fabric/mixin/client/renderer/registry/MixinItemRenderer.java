@@ -33,6 +33,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.ItemCooldownManager;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
@@ -92,9 +93,9 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Ljava/lang/String;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"))
 	public int countColor(TextRenderer textRenderer, String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, boolean seeThrough, int backgroundColor, int light,
 						TextRenderer textRenderer2, ItemStack stack, int x2, int y2, String countLabel) {
-		return textRenderer.draw(ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getContents(stack, countLabel).method_30937(),
-				x, y, ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getColor(stack, countLabel),
-				shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
+		Text contents = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getContents(stack, countLabel);
+		color = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getColor(stack, countLabel);
+		return textRenderer.draw(contents.method_30937(), x, y, color, shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
 	}
 
 	// changes "is durability bar visible" condition
