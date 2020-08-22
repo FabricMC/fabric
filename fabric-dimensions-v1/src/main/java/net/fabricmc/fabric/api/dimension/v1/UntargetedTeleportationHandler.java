@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.dimension.v1;
 
-import java.util.Map;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.TeleportTarget;
