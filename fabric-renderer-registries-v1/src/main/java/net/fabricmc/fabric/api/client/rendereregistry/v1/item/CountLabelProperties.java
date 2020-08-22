@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCountLabelProperties;
 
@@ -24,6 +25,6 @@ public interface CountLabelProperties {
 	CountLabelProperties DEFAULT = new DefaultCountLabelProperties();
 
 	boolean isVisible(ItemStack stack, String override);
-	String getContents(ItemStack stack, String override);
+	Text getContents(ItemStack stack, String override);
 	int getColor(ItemStack stack, String override);
 }

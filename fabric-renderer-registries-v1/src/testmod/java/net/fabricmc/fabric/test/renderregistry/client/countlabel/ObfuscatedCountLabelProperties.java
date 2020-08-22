@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.test.renderregistry.client.countlabel;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
@@ -28,8 +30,9 @@ public class ObfuscatedCountLabelProperties implements CountLabelProperties {
 	}
 
 	@Override
-	public String getContents(ItemStack stack, String override) {
-		return Formatting.OBFUSCATED.toString() + (override == null ? Integer.toString(stack.getCount()) : override);
+	public Text getContents(ItemStack stack, String override) {
+		return new LiteralText(override == null ? Integer.toString(stack.getCount()) : override)
+				.styled(style -> style.withFormatting(Formatting.OBFUSCATED));
 	}
 
 	@Override

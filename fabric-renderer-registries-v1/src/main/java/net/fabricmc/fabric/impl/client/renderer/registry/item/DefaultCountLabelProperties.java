@@ -17,20 +17,22 @@
 package net.fabricmc.fabric.impl.client.renderer.registry.item;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
 
 public class DefaultCountLabelProperties implements CountLabelProperties {
 	@Override
 	public boolean isVisible(ItemStack stack, String override) {
-		// copied from ItemRenderer.renderGuiItemOverlay, line 327 (override was method param "countLabel")
-		return override != null || stack.getCount() != 1;
+		// copied from ItemRenderer.renderGuiItemOverlay, line 327
+		return stack.getCount() != 1;
 	}
 
 	@Override
-	public String getContents(ItemStack stack, String override) {
+	public Text getContents(ItemStack stack, String override) {
 		// copied from ItemRenderer.renderGuiItemOverlay, line 328 (override was method param "countLabel")
-		return override == null ? Integer.toString(stack.getCount()) : override;
+		return new LiteralText(override == null ? Integer.toString(stack.getCount()) : override);
 	}
 
 	@Override
