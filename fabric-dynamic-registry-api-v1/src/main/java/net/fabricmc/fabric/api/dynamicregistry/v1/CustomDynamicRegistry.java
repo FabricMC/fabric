@@ -31,12 +31,12 @@ import net.minecraft.util.registry.SimpleRegistry;
  *
  * @param <T> the type that the registry holds
  */
-public class DynamicRegistryEntry<T> {
+public class CustomDynamicRegistry<T> {
 	private final SimpleRegistry<T> registry;
 	private final Supplier<T> defaultValueSupplier;
 	private final Codec<T> codec;
 
-	public DynamicRegistryEntry(SimpleRegistry<T> registry, Supplier<T> defaultValueSupplier, Codec<T> codec) {
+	public CustomDynamicRegistry(SimpleRegistry<T> registry, Supplier<T> defaultValueSupplier, Codec<T> codec) {
 		this.registry = registry;
 		this.defaultValueSupplier = defaultValueSupplier;
 		this.codec = codec;

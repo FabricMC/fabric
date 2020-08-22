@@ -27,8 +27,8 @@ import java.util.List;
  *
  * <pre><code>
  * public class ExampleDynamicRegistryProvider implements DynamicRegistryProvider {
- * 	public void getDynamicRegistries(List&lt;DynamicRegistryEntry&lt;?&gt;&gt; entries) {
- * 		entries.add(new DynamicRegistryEntry&lt;&gt;(CUSTOM_REGISTRY, () -> DEFAULT_VALUE, RegistryItem.CODEC));
+ * 	public void getDynamicRegistries(List&lt;CustomDynamicRegistry&lt;?&gt;&gt; entries) {
+ * 		entries.add(new CustomDynamicRegistry&lt;&gt;(CUSTOM_REGISTRY, () -> DEFAULT_VALUE, RegistryItem.CODEC));
  * 	}
  * }
  * </code></pre>
@@ -36,5 +36,5 @@ import java.util.List;
  * @see net.fabricmc.loader.api.FabricLoader#getEntrypointContainers(String, Class)
  */
 public interface DynamicRegistryProvider {
-	void getDynamicRegistries(List<DynamicRegistryEntry<?>> entries);
+	void getDynamicRegistries(List<CustomDynamicRegistry<?>> entries);
 }

@@ -18,12 +18,12 @@ package net.fabricmc.fabric.test.dynamicregistry;
 
 import java.util.List;
 
-import net.fabricmc.fabric.api.dynamicregistry.v1.DynamicRegistryEntry;
+import net.fabricmc.fabric.api.dynamicregistry.v1.CustomDynamicRegistry;
 import net.fabricmc.fabric.api.dynamicregistry.v1.DynamicRegistryProvider;
 import net.fabricmc.fabric.test.dynamicregistry.tater.Tater;
 
 public class TestDynamicRegistryProvider implements DynamicRegistryProvider {
-	public void getDynamicRegistries(List<DynamicRegistryEntry<?>> entries) {
-		entries.add(new DynamicRegistryEntry<>(DynamicRegistriesTestMod.TATER_REGISTRY, () -> DynamicRegistriesTestMod.DEFAULT_TATER, Tater.CODEC));
+	public void getDynamicRegistries(List<CustomDynamicRegistry<?>> entries) {
+		entries.add(new CustomDynamicRegistry<>(DynamicRegistriesTestMod.TATER_REGISTRY, () -> DynamicRegistriesTestMod.DEFAULT_TATER, Tater.CODEC));
 	}
 }
