@@ -87,7 +87,7 @@ public abstract class MixinItemRenderer {
 		return ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).isVisible(stack, countLabel) ? 2 : 1;
 	}
 
-	// changes count label label and color
+	// changes count label contents and color
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Ljava/lang/String;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"))
 	public int countColor(TextRenderer textRenderer, String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, boolean seeThrough, int backgroundColor, int light,
