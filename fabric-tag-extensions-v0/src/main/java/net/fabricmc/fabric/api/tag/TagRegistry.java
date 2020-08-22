@@ -36,8 +36,6 @@ import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
  * Helper methods for registering Tags.
  */
 public final class TagRegistry {
-	public static final String COMMON_NAMESPACE = "c";
-
 	private TagRegistry() { }
 
 	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagGroup<T>> containerSupplier) {
@@ -77,6 +75,10 @@ public final class TagRegistry {
 	}
 
 	private static Identifier globalId(String path) {
-		return new Identifier(COMMON_NAMESPACE, path);
+		return new Identifier(getCommonNamespace(), path);
+	}
+
+	public static String getCommonNamespace() {
+		throw new UnsupportedOperationException("A common namespace for tags has not been chosen yet.");
 	}
 }
