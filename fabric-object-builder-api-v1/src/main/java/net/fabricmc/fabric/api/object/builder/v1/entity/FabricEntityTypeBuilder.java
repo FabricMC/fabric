@@ -304,14 +304,26 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+		public FabricEntityTypeBuilder.Living<T> trackRangeChunks(int range) {
+			super.trackRangeChunks(range);
 			return this;
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+		public FabricEntityTypeBuilder.Living<T> trackRangeBlocks(int range) {
+			super.trackRangeBlocks(range);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> trackedUpdateRate(int trackedUpdateRate) {
+			super.trackedUpdateRate(trackedUpdateRate);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> forceTrackedVelocityUpdates(boolean forceTrackedVelocityUpdates) {
+			super.forceTrackedVelocityUpdates(forceTrackedVelocityUpdates);
 			return this;
 		}
 
@@ -412,14 +424,26 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+		public FabricEntityTypeBuilder.Mob<T> trackRangeChunks(int range) {
+			super.trackRangeChunks(range);
 			return this;
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+		public FabricEntityTypeBuilder.Mob<T> trackRangeBlocks(int range) {
+			super.trackRangeBlocks(range);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> trackedUpdateRate(int trackedUpdateRate) {
+			super.trackedUpdateRate(trackedUpdateRate);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> forceTrackedVelocityUpdates(boolean forceTrackedVelocityUpdates) {
+			super.forceTrackedVelocityUpdates(forceTrackedVelocityUpdates);
 			return this;
 		}
 
