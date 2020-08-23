@@ -55,7 +55,7 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
-			if (entry != null && entry.getMiningLevel(tag) > 0) {
+			if (entry != null && entry.getMiningLevel(tag) >= 0) {
 				float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
 				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
 			}
