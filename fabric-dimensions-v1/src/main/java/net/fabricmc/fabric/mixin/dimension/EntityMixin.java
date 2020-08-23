@@ -38,7 +38,7 @@ public class EntityMixin {
 	public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cri) {
 		Entity self = (Entity) (Object) this;
 		// Check if a destination has been set for the entity currently being teleported
-		TeleportTarget customTarget = FabricDimensionInternals.getCustomTarget(self, destination);
+		TeleportTarget customTarget = FabricDimensionInternals.getCustomTarget();
 
 		if (customTarget != null) {
 			cri.setReturnValue(customTarget);

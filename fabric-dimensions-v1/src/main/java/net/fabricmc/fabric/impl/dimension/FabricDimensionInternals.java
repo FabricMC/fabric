@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.impl.dimension;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import com.google.common.base.Preconditions;
 
@@ -25,66 +25,64 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.TeleportTarget;
-import net.minecraft.world.World;
+import net.minecraft.world.dimension.DimensionOptions;
+import net.minecraft.world.dimension.DimensionType;
 
-import net.fabricmc.fabric.api.dimension.v1.UntargetedTeleportationAttributes;
-import net.fabricmc.fabric.api.dimension.v1.UntargetedTeleportationHandler;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
 public final class FabricDimensionInternals {
-	private FabricDimensionInternals() {
-		throw new AssertionError();
-	}
-
-	public static final Map<RegistryKey<World>, UntargetedTeleportationHandler> UNTARGETED_HANDLERS = new HashMap<>();
+	/**
+	 * The set of dimension types that were explicitly declared by mods to be stable.
+	 */
+	private static final Set<RegistryKey<DimensionType>> stableDimensionTypes = new HashSet<>();
 
 	/**
-	 * The attributes passed to the last call to {@link FabricDimensions#teleport(Entity, ServerWorld, TeleportTarget)}.
+	 * The set of dimensions that were explicitly declared by mods to be stable.
 	 */
-	private static UntargetedTeleportationAttributes currentAttributes;
+	private static final Set<RegistryKey<DimensionOptions>> stableDimensions = new HashSet<>();
 
 	/**
 	 * The target passed to the last call to {@link FabricDimensions#teleport(Entity, ServerWorld, TeleportTarget)}.
 	 */
 	private static TeleportTarget currentTarget;
 
+	private FabricDimensionInternals() {
+		throw new AssertionError();
+	}
+
 	/**
-	 * Returns either the targetted teleportation's target location, or lets the target dimension's default
-	 * placer decide where to put the entity (if one is registered).
+	 * Returns the last target set when a user of the API requested teleportation, or null.
 	 */
-	public static TeleportTarget getCustomTarget(Entity entity, ServerWorld destination) {
-		if (currentTarget != null) {
-			return currentTarget; // Custom target always has priority
-		}
+	public static TeleportTarget getCustomTarget() {
+		return currentTarget;
+	}
 
-		UntargetedTeleportationHandler placer = UNTARGETED_HANDLERS.get(destination.getRegistryKey());
+	public static void addStableDimensionType(RegistryKey<DimensionType> key) {
+		stableDimensionTypes.add(key);
+	}
 
-		if (placer != null) {
-			// Allow the mod to handle placement itself if someone does an untargeted transition
-			UntargetedTeleportationAttributes attributes = currentAttributes;
+	public static void addStableDimension(RegistryKey<DimensionOptions> key) {
+		stableDimensions.add(key);
+	}
 
-			if (attributes == null) {
-				attributes = UntargetedTeleportationAttributes.empty();
-			}
+	public static boolean isStableModdedDimension(RegistryKey<DimensionOptions> key) {
+		return stableDimensions.contains(key);
+	}
 
-			return placer.handleTeleport(entity, destination, attributes);
-		}
-
-		return null;
+	public static boolean isStableModdedDimensionType(RegistryKey<DimensionType> key) {
+		return stableDimensionTypes.contains(key);
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E extends Entity> E changeDimension(E teleported, ServerWorld dimension, /*Nullable*/ TeleportTarget target, /* Nullable */ UntargetedTeleportationAttributes attributes) {
+	public static <E extends Entity> E changeDimension(E teleported, ServerWorld dimension, /*Nullable*/ TeleportTarget target) {
 		Preconditions.checkArgument(!teleported.world.isClient, "Entities can only be teleported on the server side");
 		Preconditions.checkArgument(Thread.currentThread() == ((ServerWorld) teleported.world).getServer().getThread(), "Entities must be teleported from the main server thread");
 
 		try {
 			currentTarget = target;
-			currentAttributes = attributes;
 			return (E) teleported.moveToWorld(dimension);
 		} finally {
 			currentTarget = null;
-			currentAttributes = null;
 		}
 	}
 }

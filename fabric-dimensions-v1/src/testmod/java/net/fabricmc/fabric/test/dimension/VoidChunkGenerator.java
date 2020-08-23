@@ -40,6 +40,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 					BiomeSource.CODEC.fieldOf("biome_source")
 							.forGetter((generator) -> generator.biomeSource),
 					Codec.BOOL.fieldOf("custom_bool")
+							.stable()
 							.forGetter((generator) -> generator.customBool)
 			)
 			.apply(instance, instance.stable(VoidChunkGenerator::new))
