@@ -36,11 +36,12 @@ import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 public class DimensionOptionMixin {
 	/**
 	 * This injects right after the method makes a local copy of all present
-	 * dimensions, and modifies the list by removing our mod-provided dimension from
-	 * it.
+	 * dimensions to validate that it fully conforms to the default settings and
+	 * contains no additional dimensions.
 	 *
-	 * <p>This means Vanilla will perform it's check whether it should display an
-	 * experimental warning without considering our dimension.
+	 * <p>We then remove all dimensions from this list that have been explicitly
+	 * marked as stable by mods to allow the check to pass, if the rest of the
+	 * dimension options are stable w.r.t. to Vanilla's criteria.
 	 */
 	@ModifyVariable(method = "method_29567", at = @At(value = "INVOKE_ASSIGN", ordinal = 0, target = "Lcom/google/common/collect/Lists;newArrayList(Ljava/lang/Iterable;)Ljava/util/ArrayList;", remap = false), allow = 1)
 	private static List<Map.Entry<RegistryKey<DimensionOptions>, DimensionOptions>> overrideExperimentalCheck(
