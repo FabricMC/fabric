@@ -5,7 +5,7 @@
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
-  "icon": "assets/fabric-tool-attribute0api-v1/icon.png",
+  "icon": "assets/fabric-tool-attribute-api-v1/icon.png",
   "contact": {
     "homepage": "https://fabricmc.net",
     "irc": "irc://irc.esper.net:6667/fabric",

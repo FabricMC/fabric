@@ -43,12 +43,12 @@ public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	}
 
 	@Inject(method = "add", at = @At("RETURN"))
-	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
+	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<V> info) {
 		onChange(registryKey);
 	}
 
 	@Inject(method = "set", at = @At("RETURN"))
-	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
+	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<V> info) {
 		onChange(registryKey);
 	}
 
