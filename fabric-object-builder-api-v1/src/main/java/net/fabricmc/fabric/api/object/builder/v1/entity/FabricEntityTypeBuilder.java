@@ -244,7 +244,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// SNIP! Modded datafixers are not supported anyway.
 			// TODO: Flesh out once modded datafixers exist.
 		}
+
 		EntityType<T> type = new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates);
+		
 		return type;
 	}
 
