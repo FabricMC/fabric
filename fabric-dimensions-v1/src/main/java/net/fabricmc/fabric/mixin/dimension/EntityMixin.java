@@ -28,8 +28,8 @@ import net.minecraft.world.TeleportTarget;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
- * This mixin sets the teleport destination, because otherwise Vanilla will not
- * move the player.
+ * This mixin implements {@link Entity#getTeleportTarget(ServerWorld)} for modded dimensions, as Vanilla will
+ * not return a teleport target for anything but Vanilla dimensions.
  */
 @Mixin(Entity.class)
 public class EntityMixin {

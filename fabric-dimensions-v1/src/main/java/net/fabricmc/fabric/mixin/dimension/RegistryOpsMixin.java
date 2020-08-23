@@ -39,8 +39,9 @@ import net.minecraft.world.dimension.DimensionType;
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
 /**
- * This convoluted Mixin's purpose is to mark only <em>specific</em> dimension types that are loaded via the
- * Registry Codec to be stable, but not <em>all</em>.
+ * This convoluted Mixins purpose is to mark only <em>specific</em> but not <em>all</em> dimension types that are
+ * loaded via the Registry Codec to be stable. This is required to hide the experimental warning screen when
+ * a world is joined.
  *
  * <p>To do this in the most compatible way possible, we capture the identifier of the element that is being loaded
  * in a thread-local, and then modify the lifecycle of the data result based on that identifier.
