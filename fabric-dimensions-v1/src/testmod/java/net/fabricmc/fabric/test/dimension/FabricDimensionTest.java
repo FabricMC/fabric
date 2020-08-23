@@ -42,7 +42,6 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 
 public class FabricDimensionTest implements ModInitializer {
-
 	// The dimension options refer to the JSON-file in the dimension subfolder of the datapack,
 	// which will always share it's ID with the world that is created from it
 	private static final RegistryKey<DimensionOptions> DIMENSION_KEY = RegistryKey.of(
