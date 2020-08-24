@@ -42,6 +42,14 @@ public class FabricItemSettings extends Item.Settings {
 		return this;
 	}
 
+	/**
+	 * Sets the custom damage handler of the item.
+	 */
+	public FabricItemSettings customDamage(CustomDamageHandler handler) {
+		FabricItemInternals.computeExtraData(this).customDamage(handler);
+		return this;
+	}
+
 	// Overrides of vanilla methods
 
 	@Override

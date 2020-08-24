@@ -31,6 +31,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
@@ -50,10 +51,10 @@ public abstract class ItemStackMixin {
 
 	@ModifyArg(method = "damage(ILnet/minecraft/entity/LivingEntity;Ljava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;damage(ILjava/util/Random;Lnet/minecraft/server/network/ServerPlayerEntity;)Z"), index = 0)
 	private int hookDamage(int amount) {
-		Item item = getItem();
+		CustomDamageHandler handler = ((ItemExtensions) getItem()).fabric_getCustomDamageHandler();
 
-		if (item instanceof CustomDamageHandler) {
-			return ((CustomDamageHandler) item).damage((ItemStack) (Object) this, amount, fabric_damagingEntity, fabric_breakCallback);
+		if (handler != null) {
+			return handler.damage((ItemStack) (Object) this, amount, fabric_damagingEntity, fabric_breakCallback);
 		}
 
 		return amount;

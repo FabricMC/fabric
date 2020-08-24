@@ -29,6 +29,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 
 public class CustomDamageTest implements ModInitializer {
 	@Override
@@ -36,11 +37,7 @@ public class CustomDamageTest implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), new WeirdPick());
 	}
 
-	public static class WeirdPick extends PickaxeItem implements CustomDamageHandler {
-		protected WeirdPick() {
-			super(ToolMaterials.GOLD, 1, -2.8F, new Settings());
-		}
-
+	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = new CustomDamageHandler() {
 		@Override
 		public <T extends LivingEntity> int damage(ItemStack stack, int amount, T entity, Consumer<T> breakCallback) {
 			// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
@@ -51,6 +48,12 @@ public class CustomDamageTest implements ModInitializer {
 				tag.putInt("weird", tag.getInt("weird") + 1);
 				return 0;
 			}
+		}
+	};
+
+	public static class WeirdPick extends PickaxeItem {
+		protected WeirdPick() {
+			super(ToolMaterials.GOLD, 1, -2.8F, new FabricItemSettings().customDamage(WEIRD_DAMAGE_HANDLER));
 		}
 
 		@Override
