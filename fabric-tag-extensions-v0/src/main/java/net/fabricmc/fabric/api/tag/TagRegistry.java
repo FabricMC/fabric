@@ -35,9 +35,11 @@ import net.fabricmc.fabric.mixin.tag.extension.AccessorFluidTags;
 /**
  * Helper methods for registering Tags.
  *
- * <p>The convention for namespaces of common tags (e.g. ingots) is not yet decided.
+ * <p>Although not officially endorsed by Fabric, many mods use the following tag naming conventions for common tags such as ores or ingots:
  *
- * <p>The convention for paths is not yet decided.
+ * <p>For a common namespace, their convention is currently {@code c}.
+ *
+ * <p>For paths, their convention is currently the use of plural terms, such as {@code c:iron_ingots}, keeping in line with the majority of vanilla tags such as {@code minecraft:slabs} and {@code minecraft:gold_ores}.
  */
 public final class TagRegistry {
 	private TagRegistry() { }
