@@ -31,7 +31,7 @@ import net.fabricmc.api.Environment;
  * <p>An item with a builtin renderer must have a model extending {@code minecraft:builtin/entity}.
  * The renderers are registered with {@link BuiltinItemRendererRegistry#register(Item, BuiltinItemRenderer)}.
  *
- * @deprecated Please use {@link DynamicItemRenderer} instead.
+ * @deprecated Please use {@link BuiltinItemRendererRegistry.DynamicItemRenderer} instead.
  */
 @Deprecated
 @Environment(EnvType.CLIENT)
