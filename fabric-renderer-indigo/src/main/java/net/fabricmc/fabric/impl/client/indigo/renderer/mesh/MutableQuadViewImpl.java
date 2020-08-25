@@ -112,8 +112,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	}
 
 	/**
-	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction, int[], int)}
-	 * which has better encapsulation and removed outdata item flag
+	 * @deprecated will be removed in 1.17 cycle - see docs in interface
 	 */
 	@Deprecated
 	@Override
@@ -123,8 +122,9 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
-	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace, int startIndex) {
-		System.arraycopy(quad.getVertexData(), startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
+	@Override
+	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace) {
+		System.arraycopy(quad.getVertexData(), 0, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
 		cullFace(cullFace);
 		nominalFace(quad.getFace());
 		colorIndex(quad.getColorIndex());

@@ -247,7 +247,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		final Maker editorQuad = this.editorQuad;
 
 		for (final BakedQuad q : quads) {
-			editorQuad.fromVanilla(q, IndigoRenderer.MATERIAL_STANDARD, cullFace, 0);
+			editorQuad.fromVanilla(q, IndigoRenderer.MATERIAL_STANDARD, cullFace);
 			renderQuad();
 		}
 	}

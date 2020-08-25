@@ -117,7 +117,7 @@ public abstract class TerrainFallbackConsumer extends AbstractQuadRenderer imple
 		}
 
 		final MutableQuadViewImpl editorQuad = this.editorQuad;
-		editorQuad.fromVanilla(quad, defaultMaterial, cullFace, 0);
+		editorQuad.fromVanilla(quad, defaultMaterial, cullFace);
 
 		if (!transform.transform(editorQuad)) {
 			return;
