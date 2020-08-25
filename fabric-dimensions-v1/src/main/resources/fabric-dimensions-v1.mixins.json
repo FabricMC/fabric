@@ -5,7 +5,8 @@
   "mixins": [
     "EntityMixin",
     "DimensionOptionMixin",
-    "RegistryOpsMixin"
+    "RegistryOpsMixin",
+    "ServerBugfixMixin"
   ],
   "injectors": {
     "defaultRequire": 1
