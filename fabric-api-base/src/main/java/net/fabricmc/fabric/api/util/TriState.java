@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.api.util;
 
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 /**
  * Represents a boolean value which can be true, false or refer to a default value.
@@ -105,5 +108,105 @@ public enum TriState {
 	 */
 	public boolean orElseGet(BooleanSupplier supplier) {
 		return this == TriState.DEFAULT ? supplier.getAsBoolean() : this.get();
+	}
+
+	/**
+	 * Maps the value of an option if this tri-state is {@link TriState#TRUE}.
+	 *
+	 * @param mapper the mapper to use
+	 * @param <T> the type of object supplied by the mapper
+	 * @return an optional containing the value if {@link TriState#TRUE}, otherwise {@link Optional#empty()}.
+	 */
+	public <T> Optional<T> mapTrue(Supplier<T> mapper) {
+		Objects.requireNonNull(mapper);
+
+		if (this == TRUE) {
+			return Optional.ofNullable(mapper.get());
+		}
+
+		return Optional.empty();
+	}
+
+	/**
+	 * Maps the value of an option if this tri-state is {@link TriState#TRUE}.
+	 *
+	 * @param mapper the mapper to use
+	 * @param <T> the type of object supplied by the mapper
+	 * @return an optional containing the value if {@link TriState#FALSE}, otherwise {@link Optional#empty()}.
+	 */
+	public <T> Optional<T> mapFalse(Supplier<T> mapper) {
+		Objects.requireNonNull(mapper);
+
+		if (this == FALSE) {
+			return Optional.ofNullable(mapper.get());
+		}
+
+		return Optional.empty();
+	}
+
+	/**
+	 * Maps the value of an option if this tri-state is {@link TriState#DEFAULT}.
+	 *
+	 * @param mapper the mapper to use
+	 * @param <T> the type of object supplied by the mapper
+	 * @return an optional containing the value if {@link TriState#DEFAULT}, otherwise {@link Optional#empty()}.
+	 */
+	public <T> Optional<T> mapDefault(Supplier<T> mapper) {
+		Objects.requireNonNull(mapper);
+
+		if (this == DEFAULT) {
+			return Optional.ofNullable(mapper.get());
+		}
+
+		return Optional.empty();
+	}
+
+	/**
+	 * Calls the supplied runnable if this tri-state is {@link TriState#TRUE}.
+	 *
+	 * @param runnable the interface to run
+	 */
+	public void ifTrue(Runnable runnable) {
+		if (this == TRUE) {
+			runnable.run();
+		}
+	}
+
+	/**
+	 * Calls the supplied runnable if this tri-state is {@link TriState#FALSE}.
+	 *
+	 * @param runnable the interface to run
+	 */
+	public void ifFalse(Runnable runnable) {
+		if (this == FALSE) {
+			runnable.run();
+		}
+	}
+
+	/**
+	 * Calls the supplied runnable if this tri-state is {@link TriState#DEFAULT}.
+	 *
+	 * @param runnable the interface to run
+	 */
+	public void ifDefault(Runnable runnable) {
+		if (this == DEFAULT) {
+			runnable.run();
+		}
+	}
+
+	/**
+	 * Gets the value of this tri-state, or throws an exception if this tri-state's value is {@link TriState#DEFAULT}.
+	 *
+	 * @param exceptionSupplier the supplying function that produces an xception to be thrown
+	 * @param <X> Type of the exception to be thrown
+	 * @return the value
+	 * @throws X if the value is {@link TriState#DEFAULT}
+	 */
+	public <X extends Throwable> boolean orElseThrow(Supplier<X> exceptionSupplier) throws X {
+		if (this != DEFAULT) {
+			return this.get();
+		}
+
+		throw exceptionSupplier.get();
 	}
 }
