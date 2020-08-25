@@ -45,9 +45,9 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.model.ModelHelper;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
+import net.fabricmc.fabric.impl.client.indigo.renderer.IndigoRenderer;
 import net.fabricmc.fabric.impl.client.indigo.renderer.RenderMaterialImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.helper.ColorHelper;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingFormat;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MeshImpl;
 import net.fabricmc.fabric.impl.client.indigo.renderer.mesh.MutableQuadViewImpl;
@@ -143,7 +143,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 
 		@Override
 		public Maker emit() {
-			lightFace(GeometryHelper.lightFace(this));
+			computeGeometry();
 			renderQuad();
 			clear();
 			return this;
@@ -247,14 +247,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 		final Maker editorQuad = this.editorQuad;
 
 		for (final BakedQuad q : quads) {
-			editorQuad.clear();
-			editorQuad.fromVanilla(q.getVertexData(), 0, false);
-			editorQuad.cullFace(cullFace);
-			final Direction lightFace = q.getFace();
-			editorQuad.lightFace(lightFace);
-			editorQuad.nominalFace(lightFace);
-			editorQuad.colorIndex(q.getColorIndex());
-			editorQuad.shade(q.hasShade());
+			editorQuad.fromVanilla(q, IndigoRenderer.MATERIAL_STANDARD, cullFace, 0);
 			renderQuad();
 		}
 	}

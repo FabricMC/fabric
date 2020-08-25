@@ -31,6 +31,7 @@ import static net.fabricmc.fabric.impl.client.indigo.renderer.mesh.EncodingForma
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.util.math.Direction;
 
@@ -54,7 +55,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	public void clear() {
 		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
-		isFaceNormalInvalid = true;
 		isGeometryInvalid = true;
 		nominalFace = null;
 		normalFlags(0);
@@ -81,6 +81,11 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
+	/*
+	 * @deprecated Not part of API but left public case anyone is abusing scope.
+	 * No longer needed and should be removed in 1.17 cycle.
+	 */
+	@Deprecated
 	public final MutableQuadViewImpl lightFace(Direction face) {
 		Preconditions.checkNotNull(face);
 
@@ -106,10 +111,26 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
+	/**
+	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction, int[], int)}
+	 * which has better encapsulation and removed outdata item flag
+	 */
+	@Deprecated
 	@Override
 	public final MutableQuadViewImpl fromVanilla(int[] quadData, int startIndex, boolean isItem) {
 		System.arraycopy(quadData, startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
-		this.invalidateShape();
+		isGeometryInvalid = true;
+		return this;
+	}
+
+	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace, int startIndex) {
+		System.arraycopy(quad.getVertexData(), startIndex, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
+		cullFace(cullFace);
+		nominalFace(quad.getFace());
+		colorIndex(quad.getColorIndex());
+		material(material);
+		shade(quad.hasShade());
+		isGeometryInvalid = true;
 		return this;
 	}
 
@@ -119,10 +140,15 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		data[index] = Float.floatToRawIntBits(x);
 		data[index + 1] = Float.floatToRawIntBits(y);
 		data[index + 2] = Float.floatToRawIntBits(z);
-		isFaceNormalInvalid = true;
+		isGeometryInvalid = true;
 		return this;
 	}
 
+	/*
+	 * @deprecated Not part of API but left public case anyone is abusing scope.
+	 * Scope should be reduced to protected in 1.17 cycle.
+	 */
+	@Deprecated
 	public void normalFlags(int flags) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS], flags);
 	}
@@ -136,7 +162,11 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	/**
 	 * Internal helper method. Copies face normals to vertex normals lacking one.
+	 *
+	 * @deprecated Not part of API but left public case anyone is abusing scope.
+	 * Scope should be reduced to protected in 1.17 cycle.
 	 */
+	@Deprecated
 	public final void populateMissingNormals() {
 		final int normalFlags = this.normalFlags();
 

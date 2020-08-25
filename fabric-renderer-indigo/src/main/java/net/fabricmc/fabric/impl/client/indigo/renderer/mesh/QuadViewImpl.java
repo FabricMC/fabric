@@ -48,9 +48,9 @@ import net.fabricmc.fabric.impl.client.indigo.renderer.helper.NormalHelper;
  */
 public class QuadViewImpl implements QuadView {
 	protected Direction nominalFace;
+	/** True when geometry flags or light face may not match geometry. */
 	protected boolean isGeometryInvalid = true;
 	protected final Vector3f faceNormal = new Vector3f();
-	protected boolean isFaceNormalInvalid = true;
 	private boolean shade = true;
 
 	/** Size and where it comes from will vary in subtypes. But in all cases quad is fully encoded to array. */
@@ -72,9 +72,12 @@ public class QuadViewImpl implements QuadView {
 	/**
 	 * Used on vanilla quads or other quads that don't have encoded shape info
 	 * to signal that such should be computed when requested.
+	 *
+	 * @deprecated Not part of API but left public case anyone is abusing scope.
+	 * No longer needed and should be removed in 1.17 cycle.
 	 */
+	@Deprecated
 	public final void invalidateShape() {
-		isFaceNormalInvalid = true;
 		isGeometryInvalid = true;
 	}
 
@@ -83,10 +86,11 @@ public class QuadViewImpl implements QuadView {
 	 * Only does the decoding part.
 	 */
 	public final void load() {
-		// face normal isn't encoded but geometry flags are
-		isFaceNormalInvalid = true;
 		isGeometryInvalid = false;
 		nominalFace = lightFace();
+
+		// face normal isn't encoded
+		NormalHelper.computeFaceNormal(faceNormal, this);
 	}
 
 	/** Reference to underlying array. Use with caution. Meant for fast renderer access */
@@ -105,21 +109,32 @@ public class QuadViewImpl implements QuadView {
 
 	/** gets flags used for lighting - lazily computed via {@link GeometryHelper#computeShapeFlags(QuadView)}. */
 	public int geometryFlags() {
+		computeGeometry();
+		return EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS]);
+	}
+
+	protected void computeGeometry() {
 		if (isGeometryInvalid) {
 			isGeometryInvalid = false;
-			final int result = GeometryHelper.computeShapeFlags(this);
-			data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], result);
-			return result;
-		} else {
-			return EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS]);
+
+			NormalHelper.computeFaceNormal(faceNormal, this);
+
+			// depends on face normal
+			data[baseIndex + HEADER_BITS] = EncodingFormat.lightFace(data[baseIndex + HEADER_BITS], GeometryHelper.lightFace(this));
+
+			// depends on light face
+			data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], GeometryHelper.computeShapeFlags(this));
 		}
 	}
 
 	/**
 	 * Used to override geometric analysis for compatibility edge case.
+	 *
+	 * @deprecated Not part of API but left in case anyone is abusing scope.
+	 * No longer needed and should be removed in 1.17 cycle.
 	 */
+	@Deprecated
 	public void geometryFlags(int flags) {
-		isGeometryInvalid = false;
 		data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], flags);
 	}
 
@@ -145,6 +160,7 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public final Direction lightFace() {
+		computeGeometry();
 		return EncodingFormat.lightFace(data[baseIndex + HEADER_BITS]);
 	}
 
@@ -160,31 +176,20 @@ public class QuadViewImpl implements QuadView {
 
 	@Override
 	public final Vector3f faceNormal() {
-		if (isFaceNormalInvalid) {
-			NormalHelper.computeFaceNormal(faceNormal, this);
-			isFaceNormalInvalid = false;
-		}
-
+		computeGeometry();
 		return faceNormal;
 	}
 
 	@Override
 	public void copyTo(MutableQuadView target) {
+		computeGeometry();
+
 		final MutableQuadViewImpl quad = (MutableQuadViewImpl) target;
-		// copy everything except the header/material
+		// copy everything except the material
 		System.arraycopy(data, baseIndex + 1, quad.data, quad.baseIndex + 1, EncodingFormat.TOTAL_STRIDE - 1);
-		quad.isFaceNormalInvalid = this.isFaceNormalInvalid;
-
-		if (!this.isFaceNormalInvalid) {
-			quad.faceNormal.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
-		}
-
-		quad.lightFace(lightFace());
-		quad.colorIndex(colorIndex());
-		quad.tag(tag());
-		quad.cullFace(cullFace());
+		quad.faceNormal.set(faceNormal.getX(), faceNormal.getY(), faceNormal.getZ());
 		quad.nominalFace = this.nominalFace;
-		quad.normalFlags(normalFlags());
+		quad.isGeometryInvalid = false;
 	}
 
 	@Override
