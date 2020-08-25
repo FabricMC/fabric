@@ -44,9 +44,14 @@ public class DynamicRegistryManagerMixin {
 		for (DynamicRegistryProvider provider : providers) {
 			provider.addDynamicRegistries((customDynamicRegistry) -> {
 				addRegistry(customDynamicRegistry);
-				builder.put(customDynamicRegistry.getRegistryRef(), customDynamicRegistry.getInfo());
+				builder.put(customDynamicRegistry.getRegistryRef(), getInfo(customDynamicRegistry));
 			});
 		}
+	}
+
+	@Unique
+	private static <T> DynamicRegistryManager.Info<T> getInfo(CustomDynamicRegistry<T> customDynamicRegistry) {
+		return new DynamicRegistryManager.Info<>(customDynamicRegistry.getRegistryRef(), customDynamicRegistry.getCodec(), null);
 	}
 
 	@Unique

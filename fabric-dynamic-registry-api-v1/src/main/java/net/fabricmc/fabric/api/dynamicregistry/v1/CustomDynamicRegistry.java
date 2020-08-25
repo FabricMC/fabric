@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.Lifecycle;
 
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
@@ -58,7 +57,7 @@ public class CustomDynamicRegistry<T> {
 		return this.defaultValueSupplier;
 	}
 
-	public DynamicRegistryManager.Info<?> getInfo() {
-		return new DynamicRegistryManager.Info<>(this.getRegistryRef(), this.codec, null);
+	public Codec<T> getCodec() {
+		return this.codec;
 	}
 }
