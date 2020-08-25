@@ -111,11 +111,11 @@ public enum TriState {
 	}
 
 	/**
-	 * Maps the value of an option if this tri-state is {@link TriState#TRUE}.
+	 * Maps the value of an optional if this tri-state is {@link TriState#TRUE}.
 	 *
 	 * @param mapper the mapper to use
 	 * @param <T> the type of object supplied by the mapper
-	 * @return an optional containing the value if {@link TriState#TRUE}, otherwise {@link Optional#empty()}.
+	 * @return an optional containing the value if {@link TriState#TRUE} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
 	 */
 	public <T> Optional<T> mapTrue(Supplier<T> mapper) {
 		Objects.requireNonNull(mapper);
@@ -128,11 +128,11 @@ public enum TriState {
 	}
 
 	/**
-	 * Maps the value of an option if this tri-state is {@link TriState#TRUE}.
+	 * Maps the value of an optional if this tri-state is {@link TriState#TRUE}.
 	 *
 	 * @param mapper the mapper to use
 	 * @param <T> the type of object supplied by the mapper
-	 * @return an optional containing the value if {@link TriState#FALSE}, otherwise {@link Optional#empty()}.
+	 * @return an optional containing the value if {@link TriState#FALSE} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
 	 */
 	public <T> Optional<T> mapFalse(Supplier<T> mapper) {
 		Objects.requireNonNull(mapper);
@@ -145,11 +145,11 @@ public enum TriState {
 	}
 
 	/**
-	 * Maps the value of an option if this tri-state is {@link TriState#DEFAULT}.
+	 * Maps the value of an optional if this tri-state is {@link TriState#DEFAULT}.
 	 *
 	 * @param mapper the mapper to use
 	 * @param <T> the type of object supplied by the mapper
-	 * @return an optional containing the value if {@link TriState#DEFAULT}, otherwise {@link Optional#empty()}.
+	 * @return an optional containing the value if {@link TriState#DEFAULT} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
 	 */
 	public <T> Optional<T> mapDefault(Supplier<T> mapper) {
 		Objects.requireNonNull(mapper);
