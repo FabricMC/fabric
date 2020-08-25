@@ -70,18 +70,6 @@ public class QuadViewImpl implements QuadView {
 	}
 
 	/**
-	 * Used on vanilla quads or other quads that don't have encoded shape info
-	 * to signal that such should be computed when requested.
-	 *
-	 * @deprecated Not part of API but left public case anyone is abusing scope.
-	 * No longer needed and should be removed in 1.17 cycle.
-	 */
-	@Deprecated
-	public final void invalidateShape() {
-		isGeometryInvalid = true;
-	}
-
-	/**
 	 * Like {@link #load(int[], int)} but assumes array and index already set.
 	 * Only does the decoding part.
 	 */
@@ -125,17 +113,6 @@ public class QuadViewImpl implements QuadView {
 			// depends on light face
 			data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], GeometryHelper.computeShapeFlags(this));
 		}
-	}
-
-	/**
-	 * Used to override geometric analysis for compatibility edge case.
-	 *
-	 * @deprecated Not part of API but left in case anyone is abusing scope.
-	 * No longer needed and should be removed in 1.17 cycle.
-	 */
-	@Deprecated
-	public void geometryFlags(int flags) {
-		data[baseIndex + HEADER_BITS] = EncodingFormat.geometryFlags(data[baseIndex + HEADER_BITS], flags);
 	}
 
 	@Override

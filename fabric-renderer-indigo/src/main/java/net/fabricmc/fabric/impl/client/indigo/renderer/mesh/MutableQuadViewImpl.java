@@ -81,18 +81,6 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
-	/*
-	 * @deprecated Not part of API but left public case anyone is abusing scope.
-	 * No longer needed and should be removed in 1.17 cycle.
-	 */
-	@Deprecated
-	public final MutableQuadViewImpl lightFace(Direction face) {
-		Preconditions.checkNotNull(face);
-
-		data[baseIndex + HEADER_BITS] = EncodingFormat.lightFace(data[baseIndex + HEADER_BITS], face);
-		return this;
-	}
-
 	@Override
 	public final MutableQuadViewImpl nominalFace(Direction face) {
 		nominalFace = face;
@@ -144,12 +132,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		return this;
 	}
 
-	/*
-	 * @deprecated Not part of API but left public case anyone is abusing scope.
-	 * Scope should be reduced to protected in 1.17 cycle.
-	 */
-	@Deprecated
-	public void normalFlags(int flags) {
+	protected void normalFlags(int flags) {
 		data[baseIndex + HEADER_BITS] = EncodingFormat.normalFlags(data[baseIndex + HEADER_BITS], flags);
 	}
 
@@ -162,11 +145,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 
 	/**
 	 * Internal helper method. Copies face normals to vertex normals lacking one.
-	 *
-	 * @deprecated Not part of API but left public case anyone is abusing scope.
-	 * Scope should be reduced to protected in 1.17 cycle.
 	 */
-	@Deprecated
 	public final void populateMissingNormals() {
 		final int normalFlags = this.normalFlags();
 
