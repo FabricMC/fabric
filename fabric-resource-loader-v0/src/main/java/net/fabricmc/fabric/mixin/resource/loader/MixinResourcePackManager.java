@@ -47,6 +47,7 @@ public abstract class MixinResourcePackManager<T extends ResourcePackProfile> {
 	public void construct(ResourcePackProfile.Factory arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
 		providers = new HashSet<>(providers);
 
+		// Search resource pack providers to find any server-related pack provider.
 		boolean shouldAddServerProvider = false;
 
 		for (ResourcePackProvider provider : this.providers) {
@@ -58,6 +59,7 @@ public abstract class MixinResourcePackManager<T extends ResourcePackProfile> {
 			}
 		}
 
+		// On server, add the mod resource pack provider.
 		if (shouldAddServerProvider) {
 			providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 		}

@@ -86,8 +86,11 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	}
 
 	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
+		// Loop through each registered built-in resource packs and add them if valid.
 		for (Pair<String, ModNioResourcePack> entry : builtinResourcePacks) {
+			// Add the built-in pack only if namespaces for the specified resource type are present.
 			if (!entry.getRight().getNamespaces(resourceType).isEmpty()) {
+				// Make the resource pack profile for built-in pack, should never be always enabled.
 				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(), false,
 						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN);
 				if (profile != null) {

@@ -32,6 +32,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 public class MixinClientBuiltinResourcePackProvider {
 	@Inject(method = "register", at = @At("RETURN"))
 	private void addBuiltinResourcePacks(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory, CallbackInfo ci) {
+		// Register mod and built-in resource packs after the vanilla built-in resource packs are registered.
 		ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(consumer, factory);
 	}
 }

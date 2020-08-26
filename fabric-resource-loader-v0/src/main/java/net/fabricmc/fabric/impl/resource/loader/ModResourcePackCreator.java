@@ -43,6 +43,19 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 
 	@Override
 	public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
+		/*
+			Register order rule in this provider:
+			1. Mod resource packs
+			2. Mod built-in resource packs
+
+			Register order rule globally:
+			1. Default and Vanilla built-in resource packs
+			2. Mod resource packs
+			3. Mod built-in resource packs
+			4. User resource packs
+		 */
+
+		// Build a list of mod resource packs.
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
 
@@ -51,6 +64,9 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 				throw new RuntimeException("Not a ModResourcePack!");
 			}
 
+			// Make the resource pack profile for mod resource packs.
+			// Mod resource packs must always be enabled to avoid issues
+			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
 			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
 					true, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);
@@ -60,6 +76,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			}
 		}
 
+		// Register all built-in resource packs provided by mods.
 		ResourceManagerHelperImpl.registerBuiltinResourcePacks(this.type, consumer, factory);
 	}
 }

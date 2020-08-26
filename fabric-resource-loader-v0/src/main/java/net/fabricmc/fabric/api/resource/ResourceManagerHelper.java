@@ -58,12 +58,14 @@ public interface ResourceManagerHelper {
 	/**
 	 * Registers a built-in resource pack.
 	 *
+	 * <p>The registered built-in resource pack is not enabled by default.
+	 *
 	 * <p>A built-in resource pack is an extra resource pack provided by your mod which is not always active, it's similar to the "Programmer Art" resource pack.
 	 *
 	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
 	 * For example it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
 	 *
-	 * <p>The subPath corresponds to a path in the JAR file which points to the resource pack folder. For example the subPath can be {@code "resourcepacks/extra"}.
+	 * <p>The {@code subPath} corresponds to a path in the JAR file which points to the resource pack folder. For example the subPath can be {@code "resourcepacks/extra"}.
 	 *
 	 * @param id The identifier of the resource pack.
 	 * @param subPath The sub path in the mod resources.
@@ -84,7 +86,10 @@ public interface ResourceManagerHelper {
 	 * <p>Why and when to use it? A built-in resource pack should be used to provide extra assets/data that should be optional with your mod but still directly provided by it.
 	 * For example it could provide textures of your mod in another resolution, or could allow to provide different styles of your assets.
 	 *
-	 * <p>The subPath corresponds to a path in the JAR file which points to the resource pack folder. For example the subPath can be {@code "resourcepacks/extra"}.
+	 * <p>The {@code subPath} corresponds to a path in the JAR file which points to the resource pack folder. For example the subPath can be {@code "resourcepacks/extra"}.
+	 *
+	 * <p>Note about the enabled by default parameter: a resource pack cannot be enabled by default, only data packs can.
+	 * Making this work for resource packs is near impossible without touching how Vanilla handles disabled resource packs.
 	 *
 	 * @param id The identifier of the resource pack.
 	 * @param subPath The sub path in the mod resources.

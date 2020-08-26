@@ -60,6 +60,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
+		// Specific to registered built-in resource packs.
 		this.name = name;
 		this.defaultEnabled = defaultEnabled;
 	}
@@ -236,7 +237,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	@Override
 	public String getName() {
 		if (this.name != null) {
-			return this.name; // Builtin resource pack provided by a mod, the name is overriden.
+			return this.name; // Built-in resource pack provided by a mod, the name is overriden.
 		}
 
 		return ModResourcePackUtil.getName(modInfo);
