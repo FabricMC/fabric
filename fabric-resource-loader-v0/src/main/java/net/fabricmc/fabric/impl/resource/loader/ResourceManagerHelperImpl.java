@@ -54,10 +54,6 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
 	}
 
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container) {
-		return registerBuiltinResourcePack(id, subPath, container, false);
-	}
-
 	/**
 	 * Registers a built-in resource pack. Internal implementation.
 	 *
