@@ -117,6 +117,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		nominalFace(quad.getFace());
 		colorIndex(quad.getColorIndex());
 		material(material);
+		tag(0);
 		shade(quad.hasShade());
 		isGeometryInvalid = true;
 		return this;
