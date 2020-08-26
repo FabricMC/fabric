@@ -39,7 +39,7 @@ public class MixinGameOptions {
 
 	@Inject(method = "load", at = @At("RETURN"))
 	private void onLoad(CallbackInfo ci) {
-		// Add built-in resource packs if they are enabled by default.
+		// Add built-in resource packs if they are enabled by default only if the options file is blank.
 		if (this.resourcePacks.isEmpty()) {
 			List<ResourcePackProfile> profiles = new ArrayList<>();
 			ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(profiles::add, ResourcePackProfile::new);
