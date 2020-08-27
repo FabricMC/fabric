@@ -5,5 +5,7 @@
   "item.fabric-renderer-registries-v1-testmod.disco_ball": "Disco Ball",
   "item.fabric-renderer-registries-v1-testmod.long_cooldown": "Long Cooldown",
   "item.fabric-renderer-registries-v1-testmod.hidden_cooldown": "Hidden Cooldown",
-  "item.fabric-renderer-registries-v1-testmod.obfuscated_count": "Obfuscated Count Label"
+  "item.fabric-renderer-registries-v1-testmod.obfuscated_count": "Obfuscated Count Label",
+  "item.fabric-renderer-registries-v1-testmod.mysterious_book": "Mysterious Book",
+  "item.fabric-renderer-registries-v1-testmod.tunisian_diamond": "Tunisian Diamond"
 }

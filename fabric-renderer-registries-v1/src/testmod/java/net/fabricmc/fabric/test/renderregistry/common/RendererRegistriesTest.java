@@ -36,9 +36,13 @@ public class RendererRegistriesTest implements ModInitializer {
 	public static final Item MANA_STORAGE = new StorageItem(new Item.Settings().group(ItemGroup.MISC));
 	public static final Item DISCO_BALL = new Item(new Item.Settings().group(ItemGroup.MISC));
 
-	// Custom Cooldown Overlay items
+	// Cooldown Overlay related items
 	public static final Item LONG_COOLDOWN = new CooldownItem(new Item.Settings().group(ItemGroup.MISC), 4 * 20);
 	public static final Item HIDDEN_COOLDOWN = new CooldownItem(new Item.Settings().group(ItemGroup.MISC), 4 * 20);
+
+	// Pre/Post-Rendering related items
+	public static final Item MYSTERIOUS_BOOK = new Item(new Item.Settings().maxCount(1).group(ItemGroup.MISC));
+	public static final Item TUNISIAN_DIAMOND = new Item(new Item.Settings().group(ItemGroup.MISC));
 
 	public static Identifier id(String path) {
 		return new Identifier(ID, path);
@@ -57,5 +61,9 @@ public class RendererRegistriesTest implements ModInitializer {
 		// Items used to demonstrate custom cooldown overlays
 		Registry.register(Registry.ITEM, id("long_cooldown"), LONG_COOLDOWN);
 		Registry.register(Registry.ITEM, id("hidden_cooldown"), HIDDEN_COOLDOWN);
+
+		// Items used to demostrate pre/post-rendering
+		Registry.register(Registry.ITEM, id("mysterious_book"), MYSTERIOUS_BOOK);
+		Registry.register(Registry.ITEM, id("tunisian_diamond"), TUNISIAN_DIAMOND);
 	}
 }
