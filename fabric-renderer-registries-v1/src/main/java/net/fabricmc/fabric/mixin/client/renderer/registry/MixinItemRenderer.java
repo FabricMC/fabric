@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -45,6 +46,7 @@ public abstract class MixinItemRenderer {
 
 	@Unique private final MatrixStack matrixStack = new MatrixStack();
 	@Unique private boolean needPopping = false;
+	@Unique private String countLabelTmp;
 
 	@Unique private void setGuiQuadColor(Args args, int color) {
 		// renderGuiQuad takes each component separately, for some reason
@@ -80,12 +82,28 @@ public abstract class MixinItemRenderer {
 		return matrixStack;
 	}
 
+	// hack to make the "countLabel != null" expression in the "is count label visible" condition to always evaluate to false
+	// this makes count label visibility depend on ItemStack.getCount(), which gets redirected to our isVisible method
+	// thanks, @Gimpansor
+	@ModifyVariable(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0), ordinal = 0)
+	public String countVisibleCondHack(String countLabel) {
+		countLabelTmp = countLabel;
+		return null;
+	}
+
 	// changes "is count label visible" condition
-	// note - countLabel being non-null will *force* the label to be displayed
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0))
 	public int countVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
 		return ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).isVisible(stack, countLabel) ? 2 : 1;
+	}
+
+	// undoes the "countLabel != null" expression hack
+	@ModifyVariable(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;translate(DDD)V"), ordinal = 0)
+	public String countVisibleCondHackUndo(String countLabel) {
+		return countLabelTmp;
 	}
 
 	// changes count label contents and color
@@ -96,6 +114,13 @@ public abstract class MixinItemRenderer {
 		Text contents = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getContents(stack, countLabel);
 		color = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getColor(stack, countLabel);
 		return textRenderer.draw(contents.method_30937(), x, y, color, shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
+	}
+
+	// undoes the "countLabel != null" expression hack *again* (since the 1st undo only happens if the count label is rendered)
+	@ModifyVariable(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z"), ordinal = 0)
+	public String countVisibleCondHackUndoAgain(String countLabel) {
+		return countLabelTmp;
 	}
 
 	// changes "is durability bar visible" condition

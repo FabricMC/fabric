@@ -28,9 +28,7 @@ public interface CountLabelProperties {
 	CountLabelProperties DEFAULT = new DefaultCountLabelProperties();
 
 	/**
-	 * <p>Checks if the count label is visible or not.</p>
-	 * <strong>NOTE:</strong> Currently, if {@code override} is non-null, the count label will always be displayed,
-	 * regardless of what this method returns.
+	 * Checks if the count label is visible or not.
 	 * @param stack stack to check
 	 * @param override label contents override
 	 * @return {@code true} if label is visible, {@code false} otherwise
