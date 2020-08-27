@@ -33,6 +33,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRen
 public class GildedStackBorder extends DrawableHelper implements PostItemOverlayRenderer {
 	@Override
 	public void renderOverlay(MatrixStack matrixStack, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
+		// TODO this... doesn't render anything. it *is* called, Tessellator just kinda refuses to do anything
 		Integer colorRaw = Formatting.GOLD.getColorValue();
 		assert colorRaw != null : "Something is *seriously* wrong with this Minecraft client instance...";
 		int color = colorRaw;

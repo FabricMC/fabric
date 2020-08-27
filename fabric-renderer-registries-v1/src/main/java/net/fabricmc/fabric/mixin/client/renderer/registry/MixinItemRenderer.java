@@ -82,7 +82,7 @@ public abstract class MixinItemRenderer {
 		return matrixStack;
 	}
 
-	// hack to make the "countLabel != null" expression in the "is count label visible" condition to always evaluate to false
+	// hack to make the "countLabel != null" expression in the "is count label visible" condition always evaluate to false
 	// this makes count label visibility depend on ItemStack.getCount(), which gets redirected to our isVisible method
 	// thanks, @Gimpansor
 	@ModifyVariable(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",

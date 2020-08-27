@@ -27,6 +27,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PreItemOverlayRend
 public class MysteriousStackBorder extends DrawableHelper implements PreItemOverlayRenderer {
 	@Override
 	public boolean renderOverlay(MatrixStack matrixStack, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
+		// TODO this... doesn't render anything. it *is* called, Tessellator just kinda refuses to do anything
 		Integer colorRaw = Formatting.DARK_PURPLE.getColorValue();
 		assert colorRaw != null : "Something is *seriously* wrong with this Minecraft client instance...";
 		int color = colorRaw;
