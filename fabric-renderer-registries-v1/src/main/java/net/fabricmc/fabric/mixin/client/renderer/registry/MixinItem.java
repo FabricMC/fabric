@@ -42,8 +42,8 @@ public abstract class MixinItem implements ItemOverlayExtensions {
 	}
 
 	@Override
-	public void fabric_setCountLabelProperties(CountLabelProperties clp) {
-		this.countLabelProperties = clp;
+	public void fabric_setCountLabelProperties(CountLabelProperties properties) {
+		this.countLabelProperties = properties;
 	}
 
 	@Override
@@ -52,8 +52,8 @@ public abstract class MixinItem implements ItemOverlayExtensions {
 	}
 
 	@Override
-	public void fabric_setDurabilityBarProperties(DurabilityBarProperties dbp) {
-		this.durabilityBarProperties = dbp;
+	public void fabric_setDurabilityBarProperties(DurabilityBarProperties properties) {
+		this.durabilityBarProperties = properties;
 	}
 
 	@Override
@@ -62,8 +62,8 @@ public abstract class MixinItem implements ItemOverlayExtensions {
 	}
 
 	@Override
-	public void fabric_setCooldownOverlayProperties(CooldownOverlayProperties cop) {
-		this.cooldownOverlayProperties = cop;
+	public void fabric_setCooldownOverlayProperties(CooldownOverlayProperties properties) {
+		this.cooldownOverlayProperties = properties;
 	}
 
 	@Override
@@ -72,17 +72,17 @@ public abstract class MixinItem implements ItemOverlayExtensions {
 	}
 
 	@Override
-	public void fabric_setPreOverlayRenderer(PreItemOverlayRenderer pior) {
-		this.preItemOverlayRenderer = pior;
+	public void fabric_setPreOverlayRenderer(PreItemOverlayRenderer renderer) {
+		this.preItemOverlayRenderer = renderer;
 	}
 
 	@Override
-	public PostItemOverlayRenderer fabric_getPostItemOveralyRenderer() {
+	public PostItemOverlayRenderer fabric_getPostItemOverlayRenderer() {
 		return postItemOverlayRenderer;
 	}
 
 	@Override
-	public void fabric_setPostOverlayRenderer(PostItemOverlayRenderer pior) {
-		this.postItemOverlayRenderer = pior;
+	public void fabric_setPostOverlayRenderer(PostItemOverlayRenderer renderer) {
+		this.postItemOverlayRenderer = renderer;
 	}
 }

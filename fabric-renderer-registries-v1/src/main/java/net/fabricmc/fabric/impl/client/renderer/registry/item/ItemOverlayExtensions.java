@@ -24,17 +24,17 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarPrope
 
 public interface ItemOverlayExtensions {
 	CountLabelProperties fabric_getCountLabelProperties();
-	void fabric_setCountLabelProperties(CountLabelProperties clp);
+	void fabric_setCountLabelProperties(CountLabelProperties properties);
 
 	DurabilityBarProperties fabric_getDurabilityBarProperties();
-	void fabric_setDurabilityBarProperties(DurabilityBarProperties dbp);
+	void fabric_setDurabilityBarProperties(DurabilityBarProperties properties);
 
 	CooldownOverlayProperties fabric_getCooldownOverlayProperties();
-	void fabric_setCooldownOverlayProperties(CooldownOverlayProperties cop);
+	void fabric_setCooldownOverlayProperties(CooldownOverlayProperties properties);
 
 	PreItemOverlayRenderer fabric_getPreItemOverlayRenderer();
-	void fabric_setPreOverlayRenderer(PreItemOverlayRenderer pior);
+	void fabric_setPreOverlayRenderer(PreItemOverlayRenderer renderer);
 
-	PostItemOverlayRenderer fabric_getPostItemOveralyRenderer();
-	void fabric_setPostOverlayRenderer(PostItemOverlayRenderer pior);
+	PostItemOverlayRenderer fabric_getPostItemOverlayRenderer();
+	void fabric_setPostOverlayRenderer(PostItemOverlayRenderer renderer);
 }

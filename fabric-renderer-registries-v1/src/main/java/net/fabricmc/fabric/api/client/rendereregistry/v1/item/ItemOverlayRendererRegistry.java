@@ -27,39 +27,39 @@ public final class ItemOverlayRendererRegistry {
 		return ((ItemOverlayExtensions) item).fabric_getCountLabelProperties();
 	}
 
-	public static void setCountLabelProperties(Item item, CountLabelProperties clp) {
-		((ItemOverlayExtensions) item).fabric_setCountLabelProperties(clp);
+	public static void setCountLabelProperties(Item item, CountLabelProperties properties) {
+		((ItemOverlayExtensions) item).fabric_setCountLabelProperties(properties);
 	}
 
 	public static DurabilityBarProperties getDurabilityBarProperties(Item item) {
 		return ((ItemOverlayExtensions) item).fabric_getDurabilityBarProperties();
 	}
 
-	public static void setDurabilityBarProperties(Item item, DurabilityBarProperties dbp) {
-		((ItemOverlayExtensions) item).fabric_setDurabilityBarProperties(dbp);
+	public static void setDurabilityBarProperties(Item item, DurabilityBarProperties properties) {
+		((ItemOverlayExtensions) item).fabric_setDurabilityBarProperties(properties);
 	}
 
 	public static CooldownOverlayProperties getCooldownOverlayProperties(Item item) {
 		return ((ItemOverlayExtensions) item).fabric_getCooldownOverlayProperties();
 	}
 
-	public static void setCooldownOverlayProperties(Item item, CooldownOverlayProperties cop) {
-		((ItemOverlayExtensions) item).fabric_setCooldownOverlayProperties(cop);
+	public static void setCooldownOverlayProperties(Item item, CooldownOverlayProperties properties) {
+		((ItemOverlayExtensions) item).fabric_setCooldownOverlayProperties(properties);
 	}
 
 	public static PreItemOverlayRenderer getPreRenderer(Item item) {
 		return ((ItemOverlayExtensions) item).fabric_getPreItemOverlayRenderer();
 	}
 
-	public static void setPreRenderer(Item item, PreItemOverlayRenderer pior) {
-		((ItemOverlayExtensions) item).fabric_setPreOverlayRenderer(pior);
+	public static void setPreRenderer(Item item, PreItemOverlayRenderer renderer) {
+		((ItemOverlayExtensions) item).fabric_setPreOverlayRenderer(renderer);
 	}
 
 	public static PostItemOverlayRenderer getPostRenderer(Item item) {
-		return ((ItemOverlayExtensions) item).fabric_getPostItemOveralyRenderer();
+		return ((ItemOverlayExtensions) item).fabric_getPostItemOverlayRenderer();
 	}
 
-	public static void setPostRenderer(Item item, PostItemOverlayRenderer pior) {
-		((ItemOverlayExtensions) item).fabric_setPostOverlayRenderer(pior);
+	public static void setPostRenderer(Item item, PostItemOverlayRenderer renderer) {
+		((ItemOverlayExtensions) item).fabric_setPostOverlayRenderer(renderer);
 	}
 }
