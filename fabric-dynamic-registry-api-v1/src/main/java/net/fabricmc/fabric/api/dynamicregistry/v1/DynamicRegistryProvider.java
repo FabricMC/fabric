@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 /**
  * An entrypoint for developers to modify custom dynamic registries.
  *
- * <p>Registries added to this list can be changed from within datapacks.</p>
+ * <p>A dynamic registry is an optional per-server extension to an existing registry. They are decoded from datapack JSONs at the path `data/namespace/<registry_path>/<entry_id>.json` and synced to clients using a codec provided for registry entries.</p>
  *
  * <p>In {@code fabric.mod.json}, the entrypoint is defined with the {@code dynamic-registry-provider} key.</p>
  *
