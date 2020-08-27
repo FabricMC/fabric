@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.api.EnvType;
@@ -30,13 +31,12 @@ import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultPreItemOver
  *
  * <p>With this interface, you could customize this overlay to your heart's content.
  *
- * <p>Example:
- * <blockquote><pre>
- * ItemOverlayRendererRegistry.setCustom(Items.DIAMOND, (matrixStack, renderer, stack, x, y, countLabel) -> {
+ * <p>Example:<pre>
+ * {@link ItemOverlayRendererRegistry#setPreRenderer(Item, PreItemOverlayRenderer) ItemOverlayRendererRegistry.setPreRenderer}(Items.DIAMOND, (matrixStack, renderer, stack, x, y, countLabel) -> {
  * 	renderer.drawWithShadow(matrixStack, "?", x + 17 - renderer.getWidth("?"), y + 9, 0xFFFFFF);
  * 	return true;
  * });
- * </pre></blockquote>
+ * </pre>
  */
 @FunctionalInterface
 public interface PreItemOverlayRenderer {

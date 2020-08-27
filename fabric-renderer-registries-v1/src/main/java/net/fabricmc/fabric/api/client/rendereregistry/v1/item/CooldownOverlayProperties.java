@@ -21,10 +21,33 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOverlayProperties;
 
+/**
+ * This interface allows you to modify the cooldown overlay that is displayed on item stacks in inventories.
+ */
 public interface CooldownOverlayProperties {
 	CooldownOverlayProperties DEFAULT = new DefaultCooldownOverlayProperties();
 
+	/**
+	 * Checks if the cooldown overlay is visible or not.
+	 * @param stack stack to check
+	 * @param client current {@link MinecraftClient} instance
+	 * @return {@code true} if overlay is visible, {@code false} otherwise
+	 */
 	boolean isVisible(ItemStack stack, MinecraftClient client);
+
+	/**
+	 * Gets how full the cooldown overlay is.
+	 * @param stack stack to check
+	 * @param client current {@link MinecraftClient} instance
+	 * @return overlay fill factor, between 0 and 1 (inclusive)
+	 */
 	float getFillFactor(ItemStack stack, MinecraftClient client);
+
+	/**
+	 * Gets the color of the cooldown overlay.
+	 * @param stack stack to check
+	 * @param client current {@link MinecraftClient} instance
+	 * @return overlay color
+	 */
 	int getColor(ItemStack stack, MinecraftClient client);
 }
