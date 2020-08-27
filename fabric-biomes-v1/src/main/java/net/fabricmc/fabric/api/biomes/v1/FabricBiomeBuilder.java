@@ -14,6 +14,9 @@ import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeEffects;
 import net.minecraft.world.biome.BiomeParticleConfig;
@@ -30,6 +33,9 @@ import net.fabricmc.fabric.mixin.biome.SpawnDensityAccessor;
 import net.fabricmc.fabric.mixin.biome.SpawnSettingsAccessor;
 
 public class FabricBiomeBuilder {
+	// DynamicRegistryManager
+	private DynamicRegistryManager registryManager;
+
 	// Biome settings
 	private float depth;
 	private float scale;
@@ -65,8 +71,12 @@ public class FabricBiomeBuilder {
 	private Optional<BiomeAdditionsSound> additionsSound = Optional.empty();
 	private Optional<MusicSound> musicSound = Optional.empty();
 
-	public static FabricBiomeBuilder of(Biome biome) {
-		FabricBiomeBuilder builder = new FabricBiomeBuilder();
+	private FabricBiomeBuilder(DynamicRegistryManager registryManager) {
+		this.registryManager = registryManager;
+	}
+
+	public static FabricBiomeBuilder of(Biome biome, DynamicRegistryManager registryManager) {
+		FabricBiomeBuilder builder = new FabricBiomeBuilder(registryManager);
 		builder.depth(biome.getDepth());
 		builder.category(biome.getCategory());
 		builder.precipitation(biome.getPrecipitation());
@@ -237,8 +247,18 @@ public class FabricBiomeBuilder {
 		return this;
 	}
 
+	public FabricBiomeBuilder carver(GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> carver) {
+		carver(step, () -> registryManager.get(Registry.CONFIGURED_CARVER_WORLDGEN).get(carver));
+		return this;
+	}
+
 	public FabricBiomeBuilder feature(GenerationStep.Feature step, Supplier<ConfiguredFeature<?, ?>> feature) {
 		this.features.computeIfAbsent(step, (s) -> Lists.newArrayList()).add(feature);
+		return this;
+	}
+
+	public FabricBiomeBuilder feature(GenerationStep.Feature step, RegistryKey<ConfiguredFeature<?, ?>> feature) {
+		feature(step, () -> registryManager.get(Registry.CONFIGURED_FEATURE_WORLDGEN).get(feature));
 		return this;
 	}
 
@@ -247,8 +267,18 @@ public class FabricBiomeBuilder {
 		return this;
 	}
 
+	public FabricBiomeBuilder structureFeature(RegistryKey<ConfiguredStructureFeature<?, ?>> structureFeature) {
+		structureFeature(() -> registryManager.get(Registry.CONFIGURED_STRUCTURE_FEATURE_WORLDGEN).get(structureFeature));
+		return this;
+	}
+
 	public FabricBiomeBuilder surfaceBuilder(Supplier<ConfiguredSurfaceBuilder<?>> surfaceBuilder) {
 		this.surfaceBuilder = surfaceBuilder;
+		return this;
+	}
+
+	public FabricBiomeBuilder surfaceBuilder(RegistryKey<ConfiguredSurfaceBuilder<?>> surfaceBuilder) {
+		surfaceBuilder(() -> registryManager.get(Registry.CONFIGURED_SURFACE_BUILDER_WORLDGEN).get(surfaceBuilder));
 		return this;
 	}
 
