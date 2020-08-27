@@ -25,6 +25,8 @@ import java.util.function.Consumer;
  *
  * <p>In {@code fabric.mod.json}, the entrypoint is defined with the {@code dynamic-registry-provider} key.</p>
  *
+ * <p>Dynamic registries are initialized at different times in relation to the mod's initialization depending on the environment and version of Fabric loader. Due to this, some parts of the game may not be initialized yet. To prevent issues from occurring, the dynamic registry provider should be defined within a separate class and access as few other classes as possible.</p>
+ *
  * <pre><code>
  * public class ExampleDynamicRegistryProvider implements DynamicRegistryProvider {
  * 	public void addDynamicRegistries(Consumer&lt;CustomDynamicRegistry&lt;?&gt;&gt; adder) {
