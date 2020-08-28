@@ -13,6 +13,8 @@ Also check out [Fabric Loader](https://github.com/FabricMC/fabric-loader), the (
 
 For support and discussion for both developers and users, visit [the Fabric Discord server](https://discord.gg/v6v4pMv).
 
+For more information about the fabric project as a whole check out the [fabric homepage](https://fabricmc.net/), and the [fabric wiki](https://fabricmc.net/wiki/doku.php).
+
 ## Getting Started
 
 ### For Players
