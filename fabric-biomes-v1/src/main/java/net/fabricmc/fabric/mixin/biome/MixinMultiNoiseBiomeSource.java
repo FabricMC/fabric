@@ -20,33 +20,45 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
-@Mixin(MultiNoiseBiomeSource.class)
+/**
+ * This Mixin is responsible for adding mod-biomes to the NETHER preset in the MultiNoiseBiomeSource.
+ */
+@Mixin(MultiNoiseBiomeSource.Preset.class)
 public class MixinMultiNoiseBiomeSource {
-	@Inject(method = "method_28467", at = @At("RETURN"))
-	private static void modifyNoisePoints(long l, CallbackInfoReturnable<MultiNoiseBiomeSource> cir) {
+	// NOTE: This is a lambda-function in the NETHER preset field initializer
+	@Inject(method = "method_31088", at = @At("RETURN"))
+	private static void modifyNoisePoints(MultiNoiseBiomeSource.Preset preset, Registry<Biome> biomeRegistry, Long seed, CallbackInfoReturnable<MultiNoiseBiomeSource> cir) {
 		MultiNoiseBiomeSource returnedSource = cir.getReturnValue();
+		MultiNoiseBiomeSourceAccessor sourceAccessor = (MultiNoiseBiomeSourceAccessor) returnedSource;
+		BiomeSourceAccessor baseSourceAccessor = (BiomeSourceAccessor) returnedSource;
 
 		// collect existing noise points in non-immutable map
-		List<Pair<Biome.MixedNoisePoint, Supplier<Biome>>> existingPoints = new ArrayList<>(((MultiNoiseBiomeSourceAccessor) returnedSource).getBiomePoints());
+		List<Pair<Biome.MixedNoisePoint, Supplier<Biome>>> existingPoints = new ArrayList<>(sourceAccessor.getBiomePoints());
+		List<Biome> biomes = new ArrayList<>(returnedSource.getBiomes());
 
 		// add fabric biome noise point data to list && BiomeSource biome list
-		InternalBiomeData.getNetherBiomeNoisePoints().forEach((biome, noisePoint) -> {
+		InternalBiomeData.getNetherBiomeNoisePoints().forEach((biomeKey, noisePoint) -> {
+			Biome biome = biomeRegistry.getOrThrow(biomeKey);
+			// NOTE: Even though we have to pass in suppliers, BiomeSource's ctor will resolve them immediately
 			existingPoints.add(Pair.of(noisePoint, () -> biome));
-			returnedSource.getBiomes().add(biome);
+			biomes.add(biome);
 		});
 
 		// modify MultiNoiseBiomeSource list with updated data
-		((MultiNoiseBiomeSourceAccessor) returnedSource).setBiomePoints(existingPoints);
+		sourceAccessor.setBiomePoints(ImmutableList.copyOf(existingPoints));
+		baseSourceAccessor.setBiomes(ImmutableList.copyOf(biomes));
 	}
 }

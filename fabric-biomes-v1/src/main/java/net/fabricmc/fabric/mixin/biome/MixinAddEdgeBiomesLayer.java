@@ -21,8 +21,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.AddEdgeBiomesLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -31,18 +32,18 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 
 /**
- * Adds edges and shores specified in {@link OverworldBiomes#addEdgeBiome(Biome, Biome, double)} and {@link OverworldBiomes#addShoreBiome(Biome, Biome, double)} to the edges layer.
+ * Adds edges and shores specified in {@link OverworldBiomes#addEdgeBiome(RegistryKey, RegistryKey, double)} and {@link OverworldBiomes#addShoreBiome(RegistryKey, RegistryKey, double)} to the edges layer.
  */
 @Mixin(AddEdgeBiomesLayer.class)
 public class MixinAddEdgeBiomesLayer {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info) {
-		Biome centerBiome = BuiltinRegistries.BIOME.get(center);
+		RegistryKey<Biome> centerBiome = BuiltinBiomes.fromRawId(center);
 
 		if (InternalBiomeData.getOverworldShores().containsKey(centerBiome) && InternalBiomeUtils.neighborsOcean(north, east, south, west)) {
-			info.setReturnValue(BuiltinRegistries.BIOME.getRawId(InternalBiomeData.getOverworldShores().get(centerBiome).pickRandom(rand)));
+			info.setReturnValue(InternalBiomeUtils.getRawId(InternalBiomeData.getOverworldShores().get(centerBiome).pickRandom(rand)));
 		} else if (InternalBiomeData.getOverworldEdges().containsKey(centerBiome) && InternalBiomeUtils.isEdge(north, east, south, west, center)) {
-			info.setReturnValue(BuiltinRegistries.BIOME.getRawId(InternalBiomeData.getOverworldEdges().get(centerBiome).pickRandom(rand)));
+			info.setReturnValue(InternalBiomeUtils.getRawId(InternalBiomeData.getOverworldEdges().get(centerBiome).pickRandom(rand)));
 		}
 	}
 }

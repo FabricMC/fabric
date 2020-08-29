@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.AddHillsLayer;
 import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
@@ -31,13 +33,18 @@ import net.minecraft.world.biome.layer.util.LayerSampler;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
 
 /**
- * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(Biome, Biome, double)}into the default hills layer.
+ * Injects hills biomes specified from {@link OverworldBiomes#addHillsBiome(RegistryKey, RegistryKey, double)} into the default hills layer.
  */
 @Mixin(AddHillsLayer.class)
 public class MixinAddHillsLayer {
+	// This maps between from a biome to it's "modified variant" biome, which was previously modeled via parent biomes
+	@Shadow
+	private static Int2IntMap field_26727;
+
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler biomeSampler, LayerSampler noiseSampler, int chunkX, int chunkZ, CallbackInfoReturnable<Integer> info) {
 		if (InternalBiomeData.getOverworldHills().isEmpty()) {
@@ -48,9 +55,13 @@ public class MixinAddHillsLayer {
 		final int biomeId = biomeSampler.sample(chunkX, chunkZ);
 		int noiseSample = noiseSampler.sample(chunkX, chunkZ);
 		int processedNoiseSample = (noiseSample - 2) % 29;
-		final Biome biome = BuiltinRegistries.BIOME.get(biomeId);
+		RegistryKey<Biome> key = BuiltinBiomes.fromRawId(biomeId);
 
-		WeightedBiomePicker hillPicker = InternalBiomeData.getOverworldHills().get(biome);
+		if (key == null) {
+			throw new IllegalStateException("Biome sampler returned unregistered Biome ID: " + biomeId);
+		}
+
+		WeightedBiomePicker hillPicker = InternalBiomeData.getOverworldHills().get(key);
 
 		if (hillPicker == null) {
 			// No hills for this biome, fall through to vanilla logic.
@@ -59,12 +70,10 @@ public class MixinAddHillsLayer {
 		}
 
 		if (rand.nextInt(3) == 0 || processedNoiseSample == 0) {
-			int biomeReturn = BuiltinRegistries.BIOME.getRawId(hillPicker.pickRandom(rand));
-			Biome parent;
+			int biomeReturn = InternalBiomeUtils.getRawId(hillPicker.pickRandom(rand));
 
 			if (processedNoiseSample == 0 && biomeReturn != biomeId) {
-				parent = Biomes.getMutated(BuiltinRegistries.BIOME.get(biomeReturn));
-				biomeReturn = parent == null ? biomeId : BuiltinRegistries.BIOME.getRawId(parent);
+				biomeReturn = field_26727.getOrDefault(biomeReturn, biomeId);
 			}
 
 			if (biomeReturn != biomeId) {

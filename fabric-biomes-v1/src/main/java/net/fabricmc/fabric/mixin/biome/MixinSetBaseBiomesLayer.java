@@ -24,8 +24,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -57,22 +59,6 @@ public class MixinSetBaseBiomesLayer {
 	@Mutable
 	private static int[] DRY_BIOMES;
 
-	@Shadow
-	@Final
-	private static int WOODED_BADLANDS_PLATEAU_ID;
-
-	@Shadow
-	@Final
-	private static int BADLANDS_PLATEAU_ID;
-
-	@Shadow
-	@Final
-	private static int JUNGLE_ID;
-
-	@Shadow
-	@Final
-	private static int GIANT_TREE_TAIGA_ID;
-
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/world/biome/layer/SetBaseBiomesLayer;chosenGroup1:[I"), method = "sample", cancellable = true)
 	private void injectDryBiomes(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		InternalBiomeUtils.injectBiomesIntoClimate(random, DRY_BIOMES, OverworldClimate.DRY, info::setReturnValue);
@@ -96,16 +82,16 @@ public class MixinSetBaseBiomesLayer {
 	@Inject(at = @At("RETURN"), method = "sample", cancellable = true)
 	private void transformVariants(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int biomeId = info.getReturnValueI();
-		Biome biome = BuiltinRegistries.BIOME.get(biomeId);
+		RegistryKey<Biome> biome = BuiltinBiomes.fromRawId(biomeId);
 
 		// Determine what special case this is...
 		OverworldClimate climate;
 
-		if (biomeId == BADLANDS_PLATEAU_ID || biomeId == WOODED_BADLANDS_PLATEAU_ID) {
+		if (biome == BiomeKeys.BADLANDS_PLATEAU || biome == BiomeKeys.WOODED_BADLANDS_PLATEAU) {
 			climate = OverworldClimate.DRY;
-		} else if (biomeId == JUNGLE_ID) {
+		} else if (biome == BiomeKeys.JUNGLE) {
 			climate = OverworldClimate.TEMPERATE;
-		} else if (biomeId == GIANT_TREE_TAIGA_ID) {
+		} else if (biome == BiomeKeys.GIANT_TREE_TAIGA) {
 			climate = OverworldClimate.TEMPERATE;
 		} else {
 			climate = null;

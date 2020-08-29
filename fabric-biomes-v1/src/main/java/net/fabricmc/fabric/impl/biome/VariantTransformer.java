@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -38,7 +39,7 @@ final class VariantTransformer {
 	 * @param chance the chance of replacement of the biome into the variant
 	 * @param climates the climates that the variant can replace the base biome in, empty/null indicates all climates
 	 */
-	void addBiome(Biome variant, double chance, OverworldClimate[] climates) {
+	void addBiome(RegistryKey<Biome> variant, double chance, OverworldClimate[] climates) {
 		if (climates == null || climates.length == 0) {
 			defaultTransformer.addBiome(variant, chance);
 			climates = OverworldClimate.values();
@@ -56,7 +57,7 @@ final class VariantTransformer {
 	 * @param random the {@link LayerRandomnessSource} from the layer
 	 * @return the transformed biome
 	 */
-	Biome transformBiome(Biome replaced, LayerRandomnessSource random, OverworldClimate climate) {
+	RegistryKey<Biome> transformBiome(RegistryKey<Biome> replaced, LayerRandomnessSource random, OverworldClimate climate) {
 		if (climate == null) {
 			return defaultTransformer.transformBiome(replaced, random);
 		}
@@ -77,7 +78,7 @@ final class VariantTransformer {
 		 * @param variant the variant that the replaced biome is replaced with
 		 * @param chance the chance of replacement of the biome into the variant
 		 */
-		private void addBiome(Biome variant, double chance) {
+		private void addBiome(RegistryKey<Biome> variant, double chance) {
 			variants.add(new BiomeVariant(variant, chance));
 		}
 
@@ -88,7 +89,7 @@ final class VariantTransformer {
 		 * @param random the {@link LayerRandomnessSource} from the layer
 		 * @return the transformed biome
 		 */
-		private Biome transformBiome(Biome replaced, LayerRandomnessSource random) {
+		private RegistryKey<Biome> transformBiome(RegistryKey<Biome> replaced, LayerRandomnessSource random) {
 			for (BiomeVariant variant : variants) {
 				if (random.nextInt(Integer.MAX_VALUE) < variant.getChance() * Integer.MAX_VALUE) {
 					return variant.getVariant();

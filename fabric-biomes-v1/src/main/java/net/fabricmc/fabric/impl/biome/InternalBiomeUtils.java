@@ -20,28 +20,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.IntConsumer;
 
+import it.unimi.dsi.fastutil.ints.Int2IntMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.util.registry.BuiltinRegistries;
-import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import net.minecraft.world.dimension.DimensionOptions;
-import net.minecraft.world.gen.GeneratorOptions;
 
 import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.fabricmc.fabric.mixin.biome.DimensionOptionsAccessor;
-import net.fabricmc.fabric.mixin.biome.DimensionTypeAccessor;
+import net.fabricmc.fabric.mixin.biome.AddHillsLayerAccessor;
+import net.fabricmc.fabric.mixin.biome.BuiltinBiomesAccessor;
 
 /**
  * Internal utilities used for biome sampling.
  */
 public final class InternalBiomeUtils {
-	private InternalBiomeUtils() { }
+	private static final Logger LOGGER = LogManager.getLogger();
+
+	private InternalBiomeUtils() {
+	}
 
 	/**
-	 * @param north raw id of the biome to the north
-	 * @param east raw id of the biome to the east
-	 * @param south raw id of the biome to the south
-	 * @param west raw id of the biome to the west
+	 * @param north  raw id of the biome to the north
+	 * @param east   raw id of the biome to the east
+	 * @param south  raw id of the biome to the south
+	 * @param west   raw id of the biome to the west
 	 * @param center central biome that comparisons are relative to
 	 * @return whether the central biome is an edge of a biome
 	 */
@@ -50,7 +57,7 @@ public final class InternalBiomeUtils {
 	}
 
 	/**
-	 * @param mainBiomeId the main raw biome id in comparison
+	 * @param mainBiomeId      the main raw biome id in comparison
 	 * @param secondaryBiomeId the secondary raw biome id in comparison
 	 * @return whether the two biomes are unsimilar
 	 */
@@ -58,21 +65,23 @@ public final class InternalBiomeUtils {
 		if (mainBiomeId == secondaryBiomeId) { // for efficiency, determine if the ids are equal first
 			return false;
 		} else {
-			Biome secondaryBiome = BuiltinRegistries.BIOME.get(secondaryBiomeId);
-			Biome mainBiome = BuiltinRegistries.BIOME.get(mainBiomeId);
+			// Regard a biome as "similar" to it's derived biome, i.e.
+			// No edge between plains and sunflower plains
 
-			boolean isUnsimilar = secondaryBiome.hasParent() ? !(mainBiomeId == BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(new Identifier(secondaryBiome.getParent())))) : true;
-			isUnsimilar = isUnsimilar && (mainBiome.hasParent() ? !(secondaryBiomeId == BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.get(new Identifier(mainBiome.getParent())))) : true);
-
-			return isUnsimilar;
+			// The parent-child relationship previously modeled in Biome itself is gone,
+			// and has been - for the time being - replaced by a hardcoded raw-id map
+			// in AddHillsLayer.
+			Int2IntMap parentChildMap = AddHillsLayerAccessor.getBaseToVariantMap();
+			return parentChildMap.get(mainBiomeId) != secondaryBiomeId
+					&& parentChildMap.get(secondaryBiomeId) != mainBiomeId;
 		}
 	}
 
 	/**
 	 * @param north raw id of the biome to the north
-	 * @param east raw id of the biome to the east
+	 * @param east  raw id of the biome to the east
 	 * @param south raw id of the biome to the south
-	 * @param west raw id of the biome to the west
+	 * @param west  raw id of the biome to the west
 	 * @return whether a biome in any direction is an ocean around the central biome
 	 */
 	public static boolean neighborsOcean(int north, int east, int south, int west) {
@@ -105,20 +114,21 @@ public final class InternalBiomeUtils {
 	/**
 	 * Potentially transforms a biome into its variants based on the provided randomness source.
 	 *
-	 * @param random The randomness source
+	 * @param random   The randomness source
 	 * @param existing The base biome
-	 * @param climate The climate in which the biome resides, or null to indicate an unknown climate
+	 * @param climate  The climate in which the biome resides, or null to indicate an unknown climate
 	 * @return The potentially transformed biome
 	 */
-	public static int transformBiome(LayerRandomnessSource random, Biome existing, OverworldClimate climate) {
-		Map<Biome, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
+	public static int transformBiome(LayerRandomnessSource random, RegistryKey<Biome> existing, OverworldClimate climate) {
+		Map<RegistryKey<Biome>, VariantTransformer> overworldVariantTransformers = InternalBiomeData.getOverworldVariantTransformers();
 		VariantTransformer transformer = overworldVariantTransformers.get(existing);
 
 		if (transformer != null) {
-			return BuiltinRegistries.BIOME.getRawId(transformer.transformBiome(existing, random, climate));
+			RegistryKey<Biome> key = transformer.transformBiome(existing, random, climate);
+			return getRawId(key);
 		}
 
-		return BuiltinRegistries.BIOME.getRawId(existing);
+		return getRawId(existing);
 	}
 
 	public static void injectBiomesIntoClimate(LayerRandomnessSource random, int[] vanillaArray, OverworldClimate climate, IntConsumer result) {
@@ -138,7 +148,7 @@ public final class InternalBiomeUtils {
 		if (reqWeightSum < vanillaArray.length) {
 			// Vanilla biome; look it up from the vanilla array and transform accordingly.
 
-			result.accept(transformBiome(random, BuiltinRegistries.BIOME.get(vanillaArray[(int) reqWeightSum]), climate));
+			result.accept(transformBiome(random, BuiltinBiomes.fromRawId(vanillaArray[(int) reqWeightSum]), climate));
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 
@@ -148,7 +158,22 @@ public final class InternalBiomeUtils {
 		}
 	}
 
-	public static void recreateChunkGenerators(GeneratorOptions generatorOptions) {
-		((DimensionOptionsAccessor) (Object) generatorOptions.getDimensionMap().get(DimensionOptions.NETHER)).setChunkGenerator(DimensionTypeAccessor.createNetherGenerator(generatorOptions.getSeed()));
+	public static int getRawId(RegistryKey<Biome> key) {
+		return BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.getOrThrow(key));
+	}
+
+	/**
+	 * Makes sure that the given registry key is mapped in {@link BuiltinBiomes}. This mapping may be absent
+	 * if mods register their biomes only in {@link BuiltinRegistries#BIOME}, and not using the
+	 * private method in {@link BuiltinBiomes}.
+	 */
+	public static void ensureIdMapping(RegistryKey<Biome> biomeKey) {
+		int rawId = getRawId(biomeKey);
+		Int2ObjectMap<RegistryKey<Biome>> biomes = BuiltinBiomesAccessor.getBY_RAW_ID();
+
+		if (!biomes.containsKey(rawId)) {
+			LOGGER.debug("Automatically creating layer-related raw-id mapping for biome {}", biomeKey);
+			biomes.put(rawId, biomeKey);
+		}
 	}
 }

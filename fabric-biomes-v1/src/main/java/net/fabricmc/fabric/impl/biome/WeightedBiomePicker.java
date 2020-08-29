@@ -21,6 +21,7 @@ import java.util.List;
 
 import com.google.common.base.Preconditions;
 
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -36,7 +37,7 @@ public final class WeightedBiomePicker {
 		entries = new ArrayList<>();
 	}
 
-	void addBiome(final Biome biome, final double weight) {
+	void addBiome(final RegistryKey<Biome> biome, final double weight) {
 		currentTotal += weight;
 
 		entries.add(new ContinentalBiomeEntry(biome, weight, currentTotal));
@@ -46,7 +47,7 @@ public final class WeightedBiomePicker {
 		return currentTotal;
 	}
 
-	public Biome pickRandom(LayerRandomnessSource random) {
+	public RegistryKey<Biome> pickRandom(LayerRandomnessSource random) {
 		double target = random.nextInt(Integer.MAX_VALUE) * getCurrentWeightTotal() / Integer.MAX_VALUE;
 
 		return search(target).getBiome();
