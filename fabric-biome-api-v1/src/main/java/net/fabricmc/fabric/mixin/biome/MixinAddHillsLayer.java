@@ -55,7 +55,7 @@ public class MixinAddHillsLayer {
 		final int biomeId = biomeSampler.sample(chunkX, chunkZ);
 		int noiseSample = noiseSampler.sample(chunkX, chunkZ);
 		int processedNoiseSample = (noiseSample - 2) % 29;
-		RegistryKey<Biome> key = BuiltinBiomes.fromRawId(biomeId);
+		RegistryKey<Biome> key = Biomes.fromRawId(biomeId);
 
 		if (key == null) {
 			throw new IllegalStateException("Biome sampler returned unregistered Biome ID: " + biomeId);

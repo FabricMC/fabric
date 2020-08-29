@@ -23,7 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BuiltinBiomes;
+import net.minecraft.world.biome.Biomes;
 import net.minecraft.world.biome.layer.AddEdgeBiomesLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 public class MixinAddEdgeBiomesLayer {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, int north, int east, int south, int west, int center, CallbackInfoReturnable<Integer> info) {
-		RegistryKey<Biome> centerBiome = BuiltinBiomes.fromRawId(center);
+		RegistryKey<Biome> centerBiome = Biomes.fromRawId(center);
 
 		if (InternalBiomeData.getOverworldShores().containsKey(centerBiome) && InternalBiomeUtils.neighborsOcean(north, east, south, west)) {
 			info.setReturnValue(InternalBiomeUtils.getRawId(InternalBiomeData.getOverworldShores().get(centerBiome).pickRandom(rand)));

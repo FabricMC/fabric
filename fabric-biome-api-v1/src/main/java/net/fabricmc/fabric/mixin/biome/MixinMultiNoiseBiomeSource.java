@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -38,17 +39,26 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 @Mixin(MultiNoiseBiomeSource.Preset.class)
 public class MixinMultiNoiseBiomeSource {
 	// NOTE: This is a lambda-function in the NETHER preset field initializer
-	@ModifyArgs(method = "method_31088", at = @At(value = "INVOKE", target = "net/minecraft/world/biome/source/MultiNoiseBiomeSource.<init> (JLjava/util/List;Ljava/util/Optional;Lnet/minecraft/world/biome/source/MultiNoiseBiomeSource$1;)V"))
-	private static void appendNetherBiomes(Args args, MultiNoiseBiomeSource.Preset preset, Registry<Biome> registry, Long seed) {
-		List<Pair<Biome.MixedNoisePoint, Supplier<Biome>>> biomes = new ArrayList<>(args.get(1));
+	@Inject(method = "method_31088", at = @At("RETURN"))
+	private static void modifyNoisePoints(MultiNoiseBiomeSource.Preset preset, Registry<Biome> biomeRegistry, Long seed, CallbackInfoReturnable<MultiNoiseBiomeSource> cir) {
+		MultiNoiseBiomeSource returnedSource = cir.getReturnValue();
+		MultiNoiseBiomeSourceAccessor sourceAccessor = (MultiNoiseBiomeSourceAccessor) returnedSource;
+		BiomeSourceAccessor baseSourceAccessor = (BiomeSourceAccessor) returnedSource;
+
+		// collect existing noise points in non-immutable map
+		List<Pair<Biome.MixedNoisePoint, Supplier<Biome>>> existingPoints = new ArrayList<>(sourceAccessor.getBiomePoints());
+		List<Biome> biomes = new ArrayList<>(returnedSource.getBiomes());
 
 		// add fabric biome noise point data to list && BiomeSource biome list
 		InternalBiomeData.getNetherBiomeNoisePoints().forEach((biomeKey, noisePoint) -> {
-			Biome biome = registry.getOrThrow(biomeKey);
+			Biome biome = biomeRegistry.method_31140(biomeKey);
 			// NOTE: Even though we have to pass in suppliers, BiomeSource's ctor will resolve them immediately
-			biomes.add(Pair.of(noisePoint, () -> biome));
+			existingPoints.add(Pair.of(noisePoint, () -> biome));
+			biomes.add(biome);
 		});
 
-		args.set(1, biomes);
+		// modify MultiNoiseBiomeSource list with updated data
+		sourceAccessor.setBiomePoints(ImmutableList.copyOf(existingPoints));
+		baseSourceAccessor.setBiomes(ImmutableList.copyOf(biomes));
 	}
 }

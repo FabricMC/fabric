@@ -25,8 +25,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.BuiltinBiomes;
+import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.BuiltInBiomes;
 import net.minecraft.world.biome.layer.AddRiversLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.util.LayerSampler;
@@ -43,12 +43,12 @@ public class MixinAddRiversLayer {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler landSampler, LayerSampler riverSampler, int x, int z, CallbackInfoReturnable<Integer> info) {
 		int landBiomeId = landSampler.sample(x, z);
-		RegistryKey<Biome> landBiomeKey = BuiltinBiomes.fromRawId(landBiomeId);
+		RegistryKey<Biome> landBiomeKey = Biomes.fromRawId(landBiomeId);
 
 		int riverBiomeId = riverSampler.sample(x, z);
 		Map<RegistryKey<Biome>, RegistryKey<Biome>> overworldRivers = InternalBiomeData.getOverworldRivers();
 
-		if (overworldRivers.containsKey(landBiomeKey) && BuiltinBiomes.fromRawId(riverBiomeId) == BiomeKeys.RIVER) {
+		if (overworldRivers.containsKey(landBiomeKey) && Biomes.fromRawId(riverBiomeId) == BuiltInBiomes.RIVER) {
 			RegistryKey<Biome> riverBiome = overworldRivers.get(landBiomeKey);
 			info.setReturnValue(riverBiome == null ? landBiomeId : InternalBiomeUtils.getRawId(riverBiome));
 		}
