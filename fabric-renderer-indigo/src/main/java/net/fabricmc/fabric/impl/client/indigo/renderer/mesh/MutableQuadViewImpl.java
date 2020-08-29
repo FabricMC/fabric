@@ -113,7 +113,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 	@Override
 	public final MutableQuadViewImpl fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace) {
 		System.arraycopy(quad.getVertexData(), 0, data, baseIndex + HEADER_STRIDE, QUAD_STRIDE);
-		cullFace(cullFace);
+		data[baseIndex + HEADER_BITS] = EncodingFormat.cullFace(0, cullFace);
 		nominalFace(quad.getFace());
 		colorIndex(quad.getColorIndex());
 		material(material);
