@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.test.item;
 
-import java.util.function.Consumer;
-
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolMaterials;
@@ -37,17 +34,14 @@ public class CustomDamageTest implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "weird_pickaxe"), new WeirdPick());
 	}
 
-	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = new CustomDamageHandler() {
-		@Override
-		public <T extends LivingEntity> int damage(ItemStack stack, int amount, T entity, Consumer<T> breakCallback) {
-			// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
-			if (entity.isSneaking()) {
-				return amount;
-			} else {
-				CompoundTag tag = stack.getOrCreateTag();
-				tag.putInt("weird", tag.getInt("weird") + 1);
-				return 0;
-			}
+	public static final CustomDamageHandler WEIRD_DAMAGE_HANDLER = (stack, amount, entity, breakCallback) -> {
+		// If sneaking, apply all damage to vanilla. Otherwise, increment a tag on the stack by one and don't apply any damage
+		if (entity.isSneaking()) {
+			return amount;
+		} else {
+			CompoundTag tag = stack.getOrCreateTag();
+			tag.putInt("weird", tag.getInt("weird") + 1);
+			return 0;
 		}
 	};
 
