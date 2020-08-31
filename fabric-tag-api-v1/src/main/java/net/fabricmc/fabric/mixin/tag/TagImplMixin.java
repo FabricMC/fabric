@@ -31,7 +31,7 @@ public abstract class TagImplMixin<T> implements FabricTagExtensions, Tag<T> {
 
 	@Override
 	public boolean fabric_hasBeenReplaced() {
-		return fabric_clearCount > 0;
+		return this.fabric_clearCount > 0;
 	}
 
 	@Override

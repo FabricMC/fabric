@@ -19,7 +19,7 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
     "fabric-resource-loader-v0": "*",
-    "minecraft": "~1.16-alpha.20.14.a"
+    "minecraft": "~1.16-alpha.20.27.a"
   },
   "description": "Hooks for tags.",
   "mixins": [

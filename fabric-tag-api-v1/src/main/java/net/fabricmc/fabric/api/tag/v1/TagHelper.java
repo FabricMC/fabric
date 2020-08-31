@@ -22,9 +22,6 @@ import net.fabricmc.fabric.impl.tag.FabricTagBuilderExtensions;
 import net.fabricmc.fabric.impl.tag.FabricTagExtensions;
 
 public final class TagHelper {
-	private TagHelper() {
-	}
-
 	/**
 	 * Checks if a tag has been replaced.
 	 *
@@ -50,5 +47,8 @@ public final class TagHelper {
 		extensions.fabric_clearTagEntries();
 
 		return builder;
+	}
+
+	private TagHelper() {
 	}
 }

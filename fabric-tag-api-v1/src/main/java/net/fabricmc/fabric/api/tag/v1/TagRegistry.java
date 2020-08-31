@@ -34,9 +34,6 @@ import net.fabricmc.fabric.mixin.tag.FluidTagsAccessor;
 import net.fabricmc.fabric.mixin.tag.ItemTagsAccessor;
 
 public final class TagRegistry {
-	private TagRegistry() {
-	}
-
 	/**
 	 * Registers a block tag.
 	 *
@@ -90,7 +87,7 @@ public final class TagRegistry {
 	 * @return a tag
 	 */
 	public static Tag.Identified<Fluid> fluid(Identifier id) {
-		return TagDelegate.create(id, FluidTags::getTagGroup);
+		return TagDelegate.create(id, FluidTagsAccessor.getRequiredTags()::getGroup);
 	}
 
 	/**
@@ -127,5 +124,8 @@ public final class TagRegistry {
 	 */
 	public static Tag.Identified<Item> requiredItem(Identifier id) {
 		return ItemTagsAccessor.getRequiredTags().add(id.toString()); // WTF Mojang
+	}
+
+	private TagRegistry() {
 	}
 }

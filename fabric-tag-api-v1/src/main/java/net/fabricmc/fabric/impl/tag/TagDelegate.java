@@ -23,6 +23,11 @@ import net.minecraft.tag.TagGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
+/**
+ * Represents a thread-safe delegate which refers to a tag in a tag group.
+ *
+ * @param <T> the type of object the tag stores
+ */
 public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensions {
 	private final Identifier id;
 	private final Supplier<TagGroup<T>> containerSupplier;
@@ -40,12 +45,12 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensi
 
 	@Override
 	public boolean contains(T entry) {
-		return getTag().contains(entry);
+		return this.getTag().contains(entry);
 	}
 
 	@Override
 	public List<T> values() {
-		return getTag().values();
+		return this.getTag().values();
 	}
 
 	/**
@@ -59,7 +64,7 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensi
 	 */
 	private Tag<T> getTag() {
 		Target<T> target = this.target;
-		TagGroup<T> reqContainer = containerSupplier.get();
+		TagGroup<T> reqContainer = this.containerSupplier.get();
 		Tag<T> ret;
 
 		if (target == null || target.container != reqContainer) {
@@ -74,12 +79,12 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensi
 
 	@Override
 	public Identifier getId() {
-		return id;
+		return this.id;
 	}
 
 	@Override
 	public boolean fabric_hasBeenReplaced() {
-		return clearCount > 0;
+		return this.clearCount > 0;
 	}
 
 	@Override

@@ -43,18 +43,18 @@ public abstract class TagBuilderMixin<T> implements FabricTagBuilderExtensions {
 
 	@Redirect(method = "build", at = @At(value = "INVOKE", target = "Ljava/util/Optional;of(Ljava/lang/Object;)Ljava/util/Optional;"))
 	private Optional<?> build(Object tagObj) {
-		((FabricTagExtensions) tagObj).fabric_setClearCount(fabric_clearCount);
+		((FabricTagExtensions) tagObj).fabric_setClearCount(this.fabric_clearCount);
 		return Optional.of(tagObj);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V"), method = "read")
 	public void onFromJsonClear(JsonObject json, String packName, CallbackInfoReturnable<Tag.Builder> info) {
-		fabric_clearCount++;
+		this.fabric_clearCount++;
 	}
 
 	@Override
 	public void fabric_clearTagEntries() {
-		entries.clear();
-		fabric_clearCount++;
+		this.entries.clear();
+		this.fabric_clearCount++;
 	}
 }
