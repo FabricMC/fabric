@@ -18,15 +18,17 @@ package net.fabricmc.fabric.mixin.tag;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.tag.EntityTypeTags;
 import net.minecraft.tag.RequiredTagList;
+import net.minecraft.tag.Tag;
 
 @Mixin(EntityTypeTags.class)
 public interface EntityTypeTagsAccessor {
-	@Accessor("REQUIRED_TAGS")
-	static RequiredTagList<EntityType<?>> getRequiredTags() {
+	@Invoker("register")
+	static Tag.Identified<EntityType<?>> register(String id) {
 		throw new AssertionError("This should not occur!");
 	}
 }

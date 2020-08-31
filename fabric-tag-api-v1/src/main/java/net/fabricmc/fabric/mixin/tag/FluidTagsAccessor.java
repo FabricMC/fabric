@@ -18,15 +18,22 @@ package net.fabricmc.fabric.mixin.tag;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.RequiredTagList;
+import net.minecraft.tag.Tag;
 
 @Mixin(FluidTags.class)
 public interface FluidTagsAccessor {
 	@Accessor("REQUIRED_TAGS")
-	static RequiredTagList<Fluid> getRequiredTags() {
+	static RequiredTagList<Fluid> getRequiredTagList() {
+		throw new AssertionError("This should not occur!");
+	}
+
+	@Invoker("register")
+	static Tag.Identified<Fluid> register(String id) {
 		throw new AssertionError("This should not occur!");
 	}
 }
