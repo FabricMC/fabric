@@ -42,7 +42,7 @@ public class RendererRegistriesTest implements ModInitializer {
 
 	// Pre/Post-Rendering related items
 	public static final Item MYSTERIOUS_BOOK = new Item(new Item.Settings().maxCount(1).group(ItemGroup.MISC));
-	public static final Item TUNISIAN_DIAMOND = new Item(new Item.Settings().group(ItemGroup.MISC));
+	public static final Item TUNISIAN_DIAMOND = new Item(new Item.Settings().maxCount(1).group(ItemGroup.MISC));
 
 	public static Identifier id(String path) {
 		return new Identifier(ID, path);

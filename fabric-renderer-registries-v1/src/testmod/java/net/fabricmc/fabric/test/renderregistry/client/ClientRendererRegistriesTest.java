@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.renderregistry.client;
 
+import net.minecraft.util.Formatting;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
 import net.fabricmc.fabric.test.renderregistry.client.cooldown.HiddenCooldownProperties;
@@ -24,8 +26,8 @@ import net.fabricmc.fabric.test.renderregistry.client.countlabel.ObfuscatedCount
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.DiscoBarProperties;
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.EnergyBarProperties;
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.ManaBarProperties;
-import net.fabricmc.fabric.test.renderregistry.client.postrender.GildedStackBorder;
-import net.fabricmc.fabric.test.renderregistry.client.prerender.MysteriousStackBorder;
+import net.fabricmc.fabric.test.renderregistry.client.postrender.WarningIcon;
+import net.fabricmc.fabric.test.renderregistry.client.prerender.StackBorder;
 import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
 
 public class ClientRendererRegistriesTest implements ClientModInitializer {
@@ -40,8 +42,9 @@ public class ClientRendererRegistriesTest implements ClientModInitializer {
 		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownProperties());
 		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.HIDDEN_COOLDOWN, new HiddenCooldownProperties());
 
-		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.MYSTERIOUS_BOOK, new MysteriousStackBorder());
-		ItemOverlayRendererRegistry.setPostRenderer(RendererRegistriesTest.TUNISIAN_DIAMOND, new GildedStackBorder());
+		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.TUNISIAN_DIAMOND, new StackBorder(Formatting.GOLD));
+		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.MYSTERIOUS_BOOK, new StackBorder(Formatting.DARK_PURPLE));
+		ItemOverlayRendererRegistry.setPostRenderer(RendererRegistriesTest.MYSTERIOUS_BOOK, new WarningIcon());
 	}
 }
 
