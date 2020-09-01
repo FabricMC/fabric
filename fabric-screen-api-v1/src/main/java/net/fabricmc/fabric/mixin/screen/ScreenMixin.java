@@ -33,7 +33,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.render.item.ItemRenderer;
 
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ButtonList;
@@ -42,7 +42,7 @@ import net.fabricmc.fabric.impl.client.screen.MouseEventsImpl;
 import net.fabricmc.fabric.impl.client.screen.ScreenEventFactory;
 
 @Mixin(Screen.class)
-public abstract class ScreenMixin implements FabricScreen {
+public abstract class ScreenMixin implements ScreenExtensions {
 	@Shadow
 	protected ItemRenderer itemRenderer;
 	@Shadow
@@ -90,7 +90,7 @@ public abstract class ScreenMixin implements FabricScreen {
 	public List<AbstractButtonWidget> getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
-			this.fabricButtons = new ButtonList<>(this.buttons, this.children);
+			this.fabricButtons = new ButtonList<>(this, this.buttons, this.children);
 		}
 
 		return this.fabricButtons;

@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.screen;
 
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.Event;
 
-public final class KeyboardEventsImpl implements FabricScreen.KeyboardEvents {
+public final class KeyboardEventsImpl implements ScreenExtensions.KeyboardEvents {
 	private final Event<ScreenEvents.BeforeKeyPressed> beforeKeyPressedEvent = ScreenEventFactory.createBeforeKeyPressedEvent();
 	private final Event<ScreenEvents.AfterKeyPressed> afterKeyPressedEvent = ScreenEventFactory.createAfterKeyPressedEvent();
 	private final Event<ScreenEvents.BeforeKeyReleased> beforeKeyReleasedEvent = ScreenEventFactory.createBeforeKeyReleasedEvent();

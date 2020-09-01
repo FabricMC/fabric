@@ -18,13 +18,13 @@ package net.fabricmc.fabric.impl.client.screen;
 
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Factory methods for creating event instances used in {@link FabricScreen}.
+ * Factory methods for creating event instances used in {@link ScreenExtensions}.
  */
 public final class ScreenEventFactory {
 	public static Event<ScreenEvents.BeforeRender> createBeforeRenderEvent() {

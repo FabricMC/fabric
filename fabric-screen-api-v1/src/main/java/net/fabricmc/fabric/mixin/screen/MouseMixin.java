@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
 
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 
 @Mixin(Mouse.class)
 public abstract class MouseMixin {
@@ -36,13 +36,14 @@ public abstract class MouseMixin {
 	@Final
 	private MinecraftClient client;
 	@Unique
-	private FabricScreen currentScreen;
+	private ScreenExtensions currentScreen;
 	@Unique
 	private Double horizontalScrollAmount;
 
+	// Synthetic method in onMouseButton
 	@Inject(method = "method_1611([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"), cancellable = true)
 	private void beforeMouseClickedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen = ((FabricScreen) this.client.currentScreen);
+		this.currentScreen = ((ScreenExtensions) this.client.currentScreen);
 
 		if (this.currentScreen.getMouseEvents().getBeforeMouseClickedEvent().invoker().beforeMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
@@ -51,15 +52,17 @@ public abstract class MouseMixin {
 		}
 	}
 
+	// Synthetic method in onMouseButton
 	@Inject(method = "method_1611([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseClickedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
 		this.currentScreen.getMouseEvents().getAfterMouseClickedEvent().invoker().afterMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
+	// Synthetic method in onMouseButton
 	@Inject(method = "method_1605([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(DDI)Z"), cancellable = true)
 	private void beforeMouseReleasedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen = ((FabricScreen) this.client.currentScreen);
+		this.currentScreen = ((ScreenExtensions) this.client.currentScreen);
 
 		if (this.currentScreen.getMouseEvents().getBeforeMouseReleasedEvent().invoker().beforeMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
@@ -68,6 +71,7 @@ public abstract class MouseMixin {
 		}
 	}
 
+	// Synthetic method in onMouseButton
 	@Inject(method = "method_1605([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseReleasedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
 		this.currentScreen.getMouseEvents().getAfterMouseReleasedEvent().invoker().afterMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
@@ -76,7 +80,7 @@ public abstract class MouseMixin {
 
 	@Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseScrolled(DDD)Z"), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
 	private void beforeMouseScrollEvent(long window, double horizontal, double vertical, CallbackInfo ci, double verticalAmount, double mouseX, double mouseY) {
-		this.currentScreen = ((FabricScreen) this.client.currentScreen); // Cache screen for after event
+		this.currentScreen = ((ScreenExtensions) this.client.currentScreen); // Cache screen for after event
 
 		// Apply same calculations to horizontal scroll as vertical scroll amount has
 		this.horizontalScrollAmount = this.client.options.discreteMouseScroll ? Math.signum(horizontal) : horizontal * this.client.options.mouseWheelSensitivity;

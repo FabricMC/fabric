@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.client.screen;
 
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.Event;
 
-public final class MouseEventsImpl implements FabricScreen.MouseEvents {
+public final class MouseEventsImpl implements ScreenExtensions.MouseEvents {
 	private final Event<ScreenEvents.BeforeMouseClicked> beforeMouseClickedEvent = ScreenEventFactory.createBeforeMouseClickedEvent();
 	private final Event<ScreenEvents.AfterMouseClicked> afterMouseClickedEvent = ScreenEventFactory.createAfterMouseClickedEvent();
 	private final Event<ScreenEvents.BeforeMouseReleased> beforeMouseReleasedEvent = ScreenEventFactory.createBeforeMouseReleasedEvent();

@@ -35,7 +35,7 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
@@ -43,17 +43,19 @@ public abstract class MinecraftClientMixin {
 	public Screen currentScreen;
 
 	@Unique
-	private FabricScreen tickingScreen;
+	private ScreenExtensions tickingScreen;
 
+	// Synthetic method in `tick`
 	// These two injections should be caught by "Screen#wrapScreenError" if anything fails in an event and then rethrown in the crash report
 	@Inject(method = "method_1572", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;tick()V"))
 	private void beforeScreenTick(CallbackInfo ci) {
 		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
 		// If someone changes the screen, the after tick event will likely have class cast exceptions or an NPE.
-		this.tickingScreen = (FabricScreen) this.currentScreen;
+		this.tickingScreen = (ScreenExtensions) this.currentScreen;
 		this.tickingScreen.getBeforeTickEvent().invoker().beforeTick((MinecraftClient) (Object) this, this.tickingScreen.getScreen(), this.tickingScreen);
 	}
 
+	// Synthetic method in `tick`
 	@Inject(method = "method_1572", at = @At("TAIL"))
 	private void afterScreenTick(CallbackInfo ci) {
 		this.tickingScreen.getAfterTickEvent().invoker().afterTick((MinecraftClient) (Object) this, this.tickingScreen.getScreen(), this.tickingScreen);
@@ -67,7 +69,7 @@ public abstract class MinecraftClientMixin {
 	private void beforeLoadingScreenTick(String worldName, DynamicRegistryManager.Impl dynamicRegistryManager, Function<LevelStorage.Session, DataPackSettings> function, Function4<LevelStorage.Session, DynamicRegistryManager.Impl, ResourceManager, DataPackSettings, SaveProperties> function4, boolean safeMode, @Coerce Object worldLoadAction, CallbackInfo ci) {
 		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
 		// If someone changes the screen, the after tick event will likely have class cast exceptions or an NPE.
-		this.tickingScreen = (FabricScreen) this.currentScreen;
+		this.tickingScreen = (ScreenExtensions) this.currentScreen;
 		this.tickingScreen.getBeforeTickEvent().invoker().beforeTick((MinecraftClient) (Object) this, this.tickingScreen.getScreen(), this.tickingScreen);
 	}
 

@@ -29,7 +29,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 
 @Mixin(GameRenderer.class)
 public abstract class GameRendererMixin {
@@ -38,13 +38,13 @@ public abstract class GameRendererMixin {
 	private MinecraftClient client;
 
 	@Unique
-	private FabricScreen renderingScreen;
+	private ScreenExtensions renderingScreen;
 
 	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;render(Lnet/minecraft/client/util/math/MatrixStack;IIF)V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onBeforeRenderScreen(float tickDelta, long startTime, boolean tick, CallbackInfo ci, int mouseX, int mouseY, MatrixStack matrices) {
 		// Store the screen in a variable in case someone tries to change the screen during this before render event.
 		// If someone changes the screen, the after render event will likely have class cast exceptions or an NPE.
-		this.renderingScreen = (FabricScreen) this.client.currentScreen;
+		this.renderingScreen = (ScreenExtensions) this.client.currentScreen;
 		this.renderingScreen.getBeforeRenderEvent().invoker().beforeRender(this.client, matrices, this.renderingScreen.getScreen(), this.renderingScreen, mouseX, mouseY, tickDelta);
 	}
 

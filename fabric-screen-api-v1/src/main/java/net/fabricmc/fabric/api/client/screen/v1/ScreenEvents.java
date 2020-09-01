@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.screen.v1;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screen.TickableElement;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.EnvType;
@@ -25,21 +26,19 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-// TODO:
-// Char typed
-// Add Child
-// Add button
-// Change ButtonList to fire add child and button events
+/**
+ * Holds events related to {@link Screen}s.
+ */
 @Environment(EnvType.CLIENT)
 public final class ScreenEvents {
 	/**
 	 * An event that is called before a {@link Screen#init(MinecraftClient, int, int) screen is initialized} to it's default state.
-	 * It should be noted many of the methods in {@link FabricScreen} such as the screen's text renderer may not be initialized yet, and as such their use is discouraged.
+	 * It should be noted many of the methods in {@link ScreenExtensions} such as the screen's text renderer may not be initialized yet, and as such their use is discouraged.
 	 *
-	 * <p>Typically this event is used to register screen events such as listening to when child elements are added to the screen.
+	 * <!--<p>Typically this event is used to register screen events such as listening to when child elements are added to the screen. -=- Uncomment when child add/remove event is added for elements-->
 	 * You can still use {@link ScreenEvents#AFTER_INIT} to register events such as keyboard and mouse events.
 	 *
-	 * <p>The {@link FabricScreen} provided by the {@code info} parameter may be used to register tick, render events, keyboard, mouse, additional and removal of child elements (including buttons).
+	 * <p>The {@link ScreenExtensions} provided by the {@code info} parameter may be used to register tick, render events, keyboard, mouse, additional and removal of child elements (including buttons).
 	 * For example, to register an event on inventory like screens after render, the following code could be used:
 	 * <blockquote><pre>
 	 * &#64;Override
@@ -68,19 +67,21 @@ public final class ScreenEvents {
 
 	/**
 	 * An event that is called after a {@link Screen#init(MinecraftClient, int, int) screen is initialized} to it's default state.
-	 * Since this event is fired after a screen has been initialized,
 	 *
 	 * <p>Typically this event is used to modify a screen after the screen has been initialized.
-	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this callback.
+	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this event.
 	 *
 	 * <p>For example, to add a button to the title screen, the following code could be used:
 	 * <blockquote><pre>
-	 * ScreenEvents.AFTER_INIT.register((client, screen, info, scaledWidth, scaledHeight) -> {
+	 * ScreenEvents.AFTER_INIT.register((client, screen, context, scaledWidth, scaledHeight) -> {
 	 * 	if (screen instanceof TitleScreen) {
 	 * 		context.getButtons().add(new ButtonWidget(...));
 	 * 	}
 	 * });
 	 * </pre></blockquote>
+	 *
+	 *<p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.screen.TickableElement ticked} or {@link net.minecraft.client.gui.Drawable drawn}.
+	 * Unless the element is button, you need to call the specific {@link TickableElement#tick() tick} and {@link net.minecraft.client.gui.Drawable#render(MatrixStack, int, int, float) render} methods in the correspondding screen events.
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT
@@ -93,82 +94,82 @@ public final class ScreenEvents {
 
 	@FunctionalInterface
 	public interface BeforeInit {
-		void beforeInit(MinecraftClient client, Screen screen, FabricScreen info, int scaledWidth, int scaledHeight);
+		void beforeInit(MinecraftClient client, Screen screen, ScreenExtensions context, int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface
 	public interface AfterInit {
-		void afterInit(MinecraftClient client, Screen screen, FabricScreen info, int scaledWidth, int scaledHeight);
+		void afterInit(MinecraftClient client, Screen screen, ScreenExtensions context, int scaledWidth, int scaledHeight);
 	}
 
 	@FunctionalInterface
 	public interface BeforeRender {
-		void beforeRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta);
+		void beforeRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenExtensions context, int mouseX, int mouseY, float tickDelta);
 	}
 
 	@FunctionalInterface
 	public interface AfterRender {
-		void afterRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta);
+		void afterRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenExtensions context, int mouseX, int mouseY, float tickDelta);
 	}
 
 	@FunctionalInterface
 	public interface BeforeTick {
-		void beforeTick(MinecraftClient client, Screen screen, FabricScreen info);
+		void beforeTick(MinecraftClient client, Screen screen, ScreenExtensions context);
 	}
 
 	@FunctionalInterface
 	public interface AfterTick {
-		void afterTick(MinecraftClient client, Screen screen, FabricScreen info);
+		void afterTick(MinecraftClient client, Screen screen, ScreenExtensions context);
 	}
 
 	@FunctionalInterface
 	public interface BeforeKeyPressed {
-		boolean beforeKeyPress(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+		boolean beforeKeyPress(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers);
 	}
 
 	@FunctionalInterface
 	public interface AfterKeyPressed {
-		void afterKeyPress(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+		void afterKeyPress(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers);
 	}
 
 	@FunctionalInterface
 	public interface BeforeKeyReleased {
-		boolean beforeKeyReleased(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+		boolean beforeKeyReleased(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers);
 	}
 
 	@FunctionalInterface
 	public interface AfterKeyReleased {
-		void afterKeyReleased(MinecraftClient client, Screen screen, FabricScreen info, int key, int scancode, int modifiers);
+		void afterKeyReleased(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers);
 	}
 
 	@FunctionalInterface
 	public interface BeforeMouseClicked {
-		boolean beforeMouseClicked(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+		boolean beforeMouseClicked(MinecraftClient client, Screen screen, ScreenExtensions context, double mouseX, double mouseY, int button);
 	}
 
 	@FunctionalInterface
 	public interface AfterMouseClicked {
-		void afterMouseClicked(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+		void afterMouseClicked(MinecraftClient client, Screen screen, ScreenExtensions context, double mouseX, double mouseY, int button);
 	}
 
 	@FunctionalInterface
 	public interface BeforeMouseReleased {
-		boolean beforeMouseReleased(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+		boolean beforeMouseReleased(MinecraftClient client, Screen screen, ScreenExtensions context, double mouseX, double mouseY, int button);
 	}
 
 	@FunctionalInterface
 	public interface AfterMouseReleased {
-		void afterMouseReleased(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, int button);
+		void afterMouseReleased(MinecraftClient client, Screen screen, ScreenExtensions context, double mouseX, double mouseY, int button);
 	}
 
 	@FunctionalInterface
 	public interface BeforeMouseScrolled {
-		boolean beforeMouseScrolled(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+		boolean beforeMouseScrolled(MinecraftClient client, Screen screen, ScreenExtensions context, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
 	@FunctionalInterface
 	public interface AfterMouseScrolled {
-		void afterMouseScrolled(MinecraftClient client, Screen screen, FabricScreen info, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+		void afterMouseScrolled(MinecraftClient client, Screen screen, ScreenExtensions context, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
 	private ScreenEvents() {

@@ -31,15 +31,15 @@ import net.fabricmc.fabric.api.event.Event;
  * Provides access to additional context a screen can hold.
  */
 @Environment(EnvType.CLIENT)
-public interface FabricScreen {
+public interface ScreenExtensions {
 	/**
 	 * Gets the screen's additional info.
 	 *
 	 * @param screen the screen
 	 * @return the screen's context
 	 */
-	static FabricScreen getInfo(Screen screen) {
-		return (FabricScreen) screen;
+	static ScreenExtensions getExtensions(Screen screen) {
+		return (ScreenExtensions) screen;
 	}
 
 	/**
@@ -65,26 +65,44 @@ public interface FabricScreen {
 
 	/**
 	 * An event that is called before a screen is ticked.
+	 *
+	 * @return the event
 	 */
 	Event<ScreenEvents.BeforeTick> getBeforeTickEvent();
 
 	/**
 	 * An event that is called after a screen is ticked.
+	 *
+	 * @return the event
 	 */
 	Event<ScreenEvents.AfterTick> getAfterTickEvent();
 
 	/**
 	 * An event that is called before a screen is rendered.
+	 *
+	 * @return the event
 	 */
 	Event<ScreenEvents.BeforeRender> getBeforeRenderEvent();
 
 	/**
 	 * An event that is called after a screen is rendered.
+	 *
+	 * @return the event
 	 */
 	Event<ScreenEvents.AfterRender> getAfterRenderEvent();
 
+	/**
+	 * Gets the containing object for all keyboard related events for this screen.
+	 *
+	 * @return the keyboard events object
+	 */
 	KeyboardEvents getKeyboardEvents();
 
+	/**
+	 * Gets the containing object for all mouse related events for this screen.
+	 *
+	 * @return the mouse events object
+	 */
 	MouseEvents getMouseEvents();
 
 	/**
@@ -95,26 +113,80 @@ public interface FabricScreen {
 	Screen getScreen();
 
 	interface KeyboardEvents {
+		/**
+		 * An event that is called before a key press is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.BeforeKeyPressed> getBeforeKeyPressedEvent();
 
+		/**
+		 * An event that is called after a key press is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.AfterKeyPressed> getAfterKeyPressedEvent();
 
+		/**
+		 * An event that is called after the release of a key is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.BeforeKeyReleased> getBeforeKeyReleasedEvent();
 
+		/**
+		 * An event that is called after the release a key is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.AfterKeyReleased> getAfterKeyReleasedEvent();
 	}
 
 	interface MouseEvents {
+		/**
+		 * An event that is called before a mouse click is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.BeforeMouseClicked> getBeforeMouseClickedEvent();
 
+		/**
+		 * An event that is called after a mouse click is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.AfterMouseClicked> getAfterMouseClickedEvent();
 
+		/**
+		 * An event that is called after the release of a mouse click is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.BeforeMouseReleased> getBeforeMouseReleasedEvent();
 
+		/**
+		 * An event that is called after the release of a mouse click is processed for a screen.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.AfterMouseReleased> getAfterMouseReleasedEvent();
 
+		/**
+		 * An event that is called before mouse scrolling is processed for a screen.
+		 *
+		 * <p>This event tracks amount a mouse was scrolled both vertically and horizontally.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.BeforeMouseScrolled> getBeforeMouseScrolledEvent();
 
+		/**
+		 * An event that is called after mouse scrolling is processed for a screen.
+		 *
+		 * <p>This event tracks amount a mouse was scrolled both vertically and horizontally.
+		 *
+		 * @return the event
+		 */
 		Event<ScreenEvents.AfterMouseScrolled> getAfterMouseScrolledEvent();
 	}
 }

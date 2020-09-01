@@ -31,7 +31,7 @@ import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.screen.v1.FabricScreen;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 public class ScreenTests implements ClientModInitializer {
@@ -46,11 +46,11 @@ public class ScreenTests implements ClientModInitializer {
 		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
 	}
 
-	private void beforeInitScreen(MinecraftClient client, Screen screen, FabricScreen info, int windowWidth, int windowHeight) {
+	private void beforeInitScreen(MinecraftClient client, Screen screen, ScreenExtensions info, int windowWidth, int windowHeight) {
 		// TODO: Write tests listening to addition of child elements
 	}
 
-	private void afterInitScreen(MinecraftClient client, Screen screen, FabricScreen info, int windowWidth, int windowHeight) {
+	private void afterInitScreen(MinecraftClient client, Screen screen, ScreenExtensions info, int windowWidth, int windowHeight) {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
@@ -81,16 +81,16 @@ public class ScreenTests implements ClientModInitializer {
 		}
 	}
 
-	private void afterKeyPress(MinecraftClient client, Screen screen, FabricScreen fabricScreen, int key, int scancode, int modifiers) {
+	private void afterKeyPress(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers) {
 		LOGGER.info("After Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
 	}
 
-	private boolean beforeKeyPress(MinecraftClient client, Screen screen, FabricScreen fabricScreen, int key, int scancode, int modifiers) {
+	private boolean beforeKeyPress(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers) {
 		LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
 		return false; // Let actions continue
 	}
 
-	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta) {
+	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenExtensions info, int mouseX, int mouseY, float tickDelta) {
 		if (screen instanceof TitleScreen) {
 			RenderSystem.pushMatrix();
 			// Render an armor icon to test
