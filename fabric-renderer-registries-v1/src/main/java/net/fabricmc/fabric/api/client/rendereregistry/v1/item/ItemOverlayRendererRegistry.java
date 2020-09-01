@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensions;
 
@@ -61,5 +62,45 @@ public final class ItemOverlayRendererRegistry {
 
 	public static void setPostRenderer(Item item, PostItemOverlayRenderer renderer) {
 		((ItemOverlayExtensions) item).fabric_setPostOverlayRenderer(renderer);
+	}
+
+	public static CountLabelProperties getCountLabelProperties(ItemConvertible itemConvertible) {
+		return getCountLabelProperties(itemConvertible.asItem());
+	}
+
+	public static void setCountLabelProperties(ItemConvertible itemConvertible, CountLabelProperties properties) {
+		setCountLabelProperties(itemConvertible.asItem(), properties);
+	}
+
+	public static DurabilityBarProperties getDurabilityBarProperties(ItemConvertible itemConvertible) {
+		return getDurabilityBarProperties(itemConvertible.asItem());
+	}
+
+	public static void setDurabilityBarProperties(ItemConvertible itemConvertible, DurabilityBarProperties properties) {
+		setDurabilityBarProperties(itemConvertible.asItem(), properties);
+	}
+
+	public static CooldownOverlayProperties getCooldownOverlayProperties(ItemConvertible itemConvertible) {
+		return getCooldownOverlayProperties(itemConvertible.asItem());
+	}
+
+	public static void setCooldownOverlayProperties(ItemConvertible itemConvertible, CooldownOverlayProperties properties) {
+		setCooldownOverlayProperties(itemConvertible.asItem(), properties);
+	}
+
+	public static PreItemOverlayRenderer getPreRenderer(ItemConvertible itemConvertible) {
+		return getPreRenderer(itemConvertible.asItem());
+	}
+
+	public static void setPreRenderer(ItemConvertible itemConvertible, PreItemOverlayRenderer renderer) {
+		setPreRenderer(itemConvertible.asItem(), renderer);
+	}
+
+	public static PostItemOverlayRenderer getPostRenderer(ItemConvertible itemConvertible) {
+		return getPostRenderer(itemConvertible.asItem());
+	}
+
+	public static void setPostRenderer(ItemConvertible itemConvertible, PostItemOverlayRenderer renderer) {
+		setPostRenderer(itemConvertible.asItem(), renderer);
 	}
 }
