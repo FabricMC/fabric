@@ -65,42 +65,102 @@ public final class ItemOverlayRendererRegistry {
 	}
 
 	public static CountLabelProperties getCountLabelProperties(ItemConvertible itemConvertible) {
-		return getCountLabelProperties(itemConvertible.asItem());
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return null;
+		}
+
+		return getCountLabelProperties(item);
 	}
 
 	public static void setCountLabelProperties(ItemConvertible itemConvertible, CountLabelProperties properties) {
-		setCountLabelProperties(itemConvertible.asItem(), properties);
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return;
+		}
+
+		setCountLabelProperties(item, properties);
 	}
 
 	public static DurabilityBarProperties getDurabilityBarProperties(ItemConvertible itemConvertible) {
-		return getDurabilityBarProperties(itemConvertible.asItem());
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return null;
+		}
+
+		return getDurabilityBarProperties(item);
 	}
 
 	public static void setDurabilityBarProperties(ItemConvertible itemConvertible, DurabilityBarProperties properties) {
-		setDurabilityBarProperties(itemConvertible.asItem(), properties);
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return;
+		}
+
+		setDurabilityBarProperties(item, properties);
 	}
 
 	public static CooldownOverlayProperties getCooldownOverlayProperties(ItemConvertible itemConvertible) {
-		return getCooldownOverlayProperties(itemConvertible.asItem());
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return null;
+		}
+
+		return getCooldownOverlayProperties(item);
 	}
 
 	public static void setCooldownOverlayProperties(ItemConvertible itemConvertible, CooldownOverlayProperties properties) {
-		setCooldownOverlayProperties(itemConvertible.asItem(), properties);
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return;
+		}
+
+		setCooldownOverlayProperties(item, properties);
 	}
 
 	public static PreItemOverlayRenderer getPreRenderer(ItemConvertible itemConvertible) {
-		return getPreRenderer(itemConvertible.asItem());
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return null;
+		}
+
+		return getPreRenderer(item);
 	}
 
 	public static void setPreRenderer(ItemConvertible itemConvertible, PreItemOverlayRenderer renderer) {
-		setPreRenderer(itemConvertible.asItem(), renderer);
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return;
+		}
+
+		setPreRenderer(item, renderer);
 	}
 
 	public static PostItemOverlayRenderer getPostRenderer(ItemConvertible itemConvertible) {
-		return getPostRenderer(itemConvertible.asItem());
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return null;
+		}
+
+		return getPostRenderer(item);
 	}
 
 	public static void setPostRenderer(ItemConvertible itemConvertible, PostItemOverlayRenderer renderer) {
-		setPostRenderer(itemConvertible.asItem(), renderer);
+		Item item = itemConvertible.asItem();
+
+		if (item == null) {
+			return;
+		}
+
+		setPostRenderer(item, renderer);
 	}
 }
