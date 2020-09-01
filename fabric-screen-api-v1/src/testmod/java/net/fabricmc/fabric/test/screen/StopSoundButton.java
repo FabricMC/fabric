@@ -31,7 +31,7 @@ class StopSoundButton extends AbstractPressableButtonWidget {
 	private final Screen screen;
 
 	StopSoundButton(Screen screen, int x, int y, int width, int height) {
-		super(x, y, width, height, Text.method_30163(""));
+		super(x, y, width, height, Text.of(""));
 		this.screen = screen;
 	}
 

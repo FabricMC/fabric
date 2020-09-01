@@ -30,7 +30,7 @@ class SoundButton extends AbstractPressableButtonWidget {
 	private static final Random RANDOM = new Random();
 
 	SoundButton(int x, int y, int width, int height) {
-		super(x, y, width, height, Text.method_30163("Sound Button"));
+		super(x, y, width, height, Text.of("Sound Button"));
 	}
 
 	@Override
