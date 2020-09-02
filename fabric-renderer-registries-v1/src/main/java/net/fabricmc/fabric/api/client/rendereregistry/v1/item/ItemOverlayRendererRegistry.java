@@ -29,12 +29,12 @@ import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensi
 public final class ItemOverlayRendererRegistry {
 	private ItemOverlayRendererRegistry() { }
 
-	public static ItemLabelProperties getCountLabelProperties(Item item) {
+	public static ItemLabelInfo getCountLabelProperties(Item item) {
 		Objects.requireNonNull(item);
 		return ((ItemOverlayExtensions) item).fabric_getCountLabelProperties();
 	}
 
-	public static void setCountLabelProperties(Item item, ItemLabelProperties properties) {
+	public static void setCountLabelProperties(Item item, ItemLabelInfo properties) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(properties);
 		((ItemOverlayExtensions) item).fabric_setCountLabelProperties(properties);
@@ -83,12 +83,12 @@ public final class ItemOverlayRendererRegistry {
 		((ItemOverlayExtensions) item).fabric_setPostOverlayRenderer(renderer);
 	}
 
-	public static ItemLabelProperties getCountLabelProperties(ItemConvertible itemConvertible) {
+	public static ItemLabelInfo getCountLabelProperties(ItemConvertible itemConvertible) {
 		Objects.requireNonNull(itemConvertible);
 		return getCountLabelProperties(itemConvertible.asItem());
 	}
 
-	public static void setCountLabelProperties(ItemConvertible itemConvertible, ItemLabelProperties properties) {
+	public static void setCountLabelProperties(ItemConvertible itemConvertible, ItemLabelInfo properties) {
 		Objects.requireNonNull(itemConvertible);
 		setCountLabelProperties(itemConvertible.asItem(), properties);
 	}

@@ -21,9 +21,9 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 
-public class ObfuscatedItemLabelInfo implements ItemLabelProperties {
+public class ObfuscatedItemLabelInfo implements ItemLabelInfo {
 	@Override
 	public boolean isVisible(ItemStack stack, String override) {
 		return true;

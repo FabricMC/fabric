@@ -17,13 +17,13 @@
 package net.fabricmc.fabric.impl.client.renderer.registry.item;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 
 public interface ItemOverlayExtensions {
-	ItemLabelProperties fabric_getCountLabelProperties();
-	void fabric_setCountLabelProperties(ItemLabelProperties properties);
+	ItemLabelInfo fabric_getCountLabelProperties();
+	void fabric_setCountLabelProperties(ItemLabelInfo properties);
 
 	ItemDamageBarInfo fabric_getDurabilityBarProperties();
 	void fabric_setDurabilityBarProperties(ItemDamageBarInfo properties);

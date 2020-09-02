@@ -26,7 +26,7 @@ import net.fabricmc.api.Environment;
  * This interface allows you to modify the count label that is displayed on item stacks in inventories.
  */
 @Environment(EnvType.CLIENT)
-public interface ItemLabelProperties {
+public interface ItemLabelInfo {
 	/**
 	 * Checks if the count label is visible or not.
 	 * @param stack stack to check

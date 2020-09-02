@@ -22,27 +22,27 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensions;
 
 @Mixin(Item.class)
 public abstract class MixinItem implements ItemOverlayExtensions {
-	@Unique private ItemLabelProperties itemLabelProperties;
+	@Unique private ItemLabelInfo itemLabelInfo;
 	@Unique private ItemDamageBarInfo itemDamageBarInfo;
 	@Unique private ItemCooldownInfo itemCooldownInfo;
 	@Unique private ItemOverlayRenderer.Pre preItemOverlayRenderer;
 	@Unique private ItemOverlayRenderer.Post postItemOverlayRenderer;
 
 	@Override
-	public ItemLabelProperties fabric_getCountLabelProperties() {
-		return itemLabelProperties;
+	public ItemLabelInfo fabric_getCountLabelProperties() {
+		return itemLabelInfo;
 	}
 
 	@Override
-	public void fabric_setCountLabelProperties(ItemLabelProperties properties) {
-		this.itemLabelProperties = properties;
+	public void fabric_setCountLabelProperties(ItemLabelInfo properties) {
+		this.itemLabelInfo = properties;
 	}
 
 	@Override

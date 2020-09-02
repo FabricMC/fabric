@@ -39,7 +39,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
@@ -113,7 +113,7 @@ public abstract class MixinItemRenderer {
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0))
 	public int countVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
-		ItemLabelProperties props = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
+		ItemLabelInfo props = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
 
 		if (props == null) {
 			return stack2.getCount();
@@ -134,7 +134,7 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Ljava/lang/String;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"))
 	public int countColor(TextRenderer textRenderer, String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, boolean seeThrough, int backgroundColor, int light,
 						TextRenderer textRenderer2, ItemStack stack, int x2, int y2, String countLabel) {
-		ItemLabelProperties props = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
+		ItemLabelInfo props = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
 
 		if (props == null) {
 			return textRenderer.draw(text, x, y, color, shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
