@@ -23,11 +23,14 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegistryImpl;
 
 /**
  * Helper class for registering BlockEntityRenderers.
  */
+@Environment(EnvType.CLIENT)
 public interface BlockEntityRendererRegistry {
 	BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistryImpl();
 

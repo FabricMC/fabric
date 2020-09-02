@@ -25,8 +25,11 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 
+@Environment(EnvType.CLIENT)
 public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
 	private static HashMap<BlockEntityType<?>, Function<BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> map = new HashMap<>();
 	private static BiConsumer<BlockEntityType<?>, Function<BlockEntityRenderDispatcher, ? extends BlockEntityRenderer<?>>> handler = (type, function) -> map.put(type, function);

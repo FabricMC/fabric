@@ -28,9 +28,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.resource.ReloadableResourceManager;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 /**
  * Helper class for registering EntityRenderers.
  */
+@Environment(EnvType.CLIENT)
 public class EntityRendererRegistry {
 	@FunctionalInterface
 	public interface Factory {
