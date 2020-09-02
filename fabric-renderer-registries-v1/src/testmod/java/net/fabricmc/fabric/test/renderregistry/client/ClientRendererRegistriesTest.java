@@ -33,14 +33,14 @@ import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
 public class ClientRendererRegistriesTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ItemOverlayRendererRegistry.setCountLabelProperties(RendererRegistriesTest.OBFUSCATED_COUNT, new ObfuscatedItemLabelInfo());
+		ItemOverlayRendererRegistry.setLabelInfo(RendererRegistriesTest.OBFUSCATED_COUNT, new ObfuscatedItemLabelInfo());
 
-		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.ENERGY_STORAGE, new EnergyBarInfo());
-		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.MANA_STORAGE, new ManaBarInfo());
-		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.DISCO_BALL, new DiscoBarInfo());
+		ItemOverlayRendererRegistry.setDamageBarInfo(RendererRegistriesTest.ENERGY_STORAGE, new EnergyBarInfo());
+		ItemOverlayRendererRegistry.setDamageBarInfo(RendererRegistriesTest.MANA_STORAGE, new ManaBarInfo());
+		ItemOverlayRendererRegistry.setDamageBarInfo(RendererRegistriesTest.DISCO_BALL, new DiscoBarInfo());
 
-		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownInfo());
-		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.HIDDEN_COOLDOWN, new HiddenCooldownInfo());
+		ItemOverlayRendererRegistry.setCooldownInfo(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownInfo());
+		ItemOverlayRendererRegistry.setCooldownInfo(RendererRegistriesTest.HIDDEN_COOLDOWN, new HiddenCooldownInfo());
 
 		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.TUNISIAN_DIAMOND, new StackBorder(Formatting.GOLD));
 		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.MYSTERIOUS_BOOK, new StackBorder(Formatting.DARK_PURPLE));

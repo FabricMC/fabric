@@ -39,10 +39,10 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayMaps;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
@@ -69,7 +69,7 @@ public abstract class MixinItemRenderer {
 			return;
 		}
 
-		ItemOverlayRenderer.Pre preRenderer = ItemOverlayRendererRegistry.getPreRenderer(stack.getItem());
+		ItemOverlayRenderer.Pre preRenderer = ItemOverlayMaps.PRE_RENDERER_MAP.get(stack.getItem());
 
 		if (preRenderer == null) {
 			return;
@@ -102,7 +102,7 @@ public abstract class MixinItemRenderer {
 		countLabelTmp = countLabel;
 
 		// only perform this hack if we override default behavior!
-		if (ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()) == null) {
+		if (ItemOverlayMaps.LABEL_INFO_MAP.get(stack.getItem()) == null) {
 			return countLabel;
 		}
 
@@ -113,7 +113,7 @@ public abstract class MixinItemRenderer {
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getCount()I", ordinal = 0))
 	public int countVisible(ItemStack stack2, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
-		ItemLabelInfo props = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
+		ItemLabelInfo props = ItemOverlayMaps.LABEL_INFO_MAP.get(stack.getItem());
 
 		if (props == null) {
 			return stack2.getCount();
@@ -134,14 +134,14 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/font/TextRenderer;draw(Ljava/lang/String;FFIZLnet/minecraft/util/math/Matrix4f;Lnet/minecraft/client/render/VertexConsumerProvider;ZII)I"))
 	public int countColor(TextRenderer textRenderer, String text, float x, float y, int color, boolean shadow, Matrix4f matrix, VertexConsumerProvider vertexConsumers, boolean seeThrough, int backgroundColor, int light,
 						TextRenderer textRenderer2, ItemStack stack, int x2, int y2, String countLabel) {
-		ItemLabelInfo props = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem());
+		ItemLabelInfo props = ItemOverlayMaps.LABEL_INFO_MAP.get(stack.getItem());
 
 		if (props == null) {
 			return textRenderer.draw(text, x, y, color, shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
 		}
 
-		Text contents = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getContents(stack, countLabel);
-		color = ItemOverlayRendererRegistry.getCountLabelProperties(stack.getItem()).getColor(stack, countLabel);
+		Text contents = ItemOverlayMaps.LABEL_INFO_MAP.get(stack.getItem()).getContents(stack, countLabel);
+		color = ItemOverlayMaps.LABEL_INFO_MAP.get(stack.getItem()).getColor(stack, countLabel);
 		return textRenderer.draw(contents.method_30937(), x, y, color, shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
 	}
 
@@ -156,7 +156,7 @@ public abstract class MixinItemRenderer {
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z"))
 	public boolean barVisible(ItemStack stack) {
-		ItemDamageBarInfo props = ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem());
+		ItemDamageBarInfo props = ItemOverlayMaps.DAMAGE_BAR_INFO_MAP.get(stack.getItem());
 
 		if (props == null) {
 			return stack.isDamageable();
@@ -170,7 +170,7 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
 					ordinal = 1))
 	public void barFillAndColor(Args args, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel) {
-		ItemDamageBarInfo props = ItemOverlayRendererRegistry.getDurabilityBarProperties(stack.getItem());
+		ItemDamageBarInfo props = ItemOverlayMaps.DAMAGE_BAR_INFO_MAP.get(stack.getItem());
 
 		if (props == null) {
 			return;
@@ -187,7 +187,7 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/Item;F)F"))
 	public float cooldownVisible(ItemCooldownManager itemCooldownManager, Item item, float partialTicks,
 			TextRenderer renderer, ItemStack stack) {
-		ItemCooldownInfo props = ItemOverlayRendererRegistry.getCooldownOverlayProperties(item);
+		ItemCooldownInfo props = ItemOverlayMaps.COOLDOWN_INFO_MAP.get(item);
 
 		if (props == null) {
 			return itemCooldownManager.getCooldownProgress(item, partialTicks);
@@ -201,7 +201,7 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
 					ordinal = 2))
 	public void cooldownFillAndColor(Args args, TextRenderer renderer, ItemStack stack, int x, int y) {
-		ItemCooldownInfo props = ItemOverlayRendererRegistry.getCooldownOverlayProperties(stack.getItem());
+		ItemCooldownInfo props = ItemOverlayMaps.COOLDOWN_INFO_MAP.get(stack.getItem());
 
 		if (props == null) {
 			return;
@@ -229,7 +229,7 @@ public abstract class MixinItemRenderer {
 			needPopping = false;
 		}
 
-		ItemOverlayRenderer.Post postRenderer = ItemOverlayRendererRegistry.getPostRenderer(stack.getItem());
+		ItemOverlayRenderer.Post postRenderer = ItemOverlayMaps.POST_RENDERER_MAP.get(stack.getItem());
 
 		if (postRenderer == null) {
 			return;

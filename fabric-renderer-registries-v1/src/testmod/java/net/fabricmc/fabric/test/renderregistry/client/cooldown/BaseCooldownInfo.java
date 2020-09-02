@@ -17,16 +17,31 @@
 package net.fabricmc.fabric.test.renderregistry.client.cooldown;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
 
-/**
- * Hides the cooldown overlay, even if there is a cooldown, as long as it has more than 20% remaining.
- */
-public class HiddenCooldownInfo extends BaseCooldownInfo {
+public abstract class BaseCooldownInfo implements ItemCooldownInfo {
+	protected float getCooldownAmount(ItemStack stack, MinecraftClient client) {
+		// copied from ItemRenderer.renderGuiItemOverlay, lines 355-356 (player was local "clientPlayerEntity", client was MinecraftClient.getInstance())
+		ClientPlayerEntity player = client.player;
+		return player == null ? 0.0F : player.getItemCooldownManager().getCooldownProgress(stack.getItem(), client.getTickDelta());
+	}
+
 	@Override
 	public boolean isVisible(ItemStack stack, MinecraftClient client) {
-		return getCooldownAmount(stack, client) <= 0.2f;
+		// copied from ItemRenderer.renderGuiItemOverlay, line 357 (getCooldownAmount call was local "k")
+		return getCooldownAmount(stack, client) > 0;
+	}
+
+	@Override
+	public float getFillFactor(ItemStack stack, MinecraftClient client) {
+		return getCooldownAmount(stack, client);
+	}
+
+	@Override
+	public int getColor(ItemStack stack, MinecraftClient client) {
+		return 0x7FFFFFFF;
 	}
 }

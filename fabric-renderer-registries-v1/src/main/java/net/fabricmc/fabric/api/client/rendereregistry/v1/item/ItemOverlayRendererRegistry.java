@@ -23,109 +23,60 @@ import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensions;
+import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayMaps;
 
 @Environment(EnvType.CLIENT)
 public final class ItemOverlayRendererRegistry {
 	private ItemOverlayRendererRegistry() { }
 
-	public static ItemLabelInfo getCountLabelProperties(Item item) {
+	public static void setLabelInfo(Item item, ItemLabelInfo info) {
 		Objects.requireNonNull(item);
-		return ((ItemOverlayExtensions) item).fabric_getCountLabelProperties();
+		Objects.requireNonNull(info);
+		ItemOverlayMaps.LABEL_INFO_MAP.put(item, info);
 	}
 
-	public static void setCountLabelProperties(Item item, ItemLabelInfo properties) {
+	public static void setDamageBarInfo(Item item, ItemDamageBarInfo info) {
 		Objects.requireNonNull(item);
-		Objects.requireNonNull(properties);
-		((ItemOverlayExtensions) item).fabric_setCountLabelProperties(properties);
+		Objects.requireNonNull(info);
+		ItemOverlayMaps.DAMAGE_BAR_INFO_MAP.put(item, info);
 	}
 
-	public static ItemDamageBarInfo getDurabilityBarProperties(Item item) {
+	public static void setCooldownInfo(Item item, ItemCooldownInfo info) {
 		Objects.requireNonNull(item);
-		return ((ItemOverlayExtensions) item).fabric_getDurabilityBarProperties();
-	}
-
-	public static void setDurabilityBarProperties(Item item, ItemDamageBarInfo properties) {
-		Objects.requireNonNull(item);
-		Objects.requireNonNull(properties);
-		((ItemOverlayExtensions) item).fabric_setDurabilityBarProperties(properties);
-	}
-
-	public static ItemCooldownInfo getCooldownOverlayProperties(Item item) {
-		return ((ItemOverlayExtensions) item).fabric_getCooldownOverlayProperties();
-	}
-
-	public static void setCooldownOverlayProperties(Item item, ItemCooldownInfo properties) {
-		Objects.requireNonNull(item);
-		Objects.requireNonNull(properties);
-		((ItemOverlayExtensions) item).fabric_setCooldownOverlayProperties(properties);
-	}
-
-	public static ItemOverlayRenderer.Pre getPreRenderer(Item item) {
-		Objects.requireNonNull(item);
-		return ((ItemOverlayExtensions) item).fabric_getPreItemOverlayRenderer();
+		Objects.requireNonNull(info);
+		ItemOverlayMaps.COOLDOWN_INFO_MAP.put(item, info);
 	}
 
 	public static void setPreRenderer(Item item, ItemOverlayRenderer.Pre renderer) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(renderer);
-		((ItemOverlayExtensions) item).fabric_setPreOverlayRenderer(renderer);
-	}
-
-	public static ItemOverlayRenderer.Post getPostRenderer(Item item) {
-		Objects.requireNonNull(item);
-		return ((ItemOverlayExtensions) item).fabric_getPostItemOverlayRenderer();
+		ItemOverlayMaps.PRE_RENDERER_MAP.put(item, renderer);
 	}
 
 	public static void setPostRenderer(Item item, ItemOverlayRenderer.Post renderer) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(renderer);
-		((ItemOverlayExtensions) item).fabric_setPostOverlayRenderer(renderer);
+		ItemOverlayMaps.POST_RENDERER_MAP.put(item, renderer);
 	}
 
-	public static ItemLabelInfo getCountLabelProperties(ItemConvertible itemConvertible) {
+	public static void setLabelInfo(ItemConvertible itemConvertible, ItemLabelInfo info) {
 		Objects.requireNonNull(itemConvertible);
-		return getCountLabelProperties(itemConvertible.asItem());
+		setLabelInfo(itemConvertible.asItem(), info);
 	}
 
-	public static void setCountLabelProperties(ItemConvertible itemConvertible, ItemLabelInfo properties) {
+	public static void setDamageBarInfo(ItemConvertible itemConvertible, ItemDamageBarInfo info) {
 		Objects.requireNonNull(itemConvertible);
-		setCountLabelProperties(itemConvertible.asItem(), properties);
+		setDamageBarInfo(itemConvertible.asItem(), info);
 	}
 
-	public static ItemDamageBarInfo getDurabilityBarProperties(ItemConvertible itemConvertible) {
+	public static void setCooldownInfo(ItemConvertible itemConvertible, ItemCooldownInfo info) {
 		Objects.requireNonNull(itemConvertible);
-		return getDurabilityBarProperties(itemConvertible.asItem());
-	}
-
-	public static void setDurabilityBarProperties(ItemConvertible itemConvertible, ItemDamageBarInfo properties) {
-		Objects.requireNonNull(itemConvertible);
-		setDurabilityBarProperties(itemConvertible.asItem(), properties);
-	}
-
-	public static ItemCooldownInfo getCooldownOverlayProperties(ItemConvertible itemConvertible) {
-		Objects.requireNonNull(itemConvertible);
-		return getCooldownOverlayProperties(itemConvertible.asItem());
-	}
-
-	public static void setCooldownOverlayProperties(ItemConvertible itemConvertible, ItemCooldownInfo properties) {
-		Objects.requireNonNull(itemConvertible);
-		setCooldownOverlayProperties(itemConvertible.asItem(), properties);
-	}
-
-	public static ItemOverlayRenderer.Pre getPreRenderer(ItemConvertible itemConvertible) {
-		Objects.requireNonNull(itemConvertible);
-		return getPreRenderer(itemConvertible.asItem());
+		setCooldownInfo(itemConvertible.asItem(), info);
 	}
 
 	public static void setPreRenderer(ItemConvertible itemConvertible, ItemOverlayRenderer.Pre renderer) {
 		Objects.requireNonNull(itemConvertible);
 		setPreRenderer(itemConvertible.asItem(), renderer);
-	}
-
-	public static ItemOverlayRenderer.Post getPostRenderer(ItemConvertible itemConvertible) {
-		Objects.requireNonNull(itemConvertible);
-		return getPostRenderer(itemConvertible.asItem());
 	}
 
 	public static void setPostRenderer(ItemConvertible itemConvertible, ItemOverlayRenderer.Post renderer) {
