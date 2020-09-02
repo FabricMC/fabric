@@ -18,14 +18,14 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultDurabilityBarProperties;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 /**
  * This interface allows you to modify the durability bar that is displayed on item stacks in inventories.
  */
+@Environment(EnvType.CLIENT)
 public interface DurabilityBarProperties {
-	DurabilityBarProperties DEFAULT = new DefaultDurabilityBarProperties();
-
 	/**
 	 * Checks if the durability bar is visible or not.
 	 * @param stack stack to check

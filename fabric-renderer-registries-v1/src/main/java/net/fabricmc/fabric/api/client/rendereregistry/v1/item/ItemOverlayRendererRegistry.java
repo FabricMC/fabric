@@ -21,8 +21,11 @@ import java.util.Objects;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensions;
 
+@Environment(EnvType.CLIENT)
 public final class ItemOverlayRendererRegistry {
 	private ItemOverlayRendererRegistry() { }
 

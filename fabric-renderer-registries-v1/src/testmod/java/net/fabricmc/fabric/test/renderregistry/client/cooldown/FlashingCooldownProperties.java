@@ -23,8 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
-import net.fabricmc.fabric.impl.client.renderer.registry.item.DefaultCooldownOverlayProperties;
-
 /**
  * Shows a full red, flashing overlay if there's more than 80% of the cooldown still remaining.
  */
