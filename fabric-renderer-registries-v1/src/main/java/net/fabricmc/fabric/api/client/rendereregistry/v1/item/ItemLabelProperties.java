@@ -16,38 +16,38 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 /**
- * This interface allows you to modify the cooldown overlay that is displayed on item stacks in inventories.
+ * This interface allows you to modify the count label that is displayed on item stacks in inventories.
  */
 @Environment(EnvType.CLIENT)
-public interface CooldownOverlayProperties {
+public interface ItemLabelProperties {
 	/**
-	 * Checks if the cooldown overlay is visible or not.
+	 * Checks if the count label is visible or not.
 	 * @param stack stack to check
-	 * @param client current {@link MinecraftClient} instance
-	 * @return {@code true} if overlay is visible, {@code false} otherwise
+	 * @param override label contents override
+	 * @return {@code true} if label is visible, {@code false} otherwise
 	 */
-	boolean isVisible(ItemStack stack, MinecraftClient client);
+	boolean isVisible(ItemStack stack, String override);
 
 	/**
-	 * Gets how full the cooldown overlay is.
+	 * Gets the contents of the count label.
 	 * @param stack stack to check
-	 * @param client current {@link MinecraftClient} instance
-	 * @return overlay fill factor, between 0 and 1 (inclusive)
+	 * @param override label contents override
+	 * @return label contents
 	 */
-	float getFillFactor(ItemStack stack, MinecraftClient client);
+	Text getContents(ItemStack stack, String override);
 
 	/**
-	 * Gets the color of the cooldown overlay.
+	 * Gets the color of the count label.
 	 * @param stack stack to check
-	 * @param client current {@link MinecraftClient} instance
-	 * @return overlay color
+	 * @param override label contents override
+	 * @return label color
 	 */
-	int getColor(ItemStack stack, MinecraftClient client);
+	int getColor(ItemStack stack, String override);
 }

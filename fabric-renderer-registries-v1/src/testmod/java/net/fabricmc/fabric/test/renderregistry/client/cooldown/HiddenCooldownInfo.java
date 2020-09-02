@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.rendereregistry.v1.item;
+package net.fabricmc.fabric.test.renderregistry.client.cooldown;
 
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 /**
- * This interface allows you to append to Minecraft's GUI item overlay rendering (durability bars, item counts
- * and cooldown overlays).
+ * Hides the cooldown overlay, even if there is a cooldown, as long as it has more than 20% remaining.
  */
-@Environment(EnvType.CLIENT)
-@FunctionalInterface
-public interface PostItemOverlayRenderer {
-	/**
-	 * Called after Vanilla's overlay rendering.
-	 */
-	void renderOverlay(MatrixStack matrixStack, TextRenderer renderer, ItemStack stack, int x, int y, String countLabel);
+public class HiddenCooldownInfo extends DefaultCooldownOverlayProperties {
+	@Override
+	public boolean isVisible(ItemStack stack, MinecraftClient client) {
+		return getCooldownAmount(stack, client) <= 0.2f;
+	}
 }

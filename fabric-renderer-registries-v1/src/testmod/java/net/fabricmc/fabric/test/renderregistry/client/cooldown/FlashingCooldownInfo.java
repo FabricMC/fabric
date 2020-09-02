@@ -26,7 +26,7 @@ import net.minecraft.util.math.MathHelper;
 /**
  * Shows a full red, flashing overlay if there's more than 80% of the cooldown still remaining.
  */
-public class FlashingCooldownProperties extends DefaultCooldownOverlayProperties {
+public class FlashingCooldownInfo extends DefaultCooldownOverlayProperties {
 	@Override
 	public float getFillFactor(ItemStack stack, MinecraftClient client) {
 		if (getCooldownAmount(stack, client) > 0.8f) {

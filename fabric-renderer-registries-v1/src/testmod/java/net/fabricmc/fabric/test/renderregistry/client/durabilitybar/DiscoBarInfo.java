@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.countlabel;
+package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.util.Util;
+import net.minecraft.util.math.MathHelper;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 
-public class ObfuscatedCountLabelProperties implements CountLabelProperties {
+public class DiscoBarInfo implements ItemDamageBarInfo {
 	@Override
-	public boolean isVisible(ItemStack stack, String override) {
+	public boolean isVisible(ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public Text getContents(ItemStack stack, String override) {
-		return new LiteralText(override == null ? Integer.toString(stack.getCount()) : override)
-				.styled(style -> style.withFormatting(Formatting.OBFUSCATED));
+	public float getFillFactor(ItemStack stack) {
+		return 1;
 	}
 
 	@Override
-	public int getColor(ItemStack stack, String override) {
-		return 0xFFFFFF;
+	public int getColor(ItemStack stack) {
+		// This doesn't need to be pretty, but it shows that
+		// one can get fancy with durability bars by taking
+		// the current time into account when calculating fill factor
+		// or color.
+		float c = (Util.getMeasuringTimeMs() % 360) / 360f;
+		return MathHelper.hsvToRgb(c, 1.0f, 1.0f);
 	}
 }

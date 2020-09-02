@@ -29,106 +29,106 @@ import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensi
 public final class ItemOverlayRendererRegistry {
 	private ItemOverlayRendererRegistry() { }
 
-	public static CountLabelProperties getCountLabelProperties(Item item) {
+	public static ItemLabelProperties getCountLabelProperties(Item item) {
 		Objects.requireNonNull(item);
 		return ((ItemOverlayExtensions) item).fabric_getCountLabelProperties();
 	}
 
-	public static void setCountLabelProperties(Item item, CountLabelProperties properties) {
+	public static void setCountLabelProperties(Item item, ItemLabelProperties properties) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(properties);
 		((ItemOverlayExtensions) item).fabric_setCountLabelProperties(properties);
 	}
 
-	public static DurabilityBarProperties getDurabilityBarProperties(Item item) {
+	public static ItemDamageBarInfo getDurabilityBarProperties(Item item) {
 		Objects.requireNonNull(item);
 		return ((ItemOverlayExtensions) item).fabric_getDurabilityBarProperties();
 	}
 
-	public static void setDurabilityBarProperties(Item item, DurabilityBarProperties properties) {
+	public static void setDurabilityBarProperties(Item item, ItemDamageBarInfo properties) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(properties);
 		((ItemOverlayExtensions) item).fabric_setDurabilityBarProperties(properties);
 	}
 
-	public static CooldownOverlayProperties getCooldownOverlayProperties(Item item) {
+	public static ItemCooldownInfo getCooldownOverlayProperties(Item item) {
 		return ((ItemOverlayExtensions) item).fabric_getCooldownOverlayProperties();
 	}
 
-	public static void setCooldownOverlayProperties(Item item, CooldownOverlayProperties properties) {
+	public static void setCooldownOverlayProperties(Item item, ItemCooldownInfo properties) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(properties);
 		((ItemOverlayExtensions) item).fabric_setCooldownOverlayProperties(properties);
 	}
 
-	public static PreItemOverlayRenderer getPreRenderer(Item item) {
+	public static ItemOverlayRenderer.Pre getPreRenderer(Item item) {
 		Objects.requireNonNull(item);
 		return ((ItemOverlayExtensions) item).fabric_getPreItemOverlayRenderer();
 	}
 
-	public static void setPreRenderer(Item item, PreItemOverlayRenderer renderer) {
+	public static void setPreRenderer(Item item, ItemOverlayRenderer.Pre renderer) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(renderer);
 		((ItemOverlayExtensions) item).fabric_setPreOverlayRenderer(renderer);
 	}
 
-	public static PostItemOverlayRenderer getPostRenderer(Item item) {
+	public static ItemOverlayRenderer.Post getPostRenderer(Item item) {
 		Objects.requireNonNull(item);
 		return ((ItemOverlayExtensions) item).fabric_getPostItemOverlayRenderer();
 	}
 
-	public static void setPostRenderer(Item item, PostItemOverlayRenderer renderer) {
+	public static void setPostRenderer(Item item, ItemOverlayRenderer.Post renderer) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(renderer);
 		((ItemOverlayExtensions) item).fabric_setPostOverlayRenderer(renderer);
 	}
 
-	public static CountLabelProperties getCountLabelProperties(ItemConvertible itemConvertible) {
+	public static ItemLabelProperties getCountLabelProperties(ItemConvertible itemConvertible) {
 		Objects.requireNonNull(itemConvertible);
 		return getCountLabelProperties(itemConvertible.asItem());
 	}
 
-	public static void setCountLabelProperties(ItemConvertible itemConvertible, CountLabelProperties properties) {
+	public static void setCountLabelProperties(ItemConvertible itemConvertible, ItemLabelProperties properties) {
 		Objects.requireNonNull(itemConvertible);
 		setCountLabelProperties(itemConvertible.asItem(), properties);
 	}
 
-	public static DurabilityBarProperties getDurabilityBarProperties(ItemConvertible itemConvertible) {
+	public static ItemDamageBarInfo getDurabilityBarProperties(ItemConvertible itemConvertible) {
 		Objects.requireNonNull(itemConvertible);
 		return getDurabilityBarProperties(itemConvertible.asItem());
 	}
 
-	public static void setDurabilityBarProperties(ItemConvertible itemConvertible, DurabilityBarProperties properties) {
+	public static void setDurabilityBarProperties(ItemConvertible itemConvertible, ItemDamageBarInfo properties) {
 		Objects.requireNonNull(itemConvertible);
 		setDurabilityBarProperties(itemConvertible.asItem(), properties);
 	}
 
-	public static CooldownOverlayProperties getCooldownOverlayProperties(ItemConvertible itemConvertible) {
+	public static ItemCooldownInfo getCooldownOverlayProperties(ItemConvertible itemConvertible) {
 		Objects.requireNonNull(itemConvertible);
 		return getCooldownOverlayProperties(itemConvertible.asItem());
 	}
 
-	public static void setCooldownOverlayProperties(ItemConvertible itemConvertible, CooldownOverlayProperties properties) {
+	public static void setCooldownOverlayProperties(ItemConvertible itemConvertible, ItemCooldownInfo properties) {
 		Objects.requireNonNull(itemConvertible);
 		setCooldownOverlayProperties(itemConvertible.asItem(), properties);
 	}
 
-	public static PreItemOverlayRenderer getPreRenderer(ItemConvertible itemConvertible) {
+	public static ItemOverlayRenderer.Pre getPreRenderer(ItemConvertible itemConvertible) {
 		Objects.requireNonNull(itemConvertible);
 		return getPreRenderer(itemConvertible.asItem());
 	}
 
-	public static void setPreRenderer(ItemConvertible itemConvertible, PreItemOverlayRenderer renderer) {
+	public static void setPreRenderer(ItemConvertible itemConvertible, ItemOverlayRenderer.Pre renderer) {
 		Objects.requireNonNull(itemConvertible);
 		setPreRenderer(itemConvertible.asItem(), renderer);
 	}
 
-	public static PostItemOverlayRenderer getPostRenderer(ItemConvertible itemConvertible) {
+	public static ItemOverlayRenderer.Post getPostRenderer(ItemConvertible itemConvertible) {
 		Objects.requireNonNull(itemConvertible);
 		return getPostRenderer(itemConvertible.asItem());
 	}
 
-	public static void setPostRenderer(ItemConvertible itemConvertible, PostItemOverlayRenderer renderer) {
+	public static void setPostRenderer(ItemConvertible itemConvertible, ItemOverlayRenderer.Post renderer) {
 		Objects.requireNonNull(itemConvertible);
 		setPostRenderer(itemConvertible.asItem(), renderer);
 	}

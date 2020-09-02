@@ -25,10 +25,10 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
 import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
 
-public class WarningIcon extends DrawableHelper implements PostItemOverlayRenderer {
+public class WarningIcon extends DrawableHelper implements ItemOverlayRenderer.Post {
 	private static final Identifier WARNING_TEX = RendererRegistriesTest.id("textures/gui/warning.png");
 
 	@SuppressWarnings("deprecation")

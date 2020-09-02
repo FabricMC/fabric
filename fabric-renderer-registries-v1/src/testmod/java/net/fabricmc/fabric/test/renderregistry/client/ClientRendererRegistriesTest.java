@@ -20,12 +20,12 @@ import net.minecraft.util.Formatting;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
-import net.fabricmc.fabric.test.renderregistry.client.cooldown.HiddenCooldownProperties;
-import net.fabricmc.fabric.test.renderregistry.client.cooldown.FlashingCooldownProperties;
-import net.fabricmc.fabric.test.renderregistry.client.countlabel.ObfuscatedCountLabelProperties;
-import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.DiscoBarProperties;
-import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.EnergyBarProperties;
-import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.ManaBarProperties;
+import net.fabricmc.fabric.test.renderregistry.client.cooldown.HiddenCooldownInfo;
+import net.fabricmc.fabric.test.renderregistry.client.cooldown.FlashingCooldownInfo;
+import net.fabricmc.fabric.test.renderregistry.client.countlabel.ObfuscatedItemLabelInfo;
+import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.DiscoBarInfo;
+import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.EnergyBarInfo;
+import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.ManaBarInfo;
 import net.fabricmc.fabric.test.renderregistry.client.postrender.WarningIcon;
 import net.fabricmc.fabric.test.renderregistry.client.prerender.StackBorder;
 import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
@@ -33,14 +33,14 @@ import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
 public class ClientRendererRegistriesTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ItemOverlayRendererRegistry.setCountLabelProperties(RendererRegistriesTest.OBFUSCATED_COUNT, new ObfuscatedCountLabelProperties());
+		ItemOverlayRendererRegistry.setCountLabelProperties(RendererRegistriesTest.OBFUSCATED_COUNT, new ObfuscatedItemLabelInfo());
 
-		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.ENERGY_STORAGE, new EnergyBarProperties());
-		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.MANA_STORAGE, new ManaBarProperties());
-		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.DISCO_BALL, new DiscoBarProperties());
+		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.ENERGY_STORAGE, new EnergyBarInfo());
+		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.MANA_STORAGE, new ManaBarInfo());
+		ItemOverlayRendererRegistry.setDurabilityBarProperties(RendererRegistriesTest.DISCO_BALL, new DiscoBarInfo());
 
-		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownProperties());
-		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.HIDDEN_COOLDOWN, new HiddenCooldownProperties());
+		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownInfo());
+		ItemOverlayRendererRegistry.setCooldownOverlayProperties(RendererRegistriesTest.HIDDEN_COOLDOWN, new HiddenCooldownInfo());
 
 		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.TUNISIAN_DIAMOND, new StackBorder(Formatting.GOLD));
 		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.MYSTERIOUS_BOOK, new StackBorder(Formatting.DARK_PURPLE));

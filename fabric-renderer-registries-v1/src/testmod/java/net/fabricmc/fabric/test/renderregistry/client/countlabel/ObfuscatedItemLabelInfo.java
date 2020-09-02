@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
+package net.fabricmc.fabric.test.renderregistry.client.countlabel;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
-import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.StorageItem;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelProperties;
 
-public class ManaBarProperties implements DurabilityBarProperties {
+public class ObfuscatedItemLabelInfo implements ItemLabelProperties {
 	@Override
-	public boolean isVisible(ItemStack stack) {
-		// Let's make this only visible if anything is stored
-		return getFillFactor(stack) > 0;
+	public boolean isVisible(ItemStack stack, String override) {
+		return true;
 	}
 
 	@Override
-	public float getFillFactor(ItemStack stack) {
-		return ((StorageItem) stack.getItem()).getFillLevel(stack);
+	public Text getContents(ItemStack stack, String override) {
+		return new LiteralText(override == null ? Integer.toString(stack.getCount()) : override)
+				.styled(style -> style.withFormatting(Formatting.OBFUSCATED));
 	}
 
 	@Override
-	public int getColor(ItemStack stack) {
-		// Purple mana!
-		return 0x660099;
+	public int getColor(ItemStack stack, String override) {
+		return 0xFFFFFF;
 	}
 }

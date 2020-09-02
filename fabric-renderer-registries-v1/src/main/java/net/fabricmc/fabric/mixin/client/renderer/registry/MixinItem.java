@@ -21,68 +21,67 @@ import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRenderer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PreItemOverlayRenderer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayExtensions;
 
 @Mixin(Item.class)
 public abstract class MixinItem implements ItemOverlayExtensions {
-	@Unique private CountLabelProperties countLabelProperties;
-	@Unique private DurabilityBarProperties durabilityBarProperties;
-	@Unique private CooldownOverlayProperties cooldownOverlayProperties;
-	@Unique private PreItemOverlayRenderer preItemOverlayRenderer;
-	@Unique private PostItemOverlayRenderer postItemOverlayRenderer;
+	@Unique private ItemLabelProperties itemLabelProperties;
+	@Unique private ItemDamageBarInfo itemDamageBarInfo;
+	@Unique private ItemCooldownInfo itemCooldownInfo;
+	@Unique private ItemOverlayRenderer.Pre preItemOverlayRenderer;
+	@Unique private ItemOverlayRenderer.Post postItemOverlayRenderer;
 
 	@Override
-	public CountLabelProperties fabric_getCountLabelProperties() {
-		return countLabelProperties;
+	public ItemLabelProperties fabric_getCountLabelProperties() {
+		return itemLabelProperties;
 	}
 
 	@Override
-	public void fabric_setCountLabelProperties(CountLabelProperties properties) {
-		this.countLabelProperties = properties;
+	public void fabric_setCountLabelProperties(ItemLabelProperties properties) {
+		this.itemLabelProperties = properties;
 	}
 
 	@Override
-	public DurabilityBarProperties fabric_getDurabilityBarProperties() {
-		return durabilityBarProperties;
+	public ItemDamageBarInfo fabric_getDurabilityBarProperties() {
+		return itemDamageBarInfo;
 	}
 
 	@Override
-	public void fabric_setDurabilityBarProperties(DurabilityBarProperties properties) {
-		this.durabilityBarProperties = properties;
+	public void fabric_setDurabilityBarProperties(ItemDamageBarInfo properties) {
+		this.itemDamageBarInfo = properties;
 	}
 
 	@Override
-	public CooldownOverlayProperties fabric_getCooldownOverlayProperties() {
-		return cooldownOverlayProperties;
+	public ItemCooldownInfo fabric_getCooldownOverlayProperties() {
+		return itemCooldownInfo;
 	}
 
 	@Override
-	public void fabric_setCooldownOverlayProperties(CooldownOverlayProperties properties) {
-		this.cooldownOverlayProperties = properties;
+	public void fabric_setCooldownOverlayProperties(ItemCooldownInfo properties) {
+		this.itemCooldownInfo = properties;
 	}
 
 	@Override
-	public PreItemOverlayRenderer fabric_getPreItemOverlayRenderer() {
+	public ItemOverlayRenderer.Pre fabric_getPreItemOverlayRenderer() {
 		return preItemOverlayRenderer;
 	}
 
 	@Override
-	public void fabric_setPreOverlayRenderer(PreItemOverlayRenderer renderer) {
+	public void fabric_setPreOverlayRenderer(ItemOverlayRenderer.Pre renderer) {
 		this.preItemOverlayRenderer = renderer;
 	}
 
 	@Override
-	public PostItemOverlayRenderer fabric_getPostItemOverlayRenderer() {
+	public ItemOverlayRenderer.Post fabric_getPostItemOverlayRenderer() {
 		return postItemOverlayRenderer;
 	}
 
 	@Override
-	public void fabric_setPostOverlayRenderer(PostItemOverlayRenderer renderer) {
+	public void fabric_setPostOverlayRenderer(ItemOverlayRenderer.Post renderer) {
 		this.postItemOverlayRenderer = renderer;
 	}
 }

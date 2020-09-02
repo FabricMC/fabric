@@ -14,17 +14,28 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.cooldown;
+package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
-/**
- * Hides the cooldown overlay, even if there is a cooldown, as long as it has more than 20% remaining.
- */
-public class HiddenCooldownProperties extends DefaultCooldownOverlayProperties {
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
+import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.StorageItem;
+
+public class ManaBarInfo implements ItemDamageBarInfo {
 	@Override
-	public boolean isVisible(ItemStack stack, MinecraftClient client) {
-		return getCooldownAmount(stack, client) <= 0.2f;
+	public boolean isVisible(ItemStack stack) {
+		// Let's make this only visible if anything is stored
+		return getFillFactor(stack) > 0;
+	}
+
+	@Override
+	public float getFillFactor(ItemStack stack) {
+		return ((StorageItem) stack.getItem()).getFillLevel(stack);
+	}
+
+	@Override
+	public int getColor(ItemStack stack) {
+		// Purple mana!
+		return 0x660099;
 	}
 }

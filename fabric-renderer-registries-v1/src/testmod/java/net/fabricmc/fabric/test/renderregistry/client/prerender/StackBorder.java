@@ -32,10 +32,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PreItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
 import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
 
-public class StackBorder extends DrawableHelper implements PreItemOverlayRenderer {
+public class StackBorder extends DrawableHelper implements ItemOverlayRenderer.Pre {
 	protected static final Identifier BORDER_TEX = RendererRegistriesTest.id("textures/gui/border.png");
 	protected final int color;
 

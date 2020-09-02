@@ -16,25 +16,24 @@
 
 package net.fabricmc.fabric.impl.client.renderer.registry.item;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CooldownOverlayProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.CountLabelProperties;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PostItemOverlayRenderer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.PreItemOverlayRenderer;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 
 public interface ItemOverlayExtensions {
-	CountLabelProperties fabric_getCountLabelProperties();
-	void fabric_setCountLabelProperties(CountLabelProperties properties);
+	ItemLabelProperties fabric_getCountLabelProperties();
+	void fabric_setCountLabelProperties(ItemLabelProperties properties);
 
-	DurabilityBarProperties fabric_getDurabilityBarProperties();
-	void fabric_setDurabilityBarProperties(DurabilityBarProperties properties);
+	ItemDamageBarInfo fabric_getDurabilityBarProperties();
+	void fabric_setDurabilityBarProperties(ItemDamageBarInfo properties);
 
-	CooldownOverlayProperties fabric_getCooldownOverlayProperties();
-	void fabric_setCooldownOverlayProperties(CooldownOverlayProperties properties);
+	ItemCooldownInfo fabric_getCooldownOverlayProperties();
+	void fabric_setCooldownOverlayProperties(ItemCooldownInfo properties);
 
-	PreItemOverlayRenderer fabric_getPreItemOverlayRenderer();
-	void fabric_setPreOverlayRenderer(PreItemOverlayRenderer renderer);
+	ItemOverlayRenderer.Pre fabric_getPreItemOverlayRenderer();
+	void fabric_setPreOverlayRenderer(ItemOverlayRenderer.Pre renderer);
 
-	PostItemOverlayRenderer fabric_getPostItemOverlayRenderer();
-	void fabric_setPostOverlayRenderer(PostItemOverlayRenderer renderer);
+	ItemOverlayRenderer.Post fabric_getPostItemOverlayRenderer();
+	void fabric_setPostOverlayRenderer(ItemOverlayRenderer.Post renderer);
 }

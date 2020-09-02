@@ -18,10 +18,10 @@ package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
 
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.DurabilityBarProperties;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.StorageItem;
 
-public class EnergyBarProperties implements DurabilityBarProperties {
+public class EnergyBarInfo implements ItemDamageBarInfo {
 	@Override
 	public boolean isVisible(ItemStack stack) {
 		return true;
