@@ -16,25 +16,21 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackManager;
-
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
+import net.minecraft.resource.ResourcePackProvider;
 
 @Mixin(ResourcePackManager.class)
-public class MixinResourcePackManagerClient {
-	@Inject(method = "createResourcePacks", at = @At("RETURN"), cancellable = true)
-	public void createResourcePacks(CallbackInfoReturnable<List<ResourcePack>> infoReturnable) {
-		List<ResourcePack> list = new ArrayList<>(infoReturnable.getReturnValue());
-		ModResourcePackUtil.modifyResourcePackList(list);
-		infoReturnable.setReturnValue(list);
-	}
+public interface ResourcePackManagerAccessor {
+	/**
+	 * Returns the resource pack providers of this resource pack manager.
+	 *
+	 * @return The resource pack providers.
+	 */
+	@Accessor("providers")
+	Set<ResourcePackProvider> getProviders();
 }
