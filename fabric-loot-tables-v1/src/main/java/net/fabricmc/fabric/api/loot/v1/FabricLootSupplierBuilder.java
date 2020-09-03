@@ -81,7 +81,7 @@ public class FabricLootSupplierBuilder extends LootTable.Builder {
 	}
 
 	/**
-	 * Copies the pools and functions of the {@code supplier} to this builder.
+	 * Copies the pools and functions of the {@code supplier} to this builder.
 	 * If {@code copyType} is true, the {@link FabricLootSupplier#getType type} of the supplier is also copied.
 	 */
 	public FabricLootSupplierBuilder copyFrom(LootTable supplier, boolean copyType) {
