@@ -9,7 +9,8 @@
     "MixinMinecraftServer",
     "MixinReloadableResourceManagerImpl",
     "MixinResourcePackManager",
-    "ResourcePackManagerAccessor"
+    "ResourcePackManagerAccessor",
+    "ResourcePackProfileAccessor"
   ],
   "client": [
     "MixinClientBuiltinResourcePackProvider",
