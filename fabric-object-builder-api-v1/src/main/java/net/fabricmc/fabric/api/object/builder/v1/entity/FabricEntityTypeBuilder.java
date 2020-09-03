@@ -50,9 +50,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	private EntityType.EntityFactory<T> factory;
 	private boolean saveable = true;
 	private boolean summonable = true;
-	private int trackingDistance = 5;
-	private int updateIntervalTicks = 3;
-	private Boolean alwaysUpdateVelocity;
+	private int trackRange = 5;
+	private int trackedUpdateRate = 3;
+	private Boolean forceTrackedVelocityUpdates;
 	private boolean fireImmune = false;
 	private boolean spawnableFarFromPlayer;
 	private EntityDimensions dimensions = EntityDimensions.changing(-1.0f, -1.0f);
@@ -190,14 +190,55 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-		return trackable(trackingDistanceBlocks, updateIntervalTicks, true);
+	/**
+	 * @deprecated use {@link FabricEntityTypeBuilder#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder#forceTrackedVelocityUpdates(boolean)}
+	 */
+	@Deprecated
+	public FabricEntityTypeBuilder<T> trackable(int trackRangeBlocks, int trackedUpdateRate) {
+		return trackable(trackRangeBlocks, trackedUpdateRate, true);
 	}
 
-	public FabricEntityTypeBuilder<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-		this.trackingDistance = trackingDistanceBlocks;
-		this.updateIntervalTicks = updateIntervalTicks;
-		this.alwaysUpdateVelocity = alwaysUpdateVelocity;
+	/**
+	 * @deprecated use {@link FabricEntityTypeBuilder#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder#forceTrackedVelocityUpdates(boolean)}
+	 */
+	@Deprecated
+	public FabricEntityTypeBuilder<T> trackable(int trackRangeBlocks, int trackedUpdateRate, boolean forceTrackedVelocityUpdates) {
+		this.trackRangeBlocks(trackRangeBlocks);
+		this.trackedUpdateRate(trackedUpdateRate);
+		this.forceTrackedVelocityUpdates(forceTrackedVelocityUpdates);
+		return this;
+	}
+
+	/**
+	 * Sets the maximum chunk tracking range of this entity type.
+	 *
+	 * @param range the tracking range in chunks
+	 *
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> trackRangeChunks(int range) {
+		this.trackRange = range;
+		return this;
+	}
+
+	/**
+	 * Sets the maximum block range at which players can see this entity type.
+	 *
+	 * @param range the tracking range in blocks
+	 *
+	 * @return this builder for chaining
+	 */
+	public FabricEntityTypeBuilder<T> trackRangeBlocks(int range) {
+		return trackRangeChunks(range + 15 / 16);
+	}
+
+	public FabricEntityTypeBuilder<T> trackedUpdateRate(int rate) {
+		this.trackedUpdateRate = rate;
+		return this;
+	}
+
+	public FabricEntityTypeBuilder<T> forceTrackedVelocityUpdates(boolean forceTrackedVelocityUpdates) {
+		this.forceTrackedVelocityUpdates = forceTrackedVelocityUpdates;
 		return this;
 	}
 
@@ -223,7 +264,7 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<T> type = new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackingDistance, updateIntervalTicks, alwaysUpdateVelocity);
+		EntityType<T> type = new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates);
 
 		return type;
 	}
@@ -283,15 +324,47 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			return this;
 		}
 
+		/**
+		 * @deprecated use {@link FabricEntityTypeBuilder.Living#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Living#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Living#forceTrackedVelocityUpdates(boolean)}
+		 */
 		@Override
-		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+		@Deprecated
+		public FabricEntityTypeBuilder.Living<T> trackable(int trackRangeBlocks, int trackedUpdateRate) {
+			super.trackable(trackRangeBlocks, trackedUpdateRate);
+			return this;
+		}
+
+		/**
+		 * @deprecated use {@link FabricEntityTypeBuilder.Living#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Living#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Living#forceTrackedVelocityUpdates(boolean)}
+		 */
+		@Override
+		@Deprecated
+		public FabricEntityTypeBuilder.Living<T> trackable(int trackRangeBlocks, int trackedUpdateRate, boolean forceTrackedVelocityUpdates) {
+			super.trackable(trackRangeBlocks, trackedUpdateRate, forceTrackedVelocityUpdates);
 			return this;
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Living<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+		public FabricEntityTypeBuilder.Living<T> trackRangeChunks(int range) {
+			super.trackRangeChunks(range);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> trackRangeBlocks(int range) {
+			super.trackRangeBlocks(range);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> trackedUpdateRate(int rate) {
+			super.trackedUpdateRate(rate);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Living<T> forceTrackedVelocityUpdates(boolean forceTrackedVelocityUpdates) {
+			super.forceTrackedVelocityUpdates(forceTrackedVelocityUpdates);
 			return this;
 		}
 
@@ -391,15 +464,47 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 			return this;
 		}
 
+		/**
+		 * @deprecated use {@link FabricEntityTypeBuilder.Mob#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Mob#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Mob#forceTrackedVelocityUpdates(boolean)}
+		 */
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks);
+		@Deprecated
+		public FabricEntityTypeBuilder.Mob<T> trackable(int trackRangeBlocks, int trackedUpdateRate) {
+			super.trackable(trackRangeBlocks, trackedUpdateRate);
+			return this;
+		}
+
+		/**
+		 * @deprecated use {@link FabricEntityTypeBuilder.Mob#trackRangeBlocks(int)}, {@link FabricEntityTypeBuilder.Mob#trackedUpdateRate(int)} and {@link FabricEntityTypeBuilder.Mob#forceTrackedVelocityUpdates(boolean)}
+		 */
+		@Override
+		@Deprecated
+		public FabricEntityTypeBuilder.Mob<T> trackable(int trackRangeBlocks, int trackedUpdateRate, boolean forceTrackedVelocityUpdates) {
+			super.trackable(trackRangeBlocks, trackedUpdateRate, forceTrackedVelocityUpdates);
 			return this;
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> trackable(int trackingDistanceBlocks, int updateIntervalTicks, boolean alwaysUpdateVelocity) {
-			super.trackable(trackingDistanceBlocks, updateIntervalTicks, alwaysUpdateVelocity);
+		public FabricEntityTypeBuilder.Mob<T> trackRangeChunks(int range) {
+			super.trackRangeChunks(range);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> trackRangeBlocks(int range) {
+			super.trackRangeBlocks(range);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> trackedUpdateRate(int rate) {
+			super.trackedUpdateRate(rate);
+			return this;
+		}
+
+		@Override
+		public FabricEntityTypeBuilder.Mob<T> forceTrackedVelocityUpdates(boolean forceTrackedVelocityUpdates) {
+			super.forceTrackedVelocityUpdates(forceTrackedVelocityUpdates);
 			return this;
 		}
 
