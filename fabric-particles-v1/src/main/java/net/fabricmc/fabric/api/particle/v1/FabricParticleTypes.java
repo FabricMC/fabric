@@ -78,7 +78,7 @@ public final class FabricParticleTypes {
 	public static <T extends ParticleEffect> ParticleType<T> complex(boolean alwaysSpawn, ParticleEffect.Factory<T> factory) {
 		return new ParticleType<T>(alwaysSpawn, factory) {
 			@Override
-			public Codec<T> method_29138() {
+			public Codec<T> getCodec() {
 				//TODO fix me
 				return null;
 			}

@@ -193,7 +193,7 @@ public final class FabricStructureBuilder<FC extends FeatureConfig, S extends St
 
 		if (adjustsSurface) {
 			StructureFeatureAccessor.setSurfaceAdjustingStructures(ImmutableList.<StructureFeature<?>>builder()
-					.addAll(StructureFeature.field_24861)
+					.addAll(StructureFeature.JIGSAW_STRUCTURES)
 					.add(structure)
 					.build());
 		}
