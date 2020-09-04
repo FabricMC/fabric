@@ -5,8 +5,8 @@
   "mixins": [
     "BiomeAccessor",
     "FlatChunkGeneratorConfigAccessor",
-    "MixinChunkGeneratorSettings",
-    "MixinStructuresConfig",
+    "ChunkGeneratorSettingsMixin",
+    "StructuresConfigMixin",
     "StructureFeatureAccessor",
     "StructuresConfigAccessor"
   ],

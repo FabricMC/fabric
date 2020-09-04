@@ -4,8 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "client": [
     "LivingEntityRendererAccessor",
-    "MixinBlockEntityRenderDispatcher",
-    "MixinEntityRenderDispatcher"
+    "BlockEntityRenderDispatcherMixin",
+    "EntityRenderDispatcherMixin"
   ],
   "injectors": {
     "defaultRequire": 1

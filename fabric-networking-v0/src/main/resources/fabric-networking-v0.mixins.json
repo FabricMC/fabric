@@ -3,15 +3,15 @@
   "package": "net.fabricmc.fabric.mixin.networking",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinCustomPayloadC2SPacket",
-    "MixinEntityTracker",
-    "MixinPlayerManager",
-    "MixinServerPlayNetworkHandler",
-    "MixinThreadedAnvilChunkStorage"
+    "CustomPayloadC2SPacketMixin",
+    "EntityTrackerMixin",
+    "PlayerManagerMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "ThreadedAnvilChunkStorageMixin"
   ],
   "client": [
-    "MixinClientPlayNetworkHandler",
-    "MixinMinecraftClient"
+    "ClientPlayNetworkHandlerMixin",
+    "MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

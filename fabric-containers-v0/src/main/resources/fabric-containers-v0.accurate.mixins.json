@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.container",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinServerPlayerEntity"
+    "ServerPlayerEntityMixin"
   ],
   "injectors": {
     "defaultRequire": 1

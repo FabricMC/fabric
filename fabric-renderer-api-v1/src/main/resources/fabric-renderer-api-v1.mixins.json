@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.renderer",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "client.MixinBakedModel",
-    "client.MixinSpriteAtlasTexture"
+    "client.BakedModelMixin",
+    "client.SpriteAtlasTextureMixin"
   ],
   "injectors": {
     "defaultRequire": 1

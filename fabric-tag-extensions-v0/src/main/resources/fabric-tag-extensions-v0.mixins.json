@@ -3,9 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.tag.extension",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AccessorFluidTags",
-    "MixinTagImpl",
-    "MixinTagBuilder"
+    "FluidTagsAccessor",
+    "TagImplMixin",
+    "TagBuilderMixin"
   ],
   "injectors": {
     "defaultRequire": 1

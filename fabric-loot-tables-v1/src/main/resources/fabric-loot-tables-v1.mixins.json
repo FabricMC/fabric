@@ -5,10 +5,10 @@
   "mixins": [
     "LootPoolBuilderHooks",
     "LootPoolEntryTypesAccessor",
-    "LootSupplierBuilderHooks",
-    "MixinLootManager",
-    "MixinLootPool",
-    "MixinLootSupplier"
+    "LootTableBuilderHooks",
+    "LootManagerMixin",
+    "LootPoolMixin",
+    "LootTableMixin"
   ],
   "injectors": {
     "defaultRequire": 1

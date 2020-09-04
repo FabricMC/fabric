@@ -6,13 +6,13 @@
   "mixins": [
   ],
   "client": [
-    "MixinAmbientOcclusionCalculator",
-    "MixinBlockModelRenderer",
-    "MixinChunkRebuildTask",
-    "MixinChunkRenderData",
-    "MixinChunkRenderer",
-    "MixinChunkRendererRegion",
-    "MixinItemRenderer"
+    "AmbientOcclusionCalculatorMixin",
+    "BlockModelRendererMixin",
+    "ChunkRebuildTaskMixin",
+    "ChunkDataMixin",
+    "BuiltChunkMixin",
+    "ChunkRendererRegionMixin",
+    "ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

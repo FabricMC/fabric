@@ -5,14 +5,14 @@
   "mixins": [
     "DimensionOptionsAccessor",
     "DimensionTypeAccessor",
-    "MixinAddEdgeBiomesLayer",
-    "MixinAddHillsLayer",
-    "MixinAddRiversLayer",
-    "MixinBiomeSource",
-    "MixinSetBaseBiomesLayer",
-    "MixinMinecraftDedicatedServer",
-    "MixinMultiNoiseBiomeSource",
-    "MixinVanillaLayeredBiomeSource",
+    "AddEdgeBiomesLayerMixin",
+    "AddHillsLayerMixin",
+    "AddRiversLayerMixin",
+    "BiomeSourceMixin",
+    "SetBaseBiomesLayerMixin",
+    "MinecraftDedicatedServerMixin",
+    "MultiNoiseBiomeSourceMixin",
+    "VanillaLayeredBiomeSourceMixin",
     "MultiNoiseBiomeSourceAccessor"
   ],
   "injectors": {
