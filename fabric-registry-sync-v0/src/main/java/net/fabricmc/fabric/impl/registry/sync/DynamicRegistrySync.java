@@ -42,7 +42,7 @@ public class DynamicRegistrySync {
 	 * the registry events.
 	 */
 	public static void setupSync(DynamicRegistryManager.Impl template) {
-		LOGGER.trace("Setting up synchronisation of new BuiltinRegistries entries to the built-in DynamicRegistryManager");
+		LOGGER.debug("Setting up synchronisation of new BuiltinRegistries entries to the built-in DynamicRegistryManager");
 		BuiltinRegistries.REGISTRIES.stream().forEach(source -> setupSync(source, template));
 	}
 
@@ -58,7 +58,7 @@ public class DynamicRegistrySync {
 		RegistryEntryAddedCallback.event(source).register((rawId, id, object) -> {
 			LOGGER.trace("Synchronizing {} from built-in registry {} into built-in dynamic registry manager template.",
 					id, source.getKey());
-			Lifecycle lifecycle = sourceAccessor.callMethod_31139(object);
+			Lifecycle lifecycle = sourceAccessor.callGetEntryLifecycle(object);
 			RegistryKey<T> entryKey = RegistryKey.of(sourceKey, id);
 			target.set(rawId, entryKey, object, lifecycle);
 		});

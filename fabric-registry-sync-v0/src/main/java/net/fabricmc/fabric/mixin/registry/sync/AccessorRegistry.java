@@ -35,9 +35,6 @@ public interface AccessorRegistry<T> {
 	@Accessor()
 	RegistryKey<Registry<T>> getRegistryKey();
 
-	/**
-	 * Gets the lifecycle of a registry entry.
-	 */
 	@Invoker
-	Lifecycle callMethod_31139(T object);
+	Lifecycle callGetEntryLifecycle(T object);
 }

@@ -32,7 +32,7 @@ public class MixinDynamicRegistryManager {
 	// but it still contains the same objects as BuiltinRegistries, while the subsequent
 	// managers built from this template will contain copies.
 	@Shadow
-	private static DynamicRegistryManager.Impl field_26733;
+	private static DynamicRegistryManager.Impl BUILTIN;
 
 	/**
 	 * Ensures that any registrations made into {@link net.minecraft.util.registry.BuiltinRegistries} after
@@ -40,6 +40,6 @@ public class MixinDynamicRegistryManager {
 	 */
 	@Inject(method = "<clinit>", at = @At(value = "TAIL"))
 	private static void setupBuiltInSync(CallbackInfo ci) {
-		DynamicRegistrySync.setupSync(field_26733);
+		DynamicRegistrySync.setupSync(BUILTIN);
 	}
 }

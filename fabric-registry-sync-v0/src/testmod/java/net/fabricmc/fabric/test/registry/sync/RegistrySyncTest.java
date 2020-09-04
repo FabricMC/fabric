@@ -90,7 +90,8 @@ public class RegistrySyncTest implements ModInitializer {
 		Identifier f1Id = new Identifier("registry_sync", "f1");
 		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f1Id, cf1);
 
-		// Force-Initialize the dynamic registry manager
+		// Force-Initialize the dynamic registry manager, doing this in a Mod initializer would cause
+		// further registrations into BuiltInRegistries to _NOT_ propagate into DynamicRegistryManager.BUILTIN
 		checkFeature(DynamicRegistryManager.create(), f1Id);
 
 		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = Feature.DESERT_WELL.configure(DefaultFeatureConfig.INSTANCE);

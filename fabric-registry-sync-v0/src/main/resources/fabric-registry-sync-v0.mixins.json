@@ -5,13 +5,13 @@
   "mixins": [
     "AccessorRegistry",
     "MixinBootstrap",
+    "MixinDynamicRegistryManager",
     "MixinIdList",
     "MixinIdRegistry",
     "MixinPlayerManager",
     "MixinLevelStorageSession",
     "MixinRegistry",
-    "MixinSimpleRegistry",
-    "MixinDynamicRegistryManager"
+    "MixinSimpleRegistry"
   ],
   "client": [
     "client.MixinBlockColorMap",
