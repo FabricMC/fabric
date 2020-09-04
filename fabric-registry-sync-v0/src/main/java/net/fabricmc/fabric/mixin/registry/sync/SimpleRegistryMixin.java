@@ -63,7 +63,6 @@ import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
 public abstract class SimpleRegistryMixin<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry {
-
 	protected SimpleRegistryMixin(RegistryKey<Registry<T>> arg, Lifecycle lifecycle) {
 		super(arg, lifecycle);
 	}
@@ -189,6 +188,7 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(rawId, registryKey.getValue(), entry);
 		}
+
 		onChange(registryKey);
 	}
 
