@@ -5,11 +5,15 @@ import java.util.Set;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.mojang.serialization.Lifecycle;
 
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 
+import net.fabricmc.fabric.api.biomes.v1.FabricBiomeBuilder;
+import net.fabricmc.fabric.api.biomes.v1.event.BiomeLoadingCallback;
 import net.fabricmc.fabric.mixin.biome.DynamicRegistryManagerAccessor;
 
 public class FabricBiomesInternal {
@@ -38,5 +42,22 @@ public class FabricBiomesInternal {
 
 	public static Map<RegistryKey<Biome>, Biome.MixedNoisePoint> getNetherBiomes() {
 		return NETHER_BIOMES;
+	}
+
+	// Flag to temporarily disable triggering the BiomeLoadingCallback
+	private static boolean disableBiomeLoadingCallback = false;
+
+	public static void onBiomeRegistered(int rawId, RegistryKey<Biome> key, Biome oldBiome, MutableRegistry<Biome> registry) {
+		if (!disableBiomeLoadingCallback) {
+			// Create builder, pass to event and rebuild biome
+			FabricBiomeBuilder builder = FabricBiomeBuilder.of(oldBiome);
+			BiomeLoadingCallback.EVENT.invoker().onBiomeLoading(key, builder);
+			Biome newBiome = builder.build();
+
+			// Prevent re-triggering
+			disableBiomeLoadingCallback = true;
+			registry.set(rawId, key, newBiome, Lifecycle.stable());
+			disableBiomeLoadingCallback = false;
+		}
 	}
 }

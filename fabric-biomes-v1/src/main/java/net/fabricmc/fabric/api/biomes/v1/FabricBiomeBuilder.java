@@ -1,30 +1,35 @@
 package net.fabricmc.fabric.api.biomes.v1;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
+
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.fabricmc.fabric.mixin.biome.BiomeEffectsAccessor;
-import net.fabricmc.fabric.mixin.biome.SpawnDensityAccessor;
-import net.fabricmc.fabric.mixin.biome.SpawnSettingsAccessor;
+
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.sound.BiomeAdditionsSound;
 import net.minecraft.sound.BiomeMoodSound;
 import net.minecraft.sound.MusicSound;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.world.biome.*;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeEffects;
+import net.minecraft.world.biome.BiomeParticleConfig;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
+import net.fabricmc.fabric.mixin.biome.BiomeEffectsAccessor;
+import net.fabricmc.fabric.mixin.biome.SpawnDensityAccessor;
+import net.fabricmc.fabric.mixin.biome.SpawnSettingsAccessor;
 
 public class FabricBiomeBuilder {
-
 	// Biome settings
 	private float depth;
 	private float scale;
@@ -36,13 +41,13 @@ public class FabricBiomeBuilder {
 
 	// GenerationSettings
 	private Supplier<ConfiguredSurfaceBuilder<?>> surfaceBuilder;
-	private Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> carvers = Maps.newLinkedHashMap();
-	private Map<GenerationStep.Feature, List<Supplier<ConfiguredFeature<?, ?>>>> features = Maps.newLinkedHashMap();
-	private List<Supplier<ConfiguredStructureFeature<?, ?>>> structureFeatures = Lists.newArrayList();
+	private final Map<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> carvers = Maps.newLinkedHashMap();
+	private final Map<GenerationStep.Feature, List<Supplier<ConfiguredFeature<?, ?>>>> features = Maps.newLinkedHashMap();
+	private final List<Supplier<ConfiguredStructureFeature<?, ?>>> structureFeatures = Lists.newArrayList();
 
 	// SpawnSettings
-	private Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> spawners = Maps.newLinkedHashMap();
-	private Map<EntityType<?>, SpawnSettings.SpawnDensity> spawnDensities = Maps.newLinkedHashMap();
+	private final Map<SpawnGroup, List<SpawnSettings.SpawnEntry>> spawners = Maps.newLinkedHashMap();
+	private final Map<EntityType<?>, SpawnSettings.SpawnDensity> spawnDensities = Maps.newLinkedHashMap();
 	private float creatureSpawnProbability = 0.1F;
 	private boolean playerSpawnFriendly = false;
 
@@ -72,33 +77,38 @@ public class FabricBiomeBuilder {
 		//TODO: temperatureModifier
 
 		GenerationSettings generationSettings = biome.getGenerationSettings();
-		for(GenerationStep.Carver step : GenerationStep.Carver.values()) {
-			for(Supplier<ConfiguredCarver<?>> carver : generationSettings.getCarversForStep(step)) {
+
+		for (GenerationStep.Carver step : GenerationStep.Carver.values()) {
+			for (Supplier<ConfiguredCarver<?>> carver : generationSettings.getCarversForStep(step)) {
 				builder.carver(step, carver);
 			}
 		}
 
-		for(GenerationStep.Feature step : GenerationStep.Feature.values()) {
-			if(step.ordinal() < generationSettings.getFeatures().size()) {
+		for (GenerationStep.Feature step : GenerationStep.Feature.values()) {
+			if (step.ordinal() < generationSettings.getFeatures().size()) {
 				for (Supplier<ConfiguredFeature<?, ?>> feature : generationSettings.getFeatures().get(step.ordinal())) {
 					builder.feature(step, feature);
 				}
 			}
 		}
-		for(Supplier<ConfiguredStructureFeature<?, ?>> structureFeature : generationSettings.getStructureFeatures()) {
+
+		for (Supplier<ConfiguredStructureFeature<?, ?>> structureFeature : generationSettings.getStructureFeatures()) {
 			builder.structureFeature(structureFeature);
 		}
+
 		builder.surfaceBuilder(generationSettings.getSurfaceBuilder());
 
 		SpawnSettings spawnSettings = biome.getSpawnSettings();
 		builder.playerSpawnFriendly(spawnSettings.isPlayerSpawnFriendly());
 		builder.creatureSpawnProbability(spawnSettings.getCreatureSpawnProbability());
-		for(SpawnGroup group : SpawnGroup.values()) {
-			for(SpawnSettings.SpawnEntry entry : spawnSettings.getSpawnEntry(group)) {
+
+		for (SpawnGroup group : SpawnGroup.values()) {
+			for (SpawnSettings.SpawnEntry entry : spawnSettings.getSpawnEntry(group)) {
 				builder.spawn(group, entry);
 			}
 		}
-		for(Map.Entry<EntityType<?>, SpawnSettings.SpawnDensity> entry : ((SpawnSettingsAccessor)spawnSettings).getSpawnCosts().entrySet()) {
+
+		for (Map.Entry<EntityType<?>, SpawnSettings.SpawnDensity> entry : ((SpawnSettingsAccessor) spawnSettings).getSpawnCosts().entrySet()) {
 			builder.spawnDensity(entry.getKey(), entry.getValue().getMass(), entry.getValue().getGravityLimit());
 		}
 
@@ -131,34 +141,42 @@ public class FabricBiomeBuilder {
 
 		GenerationSettings.Builder generationSettingsBuilder = new GenerationSettings.Builder();
 		generationSettingsBuilder.surfaceBuilder(surfaceBuilder);
+
 		for (Map.Entry<GenerationStep.Carver, List<Supplier<ConfiguredCarver<?>>>> entry : carvers.entrySet()) {
 			for (Supplier<ConfiguredCarver<?>> carver : entry.getValue()) {
 				generationSettingsBuilder.carver(entry.getKey(), carver.get());
 			}
 		}
+
 		for (Map.Entry<GenerationStep.Feature, List<Supplier<ConfiguredFeature<?, ?>>>> entry : features.entrySet()) {
 			for (Supplier<ConfiguredFeature<?, ?>> feature : entry.getValue()) {
 				generationSettingsBuilder.feature(entry.getKey().ordinal(), feature);
 			}
 		}
+
 		for (Supplier<ConfiguredStructureFeature<?, ?>> structureFeature : structureFeatures) {
 			generationSettingsBuilder.structureFeature(structureFeature.get());
 		}
+
 		biomeBuilder.generationSettings(generationSettingsBuilder.build());
 
 		SpawnSettings.Builder spawnSettingsBuilder = new SpawnSettings.Builder();
 		spawnSettingsBuilder.creatureSpawnProbability(creatureSpawnProbability);
+
 		if (playerSpawnFriendly) {
 			spawnSettingsBuilder.playerSpawnFriendly();
 		}
+
 		for (Map.Entry<SpawnGroup, List<SpawnSettings.SpawnEntry>> entry : spawners.entrySet()) {
 			for (SpawnSettings.SpawnEntry spawnEntry : entry.getValue()) {
 				spawnSettingsBuilder.spawn(entry.getKey(), spawnEntry);
 			}
 		}
+
 		for (Map.Entry<EntityType<?>, SpawnSettings.SpawnDensity> entry : spawnDensities.entrySet()) {
 			spawnSettingsBuilder.spawnCost(entry.getKey(), entry.getValue().getMass(), entry.getValue().getGravityLimit());
 		}
+
 		biomeBuilder.spawnSettings(spawnSettingsBuilder.build());
 
 		BiomeEffects.Builder biomeEffectsBuilder = new BiomeEffects.Builder();

@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
+    "fabricloader": ">=0.9.2",
     "minecraft": ">=1.16-alpha.20.22.a"
   },
   "description": "Hooks for adding biomes to the default world generator.",
@@ -25,7 +25,6 @@
   ],
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.biome.FabricBiomesEntrypoint"
     ]
   }
 }

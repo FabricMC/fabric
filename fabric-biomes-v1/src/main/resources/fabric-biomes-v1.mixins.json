@@ -9,7 +9,7 @@
     "SpawnSettingsAccessor",
     "SpawnDensityAccessor",
     "BiomeEffectsAccessor",
-    "BiomeMixin"
+    "DynamicRegistryManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
