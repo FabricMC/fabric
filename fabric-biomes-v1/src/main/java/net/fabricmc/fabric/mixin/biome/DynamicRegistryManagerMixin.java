@@ -38,7 +38,7 @@ public class DynamicRegistryManagerMixin {
 	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.Impl> cir, DynamicRegistryManager.Impl registryManager) {
 		MutableRegistry<Biome> biomeRegistry = registryManager.get(Registry.BIOME_KEY);
 		RegistryEntryAddedCallback.event(biomeRegistry).register((rawId, id, object) -> {
-			FabricBiomesInternal.onBiomeRegistered(rawId, RegistryKey.of(Registry.BIOME_KEY, id), biomeRegistry.get(id), biomeRegistry);
+			FabricBiomesInternal.onBiomeRegistered(rawId, RegistryKey.of(Registry.BIOME_KEY, id), biomeRegistry.get(id), biomeRegistry, registryManager);
 		});
 	}
 }

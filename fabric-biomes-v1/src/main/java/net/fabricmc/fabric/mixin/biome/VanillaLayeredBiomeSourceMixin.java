@@ -21,5 +21,8 @@ public class VanillaLayeredBiomeSourceMixin {
 		Stream<Supplier<Biome>> vanillaBiomes = args.get(0);
 		Stream<Supplier<Biome>> addedBiomes = FabricBiomesInternal.getOverworldBiomes().stream().map(biomeRegistryKey -> () -> biomeRegistry.get(biomeRegistryKey));
 		args.set(0, Stream.concat(vanillaBiomes, addedBiomes));
+
+		// Saved for resolving rawIDs in BiomeLayers.
+		FabricBiomesInternal.lastBiomeRegistry = biomeRegistry;
 	}
 }
