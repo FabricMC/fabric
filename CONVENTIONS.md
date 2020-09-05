@@ -26,7 +26,7 @@ Enum values that are referenced internally (values referenced within methods ass
 
 Regular mixin classes must be named the same name as the target class they are being mixed into, with "Mixin" appended to the end of the class name. As an example, a mixin class into the class `MinecraftServer` should be named `MinecraftServerMixin`.
 
-Accessor mixin classes must be named the same name as the target class they are being mixed into, with "Accessor" appended to the end of the class name. As an example, the accessor class into the class `MinecraftServer` should be named `MinecraftServerAccessor`.
+Likewise, accessor mixin classes must be named the same name as the target class they are being mixed into, with "Accessor" appended to the end of the class name. As an example, the accessor class into the class `MinecraftServer` should be named `MinecraftServerAccessor`.
 
 "Duck interfaces" (Interfaces that are implemented onto classes using mixins) should be named the same name as the target class that implements the interface, with a series of adjectives at the front of the class name describing the contents or the implementation use case of the interface, along with "Hooks" at the end of the class name. For example, a duck interface implemented by `PlayerEntity` through mixins in order to add a mana player attribute should be named `ManaPlayerEntityHooks`.
 
@@ -52,4 +52,4 @@ Packages must follow the following format (using `fabric-biome-api-v1` as an exa
 
 Multi-word names can be split or combined depending on what makes sense from a hierarchical standpoint. Take for example a module named `fabric-lifecycle-events-v1`. It would have the root package `net.fabricmc.fabric.api.event.lifecycle.v1` to maintain the hierarchy of lifecycle being a type of event. A module named `fabric-networking-block-entity-v1` would have the root package `net.fabricmc.fabric.api.networking.blockentity`, because "Block Entity" is a singular construct under "networking", and should not imply that entity was hierarchically inferior to block.
 
-Experimental apis in Fabric API ought to be annotated using `@Deprecated` in order to indicate instability and the potential for the api to drastically change between versions.
+Experimental APIs in Fabric API ought to be annotated using `@Deprecated` in order to indicate instability and the potential for the API to drastically change between versions.
