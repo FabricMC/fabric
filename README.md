@@ -13,7 +13,7 @@ Also check out [Fabric Loader](https://github.com/FabricMC/fabric-loader), the (
 
 For support and discussion for both developers and users, visit [the Fabric Discord server](https://discord.gg/v6v4pMv).
 
-For more information about the fabric project as a whole check out the [fabric homepage](https://fabricmc.net/), and the [fabric wiki](https://fabricmc.net/wiki/doku.php).
+For more information about the Fabric project as a whole check out the [Fabric homepage](https://fabricmc.net/), and the [Fabric wiki](https://fabricmc.net/wiki/doku.php).
 
 ## Getting Started
 
@@ -27,9 +27,9 @@ In addition, most mods depend on an API mod, containing commonly used hooks. It 
 
 ### For Developers
 
-To setup a Fabric development environment, check out the [example fabric mod](https://github.com/FabricMC/fabric-example-mod) and follow the instructions there.
+To setup a Fabric development environment, check out the [example Fabric mod](https://github.com/FabricMC/fabric-example-mod) and follow the instructions there.
 
-The fabric wiki also has a series of helpful tutorials to teach you how to create your first mod. They can be found [here](https://fabricmc.net/wiki/start#tutorials2).
+The Fabric wiki also has a series of helpful tutorials to teach you how to create your first mod. They can be found [here](https://fabricmc.net/wiki/start#tutorials2).
 
 ### For Contributors
 
