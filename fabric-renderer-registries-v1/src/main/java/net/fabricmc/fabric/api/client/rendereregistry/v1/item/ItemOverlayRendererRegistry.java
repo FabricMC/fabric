@@ -83,4 +83,29 @@ public final class ItemOverlayRendererRegistry {
 		Objects.requireNonNull(itemConvertible);
 		setPostRenderer(itemConvertible.asItem(), renderer);
 	}
+
+	public static void setDefaultLabelInfo(ItemLabelInfo info) {
+		Objects.requireNonNull(info);
+		ItemOverlayMaps.LABEL_INFO_MAP.defaultReturnValue(info);
+	}
+
+	public static void setDefaultDamageBarInfo(ItemDamageBarInfo info) {
+		Objects.requireNonNull(info);
+		ItemOverlayMaps.DAMAGE_BAR_INFO_MAP.defaultReturnValue(info);
+	}
+
+	public static void setDefaultCooldownInfo(ItemCooldownInfo info) {
+		Objects.requireNonNull(info);
+		ItemOverlayMaps.COOLDOWN_INFO_MAP.defaultReturnValue(info);
+	}
+
+	public static void setDefaultPreRenderer(ItemOverlayRenderer.Pre renderer) {
+		Objects.requireNonNull(renderer);
+		ItemOverlayMaps.PRE_RENDERER_MAP.defaultReturnValue(renderer);
+	}
+
+	public static void setDefaultPostRenderer(ItemOverlayRenderer.Post renderer) {
+		Objects.requireNonNull(renderer);
+		ItemOverlayMaps.POST_RENDERER_MAP.defaultReturnValue(renderer);
+	}
 }

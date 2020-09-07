@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.client.renderer.registry.item;
 
-import java.util.IdentityHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 
 import net.minecraft.item.Item;
 
@@ -34,9 +34,9 @@ public final class ItemOverlayMaps {
 	// The FabricMC Group is not responsible for any damages caused by directly mutating the following maps.
 	// (use ItemOverlayRendererRegistry)
 
-	public static final IdentityHashMap<Item, ItemLabelInfo> LABEL_INFO_MAP = new IdentityHashMap<>();
-	public static final IdentityHashMap<Item, ItemDamageBarInfo> DAMAGE_BAR_INFO_MAP = new IdentityHashMap<>();
-	public static final IdentityHashMap<Item, ItemCooldownInfo> COOLDOWN_INFO_MAP = new IdentityHashMap<>();
-	public static final IdentityHashMap<Item, ItemOverlayRenderer.Pre> PRE_RENDERER_MAP = new IdentityHashMap<>();
-	public static final IdentityHashMap<Item, ItemOverlayRenderer.Post> POST_RENDERER_MAP = new IdentityHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemLabelInfo> LABEL_INFO_MAP = new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemDamageBarInfo> DAMAGE_BAR_INFO_MAP = new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemCooldownInfo> COOLDOWN_INFO_MAP = new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemOverlayRenderer.Pre> PRE_RENDERER_MAP = new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemOverlayRenderer.Post> POST_RENDERER_MAP = new Reference2ObjectOpenHashMap<>();
 }
