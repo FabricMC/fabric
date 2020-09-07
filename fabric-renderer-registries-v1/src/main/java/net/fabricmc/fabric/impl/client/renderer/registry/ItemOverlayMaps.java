@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client.renderer.registry.item;
+package net.fabricmc.fabric.impl.client.renderer.registry;
 
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 

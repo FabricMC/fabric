@@ -42,13 +42,10 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownOverla
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
-import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayMaps;
+import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayMaps;
 
 @Mixin(ItemRenderer.class)
 public abstract class MixinItemRenderer {
-	// This design means multiple durability bars are impossible. Too bad!
-	// TODO EDIT: Multiple durability bars actually *are* possible with a simple @Inject, I reckon...
-
 	@Unique private final MatrixStack matrixStack = new MatrixStack();
 	@Unique private boolean needPopping = false;
 	@Unique private String countLabelTmp;

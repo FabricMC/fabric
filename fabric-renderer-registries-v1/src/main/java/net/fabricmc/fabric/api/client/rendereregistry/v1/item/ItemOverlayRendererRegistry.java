@@ -23,7 +23,7 @@ import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.client.renderer.registry.item.ItemOverlayMaps;
+import net.fabricmc.fabric.impl.client.renderer.registry.ItemOverlayMaps;
 
 @Environment(EnvType.CLIENT)
 public final class ItemOverlayRendererRegistry {
