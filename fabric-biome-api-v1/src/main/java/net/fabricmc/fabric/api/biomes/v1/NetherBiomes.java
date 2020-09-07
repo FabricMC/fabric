@@ -23,14 +23,19 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * API that exposes the internals of Minecraft's nether biome code.
+ *
+ * @deprecated Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
+ * since it is likely to change in future Minecraft versions.
  */
+@Deprecated
 public final class NetherBiomes {
-	private NetherBiomes() { }
+	private NetherBiomes() {
+	}
 
 	/**
 	 * Adds a biome to the Nether generator.
 	 *
-	 * @param biome The biome to add. Must not be null.
+	 * @param biome           The biome to add. Must not be null.
 	 * @param mixedNoisePoint data about the given {@link Biome}'s spawning information in the nether.
 	 * @see Biome.MixedNoisePoint
 	 */
