@@ -23,12 +23,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
-
 /**
  * Shows a full red, flashing overlay if there's more than 80% of the cooldown still remaining.
  */
-public class FlashingCooldownInfo extends BaseCooldownInfo {
+public class FlashingCooldownOverlayInfo extends BaseCooldownOverlayInfo {
 	@Override
 	public float getFillFactor(ItemStack stack, MinecraftClient client) {
 		if (getCooldownAmount(stack, client) > 0.8f) {

@@ -22,26 +22,26 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 /**
- * This interface allows you to modify the durability bar that is displayed on item stacks in inventories.
+ * This interface allows you to modify the damage bar that is displayed on damaged item stacks in inventories.
  */
 @Environment(EnvType.CLIENT)
 public interface ItemDamageBarInfo {
 	/**
-	 * Checks if the durability bar is visible or not.
+	 * Checks if the damage bar is visible or not.
 	 * @param stack stack to check
 	 * @return {@code true} if bar is visible, {@code false} otherwise
 	 */
 	boolean isVisible(ItemStack stack);
 
 	/**
-	 * Gets how full the durability bar is.
+	 * Gets how full the damage bar is.
 	 * @param stack stack to check
 	 * @return bar fill factor, between 0 and 1 (inclusive)
 	 */
 	float getFillFactor(ItemStack stack);
 
 	/**
-	 * Gets the color of the durability bar.
+	 * Gets the color of the damage bar.
 	 * @param stack stack to check
 	 * @return bar color
 	 */

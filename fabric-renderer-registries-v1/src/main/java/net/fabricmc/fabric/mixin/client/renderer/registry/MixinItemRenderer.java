@@ -38,7 +38,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Matrix4f;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownOverlayInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
@@ -152,7 +152,7 @@ public abstract class MixinItemRenderer {
 		return countLabelTmp;
 	}
 
-	// changes "is durability bar visible" condition
+	// changes "is damage bar visible" condition
 	@Redirect(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;isDamaged()Z"))
 	public boolean barVisible(ItemStack stack) {
@@ -165,7 +165,7 @@ public abstract class MixinItemRenderer {
 		return props.isVisible(stack);
 	}
 
-	// changes durability bar fill factor and color
+	// changes damage bar fill factor and color
 	@ModifyArgs(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
 					ordinal = 1))
@@ -187,7 +187,7 @@ public abstract class MixinItemRenderer {
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/ItemCooldownManager;getCooldownProgress(Lnet/minecraft/item/Item;F)F"))
 	public float cooldownVisible(ItemCooldownManager itemCooldownManager, Item item, float partialTicks,
 			TextRenderer renderer, ItemStack stack) {
-		ItemCooldownInfo props = ItemOverlayMaps.COOLDOWN_INFO_MAP.get(item);
+		ItemCooldownOverlayInfo props = ItemOverlayMaps.COOLDOWN_OVERLAY_INFO_MAP.get(item);
 
 		if (props == null) {
 			return itemCooldownManager.getCooldownProgress(item, partialTicks);
@@ -196,12 +196,12 @@ public abstract class MixinItemRenderer {
 		return props.isVisible(stack, MinecraftClient.getInstance()) ? 1 : 0;
 	}
 
-	// changes cooldown fill factor and color
+	// changes cooldown overlay fill factor and color
 	@ModifyArgs(method = "renderGuiItemOverlay(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V",
 			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/item/ItemRenderer;renderGuiQuad(Lnet/minecraft/client/render/BufferBuilder;IIIIIIII)V",
 					ordinal = 2))
 	public void cooldownFillAndColor(Args args, TextRenderer renderer, ItemStack stack, int x, int y) {
-		ItemCooldownInfo props = ItemOverlayMaps.COOLDOWN_INFO_MAP.get(stack.getItem());
+		ItemCooldownOverlayInfo props = ItemOverlayMaps.COOLDOWN_OVERLAY_INFO_MAP.get(stack.getItem());
 
 		if (props == null) {
 			return;

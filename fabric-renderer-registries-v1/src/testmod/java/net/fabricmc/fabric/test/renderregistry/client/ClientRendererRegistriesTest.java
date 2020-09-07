@@ -20,8 +20,8 @@ import net.minecraft.util.Formatting;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRendererRegistry;
-import net.fabricmc.fabric.test.renderregistry.client.cooldown.HiddenCooldownInfo;
-import net.fabricmc.fabric.test.renderregistry.client.cooldown.FlashingCooldownInfo;
+import net.fabricmc.fabric.test.renderregistry.client.cooldown.HiddenCooldownOverlayInfo;
+import net.fabricmc.fabric.test.renderregistry.client.cooldown.FlashingCooldownOverlayInfo;
 import net.fabricmc.fabric.test.renderregistry.client.countlabel.ObfuscatedItemLabelInfo;
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.DiscoBarInfo;
 import net.fabricmc.fabric.test.renderregistry.client.durabilitybar.EnergyBarInfo;
@@ -39,8 +39,8 @@ public class ClientRendererRegistriesTest implements ClientModInitializer {
 		ItemOverlayRendererRegistry.setDamageBarInfo(RendererRegistriesTest.MANA_STORAGE, new ManaBarInfo());
 		ItemOverlayRendererRegistry.setDamageBarInfo(RendererRegistriesTest.DISCO_BALL, new DiscoBarInfo());
 
-		ItemOverlayRendererRegistry.setCooldownInfo(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownInfo());
-		ItemOverlayRendererRegistry.setCooldownInfo(RendererRegistriesTest.HIDDEN_COOLDOWN, new HiddenCooldownInfo());
+		ItemOverlayRendererRegistry.setCooldownOverlayInfo(RendererRegistriesTest.LONG_COOLDOWN, new FlashingCooldownOverlayInfo());
+		ItemOverlayRendererRegistry.setCooldownOverlayInfo(RendererRegistriesTest.HIDDEN_COOLDOWN, new HiddenCooldownOverlayInfo());
 
 		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.TUNISIAN_DIAMOND, new StackBorder(Formatting.GOLD));
 		ItemOverlayRendererRegistry.setPreRenderer(RendererRegistriesTest.MYSTERIOUS_BOOK, new StackBorder(Formatting.DARK_PURPLE));

@@ -22,7 +22,7 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownOverlayInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemLabelInfo;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
@@ -34,9 +34,14 @@ public final class ItemOverlayMaps {
 	// The FabricMC Group is not responsible for any damages caused by directly mutating the following maps.
 	// (use ItemOverlayRendererRegistry)
 
-	public static final Reference2ObjectOpenHashMap<Item, ItemLabelInfo> LABEL_INFO_MAP = new Reference2ObjectOpenHashMap<>();
-	public static final Reference2ObjectOpenHashMap<Item, ItemDamageBarInfo> DAMAGE_BAR_INFO_MAP = new Reference2ObjectOpenHashMap<>();
-	public static final Reference2ObjectOpenHashMap<Item, ItemCooldownInfo> COOLDOWN_INFO_MAP = new Reference2ObjectOpenHashMap<>();
-	public static final Reference2ObjectOpenHashMap<Item, ItemOverlayRenderer.Pre> PRE_RENDERER_MAP = new Reference2ObjectOpenHashMap<>();
-	public static final Reference2ObjectOpenHashMap<Item, ItemOverlayRenderer.Post> POST_RENDERER_MAP = new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemLabelInfo> LABEL_INFO_MAP
+			= new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemDamageBarInfo> DAMAGE_BAR_INFO_MAP
+			= new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemCooldownOverlayInfo> COOLDOWN_OVERLAY_INFO_MAP
+			= new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemOverlayRenderer.Pre> PRE_RENDERER_MAP
+			= new Reference2ObjectOpenHashMap<>();
+	public static final Reference2ObjectOpenHashMap<Item, ItemOverlayRenderer.Post> POST_RENDERER_MAP
+			= new Reference2ObjectOpenHashMap<>();
 }

@@ -20,9 +20,9 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownOverlayInfo;
 
-public abstract class BaseCooldownInfo implements ItemCooldownInfo {
+public abstract class BaseCooldownOverlayInfo implements ItemCooldownOverlayInfo {
 	protected float getCooldownAmount(ItemStack stack, MinecraftClient client) {
 		// copied from ItemRenderer.renderGuiItemOverlay, lines 355-356 (player was local "clientPlayerEntity", client was MinecraftClient.getInstance())
 		ClientPlayerEntity player = client.player;

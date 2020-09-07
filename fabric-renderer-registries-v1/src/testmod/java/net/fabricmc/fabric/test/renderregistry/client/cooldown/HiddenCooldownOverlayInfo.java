@@ -19,12 +19,10 @@ package net.fabricmc.fabric.test.renderregistry.client.cooldown;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemCooldownInfo;
-
 /**
  * Hides the cooldown overlay, even if there is a cooldown, as long as it has more than 20% remaining.
  */
-public class HiddenCooldownInfo extends BaseCooldownInfo {
+public class HiddenCooldownOverlayInfo extends BaseCooldownOverlayInfo {
 	@Override
 	public boolean isVisible(ItemStack stack, MinecraftClient client) {
 		return getCooldownAmount(stack, client) <= 0.2f;

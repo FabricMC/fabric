@@ -26,7 +26,7 @@ import net.fabricmc.api.Environment;
  * This interface allows you to modify the cooldown overlay that is displayed on item stacks in inventories.
  */
 @Environment(EnvType.CLIENT)
-public interface ItemCooldownInfo {
+public interface ItemCooldownOverlayInfo {
 	/**
 	 * Checks if the cooldown overlay is visible or not.
 	 * @param stack stack to check

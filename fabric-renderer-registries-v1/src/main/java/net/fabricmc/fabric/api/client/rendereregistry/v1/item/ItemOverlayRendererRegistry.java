@@ -41,10 +41,10 @@ public final class ItemOverlayRendererRegistry {
 		ItemOverlayMaps.DAMAGE_BAR_INFO_MAP.put(item, info);
 	}
 
-	public static void setCooldownInfo(Item item, ItemCooldownInfo info) {
+	public static void setCooldownOverlayInfo(Item item, ItemCooldownOverlayInfo info) {
 		Objects.requireNonNull(item);
 		Objects.requireNonNull(info);
-		ItemOverlayMaps.COOLDOWN_INFO_MAP.put(item, info);
+		ItemOverlayMaps.COOLDOWN_OVERLAY_INFO_MAP.put(item, info);
 	}
 
 	public static void setPreRenderer(Item item, ItemOverlayRenderer.Pre renderer) {
@@ -69,9 +69,9 @@ public final class ItemOverlayRendererRegistry {
 		setDamageBarInfo(itemConvertible.asItem(), info);
 	}
 
-	public static void setCooldownInfo(ItemConvertible itemConvertible, ItemCooldownInfo info) {
+	public static void setCooldownOverlayInfo(ItemConvertible itemConvertible, ItemCooldownOverlayInfo info) {
 		Objects.requireNonNull(itemConvertible);
-		setCooldownInfo(itemConvertible.asItem(), info);
+		setCooldownOverlayInfo(itemConvertible.asItem(), info);
 	}
 
 	public static void setPreRenderer(ItemConvertible itemConvertible, ItemOverlayRenderer.Pre renderer) {
@@ -94,9 +94,9 @@ public final class ItemOverlayRendererRegistry {
 		ItemOverlayMaps.DAMAGE_BAR_INFO_MAP.defaultReturnValue(info);
 	}
 
-	public static void setDefaultCooldownInfo(ItemCooldownInfo info) {
+	public static void setDefaultCooldownOverlayInfo(ItemCooldownOverlayInfo info) {
 		Objects.requireNonNull(info);
-		ItemOverlayMaps.COOLDOWN_INFO_MAP.defaultReturnValue(info);
+		ItemOverlayMaps.COOLDOWN_OVERLAY_INFO_MAP.defaultReturnValue(info);
 	}
 
 	public static void setDefaultPreRenderer(ItemOverlayRenderer.Pre renderer) {
