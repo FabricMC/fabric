@@ -19,7 +19,8 @@ package net.fabricmc.fabric.api.biomes.v1;
 /**
  * Represents the climates of biomes on the overworld continents.
  *
- * @deprecated Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
+ * @deprecated Experimental feature, may be removed or changed without further notice.
+ * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
  * since it is likely to change in future Minecraft versions.
  */
 @Deprecated

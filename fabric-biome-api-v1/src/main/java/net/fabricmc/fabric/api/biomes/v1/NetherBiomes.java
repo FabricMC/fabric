@@ -24,7 +24,8 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 /**
  * API that exposes the internals of Minecraft's nether biome code.
  *
- * @deprecated Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
+ * @deprecated Experimental feature, may be removed or changed without further notice.
+ * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
  * since it is likely to change in future Minecraft versions.
  */
 @Deprecated
