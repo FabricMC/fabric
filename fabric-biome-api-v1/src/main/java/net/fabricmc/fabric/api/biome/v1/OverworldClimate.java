@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.biomes.v1;
+package net.fabricmc.fabric.api.biome.v1;
 
 /**
  * Represents the climates of biomes on the overworld continents.

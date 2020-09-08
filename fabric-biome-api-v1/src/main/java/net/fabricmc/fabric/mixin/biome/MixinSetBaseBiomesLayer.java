@@ -31,7 +31,7 @@ import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
 import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 
 /**

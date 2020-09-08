@@ -35,7 +35,7 @@ import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
 import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
 
 /**
