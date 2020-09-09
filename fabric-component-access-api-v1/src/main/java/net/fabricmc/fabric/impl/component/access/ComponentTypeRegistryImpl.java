@@ -31,8 +31,8 @@ public final class ComponentTypeRegistryImpl implements ComponentTypeRegistry {
 	private static final Object2ObjectOpenHashMap<Identifier, ComponentType<?>> TYPES_BY_ID = new Object2ObjectOpenHashMap<>();
 
 	@Override
-	public <T> ComponentType<T> createComponent(Identifier id, T absentValue) {
-		final ComponentType<T> result = new ComponentTypeImpl<>(absentValue);
+	public <T> ComponentType<T> createComponent(Identifier id, Class<T> type, T absentValue) {
+		final ComponentType<T> result = new ComponentTypeImpl<T> (type, absentValue);
 
 		if (TYPES_BY_ID.putIfAbsent(id, result) != null) {
 			throw new IllegalStateException("Component already registered with ID " + id.toString());

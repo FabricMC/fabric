@@ -67,10 +67,7 @@ public interface ComponentType<T> {
 	 *
 	 * @throws ClassCastException if the input object cannot be cast to the component class
 	 */
-	@SuppressWarnings("unchecked")
-	default T cast(Object obj) {
-		return (T) obj;
-	}
+	T cast(Object obj);
 
 	/**
 	 * Retrieves a {@code ComponentAccess} to access components of this type

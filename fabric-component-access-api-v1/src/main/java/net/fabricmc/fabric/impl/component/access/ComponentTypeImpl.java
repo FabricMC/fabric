@@ -58,9 +58,11 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 	private ObjectArrayList<Pair<Function<EntityComponentContext, T>, Predicate<EntityType<?>>>> deferedEntityMappings;
 
 	private final AbsentComponentAccess<T> absentComponentAccess;
+	private final Class<T> type;
 
-	ComponentTypeImpl(T absent) {
+	ComponentTypeImpl(Class<T> type, T absent) {
 		this.absent = absent;
+		this.type = type;
 		defaultBlockMapping = b -> absent;
 		defaultItemMapping = i -> absent;
 		defaultEntityMapping = e -> absent;
@@ -70,6 +72,11 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 	@Override
 	public T absent() {
 		return absent;
+	}
+
+	@Override
+	public T cast(Object obj) {
+		return type.cast(obj);
 	}
 
 	Function<BlockComponentContext, ?> getMapping(Block block) {

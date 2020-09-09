@@ -37,7 +37,7 @@ public interface ComponentTypeRegistry {
 	 *
 	 * @throws IllegalStateException if the given id is already in use
 	 */
-	<T> ComponentType<T> createComponent(Identifier id, T absentValue);
+	<T> ComponentType<T> createComponent(Identifier id, Class<T> type, T absentValue);
 
 	/**
 	 * Returns the {@code ComponentType} instance associated with the given id, or {@code null} if not found.
