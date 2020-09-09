@@ -25,10 +25,9 @@ import net.fabricmc.fabric.api.component.access.v1.EntityComponentContext;
 public final class EntityComponentContextImpl extends AbstractComponentContextImpl implements EntityComponentContext {
 	private Entity entity;
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public <E extends Entity> E entity() {
-		return (E) entity;
+	public Entity entity() {
+		return entity;
 	}
 
 	@Override

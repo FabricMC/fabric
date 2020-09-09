@@ -28,5 +28,5 @@ public interface EntityComponentContext extends ComponentContext {
 	 *
 	 * @return {@code Entity} instance that may contain component(s)
 	 */
-	<E extends Entity> E entity();
+	Entity entity();
 }
