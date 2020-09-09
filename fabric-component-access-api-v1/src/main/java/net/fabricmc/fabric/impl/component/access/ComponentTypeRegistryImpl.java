@@ -33,7 +33,7 @@ public class ComponentTypeRegistryImpl implements ComponentTypeRegistry {
 
 	@Override
 	public <T> ComponentType<T> createComponent(Identifier id, T absentValue) {
-		Preconditions.checkState(!TYPES_BY_ID.containsKey(id), "Device component already registered with ID " + id.toString());
+		Preconditions.checkState(!TYPES_BY_ID.containsKey(id), "Component already registered with ID " + id.toString());
 		final ComponentType<T> result = new ComponentTypeImpl<>(absentValue);
 		TYPES_BY_ID.put(id, result);
 		return result;
