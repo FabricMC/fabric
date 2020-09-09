@@ -64,7 +64,7 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 		defaultBlockMapping = b -> absent;
 		defaultItemMapping = i -> absent;
 		defaultEntityMapping = e -> absent;
-		absentComponentAccess = new AbsentComponentAccess<> (this);
+		absentComponentAccess = new AbsentComponentAccess<>(this);
 	}
 
 	@Override
