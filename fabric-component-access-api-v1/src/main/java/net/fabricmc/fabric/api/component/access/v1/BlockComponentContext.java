@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.component.access.v1;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -42,13 +41,6 @@ public interface BlockComponentContext extends ComponentContext {
 	 * @return {@code BlockEntity} instance at {@link #pos()}, or {@code null} if there is none
 	 */
 	/* @Nullable */ BlockEntity blockEntity();
-
-	/**
-	 * {@code Block} instance at {@link #pos()}. Will never be {@code null} but could be air.
-	 *
-	 * @return @code Block} instance at {@link #pos()}
-	 */
-	Block block();
 
 	/**
 	 * {@code BlockState} instance at {@link #pos()}. Will never be {@code null} but could be air.

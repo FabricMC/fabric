@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.component.access;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
@@ -26,15 +25,9 @@ import net.fabricmc.fabric.api.component.access.v1.BlockComponentContext;
 
 @SuppressWarnings("rawtypes")
 public final class BlockComponentContextImpl extends AbstractComponentContextImpl implements BlockComponentContext {
-	private Block block;
 	private BlockPos pos;
 	private BlockState blockState;
 	private BlockEntity blockEntity;
-
-	@Override
-	public Block block() {
-		return block;
-	}
 
 	@Override
 	public BlockPos pos() {
@@ -77,8 +70,7 @@ public final class BlockComponentContextImpl extends AbstractComponentContextImp
 		this.pos = pos;
 		blockEntity = null;
 		blockState = world.getBlockState(pos);
-		block = blockState.getBlock();
-		mapping = componentType.getMapping(block);
+		mapping = componentType.getMapping(blockState.getBlock());
 		return this;
 	}
 
@@ -89,8 +81,7 @@ public final class BlockComponentContextImpl extends AbstractComponentContextImp
 		this.pos = pos;
 		blockEntity = null;
 		this.blockState = blockState;
-		block = blockState.getBlock();
-		mapping = componentType.getMapping(block);
+		mapping = componentType.getMapping(blockState.getBlock());
 		return this;
 	}
 
@@ -101,8 +92,7 @@ public final class BlockComponentContextImpl extends AbstractComponentContextImp
 		pos = null;
 		this.blockEntity = blockEntity;
 		blockState = blockEntity.getCachedState();
-		block = blockState.getBlock();
-		mapping = componentType.getMapping(block);
+		mapping = componentType.getMapping(blockState.getBlock());
 		return this;
 	}
 
