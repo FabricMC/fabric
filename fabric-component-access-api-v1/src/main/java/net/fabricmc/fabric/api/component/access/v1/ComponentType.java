@@ -106,11 +106,8 @@ public interface ComponentType<T> {
 	 *
 	 * <p>The instance that is returned may be thread-local and should never be retained.
 	 *
-	 * @param world the server world where the component may be located
-	 * @param pos the block position where the component may be located
-	 * @param blockState the current block state at the given position within the world
+	 * @param blockEntity the block entity where the component may be located
 	 * @return a {@code ComponentAccess} to access components of this type
-	 * that may be present at the given location
 	 */
 	ComponentAccess<T> getAccess(BlockEntity blockEntity);
 
@@ -170,20 +167,11 @@ public interface ComponentType<T> {
 	ComponentAccess<T> getAccess(Supplier<ItemStack> stackGetter, Consumer<ItemStack> stackSetter, World world);
 
 	/**
-	 * Applies registered item actions to a component instance of this type until one is successful.
+	 * Applies item actions registered for this component via {@link #registerItemAction(BiPredicate, Item...)}.
+	 * If more than one action is registered will attempt in undefined order until one is successful.
 	 * Returns true if one action was successful, false if no actions were found or none succeeded.
 	 *
-	 * @param target the component instance to which actions will be applied
-	 * @param player the player using an item on the component
-	 * @return {@code true} if one action was successfully applied
-	 */
-	default boolean applyActionsWithHeld(T target, ServerPlayerEntity player) {
-		return applyActions(target, () -> player.getMainHandStack(), s -> player.setStackInHand(Hand.MAIN_HAND, s), player);
-	}
-
-	/**
-	 * Applies registered item actions to a component instance of this type until one is successful.
-	 * Returns true if one action was successful, false if no actions were found or none succeeded.
+	 * <p>Mods must opt-in to this behavior by calling this method from {@link Block#onUse()}.
 	 *
 	 * @param target the component instance to which actions will be applied
 	 * @param stackGetter function to retrieve the item stack that is being used
@@ -192,6 +180,18 @@ public interface ComponentType<T> {
 	 * @return {@code true} if one action was successfully applied
 	 */
 	boolean applyActions(T target, Supplier<ItemStack> stackGetter, Consumer<ItemStack> stackSetter, ServerPlayerEntity player);
+
+	/**
+	 * Convenient version of {@link #applyActions(Object, Supplier, Consumer, ServerPlayerEntity)}
+	 * that applies to the item held by the player in main hand.
+	 *
+	 * @param target the component instance to which actions will be applied
+	 * @param player the player using an item on the component
+	 * @return {@code true} if one action was successfully applied
+	 */
+	default boolean applyActionsWithHeldItem(T target, ServerPlayerEntity player) {
+		return applyActions(target, () -> player.getMainHandStack(), s -> player.setStackInHand(Hand.MAIN_HAND, s), player);
+	}
 
 	/**
 	 * Applies registered item actions to a component instance of this type until one is successful.
