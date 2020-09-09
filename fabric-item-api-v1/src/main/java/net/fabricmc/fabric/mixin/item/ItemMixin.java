@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019, 2020 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,14 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import net.minecraft.item.Item;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
+import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 @Mixin(Item.class)
 abstract class ItemMixin implements ItemExtensions {
@@ -46,5 +48,12 @@ abstract class ItemMixin implements ItemExtensions {
 	@Override
 	public void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider) {
 		this.equipmentSlotProvider = equipmentSlotProvider;
+	}
+
+	@Inject(method = "isUsedOnRelease", at = @At("HEAD"), cancellable = true)
+	public void isUsedOnRelease(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
+		if (itemStack.getItem() instanceof CrossbowItem) {
+			cir.setReturnValue(true);
+		}
 	}
 }
