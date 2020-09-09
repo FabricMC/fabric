@@ -88,10 +88,10 @@ public interface ComponentAccess<T> {
 	 * @return {@code true} if a non-absent component was successfully obtained and the action was applied to it
 	 */
 	default boolean acceptIfPresent(/* @Nullable */ Direction side, /* @Nullable */ Identifier id, Consumer<T> action) {
-		final T svc = get(side, id);
+		final T access = get(side, id);
 
-		if (svc != componentType().absent()) {
-			action.accept(svc);
+		if (access != componentType().absent()) {
+			action.accept(access);
 			return true;
 		}
 
@@ -143,10 +143,10 @@ public interface ComponentAccess<T> {
 	 * @return Function result if a non-absent component was successfully obtained or {@code null} otherwise
 	 */
 	default <V> V applyIfPresent(/* @Nullable */ Direction side, /* @Nullable */ Identifier id, Function<T, V> function) {
-		final T svc = get(side, id);
+		final T access = get(side, id);
 
-		if (svc != componentType().absent()) {
-			return function.apply(svc);
+		if (access != componentType().absent()) {
+			return function.apply(access);
 		}
 
 		return null;

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.component.access;
 
-import com.google.common.base.Preconditions;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.util.Identifier;
@@ -24,7 +23,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.component.access.v1.ComponentType;
 import net.fabricmc.fabric.api.component.access.v1.ComponentTypeRegistry;
 
-public class ComponentTypeRegistryImpl implements ComponentTypeRegistry {
+public final class ComponentTypeRegistryImpl implements ComponentTypeRegistry {
 	private ComponentTypeRegistryImpl() { }
 
 	public static final ComponentTypeRegistry INSTANCE = new ComponentTypeRegistryImpl();
@@ -33,9 +32,12 @@ public class ComponentTypeRegistryImpl implements ComponentTypeRegistry {
 
 	@Override
 	public <T> ComponentType<T> createComponent(Identifier id, T absentValue) {
-		Preconditions.checkState(!TYPES_BY_ID.containsKey(id), "Component already registered with ID " + id.toString());
 		final ComponentType<T> result = new ComponentTypeImpl<>(absentValue);
-		TYPES_BY_ID.put(id, result);
+
+		if (TYPES_BY_ID.putIfAbsent(id, result) != null) {
+			throw new IllegalStateException("Component already registered with ID " + id.toString());
+		}
+
 		return result;
 	}
 

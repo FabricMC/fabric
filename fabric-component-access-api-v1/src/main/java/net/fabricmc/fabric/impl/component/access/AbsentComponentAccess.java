@@ -22,7 +22,7 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.component.access.v1.ComponentAccess;
 import net.fabricmc.fabric.api.component.access.v1.ComponentType;
 
-public class AbsentComponentAccess<T> implements ComponentAccess<T> {
+public final class AbsentComponentAccess<T> implements ComponentAccess<T> {
 	protected final ComponentType<T> componentType;
 
 	AbsentComponentAccess(ComponentType<T> componentType) {

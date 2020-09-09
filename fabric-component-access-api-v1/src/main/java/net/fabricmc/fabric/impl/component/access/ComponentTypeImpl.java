@@ -23,8 +23,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -77,7 +77,7 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 	}
 
 	@Override
-	public void registerProvider(Function<BlockComponentContext, T> mapping, Block... blocks) {
+	public void registerBlockProvider(Function<BlockComponentContext, T> mapping, Block... blocks) {
 		for (final Block b : blocks) {
 			blockMappings.put(b, mapping);
 		}
@@ -88,7 +88,7 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 	}
 
 	@Override
-	public void registerProvider(Function<EntityComponentContext, T> mapping, EntityType<?>... entities) {
+	public void registerEntityProvider(Function<EntityComponentContext, T> mapping, EntityType<?>... entities) {
 		for (final EntityType<?> e : entities) {
 			entityMappings.put(e, mapping);
 		}
@@ -99,14 +99,14 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 	}
 
 	@Override
-	public void registerProvider(Function<ItemComponentContext, T> mapping, Item... items) {
+	public void registerItemProvider(Function<ItemComponentContext, T> mapping, Item... items) {
 		for (final Item i : items) {
 			itemMappings.put(i, mapping);
 		}
 	}
 
 	@Override
-	public void registerAction(BiPredicate<ItemComponentContext, T> action, Item... items) {
+	public void registerItemAction(BiPredicate<ItemComponentContext, T> action, Item... items) {
 		for (final Item i : items) {
 			ObjectArrayList<BiPredicate<ItemComponentContext, T>> list = itemActions.get(i);
 
@@ -194,7 +194,7 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 	}
 
 	@Override
-	public void registerProvider(Function<EntityComponentContext, T> mapping, Predicate<EntityType<?>> predicate) {
+	public void registerEntityProvider(Function<EntityComponentContext, T> mapping, Predicate<EntityType<?>> predicate) {
 		if (deferedEntityMappings == null) {
 			deferedEntityMappings = new ObjectArrayList<>();
 		}
@@ -206,8 +206,8 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 		if (deferedEntityMappings != null) {
 			for (final Pair<Function<EntityComponentContext, T>, Predicate<EntityType<?>>> pair : deferedEntityMappings) {
 				Registry.ENTITY_TYPE.forEach(e -> {
-					if (pair.getRight().test(e)) {
-						registerProvider(pair.getLeft(), e);
+					if (pair.getSecond().test(e)) {
+						registerEntityProvider(pair.getFirst(), e);
 					}
 				});
 			}

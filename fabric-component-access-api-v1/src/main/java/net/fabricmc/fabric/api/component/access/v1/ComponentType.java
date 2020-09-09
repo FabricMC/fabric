@@ -220,7 +220,7 @@ public interface ComponentType<T> {
 	 * @param mapping function that derives a component instance from an access context
 	 * @param blocks one or more blocks for which the function will apply
 	 */
-	void registerProvider(Function<BlockComponentContext, T> mapping, Block... blocks);
+	void registerBlockProvider(Function<BlockComponentContext, T> mapping, Block... blocks);
 
 	/**
 	 * Causes the given blocks to provide component instances of this type
@@ -231,8 +231,8 @@ public interface ComponentType<T> {
 	 * @param blocks one or more blocks that will provide components in this way
 	 */
 	@SuppressWarnings("unchecked")
-	default void addProvider(Block... blocks) {
-		registerProvider(ctx -> (T) ctx.blockEntity(), blocks);
+	default void addBlockProvider(Block... blocks) {
+		registerBlockProvider(ctx -> (T) ctx.blockEntity(), blocks);
 	}
 
 	/**
@@ -246,10 +246,10 @@ public interface ComponentType<T> {
 	 * @param mapping mapping function that derives a component instance from an access context
 	 * @param entities one or more entities for which the function will apply
 	 */
-	void registerProvider(Function<EntityComponentContext, T> mapping, EntityType<?>... entities);
+	void registerEntityProvider(Function<EntityComponentContext, T> mapping, EntityType<?>... entities);
 
 	/**
-	 * Same as {@link #registerProvider(Function, EntityType...)} but matches all entities that
+	 * Same as {@link #registerEntityProvider(Function, EntityType...)} but matches all entities that
 	 * match the given predicate instead of providing specific entity types.  Use this to register
 	 * a provider for all entities that implement {@code LivingEntity}, for example.
 	 *
@@ -260,7 +260,7 @@ public interface ComponentType<T> {
 	 * @param mapping mapping function that derives a component instance from an access context
 	 * @param predicate Mapping will apply to all entity types that match this test
 	 */
-	void registerProvider(Function<EntityComponentContext, T> mapping, Predicate<EntityType<?>> predicate);
+	void registerEntityProvider(Function<EntityComponentContext, T> mapping, Predicate<EntityType<?>> predicate);
 
 	/**
 	 * Causes the given items to provide component instances of this type
@@ -271,7 +271,7 @@ public interface ComponentType<T> {
 	 * @param mapping mapping function that derives a component instance from an access context
 	 * @param items one or more items for which the function will apply
 	 */
-	void registerProvider(Function<ItemComponentContext, T> mapping, Item... items);
+	void registerItemProvider(Function<ItemComponentContext, T> mapping, Item... items);
 
 	/**
 	 * Adds a function that will be applied when one of the given items is used
@@ -282,5 +282,5 @@ public interface ComponentType<T> {
 	 * @param action Function to be applied, must return {@code true} if the action was successful and no more actions should be tried.
 	 * @param items One or more items to which this action will be applied
 	 */
-	void registerAction(BiPredicate<ItemComponentContext, T> action, Item... items);
+	void registerItemAction(BiPredicate<ItemComponentContext, T> action, Item... items);
 }
