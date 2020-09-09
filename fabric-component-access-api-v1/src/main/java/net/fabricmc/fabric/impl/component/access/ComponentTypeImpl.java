@@ -79,6 +79,11 @@ public final class ComponentTypeImpl<T> implements ComponentType<T> {
 		return type.cast(obj);
 	}
 
+	@Override
+	public Class<T> type() {
+		return type;
+	}
+
 	Function<BlockComponentContext, ?> getMapping(Block block) {
 		return blockMappings.getOrDefault(block, defaultBlockMapping);
 	}

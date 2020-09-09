@@ -60,6 +60,13 @@ public interface ComponentType<T> {
 	ComponentAccess<T> getAbsentAccess();
 
 	/**
+	 * The class associated with this component type. Exposed to support introspection.
+	 *
+	 * @return the class associated with this component type
+	 */
+	Class<T> type();
+
+	/**
 	 * Casts the input parameter to the component class associated with this component type.
 	 *
 	 * @param obj the object to be cast
