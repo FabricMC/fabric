@@ -19,9 +19,9 @@ package net.fabricmc.fabric.test.event.interaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.fabric.api.event.player.PlayerBlockPlaceEvents;
 import net.minecraft.block.Blocks;
 
+import net.fabricmc.fabric.api.event.player.PlayerBlockPlaceEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
 

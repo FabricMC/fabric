@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "fabric-events-interaction-v0-testmod",
   "name": "Fabric Events Interaction (v0) Test Mod",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
