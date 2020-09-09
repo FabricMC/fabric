@@ -29,7 +29,7 @@ public interface BlockComponentContext extends ComponentContext {
 	/**
 	 * Locates the block component within the world.
 	 *
-	 * @return Positing of the block component within the world.
+	 * @return Position of the block component within the world.
 	 */
 	BlockPos pos();
 
