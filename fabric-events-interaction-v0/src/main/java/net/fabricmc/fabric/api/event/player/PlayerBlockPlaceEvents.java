@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.api.event.player;
 
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public final class PlayerBlockPlaceEvents
-{
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
+
+public final class PlayerBlockPlaceEvents {
 	private PlayerBlockPlaceEvents() { }
 
 	/**

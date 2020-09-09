@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.event.interaction;
 
-import net.fabricmc.fabric.api.event.player.PlayerBlockPlaceEvents;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -24,12 +23,13 @@ import net.minecraft.block.BlockState;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.ActionResult;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockPlaceEvents;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.block.BlockAttackInteractionAware;
 import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
-import net.minecraft.world.World;
 
 public class InteractionEventsRouter implements ModInitializer {
 	@Override
@@ -62,8 +62,7 @@ public class InteractionEventsRouter implements ModInitializer {
 	 * This also stops clients executing this
 	 */
 	private static void onCanceled(World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity) {
-		if (player instanceof ServerPlayerEntity)
-		{
+		if (player instanceof ServerPlayerEntity) {
 			BlockPos cornerPos = pos.add(-1, -1, -1);
 
 			for (int x = 0; x < 3; x++) {
