@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018, 2019, 2020 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,5 +31,5 @@ public interface FabricBowHooks {
 	 * @param user              The user of the bow
 	 * @param remainingUseTicks The ticks remaining on the bow usage
 	 */
-	public void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks);
+	void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks);
 }

@@ -16,27 +16,26 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricCrossbowHooks;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.item.v1.FabricCrossbowHooks;
 
 public class FabricCrossbowTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Registers an item with a custom equipment slot.
-		Item testItem = new TestCrossbow(new FabricItemSettings().group(ItemGroup.COMBAT));
+		Item testItem = new TestCrossbow(new Item.Settings().group(ItemGroup.COMBAT));
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_crossbow"), testItem);
 	}
 
 	public static class TestCrossbow extends CrossbowItem implements FabricCrossbowHooks {
-
 		public TestCrossbow(Settings settings) {
 			super(settings);
 		}

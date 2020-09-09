@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018, 2019, 2020 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.fabricmc.fabric.api.item.v1.FabricCrossbowHooks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ArrowItem;
@@ -29,22 +29,21 @@ import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.item.v1.FabricCrossbowHooks;
+
 @Mixin(CrossbowItem.class)
 public class CrossbowItemMixin {
-
 	@Inject(method = "createArrow", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILSOFT)
-	private static void createArrow(World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow,
-			CallbackInfoReturnable<PersistentProjectileEntity> cir, ArrowItem arrowItem,
-			PersistentProjectileEntity persistentProjectileEntity) {
-
+	private static void createArrow(World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow, CallbackInfoReturnable<PersistentProjectileEntity> cir, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
 		if (!(crossbow.getItem() instanceof CrossbowItem)) {
 			return;
 		}
+
 		((FabricCrossbowHooks) crossbow.getItem()).createArrow(arrowItem, persistentProjectileEntity);
 	}
 
 	@Inject(method = "getSpeed", at = @At(value = "HEAD"))
-	private static void tickMovement(ItemStack itemStack, CallbackInfoReturnable<Float> cir) {
+	private static void getSpeed(ItemStack itemStack, CallbackInfoReturnable<Float> cir) {
 		if (itemStack.getItem() instanceof CrossbowItem) {
 			cir.setReturnValue(((FabricCrossbowHooks) itemStack.getItem()).getSpeed());
 		}

@@ -5,18 +5,18 @@
   "mixins": [
     "ItemMixin",
     "MobEntityMixin",
-	"CrossbowItemMixin",
-	"MobEntityCanUseRangedWeapon_Crossbow",
-	"MobEntityCanUseRangedWeapon_Bow",
-	"AbstractSkeletonEntityMixin",
-	"ProjectileUtilMixin",
-	"BowItemMixin"
+    "CrossbowItemMixin",
+    "MobEntityCanUseRangedWeapon_Crossbow",
+    "MobEntityCanUseRangedWeapon_Bow",
+    "AbstractSkeletonEntityMixin",
+    "ProjectileUtilMixin",
+    "BowItemMixin"
   ],
   "client": [
     "client.ItemStackMixin",
-	"client.HeldItemRendererMixin",
-	"client.PlayerEntityRendererMixin",
-	"client.SkeletonEntityModelMixin"
+    "client.HeldItemRendererMixin",
+    "client.PlayerEntityRendererMixin",
+    "client.SkeletonEntityModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

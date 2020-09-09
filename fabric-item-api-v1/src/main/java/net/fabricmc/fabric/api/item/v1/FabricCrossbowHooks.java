@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016, 2017, 2018, 2019, 2020 FabricMC
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,10 @@ import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ArrowItem;
 
 /**
- * An interface to implement on all custom crossbows
+ * An interface to implement on all custom crossbows.
  *
  */
 public interface FabricCrossbowHooks {
-
 	/**
 	 * Allows editing of the shot arrow from the crossbow. All default crossbow
 	 * properties are applied first.
@@ -35,10 +34,9 @@ public interface FabricCrossbowHooks {
 	void createArrow(ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity);
 
 	/**
-	 * Gets the speed of the crossbow projectile
+	 * Gets the speed of the crossbow projectile.
 	 *
 	 * @return The speed
 	 */
 	float getSpeed();
-
 }

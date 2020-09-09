@@ -23,18 +23,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
 	@Inject(method = "getTooltip", at = @At("RETURN"))
-	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext,
-			CallbackInfoReturnable<List<Text>> info) {
-		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext,
-				info.getReturnValue());
+	private void getTooltip(PlayerEntity entity, TooltipContext tooltipContext, CallbackInfoReturnable<List<Text>> info) {
+		ItemTooltipCallback.EVENT.invoker().getTooltip((ItemStack) (Object) this, tooltipContext, info.getReturnValue());
 	}
 }

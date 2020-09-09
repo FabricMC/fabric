@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricBowHooks;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.Item;
@@ -27,24 +24,24 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.item.v1.FabricBowHooks;
+
 public class FabricBowTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Registers an item with a custom equipment slot.
-		Item testItem = new TestBow(new FabricItemSettings().group(ItemGroup.COMBAT));
+		Item testItem = new TestBow(new Item.Settings().group(ItemGroup.COMBAT));
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_bow"), testItem);
 	}
 
 	public static class TestBow extends BowItem implements FabricBowHooks {
-
 		public TestBow(Settings settings) {
 			super(settings);
 		}
 
 		@Override
 		public void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks) {
-
 		}
-
 	}
 }
