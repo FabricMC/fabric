@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.component.access;
 
 import java.util.function.Function;
 
-import org.apache.commons.lang3.ObjectUtils;
-
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -40,7 +38,8 @@ abstract class AbstractComponentContextImpl implements ComponentContext, Compone
 	public final Object get(Direction side, Identifier id) {
 		this.side = side;
 		this.id = id;
-		return ObjectUtils.defaultIfNull(mapping.apply(this), componentType.absent());
+		final Object result = mapping.apply(this);
+		return result == null ? componentType.absent() : result;
 	}
 
 	@Override
