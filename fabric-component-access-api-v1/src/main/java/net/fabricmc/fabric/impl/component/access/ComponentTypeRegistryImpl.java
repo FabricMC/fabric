@@ -21,8 +21,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentType;
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentTypeRegistry;
+import net.fabricmc.fabric.api.component.access.v1.ComponentType;
+import net.fabricmc.fabric.api.component.access.v1.ComponentTypeRegistry;
 
 public class ComponentTypeRegistryImpl implements ComponentTypeRegistry {
 	private ComponentTypeRegistryImpl() { }

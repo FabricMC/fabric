@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.component.accessor.v1;
+package net.fabricmc.fabric.api.component.access.v1;
 
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;

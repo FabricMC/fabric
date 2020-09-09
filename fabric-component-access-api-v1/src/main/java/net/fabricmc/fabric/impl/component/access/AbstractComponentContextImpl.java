@@ -24,9 +24,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentAccess;
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentContext;
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentType;
+import net.fabricmc.fabric.api.component.access.v1.ComponentAccess;
+import net.fabricmc.fabric.api.component.access.v1.ComponentContext;
+import net.fabricmc.fabric.api.component.access.v1.ComponentType;
 
 @SuppressWarnings("rawtypes")
 abstract class AbstractComponentContextImpl implements ComponentContext, ComponentAccess {

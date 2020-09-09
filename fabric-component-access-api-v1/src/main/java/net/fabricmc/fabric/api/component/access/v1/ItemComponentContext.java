@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.component.accessor.v1;
+package net.fabricmc.fabric.api.component.access.v1;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -24,7 +24,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 /**
  * Sub-type of {@code ComponentContext} for item-based providers,
- * carries information needed for provider to retrieve the component
+ * carries information needed for provider to retrieve the component.
  */
 public interface ItemComponentContext extends ComponentContext {
 	/**

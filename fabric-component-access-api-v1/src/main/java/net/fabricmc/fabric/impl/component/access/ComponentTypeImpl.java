@@ -38,13 +38,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.component.accessor.v1.BlockComponentContext;
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentAccess;
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentType;
-import net.fabricmc.fabric.api.component.accessor.v1.EntityComponentContext;
-import net.fabricmc.fabric.api.component.accessor.v1.ItemComponentContext;
+import net.fabricmc.fabric.api.component.access.v1.BlockComponentContext;
+import net.fabricmc.fabric.api.component.access.v1.ComponentAccess;
+import net.fabricmc.fabric.api.component.access.v1.ComponentType;
+import net.fabricmc.fabric.api.component.access.v1.EntityComponentContext;
+import net.fabricmc.fabric.api.component.access.v1.ItemComponentContext;
 
-public final class ComponentTypeImpl<T> implements ComponentType<T>{
+public final class ComponentTypeImpl<T> implements ComponentType<T> {
 	private final T absent;
 	private final Function<BlockComponentContext, ?> defaultBlockMapping;
 	private final Function<ItemComponentContext, ?> defaultItemMapping;
@@ -64,7 +64,7 @@ public final class ComponentTypeImpl<T> implements ComponentType<T>{
 		defaultBlockMapping = b -> absent;
 		defaultItemMapping = i -> absent;
 		defaultEntityMapping = e -> absent;
-		absentComponentAccess = new AbsentComponentAccess<T> (this);
+		absentComponentAccess = new AbsentComponentAccess<> (this);
 	}
 
 	@Override

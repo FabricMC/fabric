@@ -23,7 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.component.accessor.v1.ItemComponentContext;
+import net.fabricmc.fabric.api.component.access.v1.ItemComponentContext;
 
 @SuppressWarnings("rawtypes")
 public final class ItemComponentContextImpl extends AbstractComponentContextImpl implements ItemComponentContext {

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.component.access;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.component.accessor.v1.EntityComponentContext;
+import net.fabricmc.fabric.api.component.access.v1.EntityComponentContext;
 
 @SuppressWarnings("rawtypes")
 public final class EntityComponentContextImpl extends AbstractComponentContextImpl implements EntityComponentContext {

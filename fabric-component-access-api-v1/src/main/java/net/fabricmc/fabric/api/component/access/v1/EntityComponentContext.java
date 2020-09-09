@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.component.accessor.v1;
+package net.fabricmc.fabric.api.component.access.v1;
 
 import net.minecraft.entity.Entity;
 
@@ -24,7 +24,7 @@ import net.minecraft.entity.Entity;
  */
 public interface EntityComponentContext extends ComponentContext {
 	/**
-	 * {@code Entity} instance that may contain component(s)
+	 * {@code Entity} instance that may contain component(s).
 	 *
 	 * @return {@code Entity} instance that may contain component(s)
 	 */

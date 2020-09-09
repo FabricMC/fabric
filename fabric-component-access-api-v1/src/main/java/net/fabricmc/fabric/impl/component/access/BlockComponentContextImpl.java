@@ -22,7 +22,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.component.accessor.v1.BlockComponentContext;
+import net.fabricmc.fabric.api.component.access.v1.BlockComponentContext;
 
 @SuppressWarnings("rawtypes")
 public final class BlockComponentContextImpl extends AbstractComponentContextImpl implements BlockComponentContext {

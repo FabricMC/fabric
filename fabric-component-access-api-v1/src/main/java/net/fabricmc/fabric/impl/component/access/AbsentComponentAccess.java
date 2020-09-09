@@ -19,8 +19,8 @@ package net.fabricmc.fabric.impl.component.access;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentAccess;
-import net.fabricmc.fabric.api.component.accessor.v1.ComponentType;
+import net.fabricmc.fabric.api.component.access.v1.ComponentAccess;
+import net.fabricmc.fabric.api.component.access.v1.ComponentType;
 
 public class AbsentComponentAccess<T> implements ComponentAccess<T> {
 	protected final ComponentType<T> componentType;
