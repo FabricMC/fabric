@@ -142,6 +142,7 @@ public interface ComponentAccess<T> {
 	 * @param function Function to be applied to a non-absent component
 	 * @return Function result if a non-absent component was successfully obtained or {@code null} otherwise
 	 */
+	/* @Nullable */
 	default <V> V applyIfPresent(/* @Nullable */ Direction side, /* @Nullable */ Identifier id, Function<T, V> function) {
 		final T access = get(side, id);
 
@@ -160,6 +161,7 @@ public interface ComponentAccess<T> {
 	 * @param function Function to be applied to a non-absent component
 	 * @return Function result if a non-absent component was successfully obtained or {@code null} otherwise
 	 */
+	/* @Nullable */
 	default <V> V applyIfPresent(/* @Nullable */ Direction side, Function<T, V> function) {
 		return applyIfPresent(side, null, function);
 	}
@@ -172,6 +174,7 @@ public interface ComponentAccess<T> {
 	 * @param function Function to be applied to a non-absent component
 	 * @return Function result if a non-absent component was successfully obtained or {@code null} otherwise
 	 */
+	/* @Nullable */
 	default <V> V applyIfPresent(/* @Nullable */ Identifier id, Function<T, V> function) {
 		return applyIfPresent(null, id, function);
 	}
@@ -183,6 +186,7 @@ public interface ComponentAccess<T> {
 	 * @param function Function to be applied to a non-absent component
 	 * @return Function result if a non-absent component was successfully obtained or {@code null} otherwise
 	 */
+	/* @Nullable */
 	default <V> V applyIfPresent(Function<T, V> function) {
 		return applyIfPresent(null, null, function);
 	}
