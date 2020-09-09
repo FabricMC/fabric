@@ -31,7 +31,11 @@ import net.minecraft.item.Items;
 public class HeldItemRendererMixin {
 	@Redirect(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item renderFirstPersonItem(ItemStack itemStack) {
-		return itemStack.getItem() instanceof CrossbowItem ? Items.CROSSBOW : itemStack.getItem();
+		if (itemstack.getItem() instanceof CrossbowItem) {
+			return Items.CROSSBOW; // Return true to invoke crossbow rendering path 
+		}
+
+		return itemStack.getItem();
 	}
 
 	@Redirect(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
