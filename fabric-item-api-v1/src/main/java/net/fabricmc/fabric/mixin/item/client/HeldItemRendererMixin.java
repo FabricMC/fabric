@@ -36,6 +36,14 @@ public class HeldItemRendererMixin {
 
 	@Redirect(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item renderItem(ItemStack itemStack) {
-		return itemStack.getItem() instanceof CrossbowItem ? Items.CROSSBOW : itemStack.getItem() instanceof BowItem ? Items.BOW : itemStack.getItem();
+		if (itemStack.getItem() instanceof CrossbowItem) {
+			return Items.CROSSBOW; // Return crossbow for rendering
+		}
+
+		if (itemStack.getItem() instanceof BowItem) {
+			return Items.BOW; // Return bow for rendering
+		}
+
+		return itemStack.getItem();
 	}
 }

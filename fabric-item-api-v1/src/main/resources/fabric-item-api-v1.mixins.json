@@ -6,8 +6,8 @@
     "ItemMixin",
     "MobEntityMixin",
     "CrossbowItemMixin",
-    "MobEntityCanUseRangedWeapon_Crossbow",
-    "MobEntityCanUseRangedWeapon_Bow",
+    "EntityCrossbowUseMixin",
+    "EntityBowUseMixin",
     "AbstractSkeletonEntityMixin",
     "ProjectileUtilMixin",
     "BowItemMixin"

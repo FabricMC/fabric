@@ -11,8 +11,8 @@
   "entrypoints": {
     "main": [
       "net.fabricmc.fabric.test.item.FabricItemSettingsTests",
-	  "net.fabricmc.fabric.test.item.FabricCrossbowTests",
-	  "net.fabricmc.fabric.test.item.FabricBowTests"
+      "net.fabricmc.fabric.test.item.FabricCrossbowTests",
+      "net.fabricmc.fabric.test.item.FabricBowTests"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"

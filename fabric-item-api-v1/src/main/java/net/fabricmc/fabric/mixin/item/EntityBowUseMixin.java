@@ -26,7 +26,7 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.RangedWeaponItem;
 
 @Mixin({ AbstractSkeletonEntity.class })
-public class MobEntityCanUseRangedWeapon_Bow {
+public class EntityBowUseMixin {
 	@Inject(method = "canUseRangedWeapon", at = @At("HEAD"))
 	public void canUseRangedWeapon(RangedWeaponItem weapon, CallbackInfoReturnable<Boolean> cir) {
 		if (weapon instanceof BowItem) {
