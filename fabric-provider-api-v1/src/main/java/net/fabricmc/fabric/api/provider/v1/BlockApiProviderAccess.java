@@ -36,6 +36,7 @@ import net.fabricmc.fabric.impl.provider.BlockApiProviderAccessImpl;
  *
  * @param <P> Identifies the API provider type
  * @param <A> Identifies the API type
+ * @see ApiProviderAccess
  */
 public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {
 	/**

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.provider.v1;
 
+import net.fabricmc.fabric.impl.provider.ApiProviderAccessRegistry;
+
 /**
  * Describes and provides access to component instances that may be retrieved
  * for blocks, items or entities.
@@ -28,34 +30,36 @@ package net.fabricmc.fabric.api.provider.v1;
  */
 public interface ApiProviderAccess<P extends ApiProvider<P, A>, A> {
 	/**
-	 * Component value that will be returned when  an API is not present or not available.
+	 * API instance to be returned when the API is not present or not available.
 	 *
-	 * @return value to be returned when an API is not present or not available.
+	 * @return instance to be returned when the API is not present or not available.
 	 */
 	A absentApi();
 
 	/**
-	 * An automatically constructed, immutable and non-allocating {@code ComponentAccess} instance
-	 * that will always return the {@link #absentApi()} value.  Useful as default return value for access requests.
+	 * An immutable and non-allocating {@link ApiProvider} instance
+	 * that always returns the {@link #absentApi()} value.  Provided by
+	 * the provider implementation and used as return value for access
+	 * when no provider is available.
 	 *
-	 * @return an immutable, non-allocating {@code ComponentAccess} instance that will always return {@link #absentApi()}
+	 * @return an immutable, non-allocating {@code ApiProvider} instance that always returns {@link #absentApi()}
 	 */
 	P absentProvider();
 
 	/**
-	 * The class associated with this component type. Exposed to support introspection.
+	 * The class for instances of the provided API. Exposed to support introspection.
 	 *
-	 * @return the class associated with this component type
+	 * @return the class for instances of the provided API
 	 */
 	Class<A> apiType();
 
 	/**
-	 * Casts the input parameter to the component class associated with this component type.
+	 * Casts the input parameter to the class associated with the provided API.
 	 *
 	 * @param obj the object to be cast
-	 * @return the input object cast to the component type
+	 * @return the input object cast to the API type
 	 *
-	 * @throws ClassCastException if the input object cannot be cast to the component class
+	 * @throws ClassCastException if the input object cannot be cast to the API class
 	 */
 	A castToApi(Object obj);
 }

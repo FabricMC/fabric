@@ -30,6 +30,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProvider;
 import net.fabricmc.fabric.api.provider.v1.BlockApiProviderAccess;
+import net.fabricmc.fabric.mixin.provider.BlockEntityTypeAccessor;
 
 public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends AbstractApiProviderAccess<P, A> implements BlockApiProviderAccess<P, A> {
 	private final Reference2ReferenceOpenHashMap<Block, BlockProviderFunction<P, A>> blockMappings = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
@@ -51,7 +52,11 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 	@Override
 	public void registerProviderForBlockEntity(BlockEntityProviderFunction<P, A> mapping, BlockEntityType<?>... blockEntityTypes) {
 		for (final BlockEntityType<?> bet : blockEntityTypes) {
-			if (blockEntityMappings.putIfAbsent(bet, mapping) != null) {
+			if (blockEntityMappings.putIfAbsent(bet, mapping) == null) {
+				// register provider access for associated blocks to route to BE provider when retrieved through block state
+				final BlockProviderFunction<P, A> blockMapping = (world, pos, blockState) -> mapping.getProvider(world.getBlockEntity(pos));
+				((BlockEntityTypeAccessor) bet).getBlocks().forEach(block -> registerProviderForBlock(blockMapping, block));
+			} else {
 				LOGGER.warn("[Fabric] Encountered duplicate API Provider registration for block entity type " + Registry.BLOCK_ENTITY_TYPE.getId(bet));
 			}
 		}

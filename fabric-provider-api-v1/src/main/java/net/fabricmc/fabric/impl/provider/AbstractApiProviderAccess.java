@@ -23,9 +23,9 @@ import net.fabricmc.fabric.api.provider.v1.ApiProvider;
 import net.fabricmc.fabric.api.provider.v1.ApiProviderAccess;
 
 abstract class AbstractApiProviderAccess<P extends ApiProvider<P, A>, A> implements ApiProviderAccess<P, A> {
-	private final A absentApi;
-	private final P absentProvider;
-	private final Class<A> apiType;
+	final A absentApi;
+	final P absentProvider;
+	final Class<A> apiType;
 
 	AbstractApiProviderAccess(Class<A> apiType, P absentProvider) {
 		absentApi = absentProvider.getApi();

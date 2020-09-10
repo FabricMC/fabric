@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.provider.v1.ApiProvider;
 import net.fabricmc.fabric.api.provider.v1.EntityApiProviderAccess;
 
 public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends AbstractApiProviderAccess<P, A> implements EntityApiProviderAccess<P, A> {
-	protected final Reference2ReferenceOpenHashMap<EntityType<?>, Function<Entity, P>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
+	private final Reference2ReferenceOpenHashMap<EntityType<?>, Function<Entity, P>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
 
 	EntityApiProviderAccessImpl(Class<A> apiType, P absentProvider) {
 		super(apiType, absentProvider);
