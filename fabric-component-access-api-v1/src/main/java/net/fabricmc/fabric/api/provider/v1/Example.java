@@ -24,9 +24,9 @@ public class Example {
 
 	static final BoopProvider HAVE_A_BOOP_MAYBE = (side, player) -> (side == Direction.UP && player.isSneaking()) ? () -> System.out.println("Boop! Side = " + side.toString()) : NO_BOOP_FOR_YOU;
 
-	public static final ApiProviderAccess<BoopProvider, Boop> BOOP_ACCESS = ApiProviderAccessRegistry.INSTANCE.createAccess(new Identifier("boop:boop"), Boop.class, (side, player) -> NO_BOOP_FOR_YOU);
+	public static final BlockApiProviderAccess<BoopProvider, Boop> BOOP_ACCESS = BlockApiProviderAccess.registerAcess(new Identifier("boop:boop"), Boop.class, (side, player) -> NO_BOOP_FOR_YOU);
 
 	static {
-		BOOP_ACCESS.registerBlockProvider((world, pos, blockState) -> HAVE_A_BOOP_MAYBE, Blocks.COBBLESTONE);
+		BOOP_ACCESS.registerProviderForBlock((world, pos, blockState) -> HAVE_A_BOOP_MAYBE, Blocks.COBBLESTONE);
 	}
 }
