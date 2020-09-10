@@ -15,7 +15,7 @@ jobs:
       - uses: eskatos/gradle-command-action@v1.3.2
         with:
           gradle-version: wrapper
-          arguments: check build publishToMavenLocal --stacktrace
+          arguments: check build publishToMavenLocal --stacktrace --parallel
           dependencies-cache-enabled: false
           configuration-cache-enabled: false
       - uses: actions/upload-artifact@v2
