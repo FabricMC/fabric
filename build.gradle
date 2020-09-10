@@ -9,7 +9,7 @@ plugins {
 	id 'eclipse'
 	id 'idea'
 	id 'maven-publish'
-	id 'fabric-loom' version '0.4.28' apply false
+	id 'fabric-loom' version '0.5.25' apply false
 	id 'net.minecrell.licenser' version '0.4.1'
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id 'com.matthewprenger.cursegradle' version "1.4.0"
@@ -18,9 +18,9 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.20.1"
-	static def mcVersion = "1.16.2"
-	static def yarnVersion = "+build.46"
+	static def baseVersion = "0.20.2"
+	static def mcVersion = "1.16.3"
+	static def yarnVersion = "+build.1"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
@@ -78,6 +78,10 @@ allprojects {
 
 	configurations {
 		dev
+	}
+
+	loom {
+		shareCaches = true
 	}
 
 	repositories {
@@ -269,7 +273,7 @@ curseforge {
 		id = '306612'
 		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
 		releaseType = 'release'
-		addGameVersion '1.16.2'
+		addGameVersion '1.16.3'
 		addGameVersion 'Fabric'
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
