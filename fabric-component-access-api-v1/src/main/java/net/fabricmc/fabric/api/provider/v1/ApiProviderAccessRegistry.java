@@ -14,42 +14,41 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.component.access.v1;
+package net.fabricmc.fabric.api.provider.v1;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.component.access.ComponentTypeRegistryImpl;
+import net.fabricmc.fabric.impl.provider.ApiProviderAccessRegistryImpl;
 
 /**
- * Creates and retrieves {@code ComponentType} instances.
- *
- * <p>Because component types are simple and server-side-only this is currently
- * implemented as a simple ID:instance map and not an actual {@code Registry}.
+ * Creates and retrieves {@code ApiProviderAccess} instances.
  */
-public interface ComponentTypeRegistry {
+public interface ApiProviderAccessRegistry {
 	/**
 	 * Creates and returns a new component type with the given id and absent value.
 	 *
-	 * @param <T> Type parameter identifying the {@code Class} of the actual component instance
+	 * @param <P> Identifies the API provider type
+	 * @param <A> Identifies the API type
 	 * @param id Name-spaced id for this component
 	 * @param absentValue Component value to be returned when a component is not present
 	 * @return A new {@code ComponentType} instance
 	 *
 	 * @throws IllegalStateException if the given id is already in use
 	 */
-	<T> ComponentType<T> createComponent(Identifier id, Class<T> type, T absentValue);
+	<P extends ApiProvider<P, A>, A> ApiProviderAccess<P, A> createAccess(Identifier id, Class<A> type, P absentProvider);
 
 	/**
 	 * Returns the {@code ComponentType} instance associated with the given id, or {@code null} if not found.
 	 *
-	 * @param <T> Type parameter identifying the {@code Class} of the actual component instance
+	 * @param <P> Identifies the API provider type
+	 * @param <A> Identifies the API type
 	 * @param id Name-spaced id for the component to be found
 	 * @return the {@code ComponentType} instance associated with the given id
 	 */
-	<T> ComponentType<T> getComponent(Identifier id);
+	ApiProviderAccess<?, ?> getAccess(Identifier id);
 
 	/**
 	 * The singleton ComponentTyoeRegistry instance.
 	 */
-	ComponentTypeRegistry INSTANCE = ComponentTypeRegistryImpl.INSTANCE;
+	ApiProviderAccessRegistry INSTANCE = ApiProviderAccessRegistryImpl.INSTANCE;
 }

@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.component.access.v1;
+package net.fabricmc.fabric.api.provider.v1;
 
-import net.minecraft.entity.Entity;
+import net.minecraft.block.entity.BlockEntity;
 
 /**
- * Sub-type of {@code ComponentContext} for entity-based providers,
- * carries information needed for provider to retrieve the component.
+ * @param <P> Identifies the API provider type
+ * @param <A> Identifies the API type
  */
-public interface EntityComponentContext extends ComponentContext {
-	/**
-	 * {@code Entity} instance that may contain component(s).
-	 *
-	 * @return {@code Entity} instance that may contain component(s)
-	 */
-	Entity entity();
+@FunctionalInterface
+public interface BlockEntityProviderFunction <P extends ApiProvider<P, A>, A> {
+	P getProvider(BlockEntity blockEntity);
 }
