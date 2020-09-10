@@ -21,27 +21,14 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Blocks;
 
-import net.fabricmc.fabric.api.event.player.PlayerBlockPlaceEvents;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockPlaceEvents;
 
-public class PlayerBreakAndPlaceBlockTests implements ModInitializer {
+public class PlayerPlaceBlockTests implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("InteractionEventsTest");
 
 	@Override
 	public void onInitialize() {
-		PlayerBlockBreakEvents.BEFORE.register(((world, player, pos, state, entity) -> {
-			return state.getBlock() != Blocks.BEDROCK;
-		}));
-
-		PlayerBlockBreakEvents.CANCELED.register(((world, player, pos, state, entity) -> {
-			LOGGER.info("Block break event canceled at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-		}));
-
-		PlayerBlockBreakEvents.AFTER.register(((world, player, pos, state, entity) -> {
-			LOGGER.info("Block broken at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-		}));
-
 		PlayerBlockPlaceEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
 			LOGGER.info("Block about to be placed at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 			return state.getBlock() != Blocks.GRAVEL;
