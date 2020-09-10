@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.provider;
 
 import java.util.function.Function;
 
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -26,9 +29,12 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.provider.v1.ApiProvider;
 import net.fabricmc.fabric.api.provider.v1.ItemApiProviderAccess;
 
-public final class ItemApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends SimpleApiProviderAccess<P, A, Item, ItemStack> implements ItemApiProviderAccess<P, A> {
+public final class ItemApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends AbstractApiProviderAccess<P, A> implements ItemApiProviderAccess<P, A> {
+	private final Reference2ReferenceOpenHashMap<Item, Function<ItemStack, P>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
+
 	private ItemApiProviderAccessImpl(Class<A> apiType, P absentProvider) {
 		super(apiType, absentProvider);
+		map.defaultReturnValue(e -> absentProvider);
 	}
 
 	@Override

@@ -18,6 +18,9 @@ package net.fabricmc.fabric.impl.provider;
 
 import java.util.function.Function;
 
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
@@ -26,9 +29,12 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.provider.v1.ApiProvider;
 import net.fabricmc.fabric.api.provider.v1.EntityApiProviderAccess;
 
-public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends SimpleApiProviderAccess<P, A, EntityType<?>, Entity> implements EntityApiProviderAccess<P, A> {
+public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends AbstractApiProviderAccess<P, A> implements EntityApiProviderAccess<P, A> {
+	protected final Reference2ReferenceOpenHashMap<EntityType<?>, Function<Entity, P>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
+
 	EntityApiProviderAccessImpl(Class<A> apiType, P absentProvider) {
 		super(apiType, absentProvider);
+		map.defaultReturnValue(e -> absentProvider);
 	}
 
 	@Override

@@ -50,13 +50,13 @@ public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends
 	void registerProviderForEntity(Function<Entity, P> mapping, EntityType<?> entityType);
 
 	/**
-	 * Retrieves a {@code ComponentAccess} to access components of this type
-	 * that may be present in the given entity.
+	 * Retrieves an {@code ApiProvider} for an API associated with the given entity,
+	 * or the {@link #absentProvider()} if no provider is accessible.
 	 *
-	 * <p>If the API consumer somehow knows the entity implements the
-	 * provider interface directly, casting the entity instance will always be
-	 * faster. This is useful when that is unknown to the consumer, or when
-	 * the Entity exposes the target API as a member.
+	 * <p>This is useful when that is unknown to the consumer, or when
+	 * the Entity exposes the target API as a member. If the API consumer
+	 * somehow knows the entity implements the provider interface directly,
+	 * casting the entity instance will always be faster.
 	 *
 	 * @param entity entity to provide component access if available
 	 * @return a {@code ComponentAccess} to access components of this type

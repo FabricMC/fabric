@@ -22,7 +22,9 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProviderAccess;
 
-public class ApiProviderAccessRegistry<T extends ApiProviderAccess<?, ?>> {
+public final class ApiProviderAccessRegistry<T extends ApiProviderAccess<?, ?>> {
+	ApiProviderAccessRegistry () {}
+
 	private final Object2ObjectOpenHashMap<Identifier, T> MAP = new Object2ObjectOpenHashMap<>();
 
 	public void register(Identifier id, T access) {
