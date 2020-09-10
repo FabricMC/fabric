@@ -44,7 +44,7 @@ public class PlayerBreakAndPlaceBlockTests implements ModInitializer {
 
 		PlayerBlockPlaceEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
 			LOGGER.info("Block about to be placed at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
-			return state.getBlock() != Blocks.STONE;
+			return state.getBlock() != Blocks.GRAVEL;
 		}));
 
 		PlayerBlockPlaceEvents.CANCELED.register(((world, player, pos, state, entity) -> {
