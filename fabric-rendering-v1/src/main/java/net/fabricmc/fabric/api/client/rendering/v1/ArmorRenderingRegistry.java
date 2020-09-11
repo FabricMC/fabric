@@ -35,7 +35,8 @@ import net.fabricmc.fabric.impl.client.rendering.ArmorRenderingRegistryImpl;
  * A class for registering custom armor models and textures for {@link Item}, to be provided by a {@link ModelProvider} or {@link TextureProvider}.
  *
  * <p>This can be used to replace existing vanilla armor models and textures conditionally, however each {@link Item}
- * instance can only allow one {@link ModelProvider} or {@link TextureProvider} respectively.</p>
+ * instance can only allow one {@link ModelProvider} or {@link TextureProvider} respectively, causing potential conflicts
+ * with other mods if you replace the model or texture for vanilla items. Consider using a separate item instead.</p>
  *
  * <p>A custom model would probably also require a custom texture to go along it, the model will use the vanilla texture if it is undefined.</p>
  *
