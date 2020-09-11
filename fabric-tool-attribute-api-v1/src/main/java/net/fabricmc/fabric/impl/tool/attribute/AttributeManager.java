@@ -23,12 +23,15 @@ import java.util.Set;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 
+@ApiStatus.Internal
 public final class AttributeManager {
-	private AttributeManager() { }
+	private AttributeManager() {
+	}
 
 	/**
 	 * Merge two multimaps of EntityAttributeModifiers, combining their modifiers to prevent duplicate entries in a tooltip.

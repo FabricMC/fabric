@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -38,6 +40,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  * <p>Only applicable to items that are not a subclass of {@link DynamicAttributeTool}</p>
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
  */
+@ApiStatus.Internal
 public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	private final Item vanillaItem = Items.SHEARS;
 

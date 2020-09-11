@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -33,6 +35,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  *
  * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
  */
+@ApiStatus.Internal
 public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {

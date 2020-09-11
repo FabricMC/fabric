@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -37,6 +39,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  *
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
  */
+@ApiStatus.Internal
 public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	private final List<Item> vanillaItems;
 

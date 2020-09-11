@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "fabric-tool-attribute-api-v1-testmod:test_stone_level_tater",
+    "fabric-tool-attribute-api-v1-testmod:test_stone_dynamic_level_tater",
+    "fabric-tool-attribute-api-v1-testmod:test_diamond_level_tater",
+    "fabric-tool-attribute-api-v1-testmod:test_diamond_dynamic_level_tater"
+  ]
+}
