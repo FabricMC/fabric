@@ -72,7 +72,7 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 		return blockEntityMappings.get(blockEntity.getType()).getProvider(blockEntity);
 	}
 
-	private static final ApiProviderAccessRegistry<BlockApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<> ();
+	private static final ApiProviderAccessRegistry<BlockApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<>();
 
 	public static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
 		final BlockApiProviderAccess<P, A> result = new BlockApiProviderAccessImpl<> (apiType, absentProvider);
