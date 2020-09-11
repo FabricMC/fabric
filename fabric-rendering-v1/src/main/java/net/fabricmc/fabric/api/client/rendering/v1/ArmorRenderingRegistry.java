@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import java.util.Arrays;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
@@ -50,7 +53,7 @@ public final class ArmorRenderingRegistry {
 	 * @param provider the provider for the model
 	 * @param items    the items to be registered for
 	 */
-	public static void registerModel(/* @Nullable */ ModelProvider provider, Item... items) {
+	public static void registerModel(@Nullable ModelProvider provider, Item... items) {
 		registerModel(provider, Arrays.asList(items));
 	}
 
@@ -60,7 +63,7 @@ public final class ArmorRenderingRegistry {
 	 * @param provider the provider for the model
 	 * @param items    the items to be registered for
 	 */
-	public static void registerModel(/* @Nullable */ ModelProvider provider, Iterable<Item> items) {
+	public static void registerModel(@Nullable ModelProvider provider, Iterable<Item> items) {
 		ArmorRenderingRegistryImpl.registerModel(provider, items);
 	}
 
@@ -70,7 +73,7 @@ public final class ArmorRenderingRegistry {
 	 * @param provider the provider for the texture
 	 * @param items    the items to be registered for
 	 */
-	public static void registerTexture(/* @Nullable */ TextureProvider provider, Item... items) {
+	public static void registerTexture(@Nullable TextureProvider provider, Item... items) {
 		registerTexture(provider, Arrays.asList(items));
 	}
 
@@ -80,7 +83,7 @@ public final class ArmorRenderingRegistry {
 	 * @param provider the provider for the texture
 	 * @param items    the items to be registered for
 	 */
-	public static void registerTexture(/* @Nullable */ TextureProvider provider, Iterable<Item> items) {
+	public static void registerTexture(@Nullable TextureProvider provider, Iterable<Item> items) {
 		ArmorRenderingRegistryImpl.registerTexture(provider, items);
 	}
 
@@ -123,6 +126,7 @@ public final class ArmorRenderingRegistry {
 		 * @param defaultModel The default vanilla armor model
 		 * @return The model of the armor piece. Should never be null.
 		 */
+		@NotNull
 		BipedEntityModel<LivingEntity> getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, BipedEntityModel<LivingEntity> defaultModel);
 	}
 
@@ -138,7 +142,7 @@ public final class ArmorRenderingRegistry {
 		 * @param defaultTexture The default vanilla texture identifier
 		 * @return the custom armor texture identifier, return null to use the vanilla ones. Defaulted to the item's registry id.
 		 */
-		/* @Nullable */
+		@Nullable
 		String getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, String defaultTexture);
 	}
 }

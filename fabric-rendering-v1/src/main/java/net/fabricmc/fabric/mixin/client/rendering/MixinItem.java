@@ -22,7 +22,6 @@ import org.spongepowered.asm.mixin.Unique;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderingRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.ArmorTextureRegistry;
 import net.fabricmc.fabric.impl.client.rendering.ArmorProviderExtensions;
 
 @Mixin(Item.class)
