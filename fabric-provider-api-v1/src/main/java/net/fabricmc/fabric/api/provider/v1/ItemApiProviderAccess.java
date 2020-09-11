@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.provider.v1;
 
 import java.util.function.Function;
 
-import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
@@ -37,7 +37,7 @@ public interface ItemApiProviderAccess<P extends ApiProvider<P, A>, A> extends A
 	 * @param mapping function that derives a provider instance from an item stack
 	 * @param items one or more types for which the mapping will apply
 	 */
-	void registerProviderForItem(Function<ItemStack, P> mapping, Item... items);
+	void registerProviderForItem(Function<ItemStack, P> mapping, ItemConvertible... items);
 
 	/**
 	 * Retrieves an {@code ApiProvider} used to obtain an API instance if present.

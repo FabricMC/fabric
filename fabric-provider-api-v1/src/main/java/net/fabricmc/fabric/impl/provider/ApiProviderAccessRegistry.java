@@ -30,7 +30,7 @@ public final class ApiProviderAccessRegistry<T extends ApiProviderAccess<?, ?>> 
 
 	public void register(Identifier id, T access) {
 		if (MAP.putIfAbsent(id, access) != null) {
-			AbstractApiProviderAccess.LOGGER.info("[Fabric] Encountered duplicate API Provider access registeration with ID " + id.toString());
+			AbstractApiProviderAccess.LOGGER.info("Encountered duplicate API Provider access registeration with ID " + id.toString());
 		}
 	}
 

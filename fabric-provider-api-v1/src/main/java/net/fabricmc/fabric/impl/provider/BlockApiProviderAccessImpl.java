@@ -44,7 +44,7 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 	public void registerProviderForBlock(BlockProviderFunction<P, A> mapping, Block... blocks) {
 		for (final Block b : blocks) {
 			if (blockMappings.putIfAbsent(b, mapping) != null) {
-				LOGGER.warn("[Fabric] Encountered duplicate API Provider registration for block " + Registry.BLOCK.getId(b));
+				LOGGER.warn("Encountered duplicate API Provider registration for block " + Registry.BLOCK.getId(b));
 			}
 		}
 	}
@@ -57,7 +57,7 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 				final BlockProviderFunction<P, A> blockMapping = (world, pos, blockState) -> mapping.getProvider(world.getBlockEntity(pos));
 				((BlockEntityTypeAccessor) bet).getBlocks().forEach(block -> registerProviderForBlock(blockMapping, block));
 			} else {
-				LOGGER.warn("[Fabric] Encountered duplicate API Provider registration for block entity type " + Registry.BLOCK_ENTITY_TYPE.getId(bet));
+				LOGGER.warn("Encountered duplicate API Provider registration for block entity type " + Registry.BLOCK_ENTITY_TYPE.getId(bet));
 			}
 		}
 	}

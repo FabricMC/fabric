@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.provider.BlockApiProviderAccessImpl;
  * instance associated with a block/block position via more exotic data structures.
  *
  * <p>Two access methods are provided - one for block entities and one for block state
- * within the world.  If a block entity instance is already acquired the block entity
+ * within the world. If a block entity instance is already acquired the block entity
  * access method should perform slightly better but both give equivalent results.
  */
 public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {

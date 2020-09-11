@@ -40,7 +40,7 @@ public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> e
 	@Override
 	public void registerProviderForEntity(Function<Entity, P> mapping, EntityType<?> entityType) {
 		if (map.putIfAbsent(entityType, mapping) != null) {
-			LOGGER.warn("[Fabric] Encountered duplicate API Provider registration for entity " + Registry.ENTITY_TYPE.getId(entityType));
+			LOGGER.warn("Encountered duplicate API Provider registration for entity " + Registry.ENTITY_TYPE.getId(entityType));
 		}
 	}
 

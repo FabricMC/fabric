@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -38,10 +39,10 @@ public final class ItemApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ext
 	}
 
 	@Override
-	public void registerProviderForItem(Function<ItemStack, P> mapping, Item... items) {
-		for (final Item item : items) {
-			if (map.putIfAbsent(item, mapping) != null) {
-				LOGGER.warn("[Fabric] Encountered duplicate API Provider registration for item " + Registry.ITEM.getId(item));
+	public void registerProviderForItem(Function<ItemStack, P> mapping, ItemConvertible... items) {
+		for (final ItemConvertible item : items) {
+			if (map.putIfAbsent(item.asItem(), mapping) != null) {
+				LOGGER.warn("Encountered duplicate API Provider registration for item " + Registry.ITEM.getId(item.asItem()));
 			}
 		}
 	}
