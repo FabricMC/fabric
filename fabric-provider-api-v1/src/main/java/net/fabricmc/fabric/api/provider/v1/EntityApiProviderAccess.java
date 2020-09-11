@@ -22,45 +22,32 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.provider.ApiProviderAccessRegistry;
 import net.fabricmc.fabric.impl.provider.EntityApiProviderAccessImpl;
 
 /**
- * Describes and provides access to component instances that may be retrieved
- * for blocks, items or entities.
- *
- * <p>This interface should never be implemented by mod authors. Create new instances
- * using {@link ApiProviderAccessRegistry#createAccess(net.minecraft.util.Identifier, Class, ApiProvider)}.
- *
- * @param <P> Identifies the API provider type
- * @param <A> Identifies the API type
+ * See {link ApiProviderAccess}. This subclass is for {@code Entity} game objects.
  */
 public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {
 	/**
-	 * Causes the given entity types to provide component instances of this type
-	 * by application of the given mapping function.
+	 * Causes the given entities to to supply API provider instances by application of
+	 * the given mapping function.
 	 *
-	 * <p>This will override any previous mapping of the same component type and only one
-	 * result per entity is possible.  For the reason, mod authors are advised to create
-	 * distinct component types for their use cases as needed to prevent conflicts.
+	 * <p>The mapping function should return {@link #absentApi()} if no component is available.
 	 *
-	 * @param mapping mapping function that derives a component instance from an access context
-	 * @param entities one or more entities for which the function will apply
+	 * @param mapping function that derives a provider instance from an entity
+	 * @param entityType type for which the mapping will apply
 	 */
 	void registerProviderForEntity(Function<Entity, P> mapping, EntityType<?> entityType);
 
 	/**
-	 * Retrieves an {@code ApiProvider} for an API associated with the given entity,
-	 * or the {@link #absentProvider()} if no provider is accessible.
+	 * Retrieves an {@code ApiProvider} used to obtain an API instance if present.
 	 *
-	 * <p>This is useful when that is unknown to the consumer, or when
-	 * the Entity exposes the target API as a member. If the API consumer
-	 * somehow knows the entity implements the provider interface directly,
-	 * casting the entity instance will always be faster.
+	 * <p>If the API consumer somehow knows the entity consistently implements the
+	 * API or provider interface directly, casting the entity instance will always be faster.
 	 *
-	 * @param entity entity to provide component access if available
-	 * @return a {@code ComponentAccess} to access components of this type
-	 * that may be present in the given entity
+	 * @param entity the entity where the component may be located
+	 * @return a {@code ApiProvider} used to obtain an API instance if present.
+	 * Will be {@link #absentProvider()} if no API is present.
 	 */
 	P getProviderFromEntity(Entity entity);
 

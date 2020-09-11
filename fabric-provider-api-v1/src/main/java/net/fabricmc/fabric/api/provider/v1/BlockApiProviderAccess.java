@@ -24,88 +24,74 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.provider.ApiProviderAccessRegistry;
 import net.fabricmc.fabric.impl.provider.BlockApiProviderAccessImpl;
 
 /**
- * Describes and provides access to component instances that may be retrieved
- * for blocks, items or entities.
+ * See {link ApiProviderAccess}. This subclass is for {@code Block} game objects.
  *
- * <p>This interface should never be implemented by mod authors. Create new instances
- * using {@link ApiProviderAccessRegistry#createAccess(net.minecraft.util.Identifier, Class, ApiProvider)}.
+ * <p>Block provider access is special because implementation can be more varied.
+ * The same API interface could be implemented directly in a {@code BlockEntity},
+ * as a member of a {@code BlockEntity} (in which case there could be more than one
+ * API instance available), as a wrapper on top of {@code BlockState}, or a free-floating
+ * instance associated with a block/block position via more exotic data structures.
  *
- * @param <P> Identifies the API provider type
- * @param <A> Identifies the API type
- * @see ApiProviderAccess
+ * <p>Two access methods are provided - one for block entities and one for block state
+ * within the world.  If a block entity instance is already acquired the block entity
+ * access method should perform slightly better but both give equivalent results.
  */
 public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {
 	/**
-	 * Causes the given blocks to provide component instances of this type
-	 * by application of the given mapping function. Use this version for blocks that
+	 * Causes the given blocks to supply API provider instances by application of
+	 * the given mapping function. Use this version for blocks that
 	 * may provide a component without the presence of a {@code BlockEntity}.
 	 *
 	 * <p>The mapping function should return {@link #absentApi()} if no component is available.
 	 *
-	 * @param mapping function that derives a component instance from an access context
-	 * @param blocks one or more blocks for which the function will apply
+	 * @param mapping function that derives a provider instance from block state
+	 * @param blocks one or more blocks for which the mapping will apply
 	 */
 	void registerProviderForBlock(BlockProviderFunction<P, A> mapping, Block... blocks);
 
 	/**
-	 * Causes the given blocks to provide component instances of this type
-	 * via block entities associated with the given blocks.
+	 * Causes the given blocks to to supply API provider instances by application of
+	 * the given mapping function, Use this version for blocks where the {@code BlockEntity}
+	 * houses or directly implements the component instance.
 	 *
-	 * <p>Use this version for blocks where the {@code BlockEntity} houses or
-	 * directly implements the component instance.
+	 * <p>The mapping function should return {@link #absentApi()} if no component is available.
 	 *
-	 * @param blocks one or more blocks that will provide components in this way
+	 * @param mapping function that derives a provider instance from a block entity
+	 * @param blockEntityTypes one or more types for which the mapping will apply
 	 */
 	void registerProviderForBlockEntity(BlockEntityProviderFunction<P, A> mapping, BlockEntityType<?>... blockEntityTypes);
 
 	/**
-	 * Retrieves a {@code ComponentAccess} to access components of this type
-	 * that may be present at the given location.
+	 * Retrieves an {@code ApiProvider} used to obtain an API instance if present.
 	 *
-	 * <p>The instance that is returned may be thread-local and should never be retained.
-	 *
-	 * <p>Note that {@link #getProviderFromBlock(World, BlockPos, BlockState)} may be more performant
-	 * if 1) you know this component type requires block state and 2) the block state
-	 * and the given position is already on the call stack.
-	 *
-	 * @param world the server world where the component may be located
-	 * @param pos the block position where the component may be located
-	 * @return a {@code ComponentAccess} to access components of this type
-	 * that may be present at the given location
+	 * @param world the world where provider may be located
+	 * @param pos the block position where provider may be located
+	 * @param blockState the current block state at the given position within the world
+	 * @return a {@code ApiProvider} used to obtain an API instance if present.
+	 * Will be {@link #absentProvider()} if no API is present.
+	 */
+	P getProviderFromBlock(World world, BlockPos pos, BlockState blockState);
+
+	/**
+	 * Convenient version of {@link #getProviderFromBlock(World, BlockPos, BlockState)}
+	 * to use when block state is not already retrieved.
 	 */
 	default P getProviderFromBlock(World world, BlockPos pos) {
 		return getProviderFromBlock(world, pos, world.getBlockState(pos));
 	}
 
 	/**
-	 * Retrieves a {@code ComponentAccess} to access components of this type
-	 * that may be present at the given location.
+	 * Retrieves an {@code ApiProvider} used to obtain an API instance if present.
 	 *
-	 * <p>The instance that is returned may be thread-local and should never be retained.
-	 *
-	 * @param world the server world where the component may be located
-	 * @param pos the block position where the component may be located
-	 * @param blockState the current block state at the given position within the world
-	 * @return a {@code ComponentAccess} to access components of this type
-	 * that may be present at the given location
-	 */
-	P getProviderFromBlock(World world, BlockPos pos, BlockState blockState);
-
-	/**
-	 * Retrieves a {@code ComponentAccess} to access components of this type
-	 * that may be present at the given location.
-	 *
-	 * <p>If the API consumer somehow knows the block entity implements the
-	 * provider interface directly, casting the BE instance will always be
-	 * faster. This is useful when that is unknown to the consumer, or when
-	 * the BlockEntity exposes the target API as a member.
+	 * <p>If the API consumer somehow knows the block entity consistently implements the
+	 * API or provider interface directly, casting the block entity instance will always be faster.
 	 *
 	 * @param blockEntity the block entity where the component may be located
-	 * @return a {@code ComponentAccess} to access components of this type
+	 * @return a {@code ApiProvider} used to obtain an API instance if present.
+	 * Will be {@link #absentProvider()} if no API is present.
 	 */
 	P getProviderFromBlockEntity(BlockEntity blockEntity);
 
@@ -114,7 +100,7 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @param <A> Identifies the API type
 	 */
 	@FunctionalInterface
-	public interface BlockEntityProviderFunction <P extends ApiProvider<P, A>, A> {
+	public interface BlockEntityProviderFunction<P extends ApiProvider<P, A>, A> {
 		P getProvider(BlockEntity blockEntity);
 	}
 
@@ -123,7 +109,7 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @param <A> Identifies the API type
 	 */
 	@FunctionalInterface
-	public interface BlockProviderFunction <P extends ApiProvider<P, A>, A> {
+	public interface BlockProviderFunction<P extends ApiProvider<P, A>, A> {
 		P getProvider(World world, BlockPos pos, BlockState state);
 
 		default P getProvider(World world, BlockPos pos) {
@@ -131,10 +117,29 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 		}
 	}
 
+	/**
+	 * Creates and returns new provider access instances.
+	 *
+	 * @param <P> Identifies the API provider type
+	 * @param <A> Identifies the API type
+	 * @param id Name-spaced identifier for this provider access
+	 * @param apiType the class for instances of the provided API
+	 * @param absentProvider immutable and non-allocating provider instance
+	 * that always returns the API instance to be used when no instance is available.
+	 * @return the created {@link ApiProviderAccess}
+	 */
 	static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAcess(Identifier id, Class<A> apiType, P absentProvider) {
 		return BlockApiProviderAccessImpl.registerAcess(id, apiType, absentProvider);
 	}
 
+	/**
+	 * Retrieves a provider access instance registered earlier.
+	 * May be unreliable during initialization due to undefined mod load order.
+	 *
+	 * @param id Name-spaced identifier for the requested provider access
+	 * @return the requested {@link ApiProviderAccess}, or {@code null} if none is available
+	 */
+	/* @Nullable */
 	static BlockApiProviderAccess<?, ?> getAccess(Identifier id) {
 		return BlockApiProviderAccessImpl.getAccess(id);
 	}
