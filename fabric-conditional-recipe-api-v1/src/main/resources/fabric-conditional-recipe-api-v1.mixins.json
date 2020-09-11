@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.conditionalrecipe",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinRecipeManager"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
