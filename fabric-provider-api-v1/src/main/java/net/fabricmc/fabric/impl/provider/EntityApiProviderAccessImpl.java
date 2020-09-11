@@ -51,7 +51,7 @@ public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> e
 
 	private static final ApiProviderAccessRegistry<EntityApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<> ();
 
-	public static <P extends ApiProvider<P, A>, A> EntityApiProviderAccess<P, A> registerAcess(Identifier id, Class<A> type, P absentProvider) {
+	public static <P extends ApiProvider<P, A>, A> EntityApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> type, P absentProvider) {
 		final EntityApiProviderAccess<P, A> result = new EntityApiProviderAccessImpl<> (type, absentProvider);
 		REGISTRY.register(id, result);
 		return result;

@@ -128,8 +128,8 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * that always returns the API instance to be used when no instance is available.
 	 * @return the created {@link ApiProviderAccess}
 	 */
-	static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAcess(Identifier id, Class<A> apiType, P absentProvider) {
-		return BlockApiProviderAccessImpl.registerAcess(id, apiType, absentProvider);
+	static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
+		return BlockApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
 	}
 
 	/**

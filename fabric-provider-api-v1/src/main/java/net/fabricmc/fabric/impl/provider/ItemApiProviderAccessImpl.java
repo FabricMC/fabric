@@ -53,7 +53,7 @@ public final class ItemApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ext
 
 	private static final ApiProviderAccessRegistry<ItemApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<> ();
 
-	public static <P extends ApiProvider<P, A>, A> ItemApiProviderAccess<P, A> registerAcess(Identifier id, Class<A> apiType, P absentProvider) {
+	public static <P extends ApiProvider<P, A>, A> ItemApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
 		final ItemApiProviderAccessImpl<P, A> result = new ItemApiProviderAccessImpl<> (apiType, absentProvider);
 		REGISTRY.register(id, result);
 		return result;

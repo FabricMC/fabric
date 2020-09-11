@@ -74,7 +74,7 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 
 	private static final ApiProviderAccessRegistry<BlockApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<> ();
 
-	public static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAcess(Identifier id, Class<A> apiType, P absentProvider) {
+	public static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
 		final BlockApiProviderAccess<P, A> result = new BlockApiProviderAccessImpl<> (apiType, absentProvider);
 		REGISTRY.register(id, result);
 		return result;

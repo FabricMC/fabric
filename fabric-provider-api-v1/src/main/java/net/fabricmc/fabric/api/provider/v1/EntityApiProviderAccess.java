@@ -51,8 +51,8 @@ public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends
 	 */
 	P getProviderFromEntity(Entity entity);
 
-	static <P extends ApiProvider<P, A>, A> EntityApiProviderAccess<P, A> registerAcess(Identifier id, Class<A> apiType, P absentProvider) {
-		return EntityApiProviderAccessImpl.registerAcess(id, apiType, absentProvider);
+	static <P extends ApiProvider<P, A>, A> EntityApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
+		return EntityApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
 	}
 
 	static EntityApiProviderAccess<?, ?> getAccess(Identifier id) {

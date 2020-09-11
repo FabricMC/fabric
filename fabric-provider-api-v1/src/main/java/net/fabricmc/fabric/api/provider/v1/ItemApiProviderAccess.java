@@ -47,8 +47,8 @@ public interface ItemApiProviderAccess<P extends ApiProvider<P, A>, A> extends A
 	 */
 	P getProviderFromStack(ItemStack stack);
 
-	static <P extends ApiProvider<P, A>, A> ItemApiProviderAccess<P, A> registerAcess(Identifier id, Class<A> apiType, P absentProvider) {
-		return ItemApiProviderAccessImpl.registerAcess(id, apiType, absentProvider);
+	static <P extends ApiProvider<P, A>, A> ItemApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
+		return ItemApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
 	}
 
 	static ItemApiProviderAccess<?, ?> getAccess(Identifier id) {
