@@ -65,8 +65,6 @@ public class RegistrySyncTest implements ModInitializer {
 
 		Registry.register(fabricRegistry, new Identifier("registry_sync", "test"), "test");
 
-		Validate.isTrue(Registry.REGISTRIES.containsId(new Identifier("registry_sync", "fabric_registry")));
-
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));

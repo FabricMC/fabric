@@ -27,15 +27,17 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.resource.FileResourcePackProvider;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
+import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(ResourcePackManager.class)
-public class MixinResourcePackManager<T extends ResourcePackProfile> {
+public abstract class MixinResourcePackManager<T extends ResourcePackProfile> {
 	@Shadow
 	@Final
 	@Mutable
@@ -44,6 +46,22 @@ public class MixinResourcePackManager<T extends ResourcePackProfile> {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	public void construct(ResourcePackProfile.Factory arg, ResourcePackProvider[] resourcePackProviders, CallbackInfo info) {
 		providers = new HashSet<>(providers);
-		providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
+
+		// Search resource pack providers to find any server-related pack provider.
+		boolean shouldAddServerProvider = false;
+
+		for (ResourcePackProvider provider : this.providers) {
+			if (provider instanceof FileResourcePackProvider
+					&& (((FileResourcePackProviderAccessor) provider).getResourcePackSource() == ResourcePackSource.PACK_SOURCE_WORLD
+					|| ((FileResourcePackProviderAccessor) provider).getResourcePackSource() == ResourcePackSource.PACK_SOURCE_SERVER)) {
+				shouldAddServerProvider = true;
+				break;
+			}
+		}
+
+		// On server, add the mod resource pack provider.
+		if (shouldAddServerProvider) {
+			providers.add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
+		}
 	}
 }

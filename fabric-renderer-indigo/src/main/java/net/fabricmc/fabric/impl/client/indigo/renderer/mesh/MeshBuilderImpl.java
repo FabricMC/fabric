@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
 import net.fabricmc.fabric.api.renderer.v1.mesh.MeshBuilder;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
-import net.fabricmc.fabric.impl.client.indigo.renderer.helper.GeometryHelper;
 
 /**
  * Our implementation of {@link MeshBuilder}, used for static mesh creation and baking.
@@ -69,12 +68,7 @@ public class MeshBuilderImpl implements MeshBuilder {
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
 		@Override
 		public Maker emit() {
-			lightFace(GeometryHelper.lightFace(this));
-
-			if (isGeometryInvalid) {
-				geometryFlags(GeometryHelper.computeShapeFlags(this));
-			}
-
+			computeGeometry();
 			index += EncodingFormat.TOTAL_STRIDE;
 			ensureCapacity(EncodingFormat.TOTAL_STRIDE);
 			baseIndex = index;

@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
-
-import java.util.ArrayList;
-import java.util.List;
+package net.fabricmc.fabric.mixin.structure;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.resource.ResourcePack;
-import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.world.gen.chunk.ChunkGeneratorSettings;
 
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackUtil;
+import net.fabricmc.fabric.impl.structure.FabricStructureUtil;
 
-@Mixin(ResourcePackManager.class)
-public class MixinResourcePackManagerClient {
-	@Inject(method = "createResourcePacks", at = @At("RETURN"), cancellable = true)
-	public void createResourcePacks(CallbackInfoReturnable<List<ResourcePack>> infoReturnable) {
-		List<ResourcePack> list = new ArrayList<>(infoReturnable.getReturnValue());
-		ModResourcePackUtil.modifyResourcePackList(list);
-		infoReturnable.setReturnValue(list);
+@Mixin(ChunkGeneratorSettings.class)
+public class MixinChunkGeneratorSettings {
+	@Inject(method = "createUndergroundSettings", at = @At("RETURN"))
+	private static void onCreateCavesType(CallbackInfoReturnable<ChunkGeneratorSettings> cir) {
+		FabricStructureUtil.DEFAULT_STRUCTURES_CONFIGS.add(cir.getReturnValue().getStructuresConfig());
 	}
 }
