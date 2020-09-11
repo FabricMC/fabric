@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -30,7 +31,11 @@ import net.minecraft.client.network.ClientPlayerInteractionManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
@@ -50,15 +55,24 @@ import net.fabricmc.fabric.api.event.player.AttackEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.fabric.api.event.client.player.ClientBlockBreakEvent;
+import net.fabricmc.fabric.api.event.client.player.ClientBlockPlaceEvent;
 
 @Mixin(ClientPlayerInteractionManager.class)
-public class MixinClientPlayerInteractionManager {
+public abstract class MixinClientPlayerInteractionManager {
 	@Shadow
 	private MinecraftClient client;
 	@Shadow
 	private ClientPlayNetworkHandler networkHandler;
 	@Shadow
 	private GameMode gameMode;
+
+	@Shadow
+	public abstract void cancelBlockBreaking();
+
+	@Shadow
+	private float currentBreakingProgress;
+	private BlockState blockBreakingState;
 
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameMode;isCreative()Z", ordinal = 0), method = "attackBlock", cancellable = true)
 	public void attackBlock(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> info) {
@@ -139,6 +153,79 @@ public class MixinClientPlayerInteractionManager {
 			info.setReturnValue(result);
 			info.cancel();
 			return;
+		}
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayNetworkHandler;sendPacket(Lnet/minecraft/network/Packet;)V", ordinal = 2), method = "interactBlock", cancellable = true)
+	public void beforeBlockPlace(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
+		Item item = player.getStackInHand(hand).getItem();
+
+		if (item instanceof BlockItem) {
+			ItemUsageContext usageContext = new ItemUsageContext(player, hand, hitResult);
+			ItemPlacementContext placementContext = new ItemPlacementContext(usageContext);
+
+			BlockState futureBlockState = ((BlockItem) item).getBlock().getPlacementState(placementContext);
+
+			boolean result = ClientBlockPlaceEvent.BEFORE.invoker().beforeBlockPlace(world, player, placementContext.getBlockPos(), futureBlockState);
+
+			if (!result) {
+				ClientBlockPlaceEvent.CANCELED.invoker().onBlockPlaceCanceled(world, player, placementContext.getBlockPos(), futureBlockState);
+				cir.setReturnValue(ActionResult.FAIL);
+			}
+		}
+	}
+
+	@Inject(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"), method = "interactBlock")
+	public void afterBlockPlace(ClientPlayerEntity player, ClientWorld world, Hand hand, BlockHitResult hitResult, CallbackInfoReturnable<ActionResult> cir) {
+		Item item = player.getStackInHand(hand).getItem();
+
+		if (item instanceof BlockItem) {
+			BlockPos targetBlock = hitResult.getBlockPos().offset(hitResult.getSide());
+			ClientBlockPlaceEvent.AFTER.invoker().afterBlockPlace(world, player, targetBlock, world.getBlockState(targetBlock));
+		}
+	}
+
+	@Inject(method = "attackBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/tutorial/TutorialManager;onBlockAttacked(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;F)V"), cancellable = true)
+	public void blockBreakStart(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+		ClientWorld world = this.client.world;
+
+		if (world != null) {
+			blockBreakingState = world.getBlockState(pos);
+			boolean result = ClientBlockBreakEvent.ON_START.invoker().onBlockBreakStart(world, this.client.player, pos, blockBreakingState, 0.0F);
+
+			if (!result) {
+				ClientBlockBreakEvent.ON_CANCEL.invoker().onBlockBreakCancel(world, this.client.player, pos, blockBreakingState, 0.0F);
+				cir.setReturnValue(true);
+			} else {
+				blockBreakProgression(pos, world, blockBreakingState, cir, 0.0F);
+			}
+		}
+	}
+
+	@Inject(method = "updateBlockBreakingProgress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/tutorial/TutorialManager;onBlockAttacked(Lnet/minecraft/client/world/ClientWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;F)V"), cancellable = true)
+	public void blockBreakProgressEvent(BlockPos pos, Direction direction, CallbackInfoReturnable<Boolean> cir) {
+		ClientWorld world = client.world;
+
+		if (world != null) {
+			blockBreakProgression(pos, world, world.getBlockState(pos), cir, Math.min(currentBreakingProgress, 1));
+		}
+	}
+
+	private void blockBreakProgression(BlockPos pos, ClientWorld world, BlockState blockBreakingState, CallbackInfoReturnable<Boolean> cir, float progress) {
+		boolean result = ClientBlockBreakEvent.ON_PROGRESS.invoker().onBlockBreakProgress(world, client.player, pos, blockBreakingState, progress);
+
+		if (!result) {
+			ClientBlockBreakEvent.ON_CANCEL.invoker().onBlockBreakCancel(world, client.player, pos, blockBreakingState, progress);
+			cir.setReturnValue(true);
+		}
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), method = "breakBlock")
+	public void blockBreak(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+		ClientWorld world = this.client.world;
+
+		if (world != null) {
+			ClientBlockBreakEvent.ON_BREAK.invoker().onBlockBreak(world, client.player, pos, blockBreakingState, 1.0F);
 		}
 	}
 }

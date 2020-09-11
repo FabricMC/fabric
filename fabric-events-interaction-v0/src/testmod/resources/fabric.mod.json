@@ -10,7 +10,9 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.event.interaction.PlayerBreakBlockTests"
+      "net.fabricmc.fabric.test.event.interaction.PlayerBreakBlockTests",
+      "net.fabricmc.fabric.test.event.interaction.ClientBlockPlaceEvents",
+      "net.fabricmc.fabric.test.event.interaction.ClientBlockBreakEvents"
     ]
   }
 }
