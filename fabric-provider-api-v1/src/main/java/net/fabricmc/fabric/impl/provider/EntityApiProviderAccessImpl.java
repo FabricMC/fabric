@@ -49,7 +49,7 @@ public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> e
 		return map.get(entity.getType()).apply(entity);
 	}
 
-	private static final ApiProviderAccessRegistry<EntityApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<> ();
+	private static final ApiProviderAccessRegistry<EntityApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<>();
 
 	public static <P extends ApiProvider<P, A>, A> EntityApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> type, P absentProvider) {
 		final EntityApiProviderAccess<P, A> result = new EntityApiProviderAccessImpl<> (type, absentProvider);
