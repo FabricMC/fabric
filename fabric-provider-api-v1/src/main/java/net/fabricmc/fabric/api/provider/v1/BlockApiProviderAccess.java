@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.provider.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -139,7 +141,7 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @param id Name-spaced identifier for the requested provider access
 	 * @return the requested {@link ApiProviderAccess}, or {@code null} if none is available
 	 */
-	/* @Nullable */
+	@Nullable
 	static BlockApiProviderAccess<?, ?> getAccess(Identifier id) {
 		return BlockApiProviderAccessImpl.getAccess(id);
 	}

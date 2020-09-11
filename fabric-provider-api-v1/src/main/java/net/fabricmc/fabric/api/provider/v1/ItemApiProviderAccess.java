@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.provider.v1;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
@@ -51,6 +53,7 @@ public interface ItemApiProviderAccess<P extends ApiProvider<P, A>, A> extends A
 		return ItemApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
 	}
 
+	@Nullable
 	static ItemApiProviderAccess<?, ?> getAccess(Identifier id) {
 		return ItemApiProviderAccessImpl.getAccess(id);
 	}

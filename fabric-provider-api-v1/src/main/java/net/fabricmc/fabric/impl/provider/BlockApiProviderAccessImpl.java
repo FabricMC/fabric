@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -90,6 +91,7 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 		return result;
 	}
 
+	@Nullable
 	public static BlockApiProviderAccess<?, ?> getAccess(Identifier id) {
 		return REGISTRY.get(id);
 	}

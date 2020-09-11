@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -61,6 +62,7 @@ public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> e
 		return result;
 	}
 
+	@Nullable
 	public static EntityApiProviderAccess<?, ?> getAccess(Identifier id) {
 		return REGISTRY.get(id);
 	}

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.provider.v1;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
@@ -55,6 +57,7 @@ public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends
 		return EntityApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
 	}
 
+	@Nullable
 	static EntityApiProviderAccess<?, ?> getAccess(Identifier id) {
 		return EntityApiProviderAccessImpl.getAccess(id);
 	}

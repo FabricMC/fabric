@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.provider;
 import java.util.Objects;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
@@ -39,7 +40,7 @@ public final class ApiProviderAccessRegistry<T extends ApiProviderAccess<?, ?>> 
 		}
 	}
 
-	/* @Nullabe */
+	@Nullable
 	public T get(Identifier id) {
 		return MAP.get(id);
 	}

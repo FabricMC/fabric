@@ -21,6 +21,7 @@ import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
@@ -65,6 +66,7 @@ public final class ItemApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ext
 		return result;
 	}
 
+	@Nullable
 	public static ItemApiProviderAccess<?, ?> getAccess(Identifier id) {
 		return REGISTRY.get(id);
 	}
