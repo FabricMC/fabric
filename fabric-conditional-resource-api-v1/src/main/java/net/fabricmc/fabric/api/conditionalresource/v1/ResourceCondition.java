@@ -17,10 +17,11 @@
 package net.fabricmc.fabric.api.conditionalresource.v1;
 
 import com.google.gson.JsonElement;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
 @FunctionalInterface
 public interface ResourceCondition {
-	boolean process(Identifier recipeId, JsonElement element);
+	boolean process(Identifier recipeId, @Nullable JsonElement element);
 }

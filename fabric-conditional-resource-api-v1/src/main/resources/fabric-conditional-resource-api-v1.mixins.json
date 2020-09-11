@@ -3,7 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.conditionalresource",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinJsonDataLoader"
+    "ReloadableResourceManagerImplMixin"
   ],
   "client": [
   ],

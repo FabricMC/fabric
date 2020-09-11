@@ -21,7 +21,6 @@ import java.util.Objects;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,10 +62,6 @@ public final class ResourceConditionsImpl {
 		ResourceCondition condition = get(type);
 		if (condition == null) throw new NullPointerException("Condition '" + type + "' does not exist!");
 
-		if (object.has("condition")) {
-			return condition.process(resourceId, object.get("condition"));
-		} else {
-			throw new JsonSyntaxException("Missing 'condition', expected to find an element");
-		}
+		return condition.process(resourceId, object.has("condition") ? object.get("condition") : null);
 	}
 }

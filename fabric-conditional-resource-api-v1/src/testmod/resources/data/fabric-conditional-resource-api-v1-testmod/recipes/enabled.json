@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:wet_sponge"
+    }
+  },
+  "result": {
+    "item": "minecraft:gold_block",
+    "count": 1
+  }
+}

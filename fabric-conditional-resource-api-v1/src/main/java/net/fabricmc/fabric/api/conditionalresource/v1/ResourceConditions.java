@@ -42,7 +42,7 @@ public final class ResourceConditions {
 	}
 
 	public static boolean evaluate(Identifier resourceId, JsonElement element) {
-		if (!element.isJsonObject()) throw new IllegalArgumentException("Resource element is not an object!");
+		if (!element.isJsonObject()) throw new IllegalArgumentException("Condition element is not an object!");
 		return ResourceConditionsImpl.evaluate(resourceId, element.getAsJsonObject());
 	}
 }

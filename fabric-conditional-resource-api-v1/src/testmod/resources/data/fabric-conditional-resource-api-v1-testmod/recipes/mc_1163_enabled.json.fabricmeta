@@ -1,0 +1,6 @@
+{
+  "type": "fabric:mod",
+  "condition": {
+    "minecraft": ">=1.16.3"
+  }
+}
