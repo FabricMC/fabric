@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.provider;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 import it.unimi.dsi.fastutil.Hash;
@@ -39,6 +40,9 @@ public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> e
 
 	@Override
 	public void registerProviderForEntity(Function<Entity, P> mapping, EntityType<?> entityType) {
+		Objects.requireNonNull(mapping, "encountered API provider mapping");
+		Objects.requireNonNull(entityType, "encountered null entity type in API provider mapping");
+
 		if (map.putIfAbsent(entityType, mapping) != null) {
 			LOGGER.warn("Encountered duplicate API Provider registration for entity " + Registry.ENTITY_TYPE.getId(entityType));
 		}

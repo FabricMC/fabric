@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.provider;
 
+import java.util.Objects;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,6 +30,9 @@ abstract class AbstractApiProviderAccess<P extends ApiProvider<P, A>, A> impleme
 	final Class<A> apiType;
 
 	AbstractApiProviderAccess(Class<A> apiType, P absentProvider) {
+		Objects.requireNonNull(apiType, "encountered null API type");
+		Objects.requireNonNull(absentProvider, "encountered null API absentProvider");
+
 		absentApi = absentProvider.getApi();
 		this.absentProvider = absentProvider;
 		this.apiType = apiType;

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.provider;
 
+import java.util.Objects;
+
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 
@@ -42,7 +44,11 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 
 	@Override
 	public void registerProviderForBlock(BlockProviderFunction<P, A> mapping, Block... blocks) {
+		Objects.requireNonNull(mapping, "encountered API provider mapping");
+
 		for (final Block b : blocks) {
+			Objects.requireNonNull(b, "encountered null block in API provider mapping");
+
 			if (blockMappings.putIfAbsent(b, mapping) != null) {
 				LOGGER.warn("Encountered duplicate API Provider registration for block " + Registry.BLOCK.getId(b));
 			}
@@ -51,7 +57,11 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 
 	@Override
 	public void registerProviderForBlockEntity(BlockEntityProviderFunction<P, A> mapping, BlockEntityType<?>... blockEntityTypes) {
+		Objects.requireNonNull(mapping, "encountered API provider mapping");
+
 		for (final BlockEntityType<?> bet : blockEntityTypes) {
+			Objects.requireNonNull(bet, "encountered null block entity type in API provider mapping");
+
 			if (blockEntityMappings.putIfAbsent(bet, mapping) == null) {
 				// register provider access for associated blocks to route to BE provider when retrieved through block state
 				final BlockProviderFunction<P, A> blockMapping = (world, pos, blockState) -> mapping.getProvider(world.getBlockEntity(pos));

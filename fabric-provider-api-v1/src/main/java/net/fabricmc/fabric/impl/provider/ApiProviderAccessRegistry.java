@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.provider;
 
+import java.util.Objects;
+
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.util.Identifier;
@@ -29,6 +31,9 @@ public final class ApiProviderAccessRegistry<T extends ApiProviderAccess<?, ?>> 
 	private final Object2ObjectOpenHashMap<Identifier, T> MAP = new Object2ObjectOpenHashMap<>();
 
 	public void register(Identifier id, T access) {
+		Objects.requireNonNull(id, "encountered null API provider access ID");
+		Objects.requireNonNull(id, "encountered null API provider access method");
+
 		if (MAP.putIfAbsent(id, access) != null) {
 			AbstractApiProviderAccess.LOGGER.info("Encountered duplicate API Provider access registeration with ID " + id.toString());
 		}
