@@ -16,14 +16,8 @@
 
 package net.fabricmc.fabric.api.provider.v1;
 
-import net.fabricmc.fabric.impl.provider.ApiProviderAccessRegistry;
-
 /**
- * Describes and provides access to component instances that may be retrieved
- * for blocks, items or entities.
- *
- * <p>This interface should never be implemented by mod authors. Create new instances
- * using {@link ApiProviderAccessRegistry#createAccess(net.minecraft.util.Identifier, Class, ApiProvider)}.
+ * Provides loosely-coupled access to providers of API associated with game objects.
  *
  * @param <P> Identifies the API provider type
  * @param <A> Identifies the API type
