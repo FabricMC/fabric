@@ -32,7 +32,7 @@ public final class PlayerBlockPlaceEvents {
 	 * Called on both client and server
 	 *
 	 * <p>If any listener cancels a block placing action, that block placing
-	 * action is cancelled and {@link #CANCELED} event is fired. Otherwise, the
+	 * action is canceled and {@link #CANCELED} event is fired. Otherwise, the
 	 * {@link #AFTER} event is fired.</p>
 	 */
 	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
