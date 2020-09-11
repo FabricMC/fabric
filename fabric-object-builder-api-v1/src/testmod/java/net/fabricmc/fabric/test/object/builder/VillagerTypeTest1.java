@@ -43,25 +43,8 @@ import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 
 public class VillagerTypeTest1 implements ModInitializer {
-	public static final VillagerType TEST = register("test");
-
-	private static VillagerType register(String name) {
-		final Identifier id = new Identifier("testmod", name);
-		final VillagerType type = new VillagerType() {
-			@Override
-			public String toString() {
-				return id.toString();
-			}
-		};
-
-		// Mojang and the screwed up generic
-		return Registry.register(Registry.VILLAGER_TYPE, id, type);
-	}
-
 	@Override
 	public void onInitialize() {
-		VillagerType.BIOME_TO_TYPE.put(Biomes.CRIMSON_FOREST, VillagerTypeTest1.TEST);
-
 		TradeOfferHelper.registerVillagerOffers(VillagerProfession.ARMORER, 1, factories -> {
 			factories.add(new SimpleTradeFactory(new TradeOffer(new ItemStack(Items.GOLD_INGOT, 3), new ItemStack(Items.NETHERITE_SCRAP, 4), new ItemStack(Items.NETHERITE_INGOT), 2, 6, 0.15F)));
 		});
