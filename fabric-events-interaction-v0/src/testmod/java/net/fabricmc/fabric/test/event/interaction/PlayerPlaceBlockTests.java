@@ -29,16 +29,16 @@ public class PlayerPlaceBlockTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		PlayerBlockPlaceEvents.BEFORE.register(((world, player, pos, state, blockEntity) -> {
+		PlayerBlockPlaceEvents.BEFORE.register(((world, player, pos, state) -> {
 			LOGGER.info("Block about to be placed at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 			return state.getBlock() != Blocks.GRAVEL;
 		}));
 
-		PlayerBlockPlaceEvents.CANCELED.register(((world, player, pos, state, entity) -> {
+		PlayerBlockPlaceEvents.CANCELED.register(((world, player, pos, state) -> {
 			LOGGER.info("Block place event canceled at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 		}));
 
-		PlayerBlockPlaceEvents.AFTER.register(((world, player, pos, state, entity) -> {
+		PlayerBlockPlaceEvents.AFTER.register(((world, player, pos, state) -> {
 			LOGGER.info("Block placed at " + pos.getX() + ", " + pos.getY() + ", " + pos.getZ());
 		}));
 	}

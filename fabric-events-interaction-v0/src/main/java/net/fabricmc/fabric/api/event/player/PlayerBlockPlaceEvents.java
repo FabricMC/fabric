@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.event.player;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -37,9 +36,9 @@ public final class PlayerBlockPlaceEvents {
 	 * {@link #AFTER} event is fired.</p>
 	 */
 	public static final Event<Before> BEFORE = EventFactory.createArrayBacked(Before.class,
-			(listeners) -> (world, player, pos, state, entity) -> {
+			(listeners) -> (world, player, pos, state) -> {
 				for (Before event : listeners) {
-					boolean result = event.beforeBlockPlace(world, player, pos, state, entity);
+					boolean result = event.beforeBlockPlace(world, player, pos, state);
 
 					if (!result) {
 						return false;
@@ -56,9 +55,9 @@ public final class PlayerBlockPlaceEvents {
 	 * <p>Called on both client and server
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
-			(listeners) -> (world, player, pos, state, entity) -> {
+			(listeners) -> (world, player, pos, state) -> {
 				for (After event : listeners) {
-					event.afterBlockPlace(world, player, pos, state, entity);
+					event.afterBlockPlace(world, player, pos, state);
 				}
 			}
 	);
@@ -69,9 +68,9 @@ public final class PlayerBlockPlaceEvents {
 	 * <p>Called on both client and server. May be used on logical server to send packets to revert client-side block changes.
 	 */
 	public static final Event<Canceled> CANCELED = EventFactory.createArrayBacked(Canceled.class,
-			(listeners) -> (world, player, pos, state, entity) -> {
+			(listeners) -> (world, player, pos, state) -> {
 				for (Canceled event : listeners) {
-					event.onBlockPlaceCanceled(world, player, pos, state, entity);
+					event.onBlockPlaceCanceled(world, player, pos, state);
 				}
 			}
 	);
@@ -87,10 +86,9 @@ public final class PlayerBlockPlaceEvents {
 		 * @param player the player placing the block
 		 * @param pos the position at which the block is placed
 		 * @param state the block state <strong>before</strong> the block is placed
-		 * @param blockEntity the block entity <strong>before</strong> the block is placed, can be {@code null}
 		 * @return {@code false} to cancel block placing action, or {@code true} to pass to next listener
 		 */
-		boolean beforeBlockPlace(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
+		boolean beforeBlockPlace(World world, PlayerEntity player, BlockPos pos, BlockState state);
 	}
 
 	@FunctionalInterface
@@ -102,9 +100,8 @@ public final class PlayerBlockPlaceEvents {
 		 * @param player the player who placed the block
 		 * @param pos the position where the block was placed
 		 * @param state the block state <strong>before</strong> the block was placed
-		 * @param blockEntity the block entity of the placed block, can be {@code null}
 		 */
-		void afterBlockPlace(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
+		void afterBlockPlace(World world, PlayerEntity player, BlockPos pos, BlockState state);
 	}
 
 	@FunctionalInterface
@@ -116,8 +113,7 @@ public final class PlayerBlockPlaceEvents {
 		 * @param player the player who was going to place the block
 		 * @param pos the position where the block was going to be placed
 		 * @param state the block state of the block that was going to be place
-		 * @param blockEntity the block entity of the block that was going to be placed, can be {@code null}
 		 */
-		void onBlockPlaceCanceled(World world, PlayerEntity player, BlockPos pos, BlockState state, /* Nullable */ BlockEntity blockEntity);
+		void onBlockPlaceCanceled(World world, PlayerEntity player, BlockPos pos, BlockState state);
 	}
 }

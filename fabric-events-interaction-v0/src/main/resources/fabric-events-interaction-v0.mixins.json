@@ -5,8 +5,7 @@
   "mixins": [
     "MixinServerPlayerEntity",
     "MixinServerPlayerInteractionManager",
-    "MixinServerPlayNetworkHandler",
-    "MixinBlockItem"
+    "MixinServerPlayNetworkHandler"
   ],
   "client": [
     "MixinClientPlayerInteractionManager",

@@ -27,6 +27,10 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -45,6 +49,7 @@ import net.fabricmc.fabric.api.event.player.AttackBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.event.player.PlayerBlockBreakEvents;
+import net.fabricmc.fabric.api.event.player.PlayerBlockPlaceEvents;
 
 @Mixin(ServerPlayerInteractionManager.class)
 public class MixinServerPlayerInteractionManager {
@@ -101,5 +106,36 @@ public class MixinServerPlayerInteractionManager {
 	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBroken(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V"), method = "tryBreakBlock", locals = LocalCapture.CAPTURE_FAILHARD)
 	private void onBlockBroken(BlockPos pos, CallbackInfoReturnable<Boolean> cir, BlockState state, BlockEntity entity, Block block, boolean b1) {
 		PlayerBlockBreakEvents.AFTER.invoker().afterBlockBreak(this.world, this.player, pos, state, entity);
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;useOnBlock(Lnet/minecraft/item/ItemUsageContext;)Lnet/minecraft/util/ActionResult;"), method = "interactBlock", cancellable = true)
+	public void beforeBlockPlace(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> cir) {
+		Item item = stack.getItem();
+
+		if (item instanceof BlockItem) {
+			ItemUsageContext usageContext = new ItemUsageContext(player, hand, blockHitResult);
+			ItemPlacementContext placementContext = new ItemPlacementContext(usageContext);
+
+			BlockState futureBlockState = ((BlockItem) item).getBlock().getPlacementState(placementContext);
+
+			boolean result = PlayerBlockPlaceEvents.BEFORE.invoker().beforeBlockPlace(world, player, placementContext.getBlockPos(), futureBlockState);
+
+			if (!result) {
+				PlayerBlockPlaceEvents.CANCELED.invoker().onBlockPlaceCanceled(world, player, placementContext.getBlockPos(), futureBlockState);
+
+				cir.setReturnValue(ActionResult.PASS);
+			}
+		}
+	}
+
+	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/advancement/criterion/ItemUsedOnBlockCriterion;test(Lnet/minecraft/server/network/ServerPlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/item/ItemStack;)V"), method = "interactBlock", cancellable = true)
+	public void afterBlockPlace(ServerPlayerEntity player, World world, ItemStack stack, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> cir) {
+		Item item = stack.getItem();
+
+		if (item instanceof BlockItem) {
+			BlockPos targetBlock = blockHitResult.getBlockPos().offset(blockHitResult.getSide());
+
+			PlayerBlockPlaceEvents.AFTER.invoker().afterBlockPlace(world, player, targetBlock, world.getBlockState(targetBlock));
+		}
 	}
 }
