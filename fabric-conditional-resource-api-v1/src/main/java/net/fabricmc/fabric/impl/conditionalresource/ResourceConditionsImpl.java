@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.conditionalrecipe;
+package net.fabricmc.fabric.impl.conditionalresource;
+
+import java.util.Objects;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -26,36 +28,43 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 
-import net.fabricmc.fabric.api.conditionalrecipe.v1.RecipeCondition;
+import net.fabricmc.fabric.api.conditionalresource.v1.ResourceCondition;
 
 @ApiStatus.Internal
-public final class RecipeConditionsImpl {
-	private RecipeConditionsImpl() {
+public final class ResourceConditionsImpl {
+	private ResourceConditionsImpl() {
 	}
 
-	private static final BiMap<Identifier, RecipeCondition> CONDITIONS = HashBiMap.create();
+	private static final BiMap<Identifier, ResourceCondition> CONDITIONS = HashBiMap.create();
 
-	public static <T extends RecipeCondition> void register(Identifier id, T condition) {
+	public static <T extends ResourceCondition> void register(Identifier id, T condition) {
+		Objects.requireNonNull(id);
+		Objects.requireNonNull(condition);
+
 		CONDITIONS.put(id, condition);
 	}
 
 	@Nullable
-	public static <T extends RecipeCondition> T get(Identifier id) {
+	public static <T extends ResourceCondition> T get(Identifier id) {
+		Objects.requireNonNull(id);
+
 		return (T) CONDITIONS.get(id);
 	}
 
 	@Nullable
-	public static <T extends RecipeCondition> Identifier getId(T condition) {
+	public static <T extends ResourceCondition> Identifier getId(T condition) {
+		Objects.requireNonNull(condition);
+
 		return CONDITIONS.inverse().get(condition);
 	}
 
-	public static boolean evaluate(Identifier recipeId, JsonObject object) {
+	public static boolean evaluate(Identifier resourceId, JsonObject object) {
 		Identifier type = new Identifier(JsonHelper.getString(object, "type"));
-		RecipeCondition condition = get(type);
+		ResourceCondition condition = get(type);
 		if (condition == null) throw new NullPointerException("Condition '" + type + "' does not exist!");
 
 		if (object.has("condition")) {
-			return condition.process(recipeId, object.get("condition"));
+			return condition.process(resourceId, object.get("condition"));
 		} else {
 			throw new JsonSyntaxException("Missing 'condition', expected to find an element");
 		}

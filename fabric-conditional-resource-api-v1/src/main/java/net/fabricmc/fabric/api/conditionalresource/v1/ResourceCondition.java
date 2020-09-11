@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.conditionalrecipe.v1;
+package net.fabricmc.fabric.api.conditionalresource.v1;
 
 import com.google.gson.JsonElement;
 
 import net.minecraft.util.Identifier;
 
 @FunctionalInterface
-public interface RecipeCondition {
+public interface ResourceCondition {
 	boolean process(Identifier recipeId, JsonElement element);
 }

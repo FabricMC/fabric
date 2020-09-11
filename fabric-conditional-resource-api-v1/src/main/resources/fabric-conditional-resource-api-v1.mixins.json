@@ -1,9 +1,9 @@
 {
   "required": true,
-  "package": "net.fabricmc.fabric.mixin.conditionalrecipe",
+  "package": "net.fabricmc.fabric.mixin.conditionalresource",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinRecipeManager"
+    "MixinJsonDataLoader"
   ],
   "client": [
   ],

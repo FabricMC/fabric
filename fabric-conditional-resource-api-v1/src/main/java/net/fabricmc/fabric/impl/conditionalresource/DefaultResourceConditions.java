@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.conditionalrecipe;
+package net.fabricmc.fabric.impl.conditionalresource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +29,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.conditionalrecipe.v1.RecipeConditions;
+import net.fabricmc.fabric.api.conditionalresource.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.Version;
@@ -37,13 +37,13 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.util.version.VersionParsingException;
 import net.fabricmc.loader.util.version.VersionPredicateParser;
 
-public class DefaultRecipeConditions implements ModInitializer {
+public class DefaultResourceConditions implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		RecipeConditions.register(new Identifier("fabric:impossible"), (recipeId, element) -> false);
-		RecipeConditions.register(new Identifier("fabric:always"), (recipeId, element) -> true);
-		RecipeConditions.register(new Identifier("fabric:boolean"), (recipeId, element) -> element.getAsBoolean());
-		RecipeConditions.register(new Identifier("fabric:or"), (recipeId, element) -> {
+		ResourceConditions.register(new Identifier("fabric:impossible"), (resourceId, element) -> false);
+		ResourceConditions.register(new Identifier("fabric:always"), (resourceId, element) -> true);
+		ResourceConditions.register(new Identifier("fabric:boolean"), (resourceId, element) -> element.getAsBoolean());
+		ResourceConditions.register(new Identifier("fabric:or"), (resourceId, element) -> {
 			JsonArray conditions = element.getAsJsonArray();
 
 			if (conditions.size() == 0) {
@@ -51,14 +51,14 @@ public class DefaultRecipeConditions implements ModInitializer {
 			}
 
 			for (JsonElement condition : conditions) {
-				if (RecipeConditions.evaluate(recipeId, condition.getAsJsonObject())) {
+				if (ResourceConditions.evaluate(resourceId, condition.getAsJsonObject())) {
 					return true;
 				}
 			}
 
 			return false;
 		});
-		RecipeConditions.register(new Identifier("fabric:and"), (recipeId, element) -> {
+		ResourceConditions.register(new Identifier("fabric:and"), (resourceId, element) -> {
 			JsonArray conditions = element.getAsJsonArray();
 
 			if (conditions.size() == 0) {
@@ -66,14 +66,14 @@ public class DefaultRecipeConditions implements ModInitializer {
 			}
 
 			for (JsonElement condition : conditions) {
-				if (!RecipeConditions.evaluate(recipeId, condition.getAsJsonObject())) {
+				if (!ResourceConditions.evaluate(resourceId, condition.getAsJsonObject())) {
 					return false;
 				}
 			}
 
 			return true;
 		});
-		RecipeConditions.register(new Identifier("fabric:mod"), (recipeId, element) -> {
+		ResourceConditions.register(new Identifier("fabric:mod"), (resourceId, element) -> {
 			JsonObject object = element.getAsJsonObject();
 
 			for (Map.Entry<String, JsonElement> entry : object.entrySet()) {

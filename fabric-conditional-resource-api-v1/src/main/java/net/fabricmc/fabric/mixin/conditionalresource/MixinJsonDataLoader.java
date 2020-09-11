@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.conditionalrecipe;
+package net.fabricmc.fabric.mixin.conditionalresource;
 
 import java.util.Map;
 
@@ -26,24 +26,24 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.recipe.RecipeManager;
+import net.minecraft.resource.JsonDataLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.profiler.Profiler;
 
-import net.fabricmc.fabric.api.conditionalrecipe.v1.RecipeConditions;
+import net.fabricmc.fabric.api.conditionalresource.v1.ResourceConditions;
 
-@Mixin(RecipeManager.class)
-public class MixinRecipeManager {
+@Mixin(JsonDataLoader.class)
+public class MixinJsonDataLoader {
 	@Shadow
 	@Final
 	private static Logger LOGGER;
 
-	@Inject(method = "apply", at = @At("HEAD"))
-	private void apply(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler, CallbackInfo ci) {
-		map.entrySet().removeIf(this::processConditions);
+	@Inject(method = "prepare", at = @At("RETURN"))
+	private void apply(ResourceManager resourceManager, Profiler profiler, CallbackInfoReturnable<Map<Identifier, JsonElement>> cir) {
+		cir.getReturnValue().entrySet().removeIf(this::processConditions);
 	}
 
 	@Unique
@@ -58,7 +58,7 @@ public class MixinRecipeManager {
 		boolean evaluate = true;
 
 		try {
-			evaluate = RecipeConditions.evaluate(entry.getKey(), conditions);
+			evaluate = ResourceConditions.evaluate(entry.getKey(), conditions);
 		} catch (Exception e) {
 			LOGGER.error("Failed to evaluate conditions for {}: {}", entry.getKey(), conditions);
 		}
