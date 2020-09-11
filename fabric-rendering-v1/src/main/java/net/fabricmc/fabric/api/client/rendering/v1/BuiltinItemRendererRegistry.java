@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
+import org.jetbrains.annotations.Contract;
+
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
