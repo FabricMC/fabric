@@ -23,5 +23,5 @@ import net.minecraft.util.Identifier;
 
 @FunctionalInterface
 public interface ResourceCondition {
-	boolean process(Identifier recipeId, @Nullable JsonElement element);
+	boolean process(Identifier resourceId, @Nullable JsonElement element);
 }
