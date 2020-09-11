@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.impl.provider.EntityApiProviderAccessImpl;
 
 /**
- * See {link ApiProviderAccess}. This subclass is for {@code Entity} game objects.
+ * See {@link ApiProviderAccess}. This subclass is for {@code Entity} game objects.
  */
 public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {
 	/**
