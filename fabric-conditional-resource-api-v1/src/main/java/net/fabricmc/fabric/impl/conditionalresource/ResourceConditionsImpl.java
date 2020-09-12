@@ -57,11 +57,11 @@ public final class ResourceConditionsImpl {
 		return CONDITIONS.inverse().get(condition);
 	}
 
-	public static boolean evaluate(Identifier resourceId, JsonObject object) {
+	public static boolean evaluate(Identifier fabricMetaId, JsonObject object) {
 		Identifier type = new Identifier(JsonHelper.getString(object, "type"));
 		ResourceCondition condition = get(type);
 		if (condition == null) throw new NullPointerException("Condition '" + type + "' does not exist!");
 
-		return condition.process(resourceId, object.has("condition") ? object.get("condition") : null);
+		return condition.process(fabricMetaId, object.has("condition") ? object.get("condition") : null);
 	}
 }

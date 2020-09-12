@@ -27,22 +27,50 @@ public final class ResourceConditions {
 	private ResourceConditions() {
 	}
 
+	/**
+	 * Registers a {@link ResourceCondition} with the specified {@code id}.
+	 *
+	 * @param id        the identifier of the condition
+	 * @param condition the resource condition
+	 * @param <T>       the {@link ResourceCondition} type
+	 */
 	public static <T extends ResourceCondition> void register(Identifier id, T condition) {
 		ResourceConditionsImpl.register(id, condition);
 	}
 
+	/**
+	 * Gets the {@link ResourceCondition} with the specified {@code id}.
+	 *
+	 * @param id  the identifier of the condition
+	 * @param <T> the {@link ResourceCondition} type
+	 * @return the resource condition
+	 */
 	@Nullable
 	public static <T extends ResourceCondition> T get(Identifier id) {
 		return ResourceConditionsImpl.get(id);
 	}
 
+	/**
+	 * Gets the {@link Identifier} with the specified {@link ResourceCondition}.
+	 *
+	 * @param condition the resource condition
+	 * @param <T>       the {@link ResourceCondition} type
+	 * @return the identifier of the condition
+	 */
 	@Nullable
 	public static <T extends ResourceCondition> Identifier getId(T condition) {
 		return ResourceConditionsImpl.getId(condition);
 	}
 
-	public static boolean evaluate(Identifier resourceId, JsonElement element) {
+	/**
+	 * Evaluates the resource condition.
+	 *
+	 * @param fabricMetaId the identifier of the fabric meta
+	 * @param element      the content of the condition
+	 * @return whether the condition is true
+	 */
+	public static boolean evaluate(Identifier fabricMetaId, JsonElement element) {
 		if (!element.isJsonObject()) throw new IllegalArgumentException("Condition element is not an object!");
-		return ResourceConditionsImpl.evaluate(resourceId, element.getAsJsonObject());
+		return ResourceConditionsImpl.evaluate(fabricMetaId, element.getAsJsonObject());
 	}
 }

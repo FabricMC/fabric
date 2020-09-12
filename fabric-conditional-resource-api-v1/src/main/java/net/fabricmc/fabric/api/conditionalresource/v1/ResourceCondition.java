@@ -23,5 +23,12 @@ import net.minecraft.util.Identifier;
 
 @FunctionalInterface
 public interface ResourceCondition {
-	boolean process(Identifier resourceId, @Nullable JsonElement element);
+	/**
+	 * Processes the resource condition.
+	 *
+	 * @param fabricMetaId the identifier of the fabric meta
+	 * @param element      the content of the condition
+	 * @return whether the condition is true
+	 */
+	boolean process(Identifier fabricMetaId, @Nullable JsonElement element);
 }

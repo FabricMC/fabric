@@ -40,10 +40,10 @@ import net.fabricmc.loader.util.version.VersionPredicateParser;
 public class DefaultResourceConditions implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ResourceConditions.register(new Identifier("fabric:impossible"), (resourceId, element) -> false);
-		ResourceConditions.register(new Identifier("fabric:always"), (resourceId, element) -> true);
-		ResourceConditions.register(new Identifier("fabric:boolean"), (resourceId, element) -> element.getAsBoolean());
-		ResourceConditions.register(new Identifier("fabric:or"), (resourceId, element) -> {
+		ResourceConditions.register(new Identifier("fabric:impossible"), (fabricMetaId, element) -> false);
+		ResourceConditions.register(new Identifier("fabric:always"), (fabricMetaId, element) -> true);
+		ResourceConditions.register(new Identifier("fabric:boolean"), (fabricMetaId, element) -> element.getAsBoolean());
+		ResourceConditions.register(new Identifier("fabric:or"), (fabricMetaId, element) -> {
 			JsonArray conditions = element.getAsJsonArray();
 
 			if (conditions.size() == 0) {
@@ -51,14 +51,14 @@ public class DefaultResourceConditions implements ModInitializer {
 			}
 
 			for (JsonElement condition : conditions) {
-				if (ResourceConditions.evaluate(resourceId, condition.getAsJsonObject())) {
+				if (ResourceConditions.evaluate(fabricMetaId, condition.getAsJsonObject())) {
 					return true;
 				}
 			}
 
 			return false;
 		});
-		ResourceConditions.register(new Identifier("fabric:and"), (resourceId, element) -> {
+		ResourceConditions.register(new Identifier("fabric:and"), (fabricMetaId, element) -> {
 			JsonArray conditions = element.getAsJsonArray();
 
 			if (conditions.size() == 0) {
@@ -66,14 +66,14 @@ public class DefaultResourceConditions implements ModInitializer {
 			}
 
 			for (JsonElement condition : conditions) {
-				if (!ResourceConditions.evaluate(resourceId, condition.getAsJsonObject())) {
+				if (!ResourceConditions.evaluate(fabricMetaId, condition.getAsJsonObject())) {
 					return false;
 				}
 			}
 
 			return true;
 		});
-		ResourceConditions.register(new Identifier("fabric:mod"), (resourceId, element) -> {
+		ResourceConditions.register(new Identifier("fabric:mod"), (fabricMetaId, element) -> {
 			JsonObject object = element.getAsJsonObject();
 
 			for (Map.Entry<String, JsonElement> entry : object.entrySet()) {

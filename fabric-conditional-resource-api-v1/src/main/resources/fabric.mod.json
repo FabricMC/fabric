@@ -16,8 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*"
+    "fabricloader": ">=0.4.0"
   },
   "description": "Adds api for conditional resource.",
   "mixins": [
