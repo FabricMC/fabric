@@ -16,12 +16,15 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import net.minecraft.util.Identifier;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
+import net.fabricmc.fabric.api.networking.v1.ClientChannelEvents;
 
-public final class PacketTypes {
-	public static final Identifier BRAND = new Identifier("minecraft:brand");
-	public static final Identifier REGISTER = new Identifier("minecraft:register");
-	public static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
-
-	public static final Identifier OPEN_CONTAINER = new Identifier("fabric", "container/open");
+public final class OldClientNetworkingHooks implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		// Must be lambdas below
+		ClientChannelEvents.REGISTERED.register((handler, client, sender, channels) -> S2CPacketTypeCallback.REGISTERED.invoker().accept(channels));
+		ClientChannelEvents.UNREGISTERED.register((handler, client, sender, channels) -> S2CPacketTypeCallback.UNREGISTERED.invoker().accept(channels));
+	}
 }

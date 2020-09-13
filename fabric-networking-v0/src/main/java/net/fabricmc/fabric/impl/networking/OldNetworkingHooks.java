@@ -16,8 +16,15 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-public final class PacketDebugOptions {
-	public static final boolean DISABLE_BUFFER_RELEASES = System.getProperty("fabric.networking.broken.disableBufferReleases", "false").equalsIgnoreCase("true");
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
+import net.fabricmc.fabric.api.networking.v1.ServerChannelEvents;
 
-	private PacketDebugOptions() { }
+public final class OldNetworkingHooks implements ModInitializer {
+	@Override
+	public void onInitialize() {
+		// Must be lambdas below
+		ServerChannelEvents.REGISTERED.register((handler, server, sender, channels) -> C2SPacketTypeCallback.REGISTERED.invoker().accept(handler.player, channels));
+		ServerChannelEvents.UNREGISTERED.register((handler, server, sender, channels) -> C2SPacketTypeCallback.UNREGISTERED.invoker().accept(handler.player, channels));
+	}
 }

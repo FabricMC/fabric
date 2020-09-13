@@ -39,6 +39,7 @@ import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
  *
  * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
  */
+// TODO: Replace this and deprecate in a new entity tracking module
 public final class PlayerStream {
 	private PlayerStream() { }
 

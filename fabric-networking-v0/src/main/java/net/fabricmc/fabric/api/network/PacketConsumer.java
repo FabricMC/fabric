@@ -20,7 +20,10 @@ import net.minecraft.network.PacketByteBuf;
 
 /**
  * Interface for receiving CustomPayload-based packets.
+ *
+ * @deprecated See the corresponding play packet handler in {@link net.fabricmc.fabric.api.networking.v1.ClientNetworking} or {@link net.fabricmc.fabric.api.networking.v1.ServerNetworking}
  */
+@Deprecated
 @FunctionalInterface
 public interface PacketConsumer {
 	/**

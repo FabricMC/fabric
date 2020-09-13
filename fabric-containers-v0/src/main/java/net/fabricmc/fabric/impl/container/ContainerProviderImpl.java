@@ -33,10 +33,10 @@ import net.minecraft.network.PacketByteBuf;
 
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
-import net.fabricmc.fabric.impl.networking.PacketTypes;
 import net.fabricmc.fabric.mixin.container.ServerPlayerEntityAccessor;
 
 public class ContainerProviderImpl implements ContainerProviderRegistry {
+	public static final Identifier OPEN_CONTAINER = new Identifier("fabric", "container/open");
 	/**
 	 * Use the instance provided by ContainerProviderRegistry.
 	 */
@@ -91,7 +91,7 @@ public class ContainerProviderImpl implements ContainerProviderRegistry {
 		buf.writeByte(syncId);
 
 		writer.accept(buf);
-		player.networkHandler.sendPacket(new CustomPayloadS2CPacket(PacketTypes.OPEN_CONTAINER, buf));
+		player.networkHandler.sendPacket(new CustomPayloadS2CPacket(OPEN_CONTAINER, buf));
 
 		PacketByteBuf clonedBuf = new PacketByteBuf(buf.duplicate());
 		clonedBuf.readIdentifier();

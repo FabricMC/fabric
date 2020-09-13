@@ -16,87 +16,67 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.Objects;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.thread.ThreadExecutor;
 
-import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
+import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
+import net.fabricmc.fabric.api.network.PacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 
-public class ClientSidePacketRegistryImpl extends PacketRegistryImpl implements ClientSidePacketRegistry {
-	private final Collection<Identifier> serverPayloadIds = new HashSet<>();
-
-	public static void invalidateRegisteredIdList() {
-		((ClientSidePacketRegistryImpl) ClientSidePacketRegistry.INSTANCE).serverPayloadIds.clear();
-	}
-
+public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canServerReceive(Identifier id) {
-		return serverPayloadIds.contains(id);
+		return ClientNetworking.getPlayReceiver().hasChannel(id);
 	}
 
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
-
-		if (handler != null) {
-			if (completionListener == null) {
-				// stay closer to the vanilla codepath
-				handler.sendPacket(packet);
-			} else {
-				handler.getConnection().send(packet, completionListener);
-			}
-		} else {
-			LOGGER.warn("Sending packet " + packet + " to server failed, not connected!");
-		}
+		ClientNetworking.getPlaySender().sendPacket(packet, completionListener);
 	}
 
 	@Override
 	public Packet<?> toPacket(Identifier id, PacketByteBuf buf) {
-		return new CustomPayloadC2SPacket(id, buf);
+		return ClientNetworking.getPlaySender().makePacket(id, buf);
 	}
 
 	@Override
-	protected void onRegister(Identifier id) {
-		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
+	public void register(Identifier id, PacketConsumer consumer) {
+		// id is checked in client networking
+		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		if (handler != null) {
-			createRegisterTypePacket(PacketTypes.REGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
-		}
+		ClientNetworking.getPlayReceiver().register(id, (handler, client, sender, buf) -> {
+			consumer.accept(new PacketContext() {
+				@Override
+				public EnvType getPacketEnvironment() {
+					return EnvType.CLIENT;
+				}
+
+				@Override
+				public PlayerEntity getPlayer() {
+					return client.player;
+				}
+
+				@Override
+				public ThreadExecutor<?> getTaskQueue() {
+					return client;
+				}
+			}, buf);
+		});
 	}
 
 	@Override
-	protected void onUnregister(Identifier id) {
-		ClientPlayNetworkHandler handler = MinecraftClient.getInstance().getNetworkHandler();
-
-		if (handler != null) {
-			createRegisterTypePacket(PacketTypes.UNREGISTER, Collections.singleton(id)).ifPresent(handler::sendPacket);
-		}
-	}
-
-	@Override
-	protected Collection<Identifier> getIdCollectionFor(PacketContext context) {
-		return serverPayloadIds;
-	}
-
-	@Override
-	protected void onReceivedRegisterPacket(PacketContext context, Collection<Identifier> ids) {
-		S2CPacketTypeCallback.REGISTERED.invoker().accept(ids);
-	}
-
-	@Override
-	protected void onReceivedUnregisterPacket(PacketContext context, Collection<Identifier> ids) {
-		S2CPacketTypeCallback.UNREGISTERED.invoker().accept(ids);
+	public void unregister(Identifier id) {
+		ClientNetworking.getPlayReceiver().unregister(id);
 	}
 }

@@ -30,8 +30,15 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>Registrations received will be for <em>server -&gt; client</em> packets
  * that the sending client can understand.
+ *
+ * @deprecated Please migrate to {@link net.fabricmc.fabric.api.networking.v1.ClientChannelEvents}.
  */
+@Deprecated
 public interface C2SPacketTypeCallback {
+	/**
+	 * @deprecated Please migrate to {@link net.fabricmc.fabric.api.networking.v1.ClientChannelEvents#REGISTERED}.
+	 */
+	@Deprecated
 	Event<C2SPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
 			C2SPacketTypeCallback.class,
 			(callbacks) -> (client, types) -> {
@@ -41,6 +48,10 @@ public interface C2SPacketTypeCallback {
 			}
 	);
 
+	/**
+	 * @deprecated Please migrate to {@link net.fabricmc.fabric.api.networking.v1.ClientChannelEvents#UNREGISTERED}.
+	 */
+	@Deprecated
 	Event<C2SPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(
 			C2SPacketTypeCallback.class,
 			(callbacks) -> (client, types) -> {
