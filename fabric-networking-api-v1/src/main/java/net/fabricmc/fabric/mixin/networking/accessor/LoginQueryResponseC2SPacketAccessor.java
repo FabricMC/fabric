@@ -14,31 +14,19 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.mixin.networking.accessor;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
 
-import net.fabricmc.fabric.impl.networking.CustomPayloadC2SPacketAccessor;
+@Mixin(LoginQueryResponseC2SPacket.class)
+public interface LoginQueryResponseC2SPacketAccessor {
+	@Accessor
+	int getQueryId();
 
-@Mixin(CustomPayloadC2SPacket.class)
-public class MixinCustomPayloadC2SPacket implements CustomPayloadC2SPacketAccessor {
-	@Shadow
-	private Identifier channel;
-	@Shadow
-	private PacketByteBuf data;
-
-	@Override
-	public Identifier getChannel() {
-		return channel;
-	}
-
-	@Override
-	public PacketByteBuf getData() {
-		return new PacketByteBuf(this.data.copy());
-	}
+	@Accessor
+	PacketByteBuf getResponse();
 }

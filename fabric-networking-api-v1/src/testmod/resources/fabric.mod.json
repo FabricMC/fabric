@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-networking-api-v1-testmod",
+  "name": "Fabric Networking API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-networking-api-v1": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.networking.v1.NetworkingUser"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.networking.v1.NetworkingClientUser"
+    ]
+  }
+}

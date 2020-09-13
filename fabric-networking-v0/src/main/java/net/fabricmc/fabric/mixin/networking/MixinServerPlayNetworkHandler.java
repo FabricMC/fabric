@@ -33,7 +33,6 @@ import net.minecraft.util.thread.ThreadExecutor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.impl.networking.CustomPayloadC2SPacketAccessor;
 import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 
 @Mixin(ServerPlayNetworkHandler.class)

@@ -14,17 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking;
+package net.fabricmc.fabric.mixin.networking.accessor;
 
-import net.minecraft.util.Identifier;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
+import net.minecraft.util.Identifier;
 
-/**
- * Helper interface containing getters for CustomPayloadC2SPacket
- * which were omitted from the compiled game.
- */
-public interface CustomPayloadC2SPacketAccessor {
+@Mixin(LoginQueryRequestS2CPacket.class)
+public interface LoginQueryRequestS2CPacketAccessor {
+	@Accessor("queryId")
+	int getServerQueryId();
+
+	@Accessor
 	Identifier getChannel();
 
-	PacketByteBuf getData();
+	@Accessor
+	void setChannel(Identifier channel);
+
+	@Accessor
+	PacketByteBuf getPayload();
+
+	@Accessor
+	void setPayload(PacketByteBuf payload);
+
+	@Accessor
+	void setQueryId(int queryId);
 }
