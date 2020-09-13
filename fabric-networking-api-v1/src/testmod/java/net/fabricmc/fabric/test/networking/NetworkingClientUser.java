@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.networking.v1;
+package net.fabricmc.fabric.test.networking;
 
 import java.util.concurrent.CompletableFuture;
 

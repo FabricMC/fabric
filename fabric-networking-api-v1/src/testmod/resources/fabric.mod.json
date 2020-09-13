@@ -10,10 +10,10 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.networking.v1.NetworkingUser"
+      "net.fabricmc.fabric.test.networking.NetworkingUser"
     ],
     "client": [
-      "net.fabricmc.fabric.test.networking.v1.NetworkingClientUser"
+      "net.fabricmc.fabric.test.networking.NetworkingClientUser"
     ]
   }
 }
