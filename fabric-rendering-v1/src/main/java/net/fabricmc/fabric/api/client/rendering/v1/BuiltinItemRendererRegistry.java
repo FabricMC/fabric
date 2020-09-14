@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.rendering.v1;
 
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -78,8 +79,7 @@ public interface BuiltinItemRendererRegistry {
 	 * @throws IllegalArgumentException if the item already has a registered renderer
 	 * @throws NullPointerException if either the item or the renderer is null
 	 */
-	@Contract("null, _ -> fail; _, null -> fail")
-	void register(ItemConvertible item, DynamicItemRenderer renderer);
+	void register(@NotNull ItemConvertible item, @NotNull DynamicItemRenderer renderer);
 
 	/**
 	 * Dynamic item renderers render items with custom code.
