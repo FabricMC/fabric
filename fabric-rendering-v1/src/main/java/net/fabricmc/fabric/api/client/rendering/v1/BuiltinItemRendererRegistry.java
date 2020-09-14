@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.rendering.v1;
 
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.client.render.VertexConsumerProvider;
