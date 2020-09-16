@@ -21,11 +21,8 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
@@ -49,12 +46,5 @@ abstract class ItemMixin implements ItemExtensions {
 	@Override
 	public void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider) {
 		this.equipmentSlotProvider = equipmentSlotProvider;
-	}
-
-	@Inject(method = "isUsedOnRelease", at = @At("HEAD"), cancellable = true)
-	public void isUsedOnRelease(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
-		if (itemStack.getItem() instanceof CrossbowItem) {
-			cir.setReturnValue(true);
-		}
 	}
 }

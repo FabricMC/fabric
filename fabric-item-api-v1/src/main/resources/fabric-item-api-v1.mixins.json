@@ -4,19 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ItemMixin",
-    "MobEntityMixin",
-    "CrossbowItemMixin",
-    "EntityCrossbowUseMixin",
-    "EntityBowUseMixin",
-    "AbstractSkeletonEntityMixin",
-    "ProjectileUtilMixin",
-    "BowItemMixin"
+    "MobEntityMixin"
   ],
   "client": [
-    "client.ItemStackMixin",
-    "client.HeldItemRendererMixin",
-    "client.PlayerEntityRendererMixin",
-    "client.SkeletonEntityModelMixin"
+    "client.ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1
