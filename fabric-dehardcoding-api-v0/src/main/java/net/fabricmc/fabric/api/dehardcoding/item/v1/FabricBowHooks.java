@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.item.v1;
+package net.fabricmc.fabric.api.dehardcoding.item.v1;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 
 /**
@@ -26,10 +27,10 @@ import net.minecraft.item.ItemStack;
 public interface FabricBowHooks {
 	/**
 	 * Runs all of the default arrow functions first.
-	 *
-	 * @param arrowStack        The ItemStack for the arrows
+	 *  @param arrowStack        The ItemStack for the arrows
 	 * @param user              The user of the bow
 	 * @param remainingUseTicks The ticks remaining on the bow usage
+	 * @param persistentProjectileEntity The arrow entity to be spawned
 	 */
-	void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks);
+	void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks, PersistentProjectileEntity persistentProjectileEntity);
 }

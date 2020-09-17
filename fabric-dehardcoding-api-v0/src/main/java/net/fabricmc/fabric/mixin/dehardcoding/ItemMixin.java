@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tool;
+package net.fabricmc.fabric.mixin.dehardcoding;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.entity.mob.PiglinEntity;
-import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
-@Mixin({ PiglinEntity.class, PillagerEntity.class })
-public class EntityCrossbowUseMixin {
-	@Inject(method = "canUseRangedWeapon", at = @At("HEAD"))
-	public void canUseRangedWeapon(RangedWeaponItem weapon, CallbackInfoReturnable<Boolean> cir) {
-		if (weapon instanceof CrossbowItem) {
+@Mixin(Item.class)
+abstract class ItemMixin {
+	@Inject(method = "isUsedOnRelease", at = @At("HEAD"), cancellable = true)
+	public void isUsedOnRelease(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
+		if (itemStack.getItem() instanceof CrossbowItem) {
 			cir.setReturnValue(true);
 		}
 	}

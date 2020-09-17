@@ -16,13 +16,17 @@
 
 package net.fabricmc.fabric.test.tool;
 
-import net.minecraft.item.*;
+import net.minecraft.item.ArrowItem;
+import net.minecraft.item.CrossbowItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricCrossbowHooks;
+import net.fabricmc.fabric.api.dehardcoding.item.v1.FabricCrossbowHooks;
 
 public class FabricCrossbowTests implements ModInitializer {
 	@Override

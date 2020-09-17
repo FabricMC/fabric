@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.test.tool;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -25,7 +26,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricBowHooks;
+import net.fabricmc.fabric.api.dehardcoding.item.v1.FabricBowHooks;
 
 public class FabricBowTests implements ModInitializer {
 	@Override
@@ -42,7 +43,8 @@ public class FabricBowTests implements ModInitializer {
 		}
 
 		@Override
-		public void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks) {
+		public void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks, PersistentProjectileEntity persistentProjectileEntity) {
+			persistentProjectileEntity.setPunch(100);
 		}
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tool;
+package net.fabricmc.fabric.mixin.dehardcoding;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +29,7 @@ import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.item.v1.FabricCrossbowHooks;
+import net.fabricmc.fabric.api.dehardcoding.item.v1.FabricCrossbowHooks;
 
 @Mixin(CrossbowItem.class)
 public class CrossbowItemMixin {

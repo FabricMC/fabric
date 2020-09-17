@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "net.fabricmc.fabric.mixin.tool",
+  "package": "net.fabricmc.fabric.mixin.dehardcoding",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CrossbowItemMixin",
@@ -9,7 +9,8 @@
     "EntityBowUseMixin",
     "AbstractSkeletonEntityMixin",
     "ProjectileUtilMixin",
-    "BowItemMixin"
+    "BowItemMixin",
+    "ItemMixin"
   ],
   "client": [
     "client.HeldItemRendererMixin",

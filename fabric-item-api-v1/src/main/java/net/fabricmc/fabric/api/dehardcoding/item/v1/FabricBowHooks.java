@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.tool;
+package net.fabricmc.fabric.api.dehardcoding.item.v1;
 
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.Item;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
 
-@Mixin(Item.class)
-abstract class ItemMixin {
-	@Inject(method = "isUsedOnRelease", at = @At("HEAD"), cancellable = true)
-	public void isUsedOnRelease(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
-		if (itemStack.getItem() instanceof CrossbowItem) {
-			cir.setReturnValue(true);
-		}
-	}
+/**
+ * An interface to implement for all custom bows.
+ *
+ */
+public interface FabricBowHooks {
+	/**
+	 * Runs all of the default arrow functions first.
+	 *
+	 * @param arrowStack        The ItemStack for the arrows
+	 * @param user              The user of the bow
+	 * @param remainingUseTicks The ticks remaining on the bow usage
+	 */
+	void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks);
 }
