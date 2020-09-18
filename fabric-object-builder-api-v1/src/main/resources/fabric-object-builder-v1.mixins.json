@@ -9,6 +9,9 @@
     "MaterialBuilderAccessor",
     "MixinBlock",
     "PointOfInterestTypeAccessor",
+    "TradeOffersAccessor",
+    "TradeOffersMixin",
+    "TypeAwareTradeMixin",
     "VillagerProfessionAccessor"
   ],
   "injectors": {
