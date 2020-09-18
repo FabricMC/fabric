@@ -29,7 +29,7 @@ public final class PlayerBlockPlaceEvents {
 
 	/**
 	 * Callback before a block is placed.
-	 * Called on both client and server
+	 * Called on server only
 	 *
 	 * <p>If any listener cancels a block placing action, that block placing
 	 * action is canceled and {@link #CANCELED} event is fired. Otherwise, the
@@ -52,7 +52,7 @@ public final class PlayerBlockPlaceEvents {
 	/**
 	 * Callback after a block is placed.
 	 *
-	 * <p>Called on both client and server
+	 * <p>Called on server only
 	 */
 	public static final Event<After> AFTER = EventFactory.createArrayBacked(After.class,
 			(listeners) -> (world, player, pos, state) -> {
@@ -65,7 +65,7 @@ public final class PlayerBlockPlaceEvents {
 	/**
 	 * Callback when a block place has been canceled.
 	 *
-	 * <p>Called on both client and server. May be used on logical server to send packets to revert client-side block changes.
+	 * <p>Called on server only. May be used on logical server to send packets to revert client-side block changes.
 	 */
 	public static final Event<Canceled> CANCELED = EventFactory.createArrayBacked(Canceled.class,
 			(listeners) -> (world, player, pos, state) -> {
