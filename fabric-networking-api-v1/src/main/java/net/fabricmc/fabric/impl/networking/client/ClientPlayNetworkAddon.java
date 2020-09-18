@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.networking.v1.ClientChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ClientConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
+import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
@@ -39,6 +40,9 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		super(ClientNetworkingDetails.PLAY, handler.getConnection());
 		this.handler = handler;
 		this.client = client;
+
+		// Must register pending channels via lateinit
+		this.registerPendingChannels((ChannelInfoHolder) this.connection);
 	}
 
 	// also expose sendRegistration

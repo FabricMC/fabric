@@ -49,8 +49,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		this.receiver = receiver;
 		this.sendableChannels = sendableChannels;
 		this.sendableChannelsView = Collections.unmodifiableSet(sendableChannels);
+	}
 
-		Collection<Identifier> pending = ((ChannelInfoHolder) connection).getChannels();
+	protected void registerPendingChannels(ChannelInfoHolder holder) {
+		final Collection<Identifier> pending = holder.getChannels();
 
 		if (!pending.isEmpty()) {
 			register(new ArrayList<>(pending));

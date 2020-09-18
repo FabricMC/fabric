@@ -14,27 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.networking;
+package net.fabricmc.fabric.test.networking.login;
 
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.text.Text;
-
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
 
-public final class NetworkingClientUser implements ClientModInitializer {
+@Environment(EnvType.CLIENT)
+public final class NetworkingLoginQueryClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientNetworking.getPlayReceiver().register(NetworkingUser.TEST_CHANNEL, (handler, client, sender, buf) -> {
-			Text text = buf.readText();
-			client.send(() -> client.inGameHud.setOverlayMessage(text, true));
+		// Send a dummy response to the server in return, by registering here we essentially say we understood the server's query
+		ClientNetworking.getLoginReceiver().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, client, buf, listenerAdder) -> {
+			return CompletableFuture.completedFuture(PacketByteBufs.empty());
 		});
-
-		// a dummy response
-		ClientNetworking.getLoginReceiver().register(NetworkingUser.TEST_CHANNEL, (handler, client, buf, listenerAdder) ->
-				CompletableFuture.completedFuture(PacketByteBufs.empty())
-		);
 	}
 }

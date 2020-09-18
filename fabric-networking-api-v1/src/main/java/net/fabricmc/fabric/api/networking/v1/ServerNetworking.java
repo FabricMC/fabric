@@ -125,6 +125,8 @@ public final class ServerNetworking {
 		/**
 		 * Handles an incoming query response from a client.
 		 *
+		 * <p>Whether the client understood the query should be checked before reading from the payload of the packet.
+		 *
 		 * @param handler the network handler that received this packet
 		 * @param server the server
 		 * @param sender the packet sender

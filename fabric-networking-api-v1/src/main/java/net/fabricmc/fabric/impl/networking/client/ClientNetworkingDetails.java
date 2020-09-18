@@ -48,6 +48,7 @@ public final class ClientNetworkingDetails {
 
 	@Environment(EnvType.CLIENT)
 	public static void clientInit() {
+		// Register a login query handler for early channel registration.
 		ClientNetworking.getLoginReceiver().register(NetworkingDetails.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
 			int n = buf.readVarInt();
 			List<Identifier> ids = new ArrayList<>(n);

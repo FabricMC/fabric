@@ -30,6 +30,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
+import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerNetworking.PlayChannelHandler> {
@@ -40,6 +41,9 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		super(ServerNetworkingDetails.PLAY, handler.getConnection());
 		this.handler = handler;
 		this.server = server;
+
+		// Must register pending channels via lateinit
+		this.registerPendingChannels((ChannelInfoHolder) this.connection);
 	}
 
 	public void onClientReady() {
@@ -55,7 +59,6 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	 */
 	public boolean handle(CustomPayloadC2SPacket packet) {
 		CustomPayloadC2SPacketAccessor access = (CustomPayloadC2SPacketAccessor) packet;
-		System.out.printf("Handling packet %s%n", access.getChannel());
 		return handle(access.getChannel(), access.getData());
 	}
 

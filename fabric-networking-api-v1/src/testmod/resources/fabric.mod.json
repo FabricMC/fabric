@@ -10,10 +10,14 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.networking.NetworkingUser"
+      "net.fabricmc.fabric.test.networking.keybindreciever.NetworkingKeybindPacketTest",
+      "net.fabricmc.fabric.test.networking.login.NetworkingLoginQueryTest",
+      "net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.networking.NetworkingClientUser"
+      "net.fabricmc.fabric.test.networking.keybindreciever.NetworkingKeybindClientPacketTest",
+      "net.fabricmc.fabric.test.networking.login.NetworkingLoginQueryClientTest",
+      "net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketClientTest"
     ]
   }
 }
