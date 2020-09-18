@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.cooldown;
+package net.fabricmc.fabric.test.renderer.registry.client.cooldown;
 
 import java.awt.Color;
 

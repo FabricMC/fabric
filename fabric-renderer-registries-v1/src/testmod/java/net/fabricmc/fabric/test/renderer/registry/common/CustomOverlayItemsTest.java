@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.common;
+package net.fabricmc.fabric.test.renderer.registry.common;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -22,10 +22,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.test.renderregistry.common.cooldown.CooldownItem;
-import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.StorageItem;
+import net.fabricmc.fabric.test.renderer.registry.common.cooldown.CooldownItem;
+import net.fabricmc.fabric.test.renderer.registry.common.durabilitybar.StorageItem;
 
-public class RendererRegistriesTest implements ModInitializer {
+/**
+ * This "test" registers items used in the
+ * {@link net.fabricmc.fabric.test.renderer.registry.client.ItemOverlayRendererTest ItemOverlayRendererTest}.
+ */
+public final class CustomOverlayItemsTest implements ModInitializer {
 	public static final String ID = "fabric-renderer-registries-v1-testmod";
 
 	// Count Label related items
@@ -62,7 +66,7 @@ public class RendererRegistriesTest implements ModInitializer {
 		Registry.register(Registry.ITEM, id("long_cooldown"), LONG_COOLDOWN);
 		Registry.register(Registry.ITEM, id("hidden_cooldown"), HIDDEN_COOLDOWN);
 
-		// Items used to demostrate pre/post-rendering
+		// Items used to demonstrate pre/post-rendering
 		Registry.register(Registry.ITEM, id("mysterious_book"), MYSTERIOUS_BOOK);
 		Registry.register(Registry.ITEM, id("tunisian_diamond"), TUNISIAN_DIAMOND);
 	}

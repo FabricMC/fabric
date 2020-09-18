@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
+package net.fabricmc.fabric.test.renderer.registry.client.durabilitybar;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Util;

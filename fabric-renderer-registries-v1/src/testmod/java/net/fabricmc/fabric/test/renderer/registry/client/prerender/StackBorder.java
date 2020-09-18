@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.prerender;
+package net.fabricmc.fabric.test.renderer.registry.client.prerender;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import org.lwjgl.opengl.GL11;
@@ -33,10 +33,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Matrix4f;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
-import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
+import net.fabricmc.fabric.test.renderer.registry.common.CustomOverlayItemsTest;
 
 public class StackBorder extends DrawableHelper implements ItemOverlayRenderer.Pre {
-	protected static final Identifier BORDER_TEX = RendererRegistriesTest.id("textures/gui/border.png");
+	protected static final Identifier BORDER_TEX = CustomOverlayItemsTest.id("textures/gui/border.png");
 	protected final int color;
 
 	public StackBorder(int color) {

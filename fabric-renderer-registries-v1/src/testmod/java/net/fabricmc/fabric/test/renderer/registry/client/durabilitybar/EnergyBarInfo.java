@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.durabilitybar;
+package net.fabricmc.fabric.test.renderer.registry.client.durabilitybar;
 
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemDamageBarInfo;
-import net.fabricmc.fabric.test.renderregistry.common.durabilitybar.StorageItem;
+import net.fabricmc.fabric.test.renderer.registry.common.durabilitybar.StorageItem;
 
 public class EnergyBarInfo implements ItemDamageBarInfo {
 	@Override

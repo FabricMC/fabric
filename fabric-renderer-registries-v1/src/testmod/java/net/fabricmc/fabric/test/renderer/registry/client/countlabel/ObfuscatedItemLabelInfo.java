@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.countlabel;
+package net.fabricmc.fabric.test.renderer.registry.client.countlabel;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;

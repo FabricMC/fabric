@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderer.registry;
+package net.fabricmc.fabric.test.renderer.registry.client;
 
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -37,10 +37,10 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
 
 /**
- * This test exists solely for testing generics.
- * As such it is not in the mod json
+ * This test exists solely for testing generics.<br>
+ * As such, it is not in the mod JSON.
  */
-public class FeatureRendererGenericTests implements ClientModInitializer {
+public final class FeatureRendererGenericTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// These aren't tests in the normal sense. These exist to test that generics are sane.

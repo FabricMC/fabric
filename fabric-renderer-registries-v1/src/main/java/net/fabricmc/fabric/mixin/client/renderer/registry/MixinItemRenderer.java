@@ -139,7 +139,7 @@ public abstract class MixinItemRenderer {
 
 		Text contents = ItemOverlayMaps.LABEL_INFO_MAP.get(stack.getItem()).getContents(stack, countLabel);
 		color = ItemOverlayMaps.LABEL_INFO_MAP.get(stack.getItem()).getColor(stack, countLabel);
-		return textRenderer.draw(contents.method_30937(), x, y, color, shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
+		return textRenderer.draw(contents.asOrderedText(), x, y, color, shadow, matrix, vertexConsumers, seeThrough, backgroundColor, light);
 	}
 
 	// undoes the "countLabel != null" expression hack *again* (since the 1st undo only happens if the count label is rendered)

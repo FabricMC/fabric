@@ -12,11 +12,11 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest"
+      "net.fabricmc.fabric.test.renderer.registry.common.CustomOverlayItemsTest"
     ],
     "client": [
-      "net.fabricmc.fabric.test.renderregistry.client.ClientRendererRegistriesTest",
-      "net.fabricmc.fabric.test.renderer.registry.FeatureRendererTest"
+      "net.fabricmc.fabric.test.renderer.registry.client.ItemOverlayRendererTest",
+      "net.fabricmc.fabric.test.renderer.registry.client.FeatureRendererTest"
     ]
   }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.renderregistry.client.postrender;
+package net.fabricmc.fabric.test.renderer.registry.client.postrender;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
@@ -26,10 +26,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.item.ItemOverlayRenderer;
-import net.fabricmc.fabric.test.renderregistry.common.RendererRegistriesTest;
+import net.fabricmc.fabric.test.renderer.registry.common.CustomOverlayItemsTest;
 
 public class WarningIcon extends DrawableHelper implements ItemOverlayRenderer.Post {
-	private static final Identifier WARNING_TEX = RendererRegistriesTest.id("textures/gui/warning.png");
+	private static final Identifier WARNING_TEX = CustomOverlayItemsTest.id("textures/gui/warning.png");
 
 	@SuppressWarnings("deprecation")
 	@Override
