@@ -3,13 +3,17 @@
   "package": "net.fabricmc.fabric.mixin.biome",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "DimensionOptionsAccessor",
+    "DimensionTypeAccessor",
     "MixinAddEdgeBiomesLayer",
     "MixinAddHillsLayer",
     "MixinAddRiversLayer",
     "MixinBiomeSource",
     "MixinSetBaseBiomesLayer",
-    "MixinTheNetherDimension",
-    "MixinVanillaLayeredBiomeSource"
+    "MixinMinecraftDedicatedServer",
+    "MixinMultiNoiseBiomeSource",
+    "MixinVanillaLayeredBiomeSource",
+    "MultiNoiseBiomeSourceAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

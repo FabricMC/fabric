@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "LootPoolBuilderHooks",
+    "LootPoolEntryTypesAccessor",
     "LootSupplierBuilderHooks",
     "MixinLootManager",
     "MixinLootPool",

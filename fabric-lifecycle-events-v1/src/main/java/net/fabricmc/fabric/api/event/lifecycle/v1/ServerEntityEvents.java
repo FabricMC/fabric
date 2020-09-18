@@ -53,6 +53,7 @@ public final class ServerEntityEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerWorld world);
 	}

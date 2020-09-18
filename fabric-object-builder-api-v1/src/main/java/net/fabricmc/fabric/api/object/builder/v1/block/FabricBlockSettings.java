@@ -66,6 +66,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		thisAccessor.setDynamicBounds(otherAccessor.getDynamicBounds());
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
+		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
 
 		// Now attempt to copy fabric specific data
 		BlockSettingsInternals otherInternals = (BlockSettingsInternals) settings;
@@ -244,7 +245,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Make the material require tool to drop and slows down mining speed if the incorrect tool is used.
+	 * Make the block require tool to drop and slows down mining speed if the incorrect tool is used.
 	 */
 	@Override
 	public FabricBlockSettings requiresTool() {
@@ -279,8 +280,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link FabricMaterialBuilder#requiresTool()}.
+	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		FabricBlockInternals.computeExtraData(this).addMiningLevel(tag, miningLevel);
@@ -288,8 +289,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link FabricMaterialBuilder#requiresTool()}.
+	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);

@@ -143,8 +143,20 @@ public interface MutableQuadView extends QuadView {
 	 * This method should be performant whenever caller's vertex representation makes it feasible.
 	 *
 	 * <p>Calling this method does not emit the quad.
+	 *
+	 * @deprecated Use {@link #fromVanilla(BakedQuad, RenderMaterial, Direction, int[], int)}
+	 * which has better encapsulation and removed outdated item flag
 	 */
+	@Deprecated
 	MutableQuadView fromVanilla(int[] quadData, int startIndex, boolean isItem);
+
+	/**
+	 * Enables bulk vertex data transfer using the standard Minecraft vertex formats.
+	 * This method should be performant whenever caller's vertex representation makes it feasible.
+	 *
+	 * <p>Calling this method does not emit the quad.
+	 */
+	MutableQuadView fromVanilla(BakedQuad quad, RenderMaterial material, Direction cullFace);
 
 	/**
 	 * Encodes an integer tag with this quad that can later be retrieved via

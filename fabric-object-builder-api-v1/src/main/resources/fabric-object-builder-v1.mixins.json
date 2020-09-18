@@ -12,6 +12,7 @@
     "MaterialBuilderAccessor",
     "MixinBlock",
     "PointOfInterestTypeAccessor",
+    "SpawnRestrictionAccessor",
     "VillagerProfessionAccessor"
   ],
   "client": [
