@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.tool;
+package net.fabricmc.fabric.test.extensibility;
 
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.CrossbowItem;

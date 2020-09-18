@@ -7,8 +7,8 @@
   "license": "Apache-2.0",
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.tool.FabricCrossbowTests",
-      "net.fabricmc.fabric.test.tool.FabricBowTests"
+      "net.fabricmc.fabric.test.extensibility.FabricCrossbowTests",
+      "net.fabricmc.fabric.test.extensibility.FabricBowTests"
     ]
   }
 }
