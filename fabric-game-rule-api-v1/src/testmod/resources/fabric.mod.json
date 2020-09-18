@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-game-rule-api-v1-testmod",
+  "name": "Fabric Game Rule API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-game-rule-api-v1": "*",
+    "fabric-lifecycle-events-v1":"*",
+    "fabric-resource-loader-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.gamerule.GameRulesTestMod"
+    ]
+  }
+}

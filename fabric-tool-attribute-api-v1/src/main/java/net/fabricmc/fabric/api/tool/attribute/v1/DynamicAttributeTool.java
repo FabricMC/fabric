@@ -68,7 +68,7 @@ public interface DynamicAttributeTool {
 	 * @param stack The item stack being used to mine the block
 	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
-	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
+	 * @deprecated Use {@link #getMiningSpeedMultiplier(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
 	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
@@ -91,8 +91,9 @@ public interface DynamicAttributeTool {
 	}
 
 	/**
-	 * Post process the mining speed, can be used to change tool speed regardless if the tool is effective.
-	 * Useful if you want to change the mining speed even if it is not effective.
+	 * Post process the mining speed, this takes place after the mining speed has been calculated.
+	 *
+	 * <p>This allows bypassing the regular computation formula.
 	 *
 	 * @param tag          The tool tag the item stack is handled by
 	 * @param state        The block to mine

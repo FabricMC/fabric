@@ -25,14 +25,17 @@ import java.util.Set;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,7 +44,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.Int2ObjectBiMap;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
@@ -59,11 +61,17 @@ import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 @Mixin(SimpleRegistry.class)
 public abstract class MixinIdRegistry<T> implements RemappableRegistry, ListenableRegistry {
 	@Shadow
-	protected Int2ObjectBiMap<T> indexedEntries;
+	@Final
+	private ObjectList<T> field_26682;
 	@Shadow
-	protected BiMap<Identifier, T> entriesById;
+	@Final
+	private Object2IntMap<T> field_26683;
 	@Shadow
-	protected BiMap<RegistryKey<T>, T> entriesByKey;
+	@Final
+	private BiMap<Identifier, T> entriesById;
+	@Shadow
+	@Final
+	private BiMap<RegistryKey<T>, T> entriesByKey;
 	@Shadow
 	private int nextId;
 	@Unique
@@ -128,8 +136,8 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, Object object, CallbackInfoReturnable info) {
-		int indexedEntriesId = indexedEntries.getRawId((T) object);
+	public void setPre(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, CallbackInfoReturnable info) {
+		int indexedEntriesId = field_26683.getInt((T) object);
 
 		if (indexedEntriesId >= 0) {
 			throw new RuntimeException("Attempted to register object " + object + " twice! (at raw IDs " + indexedEntriesId + " and " + id + " )");
@@ -141,7 +149,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			T oldObject = entriesById.get(registryId.getValue());
 
 			if (oldObject != null && oldObject != object) {
-				int oldId = indexedEntries.getRawId(oldObject);
+				int oldId = field_26683.getInt(oldObject);
 
 				if (oldId != id) {
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
@@ -157,7 +165,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 	@SuppressWarnings("unchecked")
 	@Inject(method = "set", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, Object object, CallbackInfoReturnable info) {
+	public void setPost(int id, RegistryKey<T> registryId, Object object, Lifecycle lifecycle, CallbackInfoReturnable info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
 		}
@@ -298,7 +306,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 
 		Int2IntMap idMap = new Int2IntOpenHashMap();
 
-		for (Object o : indexedEntries) {
+		for (Object o : field_26682) {
 			Identifier id = registry.getId(o);
 			int rid = registry.getRawId(o);
 
@@ -309,7 +317,8 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 		}
 
 		// entries was handled above, if it was necessary.
-		indexedEntries.clear();
+		field_26682.clear();
+		field_26683.clear();
 		nextId = 0;
 
 		List<Identifier> orderedRemoteEntries = new ArrayList<>(remoteIndexedEntries.keySet());
@@ -333,7 +342,9 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			}
 
 			// Add the new object, increment nextId to match.
-			indexedEntries.put(object, id);
+			field_26682.size(Math.max(this.field_26682.size(), id + 1));
+			field_26682.set(id, object);
+			field_26683.put(object, id);
 
 			if (nextId <= id) {
 				nextId = id + 1;
@@ -370,7 +381,7 @@ public abstract class MixinIdRegistry<T> implements RemappableRegistry, Listenab
 			remap(name, fabric_prevIndexedEntries, RemapMode.AUTHORITATIVE);
 
 			for (Identifier id : addedIds) {
-				fabric_getAddObjectEvent().invoker().onEntryAdded(indexedEntries.getRawId(entriesById.get(id)), id, entriesById.get(id));
+				fabric_getAddObjectEvent().invoker().onEntryAdded(field_26683.getInt(entriesById.get(id)), id, entriesById.get(id));
 			}
 
 			fabric_prevIndexedEntries = null;

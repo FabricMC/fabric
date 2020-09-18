@@ -73,6 +73,9 @@ public interface AbstractBlockSettingsAccessor {
 	@Accessor
 	boolean getIsAir();
 
+	@Accessor
+	boolean isToolRequired();
+
 	/* SETTERS */
 	@Accessor
 	void setMaterial(Material material);
@@ -103,8 +106,11 @@ public interface AbstractBlockSettingsAccessor {
 
 	@Accessor
 	void setLootTableId(Identifier lootTableId);
-	/* INVOKERS */
 
+	@Accessor
+	void setToolRequired(boolean toolRequired);
+
+	/* INVOKERS */
 	@Invoker
 	Block.Settings invokeSounds(BlockSoundGroup group);
 
