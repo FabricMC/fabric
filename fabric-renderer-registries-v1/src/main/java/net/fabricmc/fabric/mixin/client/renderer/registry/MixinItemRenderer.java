@@ -73,7 +73,7 @@ public abstract class MixinItemRenderer {
 		}
 
 		matrixStack.push();
-		boolean cancel = preRenderer.renderOverlay(new MatrixStack(), renderer, stack, x, y, countLabel);
+		boolean cancel = preRenderer.renderOverlay(matrixStack, renderer, stack, x, y, countLabel);
 		matrixStack.pop();
 
 		if (cancel) {
@@ -156,7 +156,7 @@ public abstract class MixinItemRenderer {
 		ItemDamageBarInfo props = ItemOverlayMaps.DAMAGE_BAR_INFO_MAP.get(stack.getItem());
 
 		if (props == null) {
-			return stack.isDamageable();
+			return stack.isDamaged();
 		}
 
 		return props.isVisible(stack);
