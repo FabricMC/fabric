@@ -29,8 +29,8 @@ import net.minecraft.item.ItemStack;
  */
 public interface FabricCrossbowHooks {
 	/**
-	 * Allows editing of the shot arrow from the crossbow. All default crossbow
-	 * properties are applied first.
+	 * Allows editing of the shot arrow from the crossbow. Applies all crossbow
+	 * projectile properties first.
 	 *
 	 * @param arrowItem                  The arrow type
 	 * @param persistentProjectileEntity The arrow entity
@@ -39,10 +39,12 @@ public interface FabricCrossbowHooks {
 
 	/**
 	 * Gets the speed of the crossbow projectile. <br>
-	 * To get the projectile from the crossbow, call {@link CrossbowItem#hasProjectile(ItemStack, Item)} passing in {@code this} and the {@link Item} for the projectile
+	 * To get the projectile from the crossbow, call {@link CrossbowItem#hasProjectile(ItemStack, Item)} passing in {@code stack} and the {@link Item} for the projectile
 	 *
+	 *
+	 * @param stack The ItemStack for the crossbow
 	 * @param entity The entity shooting the crossbow
 	 * @return The speed of the projectile
 	 */
-	float getSpeed(LivingEntity entity);
+	float getSpeed(ItemStack stack, LivingEntity entity);
 }

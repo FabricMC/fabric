@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.test.extensibility;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ArrowItem;
 import net.minecraft.item.CrossbowItem;
@@ -33,13 +30,12 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbowHooks;
 
 public class FabricCrossbowTests implements ModInitializer {
-	public static final Logger LOGGER = LogManager.getLogger("FabricCrossbowTests");
+	public static final Item TEST_CROSSBOW = new TestCrossbow(new Item.Settings().group(ItemGroup.COMBAT));
 
 	@Override
 	public void onInitialize() {
 		// Registers a custom crossbow.
-		Item testItem = new TestCrossbow(new Item.Settings().group(ItemGroup.COMBAT));
-		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_crossbow"), testItem);
+		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_crossbow"), TEST_CROSSBOW);
 	}
 
 	//Basically a railgun.
@@ -54,8 +50,7 @@ public class FabricCrossbowTests implements ModInitializer {
 		}
 
 		@Override
-		public float getSpeed(LivingEntity entity) {
-			LOGGER.info("Get speed called. Shooting Entity: " + entity.getName().asString());
+		public float getSpeed(ItemStack stack, LivingEntity entity) {
 			return 10f;
 		}
 

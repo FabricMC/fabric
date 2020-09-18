@@ -44,12 +44,10 @@ public abstract class CrossbowItemMixin {
 		((FabricCrossbowHooks) crossbow.getItem()).createArrow(arrowItem, persistentProjectileEntity);
 	}
 
+	//Redirecting this method in order to get the item stack and shooting entity
 	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/CrossbowItem;shootAll(Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;FF)V"))
 	private void shootAll(World world, LivingEntity entity, Hand hand, ItemStack stack, float speed, float divergence) {
-		if (stack.getItem() instanceof FabricCrossbowHooks) {
-			CrossbowItem.shootAll(world, entity, hand, stack, ((FabricCrossbowHooks) stack.getItem()).getSpeed(entity), 1.0F);
-		} else {
-			CrossbowItem.shootAll(world, entity, hand, stack, CrossbowItem.getSpeed(stack), 1.0F);
-		}
+		float _speed = stack.getItem() instanceof FabricCrossbowHooks ? ((FabricCrossbowHooks) stack.getItem()).getSpeed(stack, entity) : speed;
+		CrossbowItem.shootAll(world, entity, hand, stack, _speed, 1.0F);
 	}
 }

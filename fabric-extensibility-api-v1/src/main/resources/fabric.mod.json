@@ -22,8 +22,7 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "description": "Makes the hardcoded features of Minecraft more extendable",
-  "accessWidener": "fabric-extensibility-api-v1.accesswidener"
+  "description": "Makes the hardcoded features of Minecraft more extendable"
 }
 
 

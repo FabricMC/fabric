@@ -26,8 +26,8 @@ import net.minecraft.item.ItemStack;
  */
 public interface FabricBowHooks {
 	/**
-	 * Runs all of the default arrow functions first.
-	 *  @param arrowStack        The ItemStack for the arrows
+	 * Applies all of the vanilla arrow modifiers first.
+	 * @param arrowStack        The ItemStack for the arrows
 	 * @param user              The user of the bow
 	 * @param remainingUseTicks The ticks remaining on the bow usage
 	 * @param persistentProjectileEntity The arrow entity to be spawned

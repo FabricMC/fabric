@@ -29,11 +29,12 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.extensibility.item.v1.FabricBowHooks;
 
 public class FabricBowTests implements ModInitializer {
+	public static final Item TEST_BOW = new TestBow(new Item.Settings().group(ItemGroup.COMBAT));
+
 	@Override
 	public void onInitialize() {
 		// Registers a custom bow.
-		Item testItem = new TestBow(new Item.Settings().group(ItemGroup.COMBAT));
-		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_bow"), testItem);
+		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_bow"), TEST_BOW);
 	}
 
 	public static class TestBow extends BowItem implements FabricBowHooks {

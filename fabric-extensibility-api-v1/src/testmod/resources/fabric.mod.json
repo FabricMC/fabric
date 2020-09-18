@@ -9,6 +9,9 @@
     "main": [
       "net.fabricmc.fabric.test.extensibility.FabricCrossbowTests",
       "net.fabricmc.fabric.test.extensibility.FabricBowTests"
+    ],
+    "client": [
+      "net.fabricmc.fabric.test.extensibility.client.FabricExtensibilityClientVisualizations"
     ]
   }
 }

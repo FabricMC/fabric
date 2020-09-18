@@ -1,3 +1,0 @@
-accessWidener	v1	named
-
-accessible    method    net/minecraft/item/CrossbowItem    getSpeed    (Lnet/minecraft/item/ItemStack;)F

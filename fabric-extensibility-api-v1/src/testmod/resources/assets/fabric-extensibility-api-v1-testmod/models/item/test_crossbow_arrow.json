@@ -1,0 +1,6 @@
+{
+    "parent": "item/crossbow",
+    "textures": {
+        "layer0": "fabric-extensibility-api-v1-testmod:item/test_crossbow_arrow"
+    }
+}

@@ -1,0 +1,6 @@
+{
+    "parent": "item/bow",
+    "textures": {
+        "layer0": "fabric-extensibility-api-v1-testmod:item/test_bow_pulling_2"
+    }
+}
