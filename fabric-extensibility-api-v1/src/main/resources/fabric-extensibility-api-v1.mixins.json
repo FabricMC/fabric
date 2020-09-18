@@ -1,0 +1,23 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.fabricmc.fabric.mixin.extensibility",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "CrossbowItemMixin",
+    "EntityCrossbowUseMixin",
+    "EntityBowUseMixin",
+    "AbstractSkeletonEntityMixin",
+    "ProjectileUtilMixin",
+    "BowItemMixin",
+    "ItemMixin"
+  ],
+  "client": [
+    "client.HeldItemRendererMixin",
+    "client.PlayerEntityRendererMixin",
+    "client.SkeletonEntityModelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

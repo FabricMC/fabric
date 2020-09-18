@@ -1,0 +1,10 @@
+archivesBaseName = "fabric-extensibility-api-v1"
+version = getSubprojectVersion(project, "1.0.0")
+
+dependencies {
+	compile project(path: ':fabric-api-base', configuration: 'dev')
+}
+
+minecraft {
+	accessWidener = file("src/main/resources/fabric-extensibility-api-v1.accesswidener")
+}
