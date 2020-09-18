@@ -13,6 +13,9 @@
     "MixinBlock",
     "PointOfInterestTypeAccessor",
     "SpawnRestrictionAccessor",
+    "TradeOffersAccessor",
+    "TradeOffersMixin",
+    "TypeAwareTradeMixin",
     "VillagerProfessionAccessor"
   ],
   "client": [
