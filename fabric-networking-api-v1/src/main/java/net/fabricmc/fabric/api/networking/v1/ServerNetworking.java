@@ -182,19 +182,16 @@ public final class ServerNetworking {
 		 * building of a followup query request can be performed properly on the logical server
 		 * thread before the player successfully logs in:
 		 * <blockquote><pre>
-		 * ServerNetworking.getLoginReceiver().register(CHECK_CHANNEL, (context, buf) -&gt; {
-		 * 	if (!context.isUnderstood()) {
+		 * ServerNetworking.getLoginReceiver().register(CHECK_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -&gt; {
+		 * 	if (!understood) {
 		 * 		handler.disconnect(new LiteralText("Only accept clients that can check!"));
 		 * 		return;
 		 * 	}
 		 *
 		 * 	String checkMessage = buf.readString(32767);
-		 * 	ServerLoginNetworkHandler handler = context.getPacketListener();
-		 * 	PacketSender sender = context.getPacketSender();
-		 * 	MinecraftServer server = context.getEngine();
 		 *
 		 * 	// Just send the CompletableFuture returned by the server's submit method
-		 * 	context.waitFor(server.submit(() -&gt; {
+		 * 	synchronizer.waitFor(server.submit(() -&gt; {
 		 * 		LoginInfoChecker checker = LoginInfoChecker.get(server);
 		 *
 		 * 		if (!checker.check(handler.getConnectionInfo(), checkMessage)) {
