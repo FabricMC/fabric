@@ -33,11 +33,10 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerTypeAccessor;
  * Utilities related to the creation of {@link VillagerType}s.
  * Not to be confused with a {@link VillagerProfession}, a villager type defines the appearance of a villager.
  *
- * <p>Creation of custom villager types may be done via the use of a simple helper method.
+ * <p>Creation and registration of custom villager types may be done via the use of a simple helper method.
  * Below is an example of how one wouldd create a villager type:
  * <blockquote><pre>
- * // Note: You should register your villager types via the corresponding registry
- * public static final VillagerType MOUNTAIN = VillagerTypeHelper.create(new Identifier("mymod", "mountain"));
+ * public static final VillagerType MOUNTAIN = VillagerTypeHelper.register(new Identifier("mymod", "mountain"));
  * </pre></blockquote>
  *
  * <p>Creation and registration of a villager type does not guarantee villagers of a specific type will be created in a world.
@@ -51,14 +50,14 @@ public final class VillagerTypeHelper {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	/**
-	 * Creates a new villager type.
+	 * Creates and registers a new villager type.
 	 *
 	 * @param id the id of the villager type
 	 * @return a new villager type
 	 */
-	public static VillagerType create(Identifier id) {
+	public static VillagerType register(Identifier id) {
 		Objects.requireNonNull(id, "Id of villager type cannot be null");
-		return VillagerTypeAccessor.callCreate(id.toString());
+		return VillagerTypeAccessor.callRegister(id.toString());
 	}
 
 	/**

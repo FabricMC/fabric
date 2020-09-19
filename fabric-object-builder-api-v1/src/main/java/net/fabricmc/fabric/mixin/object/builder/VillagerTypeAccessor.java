@@ -33,8 +33,9 @@ public interface VillagerTypeAccessor {
 		throw new AssertionError("Untransformed Accessor!");
 	}
 
-	@Invoker("<init>")
-	static VillagerType callCreate(String string) {
+	// FIXME: This should be called `register` in yarn
+	@Invoker("create")
+	static VillagerType callRegister(String id) {
 		throw new AssertionError("Untransformed Accessor!");
 	}
 }
