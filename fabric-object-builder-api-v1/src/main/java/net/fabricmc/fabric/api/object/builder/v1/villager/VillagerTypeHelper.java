@@ -44,7 +44,7 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerTypeAccessor;
  * Typically the villager type is bound to a specific group of biomes.
  * Below is an example of allowing creation of mountain villagers in a mountain biome:
  * <blockquote><pre>
- * VillagerTypeHelper.mapBiomeToVillagerType(BiomeKeys.MOUNTAIN, MyVillagerTypes.MOUNTAIN);
+ * VillagerTypeHelper.addVillagerTypeToBiome(BiomeKeys.MOUNTAIN, MyVillagerTypes.MOUNTAIN);
  * </pre></blockquote>
  */
 public final class VillagerTypeHelper {
@@ -62,13 +62,12 @@ public final class VillagerTypeHelper {
 	}
 
 	/**
-	 * Maps a biome to villager type.
-	 * This mapping is used when a new villager entity is created.
+	 * Sets the biome a villager type can spawn in.
 	 *
 	 * @param biomeKey the registry key of the biome
 	 * @param villagerType the villager type
 	 */
-	public static void mapBiomeToVillagerType(RegistryKey<Biome> biomeKey, VillagerType villagerType) {
+	public static void addVillagerTypeToBiome(RegistryKey<Biome> biomeKey, VillagerType villagerType) {
 		Objects.requireNonNull(biomeKey, "Biome registry key cannot be null");
 		Objects.requireNonNull(villagerType, "Villager type cannot be null");
 
