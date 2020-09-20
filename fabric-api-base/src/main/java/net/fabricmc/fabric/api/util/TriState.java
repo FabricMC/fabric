@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Represents a boolean value which can be true, false or refer to a default value.
  */
@@ -55,7 +57,7 @@ public enum TriState {
 	 * @return {@link TriState#DEFAULT} if {@code null}.
 	 * Otherwise {@link TriState#TRUE} or {@link TriState#FALSE} depending on the value of the boolean.
 	 */
-	public static TriState of(/* @Nullable */ Boolean bool) {
+	public static TriState of(@Nullable Boolean bool) {
 		return bool == null ? TriState.DEFAULT : TriState.of(bool.booleanValue());
 	}
 
@@ -75,7 +77,7 @@ public enum TriState {
 	 * @return {@code null} if {@link TriState#DEFAULT}.
 	 * Otherwise {@code true} if {@link TriState#TRUE} or {@code false} if {@link TriState#FALSE}.
 	 */
-	/* @Nullable */
+	@Nullable
 	public Boolean getBoxed() {
 		return this == TriState.DEFAULT ? null : this.get();
 	}
@@ -109,7 +111,7 @@ public enum TriState {
 	 * @param <T> the type of object supplied by the mapper
 	 * @return an optional containing the value if {@link TriState#TRUE} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
 	 */
-	public <T> Optional<T> mapTrue(Supplier</* @Nullable */ T> mapper) {
+	public <T> Optional<T> mapTrue(Supplier<@Nullable T> mapper) {
 		return this.mapEq(TriState.TRUE, mapper);
 	}
 
@@ -120,7 +122,7 @@ public enum TriState {
 	 * @param <T> the type of object supplied by the mapper
 	 * @return an optional containing the value if {@link TriState#FALSE} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
 	 */
-	public <T> Optional<T> mapFalse(Supplier</* @Nullable */ T> mapper) {
+	public <T> Optional<T> mapFalse(Supplier<@Nullable T> mapper) {
 		return this.mapEq(TriState.FALSE, mapper);
 	}
 
@@ -131,11 +133,11 @@ public enum TriState {
 	 * @param <T> the type of object supplied by the mapper
 	 * @return an optional containing the value if {@link TriState#DEFAULT} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
 	 */
-	public <T> Optional<T> mapDefault(Supplier</* @Nullable */ T> mapper) {
+	public <T> Optional<T> mapDefault(Supplier<@Nullable T> mapper) {
 		return this.mapEq(TriState.DEFAULT, mapper);
 	}
 
-	private <T> Optional<T> mapEq(TriState comparison, Supplier</* @Nullable */ T> mapper) {
+	private <T> Optional<T> mapEq(TriState comparison, Supplier<@Nullable T> mapper) {
 		Objects.requireNonNull(mapper);
 
 		if (this == comparison) {
