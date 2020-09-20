@@ -17,8 +17,6 @@
 package net.fabricmc.fabric.test.extensibility;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ArrowItem;
-import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -27,25 +25,12 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbowHooks;
+import net.fabricmc.fabric.impl.extensibility.item.v1.FabricCrossbowItem;
 
 public class FabricCrossbowTests implements ModInitializer {
-	public static final Item TEST_CROSSBOW = new TestCrossbow(new Item.Settings().group(ItemGroup.COMBAT));
-
-	@Override
-	public void onInitialize() {
-		// Registers a custom crossbow.
-		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_crossbow"), TEST_CROSSBOW);
-	}
-
-	//Basically a railgun.
-	public static class TestCrossbow extends CrossbowItem implements FabricCrossbowHooks {
-		public TestCrossbow(Settings settings) {
-			super(settings);
-		}
-
+	public static final Item TEST_CROSSBOW = new FabricCrossbowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
 		@Override
-		public void createArrow(ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
+		public void modifyShotProjectile(ItemStack crossbowStack, LivingEntity entity, ItemStack projectileStack, PersistentProjectileEntity persistentProjectileEntity) {
 			persistentProjectileEntity.setDamage(1000);
 		}
 
@@ -53,10 +38,11 @@ public class FabricCrossbowTests implements ModInitializer {
 		public float getSpeed(ItemStack stack, LivingEntity entity) {
 			return 10f;
 		}
+	};
 
-		@Override
-		public boolean isUsedOnRelease(ItemStack stack) {
-			return this == stack.getItem();
-		}
+	@Override
+	public void onInitialize() {
+		// Registers a custom crossbow.
+		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_crossbow"), TEST_CROSSBOW);
 	}
 }

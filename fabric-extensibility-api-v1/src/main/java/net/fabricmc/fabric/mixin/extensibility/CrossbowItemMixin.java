@@ -31,23 +31,21 @@ import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbowHooks;
+import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
 
 @Mixin(CrossbowItem.class)
 public abstract class CrossbowItemMixin {
 	@Inject(method = "createArrow", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILSOFT)
-	private static void createArrow(World world, LivingEntity entity, ItemStack crossbow, ItemStack arrow, CallbackInfoReturnable<PersistentProjectileEntity> cir, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
-		if (!(crossbow.getItem() instanceof FabricCrossbowHooks)) {
-			return;
+	private static void createArrow(World world, LivingEntity entity, ItemStack crossbow, ItemStack projectileStack, CallbackInfoReturnable<PersistentProjectileEntity> cir, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
+		if ((crossbow.getItem() instanceof FabricCrossbow)) {
+			((FabricCrossbow) crossbow.getItem()).modifyShotProjectile(crossbow, entity, projectileStack, persistentProjectileEntity);
 		}
-
-		((FabricCrossbowHooks) crossbow.getItem()).createArrow(arrowItem, persistentProjectileEntity);
 	}
 
 	//Redirecting this method in order to get the item stack and shooting entity
 	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/CrossbowItem;shootAll(Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;FF)V"))
 	private void shootAll(World world, LivingEntity entity, Hand hand, ItemStack stack, float speed, float divergence) {
-		float _speed = stack.getItem() instanceof FabricCrossbowHooks ? ((FabricCrossbowHooks) stack.getItem()).getSpeed(stack, entity) : speed;
+		float _speed = stack.getItem() instanceof FabricCrossbow ? ((FabricCrossbow) stack.getItem()).getSpeed(stack, entity) : speed;
 		CrossbowItem.shootAll(world, entity, hand, stack, _speed, 1.0F);
 	}
 }

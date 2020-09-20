@@ -14,23 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.extensibility.item.v1;
+package net.fabricmc.fabric.impl.extensibility.item.v1;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 
+import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
+
 /**
- * An interface to implement for all custom bows. <br>
- * Note: This is meant to be used on a BowItem class
+ * This is the default implementation for FabricBow, allowing for the easy creation of new bows with no new modded functionality.
  */
-public interface FabricBowHooks {
-	/**
-	 * Applies all of the vanilla arrow modifiers first.
-	 * @param arrowStack        The ItemStack for the arrows
-	 * @param user              The user of the bow
-	 * @param remainingUseTicks The ticks remaining on the bow usage
-	 * @param persistentProjectileEntity The arrow entity to be spawned
-	 */
-	void onBowRelease(ItemStack arrowStack, LivingEntity user, int remainingUseTicks, PersistentProjectileEntity persistentProjectileEntity);
+public class FabricBowItem extends BowItem implements FabricBow {
+	public FabricBowItem(Settings settings) {
+		super(settings);
+	}
+
+	@Override
+	public void modifyShotProjectile(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, int remainingUseTicks, PersistentProjectileEntity persistentProjectileEntity) {
+	}
 }

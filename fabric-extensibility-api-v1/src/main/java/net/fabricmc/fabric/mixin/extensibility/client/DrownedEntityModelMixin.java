@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.extensibility;
+package net.fabricmc.fabric.mixin.extensibility.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.entity.mob.AbstractSkeletonEntity;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.RangedWeaponItem;
+import net.minecraft.client.render.entity.model.DrownedEntityModel;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
-@Mixin({ AbstractSkeletonEntity.class })
-public class EntityBowUseMixin {
-	@Inject(method = "canUseRangedWeapon", at = @At("HEAD"))
-	public void canUseRangedWeapon(RangedWeaponItem weapon, CallbackInfoReturnable<Boolean> cir) {
-		if (weapon instanceof BowItem) {
-			cir.setReturnValue(true);
-		}
+import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
+
+@Mixin(DrownedEntityModel.class)
+public class DrownedEntityModelMixin {
+	@Redirect(method = "animateModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
+	public Item getItem(ItemStack stack) {
+		return stack.getItem() instanceof FabricTrident ? Items.TRIDENT : stack.getItem();
 	}
 }

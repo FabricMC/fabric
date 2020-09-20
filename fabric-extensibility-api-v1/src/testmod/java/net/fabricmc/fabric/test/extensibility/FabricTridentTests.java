@@ -16,28 +16,33 @@
 
 package net.fabricmc.fabric.test.extensibility;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
+import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.TridentItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.impl.extensibility.item.v1.FabricBowItem;
+import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
 
-public class FabricBowTests implements ModInitializer {
-	public static final Item TEST_BOW = new FabricBowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
-		@Override
-		public void modifyShotProjectile(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, int remainingUseTicks, PersistentProjectileEntity persistentProjectileEntity) {
-			persistentProjectileEntity.setPunch(100);
-		}
-	};
+public class FabricTridentTests implements ModInitializer {
+	public static final Item TEST_TRIDENT = new TestTrident(new Item.Settings().group(ItemGroup.COMBAT));
 
 	@Override
 	public void onInitialize() {
-		// Registers a custom bow.
-		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_bow"), TEST_BOW);
+		// Registers a custom trident.
+		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_trident"), TEST_TRIDENT);
+	}
+
+	public static class TestTrident extends TridentItem implements FabricTrident {
+		public TestTrident(Settings settings) {
+			super(settings);
+		}
+
+		@Override
+		public ModelIdentifier getInventoryModelIdentifier() {
+			return new ModelIdentifier("minecraft:trident#inventory");
+		}
 	}
 }

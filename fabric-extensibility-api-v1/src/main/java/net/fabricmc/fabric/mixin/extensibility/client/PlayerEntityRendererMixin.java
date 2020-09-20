@@ -30,15 +30,16 @@ import net.minecraft.util.Hand;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PlayerEntityRenderer.class)
 public class PlayerEntityRendererMixin {
 	@Inject(method = "getArmPose", at = @At("HEAD"), cancellable = true)
 	private static void getArmPose(AbstractClientPlayerEntity abstractClientPlayerEntity, Hand hand, CallbackInfoReturnable<BipedEntityModel.ArmPose> cir) {
-		ItemStack itemStack = abstractClientPlayerEntity.getStackInHand(hand);
+		ItemStack stackInHand = abstractClientPlayerEntity.getStackInHand(hand);
 
-		if (!abstractClientPlayerEntity.handSwinging && itemStack.getItem() instanceof CrossbowItem && CrossbowItem.isCharged(itemStack)) {
+		if (!abstractClientPlayerEntity.handSwinging && stackInHand.getItem() instanceof FabricCrossbow && CrossbowItem.isCharged(stackInHand)) {
 			cir.setReturnValue(BipedEntityModel.ArmPose.CROSSBOW_HOLD);
 		}
 	}

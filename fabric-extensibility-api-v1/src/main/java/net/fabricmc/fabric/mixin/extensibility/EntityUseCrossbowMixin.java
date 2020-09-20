@@ -27,7 +27,7 @@ import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.RangedWeaponItem;
 
 @Mixin({ PiglinEntity.class, PillagerEntity.class })
-public class EntityCrossbowUseMixin {
+public class EntityUseCrossbowMixin {
 	@Inject(method = "canUseRangedWeapon", at = @At("HEAD"))
 	public void canUseRangedWeapon(RangedWeaponItem weapon, CallbackInfoReturnable<Boolean> cir) {
 		if (weapon instanceof CrossbowItem) {

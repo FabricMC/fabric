@@ -20,17 +20,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.entity.mob.AbstractSkeletonEntity;
+import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
+import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
 
-@Mixin(AbstractSkeletonEntity.class)
-public class AbstractSkeletonEntityMixin {
-	@Redirect(method = "updateAttackType", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
-	private Item updateAttackType(ItemStack itemStack) {
-		return itemStack.getItem() instanceof FabricBow ? Items.BOW : itemStack.getItem();
+@Mixin(DrownedEntity.TridentAttackGoal.class)
+public class TridentAttackGoalMixin {
+	@Redirect(method = "canStart", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
+	public Item getHeldItemModel(ItemStack stack) {
+		return stack.getItem() instanceof FabricTrident ? Items.TRIDENT : stack.getItem();
 	}
 }

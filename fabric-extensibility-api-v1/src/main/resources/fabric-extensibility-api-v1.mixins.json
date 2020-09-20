@@ -5,17 +5,20 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "CrossbowItemMixin",
-    "EntityCrossbowUseMixin",
-    "EntityBowUseMixin",
+    "EntityUseCrossbowMixin",
+    "EntityUseBowMixin",
     "AbstractSkeletonEntityMixin",
     "ProjectileUtilMixin",
     "BowItemMixin",
-    "ItemMixin"
+    "ItemMixin",
+    "TridentAttackGoalMixin"
   ],
   "client": [
     "client.HeldItemRendererMixin",
     "client.PlayerEntityRendererMixin",
-    "client.SkeletonEntityModelMixin"
+    "client.SkeletonEntityModelMixin",
+    "client.ItemRendererMixin",
+    "client.DrownedEntityModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

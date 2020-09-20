@@ -14,7 +14,11 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.object.builder.v1.client.model;
+package net.fabricmc.fabric.test.extensibility.client;
+
+import static net.fabricmc.fabric.test.extensibility.FabricBowTests.TEST_BOW;
+import static net.fabricmc.fabric.test.extensibility.FabricCrossbowTests.TEST_CROSSBOW;
+import static net.fabricmc.fabric.test.extensibility.FabricTridentTests.TEST_TRIDENT;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
@@ -24,11 +28,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 
-@Environment(EnvType.CLIENT)
-public final class FabricModelProviderHelper {
+public class FabricExtensibilityTestmodClient implements ClientModInitializer {
+	@Override
+	public void onInitializeClient() {
+		registerCrossbow(TEST_CROSSBOW);
+		registerCrossbow(TEST_BOW);
+		registerTridentModels(TEST_TRIDENT);
+	}
+
 	public static void registerCrossbow(Item crossbow) {
 		FabricModelPredicateProviderRegistry.register(crossbow, new Identifier("pull"), (itemStack4, clientWorld3, livingEntity2) -> {
 			if (livingEntity2 == null) {
@@ -80,9 +90,7 @@ public final class FabricModelProviderHelper {
 	}
 
 	public static void registerElytra(Item elytra) {
-		FabricModelPredicateProviderRegistry.register(elytra, new Identifier("broken"), (itemStack, clientWorld, livingEntity) -> {
-			return ElytraItem.isUsable(itemStack) ? 0.0F : 1.0F;
-		});
+		FabricModelPredicateProviderRegistry.register(elytra, new Identifier("broken"), (itemStack, clientWorld, livingEntity) -> ElytraItem.isUsable(itemStack) ? 0.0F : 1.0F);
 	}
 
 	public static void registerFishingRod(Item fishingRod) {
@@ -103,14 +111,10 @@ public final class FabricModelProviderHelper {
 	}
 
 	public static void registerShield(Item shield) {
-		FabricModelPredicateProviderRegistry.register(shield, new Identifier("blocking"), (itemStack, clientWorld, livingEntity) -> {
-			return livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1.0F : 0.0F;
-		});
+		FabricModelPredicateProviderRegistry.register(shield, new Identifier("blocking"), (itemStack, clientWorld, livingEntity) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1.0F : 0.0F);
 	}
 
 	public static void registerTridentModels(Item trident) {
-		FabricModelPredicateProviderRegistry.register(trident, new Identifier("throwing"), (itemStack, clientWorld, livingEntity) -> {
-			return livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1.0F : 0.0F;
-		});
+		FabricModelPredicateProviderRegistry.register(trident, new Identifier("throwing"), (itemStack, clientWorld, livingEntity) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1.0F : 0.0F);
 	}
 }
