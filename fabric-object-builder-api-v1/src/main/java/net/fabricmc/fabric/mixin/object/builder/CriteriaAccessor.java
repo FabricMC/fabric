@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.mixin.object.builder;
 
-import com.mojang.serialization.Lifecycle;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.advancement.criterion.Criteria;
+import net.minecraft.advancement.criterion.Criterion;
 
-@Mixin(Registry.class)
-public interface AccessorRegistry<T> {
-	@Accessor()
-	static MutableRegistry<MutableRegistry<?>> getROOT() {
-		throw new UnsupportedOperationException();
-	}
-
-	@Accessor()
-	RegistryKey<Registry<T>> getRegistryKey();
-
+@Mixin(Criteria.class)
+public interface CriteriaAccessor {
 	@Invoker
-	Lifecycle callGetEntryLifecycle(T object);
+	static <T extends Criterion<?>> T callRegister(T object) {
+		throw new AssertionError("Mixin dummy");
+	}
 }
