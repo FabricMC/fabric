@@ -14,27 +14,20 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.mixin.biome;
 
-import com.mojang.serialization.Lifecycle;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BuiltinBiomes;
 
-@Mixin(Registry.class)
-public interface AccessorRegistry<T> {
-	@Accessor()
-	static MutableRegistry<MutableRegistry<?>> getROOT() {
-		throw new UnsupportedOperationException();
+@Mixin(BuiltinBiomes.class)
+public interface BuiltinBiomesAccessor {
+	@Accessor
+	static Int2ObjectMap<RegistryKey<Biome>> getBY_RAW_ID() {
+		throw new AssertionError("mixin");
 	}
-
-	@Accessor()
-	RegistryKey<Registry<T>> getRegistryKey();
-
-	@Invoker
-	Lifecycle callGetEntryLifecycle(T object);
 }

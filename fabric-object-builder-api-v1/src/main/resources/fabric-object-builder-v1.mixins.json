@@ -6,12 +6,16 @@
     "AbstractBlockAccessor",
     "AbstractBlockSettingsAccessor",
     "AbstractBlockSettingsMixin",
+    "CriteriaAccessor",
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
     "MaterialBuilderAccessor",
     "MixinBlock",
     "PointOfInterestTypeAccessor",
     "SpawnRestrictionAccessor",
+    "TradeOffersAccessor",
+    "TradeOffersMixin",
+    "TypeAwareTradeMixin",
     "VillagerProfessionAccessor"
   ],
   "client": [

@@ -14,7 +14,7 @@ rootProject.name = "fabric-api"
 
 include 'fabric-api-base'
 
-//include 'fabric-biomes-v1'
+include 'fabric-biome-api-v1'
 include 'fabric-blockrenderlayer-v1'
 include 'fabric-commands-v0'
 include 'fabric-command-api-v1'

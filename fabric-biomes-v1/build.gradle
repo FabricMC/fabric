@@ -1,2 +1,0 @@
-archivesBaseName = "fabric-biomes-v1"
-version = getSubprojectVersion(project, "1.0.2")

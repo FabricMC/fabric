@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.mixin.biome;
 
-import com.mojang.serialization.Lifecycle;
+import java.util.List;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 
-@Mixin(Registry.class)
-public interface AccessorRegistry<T> {
-	@Accessor()
-	static MutableRegistry<MutableRegistry<?>> getROOT() {
-		throw new UnsupportedOperationException();
+/**
+ * This accessor gives us access to the hardcoded list of overworld biomes.
+ */
+@Mixin(VanillaLayeredBiomeSource.class)
+public interface VanillaLayeredBiomeSourceAccessor {
+	@Accessor
+	static List<RegistryKey<Biome>> getBIOMES() {
+		throw new AssertionError("mixin");
 	}
 
-	@Accessor()
-	RegistryKey<Registry<T>> getRegistryKey();
-
-	@Invoker
-	Lifecycle callGetEntryLifecycle(T object);
+	@Accessor
+	static void setBIOMES(List<RegistryKey<Biome>> biomes) {
+		throw new AssertionError("mixin");
+	}
 }

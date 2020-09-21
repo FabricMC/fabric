@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.mixin.object.builder;
 
-import com.mojang.serialization.Lifecycle;
+import java.util.Map;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.village.TradeOffers;
+import net.minecraft.village.VillagerProfession;
 
-@Mixin(Registry.class)
-public interface AccessorRegistry<T> {
-	@Accessor()
-	static MutableRegistry<MutableRegistry<?>> getROOT() {
-		throw new UnsupportedOperationException();
+@Mixin(TradeOffers.class)
+public interface TradeOffersAccessor {
+	@Accessor("PROFESSION_TO_LEVELED_TRADE")
+	static void setVillagerTradeMap(Map<VillagerProfession, Int2ObjectMap<TradeOffers.Factory[]>> trades) {
+		throw new AssertionError("This should not happen!");
 	}
 
-	@Accessor()
-	RegistryKey<Registry<T>> getRegistryKey();
-
-	@Invoker
-	Lifecycle callGetEntryLifecycle(T object);
+	@Accessor("WANDERING_TRADER_TRADES")
+	static void setWanderingTraderTradeMap(Int2ObjectMap<TradeOffers.Factory[]> trades) {
+		throw new AssertionError("This should not happen!");
+	}
 }
