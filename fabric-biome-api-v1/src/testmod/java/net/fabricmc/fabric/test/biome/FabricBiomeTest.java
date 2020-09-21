@@ -23,8 +23,11 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.DefaultBiomeCreator;
+import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
 import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
 import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
@@ -63,5 +66,17 @@ public class FabricBiomeTest implements ModInitializer {
 		OverworldBiomes.addHillsBiome(BiomeKeys.BAMBOO_JUNGLE, BiomeKeys.BASALT_DELTAS, 0.9);
 
 		OverworldBiomes.addContinentalBiome(BiomeKeys.END_HIGHLANDS, OverworldClimate.DRY, 0.5);
+
+		BiomeModifications.create(new Identifier("fabric:test_mod"))
+				.add(BiomeModifications.ORDER_ADDITIONS,
+						BiomeSelectors.foundInOverworld(),
+						modification -> modification.getWeather().setDownfall(100))
+				.add(BiomeModifications.ORDER_ADDITIONS,
+						BiomeSelectors.foundInOverworld().and(BiomeSelectors.excludeByKey(BiomeKeys.PLAINS)).and(
+								context -> context.hasBuiltInSurfaceBuilder(ConfiguredSurfaceBuilders.GRASS)
+						),
+						context -> {
+							context.getGenerationSettings().setBuiltInSurfaceBuilder(ConfiguredSurfaceBuilders.CRIMSON_FOREST);
+						});
 	}
 }

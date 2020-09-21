@@ -16,14 +16,16 @@
 
 package net.fabricmc.fabric.api.biome.v1;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Represents the climates of biomes on the overworld continents.
  *
- * @deprecated Experimental feature, may be removed or changed without further notice.
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
  * since it is likely to change in future Minecraft versions.
  */
-@Deprecated
+@ApiStatus.Experimental
 public enum OverworldClimate {
 	/**
 	 * Includes Snowy Tundra (with a weight of 3) and Snowy Taiga (with a weight of 1).
