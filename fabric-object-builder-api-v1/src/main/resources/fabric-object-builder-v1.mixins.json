@@ -3,10 +3,21 @@
   "package": "net.fabricmc.fabric.mixin.object.builder",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AbstractBlockAccessor", "AbstractBlockMixin", "AbstractBlockSettingsAccessor", "AbstractBlockSettingsMixin",
-    "CriteriaAccessor", "DefaultAttributeRegistryAccessor", "DefaultAttributeRegistryMixin", "MaterialBuilderAccessor",
-    "MixinBlock", "PointOfInterestTypeAccessor", "SpawnRestrictionAccessor", "TradeOffersAccessor", "TradeOffersMixin",
-    "TypeAwareTradeMixin", "VillagerProfessionAccessor"
+    "AbstractBlockAccessor",
+    "AbstractBlockMixin",
+    "AbstractBlockSettingsAccessor",
+    "AbstractBlockSettingsMixin",
+    "CriteriaAccessor",
+    "DefaultAttributeRegistryAccessor",
+    "DefaultAttributeRegistryMixin",
+    "MaterialBuilderAccessor",
+    "MixinBlock",
+    "PointOfInterestTypeAccessor",
+    "SpawnRestrictionAccessor",
+    "TradeOffersAccessor",
+    "TradeOffersMixin",
+    "TypeAwareTradeMixin",
+    "VillagerProfessionAccessor"
   ],
   "client": [
     "ModelPredicateProviderRegistryAccessor",
