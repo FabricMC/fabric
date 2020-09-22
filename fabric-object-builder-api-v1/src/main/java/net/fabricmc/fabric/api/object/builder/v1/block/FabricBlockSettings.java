@@ -23,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
@@ -294,5 +295,32 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);
+	}
+
+	/**
+	 * Sets the piston behavior of the block, if not set it defaults to the value of
+	 * {@link Material#getPistonBehavior()} for the block's material.
+	 */
+	public FabricBlockSettings pistonBehavior(PistonBehavior pistonBehavior) {
+		FabricBlockInternals.computeExtraData(this).setPistonBehavior(pistonBehavior);
+		return this;
+	}
+
+	/**
+	 * Sets whether the block is replaceable, if not set it defaults to the value of {@link Material#isReplaceable()}
+	 * for the block's material.
+	 */
+	public FabricBlockSettings replaceable(boolean replaceable) {
+		FabricBlockInternals.computeExtraData(this).setReplaceable(replaceable);
+		return this;
+	}
+
+	/**
+	 * Sets whether the block is solid, if not set it defaults to the value of {@link Material#isSolid()} for the
+	 * block's material.
+	 */
+	public FabricBlockSettings solid(boolean solid) {
+		FabricBlockInternals.computeExtraData(this).setSolid(solid);
+		return this;
 	}
 }
