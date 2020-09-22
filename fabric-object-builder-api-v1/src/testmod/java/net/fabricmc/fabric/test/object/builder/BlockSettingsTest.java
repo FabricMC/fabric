@@ -1,12 +1,12 @@
 package net.fabricmc.fabric.test.object.builder;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 
 public class BlockSettingsTest implements ModInitializer {
 	public static final Block TEST_BLOCK_1 = new Block(FabricBlockSettings.of(Material.WOOD).pistonBehavior(PistonBehavior.DESTROY).replaceable(true).solid(false));

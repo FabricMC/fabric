@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
-import net.fabricmc.fabric.impl.object.builder.AbstractBlockInternals;
-import net.fabricmc.fabric.impl.object.builder.BlockSettingsInternals;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.AbstractBlock;
@@ -34,6 +30,8 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
+
+import net.fabricmc.fabric.impl.object.builder.AbstractBlockInternals;
 
 @Mixin(AbstractBlock.class)
 public abstract class AbstractBlockMixin implements AbstractBlockInternals {
@@ -51,16 +49,17 @@ public abstract class AbstractBlockMixin implements AbstractBlockInternals {
 
 	@Inject(method = "getPistonBehavior(Lnet/minecraft/block/BlockState;)Lnet/minecraft/block/piston/PistonBehavior;", at = @At("RETURN"), cancellable = true)
 	public void pistonBehaviorInject(BlockState state, CallbackInfoReturnable<PistonBehavior> cir) {
-		if(this.pistonBehavior != null) {
+		if (this.pistonBehavior != null) {
 			cir.setReturnValue(this.pistonBehavior);
 		}
 	}
 
 	@Override
 	public boolean isReplaceable(BlockState state) {
-		if(replaceable != null) {
+		if (replaceable != null) {
 			return replaceable;
 		}
+
 		return this.material.isReplaceable();
 	}
 
@@ -71,9 +70,10 @@ public abstract class AbstractBlockMixin implements AbstractBlockInternals {
 
 	@Override
 	public boolean isSolid(BlockState state) {
-		if(solid != null) {
+		if (solid != null) {
 			return solid;
 		}
+
 		return this.material.isSolid();
 	}
 
