@@ -51,8 +51,7 @@ abstract class ChunkSerializerMixin {
 	 */
 	@Inject(method = "readStructureReferences", at = @At("TAIL"))
 	private static void removeNullKeys(ChunkPos pos, CompoundTag tag, CallbackInfoReturnable<Map<StructureFeature<?>, LongSet>> cir) {
-		if (cir.getReturnValue().containsKey(null)) {
-			cir.getReturnValue().remove(null);
+		if (cir.getReturnValue().remove(null) != null) {
 			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(true);
 		}
 	}
