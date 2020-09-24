@@ -17,6 +17,7 @@ import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.feature.StructureFeature;
 
+// This is a bug fix, tracking issue:
 @Mixin(ChunkSerializer.class)
 abstract class ChunkSerializerMixin {
 	@Unique
@@ -34,8 +35,10 @@ abstract class ChunkSerializerMixin {
 	 */
 	@Inject(method = "readStructureReferences", at = @At("TAIL"))
 	private static void removeNullKeys(ChunkPos pos, CompoundTag tag, CallbackInfoReturnable<Map<StructureFeature<?>, LongSet>> cir) {
-		cir.getReturnValue().remove(null);
-		ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(Unit.INSTANCE);
+		if (cir.getReturnValue().containsKey(null)) {
+			cir.getReturnValue().remove(null);
+			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(Unit.INSTANCE);
+		}
 	}
 
 	@Redirect(method = "readStructureStarts", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setStructureReferences(Ljava/util/Map;)V", shift = At.Shift.AFTER))
