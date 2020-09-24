@@ -17,7 +17,7 @@ import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-// This is a bug fix, tracking issue:
+// This is a bug fix, tracking issue: MC-194811
 @Mixin(ChunkSerializer.class)
 abstract class ChunkSerializerMixin {
 	@Unique
