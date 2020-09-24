@@ -38,6 +38,8 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerTypeAccessor;
  * <p>Creation and registration of a villager type does not guarantee villagers of a specific type will be created in a world.
  * Typically the villager type is bound to a specific group of biomes.
  * To allow a villager type to be spawned in a specific biome, use {@link VillagerTypeHelper#addVillagerTypeToBiome(RegistryKey, VillagerType)}.
+ *
+ * <p>The texture used for the appearance of the villager is located at {@code assets/IDENTIFIER_NAMESPACE/textures/entity/villager/type/IDENTIFIER_PATH.png}.
  */
 public final class VillagerTypeHelper {
 	private static final Logger LOGGER = LogManager.getLogger();
