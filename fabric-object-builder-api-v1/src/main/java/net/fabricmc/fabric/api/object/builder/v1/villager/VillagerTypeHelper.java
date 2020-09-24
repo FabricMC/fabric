@@ -33,18 +33,11 @@ import net.fabricmc.fabric.mixin.object.builder.VillagerTypeAccessor;
  * Utilities related to the creation of {@link VillagerType}s.
  * Not to be confused with a {@link VillagerProfession}, a villager type defines the appearance of a villager.
  *
- * <p>Creation and registration of custom villager types may be done via the use of a simple helper method.
- * Below is an example of how one wouldd create a villager type:
- * <blockquote><pre>
- * public static final VillagerType MOUNTAIN = VillagerTypeHelper.register(new Identifier("mymod", "mountain"));
- * </pre></blockquote>
+ * <p>Creation and registration of custom villager types may be done by using {@link VillagerTypeHelper#register(Identifier)}.
  *
  * <p>Creation and registration of a villager type does not guarantee villagers of a specific type will be created in a world.
  * Typically the villager type is bound to a specific group of biomes.
- * Below is an example of allowing creation of mountain villagers in a mountain biome:
- * <blockquote><pre>
- * VillagerTypeHelper.addVillagerTypeToBiome(BiomeKeys.MOUNTAIN, MyVillagerTypes.MOUNTAIN);
- * </pre></blockquote>
+ * To allow a villager type to be spawned in a specific biome, use {@link VillagerTypeHelper#addVillagerTypeToBiome(RegistryKey, VillagerType)}.
  */
 public final class VillagerTypeHelper {
 	private static final Logger LOGGER = LogManager.getLogger();
