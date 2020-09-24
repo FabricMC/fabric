@@ -42,9 +42,9 @@ abstract class ChunkSerializerMixin {
 	 * Remove objects keyed by `null` in the map.
 	 * This data is likely bad since multiple missing structures will cause value mapped by `null` to change at least once.
 	 *
-	 * If a null value is stored in this map, the chunk will fail to save, so we remove the value stored using null key.
+	 * <p>If a null value is stored in this map, the chunk will fail to save, so we remove the value stored using null key.
 	 *
-	 * Note that the chunk may continue to emit errors after being (un)loaded again.
+	 * <p>Note that the chunk may continue to emit errors after being (un)loaded again.
 	 * This is because of the way minecraft handles chunk saving.
 	 * If the chunk is not modified, the game will keep the currently saved chunk on the disk.
 	 * In order to affect this change, we must mark the chunk to be save in order force the game to save the chunk without the errors.
