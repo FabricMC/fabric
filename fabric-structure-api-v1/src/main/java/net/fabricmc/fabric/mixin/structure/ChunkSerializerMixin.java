@@ -41,8 +41,9 @@ abstract class ChunkSerializerMixin {
 		}
 	}
 
-	@Redirect(method = "readStructureStarts", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setStructureReferences(Ljava/util/Map;)V", shift = At.Shift.AFTER))
-	private static void makeChunksDirtyIfMissingStructures(Chunk chunk, Map<StructureFeature<?>, LongSet> structureReferences) {
+	@Redirect(method = "deserialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setStructureReferences(Ljava/util/Map;)V"))
+	private static void forceChunkSavingIfNullKeysExist(Chunk chunk, Map<StructureFeature<?>, LongSet> structureReferences) {
+		// Redirect is much cleaner than local capture. The local capture would be very long
 		if (ChunkSerializerMixin.CHUNK_NEEDS_SAVING.get() != null) {
 			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(null);
 			// Make the chunk save as soon as possible

@@ -11,7 +11,7 @@ import net.minecraft.world.ChunkSerializer;
 @Mixin(ChunkSerializer.class)
 abstract class ChunkSerializerMixin {
 	/**
-	 * @reason Changes the logging message for the `unknown structure start` to describe which chunk it has occured in for debugging purposes.
+	 * @reason Changes the logging message for the `unknown structure start` to describe which chunk the missing structure is located in for debugging purposes.
 	 */
 	@ModifyConstant(method = "readStructureStarts", constant = @Constant(stringValue = "Unknown structure start: {}"))
 	private static String modifyErrorMessage(String original, StructureManager structureManager, CompoundTag tag, long worldSeed) {
