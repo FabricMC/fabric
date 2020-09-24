@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.ChunkSerializer;
 import net.minecraft.world.chunk.Chunk;
@@ -37,7 +36,7 @@ import net.minecraft.world.gen.feature.StructureFeature;
 @Mixin(ChunkSerializer.class)
 abstract class ChunkSerializerMixin {
 	@Unique
-	private static final ThreadLocal<Unit> CHUNK_NEEDS_SAVING = new ThreadLocal<>();
+	private static final ThreadLocal<Boolean> CHUNK_NEEDS_SAVING = ThreadLocal.withInitial(() -> false);
 
 	/**
 	 * Remove objects keyed by `null` in the map.
@@ -54,15 +53,15 @@ abstract class ChunkSerializerMixin {
 	private static void removeNullKeys(ChunkPos pos, CompoundTag tag, CallbackInfoReturnable<Map<StructureFeature<?>, LongSet>> cir) {
 		if (cir.getReturnValue().containsKey(null)) {
 			cir.getReturnValue().remove(null);
-			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(Unit.INSTANCE);
+			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(true);
 		}
 	}
 
 	@Redirect(method = "deserialize", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/Chunk;setStructureReferences(Ljava/util/Map;)V"))
 	private static void forceChunkSavingIfNullKeysExist(Chunk chunk, Map<StructureFeature<?>, LongSet> structureReferences) {
 		// Redirect is much cleaner than local capture. The local capture would be very long
-		if (ChunkSerializerMixin.CHUNK_NEEDS_SAVING.get() != null) {
-			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(null);
+		if (ChunkSerializerMixin.CHUNK_NEEDS_SAVING.get()) {
+			ChunkSerializerMixin.CHUNK_NEEDS_SAVING.set(false);
 			// Make the chunk save as soon as possible
 			chunk.setShouldSave(true);
 		}
