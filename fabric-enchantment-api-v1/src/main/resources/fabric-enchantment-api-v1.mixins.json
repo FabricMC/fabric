@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.enchantment",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "EnchantmentHelperMixin",
+    "EnchantedBookItemMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
