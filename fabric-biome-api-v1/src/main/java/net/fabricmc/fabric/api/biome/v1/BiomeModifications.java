@@ -18,10 +18,15 @@ package net.fabricmc.fabric.api.biome.v1;
 
 import java.util.function.Predicate;
 
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.carver.ConfiguredCarver;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -70,7 +75,7 @@ public final class BiomeModifications {
 	public static final int ORDER_POST_PROCESSING = 100000000;
 
 	/**
-	 * Add a feature to one or more biomes.
+	 * Convenience method to add a feature to one or more biomes.
 	 *
 	 * @see BiomeSelectors
 	 */
@@ -81,7 +86,7 @@ public final class BiomeModifications {
 	}
 
 	/**
-	 * Add a structure to one or more biomes.
+	 * Convenience method to add a structure to one or more biomes.
 	 *
 	 * @see BiomeSelectors
 	 */
@@ -92,13 +97,35 @@ public final class BiomeModifications {
 	}
 
 	/**
-	 * Add a carver to one or more biomes.
+	 * Convenience method to add a carver to one or more biomes.
 	 *
 	 * @see BiomeSelectors
 	 */
 	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
 		create(configuredCarverKey.getValue()).add(ORDER_ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addCarver(step, configuredCarverKey);
+		});
+	}
+
+	/**
+	 * Convenience method to add an entity spawn to one or more biomes.
+	 *
+	 * @see BiomeSelectors
+	 * @see net.minecraft.world.biome.SpawnSettings.Builder#spawn(SpawnGroup, SpawnSettings.SpawnEntry)
+	 */
+	public static void addSpawn(Predicate<BiomeSelectionContext> biomeSelector,
+								SpawnGroup spawnGroup, EntityType<?> entityType,
+								int weight, int minGroupSize, int maxGroupSize) {
+		// See constructor of SpawnSettings.SpawnEntry for context
+		Preconditions.checkArgument(entityType.getSpawnGroup() != SpawnGroup.MISC,
+				"Cannot add spawns for entities with spawnGroup=MISC since they'd be replaced by pigs.");
+
+		// We need the entity type to be registered or we cannot deduce an ID otherwisea
+		Identifier id = Registry.ENTITY_TYPE.getId(entityType);
+		Preconditions.checkState(id != Registry.ENTITY_TYPE.getDefaultId(), "Unregistered entity type: %s", entityType);
+
+		create(id).add(ORDER_ADDITIONS, biomeSelector, context -> {
+			context.getSpawnSettings().addSpawn(spawnGroup, new SpawnSettings.SpawnEntry(entityType, weight, minGroupSize, maxGroupSize));
 		});
 	}
 

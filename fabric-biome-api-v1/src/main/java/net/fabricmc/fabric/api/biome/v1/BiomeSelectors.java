@@ -17,15 +17,19 @@
 package net.fabricmc.fabric.api.biome.v1;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.SpawnSettings;
 
 import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
 
@@ -135,5 +139,35 @@ public final class BiomeSelectors {
 	 */
 	public static Predicate<BiomeSelectionContext> includeByKey(Collection<RegistryKey<Biome>> keys) {
 		return context -> keys.contains(context.getBiomeKey());
+	}
+
+	/**
+	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
+	 *
+	 * <p>Matches spawns in all {@link SpawnGroup spawn groups}.
+	 */
+	public static Predicate<BiomeSelectionContext> spawnsOneOf(EntityType<?>... entityTypes) {
+		return spawnsOneOf(ImmutableSet.copyOf(entityTypes));
+	}
+
+	/**
+	 * Returns a biome selector that will match biomes in which one of the given entity types can spawn.
+	 *
+	 * <p>Matches spawns in all {@link SpawnGroup spawn groups}.
+	 */
+	public static Predicate<BiomeSelectionContext> spawnsOneOf(Set<EntityType<?>> entityTypes) {
+		return context -> {
+			SpawnSettings spawnSettings = context.getBiome().getSpawnSettings();
+
+			for (SpawnGroup spawnGroup : SpawnGroup.values()) {
+				for (SpawnSettings.SpawnEntry spawnEntry : spawnSettings.getSpawnEntry(spawnGroup)) {
+					if (entityTypes.contains(spawnEntry.type)) {
+						return true;
+					}
+				}
+			}
+
+			return false;
+		};
 	}
 }
