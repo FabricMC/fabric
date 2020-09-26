@@ -56,8 +56,8 @@ public abstract class FabricEnchantment extends Enchantment {
 	public abstract boolean isAcceptableItem(ItemStack stack);
 
 	/**
-	 * A custom method that determines whether or not this enchantment's books
-	 * ought to be placed into the given item group.
+	 * Determines whether or not this enchantment's book ought to be placed into
+	 * the given item group.
 	 *
 	 * <p>It should be noted that all enchanted books, for all enchantments are
 	 * automatically added to the search tab regardless of what this method

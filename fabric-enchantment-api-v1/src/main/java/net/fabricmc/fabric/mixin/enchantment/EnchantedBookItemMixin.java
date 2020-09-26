@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.enchantment;
 
-import java.util.Iterator;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,16 +46,10 @@ public class EnchantedBookItemMixin {
 	// This target mixes in right at the end of the append stacks method
 	@Inject(method = "appendStacks", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks, CallbackInfo callback) {
-		// Get an iterator for the enchantment registry. This mixin iterates over the enchantment
-		// registry a second time, which does increase initialization time but because this method
-		// is only called once in the initialization processs, and alternative mixins would be more
-		// invasive, this is how it is.
-		Iterator<Enchantment> iterator = Registry.ENCHANTMENT.iterator();
-
-		// While the iterator has another element (basically for every element in the iterator)
-		while (iterator.hasNext()) {
-			Enchantment enchantment = iterator.next();
-
+		// This mixin iterates over the enchantment registry a second time, which does increase
+		// initialization time but because this method is only called once in the initialization
+		// processs, and alternative mixins would be more invasive, this is how it is.
+		for (Enchantment enchantment : Registry.ENCHANTMENT) {
 			// If the enchantment is a FabricEnchantment
 			if (enchantment instanceof FabricEnchantment) {
 				// If the item group is search, add the enchantment regardless of what it is

@@ -67,7 +67,6 @@ public class EnchantmentHelperMixin {
 			} else {
 				// So, because we know the iterator is empty we know we can safely return the enchantment entry list without any unintended side effects
 				callback.setReturnValue(list);
-				callback.cancel();
 				break;
 			}
 		}
