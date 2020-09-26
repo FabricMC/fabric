@@ -29,15 +29,11 @@ import net.minecraft.world.biome.Biome;
 import net.fabricmc.fabric.impl.biome.modification.BiomeModificationTracker;
 
 /**
- * Prevents double-modification of biomes in the same dynamic registry manager from occuring and fails-fast
- * if it does occur.
+ * This Mixin allows us to track which biomes already ran through {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl}
+ * on a per-DynamicRegistryManager basis.
  */
 @Mixin(DynamicRegistryManager.Impl.class)
 public class DynamicRegistryManagerImplMixin implements BiomeModificationTracker {
-	/**
-	 * Vanilla will sometimes happily apply the RegistryOps twice to the same dynamic registry manager.
-	 * To see an example for this, use "Re-Create World".
-	 */
 	@Unique
 	private final Set<RegistryKey<Biome>> modifiedBiomes = new HashSet<>();
 

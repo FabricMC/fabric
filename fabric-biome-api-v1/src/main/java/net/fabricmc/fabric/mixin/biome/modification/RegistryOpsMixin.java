@@ -31,6 +31,21 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 /**
  * This Mixin hooks int the creation of RegistryOps, which will currently load data pack contents into
  * the supplied dynamic registry manager, making it the point at which we should apply biome modifications.
+ * <p>
+ * There is generally the following order:
+ * <ol>
+ *     <li>{@link DynamicRegistryManager#create()} is used to create a dynamic registry manager with just
+ *     entries from {@link net.minecraft.util.registry.BuiltinRegistries}</li>
+ *     <li>Sometimes, Vanilla Minecraft will stop here, and use the DRM as-is (examples: server.properties parsing, world creation screen).</li>
+ *     <li>{@link RegistryOps#of(DynamicOps, ResourceManager, DynamicRegistryManager.Impl)} gets called with the manager, and a
+ *     resource manager that contains the loaded data packs. This will pull in all worldgen objects from datapacks into the
+ *     dynamic registry manager.</li>
+ *     <li>After the worldgen objects are pulled in from the datapacks, this mixin will call the biome modification callback.</li>
+ *     <li>In most cases, Vanilla will stop here and now use the dynamic registy manager to instantiate a server.</li>
+ *     <li>Sometimes, i.e. when using the "re-create world feature", and a datapack throws an error, Vanilla will sometimes
+ *     repeat the {@link RegistryOps#of(DynamicOps, ResourceManager, DynamicRegistryManager.Impl)} call on the same
+ *     dynamic registry manager. We guard against this using {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationTracker}.</li>
+ * </ol>
  */
 @Mixin(RegistryOps.class)
 public class RegistryOpsMixin {
