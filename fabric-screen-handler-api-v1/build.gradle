@@ -6,7 +6,10 @@ minecraft {
 }
 
 dependencies {
-	compile(project(path: ':fabric-api-base', configuration: 'dev'))
-	compile(project(path: ':fabric-networking-v0', configuration: 'dev'))
 	testmodRuntimeOnly(project(path: ':fabric-resource-loader-v0', configuration: 'dev'))
 }
+
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-networking-v0'
+])
