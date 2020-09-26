@@ -31,8 +31,8 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 /**
  * This Mixin hooks int the creation of RegistryOps, which will currently load data pack contents into
  * the supplied dynamic registry manager, making it the point at which we should apply biome modifications.
- * <p>
- * There is generally the following order:
+ *
+ * <p>There is generally the following order:
  * <ol>
  *     <li>{@link DynamicRegistryManager#create()} is used to create a dynamic registry manager with just
  *     entries from {@link net.minecraft.util.registry.BuiltinRegistries}</li>
