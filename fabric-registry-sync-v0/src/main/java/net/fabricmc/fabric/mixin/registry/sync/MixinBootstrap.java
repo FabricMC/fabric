@@ -37,7 +37,6 @@ import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockItemTracker;
 
 @Mixin(Bootstrap.class)
 public class MixinBootstrap {
-	@SuppressWarnings("unchecked")
 	@Inject(method = "setOutputStreams", at = @At("RETURN"))
 	private static void initialize(CallbackInfo info) {
 		// These seemingly pointless accesses are done to make sure each
