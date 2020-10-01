@@ -132,9 +132,8 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 	@Unique
 	private boolean fabric_isObjectNew = false;
 
-	@SuppressWarnings({"unchecked", "ConstantConditions"})
 	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable info) {
+	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
 		int indexedEntriesId = entryToRawId.getInt(object);
 
 		if (indexedEntriesId >= 0) {
@@ -161,9 +160,8 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable info) {
+	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
 		}
