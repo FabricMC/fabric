@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
 import static net.minecraft.util.math.MathHelper.approximatelyEquals;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
@@ -114,7 +116,7 @@ public abstract class GeometryHelper {
 	 *
 	 * @param lightFace MUST be non-null.
 	 */
-	public static boolean isQuadCubic(Direction lightFace, QuadView quad) {
+	public static boolean isQuadCubic(@NotNull Direction lightFace, QuadView quad) {
 		if (lightFace == null) {
 			return false;
 		}

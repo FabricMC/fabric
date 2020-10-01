@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.api.entity;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.hit.HitResult;
 
 public interface EntityPickInteractionAware {
-	ItemStack getPickedStack(/* nullable */ PlayerEntity player, /* nullable */ HitResult result);
+	ItemStack getPickedStack(@Nullable PlayerEntity player, @Nullable HitResult result);
 }

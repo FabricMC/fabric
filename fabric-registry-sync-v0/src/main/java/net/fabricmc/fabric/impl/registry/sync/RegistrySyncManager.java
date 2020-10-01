@@ -35,6 +35,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
@@ -105,7 +106,8 @@ public final class RegistrySyncManager {
 	 * @param activeTag contains the registry ids that were previously read and applied, can be null.
 	 * @return a {@link CompoundTag} to save or sync, null when empty
 	 */
-	public static CompoundTag toTag(boolean isClientSync, CompoundTag activeTag) {
+	@Nullable
+	public static CompoundTag toTag(boolean isClientSync, @Nullable CompoundTag activeTag) {
 		CompoundTag mainTag = new CompoundTag();
 
 		for (Identifier registryId : Registry.REGISTRIES.getIds()) {

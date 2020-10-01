@@ -22,6 +22,7 @@ import java.util.function.BiConsumer;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.GameRules;
@@ -140,7 +141,7 @@ public final class GameRuleFactory {
 	 * @param changedCallback a callback that is invoked when the value of a game rule has changed
 	 * @return an integer rule type
 	 */
-	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int minimumValue, int maximumValue, /* @Nullable */ BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
+	public static GameRules.Type<GameRules.IntRule> createIntRule(int defaultValue, int minimumValue, int maximumValue, @Nullable BiConsumer<MinecraftServer, GameRules.IntRule> changedCallback) {
 		return new GameRules.Type<>(
 				() -> IntegerArgumentType.integer(minimumValue, maximumValue),
 				type -> new BoundedIntRule(type, defaultValue, minimumValue, maximumValue), // Internally use a bounded int rule

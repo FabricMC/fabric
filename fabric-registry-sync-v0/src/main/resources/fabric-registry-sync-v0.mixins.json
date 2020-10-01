@@ -5,6 +5,7 @@
   "mixins": [
     "AccessorRegistry",
     "MixinBootstrap",
+    "MixinDynamicRegistryManager",
     "MixinIdList",
     "MixinIdRegistry",
     "MixinPlayerManager",

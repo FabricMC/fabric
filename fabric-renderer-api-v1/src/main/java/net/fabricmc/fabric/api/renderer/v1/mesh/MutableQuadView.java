@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1.mesh;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
@@ -115,7 +117,8 @@ public interface MutableQuadView extends QuadView {
 	 * is computed based on face geometry and must be non-null in vanilla quads.
 	 * That computed value is returned by {@link #lightFace()}.
 	 */
-	MutableQuadView cullFace(Direction face);
+	@Nullable
+	MutableQuadView cullFace(@Nullable Direction face);
 
 	/**
 	 * Provides a hint to renderer about the facing of this quad. Not required,
@@ -130,6 +133,7 @@ public interface MutableQuadView extends QuadView {
 	 * <p>Note: This value is not persisted independently when the quad is encoded.
 	 * When reading encoded quads, this value will always be the same as {@link #lightFace()}.
 	 */
+	@Nullable
 	MutableQuadView nominalFace(Direction face);
 
 	/**
