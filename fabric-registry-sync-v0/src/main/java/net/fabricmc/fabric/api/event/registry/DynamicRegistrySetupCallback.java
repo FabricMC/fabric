@@ -39,13 +39,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {
-	void onSetupRegistry(DynamicRegistryManager registryManager);
+	void onRegistrySetup(DynamicRegistryManager registryManager);
 
 	Event<DynamicRegistrySetupCallback> EVENT = EventFactory.createArrayBacked(
 			DynamicRegistrySetupCallback.class,
 			callbacks -> registryManager -> {
 				for (DynamicRegistrySetupCallback callback : callbacks) {
-					callback.onSetupRegistry(registryManager);
+					callback.onRegistrySetup(registryManager);
 				}
 			}
 	);
