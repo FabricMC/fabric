@@ -27,13 +27,13 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.tag.v1.TagRegistry;
+import net.fabricmc.fabric.api.tag.v1.Tags;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class TagTests implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger("TagTests");
-	public static final Tag.Identified<Block> FALLING = TagRegistry.requiredBlock(new Identifier("testmod", "falling"));
-	public static final Tag.Identified<EntityType<?>> BOSS = TagRegistry.entityType(new Identifier("testmod", "boss"));
+	public static final Tag.Identified<Block> FALLING = Tags.requiredBlock(new Identifier("testmod", "falling"));
+	public static final Tag.Identified<EntityType<?>> BOSS = Tags.entityType(new Identifier("testmod", "boss"));
 
 	@Override
 	public void onInitialize() {

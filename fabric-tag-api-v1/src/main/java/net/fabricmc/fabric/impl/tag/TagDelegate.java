@@ -30,7 +30,7 @@ import net.minecraft.util.Identifier;
  */
 public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensions {
 	private final Identifier id;
-	private final Supplier<TagGroup<T>> containerSupplier;
+	private final Supplier<TagGroup<T>> groupSupplier;
 	private volatile Target<T> target;
 	private int clearCount;
 
@@ -38,9 +38,9 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensi
 		return new TagDelegate<>(id, groupSupplier);
 	}
 
-	private TagDelegate(Identifier id, Supplier<TagGroup<T>> containerSupplier) {
+	private TagDelegate(Identifier id, Supplier<TagGroup<T>> groupSupplier) {
 		this.id = id;
-		this.containerSupplier = containerSupplier;
+		this.groupSupplier = groupSupplier;
 	}
 
 	@Override
@@ -64,12 +64,12 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensi
 	 */
 	private Tag<T> getTag() {
 		Target<T> target = this.target;
-		TagGroup<T> reqContainer = this.containerSupplier.get();
+		TagGroup<T> group = this.groupSupplier.get();
 		Tag<T> ret;
 
-		if (target == null || target.container != reqContainer) {
-			ret = reqContainer.getTagOrEmpty(getId());
-			this.target = new Target<>(reqContainer, ret);
+		if (target == null || target.group != group) {
+			ret = group.getTagOrEmpty(getId());
+			this.target = new Target<>(group, ret);
 		} else {
 			ret = target.tag;
 		}
@@ -93,12 +93,12 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensi
 	}
 
 	private static final class Target<T> {
-		Target(TagGroup<T> container, Tag<T> tag) {
-			this.container = container;
+		Target(TagGroup<T> group, Tag<T> tag) {
+			this.group = group;
 			this.tag = tag;
 		}
 
-		final TagGroup<T> container;
+		final TagGroup<T> group;
 		final Tag<T> tag;
 	}
 }

@@ -43,8 +43,7 @@ public final class TagHelper {
 	 * @return the builder for chaining.
 	 */
 	public static Tag.Builder clearEntries(Tag.Builder builder) {
-		final FabricTagBuilderExtensions extensions = (FabricTagBuilderExtensions) builder;
-		extensions.fabric_clearTagEntries();
+		((FabricTagBuilderExtensions) builder).fabric_clearTagEntries();
 
 		return builder;
 	}

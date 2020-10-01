@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.tag.v1;
 
+import java.util.function.Supplier;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityType;
 import net.minecraft.fluid.Fluid;
@@ -25,6 +27,7 @@ import net.minecraft.tag.EntityTypeTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.tag.TagDelegate;
@@ -33,15 +36,41 @@ import net.fabricmc.fabric.mixin.tag.EntityTypeTagsAccessor;
 import net.fabricmc.fabric.mixin.tag.FluidTagsAccessor;
 import net.fabricmc.fabric.mixin.tag.ItemTagsAccessor;
 
-public final class TagRegistry {
+/**
+ * Utilities related to the creation and registration of {@link Tag}s.
+ * In Minecraft, there are two types of tags: "required" and "optional".
+ *
+ * <p>A "required" tag is required for the game to function, usually being bound to game logic. One example of this is whether {@link BlockTags#DRAGON_IMMUNE a block is immune to the ender dragon}.
+ * If a required tag is not present, a Minecraft server will refuse to start and a client connecting to a server will disconnect.
+ *
+ * <p>An "optional" tag is not required for the game to function.
+ *
+ * @see Tag
+ */
+public final class Tags {
+	/**
+	 * Creates a thread-safe delegate to an "optional" tag which refers to a tag in a tag group.
+	 * This type of tag will recompute the tag values if the tag being referred to is outdated or no longer exists.
+	 *
+	 * <p>If a tag of the specified {@code id} does not exist in the tag group, then delegate will refer to an empty tag.
+	 *
+	 * @param id the id of the tag
+	 * @param groupSupplier a supplier used to get the tag group
+	 * @param <T> the type of object the tag holds
+	 * @return a new identified tag
+	 */
+	public static <T> Tag.Identified<T> createDelegatedTag(Identifier id, Supplier<TagGroup<T>> groupSupplier) {
+		return TagDelegate.create(id, groupSupplier);
+	}
+
 	/**
 	 * Registers a block tag.
 	 *
 	 * @param id the id of the tag
-	 * @return a tag
+	 * @return an identified tag
 	 */
 	public static Tag.Identified<Block> block(Identifier id) {
-		return TagDelegate.create(id, BlockTags::getTagGroup);
+		return createDelegatedTag(id, BlockTags::getTagGroup);
 	}
 
 	/**
@@ -51,7 +80,7 @@ public final class TagRegistry {
 	 * This type of tag is typically used when game logic is bound to a tag, such as marking a {@link BlockTags#DRAGON_IMMUNE block dragon immune}.
 	 *
 	 * @param id the id of the tag
-	 * @return an identified tag
+	 * @return a new required tag
 	 */
 	public static Tag.Identified<Block> requiredBlock(Identifier id) {
 		return BlockTagsAccessor.register(id.toString()); // WTF Mojang
@@ -61,10 +90,10 @@ public final class TagRegistry {
 	 * Registers an entity type tag.
 	 *
 	 * @param id the id of the tag
-	 * @return a tag
+	 * @return an identified tag
 	 */
 	public static Tag.Identified<EntityType<?>> entityType(Identifier id) {
-		return TagDelegate.create(id, EntityTypeTags::getTagGroup);
+		return createDelegatedTag(id, EntityTypeTags::getTagGroup);
 	}
 
 	/**
@@ -74,7 +103,7 @@ public final class TagRegistry {
 	 * This type of tag is typically used when game logic is bound to a tag, such as marking a type of entity as a {@link EntityTypeTags#RAIDERS raider}.
 	 *
 	 * @param id the id of the tag
-	 * @return an identified tag
+	 * @return a new required tag
 	 */
 	public static Tag.Identified<EntityType<?>> requiredEntityType(Identifier id) {
 		return EntityTypeTagsAccessor.register(id.toString()); // WTF Mojang
@@ -84,10 +113,10 @@ public final class TagRegistry {
 	 * Registers a fluid tag.
 	 *
 	 * @param id the id of the tag
-	 * @return a tag
+	 * @return an identified tag
 	 */
 	public static Tag.Identified<Fluid> fluid(Identifier id) {
-		return TagDelegate.create(id, FluidTagsAccessor.getRequiredTagList()::getGroup);
+		return createDelegatedTag(id, FluidTagsAccessor.getRequiredTagList()::getGroup);
 	}
 
 	/**
@@ -97,7 +126,7 @@ public final class TagRegistry {
 	 * This type of tag is typically used when game logic is bound to a tag, such as marking a fluid as {@link FluidTags#LAVA lava}.
 	 *
 	 * @param id the id of the tag
-	 * @return an identified tag
+	 * @return a new required tag
 	 */
 	public static Tag.Identified<Fluid> requiredFluid(Identifier id) {
 		return FluidTagsAccessor.register(id.toString()); // WTF Mojang
@@ -110,7 +139,7 @@ public final class TagRegistry {
 	 * @return a tag
 	 */
 	public static Tag.Identified<Item> item(Identifier id) {
-		return TagDelegate.create(id, ItemTags::getTagGroup);
+		return createDelegatedTag(id, ItemTags::getTagGroup);
 	}
 
 	/**
@@ -120,12 +149,12 @@ public final class TagRegistry {
 	 * This type of tag is typically used when game logic is bound to a tag, such as marking an item as {@link ItemTags#PIGLIN_REPELLENTS repulsive to a piglin}.
 	 *
 	 * @param id the id of the tag
-	 * @return an identified tag
+	 * @return a new required tag
 	 */
 	public static Tag.Identified<Item> requiredItem(Identifier id) {
 		return ItemTagsAccessor.register(id.toString()); // WTF Mojang
 	}
 
-	private TagRegistry() {
+	private Tags() {
 	}
 }

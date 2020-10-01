@@ -26,12 +26,13 @@ import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagGroup;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.tag.v1.Tags;
 import net.fabricmc.fabric.impl.tag.TagDelegate;
 
 /**
  * Helper methods for registering Tags.
  *
- * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry} instead.
+ * @deprecated Please use {@link Tags} instead.
  */
 @Deprecated
 public final class TagRegistry {
@@ -39,38 +40,38 @@ public final class TagRegistry {
 
 	@Deprecated
 	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagGroup<T>> groupSupplier) {
-		return TagDelegate.create(id, groupSupplier);
+		return Tags.createDelegatedTag(id, groupSupplier);
 	}
 
 	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#block(Identifier)} instead.
+	 * @deprecated Please use {@link Tags#block(Identifier)} instead.
 	 */
 	@Deprecated
 	public static Tag<Block> block(Identifier id) {
-		return net.fabricmc.fabric.api.tag.v1.TagRegistry.block(id);
+		return Tags.block(id);
 	}
 
 	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#entityType(Identifier)} instead.
+	 * @deprecated Please use {@link Tags#entityType(Identifier)} instead.
 	 */
 	@Deprecated
 	public static Tag<EntityType<?>> entityType(Identifier id) {
-		return net.fabricmc.fabric.api.tag.v1.TagRegistry.entityType(id);
+		return Tags.entityType(id);
 	}
 
 	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#fluid(Identifier)} instead.
+	 * @deprecated Please use {@link Tags#fluid(Identifier)} instead.
 	 */
 	@Deprecated
 	public static Tag<Fluid> fluid(Identifier id) {
-		return net.fabricmc.fabric.api.tag.v1.TagRegistry.fluid(id);
+		return Tags.fluid(id);
 	}
 
 	/**
-	 * @deprecated Please use {@link net.fabricmc.fabric.api.tag.v1.TagRegistry#item(Identifier)} instead.
+	 * @deprecated Please use {@link Tags#item(Identifier)} instead.
 	 */
 	@Deprecated
 	public static Tag<Item> item(Identifier id) {
-		return net.fabricmc.fabric.api.tag.v1.TagRegistry.item(id);
+		return Tags.item(id);
 	}
 }
