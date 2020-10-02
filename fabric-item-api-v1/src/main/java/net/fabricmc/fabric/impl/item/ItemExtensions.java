@@ -16,12 +16,24 @@
 
 package net.fabricmc.fabric.impl.item;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.ItemExplosionHandler;
 
 public interface ItemExtensions {
-	/* @Nullable */ EquipmentSlotProvider fabric_getEquipmentSlotProvider();
+	@Nullable
+	EquipmentSlotProvider fabric_getEquipmentSlotProvider();
+
 	void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider);
-	/* @Nullable */ CustomDamageHandler fabric_getCustomDamageHandler();
+
+	@Nullable
+	CustomDamageHandler fabric_getCustomDamageHandler();
+
 	void fabric_setCustomDamageHandler(CustomDamageHandler handler);
+
+	@Nullable ItemExplosionHandler fabric_getItemExplosionHandler();
+
+	void fabric_setItemExplosionHandler(ItemExplosionHandler handler);
 }

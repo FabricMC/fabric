@@ -53,6 +53,11 @@ public class FabricItemSettings extends Item.Settings {
 		return this;
 	}
 
+	public FabricItemSettings explosionHandler(ItemExplosionHandler handler) {
+		FabricItemInternals.computeExtraData(this).explosionHandler(handler);
+		return this;
+	}
+
 	// Overrides of vanilla methods
 
 	@Override

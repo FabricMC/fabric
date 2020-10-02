@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +27,7 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.ItemExplosionHandler;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
@@ -37,11 +39,15 @@ abstract class ItemMixin implements ItemExtensions {
 	@Unique
 	private CustomDamageHandler customDamageHandler;
 
+	@Unique
+	private ItemExplosionHandler explosionHandler;
+
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
 		FabricItemInternals.onBuild(settings, (Item) (Object) this);
 	}
 
+	@Nullable
 	@Override
 	public EquipmentSlotProvider fabric_getEquipmentSlotProvider() {
 		return equipmentSlotProvider;
@@ -52,6 +58,7 @@ abstract class ItemMixin implements ItemExtensions {
 		this.equipmentSlotProvider = equipmentSlotProvider;
 	}
 
+	@Nullable
 	@Override
 	public CustomDamageHandler fabric_getCustomDamageHandler() {
 		return customDamageHandler;
@@ -60,5 +67,16 @@ abstract class ItemMixin implements ItemExtensions {
 	@Override
 	public void fabric_setCustomDamageHandler(CustomDamageHandler handler) {
 		this.customDamageHandler = handler;
+	}
+
+	@Nullable
+	@Override
+	public ItemExplosionHandler fabric_getItemExplosionHandler() {
+		return this.explosionHandler;
+	}
+
+	@Override
+	public void fabric_setItemExplosionHandler(ItemExplosionHandler handler) {
+		this.explosionHandler = handler;
 	}
 }

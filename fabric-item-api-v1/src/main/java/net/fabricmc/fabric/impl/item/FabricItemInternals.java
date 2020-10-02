@@ -18,10 +18,13 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.ItemExplosionHandler;
 
 public final class FabricItemInternals {
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
@@ -39,12 +42,17 @@ public final class FabricItemInternals {
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
+			((ItemExtensions) item).fabric_setItemExplosionHandler(data.explosionHandler);
 		}
 	}
 
 	public static final class ExtraData {
-		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
-		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		@Nullable
+		private EquipmentSlotProvider equipmentSlotProvider;
+		@Nullable
+		private CustomDamageHandler customDamageHandler;
+		@Nullable
+		private ItemExplosionHandler explosionHandler;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
@@ -52,6 +60,10 @@ public final class FabricItemInternals {
 
 		public void customDamage(CustomDamageHandler handler) {
 			this.customDamageHandler = handler;
+		}
+
+		public void explosionHandler(ItemExplosionHandler handler) {
+			this.explosionHandler = handler;
 		}
 	}
 }
