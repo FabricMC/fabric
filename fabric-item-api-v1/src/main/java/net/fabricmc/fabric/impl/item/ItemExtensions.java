@@ -33,7 +33,8 @@ public interface ItemExtensions {
 
 	void fabric_setCustomDamageHandler(CustomDamageHandler handler);
 
-	@Nullable ItemExplosionHandler fabric_getItemExplosionHandler();
+	@Nullable
+	ItemExplosionHandler fabric_getItemExplosionHandler();
 
 	void fabric_setItemExplosionHandler(ItemExplosionHandler handler);
 }
