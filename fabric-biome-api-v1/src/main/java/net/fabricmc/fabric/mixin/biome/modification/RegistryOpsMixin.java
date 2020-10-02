@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
  * <ol>
  *     <li>{@link DynamicRegistryManager#create()} is used to create a dynamic registry manager with just
  *     entries from {@link net.minecraft.util.registry.BuiltinRegistries}</li>
- *     <li>Sometimes, Vanilla Minecraft will stop here, and use the DRM as-is (examples: server.properties parsing, world creation screen).</li>
+ *     <li>Sometimes, Vanilla Minecraft will stop here, and use the {@link DynamicRegistryManager} as-is (examples: server.properties parsing, world creation screen).</li>
  *     <li>{@link RegistryOps#of(DynamicOps, ResourceManager, DynamicRegistryManager.Impl)} gets called with the manager, and a
  *     resource manager that contains the loaded data packs. This will pull in all worldgen objects from datapacks into the
  *     dynamic registry manager.</li>
