@@ -23,6 +23,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
@@ -38,9 +40,12 @@ public abstract class AbstractBlockMixin implements AbstractBlockInternals {
 	@Shadow
 	@Final
 	protected Material material;
-	/* @Nullable */ private PistonBehavior pistonBehavior;
-	/* @Nullable */ private Boolean replaceable;
-	/* @Nullable */ private Boolean solid;
+	@Nullable
+	private PistonBehavior pistonBehavior;
+	@Nullable
+	private Boolean replaceable;
+	@Nullable
+	private Boolean solid;
 
 	@Override
 	public void setPistonBehavior(PistonBehavior pistonBehavior) {
