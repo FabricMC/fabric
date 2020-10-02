@@ -185,7 +185,7 @@ public enum TriState {
 	/**
 	 * Gets the value of this tri-state, or throws an exception if this tri-state's value is {@link TriState#DEFAULT}.
 	 *
-	 * @param exceptionSupplier the supplying function that produces an xception to be thrown
+	 * @param exceptionSupplier the supplying function that produces an exception to be thrown
 	 * @param <X> Type of the exception to be thrown
 	 * @return the value
 	 * @throws X if the value is {@link TriState#DEFAULT}
