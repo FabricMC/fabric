@@ -26,12 +26,15 @@ import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ClientChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ClientConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 
+@Environment(EnvType.CLIENT)
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;

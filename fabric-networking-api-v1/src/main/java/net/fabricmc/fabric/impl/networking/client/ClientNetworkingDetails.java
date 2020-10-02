@@ -34,6 +34,7 @@ import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingDetails;
 import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
 
+@Environment(EnvType.CLIENT)
 public final class ClientNetworkingDetails {
 	public static final SimpleChannelHandlerRegistry<ClientNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
 	public static final SimpleChannelHandlerRegistry<ClientNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();

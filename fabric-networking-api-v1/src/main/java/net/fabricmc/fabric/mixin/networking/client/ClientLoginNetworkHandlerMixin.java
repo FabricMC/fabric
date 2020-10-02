@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.mixin.networking.client;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,9 +28,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerHook;
 
+@Environment(EnvType.CLIENT)
 @Mixin(ClientLoginNetworkHandler.class)
 abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandlerHook {
 	@Shadow
