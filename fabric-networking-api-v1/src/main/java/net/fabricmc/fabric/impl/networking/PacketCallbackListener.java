@@ -18,6 +18,6 @@ package net.fabricmc.fabric.impl.networking;
 
 import net.minecraft.network.Packet;
 
-public interface PacketCallback {
+public interface PacketCallbackListener {
 	void sent(Packet<?> packet);
 }

@@ -19,7 +19,6 @@ package net.fabricmc.fabric.impl.networking;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +29,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
-import net.fabricmc.fabric.impl.networking.server.QueryIdFactory;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingDetails;
 
 public final class NetworkingDetails {
@@ -49,18 +47,6 @@ public final class NetworkingDetails {
 	 * Dynamic registration of supported channels is still allowed using {@link NetworkingDetails#REGISTER_CHANNEL} and {@link NetworkingDetails#UNREGISTER_CHANNEL}.
 	 */
 	public static final Identifier EARLY_REGISTRATION_CHANNEL = new Identifier(MOD_ID, "early_registration");
-
-	public static QueryIdFactory createQueryIdManager() {
-		// todo incremental ids or randomized
-		return new QueryIdFactory() {
-			private final AtomicInteger currentId = new AtomicInteger();
-
-			@Override
-			public int nextId() {
-				return currentId.getAndIncrement();
-			}
-		};
-	}
 
 	public static void init() {
 		ServerConnectionEvents.LOGIN_QUERY_START.register((handler, server, sender, synchronizer) -> {

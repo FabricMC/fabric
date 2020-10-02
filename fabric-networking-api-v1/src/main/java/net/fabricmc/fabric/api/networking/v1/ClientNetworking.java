@@ -109,7 +109,7 @@ public final class ClientNetworking {
 		 * Modification to the game should be {@linkplain net.minecraft.util.thread.ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft client instance.
 		 *
 		 * <p>An example usage of this is to display a
-		 * <blockquote><pre>
+		 * <pre>{@code
 		 * ClientNetworking.getPlayReceiver().register(new Identifier("mymod", "overlay"), (handler, client, sender, buf) -&rt; {
 		 * 	String message = buf.readString(32767);
 		 *
@@ -118,7 +118,7 @@ public final class ClientNetworking {
 		 * 		client.inGameHud.setOverlayMessage(message, true);
 		 * 	});
 		 * });
-		 * </pre></blockquote>
+		 * }</pre>
 		 *
 		 * @param handler the network handler that received this packet
 		 * @param client the client

@@ -146,7 +146,7 @@ public final class ServerNetworking {
 		 * Modification to the game should be {@linkplain net.minecraft.util.thread.ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft server instance.
 		 *
 		 * <p>An example usage of this is to create an explosion where the player is looking:
-		 * <blockquote><pre>
+		 * <pre>{@code
 		 * ServerNetworking.getPlayReceiver().register(new Identifier("mymod", "boom"), (handler, server, sender, buf) -&rt; {
 		 * 	boolean fire = buf.readBoolean();
 		 *
@@ -155,7 +155,7 @@ public final class ServerNetworking {
 		 * 		ModPacketHandler.createExplosion(handler.player, fire);
 		 * 	});
 		 * });
-		 * </pre></blockquote>
+		 * }</pre>
 		 *
 		 * @param handler the network handler that received this packet
 		 * @param server the server
@@ -181,7 +181,7 @@ public final class ServerNetworking {
 		 * <p>Here is an example where the player log-in is blocked so that a credential check and
 		 * building of a followup query request can be performed properly on the logical server
 		 * thread before the player successfully logs in:
-		 * <blockquote><pre>
+		 * <pre>{@code
 		 * ServerNetworking.getLoginReceiver().register(CHECK_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -&gt; {
 		 * 	if (!understood) {
 		 * 		handler.disconnect(new LiteralText("Only accept clients that can check!"));
@@ -202,7 +202,7 @@ public final class ServerNetworking {
 		 * 		sender.send(UPCOMING_CHECK, checker.buildSecondQueryPacket(handler, checkMessage));
 		 * 	}));
 		 * });
-		 * </pre></blockquote>
+		 * }</pre>
 		 * Usually it is enough to pass the return value for {@link net.minecraft.util.thread.ThreadExecutor#submit(Runnable)}
 		 * for {@code future}.</p>
 		 *

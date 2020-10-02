@@ -40,7 +40,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
-import net.fabricmc.fabric.impl.networking.PacketCallback;
+import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 
 @Mixin(ClientConnection.class)
 abstract class ClientConnectionMixin implements ChannelInfoHolder {
@@ -74,8 +74,8 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 
 	@Inject(method = "sendImmediately", at = @At(value = "FIELD", target = "Lnet/minecraft/network/ClientConnection;packetsSentCounter:I"))
 	private void checkPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback, CallbackInfo ci) {
-		if (this.packetListener instanceof PacketCallback) {
-			((PacketCallback) this.packetListener).sent(packet);
+		if (this.packetListener instanceof PacketCallbackListener) {
+			((PacketCallbackListener) this.packetListener).sent(packet);
 		}
 	}
 
