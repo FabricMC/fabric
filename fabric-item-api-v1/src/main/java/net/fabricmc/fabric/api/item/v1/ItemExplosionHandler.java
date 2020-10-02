@@ -25,7 +25,7 @@ import net.minecraft.item.Items;
  *
  * <p>Item explosion handlers may be set with {@link FabricItemSettings#explosionHandler(ItemExplosionHandler)}.
  *
- * Note that a {@link Items#NETHER_STAR} is always immune to explosions and cannot be set to be vulnerable to explosions.
+ * <p>Note that a {@link Items#NETHER_STAR} is always immune to explosions and cannot be set to be vulnerable to explosions.
  */
 @FunctionalInterface
 public interface ItemExplosionHandler {
