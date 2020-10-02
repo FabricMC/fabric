@@ -80,8 +80,8 @@ public final class ScreenEvents {
 	 * });
 	 * </pre></blockquote>
 	 *
-	 *<p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.screen.TickableElement ticked} or {@link net.minecraft.client.gui.Drawable drawn}.
-	 * Unless the element is button, you need to call the specific {@link TickableElement#tick() tick} and {@link net.minecraft.client.gui.Drawable#render(MatrixStack, int, int, float) render} methods in the correspondding screen events.
+	 * <p>Note that by adding an element to a screen, the element is not automatically {@link net.minecraft.client.gui.screen.TickableElement ticked} or {@link net.minecraft.client.gui.Drawable drawn}.
+	 * Unless the element is button, you need to call the specific {@link TickableElement#tick() tick} and {@link net.minecraft.client.gui.Drawable#render(MatrixStack, int, int, float) render} methods in the corresponding screen events.
 	 *
 	 * <p>This event can also indicate that the previous screen has been closed.
 	 * @see ScreenEvents#BEFORE_INIT
