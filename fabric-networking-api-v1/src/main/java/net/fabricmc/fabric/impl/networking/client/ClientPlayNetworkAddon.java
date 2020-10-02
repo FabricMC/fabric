@@ -48,7 +48,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	// also expose sendRegistration
 
 	public void onServerReady() {
-		sendRegistration();
+		this.sendChannelRegistrationPacket();
 		ClientConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.client, this);
 	}
 

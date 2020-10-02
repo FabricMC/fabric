@@ -93,7 +93,7 @@ abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandl
 	}
 
 	@Override
-	public Packet<?> makeDisconnectPacket(Text message) {
+	public Packet<?> createDisconnectPacket(Text message) {
 		return new LoginDisconnectS2CPacket(message);
 	}
 }

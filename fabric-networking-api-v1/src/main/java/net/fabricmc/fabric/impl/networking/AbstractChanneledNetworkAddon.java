@@ -92,7 +92,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	protected abstract void receive(H handler, PacketByteBuf buf);
 
-	public void sendRegistration() {
+	public void sendChannelRegistrationPacket() {
 		Collection<Identifier> channels = this.receiver.getChannels();
 
 		if (channels.isEmpty()) {
@@ -112,7 +112,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			buf.writeBytes(channel.toString().getBytes(StandardCharsets.US_ASCII));
 		}
 
-		sendPacket(NetworkingDetails.REGISTER_CHANNEL, buf);
+		this.sendPacket(NetworkingDetails.REGISTER_CHANNEL, buf);
 	}
 
 	// wrap in try with res (buf)
@@ -126,23 +126,23 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			if (b != 0) {
 				active.append(AsciiString.b2c(b));
 			} else {
-				addId(ids, active);
+				this.addId(ids, active);
 				active = new StringBuilder();
 			}
 		}
 
-		addId(ids, active);
-		schedule(register ? () -> register(ids) : () -> unregister(ids));
+		this.addId(ids, active);
+		this.schedule(register ? () -> register(ids) : () -> unregister(ids));
 	}
 
 	public void register(List<Identifier> ids) {
 		this.sendableChannels.addAll(ids);
-		postRegisterEvent(ids);
+		this.postRegisterEvent(ids);
 	}
 
 	public void unregister(List<Identifier> ids) {
 		this.sendableChannels.removeAll(ids);
-		postUnregisterEvent(ids);
+		this.postUnregisterEvent(ids);
 	}
 
 	protected abstract void schedule(Runnable task);

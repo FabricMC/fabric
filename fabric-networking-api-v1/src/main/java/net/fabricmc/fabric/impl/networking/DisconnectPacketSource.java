@@ -20,5 +20,5 @@ import net.minecraft.network.Packet;
 import net.minecraft.text.Text;
 
 public interface DisconnectPacketSource {
-	Packet<?> makeDisconnectPacket(Text message);
+	Packet<?> createDisconnectPacket(Text message);
 }

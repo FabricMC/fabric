@@ -55,7 +55,7 @@ public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegi
 	@Override
 	public boolean register(Identifier channel, H handler) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(handler, "Handler cannot be null");
+		Objects.requireNonNull(handler, "Packet handler cannot be null");
 
 		if (NetworkingDetails.isReservedChannel(channel)) {
 			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
@@ -76,7 +76,7 @@ public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegi
 		Objects.requireNonNull(channel, "Channel cannot be null");
 
 		if (NetworkingDetails.isReservedChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot unregister handler for reserved channel \"%s\"", channel));
+			throw new IllegalArgumentException(String.format("Cannot unregister packet handler for reserved channel \"%s\"", channel));
 		}
 
 		Lock lock = this.lock.writeLock();

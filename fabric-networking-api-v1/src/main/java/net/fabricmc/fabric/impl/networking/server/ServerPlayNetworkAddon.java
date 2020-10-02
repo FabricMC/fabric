@@ -48,7 +48,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	public void onClientReady() {
 		ServerConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.server, this);
-		sendRegistration();
+		this.sendChannelRegistrationPacket();
 	}
 
 	/**
