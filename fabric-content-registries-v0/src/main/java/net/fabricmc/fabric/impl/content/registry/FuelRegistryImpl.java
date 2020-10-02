@@ -28,6 +28,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
@@ -36,12 +37,25 @@ public class FuelRegistryImpl implements FuelRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
+	private Map<Item, Integer> fuelTimeMap;
+	private boolean fuelTimeMapNeedsUpdate = true;
 
-	public FuelRegistryImpl() { }
+	public FuelRegistryImpl() {
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
+			if (success) {
+				fuelTimeMapNeedsUpdate = true;
+			}
+		});
+	}
 
 	@Override
 	public Integer get(ItemConvertible item) {
-		return AbstractFurnaceBlockEntity.createFuelTimeMap().get(item.asItem());
+		if (fuelTimeMapNeedsUpdate) {
+			fuelTimeMapNeedsUpdate = false;
+			fuelTimeMap = AbstractFurnaceBlockEntity.createFuelTimeMap();
+		}
+
+		return fuelTimeMap.get(item.asItem());
 	}
 
 	@Override
@@ -51,6 +65,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 		}
 
 		itemCookTimes.put(item, cookTime.intValue());
+		fuelTimeMapNeedsUpdate = true;
 	}
 
 	@Override
@@ -60,26 +75,31 @@ public class FuelRegistryImpl implements FuelRegistry {
 		}
 
 		tagCookTimes.put(tag, cookTime.intValue());
+		fuelTimeMapNeedsUpdate = true;
 	}
 
 	@Override
 	public void remove(ItemConvertible item) {
 		add(item, 0);
+		fuelTimeMapNeedsUpdate = true;
 	}
 
 	@Override
 	public void remove(Tag<Item> tag) {
 		add(tag, 0);
+		fuelTimeMapNeedsUpdate = true;
 	}
 
 	@Override
 	public void clear(ItemConvertible item) {
 		itemCookTimes.removeInt(item);
+		fuelTimeMapNeedsUpdate = true;
 	}
 
 	@Override
 	public void clear(Tag<Item> tag) {
 		tagCookTimes.removeInt(tag);
+		fuelTimeMapNeedsUpdate = true;
 	}
 
 	public void apply(Map<Item, Integer> map) {
