@@ -20,6 +20,7 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +38,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
-	private Map<Item, Integer> fuelTimeMap;
+	private Object2IntMap<Item> fuelTimeMap;
 	private boolean fuelTimeMapNeedsUpdate = true;
 
 	public FuelRegistryImpl() {
@@ -49,10 +50,11 @@ public class FuelRegistryImpl implements FuelRegistry {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")
 	public Integer get(ItemConvertible item) {
 		if (fuelTimeMapNeedsUpdate) {
 			fuelTimeMapNeedsUpdate = false;
-			fuelTimeMap = AbstractFurnaceBlockEntity.createFuelTimeMap();
+			fuelTimeMap = new Object2IntOpenHashMap<>(AbstractFurnaceBlockEntity.createFuelTimeMap());
 		}
 
 		return fuelTimeMap.get(item.asItem());
