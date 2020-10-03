@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BiomeAccessor",
+    "ChunkSerializerMixin",
     "FlatChunkGeneratorConfigAccessor",
     "MixinChunkGeneratorSettings",
     "MixinStructuresConfig",

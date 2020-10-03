@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.object.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.item.Item;
@@ -69,10 +71,14 @@ public final class FabricBlockInternals {
 
 	public static final class ExtraData {
 		private final List<MiningLevel> miningLevels = new ArrayList<>();
-		/* @Nullable */ private Boolean breakByHand;
-		/* @Nullable */ private PistonBehavior pistonBehavior;
-		/* @Nullable */ private Boolean replaceable;
-		/* @Nullable */ private Boolean solid;
+		@Nullable
+    private Boolean breakByHand;
+    @Nullable
+    private PistonBehavior pistonBehavior;
+		@Nullable
+    private Boolean replaceable;
+		@Nullable
+    private Boolean solid;
 
 		public ExtraData(Block.Settings settings) {
 		}

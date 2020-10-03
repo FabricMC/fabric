@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.rendering.data.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -58,6 +60,7 @@ public interface RenderAttachedBlockView extends BlockRenderView {
 	 *
 	 * @param pos Position of the block for the block model.
 	 */
+	@Nullable
 	default Object getBlockEntityRenderAttachment(BlockPos pos) {
 		BlockEntity be = ((BlockRenderView) this).getBlockEntity(pos);
 		return be == null ? null : ((RenderAttachmentBlockEntity) be).getRenderAttachmentData();

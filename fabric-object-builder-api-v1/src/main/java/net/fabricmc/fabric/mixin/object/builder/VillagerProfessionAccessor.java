@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 import com.google.common.collect.ImmutableSet;
@@ -29,7 +30,7 @@ import net.minecraft.world.poi.PointOfInterestType;
 @Mixin(VillagerProfession.class)
 public interface VillagerProfessionAccessor {
 	@Invoker("<init>")
-	static VillagerProfession create(String id, PointOfInterestType type, ImmutableSet<Item> gatherableItems, ImmutableSet<Block> secondaryJobSites, /* @Nullable */ SoundEvent soundEvent) {
+	static VillagerProfession create(String id, PointOfInterestType type, ImmutableSet<Item> gatherableItems, ImmutableSet<Block> secondaryJobSites, @Nullable SoundEvent soundEvent) {
 		throw new AssertionError("Untransformed accessor!");
 	}
 }
