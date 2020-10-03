@@ -72,13 +72,13 @@ public final class FabricBlockInternals {
 	public static final class ExtraData {
 		private final List<MiningLevel> miningLevels = new ArrayList<>();
 		@Nullable
-    private Boolean breakByHand;
-    @Nullable
-    private PistonBehavior pistonBehavior;
+		private Boolean breakByHand;
 		@Nullable
-    private Boolean replaceable;
+		private PistonBehavior pistonBehavior;
 		@Nullable
-    private Boolean solid;
+		private Boolean replaceable;
+		@Nullable
+		private Boolean solid;
 
 		public ExtraData(Block.Settings settings) {
 		}
