@@ -19,19 +19,19 @@ package net.fabricmc.fabric.impl.tag.extension;
 import java.util.List;
 import java.util.function.Supplier;
 
+import net.minecraft.tag.TagGroup;
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.TagContainer;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.tag.FabricTag;
 
 public final class TagDelegate<T> implements Tag.Identified<T>, FabricTag<T>, FabricTagHooks {
 	private final Identifier id;
-	private final Supplier<TagContainer<T>> containerSupplier;
+	private final Supplier<TagGroup<T>> containerSupplier;
 	private volatile Target<T> target;
 	private int clearCount;
 
-	public TagDelegate(Identifier id, Supplier<TagContainer<T>> containerSupplier) {
+	public TagDelegate(Identifier id, Supplier<TagGroup<T>> containerSupplier) {
 		this.id = id;
 		this.containerSupplier = containerSupplier;
 	}
@@ -57,11 +57,11 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTag<T>, Fa
 	 */
 	private Tag<T> getTag() {
 		Target<T> target = this.target;
-		TagContainer<T> reqContainer = containerSupplier.get();
+		TagGroup<T> reqContainer = containerSupplier.get();
 		Tag<T> ret;
 
 		if (target == null || target.container != reqContainer) {
-			ret = reqContainer.getOrCreate(getId());
+			ret = reqContainer.getTagOrEmpty(getId());
 			this.target = new Target<>(reqContainer, ret);
 		} else {
 			ret = target.tag;
@@ -86,12 +86,12 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTag<T>, Fa
 	}
 
 	private static final class Target<T> {
-		Target(TagContainer<T> container, Tag<T> tag) {
+		Target(TagGroup<T> container, Tag<T> tag) {
 			this.container = container;
 			this.tag = tag;
 		}
 
-		final TagContainer<T> container;
+		final TagGroup<T> container;
 		final Tag<T> tag;
 	}
 }

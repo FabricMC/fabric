@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.event.player;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ActionResult;
@@ -50,5 +52,5 @@ public interface UseEntityCallback {
 			}
 	);
 
-	ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, /* Nullable */ EntityHitResult hitResult);
+	ActionResult interact(PlayerEntity player, World world, Hand hand, Entity entity, @Nullable EntityHitResult hitResult);
 }

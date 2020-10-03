@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.rendering.data.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.entity.BlockEntity;
 
 /**
@@ -35,5 +37,6 @@ public interface RenderAttachmentBlockEntity {
 	/**
 	 * @return The model state data provided by this block entity. Can be null.
 	 */
+	@Nullable
 	Object getRenderAttachmentData();
 }

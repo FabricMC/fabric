@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.event.lifecycle.v1;
 
+import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerManager;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -24,6 +26,17 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ServerLifecycleEvents {
 	private ServerLifecycleEvents() {
 	}
+
+	/**
+	 * Called when a Minecraft server is starting.
+	 *
+	 * <p>This occurs before the {@link PlayerManager player manager} and any worlds are loaded.
+	 */
+	public static final Event<ServerStarting> SERVER_STARTING = EventFactory.createArrayBacked(ServerStarting.class, callbacks -> server -> {
+		for (ServerStarting callback : callbacks) {
+			callback.onServerStarting(server);
+		}
+	});
 
 	/**
 	 * Called when a Minecraft server has started and is about to tick for the first time.
@@ -63,15 +76,62 @@ public final class ServerLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called before a Minecraft server reloads data packs.
+	 */
+	public static final Event<StartDataPackReload> START_DATA_PACK_RELOAD = EventFactory.createArrayBacked(StartDataPackReload.class, callbacks -> (server, serverResourceManager) -> {
+		for (StartDataPackReload callback : callbacks) {
+			callback.startDataPackReload(server, serverResourceManager);
+		}
+	});
+
+	/**
+	 * Called after a Minecraft server has reloaded data packs.
+	 *
+	 * <p>If reloading data packs was unsuccessful, the current data packs will be kept.
+	 */
+	public static final Event<EndDataPackReload> END_DATA_PACK_RELOAD = EventFactory.createArrayBacked(EndDataPackReload.class, callbacks -> (server, serverResourceManager, success) -> {
+		for (EndDataPackReload callback : callbacks) {
+			callback.endDataPackReload(server, serverResourceManager, success);
+		}
+	});
+
+	@FunctionalInterface
+	public interface ServerStarting {
+		void onServerStarting(MinecraftServer server);
+	}
+
+	@FunctionalInterface
 	public interface ServerStarted {
 		void onServerStarted(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface ServerStopping {
 		void onServerStopping(MinecraftServer server);
 	}
 
+	@FunctionalInterface
 	public interface ServerStopped {
 		void onServerStopped(MinecraftServer server);
+	}
+
+	@FunctionalInterface
+	public interface StartDataPackReload {
+		void startDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager);
+	}
+
+	@FunctionalInterface
+	public interface EndDataPackReload {
+		/**
+		 * Called after data packs on a Minecraft server have been reloaded.
+		 *
+		 * <p>If the reload was not successful, the old data packs will be kept.
+		 *
+		 * @param server the server
+		 * @param serverResourceManager the server resource manager
+		 * @param success if the reload was successful
+		 */
+		void endDataPackReload(MinecraftServer server, ServerResourceManager serverResourceManager, boolean success);
 	}
 }

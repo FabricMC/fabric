@@ -23,12 +23,18 @@ import java.util.function.Consumer;
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
+import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 
+/**
+ * Represents a resource pack provider for mods and built-in mods resource packs.
+ */
 public class ModResourcePackCreator implements ResourcePackProvider {
+	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod"));
+	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
@@ -36,8 +42,20 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 	}
 
 	@Override
-	public <T extends ResourcePackProfile> void register(Consumer<T> consumer, ResourcePackProfile.Factory<T> factory) {
-		// TODO: "vanilla" does not emit a message; neither should a modded datapack
+	public void register(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
+		/*
+			Register order rule in this provider:
+			1. Mod resource packs
+			2. Mod built-in resource packs
+
+			Register order rule globally:
+			1. Default and Vanilla built-in resource packs
+			2. Mod resource packs
+			3. Mod built-in resource packs
+			4. User resource packs
+		 */
+
+		// Build a list of mod resource packs.
 		List<ResourcePack> packs = new ArrayList<>();
 		ModResourcePackUtil.appendModResourcePacks(packs, type);
 
@@ -46,13 +64,19 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 				throw new RuntimeException("Not a ModResourcePack!");
 			}
 
-			T var3 = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					false, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
-					text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod")));
+			// Make the resource pack profile for mod resource packs.
+			// Mod resource packs must always be enabled to avoid issues
+			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
+			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
+					true, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
+					RESOURCE_PACK_SOURCE);
 
-			if (var3 != null) {
-				consumer.accept(var3);
+			if (resourcePackProfile != null) {
+				consumer.accept(resourcePackProfile);
 			}
 		}
+
+		// Register all built-in resource packs provided by mods.
+		ResourceManagerHelperImpl.registerBuiltinResourcePacks(this.type, consumer, factory);
 	}
 }

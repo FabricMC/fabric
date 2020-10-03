@@ -28,24 +28,22 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.BiomeKeys;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.trackers.StateIdTracker;
-import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BiomeParentTracker;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockItemTracker;
 
 @Mixin(Bootstrap.class)
 public class MixinBootstrap {
-	@SuppressWarnings("unchecked")
 	@Inject(method = "setOutputStreams", at = @At("RETURN"))
 	private static void initialize(CallbackInfo info) {
 		// These seemingly pointless accesses are done to make sure each
 		// static initializer is called, to register vanilla-provided blocks
 		// and items from the respective classes - otherwise, they would
 		// duplicate our calls from below.
-		Object oBiome = Biomes.THE_END;
+		Object oBiome = BiomeKeys.THE_END;
 		Object oBlock = Blocks.AIR;
 		Object oFluid = Fluids.EMPTY;
 		Object oItem = Items.AIR;
@@ -55,7 +53,6 @@ public class MixinBootstrap {
 		StateIdTracker.register(Registry.FLUID, Fluid.STATE_IDS, (fluid) -> fluid.getStateManager().getStates());
 
 		// map tracking
-		BiomeParentTracker.register(Registry.BIOME);
 		BlockItemTracker.register(Registry.ITEM);
 
 		// block initialization, like Blocks

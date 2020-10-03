@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.renderer.v1.material.MaterialFinder;
@@ -50,6 +52,7 @@ public interface Renderer {
 	 * Return a material previously registered via {@link #registerMaterial(Identifier, RenderMaterial)}.
 	 * Will return null if no material was found matching the given identifier.
 	 */
+	@Nullable
 	RenderMaterial materialById(Identifier id);
 
 	/**

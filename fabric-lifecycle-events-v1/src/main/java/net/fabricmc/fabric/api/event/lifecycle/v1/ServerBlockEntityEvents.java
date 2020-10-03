@@ -75,10 +75,12 @@ public final class ServerBlockEntityEvents {
 		}
 	});
 
+	@FunctionalInterface
 	public interface Load {
 		void onLoad(BlockEntity blockEntity, ServerWorld world);
 	}
 
+	@FunctionalInterface
 	public interface Unload {
 		void onUnload(BlockEntity blockEntity, ServerWorld world);
 	}

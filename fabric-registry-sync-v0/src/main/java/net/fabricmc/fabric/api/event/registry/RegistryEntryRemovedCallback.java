@@ -27,11 +27,6 @@ public interface RegistryEntryRemovedCallback<T> {
 	void onEntryRemoved(int rawId, Identifier id, T object);
 
 	static <T> Event<RegistryEntryRemovedCallback<T>> event(Registry<T> registry) {
-		if (!(registry instanceof ListenableRegistry)) {
-			throw new IllegalArgumentException("Unsupported registry: " + registry.getClass().getName());
-		}
-
-		//noinspection unchecked
-		return (Event<RegistryEntryRemovedCallback<T>>) ((ListenableRegistry) registry).fabric_getRemoveObjectEvent();
+		return ListenableRegistry.get(registry).fabric_getRemoveObjectEvent();
 	}
 }
