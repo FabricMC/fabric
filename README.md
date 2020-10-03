@@ -9,35 +9,38 @@ Fabric API is the library for essential hooks and interoperability mechanisms fo
 - Essential features such as registry synchronization and adding information to crash reports.
 - An advanced rendering API designed for compatibility with optimization mods and graphics overhaul mods.
 
-Also check out [Fabric Loader](https://github.com/FabricMC/fabric-loader), the (mostly) version independent mod loader that powers Fabric. Fabric API is a mod like any other fabric mod which requires Fabric Loader to be installed.
+Also check out [Fabric Loader](https://github.com/FabricMC/fabric-loader), the (mostly) version-independent mod loader that powers Fabric. Fabric API is a mod like any other Fabric mod which requires Fabric Loader to be installed.
 
 For support and discussion for both developers and users, visit [the Fabric Discord server](https://discord.gg/v6v4pMv).
 
 ## Using Fabric API
 
-To use fabric api, download Fabric API from [Curseforge](https://www.curseforge.com/minecraft/mc-mods/fabric-api) or [GitHub Releases](https://github.com/FabricMC/fabric/releases).
+To use Fabric API, download it from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api) or [GitHub Releases](https://github.com/FabricMC/fabric/releases).
 
 The downloaded jar file should be placed in your `mods` folder.
 
 ## Getting Started With Development
 
-To setup a Fabric development environment, check out the [fabric example mod](https://github.com/FabricMC/fabric-example-mod) and follow the instructions there. The Example mod should already include Fabric API.
+To setup a Fabric development environment, check out the [Fabric example mod](https://github.com/FabricMC/fabric-example-mod) and follow the instructions there. The example mod already depends on Fabric API.
 
 To include all of Fabric API in a mod development environment, add the following to your `dependencies` block in the gradle buildscript:
 
-**Groovy DSL**
+### Groovy DSL
+
 ```groovy
 modImplementation "net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION"
 ```
 
-**Kotlin DSL**
+### Kotlin DSL
+
 ```kotlin
 modImplementation("net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION")
 ```
 
-Individual modules from Fabric API may be resolved via the `fabricApi` extension in loom for a smaller dependency footprint:
+Individual modules from Fabric API may be resolved via the `fabricApi` extension in Loom for a smaller dependency footprint:
 
-**Groovy DSL**
+### Groovy DSL
+
 ```groovy
 // Make a collection of all api modules we wish to use
 Set<String> apiModules = [
@@ -53,7 +56,8 @@ apiModules.forEach {
 }
 ```
 
-**Kotlin DSL**
+### Kotlin DSL
+
 ```kotlin
 // Make a set of all api modules we wish to use
 setOf(
@@ -82,6 +86,6 @@ Check out [the Contributing guidelines](../CONTRIBUTING.md)*.
 
 Fabric API is designed to be modular for ease of updating. This also has the advantage of splitting up the codebase into smaller chunks.
 
-Each module contains it's own `README.md`* explaining the module's purpose and additional info on using the module.
+Each module contains its own `README.md`* explaining the module's purpose and additional info on using the module.
 
-\* The readme for each module is being worked on, not every module has a readme at the moment
+\* The README for each module is being worked on; not every module has a README at the moment
