@@ -77,13 +77,6 @@ See something Fabric API doesn't support, a bug or something that may be useful?
 Check out [the Contributing guidelines](../CONTRIBUTING.md)*.
 
 \* The contributing guidelines are work in progress
-<!-- relative link will be fixed once as part of fabric repo, needs testing in fork -->
-
-<!--
-[Checkstyle](https://checkstyle.sourceforge.io/) is used to enforce code style. Make sure to install the necessary tools in your development environment to not be held up in review by failing code style checks.
-
-For more information on contributing to Fabric, read [The Fabric Feature Procedure](https://fabricmc.net/wiki/tutorial:feature_procedure).
--->
 
 ## Modules
 
