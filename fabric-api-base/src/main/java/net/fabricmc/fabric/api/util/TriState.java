@@ -105,81 +105,20 @@ public enum TriState {
 	}
 
 	/**
-	 * Maps the value of an optional if this tri-state is {@link TriState#TRUE}.
+	 * Maps the boolean value of this tri-state if it is {@link TriState#TRUE} or {@link TriState#FALSE}
 	 *
 	 * @param mapper the mapper to use
-	 * @param <T> the type of object supplied by the mapper
-	 * @return an optional containing the value if {@link TriState#TRUE} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
+	 * @param <T> the type of object being supplier by the mapper
+	 * @return an optional containing the mapped value; {@link Optional#empty()} if the tri-state is {@link TriState#DEFAULT} or the value provided by the mapper is {@code null}.
 	 */
-	public <T> Optional<T> mapTrue(Supplier<@Nullable T> mapper) {
-		return this.mapEq(TRUE, mapper);
-	}
+	public <T> Optional<T> map(BooleanFunction<@Nullable T> mapper) {
+		Objects.requireNonNull(mapper, "Mapper function cannot be null");
 
-	/**
-	 * Maps the value of an optional if this tri-state is {@link TriState#TRUE}.
-	 *
-	 * @param mapper the mapper to use
-	 * @param <T> the type of object supplied by the mapper
-	 * @return an optional containing the value if {@link TriState#FALSE} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
-	 */
-	public <T> Optional<T> mapFalse(Supplier<@Nullable T> mapper) {
-		return this.mapEq(FALSE, mapper);
-	}
-
-	/**
-	 * Maps the value of an optional if this tri-state is {@link TriState#DEFAULT}.
-	 *
-	 * @param mapper the mapper to use
-	 * @param <T> the type of object supplied by the mapper
-	 * @return an optional containing the value if {@link TriState#DEFAULT} and the value returned by the mapper is non-null, otherwise {@link Optional#empty()}.
-	 */
-	public <T> Optional<T> mapDefault(Supplier<@Nullable T> mapper) {
-		return this.mapEq(DEFAULT, mapper);
-	}
-
-	private <T> Optional<T> mapEq(TriState comparison, Supplier<@Nullable T> mapper) {
-		Objects.requireNonNull(mapper);
-
-		if (this == comparison) {
-			return Optional.ofNullable(mapper.get());
+		if (this.getBoxed() == null) {
+			return Optional.empty();
 		}
 
-		return Optional.empty();
-	}
-
-	/**
-	 * Calls the supplied runnable if this tri-state is {@link TriState#TRUE}.
-	 *
-	 * @param runnable the interface to run
-	 */
-	public void ifTrue(Runnable runnable) {
-		this.ifEq(TRUE, runnable);
-	}
-
-	/**
-	 * Calls the supplied runnable if this tri-state is {@link TriState#FALSE}.
-	 *
-	 * @param runnable the interface to run
-	 */
-	public void ifFalse(Runnable runnable) {
-		this.ifEq(FALSE, runnable);
-	}
-
-	/**
-	 * Calls the supplied runnable if this tri-state is {@link TriState#DEFAULT}.
-	 *
-	 * @param runnable the interface to run
-	 */
-	public void ifDefault(Runnable runnable) {
-		this.ifEq(DEFAULT, runnable);
-	}
-
-	private void ifEq(TriState comparison, Runnable runnable) {
-		Objects.requireNonNull(runnable);
-
-		if (this == comparison) {
-			runnable.run();
-		}
+		return Optional.ofNullable(mapper.apply(this.get()));
 	}
 
 	/**
