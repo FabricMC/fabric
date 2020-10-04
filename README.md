@@ -13,17 +13,19 @@ Also check out [Fabric Loader](https://github.com/FabricMC/fabric-loader), the (
 
 For support and discussion for both developers and users, visit [the Fabric Discord server](https://discord.gg/v6v4pMv).
 
-## Using Fabric API
+## Using Fabric API to play with mods
+
+Make sure you have install fabric loader first. More information about installing Fabric Loader can be found [here](https://fabricmc.net/use/).
 
 To use Fabric API, download it from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api) or [GitHub Releases](https://github.com/FabricMC/fabric/releases).
 
 The downloaded jar file should be placed in your `mods` folder.
 
-## Getting Started With Development
+## Using Fabric API to develop mods
 
 To setup a Fabric development environment, check out the [Fabric example mod](https://github.com/FabricMC/fabric-example-mod) and follow the instructions there. The example mod already depends on Fabric API.
 
-To include all of Fabric API in a mod development environment, add the following to your `dependencies` block in the gradle buildscript:
+To include the full Fabric API with all modules in a mod, add the following to your `dependencies` block in the gradle buildscript:
 
 ### Groovy DSL
 
@@ -37,7 +39,7 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION"
 modImplementation("net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION")
 ```
 
-Individual modules from Fabric API may be resolved via the `fabricApi` extension in Loom for a smaller dependency footprint:
+Alternatively, modules from Fabric API can be specified individually as shown below:
 
 ### Groovy DSL
 
@@ -72,7 +74,7 @@ setOf(
 ```
 
 <!--Linked to gradle documentation on properties-->
-Gradle properties may be used to catalog dependency versions in a single `gradle.properties` file at the root of a project. More information is available [here](https://docs.gradle.org/current/userguide/organizing_gradle_projects.html#declare_properties_in_gradle_properties_file).
+Instead of hardcoding version constants all over the build script, Gradle properties may be used to replace these constants. Properties are defined in the `gradle.properties` file at the root of a project. More information is available [here](https://docs.gradle.org/current/userguide/organizing_gradle_projects.html#declare_properties_in_gradle_properties_file).
 
 ## Contributing
 
