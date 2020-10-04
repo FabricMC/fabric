@@ -45,42 +45,12 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 @ApiStatus.Experimental
 public final class BiomeModifications {
 	/**
-	 * The suggested order for modifiers that enrich biomes by adding to them without relying on
-	 * other information in the biome, or removing other features.
-	 *
-	 * <p><b>Examples:</b> New ores, new vegetation, new structures
-	 */
-	public static final int ORDER_ADDITIONS = 1000;
-
-	/**
-	 * The suggested order for  modifiers that remove features or other aspects of biomes (i.e. removal of spawns,
-	 * removal of features, etc.).
-	 *
-	 * <p><b>Examples:</b> Remove iron ore from plains, remove ghasts
-	 */
-	public static final int ORDER_REMOVALS = 1000000;
-
-	/**
-	 * The suggested order for modifiers that replace existing features with modified features.
-	 *
-	 * <p><b>Examples:</b> Replace mineshafts with biome-specific mineshafts
-	 */
-	public static final int ORDER_REPLACEMENTS = 10000000;
-
-	/**
-	 * The suggested order for modifiers that perform wide-reaching biome postprocessing.
-	 *
-	 * <p><b>Examples:</b> Mods that allow modpack authors to customize world generation
-	 */
-	public static final int ORDER_POST_PROCESSING = 100000000;
-
-	/**
 	 * Convenience method to add a feature to one or more biomes.
 	 *
 	 * @see BiomeSelectors
 	 */
 	public static void addFeature(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Feature step, RegistryKey<ConfiguredFeature<?, ?>> configuredFeatureKey) {
-		create(configuredFeatureKey.getValue()).add(ORDER_ADDITIONS, biomeSelector, context -> {
+		create(configuredFeatureKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addFeature(step, configuredFeatureKey);
 		});
 	}
@@ -91,7 +61,7 @@ public final class BiomeModifications {
 	 * @see BiomeSelectors
 	 */
 	public static void addStructure(Predicate<BiomeSelectionContext> biomeSelector, RegistryKey<ConfiguredStructureFeature<?, ?>> configuredStructureKey) {
-		create(configuredStructureKey.getValue()).add(ORDER_ADDITIONS, biomeSelector, context -> {
+		create(configuredStructureKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addStructure(configuredStructureKey);
 		});
 	}
@@ -102,7 +72,7 @@ public final class BiomeModifications {
 	 * @see BiomeSelectors
 	 */
 	public static void addCarver(Predicate<BiomeSelectionContext> biomeSelector, GenerationStep.Carver step, RegistryKey<ConfiguredCarver<?>> configuredCarverKey) {
-		create(configuredCarverKey.getValue()).add(ORDER_ADDITIONS, biomeSelector, context -> {
+		create(configuredCarverKey.getValue()).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getGenerationSettings().addCarver(step, configuredCarverKey);
 		});
 	}
@@ -124,7 +94,7 @@ public final class BiomeModifications {
 		Identifier id = Registry.ENTITY_TYPE.getId(entityType);
 		Preconditions.checkState(id != Registry.ENTITY_TYPE.getDefaultId(), "Unregistered entity type: %s", entityType);
 
-		create(id).add(ORDER_ADDITIONS, biomeSelector, context -> {
+		create(id).add(ModificationPhase.ADDITIONS, biomeSelector, context -> {
 			context.getSpawnSettings().addSpawn(spawnGroup, new SpawnSettings.SpawnEntry(entityType, weight, minGroupSize, maxGroupSize));
 		});
 	}
@@ -134,7 +104,7 @@ public final class BiomeModifications {
 	 *
 	 * @param id An identifier for the new set of biome modifications that is returned. Is used for
 	 *           guaranteeing consistent ordering between the biome modifications added by different mods
-	 *           (assuming they otherwise have the same order).
+	 *           (assuming they otherwise have the same phase).
 	 */
 	public static BiomeModification create(Identifier id) {
 		return new BiomeModification(id);

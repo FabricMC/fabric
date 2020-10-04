@@ -28,6 +28,7 @@ import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilders;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
 import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
 import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
@@ -68,10 +69,10 @@ public class FabricBiomeTest implements ModInitializer {
 		OverworldBiomes.addContinentalBiome(BiomeKeys.END_HIGHLANDS, OverworldClimate.DRY, 0.5);
 
 		BiomeModifications.create(new Identifier("fabric:test_mod"))
-				.add(BiomeModifications.ORDER_ADDITIONS,
+				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.foundInOverworld(),
 						modification -> modification.getWeather().setDownfall(100))
-				.add(BiomeModifications.ORDER_ADDITIONS,
+				.add(ModificationPhase.ADDITIONS,
 						BiomeSelectors.foundInOverworld().and(BiomeSelectors.excludeByKey(BiomeKeys.PLAINS)).and(
 								context -> context.hasBuiltInSurfaceBuilder(ConfiguredSurfaceBuilders.GRASS)
 						),

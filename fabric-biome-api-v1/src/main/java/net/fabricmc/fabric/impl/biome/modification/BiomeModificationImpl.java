@@ -42,12 +42,13 @@ import net.minecraft.world.biome.Biome;
 
 import net.fabricmc.fabric.api.biome.v1.BiomeModificationContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
+import net.fabricmc.fabric.api.biome.v1.ModificationPhase;
 
 @ApiStatus.Internal
 public class BiomeModificationImpl {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	private static final Comparator<ModifierRecord> MODIFIER_ORDER_COMPARATOR = Comparator.<ModifierRecord>comparingInt(r -> r.order).thenComparing(r -> r.id);
+	private static final Comparator<ModifierRecord> MODIFIER_ORDER_COMPARATOR = Comparator.<ModifierRecord>comparingInt(r -> r.phase.ordinal()).thenComparingInt(r -> r.order).thenComparing(r -> r.id);
 
 	public static final BiomeModificationImpl INSTANCE = new BiomeModificationImpl();
 
@@ -58,20 +59,33 @@ public class BiomeModificationImpl {
 	private BiomeModificationImpl() {
 	}
 
-	public void addModifier(Identifier id, int order, Predicate<BiomeSelectionContext> selector, BiConsumer<BiomeSelectionContext, BiomeModificationContext> modifier) {
+	public void addModifier(Identifier id, ModificationPhase phase, Predicate<BiomeSelectionContext> selector, BiConsumer<BiomeSelectionContext, BiomeModificationContext> modifier) {
 		Objects.requireNonNull(selector);
 		Objects.requireNonNull(modifier);
 
-		modifiers.add(new ModifierRecord(order, id, selector, modifier));
+		modifiers.add(new ModifierRecord(phase, id, selector, modifier));
 		modifiersUnsorted = true;
 	}
 
-	public void addModifier(Identifier id, int order, Predicate<BiomeSelectionContext> selector, Consumer<BiomeModificationContext> modifier) {
+	public void addModifier(Identifier id, ModificationPhase phase, Predicate<BiomeSelectionContext> selector, Consumer<BiomeModificationContext> modifier) {
 		Objects.requireNonNull(selector);
 		Objects.requireNonNull(modifier);
 
-		modifiers.add(new ModifierRecord(order, id, selector, modifier));
+		modifiers.add(new ModifierRecord(phase, id, selector, modifier));
 		modifiersUnsorted = true;
+	}
+
+	/**
+	 * This is currently not publicly exposed but likely useful for modpack support mods.
+	 */
+	void changeOrder(Identifier id, int order) {
+		modifiersUnsorted = true;
+
+		for (ModifierRecord modifierRecord : modifiers) {
+			if (id.equals(modifierRecord.id)) {
+				modifierRecord.setOrder(order);
+			}
+		}
 	}
 
 	@TestOnly
@@ -157,7 +171,7 @@ public class BiomeModificationImpl {
 	}
 
 	private static class ModifierRecord {
-		private final int order;
+		private final ModificationPhase phase;
 
 		private final Identifier id;
 
@@ -167,16 +181,19 @@ public class BiomeModificationImpl {
 
 		private final Consumer<BiomeModificationContext> modifier;
 
-		ModifierRecord(int order, Identifier id, Predicate<BiomeSelectionContext> selector, Consumer<BiomeModificationContext> modifier) {
-			this.order = order;
+		// Whenever this is modified, the modifiers need to be resorted
+		private int order;
+
+		ModifierRecord(ModificationPhase phase, Identifier id, Predicate<BiomeSelectionContext> selector, Consumer<BiomeModificationContext> modifier) {
+			this.phase = phase;
 			this.id = id;
 			this.selector = selector;
 			this.modifier = modifier;
 			this.contextSensitiveModifier = null;
 		}
 
-		ModifierRecord(int order, Identifier id, Predicate<BiomeSelectionContext> selector, BiConsumer<BiomeSelectionContext, BiomeModificationContext> modifier) {
-			this.order = order;
+		ModifierRecord(ModificationPhase phase, Identifier id, Predicate<BiomeSelectionContext> selector, BiConsumer<BiomeSelectionContext, BiomeModificationContext> modifier) {
+			this.phase = phase;
 			this.id = id;
 			this.selector = selector;
 			this.contextSensitiveModifier = modifier;
@@ -198,6 +215,10 @@ public class BiomeModificationImpl {
 			} else {
 				modifier.accept(modificationContext);
 			}
+		}
+
+		public void setOrder(int order) {
+			this.order = order;
 		}
 	}
 }
