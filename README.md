@@ -25,7 +25,7 @@ The downloaded jar file should be placed in your `mods` folder.
 
 To setup a Fabric development environment, check out the [Fabric example mod](https://github.com/FabricMC/fabric-example-mod) and follow the instructions there. The example mod already depends on Fabric API.
 
-To include the full Fabric API with all modules in a mod, add the following to your `dependencies` block in the gradle buildscript:
+To include the full Fabric API with all modules in the development environment, add the following to your `dependencies` block in the gradle buildscript:
 
 ### Groovy DSL
 
