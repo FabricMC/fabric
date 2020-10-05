@@ -114,7 +114,7 @@ public enum TriState {
 	public <T> Optional<T> map(BooleanFunction<@Nullable ? extends T> mapper) {
 		Objects.requireNonNull(mapper, "Mapper function cannot be null");
 
-		if (this.getBoxed() == null) {
+		if (this == DEFAULT) {
 			return Optional.empty();
 		}
 
