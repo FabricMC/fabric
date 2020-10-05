@@ -12,5 +12,8 @@
     "main": [
       "net.fabricmc.fabric.test.enchantment.EnchantmentTestMod"
     ]
-  }
+  },
+  "mixins": [
+    "fabric-enchantment-api-v1-testmod.mixins.json"
+  ]
 }

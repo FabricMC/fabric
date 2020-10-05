@@ -30,7 +30,7 @@ public class DirtyEnchantment extends FabricEnchantment {
 
 	@Override
 	public boolean isAcceptableItem(ItemStack stack) {
-		return stack.getItem() == Items.DIAMOND_BOOTS;
+		return stack.getItem() == Items.DIRT && stack.getCount() == 1;
 	}
 
 	@Override

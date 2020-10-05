@@ -24,6 +24,21 @@ import net.minecraft.item.ItemStack;
 
 /**
  * An abstract class for enchantments looking to take advantage of custom enchantment targets.
+ *
+ * <p>For an item to be enchanted in the enchantment table both
+ * isAcceptableItem and isEnchantableItem must be true for the item.</p>
+ *
+ * <p>For an item to be enchanted in the anvil only isAcceptableItem
+ * must be true for the item.</p>
+ *
+ * <p>Consequently, all enchantments an item can accept from the enchantment
+ * table can also be applied through the anvil just like vanilla.</p>
+ *
+ * @author Vaerian (vaeriann@gmail.com or @Vaerian on GitHub).
+ *
+ * <p>Please contact the author, Vaerian, at the email or GitHub profile listed above
+ * with any questions surrounding implementation choices, functionality, or updating
+ * to newer versions of the game.</p>
  */
 public abstract class FabricEnchantment extends Enchantment {
 	protected FabricEnchantment(Rarity weight, EquipmentSlot...slotTypes) {
@@ -35,13 +50,14 @@ public abstract class FabricEnchantment extends Enchantment {
 	// there is no target anymore it must be overridden in order to prevent a null pointer exception.
 	/**
 	 * Overrides the vanilla enchantment target and determines whether or not
-	 * the given item stack can accept this enchantment.
+	 * the given item stack can accept this enchantment by any means.
 	 *
-	 * <p>It is important to note that item stacks of items who do not say that
-	 * they are enchantable will not be able to be enchanted, despite this
-	 * method indicating that they can accept this enchantment. To change this
-	 * the {@link net.minecraft.item.Item#isEnchantable(ItemStack)} method
-	 * must be overridden.</p>
+	 * <p>Only this method is called directly by the anvil to determine whether or not
+	 * this enchantment can be applied to an item. Item stacks that do not indicate
+	 * enchantability ({@link net.minecraft.item.Item#isEnchantable(ItemStack)} and
+	 * {@link net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment#isEnchantableItem(ItemStack)})
+	 * can still accept this enchantment through the anvil, but they will not be able to be enchanted
+	 * in the enchantment table itself</p>
 	 *
 	 * @param stack The item stack querying the ability to accept this
 	 * enchantment.
@@ -54,6 +70,30 @@ public abstract class FabricEnchantment extends Enchantment {
 	 */
 	@Override
 	public abstract boolean isAcceptableItem(ItemStack stack);
+
+	/**
+	 * Overrides the vanilla judgement about whether or not the given item
+	 * stack can accept this enchantment from an enchantment table.
+	 *
+	 * <p>It is important to note that item stacks of items who do not say that
+	 * they are enchantable will not be able to be enchanted, despite this
+	 * method indicating that they can accept this enchantment. To change this
+	 * the {@link net.minecraft.item.Item#isEnchantable(ItemStack)} method
+	 * must be overridden.</p>
+	 *
+	 * @param stack The item stack querying the ability to accept this
+	 * enchantment.
+	 * @return A boolean value representing whether or not the given item
+	 * stack should be able to accept the enchantment from an enchantment
+	 * table.
+	 *
+	 * @see net.minecraft.item.Item#isEnchantable(ItemStack)
+	 * @see net.minecraft.screen.EnchantmentScreenHandler#onContentChanged(Inventory)
+	 * @see net.fabricmc.fabric.mixin.enchantment.EnchantmentHelperMixin
+	 */
+	public boolean isEnchantableItem(ItemStack stack) {
+		return this.isAcceptableItem(stack);
+	}
 
 	/**
 	 * Determines whether or not this enchantment's book ought to be placed into

@@ -35,6 +35,12 @@ import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment;
 
 /**
  * A mixin to handle the verification of FabricEnchantments with custom targets.
+ *
+ * @author Vaerian (vaeriann@gmail.com or @Vaerian on GitHub).
+ *
+ * Please contact the author, Vaerian, at the email or GitHub profile listed above
+ * with any questions surrounding implementation choices, functionality, or updating
+ * to newer versions of the game.
  */
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
@@ -45,7 +51,7 @@ public class EnchantmentHelperMixin {
 		// If the enchantment type is null (ie. it would cause a null pointer exception normally) and its null because its a FabricEnchantment
 		while (enchantment.type == null && enchantment instanceof FabricEnchantment) {
 			// Then check if the item in question is a book or a valid target
-			if (bl || enchantment.isAcceptableItem(stack)) {
+			if (bl || ((FabricEnchantment) enchantment).isEnchantableItem(stack)) {
 				// If it is then add all of the enchantment levels just like vanilla does
 				// This for loop is basically copied from vanilla, it copies exactly the logic it uses to add the enchantment entries
 				for (int i = enchantment.getMaxLevel(); i > enchantment.getMinLevel() - 1; i--) {

@@ -35,6 +35,12 @@ import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment;
 
 /**
  * A mixin to add enchanted books for custom enchantments to the right item groups.
+ *
+ * @author Vaerian (vaeriann@gmail.com or @Vaerian on GitHub).
+ *
+ * Please contact the author, Vaerian, at the email or GitHub profile listed above
+ * with any questions surrounding implementation choices, functionality, or updating
+ * to newer versions of the game.
  */
 @Mixin(EnchantedBookItem.class)
 public class EnchantedBookItemMixin {

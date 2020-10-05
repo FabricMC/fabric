@@ -25,6 +25,10 @@ import net.fabricmc.api.ModInitializer;
 public class EnchantmentTestMod implements ModInitializer {
 	public static final Enchantment DIRTY = Registry.register(Registry.ENCHANTMENT, new Identifier("fabric-enchantment-api-v1-testmod", "dirty"), new DirtyEnchantment());
 
+	// Note to users of this testmod, enchantment capabilities in creative are weird, any enchantment
+	// can be added to any item using an anvil when in creative. This is not the case in survival mode,
+	// so make sure whenever you are testing your enchantments you're in survival.
+
 	@Override
 	public void onInitialize() { }
 }
