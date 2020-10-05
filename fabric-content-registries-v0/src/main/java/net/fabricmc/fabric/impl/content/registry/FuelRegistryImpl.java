@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
+import java.util.Collections;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -42,15 +43,18 @@ public class FuelRegistryImpl implements FuelRegistry {
 
 	public FuelRegistryImpl() { }
 
-	@Override
-	@SuppressWarnings("deprecation")
-	public Integer get(ItemConvertible item) {
+	public Map<Item, Integer> getFuelTimes() {
 		if (fuelTimeMapNeedsUpdate) {
 			fuelTimeMapNeedsUpdate = false;
 			fuelTimeMap = new Object2IntOpenHashMap<>(AbstractFurnaceBlockEntity.createFuelTimeMap());
 		}
 
-		return fuelTimeMap.get(item.asItem());
+		return Collections.unmodifiableMap(fuelTimeMap);
+	}
+
+	@Override
+	public Integer get(ItemConvertible item) {
+		return getFuelTimes().get(item.asItem());
 	}
 
 	@Override

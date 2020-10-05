@@ -21,13 +21,12 @@ import java.util.Map;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 
 @Mixin(AbstractFurnaceBlockEntity.class)
@@ -37,18 +36,25 @@ public class MixinAbstractFurnaceBlockEntity {
 		FuelRegistryImpl.INSTANCE.apply(info.getReturnValue());
 	}
 
-	@Inject(at = @At("HEAD"), method = "canUseAsFuel", cancellable = true)
-	private static void canUseAsFuelHook(ItemStack stack, CallbackInfoReturnable<Boolean> info) {
-		info.setReturnValue(FuelRegistry.INSTANCE.get(stack.getItem()) != null);
+	@Redirect(
+			method = "canUseAsFuel",
+			at = @At(
+				value = "INVOKE",
+				target = "Lnet/minecraft/block/entity/AbstractFurnaceBlockEntity;createFuelTimeMap()Ljava/util/Map;"
+			)
+	)
+	private static Map<Item, Integer> canUseAsFuelRedirect() {
+		return FuelRegistryImpl.INSTANCE.getFuelTimes();
 	}
 
-	@Inject(at = @At("HEAD"), method = "getFuelTime", cancellable = true)
-	protected void getFuelTimeHook(ItemStack fuel, CallbackInfoReturnable<Integer> info) {
-		if (fuel.isEmpty()) {
-			info.setReturnValue(0);
-		} else {
-			Integer burnTime = FuelRegistry.INSTANCE.get(fuel.getItem());
-			info.setReturnValue(burnTime == null ? 0 : burnTime);
-		}
+	@Redirect(
+			method = "getFuelTime",
+			at = @At(
+				value = "INVOKE",
+				target = "Lnet/minecraft/block/entity/AbstractFurnaceBlockEntity;createFuelTimeMap()Ljava/util/Map;"
+			)
+	)
+	private Map<Item, Integer> getFuelTimeRedirect() {
+		return FuelRegistryImpl.INSTANCE.getFuelTimes();
 	}
 }
