@@ -105,7 +105,7 @@ public enum TriState {
 	}
 
 	/**
-	 * Maps the boolean value of this tri-state if it is {@link TriState#TRUE} or {@link TriState#FALSE}
+	 * Maps the boolean value of this tri-state if it is {@link TriState#TRUE} or {@link TriState#FALSE}.
 	 *
 	 * @param mapper the mapper to use
 	 * @param <T> the type of object being supplier by the mapper
