@@ -25,7 +25,7 @@ import net.minecraft.tag.SetTag;
 import net.fabricmc.fabric.impl.tag.FabricTagExtensions;
 
 @Mixin(value = SetTag.class, targets = {"net.minecraft.tag.Tag$1", "net.minecraft.tag.RequiredTagList$TagWrapper"})
-public abstract class TagImplMixin<T> implements FabricTagExtensions, Tag<T> {
+abstract class TagImplMixin<T> implements FabricTagExtensions, Tag<T> {
 	@Unique
 	private int fabric_clearCount;
 

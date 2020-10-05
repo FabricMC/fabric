@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.tag.FabricTagBuilderExtensions;
 import net.fabricmc.fabric.impl.tag.FabricTagExtensions;
 
 @Mixin(Tag.Builder.class)
-public abstract class TagBuilderMixin<T> implements FabricTagBuilderExtensions {
+abstract class TagBuilderMixin<T> implements FabricTagBuilderExtensions {
 	@Shadow
 	private List<Tag.TrackedEntry> entries;
 

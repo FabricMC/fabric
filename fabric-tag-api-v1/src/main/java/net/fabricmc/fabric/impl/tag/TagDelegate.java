@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.tag;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import net.minecraft.tag.TagGroup;
@@ -35,6 +36,8 @@ public final class TagDelegate<T> implements Tag.Identified<T>, FabricTagExtensi
 	private int clearCount;
 
 	public static <T> Tag.Identified<T> create(Identifier id, Supplier<TagGroup<T>> groupSupplier) {
+		Objects.requireNonNull(id, "Tag id cannot be null");
+		Objects.requireNonNull(groupSupplier, "Tag group supplier cannot be null");
 		return new TagDelegate<>(id, groupSupplier);
 	}
 

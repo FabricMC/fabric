@@ -83,7 +83,7 @@ public final class Tags {
 	 * @return a new required tag
 	 */
 	public static Tag.Identified<Block> requiredBlock(Identifier id) {
-		return BlockTagsAccessor.register(id.toString()); // WTF Mojang
+		return BlockTagsAccessor.register(id.toString());
 	}
 
 	/**
@@ -106,7 +106,7 @@ public final class Tags {
 	 * @return a new required tag
 	 */
 	public static Tag.Identified<EntityType<?>> requiredEntityType(Identifier id) {
-		return EntityTypeTagsAccessor.register(id.toString()); // WTF Mojang
+		return EntityTypeTagsAccessor.register(id.toString());
 	}
 
 	/**
@@ -129,7 +129,7 @@ public final class Tags {
 	 * @return a new required tag
 	 */
 	public static Tag.Identified<Fluid> requiredFluid(Identifier id) {
-		return FluidTagsAccessor.register(id.toString()); // WTF Mojang
+		return FluidTagsAccessor.register(id.toString());
 	}
 
 	/**
@@ -152,7 +152,7 @@ public final class Tags {
 	 * @return a new required tag
 	 */
 	public static Tag.Identified<Item> requiredItem(Identifier id) {
-		return ItemTagsAccessor.register(id.toString()); // WTF Mojang
+		return ItemTagsAccessor.register(id.toString());
 	}
 
 	private Tags() {
