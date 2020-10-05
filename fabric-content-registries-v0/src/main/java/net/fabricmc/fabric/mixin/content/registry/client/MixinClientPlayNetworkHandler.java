@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.content.registry;
+package net.fabricmc.fabric.mixin.content.registry.client;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.tag.TagManager;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.packet.s2c.play.SynchronizeTagsS2CPacket;
 
 import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 
-@Mixin(targets = "net.minecraft.tag.TagManager$1")
-public abstract class MixinTagManager implements TagManager {
-	public void apply() {
-		TagManager.super.apply();
+@Mixin(ClientPlayNetworkHandler.class)
+public abstract class MixinClientPlayNetworkHandler {
+	@Inject(at = @At("TAIL"), method = "onSynchronizeTags")
+	private void onSynchronizeTagsHook(SynchronizeTagsS2CPacket packet, CallbackInfo info) {
 		FuelRegistryImpl.INSTANCE.onTagsReloaded();
 	}
 }

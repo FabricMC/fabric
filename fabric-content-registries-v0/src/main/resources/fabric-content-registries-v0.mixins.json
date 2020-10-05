@@ -4,8 +4,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MixinAbstractFurnaceBlockEntity",
-    "MixinFireBlock",
-    "MixinTagManager"
+    "MixinFireBlock"
+  ],
+  "client": [
+    "client.MixinClientPlayNetworkHandler"
   ],
   "injectors": {
     "defaultRequire": 1

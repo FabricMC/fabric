@@ -30,6 +30,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
@@ -41,7 +42,13 @@ public class FuelRegistryImpl implements FuelRegistry {
 	private Object2IntMap<Item> fuelTimeMap;
 	private boolean fuelTimeMapNeedsUpdate = true;
 
-	public FuelRegistryImpl() { }
+	public FuelRegistryImpl() {
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
+			if (success) {
+				fuelTimeMapNeedsUpdate = true;
+			}
+		});
+	}
 
 	public Map<Item, Integer> getFuelTimes() {
 		if (fuelTimeMapNeedsUpdate) {
