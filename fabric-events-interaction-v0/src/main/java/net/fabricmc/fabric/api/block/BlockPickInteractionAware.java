@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.block;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -24,5 +26,5 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 
 public interface BlockPickInteractionAware {
-	ItemStack getPickedStack(BlockState state, BlockView view, BlockPos pos, /* nullable */ PlayerEntity player, /* nullable */ HitResult result);
+	ItemStack getPickedStack(BlockState state, BlockView view, BlockPos pos, @Nullable PlayerEntity player, @Nullable HitResult result);
 }

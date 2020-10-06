@@ -69,9 +69,8 @@ public interface DynamicAttributeTool {
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 * @deprecated Use {@link #getMiningSpeedMultiplier(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
-	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
-	default float getMiningSpeedMultiplier(ItemStack stack, /* @Nullable */ LivingEntity user) {
+	default float getMiningSpeedMultiplier(ItemStack stack, @Nullable LivingEntity user) {
 		return 1.0F;
 	}
 

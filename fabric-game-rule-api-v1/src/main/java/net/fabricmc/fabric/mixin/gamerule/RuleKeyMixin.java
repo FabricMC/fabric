@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.gamerule;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
@@ -26,8 +27,8 @@ import net.fabricmc.fabric.impl.gamerule.RuleKeyExtensions;
 
 @Mixin(GameRules.Key.class)
 public abstract class RuleKeyMixin implements RuleKeyExtensions {
-	/* @Nullable */
 	@Unique
+	@Nullable
 	private CustomGameRuleCategory customCategory;
 
 	@Override
