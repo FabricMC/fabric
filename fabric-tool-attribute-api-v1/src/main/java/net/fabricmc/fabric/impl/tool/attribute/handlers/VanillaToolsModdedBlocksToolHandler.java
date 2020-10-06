@@ -46,7 +46,7 @@ public class VanillaToolsModdedBlocksToolHandler implements ToolManagerImpl.Tool
 
 			if (entry != null) {
 				int miningLevel = stack.getItem() instanceof ToolItem ? ((ToolItem) stack.getItem()).getMaterial().getMiningLevel() : -1;
-				int requiredMiningLevel = entry.getMiningLevel(tag);
+				float requiredMiningLevel = entry.getMiningLevel(tag).getLevel();
 				return requiredMiningLevel >= 0 && miningLevel >= 0 && miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 		}
@@ -60,7 +60,7 @@ public class VanillaToolsModdedBlocksToolHandler implements ToolManagerImpl.Tool
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
-			if (entry != null && entry.getMiningLevel(tag) >= 0) {
+			if (entry != null && entry.getMiningLevel(tag).getLevel() >= 0) {
 				float multiplier = stack.getItem() instanceof ToolItem ? ((ToolItem) stack.getItem()).getMaterial().getMiningSpeedMultiplier() : stack.getItem().getMiningSpeedMultiplier(stack, state);
 				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
 			}

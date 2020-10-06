@@ -46,7 +46,9 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
-		if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
+		ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
+
+		if (entry != null && entry.handlesTag(tag)) {
 			// Block is a modded block, and we should ignore it
 			return ActionResult.PASS;
 		}

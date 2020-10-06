@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.object.builder.v1.block;
 
 import java.util.function.ToIntFunction;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -30,6 +32,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolLevel;
 import net.fabricmc.fabric.impl.object.builder.BlockSettingsInternals;
 import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockAccessor;
@@ -282,8 +285,20 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	/**
 	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
 	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
+	 *
+	 * @see #breakByTool(Tag, ToolLevel)
 	 */
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
+		return breakByTool(tag, ToolLevel.of(miningLevel));
+	}
+
+	/**
+	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
+	 */
+	public FabricBlockSettings breakByTool(Tag<Item> tag, ToolLevel miningLevel) {
 		FabricBlockInternals.computeExtraData(this).addMiningLevel(tag, miningLevel);
 		return this;
 	}
@@ -293,6 +308,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
-		return this.breakByTool(tag, 0);
+		return this.breakByTool(tag, ToolLevel.MINIMUM);
 	}
 }

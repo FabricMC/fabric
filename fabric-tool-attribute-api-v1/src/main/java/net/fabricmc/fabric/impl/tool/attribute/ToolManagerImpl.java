@@ -37,20 +37,25 @@ import net.minecraft.util.TypedActionResult;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolLevel;
 import net.fabricmc.fabric.api.util.TriState;
 
 public final class ToolManagerImpl {
 	public interface Entry {
 		void setBreakByHand(boolean value);
 
-		void putBreakByTool(Tag<Item> tag, int miningLevel);
+		void putBreakByTool(Tag<Item> tag, ToolLevel miningLevel);
 
-		int getMiningLevel(Tag<Item> tag);
+		ToolLevel getMiningLevel(Tag<Item> tag);
+
+		boolean handlesTag(Tag<Item> tag);
+
+		TriState getDefaultValue();
 	}
 
 	private static class EntryImpl implements Entry {
 		private Tag<Item>[] tags = new Tag[0];
-		private int[] tagLevels = new int[0];
+		private ToolLevel[] tagLevels = new ToolLevel[0];
 		private TriState defaultValue = TriState.DEFAULT;
 
 		@Override
@@ -59,11 +64,13 @@ public final class ToolManagerImpl {
 		}
 
 		@Override
-		public void putBreakByTool(Tag<Item> tag, int miningLevel) {
+		public void putBreakByTool(Tag<Item> tag, ToolLevel miningLevel) {
+			Objects.requireNonNull(tag);
+
 			tag(tag); // Generate tag entry
 
 			for (int i = 0; i < tags.length; i++) {
-				if (tags[i] == tag) {
+				if (tags[i].equals(tag)) {
 					tagLevels[i] = miningLevel;
 					return;
 				}
@@ -77,14 +84,24 @@ public final class ToolManagerImpl {
 		}
 
 		@Override
-		public int getMiningLevel(Tag<Item> tag) {
+		public ToolLevel getMiningLevel(Tag<Item> tag) {
 			for (int i = 0; i < tags.length; i++) {
-				if (tags[i] == tag) {
+				if (tags[i].equals(tag)) {
 					return tagLevels[i];
 				}
 			}
 
-			return -1;
+			return ToolLevel.NONE;
+		}
+
+		@Override
+		public boolean handlesTag(Tag<Item> tag) {
+			return getMiningLevel(tag).getLevel() >= 0;
+		}
+
+		@Override
+		public TriState getDefaultValue() {
+			return defaultValue;
 		}
 	}
 
@@ -160,16 +177,6 @@ public final class ToolManagerImpl {
 		return ENTRIES.get(block);
 	}
 
-	@Deprecated
-	public static void registerBreakByHand(Block block, boolean value) {
-		entry(block).setBreakByHand(value);
-	}
-
-	@Deprecated
-	public static void registerBreakByTool(Block block, Tag<Item> tag, int miningLevel) {
-		entry(block).putBreakByTool(tag, miningLevel);
-	}
-
 	/**
 	 * Hook for ItemStack.isEffectiveOn and similar methods.
 	 */
@@ -183,9 +190,9 @@ public final class ToolManagerImpl {
 			}
 		}
 
-		EntryImpl entry = (EntryImpl) entryNullable(state.getBlock());
+		Entry entry = entryNullable(state.getBlock());
 
-		return (entry != null && entry.defaultValue.get()) || (entry == null && vanillaResult);
+		return (entry != null && entry.getDefaultValue().get()) || (entry == null && vanillaResult);
 	}
 
 	public static float handleBreakingSpeedIgnoresVanilla(BlockState state, ItemStack stack, @Nullable LivingEntity user) {

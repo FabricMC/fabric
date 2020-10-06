@@ -18,9 +18,12 @@ package net.fabricmc.fabric.api.tool.attribute.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
@@ -29,6 +32,14 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  * Implement {@link DynamicAttributeTool} to change the mining level or speed of your tool depending on the {@link ItemStack}.
  */
 public final class ToolManager {
+	public static void setBlockBreakLevel(Block block, Tag<Item> tag, ToolLevel level) {
+		ToolManagerImpl.entry(block).putBreakByTool(tag, level);
+	}
+
+	public static void setBlockBreakByHand(Block block, boolean breakByHand) {
+		ToolManagerImpl.entry(block).setBreakByHand(breakByHand);
+	}
+
 	/**
 	 * Handles if the tool is effective on a block.
 	 *
@@ -44,9 +55,9 @@ public final class ToolManager {
 	/**
 	 * Handles if the tool is effective on a block, ignores vanilla tools on vanilla blocks.
 	 *
-	 * @param state the block state to break
-	 * @param stack the item stack involved with breaking the block
-	 * @param user  the user involved in breaking the block, null if not applicable.
+	 * @param state         the block state to break
+	 * @param stack         the item stack involved with breaking the block
+	 * @param user          the user involved in breaking the block, null if not applicable.
 	 * @param vanillaResult whether the tool is considered effective by vanilla
 	 * @return whether the tool is effective
 	 */

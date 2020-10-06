@@ -22,7 +22,8 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.tool.attribute.ToolHandlers"
+      "net.fabricmc.fabric.impl.tool.attribute.ToolHandlers",
+      "net.fabricmc.fabric.impl.tool.attribute.ToolLevels"
     ]
   },
   "description": "Dynamic atttributes for tools.",
