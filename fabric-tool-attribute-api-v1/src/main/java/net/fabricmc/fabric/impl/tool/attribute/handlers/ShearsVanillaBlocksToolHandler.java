@@ -43,8 +43,9 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	private final Item vanillaItem = Items.SHEARS;
 
+	@NotNull
 	@Override
-	public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 			// Block is a modded block, and we should ignore it
 			return ActionResult.PASS;
@@ -61,8 +62,9 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 		return ActionResult.PASS;
 	}
 
+	@NotNull
 	@Override
-	public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		float speed = 1.0F;
 
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {

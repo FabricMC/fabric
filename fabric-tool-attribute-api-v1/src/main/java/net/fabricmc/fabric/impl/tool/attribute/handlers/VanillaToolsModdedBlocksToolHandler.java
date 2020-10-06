@@ -38,8 +38,9 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
  */
 public class VanillaToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
+	@NotNull
 	@Override
-	public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
@@ -53,8 +54,9 @@ public class VanillaToolsModdedBlocksToolHandler implements ToolManagerImpl.Tool
 		return ActionResult.PASS;
 	}
 
+	@NotNull
 	@Override
-	public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 

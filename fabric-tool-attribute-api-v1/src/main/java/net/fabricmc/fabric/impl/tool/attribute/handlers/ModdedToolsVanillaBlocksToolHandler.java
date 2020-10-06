@@ -52,8 +52,9 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 		return (ToolItem) vanillaItems.get(miningLevel);
 	}
 
+	@NotNull
 	@Override
-	public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 				// Block is a modded block, and we should ignore it
@@ -71,8 +72,9 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 		return ActionResult.PASS;
 	}
 
+	@NotNull
 	@Override
-	public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			// Gets the mining level from our modded tool
 			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);

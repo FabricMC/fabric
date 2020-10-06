@@ -121,8 +121,9 @@ public final class ToolManagerImpl {
 
 	private static ToolHandler toolHandlerInvoker(ToolHandler[] toolHandlers) {
 		return new ToolHandler() {
+			@NotNull
 			@Override
-			public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
 					ActionResult effectiveOn = Objects.requireNonNull(toolHandler.isEffectiveOn(tag, state, stack, user));
 
@@ -134,8 +135,9 @@ public final class ToolManagerImpl {
 				return ActionResult.PASS;
 			}
 
+			@NotNull
 			@Override
-			public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
 					TypedActionResult<Float> miningSpeedMultiplier = Objects.requireNonNull(toolHandler.getMiningSpeedMultiplier(tag, state, stack, user));
 
