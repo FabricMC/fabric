@@ -22,7 +22,7 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -39,7 +39,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.util.TriState;
 
-@ApiStatus.Internal
 public final class ToolManagerImpl {
 	public interface Entry {
 		void setBreakByHand(boolean value);
@@ -123,7 +122,7 @@ public final class ToolManagerImpl {
 	private static ToolHandler toolHandlerInvoker(ToolHandler[] toolHandlers) {
 		return new ToolHandler() {
 			@Override
-			public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
 					ActionResult effectiveOn = Objects.requireNonNull(toolHandler.isEffectiveOn(tag, state, stack, user));
 
@@ -136,7 +135,7 @@ public final class ToolManagerImpl {
 			}
 
 			@Override
-			public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+			public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
 					TypedActionResult<Float> miningSpeedMultiplier = Objects.requireNonNull(toolHandler.getMiningSpeedMultiplier(tag, state, stack, user));
 
@@ -243,6 +242,7 @@ public final class ToolManagerImpl {
 		 * @param user  the user involved in breaking the block, null if not applicable.
 		 * @return the result of effectiveness
 		 */
+		@NotNull
 		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 			return ActionResult.PASS;
 		}
@@ -256,8 +256,9 @@ public final class ToolManagerImpl {
 		 * @param user  the user involved in breaking the block, null if not applicable.
 		 * @return the result of mining speed.
 		 */
+		@NotNull
 		default TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-			return null;
+			return TypedActionResult.pass(1.0F);
 		}
 	}
 }

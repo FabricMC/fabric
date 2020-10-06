@@ -18,8 +18,6 @@ package net.fabricmc.fabric.impl.tool.attribute;
 
 import java.util.Arrays;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.Items;
 
 import net.fabricmc.api.ModInitializer;
@@ -32,7 +30,6 @@ import net.fabricmc.fabric.impl.tool.attribute.handlers.VanillaToolsModdedBlocks
 /**
  * Entrypoint to register the default tool handlers.
  */
-@ApiStatus.Internal
 public class ToolHandlers implements ModInitializer {
 	@Override
 	public void onInitialize() {

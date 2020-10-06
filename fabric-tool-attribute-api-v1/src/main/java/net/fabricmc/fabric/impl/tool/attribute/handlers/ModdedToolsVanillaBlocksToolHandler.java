@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
 import java.util.List;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -39,7 +39,6 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  *
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
  */
-@ApiStatus.Internal
 public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	private final List<Item> vanillaItems;
 
@@ -54,7 +53,7 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 	}
 
 	@Override
-	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 				// Block is a modded block, and we should ignore it
@@ -73,7 +72,7 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 	}
 
 	@Override
-	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			// Gets the mining level from our modded tool
 			int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);

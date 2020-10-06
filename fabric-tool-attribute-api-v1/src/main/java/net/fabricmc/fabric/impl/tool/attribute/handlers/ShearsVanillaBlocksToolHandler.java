@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -40,12 +40,11 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  * <p>Only applicable to items that are not a subclass of {@link DynamicAttributeTool}</p>
  * <p>Only applicable to blocks that are vanilla or share the material that is handled by their vanilla tool.</p>
  */
-@ApiStatus.Internal
 public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	private final Item vanillaItem = Items.SHEARS;
 
 	@Override
-	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
 			// Block is a modded block, and we should ignore it
 			return ActionResult.PASS;
@@ -63,7 +62,7 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 	}
 
 	@Override
-	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		float speed = 1.0F;
 
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {

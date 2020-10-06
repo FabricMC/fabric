@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
@@ -35,10 +35,9 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  *
  * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
  */
-@ApiStatus.Internal
 public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	@Override
-	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public @NotNull ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
@@ -54,7 +53,7 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 	}
 
 	@Override
-	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+	public @NotNull TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
