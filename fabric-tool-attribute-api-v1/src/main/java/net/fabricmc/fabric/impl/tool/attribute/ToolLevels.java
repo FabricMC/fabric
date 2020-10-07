@@ -40,7 +40,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.item.ToolMaterial;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -72,10 +71,6 @@ public final class ToolLevels implements ModInitializer {
 
 	private static ToolLevel create(float level) {
 		return () -> level;
-	}
-
-	private static ToolLevel create(ToolMaterial material) {
-		return material::getMiningLevel;
 	}
 
 	@Override

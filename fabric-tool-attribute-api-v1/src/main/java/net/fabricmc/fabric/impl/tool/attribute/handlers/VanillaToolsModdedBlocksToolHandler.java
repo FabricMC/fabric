@@ -29,11 +29,12 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.TypedActionResult;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolMaterial;
 import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * This handler handles items that are not a subclass of {@link DynamicAttributeTool} by
- * comparing their mining level using {@link ToolMaterial#getMiningLevel()} and the block mining level.
+ * comparing their mining level using {@link FabricToolMaterial#getFrom(ToolMaterial)} and the block mining level.
  *
  * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
  */
@@ -45,7 +46,7 @@ public class VanillaToolsModdedBlocksToolHandler implements ToolManagerImpl.Tool
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 			if (entry != null) {
-				int miningLevel = stack.getItem() instanceof ToolItem ? ((ToolItem) stack.getItem()).getMaterial().getMiningLevel() : -1;
+				float miningLevel = stack.getItem() instanceof ToolItem ? FabricToolMaterial.getFrom(((ToolItem) stack.getItem()).getMaterial()).getLevel() : -1.0F;
 				float requiredMiningLevel = entry.getMiningLevel(tag).getLevel();
 				return requiredMiningLevel >= 0 && miningLevel >= 0 && miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
