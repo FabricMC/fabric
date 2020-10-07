@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.function.Predicate;
 
 import com.google.common.base.Preconditions;
-import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -39,10 +38,8 @@ import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
  * or the demo level.
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
- * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
- * since it is likely to change in future Minecraft versions.
  */
-@ApiStatus.Experimental
+@Deprecated
 public final class BiomeModifications {
 	/**
 	 * Convenience method to add a feature to one or more biomes.

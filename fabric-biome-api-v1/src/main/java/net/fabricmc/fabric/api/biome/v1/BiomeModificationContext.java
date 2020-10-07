@@ -19,7 +19,6 @@ package net.fabricmc.fabric.api.biome.v1;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.entity.EntityType;
@@ -48,10 +47,8 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
  * Allows {@link Biome} properties to be modified.
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
- * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
- * since it is likely to change in future Minecraft versions.
  */
-@ApiStatus.Experimental
+@Deprecated
 public interface BiomeModificationContext {
 	/**
 	 * @see Biome#getDepth()

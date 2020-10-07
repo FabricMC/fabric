@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import com.google.common.collect.ImmutableSet;
-import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
@@ -37,10 +36,8 @@ import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
  * Provides several convenient biome selectors that can be used with {@link BiomeModifications}.
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
- * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
- * since it is likely to change in future Minecraft versions.
  */
-@ApiStatus.Experimental
+@Deprecated
 public final class BiomeSelectors {
 	private BiomeSelectors() {
 	}

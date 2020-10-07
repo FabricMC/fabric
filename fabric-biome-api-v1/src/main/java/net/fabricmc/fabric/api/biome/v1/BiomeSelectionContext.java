@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -36,14 +34,10 @@ import net.fabricmc.fabric.impl.biome.modification.BuiltInRegistryKeys;
  * Context given to a biome selector for deciding whether it applies to a biome or not.
  *
  * <p><b>Experimental feature</b>, may be removed or changed without further notice.
- * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
- * since it is likely to change in future Minecraft versions.
  */
-@ApiStatus.Experimental
+@Deprecated
 public interface BiomeSelectionContext {
 	RegistryKey<Biome> getBiomeKey();
-
-	// TODO: isModifiedByDatapack? Might be more expensive than it seems.
 
 	/**
 	 * Returns the biome with modifications by biome modifiers of higher priority already applied.

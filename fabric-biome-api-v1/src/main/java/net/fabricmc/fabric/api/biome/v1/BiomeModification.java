@@ -28,8 +28,10 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
 
 /**
  * @see BiomeModifications
+ *
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
-@ApiStatus.Experimental
+@Deprecated
 public class BiomeModification {
 	private final Identifier id;
 
