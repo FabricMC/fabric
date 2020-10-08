@@ -24,12 +24,12 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.provider.ItemApiProviderAccessImpl;
+import net.fabricmc.fabric.impl.provider.ItemApiProviderImpl;
 
 /**
  * See {link ApiProviderAccess}. This subclass is for {@code ItemStack} game objects.
  */
-public interface ItemApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {
+public interface ItemApiProvider<A extends ApiProvider<A>> extends ApiProvider<A> {
 	/**
 	 * Causes the given items to to supply API provider instances by application of
 	 * the given mapping function,
@@ -39,7 +39,7 @@ public interface ItemApiProviderAccess<P extends ApiProvider<P, A>, A> extends A
 	 * @param mapping function that derives a provider instance from an item stack
 	 * @param items one or more types for which the mapping will apply
 	 */
-	void registerProviderForItem(Function<ItemStack, P> mapping, ItemConvertible... items);
+	void registerProviderForItem(Function<ItemStack, A> mapping, ItemConvertible... items);
 
 	/**
 	 * Retrieves an {@code ApiProvider} used to obtain an API instance if present.
@@ -47,14 +47,14 @@ public interface ItemApiProviderAccess<P extends ApiProvider<P, A>, A> extends A
 	 * @return a {@code ApiProvider} used to obtain an API instance if present.
 	 * Will be {@link #absentProvider()} if no API is present.
 	 */
-	P getProviderFromStack(ItemStack stack);
+	A getApiFromStack(ItemStack stack);
 
-	static <P extends ApiProvider<P, A>, A> ItemApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
-		return ItemApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
+	static <A extends ApiProvider<A>> ItemApiProvider<A> registerProvider(Identifier id, Class<A> apiType, A absentApi) {
+		return ItemApiProviderImpl.registerProvider(id, apiType, absentApi);
 	}
 
 	@Nullable
-	static ItemApiProviderAccess<?, ?> getAccess(Identifier id) {
-		return ItemApiProviderAccessImpl.getAccess(id);
+	static ItemApiProvider<?> getProvider(Identifier id) {
+		return ItemApiProviderImpl.getProvider(id);
 	}
 }

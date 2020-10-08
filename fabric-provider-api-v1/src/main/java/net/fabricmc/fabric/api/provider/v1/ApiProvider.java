@@ -17,36 +17,32 @@
 package net.fabricmc.fabric.api.provider.v1;
 
 /**
- * Supplies API instances associated with a game object.
+ * Provides loosely-coupled access to APIs associated with game objects.
  *
- * <p>Consumers can obtain an instance of the provider
- * without knowing how or where it is implemented by using
- * {@link ApiProviderAccess#getAccess()}.
- *
- * <p>This decoupling of provider access from provider
- * implementation is the primary purpose of this module.
- *
- * <p>Implementations are expected to extend this interface to
- * add methods with additional parameters as needed.
- *
- * <p>Allocation and management of any state, along with thread
- * safety, are fully delegated to implementations.
- *
- * @param <P> Identifies the API provider type
  * @param <A> Identifies the API type
  */
-@FunctionalInterface
-public interface ApiProvider<P extends ApiProvider<P, A>, A> {
+public interface ApiProvider<A> {
 	/**
-	 * Retrieves the API with the given access parameters, or {@link ApiProviderAccess#absentApi()} if the component
-	 * is missing or inaccessible with the given parameters.
+	 * API instance to be returned when the API is not present or not available.
 	 *
-	 * <p>When this interface is overridden, this method should have
-	 * a default implementation that returns what is appropriate when
-	 * all provider parameters are missing, or {@link ApiProviderAccess#absentProvider()}
-	 * if a null-input provider is not meaningful.
-	 *
-	 * @return An API instance or or {@link ApiProviderAccess#absentProvider()} if unavailable
+	 * @return instance to be returned when the API is not present or not available.
 	 */
-	A getApi();
+	A absentApi();
+
+	/**
+	 * The class for instances of the provided API. Exposed to support introspection.
+	 *
+	 * @return the class for instances of the provided API
+	 */
+	Class<A> apiType();
+
+	/**
+	 * Casts the input parameter to the class associated with the provided API.
+	 *
+	 * @param obj the object to be cast
+	 * @return the input object cast to the API type
+	 *
+	 * @throws ClassCastException if the input object cannot be cast to the API class
+	 */
+	A castToApi(Object obj);
 }

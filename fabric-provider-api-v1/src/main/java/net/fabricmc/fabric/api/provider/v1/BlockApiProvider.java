@@ -26,7 +26,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.impl.provider.BlockApiProviderAccessImpl;
+import net.fabricmc.fabric.impl.provider.BlockApiProviderImpl;
 
 /**
  * See {link ApiProviderAccess}. This subclass is for {@code Block} game objects.
@@ -41,7 +41,7 @@ import net.fabricmc.fabric.impl.provider.BlockApiProviderAccessImpl;
  * within the world. If a block entity instance is already acquired the block entity
  * access method should perform slightly better but both give equivalent results.
  */
-public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {
+public interface BlockApiProvider<A extends ApiProvider<A>> extends ApiProvider<A> {
 	/**
 	 * Causes the given blocks to supply API provider instances by application of
 	 * the given mapping function. Use this version for blocks that
@@ -52,7 +52,7 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @param mapping function that derives a provider instance from block state
 	 * @param blocks one or more blocks for which the mapping will apply
 	 */
-	void registerProviderForBlock(BlockProviderFunction<P, A> mapping, Block... blocks);
+	void registerProviderForBlock(BlockProviderFunction<A> mapping, Block... blocks);
 
 	/**
 	 * Causes the given blocks to to supply API provider instances by application of
@@ -64,7 +64,7 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @param mapping function that derives a provider instance from a block entity
 	 * @param blockEntityTypes one or more types for which the mapping will apply
 	 */
-	void registerProviderForBlockEntity(BlockEntityProviderFunction<P, A> mapping, BlockEntityType<?>... blockEntityTypes);
+	void registerProviderForBlockEntity(BlockEntityProviderFunction<A> mapping, BlockEntityType<?>... blockEntityTypes);
 
 	/**
 	 * Retrieves an {@code ApiProvider} used to obtain an API instance if present.
@@ -75,14 +75,14 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @return a {@code ApiProvider} used to obtain an API instance if present.
 	 * Will be {@link #absentProvider()} if no API is present.
 	 */
-	P getProviderFromBlock(World world, BlockPos pos, BlockState blockState);
+	A getApiFromBlock(World world, BlockPos pos, BlockState blockState);
 
 	/**
 	 * Convenient version of {@link #getProviderFromBlock(World, BlockPos, BlockState)}
 	 * to use when block state is not already retrieved.
 	 */
-	default P getProviderFromBlock(World world, BlockPos pos) {
-		return getProviderFromBlock(world, pos, world.getBlockState(pos));
+	default A getApiFromBlock(World world, BlockPos pos) {
+		return getApiFromBlock(world, pos, world.getBlockState(pos));
 	}
 
 	/**
@@ -95,15 +95,15 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @return a {@code ApiProvider} used to obtain an API instance if present.
 	 * Will be {@link #absentProvider()} if no API is present.
 	 */
-	P getProviderFromBlockEntity(BlockEntity blockEntity);
+	A getApiFromBlockEntity(BlockEntity blockEntity);
 
 	/**
 	 * @param <P> Identifies the API provider type
 	 * @param <A> Identifies the API type
 	 */
 	@FunctionalInterface
-	public interface BlockEntityProviderFunction<P extends ApiProvider<P, A>, A> {
-		P getProvider(BlockEntity blockEntity);
+	public interface BlockEntityProviderFunction<A> {
+		A getApi(BlockEntity blockEntity);
 	}
 
 	/**
@@ -111,38 +111,38 @@ public interface BlockApiProviderAccess<P extends ApiProvider<P, A>, A> extends 
 	 * @param <A> Identifies the API type
 	 */
 	@FunctionalInterface
-	public interface BlockProviderFunction<P extends ApiProvider<P, A>, A> {
-		P getProvider(World world, BlockPos pos, BlockState state);
+	public interface BlockProviderFunction<A> {
+		A getApi(World world, BlockPos pos, BlockState state);
 
-		default P getProvider(World world, BlockPos pos) {
-			return getProvider(world, pos, world.getBlockState(pos));
+		default A getApi(World world, BlockPos pos) {
+			return getApi(world, pos, world.getBlockState(pos));
 		}
 	}
 
 	/**
-	 * Creates and returns new provider access instances.
+	 * Creates and returns new provider instances.
 	 *
 	 * @param <P> Identifies the API provider type
 	 * @param <A> Identifies the API type
 	 * @param id Name-spaced identifier for this provider access
 	 * @param apiType the class for instances of the provided API
-	 * @param absentProvider immutable and non-allocating provider instance
+	 * @param absentApi immutable and non-allocating provider instance
 	 * that always returns the API instance to be used when no instance is available.
 	 * @return the created {@link ApiProviderAccess}
 	 */
-	static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
-		return BlockApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
+	static <A extends ApiProvider<A>> BlockApiProvider<A> registerProvider(Identifier id, Class<A> apiType, A absentApi) {
+		return BlockApiProviderImpl.registerProvider(id, apiType, absentApi);
 	}
 
 	/**
-	 * Retrieves a provider access instance registered earlier.
+	 * Retrieves a provider instance registered earlier.
 	 * May be unreliable during initialization due to undefined mod load order.
 	 *
 	 * @param id Name-spaced identifier for the requested provider access
-	 * @return the requested {@link ApiProviderAccess}, or {@code null} if none is available
+	 * @return the requested {@link ApiProvider}, or {@code null} if none is available
 	 */
 	@Nullable
-	static BlockApiProviderAccess<?, ?> getAccess(Identifier id) {
-		return BlockApiProviderAccessImpl.getAccess(id);
+	static BlockApiProvider<?> getProvider(Identifier id) {
+		return BlockApiProviderImpl.getProvider(id);
 	}
 }

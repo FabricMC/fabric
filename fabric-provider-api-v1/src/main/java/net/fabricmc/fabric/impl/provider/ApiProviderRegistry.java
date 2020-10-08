@@ -23,20 +23,20 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.provider.v1.ApiProviderAccess;
+import net.fabricmc.fabric.api.provider.v1.ApiProvider;
 
-public final class ApiProviderAccessRegistry<T extends ApiProviderAccess<?, ?>> {
-	ApiProviderAccessRegistry () {
+public final class ApiProviderRegistry<T extends ApiProvider<?>> {
+	ApiProviderRegistry () {
 	}
 
 	private final Object2ObjectOpenHashMap<Identifier, T> MAP = new Object2ObjectOpenHashMap<>();
 
 	public void register(Identifier id, T access) {
-		Objects.requireNonNull(id, "encountered null API provider access ID");
-		Objects.requireNonNull(id, "encountered null API provider access method");
+		Objects.requireNonNull(id, "encountered null API provider ID");
+		Objects.requireNonNull(access, "encountered null API provider instance");
 
 		if (MAP.putIfAbsent(id, access) != null) {
-			AbstractApiProviderAccess.LOGGER.info("Encountered duplicate API Provider access registeration with ID " + id.toString());
+			AbstractApiProvider.LOGGER.info("Encountered duplicate API Provider registeration with ID " + id.toString());
 		}
 	}
 

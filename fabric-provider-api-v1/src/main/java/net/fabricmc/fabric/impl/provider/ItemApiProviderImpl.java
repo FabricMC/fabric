@@ -30,18 +30,18 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProvider;
-import net.fabricmc.fabric.api.provider.v1.ItemApiProviderAccess;
+import net.fabricmc.fabric.api.provider.v1.ItemApiProvider;
 
-public final class ItemApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends AbstractApiProviderAccess<P, A> implements ItemApiProviderAccess<P, A> {
-	private final Reference2ReferenceOpenHashMap<Item, Function<ItemStack, P>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
+public final class ItemApiProviderImpl<A extends ApiProvider<A>> extends AbstractApiProvider<A> implements ItemApiProvider<A> {
+	private final Reference2ReferenceOpenHashMap<Item, Function<ItemStack, A>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
 
-	private ItemApiProviderAccessImpl(Class<A> apiType, P absentProvider) {
+	private ItemApiProviderImpl(Class<A> apiType, A absentProvider) {
 		super(apiType, absentProvider);
 		map.defaultReturnValue(e -> absentProvider);
 	}
 
 	@Override
-	public void registerProviderForItem(Function<ItemStack, P> mapping, ItemConvertible... items) {
+	public void registerProviderForItem(Function<ItemStack, A> mapping, ItemConvertible... items) {
 		Objects.requireNonNull(mapping, "encountered API provider mapping");
 
 		for (final ItemConvertible item : items) {
@@ -54,20 +54,20 @@ public final class ItemApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ext
 	}
 
 	@Override
-	public P getProviderFromStack(ItemStack stack) {
+	public A getApiFromStack(ItemStack stack) {
 		return map.get(stack.getItem()).apply(stack);
 	}
 
-	private static final ApiProviderAccessRegistry<ItemApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<>();
+	private static final ApiProviderRegistry<ItemApiProvider<?>> REGISTRY = new ApiProviderRegistry<>();
 
-	public static <P extends ApiProvider<P, A>, A> ItemApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
-		final ItemApiProviderAccessImpl<P, A> result = new ItemApiProviderAccessImpl<> (apiType, absentProvider);
+	public static <A extends ApiProvider<A>> ItemApiProvider<A> registerProvider(Identifier id, Class<A> apiType, A absentApi) {
+		final ItemApiProviderImpl<A> result = new ItemApiProviderImpl<> (apiType, absentApi);
 		REGISTRY.register(id, result);
 		return result;
 	}
 
 	@Nullable
-	public static ItemApiProviderAccess<?, ?> getAccess(Identifier id) {
+	public static ItemApiProvider<?> getProvider(Identifier id) {
 		return REGISTRY.get(id);
 	}
 }

@@ -32,19 +32,19 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProvider;
-import net.fabricmc.fabric.api.provider.v1.BlockApiProviderAccess;
+import net.fabricmc.fabric.api.provider.v1.BlockApiProvider;
 import net.fabricmc.fabric.mixin.provider.BlockEntityTypeAccessor;
 
-public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends AbstractApiProviderAccess<P, A> implements BlockApiProviderAccess<P, A> {
-	private final Reference2ReferenceOpenHashMap<Block, BlockProviderFunction<P, A>> blockMappings = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
-	private final Reference2ReferenceOpenHashMap<BlockEntityType<?>, BlockEntityProviderFunction<P, A>> blockEntityMappings = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
+public final class BlockApiProviderImpl<A extends ApiProvider<A>> extends AbstractApiProvider<A> implements BlockApiProvider<A> {
+	private final Reference2ReferenceOpenHashMap<Block, BlockProviderFunction<A>> blockMappings = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
+	private final Reference2ReferenceOpenHashMap<BlockEntityType<?>, BlockEntityProviderFunction<A>> blockEntityMappings = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
 
-	private BlockApiProviderAccessImpl(Class<A> apiType, P absentProvider) {
-		super(apiType, absentProvider);
+	private BlockApiProviderImpl(Class<A> apiType, A absentApi) {
+		super(apiType, absentApi);
 	}
 
 	@Override
-	public void registerProviderForBlock(BlockProviderFunction<P, A> mapping, Block... blocks) {
+	public void registerProviderForBlock(BlockProviderFunction<A> mapping, Block... blocks) {
 		Objects.requireNonNull(mapping, "encountered API provider mapping");
 
 		for (final Block b : blocks) {
@@ -57,7 +57,7 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 	}
 
 	@Override
-	public void registerProviderForBlockEntity(BlockEntityProviderFunction<P, A> mapping, BlockEntityType<?>... blockEntityTypes) {
+	public void registerProviderForBlockEntity(BlockEntityProviderFunction<A> mapping, BlockEntityType<?>... blockEntityTypes) {
 		Objects.requireNonNull(mapping, "encountered API provider mapping");
 
 		for (final BlockEntityType<?> bet : blockEntityTypes) {
@@ -65,7 +65,7 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 
 			if (blockEntityMappings.putIfAbsent(bet, mapping) == null) {
 				// register provider access for associated blocks to route to BE provider when retrieved through block state
-				final BlockProviderFunction<P, A> blockMapping = (world, pos, blockState) -> mapping.getProvider(world.getBlockEntity(pos));
+				final BlockProviderFunction<A> blockMapping = (world, pos, blockState) -> mapping.getApi(world.getBlockEntity(pos));
 				((BlockEntityTypeAccessor) bet).getBlocks().forEach(block -> registerProviderForBlock(blockMapping, block));
 			} else {
 				LOGGER.warn("Encountered duplicate API Provider registration for block entity type " + Registry.BLOCK_ENTITY_TYPE.getId(bet));
@@ -74,25 +74,25 @@ public final class BlockApiProviderAccessImpl<P extends ApiProvider<P, A>, A> ex
 	}
 
 	@Override
-	public P getProviderFromBlock(World world, BlockPos pos, BlockState blockState) {
-		return blockMappings.get(blockState.getBlock()).getProvider(world, pos, blockState);
+	public A getApiFromBlock(World world, BlockPos pos, BlockState blockState) {
+		return blockMappings.get(blockState.getBlock()).getApi(world, pos, blockState);
 	}
 
 	@Override
-	public P getProviderFromBlockEntity(BlockEntity blockEntity) {
-		return blockEntityMappings.get(blockEntity.getType()).getProvider(blockEntity);
+	public A getApiFromBlockEntity(BlockEntity blockEntity) {
+		return blockEntityMappings.get(blockEntity.getType()).getApi(blockEntity);
 	}
 
-	private static final ApiProviderAccessRegistry<BlockApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<>();
+	private static final ApiProviderRegistry<BlockApiProvider<?>> REGISTRY = new ApiProviderRegistry<>();
 
-	public static <P extends ApiProvider<P, A>, A> BlockApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
-		final BlockApiProviderAccess<P, A> result = new BlockApiProviderAccessImpl<> (apiType, absentProvider);
+	public static <A extends ApiProvider<A>> BlockApiProvider<A> registerProvider(Identifier id, Class<A> apiType, A absentApi) {
+		final BlockApiProvider<A> result = new BlockApiProviderImpl<> (apiType, absentApi);
 		REGISTRY.register(id, result);
 		return result;
 	}
 
 	@Nullable
-	public static BlockApiProviderAccess<?, ?> getAccess(Identifier id) {
+	public static BlockApiProvider<?> getProvider(Identifier id) {
 		return REGISTRY.get(id);
 	}
 }

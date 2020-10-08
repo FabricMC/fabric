@@ -24,12 +24,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.provider.EntityApiProviderAccessImpl;
+import net.fabricmc.fabric.impl.provider.EntityApiProviderImpl;
 
 /**
  * See {@link ApiProviderAccess}. This subclass is for {@code Entity} game objects.
  */
-public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends ApiProviderAccess<P, A> {
+public interface EntityApiProvider<A extends ApiProvider<A>> extends ApiProvider<A> {
 	/**
 	 * Causes the given entities to to supply API provider instances by application of
 	 * the given mapping function.
@@ -39,7 +39,7 @@ public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends
 	 * @param mapping function that derives a provider instance from an entity
 	 * @param entityType type for which the mapping will apply
 	 */
-	void registerProviderForEntity(Function<Entity, P> mapping, EntityType<?> entityType);
+	void registerProviderForEntity(Function<Entity, A> mapping, EntityType<?> entityType);
 
 	/**
 	 * Retrieves an {@code ApiProvider} used to obtain an API instance if present.
@@ -51,14 +51,14 @@ public interface EntityApiProviderAccess<P extends ApiProvider<P, A>, A> extends
 	 * @return a {@code ApiProvider} used to obtain an API instance if present.
 	 * Will be {@link #absentProvider()} if no API is present.
 	 */
-	P getProviderFromEntity(Entity entity);
+	A getApiFromEntity(Entity entity);
 
-	static <P extends ApiProvider<P, A>, A> EntityApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> apiType, P absentProvider) {
-		return EntityApiProviderAccessImpl.registerAccess(id, apiType, absentProvider);
+	static <A extends ApiProvider<A>> EntityApiProvider<A> registerProvider(Identifier id, Class<A> apiType, A absentApi) {
+		return EntityApiProviderImpl.registerProvider(id, apiType, absentApi);
 	}
 
 	@Nullable
-	static EntityApiProviderAccess<?, ?> getAccess(Identifier id) {
-		return EntityApiProviderAccessImpl.getAccess(id);
+	static EntityApiProvider<?> getProvider(Identifier id) {
+		return EntityApiProviderImpl.getProvider(id);
 	}
 }

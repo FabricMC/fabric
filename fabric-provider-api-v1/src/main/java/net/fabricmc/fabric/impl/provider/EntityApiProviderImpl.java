@@ -29,18 +29,18 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProvider;
-import net.fabricmc.fabric.api.provider.v1.EntityApiProviderAccess;
+import net.fabricmc.fabric.api.provider.v1.EntityApiProvider;
 
-public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> extends AbstractApiProviderAccess<P, A> implements EntityApiProviderAccess<P, A> {
-	private final Reference2ReferenceOpenHashMap<EntityType<?>, Function<Entity, P>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
+public final class EntityApiProviderImpl<A extends ApiProvider<A>> extends AbstractApiProvider<A> implements EntityApiProvider<A> {
+	private final Reference2ReferenceOpenHashMap<EntityType<?>, Function<Entity, A>> map = new Reference2ReferenceOpenHashMap<>(256, Hash.VERY_FAST_LOAD_FACTOR);
 
-	EntityApiProviderAccessImpl(Class<A> apiType, P absentProvider) {
-		super(apiType, absentProvider);
-		map.defaultReturnValue(e -> absentProvider);
+	EntityApiProviderImpl(Class<A> apiType, A absentApi) {
+		super(apiType, absentApi);
+		map.defaultReturnValue(e -> absentApi);
 	}
 
 	@Override
-	public void registerProviderForEntity(Function<Entity, P> mapping, EntityType<?> entityType) {
+	public void registerProviderForEntity(Function<Entity, A> mapping, EntityType<?> entityType) {
 		Objects.requireNonNull(mapping, "encountered API provider mapping");
 		Objects.requireNonNull(entityType, "encountered null entity type in API provider mapping");
 
@@ -50,20 +50,20 @@ public final class EntityApiProviderAccessImpl<P extends ApiProvider<P, A>, A> e
 	}
 
 	@Override
-	public P getProviderFromEntity(Entity entity) {
+	public A getApiFromEntity(Entity entity) {
 		return map.get(entity.getType()).apply(entity);
 	}
 
-	private static final ApiProviderAccessRegistry<EntityApiProviderAccess<?, ?>> REGISTRY = new ApiProviderAccessRegistry<>();
+	private static final ApiProviderRegistry<EntityApiProvider<?>> REGISTRY = new ApiProviderRegistry<>();
 
-	public static <P extends ApiProvider<P, A>, A> EntityApiProviderAccess<P, A> registerAccess(Identifier id, Class<A> type, P absentProvider) {
-		final EntityApiProviderAccess<P, A> result = new EntityApiProviderAccessImpl<> (type, absentProvider);
+	public static <A extends ApiProvider<A>> EntityApiProvider<A> registerProvider(Identifier id, Class<A> type, A absentApi) {
+		final EntityApiProvider<A> result = new EntityApiProviderImpl<> (type, absentApi);
 		REGISTRY.register(id, result);
 		return result;
 	}
 
 	@Nullable
-	public static EntityApiProviderAccess<?, ?> getAccess(Identifier id) {
+	public static EntityApiProvider<?> getProvider(Identifier id) {
 		return REGISTRY.get(id);
 	}
 }

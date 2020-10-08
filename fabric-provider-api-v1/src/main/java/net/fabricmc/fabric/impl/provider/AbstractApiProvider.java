@@ -22,30 +22,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProvider;
-import net.fabricmc.fabric.api.provider.v1.ApiProviderAccess;
 
-abstract class AbstractApiProviderAccess<P extends ApiProvider<P, A>, A> implements ApiProviderAccess<P, A> {
+abstract class AbstractApiProvider<A extends ApiProvider<A>> implements ApiProvider<A> {
 	final A absentApi;
-	final P absentProvider;
 	final Class<A> apiType;
 
-	AbstractApiProviderAccess(Class<A> apiType, P absentProvider) {
+	AbstractApiProvider(Class<A> apiType, A absentApi) {
 		Objects.requireNonNull(apiType, "encountered null API type");
-		Objects.requireNonNull(absentProvider, "encountered null API absentProvider");
+		Objects.requireNonNull(absentApi, "encountered null API absentProvider");
 
-		absentApi = absentProvider.getApi();
-		this.absentProvider = absentProvider;
+		this.absentApi = absentApi;
 		this.apiType = apiType;
 	}
 
 	@Override
 	public A absentApi() {
 		return absentApi;
-	}
-
-	@Override
-	public P absentProvider() {
-		return absentProvider;
 	}
 
 	@Override
