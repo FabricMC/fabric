@@ -43,7 +43,7 @@ public interface ToolLevel extends Comparable<ToolLevel> {
 	 * @param id the identifier of the level
 	 * @return the {@link ToolLevel} instance that will be loaded afterwards.
 	 */
-	static ToolLevel by(Identifier id) {
+	static Identified by(Identifier id) {
 		return by(id, ToolLevel.NONE);
 	}
 
@@ -55,7 +55,7 @@ public interface ToolLevel extends Comparable<ToolLevel> {
 	 * @param fallback the fallback of the level if it is not voted
 	 * @return the {@link ToolLevel} instance that will be loaded afterwards.
 	 */
-	static ToolLevel by(Identifier id, @NotNull ToolLevel fallback) {
+	static Identified by(Identifier id, @NotNull ToolLevel fallback) {
 		return ToolLevels.by(id, fallback);
 	}
 
@@ -73,5 +73,9 @@ public interface ToolLevel extends Comparable<ToolLevel> {
 	@Override
 	default int compareTo(@NotNull ToolLevel o) {
 		return Float.compare(getLevel(), o.getLevel());
+	}
+
+	interface Identified extends ToolLevel {
+		Identifier getId();
 	}
 }

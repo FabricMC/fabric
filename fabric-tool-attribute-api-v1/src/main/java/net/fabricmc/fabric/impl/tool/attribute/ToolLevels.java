@@ -66,7 +66,7 @@ public final class ToolLevels implements ModInitializer {
 	}
 
 	public static VotedToolLevel by(Identifier id, ToolLevel fallback) {
-		return VOTE_CACHE.computeIfAbsent(id, identifier -> new VotedToolLevel(fallback));
+		return VOTE_CACHE.computeIfAbsent(id, identifier -> new VotedToolLevel(identifier, fallback));
 	}
 
 	private static ToolLevel create(float level) {
@@ -78,17 +78,24 @@ public final class ToolLevels implements ModInitializer {
 		ResourceManagerHelper.get(ResourceType.SERVER_DATA).registerReloadListener(new VotedToolLevelLoader());
 	}
 
-	private static final class VotedToolLevel implements ToolLevel {
+	private static final class VotedToolLevel implements ToolLevel.Identified {
+		private final Identifier identifier;
 		private final ToolLevel fallback;
 		private Float value = null;
 
-		VotedToolLevel(ToolLevel fallback) {
+		VotedToolLevel(Identifier identifier, ToolLevel fallback) {
+			this.identifier = identifier;
 			this.fallback = fallback;
 		}
 
 		@Override
 		public float getLevel() {
 			return value == null ? fallback.getLevel() : value;
+		}
+
+		@Override
+		public Identifier getId() {
+			return identifier;
 		}
 	}
 

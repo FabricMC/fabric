@@ -16,10 +16,18 @@
 
 package net.fabricmc.fabric.api.tool.attribute.v1;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.item.ToolMaterial;
 import net.minecraft.util.math.MathHelper;
 
+/**
+ * Fabric extensions to {@link ToolMaterial} to provide access to returning {@link ToolLevel} as the mining level.
+ *
+ * @see DynamicAttributeTool to set tool levels according to the {@link net.minecraft.item.ItemStack} instance.
+ */
 public interface FabricToolMaterial extends ToolMaterial {
+	@NotNull
 	static ToolLevel getFrom(ToolMaterial material) {
 		if (material instanceof FabricToolMaterial) {
 			return ((FabricToolMaterial) material).getToolLevel();

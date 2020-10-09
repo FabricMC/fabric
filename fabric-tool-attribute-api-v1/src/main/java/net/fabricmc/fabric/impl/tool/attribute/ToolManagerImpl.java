@@ -70,7 +70,7 @@ public final class ToolManagerImpl {
 			tag(tag); // Generate tag entry
 
 			for (int i = 0; i < tags.length; i++) {
-				if (tags[i].equals(tag)) {
+				if (tags[i] == tag) {
 					tagLevels[i] = miningLevel;
 					return;
 				}
@@ -86,7 +86,7 @@ public final class ToolManagerImpl {
 		@Override
 		public ToolLevel getMiningLevel(Tag<Item> tag) {
 			for (int i = 0; i < tags.length; i++) {
-				if (tags[i].equals(tag)) {
+				if (tags[i] == tag) {
 					return tagLevels[i];
 				}
 			}
