@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.model;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.render.model.UnbakedModel;
 import net.minecraft.util.Identifier;
 
@@ -46,5 +48,6 @@ public interface ModelResourceProvider {
 	 * @return The loaded UnbakedModel, or null if this ModelResourceProvider doesn't handle a specific Identifier
 	 * (or if there was no error!).
 	 */
-	/* @Nullable */ UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException;
+	@Nullable
+	UnbakedModel loadModelResource(Identifier resourceId, ModelProviderContext context) throws ModelProviderException;
 }

@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.object.builder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
@@ -56,7 +58,8 @@ public final class FabricBlockInternals {
 
 	public static final class ExtraData {
 		private final List<MiningLevel> miningLevels = new ArrayList<>();
-		/* @Nullable */ private Boolean breakByHand;
+		@Nullable
+		private Boolean breakByHand;
 
 		public ExtraData(Block.Settings settings) {
 		}

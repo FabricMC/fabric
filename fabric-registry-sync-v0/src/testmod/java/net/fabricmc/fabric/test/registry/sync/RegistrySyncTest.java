@@ -24,13 +24,19 @@ import net.minecraft.block.Material;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.BuiltinRegistries;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
+import net.minecraft.world.gen.feature.ConfiguredFeature;
+import net.minecraft.world.gen.feature.DefaultFeatureConfig;
+import net.minecraft.world.gen.feature.Feature;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -41,6 +47,8 @@ public class RegistrySyncTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
+		testBuiltInRegistrySync();
+
 		if (REGISTER_BLOCKS) {
 			for (int i = 0; i < 5; i++) {
 				Block block = new Block(AbstractBlock.Settings.of(Material.STONE));
@@ -68,5 +76,54 @@ public class RegistrySyncTest implements ModInitializer {
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
+	}
+
+	/**
+	 * Tests that built-in registries are properly synchronized even after the dynamic reigstry managers have been
+	 * class-loaded.
+	 */
+	private void testBuiltInRegistrySync() {
+		System.out.println("Checking built-in registry sync...");
+
+		// Register a configured feature before force-loading the dynamic registry manager
+		ConfiguredFeature<DefaultFeatureConfig, ?> cf1 = Feature.BASALT_PILLAR.configure(DefaultFeatureConfig.INSTANCE);
+		Identifier f1Id = new Identifier("registry_sync", "f1");
+		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f1Id, cf1);
+
+		// Force-Initialize the dynamic registry manager, doing this in a Mod initializer would cause
+		// further registrations into BuiltInRegistries to _NOT_ propagate into DynamicRegistryManager.BUILTIN
+		checkFeature(DynamicRegistryManager.create(), f1Id);
+
+		ConfiguredFeature<DefaultFeatureConfig, ?> cf2 = Feature.DESERT_WELL.configure(DefaultFeatureConfig.INSTANCE);
+		Identifier f2Id = new Identifier("registry_sync", "f2");
+		Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, f2Id, cf2);
+
+		DynamicRegistryManager.Impl impl2 = DynamicRegistryManager.create();
+		checkFeature(impl2, f1Id);
+		checkFeature(impl2, f2Id);
+	}
+
+	private void checkFeature(DynamicRegistryManager manager, Identifier id) {
+		MutableRegistry<ConfiguredFeature<?, ?>> registry = manager.get(Registry.CONFIGURED_FEATURE_WORLDGEN);
+
+		ConfiguredFeature<?, ?> builtInEntry = BuiltinRegistries.CONFIGURED_FEATURE.get(id);
+
+		if (builtInEntry == null) {
+			throw new IllegalStateException("Expected built-in entry to exist for: " + id);
+		}
+
+		ConfiguredFeature<?, ?> entry = registry.get(id);
+
+		if (entry == null) {
+			throw new IllegalStateException("Expected dynamic registry to contain entry " + id);
+		}
+
+		if (builtInEntry == entry) {
+			throw new IllegalStateException("Expected that the built-in entry and dynamic entry don't have object identity because the dynamic entry is created by serializing the built-in entry to JSON and back.");
+		}
+
+		if (builtInEntry.feature != entry.feature) {
+			throw new IllegalStateException("Expected both entries to reference the same feature since it's only in Registry and is never copied");
+		}
 	}
 }
