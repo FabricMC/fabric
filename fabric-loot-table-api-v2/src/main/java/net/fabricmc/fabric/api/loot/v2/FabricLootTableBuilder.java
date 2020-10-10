@@ -112,7 +112,7 @@ public class FabricLootTableBuilder extends LootTable.Builder {
 	}
 
 	/**
-	 * Copies the pools and functions of the {@code table} to this builder.
+	 * Copies the pools and functions of the {@code table} to this builder.
 	 * If {@code copyType} is true, the {@link FabricLootTable#getType type} of the table is also copied.
 	 *
 	 * @param table    the source loot table
@@ -134,7 +134,7 @@ public class FabricLootTableBuilder extends LootTable.Builder {
 	/**
 	 * Creates an empty builder.
 	 *
-	 * @return the created buidler
+	 * @return the created builder
 	 */
 	public static FabricLootTableBuilder builder() {
 		return new FabricLootTableBuilder();

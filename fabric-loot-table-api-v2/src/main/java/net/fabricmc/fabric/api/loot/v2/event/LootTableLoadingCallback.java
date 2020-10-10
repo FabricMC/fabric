@@ -28,6 +28,24 @@ import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 /**
  * An event handler that is called when loot tables are loaded.
  * Use {@link #EVENT} to register instances.
+ *
+ * <h2>Examples</h2>
+ * <pre>
+ * {@code
+ * Identifier sandId = Blocks.SAND.getLootTableId();
+ * Identifier oakPlanksId = Blocks.OAK_PLANKS.getLootTableId();
+ *
+ * LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, table, setter) -> {
+ * 	if (sandId.equals(id)) {
+ * 		// Add a beetroot to sand drops
+ * 		table.pool(LootPool.builder().with(ItemEntry.builder(Items.BEETROOT)));
+ * 	} else if (oakPlanksId.equals(id)) {
+ * 		// Replace the loot from oak planks with emeralds
+ * 		setter.set(LootTable.builder().pool(LootPool.builder().with(ItemEntry.builder(Items.EMERALD))).build());
+ * 	}
+ * });
+ * }
+ * </pre>
  */
 @FunctionalInterface
 public interface LootTableLoadingCallback {
