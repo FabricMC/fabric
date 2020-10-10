@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.tool.attribute.v1;
 
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.EquipmentSlot;
@@ -42,9 +43,8 @@ public interface DynamicAttributeTool {
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
-	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
-	default int getMiningLevel(ItemStack stack, /* @Nullable */ LivingEntity user) {
+	default int getMiningLevel(ItemStack stack, @Nullable LivingEntity user) {
 		return 0;
 	}
 
@@ -57,8 +57,7 @@ public interface DynamicAttributeTool {
 	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
-	// nullable on user once we have an official @Nullable annotation in
-	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		return getMiningLevel(stack, user);
 	}
 
@@ -68,11 +67,10 @@ public interface DynamicAttributeTool {
 	 * @param stack The item stack being used to mine the block
 	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
-	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
+	 * @deprecated Use {@link #getMiningSpeedMultiplier(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
-	// nullable on user once we have an official @Nullable annotation in
 	@Deprecated
-	default float getMiningSpeedMultiplier(ItemStack stack, /* @Nullable */ LivingEntity user) {
+	default float getMiningSpeedMultiplier(ItemStack stack, @Nullable LivingEntity user) {
 		return 1.0F;
 	}
 
@@ -85,14 +83,14 @@ public interface DynamicAttributeTool {
 	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining speed multiplier of the item. 8.0 is equal to a diamond pick.
 	 */
-	// nullable on user once we have an official @Nullable annotation in
-	default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user) {
+	default float getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		return getMiningSpeedMultiplier(stack, user);
 	}
 
 	/**
-	 * Post process the mining speed, can be used to change tool speed regardless if the tool is effective.
-	 * Useful if you want to change the mining speed even if it is not effective.
+	 * Post process the mining speed, this takes place after the mining speed has been calculated.
+	 *
+	 * <p>This allows bypassing the regular computation formula.
 	 *
 	 * @param tag          The tool tag the item stack is handled by
 	 * @param state        The block to mine
@@ -102,7 +100,7 @@ public interface DynamicAttributeTool {
 	 * @param isEffective  whether the tool has been handled
 	 * @return the speed after post processing
 	 */
-	default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, /* @Nullable */ LivingEntity user, float currentSpeed, boolean isEffective) {
+	default float postProcessMiningSpeed(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user, float currentSpeed, boolean isEffective) {
 		return currentSpeed;
 	}
 
@@ -116,8 +114,7 @@ public interface DynamicAttributeTool {
 	 * @param user  The current user of the tool, or none if there isn't any
 	 * @return The dynamic modifiers to add on top of other modifiers on this stack. If none, return {@link #EMPTY}.
 	 */
-	// nullable on user once we have an official @Nullable annotation in
-	default Multimap<EntityAttribute, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, /* @Nullable */ LivingEntity user) {
+	default Multimap<EntityAttribute, EntityAttributeModifier> getDynamicModifiers(EquipmentSlot slot, ItemStack stack, @Nullable LivingEntity user) {
 		return EMPTY;
 	}
 }

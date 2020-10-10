@@ -1,0 +1,2 @@
+archivesBaseName = "fabric-biome-api-v1"
+version = getSubprojectVersion(project, "2.0.0")

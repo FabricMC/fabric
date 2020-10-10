@@ -32,10 +32,12 @@ public interface BlockEntityRendererRegistry {
 	BlockEntityRendererRegistry INSTANCE = new BlockEntityRendererRegistryImpl();
 
 	/**
-	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered
+	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
 	 *
 	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
-	 * @param blockEntityRenderer a function that returns a {@link BlockEntityRenderer}
+	 * @param blockEntityRenderer a function that returns a {@link BlockEntityRenderer}, called
+	 *                            when {@link BlockEntityRenderDispatcher} is initialized or immediately if the dispatcher
+	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
 	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<E>> blockEntityRenderer);

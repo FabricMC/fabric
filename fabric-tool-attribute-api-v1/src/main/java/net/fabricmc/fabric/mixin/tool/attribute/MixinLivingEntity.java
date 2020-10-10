@@ -43,7 +43,7 @@ public abstract class MixinLivingEntity extends Entity {
 	 * @author B0undarybreaker
 	 * @reason get entity attribute modifiers for dynamic tools
 	 */
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"))
+	@Redirect(method = "method_30129", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getAttributeModifiers(Lnet/minecraft/entity/EquipmentSlot;)Lcom/google/common/collect/Multimap;"))
 	public Multimap<EntityAttribute, EntityAttributeModifier> actTickModifiers(ItemStack stack, EquipmentSlot slot) {
 		return actModifiers(stack, slot, (LivingEntity) (Object) this);
 	}

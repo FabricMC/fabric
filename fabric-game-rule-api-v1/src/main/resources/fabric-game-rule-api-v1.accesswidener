@@ -1,0 +1,5 @@
+accessWidener	v1	named
+accessible  method  net/minecraft/world/GameRules$Type <init>  (Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/BiConsumer;Lnet/minecraft/world/GameRules$Acceptor;)V
+extendable  method  net/minecraft/world/GameRules$Type <init>  (Ljava/util/function/Supplier;Ljava/util/function/Function;Ljava/util/function/BiConsumer;Lnet/minecraft/world/GameRules$Acceptor;)V
+accessible  class   net/minecraft/world/GameRules$Acceptor
+accessible  class   net/minecraft/client/gui/screen/world/EditGameRulesScreen$RuleWidgetFactory

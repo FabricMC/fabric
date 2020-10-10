@@ -69,11 +69,6 @@ public class FabricRegistryInit implements ModInitializer {
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.DECORATOR);
 
-		// Saved to level format
-		RegistryAttributeHolder.get(Registry.BIOME)
-				.addAttribute(RegistryAttribute.SYNCED)
-				.addAttribute(RegistryAttribute.PERSISTED);
-
 		// Serialised by string, doesnt seem to be synced
 		RegistryAttributeHolder.get(Registry.BLOCK_STATE_PROVIDER_TYPE);
 
@@ -140,7 +135,7 @@ public class FabricRegistryInit implements ModInitializer {
 		RegistryAttributeHolder.get(Registry.RECIPE_SERIALIZER);
 
 		// Synced and saved by id
-		RegistryAttributeHolder.get(Registry.ATTRIBUTES);
+		RegistryAttributeHolder.get(Registry.ATTRIBUTE);
 
 		// Synced in StatisticsS2CPacket
 		RegistryAttributeHolder.get(Registry.STAT_TYPE)

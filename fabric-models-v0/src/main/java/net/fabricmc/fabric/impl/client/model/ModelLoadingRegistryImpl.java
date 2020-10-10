@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.render.model.ModelLoader;
 import net.minecraft.client.render.model.UnbakedModel;
@@ -139,12 +140,12 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			}
 		}
 
-		/* @Nullable */
+		@Nullable
 		public UnbakedModel loadModelFromResource(Identifier resourceId) {
 			return loadCustomModel((r) -> r.loadModelResource(resourceId, this), modelResourceProviders, "resource provider");
 		}
 
-		/* @Nullable */
+		@Nullable
 		public UnbakedModel loadModelFromVariant(Identifier variantId) {
 			if (!(variantId instanceof ModelIdentifier)) {
 				return loadModelFromResource(variantId);

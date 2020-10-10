@@ -25,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
@@ -43,12 +44,12 @@ public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 	}
 
 	@Inject(method = "add", at = @At("RETURN"))
-	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
+	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<V> info) {
 		onChange(registryKey);
 	}
 
 	@Inject(method = "set", at = @At("RETURN"))
-	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, CallbackInfoReturnable<V> info) {
+	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<V> info) {
 		onChange(registryKey);
 	}
 
@@ -58,8 +59,8 @@ public abstract class MixinSimpleRegistry<T> extends Registry<T> {
 			RegistryAttributeHolder holder = RegistryAttributeHolder.get(this);
 
 			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
-				// noinspection unchecked
-				FARBIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", ((Registry) Registry.REGISTRIES).getId(this), registryKey.getValue());
+				Identifier id = getKey().getValue();
+				FARBIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
 				RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.MODDED);
 			}
 		}

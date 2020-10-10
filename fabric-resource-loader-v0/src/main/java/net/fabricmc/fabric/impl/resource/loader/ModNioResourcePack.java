@@ -50,14 +50,19 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final boolean cacheable;
 	private final AutoCloseable closer;
 	private final String separator;
+	private final String name;
+	private final boolean defaultEnabled;
 
-	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer) {
+	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer, String name, boolean defaultEnabled) {
 		super(null);
 		this.modInfo = modInfo;
 		this.basePath = path.toAbsolutePath().normalize();
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
+		// Specific to registered built-in resource packs.
+		this.name = name;
+		this.defaultEnabled = defaultEnabled;
 	}
 
 	private Path getPath(String filename) {
@@ -225,8 +230,16 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		return modInfo;
 	}
 
+	public boolean shouldBeEnabledByDefault() {
+		return this.defaultEnabled;
+	}
+
 	@Override
 	public String getName() {
+		if (this.name != null) {
+			return this.name; // Built-in resource pack provided by a mod, the name is overriden.
+		}
+
 		return ModResourcePackUtil.getName(modInfo);
 	}
 }
