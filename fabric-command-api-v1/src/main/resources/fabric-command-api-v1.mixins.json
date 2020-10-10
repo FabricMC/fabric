@@ -6,6 +6,11 @@
     "MixinCommandManager"
   ],
   "client": [
+    "client.ClientCommandSourceMixin",
+    "client.ClientPlayerEntityMixin",
+    "client.ClientPlayNetworkHandlerMixin",
+    "client.CommandSuggestorMixin",
+    "client.MinecraftClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1
