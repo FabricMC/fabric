@@ -23,6 +23,7 @@ import com.google.gson.JsonSerializationContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.item.Items;
 import net.minecraft.loot.ConstantLootTableRange;
 import net.minecraft.loot.LootGsons;
@@ -46,14 +47,17 @@ public class LootTest implements ModInitializer {
 	private static final Gson LOOT_GSON = LootGsons.getTableGsonBuilder().create();
 	private static final String LOOT_ENTRY_JSON = "{\"type\":\"minecraft:item\",\"name\":\"minecraft:apple\"}";
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onInitialize() {
 		// Test loot entry
 		LootEntryTypeRegistry.INSTANCE.register(new Identifier("fabric", "extended_tag"), new TestSerializer());
 
-		// Test loot table load event
+		Identifier stoneBricksTableId = Blocks.STONE_BRICKS.getLootTableId();
+
+		// Test loot table load event by adding apples and feathers to the stone brick loot table.
 		LootTableLoadingCallback.EVENT.register((resourceManager, manager, id, supplier, setter) -> {
-			if ("minecraft:blocks/dirt".equals(id.toString())) {
+			if (stoneBricksTableId.equals(id)) {
 				LootPoolEntry entryFromString = LOOT_GSON.fromJson(LOOT_ENTRY_JSON, LootPoolEntry.class);
 
 				LootPool pool = FabricLootPoolBuilder.builder()
