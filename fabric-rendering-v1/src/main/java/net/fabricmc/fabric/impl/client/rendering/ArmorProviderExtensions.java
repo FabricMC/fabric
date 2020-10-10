@@ -16,16 +16,18 @@
 
 package net.fabricmc.fabric.impl.client.rendering;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderingRegistry;
 
 public interface ArmorProviderExtensions {
-	/* @Nullable */
+	@Nullable
 	ArmorRenderingRegistry.ModelProvider fabric_getArmorModelProvider();
 
-	/* @Nullable */
+	@Nullable
 	ArmorRenderingRegistry.TextureProvider fabric_getArmorTextureProvider();
 
-	void fabric_setArmorModelProvider(/* @Nullable */ ArmorRenderingRegistry.ModelProvider provider);
+	void fabric_setArmorModelProvider(@Nullable ArmorRenderingRegistry.ModelProvider provider);
 
-	void fabric_setArmorTextureProvider(/* @Nullable */ ArmorRenderingRegistry.TextureProvider provider);
+	void fabric_setArmorTextureProvider(@Nullable ArmorRenderingRegistry.TextureProvider provider);
 }

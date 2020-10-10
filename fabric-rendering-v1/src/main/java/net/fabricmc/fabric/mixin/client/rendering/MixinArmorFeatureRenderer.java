@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.mixin.client.rendering;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -95,7 +96,7 @@ public abstract class MixinArmorFeatureRenderer extends FeatureRenderer {
 	private void getArmorTexture(ArmorItem armorItem, boolean secondLayer, /* @Nullable */ String suffix, CallbackInfoReturnable<Identifier> cir, String vanillaIdentifier) {
 		String model = ArmorRenderingRegistry.getArmorTexture(storedEntity, storedEntity.getEquippedStack(storedSlot), storedSlot, vanillaIdentifier);
 
-		if (model != null) {
+		if (!Objects.equals(model, vanillaIdentifier)) {
 			cir.setReturnValue(ARMOR_TEXTURE_CACHE.computeIfAbsent(model, Identifier::new));
 		}
 	}

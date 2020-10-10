@@ -95,8 +95,9 @@ public final class ArmorRenderingRegistry {
 	 * @param stack        The item stack of the armor
 	 * @param slot         The slot which the armor is in
 	 * @param defaultModel The default model that vanilla provides
-	 * @return The model of the armor piece. Should never be null.
+	 * @return The model of the armor piece.
 	 */
+	@NotNull
 	public static BipedEntityModel<LivingEntity> getArmorModel(LivingEntity entity, ItemStack stack, EquipmentSlot slot, BipedEntityModel<LivingEntity> defaultModel) {
 		return ArmorRenderingRegistryImpl.getArmorModel(entity, stack, slot, defaultModel);
 	}
@@ -110,7 +111,7 @@ public final class ArmorRenderingRegistry {
 	 * @param defaultTexture The default vanilla texture identifier
 	 * @return the custom armor texture identifier, return null to use the vanilla ones. Defaulted to the item's registry id.
 	 */
-	/* @Nullable */
+	@NotNull
 	public static String getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, String defaultTexture) {
 		return ArmorRenderingRegistryImpl.getArmorTexture(entity, stack, slot, defaultTexture);
 	}
@@ -141,9 +142,9 @@ public final class ArmorRenderingRegistry {
 		 * @param stack          The item stack of the armor
 		 * @param slot           The slot which the armor is in
 		 * @param defaultTexture The default vanilla texture identifier
-		 * @return the custom armor texture identifier, return null to use the vanilla ones. Defaulted to the item's registry id.
+		 * @return the custom armor texture identifier. Should never be null.
 		 */
-		@Nullable
+		@NotNull
 		String getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, String defaultTexture);
 	}
 }
