@@ -45,8 +45,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -132,8 +132,8 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 	@Unique
 	private boolean fabric_isObjectNew = false;
 
-	@Inject(method = "set", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<T> info) {
+	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("HEAD"))
+	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
 		int indexedEntriesId = entryToRawId.getInt(object);
 
 		if (indexedEntriesId >= 0) {
@@ -148,7 +148,7 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 			if (oldObject != null && oldObject != object) {
 				int oldId = entryToRawId.getInt(oldObject);
 
-				if (oldId != id) {
+				if (oldId != id && checkDuplicateKeys) {
 					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
 				}
 
@@ -160,8 +160,8 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 		}
 	}
 
-	@Inject(method = "set", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, CallbackInfoReturnable<T> info) {
+	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("RETURN"))
+	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
 		if (fabric_isObjectNew) {
 			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
 		}

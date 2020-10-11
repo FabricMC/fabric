@@ -34,9 +34,11 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.Feature;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 
 public class RegistrySyncTest implements ModInitializer {
 	/**
@@ -73,9 +75,17 @@ public class RegistrySyncTest implements ModInitializer {
 
 		Registry.register(fabricRegistry, new Identifier("registry_sync", "test"), "test");
 
+		Validate.isTrue(Registry.REGISTRIES.getIds().contains(new Identifier("registry_sync", "fabric_registry")));
+
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.MODDED));
 		Validate.isTrue(RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.SYNCED));
 		Validate.isTrue(!RegistryAttributeHolder.get(fabricRegistry).hasAttribute(RegistryAttribute.PERSISTED));
+
+		DynamicRegistrySetupCallback.EVENT.register(registryManager -> {
+			RegistryEntryAddedCallback.event(registryManager.get(Registry.BIOME_KEY)).register((rawId, id, object) -> {
+				System.out.println(id);
+			});
+		});
 	}
 
 	/**
