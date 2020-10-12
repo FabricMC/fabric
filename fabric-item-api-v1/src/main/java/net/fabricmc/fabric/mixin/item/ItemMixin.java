@@ -24,9 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
-import net.minecraft.sound.SoundEvent;
-import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
-import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.*;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
@@ -39,17 +37,17 @@ abstract class ItemMixin implements ItemExtensions {
 	private CustomDamageHandler customDamageHandler;
 
 	@Unique
-	private SoundEvent strongHitSound;
+	private SoundPlayer strongHitSound;
 	@Unique
-	private SoundEvent weakHitSound;
+	private SoundPlayer weakHitSound;
 	@Unique
-	private SoundEvent criticalHitSound;
+	private SoundPlayer criticalHitSound;
 	@Unique
-	private SoundEvent knockbackHitSound;
+	private SoundPlayer knockbackHitSound;
 	@Unique
-	private SoundEvent noDamageHitSound;
+	private SoundPlayer noDamageHitSound;
 	@Unique
-	private SoundEvent sweepingHitSound;
+	private SoundPlayer sweepingHitSound;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
@@ -77,73 +75,73 @@ abstract class ItemMixin implements ItemExtensions {
 	}
 
 	@Override
-	public @Nullable SoundEvent fabric_getCriticalHitSound() {
+	public @Nullable SoundPlayer fabric_getCriticalHitSound() {
 		// TODO Auto-generated method stub
 		return criticalHitSound;
 	}
 
 	@Override
-	public @Nullable SoundEvent fabric_getKnockBackHitSound() {
+	public @Nullable SoundPlayer fabric_getKnockBackHitSound() {
 		// TODO Auto-generated method stub
 		return knockbackHitSound;
 	}
 
 	@Override
-	public @Nullable SoundEvent fabric_getNoDamageHitSound() {
+	public @Nullable SoundPlayer fabric_getNoDamageHitSound() {
 		// TODO Auto-generated method stub
 		return noDamageHitSound;
 	}
 
 	@Override
-	public @Nullable SoundEvent fabric_getStrongHitSound() {
+	public @Nullable SoundPlayer fabric_getStrongHitSound() {
 		// TODO Auto-generated method stub
 		return strongHitSound;
 	}
 
 	@Override
-	public @Nullable SoundEvent fabric_getSweepingHitSound() {
+	public @Nullable SoundPlayer fabric_getSweepingHitSound() {
 		// TODO Auto-generated method stub
 		return sweepingHitSound;
 	}
 
 	@Override
-	public @Nullable SoundEvent fabric_getWeakHitSound() {
+	public @Nullable SoundPlayer fabric_getWeakHitSound() {
 		// TODO Auto-generated method stub
 		return weakHitSound;
 	}
 
 	@Override
-	public void fabric_setCriticalHitSound(SoundEvent soundEvent) {
+	public void fabric_setCriticalHitSound(SoundPlayer soundEvent) {
 		this.criticalHitSound = soundEvent;
 
 	}
 
 	@Override
-	public void fabric_setKnockBackHitSound(SoundEvent soundEvent) {
+	public void fabric_setKnockBackHitSound(SoundPlayer soundEvent) {
 		this.knockbackHitSound = soundEvent;
 
 	}
 
 	@Override
-	public void fabric_setNoDamageHitSound(SoundEvent soundEvent) {
+	public void fabric_setNoDamageHitSound(SoundPlayer soundEvent) {
 		this.noDamageHitSound = soundEvent;
 
 	}
 
 	@Override
-	public void fabric_setStrongHitSound(SoundEvent soundEvent) {
+	public void fabric_setStrongHitSound(SoundPlayer soundEvent) {
 		this.strongHitSound = soundEvent;
 
 	}
 
 	@Override
-	public void fabric_setSweepingHitSound(SoundEvent soundEvent) {
+	public void fabric_setSweepingHitSound(SoundPlayer soundEvent) {
 		this.sweepingHitSound = soundEvent;
 
 	}
 
 	@Override
-	public void fabric_setWeakHitSound(SoundEvent soundEvent) {
+	public void fabric_setWeakHitSound(SoundPlayer soundEvent) {
 		this.weakHitSound = soundEvent;
 
 	}

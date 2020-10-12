@@ -50,7 +50,7 @@ public abstract class PlayerEntityMixin {
         if(item.fabric_getKnockBackHitSound() != null)
         {
             this.muteSound = true;
-            pe.world.playSound(null, pe.getX(), pe.getY(), pe.getZ(), item.fabric_getKnockBackHitSound(), pe.getSoundCategory(), 1.0F, 1.0F);
+            item.fabric_getKnockBackHitSound().playSound(pe.world, pe);
         }
     }
     @Inject(
@@ -67,7 +67,7 @@ public abstract class PlayerEntityMixin {
         if(item.fabric_getSweepingHitSound() != null)
         {
             this.muteSound = true;
-            pe.world.playSound(null, pe.getX(), pe.getY(), pe.getZ(), item.fabric_getSweepingHitSound(), pe.getSoundCategory(), 1.0F, 1.0F);
+            item.fabric_getSweepingHitSound().playSound(pe.world, pe);
         }
     }
     @Inject(
@@ -84,7 +84,7 @@ public abstract class PlayerEntityMixin {
         if(item.fabric_getCriticalHitSound() != null)
         {
             this.muteSound = true;
-            pe.world.playSound(null, pe.getX(), pe.getY(), pe.getZ(), item.fabric_getCriticalHitSound(), pe.getSoundCategory(), 1.0F, 1.0F);
+            item.fabric_getCriticalHitSound().playSound(pe.world, pe);
         }
     }
     @Inject(
@@ -101,7 +101,7 @@ public abstract class PlayerEntityMixin {
         if(item.fabric_getStrongHitSound() != null)
         {
             this.muteSound = true;
-            pe.world.playSound(null, pe.getX(), pe.getY(), pe.getZ(), item.fabric_getStrongHitSound(), pe.getSoundCategory(), 1.0F, 1.0F);
+            item.fabric_getStrongHitSound().playSound(pe.world, pe);
         }
     }
     @Inject(
@@ -118,7 +118,7 @@ public abstract class PlayerEntityMixin {
         if(item.fabric_getWeakHitSound() != null)
         {
             this.muteSound = true;
-            pe.world.playSound(null, pe.getX(), pe.getY(), pe.getZ(), item.fabric_getWeakHitSound(), pe.getSoundCategory(), 1.0F, 1.0F);
+            item.fabric_getWeakHitSound().playSound(pe.world, pe);
         }
     }
     @Inject(
@@ -135,7 +135,7 @@ public abstract class PlayerEntityMixin {
         if(item.fabric_getNoDamageHitSound() != null)
         {
             this.muteSound = true;
-            pe.world.playSound(null, pe.getX(), pe.getY(), pe.getZ(), item.fabric_getNoDamageHitSound(), pe.getSoundCategory(), 1.0F, 1.0F);
+            item.fabric_getNoDamageHitSound().playSound(pe.world, pe);
         }
     }
     

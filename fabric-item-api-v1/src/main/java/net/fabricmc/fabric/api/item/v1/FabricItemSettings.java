@@ -43,7 +43,7 @@ public class FabricItemSettings extends Item.Settings {
 		SWEEPING,
 	}
 
-	public FabricItemSettings soundEvent(Sound sound,SoundEvent soundEvent) {
+	public FabricItemSettings soundEvent(Sound sound,SoundPlayer soundEvent) {
 		switch (sound) {
 			case CRITIAL:
 				FabricItemInternals.computeExtraData(this).criticalHitSound(soundEvent);
