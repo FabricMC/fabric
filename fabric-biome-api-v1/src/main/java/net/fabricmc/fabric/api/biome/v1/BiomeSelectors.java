@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.api.biome.v1;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -166,5 +168,17 @@ public final class BiomeSelectors {
 
 			return false;
 		};
+	}
+
+	/**
+	 * Matches Biomes that have one of the given categories.
+	 *
+	 * @see Biome#getCategory()
+	 */
+	public static Predicate<BiomeSelectionContext> categories(Biome.Category... categories) {
+		Set<Biome.Category> categorySet = EnumSet.noneOf(Biome.Category.class);
+		Collections.addAll(categorySet, categories);
+
+		return context -> categorySet.contains(context.getBiome().getCategory());
 	}
 }
