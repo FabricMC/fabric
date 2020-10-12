@@ -3,7 +3,7 @@
 ## Organization
 
 Events in this module belong to a single class which relates to the category of events.
-The implementation of event callbacks are sub classes.
+The implementation of event callbacks are nested classes.
 
 For example, `ServerLifecycleEvents.SERVER_STARTING` is in `ServerLifecycleEvents` and the implementation of the event's callback would implement `ServerLifecycleEvents.ServerStarting`.
 
