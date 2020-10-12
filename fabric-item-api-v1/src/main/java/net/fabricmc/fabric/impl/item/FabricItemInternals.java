@@ -18,8 +18,10 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
-import net.minecraft.item.Item;
+import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.item.Item;
+import net.minecraft.sound.SoundEvent;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
@@ -39,12 +41,26 @@ public final class FabricItemInternals {
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
+			
+			((ItemExtensions) item).fabric_setStrongHitSound(data.strongHitSound);
+			((ItemExtensions) item).fabric_setWeakHitSound(data.weakHitSound);
+			((ItemExtensions) item).fabric_setCriticalHitSound(data.criticalHitSound);
+			((ItemExtensions) item).fabric_setKnockBackHitSound(data.knockbackHitSound);
+			((ItemExtensions) item).fabric_setNoDamageHitSound(data.noDamageHitSound);
+			((ItemExtensions) item).fabric_setSweepingHitSound(data.sweepingHitSound);
+
 		}
 	}
 
 	public static final class ExtraData {
 		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
 		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		private @Nullable SoundEvent strongHitSound;
+		private @Nullable SoundEvent weakHitSound;
+		private @Nullable SoundEvent criticalHitSound;
+		private @Nullable SoundEvent knockbackHitSound;
+		private @Nullable SoundEvent noDamageHitSound;
+		private @Nullable SoundEvent sweepingHitSound;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
@@ -52,6 +68,30 @@ public final class FabricItemInternals {
 
 		public void customDamage(CustomDamageHandler handler) {
 			this.customDamageHandler = handler;
+		}
+
+		public void strongHitSound(SoundEvent sound) {
+			this.strongHitSound = sound;
+		}
+
+		public void weakHitSound(SoundEvent sound) {
+			this.weakHitSound = sound;
+		}
+
+		public void criticalHitSound(SoundEvent sound) {
+			this.criticalHitSound = sound;
+		}
+
+		public void knockbackHitSound(SoundEvent sound) {
+			this.knockbackHitSound = sound;
+		}
+
+		public void noDamageHitSound(SoundEvent sound) {
+			this.noDamageHitSound = sound;
+		}
+
+		public void sweepingHitSound(SoundEvent sound) {
+			this.sweepingHitSound = sound;
 		}
 	}
 }

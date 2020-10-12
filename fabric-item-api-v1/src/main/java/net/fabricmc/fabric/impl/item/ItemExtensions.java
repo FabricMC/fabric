@@ -16,12 +16,29 @@
 
 package net.fabricmc.fabric.impl.item;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.minecraft.sound.SoundEvent;
 
 public interface ItemExtensions {
 	/* @Nullable */ EquipmentSlotProvider fabric_getEquipmentSlotProvider();
 	void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider);
 	/* @Nullable */ CustomDamageHandler fabric_getCustomDamageHandler();
 	void fabric_setCustomDamageHandler(CustomDamageHandler handler);
+
+	@Nullable SoundEvent fabric_getStrongHitSound();
+	void fabric_setStrongHitSound(SoundEvent soundEvent);
+	@Nullable SoundEvent fabric_getWeakHitSound();
+	void fabric_setWeakHitSound(SoundEvent soundEvent);
+	@Nullable SoundEvent fabric_getCriticalHitSound();
+	void fabric_setCriticalHitSound(SoundEvent soundEvent);
+	@Nullable SoundEvent fabric_getKnockBackHitSound();
+	void fabric_setKnockBackHitSound(SoundEvent soundEvent);
+	@Nullable SoundEvent fabric_getNoDamageHitSound();
+	void fabric_setNoDamageHitSound(SoundEvent soundEvent);
+	@Nullable SoundEvent fabric_getSweepingHitSound();
+	void fabric_setSweepingHitSound(SoundEvent soundEvent);
+	
 }
