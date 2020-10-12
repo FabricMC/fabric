@@ -24,7 +24,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
-import net.fabricmc.fabric.api.item.v1.*;
+
+import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.SoundPlayer;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
@@ -76,73 +79,61 @@ abstract class ItemMixin implements ItemExtensions {
 
 	@Override
 	public @Nullable SoundPlayer fabric_getCriticalHitSound() {
-		// TODO Auto-generated method stub
 		return criticalHitSound;
 	}
 
 	@Override
 	public @Nullable SoundPlayer fabric_getKnockBackHitSound() {
-		// TODO Auto-generated method stub
 		return knockbackHitSound;
 	}
 
 	@Override
 	public @Nullable SoundPlayer fabric_getNoDamageHitSound() {
-		// TODO Auto-generated method stub
 		return noDamageHitSound;
 	}
 
 	@Override
 	public @Nullable SoundPlayer fabric_getStrongHitSound() {
-		// TODO Auto-generated method stub
 		return strongHitSound;
 	}
 
 	@Override
 	public @Nullable SoundPlayer fabric_getSweepingHitSound() {
-		// TODO Auto-generated method stub
 		return sweepingHitSound;
 	}
 
 	@Override
 	public @Nullable SoundPlayer fabric_getWeakHitSound() {
-		// TODO Auto-generated method stub
 		return weakHitSound;
 	}
 
 	@Override
 	public void fabric_setCriticalHitSound(SoundPlayer soundEvent) {
 		this.criticalHitSound = soundEvent;
-
 	}
 
 	@Override
 	public void fabric_setKnockBackHitSound(SoundPlayer soundEvent) {
 		this.knockbackHitSound = soundEvent;
-
 	}
 
 	@Override
 	public void fabric_setNoDamageHitSound(SoundPlayer soundEvent) {
 		this.noDamageHitSound = soundEvent;
-
 	}
 
 	@Override
 	public void fabric_setStrongHitSound(SoundPlayer soundEvent) {
 		this.strongHitSound = soundEvent;
-
 	}
 
 	@Override
 	public void fabric_setSweepingHitSound(SoundPlayer soundEvent) {
 		this.sweepingHitSound = soundEvent;
-
 	}
 
 	@Override
 	public void fabric_setWeakHitSound(SoundPlayer soundEvent) {
 		this.weakHitSound = soundEvent;
-
 	}
 }

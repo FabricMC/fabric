@@ -20,8 +20,11 @@ import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.item.v1.*;
 import net.minecraft.item.Item;
+
+import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.SoundPlayer;
 
 public final class FabricItemInternals {
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
@@ -39,14 +42,12 @@ public final class FabricItemInternals {
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
-			
 			((ItemExtensions) item).fabric_setStrongHitSound(data.strongHitSound);
 			((ItemExtensions) item).fabric_setWeakHitSound(data.weakHitSound);
 			((ItemExtensions) item).fabric_setCriticalHitSound(data.criticalHitSound);
 			((ItemExtensions) item).fabric_setKnockBackHitSound(data.knockbackHitSound);
 			((ItemExtensions) item).fabric_setNoDamageHitSound(data.noDamageHitSound);
 			((ItemExtensions) item).fabric_setSweepingHitSound(data.sweepingHitSound);
-
 		}
 	}
 

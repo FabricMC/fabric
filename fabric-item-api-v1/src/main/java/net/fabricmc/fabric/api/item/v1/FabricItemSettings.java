@@ -32,7 +32,6 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
-
 	public enum AttackSound {
 		STRONG,
 		WEAK,
@@ -42,29 +41,30 @@ public class FabricItemSettings extends Item.Settings {
 		SWEEPING,
 	}
 
-	public FabricItemSettings soundEvent(AttackSound sound,SoundPlayer soundEvent) {
+	public FabricItemSettings soundEvent(AttackSound sound, SoundPlayer soundEvent) {
 		switch (sound) {
-			case CRITIAL:
-				FabricItemInternals.computeExtraData(this).criticalHitSound(soundEvent);
-				break;
-			case KNOCKBACK:
-				FabricItemInternals.computeExtraData(this).knockbackHitSound(soundEvent);
-				break;
-			case NO_DAMAGE:
-				FabricItemInternals.computeExtraData(this).noDamageHitSound(soundEvent);
-				break;
-			case STRONG:
-				FabricItemInternals.computeExtraData(this).strongHitSound(soundEvent);
-				break;
-			case SWEEPING:
-				FabricItemInternals.computeExtraData(this).sweepingHitSound(soundEvent);
-				break;
-			case WEAK:
-				FabricItemInternals.computeExtraData(this).weakHitSound(soundEvent);
-				break;
-			default:
-				break;
+		case CRITIAL:
+			FabricItemInternals.computeExtraData(this).criticalHitSound(soundEvent);
+			break;
+		case KNOCKBACK:
+			FabricItemInternals.computeExtraData(this).knockbackHitSound(soundEvent);
+			break;
+		case NO_DAMAGE:
+			FabricItemInternals.computeExtraData(this).noDamageHitSound(soundEvent);
+			break;
+		case STRONG:
+			FabricItemInternals.computeExtraData(this).strongHitSound(soundEvent);
+			break;
+		case SWEEPING:
+			FabricItemInternals.computeExtraData(this).sweepingHitSound(soundEvent);
+			break;
+		case WEAK:
+			FabricItemInternals.computeExtraData(this).weakHitSound(soundEvent);
+			break;
+		default:
+			break;
 		}
+
 		return this;
 	}
 
