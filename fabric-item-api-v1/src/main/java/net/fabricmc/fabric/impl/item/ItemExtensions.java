@@ -18,7 +18,9 @@ package net.fabricmc.fabric.impl.item;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.item.v1.*;
+import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
+import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.SoundPlayer;
 
 public interface ItemExtensions {
 	/* @Nullable */ EquipmentSlotProvider fabric_getEquipmentSlotProvider();
@@ -38,5 +40,4 @@ public interface ItemExtensions {
 	void fabric_setNoDamageHitSound(SoundPlayer soundEvent);
 	@Nullable SoundPlayer fabric_getSweepingHitSound();
 	void fabric_setSweepingHitSound(SoundPlayer soundEvent);
-	
 }
