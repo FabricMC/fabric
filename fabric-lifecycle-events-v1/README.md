@@ -132,7 +132,7 @@ public interface EndDataPackReload {
 
 <details><summary>Events related to objects on a logical client.</summary>
 
-**Note: These events are only available on a client. Try to access these events on a dedicated server will cause the game to crash.**
+**Note: These events are only available on a client. Trying to access these events on a dedicated server will cause the game to crash.**
 
 ## `ClientLifecycleEvents`
 
