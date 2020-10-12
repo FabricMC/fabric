@@ -20,7 +20,6 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Rarity;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
@@ -34,7 +33,7 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  */
 public class FabricItemSettings extends Item.Settings {
 
-	public enum Sound {
+	public enum AttackSound {
 		STRONG,
 		WEAK,
 		CRITIAL,
@@ -43,7 +42,7 @@ public class FabricItemSettings extends Item.Settings {
 		SWEEPING,
 	}
 
-	public FabricItemSettings soundEvent(Sound sound,SoundPlayer soundEvent) {
+	public FabricItemSettings soundEvent(AttackSound sound,SoundPlayer soundEvent) {
 		switch (sound) {
 			case CRITIAL:
 				FabricItemInternals.computeExtraData(this).criticalHitSound(soundEvent);

@@ -24,22 +24,23 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings.Sound;
+import net.fabricmc.fabric.api.item.v1.*;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings.AttackSound;
 
 public class FabricItemSettingsTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Registers an item with a custom equipment slot.
+		SoundPlayer sound = (world,player)->world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_GENERIC_EXPLODE, player.getSoundCategory(), 1.0F, 1.0F);
 		Item testItem = new Item(new FabricItemSettings()
 			.group(ItemGroup.MISC)
 			.equipmentSlot(stack -> EquipmentSlot.CHEST)
-			.soundEvent(Sound.CRITIAL, SoundEvents.ENTITY_GENERIC_EXPLODE)
-			.soundEvent(Sound.KNOCKBACK, SoundEvents.ENTITY_GENERIC_EXPLODE)
-			.soundEvent(Sound.NO_DAMAGE, SoundEvents.ENTITY_GENERIC_EXPLODE)
-			.soundEvent(Sound.STRONG, SoundEvents.ENTITY_GENERIC_EXPLODE)
-			.soundEvent(Sound.SWEEPING, SoundEvents.ENTITY_GENERIC_EXPLODE)
-			.soundEvent(Sound.WEAK, SoundEvents.ENTITY_GENERIC_EXPLODE)
+			.soundEvent(AttackSound.CRITIAL, sound)
+			.soundEvent(AttackSound.KNOCKBACK, sound)
+			.soundEvent(AttackSound.NO_DAMAGE, sound)
+			.soundEvent(AttackSound.STRONG, sound)
+			.soundEvent(AttackSound.SWEEPING, sound)
+			.soundEvent(AttackSound.WEAK, sound)
 			);
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
 	}
