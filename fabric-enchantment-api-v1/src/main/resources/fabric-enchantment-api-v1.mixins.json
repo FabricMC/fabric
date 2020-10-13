@@ -5,7 +5,8 @@
   "mixins": [
     "EnchantmentHelperMixin",
     "EnchantedBookItemMixin",
-    // "AnvilScreenHandlerMixin"
+    "AnvilScreenHandlerMixin",
+    // "DisabledAnvilScreenHandlerMixin"
   ],
   "client": [
   ],

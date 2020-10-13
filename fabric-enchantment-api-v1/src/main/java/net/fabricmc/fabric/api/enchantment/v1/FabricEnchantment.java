@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.enchantment.v1;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentTarget;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemGroup;
@@ -42,7 +43,7 @@ import net.minecraft.item.ItemStack;
  */
 public abstract class FabricEnchantment extends Enchantment {
 	protected FabricEnchantment(Rarity weight, EquipmentSlot...slotTypes) {
-		super(weight, null, slotTypes);
+		super(weight, EnchantmentTarget.ARMOR /*This can be anything, it just can't be null otherwise it'll cause a null pointer exception. It has no bearing on functionality*/, slotTypes);
 	}
 
 	// Making this method override and abstract means it has to be overwritten by any children.

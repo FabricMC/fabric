@@ -18,67 +18,92 @@ package net.fabricmc.fabric.mixin.enchantment;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
+import net.minecraft.enchantment.EnchantmentTarget;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import net.fabricmc.fabric.api.enchantment.v1.EnchantmentEvents;
 import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment;
+import net.fabricmc.fabric.api.util.TriState;
 
 /**
  * A mixin to handle the verification of FabricEnchantments with custom targets.
  *
  * @author Vaerian (vaeriann@gmail.com or @Vaerian on GitHub).
  *
- * Please contact the author, Vaerian, at the email or GitHub profile listed above
+ * <p>Please contact the author, Vaerian, at the email or GitHub profile listed above
  * with any questions surrounding implementation choices, functionality, or updating
- * to newer versions of the game.
+ * to newer versions of the game.</p>
  */
 @Mixin(EnchantmentHelper.class)
 public class EnchantmentHelperMixin {
-	// This target inside of the nested while loops but right before the call to acceptable item in the jump.
-	// This is convenient because it co-opts vanilla's normal registry iterator rather than us iterating over the registry a second time.
-	@Inject(method = "getPossibleEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentTarget;isAcceptableItem(Lnet/minecraft/item/Item;)Z", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-	private static void getPossibleEntries(int power, ItemStack stack, boolean treasureAllowed, CallbackInfoReturnable<List<EnchantmentLevelEntry>> callback, List<EnchantmentLevelEntry> list, Item item, boolean bl, Iterator<Enchantment> var6, Enchantment enchantment) {
-		// If the enchantment type is null (ie. it would cause a null pointer exception normally) and its null because its a FabricEnchantment
-		while (enchantment.type == null && enchantment instanceof FabricEnchantment) {
-			// Then check if the item in question is a book or a valid target
-			if (bl || ((FabricEnchantment) enchantment).isEnchantableItem(stack)) {
-				// If it is then add all of the enchantment levels just like vanilla does
-				// This for loop is basically copied from vanilla, it copies exactly the logic it uses to add the enchantment entries
-				for (int i = enchantment.getMaxLevel(); i > enchantment.getMinLevel() - 1; i--) {
-					if (power >= enchantment.getMinPower(i) && power <= enchantment.getMaxPower(i)) {
-						list.add(new EnchantmentLevelEntry(enchantment, i));
-						break;
-					}
-				}
-			}
+	@Unique
+	private static Enchantment currentEnchantment;
 
-			// Because the enchantment type is null, and we already handled adding the FabricEnchantment we need to skip to the next vanilla enchant
-			// If the iterator has another value this is easy
-			if (var6.hasNext()) {
-				// We just set the enchantment to the next iterator value
-				// This will make the while false and it'll go back to vanilla functionality with a vanilla enchantment with a valid enchantment target
-				enchantment = var6.next();
-			// If the iterator doesn't have another value this is more tricky
-			// Simply ending the mixin without making the enchantment value have a valid target means that a null pointer will be thrown
-			} else {
-				// So, because we know the iterator is empty we know we can safely return the enchantment entry list without any unintended side effects
-				callback.setReturnValue(list);
+	// A simple read/write lock to prevent a data race by ensure that the
+	// value captured from the inject is not modified by the time it gets to the redirect mixin.
+	@Unique
+	private static Lock lock = new ReentrantLock();
+
+	@Inject(method = "getPossibleEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentTarget;isAcceptableItem(Lnet/minecraft/item/Item;)Z", shift = At.Shift.BEFORE), locals = LocalCapture.CAPTURE_FAILHARD)
+	private static void getEnchantment(int power, ItemStack stack, boolean treasureAllowed, CallbackInfoReturnable<List<EnchantmentLevelEntry>> callback, List<Enchantment> enchantmentList, Item item, boolean isBook, Iterator<Enchantment> enchantmentIterator, Enchantment enchantment) {
+		// Start a loop
+		while (true) {
+			// Check if you have the lock, if you don't then continue the loop
+			if (lock.tryLock()) {
+				// If you have the lock set the enchantment
+				currentEnchantment = enchantment;
+				// Break out of the check loop because we know we have the lock now
 				break;
 			}
 		}
+	}
 
-		// If this point is reached it means that the enchantment value has been set to a vanilla enchantment from the iterator
-		// and that vanilla verification functionality will resume. This also means that vanilla enchantments that are registered
-		// which have a null value for their target will successfully throw a null pointer exception as expected.
+	@Redirect(method = "getPossibleEntries", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentTarget;isAcceptableItem(Lnet/minecraft/item/Item;)Z"))
+	private static boolean isAcceptableItem(EnchantmentTarget enchantmentTarget, Item item, int power, ItemStack stack, boolean treasureAllowed) {
+		// The only way this code is reached is if we know we have the lock because otherwise
+		// the above mixin will block until we get the lock.
+		// Do all of the reading logic we need to do and unlock the lock before each possible return.
+		// Ask the enchantment event if it would like to override the logic.
+		TriState callback = EnchantmentEvents.ACCEPT_ENCHANTMENT.invoker().shouldAccept(currentEnchantment, stack);
+
+		// If it simply delegates to default
+		if (callback == TriState.DEFAULT) {
+			// Make a variable for what the result will be
+			boolean val;
+
+			// If the enchantment is a fabric enchantment call our custom method
+			if (currentEnchantment instanceof FabricEnchantment) {
+				val = ((FabricEnchantment) currentEnchantment).isEnchantableItem(stack);
+			// If the enchantment is a vanilla enchantment call the vanilla method
+			} else {
+				val = currentEnchantment.type.isAcceptableItem(item);
+			}
+
+			// Unlock the lock because we're done using the enchantment value
+			lock.unlock();
+			// Return the value from the default enchantment logic
+			return val;
+		// Otherwise, if the event does want to override the logic
+		} else {
+			// Unlock the lock
+			lock.unlock();
+			// And simply return the value from the callback
+			return callback.get();
+		}
 	}
 }

@@ -17,9 +17,13 @@
 package net.fabricmc.fabric.test.enchantment;
 
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.Enchantments;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.fabric.api.enchantment.v1.EnchantmentEvents;
+import net.fabricmc.fabric.api.util.TriState;
 import net.fabricmc.api.ModInitializer;
 
 public class EnchantmentTestMod implements ModInitializer {
@@ -30,5 +34,13 @@ public class EnchantmentTestMod implements ModInitializer {
 	// so make sure whenever you are testing your enchantments you're in survival.
 
 	@Override
-	public void onInitialize() { }
+	public void onInitialize() {
+		EnchantmentEvents.registerAll((enchantment, stack) -> {
+			if (enchantment == Enchantments.FLAME && stack.getItem() == Items.DIAMOND_SHOVEL) {
+				return TriState.TRUE;
+			} else {
+				return TriState.DEFAULT;
+			}
+		});
+	}
 }
