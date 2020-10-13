@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.enchantment;
 
+import net.minecraft.util.registry.Registry;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,9 +31,10 @@ import net.minecraft.item.EnchantedBookItem;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment;
+
+import java.util.Iterator;
 
 /**
  * A mixin to add enchanted books for custom enchantments to the right item groups.
@@ -49,26 +52,38 @@ public class EnchantedBookItemMixin {
 		throw new AssertionError("Mixin shadow failed: net.fabricmc.fabric.mixin.enchantment.EnchantedBookItemMixin#forEnchantment");
 	}
 
-	// This target mixes in right at the end of the append stacks method
-	@Inject(method = "appendStacks", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
+	// This target mixes in right inside of the enchantment iterator
+	@Inject(method = "appendStacks", at = @At(value = "JUMP", opcode = Opcodes.IFEQ, ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks, CallbackInfo callback, Iterator<Enchantment> var3, Enchantment enchantment) {
+		System.out.println(group);
+		// When the iterator first encounters a FabricEnchantment it'll start this loop until it reaches a normal enchantment
+		while (enchantment instanceof FabricEnchantment) {
+			// If the FabricEnchantment indicates it should be added to the group
+			if (((FabricEnchantment) enchantment).isAcceptableItemGroup(group)) {
+				System.out.println("Acceptable");
+				// Add it to the group
+				stacks.add(forEnchantment(new EnchantmentLevelEntry(enchantment, enchantment.getMaxLevel())));
+			}
+			// If the iterator has another enchantment in it
+			if (var3.hasNext()) {
+				// Then set the enchantment value to the next enchantment
+				enchantment = var3.next();
+				// At this point if it's a fabric enchantment this loop will continue
+				// If it's a normal enchantment it'll go back to vanilla functionality
+			// Otherwise if there's no other enchantments in the iterator
+			} else {
+				// We can safely cancel the rest of the method because everything has been handled
+				callback.cancel();
+				break;
+			}
+		}
+	}
+
+	@Inject(method = "appendStacks", at = @At("TAIL"))
 	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks, CallbackInfo callback) {
-		// This mixin iterates over the enchantment registry a second time, which does increase
-		// initialization time but because this method is only called once in the initialization
-		// processs, and alternative mixins would be more invasive, this is how it is.
 		for (Enchantment enchantment : Registry.ENCHANTMENT) {
-			// If the enchantment is a FabricEnchantment
-			if (enchantment instanceof FabricEnchantment) {
-				// If the item group is search, add the enchantment regardless of what it is
-				if (group == ItemGroup.SEARCH) {
-					// Add every level of enchanted book to the search tab (just like vanilla)
-					for (int i = enchantment.getMinLevel(); i <= enchantment.getMaxLevel(); i++) {
-						stacks.add(forEnchantment(new EnchantmentLevelEntry(enchantment, i)));
-					}
-				// Otherwise if the item group is an acceptable group for this enchantment
-				} else if (((FabricEnchantment) enchantment).isAcceptableItemGroup(group)) {
-					// Add the maximum level enchanted book for this enchantment to the item group (just like vanilla)
-					stacks.add(forEnchantment(new EnchantmentLevelEntry(enchantment, enchantment.getMaxLevel())));
-				}
+			if (enchantment instanceof FabricEnchantment && ((FabricEnchantment) enchantment).isAcceptableItemGroup(group)) {
+				stacks.add(forEnchantment(new EnchantmentLevelEntry(enchantment, enchantment.getMaxLevel())));
 			}
 		}
 	}

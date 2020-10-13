@@ -35,6 +35,6 @@ public class DirtyEnchantment extends FabricEnchantment {
 
 	@Override
 	public boolean isAcceptableItemGroup(ItemGroup group) {
-		return group == ItemGroup.COMBAT;
+		return group == ItemGroup.TRANSPORTATION;
 	}
 }
