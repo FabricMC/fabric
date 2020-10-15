@@ -36,24 +36,12 @@ public class MixinAbstractFurnaceBlockEntity {
 		FuelRegistryImpl.INSTANCE.apply(info.getReturnValue());
 	}
 
-	@Redirect(
-			method = "canUseAsFuel",
-			at = @At(
-				value = "INVOKE",
-				target = "Lnet/minecraft/block/entity/AbstractFurnaceBlockEntity;createFuelTimeMap()Ljava/util/Map;"
-			)
-	)
+	@Redirect(method = "canUseAsFuel", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/AbstractFurnaceBlockEntity;createFuelTimeMap()Ljava/util/Map;"))
 	private static Map<Item, Integer> canUseAsFuelRedirect() {
 		return FuelRegistryImpl.INSTANCE.getFuelTimes();
 	}
 
-	@Redirect(
-			method = "getFuelTime",
-			at = @At(
-				value = "INVOKE",
-				target = "Lnet/minecraft/block/entity/AbstractFurnaceBlockEntity;createFuelTimeMap()Ljava/util/Map;"
-			)
-	)
+	@Redirect(method = "getFuelTime", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/AbstractFurnaceBlockEntity;createFuelTimeMap()Ljava/util/Map;"))
 	private Map<Item, Integer> getFuelTimeRedirect() {
 		return FuelRegistryImpl.INSTANCE.getFuelTimes();
 	}
