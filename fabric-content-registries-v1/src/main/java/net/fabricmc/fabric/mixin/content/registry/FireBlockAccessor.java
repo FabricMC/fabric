@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.content.registry;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.FireBlock;
@@ -30,4 +31,9 @@ public interface FireBlockAccessor {
 
 	@Accessor
 	Object2IntMap<Block> getSpreadChances();
+
+	@Invoker("registerFlammableBlock")
+	static void registerFlammableBlock(Block block, int burnChance, int spreadChance) {
+		throw new AssertionError();
+	}
 }

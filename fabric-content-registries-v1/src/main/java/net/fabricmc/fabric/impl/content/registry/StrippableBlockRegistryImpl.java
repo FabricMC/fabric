@@ -25,9 +25,21 @@ public class StrippableBlockRegistryImpl extends ContentRegistryImpl<Block, Bloc
 	public static final ContentRegistry<Block, Block> INSTANCE = new StrippableBlockRegistryImpl();
 
 	private StrippableBlockRegistryImpl() {
-		super("strippable_block_registry",
-				AxeItemAccessor.getStrippedBlocks()::put, // Putter
-				AxeItemAccessor.getStrippedBlocks()::remove, // Remover
-				AxeItemAccessor.getStrippedBlocks()::get); // Getter
+		super("strippable_block_registry");
+	}
+
+	@Override
+	protected void remover(Block key) {
+		AxeItemAccessor.getStrippedBlocks().remove(key);
+	}
+
+	@Override
+	protected void putter(Block key, Block value) {
+		AxeItemAccessor.getStrippedBlocks().put(key, value);
+	}
+
+	@Override
+	protected Block getter(Block key) {
+		return AxeItemAccessor.getStrippedBlocks().get(key);
 	}
 }

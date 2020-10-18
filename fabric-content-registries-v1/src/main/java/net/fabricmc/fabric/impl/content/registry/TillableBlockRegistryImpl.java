@@ -26,9 +26,21 @@ public class TillableBlockRegistryImpl extends ContentRegistryImpl<Block, BlockS
 	public static final ContentRegistry<Block, BlockState> INSTANCE = new TillableBlockRegistryImpl();
 
 	private TillableBlockRegistryImpl() {
-		super("tillable_block_registry",
-				HoeItemAccessor.getTilledBlocks()::put, // Putter
-				HoeItemAccessor.getTilledBlocks()::remove, // Remover
-				HoeItemAccessor.getTilledBlocks()::get); // Getter
+		super("tillable_block_registry");
+	}
+
+	@Override
+	protected void remover(Block key) {
+		HoeItemAccessor.getTilledBlocks().remove(key);
+	}
+
+	@Override
+	protected void putter(Block key, BlockState value) {
+		HoeItemAccessor.getTilledBlocks().put(key, value);
+	}
+
+	@Override
+	protected BlockState getter(Block key) {
+		return HoeItemAccessor.getTilledBlocks().get(key);
 	}
 }

@@ -27,8 +27,8 @@ import net.minecraft.item.ShovelItem;
 
 @Mixin(ShovelItem.class)
 public interface ShovelItemAccessor {
-	@Accessor(value = "PATH_BLOCKSTATES")
-	static Map<Block, BlockState> getPathBlockstates() {
+	@Accessor(value = "PATH_STATES")
+	static Map<Block, BlockState> getPathStates() {
 		throw new AssertionError();
 	}
 }

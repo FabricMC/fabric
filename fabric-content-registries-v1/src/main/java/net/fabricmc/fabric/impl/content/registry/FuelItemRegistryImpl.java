@@ -34,16 +34,29 @@ public class FuelItemRegistryImpl extends ContentRegistryImpl<Item, Integer> imp
 	public static final ItemContentRegistry<Integer> INSTANCE = new FuelItemRegistryImpl();
 
 	private FuelItemRegistryImpl() {
-		super("fuel_item_registry",
-				FUELS::put, // Putter
-				fuel -> FUELS.put(fuel, 0), // Remover
-				item -> AbstractFurnaceBlockEntity.createFuelTimeMap().get(item)); // Getter
+		super("fuel_item_registry"); // Getter
 	}
 
 	@Override
 	public void add(Tag<Item> tag, Integer value) {
-		Preconditions.checkArgument(value >= 0 && value <= Short.MAX_VALUE, "Fuel value " + value + " for tag " + tag.getId() + " is out of range. Must be between 0 and 32767 (inclusive)");
+		// TODO: identify tag?
+		Preconditions.checkArgument(value >= 0 && value <= Short.MAX_VALUE, "Fuel value " + value + " for tag is out of range. Must be between 0 and 32767 (inclusive)");
 		super.add(tag, value);
+	}
+
+	@Override
+	protected void remover(Item key) {
+		FUELS.remove(key, 0);
+	}
+
+	@Override
+	protected void putter(Item key, Integer value) {
+		FUELS.put(key, value);
+	}
+
+	@Override
+	protected Integer getter(Item key) {
+		return AbstractFurnaceBlockEntity.createFuelTimeMap().get(key);
 	}
 
 	@Override

@@ -26,9 +26,21 @@ public class FlattenableBlockRegistryImpl extends ContentRegistryImpl<Block, Blo
 	public static final ContentRegistry<Block, BlockState> INSTANCE = new FlattenableBlockRegistryImpl();
 
 	private FlattenableBlockRegistryImpl() {
-		super("flattenable_block_registry",
-				ShovelItemAccessor.getPathBlockstates()::put, // Putter
-				ShovelItemAccessor.getPathBlockstates()::remove, // Remover
-				ShovelItemAccessor.getPathBlockstates()::get); // Getter
+		super("flattenable_block_registry");
+	}
+
+	@Override
+	protected void remover(Block key) {
+		ShovelItemAccessor.getPathStates().remove(key);
+	}
+
+	@Override
+	protected void putter(Block key, BlockState value) {
+		ShovelItemAccessor.getPathStates().put(key, value);
+	}
+
+	@Override
+	protected BlockState getter(Block key) {
+		return ShovelItemAccessor.getPathStates().get(key);
 	}
 }

@@ -30,11 +30,24 @@ public class FlammableBlockRegistryImpl extends ContentRegistryImpl<Block, Flamm
 	public static final FlammableBlockRegistry FIRE_INSTANCE = new FlammableBlockRegistryImpl(Blocks.FIRE, "fire");
 
 	public FlammableBlockRegistryImpl(Block fireBlock, String prefix) {
-		super(prefix + "_flammable_block_registry",
-				(block, entry) -> ((FireBlock) fireBlock).registerFlammableBlock(block, entry.getBurnChance(), entry.getSpreadChance()), // Putter
-				block -> ((FireBlock) fireBlock).registerFlammableBlock(block, 0, 0), // Remover
-				block -> new Entry(((FireBlockAccessor) fireBlock).getBurnChances().getInt(block), ((FireBlockAccessor) fireBlock).getSpreadChances().getInt(block))); // Getter
+		super(prefix + "_flammable_block_registry");
 
 		Preconditions.checkArgument(fireBlock instanceof FireBlock, "Block " + Registry.BLOCK.getId(fireBlock) + " is not a FireBlock and a FlammableBlockRegistry cannot be created for it");
+	}
+
+	@Override
+	protected void remover(Block key) {
+		FireBlockAccessor.registerFlammableBlock(key, 0, 0);
+	}
+
+	@Override
+	protected void putter(Block key, Entry value) {
+		FireBlockAccessor.registerFlammableBlock(key, value.getBurnChance(), value.getSpreadChance());
+	}
+
+	@Override
+	protected Entry getter(Block key) {
+		FireBlockAccessor fireBlockAccessor = (FireBlockAccessor) key;
+		return new Entry(fireBlockAccessor.getBurnChances().getInt(key), fireBlockAccessor.getSpreadChances().getInt(key));
 	}
 }

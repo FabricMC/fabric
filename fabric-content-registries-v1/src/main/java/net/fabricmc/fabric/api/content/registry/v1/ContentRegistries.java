@@ -34,13 +34,18 @@ public final class ContentRegistries {
 	}
 
 	/**
-	 * Registry of Items to values from 0.0 to 1.0, defining the chance of a given item
-	 * increasing the Composter block's level.
+	 * A registry of items that may be composed by a {@link net.minecraft.block.ComposterBlock composter}.
+	 *
+	 * <p>When registering an item that is considered compostable, the registry entry specifies a value between {@code 0.0F} and {@code 1.0F}
+	 * that determines the chance of increasing a composter's {@link net.minecraft.state.property.Properties#LEVEL_8 level}.
 	 */
 	public static final ItemContentRegistry<Float> COMPOSTABLE_ITEM = CompostableItemRegistryImpl.INSTANCE;
 
 	/**
 	 * Registry of Blocks that can be set on fire by {@link net.minecraft.block.Blocks#FIRE}.
+	 *
+	 * <p>Note: blocks wanting to be a base block for {@link net.minecraft.block.Blocks#SOUL_FIRE} should use the
+	 * {@link net.minecraft.tag.BlockTags#SOUL_FIRE_BASE_BLOCKS} tag.
 	 */
 	public static final FlammableBlockRegistry FLAMMABLE_FROM_FIRE = FlammableBlockRegistryImpl.FIRE_INSTANCE;
 
@@ -56,7 +61,8 @@ public final class ContentRegistries {
 
 	/**
 	 * Registry of Blocks that when stripped turn into a specific Block.
-	 * Note: Both KEY and VALUE must have the {@link PillarBlock#AXIS} property!
+	 *
+	 * <p>Note: Both KEY and VALUE must have the {@link PillarBlock#AXIS} property!
 	 */
 	public static final ContentRegistry<Block, Block> STRIPPABLE_BLOCK = StrippableBlockRegistryImpl.INSTANCE;
 
