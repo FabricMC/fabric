@@ -24,7 +24,7 @@ class Globals {
 	static def loaderVersion = "0.9.2+build.206"
 }
 
-version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? ("build." + ENV.GITHUB_RUN_NUMBER) : "local") + "-" + getBranch()
+version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -327,3 +327,19 @@ task github(dependsOn: remapMavenJar) {
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
 	}
 }
+
+// A task to ensure that the version being released has not already been released.
+task checkVersion {
+	doFirst {
+		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text
+		def metadata = new XmlSlurper().parseText(xml)
+		def versions = metadata.versioning.versions.version*.text();
+		if (versions.contains(version)) {
+			throw new RuntimeException("${version} has already been released!")
+		}
+	}
+}
+
+github.mustRunAfter checkVersion
+publish.mustRunAfter checkVersion
+project.tasks.curseforge.mustRunAfter checkVersion
