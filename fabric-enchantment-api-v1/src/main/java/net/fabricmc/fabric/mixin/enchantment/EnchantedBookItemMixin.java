@@ -16,15 +16,17 @@
 
 package net.fabricmc.fabric.mixin.enchantment;
 
-import net.minecraft.util.registry.Registry;
-import org.objectweb.asm.Opcodes;
+import java.util.Iterator;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import org.objectweb.asm.Opcodes;
 
+import net.minecraft.util.registry.Registry;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentLevelEntry;
 import net.minecraft.item.EnchantedBookItem;
@@ -33,8 +35,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.collection.DefaultedList;
 
 import net.fabricmc.fabric.api.enchantment.v1.FabricEnchantment;
-
-import java.util.Iterator;
 
 /**
  * A mixin to add enchanted books for custom enchantments to the right item groups.
@@ -55,15 +55,14 @@ public class EnchantedBookItemMixin {
 	// This target mixes in right inside of the enchantment iterator
 	@Inject(method = "appendStacks", at = @At(value = "JUMP", opcode = Opcodes.IFEQ, ordinal = 3), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
 	public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks, CallbackInfo callback, Iterator<Enchantment> var3, Enchantment enchantment) {
-		System.out.println(group);
 		// When the iterator first encounters a FabricEnchantment it'll start this loop until it reaches a normal enchantment
 		while (enchantment instanceof FabricEnchantment) {
 			// If the FabricEnchantment indicates it should be added to the group
 			if (((FabricEnchantment) enchantment).isAcceptableItemGroup(group)) {
-				System.out.println("Acceptable");
 				// Add it to the group
 				stacks.add(forEnchantment(new EnchantmentLevelEntry(enchantment, enchantment.getMaxLevel())));
 			}
+
 			// If the iterator has another enchantment in it
 			if (var3.hasNext()) {
 				// Then set the enchantment value to the next enchantment
