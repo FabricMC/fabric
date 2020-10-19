@@ -136,10 +136,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> entityFactory(EntityType.EntityFactory<T> factory) {
+	public <N extends T> FabricEntityTypeBuilder<N> entityFactory(EntityType.EntityFactory<N> factory) {
 		Objects.requireNonNull(factory, "Entity Factory cannot be null");
-		this.factory = factory;
-		return this;
+		this.factory = (EntityType.EntityFactory<T>) factory;
+		return (FabricEntityTypeBuilder<N>) this;
 	}
 
 	/**
@@ -258,13 +258,13 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 	 *
 	 * @return a new {@link EntityType}
 	 */
-	public <N extends T> EntityType<N> build() {
+	public EntityType<T> build() {
 		if (this.saveable) {
 			// SNIP! Modded datafixers are not supported anyway.
 			// TODO: Flesh out once modded datafixers exist.
 		}
 
-		EntityType<N> type = new FabricEntityType<>((EntityType.EntityFactory<N>) this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates);
+		EntityType<T> type = new FabricEntityType<>(this.factory, this.spawnGroup, this.saveable, this.summonable, this.fireImmune, this.spawnableFarFromPlayer, this.specificSpawnBlocks, dimensions, trackRange, trackedUpdateRate, forceTrackedVelocityUpdates);
 
 		return type;
 	}
@@ -289,9 +289,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Living<T> entityFactory(EntityType.EntityFactory<T> factory) {
+		public <N extends T> FabricEntityTypeBuilder.Living<N> entityFactory(EntityType.EntityFactory<N> factory) {
 			super.entityFactory(factory);
-			return this;
+			return (Living<N>) this;
 		}
 
 		@Override
@@ -397,8 +397,8 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public <N extends T> EntityType<N> build() {
-			final EntityType<N> type = super.build();
+		public EntityType<T> build() {
+			final EntityType<T> type = super.build();
 
 			if (this.defaultAttributeBuilder != null) {
 				FabricDefaultAttributeRegistry.register(type, this.defaultAttributeBuilder.get());
@@ -429,9 +429,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> entityFactory(EntityType.EntityFactory<T> factory) {
+		public <N extends T> FabricEntityTypeBuilder.Mob<N> entityFactory(EntityType.EntityFactory<N> factory) {
 			super.entityFactory(factory);
-			return this;
+			return (Mob<N>) this;
 		}
 
 		@Override
@@ -535,11 +535,11 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public <N extends T> EntityType<N> build() {
-			EntityType<N> type = super.build();
+		public EntityType<T> build() {
+			EntityType<T> type = super.build();
 
 			if (this.spawnPredicate != null) {
-				SpawnRestrictionAccessor.callRegister((EntityType) type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
+				SpawnRestrictionAccessor.callRegister(type, this.restrictionLocation, this.restrictionHeightmap, this.spawnPredicate);
 			}
 
 			return type;

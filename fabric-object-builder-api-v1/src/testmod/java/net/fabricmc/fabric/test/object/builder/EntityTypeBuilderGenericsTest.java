@@ -33,7 +33,6 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 // This test is intentionally not an entrypoint to verify the generics of the entity type builder propagate properly
 final class EntityTypeBuilderGenericsTest {
 	static EntityType<Entity> ENTITY_1 = FabricEntityTypeBuilder.create().build();
-	static EntityType<LivingEntity> LIVING_ENTITY_USING_NORMAL_BUILDER = FabricEntityTypeBuilder.create().build();
 	static EntityType<LivingEntity> LIVING_ENTITY_1 = FabricEntityTypeBuilder.createLiving().build();
 	static EntityType<TestEntity> TEST_ENTITY_1 = FabricEntityTypeBuilder.createLiving()
 			.entityFactory(TestEntity::new)
@@ -43,12 +42,15 @@ final class EntityTypeBuilderGenericsTest {
 			.entityFactory(TestEntity::new)
 			.spawnGroup(SpawnGroup.CREATURE)
 			.build();
-	// Not typically intended but it works
-	static EntityType<? extends MobEntity> MOB_TEST = FabricEntityTypeBuilder.createMob()
+	static EntityType<TestMob> OLD_MOB = FabricEntityTypeBuilder.<TestMob>createMob()
 			.disableSaving()
+			.entityFactory(TestMob::new)
+			.build();
+	static EntityType<TestMob> MOB_TEST = FabricEntityTypeBuilder.createMob()
+			.disableSaving()
+			.entityFactory(TestMob::new)
 			.build();
 
-	@SuppressWarnings("EntityConstructor")
 	private static class TestEntity extends LivingEntity {
 		protected TestEntity(EntityType<? extends LivingEntity> entityType, World world) {
 			super(entityType, world);
@@ -71,6 +73,12 @@ final class EntityTypeBuilderGenericsTest {
 		@Override
 		public Arm getMainArm() {
 			return Arm.RIGHT;
+		}
+	}
+
+	private static class TestMob extends MobEntity {
+		protected TestMob(EntityType<? extends MobEntity> entityType, World world) {
+			super(entityType, world);
 		}
 	}
 }
