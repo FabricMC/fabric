@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.sync;
+package net.fabricmc.fabric.api.registry.v1;
 
-import java.util.Set;
+import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+public final class RegistryAttributes {
+	/**
+	 * A registry attribute that states that a registry is modded.
+	 */
+	public static final Identifier MODDED = new Identifier("fabric-registry-api-v1", "modded");
 
-@Deprecated
-public interface FabricRegistry extends RegistryAttributeHolder {
-	void build(Set<RegistryAttribute> attributes);
+	private RegistryAttributes() {
+	}
 }

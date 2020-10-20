@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.event.registry;
 
 import java.util.EnumSet;
+import java.util.Objects;
 
 import com.mojang.serialization.Lifecycle;
 
@@ -27,7 +28,7 @@ import net.minecraft.util.registry.SimpleRegistry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
-import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
+import net.fabricmc.fabric.mixin.registry.RegistryAccessor;
 
 /**
  * Used to create custom registries, with specified registry attributes.
@@ -42,7 +43,9 @@ import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
  *
  * @param <T> The type stored in the Registry
  * @param <R> The registry type
+ * @deprecated Please migrate to {@link net.fabricmc.fabric.api.registry.v1.RegistryBuilder}.
  */
+@Deprecated
 public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	/**
 	 * Create a new {@link FabricRegistryBuilder}, the registry has the {@link RegistryAttribute#MODDED} attribute by default.
@@ -94,6 +97,7 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @return the instance of {@link FabricRegistryBuilder}
 	 */
 	public FabricRegistryBuilder<T, R> attribute(RegistryAttribute attribute) {
+		Objects.requireNonNull(attribute, "Attribute cannot be null");
 		attributes.add(attribute);
 		return this;
 	}
@@ -106,8 +110,8 @@ public final class FabricRegistryBuilder<T, R extends MutableRegistry<T>> {
 		FabricRegistry fabricRegistry = (FabricRegistry) registry;
 		fabricRegistry.build(attributes);
 
-		//noinspection unchecked
-		AccessorRegistry.getROOT().add(((AccessorRegistry) registry).getRegistryKey(), registry, Lifecycle.stable());
+		//noinspection unchecked,rawtypes
+		RegistryAccessor.getRootRegistry().add((RegistryKey) registry.getKey(), registry, Lifecycle.stable());
 
 		return registry;
 	}

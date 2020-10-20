@@ -46,7 +46,7 @@ import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(LevelStorage.Session.class)
-public class MixinLevelStorageSession {
+public class LevelStorageSessionMixin {
 	@Unique
 	private static final int FABRIC_ID_REGISTRY_BACKUPS = 3;
 	@Unique

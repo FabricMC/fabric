@@ -3,16 +3,14 @@
   "package": "net.fabricmc.fabric.mixin.registry.sync",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AccessorRegistry",
-    "MixinBootstrap",
-    "MixinDynamicRegistryManager",
-    "MixinIdList",
-    "MixinIdRegistry",
-    "MixinPlayerManager",
-    "MixinLevelStorageSession",
-    "MixinRegistry",
-    "MixinSimpleRegistry",
-    "DynamicRegistryManagerMixin"
+    "BootstrapMixin",
+    "DynamicRegistryManagerMixin",
+    "IdListMixin",
+    "LevelStorageSessionMixin",
+    "PlayerManagerMixin",
+    "RegistryAccessor",
+    "RegistryMixin",
+    "SimpleRegistryMixin"
   ],
   "client": [
     "client.MixinBlockColorMap",

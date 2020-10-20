@@ -29,7 +29,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 
 @Mixin(PlayerManager.class)
-public abstract class MixinPlayerManager {
+public abstract class PlayerManagerMixin {
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	public void onPlayerConnect(ClientConnection lvt1, ServerPlayerEntity lvt2, CallbackInfo info) {
 		// TODO: If integrated and local, don't send the packet (it's ignored)

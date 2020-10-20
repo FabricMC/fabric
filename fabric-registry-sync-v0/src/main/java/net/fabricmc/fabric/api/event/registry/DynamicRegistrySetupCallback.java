@@ -36,11 +36,17 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * });
  * }
  * </pre>
+ * @deprecated Please migrate to {@link net.fabricmc.fabric.api.registry.v1.DynamicRegistryEvents#SETUP}
  */
+@Deprecated
 @FunctionalInterface
 public interface DynamicRegistrySetupCallback {
 	void onRegistrySetup(DynamicRegistryManager registryManager);
 
+	/**
+	 * @deprecated Please migrate to {@link net.fabricmc.fabric.api.registry.v1.DynamicRegistryEvents#SETUP}
+	 */
+	@Deprecated
 	Event<DynamicRegistrySetupCallback> EVENT = EventFactory.createArrayBacked(
 			DynamicRegistrySetupCallback.class,
 			callbacks -> registryManager -> {

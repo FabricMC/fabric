@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.sync;
+package net.fabricmc.fabric.mixin.registry.sync;
 
-import java.util.Set;
+import com.mojang.serialization.Lifecycle;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.minecraft.util.registry.Registry;
 
-@Deprecated
-public interface FabricRegistry extends RegistryAttributeHolder {
-	void build(Set<RegistryAttribute> attributes);
+@Mixin(Registry.class)
+public interface RegistryAccessor<T> {
+	@Invoker
+	Lifecycle callGetEntryLifecycle(T object);
 }

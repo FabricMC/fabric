@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.registry.sync;
+package net.fabricmc.fabric.api.registry.v1;
 
-import java.util.Set;
+import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+public final class RegistryEvents {
+	@FunctionalInterface
+	public interface EntryAdded<T> {
+		void onEntryAdded(int rawId, Identifier id, T object);
+	}
 
-@Deprecated
-public interface FabricRegistry extends RegistryAttributeHolder {
-	void build(Set<RegistryAttribute> attributes);
+	@FunctionalInterface
+	public interface EntryRemoved<T> {
+		void onEntryRemoved(int rawId, Identifier id, T object);
+	}
+
+	private RegistryEvents() {
+	}
 }

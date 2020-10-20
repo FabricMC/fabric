@@ -31,7 +31,7 @@ import net.minecraft.util.collection.IdList;
 import net.fabricmc.fabric.impl.registry.sync.RemovableIdList;
 
 @Mixin(IdList.class)
-public class MixinIdList<T> implements RemovableIdList<T> {
+public class IdListMixin<T> implements RemovableIdList<T> {
 	@Shadow
 	private int nextId;
 	@Shadow

@@ -16,17 +16,28 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
+import java.util.Objects;
+
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
+/**
+ * @deprecated Please migrate to {@link RegistryExtensions#getEntryRemovedEvent()}
+ */
+@Deprecated
 @FunctionalInterface
 public interface RegistryEntryRemovedCallback<T> {
 	void onEntryRemoved(int rawId, Identifier id, T object);
 
+	/**
+	 * @deprecated Please migrate to {@link RegistryExtensions#getEntryRemovedEvent()}
+	 */
 	static <T> Event<RegistryEntryRemovedCallback<T>> event(Registry<T> registry) {
+		Objects.requireNonNull(registry, "Registry cannot be null");
 		return ListenableRegistry.get(registry).fabric_getRemoveObjectEvent();
 	}
 }

@@ -27,7 +27,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
+import net.fabricmc.fabric.mixin.registry.sync.RegistryAccessor;
 
 /**
  * Handles synchronising changes to the built-in registries into the dynamic registry manager's template manager,
@@ -51,7 +51,7 @@ public class DynamicRegistrySync {
 	 * are also added to the template for dynamic registry managers.
 	 */
 	private static <T> void setupSync(Registry<T> source, DynamicRegistryManager.Impl template) {
-		@SuppressWarnings("unchecked") AccessorRegistry<T> sourceAccessor = (AccessorRegistry<T>) source;
+		@SuppressWarnings("unchecked") RegistryAccessor<T> sourceAccessor = (RegistryAccessor<T>) source;
 		RegistryKey<? extends Registry<T>> sourceKey = source.getKey();
 		MutableRegistry<T> target = template.get(sourceKey);
 

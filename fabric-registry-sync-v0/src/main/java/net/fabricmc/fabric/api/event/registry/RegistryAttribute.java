@@ -16,19 +16,35 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.registry.v1.RegistryAttributes;
+
 public enum RegistryAttribute {
 	/**
 	 * Registry will be saved to disk when modded.
 	 */
-	PERSISTED,
+	// TODO: Refer to constant in registry-sync-v1
+	PERSISTED(new Identifier("fabric-registry-api-v1", "persisted")),
 
 	/**
 	 * Registry will be synced to the client when modded.
 	 */
-	SYNCED,
+	// TODO: Refer to constant in registry-sync-v1
+	SYNCED(new Identifier("fabric-registry-api-v1", "synced")),
 
 	/**
 	 * Registry has been modded.
 	 */
-	MODDED
+	MODDED(RegistryAttributes.MODDED);
+
+	private final Identifier newKey;
+
+	RegistryAttribute(Identifier newKey) {
+		this.newKey = newKey;
+	}
+
+	public Identifier getNewKey() {
+		return this.newKey;
+	}
 }

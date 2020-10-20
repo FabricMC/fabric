@@ -50,16 +50,19 @@ import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
+import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
+import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
 
 @Mixin(SimpleRegistry.class)
-public abstract class MixinIdRegistry<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry<T> {
+public abstract class SimpleRegistryMixin<T> extends Registry<T> implements RemappableRegistry, ListenableRegistry<T> {
 	@Shadow
 	@Final
 	private ObjectList<T> rawIdToEntry;
@@ -75,9 +78,9 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 	@Shadow
 	private int nextId;
 	@Unique
-	private static Logger FABRIC_LOGGER = LogManager.getLogger();
+	private static Logger FABRIC_LOGGER = LogManager.getLogger("fabric-registry-sync-v0");
 
-	public MixinIdRegistry(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
+	public SimpleRegistryMixin(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle) {
 		super(key, lifecycle);
 	}
 
@@ -126,45 +129,6 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 	@Override
 	public Event<RegistryIdRemapCallback<T>> fabric_getRemapEvent() {
 		return fabric_postRemapEvent;
-	}
-
-	// The rest of the registry isn't thread-safe, so this one need not be either.
-	@Unique
-	private boolean fabric_isObjectNew = false;
-
-	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("HEAD"))
-	public void setPre(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
-		int indexedEntriesId = entryToRawId.getInt(object);
-
-		if (indexedEntriesId >= 0) {
-			throw new RuntimeException("Attempted to register object " + object + " twice! (at raw IDs " + indexedEntriesId + " and " + id + " )");
-		}
-
-		if (!idToEntry.containsKey(registryId.getValue())) {
-			fabric_isObjectNew = true;
-		} else {
-			T oldObject = idToEntry.get(registryId.getValue());
-
-			if (oldObject != null && oldObject != object) {
-				int oldId = entryToRawId.getInt(oldObject);
-
-				if (oldId != id && checkDuplicateKeys) {
-					throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldId + ", " + id + ")! If you're trying to override an item, use .set(), not .register()!");
-				}
-
-				fabric_removeObjectEvent.invoker().onEntryRemoved(oldId, registryId.getValue(), oldObject);
-				fabric_isObjectNew = true;
-			} else {
-				fabric_isObjectNew = false;
-			}
-		}
-	}
-
-	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("RETURN"))
-	public void setPost(int id, RegistryKey<T> registryId, T object, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<T> info) {
-		if (fabric_isObjectNew) {
-			fabric_addObjectEvent.invoker().onEntryAdded(id, registryId.getValue(), object);
-		}
 	}
 
 	@Override
@@ -377,6 +341,31 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 
 			fabric_prevIndexedEntries = null;
 			fabric_prevEntries = null;
+		}
+	}
+
+	// For tracking whether a registry has been changed
+
+	@Inject(method = "add", at = @At("RETURN"))
+	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<V> info) {
+		onChange(registryKey);
+	}
+
+	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("RETURN"))
+	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, boolean b, CallbackInfoReturnable<V> info) {
+		onChange(registryKey);
+	}
+
+	@Unique
+	private void onChange(RegistryKey<Registry<T>> registryKey) {
+		if (RegistrySyncManager.postBootstrap || !registryKey.getValue().getNamespace().equals("minecraft")) {
+			RegistryAttributeHolder holder = RegistryAttributeHolder.get(this);
+
+			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
+				Identifier id = getKey().getValue();
+				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
+				RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.MODDED);
+			}
 		}
 	}
 }

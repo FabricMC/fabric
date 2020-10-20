@@ -14,26 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.mixin.registry;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.util.registry.DynamicRegistryManager;
 
-import net.fabricmc.fabric.api.event.registry.DynamicRegistrySetupCallback;
-import net.fabricmc.fabric.impl.registry.sync.DynamicRegistrySync;
+import net.fabricmc.fabric.api.registry.v1.DynamicRegistryEvents;
 
 @Mixin(DynamicRegistryManager.class)
-public class DynamicRegistryManagerMixin {
-	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps$EntryLoader$Impl;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
+abstract class DynamicRegistryManagerMixin {
+	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps$class_5506$class_5507;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.Impl> cir, DynamicRegistryManager.Impl registryManager) {
-		// Old event needs to be implemented here in order to track all additions
-		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(registryManager);
+		DynamicRegistryEvents.SETUP.invoker().onRegistrySetup(registryManager);
 	}
 }

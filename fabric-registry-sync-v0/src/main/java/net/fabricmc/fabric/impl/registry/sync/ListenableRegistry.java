@@ -23,6 +23,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 
+@Deprecated
 public interface ListenableRegistry<T> {
 	Event<RegistryEntryAddedCallback<T>> fabric_getAddObjectEvent();
 	Event<RegistryEntryRemovedCallback<T>> fabric_getRemoveObjectEvent();

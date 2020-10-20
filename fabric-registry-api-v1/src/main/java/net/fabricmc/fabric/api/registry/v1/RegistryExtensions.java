@@ -14,27 +14,31 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.registry.sync;
+package net.fabricmc.fabric.api.registry.v1;
 
-import com.mojang.serialization.Lifecycle;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
-import org.spongepowered.asm.mixin.gen.Invoker;
+import java.util.Objects;
+import java.util.Set;
 
-import net.minecraft.util.registry.MutableRegistry;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 
-@Mixin(Registry.class)
-public interface AccessorRegistry<T> {
-	@Accessor()
-	static MutableRegistry<MutableRegistry<?>> getROOT() {
-		throw new UnsupportedOperationException();
+import net.fabricmc.fabric.api.event.Event;
+
+public interface RegistryExtensions<T> {
+	static <T> RegistryExtensions<T> get(Registry<T> registry) {
+		Objects.requireNonNull(registry, "Registry cannot be null");
+
+		//noinspection unchecked
+		return (RegistryExtensions<T>) registry;
 	}
 
-	@Accessor()
-	RegistryKey<Registry<T>> getRegistryKey();
+	Event<RegistryEvents.EntryAdded<T>> getEntryAddedEvent();
 
-	@Invoker
-	Lifecycle callGetEntryLifecycle(T object);
+	Event<RegistryEvents.EntryRemoved<T>> getEntryRemovedEvent();
+
+	void addAttribute(Identifier id);
+
+	Set<Identifier> getAttributes();
+
+	boolean hasAttribute(Identifier id);
 }
