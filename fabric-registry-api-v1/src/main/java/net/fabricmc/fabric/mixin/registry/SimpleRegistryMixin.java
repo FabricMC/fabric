@@ -60,14 +60,13 @@ abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
 		// The default return value of `entryToRawId` is `-1`.
 		// If the value is 0 or greater, the object is already present in the registry
 		if (indexedEntriesRawId >= 0) {
-			// TODO: Is RuntimeException correct?
-			throw new RuntimeException("Attempted to register object " + entry + " twice! (at raw IDs " + indexedEntriesRawId + " and " + rawId + " )");
+			throw new UnsupportedOperationException("Attempted to register object " + entry + " twice! (at raw IDs " + indexedEntriesRawId + " and " + rawId + " )");
 		}
 
 		final Identifier registryId = key.getValue();
 
 		if (!this.idToEntry.containsKey(registryId)) {
-			// We are not replacing an existing entry, so no further checks are needed
+			// We are not registry replacing anything, so no further checks are needed
 			this.fabric_isAddedObjectNew = true;
 			return;
 		}
@@ -84,9 +83,9 @@ abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
 			final int oldObjectRawId = this.entryToRawId.getInt(oldObject);
 
 			// When replacing a registry entry, both the Identifier and rawId must be the same.
-			// If the raw ids don't match, likely due to just calling `register` naively to replace an entry, we need to fail.
+			// If the raw ids don't match, likely due to just calling `add` naively to replace an entry, we need to fail.
 			if (oldObjectRawId != rawId) {
-				throw new RuntimeException("Attempted to register ID " + registryId + " at different raw IDs (" + oldObjectRawId + ", " + rawId + ")! If you're trying to override a registry entry, use .set(), not .register()!");
+				throw new UnsupportedOperationException("Attempted to register ID " + registryId + " at different raw IDs (" + oldObjectRawId + ", " + rawId + ")! If you're trying to override a registry entry, use .set(), not .register()!");
 			}
 
 			// Fire the remove event
@@ -96,6 +95,8 @@ abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
 			// We are not replacing any registry entry
 			this.fabric_isAddedObjectNew = false;
 		}
+
+		// Everything past here in vanilla codepath will add the object to all the required maps
 	}
 
 	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("TAIL"))
