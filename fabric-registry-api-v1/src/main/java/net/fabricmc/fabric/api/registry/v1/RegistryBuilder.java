@@ -37,7 +37,7 @@ import net.fabricmc.fabric.mixin.registry.RegistryAccessor;
  *  SimpleRegistry<String> registry = FabricRegistryBuilder.createSimple(new Identifier("registry_sync", "fabric_registry"))
  * 		.attribute(RegistryAttributes.MODDED)
  * 		.buildAndRegister();
- * 	}</pre>
+ * }</pre>
  *
  * @param <T> The type stored in the registry
  * @param <R> The registry type

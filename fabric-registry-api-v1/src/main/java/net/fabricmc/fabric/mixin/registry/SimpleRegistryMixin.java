@@ -19,8 +19,7 @@ package net.fabricmc.fabric.mixin.registry;
 import com.google.common.collect.BiMap;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,6 +37,7 @@ import net.fabricmc.fabric.api.registry.v1.RegistryAttributes;
 import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
 import net.fabricmc.fabric.impl.registry.RegistryAttributeTracking;
 
+@ApiStatus.Internal
 @Mixin(SimpleRegistry.class)
 abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
 	@Shadow

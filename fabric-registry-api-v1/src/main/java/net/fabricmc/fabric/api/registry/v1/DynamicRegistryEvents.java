@@ -25,10 +25,12 @@ public final class DynamicRegistryEvents {
 	/**
 	 * This event gets triggered when a new {@link DynamicRegistryManager} gets created, but before it gets filled.
 	 * Therefore, this is the ideal place to register callbacks to dynamic registries.
-	 * For example, the following code is used to register a callback that gets triggered for any registered Biome, both JSON and code defined.
+	 *
+	 * <p>For example, the following code is used to register a callback that gets triggered for any registered Biome, both JSON and code defined.
 	 *
 	 * <pre>{@code
 	 * DynamicRegistryEvents.SETUP.register(registryManager -> {
+	 *  // Get the registry from the dynamic registry manager
 	 * 	Registry<Biome> biomes = registryManager.get(Registry.BIOME_KEY);
 	 *
 	 * 	RegistryExtensions.get(biomes).getEntryAddedEvent().register((rawId, id, object) -> {

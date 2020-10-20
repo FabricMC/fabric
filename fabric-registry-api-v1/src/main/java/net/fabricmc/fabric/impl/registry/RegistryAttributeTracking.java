@@ -16,12 +16,10 @@
 
 package net.fabricmc.fabric.impl.registry;
 
+import org.jetbrains.annotations.ApiStatus;
+
+@ApiStatus.Internal
 public final class RegistryAttributeTracking {
-	/**
-	 * Set to true after vanilla's bootstrap has completed.
-	 *
-	 * <p>This field should not be modified by mods
-	 */
 	private static boolean postBootstrap = false;
 
 	public static void bootstrapRegistries() {
@@ -30,5 +28,8 @@ public final class RegistryAttributeTracking {
 
 	public static boolean isBootstrapped() {
 		return postBootstrap;
+	}
+
+	private RegistryAttributeTracking() {
 	}
 }

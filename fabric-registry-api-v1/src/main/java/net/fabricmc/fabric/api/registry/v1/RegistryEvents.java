@@ -17,10 +17,11 @@
 package net.fabricmc.fabric.api.registry.v1;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 /**
  * Holds all registry events.
- * The event instances are available via a {@link RegistryExtensions registry's extensions}.
+ * The event instances are available via a {@link RegistryExtensions registry's extensions} using {@link RegistryExtensions#get(Registry)}.
  */
 public final class RegistryEvents {
 	@FunctionalInterface

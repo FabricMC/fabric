@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.registry;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -26,6 +27,7 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 
 import net.fabricmc.fabric.api.registry.v1.DynamicRegistryEvents;
 
+@ApiStatus.Internal
 @Mixin(DynamicRegistryManager.class)
 abstract class DynamicRegistryManagerMixin {
 	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps$class_5506$class_5507;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
