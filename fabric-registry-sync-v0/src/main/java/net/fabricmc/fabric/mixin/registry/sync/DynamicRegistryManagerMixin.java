@@ -33,7 +33,8 @@ import net.fabricmc.fabric.impl.registry.sync.DynamicRegistrySync;
 public class DynamicRegistryManagerMixin {
 	@Inject(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps$EntryLoader$Impl;<init>()V"), locals = LocalCapture.CAPTURE_FAILHARD)
 	private static void onCreateImpl(CallbackInfoReturnable<DynamicRegistryManager.Impl> cir, DynamicRegistryManager.Impl registryManager) {
-		// Old event needs to be implemented here in order to track all additions
+		// Old event needs to be implemented here in order to track all additions.
+		// We cannot implement the old event onto the new event in any sane way other than this
 		DynamicRegistrySetupCallback.EVENT.invoker().onRegistrySetup(registryManager);
 	}
 }

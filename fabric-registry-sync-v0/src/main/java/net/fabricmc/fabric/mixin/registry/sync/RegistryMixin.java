@@ -34,21 +34,27 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
+import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
 @Mixin(Registry.class)
 public abstract class RegistryMixin<T> implements RegistryAttributeHolder, FabricRegistry {
 	@Inject(method = "<init>", at = @At("TAIL"))
-	private void onInitLegacyHooks(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle, CallbackInfo ci) {
+	private void initLegacyHooks(RegistryKey<? extends Registry<T>> key, Lifecycle lifecycle, CallbackInfo ci) {
 		final RegistryExtensions<T> extensions = RegistryExtensions.get((Registry<T>) (Object) this);
 
-		// Register old events to be fired by new event, must be lambdas
-		extensions.getEntryAddedEvent().register((rawId, id, object) -> {
-			RegistryEntryAddedCallback.event((Registry<T>) (Object) this).invoker().onEntryAdded(rawId, id, object);
-		});
+		// Registry must be listenable in order to dispatch old events.
+		// New registry impl has events on every registry, but it is up to the specific registry impl to call those.
+		// Fabric API implements the new entry added/removed events on SimpleRegistry which by effect also applies to DefaultedRegistry.
+		if (this instanceof ListenableRegistry) {
+			// Register old events to be fired by new event, must be lambdas
+			extensions.getEntryAddedEvent().register((rawId, id, object) -> {
+				RegistryEntryAddedCallback.event((Registry<T>) (Object) this).invoker().onEntryAdded(rawId, id, object);
+			});
 
-		extensions.getEntryRemovedEvent().register((rawId, id, object) -> {
-			RegistryEntryRemovedCallback.event((Registry<T>) (Object) this).invoker().onEntryRemoved(rawId, id, object);
-		});
+			extensions.getEntryRemovedEvent().register((rawId, id, object) -> {
+				RegistryEntryRemovedCallback.event((Registry<T>) (Object) this).invoker().onEntryRemoved(rawId, id, object);
+			});
+		}
 	}
 
 	@Override

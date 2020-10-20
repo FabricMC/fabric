@@ -39,9 +39,6 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -50,13 +47,10 @@ import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
-import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
-import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemapStateImpl;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
@@ -341,31 +335,6 @@ public abstract class SimpleRegistryMixin<T> extends Registry<T> implements Rema
 
 			fabric_prevIndexedEntries = null;
 			fabric_prevEntries = null;
-		}
-	}
-
-	// For tracking whether a registry has been changed
-
-	@Inject(method = "add", at = @At("RETURN"))
-	private <V extends T> void add(RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, CallbackInfoReturnable<V> info) {
-		onChange(registryKey);
-	}
-
-	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("RETURN"))
-	private <V extends T> void set(int rawId, RegistryKey<Registry<T>> registryKey, V entry, Lifecycle lifecycle, boolean b, CallbackInfoReturnable<V> info) {
-		onChange(registryKey);
-	}
-
-	@Unique
-	private void onChange(RegistryKey<Registry<T>> registryKey) {
-		if (RegistrySyncManager.postBootstrap || !registryKey.getValue().getNamespace().equals("minecraft")) {
-			RegistryAttributeHolder holder = RegistryAttributeHolder.get(this);
-
-			if (!holder.hasAttribute(RegistryAttribute.MODDED)) {
-				Identifier id = getKey().getValue();
-				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
-				RegistryAttributeHolder.get(this).addAttribute(RegistryAttribute.MODDED);
-			}
 		}
 	}
 }

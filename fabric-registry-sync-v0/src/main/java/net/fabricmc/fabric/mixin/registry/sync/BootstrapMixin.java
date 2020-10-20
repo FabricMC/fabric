@@ -30,7 +30,6 @@ import net.minecraft.item.Items;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BiomeKeys;
 
-import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.trackers.StateIdTracker;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockInitTracker;
 import net.fabricmc.fabric.impl.registry.sync.trackers.vanilla.BlockItemTracker;
@@ -57,7 +56,5 @@ public class BootstrapMixin {
 
 		// block initialization, like Blocks
 		BlockInitTracker.register(Registry.BLOCK);
-
-		RegistrySyncManager.bootstrapRegistries();
 	}
 }

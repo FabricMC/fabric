@@ -20,11 +20,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -33,6 +37,11 @@ import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
 
 @Mixin(Registry.class)
 abstract class RegistryMixin<T> implements RegistryExtensions<T> {
+	@Shadow
+	public abstract RegistryKey<? extends Registry<T>> getKey();
+
+	@Unique
+	protected static final Logger FABRIC_LOGGER = LogManager.getLogger("fabric-registry-api-v1");
 	@Unique
 	private Set<Identifier> attributes = new HashSet<>();
 	@Unique

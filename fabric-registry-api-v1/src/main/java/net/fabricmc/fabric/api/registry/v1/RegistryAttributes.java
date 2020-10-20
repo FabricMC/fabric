@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.registry.v1;
 
 import net.minecraft.util.Identifier;
 
+/**
+ * An enumeration of all built-in registry attributes.
+ */
 public final class RegistryAttributes {
 	/**
 	 * A registry attribute that states that a registry is modded.

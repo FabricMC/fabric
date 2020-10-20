@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.event.registry;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.registry.v1.RegistryAttributes;
@@ -44,6 +46,11 @@ public enum RegistryAttribute {
 		this.newKey = newKey;
 	}
 
+	/**
+	 * For implementation purposes only!
+	 */
+	@Deprecated
+	@ApiStatus.Internal
 	public Identifier getNewKey() {
 		return this.newKey;
 	}

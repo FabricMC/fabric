@@ -54,9 +54,6 @@ public final class RegistrySyncManager {
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
 
-	//Set to true after vanilla's bootstrap has completed
-	public static boolean postBootstrap = false;
-
 	private RegistrySyncManager() { }
 
 	public static Packet<?> createPacket() {
@@ -299,9 +296,5 @@ public final class RegistrySyncManager {
 				((RemappableRegistry) registry).unmap(registryId.toString());
 			}
 		}
-	}
-
-	public static void bootstrapRegistries() {
-		postBootstrap = true;
 	}
 }

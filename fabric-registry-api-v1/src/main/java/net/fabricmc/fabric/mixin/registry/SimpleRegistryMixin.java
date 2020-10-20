@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.registry;
 import com.google.common.collect.BiMap;
 import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,8 +30,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
+
+import net.fabricmc.fabric.api.registry.v1.RegistryAttributes;
+import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
+import net.fabricmc.fabric.impl.registry.RegistryAttributeTracking;
 
 @Mixin(SimpleRegistry.class)
 abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
@@ -45,6 +52,7 @@ abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
 	@Unique
 	private boolean fabric_isAddedObjectNew = false;
 
+	// No need to inject into `add` as `set` is called by `add` and `replace`
 	@Inject(method = "set(ILnet/minecraft/util/registry/RegistryKey;Ljava/lang/Object;Lcom/mojang/serialization/Lifecycle;Z)Ljava/lang/Object;", at = @At("HEAD"))
 	private <V extends T> void handleAdditionToRegistry(int rawId, RegistryKey<T> key, V entry, Lifecycle lifecycle, boolean checkDuplicateKeys, CallbackInfoReturnable<V> cir) {
 		// This injection exists primarily to install some safety mechanisms into registries for mods and registry sync.
@@ -104,6 +112,29 @@ abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
 		// Called after the object has been placed in the correct maps in the registry
 		if (this.fabric_isAddedObjectNew) {
 			this.getEntryAddedEvent().invoker().onEntryAdded(rawId, key.getValue(), entry);
+		}
+
+		// Mark registry as modded if we are past bootstrap
+		this.onChange(key);
+	}
+
+	/**
+	 * Marks a registry as modded if the registry has been changed.
+	 *
+	 * @param registryKey the registry entry which has changed
+	 */
+	@Unique
+	private void onChange(RegistryKey<T> registryKey) {
+		// Check if we are past bootstrap or if the added registry entry is not in the minecraft namespace
+		if (RegistryAttributeTracking.isBootstrapped() || !registryKey.getValue().getNamespace().equals("minecraft")) {
+			final RegistryExtensions<T> extensions = RegistryExtensions.get((Registry<T>) (Object) this);
+
+			// Check if the registry is already modded
+			if (!extensions.hasAttribute(RegistryAttributes.MODDED)) {
+				Identifier id = this.getKey().getValue();
+				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
+				extensions.addAttribute(RegistryAttributes.MODDED);
+			}
 		}
 	}
 }

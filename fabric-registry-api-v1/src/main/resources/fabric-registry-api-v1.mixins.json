@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.registry",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BootstrapMixin",
     "DynamicRegistryManagerMixin",
     "RegistryAccessor",
     "RegistryMixin",

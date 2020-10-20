@@ -18,14 +18,32 @@ package net.fabricmc.fabric.api.registry.v1;
 
 import net.minecraft.util.Identifier;
 
+/**
+ * Holds all registry events.
+ * The event instances are available via a {@link RegistryExtensions registry's extensions}.
+ */
 public final class RegistryEvents {
 	@FunctionalInterface
 	public interface EntryAdded<T> {
+		/**
+		 * Called when an entry is added to a registry.
+		 *
+		 * @param rawId the raw id of the registry entry
+		 * @param id the id of the registry entry
+		 * @param object the registry entry
+		 */
 		void onEntryAdded(int rawId, Identifier id, T object);
 	}
 
 	@FunctionalInterface
 	public interface EntryRemoved<T> {
+		/**
+		 * Called when an entry is removed from a registry.
+		 *
+		 * @param rawId the raw id of the registry entry
+		 * @param id the id of the registry entry
+		 * @param object the registry entry
+		 */
 		void onEntryRemoved(int rawId, Identifier id, T object);
 	}
 
