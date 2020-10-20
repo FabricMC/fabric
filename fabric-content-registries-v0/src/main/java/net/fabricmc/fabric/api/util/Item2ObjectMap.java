@@ -21,7 +21,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.tag.Tag;
 
 /**
- * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.util.Item2ObjectMap}
+ * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.util.ItemContentRegistry}
  */
 @Deprecated
 public interface Item2ObjectMap<V> {

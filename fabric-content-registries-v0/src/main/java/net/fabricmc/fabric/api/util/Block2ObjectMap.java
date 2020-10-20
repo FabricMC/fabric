@@ -20,7 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.tag.Tag;
 
 /**
- * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.util.Taggable2ObjectMap}
+ * @deprecated replaced by {@link net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry}
  */
 @Deprecated
 public interface Block2ObjectMap<V> {
