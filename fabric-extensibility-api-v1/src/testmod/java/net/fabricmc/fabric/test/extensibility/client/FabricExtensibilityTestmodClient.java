@@ -16,10 +16,6 @@
 
 package net.fabricmc.fabric.test.extensibility.client;
 
-import static net.fabricmc.fabric.test.extensibility.FabricBowTests.TEST_BOW;
-import static net.fabricmc.fabric.test.extensibility.FabricCrossbowTests.TEST_CROSSBOW;
-import static net.fabricmc.fabric.test.extensibility.FabricTridentTests.TEST_TRIDENT;
-
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ElytraItem;
@@ -30,13 +26,16 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.fabricmc.fabric.test.extensibility.FabricBowTests;
+import net.fabricmc.fabric.test.extensibility.FabricCrossbowTests;
+import net.fabricmc.fabric.test.extensibility.FabricTridentTests;
 
 public class FabricExtensibilityTestmodClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		registerCrossbow(TEST_CROSSBOW);
-		registerCrossbow(TEST_BOW);
-		registerTridentModels(TEST_TRIDENT);
+		registerCrossbow(FabricCrossbowTests.TEST_CROSSBOW);
+		registerBow(FabricBowTests.TEST_BOW);
+		registerTridentModels(FabricTridentTests.TEST_TRIDENT);
 	}
 
 	public static void registerCrossbow(Item crossbow) {

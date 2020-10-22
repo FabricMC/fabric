@@ -27,10 +27,11 @@ import net.minecraft.item.ItemStack;
 public interface FabricBow {
 	/**
 	 * In this method you can modify the behavior of arrows shot from your custom bow. Applies all of the vanilla arrow modifiers first.
-	 * @param bowStack			The ItemStack for the Bow Item
-	 * @param arrowStack        The ItemStack for the arrows
-	 * @param user              The user of the bow
-	 * @param remainingUseTicks The ticks remaining on the bow usage
+	 *
+	 * @param bowStack                   The ItemStack for the Bow Item
+	 * @param arrowStack                 The ItemStack for the arrows
+	 * @param user                       The user of the bow
+	 * @param remainingUseTicks          The ticks remaining on the bow usage
 	 * @param persistentProjectileEntity The arrow entity to be spawned
 	 */
 	void modifyShotProjectile(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, int remainingUseTicks, PersistentProjectileEntity persistentProjectileEntity);

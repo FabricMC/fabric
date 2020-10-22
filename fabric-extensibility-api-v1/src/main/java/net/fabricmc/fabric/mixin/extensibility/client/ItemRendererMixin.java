@@ -35,8 +35,8 @@ import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
 
@@ -60,7 +60,7 @@ public abstract class ItemRendererMixin {
 			matrices.push();
 			boolean bl = renderMode == ModelTransformation.Mode.GUI || renderMode == ModelTransformation.Mode.GROUND || renderMode == ModelTransformation.Mode.FIXED;
 
-			if (stack.getItem() instanceof FabricTrident && bl) {
+			if (bl) {
 				model = models.getModelManager().getModel(((FabricTrident) stack.getItem()).getInventoryModelIdentifier());
 			}
 

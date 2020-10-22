@@ -17,12 +17,12 @@
 package net.fabricmc.fabric.test.extensibility;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.impl.extensibility.item.v1.FabricCrossbowItem;

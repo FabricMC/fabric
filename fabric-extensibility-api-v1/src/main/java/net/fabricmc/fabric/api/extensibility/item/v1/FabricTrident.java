@@ -17,14 +17,20 @@
 package net.fabricmc.fabric.api.extensibility.item.v1;
 
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.util.Identifier;
 
 /**
  * In development.
  */
 public interface FabricTrident {
 	/**
-	 * should be `namespace:item_name#inventory.
+	 * should be `namespace:item_name#inventory`.
+	 *
 	 * @return the model identifier
 	 */
 	ModelIdentifier getInventoryModelIdentifier();
+
+	ModelIdentifier getTridentInHandModelIdentifier();
+
+	Identifier getEntityTexture();
 }

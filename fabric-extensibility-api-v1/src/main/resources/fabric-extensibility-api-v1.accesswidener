@@ -1,3 +1,4 @@
 accessWidener	v1	named
 
 accessible    class    net/minecraft/entity/mob/DrownedEntity$TridentAttackGoal
+accessible    field    net/minecraft/entity/projectile/TridentEntity    tridentStack    Lnet/minecraft/item/ItemStack;

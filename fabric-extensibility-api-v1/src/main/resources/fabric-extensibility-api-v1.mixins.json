@@ -4,21 +4,25 @@
   "package": "net.fabricmc.fabric.mixin.extensibility",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "CrossbowItemMixin",
-    "EntityUseCrossbowMixin",
-    "EntityUseBowMixin",
     "AbstractSkeletonEntityMixin",
-    "ProjectileUtilMixin",
     "BowItemMixin",
+    "CrossbowItemMixin",
+    "EntityUseBowMixin",
+    "EntityUseCrossbowMixin",
     "ItemMixin",
-    "TridentAttackGoalMixin"
+    "ProjectileUtilMixin",
+    "TridentAttackGoalMixin",
+    "TridentEntityMixin",
+    "TridentItemMixin"
   ],
   "client": [
+    "ClientPlayNetworkHandlerMixin",
+    "client.DrownedEntityModelMixin",
     "client.HeldItemRendererMixin",
+    "client.ItemRendererMixin",
     "client.PlayerEntityRendererMixin",
     "client.SkeletonEntityModelMixin",
-    "client.ItemRendererMixin",
-    "client.DrownedEntityModelMixin"
+    "client.TridentEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

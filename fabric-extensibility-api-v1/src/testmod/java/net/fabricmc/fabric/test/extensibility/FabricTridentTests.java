@@ -16,33 +16,21 @@
 
 package net.fabricmc.fabric.test.extensibility;
 
-import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.client.render.entity.model.TridentEntityModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.item.TridentItem;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
+import net.fabricmc.fabric.impl.extensibility.item.v1.FabricTridentItem;
 
 public class FabricTridentTests implements ModInitializer {
-	public static final Item TEST_TRIDENT = new TestTrident(new Item.Settings().group(ItemGroup.COMBAT));
+	public static final Item TEST_TRIDENT = new FabricTridentItem(new Item.Settings().group(ItemGroup.COMBAT).maxCount(1).maxDamage(1000), new TridentEntityModel(), new Identifier("fabric-extensibility-api-v1-testmod", "textures/entity/test_trident.png"));
 
 	@Override
 	public void onInitialize() {
 		// Registers a custom trident.
 		Registry.register(Registry.ITEM, new Identifier("fabric-extensibility-api-v1-testmod", "test_trident"), TEST_TRIDENT);
-	}
-
-	public static class TestTrident extends TridentItem implements FabricTrident {
-		public TestTrident(Settings settings) {
-			super(settings);
-		}
-
-		@Override
-		public ModelIdentifier getInventoryModelIdentifier() {
-			return new ModelIdentifier("minecraft:trident#inventory");
-		}
 	}
 }

@@ -25,8 +25,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
 import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
+import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
 
 @Mixin(HeldItemRenderer.class)
 public class HeldItemRendererMixin {

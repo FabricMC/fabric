@@ -32,9 +32,9 @@ public interface FabricCrossbow {
 	 * Allows editing of the projectile entity shot from the crossbow. Applies all crossbow
 	 * projectile properties first.
 	 *
-	 * @param crossbowStack The ItemStack for the crossbow
-	 * @param entity The entity shooting the crossbow
-	 * @param projectileStack The stack for the projectile
+	 * @param crossbowStack              The ItemStack for the crossbow
+	 * @param entity                     The entity shooting the crossbow
+	 * @param projectileStack            The stack for the projectile
 	 * @param persistentProjectileEntity The projectile entity to be shot
 	 */
 	void modifyShotProjectile(ItemStack crossbowStack, LivingEntity entity, ItemStack projectileStack, PersistentProjectileEntity persistentProjectileEntity);
@@ -43,7 +43,7 @@ public interface FabricCrossbow {
 	 * Allows modifying the speed of the crossbow projectile. <br>
 	 * To get the projectile from the crossbow, call {@link CrossbowItem#hasProjectile(ItemStack, Item)} passing in {@code stack} and the {@link Item} for the projectile
 	 *
-	 * @param stack The ItemStack for the crossbow
+	 * @param stack  The ItemStack for the crossbow
 	 * @param entity The Entity shooting the crossbow
 	 * @return The speed of the projectile
 	 */
