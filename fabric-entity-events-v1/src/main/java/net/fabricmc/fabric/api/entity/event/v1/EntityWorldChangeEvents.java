@@ -23,6 +23,11 @@ import net.minecraft.server.world.ServerWorld;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+/**
+ * Events related to an entity being moved to another world.
+ *
+ * @apiNote For a {@link ServerPlayerEntity}, please use {@link EntityWorldChangeEvents#AFTER_PLAYER_CHANGED_WORLD}.
+ */
 public final class EntityWorldChangeEvents {
 	/**
 	 * An event which is called after an entity has been moved to a different world.

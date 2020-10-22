@@ -16,105 +16,44 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import static net.minecraft.server.command.CommandManager.literal;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.item.Items;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.entity.event.v1.EntityEvents;
-import net.fabricmc.fabric.api.entity.event.v1.LivingEntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntityCombatEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 public final class EntityEventTests implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(EntityEventTests.class);
-	private boolean testing = false;
-	private List<EntityType<?>> successfulTests = new ArrayList<>();
 
 	@Override
 	public void onInitialize() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
-			dispatcher.register(literal("livingentity_after_damage_tests").executes(this::executeTest));
-		});
-
-		LivingEntityEvents.AFTER_DAMAGED.register((entity, damageSource, damageAmount, originalHeath) -> {
-			if (this.testing) {
-				this.successfulTests.add(entity.getType());
-			}
-
-			LOGGER.info("Damaged {}", entity);
-		});
-
-		EntityEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
+		EntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
 			LOGGER.info("[Killed]: {}", killed);
 		});
-	}
 
-	private int executeTest(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-		final ServerCommandSource source = context.getSource();
-		source.getPlayer(); // Only players can do this
+		EntityWorldChangeEvents.AFTER_PLAYER_CHANGED_WORLD.register((player, origin, destination) -> {
+			LOGGER.info("Moved player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
+		});
 
-		// Set up testing
-		this.successfulTests.clear();
-		this.testing = true;
+		EntityWorldChangeEvents.AFTER_ENTITY_CHANGED_WORLD.register((originalEntity, newEntity, origin, destination) -> {
+			LOGGER.info("Moved entity {} -> {}: [({} -> {}]", originalEntity, newEntity, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
+		});
 
-		// Summon every single entity from every type, damage it and check if the event was fired.
-		for (EntityType<?> entityType : Registry.ENTITY_TYPE) {
-			// Players cannot be summoned, must manually be tested
-			if (entityType.equals(EntityType.PLAYER)) {
-				source.sendFeedback(new LiteralText("Please damage yourself as we can't automate damaging player entities because we can't summon players").styled(style -> style.withColor(Formatting.YELLOW)), false);
-				continue;
-			}
+		ServerPlayerEvents.FIRST_JOIN.register(player -> {
+			// getStackForRender is present on both client and server, future yarn rename fixes that
+			player.inventory.insertStack(Items.BELL.getStackForRender());
+		});
 
-			if (entityType.equals(EntityType.ENDER_DRAGON)) {
-				// Ender dragon is special case, needs a manual test
-				//living.damage(DamageSource.explosion(source.getPlayer()), 1.0F);
-				source.sendFeedback(new LiteralText("Please test ender dragon manually as automated tests do not work on it.").styled(style -> style.withColor(Formatting.YELLOW)), false);
-				continue;
-			}
+		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
+			LOGGER.info("Copied data for {} from {} to {}", oldPlayer.getGameProfile().getName(), oldPlayer, newPlayer);
+		});
 
-			final Entity entity = entityType.create(source.getWorld());
-
-			if (entity == null) {
-				source.sendFeedback(new LiteralText(String.format("Cannot summon entity %s, not summonable", Registry.ENTITY_TYPE.getId(entityType).toString())), false);
-				source.sendFeedback(new LiteralText("Fishing Bobbers are not living, therefore cannot be damaged."), false);
-				continue;
-			}
-
-			// Only test on living entities
-			if (entity instanceof LivingEntity) {
-				final LivingEntity living = (LivingEntity) entity;
-				living.damage(DamageSource.GENERIC, 1.0F);
-
-				if (!this.successfulTests.contains(living.getType())) {
-					source.sendError(new LiteralText(String.format("Failed to capture event for entity of type %s", Registry.ENTITY_TYPE.getId(entityType).toString())));
-				}
-
-				// Just to cycle the entity ids.
-				source.getWorld().spawnEntity(entity);
-				source.getWorld().removeEntity(entity);
-
-				// Finally remove the entity
-				living.remove();
-			}
-		}
-
-		this.testing = false;
-
-		return 1;
+		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
+			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getServerWorld().getRegistryKey().getValue(), newPlayer.getServerWorld().getRegistryKey().getValue());
+		});
 	}
 }

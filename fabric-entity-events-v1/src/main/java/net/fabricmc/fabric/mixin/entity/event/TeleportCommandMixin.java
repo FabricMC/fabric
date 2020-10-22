@@ -35,7 +35,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
 
 @Mixin(TeleportCommand.class)
-public abstract class TeleportCommandMixin {
+abstract class TeleportCommandMixin {
 	/**
 	 * We need to fire the change world event for entities that are teleported using the `/teleport` command.
 	 */

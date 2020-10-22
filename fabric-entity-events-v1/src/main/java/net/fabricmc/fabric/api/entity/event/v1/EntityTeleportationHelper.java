@@ -28,7 +28,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.MathHelper;
 
 /**
- * A utility class providing methods to help teleport entities to other server worlds.
+ * A utilities providing mechanisms to help teleport entities to other server worlds.
  */
 public final class EntityTeleportationHelper {
 	/**

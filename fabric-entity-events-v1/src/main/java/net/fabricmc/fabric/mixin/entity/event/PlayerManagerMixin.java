@@ -35,7 +35,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(PlayerManager.class)
-public abstract class PlayerManagerMixin {
+abstract class PlayerManagerMixin {
 	@Inject(method = "respawnPlayer", at = @At("TAIL"))
 	private void afterRespawn(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfoReturnable<ServerPlayerEntity> cir) {
 		ServerPlayerEvents.AFTER_RESPAWN.invoker().afterRespawn(oldPlayer, cir.getReturnValue(), alive);

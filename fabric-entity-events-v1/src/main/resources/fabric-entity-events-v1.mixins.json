@@ -3,7 +3,6 @@
   "package": "net.fabricmc.fabric.mixin.entity.event",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "DamageTrackerMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "PlayerManagerMixin",

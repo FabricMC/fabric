@@ -81,6 +81,11 @@ public final class ServerPlayerEvents {
 
 	@FunctionalInterface
 	public interface FirstJoin {
+		/**
+		 * Called when a player has first joined a Minecraft server.
+		 *
+		 * @param player the player
+		 */
 		void firstJoined(ServerPlayerEntity player);
 	}
 

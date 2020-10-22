@@ -29,7 +29,7 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin {
+abstract class EntityMixin {
 	@Shadow
 	public World world;
 

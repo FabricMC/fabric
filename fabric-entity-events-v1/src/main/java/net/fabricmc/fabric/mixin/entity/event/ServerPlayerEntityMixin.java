@@ -27,14 +27,30 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
-import net.fabricmc.fabric.api.entity.event.v1.EntityEvents;
+import net.fabricmc.fabric.api.entity.event.v1.EntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
+abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Shadow
 	public abstract ServerWorld getServerWorld();
+
+	/**
+	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity being killed.
+	 * This is a Mojang bug.
+	 * This is implements the method call on the server player entity and then calls the corresponding event.
+	 */
+	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getPrimeAdversary()Lnet/minecraft/entity/LivingEntity;"))
+	private void callOnKillForPlayer(DamageSource source, CallbackInfo ci) {
+		final Entity attacker = source.getAttacker();
+
+		// If the damage source that killed the player was an entity, then fire the event.
+		if (attacker != null) {
+			attacker.onKilledOther(this.getServerWorld(), (ServerPlayerEntity) (Object) this);
+			EntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getServerWorld(), attacker, (ServerPlayerEntity) (Object) this);
+		}
+	}
 
 	/**
 	 * This is called by both "moveToWorld" and "teleport".
@@ -48,20 +64,5 @@ public abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	@Inject(method = "copyFrom", at = @At("TAIL"))
 	private void onCopyFrom(ServerPlayerEntity oldPlayer, boolean alive, CallbackInfo ci) {
 		ServerPlayerEvents.COPY_FROM.invoker().copyFromPlayer(oldPlayer, (ServerPlayerEntity) (Object) this, alive);
-	}
-
-	/**
-	 * Minecraft by default does not call Entity#onKilledOther for a ServerPlayerEntity being killed. So a mojang bug
-	 * This is implements it on the server player entity and then calls the corresponding event.
-	 */
-	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;getPrimeAdversary()Lnet/minecraft/entity/LivingEntity;"))
-	private void callOnKillForPlayer(DamageSource source, CallbackInfo ci) {
-		final Entity attacker = source.getAttacker();
-
-		// If the damage source that killed the player was an entity, then fire the event.
-		if (attacker != null) {
-			attacker.onKilledOther(this.getServerWorld(), (ServerPlayerEntity) (Object) this);
-			EntityEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getServerWorld(), attacker, (ServerPlayerEntity) (Object) this);
-		}
 	}
 }

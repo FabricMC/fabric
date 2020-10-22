@@ -23,7 +23,10 @@ import net.minecraft.server.world.ServerWorld;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public final class EntityEvents {
+/**
+ * Events related to entities in combat.
+ */
+public final class EntityCombatEvents {
 	/**
 	 * An event that is called after an entity is directly responsible for killing another entity.
 	 */
@@ -45,6 +48,6 @@ public final class EntityEvents {
 		void afterKilledOtherEntity(ServerWorld world, Entity entity, LivingEntity killed);
 	}
 
-	private EntityEvents() {
+	private EntityCombatEvents() {
 	}
 }
