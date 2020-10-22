@@ -32,7 +32,7 @@ public final class EntityEventTests implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		EntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((world, entity, killed) -> {
-			LOGGER.info("[Killed]: {}", killed);
+			LOGGER.info("Entity Killed: {}", killed);
 		});
 
 		EntityWorldChangeEvents.AFTER_PLAYER_CHANGED_WORLD.register((player, origin, destination) -> {
@@ -44,8 +44,7 @@ public final class EntityEventTests implements ModInitializer {
 		});
 
 		ServerPlayerEvents.FIRST_JOIN.register(player -> {
-			// getStackForRender is present on both client and server, future yarn rename fixes that
-			player.inventory.insertStack(Items.BELL.getStackForRender());
+			player.inventory.insertStack(Items.BELL.getDefaultStack());
 		});
 
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
