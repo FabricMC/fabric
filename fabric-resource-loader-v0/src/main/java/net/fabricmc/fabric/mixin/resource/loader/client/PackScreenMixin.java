@@ -14,25 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
-
-import java.util.function.Consumer;
+package net.fabricmc.fabric.mixin.resource.loader.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.resource.ResourcePackProfile;
-import net.minecraft.client.resource.ClientBuiltinResourcePackProvider;
+import net.minecraft.client.gui.screen.pack.PackListWidget;
+import net.minecraft.client.gui.screen.pack.PackScreen;
+import net.minecraft.client.gui.screen.pack.ResourcePackOrganizer;
 
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
-@Mixin(ClientBuiltinResourcePackProvider.class)
-public class MixinClientBuiltinResourcePackProvider {
-	@Inject(method = "register", at = @At("RETURN"))
-	private void addBuiltinResourcePacks(Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory, CallbackInfo ci) {
-		// Register mod and built-in resource packs after the vanilla built-in resource packs are registered.
-		ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(consumer, factory);
+@Mixin(PackScreen.class)
+public class PackScreenMixin {
+	@Inject(method = "method_29672", at = @At("HEAD"), cancellable = true)
+	private void addPackEntry(PackListWidget packListWidget, ResourcePackOrganizer.Pack pack, CallbackInfo info) {
+		// Every mod resource packs should be hidden from the user.
+		// Registered built-in resource packs should not be hidden as they are optional for the user.
+		if (pack.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
+			info.cancel();
+		}
 	}
 }

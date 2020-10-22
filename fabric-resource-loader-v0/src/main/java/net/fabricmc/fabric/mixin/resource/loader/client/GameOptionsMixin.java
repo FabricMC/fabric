@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.mixin.resource.loader.client;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(GameOptions.class)
-public class MixinGameOptions {
+public class GameOptionsMixin {
 	@Shadow
 	public List<String> resourcePacks;
 

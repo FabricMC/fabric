@@ -37,7 +37,7 @@ import net.minecraft.resource.ResourceType;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 
 @Mixin(ResourcePackManager.class)
-public abstract class MixinResourcePackManager<T extends ResourcePackProfile> {
+public abstract class ResourcePackManagerMixin<T extends ResourcePackProfile> {
 	@Shadow
 	@Final
 	@Mutable
