@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import net.minecraft.client.world.ClientWorld;
@@ -57,6 +58,8 @@ public final class EntityTeleportationHelper {
 	 * </ul>
 	 */
 	public static Optional<Entity> teleportToWorld(ServerWorld destination, Entity entity, double x, double y, double z, float yaw, float pitch) {
+		Objects.requireNonNull(destination, "Destination world cannot be null");
+
 		// Logic here is the same as TeleportCommand, just without teleport flags or package-private facing location.
 		// Server players are moved to the other world and not copied, so fall to builtin logic for player entities.
 		if (entity instanceof ServerPlayerEntity) {
@@ -82,7 +85,9 @@ public final class EntityTeleportationHelper {
 		final Entity newEntity = entity.getType().create(destination);
 
 		if (newEntity == null) {
-			return Optional.empty(); // Entity is not summonable, so return and keep the old entity in the world
+			// Entity is not summonable, so return and keep the old entity in the world.\
+			// A mod dev needs to use a more manual process in this case.
+			return Optional.empty();
 		}
 
 		// The entity is guaranteed to be moved to another world
