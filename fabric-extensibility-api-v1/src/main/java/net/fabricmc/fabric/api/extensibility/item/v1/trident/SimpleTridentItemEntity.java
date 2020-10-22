@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.extensibility.item.v1;
+package net.fabricmc.fabric.api.extensibility.item.v1.trident;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -25,20 +25,30 @@ import net.minecraft.world.World;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-public class FabricTridentItemEntity extends TridentEntity {
-	public FabricTridentItemEntity(EntityType<? extends TridentEntity> entityType, World world, ItemStack tridentStack) {
+/**
+ * This is the default implementation for the FabricTridentEntity, allowing for the easy creation of new Trident Entities in Fabric.
+ */
+public class SimpleTridentItemEntity extends TridentEntity {
+	public SimpleTridentItemEntity(EntityType<? extends TridentEntity> entityType, World world, ItemStack tridentStack) {
 		super(entityType, world);
 		this.tridentStack = tridentStack;
 	}
 
-	public FabricTridentItemEntity(World world, LivingEntity owner, ItemStack stack) {
+	public SimpleTridentItemEntity(World world, LivingEntity owner, ItemStack stack) {
 		super(world, owner, stack);
 		this.tridentStack = stack;
 	}
 
 	@Environment(EnvType.CLIENT)
-	public FabricTridentItemEntity(World world, double x, double y, double z, ItemStack tridentStack) {
+	public SimpleTridentItemEntity(World world, double x, double y, double z, ItemStack tridentStack) {
 		super(world, x, y, z);
 		this.tridentStack = tridentStack;
+	}
+
+	public SimpleTridentItemEntity(TridentEntity trident) {
+		this(trident.getEntityWorld(), (LivingEntity) trident.getOwner(), trident.tridentStack);
+		this.setVelocity(trident.getVelocity());
+		this.setUuid(trident.getUuid());
+		this.pickupType = trident.pickupType;
 	}
 }

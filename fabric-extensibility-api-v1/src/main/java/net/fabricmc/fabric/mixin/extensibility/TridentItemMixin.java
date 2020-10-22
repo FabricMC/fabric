@@ -16,37 +16,40 @@
 
 package net.fabricmc.fabric.mixin.extensibility;
 
-import io.netty.buffer.Unpooled;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.TridentItem;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.extensibility.item.v1.trident.TridentInterface;
 
 @Mixin(TridentItem.class)
 public class TridentItemMixin {
 	@Inject(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void editTridentEntity(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, int j, TridentEntity tridentEntity) {
-		PacketByteBuf buff = new PacketByteBuf(Unpooled.buffer());
-		buff.writeInt(Registry.ITEM.getRawId(stack.getItem()));
-		buff.writeUuid(tridentEntity.getUuid());
-		world.getPlayers().forEach(player -> ServerSidePacketRegistry.INSTANCE.sendToPlayer(player, new Identifier("fabric-extensibility-api-v1", "custom-trident-info-packet"), buff));
-
-		if (stack.getItem() instanceof FabricTrident) {
+		if (stack.getItem() instanceof TridentInterface) {
 			tridentEntity.tridentStack = stack;
+		}
+	}
+
+	@Redirect(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
+	private boolean editTridentType(World world, Entity entity) {
+		TridentEntity trident = (TridentEntity) entity;
+
+		if (!(trident.tridentStack.getItem() instanceof TridentInterface)) {
+			return world.spawnEntity(entity);
+		} else {
+			return world.spawnEntity(((TridentInterface) trident.tridentStack.getItem()).getTridentEntity(trident));
 		}
 	}
 }

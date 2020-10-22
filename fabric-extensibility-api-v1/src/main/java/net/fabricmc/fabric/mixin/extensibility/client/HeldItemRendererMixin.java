@@ -25,14 +25,14 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
+import net.fabricmc.fabric.api.extensibility.item.v1.bow.BowInterface;
+import net.fabricmc.fabric.api.extensibility.item.v1.crossbow.CrossbowInterface;
 
 @Mixin(HeldItemRenderer.class)
 public class HeldItemRendererMixin {
 	@Redirect(method = "renderFirstPersonItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item renderFirstPersonItem(ItemStack heldItem) {
-		if (heldItem.getItem() instanceof FabricCrossbow) {
+		if (heldItem.getItem() instanceof CrossbowInterface) {
 			return Items.CROSSBOW; // Return true to invoke crossbow rendering path
 		}
 
@@ -41,11 +41,11 @@ public class HeldItemRendererMixin {
 
 	@Redirect(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item renderItem(ItemStack heldItem) {
-		if (heldItem.getItem() instanceof FabricCrossbow) {
+		if (heldItem.getItem() instanceof CrossbowInterface) {
 			return Items.CROSSBOW; // Return crossbow for rendering
 		}
 
-		if (heldItem.getItem() instanceof FabricBow) {
+		if (heldItem.getItem() instanceof BowInterface) {
 			return Items.BOW; // Return bow for rendering
 		}
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.extensibility.item.v1;
+package net.fabricmc.fabric.api.extensibility.item.v1.crossbow;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -27,7 +27,7 @@ import net.minecraft.item.Items;
  * An interface to implement on all custom crossbows. <br>
  * Note: This is meant to be used on a CrossbowItem class, otherwise the functionality won't work
  */
-public interface FabricCrossbow {
+public interface CrossbowInterface {
 	/**
 	 * Allows editing of the projectile entity shot from the crossbow. Applies all crossbow
 	 * projectile properties first.

@@ -25,12 +25,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
+import net.fabricmc.fabric.api.extensibility.item.v1.trident.TridentInterface;
 
 @Mixin(DrownedEntityModel.class)
 public class DrownedEntityModelMixin {
 	@Redirect(method = "animateModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	public Item getItem(ItemStack stack) {
-		return stack.getItem() instanceof FabricTrident ? Items.TRIDENT : stack.getItem();
+		return stack.getItem() instanceof TridentInterface ? Items.TRIDENT : stack.getItem();
 	}
 }

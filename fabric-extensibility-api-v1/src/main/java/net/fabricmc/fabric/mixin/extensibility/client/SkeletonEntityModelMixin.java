@@ -25,17 +25,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
+import net.fabricmc.fabric.api.extensibility.item.v1.bow.BowInterface;
 
 @Mixin(SkeletonEntityModel.class)
 public class SkeletonEntityModelMixin {
 	@Redirect(method = "animateModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item animateModel(ItemStack heldItemStack) {
-		return heldItemStack.getItem() instanceof FabricBow ? Items.BOW : heldItemStack.getItem();
+		return heldItemStack.getItem() instanceof BowInterface ? Items.BOW : heldItemStack.getItem();
 	}
 
 	@Redirect(method = "setAngles", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item setAngles(ItemStack heldItemStack) {
-		return heldItemStack.getItem() instanceof FabricBow ? Items.BOW : heldItemStack.getItem();
+		return heldItemStack.getItem() instanceof BowInterface ? Items.BOW : heldItemStack.getItem();
 	}
 }

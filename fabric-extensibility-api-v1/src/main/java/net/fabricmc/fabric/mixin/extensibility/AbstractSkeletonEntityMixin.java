@@ -25,12 +25,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
+import net.fabricmc.fabric.api.extensibility.item.v1.bow.BowInterface;
 
 @Mixin(AbstractSkeletonEntity.class)
 public class AbstractSkeletonEntityMixin {
 	@Redirect(method = "updateAttackType", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item updateAttackType(ItemStack itemStack) {
-		return itemStack.getItem() instanceof FabricBow ? Items.BOW : itemStack.getItem();
+		return itemStack.getItem() instanceof BowInterface ? Items.BOW : itemStack.getItem();
 	}
 }

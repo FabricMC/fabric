@@ -27,60 +27,50 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.network.NetworkThreadUtils;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.util.registry.Registry;
 
-import net.fabricmc.fabric.impl.extensibility.item.v1.ExtensibilityApiEntry;
-import net.fabricmc.fabric.impl.extensibility.item.v1.FabricTridentItemEntity;
+import net.fabricmc.fabric.api.extensibility.item.v1.trident.SimpleTridentItemEntity;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public class ClientPlayNetworkHandlerMixin {
 	@Shadow
-	MinecraftClient client;
+	private MinecraftClient client;
 
 	@Shadow
-	ClientWorld world;
+	private ClientWorld world;
 
 	@Inject(method = "onEntitySpawn", at = @At("HEAD"), cancellable = true)
-	public void onEntitySpawnMixin(EntitySpawnS2CPacket packet, CallbackInfo info) {
-		NetworkThreadUtils.forceMainThread(packet, (ClientPlayNetworkHandler) (Object) this, (ThreadExecutor<?>) client);
+	public void overrideClientTridentSpawn(EntitySpawnS2CPacket packet, CallbackInfo info) {
+		if (packet.getEntityTypeId() != EntityType.TRIDENT) {
+			return;
+		}
+
+		NetworkThreadUtils.forceMainThread(packet, (ClientPlayNetworkHandler) (Object) this, client);
 		double d = packet.getX();
 		double e = packet.getY();
 		double f = packet.getZ();
 		EntityType<?> entityType = packet.getEntityTypeId();
-		Entity entity15 = null;
-		Entity entity16;
+		Entity tridentEntity = new TridentEntity(world, d, e, f);
 
-		if (entityType == EntityType.TRIDENT) {
-			entity15 = new TridentEntity(world, d, e, f);
-			entity16 = world.getEntityById(packet.getEntityData());
+		ItemStack tridentStack = new ItemStack(Registry.ITEM.get(packet.getEntityData()));
 
-			ItemStack tridentStack = new ItemStack(ExtensibilityApiEntry.tridentItems.remove());
-
-			if (tridentStack.getItem() != Items.TRIDENT) {
-				entity15 = new FabricTridentItemEntity(world, d, e, f, tridentStack);
-			}
-
-			if (entity16 != null) {
-				((PersistentProjectileEntity) entity15).setOwner(entity16);
-			}
+		if (tridentStack.getItem() != Items.TRIDENT) {
+			tridentEntity = new SimpleTridentItemEntity(world, d, e, f, tridentStack);
 		}
 
-		if (entity15 != null) {
-			int i = packet.getId();
-			entity15.updateTrackedPosition(d, e, f);
-			entity15.refreshPositionAfterTeleport(d, e, f);
-			entity15.pitch = packet.getPitch() * 360 / 256.0F;
-			entity15.yaw = packet.getYaw() * 360 / 256.0F;
-			entity15.setEntityId(i);
-			entity15.setUuid(packet.getUuid());
-			world.addEntity(i, entity15);
-			info.cancel();
-		}
+		int i = packet.getId();
+		tridentEntity.updateTrackedPosition(d, e, f);
+		tridentEntity.refreshPositionAfterTeleport(d, e, f);
+		tridentEntity.pitch = packet.getPitch() * 360 / 256.0F;
+		tridentEntity.yaw = packet.getYaw() * 360 / 256.0F;
+		tridentEntity.setEntityId(i);
+		tridentEntity.setUuid(packet.getUuid());
+		world.addEntity(i, tridentEntity);
+		info.cancel();
 	}
 }

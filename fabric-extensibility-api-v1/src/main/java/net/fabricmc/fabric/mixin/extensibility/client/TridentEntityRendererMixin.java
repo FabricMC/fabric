@@ -24,12 +24,12 @@ import net.minecraft.client.render.entity.TridentEntityRenderer;
 import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricTrident;
+import net.fabricmc.fabric.api.extensibility.item.v1.trident.TridentInterface;
 
 @Mixin(TridentEntityRenderer.class)
 public class TridentEntityRendererMixin {
 	@Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/TridentEntityRenderer;getTexture(Lnet/minecraft/entity/projectile/TridentEntity;)Lnet/minecraft/util/Identifier;"))
 	public Identifier getTextureMixin(TridentEntityRenderer renderer, TridentEntity entity) {
-		return entity.tridentStack.getItem() instanceof FabricTrident ? ((FabricTrident) entity.tridentStack.getItem()).getEntityTexture() : TridentEntityRenderer.TEXTURE;
+		return entity.tridentStack.getItem() instanceof TridentInterface ? ((TridentInterface) entity.tridentStack.getItem()).getEntityTexture() : TridentEntityRenderer.TEXTURE;
 	}
 }

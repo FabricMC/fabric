@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.extensibility.item.v1;
+package net.fabricmc.fabric.api.extensibility.item.v1.crossbow;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
-
 /**
  * This is the default implementation for FabricCrossbow, allowing for the easy creation of new bows with no new modded functionality.
  */
-public class FabricCrossbowItem extends CrossbowItem implements FabricCrossbow {
-	public FabricCrossbowItem(Settings settings) {
+public class SimpleCrossbowItem extends CrossbowItem implements CrossbowInterface {
+	public SimpleCrossbowItem(Settings settings) {
 		super(settings);
 	}
 

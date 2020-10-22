@@ -25,10 +25,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.impl.extensibility.item.v1.FabricBowItem;
+import net.fabricmc.fabric.api.extensibility.item.v1.bow.SimpleBowItem;
 
 public class FabricBowTests implements ModInitializer {
-	public static final Item TEST_BOW = new FabricBowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
+	public static final Item TEST_BOW = new SimpleBowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
 		@Override
 		public void modifyShotProjectile(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, int remainingUseTicks, PersistentProjectileEntity persistentProjectileEntity) {
 			persistentProjectileEntity.setPunch(100);

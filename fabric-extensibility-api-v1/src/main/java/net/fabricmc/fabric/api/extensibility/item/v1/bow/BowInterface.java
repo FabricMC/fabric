@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.extensibility.item.v1;
+package net.fabricmc.fabric.api.extensibility.item.v1.bow;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -24,7 +24,7 @@ import net.minecraft.item.ItemStack;
  * An interface to implement for all custom bows in fabric. <br>
  * Note: This is meant to be used on a BowItem class, the functionality will not work otherwise.
  */
-public interface FabricBow {
+public interface BowInterface {
 	/**
 	 * In this method you can modify the behavior of arrows shot from your custom bow. Applies all of the vanilla arrow modifiers first.
 	 *

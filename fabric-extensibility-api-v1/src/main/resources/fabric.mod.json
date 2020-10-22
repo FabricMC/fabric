@@ -22,11 +22,6 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "entrypoints": {
-    "client": [
-      "net.fabricmc.fabric.impl.extensibility.item.v1.ExtensibilityApiEntry"
-    ]
-  },
   "description": "Makes the hardcoded features of Minecraft more extendable",
   "accessWidener": "fabric-extensibility-api-v1.accesswidener"
 }

@@ -14,20 +14,18 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.extensibility.item.v1;
+package net.fabricmc.fabric.api.extensibility.item.v1.bow;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
-
 /**
  * This is the default implementation for FabricBow, allowing for the easy creation of new bows with no new modded functionality.
  */
-public class FabricBowItem extends BowItem implements FabricBow {
-	public FabricBowItem(Settings settings) {
+public class SimpleBowItem extends BowItem implements BowInterface {
+	public SimpleBowItem(Settings settings) {
 		super(settings);
 	}
 

@@ -30,14 +30,14 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricBow;
+import net.fabricmc.fabric.api.extensibility.item.v1.bow.BowInterface;
 
 @Mixin(BowItem.class)
 public class BowItemMixin {
 	@Inject(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void onStoppedUsing(ItemStack bowStack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack arrowStack, int i, float f, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
-		if (this instanceof FabricBow) {
-			((FabricBow) this).modifyShotProjectile(bowStack, arrowStack, user, remainingUseTicks, persistentProjectileEntity);
+		if (this instanceof BowInterface) {
+			((BowInterface) this).modifyShotProjectile(bowStack, arrowStack, user, remainingUseTicks, persistentProjectileEntity);
 		}
 	}
 }

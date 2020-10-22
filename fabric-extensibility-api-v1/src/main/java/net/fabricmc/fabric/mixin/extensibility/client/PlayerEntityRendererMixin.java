@@ -30,7 +30,7 @@ import net.minecraft.util.Hand;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
+import net.fabricmc.fabric.api.extensibility.item.v1.crossbow.CrossbowInterface;
 
 @Environment(EnvType.CLIENT)
 @Mixin(PlayerEntityRenderer.class)
@@ -39,7 +39,7 @@ public class PlayerEntityRendererMixin {
 	private static void getArmPose(AbstractClientPlayerEntity abstractClientPlayerEntity, Hand hand, CallbackInfoReturnable<BipedEntityModel.ArmPose> cir) {
 		ItemStack stackInHand = abstractClientPlayerEntity.getStackInHand(hand);
 
-		if (!abstractClientPlayerEntity.handSwinging && stackInHand.getItem() instanceof FabricCrossbow && CrossbowItem.isCharged(stackInHand)) {
+		if (!abstractClientPlayerEntity.handSwinging && stackInHand.getItem() instanceof CrossbowInterface && CrossbowItem.isCharged(stackInHand)) {
 			cir.setReturnValue(BipedEntityModel.ArmPose.CROSSBOW_HOLD);
 		}
 	}

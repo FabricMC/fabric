@@ -24,14 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.FabricCrossbow;
+import net.fabricmc.fabric.api.extensibility.item.v1.crossbow.CrossbowInterface;
 
 @Mixin(Item.class)
 abstract class ItemMixin {
 	@Inject(method = "isUsedOnRelease", at = @At("HEAD"), cancellable = true)
 	public void isUsedOnRelease(ItemStack itemStack, CallbackInfoReturnable<Boolean> cir) {
-		if (itemStack.getItem() instanceof FabricCrossbow) {
-			System.out.println("debug");
+		if (itemStack.getItem() instanceof CrossbowInterface) {
 			cir.setReturnValue(true);
 		}
 	}

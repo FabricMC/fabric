@@ -25,10 +25,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.impl.extensibility.item.v1.FabricCrossbowItem;
+import net.fabricmc.fabric.api.extensibility.item.v1.crossbow.SimpleCrossbowItem;
 
 public class FabricCrossbowTests implements ModInitializer {
-	public static final Item TEST_CROSSBOW = new FabricCrossbowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
+	public static final Item TEST_CROSSBOW = new SimpleCrossbowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
 		@Override
 		public void modifyShotProjectile(ItemStack crossbowStack, LivingEntity entity, ItemStack projectileStack, PersistentProjectileEntity persistentProjectileEntity) {
 			persistentProjectileEntity.setDamage(1000);

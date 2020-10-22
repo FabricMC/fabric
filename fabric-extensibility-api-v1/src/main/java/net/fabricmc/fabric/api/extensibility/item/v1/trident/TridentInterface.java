@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.extensibility.item.v1;
+package net.fabricmc.fabric.api.extensibility.item.v1.trident;
 
 import net.minecraft.client.util.ModelIdentifier;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.util.Identifier;
 
 /**
- * In development.
+ * An interface to implement for all custom tridents in fabric. <br>
+ * Note: This is meant to be used on a TridentItem class, the functionality will not work otherwise.
  */
-public interface FabricTrident {
+public interface TridentInterface {
 	/**
 	 * should be `namespace:item_name#inventory`.
 	 *
@@ -30,7 +32,16 @@ public interface FabricTrident {
 	 */
 	ModelIdentifier getInventoryModelIdentifier();
 
-	ModelIdentifier getTridentInHandModelIdentifier();
-
+	/**
+	 *
+	 * @return The Identifier for the texture of the trident entity
+	 */
 	Identifier getEntityTexture();
+
+	/**
+	 * Gets the trident entity for the trident item, allowing for custom tridents that have different features.
+	 * @param trident The vanilla trident to base custom trident of off
+	 * @return The custom trident
+	 */
+	TridentEntity getTridentEntity(TridentEntity trident);
 }

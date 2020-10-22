@@ -16,26 +16,45 @@
 
 package net.fabricmc.fabric.test.extensibility.client;
 
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.model.TridentEntityModel;
+import net.minecraft.client.render.item.ItemRenderer;
+import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
+import net.fabricmc.fabric.api.extensibility.item.v1.trident.TridentInterface;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.fabricmc.fabric.test.extensibility.FabricBowTests;
 import net.fabricmc.fabric.test.extensibility.FabricCrossbowTests;
 import net.fabricmc.fabric.test.extensibility.FabricTridentTests;
 
 public class FabricExtensibilityTestmodClient implements ClientModInitializer {
+	private static final TridentEntityModel tridentModel = new TridentEntityModel();
+
 	@Override
 	public void onInitializeClient() {
 		registerCrossbow(FabricCrossbowTests.TEST_CROSSBOW);
 		registerBow(FabricBowTests.TEST_BOW);
 		registerTridentModels(FabricTridentTests.TEST_TRIDENT);
+
+		BuiltinItemRendererRegistry.INSTANCE.register(FabricTridentTests.TEST_TRIDENT, (ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) -> {
+			matrices.push();
+			matrices.scale(1.0F, -1.0F, -1.0F);
+			VertexConsumer vertexConsumer2 = ItemRenderer.getDirectGlintVertexConsumer(vertexConsumers, tridentModel.getLayer(((TridentInterface) FabricTridentTests.TEST_TRIDENT).getEntityTexture()), false, stack.hasGlint());
+			tridentModel.render(matrices, vertexConsumer2, light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
+			matrices.pop();
+		});
 	}
 
 	public static void registerCrossbow(Item crossbow) {
