@@ -132,7 +132,7 @@ public class ItemRenderContext extends AbstractRenderContext implements RenderCo
 	 */
 	private VertexConsumer selectVertexConsumer(RenderLayer layerIn) {
 		final RenderLayer layer = transformMode == ModelTransformation.Mode.GUI ? TexturedRenderLayers.getEntityTranslucentCull() : layerIn;
-		return ItemRenderer.getArmorVertexConsumer(vertexConsumerProvider, layer, true, itemStack.hasGlint());
+		return ItemRenderer.getArmorGlintConsumer(vertexConsumerProvider, layer, true, itemStack.hasGlint());
 	}
 
 	private class Maker extends MutableQuadViewImpl implements QuadEmitter {
