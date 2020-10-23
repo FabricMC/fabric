@@ -22,10 +22,10 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.extensibility.item.v1.trident.SimpleTridentItem;
+import net.fabricmc.fabric.test.extensibility.trident.TestTrident;
 
 public class FabricTridentTests implements ModInitializer {
-	public static final Item TEST_TRIDENT = new SimpleTridentItem(new Item.Settings().group(ItemGroup.COMBAT).maxCount(1).maxDamage(1000), new Identifier("fabric-extensibility-api-v1-testmod", "textures/entity/test_trident.png"));
+	public static final Item TEST_TRIDENT = new TestTrident(new Item.Settings().group(ItemGroup.COMBAT).maxCount(1).maxDamage(1000));
 
 	@Override
 	public void onInitialize() {
