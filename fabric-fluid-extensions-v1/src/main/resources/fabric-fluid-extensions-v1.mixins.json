@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.fluid.extension",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "FlowableFluidMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
