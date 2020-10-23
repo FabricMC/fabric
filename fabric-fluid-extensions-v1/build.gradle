@@ -1,2 +1,0 @@
-archivesBaseName = "fabric-fluid-extensions-v1"
-version = getSubprojectVersion(project, "1.0.0")
