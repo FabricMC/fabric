@@ -51,7 +51,7 @@ public class FabricExtensibilityTestmodClient implements ClientModInitializer {
 		BuiltinItemRendererRegistry.INSTANCE.register(FabricTridentTests.TEST_TRIDENT, (ItemStack stack, ModelTransformation.Mode mode, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) -> {
 			matrices.push();
 			matrices.scale(1.0F, -1.0F, -1.0F);
-			VertexConsumer vertexConsumer2 = ItemRenderer.getDirectGlintVertexConsumer(vertexConsumers, tridentModel.getLayer(((TridentInterface) FabricTridentTests.TEST_TRIDENT).getEntityTexture()), false, stack.hasGlint());
+			VertexConsumer vertexConsumer2 = ItemRenderer.getItemGlintConsumer(vertexConsumers, tridentModel.getLayer(((TridentInterface) FabricTridentTests.TEST_TRIDENT).getEntityTexture()), false, stack.hasGlint());
 			tridentModel.render(matrices, vertexConsumer2, light, overlay, 1.0F, 1.0F, 1.0F, 1.0F);
 			matrices.pop();
 		});
