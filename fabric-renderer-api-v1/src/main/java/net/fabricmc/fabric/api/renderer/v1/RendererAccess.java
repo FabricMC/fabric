@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.renderer.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.fabricmc.fabric.impl.renderer.RendererAccessImpl;
 
 /**
@@ -37,6 +39,7 @@ public interface RendererAccess {
 	 * Access to the current {@link Renderer} for creating and retrieving model builders
 	 * and materials. Will return null if no render plug in is active.
 	 */
+	@Nullable
 	Renderer getRenderer();
 
 	/**

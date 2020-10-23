@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.client.render.fluid.v1;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
@@ -32,13 +34,13 @@ public interface FluidRenderHandler {
 	 *
 	 * <p>The "fabric-textures" module contains sprite rendering facilities, which may come in handy here.
 	 *
-	 * @param view The world view pertaining to the fluid. May be null!
-	 * @param pos The position of the fluid in the world. May be null!
+	 * @param view  The world view pertaining to the fluid. May be null!
+	 * @param pos   The position of the fluid in the world. May be null!
 	 * @param state The current state of the fluid.
 	 * @return An array of size two: the first entry contains the "still" sprite,
 	 * while the second entry contains the "flowing" sprite.
 	 */
-	Sprite[] getFluidSprites(/* Nullable */ BlockRenderView view, /* Nullable */ BlockPos pos, FluidState state);
+	Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state);
 
 	/**
 	 * Get the tint color for a fluid being rendered at a given position.
@@ -46,12 +48,12 @@ public interface FluidRenderHandler {
 	 * <p>Note: As of right now, our hook cannot handle setting a custom alpha
 	 * tint here - as such, it must be contained in the texture itself!
 	 *
-	 * @param view The world view pertaining to the fluid. May be null!
-	 * @param pos The position of the fluid in the world. May be null!
+	 * @param view  The world view pertaining to the fluid. May be null!
+	 * @param pos   The position of the fluid in the world. May be null!
 	 * @param state The current state of the fluid.
 	 * @return The tint color of the fluid.
 	 */
-	default int getFluidColor(BlockRenderView view, BlockPos pos, FluidState state) {
+	default int getFluidColor(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state) {
 		return -1;
 	}
 }

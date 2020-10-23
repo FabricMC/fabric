@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.object.builder.v1.villager;
 import static com.google.common.base.Preconditions.checkState;
 
 import com.google.common.collect.ImmutableSet;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -46,7 +47,7 @@ public final class VillagerProfessionBuilder {
 	private final ImmutableSet.Builder<Block> secondaryJobSiteBlockBuilder = ImmutableSet.builder();
 	private Identifier identifier;
 	private PointOfInterestType pointOfInterestType;
-	/* @Nullable */
+	@Nullable
 	private SoundEvent workSoundEvent;
 
 	private VillagerProfessionBuilder() {
@@ -54,6 +55,7 @@ public final class VillagerProfessionBuilder {
 
 	/**
 	 * Creates a builder instance to allow for creation of a {@link VillagerProfession}.
+	 *
 	 * @return A new builder.
 	 */
 	public static VillagerProfessionBuilder create() {
@@ -140,7 +142,7 @@ public final class VillagerProfessionBuilder {
 	 * @param workSoundEvent The {@link SoundEvent} to be played.
 	 * @return this builder.
 	 */
-	public VillagerProfessionBuilder workSound(/* @Nullable */ SoundEvent workSoundEvent) {
+	public VillagerProfessionBuilder workSound(@Nullable SoundEvent workSoundEvent) {
 		this.workSoundEvent = workSoundEvent;
 		return this;
 	}

@@ -20,6 +20,7 @@ import java.util.WeakHashMap;
 
 import net.minecraft.item.Item;
 
+import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
 public final class FabricItemInternals {
@@ -37,14 +38,20 @@ public final class FabricItemInternals {
 
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
+			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
 		}
 	}
 
 	public static final class ExtraData {
 		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
+		private /* @Nullable */ CustomDamageHandler customDamageHandler;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
+		}
+
+		public void customDamage(CustomDamageHandler handler) {
+			this.customDamageHandler = handler;
 		}
 	}
 }
