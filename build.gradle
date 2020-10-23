@@ -9,7 +9,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.5.25" apply false
+	id "fabric-loom" version "0.5.33" apply false
 	id "net.minecrell.licenser" version "0.4.1"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -21,7 +21,7 @@ class Globals {
 	static def baseVersion = "0.24.1"
 	static def mcVersion = "1.16.3"
 	static def yarnVersion = "+build.47"
-	static def loaderVersion = "0.9.2+build.206"
+	static def loaderVersion = "0.10.3+build.211"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
