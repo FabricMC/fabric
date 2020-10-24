@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: gradle/wrapper-validation-action@v1
-      - run: ./gradlew build publishToMavenLocal --stacktrace --parallel
+      - run: ./gradlew build publishToMavenLocal --stacktrace --parallel --no-daemon
       - uses: actions/upload-artifact@v2
         with:
           name: Artifacts
