@@ -16,12 +16,9 @@
 
 package net.fabricmc.fabric.mixin.resource.loader;
 
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-<<<<<<< HEAD:fabric-resource-loader-v0/src/main/java/net/fabricmc/fabric/mixin/resource/loader/FileResourcePackProviderAccessor.java
 import net.minecraft.resource.FileResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 
@@ -29,13 +26,4 @@ import net.minecraft.resource.ResourcePackSource;
 public interface FileResourcePackProviderAccessor {
 	@Accessor("field_25345")
 	ResourcePackSource getResourcePackSource();
-=======
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.BiomeSource;
-
-@Mixin(BiomeSource.class)
-public interface BiomeSourceAccessor {
-	@Accessor
-	void setBiomes(List<Biome> biomes);
->>>>>>> 7a4deef8... Ported 1.16.1 biomes-api-v1 to 1.16.2.:fabric-object-builder-api-v1/src/main/java/net/fabricmc/fabric/mixin/object/builder/BiomeSourceAccessor.java
 }
