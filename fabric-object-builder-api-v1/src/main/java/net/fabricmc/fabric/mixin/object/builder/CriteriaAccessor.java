@@ -16,11 +16,9 @@
 
 package net.fabricmc.fabric.mixin.object.builder;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
-<<<<<<< HEAD:fabric-object-builder-api-v1/src/main/java/net/fabricmc/fabric/mixin/object/builder/CriteriaAccessor.java
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.advancement.criterion.Criterion;
 
@@ -29,16 +27,5 @@ public interface CriteriaAccessor {
 	@Invoker
 	static <T extends Criterion<?>> T callRegister(T object) {
 		throw new AssertionError("Mixin dummy");
-=======
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-
-@Mixin(Biomes.class)
-public interface BiomesAccessor {
-	@Accessor
-	static Int2ObjectMap<RegistryKey<Biome>> getBIOMES() {
-		throw new AssertionError("mixin");
->>>>>>> 7a4deef8... Ported 1.16.1 biomes-api-v1 to 1.16.2.:fabric-object-builder-api-v1/src/main/java/net/fabricmc/fabric/mixin/object/builder/BiomesAccessor.java
 	}
 }
