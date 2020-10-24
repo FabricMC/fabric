@@ -23,6 +23,8 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.TriState;
 
+import java.util.function.BiFunction;
+
 /**
  * Events to intercept the vanilla enchantment logic.
  *
@@ -32,7 +34,7 @@ import net.fabricmc.fabric.api.util.TriState;
  * with any questions surrounding implementation choices, functionality, or updating
  * newer versions of the game.</p>
  */
-public class EnchantmentEvents {
+public final class EnchantmentEvents {
 	/**
 	 * Overrides whether or not the given enchantment should be applied to the given item
 	 * only when enchanted using an anvil.
@@ -40,8 +42,8 @@ public class EnchantmentEvents {
 	 * <p>Callbacks are evaluated on a first come, first serve basis where callbacks
 	 * registered earlier will have functional priority over ones registered later.</p>
 	 */
-	public static final Event<AcceptEnchantment> ACCEPT_APPLICATION = EventFactory.createArrayBacked(AcceptEnchantment.class, (callbacks) -> (enchantment, stack) -> {
-		for (AcceptEnchantment callback : callbacks) {
+	public static final Event<AcceptApplication> ACCEPT_APPLICATION = EventFactory.createArrayBacked(AcceptApplication.class, (callbacks) -> (enchantment, stack) -> {
+		for (AcceptApplication callback : callbacks) {
 			TriState result = callback.shouldAccept(enchantment, stack);
 
 			if (result != TriState.DEFAULT) {
@@ -77,14 +79,15 @@ public class EnchantmentEvents {
 	 *
 	 * @param callback The enchantment callback to add to both enchantment events.
 	 */
-	public static void registerAll(AcceptEnchantment callback) {
-		ACCEPT_ENCHANTMENT.register(callback);
-		ACCEPT_APPLICATION.register(callback);
+	public static void registerAll(BiFunction<Enchantment, ItemStack, TriState> callback) {
+		ACCEPT_ENCHANTMENT.register((AcceptEnchantment) callback);
+		ACCEPT_APPLICATION.register((AcceptApplication) callback);
 	}
 
 	public interface AcceptEnchantment {
 		/**
-		 * Determines whether or not the given enchantment should be applied to the given item stack.
+		 * Determines whether or not the given enchantment should be applied to the given item stack
+		 * using an enchantment table.
 		 *
 		 * <p>Returning {@link net.fabricmc.fabric.api.util.TriState#DEFAULT} will delegate to the
 		 * vanilla/modded default functionality for the enchantment. Returning
@@ -95,7 +98,28 @@ public class EnchantmentEvents {
 		 *
 		 * @param enchantment The enchantment looking to be applied.
 		 * @param stack The item stack looking to accept the given enchantment.
-		 * @return Whether or not the given enchantment should be applied to the given item stack.
+		 * @return Whether or not the given enchantment should be applied to the given item stack
+		 * through the use of an enchantment table.
+		 */
+		TriState shouldAccept(Enchantment enchantment, ItemStack stack);
+	}
+
+	public interface AcceptApplication {
+		/**
+		 * Determines whether or not the given enchantment should be applied to the given item stack
+		 * using an anvil.
+		 *
+		 * <p>Returning {@link net.fabricmc.fabric.api.util.TriState#DEFAULT} will delegate to the
+		 * vanilla/modded default functionality for the enchantment. Returning
+		 * {@link net.fabricmc.fabric.api.util.TriState#TRUE} will override the default functionality
+		 * and force the item to accept the enchantment. Returning
+		 * {@link net.fabricmc.fabric.api.util.TriState#FALSE} will override the default functionality
+		 * and prevent the item from accepting the enchantment.</p>
+		 *
+		 * @param enchantment The enchantment looking to be applied.
+		 * @param stack The item stack looking to accept the given enchantment.
+		 * @return Whether or not the given enchantment should be applied to the given item stack
+		 * through the use of an anvil.
 		 */
 		TriState shouldAccept(Enchantment enchantment, ItemStack stack);
 	}
