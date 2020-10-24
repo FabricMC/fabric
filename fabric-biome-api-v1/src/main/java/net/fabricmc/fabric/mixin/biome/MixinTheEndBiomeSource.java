@@ -68,13 +68,11 @@ public class MixinTheEndBiomeSource {
 	private void fabric_getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
 
-		if (BIOME_REGION_MAP.containsKey(vanillaBiome)) {
-			RegistryKey<Biome> region = BIOME_REGION_MAP.get(vanillaBiome);
-			// Since the pickers are populated by this mixin, picker will never be null.
-			WeightedBiomePicker picker = InternalBiomeData.getEndVariants().get(region);
-			RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX/16.0, 0, biomeZ/16.0);
+		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
+		// Since the pickers are populated by this mixin, picker will never be null.
+		WeightedBiomePicker picker = InternalBiomeData.getEndVariants().get(vanillaKey);
+		RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX, 0, biomeZ);
 
-			cir.setReturnValue(biomeRegistry.get(biomeKey));
-		}
+		cir.setReturnValue(biomeRegistry.get(biomeKey));
 	}
 }
