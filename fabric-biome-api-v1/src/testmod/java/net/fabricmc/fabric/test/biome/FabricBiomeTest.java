@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
  *
@@ -16,6 +17,11 @@
 
 package net.fabricmc.fabric.test.biome;
 
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
+import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
+import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
@@ -23,12 +29,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.DefaultBiomeCreator;
-
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biomes.v1.NetherBiomes;
-import net.fabricmc.fabric.api.biomes.v1.OverworldBiomes;
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.fabricmc.fabric.api.biomes.v1.TheEndBiomes;
 
 /**
  * <b>NOTES FOR TESTING:</b>
@@ -63,9 +63,7 @@ public class FabricBiomeTest implements ModInitializer {
 
 		OverworldBiomes.addHillsBiome(BiomeKeys.BAMBOO_JUNGLE, BiomeKeys.BASALT_DELTAS, 0.9);
 
-		OverworldBiomes.addContinentalBiome(BuiltInBiomes.END_HIGHLANDS, OverworldClimate.DRY, 0.5);
-
-		Registry.register(BuiltinRegistries.BIOME, TEST_CRIMSON_FOREST.getValue(), DefaultBiomeCreator.createPlains(false));
+		OverworldBiomes.addContinentalBiome(BiomeKeys.END_HIGHLANDS, OverworldClimate.DRY, 0.5);
 
 		// TESTING HINT: to get to the end:
 		// /execute in minecraft:the_end run tp @s 0 90 0

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.biomes.v1;
-
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BuiltInBiomes;
+package net.fabricmc.fabric.api.biome.v1;
 
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
 
 /**
  * API that allows for adding biomes to the biome source for The End.
@@ -39,7 +38,7 @@ public final class TheEndBiomes {
 	 * Vanilla biomes have a weight of 1.0
 	 */
 	public static void addMainIslandBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BuiltInBiomes.THE_END, biome, weight);
+		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.THE_END, biome, weight);
 	}
 
 	/**
@@ -51,7 +50,7 @@ public final class TheEndBiomes {
 	 * Vanilla biomes have a weight of 1.0
 	 */
 	public static void addHighlandsBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BuiltInBiomes.END_HIGHLANDS, biome, weight);
+		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.END_HIGHLANDS, biome, weight);
 	}
 
 	/**
@@ -63,7 +62,7 @@ public final class TheEndBiomes {
 	 * Vanilla biomes have a weight of 1.0
 	 */
 	public static void addMidlandsBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BuiltInBiomes.END_MIDLANDS, biome, weight);
+		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.END_MIDLANDS, biome, weight);
 	}
 
 	/**
@@ -75,7 +74,7 @@ public final class TheEndBiomes {
 	 * Vanilla biomes have a weight of 1.0
 	 */
 	public static void addBarrensBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BuiltInBiomes.END_BARRENS, biome, weight);
+		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.END_BARRENS, biome, weight);
 	}
 
 	/**
@@ -87,6 +86,6 @@ public final class TheEndBiomes {
 	 * Vanilla biomes have a weight of 1.0
 	 */
 	public static void addSmallIslandsBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BuiltInBiomes.SMALL_END_ISLANDS, biome, weight);
+		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.SMALL_END_ISLANDS, biome, weight);
 	}
 }

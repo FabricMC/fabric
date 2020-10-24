@@ -16,24 +16,22 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.IntConsumer;
-
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biome.AddHillsLayerAccessor;
+import net.fabricmc.fabric.mixin.biome.BuiltinBiomesAccessor;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import net.fabricmc.fabric.api.biomes.v1.OverworldClimate;
-import net.fabricmc.fabric.mixin.biome.AddHillsLayerAccessor;
-import net.fabricmc.fabric.mixin.biome.BiomesAccessor;
+import java.util.List;
+import java.util.Map;
+import java.util.function.IntConsumer;
 
 /**
  * Internal utilities used for biome sampling.
@@ -71,7 +69,7 @@ public final class InternalBiomeUtils {
 			// The parent-child relationship previously modeled in Biome itself is gone,
 			// and has been - for the time being - replaced by a hardcoded raw-id map
 			// in AddHillsLayer.
-			Int2IntMap parentChildMap = AddHillsLayerAccessor.getField_26727();
+			Int2IntMap parentChildMap = AddHillsLayerAccessor.getBaseToVariantMap();
 			return parentChildMap.get(mainBiomeId) != secondaryBiomeId
 					&& parentChildMap.get(secondaryBiomeId) != mainBiomeId;
 		}
@@ -148,7 +146,7 @@ public final class InternalBiomeUtils {
 		if (reqWeightSum < vanillaArray.length) {
 			// Vanilla biome; look it up from the vanilla array and transform accordingly.
 
-			result.accept(transformBiome(random, Biomes.fromRawId(vanillaArray[(int) reqWeightSum]), climate));
+			result.accept(transformBiome(random, BuiltinBiomes.fromRawId(vanillaArray[(int) reqWeightSum]), climate));
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 
@@ -159,17 +157,17 @@ public final class InternalBiomeUtils {
 	}
 
 	public static int getRawId(RegistryKey<Biome> key) {
-		return BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.method_31140(key));
+		return BuiltinRegistries.BIOME.getRawId(BuiltinRegistries.BIOME.getOrThrow(key));
 	}
 
 	/**
-	 * Makes sure that the given registry key is mapped in {@link Biomes}. This mapping may be absent
+	 * Makes sure that the given registry key is mapped in {@link BuiltinBiomes}. This mapping may be absent
 	 * if mods register their biomes only in {@link BuiltinRegistries#BIOME}, and not using the
-	 * private method in {@link Biomes}.
+	 * private method in {@link BuiltinBiomes}.
 	 */
 	public static void ensureIdMapping(RegistryKey<Biome> biomeKey) {
 		int rawId = getRawId(biomeKey);
-		Int2ObjectMap<RegistryKey<Biome>> biomes = BiomesAccessor.getBIOMES();
+		Int2ObjectMap<RegistryKey<Biome>> biomes = BuiltinBiomesAccessor.getBY_RAW_ID();
 
 		if (!biomes.containsKey(rawId)) {
 			LOGGER.debug("Automatically creating layer-related raw-id mapping for biome {}", biomeKey);

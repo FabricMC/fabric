@@ -16,19 +16,11 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -36,8 +28,7 @@ import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
-import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
+import java.util.*;
 
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation
@@ -56,8 +47,8 @@ public final class InternalBiomeData {
 	// Pre-populate with the biomes that correspond to the region's of the end
 	// See the constructor of TheEndBiomeSource for where these are hardcoded in Vanilla
 	private static final List<RegistryKey<Biome>> VANILLA_END_BIOMES = ImmutableList.of(
-			BuiltInBiomes.THE_END, BuiltInBiomes.END_HIGHLANDS, BuiltInBiomes.END_MIDLANDS,
-			BuiltInBiomes.SMALL_END_ISLANDS, BuiltInBiomes.END_BARRENS
+			BiomeKeys.THE_END, BiomeKeys.END_HIGHLANDS, BiomeKeys.END_MIDLANDS,
+			BiomeKeys.SMALL_END_ISLANDS, BiomeKeys.END_BARRENS
 	);
 	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_VARIANTS;
 

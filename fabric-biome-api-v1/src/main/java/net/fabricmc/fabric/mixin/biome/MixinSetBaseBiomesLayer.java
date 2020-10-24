@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.BuiltInBiomes;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.SetBaseBiomesLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
@@ -82,16 +82,16 @@ public class MixinSetBaseBiomesLayer {
 	@Inject(at = @At("RETURN"), method = "sample", cancellable = true)
 	private void transformVariants(LayerRandomnessSource random, int value, CallbackInfoReturnable<Integer> info) {
 		int biomeId = info.getReturnValueI();
-		RegistryKey<Biome> biome = Biomes.fromRawId(biomeId);
+		RegistryKey<Biome> biome = BuiltinBiomes.fromRawId(biomeId);
 
 		// Determine what special case this is...
 		OverworldClimate climate;
 
-		if (biome == BuiltInBiomes.BADLANDS_PLATEAU || biome == BuiltInBiomes.WOODED_BADLANDS_PLATEAU) {
+		if (biome == BiomeKeys.BADLANDS_PLATEAU || biome == BiomeKeys.WOODED_BADLANDS_PLATEAU) {
 			climate = OverworldClimate.DRY;
-		} else if (biome == BuiltInBiomes.JUNGLE) {
+		} else if (biome == BiomeKeys.JUNGLE) {
 			climate = OverworldClimate.TEMPERATE;
-		} else if (biome == BuiltInBiomes.GIANT_TREE_TAIGA) {
+		} else if (biome == BiomeKeys.GIANT_TREE_TAIGA) {
 			climate = OverworldClimate.TEMPERATE;
 		} else {
 			climate = null;

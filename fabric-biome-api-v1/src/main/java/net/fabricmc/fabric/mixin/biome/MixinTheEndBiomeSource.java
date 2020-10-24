@@ -16,9 +16,15 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
+import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.biome.source.TheEndBiomeSource;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,38 +34,33 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import net.minecraft.world.biome.source.TheEndBiomeSource;
-
-import net.fabricmc.fabric.impl.biome.EndRegion;
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
-import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
+import java.util.HashMap;
+import java.util.Map;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {
 	@Shadow
 	@Final
-	private long field_24731;
+	private Registry<Biome> biomeRegistry;
 	@Unique
-	private final Map<Biome, EndRegion> BIOME_REGION_MAP = new HashMap<>();
+	private final Map<RegistryKey<Biome>, RegistryKey<Biome>> BIOME_REGION_MAP = new HashMap<>();
 	@Unique
-	private final LayerRandomnessSource randomnessSource = new SimpleLayerRandomnessSource(field_24731);
+	private LayerRandomnessSource randomnessSource;
 
-	@Inject(method = "<init>", at = @At("TAIL"))
-	private void fabric_addDefaultEndBiomes(long l, CallbackInfo ci) {
-		BIOME_REGION_MAP.put(Biomes.THE_END, EndRegion.MAIN_ISLAND);
-		BIOME_REGION_MAP.put(Biomes.END_HIGHLANDS, EndRegion.HIGHLANDS);
-		BIOME_REGION_MAP.put(Biomes.END_MIDLANDS, EndRegion.MIDLANDS);
-		BIOME_REGION_MAP.put(Biomes.END_BARRENS, EndRegion.BARRENS);
-		BIOME_REGION_MAP.put(Biomes.SMALL_END_ISLANDS, EndRegion.SMALL_ISLANDS);
+	@Inject(method = "<init>(Lnet/minecraft/util/registry/Registry;JLnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;)V", at = @At("TAIL"))
+	private void fabric_addDefaultEndBiomes(Registry<Biome> biomeRegistry, long seed, Biome centerBiome, Biome highlandsBiome, Biome midlandsBiome, Biome smallIslandsBiome, Biome barrensBiome, CallbackInfo ci) {
+		randomnessSource = new SimpleLayerRandomnessSource(seed);
 
-		for (Map.Entry<Biome, EndRegion> entry : BIOME_REGION_MAP.entrySet()) {
-			Biome biome = entry.getKey();
-			EndRegion region = entry.getValue();
-			InternalBiomeData.addEndBiome(biome, region, 1.0);
+		BIOME_REGION_MAP.put(BiomeKeys.THE_END, BiomeKeys.THE_END);
+		BIOME_REGION_MAP.put(BiomeKeys.END_HIGHLANDS, BiomeKeys.END_HIGHLANDS);
+		BIOME_REGION_MAP.put(BiomeKeys.END_MIDLANDS, BiomeKeys.END_MIDLANDS);
+		BIOME_REGION_MAP.put(BiomeKeys.END_BARRENS, BiomeKeys.END_BARRENS);
+		BIOME_REGION_MAP.put(BiomeKeys.SMALL_END_ISLANDS, BiomeKeys.SMALL_END_ISLANDS);
+
+		for (Map.Entry<RegistryKey<Biome>, RegistryKey<Biome>> entry : BIOME_REGION_MAP.entrySet()) {
+			RegistryKey<Biome> biome = entry.getKey();
+			RegistryKey<Biome> region = entry.getValue();
+			InternalBiomeData.addEndBiomeReplacement(biome, region, 1.0);
 		}
 	}
 
@@ -68,11 +69,12 @@ public class MixinTheEndBiomeSource {
 		Biome vanillaBiome = cir.getReturnValue();
 
 		if (BIOME_REGION_MAP.containsKey(vanillaBiome)) {
-			EndRegion region = BIOME_REGION_MAP.get(vanillaBiome);
+			RegistryKey<Biome> region = BIOME_REGION_MAP.get(vanillaBiome);
 			// Since the pickers are populated by this mixin, picker will never be null.
-			WeightedBiomePicker picker = InternalBiomeData.getEndRegionBiomePickers().get(region);
+			WeightedBiomePicker picker = InternalBiomeData.getEndVariants().get(region);
+			RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX/16.0, 0, biomeZ/16.0);
 
-			cir.setReturnValue(picker.pickFromNoise(randomnessSource, biomeX/16.0, 0, biomeZ/16.0));
+			cir.setReturnValue(biomeRegistry.get(biomeKey));
 		}
 	}
 }
