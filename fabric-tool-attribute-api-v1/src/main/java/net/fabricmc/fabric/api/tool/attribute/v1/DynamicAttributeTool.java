@@ -107,7 +107,7 @@ public interface DynamicAttributeTool {
 	/**
 	 * Add modifiers for any {@link net.minecraft.entity.attribute.EntityAttributes} your item should give when equipped, based on the stack.
 	 *
-	 * <p>Appends to either attribute modifier NBT or the result from {@link net.minecraft.item.Item#getModifiers(EquipmentSlot)}.</p>
+	 * <p>Appends to either attribute modifier NBT or the result from {@link net.minecraft.item.Item#getAttributeModifiers(EquipmentSlot)}.</p>
 	 *
 	 * @param slot  The equipment slot this item is equipped in.
 	 * @param stack The stack that's equipped.

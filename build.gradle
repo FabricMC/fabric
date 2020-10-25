@@ -5,22 +5,23 @@ buildscript {
 }
 
 plugins {
-	id 'java'
-	id 'eclipse'
-	id 'idea'
-	id 'maven-publish'
-	id 'fabric-loom' version '0.5.25' apply false
-	id 'net.minecrell.licenser' version '0.4.1'
+	id "java"
+	id "eclipse"
+	id "idea"
+	id "maven-publish"
+	id "fabric-loom" version "0.5.33" apply false
+	id "net.minecrell.licenser" version "0.4.1"
 	id "org.ajoberstar.grgit" version "3.1.1"
-	id 'com.matthewprenger.cursegradle' version "1.4.0"
+	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.22.1"
+	static def baseVersion = "0.24.1"
 	static def mcVersion = "1.16.3"
-	static def yarnVersion = "+build.1"
+	static def yarnVersion = "+build.47"
+	static def loaderVersion = "0.10.3+build.211"
 }
 
 version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
@@ -32,12 +33,14 @@ def getSubprojectVersion(project, version) {
 	if (grgit == null) {
 		return version + "+nogit"
 	}
+
 	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
+
 	if (latestCommits.isEmpty()) {
 		return version + "+uncommited"
-	} else {
-		return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
 	}
+
+	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
 }
 
 def getBranch() {
@@ -45,18 +48,20 @@ def getBranch() {
 		def branch = System.getenv().GIT_BRANCH
 		return branch.substring(branch.lastIndexOf("/") + 1)
 	}
+
 	if (grgit == null) {
 		return "unknown"
 	}
+
 	def branch = grgit.branch.current().name
 	return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
 allprojects {
-	apply plugin: 'checkstyle'
-	apply plugin: 'maven-publish'
-	apply plugin: 'fabric-loom'
-	apply plugin: 'net.minecrell.licenser'
+	apply plugin: "checkstyle"
+	apply plugin: "maven-publish"
+	apply plugin: "fabric-loom"
+	apply plugin: "net.minecrell.licenser"
 
 	sourceCompatibility = 1.8
 	targetCompatibility = 1.8
@@ -73,7 +78,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:0.9.2+build.206"
+		modCompile "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
 	}
 
 	configurations {
@@ -116,42 +121,44 @@ allprojects {
 		}
 
 		license {
-			header rootProject.file('HEADER')
-			include '**/*.java'
+			header rootProject.file("HEADER")
+			include "**/*.java"
 		}
 	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
-		classifier = 'sources'
+		archiveClassifier = "sources"
 		from sourceSets.main.allSource
 	}
 
 	checkstyle {
 		configFile = rootProject.file("checkstyle.xml")
-		toolVersion = '8.31'
+		toolVersion = "8.31"
 	}
 }
 
 javadoc {
 	options {
 		source = "8"
-		encoding = 'UTF-8'
-		charSet = 'UTF-8'
+		encoding = "UTF-8"
+		charSet = "UTF-8"
 		memberLevel = JavadocMemberLevel.PACKAGE
 		links(
-				'https://guava.dev/releases/21.0/api/docs/',
-				'https://asm.ow2.io/javadoc/',
-				'https://docs.oracle.com/javase/8/docs/api/',
-				'http://jenkins.liteloader.com/job/Mixin/javadoc/',
-				'https://logging.apache.org/log4j/2.x/log4j-api/apidocs/'
+				"https://guava.dev/releases/21.0/api/docs/",
+				"https://asm.ow2.io/javadoc/",
+				"https://docs.oracle.com/javase/8/docs/api/",
+				"http://jenkins.liteloader.com/job/Mixin/javadoc/",
+				"https://logging.apache.org/log4j/2.x/log4j-api/apidocs/"
 				// Need to add minecraft jd publication etc once there is one available
 		)
 		// Disable the crazy super-strict doclint tool in Java 8
-		addStringOption('Xdoclint:none', '-quiet')
+		addStringOption("Xdoclint:none", "-quiet")
 	}
+
 	allprojects.each {
 		source(it.sourceSets.main.allJava.srcDirs)
 	}
+
 	classpath = sourceSets.main.compileClasspath
 	include("**/api/**")
 	failOnError false
@@ -161,12 +168,12 @@ task javadocJar(type: Jar) {
 	dependsOn javadoc
 	from javadoc.destinationDir
 	//Set as `fatjavadoc` to prevent an ide form trying to use this javadoc, over using the modules javadoc
-	classifier = 'fatjavadoc'
+	archiveClassifier = "fatjavadoc"
 }
+
 build.dependsOn javadocJar
 
 subprojects {
-
 	dependencies {
 		testmodCompile sourceSets.main.output
 	}
@@ -186,6 +193,7 @@ subprojects {
 					artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
 						builtBy remapMavenJar
 					}
+
 					artifact(sourcesJar) {
 						builtBy remapSourcesJar
 					}
@@ -213,10 +221,13 @@ publishing {
 			artifact(file("${project.buildDir}/libs/$archivesBaseName-${version}-maven.jar")) {
 				builtBy remapMavenJar
 			}
+
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
+
 			artifact javadocJar
+
 			pom.withXml {
 				def depsNode = asNode().appendNode("dependencies")
 				subprojects.each {
@@ -235,12 +246,12 @@ publishing {
 
 void setupRepositories(RepositoryHandler repositories) {
 	//repositories.mavenLocal() // uncomment for testing
-	if (project.hasProperty('mavenPass')) {
+	if (project.hasProperty("mavenPass")) {
 		repositories.maven {
 			url "http://mavenupload.modmuss50.me/"
 			credentials {
-				username 'buildslave'
-				password project.getProperty('mavenPass')
+				username "buildslave"
+				password project.getProperty("mavenPass")
 			}
 		}
 	}
@@ -266,43 +277,48 @@ dependencies {
 }
 
 curseforge {
-	if (project.hasProperty('curse_api_key')) {
-		apiKey = project.getProperty('curse_api_key')
+	if (project.hasProperty("curse_api_key")) {
+		apiKey = project.getProperty("curse_api_key")
 	}
+
 	project {
-		id = '306612'
-		changelog = 'A changelog can be found at https://github.com/FabricMC/fabric/commits'
-		releaseType = 'release'
-		addGameVersion '1.16.3'
-		addGameVersion 'Fabric'
+		id = "306612"
+		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
+		releaseType = "release"
+		addGameVersion "1.16.3"
+		addGameVersion "Fabric"
+
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
 			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
 		}
+
 		afterEvaluate {
 			uploadTask.dependsOn("remapJar")
 		}
 	}
+
 	options {
 		forgeGradleIntegration = false
 	}
 }
 
-apply from: 'https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle'
+apply from: "https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle"
 
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
 task github(dependsOn: remapMavenJar) {
 	onlyIf {
-		project.hasProperty('github_api_key')
+		project.hasProperty("github_api_key")
 	}
+
 	doLast {
-		def github = GitHub.connectUsingOAuth(project.getProperty('github_api_key') as String)
+		def github = GitHub.connectUsingOAuth(project.getProperty("github_api_key") as String)
 		def repository = github.getRepository("FabricMC/fabric")
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
 		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER")
-		releaseBuilder.body('A changelog can be found at https://github.com/FabricMC/fabric/commits')
+		releaseBuilder.body("A changelog can be found at https://github.com/FabricMC/fabric/commits")
 		releaseBuilder.commitish(getBranch())
 
 		def ghRelease = releaseBuilder.create()
