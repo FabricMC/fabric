@@ -63,7 +63,7 @@ public class FabricBiomeTest implements ModInitializer {
 	private static final RegistryKey<Biome> TEST_END_HIGHLANDS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_highlands"));
 
 	private static BlockState STONE = Blocks.STONE.getDefaultState();
-	private static ConfiguredSurfaceBuilder<TernarySurfaceConfig> TEST_END_SURFACE_BUILDER = register("end", SurfaceBuilder.DEFAULT.method_30478(new TernarySurfaceConfig(STONE, STONE, STONE)));
+	private static ConfiguredSurfaceBuilder<TernarySurfaceConfig> TEST_END_SURFACE_BUILDER = register("end", SurfaceBuilder.DEFAULT.withConfig(new TernarySurfaceConfig(STONE, STONE, STONE)));
 
 	@Override
 	public void onInitialize() {
