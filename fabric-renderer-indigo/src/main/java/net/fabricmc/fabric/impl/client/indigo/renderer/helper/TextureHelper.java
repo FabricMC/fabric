@@ -104,6 +104,6 @@ public class TextureHelper {
 		UVLOCKERS[Direction.NORTH.getId()] = (q, i, t) -> q.sprite(i, t, 1 - q.x(i), 1 - q.y(i));
 		UVLOCKERS[Direction.SOUTH.getId()] = (q, i, t) -> q.sprite(i, t, q.x(i), 1 - q.y(i));
 		UVLOCKERS[Direction.DOWN.getId()] = (q, i, t) -> q.sprite(i, t, q.x(i), 1 - q.z(i));
-		UVLOCKERS[Direction.UP.getId()] = (q, i, t) -> q.sprite(i, t, q.x(i), 1 - q.z(i));
+		UVLOCKERS[Direction.UP.getId()] = (q, i, t) -> q.sprite(i, t, q.x(i), q.z(i));
 	}
 }

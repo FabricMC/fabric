@@ -129,7 +129,7 @@ public class MixinLevelStorageSession {
 		}
 	}
 
-	@Inject(method = "method_27426", at = @At("HEAD"))
+	@Inject(method = "backupLevelDataFile(Lnet/minecraft/util/registry/DynamicRegistryManager;Lnet/minecraft/world/SaveProperties;Lnet/minecraft/nbt/CompoundTag;)V", at = @At("HEAD"))
 	public void saveWorld(DynamicRegistryManager registryTracker, SaveProperties saveProperties, CompoundTag compoundTag, CallbackInfo info) {
 		if (!Files.exists(directory)) {
 			return;
