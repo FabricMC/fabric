@@ -162,8 +162,8 @@ public final class InternalBiomeData {
 	}
 
 	public static void addEndBiomeReplacement(RegistryKey<Biome> replaced, RegistryKey<Biome> variant, double weight) {
-		Preconditions.checkNotNull(replaced, "replaced is null");
-		Preconditions.checkNotNull(variant, "replaced is null");
+		Preconditions.checkNotNull(replaced, "replaced biome is null");
+		Preconditions.checkNotNull(variant, "variant biome is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
 		END_VARIANTS.computeIfAbsent(replaced, key -> new WeightedBiomePicker()).addBiome(variant, weight);
 	}
