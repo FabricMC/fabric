@@ -25,6 +25,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 /**
  * API that allows for adding biomes to the biome source for The End.
  */
+@Deprecated
 public final class TheEndBiomes {
 	private TheEndBiomes() { }
 
