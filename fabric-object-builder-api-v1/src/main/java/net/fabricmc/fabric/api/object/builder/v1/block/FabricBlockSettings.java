@@ -50,7 +50,6 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	protected FabricBlockSettings(AbstractBlock.Settings settings) {
 		super(((AbstractBlockSettingsAccessor) settings).getMaterial(), ((AbstractBlockSettingsAccessor) settings).getMaterialColorFactory());
 		// Mostly Copied from vanilla's copy method
-		// Note: If new methods are added to Block settings, an accessor must be added here
 		AbstractBlockSettingsAccessor thisAccessor = (AbstractBlockSettingsAccessor) this;
 		AbstractBlockSettingsAccessor otherAccessor = (AbstractBlockSettingsAccessor) settings;
 
@@ -59,7 +58,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.resistance(otherAccessor.getResistance());
 		this.collidable(otherAccessor.getCollidable());
 		thisAccessor.setRandomTicks(otherAccessor.getRandomTicks());
-		this.luminance(otherAccessor.getLuminance());
+		this.lightLevel(otherAccessor.getLuminance());
 		thisAccessor.setMaterialColorFactory(otherAccessor.getMaterialColorFactory());
 		this.sounds(otherAccessor.getSoundGroup());
 		this.slipperiness(otherAccessor.getSlipperiness());
@@ -135,8 +134,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	@Override
-	public FabricBlockSettings luminance(ToIntFunction<BlockState> luminanceFunction) {
-		super.luminance(luminanceFunction);
+	public FabricBlockSettings lightLevel(ToIntFunction<BlockState> levelFunction) {
+		super.lightLevel(levelFunction);
 		return this;
 	}
 
@@ -225,17 +224,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	/* FABRIC ADDITIONS*/
 
-	/**
-	 * @deprecated Please use {@link FabricBlockSettings#luminance(int)}.
-	 */
-	@Deprecated
 	public FabricBlockSettings lightLevel(int lightLevel) {
-		this.luminance(lightLevel);
-		return this;
-	}
-
-	public FabricBlockSettings luminance(int luminance) {
-		this.luminance(ignored -> luminance);
+		this.lightLevel(ignored -> lightLevel);
 		return this;
 	}
 

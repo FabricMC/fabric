@@ -11,8 +11,7 @@
     "MixinPlayerManager",
     "MixinLevelStorageSession",
     "MixinRegistry",
-    "MixinSimpleRegistry",
-    "DynamicRegistryManagerMixin"
+    "MixinSimpleRegistry"
   ],
   "client": [
     "client.MixinBlockColorMap",

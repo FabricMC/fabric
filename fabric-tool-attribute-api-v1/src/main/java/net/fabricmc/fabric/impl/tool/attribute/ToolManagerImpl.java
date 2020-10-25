@@ -22,7 +22,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -121,7 +120,6 @@ public final class ToolManagerImpl {
 
 	private static ToolHandler toolHandlerInvoker(ToolHandler[] toolHandlers) {
 		return new ToolHandler() {
-			@NotNull
 			@Override
 			public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
@@ -135,7 +133,6 @@ public final class ToolManagerImpl {
 				return ActionResult.PASS;
 			}
 
-			@NotNull
 			@Override
 			public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 				for (ToolHandler toolHandler : toolHandlers) {
@@ -155,7 +152,6 @@ public final class ToolManagerImpl {
 		return ENTRIES.computeIfAbsent(block, (bb) -> new EntryImpl());
 	}
 
-	@Nullable
 	public static Entry entryNullable(Block block) {
 		return ENTRIES.get(block);
 	}
@@ -244,7 +240,6 @@ public final class ToolManagerImpl {
 		 * @param user  the user involved in breaking the block, null if not applicable.
 		 * @return the result of effectiveness
 		 */
-		@NotNull
 		default ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 			return ActionResult.PASS;
 		}
@@ -258,9 +253,8 @@ public final class ToolManagerImpl {
 		 * @param user  the user involved in breaking the block, null if not applicable.
 		 * @return the result of mining speed.
 		 */
-		@NotNull
 		default TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-			return TypedActionResult.pass(1.0F);
+			return null;
 		}
 	}
 }

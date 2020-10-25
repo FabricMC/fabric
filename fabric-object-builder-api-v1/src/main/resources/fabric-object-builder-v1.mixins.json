@@ -16,8 +16,7 @@
     "TradeOffersAccessor",
     "TradeOffersMixin",
     "TypeAwareTradeMixin",
-    "VillagerProfessionAccessor",
-    "VillagerTypeAccessor"
+    "VillagerProfessionAccessor"
   ],
   "client": [
     "ModelPredicateProviderRegistryAccessor",

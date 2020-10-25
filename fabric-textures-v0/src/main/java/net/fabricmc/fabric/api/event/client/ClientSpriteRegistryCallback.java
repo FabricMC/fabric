@@ -53,7 +53,7 @@ public interface ClientSpriteRegistryCallback {
 	 */
 	@Deprecated
 	static void registerBlockAtlas(ClientSpriteRegistryCallback callback) {
-		event(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).register(callback);
+		event(SpriteAtlasTexture.BLOCK_ATLAS_TEX).register(callback);
 	}
 
 	class Registry {
