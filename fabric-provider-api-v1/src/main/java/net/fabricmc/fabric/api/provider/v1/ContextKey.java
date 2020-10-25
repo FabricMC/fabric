@@ -35,30 +35,44 @@ public final class ContextKey<C> {
 	public static final ContextKey<@Nullable Void> NO_CONTEXT = of(Void.class, new Identifier("fabric-provider-api-v1", "no_context"));
 	private static final Map<Class<?>, Map<Identifier, ContextKey<?>>> CONTEXT_KEYS = new HashMap<>();
 	private final Class<C> clazz;
-	private final Identifier identifier;
+	private final Identifier id;
 
-	private ContextKey(Class<C> clazz, Identifier identifier) {
+	private ContextKey(Class<C> clazz, Identifier id) {
 		this.clazz = clazz;
-		this.identifier = identifier;
+		this.id = id;
 	}
 
+	/**
+	 * @return the class type of the context object this key represents
+	 */
 	public Class<C> getContextClass() {
 		return this.clazz;
 	}
 
-	public Identifier getIdentifier() {
-		return this.identifier;
+	/**
+	 * @return the id of the context key
+	 */
+	public Identifier getId() {
+		return this.id;
 	}
 
-	public static synchronized <C> ContextKey<C> of(Class<C> clazz, Identifier identifier) {
-		Objects.requireNonNull(clazz, "Class type cannot be null");
-		Objects.requireNonNull(identifier, "Context key cannot be null");
+	/**
+	 * Gets a context key of a specified type and id, creating a new key if the context key of the type and id does not exist.
+	 *
+	 * @param type the class type of the context object
+	 * @param id the id of the context key
+	 * @param <C> the type of context object
+	 * @return the context key which represents a type of context object
+	 */
+	public static synchronized <C> ContextKey<C> of(Class<C> type, Identifier id) {
+		Objects.requireNonNull(type, "Class type cannot be null");
+		Objects.requireNonNull(id, "Context key cannot be null");
 
-		CONTEXT_KEYS.putIfAbsent(clazz, new HashMap<>());
-		CONTEXT_KEYS.get(clazz).putIfAbsent(identifier, new ContextKey<>(clazz, identifier));
+		CONTEXT_KEYS.putIfAbsent(type, new HashMap<>());
+		CONTEXT_KEYS.get(type).putIfAbsent(id, new ContextKey<>(type, id));
 
 		//noinspection unchecked
-		return (ContextKey<C>) CONTEXT_KEYS.get(clazz).get(identifier);
+		return (ContextKey<C>) CONTEXT_KEYS.get(type).get(id);
 	}
 }
 
