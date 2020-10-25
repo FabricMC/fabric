@@ -43,6 +43,7 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Moved entity {} -> {}: [({} -> {}]", originalEntity, newEntity, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
 		});
 
+		// TODO: Does not work on impl?
 		ServerPlayerEvents.FIRST_JOIN.register(player -> {
 			player.inventory.insertStack(Items.BELL.getDefaultStack());
 		});
