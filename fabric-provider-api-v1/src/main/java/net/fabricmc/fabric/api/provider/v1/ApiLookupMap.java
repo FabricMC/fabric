@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.provider.v1;
 
-import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
 
 import net.minecraft.util.Identifier;
 
@@ -28,10 +28,11 @@ import net.fabricmc.fabric.impl.provider.ApiLookupMapImpl;
  */
 public interface ApiLookupMap<L extends ApiLookup<?>> extends Iterable<L> {
 	static <L extends ApiLookup<?>> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
+		Objects.requireNonNull(lookupFactory, "Lookup factory cannot be null");
+
 		return new ApiLookupMapImpl<>(lookupFactory);
 	}
 
-	@NotNull
 	L getLookup(Identifier apiId, ContextKey<?> contextKey);
 
 	interface LookupFactory<L> {

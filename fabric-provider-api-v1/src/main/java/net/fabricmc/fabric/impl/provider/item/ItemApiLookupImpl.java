@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -44,8 +43,9 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 		this.contextKey = contextKey;
 	}
 
+	@Nullable
 	@Override
-	public @Nullable T get(ItemStack stack, C context) {
+	public T get(ItemStack stack, C context) {
 		Objects.requireNonNull(stack, "World cannot be null");
 		// Providers have the final say whether a null context is allowed.
 
@@ -75,12 +75,12 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 	}
 
 	@Override
-	public @NotNull Identifier getApiId() {
+	public Identifier getApiId() {
 		return this.id;
 	}
 
 	@Override
-	public @NotNull ContextKey<C> getContextKey() {
+	public ContextKey<C> getContextKey() {
 		return this.contextKey;
 	}
 }

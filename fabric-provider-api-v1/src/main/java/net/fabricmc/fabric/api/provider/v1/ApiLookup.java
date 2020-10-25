@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.provider.v1;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.util.Identifier;
 
 /**
@@ -25,9 +23,7 @@ import net.minecraft.util.Identifier;
  * The building block for creating your own Lookup class.
  */
 public interface ApiLookup<C> {
-	@NotNull
 	Identifier getApiId();
 
-	@NotNull
 	ContextKey<C> getContextKey();
 }

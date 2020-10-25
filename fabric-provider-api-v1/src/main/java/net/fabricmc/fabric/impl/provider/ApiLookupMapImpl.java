@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
-import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.util.Identifier;
 
@@ -37,13 +36,13 @@ public final class ApiLookupMapImpl<L extends ApiLookup<?>> implements ApiLookup
 		this.lookupFactory = lookupFactory;
 	}
 
-	public synchronized @NotNull L getLookup(Identifier key, ContextKey<?> contextKey) {
+	@Override
+	public synchronized L getLookup(Identifier key, ContextKey<?> contextKey) {
 		lookups.putIfAbsent(key, new Reference2ReferenceOpenHashMap<>());
 		lookups.get(key).computeIfAbsent(contextKey, ctx -> lookupFactory.create(key, contextKey));
 		return lookups.get(key).get(contextKey);
 	}
 
-	@NotNull
 	@Override
 	public synchronized Iterator<L> iterator() {
 		return lookups.values().stream().flatMap(apiLookups -> apiLookups.values().stream()).collect(Collectors.toList()).iterator();

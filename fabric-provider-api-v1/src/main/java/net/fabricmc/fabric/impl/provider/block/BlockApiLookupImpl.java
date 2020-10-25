@@ -20,7 +20,6 @@ import java.util.Objects;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -47,8 +46,9 @@ final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		this.contextKey = contextKey;
 	}
 
+	@Nullable
 	@Override
-	public @Nullable T get(World world, BlockPos pos, C context) {
+	public T get(World world, BlockPos pos, C context) {
 		Objects.requireNonNull(world, "World cannot be null");
 		Objects.requireNonNull(pos, "Block pos cannot be null");
 		// Providers have the final say whether a null context is allowed.
@@ -100,12 +100,12 @@ final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	}
 
 	@Override
-	public @NotNull Identifier getApiId() {
+	public Identifier getApiId() {
 		return id;
 	}
 
 	@Override
-	public @NotNull ContextKey<C> getContextKey() {
+	public ContextKey<C> getContextKey() {
 		return contextKey;
 	}
 }

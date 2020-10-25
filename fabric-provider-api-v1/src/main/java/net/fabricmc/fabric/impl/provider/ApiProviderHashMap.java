@@ -26,10 +26,13 @@ import net.fabricmc.fabric.api.provider.v1.ApiProviderMap;
 public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V> {
 	private volatile Map<K, V> lookups = new Reference2ReferenceOpenHashMap<>();
 
-	public @Nullable V get(K key) {
+	@Nullable
+	@Override
+	public V get(K key) {
 		return lookups.get(key);
 	}
 
+	@Override
 	public synchronized V putIfAbsent(K key, V provider) {
 		// We use a copy-on-write strategy to allow any number of reads to concur with a write
 		Map<K, V> lookupsCopy = new Reference2ReferenceOpenHashMap<>(lookups);

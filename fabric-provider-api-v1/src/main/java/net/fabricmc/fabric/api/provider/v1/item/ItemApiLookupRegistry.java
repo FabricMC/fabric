@@ -18,15 +18,13 @@ package net.fabricmc.fabric.api.provider.v1.item;
 
 import java.util.Objects;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.impl.provider.item.ItemApiLookupRegistryImpl;
 
 public final class ItemApiLookupRegistry {
-	public static <T, C> @NotNull ItemApiLookup<T, C> getLookup(Identifier apiId, ContextKey<C> contextKey) {
+	public static <T, C> ItemApiLookup<T, C> getLookup(Identifier apiId, ContextKey<C> contextKey) {
 		Objects.requireNonNull(apiId, "Id of API cannot be null");
 		Objects.requireNonNull(contextKey, "Context key cannot be null");
 

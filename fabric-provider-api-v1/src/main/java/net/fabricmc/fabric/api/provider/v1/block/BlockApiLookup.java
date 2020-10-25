@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.provider.v1.block;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -37,11 +36,13 @@ public interface BlockApiLookup<T, C> extends ApiLookup<C> {
 
 	@FunctionalInterface
 	interface BlockApiProvider<T, C> {
-		@Nullable T get(World world, BlockPos pos, C context);
+		@Nullable
+		T get(World world, BlockPos pos, C context);
 	}
 
 	@FunctionalInterface
 	interface BlockEntityApiProvider<T, C> {
-		@Nullable T get(BlockEntity blockEntity, @NotNull C context);
+		@Nullable
+		T get(BlockEntity blockEntity, C context);
 	}
 }
