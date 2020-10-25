@@ -73,7 +73,7 @@ public class MixinTheEndBiomeSource {
 		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
 		// Since the pickers are populated by this mixin, picker will never be null.
 		WeightedBiomePicker picker = InternalBiomeData.getEndVariants().get(vanillaKey);
-		RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX, 0, biomeZ);
+		RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
 
 		cir.setReturnValue(biomeRegistry.get(biomeKey));
 	}
