@@ -16,15 +16,9 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
-import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.BiomeKeys;
-import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import net.minecraft.world.biome.source.TheEndBiomeSource;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -34,8 +28,16 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.biome.source.TheEndBiomeSource;
+
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.SimpleLayerRandomnessSource;
+import net.fabricmc.fabric.impl.biome.WeightedBiomePicker;
 
 @Mixin(TheEndBiomeSource.class)
 public class MixinTheEndBiomeSource {

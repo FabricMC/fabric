@@ -16,11 +16,19 @@
 
 package net.fabricmc.fabric.impl.biome;
 
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
-import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
+
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -28,7 +36,8 @@ import net.minecraft.world.biome.layer.BiomeLayers;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
-import java.util.*;
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biome.VanillaLayeredBiomeSourceAccessor;
 
 /**
  * Lists and maps for internal use only! Stores data that is used by the various mixins into the world generation

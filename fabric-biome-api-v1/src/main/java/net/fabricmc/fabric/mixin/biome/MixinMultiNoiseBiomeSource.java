@@ -16,19 +16,21 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
+
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
  * This Mixin is responsible for adding mod-biomes to the NETHER preset in the MultiNoiseBiomeSource.

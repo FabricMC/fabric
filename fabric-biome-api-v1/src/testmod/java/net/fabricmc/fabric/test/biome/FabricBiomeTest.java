@@ -17,11 +17,6 @@
 
 package net.fabricmc.fabric.test.biome;
 
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
-import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
-import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
-import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.sound.BiomeMoodSound;
@@ -29,12 +24,26 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.biome.*;
+import net.minecraft.world.biome.Biome;
+import net.minecraft.world.biome.BiomeEffects;
+import net.minecraft.world.biome.BiomeKeys;
+import net.minecraft.world.biome.DefaultBiomeCreator;
+import net.minecraft.world.biome.GenerationSettings;
+import net.minecraft.world.biome.SpawnSettings;
 import net.minecraft.world.gen.GenerationStep;
 import net.minecraft.world.gen.feature.ConfiguredFeatures;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import net.minecraft.world.gen.feature.DefaultBiomeFeatures;
-import net.minecraft.world.gen.surfacebuilder.*;
+import net.minecraft.world.gen.surfacebuilder.ConfiguredSurfaceBuilder;
+import net.minecraft.world.gen.surfacebuilder.SurfaceBuilder;
+import net.minecraft.world.gen.surfacebuilder.SurfaceConfig;
+import net.minecraft.world.gen.surfacebuilder.TernarySurfaceConfig;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.biome.v1.NetherBiomes;
+import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
+import net.fabricmc.fabric.api.biome.v1.TheEndBiomes;
 
 /**
  * <b>NOTES FOR TESTING:</b>

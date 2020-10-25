@@ -16,9 +16,13 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
-import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
-import net.fabricmc.fabric.impl.biome.InternalBiomeData;
-import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
+import java.util.Map;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
@@ -26,12 +30,10 @@ import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.AddRiversLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.util.LayerSampler;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Map;
+import net.fabricmc.fabric.api.biome.v1.OverworldBiomes;
+import net.fabricmc.fabric.impl.biome.InternalBiomeData;
+import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 
 /**
  * Sets river biomes specified with {@link OverworldBiomes#setRiverBiome(RegistryKey, RegistryKey)}.

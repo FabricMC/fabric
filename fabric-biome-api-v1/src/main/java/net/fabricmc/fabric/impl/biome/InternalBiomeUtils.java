@@ -16,22 +16,24 @@
 
 package net.fabricmc.fabric.impl.biome;
 
+import java.util.List;
+import java.util.Map;
+import java.util.function.IntConsumer;
+
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
-import net.fabricmc.fabric.mixin.biome.AddHillsLayerAccessor;
-import net.fabricmc.fabric.mixin.biome.BuiltinBiomesAccessor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BuiltinBiomes;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.IntConsumer;
+import net.fabricmc.fabric.api.biome.v1.OverworldClimate;
+import net.fabricmc.fabric.mixin.biome.AddHillsLayerAccessor;
+import net.fabricmc.fabric.mixin.biome.BuiltinBiomesAccessor;
 
 /**
  * Internal utilities used for biome sampling.
