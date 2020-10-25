@@ -26,9 +26,8 @@ public final class BlockApiLookupRegistryImpl {
 	private static final ApiLookupMap<BlockApiLookupImpl<?, ?>> PROVIDERS = ApiLookupMap.create(BlockApiLookupImpl::new);
 
 	public static <T, C> BlockApiLookup<T, C> getLookup(Identifier key, ContextKey<C> contextKey) {
-		@SuppressWarnings("unchecked")
-		BlockApiLookup<T, C> lookup = (BlockApiLookup<T, C>) PROVIDERS.getLookup(key, contextKey);
-		return lookup;
+		//noinspection unchecked
+		return (BlockApiLookup<T, C>) PROVIDERS.getLookup(key, contextKey);
 	}
 
 	private BlockApiLookupRegistryImpl() {
