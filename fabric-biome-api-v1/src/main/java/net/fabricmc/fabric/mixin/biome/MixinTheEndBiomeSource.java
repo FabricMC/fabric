@@ -44,34 +44,19 @@ public class MixinTheEndBiomeSource {
 	@Shadow
 	@Final
 	private Registry<Biome> biomeRegistry;
+	@Shadow
+	@Final
+	private long seed;
 	@Unique
-	private final Map<RegistryKey<Biome>, RegistryKey<Biome>> BIOME_REGION_MAP = new HashMap<>();
-	@Unique
-	private LayerRandomnessSource randomnessSource;
-
-	@Inject(method = "<init>(Lnet/minecraft/util/registry/Registry;JLnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/biome/Biome;)V", at = @At("TAIL"))
-	private void fabric_addDefaultEndBiomes(Registry<Biome> biomeRegistry, long seed, Biome centerBiome, Biome highlandsBiome, Biome midlandsBiome, Biome smallIslandsBiome, Biome barrensBiome, CallbackInfo ci) {
-		randomnessSource = new SimpleLayerRandomnessSource(seed);
-
-		BIOME_REGION_MAP.put(BiomeKeys.THE_END, BiomeKeys.THE_END);
-		BIOME_REGION_MAP.put(BiomeKeys.END_HIGHLANDS, BiomeKeys.END_HIGHLANDS);
-		BIOME_REGION_MAP.put(BiomeKeys.END_MIDLANDS, BiomeKeys.END_MIDLANDS);
-		BIOME_REGION_MAP.put(BiomeKeys.END_BARRENS, BiomeKeys.END_BARRENS);
-		BIOME_REGION_MAP.put(BiomeKeys.SMALL_END_ISLANDS, BiomeKeys.SMALL_END_ISLANDS);
-
-		for (Map.Entry<RegistryKey<Biome>, RegistryKey<Biome>> entry : BIOME_REGION_MAP.entrySet()) {
-			RegistryKey<Biome> biome = entry.getKey();
-			RegistryKey<Biome> region = entry.getValue();
-			InternalBiomeData.addEndBiomeReplacement(biome, region, 1.0);
-		}
-	}
+	private LayerRandomnessSource randomnessSource = new SimpleLayerRandomnessSource(seed);
 
 	@Inject(method = "getBiomeForNoiseGen", at = @At("RETURN"), cancellable = true)
 	private void fabric_getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
 
+		// Since all vanilla biomes are added to the registry, this will never fail.
 		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
-		// Since the pickers are populated by this mixin, picker will never be null.
+		// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
 		WeightedBiomePicker picker = InternalBiomeData.getEndVariants().get(vanillaKey);
 		RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
 
