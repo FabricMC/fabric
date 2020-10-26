@@ -32,7 +32,7 @@ public final class ContextKey<C> {
 	 * A context key which represents no context.
 	 * Typically the context parameter for this type is {@code null}.
 	 */
-	public static final ContextKey<@Nullable Void> NO_CONTEXT = of(Void.class, new Identifier("fabric-provider-api-v1", "no_context"));
+	public static final ContextKey<@Nullable Void> NO_CONTEXT;
 	private static final Map<Class<?>, Map<Identifier, ContextKey<?>>> CONTEXT_KEYS = new HashMap<>();
 	private final Class<C> clazz;
 	private final Identifier id;
@@ -73,6 +73,10 @@ public final class ContextKey<C> {
 
 		//noinspection unchecked
 		return (ContextKey<C>) CONTEXT_KEYS.get(type).get(id);
+	}
+
+	static {
+		NO_CONTEXT = of(Void.class, new Identifier("fabric-provider-api-v1", "no_context"));
 	}
 }
 
