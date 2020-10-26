@@ -27,10 +27,13 @@ import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookupRegistry;
 
-public class ItemApis {
+public final class ItemApis {
 	public static final Identifier INSERTABLE_ID = new Identifier(MOD_ID, "item_insertable");
 	public static final Identifier EXTRACTABLE_ID = new Identifier(MOD_ID, "item_extractable");
 	public static final ContextKey<@NotNull Direction> SIDED = ContextKey.of(Direction.class, new Identifier("fabric", "sided"));
 	public static final BlockApiLookup<ItemInsertable, @NotNull Direction> INSERTABLE = BlockApiLookupRegistry.getLookup(INSERTABLE_ID, SIDED);
 	public static final BlockApiLookup<ItemExtractable, @NotNull Direction> EXTRACTABLE = BlockApiLookupRegistry.getLookup(EXTRACTABLE_ID, SIDED);
+
+	private ItemApis() {
+	}
 }

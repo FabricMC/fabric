@@ -24,10 +24,10 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.test.provider.api.ItemExtractable;
 import net.fabricmc.fabric.test.provider.api.ItemInsertable;
 
-public class WrappedInventory implements ItemInsertable, ItemExtractable {
+final class WrappedInventory implements ItemInsertable, ItemExtractable {
 	private final Inventory inv;
 
-	public WrappedInventory(Inventory inv) {
+	WrappedInventory(Inventory inv) {
 		this.inv = inv;
 	}
 

@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 
 import net.minecraft.item.ItemStack;
 
-public class ItemUtils {
+public final class ItemUtils {
 	/**
 	 * Move at most maxCount items, and return the number of items moved.
 	 */
@@ -31,10 +31,14 @@ public class ItemUtils {
 			ItemStack insertedStack = to.tryInsert(stack, true);
 			return insertedStack.isEmpty() || insertedStack.getCount() < stack.getCount();
 		};
+
 		ItemStack extracted = from.tryExtract(maxCount, insertionFilter, true);
 		ItemStack leftover = to.tryInsert(extracted, false);
 		int moved = extracted.getCount() - leftover.getCount();
 		from.tryExtract(moved, insertionFilter, false);
 		return moved;
+	}
+
+	private ItemUtils() {
 	}
 }

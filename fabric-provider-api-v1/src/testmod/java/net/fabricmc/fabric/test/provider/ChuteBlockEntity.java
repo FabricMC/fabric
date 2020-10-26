@@ -26,14 +26,18 @@ import net.fabricmc.fabric.test.provider.api.ItemInsertable;
 import net.fabricmc.fabric.test.provider.api.ItemUtils;
 
 public class ChuteBlockEntity extends BlockEntity implements Tickable {
-	int moveDelay = 0;
+	private int moveDelay = 0;
+
 	public ChuteBlockEntity() {
 		super(FabricProviderTest.CHUTE_BLOCK_ENTITY_TYPE);
 	}
 
 	@Override
 	public void tick() {
-		if (world.isClient) return;
+		//noinspection ConstantConditions - Intellij intrinsics don't know what hasWorld makes getWorld evaluate to non-null
+		if (!this.hasWorld() || this.getWorld().isClient()) {
+			return;
+		}
 
 		if (moveDelay == 0) {
 			ItemExtractable from = ItemApis.EXTRACTABLE.get(world, pos.offset(Direction.UP), Direction.DOWN);
