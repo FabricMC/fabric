@@ -18,11 +18,14 @@ package net.fabricmc.fabric.impl.client.rendering;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderingRegistry;
 
@@ -62,12 +65,12 @@ public final class ArmorRenderingRegistryImpl {
 		return defaultModel;
 	}
 
-	public static String getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, String defaultTexture) {
+	public static Identifier getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, boolean secondLayer, @Nullable String suffix, Identifier defaultTexture) {
 		if (!stack.isEmpty()) {
 			ArmorRenderingRegistry.TextureProvider provider = ((ArmorProviderExtensions) stack.getItem()).fabric_getArmorTextureProvider();
 
 			if (provider != null) {
-				return provider.getArmorTexture(entity, stack, slot, defaultTexture);
+				return provider.getArmorTexture(entity, stack, slot, secondLayer, suffix, defaultTexture);
 			}
 		}
 

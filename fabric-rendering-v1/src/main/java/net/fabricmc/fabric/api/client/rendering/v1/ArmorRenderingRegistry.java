@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
@@ -89,6 +90,18 @@ public final class ArmorRenderingRegistry {
 	}
 
 	/**
+	 * Register simple armor items to use the vanilla armor file name under the mods namespace.
+	 *
+	 * @param identifier The namespace + path to use for the armor texture location.
+	 * @param items the items to be registered
+	 */
+	public static void registerSimpleTexture(Identifier identifier, Item... items) {
+		registerTexture((entity, stack, slot, secondLayer, suffix, defaultTexture) -> {
+			return new Identifier(identifier.getNamespace(), "textures/models/armor/" + identifier.getPath() + "_layer_" + (secondLayer ? 2 : 1) + (suffix == null ? "" : "_" + suffix) + ".png");
+		}, items);
+	}
+
+	/**
 	 * Gets the model of the armor piece.
 	 *
 	 * @param entity       The entity equipping the armor
@@ -103,17 +116,19 @@ public final class ArmorRenderingRegistry {
 	}
 
 	/**
-	 * Gets the armor texture identifier in string, to be converted to {@link net.minecraft.util.Identifier}.
+	 * Gets the armor texture {@link net.minecraft.util.Identifier}.
 	 *
 	 * @param entity         The entity equipping the armor
 	 * @param stack          The item stack of the armor
 	 * @param slot           The slot which the armor is in
+	 * @param secondLayer	 True if using the second texture layer
+	 * @param suffix         The texture suffix, used in vanilla by {@link net.minecraft.item.DyeableArmorItem}
 	 * @param defaultTexture The default vanilla texture identifier
 	 * @return the custom armor texture identifier, return null to use the vanilla ones. Defaulted to the item's registry id.
 	 */
 	@NotNull
-	public static String getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, String defaultTexture) {
-		return ArmorRenderingRegistryImpl.getArmorTexture(entity, stack, slot, defaultTexture);
+	public static Identifier getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, boolean secondLayer, @Nullable String suffix, Identifier defaultTexture) {
+		return ArmorRenderingRegistryImpl.getArmorTexture(entity, stack, slot, secondLayer, suffix, defaultTexture);
 	}
 
 	@FunctionalInterface
@@ -136,7 +151,7 @@ public final class ArmorRenderingRegistry {
 	@Environment(EnvType.CLIENT)
 	public interface TextureProvider {
 		/**
-		 * Gets the armor texture identifier in string, to be converted to {@link net.minecraft.util.Identifier}.
+		 * Gets the armor texture {@link net.minecraft.util.Identifier}.
 		 *
 		 * @param entity         The entity equipping the armor
 		 * @param stack          The item stack of the armor
@@ -145,6 +160,6 @@ public final class ArmorRenderingRegistry {
 		 * @return the custom armor texture identifier. Should never be null.
 		 */
 		@NotNull
-		String getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, String defaultTexture);
+		Identifier getArmorTexture(LivingEntity entity, ItemStack stack, EquipmentSlot slot, boolean secondLayer, @Nullable String suffix, Identifier defaultTexture);
 	}
 }

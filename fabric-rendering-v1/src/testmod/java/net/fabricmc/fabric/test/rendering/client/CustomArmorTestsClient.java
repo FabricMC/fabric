@@ -20,38 +20,28 @@ import java.util.Collections;
 
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterials;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.rendering.v1.ArmorRenderingRegistry;
+import net.fabricmc.fabric.test.rendering.CustomArmorTests;
 
 @Environment(EnvType.CLIENT)
-public class CustomArmorTests implements ClientModInitializer {
+public class CustomArmorTestsClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		Item customModeledArmor, customTexturedArmor;
-		Registry.register(Registry.ITEM, new Identifier("fabric-rendering-v1-testmod:custom_modeled_armor"),
-				customModeledArmor = new ArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.COMBAT)));
-
 		CustomArmorModel model = new CustomArmorModel(1.0F);
-		ArmorRenderingRegistry.registerModel((entity, stack, slot, defaultModel) -> model, customModeledArmor);
-		ArmorRenderingRegistry.registerTexture((entity, stack, slot, defaultTexture) ->
-				"fabric-rendering-v1-testmod:thing/i_have_a_cube.png", customModeledArmor);
+		ArmorRenderingRegistry.registerModel((entity, stack, slot, defaultModel) -> model, CustomArmorTests.customModeledArmor);
+		ArmorRenderingRegistry.registerTexture((entity, stack, slot, secondLayer, suffix, defaultTexture) ->
+				new Identifier("fabric-rendering-v1-testmod", "textures/cube.png"), CustomArmorTests.customModeledArmor);
 
-		Registry.register(Registry.ITEM, new Identifier("fabric-rendering-v1-testmod:custom_textured_armor"),
-				customTexturedArmor = new ArmorItem(ArmorMaterials.DIAMOND, EquipmentSlot.CHEST, new Item.Settings().group(ItemGroup.COMBAT)));
+		ArmorRenderingRegistry.registerTexture((entity, stack, slot, secondLayer, suffix, defaultTexture) ->
+				new Identifier("fabric-rendering-v1-testmod", "textures/custom_texture.png"), CustomArmorTests.customTexturedArmor);
 
-		ArmorRenderingRegistry.registerTexture((entity, stack, slot, defaultTexture) ->
-				"fabric-rendering-v1-testmod:thing/amazing.png", customTexturedArmor);
+		ArmorRenderingRegistry.registerSimpleTexture(new Identifier("fabric-rendering-v1-testmod", "simple_textured_armor"), CustomArmorTests.simpleTexturedArmor);
 	}
 
 	private static class CustomArmorModel extends BipedEntityModel<LivingEntity> {
