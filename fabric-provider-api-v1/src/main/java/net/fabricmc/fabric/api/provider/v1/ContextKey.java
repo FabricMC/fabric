@@ -28,12 +28,13 @@ import net.minecraft.util.Identifier;
  * Unique reference to a type of context.
  */
 public final class ContextKey<C> {
+	// Map must be before NO_CONTEXT or else `of` will NPE.
+	private static final Map<Class<?>, Map<Identifier, ContextKey<?>>> CONTEXT_KEYS = new HashMap<>();
 	/**
 	 * A context key which represents no context.
 	 * Typically the context parameter for this type is {@code null}.
 	 */
-	public static final ContextKey<@Nullable Void> NO_CONTEXT;
-	private static final Map<Class<?>, Map<Identifier, ContextKey<?>>> CONTEXT_KEYS = new HashMap<>();
+	public static final ContextKey<@Nullable Void> NO_CONTEXT = of(Void.class, new Identifier("fabric-provider-api-v1", "no_context"));
 	private final Class<C> clazz;
 	private final Identifier id;
 
@@ -73,10 +74,6 @@ public final class ContextKey<C> {
 
 		//noinspection unchecked
 		return (ContextKey<C>) CONTEXT_KEYS.get(type).get(id);
-	}
-
-	static {
-		NO_CONTEXT = of(Void.class, new Identifier("fabric-provider-api-v1", "no_context"));
 	}
 }
 
