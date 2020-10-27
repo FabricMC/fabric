@@ -19,14 +19,13 @@ package net.fabricmc.fabric.mixin.item;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.item.v1.ItemExplosionHandler;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
@@ -36,23 +35,26 @@ abstract class ItemEntityMixin {
 	@Shadow
 	public abstract ItemStack getStack();
 
-	@Redirect(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"), slice = @Slice(to = @At(value = "FIELD", target = "Lnet/minecraft/item/Items;NETHER_STAR:Lnet/minecraft/item/Item;")))
-	private Item handleItemExplosion(ItemStack stack, DamageSource source, float amount) {
-		final Item item = stack.getItem();
-
-		if (item == Items.NETHER_STAR) {
-			return item; // Replicate vanilla code path
+	/**
+	 * Cancels the destruction of an item if the damage source is explosive.
+	 * This allows similar logic to the nether star in vanilla.
+	 */
+	@Inject(method = "damage", at = @At("HEAD"))
+	private void handleItemExplosion(DamageSource source, float amount, CallbackInfoReturnable<Boolean> info) {
+		if (!source.isExplosive()) {
+			return; // Don't handle anything that isn't an explosive damage source
 		}
 
+		if (this.getStack().isEmpty()) {
+			return; // Fallback to vanilla
+		}
+
+		final Item item = this.getStack().getItem();
 		final ItemExplosionHandler itemExplosionHandler = ((ItemExtensions) item).fabric_getItemExplosionHandler();
 
 		// DamageSource#isExplosive has already been evaluated as true here
-		if (itemExplosionHandler != null && source.isExplosive() && itemExplosionHandler.shouldNotDestroy((ItemEntity) (Object) this, source, amount)) {
-			// Return nether star in order to make condition evaluate to true and thereby prevent the item from being destroyed.
-			return Items.NETHER_STAR;
+		if (itemExplosionHandler != null && !itemExplosionHandler.shouldDestroy((ItemEntity) (Object) this, source, amount)) {
+			info.setReturnValue(false);
 		}
-
-		// Replicate vanilla code path
-		return item;
 	}
 }

@@ -18,14 +18,11 @@ package net.fabricmc.fabric.api.item.v1;
 
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.item.Items;
 
 /**
  * Allows custom logic to dictate whether an item may be destroyed in an explosion.
  *
  * <p>Item explosion handlers may be set with {@link FabricItemSettings#explosionHandler(ItemExplosionHandler)}.
- *
- * <p>Note that a {@link Items#NETHER_STAR} is always immune to explosions and cannot be set to be vulnerable to explosions.
  */
 @FunctionalInterface
 public interface ItemExplosionHandler {
@@ -37,5 +34,5 @@ public interface ItemExplosionHandler {
 	 * @param amount the amount of damage being applied to the item entity
 	 * @return whether the item should not be destroyed in the explosion.
 	 */
-	boolean shouldNotDestroy(ItemEntity entity, DamageSource source, float amount);
+	boolean shouldDestroy(ItemEntity entity, DamageSource source, float amount);
 }
