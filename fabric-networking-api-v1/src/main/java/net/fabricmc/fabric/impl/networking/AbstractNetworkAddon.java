@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking;
 
+import java.util.Objects;
+
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -24,7 +26,6 @@ import net.minecraft.network.Packet;
 
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
-// server login
 public abstract class AbstractNetworkAddon implements PacketSender {
 	protected final ClientConnection connection;
 
@@ -34,11 +35,15 @@ public abstract class AbstractNetworkAddon implements PacketSender {
 
 	@Override
 	public void sendPacket(Packet<?> packet) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+
 		this.connection.send(packet);
 	}
 
 	@Override
 	public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+
 		this.connection.send(packet, callback);
 	}
 }

@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
-import net.fabricmc.fabric.impl.networking.server.ServerNetworkingDetails;
+import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
 public final class NetworkingDetails {
 	public static final String MOD_ID = "fabric-networking-api-v1";
@@ -51,7 +51,7 @@ public final class NetworkingDetails {
 	public static void init() {
 		ServerConnectionEvents.LOGIN_QUERY_START.register((handler, server, sender, synchronizer) -> {
 			PacketByteBuf buf = PacketByteBufs.create();
-			Collection<Identifier> channels = ServerNetworkingDetails.PLAY.getChannels();
+			Collection<Identifier> channels = ServerNetworkingImpl.PLAY.getChannels();
 			buf.writeVarInt(channels.size());
 
 			for (Identifier id : channels) {
@@ -62,7 +62,7 @@ public final class NetworkingDetails {
 			NetworkingDetails.LOGGER.debug("Sent accepted channels to the client");
 		});
 
-		ServerNetworking.getLoginReceiver().register(EARLY_REGISTRATION_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
+		ServerNetworking.getLoginReceivers().register(EARLY_REGISTRATION_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
 			if (!understood) {
 				// The client is likely a vanilla client.
 				return;

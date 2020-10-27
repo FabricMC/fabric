@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canServerReceive(Identifier id) {
-		return ClientNetworking.getPlayReceiver().hasChannel(id);
+		return ClientNetworking.getPlayReceivers().hasChannel(id);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 		// id is checked in client networking
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ClientNetworking.getPlayReceiver().register(id, (handler, client, sender, buf) -> {
+		ClientNetworking.getPlayReceivers().register(id, (handler, client, sender, buf) -> {
 			consumer.accept(new PacketContext() {
 				@Override
 				public EnvType getPacketEnvironment() {
@@ -77,6 +77,6 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 
 	@Override
 	public void unregister(Identifier id) {
-		ClientNetworking.getPlayReceiver().unregister(id);
+		ClientNetworking.getPlayReceivers().unregister(id);
 	}
 }

@@ -40,7 +40,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private final MinecraftClient client;
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
-		super(ClientNetworkingDetails.PLAY, handler.getConnection());
+		super(ClientNetworkingImpl.PLAY, handler.getConnection());
 		this.handler = handler;
 		this.client = client;
 

@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -32,7 +33,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.networking.client.ClientNetworkingDetails;
+import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 /**
  * Offers access to client-side networking functionalities.
@@ -46,6 +47,20 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingDetails;
  */
 @Environment(EnvType.CLIENT)
 public final class ClientNetworking {
+	/**
+	 * Returns the packet receiver for channel handler registration on client play network handlers, receiving {@link net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket server to client custom payload packets}.
+	 */
+	public static ChannelHandlerRegistry<PlayChannelHandler> getPlayReceivers() {
+		return ClientNetworkingImpl.PLAY;
+	}
+
+	/**
+	 * Returns the packet receiver for channel handler registration on client login network handlers, receiving {@link net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket login query request packets}.
+	 */
+	public static ChannelHandlerRegistry<LoginChannelHandler> getLoginReceivers() {
+		return ClientNetworkingImpl.LOGIN;
+	}
+
 	/**
 	 * Returns the packet sender for the current client player.
 	 *
@@ -72,21 +87,21 @@ public final class ClientNetworking {
 	 * @return the associated packet sender
 	 */
 	public static PlayPacketSender getPlaySender(ClientPlayNetworkHandler handler) {
-		return ClientNetworkingDetails.getAddon(handler);
+		Objects.requireNonNull(handler, "Network handler cannot be null");
+
+		return ClientNetworkingImpl.getAddon(handler);
 	}
 
 	/**
-	 * Returns the packet receiver for channel handler registration on client play network handlers, receiving {@link net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket server to client custom payload packets}.
+	 * Sends a packet to a server.
+	 *
+	 * @param handler a client play network handler
+	 * @param channel the channel of the packet
+	 * @param buf the payload of the packet
+	 * @throws IllegalStateException if the client's player is {@code null}
 	 */
-	public static ChannelHandlerRegistry<PlayChannelHandler> getPlayReceiver() {
-		return ClientNetworkingDetails.PLAY;
-	}
-
-	/**
-	 * Returns the packet receiver for channel handler registration on client login network handlers, receiving {@link net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket login query request packets}.
-	 */
-	public static ChannelHandlerRegistry<LoginChannelHandler> getLoginReceiver() {
-		return ClientNetworkingDetails.LOGIN;
+	public static void send(ClientPlayNetworkHandler handler, Identifier channel, PacketByteBuf buf) {
+		getPlaySender(handler).sendPacket(channel, buf);
 	}
 
 	/**
@@ -94,8 +109,9 @@ public final class ClientNetworking {
 	 *
 	 * @param channel the channel of the packet
 	 * @param buf the payload of the packet
+	 * @throws IllegalStateException if the client's player is {@code null}
 	 */
-	public static void send(Identifier channel, PacketByteBuf buf) {
+	public static void send(Identifier channel, PacketByteBuf buf) throws IllegalStateException {
 		getPlaySender().sendPacket(channel, buf);
 	}
 
@@ -108,7 +124,7 @@ public final class ClientNetworking {
 		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 		 * Modification to the game should be {@linkplain net.minecraft.util.thread.ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft client instance.
 		 *
-		 * <p>An example usage of this is to display a
+		 * <p>An example usage of this is to display an overlay message:
 		 * <pre>{@code
 		 * ClientNetworking.getPlayReceiver().register(new Identifier("mymod", "overlay"), (handler, client, sender, buf) -&rt; {
 		 * 	String message = buf.readString(32767);

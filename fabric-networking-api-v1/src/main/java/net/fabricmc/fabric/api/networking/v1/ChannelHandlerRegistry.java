@@ -34,7 +34,7 @@ public interface ChannelHandlerRegistry<H> extends ChannelRegistry {
 	 *
 	 * @param channel the id of the channel
 	 * @param handler the handler
-	 * @return whether the handler is registered
+	 * @return false if a handler is already registered to the channel
 	 */
 	boolean register(Identifier channel, H handler);
 

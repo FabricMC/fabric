@@ -35,7 +35,7 @@ import net.fabricmc.fabric.impl.networking.NetworkingDetails;
 import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
 
 @Environment(EnvType.CLIENT)
-public final class ClientNetworkingDetails {
+public final class ClientNetworkingImpl {
 	public static final SimpleChannelHandlerRegistry<ClientNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
 	public static final SimpleChannelHandlerRegistry<ClientNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
 
@@ -50,7 +50,7 @@ public final class ClientNetworkingDetails {
 	@Environment(EnvType.CLIENT)
 	public static void clientInit() {
 		// Register a login query handler for early channel registration.
-		ClientNetworking.getLoginReceiver().register(NetworkingDetails.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
+		ClientNetworking.getLoginReceivers().register(NetworkingDetails.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
 			int n = buf.readVarInt();
 			List<Identifier> ids = new ArrayList<>(n);
 

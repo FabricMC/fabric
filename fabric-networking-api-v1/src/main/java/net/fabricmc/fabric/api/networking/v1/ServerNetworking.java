@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.Objects;
 import java.util.concurrent.Future;
 
 import net.minecraft.network.PacketByteBuf;
@@ -26,7 +27,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerHook;
-import net.fabricmc.fabric.impl.networking.server.ServerNetworkingDetails;
+import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerHook;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
@@ -46,8 +47,8 @@ public final class ServerNetworking {
 	 * handlers, receiving {@link net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket
 	 * client to server custom payload packets}.
 	 */
-	public static ChannelHandlerRegistry<PlayChannelHandler> getPlayReceiver() {
-		return ServerNetworkingDetails.PLAY;
+	public static ChannelHandlerRegistry<PlayChannelHandler> getPlayReceivers() {
+		return ServerNetworkingImpl.PLAY;
 	}
 
 	/**
@@ -55,8 +56,8 @@ public final class ServerNetworking {
 	 * handlers, receiving {@link net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket
 	 * login query response packets}.
 	 */
-	public static ChannelHandlerRegistry<LoginChannelHandler> getLoginReceiver() {
-		return ServerNetworkingDetails.LOGIN;
+	public static ChannelHandlerRegistry<LoginChannelHandler> getLoginReceivers() {
+		return ServerNetworkingImpl.LOGIN;
 	}
 
 	/**
@@ -66,6 +67,8 @@ public final class ServerNetworking {
 	 * @return the associated packet sender
 	 */
 	public static PlayPacketSender getPlaySender(ServerPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Network handler cannot be null");
+
 		return ((ServerPlayNetworkHandlerHook) handler).getAddon();
 	}
 
@@ -76,6 +79,8 @@ public final class ServerNetworking {
 	 * @return the associated login query packet sender
 	 */
 	public static PacketSender getLoginSender(ServerLoginNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Network handler cannot be null");
+
 		return ((ServerLoginNetworkHandlerHook) handler).getAddon();
 	}
 
@@ -88,25 +93,10 @@ public final class ServerNetworking {
 	 * @return the associated packet sender
 	 */
 	public static PlayPacketSender getPlaySender(ServerPlayerEntity player) {
+		Objects.requireNonNull(player, "Player cannot be null");
+		Objects.requireNonNull(player.networkHandler, "Player's network handler cannot be null");
+
 		return getPlaySender(player.networkHandler);
-	}
-
-	/**
-	 * Returns the <i>Minecraft</i> Server of a server play network handler.
-	 *
-	 * @param handler the server play network handler
-	 */
-	public static MinecraftServer getServer(ServerPlayNetworkHandler handler) {
-		return handler.player.server;
-	}
-
-	/**
-	 * Returns the <i>Minecraft</i> Server of a server login network handler.
-	 *
-	 * @param handler the server login network handler
-	 */
-	public static MinecraftServer getServer(ServerLoginNetworkHandler handler) {
-		return ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 	}
 
 	/**
@@ -118,6 +108,28 @@ public final class ServerNetworking {
 	 */
 	public static void send(ServerPlayerEntity player, Identifier channel, PacketByteBuf buf) {
 		getPlaySender(player).sendPacket(channel, buf);
+	}
+
+	/**
+	 * Returns the <i>Minecraft</i> Server of a server play network handler.
+	 *
+	 * @param handler the server play network handler
+	 */
+	public static MinecraftServer getServer(ServerPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Network handler cannot be null");
+
+		return handler.player.server;
+	}
+
+	/**
+	 * Returns the <i>Minecraft</i> Server of a server login network handler.
+	 *
+	 * @param handler the server login network handler
+	 */
+	public static MinecraftServer getServer(ServerLoginNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Network handler cannot be null");
+
+		return ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 	}
 
 	@FunctionalInterface

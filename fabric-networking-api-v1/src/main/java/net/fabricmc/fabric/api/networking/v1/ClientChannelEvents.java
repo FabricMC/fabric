@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ClientChannelEvents {
 	/**
 	 * An event for the client play network handler receiving an update indicating the connected server's ability to receive packets in certain channels.
+	 * This event may be invoked at any time after login and up to disconnection.
 	 *
 	 * @see PlayPacketSender#hasChannel(Identifier)
 	 */
@@ -45,6 +46,7 @@ public final class ClientChannelEvents {
 
 	/**
 	 * An event for the client play network handler receiving an update indicating the connected server's lack of ability to receive packets in certain channels.
+	 * This event may be invoked at any time after login and up to disconnection.
 	 *
 	 * @see PlayPacketSender#hasChannel(Identifier)
 	 */

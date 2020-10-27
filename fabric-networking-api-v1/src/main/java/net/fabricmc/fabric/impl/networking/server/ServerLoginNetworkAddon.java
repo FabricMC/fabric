@@ -122,7 +122,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		}
 
 		boolean understood = originalBuf != null;
-		ServerNetworking.LoginChannelHandler handler = ServerNetworkingDetails.LOGIN.get(channel);
+		ServerNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.get(channel);
 
 		if (handler == null) {
 			return false;

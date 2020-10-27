@@ -34,7 +34,6 @@ import net.minecraft.util.InvalidIdentifierException;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
 
-// play
 public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon implements PlayPacketSender {
 	protected final SimpleChannelHandlerRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;

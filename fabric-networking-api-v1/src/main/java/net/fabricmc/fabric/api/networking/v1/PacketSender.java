@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.Objects;
+
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +61,9 @@ public interface PacketSender {
 	 * @param buf     the content of the packet
 	 */
 	default void sendPacket(Identifier channel, PacketByteBuf buf) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(buf, "Payload cannot be null");
+
 		sendPacket(makePacket(channel, buf));
 	}
 
@@ -71,6 +76,9 @@ public interface PacketSender {
 	 */
 	// the generic future listener can accept ChannelFutureListener
 	default void sendPacket(Identifier channel, PacketByteBuf buf, @Nullable GenericFutureListener<? extends Future<? super Void>> callback) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(buf, "Payload cannot be null");
+
 		sendPacket(makePacket(channel, buf), callback);
 	}
 }

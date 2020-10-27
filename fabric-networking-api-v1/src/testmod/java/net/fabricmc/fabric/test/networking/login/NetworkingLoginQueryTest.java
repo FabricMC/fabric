@@ -36,7 +36,7 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 		ServerConnectionEvents.LOGIN_QUERY_START.register(this::onLoginStart);
 
 		// login delaying example
-		ServerNetworking.getLoginReceiver().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
+		ServerNetworking.getLoginReceivers().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
 			if (understood) {
 				FutureTask<?> future = new FutureTask<>(() -> {
 					for (int i = 0; i <= 10; i++) {

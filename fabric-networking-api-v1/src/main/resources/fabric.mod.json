@@ -20,7 +20,7 @@
       "net.fabricmc.fabric.impl.networking.NetworkingDetails::init"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.networking.client.ClientNetworkingDetails::clientInit"
+      "net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl::clientInit"
     ]
   },
   "depends": {

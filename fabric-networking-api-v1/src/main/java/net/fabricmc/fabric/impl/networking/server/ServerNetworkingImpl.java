@@ -21,7 +21,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
 import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
 
-public final class ServerNetworkingDetails {
+public final class ServerNetworkingImpl {
 	public static final SimpleChannelHandlerRegistry<ServerNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
 	public static final SimpleChannelHandlerRegistry<ServerNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
 

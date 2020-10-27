@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientNetworking.getPlayReceiver().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, client, sender, buf) -> {
+		ClientNetworking.getPlayReceivers().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, client, sender, buf) -> {
 			Text text = buf.readText();
 			client.send(() -> client.inGameHud.setOverlayMessage(text, true));
 		});
