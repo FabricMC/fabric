@@ -27,10 +27,11 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.extensibility.item.v1.trident.TridentInterface;
 
+// Allow Drowneds to start their attack goal
 @Mixin(DrownedEntity.TridentAttackGoal.class)
 public class TridentAttackGoalMixin {
 	@Redirect(method = "canStart", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
-	public Item getHeldItemModel(ItemStack stack) {
+	public Item canStart(ItemStack stack) {
 		return stack.getItem() instanceof TridentInterface ? Items.TRIDENT : stack.getItem();
 	}
 }

@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.extensibility.item.v1.crossbow.CrossbowInterface;
 
+// Makes sure that custom crossbows properly charge and release when used.
 @Mixin(Item.class)
 abstract class ItemMixin {
 	@Inject(method = "isUsedOnRelease", at = @At("HEAD"), cancellable = true)

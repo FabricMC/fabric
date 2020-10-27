@@ -34,6 +34,7 @@ import net.fabricmc.fabric.api.extensibility.item.v1.bow.BowInterface;
 
 @Mixin(BowItem.class)
 public class BowItemMixin {
+	//Allows custom bows to modify the projectile shot by bows
 	@Inject(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void onStoppedUsing(ItemStack bowStack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack arrowStack, int i, float f, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
 		if (this instanceof BowInterface) {

@@ -35,7 +35,7 @@ public class FabricCrossbowTests implements ModInitializer {
 		}
 
 		@Override
-		public float getSpeed(ItemStack stack, LivingEntity entity) {
+		public float getProjectileSpeed(ItemStack stack, LivingEntity entity) {
 			return 10f;
 		}
 	};

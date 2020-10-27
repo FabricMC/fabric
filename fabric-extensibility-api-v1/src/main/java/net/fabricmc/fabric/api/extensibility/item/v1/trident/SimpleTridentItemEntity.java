@@ -24,6 +24,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.mixin.extensibility.TridentEntityAccessor;
 
 /**
  * This is the default implementation for the FabricTridentEntity, allowing for the easy creation of new Trident Entities in Fabric.
@@ -31,22 +32,22 @@ import net.fabricmc.api.Environment;
 public class SimpleTridentItemEntity extends TridentEntity {
 	public SimpleTridentItemEntity(EntityType<? extends TridentEntity> entityType, World world, ItemStack tridentStack) {
 		super(entityType, world);
-		this.tridentStack = tridentStack;
+		((TridentEntityAccessor) this).setTridentStack(tridentStack);
 	}
 
 	public SimpleTridentItemEntity(World world, LivingEntity owner, ItemStack stack) {
 		super(world, owner, stack);
-		this.tridentStack = stack;
+		((TridentEntityAccessor) this).setTridentStack(stack);
 	}
 
 	@Environment(EnvType.CLIENT)
 	public SimpleTridentItemEntity(World world, double x, double y, double z, ItemStack tridentStack) {
 		super(world, x, y, z);
-		this.tridentStack = tridentStack;
+		((TridentEntityAccessor) this).setTridentStack(tridentStack);
 	}
 
 	public SimpleTridentItemEntity(TridentEntity trident) {
-		this(trident.getEntityWorld(), (LivingEntity) trident.getOwner(), trident.tridentStack);
+		this(trident.getEntityWorld(), (LivingEntity) trident.getOwner(), ((TridentEntityAccessor) trident).getTridentStack());
 		this.setVelocity(trident.getVelocity());
 		this.setUuid(trident.getUuid());
 		this.pickupType = trident.pickupType;

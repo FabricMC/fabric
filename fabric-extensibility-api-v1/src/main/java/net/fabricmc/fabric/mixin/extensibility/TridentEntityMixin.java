@@ -27,12 +27,13 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.util.registry.Registry;
 
+// Modify how the trident entity data is sent, changing it from the uuid to the Registry ID for the item
 @Mixin(PersistentProjectileEntity.class)
 public class TridentEntityMixin {
 	@Inject(method = "createSpawnPacket", at = @At("HEAD"), cancellable = true)
 	public void sendTridentTypeToClient(CallbackInfoReturnable<Packet<?>> cir) {
 		if ((PersistentProjectileEntity) (Object) this instanceof TridentEntity) {
-			cir.setReturnValue(new EntitySpawnS2CPacket((PersistentProjectileEntity) (Object) this, Registry.ITEM.getRawId(((TridentEntity) (Object) this).tridentStack.getItem())));
+			cir.setReturnValue(new EntitySpawnS2CPacket((PersistentProjectileEntity) (Object) this, Registry.ITEM.getRawId(((TridentEntityAccessor) this).getTridentStack().getItem())));
 		}
 	}
 }

@@ -32,6 +32,8 @@ import net.fabricmc.fabric.api.extensibility.item.v1.crossbow.CrossbowInterface;
 
 @Mixin(ProjectileUtil.class)
 public class ProjectileUtilMixin {
+	// Because the uses of this method are hardcoded, checking each hand for the Fabric interfaces of the items is needed.
+	// Note: this does not cancel for the vanilla items unless they are holding a custom implementation of the items
 	@Inject(method = "getHandPossiblyHolding", at = @At(value = "HEAD"), cancellable = true)
 	private static void getHandPossiblyHolding(LivingEntity entity, Item item, CallbackInfoReturnable<Hand> cir) {
 		if (item == Items.CROSSBOW) {

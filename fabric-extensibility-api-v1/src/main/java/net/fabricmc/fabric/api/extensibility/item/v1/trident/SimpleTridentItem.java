@@ -52,7 +52,7 @@ public class SimpleTridentItem extends TridentItem implements TridentInterface {
 	}
 
 	@Override
-	public TridentEntity getTridentEntity(TridentEntity trident) {
+	public TridentEntity modifyTridentEntity(TridentEntity trident) {
 		return new SimpleTridentItemEntity(trident);
 	}
 }

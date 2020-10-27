@@ -44,6 +44,7 @@ public class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private ClientWorld world;
 
+	// Overrides the trident spawning so that custom tridents can be created on the client correctly
 	@Inject(method = "onEntitySpawn", at = @At("HEAD"), cancellable = true)
 	public void overrideClientTridentSpawn(EntitySpawnS2CPacket packet, CallbackInfo info) {
 		if (packet.getEntityTypeId() != EntityType.TRIDENT) {
@@ -54,7 +55,6 @@ public class ClientPlayNetworkHandlerMixin {
 		double d = packet.getX();
 		double e = packet.getY();
 		double f = packet.getZ();
-		EntityType<?> entityType = packet.getEntityTypeId();
 		Entity tridentEntity = new TridentEntity(world, d, e, f);
 
 		ItemStack tridentStack = new ItemStack(Registry.ITEM.get(packet.getEntityData()));

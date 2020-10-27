@@ -22,10 +22,7 @@ import net.minecraft.client.render.entity.model.TridentEntityModel;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.CrossbowItem;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
@@ -105,31 +102,6 @@ public class FabricExtensibilityTestmodClient implements ClientModInitializer {
 
 			return livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1.0F : 0.0F;
 		});
-	}
-
-	public static void registerElytra(Item elytra) {
-		FabricModelPredicateProviderRegistry.register(elytra, new Identifier("broken"), (itemStack, clientWorld, livingEntity) -> ElytraItem.isUsable(itemStack) ? 0.0F : 1.0F);
-	}
-
-	public static void registerFishingRod(Item fishingRod) {
-		FabricModelPredicateProviderRegistry.register(fishingRod, new Identifier("cast"), (itemStack, clientWorld, livingEntity) -> {
-			if (livingEntity == null) {
-				return 0.0F;
-			}
-
-			boolean bl = livingEntity.getMainHandStack() == itemStack;
-			boolean bl2 = livingEntity.getOffHandStack() == itemStack;
-
-			if (livingEntity.getMainHandStack().getItem() instanceof FishingRodItem) {
-				bl2 = false;
-			}
-
-			return (bl || bl2) && livingEntity instanceof PlayerEntity && ((PlayerEntity) livingEntity).fishHook != null ? 1.0F : 0.0F;
-		});
-	}
-
-	public static void registerShield(Item shield) {
-		FabricModelPredicateProviderRegistry.register(shield, new Identifier("blocking"), (itemStack, clientWorld, livingEntity) -> livingEntity != null && livingEntity.isUsingItem() && livingEntity.getActiveItem() == itemStack ? 1.0F : 0.0F);
 	}
 
 	public static void registerTridentModels(Item trident) {

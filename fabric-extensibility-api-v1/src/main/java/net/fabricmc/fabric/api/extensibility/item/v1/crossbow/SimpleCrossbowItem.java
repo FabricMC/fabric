@@ -34,7 +34,7 @@ public class SimpleCrossbowItem extends CrossbowItem implements CrossbowInterfac
 	}
 
 	@Override
-	public float getSpeed(ItemStack stack, LivingEntity entity) {
+	public float getProjectileSpeed(ItemStack stack, LivingEntity entity) {
 		return getSpeed(stack);
 	}
 }

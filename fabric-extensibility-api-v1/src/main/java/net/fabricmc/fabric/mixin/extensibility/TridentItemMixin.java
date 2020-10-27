@@ -19,7 +19,7 @@ package net.fabricmc.fabric.mixin.extensibility;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -35,21 +35,23 @@ import net.fabricmc.fabric.api.extensibility.item.v1.trident.TridentInterface;
 
 @Mixin(TridentItem.class)
 public class TridentItemMixin {
+	// Make the tridentStack for trident entities set to the correct item stack for rendering
 	@Inject(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void editTridentEntity(ItemStack stack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, int j, TridentEntity tridentEntity) {
 		if (stack.getItem() instanceof TridentInterface) {
-			tridentEntity.tridentStack = stack;
+			((TridentEntityAccessor) tridentEntity).setTridentStack(stack);
 		}
 	}
 
-	@Redirect(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
-	private boolean editTridentType(World world, Entity entity) {
+	// Modify the Trident Entity before it is spawned in the world
+	@ModifyArg(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
+	private Entity editTridentType(Entity entity) {
 		TridentEntity trident = (TridentEntity) entity;
 
-		if (!(trident.tridentStack.getItem() instanceof TridentInterface)) {
-			return world.spawnEntity(entity);
+		if (!(((TridentEntityAccessor) trident).getTridentStack().getItem() instanceof TridentInterface)) {
+			return entity;
 		} else {
-			return world.spawnEntity(((TridentInterface) trident.tridentStack.getItem()).getTridentEntity(trident));
+			return ((TridentInterface) ((TridentEntityAccessor) trident).getTridentStack().getItem()).modifyTridentEntity(trident);
 		}
 	}
 }

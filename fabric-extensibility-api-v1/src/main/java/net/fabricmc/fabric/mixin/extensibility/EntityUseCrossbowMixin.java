@@ -26,6 +26,7 @@ import net.minecraft.entity.mob.PillagerEntity;
 import net.minecraft.item.CrossbowItem;
 import net.minecraft.item.RangedWeaponItem;
 
+// Allows Crossbow users to use custom crossbows
 @Mixin({PiglinEntity.class, PillagerEntity.class})
 public class EntityUseCrossbowMixin {
 	@Inject(method = "canUseRangedWeapon", at = @At("HEAD"))

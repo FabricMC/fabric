@@ -13,7 +13,8 @@
     "ProjectileUtilMixin",
     "TridentAttackGoalMixin",
     "TridentEntityMixin",
-    "TridentItemMixin"
+    "TridentItemMixin",
+    "TridentEntityAccessor"
   ],
   "client": [
     "ClientPlayNetworkHandlerMixin",

@@ -23,6 +23,8 @@ import net.minecraft.item.ItemStack;
 /**
  * An interface to implement for all custom bows in fabric. <br>
  * Note: This is meant to be used on a BowItem class, the functionality will not work otherwise.
+ *
+ * @see SimpleBowItem
  */
 public interface BowInterface {
 	/**

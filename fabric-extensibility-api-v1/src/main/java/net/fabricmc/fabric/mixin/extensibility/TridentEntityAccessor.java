@@ -17,21 +17,16 @@
 package net.fabricmc.fabric.mixin.extensibility;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.entity.mob.AbstractSkeletonEntity;
-import net.minecraft.item.Item;
+import net.minecraft.entity.projectile.TridentEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.extensibility.item.v1.bow.BowInterface;
+@Mixin(TridentEntity.class)
+public interface TridentEntityAccessor {
+	@Accessor("tridentStack")
+	ItemStack getTridentStack();
 
-@Mixin(AbstractSkeletonEntity.class)
-public class AbstractSkeletonEntityMixin {
-	//Allows Skeletons to shoot custom bows
-	@Redirect(method = "updateAttackType", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
-	private Item updateAttackType(ItemStack itemStack) {
-		return itemStack.getItem() instanceof BowInterface ? Items.BOW : itemStack.getItem();
-	}
+	@Accessor("tridentStack")
+	void setTridentStack(ItemStack tridentStack);
 }

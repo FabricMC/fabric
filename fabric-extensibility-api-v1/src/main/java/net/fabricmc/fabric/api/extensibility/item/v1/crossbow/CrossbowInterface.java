@@ -26,6 +26,8 @@ import net.minecraft.item.Items;
 /**
  * An interface to implement on all custom crossbows. <br>
  * Note: This is meant to be used on a CrossbowItem class, otherwise the functionality won't work
+ *
+ * @see SimpleCrossbowItem
  */
 public interface CrossbowInterface {
 	/**
@@ -47,7 +49,7 @@ public interface CrossbowInterface {
 	 * @param entity The Entity shooting the crossbow
 	 * @return The speed of the projectile
 	 */
-	float getSpeed(ItemStack stack, LivingEntity entity);
+	float getProjectileSpeed(ItemStack stack, LivingEntity entity);
 
 	/**
 	 * Returns the vanilla implementation for getSpeed, allowing for crossbows to act the same as the vanilla crossbow.
