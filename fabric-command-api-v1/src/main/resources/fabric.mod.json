@@ -16,7 +16,7 @@
     "FabricMC"
   ],
   "depends": {
-    "fabricloader": ">=0.8.8",
+    "fabricloader": ">=0.10.5",
     "fabric-api-base": "*"
   },
   "description": "Adds command-related hooks.",
