@@ -53,26 +53,21 @@ public final class InternalBiomeData {
 	private static final Map<RegistryKey<Biome>, VariantTransformer> OVERWORLD_VARIANT_TRANSFORMERS = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, RegistryKey<Biome>> OVERWORLD_RIVER_MAP = new IdentityHashMap<>();
 
-	// Pre-populate with the biomes that correspond to the region's of the end
-	// See the constructor of TheEndBiomeSource for where these are hardcoded in Vanilla
-	private static final List<RegistryKey<Biome>> VANILLA_END_BIOMES = ImmutableList.of(
-			BiomeKeys.THE_END, BiomeKeys.END_HIGHLANDS, BiomeKeys.END_MIDLANDS,
-			BiomeKeys.SMALL_END_ISLANDS, BiomeKeys.END_BARRENS
-	);
-	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_VARIANTS;
-
-	static {
-		END_VARIANTS = new IdentityHashMap<>(VANILLA_END_BIOMES.size());
-
-		for (RegistryKey<Biome> biome : VANILLA_END_BIOMES) {
-			WeightedBiomePicker picker = new WeightedBiomePicker();
-			picker.addBiome(biome, 1.0f);
-			END_VARIANTS.put(biome, picker);
-		}
-	}
-
 	private static final Set<RegistryKey<Biome>> NETHER_BIOMES = new HashSet<>();
 	private static final Map<RegistryKey<Biome>, Biome.MixedNoisePoint> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
+	
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_BIOMES_MAP = new IdentityHashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_MIDLANDS_MAP = new IdentityHashMap<>();
+	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_BARRENS_MAP = new IdentityHashMap<>();
+
+	static {
+		END_BIOMES_MAP.put(BiomeKeys.THE_END, new WeightedBiomePicker());
+		END_BIOMES_MAP.put(BiomeKeys.END_HIGHLANDS, new WeightedBiomePicker());
+		END_BIOMES_MAP.put(BiomeKeys.SMALL_END_ISLANDS, new WeightedBiomePicker());
+
+		END_MIDLANDS_MAP.computeIfAbsent(BiomeKeys.END_HIGHLANDS, key -> new WeightedBiomePicker()).addBiome(BiomeKeys.END_MIDLANDS, 1.0);
+		END_BARRENS_MAP.computeIfAbsent(BiomeKeys.END_HIGHLANDS, key -> new WeightedBiomePicker()).addBiome(BiomeKeys.END_BARRENS, 1.0);
+	}
 
 	public static void addOverworldContinentalBiome(OverworldClimate climate, RegistryKey<Biome> biome, double weight) {
 		Preconditions.checkArgument(climate != null, "Climate is null");
@@ -165,7 +160,21 @@ public final class InternalBiomeData {
 		Preconditions.checkNotNull(replaced, "replaced biome is null");
 		Preconditions.checkNotNull(variant, "variant biome is null");
 		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
-		END_VARIANTS.computeIfAbsent(replaced, key -> new WeightedBiomePicker()).addBiome(variant, weight);
+		END_BIOMES_MAP.computeIfAbsent(replaced, key -> new WeightedBiomePicker()).addBiome(variant, weight);
+	}
+
+	public static void addEndMidlandsReplacement(RegistryKey<Biome> highlands, RegistryKey<Biome> midlands, double weight) {
+		Preconditions.checkNotNull(highlands, "highlands biome is null");
+		Preconditions.checkNotNull(midlands, "midlands biome is null");
+		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
+		END_MIDLANDS_MAP.computeIfAbsent(highlands, key -> new WeightedBiomePicker()).addBiome(midlands, weight);
+	}
+
+	public static void addEndBarrensReplacement(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
+		Preconditions.checkNotNull(highlands, "highlands biome is null");
+		Preconditions.checkNotNull(barrens, "midlands biome is null");
+		Preconditions.checkArgument(weight > 0.0, "Weight is less than or equal to 0.0 (got %s)", weight);
+		END_BARRENS_MAP.computeIfAbsent(highlands, key -> new WeightedBiomePicker()).addBiome(barrens, weight);
 	}
 
 	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getOverworldHills() {
@@ -196,8 +205,8 @@ public final class InternalBiomeData {
 		return NETHER_BIOME_NOISE_POINTS;
 	}
 
-	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndVariants() {
-		return END_VARIANTS;
+	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndBiomesMap() {
+		return END_BIOMES_MAP;
 	}
 
 	private static class DefaultHillsData {

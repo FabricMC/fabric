@@ -52,7 +52,7 @@ public class MixinTheEndBiomeSource {
 		// Since all vanilla biomes are added to the registry, this will never fail.
 		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
 		// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
-		WeightedBiomePicker picker = InternalBiomeData.getEndVariants().get(vanillaKey);
+		WeightedBiomePicker picker = InternalBiomeData.getEndBiomesMap().get(vanillaKey);
 		RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
 
 		cir.setReturnValue(biomeRegistry.get(biomeKey));
