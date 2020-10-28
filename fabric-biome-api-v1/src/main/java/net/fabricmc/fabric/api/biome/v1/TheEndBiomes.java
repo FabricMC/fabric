@@ -56,30 +56,6 @@ public final class TheEndBiomes {
 	}
 
 	/**
-	 * Ands the biome to with the specified weight to the end midlands regions which correspond to the End Midlands biome.
-	 *
-	 * @param biome the biome to be added
-	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * Vanilla biomes have a weight of 1.0
-	 */
-	public static void addMidlandsBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.END_MIDLANDS, biome, weight);
-	}
-
-	/**
-	 * Ands the biome to with the specified weight to the end barrens regions which correspond to the End Barrens biome.
-	 *
-	 * @param biome the biome to be added
-	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
-	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * Vanilla biomes have a weight of 1.0
-	 */
-	public static void addBarrensBiome(RegistryKey<Biome> biome, double weight) {
-		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.END_BARRENS, biome, weight);
-	}
-
-	/**
 	 * Ands the biome to with the specified weight to the small end island regions which correspond to the Small End Islands biome.
 	 *
 	 * @param biome the biome to be added
@@ -89,5 +65,33 @@ public final class TheEndBiomes {
 	 */
 	public static void addSmallIslandsBiome(RegistryKey<Biome> biome, double weight) {
 		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.SMALL_END_ISLANDS, biome, weight);
+	}
+
+	/**
+	 * Ands the midlands to with the specified weight to the end midlands regions which correspond to the End Midlands midlands.
+	 *
+	 * @param highlands
+	 * @param midlands the midlands to be added
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Vanilla biomes have a weight of 1.0
+	 */
+	public static void addMidlandsBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> midlands, double weight) {
+		//TODO: Javadoc
+		InternalBiomeData.addEndMidlandsReplacement(highlands, midlands, weight);
+	}
+
+	/**
+	 * Ands the barrens to with the specified weight to the end barrens regions which correspond to the End Barrens barrens.
+	 *
+	 * @param highlands
+	 * @param barrens the barrens to be added
+	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
+	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
+	 * Vanilla biomes have a weight of 1.0
+	 */
+	public static void addBarrensBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
+		//TODO: Javadoc
+		InternalBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
 }

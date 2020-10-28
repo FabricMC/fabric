@@ -55,7 +55,7 @@ public final class InternalBiomeData {
 
 	private static final Set<RegistryKey<Biome>> NETHER_BIOMES = new HashSet<>();
 	private static final Map<RegistryKey<Biome>, Biome.MixedNoisePoint> NETHER_BIOME_NOISE_POINTS = new HashMap<>();
-	
+
 	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_BIOMES_MAP = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_MIDLANDS_MAP = new IdentityHashMap<>();
 	private static final Map<RegistryKey<Biome>, WeightedBiomePicker> END_BARRENS_MAP = new IdentityHashMap<>();
