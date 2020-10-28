@@ -209,6 +209,14 @@ public final class InternalBiomeData {
 		return END_BIOMES_MAP;
 	}
 
+	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndMidlandsMap() {
+		return END_MIDLANDS_MAP;
+	}
+
+	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndBarrensMap() {
+		return END_BARRENS_MAP;
+	}
+
 	private static class DefaultHillsData {
 		private static final ImmutableMap<RegistryKey<Biome>, RegistryKey<Biome>> DEFAULT_HILLS;
 

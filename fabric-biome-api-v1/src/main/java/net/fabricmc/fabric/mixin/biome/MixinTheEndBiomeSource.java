@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.biome;
 
+import net.minecraft.world.biome.BiomeKeys;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -51,10 +52,26 @@ public class MixinTheEndBiomeSource {
 
 		// Since all vanilla biomes are added to the registry, this will never fail.
 		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
-		// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
-		WeightedBiomePicker picker = InternalBiomeData.getEndBiomesMap().get(vanillaKey);
-		RegistryKey<Biome> biomeKey = picker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
+		RegistryKey<Biome> replacementKey = null;
 
-		cir.setReturnValue(biomeRegistry.get(biomeKey));
+		if (vanillaKey == BiomeKeys.END_MIDLANDS || vanillaKey == BiomeKeys.END_BARRENS) {
+			// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
+			WeightedBiomePicker highlandsPicker = InternalBiomeData.getEndBiomesMap().get(BiomeKeys.END_HIGHLANDS);
+			RegistryKey<Biome> highlandsKey = highlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
+
+			if (vanillaKey == BiomeKeys.END_MIDLANDS) {
+				// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
+				WeightedBiomePicker midlandsPicker = InternalBiomeData.getEndMidlandsMap().get(highlandsKey);
+				
+			}
+		}
+		else {
+			// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
+			WeightedBiomePicker picker = InternalBiomeData.getEndBiomesMap().get(vanillaKey);
+			replacementKey = picker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
+		}
+
+
+		cir.setReturnValue(biomeRegistry.get(replacementKey));
 	}
 }
