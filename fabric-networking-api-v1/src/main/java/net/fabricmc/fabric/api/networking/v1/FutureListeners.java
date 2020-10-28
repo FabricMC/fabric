@@ -77,4 +77,7 @@ public final class FutureListeners {
 			second.operationComplete((B) future);
 		};
 	}
+
+	private FutureListeners() {
+	}
 }
