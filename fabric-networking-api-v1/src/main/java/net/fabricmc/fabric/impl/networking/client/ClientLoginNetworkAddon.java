@@ -22,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
@@ -64,7 +65,7 @@ public final class ClientLoginNetworkAddon {
 		List<GenericFutureListener<? extends Future<? super Void>>> futureListeners = new ArrayList<>();
 
 		try {
-			CompletableFuture<PacketByteBuf> future = handler.receive(this.handler, this.client, buf, futureListeners::add);
+			CompletableFuture<@Nullable PacketByteBuf> future = handler.receive(this.handler, this.client, buf, futureListeners::add);
 			future.thenAccept(result -> {
 				LoginQueryResponseC2SPacket packet = new LoginQueryResponseC2SPacket(queryId, result);
 				GenericFutureListener<? extends Future<? super Void>> listener = null;

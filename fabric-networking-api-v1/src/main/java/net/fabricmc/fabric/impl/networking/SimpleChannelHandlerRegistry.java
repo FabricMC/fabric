@@ -25,6 +25,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.ChannelHandlerRegistry;
@@ -41,6 +43,7 @@ public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegi
 		this.handlers = map;
 	}
 
+	@Nullable
 	public H get(Identifier channel) {
 		Lock lock = this.lock.readLock();
 		lock.lock();
