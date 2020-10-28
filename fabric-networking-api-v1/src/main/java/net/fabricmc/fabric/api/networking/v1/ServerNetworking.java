@@ -182,6 +182,7 @@ public final class ServerNetworking {
 	 *
 	 * @apiNote this interface is not intended to be implemented by users of api.
 	 */
+	@FunctionalInterface
 	public interface LoginSynchronizer {
 		/**
 		 * Allows blocking client log-in until the {@code future} is {@link Future#isDone() done}.
