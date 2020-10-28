@@ -61,12 +61,12 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	// always supposed to handle async!
 	protected boolean handle(Identifier channel, PacketByteBuf originalBuf) {
-		if (NetworkingDetails.REGISTER_CHANNEL.equals(channel)) {
+		if (NetworkingImpl.REGISTER_CHANNEL.equals(channel)) {
 			receiveRegistration(true, PacketByteBufs.slice(originalBuf));
 			return true;
 		}
 
-		if (NetworkingDetails.UNREGISTER_CHANNEL.equals(channel)) {
+		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channel)) {
 			receiveRegistration(false, PacketByteBufs.slice(originalBuf));
 			return true;
 		}
@@ -82,7 +82,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		try {
 			receive(handler, buf);
 		} catch (Throwable ex) {
-			NetworkingDetails.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
+			NetworkingImpl.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
 			throw ex;
 		}
 
@@ -111,7 +111,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			buf.writeBytes(channel.toString().getBytes(StandardCharsets.US_ASCII));
 		}
 
-		this.sendPacket(NetworkingDetails.REGISTER_CHANNEL, buf);
+		this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
 	}
 
 	// wrap in try with res (buf)
@@ -156,7 +156,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		try {
 			ids.add(new Identifier(literal));
 		} catch (InvalidIdentifierException ex) {
-			NetworkingDetails.LOGGER.warn("Received invalid channel identifier \"{}\" from connection {}", literal, this.connection, ex);
+			NetworkingImpl.LOGGER.warn("Received invalid channel identifier \"{}\" from connection {}", literal, this.connection, ex);
 		}
 	}
 

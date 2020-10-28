@@ -36,7 +36,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.impl.networking.NetworkingDetails;
+import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 
 @Environment(EnvType.CLIENT)
@@ -77,7 +77,7 @@ public final class ClientLoginNetworkAddon {
 				this.handler.getConnection().send(packet, listener);
 			});
 		} catch (Throwable ex) {
-			NetworkingDetails.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
+			NetworkingImpl.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
 			throw ex;
 		}
 

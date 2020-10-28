@@ -31,7 +31,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
-import net.fabricmc.fabric.impl.networking.NetworkingDetails;
+import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
 
 @Environment(EnvType.CLIENT)
@@ -50,7 +50,7 @@ public final class ClientNetworkingImpl {
 	@Environment(EnvType.CLIENT)
 	public static void clientInit() {
 		// Register a login query handler for early channel registration.
-		ClientNetworking.getLoginReceivers().register(NetworkingDetails.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
+		ClientNetworking.getLoginReceivers().register(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
 			int n = buf.readVarInt();
 			List<Identifier> ids = new ArrayList<>(n);
 
@@ -59,7 +59,7 @@ public final class ClientNetworkingImpl {
 			}
 
 			((ChannelInfoHolder) handler.getConnection()).getChannels().addAll(ids);
-			NetworkingDetails.LOGGER.debug("Received accepted channels from the server");
+			NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 
 			PacketByteBuf response = PacketByteBufs.create();
 			Collection<Identifier> channels = PLAY.getChannels();
@@ -69,7 +69,7 @@ public final class ClientNetworkingImpl {
 				response.writeIdentifier(id);
 			}
 
-			NetworkingDetails.LOGGER.debug("Sent accepted channels to the server");
+			NetworkingImpl.LOGGER.debug("Sent accepted channels to the server");
 			return CompletableFuture.completedFuture(response);
 		});
 	}

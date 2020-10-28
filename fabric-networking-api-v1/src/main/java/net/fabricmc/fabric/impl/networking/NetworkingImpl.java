@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
-public final class NetworkingDetails {
+public final class NetworkingImpl {
 	public static final String MOD_ID = "fabric-networking-api-v1";
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	/**
@@ -44,7 +44,7 @@ public final class NetworkingDetails {
 	public static final Identifier UNREGISTER_CHANNEL = new Identifier("minecraft", "unregister");
 	/**
 	 * Id of the packet used to declare all currently supported channels.
-	 * Dynamic registration of supported channels is still allowed using {@link NetworkingDetails#REGISTER_CHANNEL} and {@link NetworkingDetails#UNREGISTER_CHANNEL}.
+	 * Dynamic registration of supported channels is still allowed using {@link NetworkingImpl#REGISTER_CHANNEL} and {@link NetworkingImpl#UNREGISTER_CHANNEL}.
 	 */
 	public static final Identifier EARLY_REGISTRATION_CHANNEL = new Identifier(MOD_ID, "early_registration");
 
@@ -59,7 +59,7 @@ public final class NetworkingDetails {
 			}
 
 			sender.sendPacket(EARLY_REGISTRATION_CHANNEL, buf);
-			NetworkingDetails.LOGGER.debug("Sent accepted channels to the client");
+			NetworkingImpl.LOGGER.debug("Sent accepted channels to the client");
 		});
 
 		ServerNetworking.getLoginReceivers().register(EARLY_REGISTRATION_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
@@ -76,7 +76,7 @@ public final class NetworkingDetails {
 			}
 
 			((ChannelInfoHolder) handler.getConnection()).getChannels().addAll(ids);
-			NetworkingDetails.LOGGER.debug("Received accepted channels from the client");
+			NetworkingImpl.LOGGER.debug("Received accepted channels from the client");
 		});
 	}
 

@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.impl.networking.NetworkingDetails;
+import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryResponseC2SPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
@@ -117,7 +117,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		Identifier channel = this.channels.remove(queryId);
 
 		if (channel == null) {
-			NetworkingDetails.LOGGER.warn("Query ID {} was received but no channel has been associated in {}!", queryId, this.connection);
+			NetworkingImpl.LOGGER.warn("Query ID {} was received but no channel has been associated in {}!", queryId, this.connection);
 			return false;
 		}
 
@@ -133,7 +133,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		try {
 			handler.receive(this.handler, this.server, this, buf, understood, this.waits::add);
 		} catch (Throwable ex) {
-			NetworkingDetails.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
+			NetworkingImpl.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
 			throw ex;
 		}
 

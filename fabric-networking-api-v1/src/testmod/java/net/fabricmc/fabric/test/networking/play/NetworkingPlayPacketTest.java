@@ -31,7 +31,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
-import net.fabricmc.fabric.impl.networking.NetworkingDetails;
+import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
@@ -41,7 +41,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeText(new LiteralText(stuff));
 		ServerNetworking.getPlaySender(player).sendPacket(TEST_CHANNEL, buf);
-		NetworkingDetails.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
+		NetworkingImpl.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
