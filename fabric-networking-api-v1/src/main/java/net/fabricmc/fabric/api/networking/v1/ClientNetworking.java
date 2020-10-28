@@ -160,7 +160,7 @@ public final class ClientNetworking {
 		 * @param buf the payload of the packet
 		 * @param listenerAdder listeners to be called when the response packet is sent to the server
 		 * @return a completable future which contains the payload to respond to the server with.
-		 * If {@code null}, then the server will be notified that the client did not understand the query.
+		 * If the future contains {@code null}, then the server will be notified that the client did not understand the query.
 		 */
 		CompletableFuture<@Nullable PacketByteBuf> receive(ClientLoginNetworkHandler handler, MinecraftClient client, PacketByteBuf buf, Consumer<GenericFutureListener<? extends Future<? super Void>>> listenerAdder);
 	}

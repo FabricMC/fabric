@@ -25,6 +25,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
@@ -61,6 +63,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 	// return true if no longer ticks query
 	public boolean queryTick() {
 		if (this.firstQueryTick) {
+			// Send the compression packet now so clients receive compressed login queries
 			this.sendCompressionPacket();
 			ServerConnectionEvents.LOGIN_QUERY_START.invoker().onLoginStart(this.handler, this.server, this, this.waits::add);
 			this.firstQueryTick = false;
@@ -95,6 +98,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 	}
 
 	private void sendCompressionPacket() {
+		// Compression is not needed for local transport
 		if (this.server.getNetworkCompressionThreshold() >= 0 && !this.connection.isLocal()) {
 			this.connection.send(new LoginCompressionS2CPacket(this.server.getNetworkCompressionThreshold()), (channelFuture) ->
 					this.connection.setCompressionThreshold(this.server.getNetworkCompressionThreshold())
@@ -113,7 +117,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		return handle(access.getQueryId(), access.getResponse());
 	}
 
-	private boolean handle(int queryId, PacketByteBuf originalBuf) {
+	private boolean handle(int queryId, @Nullable PacketByteBuf originalBuf) {
 		Identifier channel = this.channels.remove(queryId);
 
 		if (channel == null) {
@@ -122,7 +126,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		}
 
 		boolean understood = originalBuf != null;
-		ServerNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.get(channel);
+		@Nullable ServerNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.get(channel);
 
 		if (handler == null) {
 			return false;
@@ -144,6 +148,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 	public Packet<?> makePacket(Identifier channel, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
 		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket();
+		// The constructor for creating a non-empty response was removed by proguard
 		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) ret;
 		access.setQueryId(queryId);
 		access.setChannel(channel);

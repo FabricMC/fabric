@@ -58,13 +58,15 @@ abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandl
 
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerLoginNetworkHandler;acceptPlayer()V"))
 	private void handlePlayerJoin(ServerLoginNetworkHandler handler) {
+		// Do not accept the player, thereby moving into play stage until all login futures being waited on are completed
 		if (this.addon.queryTick()) {
-			acceptPlayer();
+			this.acceptPlayer();
 		}
 	}
 
 	@Inject(method = "onQueryResponse", at = @At("HEAD"), cancellable = true)
 	private void handleCustomPayloadReceivedAsync(LoginQueryResponseC2SPacket packet, CallbackInfo ci) {
+		// Handle queries
 		if (this.addon.handle(packet)) {
 			ci.cancel();
 		}

@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.netty.util.AsciiString;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
@@ -61,6 +62,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	// always supposed to handle async!
 	protected boolean handle(Identifier channel, PacketByteBuf originalBuf) {
+		// Handle reserved packets
 		if (NetworkingImpl.REGISTER_CHANNEL.equals(channel)) {
 			receiveRegistration(true, PacketByteBufs.slice(originalBuf));
 			return true;
@@ -71,7 +73,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			return true;
 		}
 
-		H handler = this.receiver.get(channel);
+		@Nullable H handler = this.receiver.get(channel);
 
 		if (handler == null) {
 			return false;

@@ -55,7 +55,7 @@ public final class ClientLoginNetworkAddon {
 	}
 
 	private boolean handlePacket(int queryId, Identifier channel, PacketByteBuf originalBuf) {
-		ClientNetworking.LoginChannelHandler handler = ClientNetworkingImpl.LOGIN.get(channel);
+		@Nullable ClientNetworking.LoginChannelHandler handler = ClientNetworkingImpl.LOGIN.get(channel);
 
 		if (handler == null) {
 			return false;
