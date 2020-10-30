@@ -22,7 +22,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 
@@ -52,7 +51,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	public void onServerReady() {
 		this.sendChannelRegistrationPacket();
-		ClientPlayConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.client, this);
+		ClientPlayConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this, this.client);
 	}
 
 	/**
@@ -73,7 +72,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void receive(ClientPlayNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
-		handler.receive(this.handler, this.client, this, buf);
+		handler.receive(this.handler, this, this.client, buf);
 	}
 
 	// impl details
@@ -84,17 +83,17 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public Packet<?> makePacket(Identifier channel, PacketByteBuf buf) {
+	public Packet<?> createPacket(Identifier channel, PacketByteBuf buf) {
 		return ClientPlayNetworking.createC2SPacket(channel, buf);
 	}
 
 	@Override
 	protected void postRegisterEvent(List<Identifier> ids) {
-		ClientChannelEvents.REGISTERED.invoker().onChannelRegistered(this.handler, this.client, this, ids);
+		ClientChannelEvents.REGISTERED.invoker().onChannelRegistered(this.handler, this, this.client, ids);
 	}
 
 	@Override
 	protected void postUnregisterEvent(List<Identifier> ids) {
-		ClientChannelEvents.UNREGISTERED.invoker().onChannelUnregistered(this.handler, this.client, this, ids);
+		ClientChannelEvents.UNREGISTERED.invoker().onChannelUnregistered(this.handler, this, this.client, ids);
 	}
 }

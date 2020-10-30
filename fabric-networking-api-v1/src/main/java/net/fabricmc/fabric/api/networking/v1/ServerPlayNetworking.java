@@ -83,38 +83,36 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.PLAY.hasChannel(id);
 	}
 
+	public static Collection<Identifier> getReceivers(ServerPlayerEntity player) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+
+		return getReceivers(player.networkHandler);
+	}
+
+	public static Collection<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+
+		return ((ServerPlayNetworkHandlerHook) handler).getAddon().getChannels();
+	}
+
+	public static boolean canReceive(ServerPlayerEntity player, Identifier channel) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+
+		return canReceive(player.networkHandler, channel);
+	}
+
+	public static boolean canReceive(ServerPlayNetworkHandler handler, Identifier channel) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+		Objects.requireNonNull(channel, "Channel cannot be null");
+
+		return ((ServerPlayNetworkHandlerHook) handler).getAddon().hasChannel(channel);
+	}
+
 	public static Packet<?> createS2CPacket(Identifier channel, PacketByteBuf buf) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
 		return ServerNetworkingImpl.createPlayC2SPacket(channel, buf);
-	}
-
-	/**
-	 * Returns the packet sender for a server play network handler.
-	 *
-	 * @param handler a server play network handler
-	 * @return the associated packet sender
-	 */
-	public static PlayPacketSender getPlaySender(ServerPlayNetworkHandler handler) {
-		Objects.requireNonNull(handler, "Network handler cannot be null");
-
-		return ((ServerPlayNetworkHandlerHook) handler).getAddon();
-	}
-
-	/**
-	 * Returns the packet sender for a server player.
-	 *
-	 * <p>This is a shortcut for {@link #getPlaySender(ServerPlayNetworkHandler)}.</p>
-	 *
-	 * @param player a server player
-	 * @return the associated packet sender
-	 */
-	public static PlayPacketSender getPlaySender(ServerPlayerEntity player) {
-		Objects.requireNonNull(player, "Player cannot be null");
-		Objects.requireNonNull(player.networkHandler, "Player's network handler cannot be null");
-
-		return getPlaySender(player.networkHandler);
 	}
 
 	/**
@@ -125,8 +123,10 @@ public final class ServerPlayNetworking {
 	 * @param buf the payload of the packet.
 	 */
 	public static void send(ServerPlayerEntity player, Identifier channel, PacketByteBuf buf) {
-		getPlaySender(player).sendPacket(channel, buf);
+		player.networkHandler.sendPacket(createS2CPacket(channel, buf));
 	}
+
+	// Utils methods
 
 	/**
 	 * Returns the <i>Minecraft</i> Server of a server play network handler.
@@ -160,10 +160,10 @@ public final class ServerPlayNetworking {
 		 * }</pre>
 		 *
 		 * @param handler the network handler that received this packet
-		 * @param server the server
 		 * @param sender the packet sender
+		 * @param server the server
 		 * @param buf the payload of the packet
 		 */
-		void receive(ServerPlayNetworkHandler handler, MinecraftServer server, PlayPacketSender sender, PacketByteBuf buf);
+		void receive(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, PacketByteBuf buf);
 	}
 }

@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Collection;
@@ -11,11 +27,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerHook;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
-public class ServerLoginNetworking {
+public final class ServerLoginNetworking {
 	/**
 	 * Registers a handler to a channel.
 	 *
@@ -57,18 +72,6 @@ public class ServerLoginNetworking {
 	}
 
 	/**
-	 * Returns the login query packet sender for a server login network handler.
-	 *
-	 * @param handler the server login network handler
-	 * @return the associated login query packet sender
-	 */
-	public static PacketSender getLoginSender(ServerLoginNetworkHandler handler) {
-		Objects.requireNonNull(handler, "Network handler cannot be null");
-
-		return ((ServerLoginNetworkHandlerHook) handler).getAddon();
-	}
-
-	/**
 	 * Returns the <i>Minecraft</i> Server of a server login network handler.
 	 *
 	 * @param handler the server login network handler
@@ -87,16 +90,18 @@ public class ServerLoginNetworking {
 		/**
 		 * Handles an incoming query response from a client.
 		 *
-		 * <p>Whether the client understood the query should be checked before reading from the payload of the packet.
+		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
+		 * Modification to the game should be {@linkplain net.minecraft.util.thread.ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft client instance.
 		 *
+		 * <p>Whether the client understood the query should be checked before reading from the payload of the packet.
 		 * @param handler the network handler that received this packet
-		 * @param server the server
 		 * @param sender the packet sender
+		 * @param server the server
 		 * @param buf the payload of the packet
 		 * @param understood whether the client
 		 * @param synchronizer the synchronizer which may be used to delay log-in till a {@link Future} is completed.
 		 */
-		void receive(ServerLoginNetworkHandler handler, MinecraftServer server, PacketSender sender, PacketByteBuf buf, boolean understood, LoginSynchronizer synchronizer);
+		void receive(ServerLoginNetworkHandler handler, PacketSender sender, MinecraftServer server, PacketByteBuf buf, boolean understood, LoginSynchronizer synchronizer);
 	}
 
 	/**
@@ -117,7 +122,7 @@ public class ServerLoginNetworking {
 		 * building of a followup query request can be performed properly on the logical server
 		 * thread before the player successfully logs in:
 		 * <pre>{@code
-		 * ServerLoginNetworking.getLoginReceivers().register(CHECK_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -&gt; {
+		 * ServerLoginNetworking.register(CHECK_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -&gt; {
 		 * 	if (!understood) {
 		 * 		handler.disconnect(new LiteralText("Only accept clients that can check!"));
 		 * 		return;

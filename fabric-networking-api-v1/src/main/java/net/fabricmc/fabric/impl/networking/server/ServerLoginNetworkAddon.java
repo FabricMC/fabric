@@ -126,7 +126,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		}
 
 		boolean understood = originalBuf != null;
-		@Nullable ServerLoginNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.get(channel);
+		@Nullable ServerLoginNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.getHandler(channel);
 
 		if (handler == null) {
 			return false;
@@ -135,7 +135,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		PacketByteBuf buf = understood ? PacketByteBufs.slice(originalBuf) : PacketByteBufs.empty();
 
 		try {
-			handler.receive(this.handler, this.server, this, buf, understood, this.waits::add);
+			handler.receive(this.handler, this, this.server, buf, understood, this.waits::add);
 		} catch (Throwable ex) {
 			NetworkingImpl.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
 			throw ex;
@@ -145,7 +145,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 	}
 
 	@Override
-	public Packet<?> makePacket(Identifier channel, PacketByteBuf buf) {
+	public Packet<?> createPacket(Identifier channel, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
 		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket();
 		// The constructor for creating a non-empty response was removed by proguard

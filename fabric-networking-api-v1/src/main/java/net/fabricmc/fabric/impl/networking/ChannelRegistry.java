@@ -42,7 +42,7 @@ public final class ChannelRegistry<H> {
 	}
 
 	@Nullable
-	public H get(Identifier channel) {
+	public H getHandler(Identifier channel) {
 		Lock lock = this.lock.readLock();
 		lock.lock();
 

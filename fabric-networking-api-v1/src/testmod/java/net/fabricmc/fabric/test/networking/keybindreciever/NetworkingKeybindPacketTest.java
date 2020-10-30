@@ -32,7 +32,7 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerPlayNetworking.register(KEYBINDING_PACKET_ID, (handler, server, sender, buf) -> {
+		ServerPlayNetworking.register(KEYBINDING_PACKET_ID, (handler, sender, server, buf) -> {
 			// TODO: Can we send chat off the server thread?
 			server.execute(() -> {
 				handler.player.sendMessage(new LiteralText("So you pressed ").append(new KeybindText("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);

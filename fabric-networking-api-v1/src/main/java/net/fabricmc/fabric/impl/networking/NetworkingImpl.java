@@ -62,7 +62,7 @@ public final class NetworkingImpl {
 			NetworkingImpl.LOGGER.debug("Sent accepted channels to the client");
 		});
 
-		ServerLoginNetworking.register(EARLY_REGISTRATION_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
+		ServerLoginNetworking.register(EARLY_REGISTRATION_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -> {
 			if (!understood) {
 				// The client is likely a vanilla client.
 				return;

@@ -36,7 +36,7 @@ public interface PacketSender {
 	 * @param channel the id of the channel
 	 * @param buf     the content of the packet
 	 */
-	Packet<?> makePacket(Identifier channel, PacketByteBuf buf);
+	Packet<?> createPacket(Identifier channel, PacketByteBuf buf);
 
 	/**
 	 * Sends a packet.
@@ -64,7 +64,7 @@ public interface PacketSender {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Payload cannot be null");
 
-		sendPacket(makePacket(channel, buf));
+		sendPacket(createPacket(channel, buf));
 	}
 
 	/**
@@ -79,6 +79,6 @@ public interface PacketSender {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Payload cannot be null");
 
-		sendPacket(makePacket(channel, buf), callback);
+		sendPacket(createPacket(channel, buf), callback);
 	}
 }

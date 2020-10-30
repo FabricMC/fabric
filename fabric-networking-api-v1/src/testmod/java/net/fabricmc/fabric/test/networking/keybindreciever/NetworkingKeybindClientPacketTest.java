@@ -39,10 +39,10 @@ public class NetworkingKeybindClientPacketTest implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			// Player must be in game to send packets, i.e. client.player != null
-			if (client.player != null) {
+			if (client.getNetworkHandler() != null) {
 				if (TEST_BINDING.wasPressed()) {
 					// Send an empty payload, server just needs to be told when packet is sent
-					ClientPlayNetworking.getPlaySender().sendPacket(NetworkingKeybindPacketTest.KEYBINDING_PACKET_ID, PacketByteBufs.empty());
+					ClientPlayNetworking.send(client.getNetworkHandler(), NetworkingKeybindPacketTest.KEYBINDING_PACKET_ID, PacketByteBufs.empty());
 				}
 			}
 		});

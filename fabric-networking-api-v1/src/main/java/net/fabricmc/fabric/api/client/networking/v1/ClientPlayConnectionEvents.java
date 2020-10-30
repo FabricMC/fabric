@@ -23,7 +23,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 /**
  * Offers access to events related to the connection to a server on a logical client.
@@ -34,11 +34,10 @@ public final class ClientPlayConnectionEvents {
 	 * An event for the initialization of the client play network handler.
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the server.
-	 * Use {@link ClientPlayNetworking#getPlaySender(ClientPlayNetworkHandler)} to obtain the packet sender in the callback.
 	 */
-	public static final Event<PlayInitialized> PLAY_INITIALIZED = EventFactory.createArrayBacked(PlayInitialized.class, callbacks -> (handler, client, sender) -> {
+	public static final Event<PlayInitialized> PLAY_INITIALIZED = EventFactory.createArrayBacked(PlayInitialized.class, callbacks -> (handler, sender, client) -> {
 		for (PlayInitialized callback : callbacks) {
-			callback.onPlayInitialized(handler, client, sender);
+			callback.onPlayInitialized(handler, sender, client);
 		}
 	});
 
@@ -47,9 +46,9 @@ public final class ClientPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<PlayDisconnected> PLAY_DISCONNECTED = EventFactory.createArrayBacked(PlayDisconnected.class, callbacks -> (handler, client) -> {
+	public static final Event<PlayDisconnected> PLAY_DISCONNECTED = EventFactory.createArrayBacked(PlayDisconnected.class, callbacks -> (handler, sender, client) -> {
 		for (PlayDisconnected callback : callbacks) {
-			callback.onPlayDisconnected(handler, client);
+			callback.onPlayDisconnected(handler, sender, client);
 		}
 	});
 
@@ -59,12 +58,12 @@ public final class ClientPlayConnectionEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface PlayInitialized {
-		void onPlayInitialized(ClientPlayNetworkHandler handler, MinecraftClient client, PlayPacketSender sender);
+		void onPlayInitialized(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface PlayDisconnected {
-		void onPlayDisconnected(ClientPlayNetworkHandler handler, MinecraftClient client);
+		void onPlayDisconnected(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
 	}
 }

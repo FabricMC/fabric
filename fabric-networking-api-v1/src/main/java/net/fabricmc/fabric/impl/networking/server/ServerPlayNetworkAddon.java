@@ -21,7 +21,6 @@ import java.util.List;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
-import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
@@ -47,7 +46,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	public void onClientReady() {
-		ServerPlayConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.server, this);
+		ServerPlayConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this, this.server);
 		this.sendChannelRegistrationPacket();
 	}
 
@@ -64,7 +63,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void receive(ServerPlayNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
-		handler.receive(this.handler, this.server, this, buf);
+		handler.receive(this.handler, this, this.server, buf);
 	}
 
 	// impl details
@@ -75,17 +74,17 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public Packet<?> makePacket(Identifier channel, PacketByteBuf buf) {
+	public Packet<?> createPacket(Identifier channel, PacketByteBuf buf) {
 		return ServerPlayNetworking.createS2CPacket(channel, buf);
 	}
 
 	@Override
 	protected void postRegisterEvent(List<Identifier> ids) {
-		ServerChannelEvents.REGISTERED.invoker().onChannelRegistered(this.handler, this.server, this, ids);
+		ServerChannelEvents.REGISTERED.invoker().onChannelRegistered(this.handler, this, this.server, ids);
 	}
 
 	@Override
 	protected void postUnregisterEvent(List<Identifier> ids) {
-		ServerChannelEvents.UNREGISTERED.invoker().onChannelUnregistered(this.handler, this.server, this, ids);
+		ServerChannelEvents.UNREGISTERED.invoker().onChannelUnregistered(this.handler, this, this.server, ids);
 	}
 }

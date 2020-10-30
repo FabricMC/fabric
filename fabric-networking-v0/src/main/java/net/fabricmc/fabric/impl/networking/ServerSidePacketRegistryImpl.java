@@ -40,7 +40,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
 		if (player instanceof ServerPlayerEntity) {
-			return ServerPlayNetworking.getPlaySender((ServerPlayerEntity) player).hasChannel(id);
+			return ServerPlayNetworking.canReceive((ServerPlayerEntity) player, id);
 		}
 
 		// TODO: Warn or fail?
@@ -50,7 +50,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	@Override
 	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (player instanceof ServerPlayerEntity) {
-			ServerPlayNetworking.getPlaySender((ServerPlayerEntity) player).sendPacket(packet, completionListener);
+			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, completionListener);
 		}
 
 		throw new RuntimeException("Can only send to ServerPlayerEntities!");
@@ -65,7 +65,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	public void register(Identifier id, PacketConsumer consumer) {
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ServerPlayNetworking.register(id, (handler, server, sender, buf) -> {
+		ServerPlayNetworking.register(id, (handler, sender, server, buf) -> {
 			consumer.accept(new PacketContext() {
 				@Override
 				public EnvType getPacketEnvironment() {

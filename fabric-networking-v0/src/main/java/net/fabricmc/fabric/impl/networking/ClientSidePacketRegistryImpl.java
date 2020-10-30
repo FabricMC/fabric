@@ -21,6 +21,7 @@ import java.util.Objects;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -44,12 +45,16 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		ClientPlayNetworking.getPlaySender().sendPacket(packet, completionListener);
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			throw new IllegalStateException(); // TODO: Error message
+		}
+
+		MinecraftClient.getInstance().getNetworkHandler().getConnection().send(packet, completionListener);
 	}
 
 	@Override
 	public Packet<?> toPacket(Identifier id, PacketByteBuf buf) {
-		return ClientPlayNetworking.getPlaySender().makePacket(id, buf);
+		return ClientPlayNetworking.createC2SPacket(id, buf);
 	}
 
 	@Override
@@ -57,7 +62,7 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 		// id is checked in client networking
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ClientPlayNetworking.register(id, (handler, client, sender, buf) -> {
+		ClientPlayNetworking.register(id, (handler, sender, client, buf) -> {
 			consumer.accept(new PacketContext() {
 				@Override
 				public EnvType getPacketEnvironment() {

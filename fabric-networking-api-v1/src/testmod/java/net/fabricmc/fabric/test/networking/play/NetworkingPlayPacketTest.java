@@ -40,12 +40,13 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static void sendToTestChannel(ServerPlayerEntity player, String stuff) {
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeText(new LiteralText(stuff));
-		ServerPlayNetworking.getPlaySender(player).sendPacket(TEST_CHANNEL, buf);
+		ServerPlayNetworking.send(player, TEST_CHANNEL, buf);
 		NetworkingImpl.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
 		NetworkingTestmods.LOGGER.info("Registering test command");
+
 		dispatcher.register(CommandManager.literal("networktestcommand").then(CommandManager.argument("stuff", StringArgumentType.string()).executes(ctx -> {
 			String stuff = StringArgumentType.getString(ctx, "stuff");
 			sendToTestChannel(ctx.getSource().getPlayer(), stuff);

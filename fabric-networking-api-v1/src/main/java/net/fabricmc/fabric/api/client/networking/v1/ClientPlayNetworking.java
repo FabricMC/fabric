@@ -30,9 +30,10 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
+import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerHook;
 
 /**
  * Offers access to client-side networking functionalities.
@@ -86,6 +87,47 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.hasChannel(channel);
 	}
 
+	public static Collection<Identifier> getReceivers() throws IllegalStateException {
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			throw new IllegalStateException(); // TODO: Error message
+		}
+
+		return getReceivers(MinecraftClient.getInstance().getNetworkHandler());
+	}
+
+	public static Collection<Identifier> getReceivers(ClientPlayerEntity player) {
+		Objects.requireNonNull(player, "Client player entity cannot be null");
+
+		return getReceivers(player.networkHandler);
+	}
+
+	public static Collection<Identifier> getReceivers(ClientPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Client play network handler cannot be null");
+
+		return ((ClientPlayNetworkHandlerHook) handler).getAddon().getChannels();
+	}
+
+	public static boolean canReceive(Identifier channel) {
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			throw new IllegalStateException(); // TODO: Error message
+		}
+
+		return canReceive(MinecraftClient.getInstance().getNetworkHandler(), channel);
+	}
+
+	public static boolean canReceive(ClientPlayerEntity player, Identifier channel) {
+		Objects.requireNonNull(player, "Client player entity cannot be null");
+
+		return canReceive(player.networkHandler, channel);
+	}
+
+	public static boolean canReceive(ClientPlayNetworkHandler handler, Identifier channel) {
+		Objects.requireNonNull(handler, "Client play network handler cannot be null");
+		Objects.requireNonNull(channel, "Channel cannot be null");
+
+		return ((ClientPlayNetworkHandlerHook) handler).getAddon().hasChannel(channel);
+	}
+
 	public static Packet<?> createC2SPacket(Identifier channel, PacketByteBuf buf) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
@@ -94,34 +136,18 @@ public final class ClientPlayNetworking {
 	}
 
 	/**
-	 * Returns the packet sender for the current client player.
+	 * Sends a packet to the connected server.
 	 *
-	 * <p>This is a shortcut method for getting a sender.
-	 * When a client play network handler is available, {@link #getPlaySender(ClientPlayNetworkHandler)} is preferred.
-	 *
-	 * @return the packet sender for the current client player
+	 * @param channel the channel of the packet
+	 * @param buf the payload of the packet
 	 * @throws IllegalStateException if the client's player is {@code null}
 	 */
-	public static PlayPacketSender getPlaySender() throws IllegalStateException {
-		ClientPlayerEntity player = MinecraftClient.getInstance().player;
-
-		if (player == null) {
-			throw new IllegalStateException("Cannot get packet sender when not in game!");
+	public static void send(Identifier channel, PacketByteBuf buf) throws IllegalStateException {
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			throw new IllegalStateException(); // TODO: Error message
 		}
 
-		return getPlaySender(player.networkHandler);
-	}
-
-	/**
-	 * Returns the packet sender for a client play network handler.
-	 *
-	 * @param handler a client play network handler
-	 * @return the associated packet sender
-	 */
-	public static PlayPacketSender getPlaySender(ClientPlayNetworkHandler handler) {
-		Objects.requireNonNull(handler, "Network handler cannot be null");
-
-		return ClientNetworkingImpl.getAddon(handler);
+		send(MinecraftClient.getInstance().getNetworkHandler(), channel, buf);
 	}
 
 	/**
@@ -133,18 +159,9 @@ public final class ClientPlayNetworking {
 	 * @throws IllegalStateException if the client's player is {@code null}
 	 */
 	public static void send(ClientPlayNetworkHandler handler, Identifier channel, PacketByteBuf buf) {
-		getPlaySender(handler).sendPacket(channel, buf);
-	}
+		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
-	/**
-	 * Sends a packet to the connected server.
-	 *
-	 * @param channel the channel of the packet
-	 * @param buf the payload of the packet
-	 * @throws IllegalStateException if the client's player is {@code null}
-	 */
-	public static void send(Identifier channel, PacketByteBuf buf) throws IllegalStateException {
-		getPlaySender().sendPacket(channel, buf);
+		handler.sendPacket(createC2SPacket(channel, buf));
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -169,10 +186,10 @@ public final class ClientPlayNetworking {
 		 * }</pre>
 		 *
 		 * @param handler the network handler that received this packet
-		 * @param client the client
 		 * @param sender the packet sender
+		 * @param client the client
 		 * @param buf the payload of the packet
 		 */
-		void receive(ClientPlayNetworkHandler handler, MinecraftClient client, PlayPacketSender sender, PacketByteBuf buf);
+		void receive(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, PacketByteBuf buf);
 	}
 }

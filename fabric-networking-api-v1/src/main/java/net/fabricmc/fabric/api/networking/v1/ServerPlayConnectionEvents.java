@@ -30,11 +30,10 @@ public final class ServerPlayConnectionEvents {
 	 * An event for the initialization of the server play network handler.
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the client.
-	 * Use {@link ServerPlayNetworking#getPlaySender(ServerPlayNetworkHandler)} to obtain the packet sender in the callback.
 	 */
-	public static final Event<PlayInitialized> PLAY_INITIALIZED = EventFactory.createArrayBacked(PlayInitialized.class, callbacks -> (handler, server, sender) -> {
+	public static final Event<PlayInitialized> PLAY_INITIALIZED = EventFactory.createArrayBacked(PlayInitialized.class, callbacks -> (handler, sender, server) -> {
 		for (PlayInitialized callback : callbacks) {
-			callback.onPlayInitialized(handler, server, sender);
+			callback.onPlayInitialized(handler, sender, server);
 		}
 	});
 	/**
@@ -42,9 +41,9 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.</p>
 	 */
-	public static final Event<PlayDisconnected> PLAY_DISCONNECTED = EventFactory.createArrayBacked(PlayDisconnected.class, callbacks -> (handler, server) -> {
+	public static final Event<PlayDisconnected> PLAY_DISCONNECTED = EventFactory.createArrayBacked(PlayDisconnected.class, callbacks -> (handler, sender, server) -> {
 		for (PlayDisconnected callback : callbacks) {
-			callback.onPlayDisconnected(handler, server);
+			callback.onPlayDisconnected(handler, sender, server);
 		}
 	});
 
@@ -53,11 +52,11 @@ public final class ServerPlayConnectionEvents {
 
 	@FunctionalInterface
 	public interface PlayInitialized {
-		void onPlayInitialized(ServerPlayNetworkHandler handler, MinecraftServer server, PlayPacketSender sender);
+		void onPlayInitialized(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
 	}
 
 	@FunctionalInterface
 	public interface PlayDisconnected {
-		void onPlayDisconnected(ServerPlayNetworkHandler handler, MinecraftServer server);
+		void onPlayDisconnected(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
 	}
 }

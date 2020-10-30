@@ -33,9 +33,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
 
-public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon implements PlayPacketSender {
+public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon {
 	protected final ChannelRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 	protected final Set<Identifier> sendableChannelsView;
@@ -73,7 +72,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			return true;
 		}
 
-		@Nullable H handler = this.receiver.get(channel);
+		@Nullable H handler = this.receiver.getHandler(channel);
 
 		if (handler == null) {
 			return false;
@@ -162,12 +161,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		}
 	}
 
-	@Override
 	public Collection<Identifier> getChannels() {
 		return this.sendableChannelsView;
 	}
 
-	@Override
 	public boolean hasChannel(Identifier channel) {
 		return this.sendableChannels.contains(channel);
 	}

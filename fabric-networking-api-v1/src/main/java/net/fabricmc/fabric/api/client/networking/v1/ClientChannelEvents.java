@@ -26,7 +26,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 /**
  * Offers access to events related to the registration of network channels for a client-side network handler.
@@ -36,24 +36,20 @@ public final class ClientChannelEvents {
 	/**
 	 * An event for the client play network handler receiving an update indicating the connected server's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
-	 *
-	 * @see PlayPacketSender#hasChannel(Identifier)
 	 */
-	public static final Event<Registered> REGISTERED = EventFactory.createArrayBacked(Registered.class, callbacks -> (handler, client, sender, channels) -> {
+	public static final Event<Registered> REGISTERED = EventFactory.createArrayBacked(Registered.class, callbacks -> (handler, sender, client, channels) -> {
 		for (Registered callback : callbacks) {
-			callback.onChannelRegistered(handler, client, sender, channels);
+			callback.onChannelRegistered(handler, sender, client, channels);
 		}
 	});
 
 	/**
 	 * An event for the client play network handler receiving an update indicating the connected server's lack of ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
-	 *
-	 * @see PlayPacketSender#hasChannel(Identifier)
 	 */
-	public static final Event<Unregistered> UNREGISTERED = EventFactory.createArrayBacked(Unregistered.class, callbacks -> (handler, client, sender, channels) -> {
+	public static final Event<Unregistered> UNREGISTERED = EventFactory.createArrayBacked(Unregistered.class, callbacks -> (handler, sender, client, channels) -> {
 		for (Unregistered callback : callbacks) {
-			callback.onChannelUnregistered(handler, client, sender, channels);
+			callback.onChannelUnregistered(handler, sender, client, channels);
 		}
 	});
 
@@ -63,12 +59,12 @@ public final class ClientChannelEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Registered {
-		void onChannelRegistered(ClientPlayNetworkHandler handler, MinecraftClient client, PlayPacketSender sender, List<Identifier> channels);
+		void onChannelRegistered(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, List<Identifier> channels);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Unregistered {
-		void onChannelUnregistered(ClientPlayNetworkHandler handler, MinecraftClient client, PlayPacketSender sender, List<Identifier> channels);
+		void onChannelUnregistered(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, List<Identifier> channels);
 	}
 }
