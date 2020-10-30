@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
@@ -83,6 +84,13 @@ public final class ClientPlayNetworking {
 
 	public static boolean hasGlobalChannel(Identifier channel) {
 		return ClientNetworkingImpl.PLAY.hasChannel(channel);
+	}
+
+	public static Packet<?> createC2SPacket(Identifier channel, PacketByteBuf buf) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(buf, "Buf cannot be null");
+
+		return ClientNetworkingImpl.createPlayC2SPacket(channel, buf);
 	}
 
 	/**

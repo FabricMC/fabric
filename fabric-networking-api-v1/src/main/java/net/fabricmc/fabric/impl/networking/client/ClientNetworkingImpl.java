@@ -23,7 +23,9 @@ import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
@@ -46,6 +48,10 @@ public final class ClientNetworkingImpl {
 
 	public static ClientLoginNetworkAddon getAddon(ClientLoginNetworkHandler handler) {
 		return ((ClientLoginNetworkHandlerHook) handler).getAddon();
+	}
+
+	public static Packet<?> createPlayC2SPacket(Identifier channel, PacketByteBuf buf) {
+		return new CustomPayloadC2SPacket(channel, buf);
 	}
 
 	@Environment(EnvType.CLIENT)

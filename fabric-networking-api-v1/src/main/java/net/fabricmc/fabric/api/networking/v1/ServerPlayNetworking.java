@@ -21,6 +21,7 @@ import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -80,6 +81,13 @@ public final class ServerPlayNetworking {
 
 	public static boolean hasGlobalChannel(Identifier id) {
 		return ServerNetworkingImpl.PLAY.hasChannel(id);
+	}
+
+	public static Packet<?> createS2CPacket(Identifier channel, PacketByteBuf buf) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(buf, "Buf cannot be null");
+
+		return ServerNetworkingImpl.createPlayC2SPacket(channel, buf);
 	}
 
 	/**

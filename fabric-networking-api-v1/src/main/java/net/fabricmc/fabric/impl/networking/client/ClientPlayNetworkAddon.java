@@ -85,7 +85,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	public Packet<?> makePacket(Identifier channel, PacketByteBuf buf) {
-		return new CustomPayloadC2SPacket(channel, buf);
+		return ClientPlayNetworking.createC2SPacket(channel, buf);
 	}
 
 	@Override
