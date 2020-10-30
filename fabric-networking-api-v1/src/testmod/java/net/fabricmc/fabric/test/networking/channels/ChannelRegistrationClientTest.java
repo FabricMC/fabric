@@ -41,7 +41,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 //  This simply adds a screen which can be opened to see what registrations for channels the client has received and seeing what channels the server supports for reception
 @Environment(EnvType.CLIENT)
 public final class ChannelRegistrationClientTest implements ClientModInitializer {
-	static final KeyBinding OPEN_CHANNEL_SCREEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("fabric-networking-api-v1-testmod-channel-test-screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, "fabric-networking-api-v1-testmod"));
+	static final KeyBinding OPEN_CHANNEL_SCREEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("fabric-networking-api-v1-testmod-channel-test-screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_MENU, "fabric-networking-api-v1-testmod"));
 	@Nullable
 	private ServerState serverState;
 
