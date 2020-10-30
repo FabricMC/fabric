@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.networking.play;
 
+import static com.mojang.brigadier.arguments.StringArgumentType.string;
+import static net.minecraft.server.command.CommandManager.*;
+
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -47,7 +50,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {
 		NetworkingTestmods.LOGGER.info("Registering test command");
 
-		dispatcher.register(CommandManager.literal("networktestcommand").then(CommandManager.argument("stuff", StringArgumentType.string()).executes(ctx -> {
+		dispatcher.register(literal("networktestcommand").then(argument("stuff", string()).executes(ctx -> {
 			String stuff = StringArgumentType.getString(ctx, "stuff");
 			sendToTestChannel(ctx.getSource().getPlayer(), stuff);
 			return Command.SINGLE_SUCCESS;
