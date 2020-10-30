@@ -21,7 +21,6 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
 
 /**
  * Offers access to events related to the connection to a client on a logical server.

@@ -26,7 +26,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
+import net.fabricmc.fabric.api.networking.v1.play.PlayPacketSender;
 
 /**
  * Offers access to events related to the registration of network channels for a client-side network handler.

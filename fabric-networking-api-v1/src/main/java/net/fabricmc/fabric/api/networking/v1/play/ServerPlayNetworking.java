@@ -26,7 +26,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ChannelHandlerRegistry;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerHook;
 

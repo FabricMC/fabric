@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.networking.v1;
+package net.fabricmc.fabric.api.networking.v1.play;
 
 import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.networking.v1.ChannelRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 /**
  * Supports sending packets to channels in the play network handlers.

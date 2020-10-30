@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ChannelHandlerRegistry;
-import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
+import net.fabricmc.fabric.api.networking.v1.play.PlayPacketSender;
 import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
