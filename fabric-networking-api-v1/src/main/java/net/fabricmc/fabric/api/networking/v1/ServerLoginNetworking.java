@@ -48,7 +48,7 @@ public class ServerLoginNetworking {
 		return ServerNetworkingImpl.LOGIN.unregister(channel);
 	}
 
-	public static Collection<Identifier> getGlobalChannels() {
+	public static Collection<Identifier> getGlobalReceivers() {
 		return ServerNetworkingImpl.LOGIN.getChannels();
 	}
 

@@ -78,7 +78,7 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.unregister(channel);
 	}
 
-	public static Collection<Identifier> getGlobalChannels() {
+	public static Collection<Identifier> getGlobalReceivers() {
 		return ClientNetworkingImpl.PLAY.getChannels();
 	}
 

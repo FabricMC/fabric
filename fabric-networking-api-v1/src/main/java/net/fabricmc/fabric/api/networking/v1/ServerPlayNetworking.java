@@ -75,7 +75,7 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.PLAY.unregister(channel);
 	}
 
-	public static Collection<Identifier> getGlobalChannels() {
+	public static Collection<Identifier> getGlobalReceivers() {
 		return ServerNetworkingImpl.PLAY.getChannels();
 	}
 

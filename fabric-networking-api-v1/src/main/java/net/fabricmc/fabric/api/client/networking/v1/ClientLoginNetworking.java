@@ -52,7 +52,7 @@ public final class ClientLoginNetworking {
 		return ClientNetworkingImpl.LOGIN.unregister(channel);
 	}
 
-	public static Collection<Identifier> getGlobalChannels() {
+	public static Collection<Identifier> getGlobalReceivers() {
 		return ClientNetworkingImpl.LOGIN.getChannels();
 	}
 
