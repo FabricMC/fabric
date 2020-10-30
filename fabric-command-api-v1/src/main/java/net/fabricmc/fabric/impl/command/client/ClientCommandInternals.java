@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.command.client;
 
+import java.util.Objects;
+
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
 import com.mojang.brigadier.exceptions.CommandExceptionType;
@@ -56,10 +58,7 @@ public final class ClientCommandInternals {
 			return false; // Incorrect prefix, won't execute anything.
 		}
 
-		if (dispatcher == null) {
-			throw new IllegalStateException("Client-side command dispatcher not built");
-		}
-
+		CommandDispatcher<FabricClientCommandSource> dispatcher = getDispatcher();
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		// The interface is implemented on ClientCommandSource with a mixin.
@@ -115,6 +114,10 @@ public final class ClientCommandInternals {
 		String context = e.getContext();
 
 		return context != null ? new TranslatableText("command.context.parse_error", message, context) : message;
+	}
+
+	public static CommandDispatcher<FabricClientCommandSource> getDispatcher() {
+		return Objects.requireNonNull(dispatcher, "Client command dispatcher not built!");
 	}
 
 	public static void buildDispatchers() {

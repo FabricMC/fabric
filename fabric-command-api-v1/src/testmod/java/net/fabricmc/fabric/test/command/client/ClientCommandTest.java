@@ -16,26 +16,36 @@
 
 package net.fabricmc.fabric.test.command.client;
 
+import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.tree.CommandNode;
+import com.mojang.brigadier.tree.RootCommandNode;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v1.ClientArgumentBuilders;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
+@Environment(EnvType.CLIENT)
 public final class ClientCommandTest implements ClientModInitializer {
+	private static final Logger LOGGER = LogManager.getLogger();
 	private static final DynamicCommandExceptionType IS_NULL = new DynamicCommandExceptionType(x -> new LiteralText("The " + x + " is null"));
+
+	private boolean hasTested = false;
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandRegistrationCallback.EVENT.register(registerSimpleCommands("This is a client command"));
-	}
-
-	private static ClientCommandRegistrationCallback registerSimpleCommands(String message) {
-		return dispatcher -> {
-			dispatcher.register(ClientArgumentBuilders.literal("test-client-cmd").executes(context -> {
-				context.getSource().sendFeedback(new LiteralText(message));
+		ClientCommandRegistrationCallback.EVENT.register(dispatcher -> {
+			dispatcher.register(ClientArgumentBuilders.literal("test_client_command").executes(context -> {
+				context.getSource().sendFeedback(new LiteralText("This is a client command!"));
 
 				if (context.getSource().getClient() == null) {
 					throw IS_NULL.create("client");
@@ -51,6 +61,47 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 				return 0;
 			}));
-		};
+
+			// Command with argument
+			dispatcher.register(ClientArgumentBuilders.literal("test_client_command_with_arg").then(
+					ClientArgumentBuilders.argument("number", DoubleArgumentType.doubleArg()).executes(context -> {
+						double number = DoubleArgumentType.getDouble(context, "number");
+
+						// Test error formatting
+						context.getSource().sendError(new LiteralText("Your number is " + number));
+
+						return 0;
+					})
+			));
+		});
+
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (hasTested) {
+				return;
+			}
+
+			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandInternals.getDispatcher().getRoot();
+
+			// We climb the tree again
+			CommandNode<FabricClientCommandSource> test_client_command = rootNode.getChild("test_client_command");
+			CommandNode<FabricClientCommandSource> test_client_command_with_arg = rootNode.getChild("test_client_command_with_arg");
+
+			if (test_client_command == null) {
+				throw new AssertionError("Expected to find 'test_client_command' on the client command dispatcher. But it was not found.");
+			}
+
+			if (test_client_command_with_arg == null) {
+				throw new AssertionError("Expected to find 'test_client_command_with_arg' on the client command dispatcher. But it was not found.");
+			}
+
+			CommandNode<FabricClientCommandSource> number_arg = test_client_command_with_arg.getChild("number");
+
+			if (number_arg == null) {
+				throw new AssertionError("Expected to find 'number' as a child of 'test_client_command_with_arg' on the client command dispatcher. But it was not found.");
+			}
+
+			hasTested = true;
+			LOGGER.info("The client command tests have passed! Please make sure you execute the two commands for extra safety.");
+		});
 	}
 }
