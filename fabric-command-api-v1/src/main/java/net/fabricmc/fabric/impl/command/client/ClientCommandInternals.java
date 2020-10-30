@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.impl.command.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
 import com.mojang.brigadier.exceptions.CommandExceptionType;
@@ -36,27 +33,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.event.EventFactory;
 
 @Environment(EnvType.CLIENT)
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LogManager.getLogger();
+	private static final char PREFIX = '/';
 
-	private static final Map<Character, Event<ClientCommandRegistrationCallback>> events = new HashMap<>();
-	private static final Map<Character, CommandDispatcher<FabricClientCommandSource>> dispatchers = new HashMap<>();
-
-	public static Event<ClientCommandRegistrationCallback> event(char prefix) {
-		if (isInvalidCommandPrefix(prefix)) {
-			throw new IllegalArgumentException("Command prefix '" + prefix + "' cannot be a letter, a digit or whitespace!");
-		}
-
-		return events.computeIfAbsent(prefix, c -> EventFactory.createArrayBacked(ClientCommandRegistrationCallback.class, callbacks -> dispatcher -> {
-			for (ClientCommandRegistrationCallback callback : callbacks) {
-				callback.register(dispatcher);
-			}
-		}));
-	}
+	private static CommandDispatcher<FabricClientCommandSource> dispatcher = null;
 
 	/**
 	 * Executes a client-sided command from a message.
@@ -69,11 +52,12 @@ public final class ClientCommandInternals {
 			return false; // Nothing to process
 		}
 
-		char prefix = message.charAt(0);
-		CommandDispatcher<FabricClientCommandSource> dispatcher = getDispatcher(prefix);
+		if (message.charAt(0) != PREFIX) {
+			return false; // Incorrect prefix, won't execute anything.
+		}
 
 		if (dispatcher == null) {
-			return false; // Unknown prefix, won't execute anything.
+			throw new IllegalStateException("Client-side command dispatcher not built");
 		}
 
 		MinecraftClient client = MinecraftClient.getInstance();
@@ -133,43 +117,23 @@ public final class ClientCommandInternals {
 		return context != null ? new TranslatableText("command.context.parse_error", message, context) : message;
 	}
 
-	/* @Nullable */
-	public static CommandDispatcher<FabricClientCommandSource> getDispatcher(char prefix) {
-		return dispatchers.get(prefix);
-	}
-
 	public static void buildDispatchers() {
 		// This should only be called once at the end of the client constructor.
-		if (!dispatchers.isEmpty()) {
+		if (dispatcher != null) {
 			throw new IllegalStateException("Dispatchers have already been built!");
 		}
 
-		LOGGER.debug("Building client-side command dispatchers");
+		LOGGER.debug("Building client-side command dispatcher");
 
-		for (char prefix : events.keySet()) {
-			CommandDispatcher<FabricClientCommandSource> dispatcher = new CommandDispatcher<>();
-			addCommands(prefix, dispatcher);
-			// noinspection CodeBlock2Expr
-			dispatcher.findAmbiguities((parent, child, sibling, inputs) -> {
-				LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {} (client-side command prefix: {})", dispatcher.getPath(child), dispatcher.getPath(sibling), inputs, prefix);
-			});
-			dispatchers.put(prefix, dispatcher);
-		}
+		dispatcher = new CommandDispatcher<>();
+		addCommands(dispatcher);
+		// noinspection CodeBlock2Expr
+		dispatcher.findAmbiguities((parent, child, sibling, inputs) -> {
+			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", dispatcher.getPath(child), dispatcher.getPath(sibling), inputs);
+		});
 	}
 
-	public static void addCommands(char prefix, CommandDispatcher<FabricClientCommandSource> dispatcher) {
-		Event<ClientCommandRegistrationCallback> event = events.get(prefix);
-
-		if (event != null) {
-			event.invoker().register(dispatcher);
-		}
-	}
-
-	public static boolean isInvalidCommandPrefix(char prefix) {
-		return Character.isLetterOrDigit(prefix) || Character.isWhitespace(prefix);
-	}
-
-	public static boolean isPrefixUsed(char prefix) {
-		return events.containsKey(prefix);
+	public static void addCommands(CommandDispatcher<FabricClientCommandSource> dispatcher) {
+		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher);
 	}
 }

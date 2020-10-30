@@ -29,9 +29,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		ClientCommandRegistrationCallback.event().register(registerSimpleCommands("This is a client command"));
-		// Using `\` as prefix
-		ClientCommandRegistrationCallback.event('\\').register(registerSimpleCommands("This is a client command with backslashes"));
+		ClientCommandRegistrationCallback.EVENT.register(registerSimpleCommands("This is a client command"));
 	}
 
 	private static ClientCommandRegistrationCallback registerSimpleCommands(String message) {
