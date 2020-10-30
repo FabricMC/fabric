@@ -31,15 +31,13 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v1.ClientArgumentBuilders;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
 @Environment(EnvType.CLIENT)
 public final class ClientCommandTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final DynamicCommandExceptionType IS_NULL = new DynamicCommandExceptionType(x -> new LiteralText("The " + x + " is null"));
-
-	private boolean hasTested = false;
 
 	@Override
 	public void onInitializeClient() {
@@ -75,32 +73,27 @@ public final class ClientCommandTest implements ClientModInitializer {
 			));
 		});
 
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (hasTested) {
-				return;
-			}
-
+		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
 			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandInternals.getDispatcher().getRoot();
 
 			// We climb the tree again
-			CommandNode<FabricClientCommandSource> test_client_command = rootNode.getChild("test_client_command");
-			CommandNode<FabricClientCommandSource> test_client_command_with_arg = rootNode.getChild("test_client_command_with_arg");
+			CommandNode<FabricClientCommandSource> testClientCommand = rootNode.getChild("test_client_command");
+			CommandNode<FabricClientCommandSource> testClientCommandWithArg = rootNode.getChild("test_client_command_with_arg");
 
-			if (test_client_command == null) {
+			if (testClientCommand == null) {
 				throw new AssertionError("Expected to find 'test_client_command' on the client command dispatcher. But it was not found.");
 			}
 
-			if (test_client_command_with_arg == null) {
+			if (testClientCommandWithArg == null) {
 				throw new AssertionError("Expected to find 'test_client_command_with_arg' on the client command dispatcher. But it was not found.");
 			}
 
-			CommandNode<FabricClientCommandSource> number_arg = test_client_command_with_arg.getChild("number");
+			CommandNode<FabricClientCommandSource> numberArg = testClientCommandWithArg.getChild("number");
 
-			if (number_arg == null) {
+			if (numberArg == null) {
 				throw new AssertionError("Expected to find 'number' as a child of 'test_client_command_with_arg' on the client command dispatcher. But it was not found.");
 			}
 
-			hasTested = true;
 			LOGGER.info("The client command tests have passed! Please make sure you execute the two commands for extra safety.");
 		});
 	}
