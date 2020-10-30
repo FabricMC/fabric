@@ -21,7 +21,7 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v1.ArgumentBuilders;
+import net.fabricmc.fabric.api.client.command.v1.ClientArgumentBuilders;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandRegistrationCallback;
 
 public final class ClientCommandTest implements ClientModInitializer {
@@ -36,7 +36,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 
 	private static ClientCommandRegistrationCallback registerSimpleCommands(String message) {
 		return dispatcher -> {
-			dispatcher.register(ArgumentBuilders.literal("test-client-cmd").executes(context -> {
+			dispatcher.register(ClientArgumentBuilders.literal("test-client-cmd").executes(context -> {
 				context.getSource().sendFeedback(new LiteralText(message));
 
 				if (context.getSource().getClient() == null) {

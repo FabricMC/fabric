@@ -27,8 +27,8 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
  * <p>This is an alternative to the server-side helper methods in
  * {@link net.minecraft.server.command.CommandManager}.
  */
-public final class ArgumentBuilders {
-	private ArgumentBuilders() {
+public final class ClientArgumentBuilders {
+	private ClientArgumentBuilders() {
 	}
 
 	/**
