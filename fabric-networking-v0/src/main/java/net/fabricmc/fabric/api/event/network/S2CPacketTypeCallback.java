@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayChannelEvents;
 @Deprecated
 public interface S2CPacketTypeCallback {
 	/**
-	 * @deprecated Please migrate to {@link ServerPlayChannelEvents#REGISTERED}.
+	 * @deprecated Please migrate to {@link ServerPlayChannelEvents#REGISTER}.
 	 */
 	@Deprecated
 	Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
@@ -49,7 +49,7 @@ public interface S2CPacketTypeCallback {
 	);
 
 	/**
-	 * @deprecated Please migrate to {@link ServerPlayChannelEvents#UNREGISTERED}.
+	 * @deprecated Please migrate to {@link ServerPlayChannelEvents#UNREGISTER}.
 	 */
 	@Deprecated
 	Event<S2CPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(

@@ -31,9 +31,9 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the client.
 	 */
-	public static final Event<PlayInitialized> PLAY_INITIALIZED = EventFactory.createArrayBacked(PlayInitialized.class, callbacks -> (handler, sender, server) -> {
-		for (PlayInitialized callback : callbacks) {
-			callback.onPlayInitialized(handler, sender, server);
+	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, sender, server) -> {
+		for (PlayInit callback : callbacks) {
+			callback.onPlayInit(handler, sender, server);
 		}
 	});
 	/**
@@ -41,9 +41,9 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.</p>
 	 */
-	public static final Event<PlayDisconnected> PLAY_DISCONNECTED = EventFactory.createArrayBacked(PlayDisconnected.class, callbacks -> (handler, sender, server) -> {
-		for (PlayDisconnected callback : callbacks) {
-			callback.onPlayDisconnected(handler, sender, server);
+	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, sender, server) -> {
+		for (PlayDisconnect callback : callbacks) {
+			callback.onPlayDisconnect(handler, sender, server);
 		}
 	});
 
@@ -51,12 +51,12 @@ public final class ServerPlayConnectionEvents {
 	}
 
 	@FunctionalInterface
-	public interface PlayInitialized {
-		void onPlayInitialized(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
+	public interface PlayInit {
+		void onPlayInit(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
 	}
 
 	@FunctionalInterface
-	public interface PlayDisconnected {
-		void onPlayDisconnected(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
+	public interface PlayDisconnect {
+		void onPlayDisconnect(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
 	}
 }

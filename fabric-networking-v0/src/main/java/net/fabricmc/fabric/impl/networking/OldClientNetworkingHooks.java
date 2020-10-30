@@ -24,7 +24,7 @@ public final class OldClientNetworkingHooks implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// Must be lambdas below
-		ClientPlayChannelEvents.REGISTERED.register((handler, client, sender, channels) -> S2CPacketTypeCallback.REGISTERED.invoker().accept(channels));
-		ClientPlayChannelEvents.UNREGISTERED.register((handler, client, sender, channels) -> S2CPacketTypeCallback.UNREGISTERED.invoker().accept(channels));
+		ClientPlayChannelEvents.REGISTER.register((handler, client, sender, channels) -> S2CPacketTypeCallback.REGISTERED.invoker().accept(channels));
+		ClientPlayChannelEvents.UNREGISTER.register((handler, client, sender, channels) -> S2CPacketTypeCallback.UNREGISTERED.invoker().accept(channels));
 	}
 }

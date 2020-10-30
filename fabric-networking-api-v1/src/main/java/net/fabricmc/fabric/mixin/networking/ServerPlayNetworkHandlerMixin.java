@@ -64,7 +64,7 @@ abstract class ServerPlayNetworkHandlerMixin implements ServerPlayNetworkHandler
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		ServerPlayConnectionEvents.PLAY_DISCONNECTED.invoker().onPlayDisconnected((ServerPlayNetworkHandler) (Object) this, this.addon, this.server);
+		ServerPlayConnectionEvents.PLAY_DISCONNECT.invoker().onPlayDisconnect((ServerPlayNetworkHandler) (Object) this, this.addon, this.server);
 	}
 
 	@Override

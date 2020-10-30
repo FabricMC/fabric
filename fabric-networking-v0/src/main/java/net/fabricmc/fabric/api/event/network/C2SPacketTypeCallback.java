@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Deprecated
 public interface C2SPacketTypeCallback {
 	/**
-	 * @deprecated Please migrate to {@link ClientPlayChannelEvents#REGISTERED}.
+	 * @deprecated Please migrate to {@link ClientPlayChannelEvents#REGISTER}.
 	 */
 	@Deprecated
 	Event<C2SPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
@@ -50,7 +50,7 @@ public interface C2SPacketTypeCallback {
 	);
 
 	/**
-	 * @deprecated Please migrate to {@link ClientPlayChannelEvents#UNREGISTERED}.
+	 * @deprecated Please migrate to {@link ClientPlayChannelEvents#UNREGISTER}.
 	 */
 	@Deprecated
 	Event<C2SPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(

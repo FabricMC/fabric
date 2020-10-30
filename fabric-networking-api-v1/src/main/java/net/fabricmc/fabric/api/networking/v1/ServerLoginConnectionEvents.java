@@ -36,9 +36,9 @@ public final class ServerLoginConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<LoginDisconnect> LOGIN_DISCONNECTED = EventFactory.createArrayBacked(LoginDisconnect.class, callbacks -> (handler, server) -> {
+	public static final Event<LoginDisconnect> LOGIN_DISCONNECT = EventFactory.createArrayBacked(LoginDisconnect.class, callbacks -> (handler, server) -> {
 		for (LoginDisconnect callback : callbacks) {
-			callback.onLoginDisconnected(handler, server);
+			callback.onLoginDisconnect(handler, server);
 		}
 	});
 
@@ -52,6 +52,6 @@ public final class ServerLoginConnectionEvents {
 
 	@FunctionalInterface
 	public interface LoginDisconnect {
-		void onLoginDisconnected(ServerLoginNetworkHandler handler, MinecraftServer server);
+		void onLoginDisconnect(ServerLoginNetworkHandler handler, MinecraftServer server);
 	}
 }

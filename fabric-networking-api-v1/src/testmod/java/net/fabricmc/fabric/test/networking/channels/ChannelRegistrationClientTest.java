@@ -65,16 +65,16 @@ public final class ChannelRegistrationClientTest implements ClientModInitializer
 			this.serverState = null;
 		});
 
-		ClientPlayConnectionEvents.PLAY_DISCONNECTED.register((handler, sender, client) -> {
+		ClientPlayConnectionEvents.PLAY_DISCONNECT.register((handler, sender, client) -> {
 			// Kill the current state
 			this.serverState = null;
 		});
 
-		ClientPlayChannelEvents.REGISTERED.register((handler, sender, client, channels) -> {
+		ClientPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
 			this.serverState.register(channels);
 		});
 
-		ClientPlayChannelEvents.UNREGISTERED.register((handler, sender, client, channels) -> {
+		ClientPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
 			this.serverState.unregister(channels);
 		});
 	}

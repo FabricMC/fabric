@@ -35,9 +35,9 @@ public final class ClientPlayConnectionEvents {
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the server.
 	 */
-	public static final Event<PlayInitialized> PLAY_INITIALIZED = EventFactory.createArrayBacked(PlayInitialized.class, callbacks -> (handler, sender, client) -> {
-		for (PlayInitialized callback : callbacks) {
-			callback.onPlayInitialized(handler, sender, client);
+	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, sender, client) -> {
+		for (PlayInit callback : callbacks) {
+			callback.onPlayInit(handler, sender, client);
 		}
 	});
 
@@ -46,9 +46,9 @@ public final class ClientPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<PlayDisconnected> PLAY_DISCONNECTED = EventFactory.createArrayBacked(PlayDisconnected.class, callbacks -> (handler, sender, client) -> {
-		for (PlayDisconnected callback : callbacks) {
-			callback.onPlayDisconnected(handler, sender, client);
+	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, sender, client) -> {
+		for (PlayDisconnect callback : callbacks) {
+			callback.onPlayDisconnect(handler, sender, client);
 		}
 	});
 
@@ -57,13 +57,13 @@ public final class ClientPlayConnectionEvents {
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayInitialized {
-		void onPlayInitialized(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
+	public interface PlayInit {
+		void onPlayInit(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayDisconnected {
-		void onPlayDisconnected(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
+	public interface PlayDisconnect {
+		void onPlayDisconnect(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
 	}
 }

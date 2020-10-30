@@ -33,9 +33,9 @@ public final class ServerPlayChannelEvents {
 	 * An event for the server play network handler receiving an update indicating the connected client's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
-	public static final Event<Registered> REGISTERED = EventFactory.createArrayBacked(Registered.class, callbacks -> (handler, sender, server, channels) -> {
-		for (Registered callback : callbacks) {
-			callback.onChannelRegistered(handler, sender, server, channels);
+	public static final Event<Register> REGISTER = EventFactory.createArrayBacked(Register.class, callbacks -> (handler, sender, server, channels) -> {
+		for (Register callback : callbacks) {
+			callback.onChannelRegister(handler, sender, server, channels);
 		}
 	});
 
@@ -43,9 +43,9 @@ public final class ServerPlayChannelEvents {
 	 * An event for the server play network handler receiving an update indicating the connected client's lack of ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
 	 */
-	public static final Event<Unregistered> UNREGISTERED = EventFactory.createArrayBacked(Unregistered.class, callbacks -> (handler, sender, server, channels) -> {
-		for (Unregistered callback : callbacks) {
-			callback.onChannelUnregistered(handler, sender, server, channels);
+	public static final Event<Unregister> UNREGISTER = EventFactory.createArrayBacked(Unregister.class, callbacks -> (handler, sender, server, channels) -> {
+		for (Unregister callback : callbacks) {
+			callback.onChannelUnregister(handler, sender, server, channels);
 		}
 	});
 
@@ -53,12 +53,12 @@ public final class ServerPlayChannelEvents {
 	}
 
 	@FunctionalInterface
-	public interface Registered {
-		void onChannelRegistered(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);
+	public interface Register {
+		void onChannelRegister(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);
 	}
 
 	@FunctionalInterface
-	public interface Unregistered {
-		void onChannelUnregistered(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);
+	public interface Unregister {
+		void onChannelUnregister(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);
 	}
 }

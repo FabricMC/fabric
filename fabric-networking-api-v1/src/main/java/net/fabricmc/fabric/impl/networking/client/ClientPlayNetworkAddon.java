@@ -51,7 +51,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	public void onServerReady() {
 		this.sendChannelRegistrationPacket();
-		ClientPlayConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this, this.client);
+		ClientPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.client);
 	}
 
 	/**
@@ -89,11 +89,11 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void postRegisterEvent(List<Identifier> ids) {
-		ClientPlayChannelEvents.REGISTERED.invoker().onChannelRegistered(this.handler, this, this.client, ids);
+		ClientPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.client, ids);
 	}
 
 	@Override
 	protected void postUnregisterEvent(List<Identifier> ids) {
-		ClientPlayChannelEvents.UNREGISTERED.invoker().onChannelUnregistered(this.handler, this, this.client, ids);
+		ClientPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
 	}
 }

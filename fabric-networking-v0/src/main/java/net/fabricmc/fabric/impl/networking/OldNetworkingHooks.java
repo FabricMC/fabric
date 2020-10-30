@@ -24,10 +24,10 @@ public final class OldNetworkingHooks implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Must be lambdas below
-		ServerPlayChannelEvents.REGISTERED.register((handler, server, sender, channels) -> {
+		ServerPlayChannelEvents.REGISTER.register((handler, server, sender, channels) -> {
 			C2SPacketTypeCallback.REGISTERED.invoker().accept(handler.player, channels);
 		});
-		ServerPlayChannelEvents.UNREGISTERED.register((handler, server, sender, channels) -> {
+		ServerPlayChannelEvents.UNREGISTER.register((handler, server, sender, channels) -> {
 			C2SPacketTypeCallback.UNREGISTERED.invoker().accept(handler.player, channels);
 		});
 	}
