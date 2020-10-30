@@ -54,7 +54,6 @@ public final class ClientNetworkingImpl {
 		return new CustomPayloadC2SPacket(channel, buf);
 	}
 
-	@Environment(EnvType.CLIENT)
 	public static void clientInit() {
 		// Register a login query handler for early channel registration.
 		ClientLoginNetworking.register(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {

@@ -26,10 +26,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
+import net.minecraft.network.packet.s2c.login.LoginHelloS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
+import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerHook;
 
@@ -48,11 +51,21 @@ abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandl
 		this.addon = new ClientLoginNetworkAddon((ClientLoginNetworkHandler) (Object) this, this.client);
 	}
 
+	@Inject(method = "onHello", at = @At("HEAD"))
+	private void invokeLoginStartEvent(LoginHelloS2CPacket packet, CallbackInfo ci) {
+		ClientLoginConnectionEvents.LOGIN_START.invoker().onLoginStart((ClientLoginNetworkHandler) (Object) this, this.client);
+	}
+
 	@Inject(method = "onQueryRequest", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false, shift = At.Shift.AFTER), cancellable = true)
 	private void handleQueryRequest(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
 		if (this.addon.handlePacket(packet)) {
 			ci.cancel();
 		}
+	}
+
+	@Inject(method = "onDisconnected", at = @At("HEAD"))
+	private void invokeLoginDisconnectEvent(Text reason, CallbackInfo ci) {
+		ClientLoginConnectionEvents.LOGIN_DISCONNECT.invoker().onLoginDisconnect((ClientLoginNetworkHandler) (Object) this, this.client);
 	}
 
 	@Override
