@@ -24,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.command.CommandSource;
 import net.minecraft.network.packet.s2c.play.CommandTreeS2CPacket;
-import net.minecraft.server.command.CommandSource;
 
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 

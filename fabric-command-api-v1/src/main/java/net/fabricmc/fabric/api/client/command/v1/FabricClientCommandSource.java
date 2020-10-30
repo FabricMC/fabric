@@ -19,7 +19,7 @@ package net.fabricmc.fabric.api.client.command.v1;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.server.command.CommandSource;
+import net.minecraft.command.CommandSource;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
