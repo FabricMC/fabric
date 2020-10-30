@@ -56,7 +56,7 @@ public final class ClientLoginNetworking {
 		return ClientNetworkingImpl.LOGIN.getChannels();
 	}
 
-	public static boolean hasGlobalChannel(Identifier channel) {
+	public static boolean hasGlobalReceiver(Identifier channel) {
 		return ClientNetworkingImpl.LOGIN.hasChannel(channel);
 	}
 

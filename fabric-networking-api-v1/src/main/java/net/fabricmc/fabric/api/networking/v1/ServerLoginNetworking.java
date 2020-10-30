@@ -52,7 +52,7 @@ public class ServerLoginNetworking {
 		return ServerNetworkingImpl.LOGIN.getChannels();
 	}
 
-	public static boolean hasGlobalChannel(Identifier channel) {
+	public static boolean hasGlobalReceiver(Identifier channel) {
 		return ServerNetworkingImpl.LOGIN.hasChannel(channel);
 	}
 

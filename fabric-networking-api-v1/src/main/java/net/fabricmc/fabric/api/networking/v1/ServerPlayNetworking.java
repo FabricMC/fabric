@@ -79,7 +79,7 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.PLAY.getChannels();
 	}
 
-	public static boolean hasGlobalChannel(Identifier id) {
+	public static boolean hasGlobalReceiver(Identifier id) {
 		return ServerNetworkingImpl.PLAY.hasChannel(id);
 	}
 
