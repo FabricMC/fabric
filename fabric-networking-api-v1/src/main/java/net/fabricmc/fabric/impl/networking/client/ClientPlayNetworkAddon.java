@@ -28,14 +28,14 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ClientChannelEvents;
-import net.fabricmc.fabric.api.networking.v1.ClientConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 
 @Environment(EnvType.CLIENT)
-public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientNetworking.PlayChannelHandler> {
+public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
 
@@ -52,7 +52,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	public void onServerReady() {
 		this.sendChannelRegistrationPacket();
-		ClientConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.client, this);
+		ClientPlayConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.client, this);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void receive(ClientNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
+	protected void receive(ClientPlayNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
 		handler.receive(this.handler, this.client, this, buf);
 	}
 

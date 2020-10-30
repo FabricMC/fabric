@@ -23,20 +23,20 @@ import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Util;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.login.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
+import net.fabricmc.fabric.api.networking.v1.login.ServerLoginNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
 
 public final class NetworkingLoginQueryTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		ServerConnectionEvents.LOGIN_QUERY_START.register(this::onLoginStart);
+		ServerLoginConnectionEvents.LOGIN_QUERY_START.register(this::onLoginStart);
 
 		// login delaying example
-		ServerNetworking.getLoginReceivers().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
+		ServerLoginNetworking.getLoginReceivers().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, server, sender, buf, understood, synchronizer) -> {
 			if (understood) {
 				FutureTask<?> future = new FutureTask<>(() -> {
 					for (int i = 0; i <= 10; i++) {
@@ -54,7 +54,7 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 		});
 	}
 
-	private void onLoginStart(ServerLoginNetworkHandler networkHandler, MinecraftServer server, PacketSender sender, ServerNetworking.LoginSynchronizer synchronizer) {
+	private void onLoginStart(ServerLoginNetworkHandler networkHandler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
 		// Send a dummy query when the client starts accepting queries.
 		sender.sendPacket(NetworkingPlayPacketTest.TEST_CHANNEL, PacketByteBufs.empty()); // dummy packet
 	}

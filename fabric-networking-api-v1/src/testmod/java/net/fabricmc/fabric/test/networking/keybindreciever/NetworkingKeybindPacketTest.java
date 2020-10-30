@@ -22,7 +22,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
+import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 // Listens for a packet from the client which is sent to the server when a keybinding is pressed.
@@ -32,7 +32,7 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerNetworking.getPlayReceivers().register(KEYBINDING_PACKET_ID, (handler, server, sender, buf) -> {
+		ServerPlayNetworking.getPlayReceivers().register(KEYBINDING_PACKET_ID, (handler, server, sender, buf) -> {
 			// TODO: Can we send chat off the server thread?
 			server.execute(() -> {
 				handler.player.sendMessage(new LiteralText("So you pressed ").append(new KeybindText("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);

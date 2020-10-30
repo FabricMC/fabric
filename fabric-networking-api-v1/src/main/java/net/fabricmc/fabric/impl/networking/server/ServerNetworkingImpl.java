@@ -18,12 +18,13 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 
-import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
+import net.fabricmc.fabric.api.networking.v1.login.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
 
 public final class ServerNetworkingImpl {
-	public static final SimpleChannelHandlerRegistry<ServerNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
-	public static final SimpleChannelHandlerRegistry<ServerNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
+	public static final SimpleChannelHandlerRegistry<ServerLoginNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
+	public static final SimpleChannelHandlerRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {
 		return ((ServerPlayNetworkHandlerHook) handler).getAddon();

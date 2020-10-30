@@ -28,7 +28,8 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.login.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -36,8 +37,8 @@ import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
-	public static final SimpleChannelHandlerRegistry<ClientNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
-	public static final SimpleChannelHandlerRegistry<ClientNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
+	public static final SimpleChannelHandlerRegistry<ClientLoginNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
+	public static final SimpleChannelHandlerRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return ((ClientPlayNetworkHandlerHook) handler).getAddon();
@@ -50,7 +51,7 @@ public final class ClientNetworkingImpl {
 	@Environment(EnvType.CLIENT)
 	public static void clientInit() {
 		// Register a login query handler for early channel registration.
-		ClientNetworking.getLoginReceivers().register(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
+		ClientLoginNetworking.getLoginReceivers().register(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
 			int n = buf.readVarInt();
 			List<Identifier> ids = new ArrayList<>(n);
 

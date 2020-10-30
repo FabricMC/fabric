@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.login.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
@@ -55,7 +55,7 @@ public final class ClientLoginNetworkAddon {
 	}
 
 	private boolean handlePacket(int queryId, Identifier channel, PacketByteBuf originalBuf) {
-		@Nullable ClientNetworking.LoginChannelHandler handler = ClientNetworkingImpl.LOGIN.get(channel);
+		@Nullable ClientLoginNetworking.LoginChannelHandler handler = ClientNetworkingImpl.LOGIN.get(channel);
 
 		if (handler == null) {
 			return false;

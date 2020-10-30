@@ -34,13 +34,13 @@ import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
+import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
 
 public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
 		if (player instanceof ServerPlayerEntity) {
-			return ServerNetworking.getPlaySender((ServerPlayerEntity) player).hasChannel(id);
+			return ServerPlayNetworking.getPlaySender((ServerPlayerEntity) player).hasChannel(id);
 		}
 
 		// TODO: Warn or fail?
@@ -50,7 +50,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	@Override
 	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (player instanceof ServerPlayerEntity) {
-			ServerNetworking.getPlaySender((ServerPlayerEntity) player).sendPacket(packet, completionListener);
+			ServerPlayNetworking.getPlaySender((ServerPlayerEntity) player).sendPacket(packet, completionListener);
 		}
 
 		throw new RuntimeException("Can only send to ServerPlayerEntities!");
@@ -65,7 +65,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	public void register(Identifier id, PacketConsumer consumer) {
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ServerNetworking.getPlayReceivers().register(id, (handler, server, sender, buf) -> {
+		ServerPlayNetworking.getPlayReceivers().register(id, (handler, server, sender, buf) -> {
 			consumer.accept(new PacketContext() {
 				@Override
 				public EnvType getPacketEnvironment() {
@@ -87,6 +87,6 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 
 	@Override
 	public void unregister(Identifier id) {
-		ServerNetworking.getPlayReceivers().unregister(id);
+		ServerPlayNetworking.getPlayReceivers().unregister(id);
 	}
 }

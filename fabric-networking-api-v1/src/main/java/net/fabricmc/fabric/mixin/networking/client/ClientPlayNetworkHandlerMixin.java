@@ -31,7 +31,7 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ClientConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerHook;
 
@@ -64,7 +64,7 @@ abstract class ClientPlayNetworkHandlerMixin implements ClientPlayNetworkHandler
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		ClientConnectionEvents.PLAY_DISCONNECTED.invoker().onPlayDisconnected((ClientPlayNetworkHandler) (Object) this, this.client);
+		ClientPlayConnectionEvents.PLAY_DISCONNECTED.invoker().onPlayDisconnected((ClientPlayNetworkHandler) (Object) this, this.client);
 	}
 
 	@Override

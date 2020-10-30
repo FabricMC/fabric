@@ -21,7 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.login.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
 
@@ -30,7 +30,7 @@ public final class NetworkingLoginQueryClientTest implements ClientModInitialize
 	@Override
 	public void onInitializeClient() {
 		// Send a dummy response to the server in return, by registering here we essentially say we understood the server's query
-		ClientNetworking.getLoginReceivers().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, client, buf, listenerAdder) -> {
+		ClientLoginNetworking.getLoginReceivers().register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, client, buf, listenerAdder) -> {
 			return CompletableFuture.completedFuture(PacketByteBufs.empty());
 		});
 	}

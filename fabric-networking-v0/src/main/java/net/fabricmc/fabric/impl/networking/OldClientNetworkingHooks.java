@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.networking;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.event.network.S2CPacketTypeCallback;
-import net.fabricmc.fabric.api.networking.v1.ClientChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientChannelEvents;
 
 public final class OldClientNetworkingHooks implements ClientModInitializer {
 	@Override

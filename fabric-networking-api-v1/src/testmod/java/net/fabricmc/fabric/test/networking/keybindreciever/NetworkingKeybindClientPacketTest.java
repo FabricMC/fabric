@@ -26,7 +26,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
 // Sends a packet to the server when a keybinding was pressed
@@ -42,7 +42,7 @@ public class NetworkingKeybindClientPacketTest implements ClientModInitializer {
 			if (client.player != null) {
 				if (TEST_BINDING.wasPressed()) {
 					// Send an empty payload, server just needs to be told when packet is sent
-					ClientNetworking.getPlaySender().sendPacket(NetworkingKeybindPacketTest.KEYBINDING_PACKET_ID, PacketByteBufs.empty());
+					ClientPlayNetworking.getPlaySender().sendPacket(NetworkingKeybindPacketTest.KEYBINDING_PACKET_ID, PacketByteBufs.empty());
 				}
 			}
 		});

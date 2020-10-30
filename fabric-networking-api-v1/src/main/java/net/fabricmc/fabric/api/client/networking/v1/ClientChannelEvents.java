@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.networking.v1;
+package net.fabricmc.fabric.api.client.networking.v1;
 
 import java.util.List;
 
@@ -26,6 +26,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
 
 /**
  * Offers access to events related to the registration of network channels for a client-side network handler.

@@ -32,7 +32,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.play.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerHook;
@@ -64,7 +64,7 @@ abstract class ServerPlayNetworkHandlerMixin implements ServerPlayNetworkHandler
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		ServerConnectionEvents.PLAY_DISCONNECTED.invoker().onPlayDisconnected((ServerPlayNetworkHandler) (Object) this, this.server);
+		ServerPlayConnectionEvents.PLAY_DISCONNECTED.invoker().onPlayDisconnected((ServerPlayNetworkHandler) (Object) this, this.server);
 	}
 
 	@Override

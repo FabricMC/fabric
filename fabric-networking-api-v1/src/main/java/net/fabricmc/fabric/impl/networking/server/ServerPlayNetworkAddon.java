@@ -27,13 +27,13 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.ServerChannelEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
+import net.fabricmc.fabric.api.networking.v1.play.ServerPlayConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
 
-public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerNetworking.PlayChannelHandler> {
+public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
 
@@ -47,7 +47,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	public void onClientReady() {
-		ServerConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.server, this);
+		ServerPlayConnectionEvents.PLAY_INITIALIZED.invoker().onPlayInitialized(this.handler, this.server, this);
 		this.sendChannelRegistrationPacket();
 	}
 
@@ -63,7 +63,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void receive(ServerNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
+	protected void receive(ServerPlayNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
 		handler.receive(this.handler, this.server, this, buf);
 	}
 

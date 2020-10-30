@@ -36,9 +36,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.login.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.ServerConnectionEvents;
-import net.fabricmc.fabric.api.networking.v1.ServerNetworking;
+import net.fabricmc.fabric.api.networking.v1.login.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
@@ -65,7 +65,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		if (this.firstQueryTick) {
 			// Send the compression packet now so clients receive compressed login queries
 			this.sendCompressionPacket();
-			ServerConnectionEvents.LOGIN_QUERY_START.invoker().onLoginStart(this.handler, this.server, this, this.waits::add);
+			ServerLoginConnectionEvents.LOGIN_QUERY_START.invoker().onLoginStart(this.handler, this.server, this, this.waits::add);
 			this.firstQueryTick = false;
 		}
 
@@ -126,7 +126,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		}
 
 		boolean understood = originalBuf != null;
-		@Nullable ServerNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.get(channel);
+		@Nullable ServerLoginNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.get(channel);
 
 		if (handler == null) {
 			return false;

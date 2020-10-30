@@ -32,22 +32,22 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
-import net.fabricmc.fabric.api.networking.v1.ClientNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
 
 public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canServerReceive(Identifier id) {
-		return ClientNetworking.getPlayReceivers().hasChannel(id);
+		return ClientPlayNetworking.getPlayReceivers().hasChannel(id);
 	}
 
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
-		ClientNetworking.getPlaySender().sendPacket(packet, completionListener);
+		ClientPlayNetworking.getPlaySender().sendPacket(packet, completionListener);
 	}
 
 	@Override
 	public Packet<?> toPacket(Identifier id, PacketByteBuf buf) {
-		return ClientNetworking.getPlaySender().makePacket(id, buf);
+		return ClientPlayNetworking.getPlaySender().makePacket(id, buf);
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 		// id is checked in client networking
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ClientNetworking.getPlayReceivers().register(id, (handler, client, sender, buf) -> {
+		ClientPlayNetworking.getPlayReceivers().register(id, (handler, client, sender, buf) -> {
 			consumer.accept(new PacketContext() {
 				@Override
 				public EnvType getPacketEnvironment() {
@@ -77,6 +77,6 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 
 	@Override
 	public void unregister(Identifier id) {
-		ClientNetworking.getPlayReceivers().unregister(id);
+		ClientPlayNetworking.getPlayReceivers().unregister(id);
 	}
 }

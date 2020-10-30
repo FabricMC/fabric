@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.networking.v1;
+package net.fabricmc.fabric.api.client.networking.v1.play;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
@@ -23,17 +23,18 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.networking.v1.PlayPacketSender;
 
 /**
  * Offers access to events related to the connection to a server on a logical client.
  */
 @Environment(EnvType.CLIENT)
-public final class ClientConnectionEvents {
+public final class ClientPlayConnectionEvents {
 	/**
 	 * An event for the initialization of the client play network handler.
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the server.
-	 * Use {@link ClientNetworking#getPlaySender(ClientPlayNetworkHandler)} to obtain the packet sender in the callback.
+	 * Use {@link ClientPlayNetworking#getPlaySender(ClientPlayNetworkHandler)} to obtain the packet sender in the callback.
 	 */
 	public static final Event<PlayInitialized> PLAY_INITIALIZED = EventFactory.createArrayBacked(PlayInitialized.class, callbacks -> (handler, client, sender) -> {
 		for (PlayInitialized callback : callbacks) {
@@ -52,7 +53,7 @@ public final class ClientConnectionEvents {
 		}
 	});
 
-	private ClientConnectionEvents() {
+	private ClientPlayConnectionEvents() {
 	}
 
 	@Environment(EnvType.CLIENT)
