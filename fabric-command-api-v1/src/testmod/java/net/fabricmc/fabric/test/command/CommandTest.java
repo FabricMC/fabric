@@ -31,7 +31,7 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class CommandTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(CommandTest.class);
@@ -56,7 +56,7 @@ public class CommandTest implements ModInitializer {
 		});
 
 		// Use the ServerTickCallback to verify the commands actually exist in the command dispatcher.
-		ServerTickCallback.EVENT.register(server -> {
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			// Don't run the test more than once
 			if (this.hasTested) {
 				return;
