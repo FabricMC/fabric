@@ -17,9 +17,9 @@
 /**
  * The Networking API, version 1.
  *
- * <p>See {@link net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking}
+ * <p>See {@link net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking}
  * for client-side networking hooks and
- * {@link net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking} for
+ * {@link net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking} for
  * server-side networking hooks.</p>
  */
 

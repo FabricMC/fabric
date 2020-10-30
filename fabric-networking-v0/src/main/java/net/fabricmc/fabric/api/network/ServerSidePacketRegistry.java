@@ -24,7 +24,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
 
-import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 

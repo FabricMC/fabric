@@ -22,7 +22,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
 // Listens for a packet from the client which is sent to the server when a keybinding is pressed.

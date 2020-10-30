@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.client.networking.v1.login;
+package net.fabricmc.fabric.api.client.networking.v1;
 
 import java.util.Collection;
 import java.util.Objects;

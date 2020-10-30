@@ -18,8 +18,8 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 
-import net.fabricmc.fabric.api.networking.v1.login.ServerLoginNetworking;
-import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.ChannelRegistry;
 
 public final class ServerNetworkingImpl {

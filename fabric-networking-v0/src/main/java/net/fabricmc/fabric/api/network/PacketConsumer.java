@@ -18,8 +18,8 @@ package net.fabricmc.fabric.api.network;
 
 import net.minecraft.network.PacketByteBuf;
 
-import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 /**
  * Interface for receiving CustomPayload-based packets.

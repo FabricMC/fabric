@@ -26,9 +26,9 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.login.ServerLoginConnectionEvents;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.api.networking.v1.login.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
 public final class NetworkingImpl {

@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.networking.play;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override

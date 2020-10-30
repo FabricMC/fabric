@@ -1,11 +1,10 @@
-package net.fabricmc.fabric.api.networking.v1.login;
+package net.fabricmc.fabric.api.networking.v1;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 public final class ServerLoginConnectionEvents {
 	/**
