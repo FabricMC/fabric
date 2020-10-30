@@ -21,7 +21,7 @@ import java.util.Collection;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayChannelEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -32,12 +32,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Registrations received will be for <em>server -&gt; client</em> packets
  * that the sending client can understand.
  *
- * @deprecated Please migrate to {@link ClientChannelEvents}.
+ * @deprecated Please migrate to {@link ClientPlayChannelEvents}.
  */
 @Deprecated
 public interface C2SPacketTypeCallback {
 	/**
-	 * @deprecated Please migrate to {@link ClientChannelEvents#REGISTERED}.
+	 * @deprecated Please migrate to {@link ClientPlayChannelEvents#REGISTERED}.
 	 */
 	@Deprecated
 	Event<C2SPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
@@ -50,7 +50,7 @@ public interface C2SPacketTypeCallback {
 	);
 
 	/**
-	 * @deprecated Please migrate to {@link ClientChannelEvents#UNREGISTERED}.
+	 * @deprecated Please migrate to {@link ClientPlayChannelEvents#UNREGISTERED}.
 	 */
 	@Deprecated
 	Event<C2SPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(

@@ -26,7 +26,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
-import net.minecraft.network.packet.s2c.login.LoginHelloS2CPacket;
 import net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket;
 import net.minecraft.text.Text;
 
@@ -49,11 +48,7 @@ abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandl
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ClientLoginNetworkAddon((ClientLoginNetworkHandler) (Object) this, this.client);
-	}
-
-	@Inject(method = "onHello", at = @At("HEAD"))
-	private void invokeLoginStartEvent(LoginHelloS2CPacket packet, CallbackInfo ci) {
-		ClientLoginConnectionEvents.LOGIN_START.invoker().onLoginStart((ClientLoginNetworkHandler) (Object) this, this.client);
+		ClientLoginConnectionEvents.LOGIN_INIT.invoker().onLoginStart((ClientLoginNetworkHandler) (Object) this, this.client);
 	}
 
 	@Inject(method = "onQueryRequest", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false, shift = At.Shift.AFTER), cancellable = true)

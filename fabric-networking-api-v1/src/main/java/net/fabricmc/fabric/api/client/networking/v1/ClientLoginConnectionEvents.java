@@ -25,14 +25,13 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class ClientLoginConnectionEvents {
 	/**
 	 * An event for when a client's login process has begun.
-	 * This event is fired when the server has notified the client that the login process has begun.
 	 * This event may be used by mods to prepare their client side state.
 	 * This event does not guarantee that a login attempt will be successful.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<LoginStart> LOGIN_START = EventFactory.createArrayBacked(LoginStart.class, callbacks -> (handler, client) -> {
-		for (LoginStart callback : callbacks) {
+	public static final Event<LoginInit> LOGIN_INIT = EventFactory.createArrayBacked(LoginInit.class, callbacks -> (handler, client) -> {
+		for (LoginInit callback : callbacks) {
 			callback.onLoginStart(handler, client);
 		}
 	});
@@ -52,7 +51,7 @@ public final class ClientLoginConnectionEvents {
 	}
 
 	@FunctionalInterface
-	public interface LoginStart {
+	public interface LoginInit {
 		void onLoginStart(ClientLoginNetworkHandler handler, MinecraftClient client);
 	}
 

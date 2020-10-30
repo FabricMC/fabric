@@ -27,7 +27,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
@@ -89,11 +89,11 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void postRegisterEvent(List<Identifier> ids) {
-		ClientChannelEvents.REGISTERED.invoker().onChannelRegistered(this.handler, this, this.client, ids);
+		ClientPlayChannelEvents.REGISTERED.invoker().onChannelRegistered(this.handler, this, this.client, ids);
 	}
 
 	@Override
 	protected void postUnregisterEvent(List<Identifier> ids) {
-		ClientChannelEvents.UNREGISTERED.invoker().onChannelUnregistered(this.handler, this, this.client, ids);
+		ClientPlayChannelEvents.UNREGISTERED.invoker().onChannelUnregistered(this.handler, this, this.client, ids);
 	}
 }

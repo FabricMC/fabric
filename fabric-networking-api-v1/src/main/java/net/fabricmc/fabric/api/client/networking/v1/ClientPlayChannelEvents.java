@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
  * Offers access to events related to the registration of network channels for a client-side network handler.
  */
 @Environment(EnvType.CLIENT)
-public final class ClientChannelEvents {
+public final class ClientPlayChannelEvents {
 	/**
 	 * An event for the client play network handler receiving an update indicating the connected server's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
@@ -53,7 +53,7 @@ public final class ClientChannelEvents {
 		}
 	});
 
-	private ClientChannelEvents() {
+	private ClientPlayChannelEvents() {
 	}
 
 	@Environment(EnvType.CLIENT)

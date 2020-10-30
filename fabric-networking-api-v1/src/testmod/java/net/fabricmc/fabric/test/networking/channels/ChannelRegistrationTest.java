@@ -70,7 +70,8 @@ public final class ChannelRegistrationTest implements ModInitializer {
 			throw new SimpleCommandExceptionType(new LiteralText(String.format("Player can already receive packets on channel %s", channel.toString())).styled(style -> style.withColor(Formatting.YELLOW))).create();
 		}
 
-		ServerPlayNetworking.register(channel, (handler, sender, server, buf) -> {});
+		ServerPlayNetworking.register(channel, (handler, sender, server, buf) -> {
+		});
 
 		source.sendFeedback(new LiteralText(String.format("Registered channel %s", channel.toString())), false);
 

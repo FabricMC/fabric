@@ -17,14 +17,14 @@
 package net.fabricmc.fabric.test.networking.play;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.string;
-import static net.minecraft.server.command.CommandManager.*;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;

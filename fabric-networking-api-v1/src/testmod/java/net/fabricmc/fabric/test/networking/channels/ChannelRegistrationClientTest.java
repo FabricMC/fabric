@@ -16,43 +16,82 @@
 
 package net.fabricmc.fabric.test.networking.channels;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
+
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientChannelEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 // TODO: WIP
 //  This simply adds a screen which can be opened to see what registrations for channels the client has received and seeing what channels the server supports for reception
 @Environment(EnvType.CLIENT)
 public final class ChannelRegistrationClientTest implements ClientModInitializer {
+	static final KeyBinding OPEN_CHANNEL_SCREEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("fabric-networking-api-v1-testmod-channel-test-screen", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_C, "fabric-networking-api-v1-testmod"));
 	@Nullable
-	private ChannelRegistrationClientTest.ClientSession clientSession;
+	private ServerState serverState;
 
 	@Override
 	public void onInitializeClient() {
-		ClientPlayConnectionEvents.PLAY_INITIALIZED.register((handler, sender, client) -> {
+		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+			if (client.player != null) {
+				if (OPEN_CHANNEL_SCREEN.wasPressed()) {
+					client.openScreen(new ChannelScreen(this.serverState));
+				}
+			}
+		});
+
+		ClientLoginConnectionEvents.LOGIN_INIT.register((handler, client) -> {
+			// Setup the state
+			this.serverState = new ServerState();
+		});
+
+		ClientLoginConnectionEvents.LOGIN_DISCONNECT.register((handler, client) -> {
+			// Kill the current state
+			this.serverState = null;
 		});
 
 		ClientPlayConnectionEvents.PLAY_DISCONNECTED.register((handler, sender, client) -> {
 			// Kill the current state
-			this.clientSession = null;
+			this.serverState = null;
 		});
 
-		ClientChannelEvents.REGISTERED.register((handler, sender, client, channels) -> {
+		ClientPlayChannelEvents.REGISTERED.register((handler, sender, client, channels) -> {
+			this.serverState.register(channels);
 		});
 
-		ClientChannelEvents.UNREGISTERED.register((handler, sender, client, channels) -> {
+		ClientPlayChannelEvents.UNREGISTERED.register((handler, sender, client, channels) -> {
+			this.serverState.unregister(channels);
 		});
 	}
 
-	class ClientSession {
+	static class ServerState {
+		private final Set<Identifier> supported = new HashSet<>();
 
-	}
+		void register(List<Identifier> channels) {
+			this.supported.addAll(channels);
+		}
 
-	class ServerState {
+		void unregister(List<Identifier> channels) {
+			this.supported.removeAll(channels);
+		}
 
+		Collection<Identifier> getSupportedChannels() {
+			return this.supported;
+		}
 	}
 }

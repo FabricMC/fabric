@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Offers access to events related to the registration of network channels for a server-side network handler.
  */
-public final class ServerChannelEvents {
+public final class ServerPlayChannelEvents {
 	/**
 	 * An event for the server play network handler receiving an update indicating the connected client's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
@@ -49,7 +49,7 @@ public final class ServerChannelEvents {
 		}
 	});
 
-	private ServerChannelEvents() {
+	private ServerPlayChannelEvents() {
 	}
 
 	@FunctionalInterface
