@@ -33,11 +33,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
-import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerHook;
+import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerExtensions;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientLoginNetworkHandler.class)
-abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandlerHook {
+abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandlerExtensions {
 	@Shadow
 	@Final
 	private MinecraftClient client;

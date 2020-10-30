@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Offers access to events related to the registration of network channels for a server-side network handler.
+ * Offers access to events related to the registration of play network channels for a server-side network handler.
  */
 public final class ServerPlayChannelEvents {
 	/**

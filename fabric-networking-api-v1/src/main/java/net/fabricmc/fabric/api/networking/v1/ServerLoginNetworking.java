@@ -27,9 +27,18 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
+/**
+ * Offers access to login stage server-side networking functionalities.
+ *
+ * <p>Server-side networking functionalities include receiving serverbound packets, sending clientbound packets, and events related to server-side network handlers.
+ *
+ * @see ServerPlayNetworking
+ * @see ClientLoginNetworking
+ */
 public final class ServerLoginNetworking {
 	/**
 	 * Registers a handler to a channel.

@@ -32,8 +32,17 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
+/**
+ * Offers access to login stage client-side networking functionalities.
+ *
+ * <p>Client-side networking functionalities include receiving clientbound packets, sending serverbound packets, and events related to client-side network handlers.
+ *
+ * @see ClientPlayNetworking
+ * @see ServerLoginNetworking
+ */
 @Environment(EnvType.CLIENT)
 public final class ClientLoginNetworking {
 	/**

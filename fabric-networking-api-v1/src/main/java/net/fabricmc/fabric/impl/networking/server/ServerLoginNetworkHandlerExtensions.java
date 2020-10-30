@@ -16,6 +16,6 @@
 
 package net.fabricmc.fabric.impl.networking.server;
 
-public interface ServerLoginNetworkHandlerHook {
+public interface ServerLoginNetworkHandlerExtensions {
 	ServerLoginNetworkAddon getAddon();
 }

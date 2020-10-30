@@ -30,16 +30,16 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerHook;
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtensions;
 
 /**
- * Offers access to server-side networking functionalities.
+ * Offers access to play stage server-side networking functionalities.
  *
- * <p>Server-side networking functionalities include receiving serverbound packets,
- * sending clientbound packets, and events related to server-side network handlers.</p>
+ * <p>Server-side networking functionalities include receiving serverbound packets, sending clientbound packets, and events related to server-side network handlers.
  *
- * <p>This class should be only used for the logical server.</p>
+ * <p>This class should be only used for the logical server.
  *
+ * @see ServerLoginNetworking
  * @see ClientPlayNetworking
  */
 public final class ServerPlayNetworking {
@@ -92,7 +92,7 @@ public final class ServerPlayNetworking {
 	public static Collection<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
-		return ((ServerPlayNetworkHandlerHook) handler).getAddon().getChannels();
+		return ((ServerPlayNetworkHandlerExtensions) handler).getAddon().getChannels();
 	}
 
 	public static boolean canReceive(ServerPlayerEntity player, Identifier channel) {
@@ -105,7 +105,7 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 		Objects.requireNonNull(channel, "Channel cannot be null");
 
-		return ((ServerPlayNetworkHandlerHook) handler).getAddon().hasChannel(channel);
+		return ((ServerPlayNetworkHandlerExtensions) handler).getAddon().hasChannel(channel);
 	}
 
 	public static Packet<?> createS2CPacket(Identifier channel, PacketByteBuf buf) {

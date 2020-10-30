@@ -33,16 +33,17 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerHook;
+import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerExtensions;
 
 /**
- * Offers access to client-side networking functionalities.
+ * Offers access to play stage client-side networking functionalities.
  *
  * <p>Client-side networking functionalities include receiving clientbound packets,
- * sending serverbound packets, and events related to client-side network handlers.</p>
+ * sending serverbound packets, and events related to client-side network handlers.
  *
- * <p>This class should be only used on the physical client and for the logical client.</p>
+ * <p>This class should be only used on the physical client and for the logical client.
  *
+ * @see ClientLoginNetworking
  * @see ServerPlayNetworking
  */
 @Environment(EnvType.CLIENT)
@@ -104,7 +105,7 @@ public final class ClientPlayNetworking {
 	public static Collection<Identifier> getReceivers(ClientPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
-		return ((ClientPlayNetworkHandlerHook) handler).getAddon().getChannels();
+		return ((ClientPlayNetworkHandlerExtensions) handler).getAddon().getChannels();
 	}
 
 	public static boolean canReceive(Identifier channel) {
@@ -125,7 +126,7 @@ public final class ClientPlayNetworking {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 		Objects.requireNonNull(channel, "Channel cannot be null");
 
-		return ((ClientPlayNetworkHandlerHook) handler).getAddon().hasChannel(channel);
+		return ((ClientPlayNetworkHandlerExtensions) handler).getAddon().hasChannel(channel);
 	}
 
 	public static Packet<?> createC2SPacket(Identifier channel, PacketByteBuf buf) {

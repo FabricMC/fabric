@@ -33,12 +33,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
-import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerHook;
+import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerExtensions;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Environment(EnvType.CLIENT)
 @Mixin(value = ClientPlayNetworkHandler.class, priority = 999)
-abstract class ClientPlayNetworkHandlerMixin implements ClientPlayNetworkHandlerHook {
+abstract class ClientPlayNetworkHandlerMixin implements ClientPlayNetworkHandlerExtensions {
 	@Shadow
 	private MinecraftClient client;
 

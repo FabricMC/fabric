@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 /**
- * Offers access to events related to the registration of network channels for a client-side network handler.
+ * Offers access to events related to the registration of play network channels for a client-side network handler.
  */
 @Environment(EnvType.CLIENT)
 public final class ClientPlayChannelEvents {

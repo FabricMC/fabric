@@ -17,8 +17,8 @@
 /**
  * The Networking API, version 1.
  *
- * <p>For login stage networking see {@link net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking}.
- * For play stage networking see {@link net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking}.
+ * <p>For login stage networking see {@link net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking}.
+ * For play stage networking see {@link net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking}.
  */
 
-package net.fabricmc.fabric.api.networking.v1;
+package net.fabricmc.fabric.api.client.networking.v1;

@@ -43,11 +43,11 @@ public final class ClientNetworkingImpl {
 	public static final ChannelRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new ChannelRegistry<>();
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
-		return ((ClientPlayNetworkHandlerHook) handler).getAddon();
+		return ((ClientPlayNetworkHandlerExtensions) handler).getAddon();
 	}
 
 	public static ClientLoginNetworkAddon getAddon(ClientLoginNetworkHandler handler) {
-		return ((ClientLoginNetworkHandlerHook) handler).getAddon();
+		return ((ClientLoginNetworkHandlerExtensions) handler).getAddon();
 	}
 
 	public static Packet<?> createPlayC2SPacket(Identifier channel, PacketByteBuf buf) {

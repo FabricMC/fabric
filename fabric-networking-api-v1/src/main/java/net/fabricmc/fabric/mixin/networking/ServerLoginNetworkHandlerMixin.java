@@ -37,10 +37,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
-import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerHook;
+import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerExtensions;
 
 @Mixin(ServerLoginNetworkHandler.class)
-abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandlerHook, DisconnectPacketSource, PacketCallbackListener {
+abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandlerExtensions, DisconnectPacketSource, PacketCallbackListener {
 	@Shadow
 	@Final
 	private MinecraftServer server;

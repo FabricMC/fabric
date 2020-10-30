@@ -35,11 +35,11 @@ import net.minecraft.text.Text;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
-import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerHook;
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtensions;
 
 // We want to apply a bit earlier than other mods which may not use us in order to prevent refCount issues
 @Mixin(value = ServerPlayNetworkHandler.class, priority = 999)
-abstract class ServerPlayNetworkHandlerMixin implements ServerPlayNetworkHandlerHook, DisconnectPacketSource {
+abstract class ServerPlayNetworkHandlerMixin implements ServerPlayNetworkHandlerExtensions, DisconnectPacketSource {
 	@Shadow
 	@Final
 	private MinecraftServer server;

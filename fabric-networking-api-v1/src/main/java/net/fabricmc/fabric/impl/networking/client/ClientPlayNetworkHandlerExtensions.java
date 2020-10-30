@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.server;
+package net.fabricmc.fabric.impl.networking.client;
 
-public interface ServerPlayNetworkHandlerHook {
-	ServerPlayNetworkAddon getAddon();
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
+public interface ClientPlayNetworkHandlerExtensions {
+	ClientPlayNetworkAddon getAddon();
 }

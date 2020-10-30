@@ -31,7 +31,7 @@ public final class ServerNetworkingImpl {
 	public static final ChannelRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new ChannelRegistry<>();
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {
-		return ((ServerPlayNetworkHandlerHook) handler).getAddon();
+		return ((ServerPlayNetworkHandlerExtensions) handler).getAddon();
 	}
 
 	public static Packet<?> createPlayC2SPacket(Identifier channel, PacketByteBuf buf) {
