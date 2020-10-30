@@ -134,7 +134,7 @@ public class SpriteFinderImpl implements SpriteFinder {
 			} else if (quadrant instanceof Node) {
 				return ((Node) quadrant).find(u, v);
 			} else {
-				return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEX).apply(MissingSprite.getMissingSpriteId());
+				return MinecraftClient.getInstance().getSpriteAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE).apply(MissingSprite.getMissingSpriteId());
 			}
 		}
 	}
