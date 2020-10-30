@@ -16,12 +16,16 @@
 
 package net.fabricmc.fabric.impl.command.client;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
 import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.CommandNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -129,14 +133,59 @@ public final class ClientCommandInternals {
 		LOGGER.debug("Building client-side command dispatcher");
 
 		dispatcher = new CommandDispatcher<>();
-		addCommands(dispatcher);
+		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher);
 		// noinspection CodeBlock2Expr
 		dispatcher.findAmbiguities((parent, child, sibling, inputs) -> {
 			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", dispatcher.getPath(child), dispatcher.getPath(sibling), inputs);
 		});
 	}
 
-	public static void addCommands(CommandDispatcher<FabricClientCommandSource> dispatcher) {
-		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher);
+	public static void addCommands(CommandDispatcher<FabricClientCommandSource> target, FabricClientCommandSource source) {
+		Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> originalToCopy = new HashMap<>();
+		originalToCopy.put(getDispatcher().getRoot(), target.getRoot());
+		copyChildren(getDispatcher().getRoot(), target.getRoot(), source, originalToCopy);
+	}
+
+	/**
+	 * Copies the child commands from origin to target, filtered by {@code child.canUse(source)}.
+	 * Mimics vanilla's CommandManager.makeTreeForSource.
+	 *
+	 * @param origin         the source command node
+	 * @param target         the target command node
+	 * @param source         the command source
+	 * @param originalToCopy a mutable map from original command nodes to their copies, used for redirects;
+	 *                       should contain a mapping from origin to target
+	 */
+	private static void copyChildren(
+			CommandNode<FabricClientCommandSource> origin,
+			CommandNode<FabricClientCommandSource> target,
+			FabricClientCommandSource source,
+			Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> originalToCopy
+	) {
+		for (CommandNode<FabricClientCommandSource> child : origin.getChildren()) {
+			if (!child.canUse(source)) continue;
+
+			ArgumentBuilder<FabricClientCommandSource, ?> builder = child.createBuilder();
+
+			// Reset the builder
+			builder.requires(it -> true);
+
+			if (builder.getCommand() != null) {
+				builder.executes(context -> 0);
+			}
+
+			// Set up redirects
+			if (builder.getRedirect() != null) {
+				builder.redirect(originalToCopy.get(builder.getRedirect()));
+			}
+
+			CommandNode<FabricClientCommandSource> result = builder.build();
+			originalToCopy.put(child, result);
+			target.addChild(result);
+
+			if (!child.getChildren().isEmpty()) {
+				copyChildren(child, result, source, originalToCopy);
+			}
+		}
 	}
 }

@@ -18,11 +18,14 @@ package net.fabricmc.fabric.test.command.client;
 
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.tree.CommandNode;
 import com.mojang.brigadier.tree.RootCommandNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientCommandSource;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -32,12 +35,16 @@ import net.fabricmc.fabric.api.client.command.v1.ClientArgumentBuilders;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 
 @Environment(EnvType.CLIENT)
 public final class ClientCommandTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final DynamicCommandExceptionType IS_NULL = new DynamicCommandExceptionType(x -> new LiteralText("The " + x + " is null"));
+	private static final SimpleCommandExceptionType UNEXECUTABLE_EXECUTED = new SimpleCommandExceptionType(new LiteralText("Executed an unexecutable command!"));
+
+	private boolean wasTested = false;
 
 	@Override
 	public void onInitializeClient() {
@@ -71,6 +78,11 @@ public final class ClientCommandTest implements ClientModInitializer {
 						return 0;
 					})
 			));
+
+			// Unexecutable command
+			dispatcher.register(ClientArgumentBuilders.literal("hidden_client_command").requires(source -> false).executes(context -> {
+				throw UNEXECUTABLE_EXECUTED.create();
+			}));
 		});
 
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
@@ -79,6 +91,7 @@ public final class ClientCommandTest implements ClientModInitializer {
 			// We climb the tree again
 			CommandNode<FabricClientCommandSource> testClientCommand = rootNode.getChild("test_client_command");
 			CommandNode<FabricClientCommandSource> testClientCommandWithArg = rootNode.getChild("test_client_command_with_arg");
+			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");
 
 			if (testClientCommand == null) {
 				throw new AssertionError("Expected to find 'test_client_command' on the client command dispatcher. But it was not found.");
@@ -88,6 +101,10 @@ public final class ClientCommandTest implements ClientModInitializer {
 				throw new AssertionError("Expected to find 'test_client_command_with_arg' on the client command dispatcher. But it was not found.");
 			}
 
+			if (hiddenClientCommand == null) {
+				throw new AssertionError("Expected to find 'hidden_client_command' on the client command dispatcher. But it was not found.");
+			}
+
 			CommandNode<FabricClientCommandSource> numberArg = testClientCommandWithArg.getChild("number");
 
 			if (numberArg == null) {
@@ -95,6 +112,29 @@ public final class ClientCommandTest implements ClientModInitializer {
 			}
 
 			LOGGER.info("The client command tests have passed! Please make sure you execute the two commands for extra safety.");
+		});
+
+		ClientTickEvents.START_WORLD_TICK.register(world -> {
+			if (wasTested) {
+				return;
+			}
+
+			MinecraftClient client = MinecraftClient.getInstance();
+			ClientCommandSource commandSource = client.getNetworkHandler().getCommandSource();
+
+			RootCommandNode<FabricClientCommandSource> rootNode = ClientCommandInternals.getDispatcher().getRoot();
+			CommandNode<FabricClientCommandSource> hiddenClientCommand = rootNode.getChild("hidden_client_command");
+
+			if (!(commandSource instanceof FabricClientCommandSource)) {
+				throw new AssertionError("Client command source not a FabricClientCommandSource!");
+			}
+
+			if (hiddenClientCommand.canUse((FabricClientCommandSource) commandSource)) {
+				throw new AssertionError("'hidden_client_command' should not be usable.");
+			}
+
+			LOGGER.info("The in-world client command tests have passed!");
+			wasTested = true;
 		});
 	}
 }
