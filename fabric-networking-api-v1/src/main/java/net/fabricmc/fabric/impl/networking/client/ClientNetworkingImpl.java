@@ -33,12 +33,12 @@ import net.fabricmc.fabric.api.client.networking.v1.login.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
+import net.fabricmc.fabric.impl.networking.ChannelRegistry;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
-	public static final SimpleChannelHandlerRegistry<ClientLoginNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
-	public static final SimpleChannelHandlerRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
+	public static final ChannelRegistry<ClientLoginNetworking.LoginChannelHandler> LOGIN = new ChannelRegistry<>();
+	public static final ChannelRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new ChannelRegistry<>();
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return ((ClientPlayNetworkHandlerHook) handler).getAddon();
@@ -51,7 +51,7 @@ public final class ClientNetworkingImpl {
 	@Environment(EnvType.CLIENT)
 	public static void clientInit() {
 		// Register a login query handler for early channel registration.
-		ClientLoginNetworking.getLoginReceivers().register(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
+		ClientLoginNetworking.register(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (handler, client, buf, listenerAdder) -> {
 			int n = buf.readVarInt();
 			List<Identifier> ids = new ArrayList<>(n);
 

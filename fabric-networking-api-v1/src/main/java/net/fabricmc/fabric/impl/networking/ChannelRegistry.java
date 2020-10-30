@@ -29,17 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ChannelHandlerRegistry;
-
-public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegistry<H> {
+public final class ChannelRegistry<H> {
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Map<Identifier, H> handlers;
 
-	public SimpleChannelHandlerRegistry() {
+	public ChannelRegistry() {
 		this(new HashMap<>()); // sync map should be fine as there is little read write competitions
 	}
 
-	public SimpleChannelHandlerRegistry(Map<Identifier, H> map) {
+	public ChannelRegistry(Map<Identifier, H> map) {
 		this.handlers = map;
 	}
 
@@ -55,7 +53,6 @@ public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegi
 		}
 	}
 
-	@Override
 	public boolean register(Identifier channel, H handler) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(handler, "Packet handler cannot be null");
@@ -74,7 +71,6 @@ public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegi
 		}
 	}
 
-	@Override
 	public H unregister(Identifier channel) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 
@@ -92,7 +88,6 @@ public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegi
 		}
 	}
 
-	@Override
 	public Collection<Identifier> getChannels() {
 		Lock lock = this.lock.readLock();
 		lock.lock();
@@ -104,7 +99,6 @@ public final class SimpleChannelHandlerRegistry<H> implements ChannelHandlerRegi
 		}
 	}
 
-	@Override
 	public boolean hasChannel(Identifier channel) {
 		Lock lock = this.lock.readLock();
 		lock.lock();

@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.api.networking.v1.play;
 
+import java.util.Collection;
+
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ChannelRegistry;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 /**
@@ -28,5 +29,21 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
  * <!--TODO: Implement use of system property-->
  * When the {@code fabric-networking-api-v1.warnUnregisteredPackets} system property is absent or set to {@code true} and the recipient did not declare its ability to receive packets in a channel a packet was sent in, a warning is logged.</p>
  */
-public interface PlayPacketSender extends PacketSender, ChannelRegistry {
+public interface PlayPacketSender extends PacketSender {
+	/**
+	 * Returns a collection of channels this packet sender supports.
+	 *
+	 * <p>This collection does not contain duplicate channels.</p>
+	 *
+	 * @return a collection of channels
+	 */
+	Collection<Identifier> getChannels();
+
+	/**
+	 * Returns whether a channel is supported by this packet sender.
+	 *
+	 * @param channel the id of the channel to check
+	 * @return whether the channel is tracked
+	 */
+	boolean hasChannel(Identifier channel);
 }

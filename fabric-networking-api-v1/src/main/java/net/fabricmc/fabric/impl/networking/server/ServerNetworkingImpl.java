@@ -20,11 +20,11 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 
 import net.fabricmc.fabric.api.networking.v1.login.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.play.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.networking.SimpleChannelHandlerRegistry;
+import net.fabricmc.fabric.impl.networking.ChannelRegistry;
 
 public final class ServerNetworkingImpl {
-	public static final SimpleChannelHandlerRegistry<ServerLoginNetworking.LoginChannelHandler> LOGIN = new SimpleChannelHandlerRegistry<>();
-	public static final SimpleChannelHandlerRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new SimpleChannelHandlerRegistry<>();
+	public static final ChannelRegistry<ServerLoginNetworking.LoginChannelHandler> LOGIN = new ChannelRegistry<>();
+	public static final ChannelRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new ChannelRegistry<>();
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {
 		return ((ServerPlayNetworkHandlerHook) handler).getAddon();

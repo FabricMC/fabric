@@ -1,5 +1,7 @@
 package net.fabricmc.fabric.api.client.networking.v1.login;
 
+import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -10,19 +12,52 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.networking.v1.ChannelHandlerRegistry;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 @Environment(EnvType.CLIENT)
 public final class ClientLoginNetworking {
 	/**
-	 * Returns the packet receiver for channel handler registration on client login network handlers, receiving {@link net.minecraft.network.packet.s2c.login.LoginQueryRequestS2CPacket login query request packets}.
+	 * Registers a handler to a channel.
+	 *
+	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregister(Identifier)} to unregister the existing handler.</p>
+	 *
+	 * @param channel the id of the channel
+	 * @param handler the handler
+	 * @return false if a handler is already registered to the channel
 	 */
-	public static ChannelHandlerRegistry<LoginChannelHandler> getLoginReceivers() {
-		return ClientNetworkingImpl.LOGIN;
+	public static boolean register(Identifier channel, LoginChannelHandler handler) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(handler, "Channel login handler cannot be null");
+
+		return ClientNetworkingImpl.LOGIN.register(channel, handler);
+	}
+
+	/**
+	 * Removes the handler of a channel.
+	 *
+	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 *
+	 * @param channel the id of the channel
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel
+	 */
+	@Nullable
+	public static LoginChannelHandler unregister(Identifier channel) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+
+		return ClientNetworkingImpl.LOGIN.unregister(channel);
+	}
+
+	public static Collection<Identifier> getGlobalChannels() {
+		return ClientNetworkingImpl.LOGIN.getChannels();
+	}
+
+	public static boolean hasGlobalChannel(Identifier channel) {
+		return ClientNetworkingImpl.LOGIN.hasChannel(channel);
 	}
 
 	private ClientLoginNetworking() {

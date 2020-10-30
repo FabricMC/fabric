@@ -36,15 +36,15 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.play.PlayPacketSender;
 
 public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon implements PlayPacketSender {
-	protected final SimpleChannelHandlerRegistry<H> receiver;
+	protected final ChannelRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 	protected final Set<Identifier> sendableChannelsView;
 
-	protected AbstractChanneledNetworkAddon(SimpleChannelHandlerRegistry<H> receiver, ClientConnection connection) {
+	protected AbstractChanneledNetworkAddon(ChannelRegistry<H> receiver, ClientConnection connection) {
 		this(receiver, connection, new HashSet<>());
 	}
 
-	protected AbstractChanneledNetworkAddon(SimpleChannelHandlerRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels) {
+	protected AbstractChanneledNetworkAddon(ChannelRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels) {
 		super(connection);
 		this.receiver = receiver;
 		this.sendableChannels = sendableChannels;

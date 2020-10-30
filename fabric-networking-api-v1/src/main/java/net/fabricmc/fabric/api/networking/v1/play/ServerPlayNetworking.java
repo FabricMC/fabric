@@ -16,7 +16,10 @@
 
 package net.fabricmc.fabric.api.networking.v1.play;
 
+import java.util.Collection;
 import java.util.Objects;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
@@ -25,7 +28,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.play.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.ChannelHandlerRegistry;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerHook;
 
@@ -41,12 +43,43 @@ import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerHook;
  */
 public final class ServerPlayNetworking {
 	/**
-	 * Returns the packet receiver for channel handler registration on server play network
-	 * handlers, receiving {@link net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket
-	 * client to server custom payload packets}.
+	 * Registers a handler to a channel.
+	 *
+	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregister(Identifier)} to unregister the existing handler.</p>
+	 *
+	 * @param channel the id of the channel
+	 * @param handler the handler
+	 * @return false if a handler is already registered to the channel
 	 */
-	public static ChannelHandlerRegistry<PlayChannelHandler> getPlayReceivers() {
-		return ServerNetworkingImpl.PLAY;
+	public static boolean register(Identifier channel, PlayChannelHandler handler) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(handler, "Handler cannot be null");
+
+		return ServerNetworkingImpl.PLAY.register(channel, handler);
+	}
+
+	/**
+	 * Removes the handler of a channel.
+	 *
+	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 *
+	 * @param channel the id of the channel
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel
+	 */
+	@Nullable
+	public static PlayChannelHandler unregister(Identifier channel) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+
+		return ServerNetworkingImpl.PLAY.unregister(channel);
+	}
+
+	public static Collection<Identifier> getGlobalChannels() {
+		return ServerNetworkingImpl.PLAY.getChannels();
+	}
+
+	public static boolean hasGlobalChannel(Identifier id) {
+		return ServerNetworkingImpl.PLAY.hasChannel(id);
 	}
 
 	/**
