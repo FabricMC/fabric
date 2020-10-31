@@ -1,0 +1,5 @@
+accessWidener	v1	named
+extendable	class	net/minecraft/world/gen/chunk/ChunkGeneratorSettings
+accessible	method	net/minecraft/client/world/GeneratorType	<init>	(Ljava/lang/String;)V
+accessible	method	net/minecraft/client/gui/screen/world/MoreOptionsDialog	setGeneratorOptions	(Lnet/minecraft/world/gen/GeneratorOptions;)V
+accessible	method	net/minecraft/world/gen/chunk/ChunkGeneratorSettings	<init>	(Lnet/minecraft/world/gen/chunk/StructuresConfig;Lnet/minecraft/world/gen/chunk/GenerationShapeConfig;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;IIIZ)V

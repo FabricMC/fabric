@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-generator-type-api-v1",
+  "version": "${version}",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabricloader": ">=0.9.2"
+  },
+  "mixins": [
+    "fabric-generator-type-api-v1.json"
+  ],
+  "accessWidener": "fabric-generator-type-api-v1.accesswidener"
+}
