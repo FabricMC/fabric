@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Sets;
@@ -41,7 +42,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.Lazy;
 
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
@@ -50,16 +53,26 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
-	static final Identifier ID = new Identifier("fabric", "registry/sync");
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
 
-	private RegistrySyncManager() { }
+	public static RegistrySyncManager STANDARD = new RegistrySyncManager(() -> Registry.REGISTRIES, new Identifier("fabric", "registry/sync"), "");
+	public static RegistrySyncManager BUILTIN = new RegistrySyncManager(() -> BuiltinRegistries.REGISTRIES, new Identifier("fabric", "registry/sync/builtin"), "_builtin");
 
-	public static Packet<?> createPacket() {
+	private final Lazy<Registry<? extends Registry<?>>> targetRegistry;
+	private final Identifier id;
+	private final String suffix;
+
+	private RegistrySyncManager(Supplier<Registry<? extends Registry<?>>> targetRegistry, Identifier id, String suffix) {
+		this.targetRegistry = new Lazy<>(targetRegistry);
+		this.id = id;
+		this.suffix = suffix;
+	}
+
+	public Packet<?> createPacket() {
 		LOGGER.debug("Creating registry sync packet");
 
 		CompoundTag tag = toTag(true, null);
@@ -71,10 +84,10 @@ public final class RegistrySyncManager {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(tag);
 
-		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
+		return ServerSidePacketRegistry.INSTANCE.toPacket(id, buf);
 	}
 
-	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+	public void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
 		CompoundTag compound = buf.readCompoundTag();
 
 		if (accept) {
@@ -107,14 +120,14 @@ public final class RegistrySyncManager {
 	 * @return a {@link CompoundTag} to save or sync, null when empty
 	 */
 	@Nullable
-	public static CompoundTag toTag(boolean isClientSync, @Nullable CompoundTag activeTag) {
+	public CompoundTag toTag(boolean isClientSync, @Nullable CompoundTag activeTag) {
 		CompoundTag mainTag = new CompoundTag();
 
-		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			Registry registry = Registry.REGISTRIES.get(registryId);
+		for (Identifier registryId : getTargetRegistry().getIds()) {
+			Registry registry = getTargetRegistry().get(registryId);
 
 			if (DEBUG_WRITE_REGISTRY_DATA) {
-				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry");
+				File location = new File(".fabric" + File.separatorChar + "debug" + File.separatorChar + "registry" + getSuffix());
 				boolean c = true;
 
 				if (!location.exists()) {
@@ -254,17 +267,17 @@ public final class RegistrySyncManager {
 		return tag;
 	}
 
-	public static CompoundTag apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
+	public CompoundTag apply(CompoundTag tag, RemappableRegistry.RemapMode mode) throws RemapException {
 		CompoundTag mainTag = tag.getCompound("registries");
 		Set<String> containedRegistries = Sets.newHashSet(mainTag.getKeys());
 
-		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
+		for (Identifier registryId : getTargetRegistry().getIds()) {
 			if (!containedRegistries.remove(registryId.toString())) {
 				continue;
 			}
 
 			CompoundTag registryTag = mainTag.getCompound(registryId.toString());
-			Registry registry = Registry.REGISTRIES.get(registryId);
+			Registry registry = getTargetRegistry().get(registryId);
 
 			RegistryAttributeHolder attributeHolder = RegistryAttributeHolder.get(registry);
 
@@ -291,9 +304,9 @@ public final class RegistrySyncManager {
 		return mainTag;
 	}
 
-	public static void unmap() throws RemapException {
-		for (Identifier registryId : Registry.REGISTRIES.getIds()) {
-			Registry registry = Registry.REGISTRIES.get(registryId);
+	public void unmap() throws RemapException {
+		for (Identifier registryId : getTargetRegistry().getIds()) {
+			Registry registry = getTargetRegistry().get(registryId);
 
 			if (registry instanceof RemappableRegistry) {
 				((RemappableRegistry) registry).unmap(registryId.toString());
@@ -303,5 +316,17 @@ public final class RegistrySyncManager {
 
 	public static void bootstrapRegistries() {
 		postBootstrap = true;
+	}
+
+	public Registry<? extends Registry<?>> getTargetRegistry() {
+		return this.targetRegistry.get();
+	}
+
+	public Identifier getId() {
+		return id;
+	}
+
+	public String getSuffix() {
+		return suffix;
 	}
 }

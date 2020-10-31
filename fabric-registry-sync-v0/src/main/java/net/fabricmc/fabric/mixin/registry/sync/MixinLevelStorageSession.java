@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,16 +54,16 @@ public class MixinLevelStorageSession {
 	@Unique
 	private static Logger FABRIC_LOGGER = LogManager.getLogger("FabricRegistrySync");
 	@Unique
-	private CompoundTag fabric_lastSavedIdMap = null;
+	private Map<RegistrySyncManager, CompoundTag> fabric_lastSavedIdMap = new HashMap<>();
 	@Unique
-	private CompoundTag fabric_activeTag = null;
+	private Map<RegistrySyncManager, CompoundTag> fabric_activeTag = new HashMap<>();
 
 	@Shadow
 	@Final
 	private Path directory;
 
 	@Unique
-	private boolean fabric_readIdMapFile(File file) throws IOException, RemapException {
+	private boolean fabric_readIdMapFile(File file, RegistrySyncManager syncManager) throws IOException, RemapException {
 		FABRIC_LOGGER.debug("Reading registry data from " + file.toString());
 
 		if (file.exists()) {
@@ -70,7 +72,7 @@ public class MixinLevelStorageSession {
 			fileInputStream.close();
 
 			if (tag != null) {
-				fabric_activeTag = RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
+				fabric_activeTag.put(syncManager, syncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE));
 				return true;
 			}
 		}
@@ -79,14 +81,14 @@ public class MixinLevelStorageSession {
 	}
 
 	@Unique
-	private File fabric_getWorldIdMapFile(int i) {
-		return new File(new File(directory.toFile(), "data"), "fabricRegistry" + ".dat" + (i == 0 ? "" : ("." + i)));
+	private File fabric_getWorldIdMapFile(int i, RegistrySyncManager syncManager) {
+		return new File(new File(directory.toFile(), "data"), "fabricRegistry" + syncManager.getSuffix() + ".dat" + (i == 0 ? "" : ("." + i)));
 	}
 
 	@Unique
-	private void fabric_saveRegistryData() {
+	private void fabric_saveRegistryData(RegistrySyncManager syncManager) {
 		FABRIC_LOGGER.debug("Starting registry save");
-		CompoundTag newIdMap = RegistrySyncManager.toTag(false, fabric_activeTag);
+		CompoundTag newIdMap = syncManager.toTag(false, fabric_activeTag.get(syncManager));
 
 		if (newIdMap == null) {
 			FABRIC_LOGGER.debug("Not saving empty registry data");
@@ -95,20 +97,20 @@ public class MixinLevelStorageSession {
 
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
-				File file = fabric_getWorldIdMapFile(i);
+				File file = fabric_getWorldIdMapFile(i, syncManager);
 
 				if (file.exists()) {
 					if (i == FABRIC_ID_REGISTRY_BACKUPS - 1) {
 						file.delete();
 					} else {
-						File target = fabric_getWorldIdMapFile(i + 1);
+						File target = fabric_getWorldIdMapFile(i + 1, syncManager);
 						file.renameTo(target);
 					}
 				}
 			}
 
 			try {
-				File file = fabric_getWorldIdMapFile(0);
+				File file = fabric_getWorldIdMapFile(0, syncManager);
 				File parentFile = file.getParentFile();
 
 				if (!parentFile.exists()) {
@@ -125,7 +127,7 @@ public class MixinLevelStorageSession {
 				FABRIC_LOGGER.warn("[fabric-registry-sync] Failed to save registry file!", e);
 			}
 
-			fabric_lastSavedIdMap = newIdMap;
+			fabric_lastSavedIdMap.put(syncManager, newIdMap);
 		}
 	}
 
@@ -135,18 +137,24 @@ public class MixinLevelStorageSession {
 			return;
 		}
 
-		fabric_saveRegistryData();
+		fabric_saveRegistryData(RegistrySyncManager.STANDARD);
+		fabric_saveRegistryData(RegistrySyncManager.BUILTIN);
 	}
 
 	// TODO: stop double save on client?
 	@Inject(method = "readLevelProperties", at = @At("HEAD"))
 	public void readWorldProperties(CallbackInfoReturnable<SaveProperties> callbackInfo) {
+		initialiseRegistryMap(RegistrySyncManager.STANDARD);
+		initialiseRegistryMap(RegistrySyncManager.BUILTIN);
+	}
+
+	private void initialiseRegistryMap(RegistrySyncManager syncManager) {
 		// Load
 		for (int i = 0; i < FABRIC_ID_REGISTRY_BACKUPS; i++) {
 			FABRIC_LOGGER.trace("[fabric-registry-sync] Loading Fabric registry [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");
 
 			try {
-				if (fabric_readIdMapFile(fabric_getWorldIdMapFile(i))) {
+				if (fabric_readIdMapFile(fabric_getWorldIdMapFile(i, syncManager), syncManager)) {
 					FABRIC_LOGGER.info("[fabric-registry-sync] Loaded registry data [file " + (i + 1) + "/" + (FABRIC_ID_REGISTRY_BACKUPS + 1) + "]");
 					return;
 				}
@@ -164,6 +172,6 @@ public class MixinLevelStorageSession {
 		}
 
 		// If not returned (not present), try saving the registry data
-		fabric_saveRegistryData();
+		fabric_saveRegistryData(syncManager);
 	}
 }

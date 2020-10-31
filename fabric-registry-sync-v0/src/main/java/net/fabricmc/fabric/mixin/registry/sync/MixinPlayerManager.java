@@ -34,7 +34,13 @@ public abstract class MixinPlayerManager {
 	public void onPlayerConnect(ClientConnection lvt1, ServerPlayerEntity lvt2, CallbackInfo info) {
 		// TODO: If integrated and local, don't send the packet (it's ignored)
 		// TODO: Refactor out into network + move registry hook to event
-		Packet<?> packet = RegistrySyncManager.createPacket();
+		Packet<?> packet = RegistrySyncManager.STANDARD.createPacket();
+
+		if (packet != null) {
+			lvt2.networkHandler.sendPacket(packet);
+		}
+
+		packet = RegistrySyncManager.BUILTIN.createPacket();
 
 		if (packet != null) {
 			lvt2.networkHandler.sendPacket(packet);

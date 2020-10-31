@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
@@ -172,5 +173,11 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.LOOT_CONDITION_TYPE);
+
+		// Marked as modded to always fix https://bugs.mojang.com/browse/MC-202036
+		RegistryAttributeHolder.get(BuiltinRegistries.BIOME)
+				.addAttribute(RegistryAttribute.SYNCED)
+				.addAttribute(RegistryAttribute.PERSISTED)
+				.addAttribute(RegistryAttribute.MODDED);
 	}
 }

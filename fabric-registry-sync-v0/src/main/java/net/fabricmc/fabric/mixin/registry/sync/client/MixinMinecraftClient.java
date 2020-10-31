@@ -39,7 +39,8 @@ public class MixinMinecraftClient {
 	@Inject(at = @At("RETURN"), method = "disconnect(Lnet/minecraft/client/gui/screen/Screen;)V")
 	public void disconnectAfter(Screen screen_1, CallbackInfo info) {
 		try {
-			RegistrySyncManager.unmap();
+			RegistrySyncManager.STANDARD.unmap();
+			RegistrySyncManager.BUILTIN.unmap();
 		} catch (RemapException e) {
 			FABRIC_LOGGER.warn("Failed to unmap Fabric registries!", e);
 		}
