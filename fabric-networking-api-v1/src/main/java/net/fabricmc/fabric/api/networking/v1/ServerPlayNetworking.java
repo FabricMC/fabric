@@ -60,6 +60,15 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.PLAY.register(channel, handler);
 	}
 
+	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(channelHandler, "Play channel handler cannot be null");
+
+		// TODO:
+		((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon();
+	}
+
 	/**
 	 * Removes the handler of a channel.
 	 *
