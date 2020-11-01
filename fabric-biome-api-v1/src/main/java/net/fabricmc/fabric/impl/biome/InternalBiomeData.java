@@ -207,7 +207,7 @@ public final class InternalBiomeData {
 		return NETHER_BIOME_NOISE_POINTS;
 	}
 
-  public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
+	public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
 		if (NETHER_BIOMES.isEmpty()) {
 			MultiNoiseBiomeSource source = MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(BuiltinRegistries.BIOME, 0L);
 
@@ -229,7 +229,7 @@ public final class InternalBiomeData {
 
 	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndBarrensMap() {
 		return END_BARRENS_MAP;
-  }
+	}
 
 	private static class DefaultHillsData {
 		private static final ImmutableMap<RegistryKey<Biome>, RegistryKey<Biome>> DEFAULT_HILLS;
