@@ -136,10 +136,10 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		return this;
 	}
 
-	public FabricEntityTypeBuilder<T> entityFactory(EntityType.EntityFactory<T> factory) {
+	public <N extends T> FabricEntityTypeBuilder<N> entityFactory(EntityType.EntityFactory<N> factory) {
 		Objects.requireNonNull(factory, "Entity Factory cannot be null");
-		this.factory = factory;
-		return this;
+		this.factory = (EntityType.EntityFactory<T>) factory;
+		return (FabricEntityTypeBuilder<N>) this;
 	}
 
 	/**
@@ -289,9 +289,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Living<T> entityFactory(EntityType.EntityFactory<T> factory) {
+		public <N extends T> FabricEntityTypeBuilder.Living<N> entityFactory(EntityType.EntityFactory<N> factory) {
 			super.entityFactory(factory);
-			return this;
+			return (Living<N>) this;
 		}
 
 		@Override
@@ -429,9 +429,9 @@ public class FabricEntityTypeBuilder<T extends Entity> {
 		}
 
 		@Override
-		public FabricEntityTypeBuilder.Mob<T> entityFactory(EntityType.EntityFactory<T> factory) {
+		public <N extends T> FabricEntityTypeBuilder.Mob<N> entityFactory(EntityType.EntityFactory<N> factory) {
 			super.entityFactory(factory);
-			return this;
+			return (Mob<N>) this;
 		}
 
 		@Override

@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.mixin.command;
 
-import com.mojang.brigadier.AmbiguityConsumer;
 import com.mojang.brigadier.CommandDispatcher;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -28,14 +30,20 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 
 @Mixin(CommandManager.class)
-public abstract class MixinCommandManager {
+public abstract class CommandManagerMixin {
+	@Shadow
+	@Final
+	private CommandDispatcher<ServerCommandSource> dispatcher;
+
 	/**
+	 * Wait an inject in a constructor?
+	 * This is a new addition to Fabric's fork of mixin.
+	 * If you are not using fabric's fork of mixin this will fail.
+	 *
 	 * @reason Add commands before ambiguities are calculated.
 	 */
-	@Redirect(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
-	private void fabric_addCommands(CommandDispatcher<ServerCommandSource> dispatcher, AmbiguityConsumer<ServerCommandSource> ambiguityConsumer, CommandManager.RegistrationEnvironment registrationEnvironment) {
-		CommandRegistrationCallback.EVENT.invoker().register(dispatcher, registrationEnvironment == CommandManager.RegistrationEnvironment.DEDICATED);
-
-		dispatcher.findAmbiguities(ambiguityConsumer);
+	@Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"), method = "<init>")
+	private void fabric_addCommands(CommandManager.RegistrationEnvironment environment, CallbackInfo ci) {
+		CommandRegistrationCallback.EVENT.invoker().register(this.dispatcher, environment == CommandManager.RegistrationEnvironment.DEDICATED);
 	}
 }
