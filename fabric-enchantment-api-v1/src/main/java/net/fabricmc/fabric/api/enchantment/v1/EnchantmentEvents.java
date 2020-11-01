@@ -16,14 +16,14 @@
 
 package net.fabricmc.fabric.api.enchantment.v1;
 
+import java.util.function.BiFunction;
+
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.util.TriState;
-
-import java.util.function.BiFunction;
 
 /**
  * Events to intercept the vanilla enchantment logic.
