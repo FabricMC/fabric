@@ -22,5 +22,6 @@
   "description": "Hooks for adding biomes to the default world generator.",
   "mixins": [
     "fabric-biome-api-v1.mixins.json"
-  ]
+  ],
+  "accessWidener" : "fabric-biome-api-v1.accesswidener"
 }

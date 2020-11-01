@@ -24,9 +24,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 /**
  * API that exposes the internals of Minecraft's nether biome code.
  *
- * @deprecated Experimental feature, may be removed or changed without further notice.
- * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
- * since it is likely to change in future Minecraft versions.
+ * <p><b>Experimental feature</b>, may be removed or changed without further notice.
  */
 @Deprecated
 public final class NetherBiomes {
@@ -42,5 +40,13 @@ public final class NetherBiomes {
 	 */
 	public static void addNetherBiome(RegistryKey<Biome> biome, Biome.MixedNoisePoint mixedNoisePoint) {
 		InternalBiomeData.addNetherBiome(biome, mixedNoisePoint);
+	}
+
+	/**
+	 * Returns true if the given biome can generate in the nether, considering the Vanilla nether biomes,
+	 * and any biomes added to the Nether by mods.
+	 */
+	public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
+		return InternalBiomeData.canGenerateInNether(biome);
 	}
 }

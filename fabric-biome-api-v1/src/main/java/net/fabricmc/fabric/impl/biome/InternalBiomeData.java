@@ -29,10 +29,12 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 
+import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.layer.BiomeLayers;
+import net.minecraft.world.biome.source.MultiNoiseBiomeSource;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.gen.feature.StructureFeature;
 
@@ -152,8 +154,8 @@ public final class InternalBiomeData {
 		Preconditions.checkArgument(biome != null, "Biome is null");
 		Preconditions.checkArgument(spawnNoisePoint != null, "Biome.MixedNoisePoint is null");
 		InternalBiomeUtils.ensureIdMapping(biome);
-		NETHER_BIOMES.add(biome);
 		NETHER_BIOME_NOISE_POINTS.put(biome, spawnNoisePoint);
+		NETHER_BIOMES.clear(); // Reset cached overall biome list
 	}
 
 	public static void addEndBiomeReplacement(RegistryKey<Biome> replaced, RegistryKey<Biome> variant, double weight) {
@@ -205,6 +207,18 @@ public final class InternalBiomeData {
 		return NETHER_BIOME_NOISE_POINTS;
 	}
 
+  public static boolean canGenerateInNether(RegistryKey<Biome> biome) {
+		if (NETHER_BIOMES.isEmpty()) {
+			MultiNoiseBiomeSource source = MultiNoiseBiomeSource.Preset.NETHER.getBiomeSource(BuiltinRegistries.BIOME, 0L);
+
+			for (Biome netherBiome : source.getBiomes()) {
+				BuiltinRegistries.BIOME.getKey(netherBiome).ifPresent(NETHER_BIOMES::add);
+			}
+		}
+
+		return NETHER_BIOMES.contains(biome);
+	}
+
 	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndBiomesMap() {
 		return END_BIOMES_MAP;
 	}
@@ -215,7 +229,7 @@ public final class InternalBiomeData {
 
 	public static Map<RegistryKey<Biome>, WeightedBiomePicker> getEndBarrensMap() {
 		return END_BARRENS_MAP;
-	}
+  }
 
 	private static class DefaultHillsData {
 		private static final ImmutableMap<RegistryKey<Biome>, RegistryKey<Biome>> DEFAULT_HILLS;
