@@ -33,6 +33,7 @@ import net.minecraft.world.GameRules;
 
 import net.fabricmc.fabric.api.gamerule.v1.CustomGameRuleCategory;
 
+// For any future maintainers who wonder why this class does not compile because of jsr305, please reload gradle using `--refresh-dependencies`.
 @Mixin(EditGameRulesScreen.RuleListWidget.class)
 public abstract class RuleListWidgetMixin extends net.minecraft.client.gui.widget.EntryListWidget<EditGameRulesScreen.AbstractRuleWidget> {
 	@Unique
