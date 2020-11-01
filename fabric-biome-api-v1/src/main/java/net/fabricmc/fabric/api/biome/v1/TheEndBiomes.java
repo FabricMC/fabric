@@ -23,16 +23,21 @@ import net.minecraft.world.biome.BiomeKeys;
 import net.fabricmc.fabric.impl.biome.InternalBiomeData;
 
 /**
- * API that allows for adding biomes to the biome source for The End.
+ * API that exposes some internals of the minecraft default biome source for The End.
+ *
+ * @deprecated Experimental feature, may be removed or changed without further notice.
+ * Because of the volatility of world generation in Minecraft 1.16, this API is marked experimental
+ * since it is likely to change in future Minecraft versions.
  */
 @Deprecated
 public final class TheEndBiomes {
 	private TheEndBiomes() { }
 
 	/**
-	 * <p>Ands the biome with the specified weight to the main end island region; note that this includes the main island
+	 * <p>Adds the biome as a main end island biome with the specified weight; note that this includes the main island
 	 * and some of the land encircling the empty space. Note that adding a biome to this region could potentially mess
-	 * with the generation of the center island and cause it to generate incorrectly.</p>
+	 * with the generation of the center island and cause it to generate incorrectly; this method only exists for
+	 * consistency.</p>
 	 *
 	 * @param biome the biome to be added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
@@ -44,54 +49,56 @@ public final class TheEndBiomes {
 	}
 
 	/**
-	 * Ands the biome to with the specified weight to the end highlands regions which correspond to the End Highlands biome.
+	 * <p>Adds the biome as an end highlands biome with the specified weight. End Highlands biomes make up the
+	 * center region of the large outer islands in The End.</p>
 	 *
 	 * @param biome the biome to be added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * Vanilla biomes have a weight of 1.0
+	 * The vanilla biome has a weight of 1.0.
 	 */
 	public static void addHighlandsBiome(RegistryKey<Biome> biome, double weight) {
 		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.END_HIGHLANDS, biome, weight);
 	}
 
 	/**
-	 * Ands the biome to with the specified weight to the small end island regions which correspond to the Small End Islands biome.
+	 * <p>Adds a custom biome as a small end islands biome with the specified weight; small end island biomes
+	 * make up the smaller islands in between the larger islands of the end.</p>
 	 *
 	 * @param biome the biome to be added
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * Vanilla biomes have a weight of 1.0
+	 * The vanilla biome has a weight of 1.0.
 	 */
 	public static void addSmallIslandsBiome(RegistryKey<Biome> biome, double weight) {
 		InternalBiomeData.addEndBiomeReplacement(BiomeKeys.SMALL_END_ISLANDS, biome, weight);
 	}
 
 	/**
-	 * Ands the midlands to with the specified weight to the end midlands regions which correspond to the End Midlands midlands.
+	 * <p>Adds the biome as an end midlands of the parent end highlands biome. End Midlands make up the area on
+	 * the large outer islands between the highlands and the barrens and are similar to edge biomes in the
+	 * overworld.</p>
 	 *
-	 * @param highlands
-	 * @param midlands the midlands to be added
+	 * @param highlands The highlands biome to where the midlands biome is added
+	 * @param midlands the biome to be added as a midlands biome
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * Vanilla biomes have a weight of 1.0
+	 * The vanilla biome has a weight of 1.0.
 	 */
 	public static void addMidlandsBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> midlands, double weight) {
-		//TODO: Javadoc
 		InternalBiomeData.addEndMidlandsReplacement(highlands, midlands, weight);
 	}
 
 	/**
 	 * Ands the barrens to with the specified weight to the end barrens regions which correspond to the End Barrens barrens.
 	 *
-	 * @param highlands
-	 * @param barrens the barrens to be added
+	 * @param highlands The highlands biome to where the barrends biome is added
+	 * @param barrens the biome to be added as a barrens biome
 	 * @param weight the weight of the entry. The weight in this method corresponds to its selection likelihood, with
 	 * heavier biomes being more likely to be selected and lighter biomes being selected with less likelihood.
-	 * Vanilla biomes have a weight of 1.0
+	 * The vanilla biome has a weight of 1.0.
 	 */
 	public static void addBarrensBiome(RegistryKey<Biome> highlands, RegistryKey<Biome> barrens, double weight) {
-		//TODO: Javadoc
 		InternalBiomeData.addEndBarrensReplacement(highlands, barrens, weight);
 	}
 }

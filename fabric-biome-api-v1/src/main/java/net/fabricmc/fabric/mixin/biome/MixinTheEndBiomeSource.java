@@ -51,8 +51,10 @@ public class MixinTheEndBiomeSource {
 		Biome vanillaBiome = cir.getReturnValue();
 
 		// Since all vanilla biomes are added to the registry, this will never fail.
+		// If not all vanilla biomes are added to the registry, this code will fail
+		// either way.
 		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
-		RegistryKey<Biome> replacementKey = null;
+		RegistryKey<Biome> replacementKey;
 
 		if (vanillaKey == BiomeKeys.END_MIDLANDS || vanillaKey == BiomeKeys.END_BARRENS) {
 			// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
@@ -62,7 +64,12 @@ public class MixinTheEndBiomeSource {
 			if (vanillaKey == BiomeKeys.END_MIDLANDS) {
 				// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
 				WeightedBiomePicker midlandsPicker = InternalBiomeData.getEndMidlandsMap().get(highlandsKey);
-				
+				replacementKey = midlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
+			}
+			else {
+				// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
+				WeightedBiomePicker barrensPicker = InternalBiomeData.getEndBarrensMap().get(highlandsKey);
+				replacementKey = barrensPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
 			}
 		}
 		else {
