@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.content.registry.v1;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.FireBlock;
 import net.minecraft.tag.Tag;
 
 import net.fabricmc.fabric.api.content.registry.v1.util.ContentRegistry;
@@ -29,10 +30,10 @@ public interface FlammableBlockRegistry extends ContentRegistry<Block, Flammable
 	/**
 	 * Create a new flammable block registry for a type of fire.
 	 * @param fireBlock the block that this registry belongs to
-	 * @param prefix the name of the block
+	 * @throws IllegalArgumentException if {@code fireBlock} is not a {@link FireBlock}
 	 */
-	default FlammableBlockRegistry create(Block fireBlock, String prefix) {
-		return new FlammableBlockRegistryImpl(fireBlock, prefix);
+	default FlammableBlockRegistry create(Block fireBlock) {
+		return new FlammableBlockRegistryImpl(fireBlock);
 	}
 
 	default void add(Block block, int burn, int spread) {

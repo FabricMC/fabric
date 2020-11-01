@@ -27,10 +27,10 @@ import net.fabricmc.fabric.api.content.registry.v1.FlammableBlockRegistry;
 import net.fabricmc.fabric.mixin.content.registry.FireBlockAccessor;
 
 public class FlammableBlockRegistryImpl extends ContentRegistryImpl<Block, FlammableBlockRegistry.Entry> implements FlammableBlockRegistry {
-	public static final FlammableBlockRegistry FIRE_INSTANCE = new FlammableBlockRegistryImpl(Blocks.FIRE, "fire");
+	public static final FlammableBlockRegistry FIRE_INSTANCE = new FlammableBlockRegistryImpl(Blocks.FIRE);
 
-	public FlammableBlockRegistryImpl(Block fireBlock, String prefix) {
-		super(prefix + "_flammable_block_registry");
+	public FlammableBlockRegistryImpl(Block fireBlock) {
+		super(Registry.BLOCK.getId(fireBlock).toString() + "_flammable_block_registry");
 
 		Preconditions.checkArgument(fireBlock instanceof FireBlock, "Block " + Registry.BLOCK.getId(fireBlock) + " is not a FireBlock and a FlammableBlockRegistry cannot be created for it");
 	}

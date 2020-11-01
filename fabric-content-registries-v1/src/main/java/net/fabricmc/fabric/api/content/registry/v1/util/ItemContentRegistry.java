@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.content.registry.v1.util;
 
+import java.util.Objects;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 
@@ -24,14 +26,14 @@ import net.minecraft.item.ItemConvertible;
  */
 public interface ItemContentRegistry<V> extends ContentRegistry<Item, V> {
 	default V get(ItemConvertible key) {
-		return this.get(key.asItem());
+		return this.get(Objects.requireNonNull(key.asItem(), "key.asItem() returned null"));
 	}
 
 	default void add(ItemConvertible key, V value) {
-		this.add(key.asItem(), value);
+		this.add(Objects.requireNonNull(key.asItem(), "key.asItem() returned null"), value);
 	}
 
 	default void remove(ItemConvertible key) {
-		this.remove(key.asItem());
+		Objects.requireNonNull(key.asItem(), "key.asItem() returned null");
 	}
 }
