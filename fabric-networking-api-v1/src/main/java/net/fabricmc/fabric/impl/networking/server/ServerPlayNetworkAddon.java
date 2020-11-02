@@ -16,16 +16,8 @@
 
 package net.fabricmc.fabric.impl.networking.server;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -43,8 +35,6 @@ import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAccessor;
 
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
-	private final ReadWriteLock lock = new ReentrantReadWriteLock();
-	private final Map<Identifier, ServerPlayNetworking.PlayChannelHandler> handlers = new HashMap<>(); // sync map should be fine as there is little read write competitions
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
 
@@ -95,69 +85,27 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void postRegisterEvent(List<Identifier> ids) {
+	protected void invokeRegisterEvent(List<Identifier> ids) {
 		ServerPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.server, ids);
 	}
 
 	@Override
-	protected void postUnregisterEvent(List<Identifier> ids) {
+	protected void invokeUnregisterEvent(List<Identifier> ids) {
 		ServerPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.server, ids);
 	}
 
-	@Nullable
 	@Override
-	public ServerPlayNetworking.PlayChannelHandler getHandler(Identifier channel) {
-		Lock lock = this.lock.readLock();
-		lock.lock();
-
-		try {
-			return this.handlers.get(channel);
-		} finally {
-			lock.unlock();
-		}
+	protected void handleRegistration(Identifier channel) {
+		// TODO
 	}
 
 	@Override
-	public boolean registerChannel(Identifier channel, ServerPlayNetworking.PlayChannelHandler channelHandler) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(channelHandler, "Packet handler cannot be null");
-
-		if (NetworkingImpl.isReservedChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
-		}
-
-		Lock lock = this.lock.writeLock();
-		lock.lock();
-
-		try {
-			final boolean hasEntry = this.handlers.putIfAbsent(channel, channelHandler) == null;
-
-			if (!hasEntry) {
-				this.register(Collections.singletonList(channel));
-				this.sendRegisterPacket(Collections.singleton(channel));
-			}
-
-			return hasEntry;
-		} finally {
-			lock.unlock();
-		}
+	protected void handleUnregistration(Identifier channel) {
+		// TODO
 	}
 
 	@Override
-	public ServerPlayNetworking.PlayChannelHandler unregisterChannel(Identifier channel) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
-
-		if (NetworkingImpl.isReservedChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot unregister packet handler for reserved channel \"%s\"", channel));
-		}
-
-		Lock lock = this.lock.writeLock();
-		lock.lock();
-
-		try {
-			return this.handlers.remove(channel);
-		} finally {
-			lock.unlock();
-		}
+	protected boolean isReservedChannel(Identifier channel) {
+		return NetworkingImpl.isReservedPlayChannel(channel);
 	}
 }

@@ -82,7 +82,7 @@ public final class NetworkingImpl {
 		});
 	}
 
-	public static boolean isReservedChannel(Identifier id) {
+	public static boolean isReservedPlayChannel(Identifier id) {
 		return id.equals(REGISTER_CHANNEL) || id.equals(UNREGISTER_CHANNEL);
 	}
 }

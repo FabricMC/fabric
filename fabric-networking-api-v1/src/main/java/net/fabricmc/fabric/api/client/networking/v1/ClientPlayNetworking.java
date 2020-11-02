@@ -26,7 +26,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
@@ -34,7 +33,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerExtensions;
 
 /**
  * Offers access to play stage client-side networking functionalities.
@@ -71,6 +69,7 @@ public final class ClientPlayNetworking {
 	public static boolean register(ClientPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
 		throw new UnsupportedOperationException("Reimplement me!");
 	}
+
 	/**
 	 * Removes the handler of a channel.
 	 *
@@ -79,7 +78,6 @@ public final class ClientPlayNetworking {
 	 * @param channel the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
-
 	public static PlayChannelHandler unregister(ClientPlayNetworkHandler networkHandler, Identifier channel) {
 		throw new UnsupportedOperationException("Reimplement me!");
 	}

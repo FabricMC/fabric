@@ -16,34 +16,95 @@
 
 package net.fabricmc.fabric.impl.networking;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
+import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.Packet;
+import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+public abstract class AbstractNetworkAddon<H> {
+	// A lock is used due to possible access on netty's event loops and game thread at same times such as during dynamic registration
+	private final ReadWriteLock lock = new ReentrantReadWriteLock();
+	// Sync map should be fine as there is little read write competitions
+	private final Map<Identifier, H> handlers = new HashMap<>();
 
-public abstract class AbstractNetworkAddon implements PacketSender {
-	protected final ClientConnection connection;
-
-	protected AbstractNetworkAddon(ClientConnection connection) {
-		this.connection = connection;
+	protected AbstractNetworkAddon() {
 	}
 
-	@Override
-	public void sendPacket(Packet<?> packet) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
+	@Nullable
+	public H getHandler(Identifier channel) {
+		Lock lock = this.lock.readLock();
+		lock.lock();
 
-		this.connection.send(packet);
+		try {
+			return this.handlers.get(channel);
+		} finally {
+			lock.unlock();
+		}
 	}
 
-	@Override
-	public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback) {
-		Objects.requireNonNull(packet, "Packet cannot be null");
+	public boolean registerChannel(Identifier channel, H handler) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(handler, "Packet handler cannot be null");
 
-		this.connection.send(packet, callback);
+		if (this.isReservedChannel(channel)) {
+			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
+		}
+
+		Lock lock = this.lock.writeLock();
+		lock.lock();
+
+		try {
+			final boolean replaced = this.handlers.putIfAbsent(channel, handler) == null;
+
+			if (replaced) {
+				this.handleRegistration(channel);
+			}
+
+			return replaced;
+		} finally {
+			lock.unlock();
+		}
 	}
+
+	public H unregisterChannel(Identifier channel) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+
+		if (this.isReservedChannel(channel)) {
+			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
+		}
+
+		Lock lock = this.lock.writeLock();
+		lock.lock();
+
+		try {
+			final H removed = this.handlers.remove(channel);
+
+			if (removed != null) {
+				this.handleUnregistration(channel);
+			}
+
+			return removed;
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	protected abstract void handleRegistration(Identifier channel);
+
+	protected abstract void handleUnregistration(Identifier channel);
+
+	/**
+	 * Checks if a channel is considered a "reserved" channel.
+	 * A reserved channel such as "minecraft:(un)register" has special handling and should not have any channel handlers registered for it.
+	 *
+	 * @param channel the channel
+	 * @return whether the channel is reserved
+	 */
+	protected abstract boolean isReservedChannel(Identifier channel);
 }

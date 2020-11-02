@@ -22,19 +22,25 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import io.netty.util.AsciiString;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
-public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon {
+public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender {
+	protected final ClientConnection connection;
 	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 	protected final Set<Identifier> sendableChannelsView;
@@ -44,7 +50,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels) {
-		super(connection);
+		this.connection = connection;
 		this.receiver = receiver;
 		this.sendableChannels = sendableChannels;
 		this.sendableChannelsView = Collections.unmodifiableSet(sendableChannels);
@@ -139,19 +145,33 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 	public void register(List<Identifier> ids) {
 		this.sendableChannels.addAll(ids);
-		this.postRegisterEvent(ids);
+		this.invokeRegisterEvent(ids);
 	}
 
 	public void unregister(List<Identifier> ids) {
 		this.sendableChannels.removeAll(ids);
-		this.postUnregisterEvent(ids);
+		this.invokeUnregisterEvent(ids);
+	}
+
+	@Override
+	public void sendPacket(Packet<?> packet) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+
+		this.connection.send(packet);
+	}
+
+	@Override
+	public void sendPacket(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> callback) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+
+		this.connection.send(packet, callback);
 	}
 
 	protected abstract void schedule(Runnable task);
 
-	protected abstract void postRegisterEvent(List<Identifier> ids);
+	protected abstract void invokeRegisterEvent(List<Identifier> ids);
 
-	protected abstract void postUnregisterEvent(List<Identifier> ids);
+	protected abstract void invokeUnregisterEvent(List<Identifier> ids);
 
 	private void addId(List<Identifier> ids, StringBuilder sb) {
 		String literal = sb.toString();
@@ -170,11 +190,4 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	public boolean hasChannel(Identifier channel) {
 		return this.sendableChannels.contains(channel);
 	}
-
-	@Nullable
-	public abstract H getHandler(Identifier channel);
-
-    public abstract boolean registerChannel(Identifier channel, H channelHandler);
-
-	public abstract H unregisterChannel(Identifier channel);
 }

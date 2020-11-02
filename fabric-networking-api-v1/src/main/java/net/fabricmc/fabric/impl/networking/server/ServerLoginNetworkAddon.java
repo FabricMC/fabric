@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.networking.server;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -25,8 +26,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
+import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.login.LoginQueryResponseC2SPacket;
@@ -36,6 +39,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
@@ -45,7 +49,8 @@ import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketA
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryResponseC2SPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
-public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
+public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginChannelHandler> implements PacketSender {
+	private final ClientConnection connection;
 	private final ServerLoginNetworkHandler handler;
 	private final MinecraftServer server;
 	private final QueryIdFactory queryIdFactory;
@@ -54,7 +59,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 	private boolean firstQueryTick = true;
 
 	public ServerLoginNetworkAddon(ServerLoginNetworkHandler handler) {
-		super(handler.connection);
+		this.connection = handler.connection;
 		this.handler = handler;
 		this.server = ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 		this.queryIdFactory = QueryIdFactory.create();
@@ -156,8 +161,37 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon {
 		return ret;
 	}
 
+	@Override
+	public void sendPacket(Packet<?> packet) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+
+		this.connection.send(packet);
+	}
+
+	@Override
+	public void sendPacket(Packet<?> packet, GenericFutureListener<? extends io.netty.util.concurrent.Future<? super Void>> callback) {
+		Objects.requireNonNull(packet, "Packet cannot be null");
+
+		this.connection.send(packet, callback);
+	}
+
 	public void registerOutgoingPacket(LoginQueryRequestS2CPacket packet) {
 		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) packet;
 		this.channels.put(access.getServerQueryId(), access.getChannel());
+	}
+
+	@Override
+	protected void handleRegistration(Identifier channel) {
+		// TODO
+	}
+
+	@Override
+	protected void handleUnregistration(Identifier channel) {
+		// TODO
+	}
+
+	@Override
+	protected boolean isReservedChannel(Identifier channel) {
+		return false;
 	}
 }

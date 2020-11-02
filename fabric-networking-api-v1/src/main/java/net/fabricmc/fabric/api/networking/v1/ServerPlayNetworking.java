@@ -30,7 +30,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtensions;
 
 /**
  * Offers access to play stage server-side networking functionalities.

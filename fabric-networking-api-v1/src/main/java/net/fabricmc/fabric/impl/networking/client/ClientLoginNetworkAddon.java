@@ -36,11 +36,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 
 @Environment(EnvType.CLIENT)
-public final class ClientLoginNetworkAddon {
+public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginChannelHandler> {
 	private final ClientLoginNetworkHandler handler;
 	private final MinecraftClient client;
 
@@ -55,7 +56,7 @@ public final class ClientLoginNetworkAddon {
 	}
 
 	private boolean handlePacket(int queryId, Identifier channel, PacketByteBuf originalBuf) {
-		@Nullable ClientLoginNetworking.LoginChannelHandler handler = ClientNetworkingImpl.LOGIN.getHandler(channel);
+		@Nullable ClientLoginNetworking.LoginChannelHandler handler = this.getHandler(channel);
 
 		if (handler == null) {
 			return false;
@@ -82,5 +83,20 @@ public final class ClientLoginNetworkAddon {
 		}
 
 		return true;
+	}
+
+	@Override
+	protected void handleRegistration(Identifier channel) {
+		// TODO
+	}
+
+	@Override
+	protected void handleUnregistration(Identifier channel) {
+		// TODO
+	}
+
+	@Override
+	protected boolean isReservedChannel(Identifier channel) {
+		return false;
 	}
 }
