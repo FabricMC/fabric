@@ -34,6 +34,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 /**
  * Offers access to login stage client-side networking functionalities.
@@ -75,13 +76,13 @@ public final class ClientLoginNetworking {
 	public static boolean register(ClientLoginNetworkHandler networkHandler, Identifier channel, LoginChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ClientLoginNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
+		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channel, channelHandler);
 	}
 
 	public static LoginChannelHandler unregister(ClientLoginNetworkHandler networkHandler, Identifier channel) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ClientLoginNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
+		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {

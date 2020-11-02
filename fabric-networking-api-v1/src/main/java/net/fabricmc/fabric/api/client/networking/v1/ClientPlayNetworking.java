@@ -70,7 +70,7 @@ public final class ClientPlayNetworking {
 	public static boolean register(ClientPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ClientPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
+		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channel, channelHandler);
 	}
 
 	/**
@@ -84,7 +84,7 @@ public final class ClientPlayNetworking {
 	public static PlayChannelHandler unregister(ClientPlayNetworkHandler networkHandler, Identifier channel) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ClientPlayNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
+		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
@@ -104,11 +104,11 @@ public final class ClientPlayNetworking {
 	}
 
 	public static Collection<Identifier> getReceivers(ClientPlayerEntity player) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return getReceivers(player.networkHandler);
 	}
 
 	public static Collection<Identifier> getReceivers(ClientPlayNetworkHandler handler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ClientNetworkingImpl.getAddon(handler).getChannels();
 	}
 
 	public static boolean canReceive(Identifier channel) {
@@ -120,11 +120,11 @@ public final class ClientPlayNetworking {
 	}
 
 	public static boolean canReceive(ClientPlayerEntity player, Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return canReceive(player.networkHandler, channel);
 	}
 
 	public static boolean canReceive(ClientPlayNetworkHandler handler, Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ClientNetworkingImpl.getAddon(handler).hasChannel(channel);
 	}
 
 	public static Packet<?> createC2SPacket(Identifier channel, PacketByteBuf buf) {
