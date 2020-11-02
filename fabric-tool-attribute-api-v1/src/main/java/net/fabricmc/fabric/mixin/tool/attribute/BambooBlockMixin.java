@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.BambooBlock;
+import net.minecraft.block.BambooSaplingBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -29,7 +30,7 @@ import net.minecraft.world.BlockView;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
-@Mixin(BambooBlock.class)
+@Mixin({BambooBlock.class, BambooSaplingBlock.class})
 public abstract class BambooBlockMixin {
 	@Inject(at = @At("HEAD"), method = "calcBlockBreakingDelta", cancellable = true)
 	private void onCalcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos, CallbackInfoReturnable<Float> info) {
