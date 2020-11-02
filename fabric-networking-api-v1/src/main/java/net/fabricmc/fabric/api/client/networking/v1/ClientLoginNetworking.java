@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.networking.v1;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -32,6 +33,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerExtensions;
 
 /**
  * Offers access to login stage client-side networking functionalities.
@@ -71,11 +73,15 @@ public final class ClientLoginNetworking {
 	}
 
 	public static boolean register(ClientLoginNetworkHandler networkHandler, Identifier channel, LoginChannelHandler channelHandler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+
+		return ((ClientLoginNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
 	}
 
 	public static LoginChannelHandler unregister(ClientLoginNetworkHandler networkHandler, Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+
+		return ((ClientLoginNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {

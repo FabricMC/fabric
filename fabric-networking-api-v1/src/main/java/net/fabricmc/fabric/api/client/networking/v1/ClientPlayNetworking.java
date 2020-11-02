@@ -33,6 +33,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
+import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerExtensions;
 
 /**
  * Offers access to play stage client-side networking functionalities.
@@ -67,7 +68,9 @@ public final class ClientPlayNetworking {
 	 * @return false if a handler is already registered to the channel
 	 */
 	public static boolean register(ClientPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+
+		return ((ClientPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
 	}
 
 	/**
@@ -79,7 +82,9 @@ public final class ClientPlayNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
 	public static PlayChannelHandler unregister(ClientPlayNetworkHandler networkHandler, Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+
+		return ((ClientPlayNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {

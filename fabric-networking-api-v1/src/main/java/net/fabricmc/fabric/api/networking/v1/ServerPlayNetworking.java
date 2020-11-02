@@ -30,6 +30,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtensions;
 
 /**
  * Offers access to play stage server-side networking functionalities.
@@ -62,7 +63,9 @@ public final class ServerPlayNetworking {
 	 * @return false if a handler is already registered to the channel
 	 */
 	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+
+		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
 	}
 
 	/**
@@ -75,7 +78,9 @@ public final class ServerPlayNetworking {
 	 */
 	@Nullable
 	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+
+		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
@@ -87,7 +92,7 @@ public final class ServerPlayNetworking {
 	}
 
 	public static Collection<Identifier> getReceivers(ServerPlayerEntity player) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return getReceivers(player.networkHandler);
 	}
 
 	public static Collection<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
