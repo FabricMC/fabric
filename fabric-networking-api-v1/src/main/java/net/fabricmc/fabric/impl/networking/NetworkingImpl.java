@@ -26,9 +26,10 @@ import org.apache.logging.log4j.Logger;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
 public final class NetworkingImpl {
@@ -49,9 +50,11 @@ public final class NetworkingImpl {
 	public static final Identifier EARLY_REGISTRATION_CHANNEL = new Identifier(MOD_ID, "early_registration");
 
 	public static void init() {
+		// Login setup
 		ServerLoginConnectionEvents.LOGIN_QUERY_START.register((handler, server, sender, synchronizer) -> {
+			// Send early registration packet
 			PacketByteBuf buf = PacketByteBufs.create();
-			Collection<Identifier> channels = ServerNetworkingImpl.PLAY.getChannels();
+			Collection<Identifier> channels = ServerPlayNetworking.getGlobalReceivers();
 			buf.writeVarInt(channels.size());
 
 			for (Identifier id : channels) {

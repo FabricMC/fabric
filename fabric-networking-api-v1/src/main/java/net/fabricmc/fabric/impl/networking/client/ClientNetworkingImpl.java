@@ -35,12 +35,12 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
-import net.fabricmc.fabric.impl.networking.ChannelRegistry;
+import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
-	public static final ChannelRegistry<ClientLoginNetworking.LoginChannelHandler> LOGIN = new ChannelRegistry<>();
-	public static final ChannelRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new ChannelRegistry<>();
+	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginChannelHandler> LOGIN = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return ((ClientPlayNetworkHandlerExtensions) handler).getAddon();
@@ -68,7 +68,7 @@ public final class ClientNetworkingImpl {
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 
 			PacketByteBuf response = PacketByteBufs.create();
-			Collection<Identifier> channels = PLAY.getChannels();
+			Collection<Identifier> channels = ClientPlayNetworking.getGlobalReceivers();
 			response.writeVarInt(channels.size());
 
 			for (Identifier id : channels) {

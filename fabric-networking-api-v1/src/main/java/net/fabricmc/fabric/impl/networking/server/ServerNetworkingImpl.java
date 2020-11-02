@@ -24,11 +24,11 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.networking.ChannelRegistry;
+import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 
 public final class ServerNetworkingImpl {
-	public static final ChannelRegistry<ServerLoginNetworking.LoginChannelHandler> LOGIN = new ChannelRegistry<>();
-	public static final ChannelRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new ChannelRegistry<>();
+	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginChannelHandler> LOGIN = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {
 		return ((ServerPlayNetworkHandlerExtensions) handler).getAddon();

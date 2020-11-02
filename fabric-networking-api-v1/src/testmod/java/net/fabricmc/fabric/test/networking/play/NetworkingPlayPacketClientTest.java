@@ -16,17 +16,26 @@
 
 package net.fabricmc.fabric.test.networking.play;
 
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
 public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ClientPlayNetworking.register(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, sender, client, buf) -> {
-			Text text = buf.readText();
-			client.send(() -> client.inGameHud.setOverlayMessage(text, true));
+		ClientPlayConnectionEvents.PLAY_INIT.register((handler, sender, client) -> {
+			ClientPlayNetworking.register(handler, NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
 		});
+	}
+
+	private void receive(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, PacketByteBuf buf) {
+		Text text = buf.readText();
+		client.send(() -> client.inGameHud.setOverlayMessage(text, true));
 	}
 }

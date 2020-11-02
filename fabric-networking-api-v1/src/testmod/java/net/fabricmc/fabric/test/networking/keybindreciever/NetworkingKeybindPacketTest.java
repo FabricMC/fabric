@@ -16,12 +16,17 @@
 
 package net.fabricmc.fabric.test.networking.keybindreciever;
 
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.text.KeybindText;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
@@ -30,13 +35,17 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 public final class NetworkingKeybindPacketTest implements ModInitializer {
 	public static final Identifier KEYBINDING_PACKET_ID = NetworkingTestmods.id("keybind_press_test");
 
+	private static void receive(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, PacketByteBuf buf) {
+		// TODO: Can we send chat off the server thread?
+		server.execute(() -> {
+			handler.player.sendMessage(new LiteralText("So you pressed ").append(new KeybindText("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);
+		});
+	}
+
 	@Override
 	public void onInitialize() {
-		ServerPlayNetworking.register(KEYBINDING_PACKET_ID, (handler, sender, server, buf) -> {
-			// TODO: Can we send chat off the server thread?
-			server.execute(() -> {
-				handler.player.sendMessage(new LiteralText("So you pressed ").append(new KeybindText("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);
-			});
+		ServerPlayConnectionEvents.PLAY_INIT.register((handler, sender, server) -> {
+			ServerPlayNetworking.register(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
 		});
 	}
 }

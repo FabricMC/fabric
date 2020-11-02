@@ -35,15 +35,15 @@ import net.minecraft.util.InvalidIdentifierException;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 
 public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon {
-	protected final ChannelRegistry<H> receiver;
+	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 	protected final Set<Identifier> sendableChannelsView;
 
-	protected AbstractChanneledNetworkAddon(ChannelRegistry<H> receiver, ClientConnection connection) {
+	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection) {
 		this(receiver, connection, new HashSet<>());
 	}
 
-	protected AbstractChanneledNetworkAddon(ChannelRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels) {
+	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels) {
 		super(connection);
 		this.receiver = receiver;
 		this.sendableChannels = sendableChannels;
@@ -72,7 +72,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 			return true;
 		}
 
-		@Nullable H handler = this.receiver.getHandler(channel);
+		@Nullable H handler = this.getHandler(channel);
 
 		if (handler == null) {
 			return false;
@@ -93,8 +93,10 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected abstract void receive(H handler, PacketByteBuf buf);
 
 	public void sendChannelRegistrationPacket() {
-		Collection<Identifier> channels = this.receiver.getChannels();
+		this.sendRegisterPacket(this.receiver.getChannels());
+	}
 
+	protected void sendRegisterPacket(Collection<Identifier> channels) {
 		if (channels.isEmpty()) {
 			return;
 		}
@@ -168,4 +170,11 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	public boolean hasChannel(Identifier channel) {
 		return this.sendableChannels.contains(channel);
 	}
+
+	@Nullable
+	public abstract H getHandler(Identifier channel);
+
+    public abstract boolean registerChannel(Identifier channel, H channelHandler);
+
+	public abstract H unregisterChannel(Identifier channel);
 }

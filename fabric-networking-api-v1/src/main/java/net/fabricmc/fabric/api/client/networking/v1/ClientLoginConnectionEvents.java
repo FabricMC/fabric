@@ -36,6 +36,12 @@ public final class ClientLoginConnectionEvents {
 		}
 	});
 
+	public static final Event<LoginQueryStart> LOGIN_QUERY_START = EventFactory.createArrayBacked(LoginQueryStart.class, callbacks -> (handler, client) -> {
+		for (LoginQueryStart callback : callbacks) {
+			callback.onLoginQueryStart(handler, client);
+		}
+	});
+
 	/**
 	 * An event for when a client's login process has ended due to disconnection.
 	 *
@@ -53,6 +59,11 @@ public final class ClientLoginConnectionEvents {
 	@FunctionalInterface
 	public interface LoginInit {
 		void onLoginStart(ClientLoginNetworkHandler handler, MinecraftClient client);
+	}
+
+	@FunctionalInterface
+	public interface LoginQueryStart {
+		void onLoginQueryStart(ClientLoginNetworkHandler handler, MinecraftClient client);
 	}
 
 	@FunctionalInterface

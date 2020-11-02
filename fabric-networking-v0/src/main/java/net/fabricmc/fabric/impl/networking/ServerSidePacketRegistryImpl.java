@@ -25,6 +25,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
@@ -34,6 +36,8 @@ import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
 import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, PacketRegistry {
@@ -65,28 +69,35 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	public void register(Identifier id, PacketConsumer consumer) {
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ServerPlayNetworking.register(id, (handler, sender, server, buf) -> {
-			consumer.accept(new PacketContext() {
-				@Override
-				public EnvType getPacketEnvironment() {
-					return EnvType.SERVER;
-				}
-
-				@Override
-				public PlayerEntity getPlayer() {
-					return handler.player;
-				}
-
-				@Override
-				public ThreadExecutor<?> getTaskQueue() {
-					return server;
-				}
-			}, buf);
+		// FIXME: Temp stuff
+		ServerPlayConnectionEvents.PLAY_INIT.register((networkHandler, packetSender, minecraftServer) -> {
+			ServerPlayNetworking.register(networkHandler, id, (handler, sender, server, buf) -> {
+				receivePacket(consumer, handler, sender, server, buf);
+			});
 		});
 	}
 
 	@Override
 	public void unregister(Identifier id) {
-		ServerPlayNetworking.unregister(id);
+		throw new UnsupportedOperationException("Reimplement me!");
+	}
+
+	private static void receivePacket(PacketConsumer packetConsumer, ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, PacketByteBuf buf) {
+		packetConsumer.accept(new PacketContext() {
+			@Override
+			public EnvType getPacketEnvironment() {
+				return EnvType.SERVER;
+			}
+
+			@Override
+			public PlayerEntity getPlayer() {
+				return handler.player;
+			}
+
+			@Override
+			public ThreadExecutor<?> getTaskQueue() {
+				return server;
+			}
+		}, buf);
 	}
 }

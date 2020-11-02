@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
-public final class ChannelRegistry<H> {
+public final class GlobalReceiverRegistry<H> {
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Map<Identifier, H> handlers;
 
-	public ChannelRegistry() {
+	public GlobalReceiverRegistry() {
 		this(new HashMap<>()); // sync map should be fine as there is little read write competitions
 	}
 
-	public ChannelRegistry(Map<Identifier, H> map) {
+	public GlobalReceiverRegistry(Map<Identifier, H> map) {
 		this.handlers = map;
 	}
 
@@ -83,6 +83,17 @@ public final class ChannelRegistry<H> {
 
 		try {
 			return this.handlers.remove(channel);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public Map<Identifier, H> getHandlers() {
+		Lock lock = this.lock.writeLock();
+		lock.lock();
+
+		try {
+			return new HashMap<>(this.handlers);
 		} finally {
 			lock.unlock();
 		}

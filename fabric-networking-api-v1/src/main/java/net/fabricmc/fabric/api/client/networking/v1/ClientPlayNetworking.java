@@ -26,6 +26,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
@@ -52,19 +53,19 @@ public final class ClientPlayNetworking {
 	 * Registers a handler to a channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregister(ClientPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channel the id of the channel
-	 * @param handler the handler
+	 * @param networkHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean register(Identifier channel, PlayChannelHandler handler) {
+	public static boolean register(ClientPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(handler, "Play channel handler cannot be null");
+		Objects.requireNonNull(channelHandler, "Play channel handler cannot be null");
 
-		return ClientNetworkingImpl.PLAY.register(channel, handler);
+		return ((ClientPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
 	}
-
 	/**
 	 * Removes the handler of a channel.
 	 *
@@ -73,11 +74,12 @@ public final class ClientPlayNetworking {
 	 * @param channel the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
-	@Nullable
-	public static PlayChannelHandler unregister(Identifier channel) {
+
+	public static PlayChannelHandler unregister(ClientPlayNetworkHandler networkHandler, Identifier channel) {
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 		Objects.requireNonNull(channel, "Channel cannot be null");
 
-		return ClientNetworkingImpl.PLAY.unregister(channel);
+		return ((ClientPlayNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {

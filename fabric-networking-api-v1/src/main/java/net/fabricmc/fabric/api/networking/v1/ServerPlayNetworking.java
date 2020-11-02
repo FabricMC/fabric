@@ -47,26 +47,18 @@ public final class ServerPlayNetworking {
 	 * Registers a handler to a channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregister(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channel the id of the channel
-	 * @param handler the handler
+	 * @param networkHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean register(Identifier channel, PlayChannelHandler handler) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(handler, "Handler cannot be null");
-
-		return ServerNetworkingImpl.PLAY.register(channel, handler);
-	}
-
 	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(channelHandler, "Play channel handler cannot be null");
 
-		// TODO:
-		((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon();
+		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
 	}
 
 	/**
@@ -77,11 +69,11 @@ public final class ServerPlayNetworking {
 	 * @param channel the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
-	@Nullable
-	public static PlayChannelHandler unregister(Identifier channel) {
+	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channel) {
+		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 		Objects.requireNonNull(channel, "Channel cannot be null");
 
-		return ServerNetworkingImpl.PLAY.unregister(channel);
+		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
