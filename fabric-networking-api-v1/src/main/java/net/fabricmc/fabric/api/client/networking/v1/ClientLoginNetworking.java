@@ -17,7 +17,6 @@
 package net.fabricmc.fabric.api.client.networking.v1;
 
 import java.util.Collection;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -33,7 +32,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
-import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 /**
  * Offers access to login stage client-side networking functionalities.
@@ -49,17 +47,14 @@ public final class ClientLoginNetworking {
 	 * Registers a handler to a channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channel the id of the channel
 	 * @param handler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean register(Identifier channel, LoginChannelHandler handler) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(handler, "Channel login handler cannot be null");
-
-		return ClientNetworkingImpl.LOGIN.register(channel, handler);
+	public static boolean registerGlobalReceiver(Identifier channel, LoginChannelHandler handler) {
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	/**
@@ -71,18 +66,24 @@ public final class ClientLoginNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
 	@Nullable
-	public static LoginChannelHandler unregister(Identifier channel) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public static LoginChannelHandler unregisterGlobalReceiver(Identifier channel) {
+		throw new UnsupportedOperationException("Reimplement me!");
+	}
 
-		return ClientNetworkingImpl.LOGIN.unregister(channel);
+	public static boolean register(ClientLoginNetworkHandler networkHandler, Identifier channel, LoginChannelHandler channelHandler) {
+		throw new UnsupportedOperationException("Reimplement me!");
+	}
+
+	public static LoginChannelHandler unregister(ClientLoginNetworkHandler networkHandler, Identifier channel) {
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
-		return ClientNetworkingImpl.LOGIN.getChannels();
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static boolean hasGlobalReceiver(Identifier channel) {
-		return ClientNetworkingImpl.LOGIN.hasChannel(channel);
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	private ClientLoginNetworking() {

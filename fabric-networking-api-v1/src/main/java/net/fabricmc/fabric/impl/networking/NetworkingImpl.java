@@ -30,7 +30,6 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 
 public final class NetworkingImpl {
 	public static final String MOD_ID = "fabric-networking-api-v1";
@@ -65,7 +64,7 @@ public final class NetworkingImpl {
 			NetworkingImpl.LOGGER.debug("Sent accepted channels to the client");
 		});
 
-		ServerLoginNetworking.register(EARLY_REGISTRATION_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -> {
+		ServerLoginNetworking.registerGlobalReceiver(EARLY_REGISTRATION_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -> {
 			if (!understood) {
 				// The client is likely a vanilla client.
 				return;

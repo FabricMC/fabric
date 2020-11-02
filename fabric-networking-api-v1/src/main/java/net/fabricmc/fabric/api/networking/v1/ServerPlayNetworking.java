@@ -43,6 +43,15 @@ import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtens
  * @see ClientPlayNetworking
  */
 public final class ServerPlayNetworking {
+	public static boolean registerGlobalReceiver(Identifier channel, PlayChannelHandler channelHandler) {
+		throw new UnsupportedOperationException("Reimplement me!");
+	}
+
+	@Nullable
+	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channel) {
+		throw new UnsupportedOperationException("Reimplement me!");
+	}
+
 	/**
 	 * Registers a handler to a channel.
 	 *
@@ -54,11 +63,7 @@ public final class ServerPlayNetworking {
 	 * @return false if a handler is already registered to the channel
 	 */
 	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
-		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
-		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(channelHandler, "Play channel handler cannot be null");
-
-		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	/**
@@ -69,31 +74,25 @@ public final class ServerPlayNetworking {
 	 * @param channel the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
+	@Nullable
 	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channel) {
-		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
-		Objects.requireNonNull(channel, "Channel cannot be null");
-
-		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
-		return ServerNetworkingImpl.PLAY.getChannels();
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static boolean hasGlobalReceiver(Identifier id) {
-		return ServerNetworkingImpl.PLAY.hasChannel(id);
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static Collection<Identifier> getReceivers(ServerPlayerEntity player) {
-		Objects.requireNonNull(player, "Server player entity cannot be null");
-
-		return getReceivers(player.networkHandler);
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static Collection<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
-		Objects.requireNonNull(handler, "Server play network handler cannot be null");
-
-		return ((ServerPlayNetworkHandlerExtensions) handler).getAddon().getChannels();
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static boolean canReceive(ServerPlayerEntity player, Identifier channel) {
@@ -103,10 +102,7 @@ public final class ServerPlayNetworking {
 	}
 
 	public static boolean canReceive(ServerPlayNetworkHandler handler, Identifier channel) {
-		Objects.requireNonNull(handler, "Server play network handler cannot be null");
-		Objects.requireNonNull(channel, "Channel cannot be null");
-
-		return ((ServerPlayNetworkHandlerExtensions) handler).getAddon().hasChannel(channel);
+		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
 	public static Packet<?> createS2CPacket(Identifier channel, PacketByteBuf buf) {
