@@ -33,7 +33,6 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
-import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerExtensions;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 /**
@@ -53,11 +52,16 @@ public final class ClientLoginNetworking {
 	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channel the id of the channel
-	 * @param handler the handler
+	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean registerGlobalReceiver(Identifier channel, LoginChannelHandler handler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+	public static boolean registerGlobalReceiver(Identifier channel, LoginChannelHandler channelHandler) {
+		// FIXME: Temp
+		ClientLoginConnectionEvents.LOGIN_INIT.register((handler, client) -> {
+			register(handler, channel, channelHandler);
+		});
+
+		return true; // TODO Temp
 	}
 
 	/**

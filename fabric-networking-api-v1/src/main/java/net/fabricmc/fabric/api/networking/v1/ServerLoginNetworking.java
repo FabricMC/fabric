@@ -47,11 +47,16 @@ public final class ServerLoginNetworking {
 	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channel the id of the channel
-	 * @param handler the handler
+	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean registerGlobalReceiver(Identifier channel, LoginChannelHandler handler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+	public static boolean registerGlobalReceiver(Identifier channel, LoginChannelHandler channelHandler) {
+		// FIXME: Temp
+		ServerLoginConnectionEvents.LOGIN_QUERY_START.register((handler, server, sender, synchronizer) -> {
+			register(handler, channel, channelHandler);
+		});
+
+		return true; // TODO: Temp
 	}
 
 	/**

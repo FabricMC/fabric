@@ -33,7 +33,6 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
-import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerExtensions;
 
 /**
  * Offers access to play stage client-side networking functionalities.
@@ -49,7 +48,13 @@ import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerExtens
 @Environment(EnvType.CLIENT)
 public final class ClientPlayNetworking {
 	public static boolean registerGlobalReceiver(Identifier channel, PlayChannelHandler handler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		// FIXME: Temp stuff
+		ClientPlayConnectionEvents.PLAY_INIT.register((networkHandler, packetSender, minecraftClient) -> {
+			ClientPlayNetworking.register(networkHandler, channel, handler);
+		});
+
+		// TODO: Handle
+		return true;
 	}
 
 	@Nullable

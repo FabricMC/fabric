@@ -22,7 +22,6 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
@@ -30,13 +29,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.api.EnvType;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
@@ -65,35 +63,28 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 		// id is checked in client networking
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		// FIXME: Temp stuff
-		ClientPlayConnectionEvents.PLAY_INIT.register((networkHandler, packetSender, minecraftClient) -> {
-			ClientPlayNetworking.register(networkHandler, id, (handler, sender, client, buf) -> {
-				receivePacket(consumer, handler, sender, client, buf);
-			});
+		ClientPlayNetworking.registerGlobalReceiver(id, (handler, sender, client, buf) -> {
+			consumer.accept(new PacketContext() {
+				@Override
+				public EnvType getPacketEnvironment() {
+					return EnvType.CLIENT;
+				}
+
+				@Override
+				public PlayerEntity getPlayer() {
+					return client.player;
+				}
+
+				@Override
+				public ThreadExecutor<?> getTaskQueue() {
+					return client;
+				}
+			}, buf);
 		});
 	}
 
 	@Override
 	public void unregister(Identifier id) {
-		throw new UnsupportedOperationException("Reimplement me!");
-	}
-
-	private static void receivePacket(PacketConsumer packetConsumer, ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, PacketByteBuf buf) {
-		packetConsumer.accept(new PacketContext() {
-			@Override
-			public EnvType getPacketEnvironment() {
-				return EnvType.CLIENT;
-			}
-
-			@Override
-			public PlayerEntity getPlayer() {
-				return client.player;
-			}
-
-			@Override
-			public ThreadExecutor<?> getTaskQueue() {
-				return client;
-			}
-		}, buf);
+		ServerPlayNetworking.unregisterGlobalReceiver(id);
 	}
 }

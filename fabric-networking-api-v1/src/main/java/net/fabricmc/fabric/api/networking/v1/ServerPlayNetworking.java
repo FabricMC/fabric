@@ -44,7 +44,13 @@ import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtens
  */
 public final class ServerPlayNetworking {
 	public static boolean registerGlobalReceiver(Identifier channel, PlayChannelHandler channelHandler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		// FIXME: Temp stuff
+		ServerPlayConnectionEvents.PLAY_INIT.register((networkHandler, sender, server) -> {
+			ServerPlayNetworking.register(networkHandler, channel, channelHandler);
+		});
+
+		// TODO: Temp
+		return true;
 	}
 
 	@Nullable
@@ -80,7 +86,7 @@ public final class ServerPlayNetworking {
 	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channel) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channel);
+		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channel);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
@@ -96,7 +102,7 @@ public final class ServerPlayNetworking {
 	}
 
 	public static Collection<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ServerNetworkingImpl.getAddon(handler).getChannels();
 	}
 
 	public static boolean canReceive(ServerPlayerEntity player, Identifier channel) {
@@ -106,7 +112,7 @@ public final class ServerPlayNetworking {
 	}
 
 	public static boolean canReceive(ServerPlayNetworkHandler handler, Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ServerNetworkingImpl.getAddon(handler).hasChannel(channel);
 	}
 
 	public static Packet<?> createS2CPacket(Identifier channel, PacketByteBuf buf) {
@@ -127,7 +133,7 @@ public final class ServerPlayNetworking {
 		player.networkHandler.sendPacket(createS2CPacket(channel, buf));
 	}
 
-	// Utils methods
+	// Util methods
 
 	/**
 	 * Returns the <i>Minecraft</i> Server of a server play network handler.
