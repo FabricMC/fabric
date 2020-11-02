@@ -32,6 +32,11 @@ import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 @Mixin({BambooBlock.class, BambooSaplingBlock.class})
 public abstract class BambooBlockMixin {
+	/**
+	 * When the player is holding a {@link net.minecraft.item.SwordItem SwordItem}, Bamboo returns {@code 1.0F} and is instantly mined.
+	 *
+	 * <p>This injection provides that same functionality when mining with items that are in the {@link net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags#SWORDS fabric:swords} tag.
+	 */
 	@Inject(at = @At("HEAD"), method = "calcBlockBreakingDelta", cancellable = true)
 	private void onCalcBlockBreakingDelta(BlockState state, PlayerEntity player, BlockView world, BlockPos pos, CallbackInfoReturnable<Float> info) {
 		if (FabricToolTags.SWORDS.contains(player.getMainHandStack().getItem())) {
