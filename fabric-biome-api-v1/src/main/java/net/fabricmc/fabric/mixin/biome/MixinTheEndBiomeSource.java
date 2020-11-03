@@ -47,7 +47,7 @@ public class MixinTheEndBiomeSource {
 	private LayerRandomnessSource randomnessSource = new SimpleLayerRandomnessSource(seed);
 
 	@Inject(method = "getBiomeForNoiseGen", at = @At("RETURN"), cancellable = true)
-	private void fabric_getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
+	private void getWeightedEndBiome(int biomeX, int biomeY, int biomeZ, CallbackInfoReturnable<Biome> cir) {
 		Biome vanillaBiome = cir.getReturnValue();
 
 		// Since all vanilla biomes are added to the registry, this will never fail.
