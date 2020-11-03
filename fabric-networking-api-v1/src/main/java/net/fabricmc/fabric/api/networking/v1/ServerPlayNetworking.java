@@ -44,13 +44,7 @@ import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtens
  */
 public final class ServerPlayNetworking {
 	public static boolean registerGlobalReceiver(Identifier channel, PlayChannelHandler channelHandler) {
-		// FIXME: Temp stuff
-		ServerPlayConnectionEvents.PLAY_INIT.register((networkHandler, sender, server) -> {
-			ServerPlayNetworking.register(networkHandler, channel, channelHandler);
-		});
-
-		// TODO: Temp
-		return true;
+		return ServerNetworkingImpl.PLAY.register(channel, channelHandler);
 	}
 
 	@Nullable

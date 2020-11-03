@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.networking.server;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAcces
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
+	private boolean ready = false;
 
 	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, MinecraftServer server) {
 		super(ServerNetworkingImpl.PLAY, handler.getConnection());
@@ -48,12 +50,14 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	public void onClientReady() {
+		// Register global receivers
 		for (Map.Entry<Identifier, ServerPlayNetworking.PlayChannelHandler> entry : ServerNetworkingImpl.PLAY.getHandlers().entrySet()) {
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
 
 		ServerPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.server);
 		this.sendChannelRegistrationPacket();
+		this.ready = true;
 	}
 
 	/**
@@ -96,12 +100,28 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void handleRegistration(Identifier channel) {
-		// TODO
+		if (this.ready) {
+			// Register a channel to internal list must be scheduled.
+			this.schedule(() -> this.register(Collections.singletonList(channel)));
+			final PacketByteBuf buf = this.createRegisterPacket(Collections.singleton(channel));
+
+			if (buf != null) {
+				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+			}
+		}
 	}
 
 	@Override
 	protected void handleUnregistration(Identifier channel) {
-		// TODO
+		if (this.ready) {
+			// Unregistering a channel from internal list must be scheduled.
+			this.schedule(() -> this.unregister(Collections.singletonList(channel)));
+			final PacketByteBuf buf = this.createRegisterPacket(Collections.singleton(channel));
+
+			if (buf != null) {
+				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+			}
+		}
 	}
 
 	@Override

@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.networking;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +30,10 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkAddon;
 
 public final class NetworkingImpl {
 	public static final String MOD_ID = "fabric-networking-api-v1";
@@ -79,6 +83,14 @@ public final class NetworkingImpl {
 
 			((ChannelInfoHolder) handler.getConnection()).getChannels().addAll(ids);
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the client");
+		});
+
+		ServerPlayConnectionEvents.PLAY_INIT.register((handler, sender, server) -> {
+			final ServerPlayNetworkAddon addon = ServerNetworkingImpl.getAddon(handler);
+
+			for (Map.Entry<Identifier, ServerPlayNetworking.PlayChannelHandler> entry : ServerNetworkingImpl.PLAY.getHandlers().entrySet()) {
+				addon.registerChannel(entry.getKey(), entry.getValue());
+			}
 		});
 	}
 
