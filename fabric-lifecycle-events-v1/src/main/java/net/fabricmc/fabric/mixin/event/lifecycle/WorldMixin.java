@@ -16,27 +16,16 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 @Mixin(World.class)
@@ -47,7 +36,7 @@ public abstract class WorldMixin {
 	@Shadow
 	public abstract Profiler getProfiler();
 
-	@Inject(method = "addBlockEntity", at = @At("TAIL"))
+	/*@Inject(method = "addBlockEntity", at = @At("TAIL"))
 	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
 		if (!this.isClient()) { // Only fire this event if we are a server world
 			ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) (Object) this);
@@ -79,7 +68,7 @@ public abstract class WorldMixin {
 
 		// Mimic vanilla logic
 		return blockEntityList.removeAll(removals);
-	}
+	}*/
 
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {

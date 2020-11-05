@@ -37,7 +37,7 @@ public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		final Logger logger = ServerLifecycleTests.LOGGER;
+		/*final Logger logger = ServerLifecycleTests.LOGGER;
 
 		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.clientBlockEntities.add(blockEntity);
@@ -80,6 +80,6 @@ public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 					logger.error("[CLIENT] Mismatch in tracked blockentities, expected 0");
 				}
 			}
-		});
+		});*/
 	}
 }

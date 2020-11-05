@@ -19,16 +19,9 @@ package net.fabricmc.fabric.test.event.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class ServerBlockEntityLifecycleTests implements ModInitializer {
 	private static boolean PRINT_SERVER_BLOCKENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerBlockEntityMessages") != null;
@@ -36,7 +29,7 @@ public class ServerBlockEntityLifecycleTests implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		final Logger logger = ServerLifecycleTests.LOGGER;
+		/*final Logger logger = ServerLifecycleTests.LOGGER;
 
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.serverBlockEntities.add(blockEntity);
@@ -89,6 +82,6 @@ public class ServerBlockEntityLifecycleTests implements ModInitializer {
 			if (this.serverBlockEntities.size() != 0) {
 				logger.error("[SERVER] Mismatch in tracked blockentities, expected 0");
 			}
-		});
+		});*/
 	}
 }
