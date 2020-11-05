@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-networking-blockentity-v0"
-version = getSubprojectVersion(project, "0.2.5")
+version = getSubprojectVersion(project, "0.2.6")
 
 dependencies {
 	compile project(path: ':fabric-api-base', configuration: 'dev')
