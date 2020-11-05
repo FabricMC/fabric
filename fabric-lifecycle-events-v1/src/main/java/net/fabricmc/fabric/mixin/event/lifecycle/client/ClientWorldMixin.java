@@ -16,33 +16,22 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.profiler.Profiler;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.mixin.event.lifecycle.WorldMixin;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin extends WorldMixin {
-	// Call our load event after vanilla has loaded the entity
+	/*// Call our load event after vanilla has loaded the entity
 	@Inject(method = "addEntityPrivate", at = @At("TAIL"))
 	private void onEntityLoad(int id, Entity entity, CallbackInfo ci) {
 		ClientEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, (ClientWorld) (Object) this);
@@ -52,10 +41,10 @@ public abstract class ClientWorldMixin extends WorldMixin {
 	@Inject(method = "finishRemovingEntity", at = @At("HEAD"))
 	private void onEntityUnload(Entity entity, CallbackInfo ci) {
 		ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, (ClientWorld) (Object) this);
-	}
+	}*/
 
 	// We override our injection on the clientworld so only the client's block entity invocations will run
-	@Override
+	/*@Override
 	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
 		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientWorld) (Object) this);
 	}
@@ -78,7 +67,7 @@ public abstract class ClientWorldMixin extends WorldMixin {
 		}
 
 		return super.onPurgeRemovedBlockEntities(blockEntityList, removals); // Call super
-	}
+	}*/
 
 	// We override our injection on the clientworld so only the client world's tick invocations will run
 	@Override

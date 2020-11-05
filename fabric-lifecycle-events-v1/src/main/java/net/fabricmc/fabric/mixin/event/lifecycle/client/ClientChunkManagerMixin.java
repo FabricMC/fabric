@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -44,8 +45,8 @@ public abstract class ClientChunkManagerMixin {
 	private ClientWorld world;
 
 	@Inject(method = "loadChunkFromPacket", at = @At("TAIL")) // 1.16 has a boolean param here. I think it means whether the packet is complete.
-	private void onChunkLoad(int chunkX, int chunkZ, BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, int k, boolean complete, CallbackInfoReturnable<WorldChunk> cir) {
-		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, cir.getReturnValue());
+	private void onChunkLoad(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, int verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info) {
+		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, info.getReturnValue());
 	}
 
 	@Inject(method = "unload", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientChunkManager$ClientChunkMap;compareAndSet(ILnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/chunk/WorldChunk;)Lnet/minecraft/world/chunk/WorldChunk;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)

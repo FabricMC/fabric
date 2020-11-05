@@ -19,12 +19,15 @@ package net.fabricmc.fabric.impl.resource.loader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.metadata.PackResourceMetadata;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
@@ -35,10 +38,22 @@ import net.fabricmc.fabric.api.resource.ModResourcePack;
 public class ModResourcePackCreator implements ResourcePackProvider {
 	public static final ResourcePackSource RESOURCE_PACK_SOURCE = text -> new TranslatableText("pack.nameAndSource", text, new TranslatableText("pack.source.fabricmod"));
 	public static final ModResourcePackCreator CLIENT_RESOURCE_PACK_PROVIDER = new ModResourcePackCreator(ResourceType.CLIENT_RESOURCES);
+	private final ResourcePackProfile.Factory factory;
 	private final ResourceType type;
 
 	public ModResourcePackCreator(ResourceType type) {
 		this.type = type;
+		this.factory = (name, text, bl, supplier, metadata, initialPosition, source) ->
+				new ResourcePackProfile(name, text, bl, supplier, metadata, type, initialPosition, source);
+	}
+
+	/**
+	 * Registers the resource packs.
+	 *
+	 * @param consumer The resource pack profile consumer.
+	 */
+	public void register(Consumer<ResourcePackProfile> consumer) {
+		this.register(consumer, this.factory);
 	}
 
 	@Override

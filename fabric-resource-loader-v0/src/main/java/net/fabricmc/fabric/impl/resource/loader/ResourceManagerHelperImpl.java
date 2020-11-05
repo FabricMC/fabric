@@ -76,7 +76,8 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 
 		String name = id.getNamespace() + "/" + id.getPath();
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, name, enabledByDefault)));
+		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.CLIENT_RESOURCES, null, name, enabledByDefault)));
+		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, ResourceType.SERVER_DATA, null, name, enabledByDefault)));
 
 		return true;
 	}

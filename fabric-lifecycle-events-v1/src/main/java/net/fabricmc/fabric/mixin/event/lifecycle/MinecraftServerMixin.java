@@ -79,12 +79,12 @@ public abstract class MinecraftServerMixin {
 	/**
 	 * When a world is closed, it means the world will be unloaded.
 	 */
-	@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;close()V"), method = "shutdown", locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	/*@Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;close()V"), method = "shutdown", locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void closeWorld(CallbackInfo ci, Iterator<ServerWorld> worlds, ServerWorld serverWorld) {
 		for (BlockEntity blockEntity : serverWorld.blockEntities) {
 			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, serverWorld);
 		}
-	}
+	}*/
 
 	// The locals you have to manage for an inject are insane. And do it twice. A redirect is much cleaner.
 	// Here is what it looks like with an inject: https://gist.github.com/i509VCB/f80077cc536eb4dba62b794eba5611c1
