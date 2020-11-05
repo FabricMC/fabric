@@ -47,16 +47,18 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private static final Pattern RESOURCE_PACK_PATH = Pattern.compile("[a-z0-9-_]+");
 	private final ModMetadata modInfo;
 	private final Path basePath;
+	private final ResourceType type;
 	private final boolean cacheable;
 	private final AutoCloseable closer;
 	private final String separator;
 	private final String name;
 	private final boolean defaultEnabled;
 
-	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer, String name, boolean defaultEnabled) {
+	public ModNioResourcePack(ModMetadata modInfo, Path path, ResourceType type, AutoCloseable closer, String name, boolean defaultEnabled) {
 		super(null);
 		this.modInfo = modInfo;
 		this.basePath = path.toAbsolutePath().normalize();
+		this.type = type;
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
@@ -101,7 +103,7 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 			}
 		}
 
-		stream = ModResourcePackUtil.openDefault(modInfo, filename);
+		stream = ModResourcePackUtil.openDefault(this.modInfo, this.type, filename);
 
 		if (stream != null) {
 			return stream;

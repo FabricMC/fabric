@@ -42,7 +42,7 @@ public class MixinGameOptions {
 		// Add built-in resource packs if they are enabled by default only if the options file is blank.
 		if (this.resourcePacks.isEmpty()) {
 			List<ResourcePackProfile> profiles = new ArrayList<>();
-			ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(profiles::add, ResourcePackProfile::new);
+			ModResourcePackCreator.CLIENT_RESOURCE_PACK_PROVIDER.register(profiles::add);
 			this.resourcePacks = new ArrayList<>();
 
 			for (ResourcePackProfile profile : profiles) {

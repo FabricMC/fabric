@@ -53,7 +53,7 @@ public class MixinCreateWorldScreen {
 	private static DataPackSettings onNew(DataPackSettings settings) {
 		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
 		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();
-		modResourcePackCreator.register(moddedResourcePacks::add, ResourcePackProfile::new);
+		modResourcePackCreator.register(moddedResourcePacks::add);
 
 		List<String> enabled = new ArrayList<>(settings.getEnabled());
 		List<String> disabled = new ArrayList<>(settings.getDisabled());

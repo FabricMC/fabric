@@ -35,8 +35,6 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
  * Internal utilities for managing resource packs.
  */
 public final class ModResourcePackUtil {
-	public static final int PACK_FORMAT_VERSION = SharedConstants.getGameVersion().getPackVersion();
-
 	private ModResourcePackUtil() { }
 
 	public static void appendModResourcePacks(List<ResourcePack> packList, ResourceType type) {
@@ -46,7 +44,7 @@ public final class ModResourcePackUtil {
 			}
 
 			Path path = container.getRootPath();
-			ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, null, null, true);
+			ResourcePack pack = new ModNioResourcePack(container.getMetadata(), path, type, null, null, true);
 
 			if (!pack.getNamespaces(type).isEmpty()) {
 				packList.add(pack);
@@ -58,7 +56,7 @@ public final class ModResourcePackUtil {
 		return "pack.mcmeta".equals(filename);
 	}
 
-	public static InputStream openDefault(ModMetadata info, String filename) {
+	public static InputStream openDefault(ModMetadata info, ResourceType type, String filename) {
 		switch (filename) {
 		case "pack.mcmeta":
 			String description = info.getName();
@@ -69,7 +67,7 @@ public final class ModResourcePackUtil {
 				description = description.replaceAll("\"", "\\\"");
 			}
 
-			String pack = String.format("{\"pack\":{\"pack_format\":" + PACK_FORMAT_VERSION + ",\"description\":\"%s\"}}", description);
+			String pack = String.format("{\"pack\":{\"pack_format\":" + type.method_31438(SharedConstants.getGameVersion()) + ",\"description\":\"%s\"}}", description);
 			return IOUtils.toInputStream(pack, Charsets.UTF_8);
 		default:
 			return null;
