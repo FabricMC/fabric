@@ -25,20 +25,20 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.class_5614;
+import net.minecraft.class_5616;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
-import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
 import net.fabricmc.fabric.impl.client.renderer.registry.BlockEntityRendererRegistryImpl;
 
-@Mixin(BlockEntityRenderDispatcher.class)
-public abstract class MixinBlockEntityRenderDispatcher {
-	@Shadow
+@Mixin(class_5616.class)
+public abstract class MixinBlockEntityRenderers {
+	@Shadow()
 	@Final
-	private Map<BlockEntityType<?>, BlockEntityRenderer<?>> renderers;
+	private static Map<BlockEntityType<?>, class_5614<?>> field_27752;
 
-	@Inject(at = @At("RETURN"), method = "<init>")
-	private void init(CallbackInfo ci) {
-		BlockEntityRendererRegistryImpl.setup(((t, function) -> renderers.put(t, function.apply((BlockEntityRenderDispatcher) (Object) this))));
+	@Inject(at = @At("RETURN"), method = "<clinit>*")
+	private static void init(CallbackInfo ci) {
+		BlockEntityRendererRegistryImpl.setup(((t, factory) -> field_27752.put(t, factory)));
 	}
 }

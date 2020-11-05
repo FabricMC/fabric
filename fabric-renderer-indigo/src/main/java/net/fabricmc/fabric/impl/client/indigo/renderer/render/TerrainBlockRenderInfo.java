@@ -43,7 +43,7 @@ public class TerrainBlockRenderInfo extends BlockRenderInfo {
 		if ((cullCompletionFlags & mask) == 0) {
 			cullCompletionFlags |= mask;
 
-			if (Block.shouldDrawSide(blockState, blockView, blockPos, face)) {
+			if (Block.shouldDrawSide(blockState, blockView, blockPos, face, blockPos.offset(face))) {
 				cullResultFlags |= mask;
 				return true;
 			} else {

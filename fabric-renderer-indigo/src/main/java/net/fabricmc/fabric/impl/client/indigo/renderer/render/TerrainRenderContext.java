@@ -106,7 +106,7 @@ public class TerrainRenderContext extends AbstractRenderContext implements Rende
 		} catch (Throwable var9) {
 			CrashReport crashReport_1 = CrashReport.create(var9, "Tesselating block in world - Indigo Renderer");
 			CrashReportSection crashReportElement_1 = crashReport_1.addElement("Block being tesselated");
-			CrashReportSection.addBlockInfo(crashReportElement_1, blockPos, blockState);
+			CrashReportSection.addBlockInfo(crashReportElement_1, chunkInfo.blockView, blockPos, blockState);
 			throw new CrashException(crashReport_1);
 		}
 

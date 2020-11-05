@@ -19,22 +19,24 @@ package net.fabricmc.fabric.impl.client.renderer.registry;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.class_5614;
+import net.minecraft.class_5617;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 
-public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
-	private static HashMap<BlockEntityType<?>, class_5614<?>> map = new HashMap<>();
-	private static BiConsumer<BlockEntityType<?>, class_5614<?>> handler = (type, function) -> map.put(type, function);
+/**
+ * Helper class for registering EntityRenderers.
+ */
+public final class EntityRendererRegistryImpl implements EntityRendererRegistry {
+	private static HashMap<EntityType<?>, class_5617<?>> map = new HashMap<>();
+	private static BiConsumer<EntityType<?>, class_5617<?>> handler = (type, function) -> map.put(type, function);
 
-	@Override
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, class_5614<E> blockEntityRendererFactory) {
-		handler.accept(blockEntityType, blockEntityRendererFactory);
+	public <T extends Entity> void register(EntityType<? extends T> entityType, class_5617<T> factory) {
+		handler.accept(entityType, factory);
 	}
 
-	public static void setup(BiConsumer<BlockEntityType<?>, class_5614<?>> vanillaHandler) {
+	public static void setup(BiConsumer<EntityType<?>, class_5617<?>> vanillaHandler) {
 		map.forEach(vanillaHandler);
 		handler = vanillaHandler;
 	}

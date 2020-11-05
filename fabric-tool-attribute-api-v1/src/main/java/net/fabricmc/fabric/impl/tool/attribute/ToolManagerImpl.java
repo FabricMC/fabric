@@ -175,7 +175,7 @@ public final class ToolManagerImpl {
 	 */
 	public static boolean handleIsEffectiveOnIgnoresVanilla(BlockState state, ItemStack stack, @Nullable LivingEntity user, boolean vanillaResult) {
 		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
-			if (stack.getItem().isIn(eventEntry.getKey())) {
+			if (stack.method_31573(eventEntry.getKey())) {
 				ActionResult effective = eventEntry.getValue().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
 				if (effective.isAccepted()) return true;
 				effective = general().invoker().isEffectiveOn(eventEntry.getKey(), state, stack, user);
@@ -194,7 +194,7 @@ public final class ToolManagerImpl {
 		boolean handled = false;
 
 		for (Map.Entry<Tag<Item>, Event<ToolHandler>> eventEntry : HANDLER_MAP.entrySet()) {
-			if (stack.getItem().isIn(eventEntry.getKey())) {
+			if (stack.method_31573(eventEntry.getKey())) {
 				TypedActionResult<Float> speedMultiplier = Objects.requireNonNull(eventEntry.getValue().invoker().getMiningSpeedMultiplier(eventEntry.getKey(), state, stack, user));
 
 				if (speedMultiplier.getResult().isAccepted()) {

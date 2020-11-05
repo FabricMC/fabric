@@ -36,6 +36,7 @@ import net.fabricmc.fabric.test.screenhandler.item.PositionedBagItem;
 import net.fabricmc.fabric.test.screenhandler.screen.BagScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.BoxScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.PositionedBagScreenHandler;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class ScreenHandlerTest implements ModInitializer {
 	public static final String ID = "fabric-screen-handler-api-v1-testmod";
@@ -44,7 +45,7 @@ public class ScreenHandlerTest implements ModInitializer {
 	public static final Item POSITIONED_BAG = new PositionedBagItem(new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
 	public static final Block BOX = new BoxBlock(AbstractBlock.Settings.copy(Blocks.OAK_WOOD));
 	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Settings().group(ItemGroup.DECORATIONS));
-	public static final BlockEntityType<BoxBlockEntity> BOX_ENTITY = BlockEntityType.Builder.create(BoxBlockEntity::new, BOX).build(null);
+	public static final BlockEntityType<BoxBlockEntity> BOX_ENTITY = FabricBlockEntityTypeBuilder.create(BoxBlockEntity::new, BOX).build();
 	public static final ScreenHandlerType<BagScreenHandler> BAG_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(id("bag"), BagScreenHandler::new);
 	public static final ScreenHandlerType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(id("positioned_bag"), PositionedBagScreenHandler::new);
 	public static final ScreenHandlerType<BoxScreenHandler> BOX_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(id("box"), BoxScreenHandler::new);

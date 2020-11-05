@@ -73,8 +73,8 @@ public final class ClientNetworking implements ClientModInitializer {
 			PlayerEntity player = client.player;
 
 			Screen screen = screenFactory.create(
-					((ExtendedScreenHandlerType<?>) type).create(syncId, player.inventory, buf),
-					player.inventory,
+					((ExtendedScreenHandlerType<?>) type).create(syncId, player.method_31548(), buf),
+					player.method_31548(),
 					title
 			);
 

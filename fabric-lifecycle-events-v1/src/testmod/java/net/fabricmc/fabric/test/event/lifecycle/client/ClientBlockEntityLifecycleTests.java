@@ -19,16 +19,9 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 	private static boolean PRINT_CLIENT_BLOCKENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printClientBlockEntityMessages") != null;

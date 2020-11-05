@@ -16,10 +16,9 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import java.util.function.Function;
-
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.class_5614;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
@@ -35,10 +34,10 @@ public interface BlockEntityRendererRegistry {
 	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
 	 *
 	 * @param blockEntityType the {@link BlockEntityType} to register a renderer for
-	 * @param blockEntityRenderer a function that returns a {@link BlockEntityRenderer}, called
+	 * @param blockEntityRendererFactory a {@link class_5614} that creates a {@link BlockEntityRenderer}, called
 	 *                            when {@link BlockEntityRenderDispatcher} is initialized or immediately if the dispatcher
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
-	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, Function<BlockEntityRenderDispatcher, BlockEntityRenderer<E>> blockEntityRenderer);
+	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, class_5614<E> blockEntityRendererFactory);
 }

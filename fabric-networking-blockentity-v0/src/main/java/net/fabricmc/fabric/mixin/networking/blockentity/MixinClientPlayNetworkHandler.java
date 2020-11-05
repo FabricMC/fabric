@@ -32,7 +32,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Identifier;
-import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
