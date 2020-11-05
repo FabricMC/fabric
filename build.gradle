@@ -319,7 +319,7 @@ task github(dependsOn: remapMavenJar) {
 		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
-		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER")
+		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
 		releaseBuilder.body("A changelog can be found at https://github.com/FabricMC/fabric/commits")
 		releaseBuilder.commitish(getBranch())
 
