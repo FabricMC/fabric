@@ -24,7 +24,7 @@ class Globals {
 	static def loaderVersion = "0.10.5+build.213"
 }
 
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
@@ -44,8 +44,9 @@ def getSubprojectVersion(project, version) {
 }
 
 def getBranch() {
-	if (System.getenv().GIT_BRANCH) {
-		def branch = System.getenv().GIT_BRANCH
+	def ENV = System.getenv()
+	if (ENV.GITHUB_REF) {
+		def branch = ENV.GITHUB_REF
 		return branch.substring(branch.lastIndexOf("/") + 1)
 	}
 
@@ -246,12 +247,13 @@ publishing {
 
 void setupRepositories(RepositoryHandler repositories) {
 	//repositories.mavenLocal() // uncomment for testing
-	if (project.hasProperty("mavenPass")) {
+	def ENV = System.getenv()
+	if (ENV.MAVEN_URL) {
 		repositories.maven {
-			url "http://mavenupload.modmuss50.me/"
+			url ENV.MAVEN_URL
 			credentials {
-				username "buildslave"
-				password project.getProperty("mavenPass")
+				username ENV.MAVEN_USERNAME
+				password ENV.MAVEN_PASSWORD
 			}
 		}
 	}
@@ -277,8 +279,8 @@ dependencies {
 }
 
 curseforge {
-	if (project.hasProperty("curse_api_key")) {
-		apiKey = project.getProperty("curse_api_key")
+	if (ENV.CURSEFORGE_API_KEY) {
+		apiKey = ENV.CURSEFORGE_API_KEY
 	}
 
 	project {
@@ -309,12 +311,12 @@ import org.kohsuke.github.GitHub
 
 task github(dependsOn: remapMavenJar) {
 	onlyIf {
-		project.hasProperty("github_api_key")
+		ENV.GITHUB_TOKEN
 	}
 
 	doLast {
-		def github = GitHub.connectUsingOAuth(project.getProperty("github_api_key") as String)
-		def repository = github.getRepository("FabricMC/fabric")
+		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
+		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
 		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER")
@@ -325,3 +327,19 @@ task github(dependsOn: remapMavenJar) {
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
 	}
 }
+
+// A task to ensure that the version being released has not already been released.
+task checkVersion {
+	doFirst {
+		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text
+		def metadata = new XmlSlurper().parseText(xml)
+		def versions = metadata.versioning.versions.version*.text();
+		if (versions.contains(version)) {
+			throw new RuntimeException("${version} has already been released!")
+		}
+	}
+}
+
+github.mustRunAfter checkVersion
+publish.mustRunAfter checkVersion
+project.tasks.curseforge.mustRunAfter checkVersion
