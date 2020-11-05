@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "MinecraftServerMixin",
+    "ServerWorldEntityLoaderMixin",
     "ServerWorldMixin",
     "ThreadedAnvilChunkStorageMixin",
     "WorldMixin"
