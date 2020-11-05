@@ -43,6 +43,7 @@ public abstract class RuleListWidgetMixin extends net.minecraft.client.gui.widge
 		super(client, width, height, top, bottom, itemHeight);
 	}
 
+	// EditGameRulesScreen is effectively a synthetic parameter
 	@Inject(method = "<init>(Lnet/minecraft/client/gui/screen/world/EditGameRulesScreen;Lnet/minecraft/world/GameRules;)V", at = @At("TAIL"))
 	private void initializeFabricGameruleCategories(EditGameRulesScreen screen, GameRules gameRules, CallbackInfo ci) {
 		this.fabricCategories.forEach((category, widgetList) -> {
@@ -54,6 +55,7 @@ public abstract class RuleListWidgetMixin extends net.minecraft.client.gui.widge
 		});
 	}
 
+	// Synthetic method
 	@Inject(method = "method_27638(Ljava/util/Map$Entry;)V", at = @At("HEAD"), cancellable = true)
 	private void ignoreKeysWithCustomCategories(Map.Entry<GameRules.Key<?>, EditGameRulesScreen.AbstractRuleWidget> entry, CallbackInfo ci) {
 		final GameRules.Key<?> ruleKey = entry.getKey();
