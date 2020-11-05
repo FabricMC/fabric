@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
+import net.minecraft.class_5617;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.Deadmau5FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
@@ -48,9 +49,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @FunctionalInterface
 @Environment(EnvType.CLIENT)
 public interface LivingEntityFeatureRendererRegistrationCallback {
-	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper) -> {
+	Event<LivingEntityFeatureRendererRegistrationCallback> EVENT = EventFactory.createArrayBacked(LivingEntityFeatureRendererRegistrationCallback.class, callbacks -> (entityType, entityRenderer, registrationHelper, context) -> {
 		for (LivingEntityFeatureRendererRegistrationCallback callback : callbacks) {
-			callback.registerRenderers(entityType, entityRenderer, registrationHelper);
+			callback.registerRenderers(entityType, entityRenderer, registrationHelper, context);
 		}
 	});
 
@@ -60,7 +61,7 @@ public interface LivingEntityFeatureRendererRegistrationCallback {
 	 * @param entityType     the entity type of the renderer
 	 * @param entityRenderer the entity renderer
 	 */
-	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegistrationHelper registrationHelper);
+	void registerRenderers(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, RegistrationHelper registrationHelper, class_5617.class_5618 context);
 
 	/**
 	 * A delegate object used to help register feature renderers for an entity renderer.

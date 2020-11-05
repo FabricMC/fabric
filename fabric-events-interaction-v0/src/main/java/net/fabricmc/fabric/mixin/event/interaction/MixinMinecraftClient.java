@@ -66,9 +66,9 @@ public abstract class MixinMinecraftClient {
 			info.cancel();
 
 			// I don't like that we clone vanilla logic here, but it's our best bet for now.
-			PlayerInventory playerInventory = client.player.inventory;
+			PlayerInventory playerInventory = client.player.method_31548();
 
-			if (client.player.abilities.creativeMode && Screen.hasControlDown() && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
+			if (client.player.method_31549().creativeMode && Screen.hasControlDown() && client.crosshairTarget.getType() == HitResult.Type.BLOCK) {
 				BlockEntity be = client.world.getBlockEntity(((BlockHitResult) client.crosshairTarget).getBlockPos());
 
 				if (be != null) {
@@ -82,7 +82,7 @@ public abstract class MixinMinecraftClient {
 				return;
 			}
 
-			if (client.player.abilities.creativeMode) {
+			if (client.player.method_31549().creativeMode) {
 				playerInventory.addPickBlock(stack);
 				client.interactionManager.clickCreativeStack(client.player.getStackInHand(Hand.MAIN_HAND), 36 + playerInventory.selectedSlot);
 			} else {

@@ -16,82 +16,26 @@
 
 package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.texture.TextureManager;
+import net.minecraft.class_5617;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.resource.ReloadableResourceManager;
+
+import net.fabricmc.fabric.impl.client.renderer.registry.EntityRendererRegistryImpl;
 
 /**
  * Helper class for registering EntityRenderers.
  */
-public class EntityRendererRegistry {
-	@FunctionalInterface
-	public interface Factory {
-		EntityRenderer<? extends Entity> create(EntityRenderDispatcher manager, EntityRendererRegistry.Context context);
-	}
+public interface EntityRendererRegistry {
+	EntityRendererRegistry INSTANCE = new EntityRendererRegistryImpl();
 
-	public static final class Context {
-		private final TextureManager textureManager;
-		private final ReloadableResourceManager resourceManager;
-		private final ItemRenderer itemRenderer;
-		private final Map<EntityType<?>, EntityRenderer<?>> rendererMap;
-
-		private Context(TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<EntityType<?>, EntityRenderer<?>> rendererMap) {
-			this.textureManager = textureManager;
-			this.resourceManager = resourceManager;
-			this.itemRenderer = itemRenderer;
-			this.rendererMap = rendererMap;
-		}
-
-		public TextureManager getTextureManager() {
-			return textureManager;
-		}
-
-		public ReloadableResourceManager getResourceManager() {
-			return resourceManager;
-		}
-
-		public ItemRenderer getItemRenderer() {
-			return itemRenderer;
-		}
-	}
-
-	public static final EntityRendererRegistry INSTANCE = new EntityRendererRegistry();
-	private final Map<EntityRenderDispatcher, Context> renderManagerMap = new WeakHashMap<>();
-	private final Map<EntityType<?>, EntityRendererRegistry.Factory> renderSupplierMap = new HashMap<>();
-
-	private EntityRendererRegistry() { }
-
-	public void initialize(EntityRenderDispatcher manager, TextureManager textureManager, ReloadableResourceManager resourceManager, ItemRenderer itemRenderer, Map<EntityType<?>, EntityRenderer<?>> renderers) {
-		synchronized (renderSupplierMap) {
-			if (renderManagerMap.containsKey(manager)) {
-				return;
-			}
-
-			Context context = new Context(textureManager, resourceManager, itemRenderer, renderers);
-			renderManagerMap.put(manager, context);
-
-			for (EntityType<?> c : renderSupplierMap.keySet()) {
-				renderers.put(c, renderSupplierMap.get(c).create(manager, context));
-			}
-		}
-	}
-
-	public void register(EntityType<?> entityType, EntityRendererRegistry.Factory factory) {
-		synchronized (renderSupplierMap) {
-			// TODO: warn on duplicate
-			renderSupplierMap.put(entityType, factory);
-
-			for (EntityRenderDispatcher manager : renderManagerMap.keySet()) {
-				renderManagerMap.get(manager).rendererMap.put(entityType, factory.create(manager, renderManagerMap.get(manager)));
-			}
-		}
-	}
+	/**
+	 * Register a BlockEntityRenderer for a BlockEntityType. Can be called clientside before the world is rendered.
+	 *
+	 * @param entityType the {@link EntityType} to register a renderer for
+	 * @param entityRendererFactory a {@link class_5617} that creates a {@link EntityRenderer}, called
+	 *                            when {@link EntityRenderDispatcher} is initialized or immediately if the dispatcher
+	 *                            class is already loaded
+	 * @param <E> the {@link Entity}
+	 */
+	<E extends Entity> void register(EntityType<? extends E> entityType, class_5617<E> entityRendererFactory);
 }

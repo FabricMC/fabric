@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.renderer.registry;
 
+import net.minecraft.class_5617;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.ArmorStandEntityRenderer;
@@ -44,7 +45,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		// These aren't tests in the normal sense. These exist to test that generics are sane.
-		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper) -> {
+		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			if (entityRenderer instanceof PlayerEntityRenderer) {
 				registrationHelper.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
 
@@ -57,7 +58,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 			}
 
 			// Obviously not recommended, just used for testing generics
-			registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer));
+			registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.method_32170()));
 
 			if (entityRenderer instanceof BipedEntityRenderer) {
 				// It works, method ref is encouraged
@@ -68,7 +69,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register(this::registerFeatures);
 	}
 
-	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper) {
+	private void registerFeatures(EntityType<? extends LivingEntity> entityType, LivingEntityRenderer<?, ?> entityRenderer, LivingEntityFeatureRendererRegistrationCallback.RegistrationHelper registrationHelper, class_5617.class_5618 context) {
 		if (entityRenderer instanceof PlayerEntityRenderer) {
 			registrationHelper.register(new TestPlayerFeature((PlayerEntityRenderer) entityRenderer));
 
@@ -81,7 +82,7 @@ public class FeatureRendererGenericTests implements ClientModInitializer {
 		}
 
 		// Obviously not recommended, just used for testing generics.
-		registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer));
+		registrationHelper.register(new ElytraFeatureRenderer<>(entityRenderer, context.method_32170()));
 
 		if (entityRenderer instanceof BipedEntityRenderer) {
 			// It works, method ref is encouraged

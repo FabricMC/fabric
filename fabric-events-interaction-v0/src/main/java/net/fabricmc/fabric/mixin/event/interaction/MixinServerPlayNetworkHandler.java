@@ -29,6 +29,7 @@ import net.minecraft.network.packet.c2s.play.PlayerInteractEntityC2SPacket;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.world.World;
+import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
@@ -40,7 +41,7 @@ public class MixinServerPlayNetworkHandler {
 	@Inject(method = "onPlayerInteractEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;interactAt(Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/Vec3d;Lnet/minecraft/util/Hand;)Lnet/minecraft/util/ActionResult;"), cancellable = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityC2SPacket packet, CallbackInfo info) {
 		World world = player.getEntityWorld();
-		Entity entity = packet.getEntity(world);
+		Entity entity = packet.getEntity((ServerWorld) world);
 
 		if (entity != null) {
 			EntityHitResult hitResult = new EntityHitResult(entity, packet.getHitPosition().add(entity.getX(), entity.getY(), entity.getZ()));

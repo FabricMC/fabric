@@ -19,15 +19,12 @@ package net.fabricmc.fabric.impl.resource.loader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
 import net.minecraft.resource.ResourceType;
-import net.minecraft.resource.metadata.PackResourceMetadata;
-import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
