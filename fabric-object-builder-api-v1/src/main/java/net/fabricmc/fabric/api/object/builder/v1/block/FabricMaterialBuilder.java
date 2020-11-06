@@ -16,20 +16,20 @@
 
 package net.fabricmc.fabric.api.object.builder.v1.block;
 
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.DyeColor;
 
 import net.fabricmc.fabric.mixin.object.builder.MaterialBuilderAccessor;
 
 public class FabricMaterialBuilder extends Material.Builder {
-	public FabricMaterialBuilder(MaterialColor color) {
+	public FabricMaterialBuilder(MapColor color) {
 		super(color);
 	}
 
 	public FabricMaterialBuilder(DyeColor color) {
-		this(color.getMaterialColor());
+		this(color.getMapColor());
 	}
 
 	@Override

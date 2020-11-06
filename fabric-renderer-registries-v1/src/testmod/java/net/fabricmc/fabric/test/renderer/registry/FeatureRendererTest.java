@@ -34,7 +34,6 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 public final class FeatureRendererTest implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(FeatureRendererTest.class);
@@ -42,7 +41,7 @@ public final class FeatureRendererTest implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		LOGGER.info("Registering test feature renderer");
+		LOGGER.info("Registering feature renderer tests");
 		LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
 			// minecraft:player SHOULD be printed twice
 			LOGGER.info(String.format("Received registration for %s", Registry.ENTITY_TYPE.getId(entityType)));
@@ -56,13 +55,17 @@ public final class FeatureRendererTest implements ClientModInitializer {
 			}
 		});
 
-		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+		// FIXME: Add AfterResourceReload event to client so this can be tested.
+		//  This is due to a change in 20w45a which now means this is called after the client is initialized.
+		/*ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
+			LOGGER.info("Client is starting");
+
 			if (this.playerRegistrations != 2) {
 				throw new AssertionError(String.format("Expected 2 entity feature renderer registration events for \"minecraft:player\" but received %s registrations", this.playerRegistrations));
 			}
 
 			LOGGER.info("Successfully called feature renderer registration events");
-		});
+		});*/
 	}
 
 	private static class TestPlayerFeatureRenderer extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {

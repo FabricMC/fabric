@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 
@@ -53,7 +53,7 @@ public interface AbstractBlockSettingsAccessor {
 	ToIntFunction<BlockState> getLuminance();
 
 	@Accessor
-	Function<BlockState, MaterialColor> getMaterialColorFactory();
+	Function<BlockState, MapColor> getMapColorProvider();
 
 	@Accessor
 	BlockSoundGroup getSoundGroup();
@@ -93,7 +93,7 @@ public interface AbstractBlockSettingsAccessor {
 	void setRandomTicks(boolean ticksRandomly);
 
 	@Accessor
-	void setMaterialColorFactory(Function<BlockState, MaterialColor> materialColorFunction);
+	void setMapColorProvider(Function<BlockState, MapColor> mapColorProvider);
 
 	@Accessor
 	void setDynamicBounds(boolean dynamicBounds);

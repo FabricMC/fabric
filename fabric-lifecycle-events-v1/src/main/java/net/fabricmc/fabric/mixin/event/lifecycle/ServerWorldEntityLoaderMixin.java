@@ -28,7 +28,7 @@ import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 
-@Mixin(targets = "net/minecraft/server/world/ServerWorld$class_5526")
+@Mixin(targets = "net/minecraft/server/world/ServerWorld$EntityLoader")
 abstract class ServerWorldEntityLoaderMixin {
 	// final synthetic Lnet/minecraft/server/world/ServerWorld; field_26936
 	@SuppressWarnings("ShadowTarget")
@@ -37,7 +37,7 @@ abstract class ServerWorldEntityLoaderMixin {
 	private ServerWorld field_26936;
 
 	// onLoadEntity
-	@Inject(method = "method_31798(Lnet/minecraft/entity/Entity;)V", at = @At("TAIL"))
+	@Inject(method = "onLoadEntity(Lnet/minecraft/entity/Entity;)V", at = @At("TAIL"))
 	private void invokeEntityLoadEvent(Entity entity, CallbackInfo ci) {
 		ServerEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, this.field_26936);
 	}

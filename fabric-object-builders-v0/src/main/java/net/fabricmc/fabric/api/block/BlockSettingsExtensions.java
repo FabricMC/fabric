@@ -17,7 +17,7 @@
 package net.fabricmc.fabric.api.block;
 
 import net.minecraft.block.AbstractBlock.Settings;
-import net.minecraft.block.MaterialColor;
+import net.minecraft.block.MapColor;
 import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
@@ -54,8 +54,8 @@ public final class BlockSettingsExtensions {
 		((AbstractBlockSettingsAccessor) settings).setCollidable(collidable);
 	}
 
-	public static void materialColor(Settings settings, MaterialColor materialColor) {
-		((AbstractBlockSettingsAccessor) settings).setMaterialColorFactory(ignored -> materialColor);
+	public static void materialColor(Settings settings, MapColor color) {
+		((AbstractBlockSettingsAccessor) settings).setMapColorProvider(ignored -> color);
 	}
 
 	public static void drops(Settings settings, Identifier dropTableId) {
