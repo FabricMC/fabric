@@ -272,11 +272,17 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	/* FABRIC DELEGATE WRAPPERS */
 
+	/**
+	 * @deprecated Please migrate to {@link FabricBlockSettings#mapColor(MapColor)}
+	 */
 	@Deprecated
 	public FabricBlockSettings materialColor(MapColor color) {
 		return this.mapColor(color);
 	}
 
+	/**
+	 * @deprecated Please migrate to {@link FabricBlockSettings#mapColor(DyeColor)}
+	 */
 	@Deprecated
 	public FabricBlockSettings materialColor(DyeColor color) {
 		return this.mapColor(color);
