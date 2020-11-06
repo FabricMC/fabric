@@ -44,7 +44,7 @@ public abstract class ClientChunkManagerMixin {
 	@Shadow
 	private ClientWorld world;
 
-	@Inject(method = "loadChunkFromPacket", at = @At("TAIL")) // 1.16 has a boolean param here. I think it means whether the packet is complete.
+	@Inject(method = "loadChunkFromPacket", at = @At("TAIL"))
 	private void onChunkLoad(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, int verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info) {
 		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, info.getReturnValue());
 	}

@@ -31,18 +31,6 @@ import net.fabricmc.fabric.mixin.event.lifecycle.WorldMixin;
 @Environment(EnvType.CLIENT)
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin extends WorldMixin {
-	/*// Call our load event after vanilla has loaded the entity
-	@Inject(method = "addEntityPrivate", at = @At("TAIL"))
-	private void onEntityLoad(int id, Entity entity, CallbackInfo ci) {
-		ClientEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, (ClientWorld) (Object) this);
-	}
-
-	// Call our unload event before vanilla does.
-	@Inject(method = "finishRemovingEntity", at = @At("HEAD"))
-	private void onEntityUnload(Entity entity, CallbackInfo ci) {
-		ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, (ClientWorld) (Object) this);
-	}*/
-
 	// We override our injection on the clientworld so only the client's block entity invocations will run
 	/*@Override
 	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
