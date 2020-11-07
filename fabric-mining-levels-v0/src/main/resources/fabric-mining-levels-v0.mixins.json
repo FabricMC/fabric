@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.mining.level",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BambooBlockMixin",
     "MiningToolItemAccessor",
     "MixinItemStack"
   ],
