@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.block;
 
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.util.DyeColor;
 
@@ -28,13 +28,13 @@ import net.minecraft.util.DyeColor;
 public class FabricMaterialBuilder extends Material.Builder {
 	private net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder delegate;
 
-	public FabricMaterialBuilder(MaterialColor color) {
+	public FabricMaterialBuilder(MapColor color) {
 		super(color);
 		this.delegate = new net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder(color);
 	}
 
 	public FabricMaterialBuilder(DyeColor color) {
-		this(color.getMaterialColor());
+		this(color.getMapColor());
 	}
 
 	@Override

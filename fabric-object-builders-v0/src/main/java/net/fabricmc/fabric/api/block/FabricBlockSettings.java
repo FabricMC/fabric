@@ -19,8 +19,8 @@ package net.fabricmc.fabric.api.block;
 import java.util.function.Function;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
@@ -34,7 +34,7 @@ import net.minecraft.util.Identifier;
 public class FabricBlockSettings {
 	protected final net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings delegate;
 
-	protected FabricBlockSettings(Material material, MaterialColor color) {
+	protected FabricBlockSettings(Material material, MapColor color) {
 		this(Block.Settings.of(material, color));
 	}
 
@@ -50,12 +50,12 @@ public class FabricBlockSettings {
 		return of(material, material.getColor());
 	}
 
-	public static FabricBlockSettings of(Material material, MaterialColor color) {
+	public static FabricBlockSettings of(Material material, MapColor color) {
 		return new FabricBlockSettings(material, color);
 	}
 
 	public static FabricBlockSettings of(Material material, DyeColor color) {
-		return new FabricBlockSettings(material, color.getMaterialColor());
+		return new FabricBlockSettings(material, color.getMapColor());
 	}
 
 	public static FabricBlockSettings copy(Block base) {
@@ -96,13 +96,13 @@ public class FabricBlockSettings {
 
 	/* DELEGATE WRAPPERS */
 
-	public FabricBlockSettings materialColor(MaterialColor color) {
+	public FabricBlockSettings materialColor(MapColor color) {
 		this.delegate.materialColor(color);
 		return this;
 	}
 
 	public FabricBlockSettings materialColor(DyeColor color) {
-		this.delegate.materialColor(color.getMaterialColor());
+		this.delegate.materialColor(color.getMapColor());
 		return this;
 	}
 

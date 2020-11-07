@@ -13,6 +13,7 @@
     "client.ClientChunkManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
     "client.ClientWorldMixin",
+    "client.ClientWorldEntityLoaderMixin",
     "client.MinecraftClientMixin"
   ],
   "injectors": {
