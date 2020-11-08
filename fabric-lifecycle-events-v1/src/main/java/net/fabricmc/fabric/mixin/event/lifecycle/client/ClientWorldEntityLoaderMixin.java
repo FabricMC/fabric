@@ -40,13 +40,13 @@ abstract class ClientWorldEntityLoaderMixin {
 	private ClientWorld field_27735;
 
 	// Call our load event after vanilla has loaded the entity
-	@Inject(method = "onLoadEntity", at = @At("TAIL"))
+	@Inject(method = "onLoadEntity(Lnet/minecraft/entity/Entity;)V", at = @At("TAIL"))
 	private void invokeLoadEntity(Entity entity, CallbackInfo ci) {
 		ClientEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, this.field_27735);
 	}
 
 	// Call our unload event before vanilla does.
-	@Inject(method = "onUnloadEntity", at = @At("HEAD"))
+	@Inject(method = "onUnloadEntity(Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
 	private void invokeUnloadEntity(Entity entity, CallbackInfo ci) {
 		ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.field_27735);
 	}
