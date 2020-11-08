@@ -22,19 +22,16 @@ import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 
 public class SimpleLayerRandomnessSource implements LayerRandomnessSource {
-	private final long seed;
-	private final Random random;
 	private final PerlinNoiseSampler sampler;
 
 	public SimpleLayerRandomnessSource(long seed) {
-		this.seed = seed;
-		this.random = new Random(seed);
+		Random random = new Random(seed);
 		this.sampler = new PerlinNoiseSampler(random);
 	}
 
 	@Override
 	public int nextInt(int bound) {
-		return random.nextInt(bound);
+		throw new UnsupportedOperationException("SimpleLayerRandomnessSource does not support calling nextInt(int).");
 	}
 
 	@Override
