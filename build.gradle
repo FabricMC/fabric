@@ -64,8 +64,15 @@ allprojects {
 	apply plugin: "fabric-loom"
 	apply plugin: "net.minecrell.licenser"
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	tasks.withType(JavaCompile).configureEach {
+		def targetVersion = 8
+		if (JavaVersion.current().isJava9Compatible()) {
+			it.options.release = targetVersion
+		} else {
+			sourceCompatibility = JavaVersion.toVersion(targetVersion)
+			targetCompatibility = JavaVersion.toVersion(targetVersion)
+		}
+	}
 
 	group = "net.fabricmc.fabric-api"
 
