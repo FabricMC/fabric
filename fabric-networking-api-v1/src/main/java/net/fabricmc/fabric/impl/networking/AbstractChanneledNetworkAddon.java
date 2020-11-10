@@ -99,7 +99,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected abstract void receive(H handler, PacketByteBuf buf);
 
 	public void sendChannelRegistrationPacket() {
-		final PacketByteBuf buf = this.createRegisterPacket(this.receiver.getChannels());
+		final PacketByteBuf buf = this.createRegistrationPacket(this.receiver.getChannels());
 
 		if (buf != null) {
 			this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
@@ -107,7 +107,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	@Nullable
-	protected PacketByteBuf createRegisterPacket(Collection<Identifier> channels) {
+	protected PacketByteBuf createRegistrationPacket(Collection<Identifier> channels) {
 		if (channels.isEmpty()) {
 			return null;
 		}

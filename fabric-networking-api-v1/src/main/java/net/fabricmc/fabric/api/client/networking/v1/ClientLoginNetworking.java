@@ -85,11 +85,11 @@ public final class ClientLoginNetworking {
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ClientNetworkingImpl.LOGIN.getChannels();
 	}
 
 	public static boolean hasGlobalReceiver(Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ClientNetworkingImpl.LOGIN.hasChannel(channel);
 	}
 
 	private ClientLoginNetworking() {

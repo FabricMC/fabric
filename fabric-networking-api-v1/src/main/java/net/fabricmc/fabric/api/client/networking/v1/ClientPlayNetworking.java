@@ -87,42 +87,43 @@ public final class ClientPlayNetworking {
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ClientNetworkingImpl.PLAY.getChannels();
 	}
 
 	public static boolean hasGlobalReceiver(Identifier channel) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ClientNetworkingImpl.PLAY.hasChannel(channel);
 	}
 
-	public static Collection<Identifier> getReceivers() throws IllegalStateException {
+	// TODO: Clarify these are receivers for server handling
+	public static Collection<Identifier> getServerReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			throw new IllegalStateException(); // TODO: Error message
+			return getServerReceivers(MinecraftClient.getInstance().getNetworkHandler());
 		}
 
-		return getReceivers(MinecraftClient.getInstance().getNetworkHandler());
+		throw new IllegalStateException(); // TODO: Error message
 	}
 
-	public static Collection<Identifier> getReceivers(ClientPlayerEntity player) {
-		return getReceivers(player.networkHandler);
+	public static Collection<Identifier> getServerReceivers(ClientPlayerEntity player) {
+		return getServerReceivers(player.networkHandler);
 	}
 
-	public static Collection<Identifier> getReceivers(ClientPlayNetworkHandler handler) {
+	public static Collection<Identifier> getServerReceivers(ClientPlayNetworkHandler handler) {
 		return ClientNetworkingImpl.getAddon(handler).getChannels();
 	}
 
-	public static boolean canReceive(Identifier channel) {
+	public static boolean canServerReceive(Identifier channel) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			throw new IllegalStateException(); // TODO: Error message
+			return canServerReceive(MinecraftClient.getInstance().getNetworkHandler(), channel);
 		}
 
-		return canReceive(MinecraftClient.getInstance().getNetworkHandler(), channel);
+		throw new IllegalStateException(); // TODO: Error message
 	}
 
-	public static boolean canReceive(ClientPlayerEntity player, Identifier channel) {
-		return canReceive(player.networkHandler, channel);
+	public static boolean canServerReceive(ClientPlayerEntity player, Identifier channel) {
+		return canServerReceive(player.networkHandler, channel);
 	}
 
-	public static boolean canReceive(ClientPlayNetworkHandler handler, Identifier channel) {
+	public static boolean canServerReceive(ClientPlayNetworkHandler handler, Identifier channel) {
 		return ClientNetworkingImpl.getAddon(handler).hasChannel(channel);
 	}
 
@@ -142,10 +143,10 @@ public final class ClientPlayNetworking {
 	 */
 	public static void send(Identifier channel, PacketByteBuf buf) throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			throw new IllegalStateException(); // TODO: Error message
+			send(MinecraftClient.getInstance().getNetworkHandler(), channel, buf);
 		}
 
-		send(MinecraftClient.getInstance().getNetworkHandler(), channel, buf);
+		throw new IllegalStateException(); // TODO: Error message
 	}
 
 	/**

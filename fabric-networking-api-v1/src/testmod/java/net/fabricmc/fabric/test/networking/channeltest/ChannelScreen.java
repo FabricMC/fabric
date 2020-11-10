@@ -20,34 +20,81 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
+
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 final class ChannelScreen extends Screen {
-	private ButtonWidget clientButton;
-	private ButtonWidget serverButton;
+	private final NetworkingChannelClientTest mod;
+	private ButtonWidget s2cButton;
+	private ButtonWidget c2sButton;
+	private ButtonWidget closeButton;
+	private ChannelList channelList;
 
-	ChannelScreen() {
+	ChannelScreen(NetworkingChannelClientTest mod) {
 		super(new LiteralText("TODO"));
+		this.mod = mod;
 	}
 
 	@Override
 	protected void init() {
-		this.clientButton = new ButtonWidget(this.width / 2 - 30, 20, 50, 20, new LiteralText("Client"), this::toClient);
-		this.serverButton = new ButtonWidget(this.width / 2 + 30, 20, 50, 20, new LiteralText("Server"), this::toServer);
-		this.serverButton.active = false; // Server is inactive by default
+		this.s2cButton = this.addButton(new ButtonWidget(this.width / 2 - 55, 5, 50, 20, new LiteralText("S2C"), this::toS2C, (button, matrices, mouseX, mouseY) -> {
+			this.renderTooltip(matrices, new LiteralText("Packets this client can receive"), mouseX, mouseY);
+		}));
+		this.c2sButton = this.addButton(new ButtonWidget(this.width / 2 + 5, 5, 50, 20, new LiteralText("C2S"), this::toC2S, (button, matrices, mouseX, mouseY) -> {
+			this.renderTooltip(matrices, new LiteralText("Packets the server can receive"), mouseX, mouseY);
+		}));
+		this.closeButton = this.addButton(new ButtonWidget(this.width / 2 - 60, this.height - 25, 120, 20, new LiteralText("Close"), button -> this.onClose()));
+		this.channelList = this.addChild(new ChannelList(this.client, this.width, this.height - 60, 30, this.height - 30, this.textRenderer.fontHeight + 2));
 	}
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		this.renderBackgroundTexture(0);
+		this.channelList.render(matrices, mouseX, mouseY, delta);
 		super.render(matrices, mouseX, mouseY, delta);
+
+		if (this.s2cButton.active && this.c2sButton.active) {
+			final Text clickMe = new LiteralText("Click S2C or C2S to view supported channels");
+
+			final int textWidth = this.textRenderer.getWidth(clickMe);
+			//noinspection ConstantConditions
+			this.textRenderer.draw(
+					matrices,
+					clickMe,
+					this.width / 2.0F - (textWidth / 2.0F),
+					60,
+					Formatting.YELLOW.getColorValue()
+			);
+		}
 	}
 
-	private void toServer(ButtonWidget button) {
-		this.clientButton.active = true;
-		button.active = false;
+	void refresh() {
+		if (!this.c2sButton.active && this.s2cButton.active) {
+			this.toC2S(this.c2sButton);
+		}
 	}
 
-	private void toClient(ButtonWidget button) {
-		this.serverButton.active = true;
+	private void toC2S(ButtonWidget button) {
+		this.s2cButton.active = true;
 		button.active = false;
+		this.channelList.clear();
+
+		for (Identifier receiver : ClientPlayNetworking.getServerReceivers()) {
+			this.channelList.addEntry(this.channelList.new Entry(receiver));
+		}
+	}
+
+	private void toS2C(ButtonWidget button) {
+		this.c2sButton.active = true;
+		button.active = false;
+		this.channelList.clear();
+
+		// TODO: This is definitely wrong, it returns channels the server can receive from rather than channels the client may receive.
+		for (Identifier receiver : ClientPlayNetworking.getServerReceivers()) {
+			this.channelList.addEntry(this.channelList.new Entry(receiver));
+		}
 	}
 }

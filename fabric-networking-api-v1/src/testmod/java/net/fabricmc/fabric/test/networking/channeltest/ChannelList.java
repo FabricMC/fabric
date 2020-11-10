@@ -28,6 +28,15 @@ final class ChannelList extends EntryListWidget<ChannelList.Entry> {
 		super(client, width, height, top, bottom, itemHeight);
 	}
 
+	@Override
+	public int addEntry(Entry entry) {
+		return super.addEntry(entry);
+	}
+
+	void clear() {
+		this.clearEntries();
+	}
+
 	class Entry extends EntryListWidget.Entry<Entry> {
 		private final Identifier channel;
 

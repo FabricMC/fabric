@@ -102,12 +102,10 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 
 	@Override
 	protected void handleRegistration(Identifier channel) {
-		// TODO
 	}
 
 	@Override
 	protected void handleUnregistration(Identifier channel) {
-		// TODO
 	}
 
 	@Override

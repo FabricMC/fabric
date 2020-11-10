@@ -84,28 +84,28 @@ public final class ServerPlayNetworking {
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ServerNetworkingImpl.PLAY.getChannels();
 	}
 
 	public static boolean hasGlobalReceiver(Identifier id) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ServerNetworkingImpl.PLAY.hasChannel(id);
 	}
 
-	public static Collection<Identifier> getReceivers(ServerPlayerEntity player) {
-		return getReceivers(player.networkHandler);
+	public static Collection<Identifier> getPlayerReceivers(ServerPlayerEntity player) {
+		return getPlayerReceivers(player.networkHandler);
 	}
 
-	public static Collection<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
+	public static Collection<Identifier> getPlayerReceivers(ServerPlayNetworkHandler handler) {
 		return ServerNetworkingImpl.getAddon(handler).getChannels();
 	}
 
-	public static boolean canReceive(ServerPlayerEntity player, Identifier channel) {
+	public static boolean canPlayerReceive(ServerPlayerEntity player, Identifier channel) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return canReceive(player.networkHandler, channel);
+		return canPlayerReceive(player.networkHandler, channel);
 	}
 
-	public static boolean canReceive(ServerPlayNetworkHandler handler, Identifier channel) {
+	public static boolean canPlayerReceive(ServerPlayNetworkHandler handler, Identifier channel) {
 		return ServerNetworkingImpl.getAddon(handler).hasChannel(channel);
 	}
 

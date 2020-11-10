@@ -16,26 +16,60 @@
 
 package net.fabricmc.fabric.test.networking.channeltest;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.lwjgl.glfw.GLFW;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
 	public static final KeyBinding OPEN = KeyBindingHelper.registerKeyBinding(new KeyBinding("networking-v1-test", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_MENU, "fabric-networking-api-v1-testmod\""));
+	static final Set<Identifier> SUPPORTED_C2S_CHANNELS = new HashSet<>();
 
 	@Override
 	public void onInitializeClient() {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.player != null) {
 				if (OPEN.wasPressed()) {
-					client.openScreen(new ChannelScreen());
+					client.openScreen(new ChannelScreen(this));
 				}
 			}
+		});
+
+		ClientPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
+			SUPPORTED_C2S_CHANNELS.addAll(channels);
+
+			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
+				((ChannelScreen) MinecraftClient.getInstance().currentScreen).refresh();
+			}
+		});
+
+		ClientPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
+			SUPPORTED_C2S_CHANNELS.removeAll(channels);
+
+			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
+				((ChannelScreen) MinecraftClient.getInstance().currentScreen).refresh();
+			}
+		});
+
+		// State destruction on disconnection:
+		ClientLoginConnectionEvents.LOGIN_DISCONNECT.register((handler, client) -> {
+			SUPPORTED_C2S_CHANNELS.clear();
+		});
+
+		ClientPlayConnectionEvents.PLAY_DISCONNECT.register((handler, sender, client) -> {
+			SUPPORTED_C2S_CHANNELS.clear();
 		});
 	}
 }

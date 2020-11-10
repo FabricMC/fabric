@@ -190,12 +190,10 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 	@Override
 	protected void handleRegistration(Identifier channel) {
-		// TODO
 	}
 
 	@Override
 	protected void handleUnregistration(Identifier channel) {
-		// TODO
 	}
 
 	@Override

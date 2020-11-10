@@ -89,7 +89,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void schedule(Runnable task) {
-		MinecraftClient.getInstance().execute(task);
+		MinecraftClient.getInstance().submit(task);
 	}
 
 	@Override
@@ -109,10 +109,9 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void handleRegistration(Identifier channel) {
+		// If we can already send packets, immediately send the register packet for this channel
 		if (this.ready) {
-			// Register a channel to internal list must be scheduled.
-			this.schedule(() -> this.register(Collections.singletonList(channel)));
-			final PacketByteBuf buf = this.createRegisterPacket(Collections.singleton(channel));
+			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
 
 			if (buf != null) {
 				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
@@ -122,10 +121,9 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void handleUnregistration(Identifier channel) {
+		// If we can already send packets, immediately send the unregister packet for this channel
 		if (this.ready) {
-			// Unregistering a channel from internal list must be scheduled.
-			this.schedule(() -> this.unregister(Collections.singletonList(channel)));
-			final PacketByteBuf buf = this.createRegisterPacket(Collections.singleton(channel));
+			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
 
 			if (buf != null) {
 				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);

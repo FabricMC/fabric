@@ -26,7 +26,6 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
@@ -44,8 +43,12 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerPlayConnectionEvents.PLAY_INIT.register((handler, sender, server) -> {
-			ServerPlayNetworking.register(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
-		});
+		// FIXME: DO NOT LET ME PR THIS BEFORE FIXING IT
+		//  VERIFY REG IN PLAY INIT PROPAGATES TO S2C packet
+		//ServerPlayConnectionEvents.PLAY_INIT.register((handler, sender, server) -> {
+		//	ServerPlayNetworking.register(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
+		//});
+
+		ServerPlayNetworking.registerGlobalReceiver(KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
 	}
 }
