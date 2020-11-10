@@ -48,7 +48,6 @@ abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandl
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ClientLoginNetworkAddon((ClientLoginNetworkHandler) (Object) this, this.client);
-		ClientLoginConnectionEvents.LOGIN_INIT.invoker().onLoginStart((ClientLoginNetworkHandler) (Object) this, this.client);
 	}
 
 	@Inject(method = "onQueryRequest", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false, shift = At.Shift.AFTER), cancellable = true)

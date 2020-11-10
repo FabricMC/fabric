@@ -50,6 +50,8 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	public ClientLoginNetworkAddon(ClientLoginNetworkHandler handler, MinecraftClient client) {
 		this.handler = handler;
 		this.client = client;
+
+		ClientLoginConnectionEvents.LOGIN_INIT.invoker().onLoginStart(this.handler, this.client);
 	}
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {
