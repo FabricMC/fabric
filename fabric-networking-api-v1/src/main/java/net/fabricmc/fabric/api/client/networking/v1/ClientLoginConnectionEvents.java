@@ -36,6 +36,16 @@ public final class ClientLoginConnectionEvents {
 		}
 	});
 
+	/**
+	 * An event for when a client has started receiving login queries.
+	 * A client can only start receiving login queries when a server has sent the first login query.
+	 * Vanilla servers will typically never make the client enter this login phase.
+	 * If this event is fired then it is a sign that a server is not a vanilla server.
+	 *
+	 * <p>This event may be used to register login query handlers which may be used to send a response to a server.
+	 *
+	 * <p>No packets should be sent when this event is invoked.
+	 */
 	public static final Event<LoginQueryStart> LOGIN_QUERY_START = EventFactory.createArrayBacked(LoginQueryStart.class, callbacks -> (handler, client) -> {
 		for (LoginQueryStart callback : callbacks) {
 			callback.onLoginQueryStart(handler, client);

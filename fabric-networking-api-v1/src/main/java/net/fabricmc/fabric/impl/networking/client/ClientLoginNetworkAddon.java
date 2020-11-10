@@ -33,6 +33,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -44,6 +45,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketA
 public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginChannelHandler> {
 	private final ClientLoginNetworkHandler handler;
 	private final MinecraftClient client;
+	private boolean firstResponse = true;
 
 	public ClientLoginNetworkAddon(ClientLoginNetworkHandler handler, MinecraftClient client) {
 		this.handler = handler;
@@ -56,6 +58,11 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	}
 
 	private boolean handlePacket(int queryId, Identifier channel, PacketByteBuf originalBuf) {
+		if (this.firstResponse) {
+			ClientLoginConnectionEvents.LOGIN_QUERY_START.invoker().onLoginQueryStart(this.handler, this.client);
+			this.firstResponse = false;
+		}
+
 		@Nullable ClientLoginNetworking.LoginChannelHandler handler = this.getHandler(channel);
 
 		if (handler == null) {
