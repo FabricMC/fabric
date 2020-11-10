@@ -23,6 +23,12 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class ServerLoginConnectionEvents {
+	public static final Event<LoginInit> LOGIN_INIT = EventFactory.createArrayBacked(LoginInit.class, callbacks -> (handler, server) -> {
+		for (LoginInit callback : callbacks) {
+			callback.onLoginInit(handler, server);
+		}
+	});
+
 	/**
 	 * An event for the start of login queries of the server login network handler.
 	 */
@@ -43,6 +49,11 @@ public final class ServerLoginConnectionEvents {
 	});
 
 	private ServerLoginConnectionEvents() {
+	}
+
+	@FunctionalInterface
+	public interface LoginInit {
+		void onLoginInit(ServerLoginNetworkHandler handler, MinecraftServer server);
 	}
 
 	@FunctionalInterface
