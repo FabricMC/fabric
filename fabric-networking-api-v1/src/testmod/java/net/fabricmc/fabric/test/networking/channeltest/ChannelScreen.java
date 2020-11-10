@@ -92,8 +92,7 @@ final class ChannelScreen extends Screen {
 		button.active = false;
 		this.channelList.clear();
 
-		// TODO: This is definitely wrong, it returns channels the server can receive from rather than channels the client may receive.
-		for (Identifier receiver : ClientPlayNetworking.getC2SReceivers()) {
+		for (Identifier receiver : ClientPlayNetworking.getS2CReceivers()) {
 			this.channelList.addEntry(this.channelList.new Entry(receiver));
 		}
 	}

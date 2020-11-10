@@ -91,6 +91,22 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.PLAY.hasChannel(id);
 	}
 
+	public static Collection<Identifier> getC2SReceivers(ServerPlayerEntity player) {
+		return getC2SReceivers(player.networkHandler);
+	}
+
+	public static Collection<Identifier> getC2SReceivers(ServerPlayNetworkHandler handler) {
+		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
+	}
+
+	public static boolean canReceiveC2S(ServerPlayerEntity player, Identifier id) {
+		return canReceiveC2S(player.networkHandler, id);
+	}
+
+	public static boolean canReceiveC2S(ServerPlayNetworkHandler handler, Identifier id) {
+		return ServerNetworkingImpl.getAddon(handler).hasReceivableChannel(id);
+	}
+
 	public static Collection<Identifier> getS2CReceivers(ServerPlayerEntity player) {
 		return getS2CReceivers(player.networkHandler);
 	}

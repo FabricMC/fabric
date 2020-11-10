@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
-	private boolean ready;
+	private boolean canSendPackets;
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
 		super(ClientNetworkingImpl.PLAY, handler.getConnection());
@@ -62,7 +62,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		ClientPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.client);
 
 		this.sendChannelRegistrationPacket();
-		this.ready = true;
+		this.canSendPackets = true;
 	}
 
 	/**
@@ -90,7 +90,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void schedule(Runnable task) {
-		MinecraftClient.getInstance().submit(task);
+		MinecraftClient.getInstance().execute(task);
 	}
 
 	@Override
@@ -111,7 +111,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void handleRegistration(Identifier channel) {
 		// If we can already send packets, immediately send the register packet for this channel
-		if (this.ready) {
+		if (this.canSendPackets) {
 			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
 
 			if (buf != null) {
@@ -123,7 +123,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void handleUnregistration(Identifier channel) {
 		// If we can already send packets, immediately send the unregister packet for this channel
-		if (this.ready) {
+		if (this.canSendPackets) {
 			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
 
 			if (buf != null) {

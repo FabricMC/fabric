@@ -29,7 +29,8 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		// FIXME: this one?
+		//ClientPlayNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
+
 		ClientPlayConnectionEvents.PLAY_INIT.register((handler, sender, client) -> {
 			ClientPlayNetworking.register(handler, NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
 		});
@@ -37,6 +38,6 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 
 	private void receive(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, PacketByteBuf buf) {
 		Text text = buf.readText();
-		client.send(() -> client.inGameHud.setOverlayMessage(text, true));
+		client.execute(() -> client.inGameHud.setOverlayMessage(text, true));
 	}
 }

@@ -94,7 +94,7 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.hasChannel(channel);
 	}
 
-	public static Collection<Identifier> getS2CReceivers() {
+	public static Collection<Identifier> getS2CReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return getS2CReceivers(MinecraftClient.getInstance().getNetworkHandler());
 		}
@@ -107,7 +107,23 @@ public final class ClientPlayNetworking {
 	}
 
 	public static Collection<Identifier> getS2CReceivers(ClientPlayNetworkHandler networkHandler) {
-		throw new UnsupportedOperationException("Implement Me!"); //return ClientNetworkingImpl.getAddon(networkHandler);
+		return ClientNetworkingImpl.getAddon(networkHandler).getReceivableChannels();
+	}
+
+	public static boolean canReceiveS2C(Identifier channel) throws IllegalStateException {
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			return canReceiveS2C(MinecraftClient.getInstance().getNetworkHandler(), channel);
+		}
+
+		throw new IllegalStateException(); // TODO: Error message
+	}
+
+	public static boolean canReceiveS2C(ClientPlayerEntity player, Identifier channel) {
+		return canReceiveS2C(player.networkHandler, channel);
+	}
+
+	public static boolean canReceiveS2C(ClientPlayNetworkHandler handler, Identifier channel) {
+		return ClientNetworkingImpl.getAddon(handler).hasReceivableChannel(channel);
 	}
 
 	// TODO: Clarify these are receivers for server handling

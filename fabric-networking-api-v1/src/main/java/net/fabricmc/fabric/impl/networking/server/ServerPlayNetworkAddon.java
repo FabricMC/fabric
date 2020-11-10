@@ -38,7 +38,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.CustomPayloadC2SPacketAcces
 public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<ServerPlayNetworking.PlayChannelHandler> {
 	private final ServerPlayNetworkHandler handler;
 	private final MinecraftServer server;
-	private boolean ready = false;
+	private boolean canSendPackets = false;
 
 	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, MinecraftServer server) {
 		super(ServerNetworkingImpl.PLAY, handler.getConnection());
@@ -57,7 +57,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 		ServerPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.server);
 		this.sendChannelRegistrationPacket();
-		this.ready = true;
+		this.canSendPackets = true;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void schedule(Runnable task) {
-		this.handler.player.server.submit(task);
+		this.handler.player.server.execute(task);
 	}
 
 	@Override
@@ -101,7 +101,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void handleRegistration(Identifier channel) {
 		// If we can already send packets, immediately send the register packet for this channel
-		if (this.ready) {
+		if (this.canSendPackets) {
 			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
 
 			if (buf != null) {
@@ -113,11 +113,11 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void handleUnregistration(Identifier channel) {
 		// If we can already send packets, immediately send the unregister packet for this channel
-		if (this.ready) {
+		if (this.canSendPackets) {
 			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
 
 			if (buf != null) {
-				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+				this.sendPacket(NetworkingImpl.UNREGISTER_CHANNEL, buf);
 			}
 		}
 	}

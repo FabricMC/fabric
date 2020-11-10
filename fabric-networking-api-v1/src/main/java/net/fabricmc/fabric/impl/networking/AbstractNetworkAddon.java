@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.impl.networking;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
@@ -90,6 +92,28 @@ public abstract class AbstractNetworkAddon<H> {
 			}
 
 			return removed;
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public Collection<Identifier> getReceivableChannels() {
+		Lock lock = this.lock.readLock();
+		lock.lock();
+
+		try {
+			return new HashSet<>(this.handlers.keySet());
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	public boolean hasReceivableChannel(Identifier id) {
+		Lock lock = this.lock.readLock();
+		lock.lock();
+
+		try {
+			return this.handlers.containsKey(id);
 		} finally {
 			lock.unlock();
 		}
