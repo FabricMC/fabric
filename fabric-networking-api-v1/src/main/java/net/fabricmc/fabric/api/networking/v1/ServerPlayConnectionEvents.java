@@ -36,6 +36,7 @@ public final class ServerPlayConnectionEvents {
 			callback.onPlayInit(handler, sender, server);
 		}
 	});
+
 	/**
 	 * An event for the disconnection of the server play network handler.
 	 *

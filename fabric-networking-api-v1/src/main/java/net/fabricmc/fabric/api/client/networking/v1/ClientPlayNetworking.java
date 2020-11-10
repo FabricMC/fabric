@@ -94,37 +94,53 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.hasChannel(channel);
 	}
 
+	public static Collection<Identifier> getS2CReceivers() {
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			return getS2CReceivers(MinecraftClient.getInstance().getNetworkHandler());
+		}
+
+		throw new IllegalStateException(); // TODO: Error message
+	}
+
+	public static Collection<Identifier> getS2CReceivers(ClientPlayerEntity player) {
+		return getS2CReceivers(player.networkHandler);
+	}
+
+	public static Collection<Identifier> getS2CReceivers(ClientPlayNetworkHandler networkHandler) {
+		throw new UnsupportedOperationException("Implement Me!"); //return ClientNetworkingImpl.getAddon(networkHandler);
+	}
+
 	// TODO: Clarify these are receivers for server handling
-	public static Collection<Identifier> getServerReceivers() throws IllegalStateException {
+	public static Collection<Identifier> getC2SReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return getServerReceivers(MinecraftClient.getInstance().getNetworkHandler());
+			return getC2SReceivers(MinecraftClient.getInstance().getNetworkHandler());
 		}
 
 		throw new IllegalStateException(); // TODO: Error message
 	}
 
-	public static Collection<Identifier> getServerReceivers(ClientPlayerEntity player) {
-		return getServerReceivers(player.networkHandler);
+	public static Collection<Identifier> getC2SReceivers(ClientPlayerEntity player) {
+		return getC2SReceivers(player.networkHandler);
 	}
 
-	public static Collection<Identifier> getServerReceivers(ClientPlayNetworkHandler handler) {
-		return ClientNetworkingImpl.getAddon(handler).getChannels();
+	public static Collection<Identifier> getC2SReceivers(ClientPlayNetworkHandler handler) {
+		return ClientNetworkingImpl.getAddon(handler).getSendableChannels();
 	}
 
-	public static boolean canServerReceive(Identifier channel) {
+	public static boolean canReceiveC2S(Identifier channel) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return canServerReceive(MinecraftClient.getInstance().getNetworkHandler(), channel);
+			return canReceiveC2S(MinecraftClient.getInstance().getNetworkHandler(), channel);
 		}
 
 		throw new IllegalStateException(); // TODO: Error message
 	}
 
-	public static boolean canServerReceive(ClientPlayerEntity player, Identifier channel) {
-		return canServerReceive(player.networkHandler, channel);
+	public static boolean canReceiveC2S(ClientPlayerEntity player, Identifier channel) {
+		return canReceiveC2S(player.networkHandler, channel);
 	}
 
-	public static boolean canServerReceive(ClientPlayNetworkHandler handler, Identifier channel) {
-		return ClientNetworkingImpl.getAddon(handler).hasChannel(channel);
+	public static boolean canReceiveC2S(ClientPlayNetworkHandler handler, Identifier channel) {
+		return ClientNetworkingImpl.getAddon(handler).hasSendableChannel(channel);
 	}
 
 	public static Packet<?> createC2SPacket(Identifier channel, PacketByteBuf buf) {

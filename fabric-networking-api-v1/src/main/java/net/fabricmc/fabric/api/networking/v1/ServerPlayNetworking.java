@@ -91,22 +91,22 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.PLAY.hasChannel(id);
 	}
 
-	public static Collection<Identifier> getPlayerReceivers(ServerPlayerEntity player) {
-		return getPlayerReceivers(player.networkHandler);
+	public static Collection<Identifier> getS2CReceivers(ServerPlayerEntity player) {
+		return getS2CReceivers(player.networkHandler);
 	}
 
-	public static Collection<Identifier> getPlayerReceivers(ServerPlayNetworkHandler handler) {
-		return ServerNetworkingImpl.getAddon(handler).getChannels();
+	public static Collection<Identifier> getS2CReceivers(ServerPlayNetworkHandler handler) {
+		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();
 	}
 
-	public static boolean canPlayerReceive(ServerPlayerEntity player, Identifier channel) {
+	public static boolean canReceiveS2C(ServerPlayerEntity player, Identifier channel) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return canPlayerReceive(player.networkHandler, channel);
+		return canReceiveS2C(player.networkHandler, channel);
 	}
 
-	public static boolean canPlayerReceive(ServerPlayNetworkHandler handler, Identifier channel) {
-		return ServerNetworkingImpl.getAddon(handler).hasChannel(channel);
+	public static boolean canReceiveS2C(ServerPlayNetworkHandler handler, Identifier channel) {
+		return ServerNetworkingImpl.getAddon(handler).hasSendableChannel(channel);
 	}
 
 	public static Packet<?> createS2CPacket(Identifier channel, PacketByteBuf buf) {
