@@ -68,7 +68,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	 */
 	public boolean handle(CustomPayloadC2SPacket packet) {
 		CustomPayloadC2SPacketAccessor access = (CustomPayloadC2SPacketAccessor) packet;
-		return handle(access.getChannel(), access.getData());
+		return this.handle(access.getChannel(), access.getData());
 	}
 
 	@Override

@@ -56,12 +56,7 @@ public final class ClientLoginNetworking {
 	 * @return false if a handler is already registered to the channel
 	 */
 	public static boolean registerGlobalReceiver(Identifier channel, LoginChannelHandler channelHandler) {
-		// FIXME: Temp
-		ClientLoginConnectionEvents.LOGIN_INIT.register((handler, client) -> {
-			register(handler, channel, channelHandler);
-		});
-
-		return true; // TODO Temp
+		return ClientNetworkingImpl.LOGIN.registerGlobalReceiver(channel, channelHandler);
 	}
 
 	/**

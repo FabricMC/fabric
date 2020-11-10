@@ -29,6 +29,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkHandlerExtensions;
+import net.fabricmc.fabric.impl.networking.server.ServerNetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
 /**
@@ -51,12 +52,7 @@ public final class ServerLoginNetworking {
 	 * @return false if a handler is already registered to the channel
 	 */
 	public static boolean registerGlobalReceiver(Identifier channel, LoginChannelHandler channelHandler) {
-		// FIXME: Temp
-		ServerLoginConnectionEvents.LOGIN_QUERY_START.register((handler, server, sender, synchronizer) -> {
-			register(handler, channel, channelHandler);
-		});
-
-		return true; // TODO: Temp
+		return ServerNetworkingImpl.LOGIN.registerGlobalReceiver(channel, channelHandler);
 	}
 
 	/**

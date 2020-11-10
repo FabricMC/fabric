@@ -53,7 +53,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	public boolean register(Identifier channel, H handler) {
+	public boolean registerGlobalReceiver(Identifier channel, H handler) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 		Objects.requireNonNull(handler, "Packet handler cannot be null");
 
@@ -71,7 +71,7 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	public H unregister(Identifier channel) {
+	public H unregisterGlobalReceiver(Identifier channel) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
 
 		if (NetworkingImpl.isReservedPlayChannel(channel)) {

@@ -72,6 +72,12 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		if (this.firstQueryTick) {
 			// Send the compression packet now so clients receive compressed login queries
 			this.sendCompressionPacket();
+
+			// Register global receivers.
+			for (Map.Entry<Identifier, ServerLoginNetworking.LoginChannelHandler> entry : ServerNetworkingImpl.LOGIN.getHandlers().entrySet()) {
+				ServerLoginNetworking.register(this.handler, entry.getKey(), entry.getValue());
+			}
+
 			ServerLoginConnectionEvents.LOGIN_QUERY_START.invoker().onLoginStart(this.handler, this.server, this, this.waits::add);
 			this.firstQueryTick = false;
 		}

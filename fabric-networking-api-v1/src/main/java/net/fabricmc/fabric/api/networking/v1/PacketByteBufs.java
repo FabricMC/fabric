@@ -22,7 +22,7 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.PacketByteBuf;
 
 /**
- * Utilities for working with packet byte bufs.
+ * Helper methods for working with and creating {@link PacketByteBuf}s.
  */
 public final class PacketByteBufs {
 	private static final PacketByteBuf EMPTY_PACKET_BYTE_BUF = new PacketByteBuf(Unpooled.EMPTY_BUFFER);

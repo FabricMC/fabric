@@ -48,13 +48,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 @Environment(EnvType.CLIENT)
 public final class ClientPlayNetworking {
 	public static boolean registerGlobalReceiver(Identifier channel, PlayChannelHandler handler) {
-		// FIXME: Temp stuff
-		ClientPlayConnectionEvents.PLAY_INIT.register((networkHandler, packetSender, minecraftClient) -> {
-			ClientPlayNetworking.register(networkHandler, channel, handler);
-		});
-
-		// TODO: Handle
-		return true;
+		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channel, handler);
 	}
 
 	@Nullable
