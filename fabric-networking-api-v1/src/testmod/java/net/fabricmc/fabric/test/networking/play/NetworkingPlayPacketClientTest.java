@@ -29,6 +29,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
+		// FIXME: this one?
 		ClientPlayConnectionEvents.PLAY_INIT.register((handler, sender, client) -> {
 			ClientPlayNetworking.register(handler, NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
 		});

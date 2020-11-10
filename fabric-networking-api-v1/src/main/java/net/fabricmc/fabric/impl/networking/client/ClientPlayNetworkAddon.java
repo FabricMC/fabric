@@ -60,6 +60,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		}
 
 		ClientPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.client);
+
 		this.sendChannelRegistrationPacket();
 		this.ready = true;
 	}

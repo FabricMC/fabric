@@ -41,9 +41,9 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.</p>
 	 */
-	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, sender, server) -> {
+	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, server) -> {
 		for (PlayDisconnect callback : callbacks) {
-			callback.onPlayDisconnect(handler, sender, server);
+			callback.onPlayDisconnect(handler, server);
 		}
 	});
 
@@ -57,6 +57,6 @@ public final class ServerPlayConnectionEvents {
 
 	@FunctionalInterface
 	public interface PlayDisconnect {
-		void onPlayDisconnect(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
+		void onPlayDisconnect(ServerPlayNetworkHandler handler, MinecraftServer server);
 	}
 }
