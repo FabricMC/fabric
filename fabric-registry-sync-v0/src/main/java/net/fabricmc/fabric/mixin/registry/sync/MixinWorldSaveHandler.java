@@ -21,7 +21,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,12 +36,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.util.Identifier;
 import net.minecraft.world.WorldSaveHandler;
 import net.minecraft.world.level.LevelProperties;
 
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 import net.fabricmc.fabric.impl.registry.sync.RemapException;
 import net.fabricmc.fabric.impl.registry.sync.RemappableRegistry;
+import net.fabricmc.fabric.impl.registry.sync.RegistrySerialization;
 
 @Mixin(WorldSaveHandler.class)
 public class MixinWorldSaveHandler {
@@ -61,7 +65,8 @@ public class MixinWorldSaveHandler {
 			fileInputStream.close();
 
 			if (tag != null) {
-				RegistrySyncManager.apply(tag, RemappableRegistry.RemapMode.AUTHORITATIVE);
+				Map<Identifier, Object2IntMap<Identifier>> registryIndexedEntries = RegistrySerialization.fromTag(tag);
+				RegistrySyncManager.apply(registryIndexedEntries, RemappableRegistry.RemapMode.AUTHORITATIVE);
 				return true;
 			}
 		}
@@ -76,7 +81,15 @@ public class MixinWorldSaveHandler {
 
 	@Unique
 	private void fabric_saveRegistryData() {
-		CompoundTag newIdMap = RegistrySyncManager.toTag(false);
+		CompoundTag newIdMap = RegistrySerialization.toTag(false);
+
+		if (RegistrySyncManager.DEBUG) {
+			RegistrySyncManager.validateRegistries();
+		}
+
+		if (RegistrySyncManager.DEBUG_WRITE_REGISTRY_DATA) {
+			RegistrySyncManager.dumpAllRegistryData();
+		}
 
 		if (!newIdMap.equals(fabric_lastSavedIdMap)) {
 			for (int i = FABRIC_ID_REGISTRY_BACKUPS - 1; i >= 0; i--) {
@@ -96,10 +109,8 @@ public class MixinWorldSaveHandler {
 				File file = fabric_getWorldIdMapFile(0);
 				File parentFile = file.getParentFile();
 
-				if (!parentFile.exists()) {
-					if (!parentFile.mkdirs()) {
-						FABRIC_LOGGER.warn("[fabric-registry-sync] Could not create directory " + parentFile + "!");
-					}
+				if (!parentFile.exists() && !parentFile.mkdirs()) {
+					FABRIC_LOGGER.warn("[fabric-registry-sync] Could not create directory " + parentFile + "!");
 				}
 
 				FileOutputStream fileOutputStream = new FileOutputStream(file);
