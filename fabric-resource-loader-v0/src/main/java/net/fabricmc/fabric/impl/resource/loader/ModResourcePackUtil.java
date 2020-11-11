@@ -67,7 +67,7 @@ public final class ModResourcePackUtil {
 				description = description.replaceAll("\"", "\\\"");
 			}
 
-			String pack = String.format("{\"pack\":{\"pack_format\":" + type.method_31438(SharedConstants.getGameVersion()) + ",\"description\":\"%s\"}}", description);
+			String pack = String.format("{\"pack\":{\"pack_format\":" + type.getPackVersion(SharedConstants.getGameVersion()) + ",\"description\":\"%s\"}}", description);
 			return IOUtils.toInputStream(pack, Charsets.UTF_8);
 		default:
 			return null;

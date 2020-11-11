@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.class_5617;
-import net.minecraft.class_5619;
+import net.minecraft.client.render.entity.EntityRenderers;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -40,7 +40,7 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.LivingEntityFeatureRend
 import net.fabricmc.fabric.impl.client.renderer.registry.RegistrationHelperImpl;
 import net.fabricmc.fabric.impl.client.renderer.registry.EntityRendererRegistryImpl;
 
-@Mixin(class_5619.class)
+@Mixin(EntityRenderers.class)
 public abstract class MixinEntityRenderers {
 	@Shadow()
 	@Final

@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.client.rendereregistry.v1;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.class_5614;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 
@@ -39,5 +39,5 @@ public interface BlockEntityRendererRegistry {
 	 *                            class is already loaded
 	 * @param <E> the {@link BlockEntity}
 	 */
-	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, class_5614<E> blockEntityRendererFactory);
+	<E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<E> blockEntityRendererFactory);
 }

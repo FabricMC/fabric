@@ -25,7 +25,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTableRange;
+import net.minecraft.class_5658;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
@@ -63,5 +63,5 @@ public abstract class MixinLootPool implements FabricLootPool {
 
 	@Accessor
 	@Override
-	public abstract LootTableRange getRolls();
+	public abstract class_5658 getRolls();
 }

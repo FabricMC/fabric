@@ -21,20 +21,20 @@ import java.util.function.BiConsumer;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.class_5614;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 
 public class BlockEntityRendererRegistryImpl implements BlockEntityRendererRegistry {
-	private static HashMap<BlockEntityType<?>, class_5614<?>> map = new HashMap<>();
-	private static BiConsumer<BlockEntityType<?>, class_5614<?>> handler = (type, function) -> map.put(type, function);
+	private static HashMap<BlockEntityType<?>, BlockEntityRendererFactory<?>> map = new HashMap<>();
+	private static BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
 
 	@Override
-	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, class_5614<E> blockEntityRendererFactory) {
+	public <E extends BlockEntity> void register(BlockEntityType<E> blockEntityType, BlockEntityRendererFactory<E> blockEntityRendererFactory) {
 		handler.accept(blockEntityType, blockEntityRendererFactory);
 	}
 
-	public static void setup(BiConsumer<BlockEntityType<?>, class_5614<?>> vanillaHandler) {
+	public static void setup(BiConsumer<BlockEntityType<?>, BlockEntityRendererFactory<?>> vanillaHandler) {
 		map.forEach(vanillaHandler);
 		handler = vanillaHandler;
 	}

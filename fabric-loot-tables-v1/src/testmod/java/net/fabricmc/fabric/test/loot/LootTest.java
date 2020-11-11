@@ -59,7 +59,7 @@ public class LootTest implements ModInitializer {
 				LootPool pool = FabricLootPoolBuilder.builder()
 						.withEntry(ItemEntry.builder(Items.FEATHER).build())
 						.withEntry(entryFromString)
-						.rolls(ConstantLootTableRange.create(1))
+						.rolls(ConstantLootTableRange.method_32448(1))
 						.withCondition(SurvivesExplosionLootCondition.builder().build())
 						.build();
 
