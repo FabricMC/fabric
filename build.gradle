@@ -28,6 +28,8 @@ version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + 
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
+import net.fabricmc.loom.task.RunClientTask
+import net.fabricmc.loom.task.RunServerTask
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -81,6 +83,14 @@ allprojects {
 			compileClasspath += main.compileClasspath
 			runtimeClasspath += main.runtimeClasspath
 		}
+	}
+
+	task runTestmodClient(type: RunClientTask) {
+		classpath sourceSets.testmod.runtimeClasspath
+	}
+
+	task runTestmodServer(type: RunServerTask) {
+		classpath sourceSets.testmod.runtimeClasspath
 	}
 
 	dependencies {
@@ -180,6 +190,15 @@ task javadocJar(type: Jar) {
 }
 
 build.dependsOn javadocJar
+
+// Runs a dedicated headless server with all test mods that closes once complete.
+task runAutoTestServer(type: RunServerTask) {
+	project.subprojects {
+		classpath it.sourceSets.testmod.runtimeClasspath
+	}
+	jvmArgs "-Dfabric.autoTest=true"
+	args "--nogui"
+}
 
 subprojects {
 	dependencies {
