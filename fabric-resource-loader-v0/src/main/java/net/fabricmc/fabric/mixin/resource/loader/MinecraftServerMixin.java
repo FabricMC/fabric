@@ -31,7 +31,7 @@ import net.minecraft.server.MinecraftServer;
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 
 @Mixin(MinecraftServer.class)
-public class MixinMinecraftServer {
+public class MinecraftServerMixin {
 	@Redirect(method = "loadDataPacks", at = @At(value = "INVOKE", target = "Ljava/util/List;contains(Ljava/lang/Object;)Z"))
 	private static boolean onCheckDisabled(List<String> list, Object o, ResourcePackManager resourcePackManager) {
 		String profileName = (String) o;

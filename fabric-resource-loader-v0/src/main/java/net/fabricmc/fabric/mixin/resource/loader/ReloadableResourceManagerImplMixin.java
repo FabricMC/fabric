@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -28,23 +29,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.ResourceReloadListener;
-import net.minecraft.resource.ResourceReloadMonitor;
 import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 
 @Mixin(ReloadableResourceManagerImpl.class)
-public class MixinReloadableResourceManagerImplClient {
-	@Shadow
-	private List<ResourceReloadListener> listeners;
-	@Shadow
-	private List<ResourceReloadListener> initialListeners;
+public class ReloadableResourceManagerImplMixin {
+	@Final
 	@Shadow
 	private ResourceType type;
 
-	@Inject(at = @At("HEAD"), method = "beginInitialMonitoredReload")
-	public void createReloadHandler(Executor executor_1, Executor executor_2, CompletableFuture<Void> completableFuture_1, CallbackInfoReturnable<ResourceReloadMonitor> callback) {
+	@Inject(at = @At("HEAD"), method = "beginReloadInner")
+	public void reload(Executor var1, Executor var2, List<ResourceReloadListener> listeners, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
 		ResourceManagerHelperImpl.sort(type, listeners);
-		ResourceManagerHelperImpl.sort(type, initialListeners);
 	}
 }

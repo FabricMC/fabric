@@ -33,7 +33,7 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 
 @Mixin(DefaultResourcePack.class)
-public class MixinDefaultResourcePack {
+public class DefaultResourcePackMixin {
 	@Inject(method = "findInputStream", at = @At("HEAD"), cancellable = true)
 	protected void onFindInputStream(ResourceType resourceType, Identifier identifier, CallbackInfoReturnable<InputStream> callback) {
 		if (DefaultResourcePack.resourcePath != null) {

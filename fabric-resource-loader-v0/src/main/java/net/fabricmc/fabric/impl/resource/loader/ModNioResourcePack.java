@@ -51,10 +51,9 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final boolean cacheable;
 	private final AutoCloseable closer;
 	private final String separator;
-	private final String name;
 	private final boolean defaultEnabled;
 
-	public ModNioResourcePack(ModMetadata modInfo, Path path, ResourceType type, AutoCloseable closer, String name, boolean defaultEnabled) {
+	public ModNioResourcePack(ModMetadata modInfo, Path path, ResourceType type, AutoCloseable closer, boolean defaultEnabled) {
 		super(null);
 		this.modInfo = modInfo;
 		this.basePath = path.toAbsolutePath().normalize();
@@ -63,7 +62,6 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
 		// Specific to registered built-in resource packs.
-		this.name = name;
 		this.defaultEnabled = defaultEnabled;
 	}
 
@@ -81,26 +79,10 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	protected InputStream openFile(String filename) throws IOException {
 		InputStream stream;
 
-		if (DeferredNioExecutionHandler.shouldDefer()) {
-			stream = DeferredNioExecutionHandler.submit(() -> {
-				Path path = getPath(filename);
+		Path path = getPath(filename);
 
-				if (path != null && Files.isRegularFile(path)) {
-					return new DeferredInputStream(Files.newInputStream(path));
-				} else {
-					return null;
-				}
-			});
-
-			if (stream != null) {
-				return stream;
-			}
-		} else {
-			Path path = getPath(filename);
-
-			if (path != null && Files.isRegularFile(path)) {
-				return Files.newInputStream(path);
-			}
+		if (path != null && Files.isRegularFile(path)) {
+			return Files.newInputStream(path);
 		}
 
 		stream = ModResourcePackUtil.openDefault(this.modInfo, this.type, filename);
@@ -119,19 +101,8 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 			return true;
 		}
 
-		if (DeferredNioExecutionHandler.shouldDefer()) {
-			try {
-				return DeferredNioExecutionHandler.submit(() -> {
-					Path path = getPath(filename);
-					return path != null && Files.isRegularFile(path);
-				});
-			} catch (IOException e) {
-				return false;
-			}
-		} else {
-			Path path = getPath(filename);
-			return path != null && Files.isRegularFile(path);
-		}
+		Path path = getPath(filename);
+		return path != null && Files.isRegularFile(path);
 	}
 
 	@Override
@@ -238,10 +209,6 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 
 	@Override
 	public String getName() {
-		if (this.name != null) {
-			return this.name; // Built-in resource pack provided by a mod, the name is overriden.
-		}
-
 		return ModResourcePackUtil.getName(modInfo);
 	}
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.resource.loader;
+package net.fabricmc.fabric.mixin.resource.loader.client;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,9 +37,10 @@ import net.minecraft.resource.ResourceType;
 
 import net.fabricmc.fabric.impl.resource.loader.ModNioResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
+import net.fabricmc.fabric.mixin.resource.loader.ResourcePackManagerAccessor;
 
 @Mixin(CreateWorldScreen.class)
-public class MixinCreateWorldScreen {
+public class CreateWorldScreenMixin {
 	@Shadow
 	private ResourcePackManager field_25792;
 
