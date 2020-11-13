@@ -20,7 +20,6 @@
     "MixinAddRiversLayer",
     "MixinMultiNoiseBiomeSource",
     "MixinSetBaseBiomesLayer",
-    "MixinTheEndBiomeSource",
     "MultiNoiseBiomeSourceAccessor",
     "VanillaLayeredBiomeSourceAccessor"
   ],
