@@ -68,7 +68,7 @@ public class FabricBiomeTest implements ModInitializer {
 	private static final RegistryKey<Biome> TEST_END_BARRRENS = RegistryKey.of(Registry.BIOME_KEY, new Identifier(MOD_ID, "test_end_barrens"));
 
 	private static BlockState STONE = Blocks.STONE.getDefaultState();
-	private static ConfiguredSurfaceBuilder<TernarySurfaceConfig> TEST_END_SURFACE_BUILDER = register("end", SurfaceBuilder.DEFAULT.withConfig(new TernarySurfaceConfig(STONE, STONE, STONE)));
+	private static ConfiguredSurfaceBuilder<TernarySurfaceConfig> TEST_END_SURFACE_BUILDER = register(new Identifier(MOD_ID, "end"), SurfaceBuilder.DEFAULT.withConfig(new TernarySurfaceConfig(STONE, STONE, STONE)));
 
 	@Override
 	public void onInitialize() {
@@ -132,7 +132,7 @@ public class FabricBiomeTest implements ModInitializer {
 		return (new Biome.Builder()).precipitation(Biome.Precipitation.NONE).category(Biome.Category.THEEND).depth(0.1F).scale(0.2F).temperature(0.5F).downfall(0.5F).effects((new BiomeEffects.Builder()).waterColor(4159204).waterFogColor(329011).fogColor(10518688).skyColor(0).moodSound(BiomeMoodSound.CAVE).build()).spawnSettings(builder2.build()).generationSettings(builder.build()).build();
 	}
 
-	private static <SC extends SurfaceConfig> ConfiguredSurfaceBuilder<SC> register(String id, ConfiguredSurfaceBuilder<SC> configuredSurfaceBuilder) {
+	private static <SC extends SurfaceConfig> ConfiguredSurfaceBuilder<SC> register(Identifier id, ConfiguredSurfaceBuilder<SC> configuredSurfaceBuilder) {
 		return BuiltinRegistries.add(BuiltinRegistries.CONFIGURED_SURFACE_BUILDER, id, configuredSurfaceBuilder);
 	}
 }
