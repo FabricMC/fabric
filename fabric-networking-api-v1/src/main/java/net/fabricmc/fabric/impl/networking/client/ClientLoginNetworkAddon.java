@@ -103,15 +103,15 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	}
 
 	@Override
-	protected void handleRegistration(Identifier channel) {
+	protected void handleRegistration(Identifier channelName) {
 	}
 
 	@Override
-	protected void handleUnregistration(Identifier channel) {
+	protected void handleUnregistration(Identifier channelName) {
 	}
 
 	@Override
-	protected boolean isReservedChannel(Identifier channel) {
+	protected boolean isReservedChannel(Identifier channelName) {
 		return false;
 	}
 }

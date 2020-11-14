@@ -42,47 +42,47 @@ public final class GlobalReceiverRegistry<H> {
 	}
 
 	@Nullable
-	public H getHandler(Identifier channel) {
+	public H getHandler(Identifier channelName) {
 		Lock lock = this.lock.readLock();
 		lock.lock();
 
 		try {
-			return this.handlers.get(channel);
+			return this.handlers.get(channelName);
 		} finally {
 			lock.unlock();
 		}
 	}
 
-	public boolean registerGlobalReceiver(Identifier channel, H handler) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public boolean registerGlobalReceiver(Identifier channelName, H handler) {
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 		Objects.requireNonNull(handler, "Channel handler cannot be null");
 
-		if (NetworkingImpl.isReservedPlayChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
+		if (NetworkingImpl.isReservedPlayChannel(channelName)) {
+			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channelName));
 		}
 
 		Lock lock = this.lock.writeLock();
 		lock.lock();
 
 		try {
-			return this.handlers.putIfAbsent(channel, handler) == null;
+			return this.handlers.putIfAbsent(channelName, handler) == null;
 		} finally {
 			lock.unlock();
 		}
 	}
 
-	public H unregisterGlobalReceiver(Identifier channel) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public H unregisterGlobalReceiver(Identifier channelName) {
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
-		if (NetworkingImpl.isReservedPlayChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot unregister packet handler for reserved channel \"%s\"", channel));
+		if (NetworkingImpl.isReservedPlayChannel(channelName)) {
+			throw new IllegalArgumentException(String.format("Cannot unregister packet handler for reserved channel with name \"%s\"", channelName));
 		}
 
 		Lock lock = this.lock.writeLock();
 		lock.lock();
 
 		try {
-			return this.handlers.remove(channel);
+			return this.handlers.remove(channelName);
 		} finally {
 			lock.unlock();
 		}
@@ -110,14 +110,14 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	public boolean hasChannel(Identifier channel) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public boolean hasChannel(Identifier channelName) {
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
 		Lock lock = this.lock.readLock();
 		lock.lock();
 
 		try {
-			return this.handlers.containsKey(channel);
+			return this.handlers.containsKey(channelName);
 		} finally {
 			lock.unlock();
 		}

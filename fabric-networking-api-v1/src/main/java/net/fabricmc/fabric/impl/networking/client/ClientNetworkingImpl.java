@@ -50,8 +50,8 @@ public final class ClientNetworkingImpl {
 		return ((ClientLoginNetworkHandlerExtensions) handler).getAddon();
 	}
 
-	public static Packet<?> createPlayC2SPacket(Identifier channel, PacketByteBuf buf) {
-		return new CustomPayloadC2SPacket(channel, buf);
+	public static Packet<?> createPlayC2SPacket(Identifier channelName, PacketByteBuf buf) {
+		return new CustomPayloadC2SPacket(channelName, buf);
 	}
 
 	public static void clientInit() {
@@ -64,7 +64,7 @@ public final class ClientNetworkingImpl {
 				ids.add(buf.readIdentifier());
 			}
 
-			((ChannelInfoHolder) handler.getConnection()).getPendingChannels().addAll(ids);
+			((ChannelInfoHolder) handler.getConnection()).getPendingChannelsNames().addAll(ids);
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the server");
 
 			PacketByteBuf response = PacketByteBufs.create();

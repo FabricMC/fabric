@@ -94,8 +94,8 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	public Packet<?> createPacket(Identifier channel, PacketByteBuf buf) {
-		return ClientPlayNetworking.createC2SPacket(channel, buf);
+	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
+		return ClientPlayNetworking.createC2SPacket(channelName, buf);
 	}
 
 	@Override
@@ -109,10 +109,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void handleRegistration(Identifier channel) {
+	protected void handleRegistration(Identifier channelName) {
 		// If we can already send packets, immediately send the register packet for this channel
 		if (this.canSendPackets) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
+			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
 
 			if (buf != null) {
 				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
@@ -121,10 +121,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected void handleUnregistration(Identifier channel) {
+	protected void handleUnregistration(Identifier channelName) {
 		// If we can already send packets, immediately send the unregister packet for this channel
 		if (this.canSendPackets) {
-			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
+			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
 
 			if (buf != null) {
 				this.sendPacket(NetworkingImpl.UNREGISTER_CHANNEL, buf);
@@ -133,7 +133,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
-	protected boolean isReservedChannel(Identifier channel) {
-		return NetworkingImpl.isReservedPlayChannel(channel);
+	protected boolean isReservedChannel(Identifier channelName) {
+		return NetworkingImpl.isReservedPlayChannel(channelName);
 	}
 }

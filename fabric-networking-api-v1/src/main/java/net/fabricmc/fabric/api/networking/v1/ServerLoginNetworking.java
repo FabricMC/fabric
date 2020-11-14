@@ -35,7 +35,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAc
 /**
  * Offers access to login stage server-side networking functionalities.
  *
- * <p>Server-side networking functionalities include receiving serverbound packets, sending clientbound packets, and events related to server-side network handlers.
+ * <p>Server-side networking functionalities include receiving serverbound packets and sending clientbound packets.
  *
  * @see ServerPlayNetworking
  * @see ClientLoginNetworking
@@ -123,7 +123,7 @@ public final class ServerLoginNetworking {
 	}
 
 	/**
-	 * Allows blocking client log-in until all all futures passed into {@link LoginSynchronizer#waitFor(Future)} are done.
+	 * Allows blocking client log-in until all all futures passed into {@link LoginSynchronizer#waitFor(Future)} are completed.
 	 *
 	 * @apiNote this interface is not intended to be implemented by users of api.
 	 */
@@ -140,7 +140,7 @@ public final class ServerLoginNetworking {
 		 * building of a followup query request can be performed properly on the logical server
 		 * thread before the player successfully logs in:
 		 * <pre>{@code
-		 * ServerLoginNetworking.register(CHECK_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -&gt; {
+		 * ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -&gt; {
 		 * 	if (!understood) {
 		 * 		handler.disconnect(new LiteralText("Only accept clients that can check!"));
 		 * 		return;
@@ -161,8 +161,7 @@ public final class ServerLoginNetworking {
 		 * 	}));
 		 * });
 		 * }</pre>
-		 * Usually it is enough to pass the return value for {@link net.minecraft.util.thread.ThreadExecutor#submit(Runnable)}
-		 * for {@code future}.</p>
+		 * Usually it is enough to pass the return value for {@link net.minecraft.util.thread.ThreadExecutor#submit(Runnable)} for {@code future}.</p>
 		 *
 		 * @param future the future that must be done before the player can log in
 		 */

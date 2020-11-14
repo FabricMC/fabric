@@ -60,22 +60,22 @@ public abstract class AbstractNetworkAddon<H> {
 		}
 	}
 
-	public boolean registerChannel(Identifier channel, H handler) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public boolean registerChannel(Identifier channelName, H handler) {
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 		Objects.requireNonNull(handler, "Packet handler cannot be null");
 
-		if (this.isReservedChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
+		if (this.isReservedChannel(channelName)) {
+			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channelName));
 		}
 
 		Lock lock = this.lock.writeLock();
 		lock.lock();
 
 		try {
-			final boolean replaced = this.handlers.putIfAbsent(channel, handler) == null;
+			final boolean replaced = this.handlers.putIfAbsent(channelName, handler) == null;
 
 			if (replaced) {
-				this.handleRegistration(channel);
+				this.handleRegistration(channelName);
 			}
 
 			return replaced;
@@ -84,21 +84,21 @@ public abstract class AbstractNetworkAddon<H> {
 		}
 	}
 
-	public H unregisterChannel(Identifier channel) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public H unregisterChannel(Identifier channelName) {
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
-		if (this.isReservedChannel(channel)) {
-			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
+		if (this.isReservedChannel(channelName)) {
+			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel with name \"%s\"", channelName));
 		}
 
 		Lock lock = this.lock.writeLock();
 		lock.lock();
 
 		try {
-			final H removed = this.handlers.remove(channel);
+			final H removed = this.handlers.remove(channelName);
 
 			if (removed != null) {
-				this.handleUnregistration(channel);
+				this.handleUnregistration(channelName);
 			}
 
 			return removed;
@@ -118,27 +118,27 @@ public abstract class AbstractNetworkAddon<H> {
 		}
 	}
 
-	public boolean hasReceivableChannel(Identifier id) {
+	public boolean hasReceivableChannel(Identifier channelName) {
 		Lock lock = this.lock.readLock();
 		lock.lock();
 
 		try {
-			return this.handlers.containsKey(id);
+			return this.handlers.containsKey(channelName);
 		} finally {
 			lock.unlock();
 		}
 	}
 
-	protected abstract void handleRegistration(Identifier channel);
+	protected abstract void handleRegistration(Identifier channelName);
 
-	protected abstract void handleUnregistration(Identifier channel);
+	protected abstract void handleUnregistration(Identifier channelName);
 
 	/**
 	 * Checks if a channel is considered a "reserved" channel.
 	 * A reserved channel such as "minecraft:(un)register" has special handling and should not have any channel handlers registered for it.
 	 *
-	 * @param channel the channel
+	 * @param channelName the channel name
 	 * @return whether the channel is reserved
 	 */
-	protected abstract boolean isReservedChannel(Identifier channel);
+	protected abstract boolean isReservedChannel(Identifier channelName);
 }

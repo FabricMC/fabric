@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 /**
  * Offers access to login stage client-side networking functionalities.
  *
- * <p>Client-side networking functionalities include receiving clientbound packets, sending serverbound packets, and events related to client-side network handlers.
+ * <p>Client-side networking functionalities include receiving clientbound packets, sending serverbound packets.
  *
  * @see ClientPlayNetworking
  * @see ServerLoginNetworking

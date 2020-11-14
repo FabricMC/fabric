@@ -159,13 +159,13 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
-	public Packet<?> createPacket(Identifier channel, PacketByteBuf buf) {
+	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
 		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket();
 		// The constructor for creating a non-empty response was removed by proguard
 		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) ret;
 		access.setQueryId(queryId);
-		access.setChannel(channel);
+		access.setChannel(channelName);
 		access.setPayload(buf);
 		return ret;
 	}
@@ -190,15 +190,15 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	@Override
-	protected void handleRegistration(Identifier channel) {
+	protected void handleRegistration(Identifier channelName) {
 	}
 
 	@Override
-	protected void handleUnregistration(Identifier channel) {
+	protected void handleUnregistration(Identifier channelName) {
 	}
 
 	@Override
-	protected boolean isReservedChannel(Identifier channel) {
+	protected boolean isReservedChannel(Identifier channelName) {
 		return false;
 	}
 }

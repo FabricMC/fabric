@@ -53,10 +53,10 @@ public final class NetworkingImpl {
 		ServerLoginConnectionEvents.LOGIN_QUERY_START.register((handler, server, sender, synchronizer) -> {
 			// Send early registration packet
 			PacketByteBuf buf = PacketByteBufs.create();
-			Collection<Identifier> channels = ServerPlayNetworking.getGlobalReceivers();
-			buf.writeVarInt(channels.size());
+			Collection<Identifier> channelsNames = ServerPlayNetworking.getGlobalReceivers();
+			buf.writeVarInt(channelsNames.size());
 
-			for (Identifier id : channels) {
+			for (Identifier id : channelsNames) {
 				buf.writeIdentifier(id);
 			}
 
@@ -77,12 +77,12 @@ public final class NetworkingImpl {
 				ids.add(buf.readIdentifier());
 			}
 
-			((ChannelInfoHolder) handler.getConnection()).getPendingChannels().addAll(ids);
+			((ChannelInfoHolder) handler.getConnection()).getPendingChannelsNames().addAll(ids);
 			NetworkingImpl.LOGGER.debug("Received accepted channels from the client for \"{}\"", handler.getConnectionInfo());
 		});
 	}
 
-	public static boolean isReservedPlayChannel(Identifier id) {
-		return id.equals(REGISTER_CHANNEL) || id.equals(UNREGISTER_CHANNEL);
+	public static boolean isReservedPlayChannel(Identifier channelName) {
+		return channelName.equals(REGISTER_CHANNEL) || channelName.equals(UNREGISTER_CHANNEL);
 	}
 }
