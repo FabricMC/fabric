@@ -51,11 +51,11 @@ public class MixinTheEndBiomeSource {
 		Biome vanillaBiome = cir.getReturnValue();
 
 		// Since all vanilla biomes are added to the registry, this will never fail.
-		// If not all vanilla biomes are added to the registry, this code will fail
-		// either way.
 		RegistryKey<Biome> vanillaKey = biomeRegistry.getKey(vanillaBiome).get();
 		RegistryKey<Biome> replacementKey;
 
+		// The x and z of the biome are divided by 64 to ensure custom biomes are large enough; going larger than this]
+		// seems to make custom biomes too hard to find.
 		if (vanillaKey == BiomeKeys.END_MIDLANDS || vanillaKey == BiomeKeys.END_BARRENS) {
 			// Since the highlands picker is statically populated by InternalBiomeData, picker will never be null.
 			WeightedBiomePicker highlandsPicker = InternalBiomeData.getEndBiomesMap().get(BiomeKeys.END_HIGHLANDS);
