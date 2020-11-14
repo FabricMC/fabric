@@ -77,12 +77,12 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 
 		// Handle reserved packets
 		if (NetworkingImpl.REGISTER_CHANNEL.equals(channelName)) {
-			receiveRegistration(true, PacketByteBufs.slice(originalBuf));
+			this.receiveRegistration(true, PacketByteBufs.slice(originalBuf));
 			return true;
 		}
 
 		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channelName)) {
-			receiveRegistration(false, PacketByteBufs.slice(originalBuf));
+			this.receiveRegistration(false, PacketByteBufs.slice(originalBuf));
 			return true;
 		}
 
@@ -95,7 +95,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		PacketByteBuf buf = PacketByteBufs.slice(originalBuf);
 
 		try {
-			receive(handler, buf);
+			this.receive(handler, buf);
 		} catch (Throwable ex) {
 			this.logger.error("Encountered exception while handling in channel with name \"{}\"", channelName, ex);
 			throw ex;
