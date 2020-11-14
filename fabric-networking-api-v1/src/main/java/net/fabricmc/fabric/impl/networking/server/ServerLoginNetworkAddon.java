@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.mojang.authlib.GameProfile;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,12 +60,13 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	private boolean firstQueryTick = true;
 
 	public ServerLoginNetworkAddon(ServerLoginNetworkHandler handler) {
+		super("ServerLoginNetworkAddon for " + handler.getConnectionInfo());
 		this.connection = handler.connection;
 		this.handler = handler;
 		this.server = ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 		this.queryIdFactory = QueryIdFactory.create();
 
-		ServerLoginConnectionEvents.LOGIN_INIT.invoker().onLoginInit(handler, server);
+		ServerLoginConnectionEvents.LOGIN_INIT.invoker().onLoginInit(handler, this.server);
 	}
 
 	// return true if no longer ticks query
@@ -131,10 +133,11 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	}
 
 	private boolean handle(int queryId, @Nullable PacketByteBuf originalBuf) {
+		this.logger.debug("Handling inbound login query with id {}", queryId);
 		Identifier channel = this.channels.remove(queryId);
 
 		if (channel == null) {
-			NetworkingImpl.LOGGER.warn("Query ID {} was received but no channel has been associated in {}!", queryId, this.connection);
+			this.logger.warn("Query ID {} was received but no query has been associated in {}!", queryId, this.connection);
 			return false;
 		}
 
@@ -150,7 +153,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		try {
 			handler.receive(this.handler, this, this.server, buf, understood, this.waits::add);
 		} catch (Throwable ex) {
-			NetworkingImpl.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
+			this.logger.error("Encountered exception while handling in channel \"{}\"", channel, ex);
 			throw ex;
 		}
 

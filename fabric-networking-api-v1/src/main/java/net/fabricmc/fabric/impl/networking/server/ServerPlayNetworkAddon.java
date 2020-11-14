@@ -41,7 +41,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private boolean canSendPackets = false;
 
 	public ServerPlayNetworkAddon(ServerPlayNetworkHandler handler, MinecraftServer server) {
-		super(ServerNetworkingImpl.PLAY, handler.getConnection());
+		super(ServerNetworkingImpl.PLAY, handler.getConnection(), "ServerPlayNetworkAddon for " + handler.player.getEntityName());
 		this.handler = handler;
 		this.server = server;
 

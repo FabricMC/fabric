@@ -43,7 +43,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	private boolean canSendPackets;
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
-		super(ClientNetworkingImpl.PLAY, handler.getConnection());
+		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
 		this.handler = handler;
 		this.client = client;
 
@@ -127,7 +127,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channel));
 
 			if (buf != null) {
-				this.sendPacket(NetworkingImpl.REGISTER_CHANNEL, buf);
+				this.sendPacket(NetworkingImpl.UNREGISTER_CHANNEL, buf);
 			}
 		}
 	}

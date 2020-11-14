@@ -61,7 +61,7 @@ public final class NetworkingImpl {
 			}
 
 			sender.sendPacket(EARLY_REGISTRATION_CHANNEL, buf);
-			NetworkingImpl.LOGGER.debug("Sent accepted channels to the client");
+			NetworkingImpl.LOGGER.debug("Sent accepted channels to the client for \"{}\"", handler.getConnectionInfo());
 		});
 
 		ServerLoginNetworking.registerGlobalReceiver(EARLY_REGISTRATION_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -> {
@@ -78,7 +78,7 @@ public final class NetworkingImpl {
 			}
 
 			((ChannelInfoHolder) handler.getConnection()).getPendingChannels().addAll(ids);
-			NetworkingImpl.LOGGER.debug("Received accepted channels from the client");
+			NetworkingImpl.LOGGER.debug("Received accepted channels from the client for \"{}\"", handler.getConnectionInfo());
 		});
 	}
 

@@ -44,7 +44,7 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 		PacketByteBuf buf = PacketByteBufs.create();
 		buf.writeText(new LiteralText(stuff));
 		ServerPlayNetworking.send(player, TEST_CHANNEL, buf);
-		NetworkingImpl.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
+		NetworkingTestmods.LOGGER.info("Sent custom payload packet in {}", TEST_CHANNEL);
 	}
 
 	public static void registerCommand(CommandDispatcher<ServerCommandSource> dispatcher) {

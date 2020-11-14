@@ -49,6 +49,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	private boolean firstResponse = true;
 
 	public ClientLoginNetworkAddon(ClientLoginNetworkHandler handler, MinecraftClient client) {
+		super("ClientLoginNetworkAddon for Client");
 		this.handler = handler;
 		this.client = client;
 
@@ -60,7 +61,9 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		return handlePacket(packet.getQueryId(), access.getChannel(), access.getPayload());
 	}
 
-	private boolean handlePacket(int queryId, Identifier channel, PacketByteBuf originalBuf) {
+	private boolean handlePacket(int queryId, Identifier channelName, PacketByteBuf originalBuf) {
+		this.logger.debug("Handling inbound login response with id {} and channel with name {}", queryId, channelName);
+
 		if (this.firstResponse) {
 			// Register global handlers
 			for (Map.Entry<Identifier, ClientLoginNetworking.LoginChannelHandler> entry : ClientNetworkingImpl.LOGIN.getHandlers().entrySet()) {
@@ -71,7 +74,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 			this.firstResponse = false;
 		}
 
-		@Nullable ClientLoginNetworking.LoginChannelHandler handler = this.getHandler(channel);
+		@Nullable ClientLoginNetworking.LoginChannelHandler handler = this.getHandler(channelName);
 
 		if (handler == null) {
 			return false;
@@ -93,7 +96,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 				this.handler.getConnection().send(packet, listener);
 			});
 		} catch (Throwable ex) {
-			NetworkingImpl.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
+			this.logger.error("Encountered exception while handling in channel with name \"{}\"", channelName, ex);
 			throw ex;
 		}
 

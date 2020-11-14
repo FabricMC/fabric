@@ -50,11 +50,12 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	protected final Set<Identifier> sendableChannels;
 	protected final Set<Identifier> sendableChannelsView;
 
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection) {
-		this(receiver, connection, new HashSet<>());
+	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
+		this(receiver, connection, new HashSet<>(), description);
 	}
 
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels) {
+	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels, String description) {
+		super(description);
 		this.connection = connection;
 		this.receiver = receiver;
 		this.sendableChannels = sendableChannels;
@@ -71,19 +72,21 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	// always supposed to handle async!
-	protected boolean handle(Identifier channel, PacketByteBuf originalBuf) {
+	protected boolean handle(Identifier channelName, PacketByteBuf originalBuf) {
+		this.logger.debug("Handling inbound packet from channel with name \"{}\"", channelName);
+
 		// Handle reserved packets
-		if (NetworkingImpl.REGISTER_CHANNEL.equals(channel)) {
+		if (NetworkingImpl.REGISTER_CHANNEL.equals(channelName)) {
 			receiveRegistration(true, PacketByteBufs.slice(originalBuf));
 			return true;
 		}
 
-		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channel)) {
+		if (NetworkingImpl.UNREGISTER_CHANNEL.equals(channelName)) {
 			receiveRegistration(false, PacketByteBufs.slice(originalBuf));
 			return true;
 		}
 
-		@Nullable H handler = this.getHandler(channel);
+		@Nullable H handler = this.getHandler(channelName);
 
 		if (handler == null) {
 			return false;
@@ -94,7 +97,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		try {
 			receive(handler, buf);
 		} catch (Throwable ex) {
-			NetworkingImpl.LOGGER.error("Encountered exception while handling in channel \"{}\"", channel, ex);
+			this.logger.error("Encountered exception while handling in channel with name \"{}\"", channelName, ex);
 			throw ex;
 		}
 
@@ -192,7 +195,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		try {
 			ids.add(new Identifier(literal));
 		} catch (InvalidIdentifierException ex) {
-			NetworkingImpl.LOGGER.warn("Received invalid channel identifier \"{}\" from connection {}", literal, this.connection, ex);
+			this.logger.warn("Received invalid channel identifier \"{}\" from connection {}", literal, this.connection, ex);
 		}
 	}
 
