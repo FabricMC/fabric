@@ -59,6 +59,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
 
+		this.receiver.startSession(this);
 		ClientPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.client);
 
 		this.sendChannelRegistrationPacket();
