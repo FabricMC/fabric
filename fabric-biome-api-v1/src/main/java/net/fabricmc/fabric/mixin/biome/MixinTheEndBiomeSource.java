@@ -57,21 +57,20 @@ public class MixinTheEndBiomeSource {
 		RegistryKey<Biome> replacementKey;
 
 		if (vanillaKey == BiomeKeys.END_MIDLANDS || vanillaKey == BiomeKeys.END_BARRENS) {
-			// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
+			// Since the highlands picker is statically populated by InternalBiomeData, picker will never be null.
 			WeightedBiomePicker highlandsPicker = InternalBiomeData.getEndBiomesMap().get(BiomeKeys.END_HIGHLANDS);
 			RegistryKey<Biome> highlandsKey = highlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
 
 			if (vanillaKey == BiomeKeys.END_MIDLANDS) {
-				// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
 				WeightedBiomePicker midlandsPicker = InternalBiomeData.getEndMidlandsMap().get(highlandsKey);
-				replacementKey = midlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
+				replacementKey = (midlandsPicker == null) ? vanillaKey : midlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
+
 			} else {
-				// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
 				WeightedBiomePicker barrensPicker = InternalBiomeData.getEndBarrensMap().get(highlandsKey);
-				replacementKey = barrensPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
+				replacementKey = (barrensPicker == null) ? vanillaKey : barrensPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
 			}
 		} else {
-			// Since the pickers are statically populated by InternalBiomeData, picker will never be null.
+			// Since the main island and small islands pickers are statically populated by InternalBiomeData, picker will never be null.
 			WeightedBiomePicker picker = InternalBiomeData.getEndBiomesMap().get(vanillaKey);
 			replacementKey = picker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
 		}

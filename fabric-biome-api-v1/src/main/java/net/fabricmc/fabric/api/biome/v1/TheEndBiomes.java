@@ -77,7 +77,7 @@ public final class TheEndBiomes {
 	/**
 	 * <p>Adds the biome as an end midlands of the parent end highlands biome. End Midlands make up the area on
 	 * the large outer islands between the highlands and the barrens and are similar to edge biomes in the
-	 * overworld.</p>
+	 * overworld. If you don't call this method, the vanilla biome will be used by default.</p>
 	 *
 	 * @param highlands The highlands biome to where the midlands biome is added
 	 * @param midlands the biome to be added as a midlands biome
@@ -90,7 +90,9 @@ public final class TheEndBiomes {
 	}
 
 	/**
-	 * Ands the barrens to with the specified weight to the end barrens regions which correspond to the End Barrens barrens.
+	 * <p>Adds the biome as an end barrens of the parent end highlands biome. End Midlands make up the area on
+	 * the edge of the large outer islands and are similar to edge biomes in the overworld. If you don't call
+	 * this method, the vanilla biome will be used by default.</p>
 	 *
 	 * @param highlands The highlands biome to where the barrends biome is added
 	 * @param barrens the biome to be added as a barrens biome
