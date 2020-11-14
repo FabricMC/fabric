@@ -39,7 +39,7 @@ import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
-	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginChannelHandler> LOGIN = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>();
 	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {

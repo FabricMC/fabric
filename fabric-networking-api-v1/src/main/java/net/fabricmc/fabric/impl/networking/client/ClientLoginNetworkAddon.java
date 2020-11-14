@@ -39,11 +39,10 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.networking.v1.FutureListeners;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 
 @Environment(EnvType.CLIENT)
-public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginChannelHandler> {
+public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLoginNetworking.LoginQueryRequestHandler> {
 	private final ClientLoginNetworkHandler handler;
 	private final MinecraftClient client;
 	private boolean firstResponse = true;
@@ -66,7 +65,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 
 		if (this.firstResponse) {
 			// Register global handlers
-			for (Map.Entry<Identifier, ClientLoginNetworking.LoginChannelHandler> entry : ClientNetworkingImpl.LOGIN.getHandlers().entrySet()) {
+			for (Map.Entry<Identifier, ClientLoginNetworking.LoginQueryRequestHandler> entry : ClientNetworkingImpl.LOGIN.getHandlers().entrySet()) {
 				ClientLoginNetworking.register(this.handler, entry.getKey(), entry.getValue());
 			}
 
@@ -74,7 +73,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 			this.firstResponse = false;
 		}
 
-		@Nullable ClientLoginNetworking.LoginChannelHandler handler = this.getHandler(channelName);
+		@Nullable ClientLoginNetworking.LoginQueryRequestHandler handler = this.getHandler(channelName);
 
 		if (handler == null) {
 			return false;

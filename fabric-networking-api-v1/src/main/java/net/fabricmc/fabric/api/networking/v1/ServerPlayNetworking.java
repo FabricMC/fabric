@@ -43,12 +43,12 @@ import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtens
  * @see ClientPlayNetworking
  */
 public final class ServerPlayNetworking {
-	public static boolean registerGlobalReceiver(Identifier channel, PlayChannelHandler channelHandler) {
-		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(channel, channelHandler);
+	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
+		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
 	}
 
 	@Nullable
-	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channel) {
+	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
@@ -58,14 +58,14 @@ public final class ServerPlayNetworking {
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregister(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
-	 * @param channel the id of the channel
+	 * @param channelName the id of the channel
 	 * @param networkHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
+	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channel, channelHandler);
+		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channelName, channelHandler);
 	}
 
 	/**
@@ -73,22 +73,22 @@ public final class ServerPlayNetworking {
 	 *
 	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
 	 *
-	 * @param channel the id of the channel
+	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
 	@Nullable
-	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channel) {
+	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channel);
+		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
 		return ServerNetworkingImpl.PLAY.getChannels();
 	}
 
-	public static boolean hasGlobalReceiver(Identifier id) {
-		return ServerNetworkingImpl.PLAY.hasChannel(id);
+	public static boolean hasGlobalReceiver(Identifier channelName) {
+		return ServerNetworkingImpl.PLAY.hasChannel(channelName);
 	}
 
 	public static Collection<Identifier> getC2SReceivers(ServerPlayerEntity player) {
@@ -99,12 +99,12 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
 	}
 
-	public static boolean canReceiveC2S(ServerPlayerEntity player, Identifier id) {
-		return canReceiveC2S(player.networkHandler, id);
+	public static boolean canReceiveC2S(ServerPlayerEntity player, Identifier channelName) {
+		return canReceiveC2S(player.networkHandler, channelName);
 	}
 
-	public static boolean canReceiveC2S(ServerPlayNetworkHandler handler, Identifier id) {
-		return ServerNetworkingImpl.getAddon(handler).hasReceivableChannel(id);
+	public static boolean canReceiveC2S(ServerPlayNetworkHandler handler, Identifier channelName) {
+		return ServerNetworkingImpl.getAddon(handler).hasReceivableChannel(channelName);
 	}
 
 	public static Collection<Identifier> getS2CReceivers(ServerPlayerEntity player) {
@@ -115,32 +115,32 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();
 	}
 
-	public static boolean canReceiveS2C(ServerPlayerEntity player, Identifier channel) {
+	public static boolean canReceiveS2C(ServerPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return canReceiveS2C(player.networkHandler, channel);
+		return canReceiveS2C(player.networkHandler, channelName);
 	}
 
-	public static boolean canReceiveS2C(ServerPlayNetworkHandler handler, Identifier channel) {
-		return ServerNetworkingImpl.getAddon(handler).hasSendableChannel(channel);
+	public static boolean canReceiveS2C(ServerPlayNetworkHandler handler, Identifier channelName) {
+		return ServerNetworkingImpl.getAddon(handler).hasSendableChannel(channelName);
 	}
 
-	public static Packet<?> createS2CPacket(Identifier channel, PacketByteBuf buf) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public static Packet<?> createS2CPacket(Identifier channelName, PacketByteBuf buf) {
+		Objects.requireNonNull(channelName, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ServerNetworkingImpl.createPlayC2SPacket(channel, buf);
+		return ServerNetworkingImpl.createPlayC2SPacket(channelName, buf);
 	}
 
 	/**
 	 * Sends a packet to a player.
 	 *
 	 * @param player the player to send the packet to
-	 * @param channel the channel of the packet
+	 * @param channelName the channel of the packet
 	 * @param buf the payload of the packet.
 	 */
-	public static void send(ServerPlayerEntity player, Identifier channel, PacketByteBuf buf) {
-		player.networkHandler.sendPacket(createS2CPacket(channel, buf));
+	public static void send(ServerPlayerEntity player, Identifier channelName, PacketByteBuf buf) {
+		player.networkHandler.sendPacket(createS2CPacket(channelName, buf));
 	}
 
 	// Util methods

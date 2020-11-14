@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 
 public final class ServerNetworkingImpl {
-	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginChannelHandler> LOGIN = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ServerLoginNetworking.LoginQueryResponseHandler> LOGIN = new GlobalReceiverRegistry<>();
 	public static final GlobalReceiverRegistry<ServerPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 
 	public static ServerPlayNetworkAddon getAddon(ServerPlayNetworkHandler handler) {

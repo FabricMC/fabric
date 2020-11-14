@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.mojang.authlib.GameProfile;
 import io.netty.util.concurrent.GenericFutureListener;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,12 +44,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractNetworkAddon;
-import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryRequestS2CPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.LoginQueryResponseC2SPacketAccessor;
 import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAccessor;
 
-public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginChannelHandler> implements PacketSender {
+public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLoginNetworking.LoginQueryResponseHandler> implements PacketSender {
 	private final ClientConnection connection;
 	private final ServerLoginNetworkHandler handler;
 	private final MinecraftServer server;
@@ -76,7 +74,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 			this.sendCompressionPacket();
 
 			// Register global receivers.
-			for (Map.Entry<Identifier, ServerLoginNetworking.LoginChannelHandler> entry : ServerNetworkingImpl.LOGIN.getHandlers().entrySet()) {
+			for (Map.Entry<Identifier, ServerLoginNetworking.LoginQueryResponseHandler> entry : ServerNetworkingImpl.LOGIN.getHandlers().entrySet()) {
 				ServerLoginNetworking.register(this.handler, entry.getKey(), entry.getValue());
 			}
 
@@ -142,7 +140,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		}
 
 		boolean understood = originalBuf != null;
-		@Nullable ServerLoginNetworking.LoginChannelHandler handler = ServerNetworkingImpl.LOGIN.getHandler(channel);
+		@Nullable ServerLoginNetworking.LoginQueryResponseHandler handler = ServerNetworkingImpl.LOGIN.getHandler(channel);
 
 		if (handler == null) {
 			return false;

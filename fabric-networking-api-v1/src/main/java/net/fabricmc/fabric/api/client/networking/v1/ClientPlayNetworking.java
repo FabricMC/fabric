@@ -47,12 +47,12 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
  */
 @Environment(EnvType.CLIENT)
 public final class ClientPlayNetworking {
-	public static boolean registerGlobalReceiver(Identifier channel, PlayChannelHandler handler) {
-		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channel, handler);
+	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler handler) {
+		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, handler);
 	}
 
 	@Nullable
-	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channel) {
+	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		throw new UnsupportedOperationException("Reimplement me!");
 	}
 
@@ -62,14 +62,14 @@ public final class ClientPlayNetworking {
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregister(ClientPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
-	 * @param channel the id of the channel
+	 * @param channelName the id of the channel
 	 * @param networkHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean register(ClientPlayNetworkHandler networkHandler, Identifier channel, PlayChannelHandler channelHandler) {
+	public static boolean register(ClientPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channel, channelHandler);
+		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, channelHandler);
 	}
 
 	/**
@@ -77,14 +77,14 @@ public final class ClientPlayNetworking {
 	 *
 	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
 	 *
-	 * @param channel the id of the channel
+	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
 	@Nullable
-	public static PlayChannelHandler unregister(ClientPlayNetworkHandler networkHandler, Identifier channel) {
+	public static PlayChannelHandler unregister(ClientPlayNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channel);
+		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
 	}
 
 	public static Collection<Identifier> getGlobalReceivers() {
@@ -119,16 +119,16 @@ public final class ClientPlayNetworking {
 		throw new IllegalStateException("Cannot check if the client can receive packets on specific channels while not in game!");
 	}
 
-	public static boolean canReceiveS2C(ClientPlayerEntity player, Identifier channel) {
+	public static boolean canReceiveS2C(ClientPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
-		return canReceiveS2C(player.networkHandler, channel);
+		return canReceiveS2C(player.networkHandler, channelName);
 	}
 
-	public static boolean canReceiveS2C(ClientPlayNetworkHandler handler, Identifier channel) {
+	public static boolean canReceiveS2C(ClientPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
-		return ClientNetworkingImpl.getAddon(handler).hasReceivableChannel(channel);
+		return ClientNetworkingImpl.getAddon(handler).hasReceivableChannel(channelName);
 	}
 
 	public static Collection<Identifier> getC2SReceivers() throws IllegalStateException {
@@ -147,44 +147,44 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.getAddon(handler).getSendableChannels();
 	}
 
-	public static boolean canReceiveC2S(Identifier channel) throws IllegalArgumentException {
+	public static boolean canReceiveC2S(Identifier channelName) throws IllegalArgumentException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return canReceiveC2S(MinecraftClient.getInstance().getNetworkHandler(), channel);
+			return canReceiveC2S(MinecraftClient.getInstance().getNetworkHandler(), channelName);
 		}
 
 		throw new IllegalStateException("Cannot check whether the server can receive a packet while not in game!");
 	}
 
-	public static boolean canReceiveC2S(ClientPlayerEntity player, Identifier channel) {
+	public static boolean canReceiveC2S(ClientPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
-		return canReceiveC2S(player.networkHandler, channel);
+		return canReceiveC2S(player.networkHandler, channelName);
 	}
 
-	public static boolean canReceiveC2S(ClientPlayNetworkHandler handler, Identifier channel) {
+	public static boolean canReceiveC2S(ClientPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
-		Objects.requireNonNull(channel, "Channel cannot be null");
+		Objects.requireNonNull(channelName, "Channel cannot be null");
 
-		return ClientNetworkingImpl.getAddon(handler).hasSendableChannel(channel);
+		return ClientNetworkingImpl.getAddon(handler).hasSendableChannel(channelName);
 	}
 
-	public static Packet<?> createC2SPacket(Identifier channel, PacketByteBuf buf) {
-		Objects.requireNonNull(channel, "Channel cannot be null");
+	public static Packet<?> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
+		Objects.requireNonNull(channelName, "Channel cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
-		return ClientNetworkingImpl.createPlayC2SPacket(channel, buf);
+		return ClientNetworkingImpl.createPlayC2SPacket(channelName, buf);
 	}
 
 	/**
 	 * Sends a packet to the connected server.
 	 *
-	 * @param channel the channel of the packet
+	 * @param channelName the channel of the packet
 	 * @param buf the payload of the packet
 	 * @throws IllegalStateException if the client's player is {@code null}
 	 */
-	public static void send(Identifier channel, PacketByteBuf buf) throws IllegalStateException {
+	public static void send(Identifier channelName, PacketByteBuf buf) throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			send(MinecraftClient.getInstance().getNetworkHandler(), channel, buf);
+			send(MinecraftClient.getInstance().getNetworkHandler(), channelName, buf);
 		}
 
 		throw new IllegalStateException("Cannot send packets when not in game!");
@@ -194,15 +194,15 @@ public final class ClientPlayNetworking {
 	 * Sends a packet to a server.
 	 *
 	 * @param handler a client play network handler
-	 * @param channel the channel of the packet
+	 * @param channelName the channel of the packet
 	 * @param buf the payload of the packet
 	 * @throws IllegalStateException if the client's player is {@code null}
 	 */
-	public static void send(ClientPlayNetworkHandler handler, Identifier channel, PacketByteBuf buf) {
+	public static void send(ClientPlayNetworkHandler handler, Identifier channelName, PacketByteBuf buf) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
 		// Channel and buf is null checked by addon impls
-		handler.sendPacket(createC2SPacket(channel, buf));
+		handler.sendPacket(createC2SPacket(channelName, buf));
 	}
 
 	@Environment(EnvType.CLIENT)
