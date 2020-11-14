@@ -196,7 +196,7 @@ task runAutoTestServer(type: RunServerTask) {
 	project.subprojects {
 		classpath it.sourceSets.testmod.runtimeClasspath
 	}
-	jvmArgs "-Dfabric.autoTest=true"
+	jvmArgs "-Dfabric.autoTest"
 	args "--nogui"
 }
 

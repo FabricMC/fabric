@@ -26,7 +26,7 @@ public class FabricApiBaseTestInit implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		if (Boolean.parseBoolean(System.getProperty("fabric.autoTest", "false"))) {
+		if (System.getProperty("fabric.autoTest") != null) {
 			ServerTickEvents.END_SERVER_TICK.register(server -> {
 				ticks++;
 
