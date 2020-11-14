@@ -21,5 +21,8 @@ import java.util.Collection;
 import net.minecraft.util.Identifier;
 
 public interface ChannelInfoHolder {
-	Collection<Identifier> getChannels();
+	/**
+	 * @return Channels which are declared as receivable by the other side but have not been declared yet.
+	 */
+	Collection<Identifier> getPendingChannels();
 }

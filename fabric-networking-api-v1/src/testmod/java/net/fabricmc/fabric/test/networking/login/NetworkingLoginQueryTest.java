@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.networking.login;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.FutureTask;
 
 import net.minecraft.server.MinecraftServer;
@@ -34,6 +35,7 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		ServerLoginConnectionEvents.LOGIN_QUERY_START.register(this::onLoginStart);
+		ServerLoginConnectionEvents.LOGIN_QUERY_START.register(this::delaySimply);
 
 		// login delaying example
 		ServerLoginNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -> {
@@ -52,6 +54,19 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 				synchronizer.waitFor(future);
 			}
 		});
+	}
+
+	private void delaySimply(ServerLoginNetworkHandler handler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
+		synchronizer.waitFor(CompletableFuture.runAsync(() -> {
+			NetworkingTestmods.LOGGER.info("Starting simple delay task for 3000 milliseconds");
+
+			try {
+				Thread.sleep(3000);
+				NetworkingTestmods.LOGGER.info("Starting simple delay task completed");
+			} catch (InterruptedException e) {
+				NetworkingTestmods.LOGGER.error("Delay task caught exception");
+			}
+		}));
 	}
 
 	private void onLoginStart(ServerLoginNetworkHandler networkHandler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {

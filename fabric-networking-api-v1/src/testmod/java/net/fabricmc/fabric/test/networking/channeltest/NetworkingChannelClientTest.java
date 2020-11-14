@@ -30,7 +30,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 public final class NetworkingChannelClientTest implements ClientModInitializer {
@@ -47,7 +47,7 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 			}
 		});
 
-		ClientPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
+		S2CPlayChannelEvents.REGISTER.register((handler, sender, client, channels) -> {
 			SUPPORTED_C2S_CHANNELS.addAll(channels);
 
 			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
@@ -55,7 +55,7 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 			}
 		});
 
-		ClientPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
+		S2CPlayChannelEvents.UNREGISTER.register((handler, sender, client, channels) -> {
 			SUPPORTED_C2S_CHANNELS.removeAll(channels);
 
 			if (MinecraftClient.getInstance().currentScreen instanceof ChannelScreen) {
@@ -68,7 +68,7 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 			SUPPORTED_C2S_CHANNELS.clear();
 		});
 
-		ClientPlayConnectionEvents.PLAY_DISCONNECT.register((handler, sender, client) -> {
+		ClientPlayConnectionEvents.PLAY_DISCONNECT.register((handler, client) -> {
 			SUPPORTED_C2S_CHANNELS.clear();
 		});
 	}

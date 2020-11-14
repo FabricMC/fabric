@@ -18,16 +18,16 @@ package net.fabricmc.fabric.impl.networking;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.network.C2SPacketTypeCallback;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayChannelEvents;
+import net.fabricmc.fabric.api.networking.v1.C2SPlayChannelEvents;
 
 public final class OldNetworkingHooks implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Must be lambdas below
-		ServerPlayChannelEvents.REGISTER.register((handler, server, sender, channels) -> {
+		C2SPlayChannelEvents.REGISTER.register((handler, server, sender, channels) -> {
 			C2SPacketTypeCallback.REGISTERED.invoker().accept(handler.player, channels);
 		});
-		ServerPlayChannelEvents.UNREGISTER.register((handler, server, sender, channels) -> {
+		C2SPlayChannelEvents.UNREGISTER.register((handler, server, sender, channels) -> {
 			C2SPacketTypeCallback.UNREGISTERED.invoker().accept(handler.player, channels);
 		});
 	}

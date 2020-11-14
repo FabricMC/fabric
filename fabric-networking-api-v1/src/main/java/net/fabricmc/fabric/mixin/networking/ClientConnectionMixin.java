@@ -80,7 +80,7 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 	}
 
 	@Override
-	public Collection<Identifier> getChannels() {
+	public Collection<Identifier> getPendingChannels() {
 		return this.playChannels;
 	}
 }

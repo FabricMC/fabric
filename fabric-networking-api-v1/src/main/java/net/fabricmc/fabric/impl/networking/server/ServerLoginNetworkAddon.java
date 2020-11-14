@@ -101,7 +101,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 					return oldEx;
 				});
 			} catch (InterruptedException | CancellationException ignored) {
-				// ignored
+				// ignore
 			}
 
 			return true;

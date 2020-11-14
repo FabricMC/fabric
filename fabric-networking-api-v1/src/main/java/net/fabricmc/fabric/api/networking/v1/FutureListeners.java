@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.Objects;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.local.LocalChannel;
@@ -36,6 +38,8 @@ public final class FutureListeners {
 	 * @return the future listener
 	 */
 	public static ChannelFutureListener free(PacketByteBuf buf) {
+		Objects.requireNonNull(buf, "PacketByteBuf cannot be null");
+
 		return (future) -> {
 			if (!isLocalChannel(future.channel())) {
 				buf.release();
@@ -58,12 +62,16 @@ public final class FutureListeners {
 	 *
 	 * @param first  the first future listener
 	 * @param second the second future listener
-	 * @param <A>    the future type of the first listener, used for casting
-	 * @param <B>    the future type of the second listener, used for casting
+	 * @param <A> the future type of the first listener, used for casting
+	 * @param <B> the future type of the second listener, used for casting
 	 * @return the combined future listener.
 	 */
 	@SuppressWarnings("unchecked") // A, B exist just to allow casting lol
 	public static <A extends Future<? super Void>, B extends Future<? super Void>> GenericFutureListener<? extends Future<? super Void>> union(GenericFutureListener<A> first, GenericFutureListener<B> second) {
+		if (first == null && second == null) {
+			return future -> { };
+		}
+
 		if (first == null) {
 			return second;
 		}
@@ -72,7 +80,7 @@ public final class FutureListeners {
 			return first;
 		}
 
-		return (future) -> {
+		return future -> {
 			first.operationComplete((A) future);
 			second.operationComplete((B) future);
 		};

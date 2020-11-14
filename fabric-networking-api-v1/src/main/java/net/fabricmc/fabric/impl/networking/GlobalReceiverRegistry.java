@@ -55,7 +55,7 @@ public final class GlobalReceiverRegistry<H> {
 
 	public boolean registerGlobalReceiver(Identifier channel, H handler) {
 		Objects.requireNonNull(channel, "Channel cannot be null");
-		Objects.requireNonNull(handler, "Packet handler cannot be null");
+		Objects.requireNonNull(handler, "Channel handler cannot be null");
 
 		if (NetworkingImpl.isReservedPlayChannel(channel)) {
 			throw new IllegalArgumentException(String.format("Cannot register handler for reserved channel \"%s\"", channel));
@@ -111,6 +111,8 @@ public final class GlobalReceiverRegistry<H> {
 	}
 
 	public boolean hasChannel(Identifier channel) {
+		Objects.requireNonNull(channel, "Channel cannot be null");
+
 		Lock lock = this.lock.readLock();
 		lock.lock();
 

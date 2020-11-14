@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
+import java.util.Objects;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
@@ -56,6 +58,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#readBytes(int)
 	 */
 	public static PacketByteBuf readBytes(ByteBuf buf, int length) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.readBytes(length));
 	}
 
@@ -68,6 +72,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#readSlice(int)
 	 */
 	public static PacketByteBuf readSlice(ByteBuf buf, int length) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.readSlice(length));
 	}
 
@@ -80,6 +86,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#readRetainedSlice(int)
 	 */
 	public static PacketByteBuf readRetainedSlice(ByteBuf buf, int length) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.readRetainedSlice(length));
 	}
 
@@ -91,6 +99,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#copy()
 	 */
 	public static PacketByteBuf copy(ByteBuf buf) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.copy());
 	}
 
@@ -104,6 +114,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#copy(int, int)
 	 */
 	public static PacketByteBuf copy(ByteBuf buf, int index, int length) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.copy(index, length));
 	}
 
@@ -115,6 +127,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#slice()
 	 */
 	public static PacketByteBuf slice(ByteBuf buf) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.slice());
 	}
 
@@ -126,6 +140,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#retainedSlice()
 	 */
 	public static PacketByteBuf retainedSlice(ByteBuf buf) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.retainedSlice());
 	}
 
@@ -139,6 +155,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#slice(int, int)
 	 */
 	public static PacketByteBuf slice(ByteBuf buf, int index, int length) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.slice(index, length));
 	}
 
@@ -152,6 +170,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#retainedSlice(int, int)
 	 */
 	public static PacketByteBuf retainedSlice(ByteBuf buf, int index, int length) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.retainedSlice(index, length));
 	}
 
@@ -163,6 +183,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#duplicate()
 	 */
 	public static PacketByteBuf duplicate(ByteBuf buf) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.duplicate());
 	}
 
@@ -174,6 +196,8 @@ public final class PacketByteBufs {
 	 * @see ByteBuf#retainedDuplicate()
 	 */
 	public static PacketByteBuf retainedDuplicate(ByteBuf buf) {
+		Objects.requireNonNull(buf, "ByteBuf cannot be null");
+
 		return new PacketByteBuf(buf.retainedDuplicate());
 	}
 

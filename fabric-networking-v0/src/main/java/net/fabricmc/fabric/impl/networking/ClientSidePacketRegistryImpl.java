@@ -40,7 +40,8 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canServerReceive(Identifier id) {
-		// FIXME: This is probably wrong?
+		// FIXME: DO NOT PULL TILL FIXED:
+		//  This is probably wrong?
 		return ClientNetworkingImpl.PLAY.hasChannel(id);
 	}
 

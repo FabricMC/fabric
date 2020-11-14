@@ -39,6 +39,11 @@ import net.minecraft.util.InvalidIdentifierException;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 
+/**
+ * A network addon which is aware of the channels the other side may receive.
+ *
+ * @param <H> the channel handler type
+ */
 public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender {
 	protected final ClientConnection connection;
 	protected final GlobalReceiverRegistry<H> receiver;
@@ -57,7 +62,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	}
 
 	protected void registerPendingChannels(ChannelInfoHolder holder) {
-		final Collection<Identifier> pending = holder.getChannels();
+		final Collection<Identifier> pending = holder.getPendingChannels();
 
 		if (!pending.isEmpty()) {
 			register(new ArrayList<>(pending));
@@ -172,6 +177,9 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		this.connection.send(packet, callback);
 	}
 
+	/**
+	 * Schedules a task to run on the main thread.
+	 */
 	protected abstract void schedule(Runnable task);
 
 	protected abstract void invokeRegisterEvent(List<Identifier> ids);

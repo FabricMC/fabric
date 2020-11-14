@@ -78,6 +78,7 @@ public final class ClientLoginNetworking {
 		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channel, channelHandler);
 	}
 
+	@Nullable
 	public static LoginChannelHandler unregister(ClientLoginNetworkHandler networkHandler, Identifier channel) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 

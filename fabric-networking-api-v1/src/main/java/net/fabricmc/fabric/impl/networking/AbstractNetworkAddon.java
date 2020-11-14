@@ -29,10 +29,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
+/**
+ * A network addon is a simple abstraction to hold information about a player's registered channels.
+ *
+ * @param <H> the channel handler type
+ */
 public abstract class AbstractNetworkAddon<H> {
 	// A lock is used due to possible access on netty's event loops and game thread at same times such as during dynamic registration
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
-	// Sync map should be fine as there is little read write competitions
+	// Sync map should be fine as there is little read write competition
+	// All access to this map is guarded by the lock
 	private final Map<Identifier, H> handlers = new HashMap<>();
 
 	protected AbstractNetworkAddon() {
