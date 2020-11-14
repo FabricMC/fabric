@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Offers access to events related to the connection to a client on a logical server.
+ * Offers access to events related to the connection to a client on a logical server while a client is in game.
  */
 public final class ServerPlayConnectionEvents {
 	/**
