@@ -53,7 +53,6 @@ public interface PacketSender {
 	 * @param packet the packet
 	 * @param callback an optional callback to execute after the packet is sent, may be {@code null}. The callback may also accept a {@link ChannelFutureListener}.
 	 */
-	// the generic future listener can accept ChannelFutureListener
 	void sendPacket(Packet<?> packet, @Nullable GenericFutureListener<? extends Future<? super Void>> callback);
 
 	/**

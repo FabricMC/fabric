@@ -56,12 +56,18 @@ public final class S2CPlayChannelEvents {
 	private S2CPlayChannelEvents() {
 	}
 
+	/**
+	 * @see S2CPlayChannelEvents#REGISTER
+	 */
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Register {
 		void onChannelRegister(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, List<Identifier> channels);
 	}
 
+	/**
+	 * @see S2CPlayChannelEvents#UNREGISTER
+	 */
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Unregister {

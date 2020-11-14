@@ -43,7 +43,6 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 			return ServerPlayNetworking.canReceiveS2C((ServerPlayerEntity) player, id);
 		}
 
-		// TODO: Warn or fail?
 		return false;
 	}
 
@@ -51,6 +50,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	public void sendToPlayer(PlayerEntity player, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (player instanceof ServerPlayerEntity) {
 			((ServerPlayerEntity) player).networkHandler.sendPacket(packet, completionListener);
+			return;
 		}
 
 		throw new RuntimeException("Can only send to ServerPlayerEntities!");

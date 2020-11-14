@@ -52,11 +52,17 @@ public final class C2SPlayChannelEvents {
 	private C2SPlayChannelEvents() {
 	}
 
+	/**
+	 * @see C2SPlayChannelEvents#REGISTER
+	 */
 	@FunctionalInterface
 	public interface Register {
 		void onChannelRegister(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);
 	}
 
+	/**
+	 * @see C2SPlayChannelEvents#UNREGISTER
+	 */
 	@FunctionalInterface
 	public interface Unregister {
 		void onChannelUnregister(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, List<Identifier> channels);

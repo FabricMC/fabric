@@ -34,24 +34,21 @@ import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.api.network.PacketConsumer;
 import net.fabricmc.fabric.api.network.PacketContext;
 import net.fabricmc.fabric.api.network.PacketRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 
 public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canServerReceive(Identifier id) {
-		// FIXME: DO NOT PULL TILL FIXED:
-		//  This is probably wrong?
-		return ClientNetworkingImpl.PLAY.hasChannel(id);
+		return ClientPlayNetworking.canReceiveS2C(id);
 	}
 
 	@Override
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			throw new IllegalStateException(); // TODO: Error message
+			MinecraftClient.getInstance().getNetworkHandler().getConnection().send(packet, completionListener);
 		}
 
-		MinecraftClient.getInstance().getNetworkHandler().getConnection().send(packet, completionListener);
+		throw new IllegalStateException("Cannot send packet to server while not in game!"); // TODO: Error message
 	}
 
 	@Override
@@ -86,6 +83,6 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 
 	@Override
 	public void unregister(Identifier id) {
-		ServerPlayNetworking.unregisterGlobalReceiver(id);
+		ClientPlayNetworking.unregisterGlobalReceiver(id);
 	}
 }
