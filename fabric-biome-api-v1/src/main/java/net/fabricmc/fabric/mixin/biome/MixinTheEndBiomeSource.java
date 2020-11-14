@@ -64,7 +64,6 @@ public class MixinTheEndBiomeSource {
 			if (vanillaKey == BiomeKeys.END_MIDLANDS) {
 				WeightedBiomePicker midlandsPicker = InternalBiomeData.getEndMidlandsMap().get(highlandsKey);
 				replacementKey = (midlandsPicker == null) ? vanillaKey : midlandsPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
-
 			} else {
 				WeightedBiomePicker barrensPicker = InternalBiomeData.getEndBarrensMap().get(highlandsKey);
 				replacementKey = (barrensPicker == null) ? vanillaKey : barrensPicker.pickFromNoise(randomnessSource, biomeX/64.0, 0, biomeZ/64.0);
