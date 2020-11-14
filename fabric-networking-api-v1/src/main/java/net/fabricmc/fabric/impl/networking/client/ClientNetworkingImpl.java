@@ -33,15 +33,14 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
-import net.fabricmc.fabric.impl.networking.GlobalLoginReceiverRegistry;
-import net.fabricmc.fabric.impl.networking.GlobalPlayReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
-	public static final GlobalLoginReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalLoginReceiverRegistry<>();
-	public static final GlobalPlayReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalPlayReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>();
+	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return ((ClientPlayNetworkHandlerExtensions) handler).getAddon();

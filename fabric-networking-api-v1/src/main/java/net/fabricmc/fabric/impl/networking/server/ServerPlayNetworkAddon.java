@@ -55,6 +55,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
 
+		this.receiver.startSession(this);
 		ServerPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.server);
 		this.sendChannelRegistrationPacket();
 		this.canSendPackets = true;
@@ -120,6 +121,12 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 				this.sendPacket(NetworkingImpl.UNREGISTER_CHANNEL, buf);
 			}
 		}
+	}
+
+	@Override
+	public void invokeDisconnectEvent() {
+		ServerPlayConnectionEvents.PLAY_DISCONNECT.invoker().onPlayDisconnect(this.handler, this.server);
+		this.receiver.endSession(this);
 	}
 
 	@Override

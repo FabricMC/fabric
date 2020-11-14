@@ -33,7 +33,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
 
-import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
 import net.fabricmc.fabric.impl.networking.DisconnectPacketSource;
 import net.fabricmc.fabric.impl.networking.PacketCallbackListener;
 import net.fabricmc.fabric.impl.networking.server.ServerLoginNetworkAddon;
@@ -79,7 +78,7 @@ abstract class ServerLoginNetworkHandlerMixin implements ServerLoginNetworkHandl
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void handleDisconnection(Text reason, CallbackInfo ci) {
-		ServerLoginConnectionEvents.LOGIN_DISCONNECT.invoker().onLoginDisconnect((ServerLoginNetworkHandler) (Object) this, this.server);
+		this.addon.invokeDisconnectEvent();
 	}
 
 	@Override

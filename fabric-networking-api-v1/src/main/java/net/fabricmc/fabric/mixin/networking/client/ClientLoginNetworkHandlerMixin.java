@@ -31,7 +31,6 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientLoginNetworkHandlerExtensions;
 
@@ -59,7 +58,7 @@ abstract class ClientLoginNetworkHandlerMixin implements ClientLoginNetworkHandl
 
 	@Inject(method = "onDisconnected", at = @At("HEAD"))
 	private void invokeLoginDisconnectEvent(Text reason, CallbackInfo ci) {
-		ClientLoginConnectionEvents.LOGIN_DISCONNECT.invoker().onLoginDisconnect((ClientLoginNetworkHandler) (Object) this, this.client);
+		this.addon.invokeDisconnectEvent();
 	}
 
 	@Override

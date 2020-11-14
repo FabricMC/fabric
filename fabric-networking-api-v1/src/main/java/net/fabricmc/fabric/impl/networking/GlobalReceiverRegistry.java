@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -29,15 +30,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
-abstract class AbstractGlobalReceiverRegistry<H> {
+public final class GlobalReceiverRegistry<H> {
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Map<Identifier, H> handlers;
+	private final Set<AbstractNetworkAddon<H>> trackedAddons = new HashSet<>();
 
-	AbstractGlobalReceiverRegistry() {
+	public GlobalReceiverRegistry() {
 		this(new HashMap<>()); // sync map should be fine as there is little read write competitions
 	}
 
-	AbstractGlobalReceiverRegistry(Map<Identifier, H> map) {
+	public GlobalReceiverRegistry(Map<Identifier, H> map) {
 		this.handlers = map;
 	}
 
@@ -68,7 +70,7 @@ abstract class AbstractGlobalReceiverRegistry<H> {
 			final boolean replaced = this.handlers.putIfAbsent(channelName, handler) == null;
 
 			if (!replaced) {
-				this.handleRegistration(channelName);
+				this.handleRegistration(channelName, handler);
 			}
 
 			return replaced;
@@ -137,11 +139,51 @@ abstract class AbstractGlobalReceiverRegistry<H> {
 
 	// State tracking methods
 
-	protected abstract void startSession(AbstractNetworkAddon<H> addon);
+	public void startSession(AbstractNetworkAddon<H> addon) {
+		Lock lock = this.lock.writeLock();
+		lock.lock();
 
-	protected abstract void endSession(AbstractNetworkAddon<H> addon);
+		try {
+			this.trackedAddons.add(addon);
+		} finally {
+			lock.unlock();
+		}
+	}
 
-	abstract void handleRegistration(Identifier channelName);
+	public void endSession(AbstractNetworkAddon<H> addon) {
+		Lock lock = this.lock.writeLock();
+		lock.lock();
 
-	abstract void handleUnregistration(Identifier channelName);
+		try {
+			this.trackedAddons.remove(addon);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private void handleRegistration(Identifier channelName, H handler) {
+		Lock lock = this.lock.writeLock();
+		lock.lock();
+
+		try {
+			for (AbstractNetworkAddon<H> addon : this.trackedAddons) {
+				addon.registerChannel(channelName, handler);
+			}
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	private void handleUnregistration(Identifier channelName) {
+		Lock lock = this.lock.writeLock();
+		lock.lock();
+
+		try {
+			for (AbstractNetworkAddon<H> addon : this.trackedAddons) {
+				addon.unregisterChannel(channelName);
+			}
+		} finally {
+			lock.unlock();
+		}
+	}
 }

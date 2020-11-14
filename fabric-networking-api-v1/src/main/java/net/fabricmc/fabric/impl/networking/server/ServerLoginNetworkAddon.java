@@ -58,7 +58,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	private boolean firstQueryTick = true;
 
 	public ServerLoginNetworkAddon(ServerLoginNetworkHandler handler) {
-		super("ServerLoginNetworkAddon for " + handler.getConnectionInfo());
+		super(ServerNetworkingImpl.LOGIN, "ServerLoginNetworkAddon for " + handler.getConnectionInfo());
 		this.connection = handler.connection;
 		this.handler = handler;
 		this.server = ((ServerLoginNetworkHandlerAccessor) handler).getServer();
@@ -195,6 +195,12 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 	@Override
 	protected void handleUnregistration(Identifier channelName) {
+	}
+
+	@Override
+	public void invokeDisconnectEvent() {
+		ServerLoginConnectionEvents.LOGIN_DISCONNECT.invoker().onLoginDisconnect(this.handler, this.server);
+		this.receiver.endSession(this);
 	}
 
 	@Override

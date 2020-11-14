@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Offers access to events related to the indication of a connected client's ability to receive packets in certain channels
+ * Offers access to events related to the indication of a connected client's ability to receive packets in certain channels.
  */
 public final class C2SPlayChannelEvents {
 	/**

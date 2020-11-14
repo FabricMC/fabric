@@ -48,7 +48,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 	private boolean firstResponse = true;
 
 	public ClientLoginNetworkAddon(ClientLoginNetworkHandler handler, MinecraftClient client) {
-		super("ClientLoginNetworkAddon for Client");
+		super(ClientNetworkingImpl.LOGIN, "ClientLoginNetworkAddon for Client");
 		this.handler = handler;
 		this.client = client;
 
@@ -108,6 +108,12 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 
 	@Override
 	protected void handleUnregistration(Identifier channelName) {
+	}
+
+	@Override
+	public void invokeDisconnectEvent() {
+		ClientLoginConnectionEvents.LOGIN_DISCONNECT.invoker().onLoginDisconnect(this.handler, this.client);
+		this.receiver.endSession(this);
 	}
 
 	@Override

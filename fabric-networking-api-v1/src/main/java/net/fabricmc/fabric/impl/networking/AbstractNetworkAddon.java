@@ -37,6 +37,7 @@ import net.minecraft.util.Identifier;
  * @param <H> the channel handler type
  */
 public abstract class AbstractNetworkAddon<H> {
+	protected final GlobalReceiverRegistry<H> receiver;
 	protected final Logger logger;
 	// A lock is used due to possible access on netty's event loops and game thread at same times such as during dynamic registration
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -44,7 +45,8 @@ public abstract class AbstractNetworkAddon<H> {
 	// All access to this map is guarded by the lock
 	private final Map<Identifier, H> handlers = new HashMap<>();
 
-	protected AbstractNetworkAddon(String description) {
+	protected AbstractNetworkAddon(GlobalReceiverRegistry<H> receiver, String description) {
+		this.receiver = receiver;
 		this.logger = LogManager.getLogger(description);
 	}
 
@@ -132,6 +134,8 @@ public abstract class AbstractNetworkAddon<H> {
 	protected abstract void handleRegistration(Identifier channelName);
 
 	protected abstract void handleUnregistration(Identifier channelName);
+
+	public abstract void invokeDisconnectEvent();
 
 	/**
 	 * Checks if a channel is considered a "reserved" channel.

@@ -133,6 +133,12 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	@Override
+	public void invokeDisconnectEvent() {
+		ClientPlayConnectionEvents.PLAY_DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
+		this.receiver.endSession(this);
+	}
+
+	@Override
 	protected boolean isReservedChannel(Identifier channelName) {
 		return NetworkingImpl.isReservedPlayChannel(channelName);
 	}
