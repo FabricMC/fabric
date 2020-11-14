@@ -29,6 +29,7 @@ import net.minecraft.util.Identifier;
 
 /**
  * Represents something that supports sending packets to channels.
+ * @see PacketByteBufs
  */
 public interface PacketSender {
 	/**

@@ -46,15 +46,15 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
  */
 public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAddon<H> implements PacketSender {
 	protected final ClientConnection connection;
-	protected final GlobalReceiverRegistry<H> receiver;
+	protected final AbstractGlobalReceiverRegistry<H> receiver;
 	protected final Set<Identifier> sendableChannels;
 	protected final Set<Identifier> sendableChannelsView;
 
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
+	protected AbstractChanneledNetworkAddon(AbstractGlobalReceiverRegistry<H> receiver, ClientConnection connection, String description) {
 		this(receiver, connection, new HashSet<>(), description);
 	}
 
-	protected AbstractChanneledNetworkAddon(GlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels, String description) {
+	protected AbstractChanneledNetworkAddon(AbstractGlobalReceiverRegistry<H> receiver, ClientConnection connection, Set<Identifier> sendableChannels, String description) {
 		super(description);
 		this.connection = connection;
 		this.receiver = receiver;

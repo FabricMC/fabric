@@ -29,15 +29,15 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
 
-public final class GlobalReceiverRegistry<H> {
+abstract class AbstractGlobalReceiverRegistry<H> {
 	private final ReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Map<Identifier, H> handlers;
 
-	public GlobalReceiverRegistry() {
+	AbstractGlobalReceiverRegistry() {
 		this(new HashMap<>()); // sync map should be fine as there is little read write competitions
 	}
 
-	public GlobalReceiverRegistry(Map<Identifier, H> map) {
+	AbstractGlobalReceiverRegistry(Map<Identifier, H> map) {
 		this.handlers = map;
 	}
 
@@ -65,7 +65,13 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
-			return this.handlers.putIfAbsent(channelName, handler) == null;
+			final boolean replaced = this.handlers.putIfAbsent(channelName, handler) == null;
+
+			if (!replaced) {
+				this.handleRegistration(channelName);
+			}
+
+			return replaced;
 		} finally {
 			lock.unlock();
 		}
@@ -82,7 +88,13 @@ public final class GlobalReceiverRegistry<H> {
 		lock.lock();
 
 		try {
-			return this.handlers.remove(channelName);
+			final H removed = this.handlers.remove(channelName);
+
+			if (removed != null) {
+				this.handleUnregistration(channelName);
+			}
+
+			return removed;
 		} finally {
 			lock.unlock();
 		}
@@ -122,4 +134,14 @@ public final class GlobalReceiverRegistry<H> {
 			lock.unlock();
 		}
 	}
+
+	// State tracking methods
+
+	protected abstract void startSession(AbstractNetworkAddon<H> addon);
+
+	protected abstract void endSession(AbstractNetworkAddon<H> addon);
+
+	abstract void handleRegistration(Identifier channelName);
+
+	abstract void handleUnregistration(Identifier channelName);
 }

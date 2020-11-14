@@ -49,7 +49,7 @@ public final class ServerPlayNetworking {
 
 	@Nullable
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
 
 	/**

@@ -62,9 +62,9 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 
 			try {
 				Thread.sleep(3000);
-				NetworkingTestmods.LOGGER.info("Starting simple delay task completed");
+				NetworkingTestmods.LOGGER.info("Simple delay task completed");
 			} catch (InterruptedException e) {
-				NetworkingTestmods.LOGGER.error("Delay task caught exception");
+				NetworkingTestmods.LOGGER.error("Delay task caught exception", e);
 			}
 		}));
 	}

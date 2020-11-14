@@ -65,7 +65,7 @@ public final class ServerLoginNetworking {
 	 */
 	@Nullable
 	public static ServerLoginNetworking.LoginQueryResponseHandler unregisterGlobalReceiver(Identifier channelName) {
-		throw new UnsupportedOperationException("Reimplement me!");
+		return ServerNetworkingImpl.LOGIN.unregisterGlobalReceiver(channelName);
 	}
 
 	public static boolean register(ServerLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryResponseHandler handler) {

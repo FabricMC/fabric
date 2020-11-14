@@ -23,12 +23,15 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.local.LocalChannel;
 import io.netty.channel.local.LocalServerChannel;
 import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.FutureListener;
 import io.netty.util.concurrent.GenericFutureListener;
 
 import net.minecraft.network.PacketByteBuf;
 
 /**
  * Utilities for working with netty's future listeners.
+ * @see FutureListener
+ * @see ChannelFutureListener
  */
 public final class FutureListeners {
 	/**
@@ -66,8 +69,10 @@ public final class FutureListeners {
 	 * @param <B> the future type of the second listener, used for casting
 	 * @return the combined future listener.
 	 */
-	@SuppressWarnings("unchecked") // A, B exist just to allow casting lol
+	// A, B exist just to allow casting
+	@SuppressWarnings("unchecked")
 	public static <A extends Future<? super Void>, B extends Future<? super Void>> GenericFutureListener<? extends Future<? super Void>> union(GenericFutureListener<A> first, GenericFutureListener<B> second) {
+		// Return an empty future listener in the case of both parameters somehow being null
 		if (first == null && second == null) {
 			return future -> { };
 		}
