@@ -1,7 +1,7 @@
 archivesBaseName = "fabric-object-builders"
 version = getSubprojectVersion(project, "0.7.1")
 
-dependencies {
-	compile project(path: ':fabric-api-base', configuration: 'dev')
-	compile project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
-}
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-object-builder-api-v1'
+])
