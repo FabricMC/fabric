@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.networking.v1;
 
-import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -82,19 +82,8 @@ public final class ServerPlayNetworking {
 	 *
 	 * @return all channel names which global receivers are registered for.
 	 */
-	public static Collection<Identifier> getGlobalReceivers() {
+	public static Set<Identifier> getGlobalReceivers() {
 		return ServerNetworkingImpl.PLAY.getChannels();
-	}
-
-	/**
-	 * Checks if a channel of the specified name has a global receiver registered.
-	 *
-	 *
-	 * @param channelName the channel name
-	 * @return True if a channel of the specified name has a global receiver registered
-	 */
-	public static boolean hasGlobalReceiver(Identifier channelName) {
-		return ServerNetworkingImpl.PLAY.hasChannel(channelName);
 	}
 
 	/**
@@ -129,13 +118,13 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
 	}
 
-	public static Collection<Identifier> getC2SReceivers(ServerPlayerEntity player) {
+	public static Set<Identifier> getC2SReceivers(ServerPlayerEntity player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
 		return getC2SReceivers(player.networkHandler);
 	}
 
-	public static Collection<Identifier> getC2SReceivers(ServerPlayNetworkHandler handler) {
+	public static Set<Identifier> getC2SReceivers(ServerPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
@@ -174,7 +163,7 @@ public final class ServerPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names the connected client declared the ability to receive a packets on
 	 */
-	public static Collection<Identifier> getS2CReceivers(ServerPlayerEntity player) {
+	public static Set<Identifier> getS2CReceivers(ServerPlayerEntity player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
 		return getS2CReceivers(player.networkHandler);
@@ -186,7 +175,7 @@ public final class ServerPlayNetworking {
 	 * @param handler the network handler
 	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static Collection<Identifier> getS2CReceivers(ServerPlayNetworkHandler handler) {
+	public static Set<Identifier> getS2CReceivers(ServerPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();

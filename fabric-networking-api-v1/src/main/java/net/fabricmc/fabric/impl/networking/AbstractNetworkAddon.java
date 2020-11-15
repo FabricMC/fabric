@@ -16,11 +16,11 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -109,7 +109,7 @@ public abstract class AbstractNetworkAddon<H> {
 		}
 	}
 
-	public Collection<Identifier> getReceivableChannels() {
+	public Set<Identifier> getReceivableChannels() {
 		Lock lock = this.lock.readLock();
 		lock.lock();
 

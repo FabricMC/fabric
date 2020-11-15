@@ -199,7 +199,7 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 		}
 	}
 
-	public Collection<Identifier> getSendableChannels() {
+	public Set<Identifier> getSendableChannels() {
 		return this.sendableChannelsView;
 	}
 

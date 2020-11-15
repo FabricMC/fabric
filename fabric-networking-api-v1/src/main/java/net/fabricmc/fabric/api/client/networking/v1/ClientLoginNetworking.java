@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
-import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -84,19 +84,8 @@ public final class ClientLoginNetworking {
 	 *
 	 * @return all channel names which global receivers are registered for.
 	 */
-	public static Collection<Identifier> getGlobalReceivers() {
+	public static Set<Identifier> getGlobalReceivers() {
 		return ClientNetworkingImpl.LOGIN.getChannels();
-	}
-
-	/**
-	 * Checks if a query request channel of the specified name has a global receiver registered.
-	 * A global receiver is registered to all connections, in the present and future.
-	 *
-	 * @param channelName the channel name
-	 * @return True if a channel of the specified name has a global receiver registered
-	 */
-	public static boolean hasGlobalReceiver(Identifier channelName) {
-		return ClientNetworkingImpl.LOGIN.hasChannel(channelName);
 	}
 
 	/**

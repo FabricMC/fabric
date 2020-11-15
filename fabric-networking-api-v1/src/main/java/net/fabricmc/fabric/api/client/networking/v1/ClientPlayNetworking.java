@@ -16,8 +16,8 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
-import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -86,19 +86,8 @@ public final class ClientPlayNetworking {
 	 *
 	 * @return all channel names which global receivers are registered for.
 	 */
-	public static Collection<Identifier> getGlobalReceivers() {
+	public static Set<Identifier> getGlobalReceivers() {
 		return ClientNetworkingImpl.PLAY.getChannels();
-	}
-
-	/**
-	 * Checks if a channel of the specified name has a global receiver registered.
-	 *
-	 *
-	 * @param channelName the channel name
-	 * @return True if a channel of the specified name has a global receiver registered
-	 */
-	public static boolean hasGlobalReceiver(Identifier channelName) {
-		return ClientNetworkingImpl.PLAY.hasChannel(channelName);
 	}
 
 	/**
@@ -138,7 +127,7 @@ public final class ClientPlayNetworking {
 	 * @return All the channel names that the client can receive packets on
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static Collection<Identifier> getS2CReceivers() throws IllegalStateException {
+	public static Set<Identifier> getS2CReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return getS2CReceivers(MinecraftClient.getInstance().getNetworkHandler());
 		}
@@ -152,7 +141,7 @@ public final class ClientPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names that the client can receive packets on
 	 */
-	public static Collection<Identifier> getS2CReceivers(ClientPlayerEntity player) {
+	public static Set<Identifier> getS2CReceivers(ClientPlayerEntity player) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
 		return getS2CReceivers(player.networkHandler);
@@ -164,7 +153,7 @@ public final class ClientPlayNetworking {
 	 * @param handler the network handler
 	 * @return All the channel names that the client can receive packets on
 	 */
-	public static Collection<Identifier> getS2CReceivers(ClientPlayNetworkHandler handler) {
+	public static Set<Identifier> getS2CReceivers(ClientPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(handler).getReceivableChannels();
@@ -220,7 +209,7 @@ public final class ClientPlayNetworking {
 	 * @return All the channel names the connected server declared the ability to receive a packets on
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static Collection<Identifier> getC2SReceivers() throws IllegalStateException {
+	public static Set<Identifier> getC2SReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return getC2SReceivers(MinecraftClient.getInstance().getNetworkHandler());
 		}
@@ -234,7 +223,7 @@ public final class ClientPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names the connected server declared the ability to receive a packets on
 	 */
-	public static Collection<Identifier> getC2SReceivers(ClientPlayerEntity player) {
+	public static Set<Identifier> getC2SReceivers(ClientPlayerEntity player) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
 		return getC2SReceivers(player.networkHandler);
@@ -246,7 +235,7 @@ public final class ClientPlayNetworking {
 	 * @param handler the network handler
 	 * @return All the channel names the connected server declared the ability to receive a packets on
 	 */
-	public static Collection<Identifier> getC2SReceivers(ClientPlayNetworkHandler handler) {
+	public static Set<Identifier> getC2SReceivers(ClientPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(handler).getSendableChannels();

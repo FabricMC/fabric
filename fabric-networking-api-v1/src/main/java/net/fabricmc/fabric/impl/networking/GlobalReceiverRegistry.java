@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.networking;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -113,25 +112,12 @@ public final class GlobalReceiverRegistry<H> {
 		}
 	}
 
-	public Collection<Identifier> getChannels() {
+	public Set<Identifier> getChannels() {
 		Lock lock = this.lock.readLock();
 		lock.lock();
 
 		try {
 			return new HashSet<>(this.handlers.keySet());
-		} finally {
-			lock.unlock();
-		}
-	}
-
-	public boolean hasChannel(Identifier channelName) {
-		Objects.requireNonNull(channelName, "Channel name cannot be null");
-
-		Lock lock = this.lock.readLock();
-		lock.lock();
-
-		try {
-			return this.handlers.containsKey(channelName);
 		} finally {
 			lock.unlock();
 		}
