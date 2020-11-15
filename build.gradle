@@ -60,6 +60,31 @@ def getBranch() {
 	return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
+def moduleDependencies(project, List<String> depNames) {
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
+	project.dependencies {
+		deps.each {
+			compile it
+		}
+	}
+	project.publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom.withXml {
+					def depsNode = asNode().appendNode("dependencies")
+					deps.each {
+						def depNode = depsNode.appendNode("dependency")
+						depNode.appendNode("groupId", it.group)
+						depNode.appendNode("artifactId", it.name)
+						depNode.appendNode("version", it.version)
+						depNode.appendNode("scope", "compile")
+					}
+				}
+			}
+		}
+	}
+}
+
 allprojects {
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"

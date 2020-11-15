@@ -1,8 +1,8 @@
 archivesBaseName = "fabric-mining-levels-v0"
 version = getSubprojectVersion(project, "0.1.2")
 
-dependencies {
-    compile project(path: ':fabric-api-base', configuration: 'dev')
-    compile project(path: ':fabric-tag-extensions-v0', configuration: 'dev')
-    compile project(path: ':fabric-tool-attribute-api-v1', configuration: 'dev')
-}
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-tag-extensions-v0',
+		'fabric-tool-attribute-api-v1'
+])
