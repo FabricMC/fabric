@@ -76,10 +76,23 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
 
+	/**
+	 * Gets all channel names which global receivers are registered for.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * @return all channel names which global receivers are registered for.
+	 */
 	public static Collection<Identifier> getGlobalReceivers() {
 		return ServerNetworkingImpl.PLAY.getChannels();
 	}
 
+	/**
+	 * Checks if a channel of the specified name has a global receiver registered.
+	 *
+	 *
+	 * @param channelName the channel name
+	 * @return True if a channel of the specified name has a global receiver registered
+	 */
 	public static boolean hasGlobalReceiver(Identifier channelName) {
 		return ServerNetworkingImpl.PLAY.hasChannel(channelName);
 	}
@@ -87,13 +100,13 @@ public final class ServerPlayNetworking {
 	/**
 	 * Registers a handler to a channel.
 	 *
-	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
+	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregister(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
-	 * @return false if a handler is already registered to the channel
+	 * @return false if a handler is already registered to the channel name
 	 */
 	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
@@ -104,10 +117,10 @@ public final class ServerPlayNetworking {
 	/**
 	 * Removes the handler of a channel.
 	 *
-	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.</p>
 	 *
 	 * @param channelName the id of the channel
-	 * @return the previous handler, or {@code null} if no handler was bound to the channel
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
 	 */
 	@Nullable
 	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channelName) {

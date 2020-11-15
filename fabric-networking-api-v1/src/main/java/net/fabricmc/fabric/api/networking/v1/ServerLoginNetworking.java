@@ -42,7 +42,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAc
  */
 public final class ServerLoginNetworking {
 	/**
-	 * Registers a handler to a channel.
+	 * Registers a handler to a query response channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
@@ -59,7 +59,7 @@ public final class ServerLoginNetworking {
 	}
 
 	/**
-	 * Removes the handler of a channel.
+	 * Removes the handler of a query response channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>The {@code channel} is guaranteed not to have a handler after this call.
@@ -74,20 +74,52 @@ public final class ServerLoginNetworking {
 		return ServerNetworkingImpl.LOGIN.unregisterGlobalReceiver(channelName);
 	}
 
+	/**
+	 * Gets all channel names which global receivers are registered for.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * @return all channel names which global receivers are registered for.
+	 */
 	public static Collection<Identifier> getGlobalReceivers() {
 		return ServerNetworkingImpl.LOGIN.getChannels();
 	}
 
+	/**
+	 * Checks if a channel of the specified name has a global receiver registered.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * @param channelName the channel name
+	 * @return True if a channel of the specified name has a global receiver registered
+	 */
 	public static boolean hasGlobalReceiver(Identifier channelName) {
 		return ServerNetworkingImpl.LOGIN.hasChannel(channelName);
 	}
 
-	public static boolean register(ServerLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryResponseHandler handler) {
+	/**
+	 * Registers a handler to a query response channel.
+	 *
+	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregister(ServerLoginNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 *
+	 * @param networkHandler the handler
+	 * @param channelName the id of the channel
+	 * @param responseHandler the handler
+	 * @return false if a handler is already registered to the channel name
+	 */
+	public static boolean register(ServerLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryResponseHandler responseHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
-		return ((ServerLoginNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channelName, handler);
+		return ((ServerLoginNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channelName, responseHandler);
 	}
 
+	/**
+	 * Removes the handler of a query response channel.
+	 *
+	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.</p>
+	 *
+	 * @param channelName the id of the channel
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
+	 */
 	@Nullable
 	public static ServerLoginNetworking.LoginQueryResponseHandler unregister(ServerLoginNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");

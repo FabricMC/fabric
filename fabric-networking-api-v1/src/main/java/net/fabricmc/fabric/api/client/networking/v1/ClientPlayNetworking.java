@@ -26,7 +26,6 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
@@ -81,12 +80,25 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
 
+	/**
+	 * Gets all channel names which global receivers are registered for.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * @return all channel names which global receivers are registered for.
+	 */
 	public static Collection<Identifier> getGlobalReceivers() {
 		return ClientNetworkingImpl.PLAY.getChannels();
 	}
 
-	public static boolean hasGlobalReceiver(Identifier channel) {
-		return ClientNetworkingImpl.PLAY.hasChannel(channel);
+	/**
+	 * Checks if a channel of the specified name has a global receiver registered.
+	 *
+	 *
+	 * @param channelName the channel name
+	 * @return True if a channel of the specified name has a global receiver registered
+	 */
+	public static boolean hasGlobalReceiver(Identifier channelName) {
+		return ClientNetworkingImpl.PLAY.hasChannel(channelName);
 	}
 
 	/**
