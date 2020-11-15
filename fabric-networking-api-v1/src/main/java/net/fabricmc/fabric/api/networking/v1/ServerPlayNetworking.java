@@ -262,6 +262,9 @@ public final class ServerPlayNetworking {
 		return handler.player.server;
 	}
 
+	private ServerPlayNetworking() {
+	}
+
 	@FunctionalInterface
 	public interface PlayChannelHandler {
 		/**

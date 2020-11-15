@@ -327,6 +327,9 @@ public final class ClientPlayNetworking {
 		handler.sendPacket(createC2SPacket(channelName, buf));
 	}
 
+	private ClientPlayNetworking() {
+	}
+
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface PlayChannelHandler {
