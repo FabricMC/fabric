@@ -47,6 +47,7 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 public final class ClientLoginNetworking {
 	/**
 	 * Registers a handler to a channel.
+	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.</p>
@@ -54,6 +55,8 @@ public final class ClientLoginNetworking {
 	 * @param channelName the id of the channel
 	 * @param queryHandler the handler
 	 * @return false if a handler is already registered to the channel
+	 * @see ClientLoginNetworking#unregisterGlobalReceiver(Identifier)
+	 * @see ClientLoginNetworking#register(ClientLoginNetworkHandler, Identifier, LoginQueryRequestHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, LoginQueryRequestHandler queryHandler) {
 		return ClientNetworkingImpl.LOGIN.registerGlobalReceiver(channelName, queryHandler);
@@ -61,15 +64,26 @@ public final class ClientLoginNetworking {
 
 	/**
 	 * Removes the handler of a channel.
+	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
+	 * @see ClientLoginNetworking#registerGlobalReceiver(Identifier, LoginQueryRequestHandler)
+	 * @see ClientLoginNetworking#unregister(ClientLoginNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static ClientLoginNetworking.LoginQueryRequestHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ClientNetworkingImpl.LOGIN.unregisterGlobalReceiver(channelName);
+	}
+
+	public static Collection<Identifier> getGlobalReceivers() {
+		return ClientNetworkingImpl.LOGIN.getChannels();
+	}
+
+	public static boolean hasGlobalReceiver(Identifier channelName) {
+		return ClientNetworkingImpl.LOGIN.hasChannel(channelName);
 	}
 
 	public static boolean register(ClientLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryRequestHandler queryHandler) {
@@ -83,14 +97,6 @@ public final class ClientLoginNetworking {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
-	}
-
-	public static Collection<Identifier> getGlobalReceivers() {
-		return ClientNetworkingImpl.LOGIN.getChannels();
-	}
-
-	public static boolean hasGlobalReceiver(Identifier channelName) {
-		return ClientNetworkingImpl.LOGIN.hasChannel(channelName);
 	}
 
 	private ClientLoginNetworking() {

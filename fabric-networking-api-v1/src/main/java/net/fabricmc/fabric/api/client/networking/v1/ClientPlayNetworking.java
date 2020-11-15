@@ -26,6 +26,7 @@ import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
@@ -47,10 +48,34 @@ import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
  */
 @Environment(EnvType.CLIENT)
 public final class ClientPlayNetworking {
-	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler handler) {
-		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, handler);
+	/**
+	 * Registers a handler to a channel.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregister(ClientPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 *
+	 * @param channelName the id of the channel
+	 * @param channelHandler the handler
+	 * @return false if a handler is already registered to the channel
+	 * @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
+	 * @see ClientPlayNetworking#register(ClientPlayNetworkHandler, Identifier, PlayChannelHandler)
+	 */
+	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
+		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
 	}
 
+	/**
+	 * Removes the handler of a channel.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 *
+	 * @param channelName the id of the channel
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel
+	 * @see ClientPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)
+	 * @see ClientPlayNetworking#unregister(ClientPlayNetworkHandler, Identifier)
+	 */
 	@Nullable
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);

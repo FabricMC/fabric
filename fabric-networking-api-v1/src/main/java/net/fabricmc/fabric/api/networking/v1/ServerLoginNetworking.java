@@ -43,6 +43,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAc
 public final class ServerLoginNetworking {
 	/**
 	 * Registers a handler to a channel.
+	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
@@ -50,6 +51,8 @@ public final class ServerLoginNetworking {
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
+	 * @see ServerLoginNetworking#unregisterGlobalReceiver(Identifier)
+	 * @see ServerLoginNetworking#register(ServerLoginNetworkHandler, Identifier, LoginQueryResponseHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, LoginQueryResponseHandler channelHandler) {
 		return ServerNetworkingImpl.LOGIN.registerGlobalReceiver(channelName, channelHandler);
@@ -57,15 +60,26 @@ public final class ServerLoginNetworking {
 
 	/**
 	 * Removes the handler of a channel.
+	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>The {@code channel} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
+	 * @see ServerLoginNetworking#registerGlobalReceiver(Identifier, LoginQueryResponseHandler)
+	 * @see ServerLoginNetworking#unregister(ServerLoginNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static ServerLoginNetworking.LoginQueryResponseHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ServerNetworkingImpl.LOGIN.unregisterGlobalReceiver(channelName);
+	}
+
+	public static Collection<Identifier> getGlobalReceivers() {
+		return ServerNetworkingImpl.LOGIN.getChannels();
+	}
+
+	public static boolean hasGlobalReceiver(Identifier channelName) {
+		return ServerNetworkingImpl.LOGIN.hasChannel(channelName);
 	}
 
 	public static boolean register(ServerLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryResponseHandler handler) {
@@ -81,13 +95,7 @@ public final class ServerLoginNetworking {
 		return ((ServerLoginNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channelName);
 	}
 
-	public static Collection<Identifier> getGlobalReceivers() {
-		return ServerNetworkingImpl.LOGIN.getChannels();
-	}
-
-	public static boolean hasGlobalReceiver(Identifier channelName) {
-		return ServerNetworkingImpl.LOGIN.hasChannel(channelName);
-	}
+	// Helper methods
 
 	/**
 	 * Returns the <i>Minecraft</i> Server of a server login network handler.

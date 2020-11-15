@@ -43,13 +43,45 @@ import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtens
  * @see ClientPlayNetworking
  */
 public final class ServerPlayNetworking {
+	/**
+	 * Registers a handler to a channel.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
+	 * Use {@link #unregister(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 *
+	 * @param channelName the id of the channel
+	 * @param channelHandler the handler
+	 * @return false if a handler is already registered to the channel
+	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
+	 * @see ServerPlayNetworking#register(ServerPlayNetworkHandler, Identifier, PlayChannelHandler)
+	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
 	}
 
+	/**
+	 * Removes the handler of a channel.
+	 * A global receiver is registered to all connections, in the present and future.
+	 *
+	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 *
+	 * @param channelName the id of the channel
+	 * @return the previous handler, or {@code null} if no handler was bound to the channel
+	 * @see ServerPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)
+	 * @see ServerPlayNetworking#unregister(ServerPlayNetworkHandler, Identifier)
+	 */
 	@Nullable
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
 		return ServerNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
+	}
+
+	public static Collection<Identifier> getGlobalReceivers() {
+		return ServerNetworkingImpl.PLAY.getChannels();
+	}
+
+	public static boolean hasGlobalReceiver(Identifier channelName) {
+		return ServerNetworkingImpl.PLAY.hasChannel(channelName);
 	}
 
 	/**
@@ -58,8 +90,9 @@ public final class ServerPlayNetworking {
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
 	 * Use {@link #unregister(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
-	 * @param channelName the id of the channel
 	 * @param networkHandler the handler
+	 * @param channelName the id of the channel
+	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
 	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
@@ -81,14 +114,6 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
-	}
-
-	public static Collection<Identifier> getGlobalReceivers() {
-		return ServerNetworkingImpl.PLAY.getChannels();
-	}
-
-	public static boolean hasGlobalReceiver(Identifier channelName) {
-		return ServerNetworkingImpl.PLAY.hasChannel(channelName);
 	}
 
 	public static Collection<Identifier> getC2SReceivers(ServerPlayerEntity player) {
@@ -143,7 +168,7 @@ public final class ServerPlayNetworking {
 		player.networkHandler.sendPacket(createS2CPacket(channelName, buf));
 	}
 
-	// Util methods
+	// Helper methods
 
 	/**
 	 * Returns the <i>Minecraft</i> Server of a server play network handler.
