@@ -81,6 +81,14 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.PLAY.unregisterGlobalReceiver(channelName);
 	}
 
+	public static Collection<Identifier> getGlobalReceivers() {
+		return ClientNetworkingImpl.PLAY.getChannels();
+	}
+
+	public static boolean hasGlobalReceiver(Identifier channel) {
+		return ClientNetworkingImpl.PLAY.hasChannel(channel);
+	}
+
 	/**
 	 * Registers a handler to a channel.
 	 *
@@ -112,14 +120,6 @@ public final class ClientPlayNetworking {
 		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
 	}
 
-	public static Collection<Identifier> getGlobalReceivers() {
-		return ClientNetworkingImpl.PLAY.getChannels();
-	}
-
-	public static boolean hasGlobalReceiver(Identifier channel) {
-		return ClientNetworkingImpl.PLAY.hasChannel(channel);
-	}
-
 	public static Collection<Identifier> getS2CReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return getS2CReceivers(MinecraftClient.getInstance().getNetworkHandler());
@@ -129,16 +129,22 @@ public final class ClientPlayNetworking {
 	}
 
 	public static Collection<Identifier> getS2CReceivers(ClientPlayerEntity player) {
+		Objects.requireNonNull(player, "Client player entity cannot be null");
+
 		return getS2CReceivers(player.networkHandler);
 	}
 
 	public static Collection<Identifier> getS2CReceivers(ClientPlayNetworkHandler networkHandler) {
+		Objects.requireNonNull(networkHandler, "Client play network handler cannot be null");
+
 		return ClientNetworkingImpl.getAddon(networkHandler).getReceivableChannels();
 	}
 
-	public static boolean canReceiveS2C(Identifier channel) throws IllegalStateException {
+	public static boolean canReceiveS2C(Identifier channelName) throws IllegalStateException {
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
+
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return canReceiveS2C(MinecraftClient.getInstance().getNetworkHandler(), channel);
+			return canReceiveS2C(MinecraftClient.getInstance().getNetworkHandler(), channelName);
 		}
 
 		throw new IllegalStateException("Cannot check if the client can receive packets on specific channels while not in game!");
@@ -152,6 +158,7 @@ public final class ClientPlayNetworking {
 
 	public static boolean canReceiveS2C(ClientPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
 		return ClientNetworkingImpl.getAddon(handler).hasReceivableChannel(channelName);
 	}
@@ -165,10 +172,14 @@ public final class ClientPlayNetworking {
 	}
 
 	public static Collection<Identifier> getC2SReceivers(ClientPlayerEntity player) {
+		Objects.requireNonNull(player, "Client player entity cannot be null");
+
 		return getC2SReceivers(player.networkHandler);
 	}
 
 	public static Collection<Identifier> getC2SReceivers(ClientPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Client play network handler cannot be null");
+
 		return ClientNetworkingImpl.getAddon(handler).getSendableChannels();
 	}
 
@@ -188,13 +199,13 @@ public final class ClientPlayNetworking {
 
 	public static boolean canReceiveC2S(ClientPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
-		Objects.requireNonNull(channelName, "Channel cannot be null");
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
 		return ClientNetworkingImpl.getAddon(handler).hasSendableChannel(channelName);
 	}
 
 	public static Packet<?> createC2SPacket(Identifier channelName, PacketByteBuf buf) {
-		Objects.requireNonNull(channelName, "Channel cannot be null");
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
 		Objects.requireNonNull(buf, "Buf cannot be null");
 
 		return ClientNetworkingImpl.createPlayC2SPacket(channelName, buf);

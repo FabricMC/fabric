@@ -117,26 +117,39 @@ public final class ServerPlayNetworking {
 	}
 
 	public static Collection<Identifier> getC2SReceivers(ServerPlayerEntity player) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+
 		return getC2SReceivers(player.networkHandler);
 	}
 
 	public static Collection<Identifier> getC2SReceivers(ServerPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
 	}
 
 	public static boolean canReceiveC2S(ServerPlayerEntity player, Identifier channelName) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+
 		return canReceiveC2S(player.networkHandler, channelName);
 	}
 
 	public static boolean canReceiveC2S(ServerPlayNetworkHandler handler, Identifier channelName) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
+
 		return ServerNetworkingImpl.getAddon(handler).hasReceivableChannel(channelName);
 	}
 
 	public static Collection<Identifier> getS2CReceivers(ServerPlayerEntity player) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+
 		return getS2CReceivers(player.networkHandler);
 	}
 
 	public static Collection<Identifier> getS2CReceivers(ServerPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+
 		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();
 	}
 
@@ -147,6 +160,9 @@ public final class ServerPlayNetworking {
 	}
 
 	public static boolean canReceiveS2C(ServerPlayNetworkHandler handler, Identifier channelName) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
+
 		return ServerNetworkingImpl.getAddon(handler).hasSendableChannel(channelName);
 	}
 
@@ -165,6 +181,10 @@ public final class ServerPlayNetworking {
 	 * @param buf the payload of the packet.
 	 */
 	public static void send(ServerPlayerEntity player, Identifier channelName, PacketByteBuf buf) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+		Objects.requireNonNull(channelName, "Channel name cannot be null");
+		Objects.requireNonNull(buf, "Packet byte buf cannot be null");
+
 		player.networkHandler.sendPacket(createS2CPacket(channelName, buf));
 	}
 
