@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-api-base-testmod",
+  "name": "Fabric API Base Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.base.FabricApiBaseTestInit"
+    ]
+  }
+}
