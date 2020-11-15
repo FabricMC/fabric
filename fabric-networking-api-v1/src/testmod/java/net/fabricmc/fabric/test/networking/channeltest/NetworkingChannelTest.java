@@ -91,13 +91,13 @@ public final class NetworkingChannelTest implements ModInitializer {
 	private static CompletableFuture<Suggestions> suggestReceivableChannels(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) throws CommandSyntaxException {
 		final ServerPlayerEntity player = context.getSource().getPlayer();
 
-		return CommandSource.suggestIdentifiers(ServerPlayNetworking.getC2SReceivers(player), builder);
+		return CommandSource.suggestIdentifiers(ServerPlayNetworking.getReceivers(player), builder);
 	}
 
 	private static int registerChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {
 		final Identifier channel = getIdentifier(context, "channel");
 
-		if (ServerPlayNetworking.canReceiveC2S(player, channel)) {
+		if (ServerPlayNetworking.canReceive(player, channel)) {
 			throw new SimpleCommandExceptionType(new LiteralText(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
@@ -113,7 +113,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 	private static int unregisterChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {
 		final Identifier channel = getIdentifier(context, "channel");
 
-		if (!ServerPlayNetworking.canReceiveC2S(player, channel)) {
+		if (!ServerPlayNetworking.canReceive(player, channel)) {
 			throw new SimpleCommandExceptionType(new LiteralText("Cannot unregister channel the server player entity cannot recieve packets on")).create();
 		}
 

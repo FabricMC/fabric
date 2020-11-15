@@ -38,7 +38,7 @@ import net.fabricmc.fabric.api.network.PacketRegistry;
 public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, PacketRegistry {
 	@Override
 	public boolean canServerReceive(Identifier id) {
-		return ClientPlayNetworking.canReceiveS2C(id);
+		return ClientPlayNetworking.canReceive(id);
 	}
 
 	@Override

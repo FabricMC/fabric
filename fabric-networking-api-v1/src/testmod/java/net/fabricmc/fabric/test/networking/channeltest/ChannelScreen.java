@@ -82,7 +82,7 @@ final class ChannelScreen extends Screen {
 		button.active = false;
 		this.channelList.clear();
 
-		for (Identifier receiver : ClientPlayNetworking.getC2SReceivers()) {
+		for (Identifier receiver : ClientPlayNetworking.getSendable()) {
 			this.channelList.addEntry(this.channelList.new Entry(receiver));
 		}
 	}
@@ -92,7 +92,7 @@ final class ChannelScreen extends Screen {
 		button.active = false;
 		this.channelList.clear();
 
-		for (Identifier receiver : ClientPlayNetworking.getS2CReceivers()) {
+		for (Identifier receiver : ClientPlayNetworking.getReceivers()) {
 			this.channelList.addEntry(this.channelList.new Entry(receiver));
 		}
 	}

@@ -118,13 +118,25 @@ public final class ServerPlayNetworking {
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
 	}
 
-	public static Set<Identifier> getC2SReceivers(ServerPlayerEntity player) {
+	/**
+	 * Gets all the channel names that the server can receive packets on.
+	 *
+	 * @param player the player
+	 * @return All the channel names that the server can receive packets on
+	 */
+	public static Set<Identifier> getReceivers(ServerPlayerEntity player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return getC2SReceivers(player.networkHandler);
+		return getReceivers(player.networkHandler);
 	}
 
-	public static Set<Identifier> getC2SReceivers(ServerPlayNetworkHandler handler) {
+	/**
+	 * Gets all the channel names that the server can receive packets on.
+	 *
+	 * @param handler the network handler
+	 * @return All the channel names that the server can receive packets on
+	 */
+	public static Set<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
@@ -137,10 +149,10 @@ public final class ServerPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the server can receive packets on a specified channel name.
 	 */
-	public static boolean canReceiveC2S(ServerPlayerEntity player, Identifier channelName) {
+	public static boolean canReceive(ServerPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return canReceiveC2S(player.networkHandler, channelName);
+		return canReceive(player.networkHandler, channelName);
 	}
 
 	/**
@@ -150,7 +162,7 @@ public final class ServerPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the server can receive packets on a specified channel name.
 	 */
-	public static boolean canReceiveC2S(ServerPlayNetworkHandler handler, Identifier channelName) {
+	public static boolean canReceive(ServerPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
@@ -163,10 +175,10 @@ public final class ServerPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names the connected client declared the ability to receive a packets on
 	 */
-	public static Set<Identifier> getS2CReceivers(ServerPlayerEntity player) {
+	public static Set<Identifier> getSendable(ServerPlayerEntity player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return getS2CReceivers(player.networkHandler);
+		return getSendable(player.networkHandler);
 	}
 
 	/**
@@ -175,7 +187,7 @@ public final class ServerPlayNetworking {
 	 * @param handler the network handler
 	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static Set<Identifier> getS2CReceivers(ServerPlayNetworkHandler handler) {
+	public static Set<Identifier> getSendable(ServerPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getSendableChannels();
@@ -188,10 +200,10 @@ public final class ServerPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canReceiveS2C(ServerPlayerEntity player, Identifier channelName) {
+	public static boolean canSend(ServerPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return canReceiveS2C(player.networkHandler, channelName);
+		return canSend(player.networkHandler, channelName);
 	}
 
 	/**
@@ -201,7 +213,7 @@ public final class ServerPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the connected client has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canReceiveS2C(ServerPlayNetworkHandler handler, Identifier channelName) {
+	public static boolean canSend(ServerPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 

@@ -127,9 +127,9 @@ public final class ClientPlayNetworking {
 	 * @return All the channel names that the client can receive packets on
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static Set<Identifier> getS2CReceivers() throws IllegalStateException {
+	public static Set<Identifier> getReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return getS2CReceivers(MinecraftClient.getInstance().getNetworkHandler());
+			return getReceivers(MinecraftClient.getInstance().getNetworkHandler());
 		}
 
 		throw new IllegalStateException("Cannot get a list of channels the client can recieve packets on while not in game!");
@@ -141,10 +141,10 @@ public final class ClientPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names that the client can receive packets on
 	 */
-	public static Set<Identifier> getS2CReceivers(ClientPlayerEntity player) {
+	public static Set<Identifier> getReceivers(ClientPlayerEntity player) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
-		return getS2CReceivers(player.networkHandler);
+		return getReceivers(player.networkHandler);
 	}
 
 	/**
@@ -153,7 +153,7 @@ public final class ClientPlayNetworking {
 	 * @param handler the network handler
 	 * @return All the channel names that the client can receive packets on
 	 */
-	public static Set<Identifier> getS2CReceivers(ClientPlayNetworkHandler handler) {
+	public static Set<Identifier> getReceivers(ClientPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(handler).getReceivableChannels();
@@ -166,11 +166,11 @@ public final class ClientPlayNetworking {
 	 * @return True if the client can receive packets on a specified channel name.
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static boolean canReceiveS2C(Identifier channelName) throws IllegalStateException {
+	public static boolean canReceive(Identifier channelName) throws IllegalStateException {
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return canReceiveS2C(MinecraftClient.getInstance().getNetworkHandler(), channelName);
+			return canReceive(MinecraftClient.getInstance().getNetworkHandler(), channelName);
 		}
 
 		throw new IllegalStateException("Cannot check if the client can receive packets on specific channels while not in game!");
@@ -183,10 +183,10 @@ public final class ClientPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the client can receive packets on a specified channel name.
 	 */
-	public static boolean canReceiveS2C(ClientPlayerEntity player, Identifier channelName) {
+	public static boolean canReceive(ClientPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
-		return canReceiveS2C(player.networkHandler, channelName);
+		return canReceive(player.networkHandler, channelName);
 	}
 
 	/**
@@ -196,7 +196,7 @@ public final class ClientPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the client can receive packets on a specified channel name.
 	 */
-	public static boolean canReceiveS2C(ClientPlayNetworkHandler handler, Identifier channelName) {
+	public static boolean canReceive(ClientPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
@@ -209,9 +209,9 @@ public final class ClientPlayNetworking {
 	 * @return All the channel names the connected server declared the ability to receive a packets on
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static Set<Identifier> getC2SReceivers() throws IllegalStateException {
+	public static Set<Identifier> getSendable() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return getC2SReceivers(MinecraftClient.getInstance().getNetworkHandler());
+			return getSendable(MinecraftClient.getInstance().getNetworkHandler());
 		}
 
 		throw new IllegalStateException("Cannot get a list of channels the server can receive packets on while not in game!");
@@ -223,10 +223,10 @@ public final class ClientPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names the connected server declared the ability to receive a packets on
 	 */
-	public static Set<Identifier> getC2SReceivers(ClientPlayerEntity player) {
+	public static Set<Identifier> getSendable(ClientPlayerEntity player) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
-		return getC2SReceivers(player.networkHandler);
+		return getSendable(player.networkHandler);
 	}
 
 	/**
@@ -235,7 +235,7 @@ public final class ClientPlayNetworking {
 	 * @param handler the network handler
 	 * @return All the channel names the connected server declared the ability to receive a packets on
 	 */
-	public static Set<Identifier> getC2SReceivers(ClientPlayNetworkHandler handler) {
+	public static Set<Identifier> getSendable(ClientPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(handler).getSendableChannels();
@@ -248,9 +248,9 @@ public final class ClientPlayNetworking {
 	 * @return True if the connected server has declared the ability to receive a packet on the specified channel
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static boolean canReceiveC2S(Identifier channelName) throws IllegalArgumentException {
+	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return canReceiveC2S(MinecraftClient.getInstance().getNetworkHandler(), channelName);
+			return canSend(MinecraftClient.getInstance().getNetworkHandler(), channelName);
 		}
 
 		throw new IllegalStateException("Cannot check whether the server can receive a packet while not in game!");
@@ -263,10 +263,10 @@ public final class ClientPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the connected server has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canReceiveC2S(ClientPlayerEntity player, Identifier channelName) {
+	public static boolean canSend(ClientPlayerEntity player, Identifier channelName) {
 		Objects.requireNonNull(player, "Client player entity cannot be null");
 
-		return canReceiveC2S(player.networkHandler, channelName);
+		return canSend(player.networkHandler, channelName);
 	}
 
 	/**
@@ -276,7 +276,7 @@ public final class ClientPlayNetworking {
 	 * @param channelName the channel name
 	 * @return True if the connected server has declared the ability to receive a packet on the specified channel
 	 */
-	public static boolean canReceiveC2S(ClientPlayNetworkHandler handler, Identifier channelName) {
+	public static boolean canSend(ClientPlayNetworkHandler handler, Identifier channelName) {
 		Objects.requireNonNull(handler, "Client play network handler cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 

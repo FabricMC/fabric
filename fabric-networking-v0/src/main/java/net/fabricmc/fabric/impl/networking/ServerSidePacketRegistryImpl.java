@@ -40,7 +40,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	@Override
 	public boolean canPlayerReceive(PlayerEntity player, Identifier id) {
 		if (player instanceof ServerPlayerEntity) {
-			return ServerPlayNetworking.canReceiveS2C((ServerPlayerEntity) player, id);
+			return ServerPlayNetworking.canSend((ServerPlayerEntity) player, id);
 		}
 
 		return false;
