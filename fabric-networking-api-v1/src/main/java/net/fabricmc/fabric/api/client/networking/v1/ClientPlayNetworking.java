@@ -131,7 +131,7 @@ public final class ClientPlayNetworking {
 	 * @return All the channel names that the client can receive packets on
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
-	public static Set<Identifier> getReceivers() throws IllegalStateException {
+	public static Set<Identifier> getReceived() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getReceivableChannels();
 		}
@@ -183,6 +183,20 @@ public final class ClientPlayNetworking {
 	}
 
 	/**
+	 * Gets the packet sender which sends packets to the connected server.
+	 *
+	 * @return the client's packet sender
+	 * @throws IllegalStateException if the client is not connected to a server
+	 */
+	public static PacketSender getSender() throws IllegalStateException {
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler());
+		}
+
+		throw new IllegalStateException("Cannot get packet sender when not in game!");
+	}
+
+	/**
 	 * Sends a packet to the connected server.
 	 *
 	 * @param channelName the channel of the packet
@@ -211,7 +225,7 @@ public final class ClientPlayNetworking {
 		 *
 		 * <p>An example usage of this is to display an overlay message:
 		 * <pre>{@code
-		 * ClientPlayNetworking.getPlayReceivers().register(new Identifier("mymod", "overlay"), (handler, client, sender, buf) -&rt; {
+		 * ClientPlayNetworking.registerReceiver(new Identifier("mymod", "overlay"), (client, handler, buf, responseSender) -&rt; {
 		 * 	String message = buf.readString(32767);
 		 *
 		 * 	// All operations on the server or world must be executed on the server thread
@@ -220,12 +234,11 @@ public final class ClientPlayNetworking {
 		 * 	});
 		 * });
 		 * }</pre>
-		 *
+		 *  @param client the client
 		 * @param handler the network handler that received this packet
-		 * @param sender the packet sender
-		 * @param client the client
 		 * @param buf the payload of the packet
+		 * @param responseSender the packet sender
 		 */
-		void receive(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client, PacketByteBuf buf);
+		void receive(MinecraftClient client, ClientPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
 	}
 }

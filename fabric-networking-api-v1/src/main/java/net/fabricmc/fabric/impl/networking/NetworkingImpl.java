@@ -64,7 +64,7 @@ public final class NetworkingImpl {
 			NetworkingImpl.LOGGER.debug("Sent accepted channels to the client for \"{}\"", handler.getConnectionInfo());
 		});
 
-		ServerLoginNetworking.registerGlobalReceiver(EARLY_REGISTRATION_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -> {
+		ServerLoginNetworking.registerGlobalReceiver(EARLY_REGISTRATION_CHANNEL, (server, handler, understood, buf, synchronizer, sender) -> {
 			if (!understood) {
 				// The client is likely a vanilla client.
 				return;

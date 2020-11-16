@@ -150,7 +150,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		PacketByteBuf buf = understood ? PacketByteBufs.slice(originalBuf) : PacketByteBufs.empty();
 
 		try {
-			handler.receive(this.handler, this, this.server, buf, understood, this.waits::add);
+			handler.receive(this.server, this.handler, understood, buf, this.waits::add, this);
 		} catch (Throwable ex) {
 			this.logger.error("Encountered exception while handling in channel \"{}\"", channel, ex);
 			throw ex;

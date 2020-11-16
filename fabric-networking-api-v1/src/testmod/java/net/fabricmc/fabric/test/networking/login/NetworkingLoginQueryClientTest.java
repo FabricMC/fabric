@@ -30,7 +30,7 @@ public final class NetworkingLoginQueryClientTest implements ClientModInitialize
 	@Override
 	public void onInitializeClient() {
 		// Send a dummy response to the server in return, by registering here we essentially say we understood the server's query
-		ClientLoginNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (handler, client, buf, listenerAdder) -> {
+		ClientLoginNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (client, handler, buf, listenerAdder) -> {
 			return CompletableFuture.completedFuture(PacketByteBufs.empty());
 		});
 	}

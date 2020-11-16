@@ -74,7 +74,7 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void receive(ServerPlayNetworking.PlayChannelHandler handler, PacketByteBuf buf) {
-		handler.receive(this.handler, this, this.server, buf);
+		handler.receive(this.server, this.handler.player, this.handler, buf, this);
 	}
 
 	// impl details

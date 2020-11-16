@@ -92,7 +92,7 @@ final class ChannelScreen extends Screen {
 		button.active = false;
 		this.channelList.clear();
 
-		for (Identifier receiver : ClientPlayNetworking.getReceivers()) {
+		for (Identifier receiver : ClientPlayNetworking.getReceived()) {
 			this.channelList.addEntry(this.channelList.new Entry(receiver));
 		}
 	}

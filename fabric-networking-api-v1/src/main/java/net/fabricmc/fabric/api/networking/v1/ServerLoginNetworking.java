@@ -140,15 +140,15 @@ public final class ServerLoginNetworking {
 		 * <p>This method is executed on {@linkplain io.netty.channel.EventLoop netty's event loops}.
 		 * Modification to the game should be {@linkplain net.minecraft.util.thread.ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft client instance.
 		 *
-		 * <p>Whether the client understood the query should be checked before reading from the payload of the packet.
-		 * @param handler the network handler that received this packet
-		 * @param sender the packet sender
+		 * <p><b>Whether the client understood the query should be checked before reading from the payload of the packet.</b>
 		 * @param server the server
+		 * @param handler the network handler that received this packet, representing the player/client who sent the response
+		 * @param understood whether the client understood the packet
 		 * @param buf the payload of the packet
-		 * @param understood whether the client
 		 * @param synchronizer the synchronizer which may be used to delay log-in till a {@link Future} is completed.
+		 * @param responseSender the packet sender
 		 */
-		void receive(ServerLoginNetworkHandler handler, PacketSender sender, MinecraftServer server, PacketByteBuf buf, boolean understood, LoginSynchronizer synchronizer);
+		void receive(MinecraftServer server, ServerLoginNetworkHandler handler, boolean understood, PacketByteBuf buf, LoginSynchronizer synchronizer, PacketSender responseSender);
 	}
 
 	/**

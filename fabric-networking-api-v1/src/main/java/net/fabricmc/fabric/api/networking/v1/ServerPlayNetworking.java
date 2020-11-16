@@ -124,10 +124,10 @@ public final class ServerPlayNetworking {
 	 * @param player the player
 	 * @return All the channel names that the server can receive packets on
 	 */
-	public static Set<Identifier> getReceivers(ServerPlayerEntity player) {
+	public static Set<Identifier> getReceived(ServerPlayerEntity player) {
 		Objects.requireNonNull(player, "Server player entity cannot be null");
 
-		return getReceivers(player.networkHandler);
+		return getReceived(player.networkHandler);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public final class ServerPlayNetworking {
 	 * @param handler the network handler
 	 * @return All the channel names that the server can receive packets on
 	 */
-	public static Set<Identifier> getReceivers(ServerPlayNetworkHandler handler) {
+	public static Set<Identifier> getReceived(ServerPlayNetworkHandler handler) {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
@@ -208,6 +208,30 @@ public final class ServerPlayNetworking {
 	}
 
 	/**
+	 * Gets the packet sender which sends packets to the connected client.
+	 *
+	 * @param player the player
+	 * @return the packet sender
+	 */
+	public static PacketSender getSender(ServerPlayerEntity player) {
+		Objects.requireNonNull(player, "Server player entity cannot be null");
+
+		return getSender(player.networkHandler);
+	}
+
+	/**
+	 * Gets the packet sender which sends packets to the connected client.
+	 *
+	 * @param handler the network handler, representing the connection to the player/client
+	 * @return the packet sender
+	 */
+	public static PacketSender getSender(ServerPlayNetworkHandler handler) {
+		Objects.requireNonNull(handler, "Server play network handler cannot be null");
+
+		return ServerNetworkingImpl.getAddon(handler);
+	}
+
+	/**
 	 * Sends a packet to a player.
 	 *
 	 * @param player the player to send the packet to
@@ -248,21 +272,21 @@ public final class ServerPlayNetworking {
 		 *
 		 * <p>An example usage of this is to create an explosion where the player is looking:
 		 * <pre>{@code
-		 * ServerPlayNetworking.getPlayReceivers().register(new Identifier("mymod", "boom"), (handler, server, sender, buf) -&rt; {
+		 * ServerPlayNetworking.registerReceiver(new Identifier("mymod", "boom"), (server, player, handler, buf, responseSender) -&rt; {
 		 * 	boolean fire = buf.readBoolean();
 		 *
 		 * 	// All operations on the server or world must be executed on the server thread
 		 * 	server.execute(() -&rt; {
-		 * 		ModPacketHandler.createExplosion(handler.player, fire);
+		 * 		ModPacketHandler.createExplosion(player, fire);
 		 * 	});
 		 * });
 		 * }</pre>
-		 *
-		 * @param handler the network handler that received this packet
-		 * @param sender the packet sender
 		 * @param server the server
+		 * @param player the player
+		 * @param handler the network handler that received this packet, representing the player/client who sent the packet
 		 * @param buf the payload of the packet
+		 * @param responseSender the packet sender
 		 */
-		void receive(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server, PacketByteBuf buf);
+		void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender);
 	}
 }

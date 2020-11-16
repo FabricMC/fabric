@@ -40,7 +40,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
 /**
  * Offers access to login stage client-side networking functionalities.
  *
- * <p>Client-side networking functionalities include receiving clientbound packets, sending serverbound packets.
+ * <p>The Minecraft login protocol only allows the client to respond to a server's request, but not initiate one of its own.
  *
  * @see ClientPlayNetworking
  * @see ServerLoginNetworking
@@ -153,13 +153,13 @@ public final class ClientLoginNetworking {
 		 *
 		 * <p>The return value of this method is a completable future that may be used to delay the login process to the server until a task {@link CompletableFuture#isDone() is done}.
 		 *
-		 * @param handler the network handler that received this packet
 		 * @param client the client
+		 * @param handler the network handler that received this packet
 		 * @param buf the payload of the packet
 		 * @param listenerAdder listeners to be called when the response packet is sent to the server
 		 * @return a completable future which contains the payload to respond to the server with.
 		 * If the future contains {@code null}, then the server will be notified that the client did not understand the query.
 		 */
-		CompletableFuture<@Nullable PacketByteBuf> receive(ClientLoginNetworkHandler handler, MinecraftClient client, PacketByteBuf buf, Consumer<GenericFutureListener<? extends Future<? super Void>>> listenerAdder);
+		CompletableFuture<@Nullable PacketByteBuf> receive(MinecraftClient client, ClientLoginNetworkHandler handler, PacketByteBuf buf, Consumer<GenericFutureListener<? extends Future<? super Void>>> listenerAdder);
 	}
 }

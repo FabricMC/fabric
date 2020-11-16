@@ -65,7 +65,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 	public void register(Identifier id, PacketConsumer consumer) {
 		Objects.requireNonNull(consumer, "PacketConsumer cannot be null");
 
-		ServerPlayNetworking.registerGlobalReceiver(id, (handler, sender, server, buf) -> {
+		ServerPlayNetworking.registerGlobalReceiver(id, (server, player, handler, buf, sender) -> {
 			consumer.accept(new PacketContext() {
 				@Override
 				public EnvType getPacketEnvironment() {
@@ -74,7 +74,7 @@ public class ServerSidePacketRegistryImpl implements ServerSidePacketRegistry, P
 
 				@Override
 				public PlayerEntity getPlayer() {
-					return handler.player;
+					return player;
 				}
 
 				@Override
