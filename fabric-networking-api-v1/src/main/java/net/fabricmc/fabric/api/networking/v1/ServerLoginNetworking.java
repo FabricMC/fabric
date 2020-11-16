@@ -169,7 +169,7 @@ public final class ServerLoginNetworking {
 		 * building of a followup query request can be performed properly on the logical server
 		 * thread before the player successfully logs in:
 		 * <pre>{@code
-		 * ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (handler, sender, server, buf, understood, synchronizer) -&gt; {
+		 * ServerLoginNetworking.registerGlobalReceiver(CHECK_CHANNEL, (server, handler, understood, buf, synchronizer, responseSender) -&gt; {
 		 * 	if (!understood) {
 		 * 		handler.disconnect(new LiteralText("Only accept clients that can check!"));
 		 * 		return;
@@ -186,7 +186,7 @@ public final class ServerLoginNetworking {
 		 * 			return;
 		 * 		}
 		 *
-		 * 		sender.send(UPCOMING_CHECK, checker.buildSecondQueryPacket(handler, checkMessage));
+		 * 		responseSender.send(UPCOMING_CHECK, checker.buildSecondQueryPacket(handler, checkMessage));
 		 * 	}));
 		 * });
 		 * }</pre>
