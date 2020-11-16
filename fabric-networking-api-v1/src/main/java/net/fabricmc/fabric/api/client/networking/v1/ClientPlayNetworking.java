@@ -206,6 +206,7 @@ public final class ClientPlayNetworking {
 	public static void send(Identifier channelName, PacketByteBuf buf) throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			MinecraftClient.getInstance().getNetworkHandler().sendPacket(createC2SPacket(channelName, buf));
+			return;
 		}
 
 		throw new IllegalStateException("Cannot send packets when not in game!");
