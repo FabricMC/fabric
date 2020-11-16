@@ -48,13 +48,13 @@ public final class ServerPlayNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 * @see ServerPlayNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ServerPlayNetworking#register(ServerPlayNetworkHandler, Identifier, PlayChannelHandler)
+	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, Identifier, PlayChannelHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		return ServerNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
@@ -69,7 +69,7 @@ public final class ServerPlayNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ServerPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)
-	 * @see ServerPlayNetworking#unregister(ServerPlayNetworkHandler, Identifier)
+	 * @see ServerPlayNetworking#unregisterReceiver(ServerPlayNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
@@ -90,14 +90,14 @@ public final class ServerPlayNetworking {
 	 * Registers a handler to a channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel name
 	 */
-	public static boolean register(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
+	public static boolean registerReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ((ServerPlayNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channelName, channelHandler);
@@ -112,7 +112,7 @@ public final class ServerPlayNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
 	 */
 	@Nullable
-	public static PlayChannelHandler unregister(ServerPlayNetworkHandler networkHandler, Identifier channelName) {
+	public static PlayChannelHandler unregisterReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
@@ -140,33 +140,6 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 
 		return ServerNetworkingImpl.getAddon(handler).getReceivableChannels();
-	}
-
-	/**
-	 * Checks if the server can receive packets on a specified channel name.
-	 *
-	 * @param player the network handler
-	 * @param channelName the channel name
-	 * @return True if the server can receive packets on a specified channel name.
-	 */
-	public static boolean canReceive(ServerPlayerEntity player, Identifier channelName) {
-		Objects.requireNonNull(player, "Server player entity cannot be null");
-
-		return canReceive(player.networkHandler, channelName);
-	}
-
-	/**
-	 * Checks if the server can receive packets on a specified channel name.
-	 *
-	 * @param handler the network handler
-	 * @param channelName the channel name
-	 * @return True if the server can receive packets on a specified channel name.
-	 */
-	public static boolean canReceive(ServerPlayNetworkHandler handler, Identifier channelName) {
-		Objects.requireNonNull(handler, "Server play network handler cannot be null");
-		Objects.requireNonNull(channelName, "Channel name cannot be null");
-
-		return ServerNetworkingImpl.getAddon(handler).hasReceivableChannel(channelName);
 	}
 
 	/**
@@ -217,7 +190,7 @@ public final class ServerPlayNetworking {
 		Objects.requireNonNull(handler, "Server play network handler cannot be null");
 		Objects.requireNonNull(channelName, "Channel name cannot be null");
 
-		return ServerNetworkingImpl.getAddon(handler).hasSendableChannel(channelName);
+		return ServerNetworkingImpl.getAddon(handler).getSendableChannels().contains(channelName);
 	}
 
 	/**

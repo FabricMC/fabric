@@ -120,17 +120,6 @@ public abstract class AbstractNetworkAddon<H> {
 		}
 	}
 
-	public boolean hasReceivableChannel(Identifier channelName) {
-		Lock lock = this.lock.readLock();
-		lock.lock();
-
-		try {
-			return this.handlers.containsKey(channelName);
-		} finally {
-			lock.unlock();
-		}
-	}
-
 	protected abstract void handleRegistration(Identifier channelName);
 
 	protected abstract void handleUnregistration(Identifier channelName);

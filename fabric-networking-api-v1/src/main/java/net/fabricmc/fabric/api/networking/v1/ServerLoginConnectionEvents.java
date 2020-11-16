@@ -30,7 +30,7 @@ public final class ServerLoginConnectionEvents {
 	/**
 	 * An event for the initialization of the server login network handler.
 	 * This event may be used to register {@link ServerLoginNetworking.LoginQueryResponseHandler login query response handlers}
-	 * using {@link ServerLoginNetworking#register(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}.
+	 * using {@link ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}.
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
@@ -43,7 +43,7 @@ public final class ServerLoginConnectionEvents {
 	/**
 	 * An event for the start of login queries of the server login network handler.
 	 * This event may be used to register {@link ServerLoginNetworking.LoginQueryResponseHandler login query response handlers}
-	 * using {@link ServerLoginNetworking#register(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
+	 * using {@link ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 * since this event is fired just before the first login query response is processed.
 	 *
 	 * <p>You may send login queries to the connected client using the provided {@link PacketSender}.

@@ -56,7 +56,7 @@ public final class ClientLoginNetworking {
 	 * @param queryHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 * @see ClientLoginNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ClientLoginNetworking#register(ClientLoginNetworkHandler, Identifier, LoginQueryRequestHandler)
+	 * @see ClientLoginNetworking#registerReceiver(ClientLoginNetworkHandler, Identifier, LoginQueryRequestHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, LoginQueryRequestHandler queryHandler) {
 		return ClientNetworkingImpl.LOGIN.registerGlobalReceiver(channelName, queryHandler);
@@ -71,7 +71,7 @@ public final class ClientLoginNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ClientLoginNetworking#registerGlobalReceiver(Identifier, LoginQueryRequestHandler)
-	 * @see ClientLoginNetworking#unregister(ClientLoginNetworkHandler, Identifier)
+	 * @see ClientLoginNetworking#unregisterReceiver(ClientLoginNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static ClientLoginNetworking.LoginQueryRequestHandler unregisterGlobalReceiver(Identifier channelName) {
@@ -92,14 +92,14 @@ public final class ClientLoginNetworking {
 	 * Registers a handler to a query request channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(ClientLoginNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ClientLoginNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
 	 * @param queryHandler the handler
 	 * @return false if a handler is already registered to the channel name
 	 */
-	public static boolean register(ClientLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryRequestHandler queryHandler) {
+	public static boolean registerReceiver(ClientLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryRequestHandler queryHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, queryHandler);
@@ -114,7 +114,7 @@ public final class ClientLoginNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
 	 */
 	@Nullable
-	public static ClientLoginNetworking.LoginQueryRequestHandler unregister(ClientLoginNetworkHandler networkHandler, Identifier channelName) {
+	public static LoginQueryRequestHandler unregisterReceiver(ClientLoginNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);

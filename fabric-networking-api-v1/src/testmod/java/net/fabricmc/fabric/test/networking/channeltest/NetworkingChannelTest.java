@@ -97,11 +97,11 @@ public final class NetworkingChannelTest implements ModInitializer {
 	private static int registerChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {
 		final Identifier channel = getIdentifier(context, "channel");
 
-		if (ServerPlayNetworking.canReceive(player, channel)) {
+		if (ServerPlayNetworking.getReceivers(player).contains(channel)) {
 			throw new SimpleCommandExceptionType(new LiteralText(String.format("Cannot register channel %s twice for server player", channel))).create();
 		}
 
-		ServerPlayNetworking.register(player.networkHandler, channel, (handler, sender, server, buf) -> {
+		ServerPlayNetworking.registerReceiver(player.networkHandler, channel, (handler, sender, server, buf) -> {
 			System.out.printf("Received packet on channel %s%n", channel);
 		});
 
@@ -113,11 +113,11 @@ public final class NetworkingChannelTest implements ModInitializer {
 	private static int unregisterChannel(CommandContext<ServerCommandSource> context, ServerPlayerEntity player) throws CommandSyntaxException {
 		final Identifier channel = getIdentifier(context, "channel");
 
-		if (!ServerPlayNetworking.canReceive(player, channel)) {
+		if (!ServerPlayNetworking.getReceivers(player).contains(channel)) {
 			throw new SimpleCommandExceptionType(new LiteralText("Cannot unregister channel the server player entity cannot recieve packets on")).create();
 		}
 
-		ServerPlayNetworking.unregister(player.networkHandler, channel);
+		ServerPlayNetworking.unregisterReceiver(player.networkHandler, channel);
 		context.getSource().sendFeedback(new LiteralText(String.format("Unregistered channel %s for %s", getIdentifier(context, "channel"), player.getEntityName())), false);
 
 		return 1;

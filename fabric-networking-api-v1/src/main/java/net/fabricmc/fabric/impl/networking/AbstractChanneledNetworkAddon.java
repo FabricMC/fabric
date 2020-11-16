@@ -202,8 +202,4 @@ public abstract class AbstractChanneledNetworkAddon<H> extends AbstractNetworkAd
 	public Set<Identifier> getSendableChannels() {
 		return this.sendableChannelsView;
 	}
-
-	public boolean hasSendableChannel(Identifier channel) {
-		return this.sendableChannels.contains(channel);
-	}
 }

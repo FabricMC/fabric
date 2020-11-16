@@ -23,7 +23,6 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.util.Identifier;
@@ -52,13 +51,13 @@ public final class ClientPlayNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(ClientPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ClientPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 * @see ClientPlayNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ClientPlayNetworking#register(ClientPlayNetworkHandler, Identifier, PlayChannelHandler)
+	 * @see ClientPlayNetworking#registerReceiver(ClientPlayNetworkHandler, Identifier, PlayChannelHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		return ClientNetworkingImpl.PLAY.registerGlobalReceiver(channelName, channelHandler);
@@ -73,7 +72,7 @@ public final class ClientPlayNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ClientPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)
-	 * @see ClientPlayNetworking#unregister(ClientPlayNetworkHandler, Identifier)
+	 * @see ClientPlayNetworking#unregisterReceiver(ClientPlayNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static PlayChannelHandler unregisterGlobalReceiver(Identifier channelName) {
@@ -94,13 +93,13 @@ public final class ClientPlayNetworking {
 	 * Registers a handler to a channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(ClientPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ClientPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param channelName the id of the channel
 	 * @param networkHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 */
-	public static boolean register(ClientPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
+	public static boolean registerReceiver(ClientPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, channelHandler);
@@ -115,7 +114,7 @@ public final class ClientPlayNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 */
 	@Nullable
-	public static PlayChannelHandler unregister(ClientPlayNetworkHandler networkHandler, Identifier channelName) {
+	public static PlayChannelHandler unregisterReceiver(ClientPlayNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
@@ -129,78 +128,10 @@ public final class ClientPlayNetworking {
 	 */
 	public static Set<Identifier> getReceivers() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return getReceivers(MinecraftClient.getInstance().getNetworkHandler());
+			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getReceivableChannels();
 		}
 
-		throw new IllegalStateException("Cannot get a list of channels the client can recieve packets on while not in game!");
-	}
-
-	/**
-	 * Gets all the channel names that the client can receive packets on.
-	 *
-	 * @param player the player
-	 * @return All the channel names that the client can receive packets on
-	 */
-	public static Set<Identifier> getReceivers(ClientPlayerEntity player) {
-		Objects.requireNonNull(player, "Client player entity cannot be null");
-
-		return getReceivers(player.networkHandler);
-	}
-
-	/**
-	 * Gets all the channel names that the client can receive packets on.
-	 *
-	 * @param handler the network handler
-	 * @return All the channel names that the client can receive packets on
-	 */
-	public static Set<Identifier> getReceivers(ClientPlayNetworkHandler handler) {
-		Objects.requireNonNull(handler, "Client play network handler cannot be null");
-
-		return ClientNetworkingImpl.getAddon(handler).getReceivableChannels();
-	}
-
-	/**
-	 * Checks if the client can receive packets on a specified channel name.
-	 *
-	 * @param channelName the channel name
-	 * @return True if the client can receive packets on a specified channel name.
-	 * @throws IllegalStateException if the client is not connected to a server
-	 */
-	public static boolean canReceive(Identifier channelName) throws IllegalStateException {
-		Objects.requireNonNull(channelName, "Channel name cannot be null");
-
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return canReceive(MinecraftClient.getInstance().getNetworkHandler(), channelName);
-		}
-
-		throw new IllegalStateException("Cannot check if the client can receive packets on specific channels while not in game!");
-	}
-
-	/**
-	 * Checks if the client can receive packets on a specified channel name.
-	 *
-	 * @param player the player
-	 * @param channelName the channel name
-	 * @return True if the client can receive packets on a specified channel name.
-	 */
-	public static boolean canReceive(ClientPlayerEntity player, Identifier channelName) {
-		Objects.requireNonNull(player, "Client player entity cannot be null");
-
-		return canReceive(player.networkHandler, channelName);
-	}
-
-	/**
-	 * Checks if the client can receive packets on a specified channel name.
-	 *
-	 * @param handler the network handler
-	 * @param channelName the channel name
-	 * @return True if the client can receive packets on a specified channel name.
-	 */
-	public static boolean canReceive(ClientPlayNetworkHandler handler, Identifier channelName) {
-		Objects.requireNonNull(handler, "Client play network handler cannot be null");
-		Objects.requireNonNull(channelName, "Channel name cannot be null");
-
-		return ClientNetworkingImpl.getAddon(handler).hasReceivableChannel(channelName);
+		throw new IllegalStateException("Cannot get a list of channels the client can receive packets on while not in game!");
 	}
 
 	/**
@@ -211,34 +142,10 @@ public final class ClientPlayNetworking {
 	 */
 	public static Set<Identifier> getSendable() throws IllegalStateException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return getSendable(MinecraftClient.getInstance().getNetworkHandler());
+			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels();
 		}
 
 		throw new IllegalStateException("Cannot get a list of channels the server can receive packets on while not in game!");
-	}
-
-	/**
-	 * Gets all channel names that the connected server declared the ability to receive a packets on.
-	 *
-	 * @param player the player
-	 * @return All the channel names the connected server declared the ability to receive a packets on
-	 */
-	public static Set<Identifier> getSendable(ClientPlayerEntity player) {
-		Objects.requireNonNull(player, "Client player entity cannot be null");
-
-		return getSendable(player.networkHandler);
-	}
-
-	/**
-	 * Gets all channel names that the connected server declared the ability to receive a packets on.
-	 *
-	 * @param handler the network handler
-	 * @return All the channel names the connected server declared the ability to receive a packets on
-	 */
-	public static Set<Identifier> getSendable(ClientPlayNetworkHandler handler) {
-		Objects.requireNonNull(handler, "Client play network handler cannot be null");
-
-		return ClientNetworkingImpl.getAddon(handler).getSendableChannels();
 	}
 
 	/**
@@ -250,37 +157,10 @@ public final class ClientPlayNetworking {
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return canSend(MinecraftClient.getInstance().getNetworkHandler(), channelName);
+			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(channelName);
 		}
 
 		throw new IllegalStateException("Cannot check whether the server can receive a packet while not in game!");
-	}
-
-	/**
-	 * Checks if the connected server declared the ability to receive a packet on a specified channel name.
-	 *
-	 * @param player the player
-	 * @param channelName the channel name
-	 * @return True if the connected server has declared the ability to receive a packet on the specified channel
-	 */
-	public static boolean canSend(ClientPlayerEntity player, Identifier channelName) {
-		Objects.requireNonNull(player, "Client player entity cannot be null");
-
-		return canSend(player.networkHandler, channelName);
-	}
-
-	/**
-	 * Checks if the connected server declared the ability to receive a packet on a specified channel name.
-	 *
-	 * @param handler the network handler
-	 * @param channelName the channel name
-	 * @return True if the connected server has declared the ability to receive a packet on the specified channel
-	 */
-	public static boolean canSend(ClientPlayNetworkHandler handler, Identifier channelName) {
-		Objects.requireNonNull(handler, "Client play network handler cannot be null");
-		Objects.requireNonNull(channelName, "Channel name cannot be null");
-
-		return ClientNetworkingImpl.getAddon(handler).hasSendableChannel(channelName);
 	}
 
 	/**

@@ -52,7 +52,7 @@ public final class ServerLoginNetworking {
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 * @see ServerLoginNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ServerLoginNetworking#register(ServerLoginNetworkHandler, Identifier, LoginQueryResponseHandler)
+	 * @see ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, LoginQueryResponseHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, LoginQueryResponseHandler channelHandler) {
 		return ServerNetworkingImpl.LOGIN.registerGlobalReceiver(channelName, channelHandler);
@@ -67,7 +67,7 @@ public final class ServerLoginNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ServerLoginNetworking#registerGlobalReceiver(Identifier, LoginQueryResponseHandler)
-	 * @see ServerLoginNetworking#unregister(ServerLoginNetworkHandler, Identifier)
+	 * @see ServerLoginNetworking#unregisterReceiver(ServerLoginNetworkHandler, Identifier)
 	 */
 	@Nullable
 	public static ServerLoginNetworking.LoginQueryResponseHandler unregisterGlobalReceiver(Identifier channelName) {
@@ -88,14 +88,14 @@ public final class ServerLoginNetworking {
 	 * Registers a handler to a query response channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregister(ServerLoginNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ServerLoginNetworkHandler, Identifier)} to unregister the existing handler.</p>
 	 *
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
 	 * @param responseHandler the handler
 	 * @return false if a handler is already registered to the channel name
 	 */
-	public static boolean register(ServerLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryResponseHandler responseHandler) {
+	public static boolean registerReceiver(ServerLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryResponseHandler responseHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ((ServerLoginNetworkHandlerExtensions) networkHandler).getAddon().registerChannel(channelName, responseHandler);
@@ -110,7 +110,7 @@ public final class ServerLoginNetworking {
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
 	 */
 	@Nullable
-	public static ServerLoginNetworking.LoginQueryResponseHandler unregister(ServerLoginNetworkHandler networkHandler, Identifier channelName) {
+	public static ServerLoginNetworking.LoginQueryResponseHandler unregisterReceiver(ServerLoginNetworkHandler networkHandler, Identifier channelName) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
 
 		return ((ServerLoginNetworkHandlerExtensions) networkHandler).getAddon().unregisterChannel(channelName);

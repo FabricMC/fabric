@@ -76,7 +76,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 			// Register global receivers.
 			for (Map.Entry<Identifier, ServerLoginNetworking.LoginQueryResponseHandler> entry : ServerNetworkingImpl.LOGIN.getHandlers().entrySet()) {
-				ServerLoginNetworking.register(this.handler, entry.getKey(), entry.getValue());
+				ServerLoginNetworking.registerReceiver(this.handler, entry.getKey(), entry.getValue());
 			}
 
 			ServerLoginConnectionEvents.LOGIN_QUERY_START.invoker().onLoginStart(this.handler, this.server, this, this.waits::add);
