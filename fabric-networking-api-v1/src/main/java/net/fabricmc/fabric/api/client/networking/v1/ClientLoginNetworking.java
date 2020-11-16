@@ -152,6 +152,8 @@ public final class ClientLoginNetworking {
 		 * Modification to the game should be {@linkplain net.minecraft.util.thread.ThreadExecutor#submit(Runnable) scheduled} using the provided Minecraft client instance.
 		 *
 		 * <p>The return value of this method is a completable future that may be used to delay the login process to the server until a task {@link CompletableFuture#isDone() is done}.
+		 * The future should complete in reasonably time to prevent disconnection by the server.
+		 * If your request processes instantly, you may use {@link CompletableFuture#completedFuture(Object)} to wrap your response for immediate sending.
 		 *
 		 * @param client the client
 		 * @param handler the network handler that received this packet

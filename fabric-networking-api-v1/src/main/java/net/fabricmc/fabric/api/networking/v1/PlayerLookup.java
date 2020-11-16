@@ -156,8 +156,8 @@ public final class PlayerLookup {
 	 * <p>The distance check is done in the three-dimensional space instead of in the horizontal plane.
 	 *
 	 * @param world  the world
-	 * @param pos    the position
-	 * @param radius the maximum distance from the position
+	 * @param pos the position
+	 * @param radius the maximum distance from the position in blocks
 	 * @return the players around the position
 	 */
 	public static Collection<ServerPlayerEntity> around(ServerWorld world, Vec3d pos, double radius) {
@@ -176,7 +176,7 @@ public final class PlayerLookup {
 	 *
 	 * @param world  the world
 	 * @param pos    the position (can be a block pos)
-	 * @param radius the maximum distance from the position
+	 * @param radius the maximum distance from the position in blocks
 	 * @return the players around the position
 	 */
 	public static Collection<ServerPlayerEntity> around(ServerWorld world, Vec3i pos, double radius) {
