@@ -42,7 +42,7 @@ public class NetworkingKeybindClientPacketTest implements ClientModInitializer {
 			if (client.getNetworkHandler() != null) {
 				if (TEST_BINDING.wasPressed()) {
 					// Send an empty payload, server just needs to be told when packet is sent
-					ClientPlayNetworking.send(client.getNetworkHandler(), NetworkingKeybindPacketTest.KEYBINDING_PACKET_ID, PacketByteBufs.empty());
+					ClientPlayNetworking.send(NetworkingKeybindPacketTest.KEYBINDING_PACKET_ID, PacketByteBufs.empty());
 				}
 			}
 		});

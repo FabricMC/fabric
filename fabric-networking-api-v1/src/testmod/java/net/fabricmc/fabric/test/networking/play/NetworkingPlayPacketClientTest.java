@@ -32,7 +32,7 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 		//ClientPlayNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
 
 		ClientPlayConnectionEvents.PLAY_INIT.register((handler, sender, client) -> {
-			ClientPlayNetworking.registerReceiver(handler, NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
+			ClientPlayNetworking.registerReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, this::receive);
 		});
 	}
 

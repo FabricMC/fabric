@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.client.networking.v1;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -27,13 +26,16 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.PacketListener;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
+import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
 
 /**
  * Offers access to login stage client-side networking functionalities.
@@ -56,7 +58,7 @@ public final class ClientLoginNetworking {
 	 * @param queryHandler the handler
 	 * @return false if a handler is already registered to the channel
 	 * @see ClientLoginNetworking#unregisterGlobalReceiver(Identifier)
-	 * @see ClientLoginNetworking#registerReceiver(ClientLoginNetworkHandler, Identifier, LoginQueryRequestHandler)
+	 * @see ClientLoginNetworking#registerReceiver(Identifier, LoginQueryRequestHandler)
 	 */
 	public static boolean registerGlobalReceiver(Identifier channelName, LoginQueryRequestHandler queryHandler) {
 		return ClientNetworkingImpl.LOGIN.registerGlobalReceiver(channelName, queryHandler);
@@ -71,7 +73,7 @@ public final class ClientLoginNetworking {
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
 	 * @see ClientLoginNetworking#registerGlobalReceiver(Identifier, LoginQueryRequestHandler)
-	 * @see ClientLoginNetworking#unregisterReceiver(ClientLoginNetworkHandler, Identifier)
+	 * @see ClientLoginNetworking#unregisterReceiver(Identifier)
 	 */
 	@Nullable
 	public static ClientLoginNetworking.LoginQueryRequestHandler unregisterGlobalReceiver(Identifier channelName) {
@@ -92,17 +94,25 @@ public final class ClientLoginNetworking {
 	 * Registers a handler to a query request channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ClientLoginNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.</p>
 	 *
-	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
 	 * @param queryHandler the handler
 	 * @return false if a handler is already registered to the channel name
+	 * @throws IllegalStateException if the client is not logging in
 	 */
-	public static boolean registerReceiver(ClientLoginNetworkHandler networkHandler, Identifier channelName, LoginQueryRequestHandler queryHandler) {
-		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+	public static boolean registerReceiver(Identifier channelName, LoginQueryRequestHandler queryHandler) throws IllegalStateException {
+		final ClientConnection connection = ((MinecraftClientAccessor) MinecraftClient.getInstance()).getConnection();
 
-		return ClientNetworkingImpl.getAddon(networkHandler).registerChannel(channelName, queryHandler);
+		if (connection != null) {
+			final PacketListener packetListener = connection.getPacketListener();
+
+			if (packetListener instanceof ClientLoginNetworkHandler) {
+				return ClientNetworkingImpl.getAddon(((ClientLoginNetworkHandler) packetListener)).registerChannel(channelName, queryHandler);
+			}
+		}
+
+		throw new IllegalStateException("Cannot register receiver while client is not logging in!");
 	}
 
 	/**
@@ -112,12 +122,21 @@ public final class ClientLoginNetworking {
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
+	 * @throws IllegalStateException if the client is not logging in
 	 */
 	@Nullable
-	public static LoginQueryRequestHandler unregisterReceiver(ClientLoginNetworkHandler networkHandler, Identifier channelName) {
-		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
+	public static LoginQueryRequestHandler unregisterReceiver(Identifier channelName) throws IllegalStateException {
+		final ClientConnection connection = ((MinecraftClientAccessor) MinecraftClient.getInstance()).getConnection();
 
-		return ClientNetworkingImpl.getAddon(networkHandler).unregisterChannel(channelName);
+		if (connection != null) {
+			final PacketListener packetListener = connection.getPacketListener();
+
+			if (packetListener instanceof ClientLoginNetworkHandler) {
+				return ClientNetworkingImpl.getAddon(((ClientLoginNetworkHandler) packetListener)).unregisterChannel(channelName);
+			}
+		}
+
+		throw new IllegalStateException("Cannot unregister receiver while client is not logging in!");
 	}
 
 	private ClientLoginNetworking() {
