@@ -4,10 +4,13 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ClientConnectionMixin",
+    "EntityTrackerEntryMixin",
     "PlayerManagerMixin",
     "ServerLoginNetworkHandlerMixin",
     "ServerPlayNetworkHandlerMixin",
+    "ThreadedAnvilChunkStorageMixin",
     "accessor.CustomPayloadC2SPacketAccessor",
+    "accessor.EntityTrackerAccessor",
     "accessor.LoginQueryRequestS2CPacketAccessor",
     "accessor.LoginQueryResponseC2SPacketAccessor",
     "accessor.ServerLoginNetworkHandlerAccessor"

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.player.tracking;
+package net.fabricmc.fabric.mixin.networking;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,7 +28,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 
-import net.fabricmc.fabric.impl.player.tracking.ThreadedAnvilChunkStorageTrackingExtensions;
+import net.fabricmc.fabric.impl.networking.ThreadedAnvilChunkStorageTrackingExtensions;
+import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
 
 @Mixin(ThreadedAnvilChunkStorage.class)
 abstract class ThreadedAnvilChunkStorageMixin implements ThreadedAnvilChunkStorageTrackingExtensions {

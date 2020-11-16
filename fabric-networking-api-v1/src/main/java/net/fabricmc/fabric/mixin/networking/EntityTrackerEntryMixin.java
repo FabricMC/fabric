@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.player.tracking;
+package net.fabricmc.fabric.mixin.networking;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,7 +27,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import net.fabricmc.fabric.api.player.tracking.v1.EntityTrackingEvents;
+import net.fabricmc.fabric.api.networking.v1.EntityTrackingEvents;
 
 @Mixin(EntityTrackerEntry.class)
 abstract class EntityTrackerEntryMixin {

@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.player.tracking.v1;
+package net.fabricmc.fabric.api.networking.v1;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
@@ -35,7 +34,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.ChunkManager;
 
-import net.fabricmc.fabric.impl.player.tracking.ThreadedAnvilChunkStorageTrackingExtensions;
+import net.fabricmc.fabric.impl.networking.ThreadedAnvilChunkStorageTrackingExtensions;
 
 /**
  * For example, a block entity may use the methods in this class to send a packet to all clients which can see the block entity in order notify clients about a change.

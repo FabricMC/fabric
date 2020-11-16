@@ -29,7 +29,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.player.tracking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 /**
  * Helper streams for looking up players on a server.

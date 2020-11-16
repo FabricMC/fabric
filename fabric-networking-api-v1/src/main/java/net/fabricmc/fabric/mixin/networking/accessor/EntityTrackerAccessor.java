@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.player.tracking;
+package net.fabricmc.fabric.mixin.networking.accessor;
 
 import java.util.Set;
 

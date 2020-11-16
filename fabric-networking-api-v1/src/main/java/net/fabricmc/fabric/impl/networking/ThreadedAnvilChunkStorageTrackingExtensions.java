@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.player.tracking;
+package net.fabricmc.fabric.impl.networking;
 
 import java.util.Collection;
 
