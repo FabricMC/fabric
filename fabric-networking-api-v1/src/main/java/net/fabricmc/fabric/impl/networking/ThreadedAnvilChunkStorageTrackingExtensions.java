@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.server;
+package net.fabricmc.fabric.impl.player.tracking;
 
-import java.util.stream.Stream;
+import java.util.Collection;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public interface EntityTrackerStreamAccessor {
-	Stream<ServerPlayerEntity> fabric_getTrackingPlayers();
+public interface ThreadedAnvilChunkStorageTrackingExtensions {
+	Collection<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity);
 }

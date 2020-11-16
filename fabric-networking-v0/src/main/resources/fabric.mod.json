@@ -28,8 +28,5 @@
     "fabric-api-base": "*",
     "fabric-networking-api-v1": "*"
   },
-  "description": "Legacy Networking packet hooks and registries, superseded by fabric-networking-api-v1.",
-  "mixins": [
-    "fabric-networking-v0.mixins.json"
-  ]
+  "description": "Legacy Networking packet hooks and registries, superseded by fabric-networking-api-v1."
 }
