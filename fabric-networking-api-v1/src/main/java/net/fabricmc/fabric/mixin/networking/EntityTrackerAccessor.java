@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking.server;
+package net.fabricmc.fabric.mixin.player.tracking;
 
-import java.util.stream.Stream;
+import java.util.Set;
 
-import net.minecraft.entity.Entity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public interface EntityTrackerStorageAccessor {
-	Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity);
+@Mixin(targets = "net/minecraft/server/world/ThreadedAnvilChunkStorage$EntityTracker")
+public interface EntityTrackerAccessor {
+	@Accessor
+	Set<ServerPlayerEntity> getPlayersTracking();
 }

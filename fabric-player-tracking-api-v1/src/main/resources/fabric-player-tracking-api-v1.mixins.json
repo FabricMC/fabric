@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.player.tracking",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "EntityTrackerAccessor",
+    "EntityTrackerEntryMixin",
+    "ThreadedAnvilChunkStorageMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

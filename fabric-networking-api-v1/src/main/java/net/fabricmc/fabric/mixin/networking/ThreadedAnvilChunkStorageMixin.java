@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.networking;
+package net.fabricmc.fabric.mixin.player.tracking;
 
-import java.util.stream.Stream;
+import java.util.Collection;
+import java.util.Collections;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import org.spongepowered.asm.mixin.Final;
@@ -27,18 +28,24 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 
-import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
-import net.fabricmc.fabric.impl.networking.server.EntityTrackerStreamAccessor;
+import net.fabricmc.fabric.impl.player.tracking.ThreadedAnvilChunkStorageTrackingExtensions;
 
 @Mixin(ThreadedAnvilChunkStorage.class)
-public class MixinThreadedAnvilChunkStorage implements EntityTrackerStorageAccessor {
+abstract class ThreadedAnvilChunkStorageMixin implements ThreadedAnvilChunkStorageTrackingExtensions {
 	@Shadow
 	@Final
-	private Int2ObjectMap<EntityTrackerStreamAccessor> entityTrackers;
+	// We can abuse type erasure here and just get the type in the map as the accessor.
+	// This allows us to avoid an access widener for the package-private `EntityTracker` subclass.
+	private Int2ObjectMap<EntityTrackerAccessor> entityTrackers;
 
 	@Override
-	public Stream<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity) {
-		EntityTrackerStreamAccessor accessor = entityTrackers.get(entity.getEntityId());
-		return accessor != null ? accessor.fabric_getTrackingPlayers() : Stream.empty();
+	public Collection<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity) {
+		EntityTrackerAccessor accessor = this.entityTrackers.get(entity.getEntityId());
+
+		if (accessor != null) {
+			return accessor.getPlayersTracking();
+		}
+
+		return Collections.emptySet();
 	}
 }
