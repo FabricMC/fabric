@@ -35,7 +35,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.ServerLoginNetworkHandlerAc
 /**
  * Offers access to login stage server-side networking functionalities.
  *
- * <p>Server-side networking functionalities include receiving serverbound packets and sending clientbound packets.
+ * <p>Server-side networking functionalities include receiving serverbound query responses and sending clientbound query requests.
  *
  * @see ServerPlayNetworking
  * @see ClientLoginNetworking
