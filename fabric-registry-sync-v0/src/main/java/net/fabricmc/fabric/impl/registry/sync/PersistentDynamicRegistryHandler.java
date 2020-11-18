@@ -98,8 +98,10 @@ public class PersistentDynamicRegistryHandler {
 
 		if (LOGGER.isDebugEnabled()) {
 			if (existingTag == null) {
-				LOGGER.debug("No existing data found, assuming new registry with {} entries", registry.getIds().size());
+				LOGGER.debug("No existing data found, assuming new registry with {} entries. modded = {}", registry.getIds().size(), isModded);
 			} else {
+				LOGGER.debug("Existing registry data found. modded = {}", isModded);
+
 				for (T entry : registry) {
 					//noinspection unchecked
 					Identifier id = registry.getId(entry);
@@ -109,6 +111,7 @@ public class PersistentDynamicRegistryHandler {
 
 					if (existingTag.getKeys().contains(id.toString())) {
 						int existingRawId = existingTag.getInt(id.toString());
+
 						if (rawId != existingRawId) {
 							LOGGER.debug("Remapping {} {} -> {}", id.toString(), rawId, existingRawId);
 						} else {
@@ -119,7 +122,6 @@ public class PersistentDynamicRegistryHandler {
 					}
 				}
 			}
-
 		}
 
 		// If we have some existing ids and the registry contains modded/datapack entries we remap the registry with those
