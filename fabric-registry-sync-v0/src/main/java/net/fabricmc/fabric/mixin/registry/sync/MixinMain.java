@@ -47,7 +47,6 @@ import net.fabricmc.fabric.impl.registry.sync.PersistentDynamicRegistryHandler;
 
 @Mixin(Main.class)
 public class MixinMain {
-
 	// just after RegistryOps.of
 	@SuppressWarnings("rawtypes")
 	@Inject(method = "main", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;)Lnet/minecraft/util/dynamic/RegistryOps;"), locals = LocalCapture.CAPTURE_FAILHARD)
