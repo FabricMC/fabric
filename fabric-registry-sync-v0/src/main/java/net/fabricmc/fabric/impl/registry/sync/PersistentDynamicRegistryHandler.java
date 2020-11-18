@@ -83,7 +83,7 @@ public class PersistentDynamicRegistryHandler {
 	 */
 	private static <T> CompoundTag remapRegistry(Identifier registryId, MutableRegistry<T> registry, @Nullable CompoundTag existingTag) throws RemapException {
 		if (!(registry instanceof RemappableRegistry)) {
-			throw new UnsupportedOperationException("Cannot remap un re-mappable registry");
+			throw new UnsupportedOperationException("Cannot remap un re-mappable registry: " + registryId.toString());
 		}
 
 		boolean isModded = registry.getIds().stream().anyMatch(id -> !id.getNamespace().equals("minecraft"));

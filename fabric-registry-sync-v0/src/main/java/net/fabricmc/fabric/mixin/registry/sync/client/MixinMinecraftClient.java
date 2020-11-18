@@ -63,7 +63,7 @@ public class MixinMinecraftClient {
 		PersistentDynamicRegistryHandler.remapDynamicRegistries(impl, saveDir);
 	}
 
-	// synthetic in method_29607
+	// synthetic in method_29607 just after RegistryOps.of
 	@Inject(method = "method_31125", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;)Lnet/minecraft/util/dynamic/RegistryOps;"))
 	private static void method_31125(DynamicRegistryManager.Impl impl, GeneratorOptions generatorOptions, LevelInfo levelInfo, LevelStorage.Session session, DynamicRegistryManager.Impl impl2, ResourceManager resourceManager, DataPackSettings dataPackSettings, CallbackInfoReturnable<SaveProperties> cir) {
 		Path saveDir = ((AccessorLevelStorageSession) session).getDirectory();
