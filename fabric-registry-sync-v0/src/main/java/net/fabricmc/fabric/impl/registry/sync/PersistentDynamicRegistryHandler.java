@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2016, 2017, 2018, 2019 FabricMC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.fabricmc.fabric.impl.registry.sync;
 
 import java.io.IOException;
@@ -44,8 +60,14 @@ public class PersistentDynamicRegistryHandler {
 		CompoundTag registries = new CompoundTag();
 
 		// For now we only care about biomes, but lets keep our options open
+		CompoundTag biomeRegistryData = null;
+
+		if (existingTag != null) {
+			biomeRegistryData = existingTag.getCompound(Registry.BIOME_KEY.getValue().toString());
+		}
+
 		MutableRegistry<?> registry = dynamicRegistryManager.get(Registry.BIOME_KEY);
-		CompoundTag biomeIdMap = remapRegistry(Registry.BIOME_KEY.getValue(), registry, existingTag);
+		CompoundTag biomeIdMap = remapRegistry(Registry.BIOME_KEY.getValue(), registry, biomeRegistryData);
 		registries.put(Registry.BIOME_KEY.getValue().toString(), biomeIdMap);
 
 		CompoundTag outputTag = new CompoundTag();
@@ -59,14 +81,50 @@ public class PersistentDynamicRegistryHandler {
 	 * Then writes out the ids in the registry (remapped or a new world).
 	 * Keeps hold of the orphaned registry entries as to not overwrite them.
 	 */
-	@SuppressWarnings("unchecked")
-	private static CompoundTag remapRegistry(Identifier registryId, MutableRegistry registry, @Nullable CompoundTag existingTag) throws RemapException {
+	private static <T> CompoundTag remapRegistry(Identifier registryId, MutableRegistry<T> registry, @Nullable CompoundTag existingTag) throws RemapException {
 		if (!(registry instanceof RemappableRegistry)) {
 			throw new UnsupportedOperationException("Cannot remap un re-mappable registry");
 		}
 
-		// If we have some existing ids we remap the registry with those
-		if (existingTag != null) {
+		boolean isModded = registry.getIds().stream().anyMatch(id -> !id.getNamespace().equals("minecraft"));
+
+		// The current registry might not be modded, but we might have previous changed vanilla ids that we should try and remap
+		if (existingTag != null && !isModded) {
+			isModded = existingTag.getKeys().stream()
+					.map(existingTag::getString)
+					.map(Identifier::new)
+					.anyMatch(id -> !id.getNamespace().equals("minecraft"));
+		}
+
+		if (LOGGER.isDebugEnabled()) {
+			if (existingTag == null) {
+				LOGGER.debug("No existing data found, assuming new registry with {} entries", registry.getIds().size());
+			} else {
+				for (T entry : registry) {
+					//noinspection unchecked
+					Identifier id = registry.getId(entry);
+					int rawId = registry.getRawId(entry);
+
+					if (id == null) continue;
+
+					if (existingTag.getKeys().contains(id.toString())) {
+						int existingRawId = existingTag.getInt(id.toString());
+						if (rawId != existingRawId) {
+							LOGGER.debug("Remapping {} {} -> {}", id.toString(), rawId, existingRawId);
+						} else {
+							LOGGER.debug("Using existing id for {} {}", id.toString(), rawId);
+						}
+					} else {
+						LOGGER.debug("Found new registry entry {}", id.toString());
+					}
+				}
+			}
+
+		}
+
+		// If we have some existing ids and the registry contains modded/datapack entries we remap the registry with those
+		if (existingTag != null && isModded) {
+			LOGGER.debug("Remapping {} with {} entries", registryId, registry.getIds().size());
 			Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
 
 			for (String key : existingTag.getKeys()) {
@@ -74,13 +132,15 @@ public class PersistentDynamicRegistryHandler {
 			}
 
 			((RemappableRegistry) registry).remap(registryId.toString(), idMap, RemappableRegistry.RemapMode.AUTHORITATIVE);
+		} else {
+			LOGGER.debug("Skipping remap of {}", registryId);
 		}
 
 		// Now start to build up what we are going to save out
 		CompoundTag registryTag = new CompoundTag();
 
-		// Save all ids as they appear in the remapped, or new registry to disk
-		for (Object entry : registry) {
+		// Save all ids as they appear in the remapped, or new registry to disk even if not modded.
+		for (T entry : registry) {
 			//noinspection unchecked
 			Identifier id = registry.getId(entry);
 
