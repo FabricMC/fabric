@@ -48,6 +48,7 @@ public enum RegistryAttribute {
 
 	/**
 	 * For implementation purposes only!
+	 * Returned key values are subject to change.
 	 */
 	@Deprecated
 	@ApiStatus.Internal

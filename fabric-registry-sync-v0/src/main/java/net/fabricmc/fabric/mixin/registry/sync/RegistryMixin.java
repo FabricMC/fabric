@@ -32,7 +32,8 @@ import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
-import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
+import net.fabricmc.fabric.api.registry.v1.RegistryAttributes;
+import net.fabricmc.fabric.impl.registry.RegistryExtensions;
 import net.fabricmc.fabric.impl.registry.sync.FabricRegistry;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
@@ -69,7 +70,7 @@ public abstract class RegistryMixin<T> implements RegistryAttributeHolder, Fabri
 	public boolean hasAttribute(RegistryAttribute attribute) {
 		Objects.requireNonNull(attribute, "Attribute cannot be null");
 
-		return RegistryExtensions.get((Registry<T>) (Object) this).hasAttribute(attribute.getNewKey());
+		return RegistryAttributes.getAttributes((Registry<T>) (Object) this).contains(attribute.getNewKey());
 	}
 
 	@Override

@@ -34,7 +34,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 import net.fabricmc.fabric.api.registry.v1.RegistryEvents;
-import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
+import net.fabricmc.fabric.impl.registry.RegistryExtensions;
 
 @ApiStatus.Internal
 @Mixin(Registry.class)
@@ -77,10 +77,5 @@ abstract class RegistryMixin<T> implements RegistryExtensions<T> {
 	@Override
 	public Set<Identifier> getAttributes() {
 		return Collections.unmodifiableSet(this.attributes);
-	}
-
-	@Override
-	public boolean hasAttribute(Identifier id) {
-		return this.attributes.contains(id);
 	}
 }

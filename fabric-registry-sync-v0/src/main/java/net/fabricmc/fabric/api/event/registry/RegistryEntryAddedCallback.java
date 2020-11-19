@@ -22,7 +22,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.Event;
-import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
+import net.fabricmc.fabric.impl.registry.RegistryExtensions;
 import net.fabricmc.fabric.impl.registry.sync.ListenableRegistry;
 
 /**

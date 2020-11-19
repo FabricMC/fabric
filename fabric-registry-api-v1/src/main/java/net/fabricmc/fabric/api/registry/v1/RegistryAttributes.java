@@ -16,7 +16,12 @@
 
 package net.fabricmc.fabric.api.registry.v1;
 
+import java.util.Set;
+
 import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import net.fabricmc.fabric.impl.registry.RegistryExtensions;
 
 /**
  * An enumeration of all built-in registry attributes.
@@ -26,6 +31,24 @@ public final class RegistryAttributes {
 	 * A registry attribute that states that a registry is modded.
 	 */
 	public static final Identifier MODDED = new Identifier("fabric-registry-api-v1", "modded");
+
+	/**
+	 * Adds an attribute to this registry.
+	 *
+	 * @param id the attribute id
+	 */
+	public static <T> void addAttribute(Registry<T> registry, Identifier id) {
+		RegistryExtensions.get(registry).addAttribute(id);
+	}
+
+	/**
+	 * Gets a set of all attributes this registry has.
+	 *
+	 * @return a set of attributes.
+	 */
+	public static <T> Set<Identifier> getAttributes(Registry<T> registry) {
+		return RegistryExtensions.get(registry).getAttributes();
+	}
 
 	private RegistryAttributes() {
 	}

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.registry.v1;
+package net.fabricmc.fabric.impl.registry;
 
 import java.util.Objects;
 import java.util.Set;
@@ -23,26 +23,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.registry.v1.RegistryEvents;
 
-/**
- * Extensions for a registry.
- * All registries have an extensions instance that can be obtained using {@link RegistryExtensions#get(Registry)}.
- *
- * <p>With a registry extensions instance, you may attach custom attributes to a registry.
- * There are also events which are called when entries are added to or removed from a registry.
- *
- * @param <T> the type of object stored in the registry
- * @see RegistryAttributes
- * @see RegistryEvents
- */
 public interface RegistryExtensions<T> {
-	/**
-	 * Gets the registry extensions for a registry,
-	 *
-	 * @param registry the registry
-	 * @param <T> the type of object stored in the registry
-	 * @return the registry extensions
-	 */
 	static <T> RegistryExtensions<T> get(Registry<T> registry) {
 		Objects.requireNonNull(registry, "Registry cannot be null");
 
@@ -77,12 +60,4 @@ public interface RegistryExtensions<T> {
 	 * @return a set of attributes.
 	 */
 	Set<Identifier> getAttributes();
-
-	/**
-	 * Checks if an attribute is present in this registry.
-	 *
-	 * @param id the attribute id
-	 * @return true if the attribute is present in this registry, otherwise false.
-	 */
-	boolean hasAttribute(Identifier id);
 }

@@ -34,7 +34,6 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.registry.v1.RegistryAttributes;
-import net.fabricmc.fabric.api.registry.v1.RegistryExtensions;
 import net.fabricmc.fabric.impl.registry.RegistryAttributeTracking;
 
 @ApiStatus.Internal
@@ -127,13 +126,11 @@ abstract class SimpleRegistryMixin<T> extends RegistryMixin<T> {
 	private void onChange(RegistryKey<T> registryKey) {
 		// Check if we are past bootstrap or if the added registry entry is not in the minecraft namespace
 		if (RegistryAttributeTracking.isBootstrapped() || !registryKey.getValue().getNamespace().equals("minecraft")) {
-			final RegistryExtensions<T> extensions = RegistryExtensions.get((Registry<T>) (Object) this);
-
 			// Check if the registry is already modded
-			if (!extensions.hasAttribute(RegistryAttributes.MODDED)) {
+			if (!RegistryAttributes.getAttributes((Registry<T>) (Object) this).contains(RegistryAttributes.MODDED)) {
 				Identifier id = this.getKey().getValue();
 				FABRIC_LOGGER.debug("Registry {} has been marked as modded, registry entry {} was changed", id, registryKey.getValue());
-				extensions.addAttribute(RegistryAttributes.MODDED);
+				RegistryAttributes.addAttribute((Registry<T>) (Object) this, RegistryAttributes.MODDED);
 			}
 		}
 	}

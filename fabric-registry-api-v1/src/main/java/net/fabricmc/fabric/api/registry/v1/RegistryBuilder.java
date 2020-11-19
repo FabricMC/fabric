@@ -108,10 +108,8 @@ public final class RegistryBuilder<T, R extends MutableRegistry<T>> {
 	 * @return the registry instance with the attributes applied
 	 */
 	public R buildAndRegister() {
-		final RegistryExtensions<T> extensions = RegistryExtensions.get(this.registry);
-
 		for (Identifier attribute : this.attributes) {
-			extensions.addAttribute(attribute);
+			RegistryAttributes.addAttribute(this.registry, attribute);
 		}
 
 		//noinspection unchecked,rawtypes

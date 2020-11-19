@@ -19,11 +19,32 @@ package net.fabricmc.fabric.api.registry.v1;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.impl.registry.RegistryExtensions;
+
 /**
  * Holds all registry events.
  * The event instances are available via a {@link RegistryExtensions registry's extensions} using {@link RegistryExtensions#get(Registry)}.
  */
 public final class RegistryEvents {
+	/**
+	 * Gets the event that is called when an entry is added to this registry.
+	 *
+	 * @return the entry added event
+	 */
+	public static <T> Event<RegistryEvents.EntryAdded<T>> getEntryAddedEvent(Registry<T> registry) {
+		return RegistryExtensions.get(registry).getEntryAddedEvent();
+	}
+
+	/**
+	 * Gets the event that is called when an entry is removed from a registry.
+	 *
+	 * @return the entry removed event
+	 */
+	public static <T> Event<RegistryEvents.EntryRemoved<T>> getEntryRemovedEvent(Registry<T> registry) {
+		return RegistryExtensions.get(registry).getEntryRemovedEvent();
+	}
+
 	@FunctionalInterface
 	public interface EntryAdded<T> {
 		/**
