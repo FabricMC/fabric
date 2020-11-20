@@ -23,6 +23,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.TeleportTarget;
 
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This class consists exclusively of static methods that operate on world dimensions.
@@ -47,12 +48,14 @@ public final class FabricDimensions {
 	 * @param destination the dimension the entity will be teleported to
 	 * @param target      where the entity will be placed in the target world.
 	 *                    As in Vanilla, the target's velocity is not applied to players.
+	 *                    If target is null, the entity will not be teleported.
 	 * @param <E>         the type of the teleported entity
 	 * @return Returns the teleported entity in the target dimension, which may be a new entity or <code>teleported</code>,
 	 * depending on the entity type.
 	 * @throws IllegalStateException if this method is called on a client entity
 	 * @apiNote this method must be called from the main server thread
 	 */
+	@Nullable
 	public static <E extends Entity> E teleport(E teleported, ServerWorld destination, TeleportTarget target) {
 		Preconditions.checkNotNull(target, "A target must be provided");
 		Preconditions.checkState(!teleported.world.isClient, "Entities can only be teleported on the server side");

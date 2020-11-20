@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.dimension;
 
 import com.mojang.serialization.Lifecycle;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -51,10 +52,13 @@ import net.minecraft.world.level.storage.LevelStorage;
  */
 @Mixin(value = Main.class, remap = false)
 public class ServerBugfixMixin {
+	@Unique
 	private static LevelStorage.Session fabric_session;
 
+	@Unique
 	private static DynamicRegistryManager.Impl fabric_dynamicRegistry;
 
+	@Unique
 	private static RegistryOps<Tag> fabric_registryOps;
 
 	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/registry/DynamicRegistryManager;create()Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;"), method = "main", remap = false, allow = 1)
