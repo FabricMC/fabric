@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.tag;
 
+import net.minecraft.util.Identifier;
+
 /**
  * Interface implemented by {@link net.minecraft.tag.Tag.Builder} instances when
  * Fabric API is present.
@@ -27,4 +29,16 @@ public interface FabricTagBuilder<T> {
 	 * Clear the contained entries and mark the tag as replaced.
 	 */
 	void clearTagEntries();
+
+	/**
+	 * Add an optional object entry
+	 * @param id The ID of the object to add
+	 */
+	void addOptional(Identifier id);
+
+	/**
+	 * Add an optional tag entry
+	 * @param id The ID of the tag to add
+	 */
+	void addOptionalTag(Identifier id);
 }
