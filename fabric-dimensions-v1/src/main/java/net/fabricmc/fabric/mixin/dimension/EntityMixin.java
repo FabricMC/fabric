@@ -23,14 +23,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.world.TeleportTarget;
 
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
+/**
+ * This mixin implements {@link Entity#getTeleportTarget(ServerWorld)} for modded dimensions, as Vanilla will
+ * not return a teleport target for anything but Vanilla dimensions.
+ */
 @Mixin(Entity.class)
-public abstract class MixinEntity {
-	// Inject right before the direction vector is retrieved by the game
-	@Inject(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;getLastNetherPortalDirectionVector()Lnet/minecraft/util/math/Vec3d;"))
-	private void onGetPortal(ServerWorld targetWorld, CallbackInfoReturnable<Entity> cir) {
-		FabricDimensionInternals.prepareDimensionalTeleportation((Entity) (Object) this);
+public class EntityMixin {
+	@SuppressWarnings("ConstantConditions")
+	@Inject(method = "getTeleportTarget", at = @At("HEAD"), cancellable = true, allow = 1)
+	public void getTeleportTarget(ServerWorld destination, CallbackInfoReturnable<TeleportTarget> cri) {
+		Entity self = (Entity) (Object) this;
+		// Check if a destination has been set for the entity currently being teleported
+		TeleportTarget customTarget = FabricDimensionInternals.getCustomTarget();
+
+		if (customTarget != null) {
+			cri.setReturnValue(customTarget);
+		}
 	}
 }
