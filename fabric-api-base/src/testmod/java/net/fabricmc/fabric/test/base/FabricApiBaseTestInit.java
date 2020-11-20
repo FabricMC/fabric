@@ -16,9 +16,14 @@
 
 package net.fabricmc.fabric.test.base;
 
+import static net.minecraft.server.command.CommandManager.literal;
+
 import org.spongepowered.asm.mixin.MixinEnvironment;
 
+import net.minecraft.text.LiteralText;
+
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 public class FabricApiBaseTestInit implements ModInitializer {
@@ -36,5 +41,14 @@ public class FabricApiBaseTestInit implements ModInitializer {
 				}
 			});
 		}
+
+		// Command to call audit the mixin environment
+		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+			dispatcher.register(literal("audit_mixins").executes(context -> {
+				context.getSource().sendFeedback(new LiteralText("Auditing mixin Environment"), false);
+				MixinEnvironment.getCurrentEnvironment().audit();
+				return 1;
+			}));
+		});
 	}
 }
