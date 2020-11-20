@@ -27,65 +27,72 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.Mouse;
+import net.minecraft.client.gui.screen.Screen;
 
-import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 
 @Mixin(Mouse.class)
-public abstract class MouseMixin {
+abstract class MouseMixin {
 	@Shadow
 	@Final
 	private MinecraftClient client;
 	@Unique
-	private ScreenExtensions currentScreen;
+	private Screen currentScreen;
 	@Unique
 	private Double horizontalScrollAmount;
 
-	// Synthetic method in onMouseButton
+	// private synthetic method_1611([ZDDI)V
 	@Inject(method = "method_1611([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z"), cancellable = true)
 	private void beforeMouseClickedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen = ((ScreenExtensions) this.client.currentScreen);
+		// Store the screen in a variable in case someone tries to change the screen during this before event.
+		// If someone changes the screen, the after event will likely have class cast exceptions or throw a NPE.
+		this.currentScreen = this.client.currentScreen;
 
-		if (this.currentScreen.getMouseEvents().getBeforeMouseClickedEvent().invoker().beforeMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
+		if (ScreenMouseEvents.getBeforeMouseClickedEvent(this.currentScreen).invoker().beforeMouseClicked(mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
 		}
 	}
 
-	// Synthetic method in onMouseButton
+	// private synthetic method_1611([ZDDI)V
 	@Inject(method = "method_1611([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseClickedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen.getMouseEvents().getAfterMouseClickedEvent().invoker().afterMouseClicked(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
+		ScreenMouseEvents.getAfterMouseClickedEvent(this.currentScreen).invoker().afterMouseClicked(mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
-	// Synthetic method in onMouseButton
+	// private synthetic method_1605([ZDDI)V
 	@Inject(method = "method_1605([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(DDI)Z"), cancellable = true)
 	private void beforeMouseReleasedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen = ((ScreenExtensions) this.client.currentScreen);
+		// Store the screen in a variable in case someone tries to change the screen during this before event.
+		// If someone changes the screen, the after event will likely have class cast exceptions or throw a NPE.
+		this.currentScreen = this.client.currentScreen;
 
-		if (this.currentScreen.getMouseEvents().getBeforeMouseReleasedEvent().invoker().beforeMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button)) {
+		if (ScreenMouseEvents.getBeforeMouseReleasedEvent(this.currentScreen).invoker().beforeMouseReleased(mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
 		}
 	}
 
-	// Synthetic method in onMouseButton
+	// private synthetic method_1605([ZDDI)V
 	@Inject(method = "method_1605([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseReleasedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		this.currentScreen.getMouseEvents().getAfterMouseReleasedEvent().invoker().afterMouseReleased(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, button);
+		ScreenMouseEvents.getAfterMouseReleasedEvent(this.currentScreen).invoker().afterMouseReleased(mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
 	@Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseScrolled(DDD)Z"), locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
 	private void beforeMouseScrollEvent(long window, double horizontal, double vertical, CallbackInfo ci, double verticalAmount, double mouseX, double mouseY) {
-		this.currentScreen = ((ScreenExtensions) this.client.currentScreen); // Cache screen for after event
+		// Store the screen in a variable in case someone tries to change the screen during this before event.
+		// If someone changes the screen, the after event will likely have class cast exceptions or throw a NPE.
+		this.currentScreen = this.client.currentScreen;
 
 		// Apply same calculations to horizontal scroll as vertical scroll amount has
 		this.horizontalScrollAmount = this.client.options.discreteMouseScroll ? Math.signum(horizontal) : horizontal * this.client.options.mouseWheelSensitivity;
 
-		if (this.currentScreen.getMouseEvents().getBeforeMouseScrolledEvent().invoker().beforeMouseScrolled(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, this.horizontalScrollAmount, verticalAmount)) {
+		if (ScreenMouseEvents.getBeforeMouseScrolledEvent(this.currentScreen).invoker().beforeMouseScrolled(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount)) {
 			this.currentScreen = null;
 			this.horizontalScrollAmount = null;
 			ci.cancel();
@@ -94,7 +101,7 @@ public abstract class MouseMixin {
 
 	@Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseScrolled(DDD)Z", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void afterMouseScrollEvent(long window, double horizontal, double vertical, CallbackInfo ci, double verticalAmount, double mouseX, double mouseY) {
-		this.currentScreen.getMouseEvents().getAfterMouseScrolledEvent().invoker().afterMouseScrolled(this.client, this.currentScreen.getScreen(), this.currentScreen, mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
+		ScreenMouseEvents.getAfterMouseScrolledEvent(this.currentScreen).invoker().afterMouseScrolled(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
 		this.currentScreen = null;
 		this.horizontalScrollAmount = null;
 	}

@@ -16,34 +16,25 @@
 
 package net.fabricmc.fabric.mixin.screen;
 
-import java.util.function.Function;
-
-import com.mojang.datafixers.util.Function4;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.resource.DataPackSettings;
-import net.minecraft.resource.ResourceManager;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.world.SaveProperties;
-import net.minecraft.world.level.storage.LevelStorage;
 
-import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin {
+abstract class MinecraftClientMixin {
 	@Shadow
 	public Screen currentScreen;
 
 	@Unique
-	private ScreenExtensions tickingScreen;
+	private Screen tickingScreen;
 
 	// Synthetic method in `tick`
 	// These two injections should be caught by "Screen#wrapScreenError" if anything fails in an event and then rethrown in the crash report
@@ -51,14 +42,14 @@ public abstract class MinecraftClientMixin {
 	private void beforeScreenTick(CallbackInfo ci) {
 		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
 		// If someone changes the screen, the after tick event will likely have class cast exceptions or an NPE.
-		this.tickingScreen = (ScreenExtensions) this.currentScreen;
-		this.tickingScreen.getBeforeTickEvent().invoker().beforeTick((MinecraftClient) (Object) this, this.tickingScreen.getScreen(), this.tickingScreen);
+		this.tickingScreen = this.currentScreen;
+		ScreenEvents.getBeforeTickEvent(this.tickingScreen).invoker().beforeTick();
 	}
 
 	// Synthetic method in `tick`
 	@Inject(method = "method_1572", at = @At("TAIL"))
 	private void afterScreenTick(CallbackInfo ci) {
-		this.tickingScreen.getAfterTickEvent().invoker().afterTick((MinecraftClient) (Object) this, this.tickingScreen.getScreen(), this.tickingScreen);
+		ScreenEvents.getAfterTickEvent(this.tickingScreen).invoker().afterTick();
 		// Finally set the currently ticking screen to null
 		this.tickingScreen = null;
 	}
@@ -66,16 +57,16 @@ public abstract class MinecraftClientMixin {
 	// The LevelLoadingScreen is the odd screen that isn't ticked by the main tick loop, so we fire events for this screen.
 	// We Coerce the package-private inner class representing the world load action so we don't need an access widener.
 	@Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/LevelLoadingScreen;tick()V"))
-	private void beforeLoadingScreenTick(String worldName, DynamicRegistryManager.Impl dynamicRegistryManager, Function<LevelStorage.Session, DataPackSettings> function, Function4<LevelStorage.Session, DynamicRegistryManager.Impl, ResourceManager, DataPackSettings, SaveProperties> function4, boolean safeMode, @Coerce Object worldLoadAction, CallbackInfo ci) {
+	private void beforeLoadingScreenTick(CallbackInfo ci) {
 		// Store the screen in a variable in case someone tries to change the screen during this before tick event.
-		// If someone changes the screen, the after tick event will likely have class cast exceptions or an NPE.
-		this.tickingScreen = (ScreenExtensions) this.currentScreen;
-		this.tickingScreen.getBeforeTickEvent().invoker().beforeTick((MinecraftClient) (Object) this, this.tickingScreen.getScreen(), this.tickingScreen);
+		// If someone changes the screen, the after tick event will likely have class cast exceptions or throw a NPE.
+		this.tickingScreen = this.currentScreen;
+		ScreenEvents.getBeforeTickEvent(this.tickingScreen).invoker().beforeTick();
 	}
 
 	@Inject(method = "startIntegratedServer(Ljava/lang/String;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Ljava/util/function/Function;Lcom/mojang/datafixers/util/Function4;ZLnet/minecraft/client/MinecraftClient$WorldLoadAction;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;render(Z)V"))
-	private void afterLoadingScreenTick(String worldName, DynamicRegistryManager.Impl dynamicRegistryManager, Function<LevelStorage.Session, DataPackSettings> function, Function4<LevelStorage.Session, DynamicRegistryManager.Impl, ResourceManager, DataPackSettings, SaveProperties> function4, boolean safeMode, @Coerce Object worldLoadAction, CallbackInfo ci) {
-		this.tickingScreen.getAfterTickEvent().invoker().afterTick((MinecraftClient) (Object) this, this.tickingScreen.getScreen(), this.tickingScreen);
+	private void afterLoadingScreenTick(CallbackInfo ci) {
+		ScreenEvents.getAfterTickEvent(this.tickingScreen).invoker().afterTick();
 		// Finally set the currently ticking screen to null
 		this.tickingScreen = null;
 	}

@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.screen;
 
 import java.util.Random;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.widget.AbstractPressableButtonWidget;
 import net.minecraft.client.sound.PositionedSoundInstance;
@@ -25,6 +27,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.SimpleRegistry;
 
 class SoundButton extends AbstractPressableButtonWidget {
 	private static final Random RANDOM = new Random();
@@ -35,8 +38,9 @@ class SoundButton extends AbstractPressableButtonWidget {
 
 	@Override
 	public void onPress() {
-		final int size = Registry.SOUND_EVENT.getIds().size();
-		final SoundEvent event = Registry.SOUND_EVENT.get(RANDOM.nextInt(size - 1));
+		// Upcast on registry is fine
+		@Nullable
+		final SoundEvent event = ((SimpleRegistry<SoundEvent>) Registry.SOUND_EVENT).getRandom(RANDOM);
 
 		MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(event != null ? event : SoundEvents.ENTITY_GENERIC_EXPLODE, 1.0F, 1.0F));
 	}

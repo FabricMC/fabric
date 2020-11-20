@@ -16,105 +16,55 @@
 
 package net.fabricmc.fabric.impl.client.screen;
 
-import net.minecraft.util.profiler.Profiler;
-
-import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * Factory methods for creating event instances used in {@link ScreenExtensions}.
  */
+@Environment(EnvType.CLIENT)
 public final class ScreenEventFactory {
 	public static Event<ScreenEvents.BeforeRender> createBeforeRenderEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeRender.class, callbacks -> (client, matrices, screen, info, mouseX, mouseY, tickDelta) -> {
-			if (EventFactory.isProfilingEnabled()) {
-				final Profiler profiler = client.getProfiler();
-				profiler.push("beforeFabricRenderScreen");
-
-				for (ScreenEvents.BeforeRender callback : callbacks) {
-					profiler.push(EventFactory.getHandlerName(callback));
-					callback.beforeRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
-					profiler.pop();
-				}
-
-				profiler.pop();
-			} else {
-				for (ScreenEvents.BeforeRender callback : callbacks) {
-					callback.beforeRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
-				}
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeRender.class, callbacks -> (matrices, mouseX, mouseY, tickDelta) -> {
+			for (ScreenEvents.BeforeRender callback : callbacks) {
+				callback.beforeRender(matrices, mouseX, mouseY, tickDelta);
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.AfterRender> createAfterRenderEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterRender.class, callbacks -> (client, matrices, screen, info, mouseX, mouseY, tickDelta) -> {
-			if (EventFactory.isProfilingEnabled()) {
-				final Profiler profiler = client.getProfiler();
-				profiler.push("afterFabricRenderScreen");
-
-				for (ScreenEvents.AfterRender callback : callbacks) {
-					profiler.push(EventFactory.getHandlerName(callback));
-					callback.afterRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
-					profiler.pop();
-				}
-
-				profiler.pop();
-			} else {
-				for (ScreenEvents.AfterRender callback : callbacks) {
-					callback.afterRender(client, matrices, screen, info, mouseX, mouseY, tickDelta);
-				}
+		return EventFactory.createArrayBacked(ScreenEvents.AfterRender.class, callbacks -> (matrices, mouseX, mouseY, tickDelta) -> {
+			for (ScreenEvents.AfterRender callback : callbacks) {
+				callback.afterRender(matrices, mouseX, mouseY, tickDelta);
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.BeforeTick> createBeforeTickEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeTick.class, callbacks -> (client, screen, info) -> {
-			if (EventFactory.isProfilingEnabled()) {
-				final Profiler profiler = client.getProfiler();
-				profiler.push("beforeFabricScreenTick");
-
-				for (ScreenEvents.BeforeTick callback : callbacks) {
-					profiler.push(EventFactory.getHandlerName(callback));
-					callback.beforeTick(client, screen, info);
-					profiler.pop();
-				}
-
-				profiler.pop();
-			} else {
-				for (ScreenEvents.BeforeTick callback : callbacks) {
-					callback.beforeTick(client, screen, info);
-				}
+		return EventFactory.createArrayBacked(ScreenEvents.BeforeTick.class, callbacks -> () -> {
+			for (ScreenEvents.BeforeTick callback : callbacks) {
+				callback.beforeTick();
 			}
 		});
 	}
 
 	public static Event<ScreenEvents.AfterTick> createAfterTickEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterTick.class, callbacks -> (client, screen, info) -> {
-			if (EventFactory.isProfilingEnabled()) {
-				final Profiler profiler = client.getProfiler();
-				profiler.push("afterFabricScreenTick");
-
-				for (ScreenEvents.AfterTick callback : callbacks) {
-					profiler.push(EventFactory.getHandlerName(callback));
-					callback.afterTick(client, screen, info);
-					profiler.pop();
-				}
-
-				profiler.pop();
-			} else {
-				for (ScreenEvents.AfterTick callback : callbacks) {
-					callback.afterTick(client, screen, info);
-				}
+		return EventFactory.createArrayBacked(ScreenEvents.AfterTick.class, callbacks -> () -> {
+			for (ScreenEvents.AfterTick callback : callbacks) {
+				callback.afterTick();
 			}
 		});
 	}
 
-	public static Event<ScreenEvents.BeforeKeyPressed> createBeforeKeyPressedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeKeyPressed.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
-			for (ScreenEvents.BeforeKeyPressed callback : callbacks) {
-				if (callback.beforeKeyPress(client, screen, info, key, scancode, modifiers)) {
+	public static Event<ScreenKeyboardEvents.BeforeKeyPressed> createBeforeKeyPressedEvent() {
+		return EventFactory.createArrayBacked(ScreenKeyboardEvents.BeforeKeyPressed.class, callbacks -> (key, scancode, modifiers) -> {
+			for (ScreenKeyboardEvents.BeforeKeyPressed callback : callbacks) {
+				if (callback.beforeKeyPress(key, scancode, modifiers)) {
 					return true;
 				}
 			}
@@ -123,18 +73,18 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.AfterKeyPressed> createAfterKeyPressedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterKeyPressed.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
-			for (ScreenEvents.AfterKeyPressed callback : callbacks) {
-				callback.afterKeyPress(client, screen, info, key, scancode, modifiers);
+	public static Event<ScreenKeyboardEvents.AfterKeyPressed> createAfterKeyPressedEvent() {
+		return EventFactory.createArrayBacked(ScreenKeyboardEvents.AfterKeyPressed.class, callbacks -> (key, scancode, modifiers) -> {
+			for (ScreenKeyboardEvents.AfterKeyPressed callback : callbacks) {
+				callback.afterKeyPress(key, scancode, modifiers);
 			}
 		});
 	}
 
-	public static Event<ScreenEvents.BeforeKeyReleased> createBeforeKeyReleasedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeKeyReleased.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
-			for (ScreenEvents.BeforeKeyReleased callback : callbacks) {
-				if (callback.beforeKeyReleased(client, screen, info, key, scancode, modifiers)) {
+	public static Event<ScreenKeyboardEvents.BeforeKeyReleased> createBeforeKeyReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenKeyboardEvents.BeforeKeyReleased.class, callbacks -> (key, scancode, modifiers) -> {
+			for (ScreenKeyboardEvents.BeforeKeyReleased callback : callbacks) {
+				if (callback.beforeKeyReleased(key, scancode, modifiers)) {
 					return true;
 				}
 			}
@@ -143,20 +93,20 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.AfterKeyReleased> createAfterKeyReleasedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterKeyReleased.class, callbacks -> (client, screen, info, key, scancode, modifiers) -> {
-			for (ScreenEvents.AfterKeyReleased callback : callbacks) {
-				callback.afterKeyReleased(client, screen, info, key, scancode, modifiers);
+	public static Event<ScreenKeyboardEvents.AfterKeyReleased> createAfterKeyReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenKeyboardEvents.AfterKeyReleased.class, callbacks -> (key, scancode, modifiers) -> {
+			for (ScreenKeyboardEvents.AfterKeyReleased callback : callbacks) {
+				callback.afterKeyReleased(key, scancode, modifiers);
 			}
 		});
 	}
 
 	//
 
-	public static Event<ScreenEvents.BeforeMouseClicked> createBeforeMouseClickedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeMouseClicked.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
-			for (ScreenEvents.BeforeMouseClicked callback : callbacks) {
-				if (callback.beforeMouseClicked(client, screen, info, mouseX, mouseY, button)) {
+	public static Event<ScreenMouseEvents.BeforeMouseClicked> createBeforeMouseClickedEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.BeforeMouseClicked.class, callbacks -> (mouseX, mouseY, button) -> {
+			for (ScreenMouseEvents.BeforeMouseClicked callback : callbacks) {
+				if (callback.beforeMouseClicked(mouseX, mouseY, button)) {
 					return true;
 				}
 			}
@@ -165,18 +115,18 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.AfterMouseClicked> createAfterMouseClickedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterMouseClicked.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
-			for (ScreenEvents.AfterMouseClicked callback : callbacks) {
-				callback.afterMouseClicked(client, screen, info, mouseX, mouseY, button);
+	public static Event<ScreenMouseEvents.AfterMouseClicked> createAfterMouseClickedEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseClicked.class, callbacks -> (mouseX, mouseY, button) -> {
+			for (ScreenMouseEvents.AfterMouseClicked callback : callbacks) {
+				callback.afterMouseClicked(mouseX, mouseY, button);
 			}
 		});
 	}
 
-	public static Event<ScreenEvents.BeforeMouseReleased> createBeforeMouseReleasedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeMouseReleased.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
-			for (ScreenEvents.BeforeMouseReleased callback : callbacks) {
-				if (callback.beforeMouseReleased(client, screen, info, mouseX, mouseY, button)) {
+	public static Event<ScreenMouseEvents.BeforeMouseReleased> createBeforeMouseReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.BeforeMouseReleased.class, callbacks -> (mouseX, mouseY, button) -> {
+			for (ScreenMouseEvents.BeforeMouseReleased callback : callbacks) {
+				if (callback.beforeMouseReleased(mouseX, mouseY, button)) {
 					return true;
 				}
 			}
@@ -185,18 +135,18 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.AfterMouseReleased> createAfterMouseReleasedEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterMouseReleased.class, callbacks -> (client, screen, info, mouseX, mouseY, button) -> {
-			for (ScreenEvents.AfterMouseReleased callback : callbacks) {
-				callback.afterMouseReleased(client, screen, info, mouseX, mouseY, button);
+	public static Event<ScreenMouseEvents.AfterMouseReleased> createAfterMouseReleasedEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseReleased.class, callbacks -> (mouseX, mouseY, button) -> {
+			for (ScreenMouseEvents.AfterMouseReleased callback : callbacks) {
+				callback.afterMouseReleased(mouseX, mouseY, button);
 			}
 		});
 	}
 
-	public static Event<ScreenEvents.BeforeMouseScrolled> createBeforeMouseScrolledEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.BeforeMouseScrolled.class, callbacks -> (client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
-			for (ScreenEvents.BeforeMouseScrolled callback : callbacks) {
-				if (callback.beforeMouseScrolled(client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount)) {
+	public static Event<ScreenMouseEvents.BeforeMouseScrolled> createBeforeMouseScrolledEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.BeforeMouseScrolled.class, callbacks -> (mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+			for (ScreenMouseEvents.BeforeMouseScrolled callback : callbacks) {
+				if (callback.beforeMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount)) {
 					return true;
 				}
 			}
@@ -205,10 +155,10 @@ public final class ScreenEventFactory {
 		});
 	}
 
-	public static Event<ScreenEvents.AfterMouseScrolled> createAfterMouseScrolledEvent() {
-		return EventFactory.createArrayBacked(ScreenEvents.AfterMouseScrolled.class, callbacks -> (client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount) -> {
-			for (ScreenEvents.AfterMouseScrolled callback : callbacks) {
-				callback.afterMouseScrolled(client, screen, info, mouseX, mouseY, horizontalAmount, verticalAmount);
+	public static Event<ScreenMouseEvents.AfterMouseScrolled> createAfterMouseScrolledEvent() {
+		return EventFactory.createArrayBacked(ScreenMouseEvents.AfterMouseScrolled.class, callbacks -> (mouseX, mouseY, horizontalAmount, verticalAmount) -> {
+			for (ScreenMouseEvents.AfterMouseScrolled callback : callbacks) {
+				callback.afterMouseScrolled(mouseX, mouseY, horizontalAmount, verticalAmount);
 			}
 		});
 	}

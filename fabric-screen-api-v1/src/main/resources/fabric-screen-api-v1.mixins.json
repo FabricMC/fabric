@@ -12,6 +12,7 @@
   },
   "mixins": [
     "KeyboardMixin",
-    "MouseMixin"
+    "MouseMixin",
+    "ScreenAccessor"
   ]
 }

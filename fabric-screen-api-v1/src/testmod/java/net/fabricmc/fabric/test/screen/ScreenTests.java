@@ -16,9 +16,8 @@
 
 package net.fabricmc.fabric.test.screen;
 
-import java.util.Random;
+import java.util.List;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,42 +27,45 @@ import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.util.math.MatrixStack;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.client.screen.v1.Screens;
 
-public class ScreenTests implements ClientModInitializer {
-	public static final Random RANDOM = new Random();
+@Environment(EnvType.CLIENT)
+public final class ScreenTests implements ClientModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger("FabricScreenApiTests");
-	private static boolean PRINT_RESIZE_SCREEN_EVENTS = System.getProperty("fabric-screen-api-testmod.printResizeScreenEvents") != null;
 
 	@Override
 	public void onInitializeClient() {
 		LOGGER.info("Started Screen Testmod");
-		ScreenEvents.BEFORE_INIT.register(this::beforeInitScreen);
+		ScreenEvents.BEFORE_INIT.register((client, screen, width, height) -> {
+			// TODO: Write tests listening to addition of child elements
+		});
+
 		ScreenEvents.AFTER_INIT.register(this::afterInitScreen);
 	}
 
-	private void beforeInitScreen(MinecraftClient client, Screen screen, ScreenExtensions info, int windowWidth, int windowHeight) {
-		// TODO: Write tests listening to addition of child elements
-	}
-
-	private void afterInitScreen(MinecraftClient client, Screen screen, ScreenExtensions info, int windowWidth, int windowHeight) {
+	private void afterInitScreen(MinecraftClient client, Screen screen, int windowWidth, int windowHeight) {
 		LOGGER.info("Initializing {}", screen.getClass().getName());
 
 		if (screen instanceof TitleScreen) {
+			final List<AbstractButtonWidget> buttons = Screens.getButtons(screen);
+
 			// Shrink the realms button, should be the third button on the list
-			final AbstractButtonWidget optionsButton = info.getButtons().get(2);
+			final AbstractButtonWidget optionsButton = buttons.get(2);
 			optionsButton.setWidth(98);
 
 			// Add a new button
-			info.getButtons().add(new SoundButton((screen.width / 2) + 2, ((screen.height / 4) + 96), 72, 20));
+			buttons.add(new SoundButton((screen.width / 2) + 2, ((screen.height / 4) + 96), 72, 20));
 			// And another button
-			info.getButtons().add(new StopSoundButton(screen, (screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
+			buttons.add(new StopSoundButton(screen, (screen.width / 2) + 80, ((screen.height / 4) + 95), 20, 20));
 
-			// And some automatic validation, make sure the buttons we added are on the list of child elements
+			// Testing:
+			// Some automatic validation that the screen list works, make sure the buttons we added are on the list of child elements
 			screen.children().stream()
 					.filter(element -> element instanceof SoundButton)
 					.findAny()
@@ -75,28 +77,20 @@ public class ScreenTests implements ClientModInitializer {
 					.orElseThrow(() -> new AssertionError("Failed to find the \"Stop Sound\" button in the screen's elements"));
 
 			// Register render event to draw an icon on the screen
-			info.getAfterRenderEvent().register(this::onRender);
-			info.getKeyboardEvents().getBeforeKeyPressedEvent().register(this::beforeKeyPress);
-			info.getKeyboardEvents().getAfterKeyPressedEvent().register(this::afterKeyPress);
-		}
-	}
+			ScreenEvents.getAfterRenderEvent(screen).register((matrices, mouseX, mouseY, tickDelta) -> {
+				// Render an armor icon to test
+				client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_TEXTURE);
+				DrawableHelper.drawTexture(matrices, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
+			});
 
-	private void afterKeyPress(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers) {
-		LOGGER.info("After Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
-	}
+			ScreenKeyboardEvents.getBeforeKeyPressedEvent(screen).register((key, scancode, modifiers) -> {
+				LOGGER.info("After Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+				return false; // Let actions continue
+			});
 
-	private boolean beforeKeyPress(MinecraftClient client, Screen screen, ScreenExtensions context, int key, int scancode, int modifiers) {
-		LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
-		return false; // Let actions continue
-	}
-
-	private void onRender(MinecraftClient client, MatrixStack matrices, Screen screen, ScreenExtensions info, int mouseX, int mouseY, float tickDelta) {
-		if (screen instanceof TitleScreen) {
-			RenderSystem.pushMatrix();
-			// Render an armor icon to test
-			client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_TEXTURE);
-			DrawableHelper.drawTexture(matrices, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
-			RenderSystem.popMatrix();
+			ScreenKeyboardEvents.getAfterKeyPressedEvent(screen).register((key, scancode, modifiers) -> {
+				LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
+			});
 		}
 	}
 }

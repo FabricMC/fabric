@@ -27,26 +27,20 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
-import net.minecraft.client.render.item.ItemRenderer;
 
-import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ButtonList;
-import net.fabricmc.fabric.impl.client.screen.KeyboardEventsImpl;
-import net.fabricmc.fabric.impl.client.screen.MouseEventsImpl;
 import net.fabricmc.fabric.impl.client.screen.ScreenEventFactory;
 
 @Mixin(Screen.class)
-public abstract class ScreenMixin implements ScreenExtensions {
-	@Shadow
-	protected ItemRenderer itemRenderer;
-	@Shadow
-	protected TextRenderer textRenderer;
+abstract class ScreenMixin implements ScreenExtensions {
 	@Shadow
 	@Final
 	protected List<AbstractButtonWidget> buttons;
@@ -64,10 +58,30 @@ public abstract class ScreenMixin implements ScreenExtensions {
 	private Event<ScreenEvents.BeforeRender> beforeRenderEvent;
 	@Unique
 	private Event<ScreenEvents.AfterRender> afterRenderEvent;
+
+	// Keyboard
 	@Unique
-	private MouseEvents mouseEvents;
+	private Event<ScreenKeyboardEvents.BeforeKeyPressed> beforeKeyPressedEvent;
 	@Unique
-	private KeyboardEvents keyboardEvents;
+	private Event<ScreenKeyboardEvents.AfterKeyPressed> afterKeyPressedEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.BeforeKeyReleased> beforeKeyReleasedEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.AfterKeyReleased> afterKeyReleasedEvent;
+
+	// Mouse
+	@Unique
+	private Event<ScreenMouseEvents.BeforeMouseClicked> beforeMouseClickedEvent;
+	@Unique
+	private Event<ScreenMouseEvents.AfterMouseClicked> afterMouseClickedEvent;
+	@Unique
+	private Event<ScreenMouseEvents.BeforeMouseReleased> beforeMouseReleasedEvent;
+	@Unique
+	private Event<ScreenMouseEvents.AfterMouseReleased> afterMouseReleasedEvent;
+	@Unique
+	private Event<ScreenMouseEvents.BeforeMouseScrolled> beforeMouseScrolledEvent;
+	@Unique
+	private Event<ScreenMouseEvents.AfterMouseScrolled> afterMouseScrolledEvent;
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"))
 	private void beforeInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
@@ -76,18 +90,31 @@ public abstract class ScreenMixin implements ScreenExtensions {
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
-		this.mouseEvents = new MouseEventsImpl();
-		this.keyboardEvents = new KeyboardEventsImpl();
-		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, this, width, height);
+
+		// Keyboard
+		this.beforeKeyPressedEvent = ScreenEventFactory.createBeforeKeyPressedEvent();
+		this.afterKeyPressedEvent = ScreenEventFactory.createAfterKeyPressedEvent();
+		this.beforeKeyReleasedEvent = ScreenEventFactory.createBeforeKeyReleasedEvent();
+		this.afterKeyReleasedEvent = ScreenEventFactory.createAfterKeyReleasedEvent();
+
+		// Mouse
+		this.beforeMouseClickedEvent = ScreenEventFactory.createBeforeMouseClickedEvent();
+		this.afterMouseClickedEvent = ScreenEventFactory.createAfterMouseClickedEvent();
+		this.beforeMouseReleasedEvent = ScreenEventFactory.createBeforeMouseReleasedEvent();
+		this.afterMouseReleasedEvent = ScreenEventFactory.createAfterMouseReleasedEvent();
+		this.beforeMouseScrolledEvent = ScreenEventFactory.createBeforeMouseScrolledEvent();
+		this.afterMouseScrolledEvent = ScreenEventFactory.createAfterMouseScrolledEvent();
+
+		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, width, height);
 	}
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
 	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		ScreenEvents.AFTER_INIT.invoker().afterInit(client, (Screen) (Object) this, this, width, height);
+		ScreenEvents.AFTER_INIT.invoker().afterInit(client, (Screen) (Object) this, width, height);
 	}
 
 	@Override
-	public List<AbstractButtonWidget> getButtons() {
+	public List<AbstractButtonWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
 			this.fabricButtons = new ButtonList<>(this, this.buttons, this.children);
@@ -97,47 +124,76 @@ public abstract class ScreenMixin implements ScreenExtensions {
 	}
 
 	@Override
-	public ItemRenderer getItemRenderer() {
-		return this.itemRenderer;
-	}
-
-	@Override
-	public TextRenderer getTextRenderer() {
-		return this.textRenderer;
-	}
-
-	@Override
-	public Event<ScreenEvents.BeforeTick> getBeforeTickEvent() {
+	public Event<ScreenEvents.BeforeTick> fabric_getBeforeTickEvent() {
 		return this.beforeTickEvent;
 	}
 
 	@Override
-	public Event<ScreenEvents.AfterTick> getAfterTickEvent() {
+	public Event<ScreenEvents.AfterTick> fabric_getAfterTickEvent() {
 		return this.afterTickEvent;
 	}
 
 	@Override
-	public Event<ScreenEvents.BeforeRender> getBeforeRenderEvent() {
+	public Event<ScreenEvents.BeforeRender> fabric_getBeforeRenderEvent() {
 		return this.beforeRenderEvent;
 	}
 
 	@Override
-	public Event<ScreenEvents.AfterRender> getAfterRenderEvent() {
+	public Event<ScreenEvents.AfterRender> fabric_getAfterRenderEvent() {
 		return this.afterRenderEvent;
 	}
 
+	// Keyboard
+
 	@Override
-	public MouseEvents getMouseEvents() {
-		return this.mouseEvents;
+	public Event<ScreenKeyboardEvents.BeforeKeyPressed> fabric_getBeforeKeyPressedEvent() {
+		return this.beforeKeyPressedEvent;
 	}
 
 	@Override
-	public KeyboardEvents getKeyboardEvents() {
-		return this.keyboardEvents;
+	public Event<ScreenKeyboardEvents.AfterKeyPressed> fabric_getAfterKeyPressedEvent() {
+		return this.afterKeyPressedEvent;
 	}
 
 	@Override
-	public Screen getScreen() {
-		return (Screen) (Object) this;
+	public Event<ScreenKeyboardEvents.BeforeKeyReleased> fabric_getBeforeKeyReleasedEvent() {
+		return this.beforeKeyReleasedEvent;
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.AfterKeyReleased> fabric_getAfterKeyReleasedEvent() {
+		return this.afterKeyReleasedEvent;
+	}
+
+	// Mouse
+
+	@Override
+	public Event<ScreenMouseEvents.BeforeMouseClicked> fabric_getBeforeMouseClickedEvent() {
+		return this.beforeMouseClickedEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.AfterMouseClicked> fabric_getAfterMouseClickedEvent() {
+		return this.afterMouseClickedEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.BeforeMouseReleased> fabric_getBeforeMouseReleasedEvent() {
+		return this.beforeMouseReleasedEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.AfterMouseReleased> fabric_getAfterMouseReleasedEvent() {
+		return this.afterMouseReleasedEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.BeforeMouseScrolled> fabric_getBeforeMouseScrolledEvent() {
+		return this.beforeMouseScrolledEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.AfterMouseScrolled> fabric_getAfterMouseScrolledEvent() {
+		return this.afterMouseScrolledEvent;
 	}
 }

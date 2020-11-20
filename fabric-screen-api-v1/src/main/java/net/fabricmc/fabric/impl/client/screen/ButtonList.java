@@ -22,9 +22,11 @@ import java.util.List;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
-import net.fabricmc.fabric.api.client.screen.v1.ScreenExtensions;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 // TODO: When events for listening to addition of child elements are added, fire events from this list.
+@Environment(EnvType.CLIENT)
 public final class ButtonList<T extends AbstractButtonWidget> extends AbstractList<T> {
 	private final ScreenExtensions extensions;
 	private final List<T> buttons;
