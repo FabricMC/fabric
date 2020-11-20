@@ -25,7 +25,6 @@ import net.minecraft.world.TeleportTarget;
 
 import net.fabricmc.fabric.impl.dimension.FabricDimensionInternals;
 
-
 /**
  * This class consists exclusively of static methods that operate on world dimensions.
  *
