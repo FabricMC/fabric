@@ -4,8 +4,6 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "EntityMixin",
-    "DimensionOptionMixin",
-    "RegistryOpsMixin",
     "ServerBugfixMixin"
   ],
   "injectors": {
