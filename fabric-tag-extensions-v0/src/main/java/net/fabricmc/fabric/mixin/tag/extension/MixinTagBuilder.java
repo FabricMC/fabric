@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Optional;
 
 import com.google.gson.JsonObject;
-import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,6 +29,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.tag.Tag;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.tag.FabricTagBuilder;
 import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
@@ -63,11 +63,11 @@ public abstract class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 
 	@Override
 	public void addOptional(Identifier id) {
-		add(new Tag.OptionalObjectEntry(id), "fabric-tag-extensions");
+		add(new Tag.OptionalObjectEntry(id), "fabric-tag-extensions-v0");
 	}
 
 	@Override
 	public void addOptionalTag(Identifier id) {
-		add(new Tag.OptionalTagEntry(id), "fabric-tag-extensions");
+		add(new Tag.OptionalTagEntry(id), "fabric-tag-extensions-v0");
 	}
 }
