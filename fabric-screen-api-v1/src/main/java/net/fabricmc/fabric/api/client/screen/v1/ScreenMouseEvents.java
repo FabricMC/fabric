@@ -27,6 +27,8 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
 /**
  * Events related to use of the mouse in a {@link Screen screen}.
+ *
+ * @see ScreenEvents
  */
 @Environment(EnvType.CLIENT)
 public final class ScreenMouseEvents {

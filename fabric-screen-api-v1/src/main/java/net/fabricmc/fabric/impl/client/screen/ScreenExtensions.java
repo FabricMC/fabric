@@ -36,6 +36,8 @@ public interface ScreenExtensions {
 
 	List<AbstractButtonWidget> fabric_getButtons();
 
+	Event<ScreenEvents.Remove> fabric_getRemoveEvent();
+
 	Event<ScreenEvents.BeforeTick> fabric_getBeforeTickEvent();
 
 	Event<ScreenEvents.AfterTick> fabric_getAfterTickEvent();

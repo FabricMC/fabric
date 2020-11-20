@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.screen;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -35,6 +36,16 @@ abstract class MinecraftClientMixin {
 
 	@Unique
 	private Screen tickingScreen;
+
+	@Inject(method = "openScreen", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V", shift = At.Shift.AFTER))
+	private void onScreenRemove(@Nullable Screen screen, CallbackInfo ci) {
+		ScreenEvents.getRemoveEvent(this.currentScreen).invoker().onRemove();
+	}
+
+	@Inject(method = "stop", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;removed()V", shift = At.Shift.AFTER))
+	private void onScreenRemoveBecauseStopping(CallbackInfo ci) {
+		ScreenEvents.getRemoveEvent(this.currentScreen).invoker().onRemove();
+	}
 
 	// Synthetic method in `tick`
 	// These two injections should be caught by "Screen#wrapScreenError" if anything fails in an event and then rethrown in the crash report

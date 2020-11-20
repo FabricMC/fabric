@@ -29,6 +29,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 @Environment(EnvType.CLIENT)
 public final class ScreenEventFactory {
+	public static Event<ScreenEvents.Remove> createRemoveEvent() {
+		return EventFactory.createArrayBacked(ScreenEvents.Remove.class, callbacks -> () -> {
+			for (ScreenEvents.Remove callback : callbacks) {
+				callback.onRemove();
+			}
+		});
+	}
+
 	public static Event<ScreenEvents.BeforeRender> createBeforeRenderEvent() {
 		return EventFactory.createArrayBacked(ScreenEvents.BeforeRender.class, callbacks -> (matrices, mouseX, mouseY, tickDelta) -> {
 			for (ScreenEvents.BeforeRender callback : callbacks) {

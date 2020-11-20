@@ -51,6 +51,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private ButtonList<AbstractButtonWidget> fabricButtons;
 	@Unique
+	private Event<ScreenEvents.Remove> removeEvent;
+	@Unique
 	private Event<ScreenEvents.BeforeTick> beforeTickEvent;
 	@Unique
 	private Event<ScreenEvents.AfterTick> afterTickEvent;
@@ -86,6 +88,8 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"))
 	private void beforeInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
 		// All elements are repopulated on the screen, so we need to reinitialize all events
+		this.fabricButtons = null;
+		this.removeEvent = ScreenEventFactory.createRemoveEvent();
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
 		this.afterRenderEvent = ScreenEventFactory.createAfterRenderEvent();
 		this.beforeTickEvent = ScreenEventFactory.createBeforeTickEvent();
@@ -121,6 +125,11 @@ abstract class ScreenMixin implements ScreenExtensions {
 		}
 
 		return this.fabricButtons;
+	}
+
+	@Override
+	public Event<ScreenEvents.Remove> fabric_getRemoveEvent() {
+		return this.removeEvent;
 	}
 
 	@Override

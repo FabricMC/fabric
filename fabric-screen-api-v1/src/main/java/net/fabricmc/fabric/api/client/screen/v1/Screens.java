@@ -31,6 +31,8 @@ import net.fabricmc.fabric.mixin.screen.ScreenAccessor;
 
 /**
  * Utility methods related to screens.
+ *
+ * @see ScreenEvents
  */
 @Environment(EnvType.CLIENT)
 public final class Screens {
@@ -50,7 +52,7 @@ public final class Screens {
 	/**
 	 * Gets a screen's item renderer.
 	 *
-	 * @return a item renderer
+	 * @return the screen's item renderer
 	 */
 	public static ItemRenderer getItemRenderer(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
@@ -61,7 +63,7 @@ public final class Screens {
 	/**
 	 * Gets a screen's text renderer.
 	 *
-	 * @return a text renderer.
+	 * @return the screen's text renderer.
 	 */
 	public static TextRenderer getTextRenderer(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");

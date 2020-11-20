@@ -31,12 +31,22 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
 /**
  * Holds events related to {@link Screen}s.
+ *
+ * <p>The events that are obtained by use of methods and all events in {@link ScreenKeyboardEvents} and {@link ScreenMouseEvents} are registered to their corresponding screen instances.
+ * This registration model is used since a screen being (re)initialized will reset the screen to it's default state, therefore reverting all changes a mod developer may have applied to a screen.
+ * Furthermore this design was chosen to reduce the amount of wasted iterations of events as a mod developer would only need to register screen events for rendering, ticking, keyboards and mice if needed on a per instance basis.
+ *
+ * <p>The primary entrypoint into a screen is when it is being opened, this is signified by an event {@link ScreenEvents#BEFORE_INIT before} and {@link ScreenEvents#AFTER_INIT after} initialization of the screen.
+ *
+ * @see ScreenKeyboardEvents
+ * @see ScreenMouseEvents
+ * @see Screens
  */
 @Environment(EnvType.CLIENT)
 public final class ScreenEvents {
 	/**
-	 * An event that is called before a {@link Screen#init(MinecraftClient, int, int) screen is initialized} to it's default state.
-	 * It should be noted many of the methods in {@link ScreenExtensions} such as the screen's text renderer may not be initialized yet, and as such their use is discouraged.
+	 * An event that is called before {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to it's default state.
+	 * It should be noted some of the methods in {@link Screens} such as a screen's {@link Screens#getTextRenderer(Screen) text renderer} may not be initialized yet, and as such their use is discouraged.
 	 *
 	 * <!--<p>Typically this event is used to register screen events such as listening to when child elements are added to the screen. ------ Uncomment when child add/remove event is added for elements-->
 	 * You can still use {@link ScreenEvents#AFTER_INIT} to register events such as keyboard and mouse events.
@@ -46,20 +56,18 @@ public final class ScreenEvents {
 	 * <pre>{@code
 	 * &#64;Override
 	 * public void onInitializeClient() {
-	 * 	ScreenEvents.AFTER_INIT.register((client, screen, info, scaledWidth, scaledHeight) -> {
+	 * 	ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 	 * 		if (screen instanceof AbstractInventoryScreen) {
-	 * 			info.getAfterRenderEvent().register(this::onRenderInventoryScreen);
+	 * 			info.getAfterRenderEvent().register((matrices, mouseX, mouseY, tickDelta) -> {
+	 * 				...
+	 * 			});
 	 * 		}
 	 * 	});
-	 * }
-	 *
-	 * private void onRenderInventoryScreen(MinecraftClient client, MatrixStack matrices, Screen screen, FabricScreen info, int mouseX, int mouseY, float tickDelta) {
-	 * 	...
 	 * }
 	 * }</pre>
 	 *
 	 * <p>This event indicates a screen has been resized, and therefore is being re-initialized.
-	 * This event can also indicate that the previous screen has been closed.
+	 * This event can also indicate that the previous screen has been changed.
 	 * @see ScreenEvents#AFTER_INIT
 	 */
 	public static final Event<ScreenEvents.BeforeInit> BEFORE_INIT = EventFactory.createArrayBacked(ScreenEvents.BeforeInit.class, callbacks -> (client, screen, scaledWidth, scaledHeight) -> {
@@ -69,14 +77,14 @@ public final class ScreenEvents {
 	});
 
 	/**
-	 * An event that is called after a {@link Screen#init(MinecraftClient, int, int) screen is initialized} to it's default state.
+	 * An event that is called after {@link Screen#init(MinecraftClient, int, int) a screen is initialized} to it's default state.
 	 *
 	 * <p>Typically this event is used to modify a screen after the screen has been initialized.
 	 * Modifications such as changing sizes of buttons, removing buttons and adding/removing child elements to the screen can be done safely using this event.
 	 *
 	 * <p>For example, to add a button to the title screen, the following code could be used:
 	 * <pre>{@code
-	 * ScreenEvents.AFTER_INIT.register((client, screen, context, scaledWidth, scaledHeight) -> {
+	 * ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 	 * 	if (screen instanceof TitleScreen) {
 	 * 		context.getButtons().add(new ButtonWidget(...));
 	 * 	}
@@ -94,6 +102,19 @@ public final class ScreenEvents {
 			callback.afterInit(client, screen, scaledWidth, scaledHeight);
 		}
 	});
+
+	/**
+	 * An event that is called after {@link Screen#removed()} is called.
+	 * This event signifies that the screen is now closed.
+	 *
+	 * <p>This event is typically used to undo any screen specific state changes such as setting the keyboard to receive {@link net.minecraft.client.Keyboard#setRepeatEvents(boolean) repeat events} or terminate threads spawned by a screen.
+	 * This event may precede initialization events {@link ScreenEvents#BEFORE_INIT} but there is no guarantee that event will be called immediately afterwards.
+	 */
+	public static Event<Remove> getRemoveEvent(Screen screen) {
+		Objects.requireNonNull(screen, "Screen cannot be null");
+
+		return ScreenExtensions.getExtensions(screen).fabric_getRemoveEvent();
+	}
 
 	/**
 	 * An event that is called before a screen is rendered.
@@ -150,6 +171,13 @@ public final class ScreenEvents {
 	public interface AfterInit {
 		void afterInit(MinecraftClient client, Screen screen, int scaledWidth, int scaledHeight);
 	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface Remove {
+		void onRemove();
+	}
+
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeRender {
