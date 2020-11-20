@@ -37,6 +37,16 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
+/**
+ * This solves a bug in vanilla where datapack added biome IDs are not saved to disk. Thus adding or changing a biome
+ * from a datapack/mod causes the ids to shift. This remaps the IDs in the {@link DynamicRegistryManager} in a similar
+ * manner to the normal registry sync.
+ *
+ * <p>See: https://bugs.mojang.com/browse/MC-202036
+ *
+ * <p>This may cause issues when vanilla adds biomes in the future, this should be fixable by also remapping the static ID
+ * map vanilla keeps.
+ */
 public class PersistentDynamicRegistryHandler {
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -48,8 +58,7 @@ public class PersistentDynamicRegistryHandler {
 		try {
 			registryData = remapDynamicRegistries(dynamicRegistryManager, readCompoundTag(getDataPath(saveDir)));
 		} catch (RemapException | IOException e) {
-			// TODO try the backups here?
-			throw new RuntimeException(e);
+			throw new RuntimeException("Failed to read dynamic registry data", e);
 		}
 
 		writeCompoundTag(registryData, getDataPath(saveDir));
@@ -70,9 +79,6 @@ public class PersistentDynamicRegistryHandler {
 		CompoundTag biomeIdMap = remapRegistry(Registry.BIOME_KEY.getValue(), registry, biomeRegistryData);
 		registries.put(Registry.BIOME_KEY.getValue().toString(), biomeIdMap);
 
-		CompoundTag outputTag = new CompoundTag();
-		outputTag.putInt("version", 1);
-		outputTag.put("registries", registries);
 		return registries;
 	}
 
@@ -86,11 +92,12 @@ public class PersistentDynamicRegistryHandler {
 			throw new UnsupportedOperationException("Cannot remap un re-mappable registry: " + registryId.toString());
 		}
 
-		boolean isModded = registry.getIds().stream().anyMatch(id -> !id.getNamespace().equals("minecraft"));
+		// This includes biomes added via datapacks via the vanilla method, along with mod provided biomes.
+		boolean isModified = registry.getIds().stream().anyMatch(id -> !id.getNamespace().equals("minecraft"));
 
-		// The current registry might not be modded, but we might have previous changed vanilla ids that we should try and remap
-		if (existingTag != null && !isModded) {
-			isModded = existingTag.getKeys().stream()
+		// The current registry might not be modified, but we might have previous changed vanilla ids that we should try and remap
+		if (existingTag != null && !isModified) {
+			isModified = existingTag.getKeys().stream()
 					.map(existingTag::getString)
 					.map(Identifier::new)
 					.anyMatch(id -> !id.getNamespace().equals("minecraft"));
@@ -98,16 +105,16 @@ public class PersistentDynamicRegistryHandler {
 
 		if (LOGGER.isDebugEnabled()) {
 			if (existingTag == null) {
-				LOGGER.debug("No existing data found, assuming new registry with {} entries. modded = {}", registry.getIds().size(), isModded);
+				LOGGER.debug("No existing data found, assuming new registry with {} entries. modded = {}", registry.getIds().size(), isModified);
 			} else {
-				LOGGER.debug("Existing registry data found. modded = {}", isModded);
+				LOGGER.debug("Existing registry data found. modded = {}", isModified);
 
 				for (T entry : registry) {
 					//noinspection unchecked
 					Identifier id = registry.getId(entry);
 					int rawId = registry.getRawId(entry);
 
-					if (id == null) continue;
+					if (id == null || rawId < 0) continue;
 
 					if (existingTag.getKeys().contains(id.toString())) {
 						int existingRawId = existingTag.getInt(id.toString());
@@ -125,7 +132,7 @@ public class PersistentDynamicRegistryHandler {
 		}
 
 		// If we have some existing ids and the registry contains modded/datapack entries we remap the registry with those
-		if (existingTag != null && isModded) {
+		if (existingTag != null && isModified) {
 			LOGGER.debug("Remapping {} with {} entries", registryId, registry.getIds().size());
 			Object2IntMap<Identifier> idMap = new Object2IntOpenHashMap<>();
 
@@ -181,17 +188,26 @@ public class PersistentDynamicRegistryHandler {
 		}
 
 		try (InputStream inputStream = Files.newInputStream(path)) {
-			return NbtIo.readCompressed(inputStream);
+			CompoundTag compoundTag = NbtIo.readCompressed(inputStream);
+
+			if (!compoundTag.contains("version") || !compoundTag.contains("registries") || compoundTag.getInt("version") != 1) {
+				throw new UnsupportedOperationException("Unsupported dynamic registry data format. Try updating?");
+			}
+
+			return compoundTag.getCompound("registries");
 		}
 	}
 
 	private static void writeCompoundTag(CompoundTag compoundTag, Path path) {
-		// TODO handle backups?
 		try {
 			Files.createDirectories(path.getParent());
 
 			try (OutputStream outputStream = Files.newOutputStream(path, StandardOpenOption.CREATE)) {
-				NbtIo.writeCompressed(compoundTag, outputStream);
+				CompoundTag outputTag = new CompoundTag();
+				outputTag.putInt("version", 1);
+				outputTag.put("registries", compoundTag);
+
+				NbtIo.writeCompressed(outputTag, outputStream);
 			}
 		} catch (IOException e) {
 			throw new RuntimeException(e);
