@@ -31,13 +31,13 @@ public interface FabricTagBuilder<T> {
 	void clearTagEntries();
 
 	/**
-	 * Add an optional object entry.
+	 * Add an optional object entry to the tag.
 	 * @param id The ID of the object to add
 	 */
-	void addOptional(Identifier id);
+	void addOptionalObject(Identifier id);
 
 	/**
-	 * Add an optional tag entry.
+	 * Add an optional tag entry to the tag.
 	 * @param id The ID of the tag to add
 	 */
 	void addOptionalTag(Identifier id);

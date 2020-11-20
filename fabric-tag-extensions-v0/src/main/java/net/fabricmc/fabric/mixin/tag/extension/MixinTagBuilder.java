@@ -62,7 +62,7 @@ public abstract class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	}
 
 	@Override
-	public void addOptional(Identifier id) {
+	public void addOptionalObject(Identifier id) {
 		add(new Tag.OptionalObjectEntry(id), "fabric-tag-extensions-v0");
 	}
 
