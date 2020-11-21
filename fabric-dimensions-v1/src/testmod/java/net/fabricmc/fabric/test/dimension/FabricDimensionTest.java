@@ -72,31 +72,21 @@ public class FabricDimensionTest implements ModInitializer {
 			ServerWorld overworld = server.getWorld(World.OVERWORLD);
 			ServerWorld world = server.getWorld(WORLD_KEY);
 
-			if (world == null) {
-				throw new AssertionError("Test world doesn't exist.");
-			}
+			if (world == null) throw new AssertionError("Test world doesn't exist.");
 
 			Entity entity = COW.create(overworld);
 
-			if(!entity.world.getRegistryKey().equals(World.OVERWORLD)) {
-				throw  new AssertionError("Entity starting world isn't the overworld");
-			}
+			if (!entity.world.getRegistryKey().equals(World.OVERWORLD)) throw new AssertionError("Entity starting world isn't the overworld");
 
 			TeleportTarget target = new TeleportTarget(Vec3d.ZERO, new Vec3d(1,1,1), 45f, 60f);
 
 			Entity teleported = FabricDimensions.teleport(entity, world, target);
 
-			if (teleported == null) {
-				throw new AssertionError("Entity didn't teleport");
-			}
+			if (teleported == null) throw new AssertionError("Entity didn't teleport");
 
-			if (!teleported.world.getRegistryKey().equals(WORLD_KEY)) {
-				throw new AssertionError("Target world not reached.");
-			}
+			if (!teleported.world.getRegistryKey().equals(WORLD_KEY)) throw new AssertionError("Target world not reached.");
 
-			if (!teleported.getPos().equals(target.position)) {
-				throw new AssertionError("Target Position not reached.");
-			}
+			if (!teleported.getPos().equals(target.position)) throw new AssertionError("Target Position not reached.");
 		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
