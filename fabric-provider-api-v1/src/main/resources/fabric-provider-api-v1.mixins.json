@@ -3,7 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.provider",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "BlockEntityTypeAccessor"
+    "BlockEntityTypeAccessor",
+    "ServerWorldMixin"
   ],
   "injectors": {
     "defaultRequire": 1

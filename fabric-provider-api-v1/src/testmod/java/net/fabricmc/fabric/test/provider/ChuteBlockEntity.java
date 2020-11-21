@@ -16,10 +16,13 @@
 
 package net.fabricmc.fabric.test.provider;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
+import net.fabricmc.fabric.api.provider.v1.block.BlockApiCache;
 import net.fabricmc.fabric.test.provider.api.ItemApis;
 import net.fabricmc.fabric.test.provider.api.ItemExtractable;
 import net.fabricmc.fabric.test.provider.api.ItemInsertable;
@@ -27,6 +30,8 @@ import net.fabricmc.fabric.test.provider.api.ItemUtils;
 
 public class ChuteBlockEntity extends BlockEntity implements Tickable {
 	private int moveDelay = 0;
+	private BlockApiCache<ItemInsertable, @NotNull Direction> cachedInsertable = null;
+	private BlockApiCache<ItemExtractable, @NotNull Direction> cachedExtractable = null;
 
 	public ChuteBlockEntity() {
 		super(FabricProviderTest.CHUTE_BLOCK_ENTITY_TYPE);
@@ -39,9 +44,17 @@ public class ChuteBlockEntity extends BlockEntity implements Tickable {
 			return;
 		}
 
+		if (cachedInsertable == null) {
+			cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, world, pos.offset(Direction.DOWN));
+		}
+
+		if (cachedExtractable == null) {
+			cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, world, pos.offset(Direction.UP));
+		}
+
 		if (moveDelay == 0) {
-			ItemExtractable from = ItemApis.EXTRACTABLE.get(world, pos.offset(Direction.UP), Direction.DOWN);
-			ItemInsertable to = ItemApis.INSERTABLE.get(world, pos.offset(Direction.DOWN), Direction.UP);
+			ItemExtractable from = cachedExtractable.get(Direction.DOWN);
+			ItemInsertable to = cachedInsertable.get(Direction.UP);
 
 			if (from != null && to != null) {
 				ItemUtils.move(from, to, 1);

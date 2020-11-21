@@ -35,9 +35,9 @@ import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.mixin.provider.BlockEntityTypeAccessor;
 
-final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
+public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final ApiProviderMap<Block, BlockApiProvider<?, ?>> providerMap = ApiProviderMap.create();
+	private final ApiProviderMap<Block, BlockApiProvider<T, C>> providerMap = ApiProviderMap.create();
 	private final Identifier id;
 	private final ContextKey<C> contextKey;
 
@@ -49,13 +49,10 @@ final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	@Nullable
 	@Override
 	public T get(World world, BlockPos pos, C context) {
-		Objects.requireNonNull(world, "World cannot be null");
-		Objects.requireNonNull(pos, "Block pos cannot be null");
+		// This call checks for null world and pos.
 		// Providers have the final say whether a null context is allowed.
-
-		@SuppressWarnings("unchecked")
 		@Nullable
-		BlockApiProvider<T, C> provider = (BlockApiProvider<T, C>) providerMap.get(world.getBlockState(pos).getBlock());
+		BlockApiProvider<T, C> provider = getProvider(world, pos);
 
 		if (provider != null) {
 			return provider.get(world, pos, context);
@@ -85,15 +82,7 @@ final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 			Objects.requireNonNull(blockEntityType, "encountered null block entity type while registering a block entity API provider mapping");
 
 			final Block[] blocks = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0]);
-			final BlockApiProvider<T, C> blockProvider = (world, pos, context) -> {
-				@Nullable final BlockEntity blockEntity = world.getBlockEntity(pos);
-
-				if (blockEntity != null) {
-					return provider.get(blockEntity, context);
-				}
-
-				return null;
-			};
+			final BlockApiProvider<T, C> blockProvider = new WrappedBlockEntityProvider<>(provider);
 
 			registerForBlocks(blockProvider, blocks);
 		}
@@ -107,5 +96,32 @@ final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	@Override
 	public ContextKey<C> getContextKey() {
 		return contextKey;
+	}
+
+	@Nullable
+	public BlockApiProvider<T, C> getProvider(World world, BlockPos pos) {
+		Objects.requireNonNull(world, "World cannot be null");
+		Objects.requireNonNull(pos, "Block pos cannot be null");
+
+		return providerMap.get(world.getBlockState(pos).getBlock());
+	}
+
+	public static class WrappedBlockEntityProvider<T, C> implements BlockApiProvider<T, C> {
+		public final BlockEntityApiProvider<T, C> blockEntityProvider;
+
+		public WrappedBlockEntityProvider(BlockEntityApiProvider<T, C> blockEntityProvider) {
+			this.blockEntityProvider = blockEntityProvider;
+		}
+
+		@Override
+		public @Nullable T get(World world, BlockPos pos, C context) {
+			@Nullable final BlockEntity blockEntity = world.getBlockEntity(pos);
+
+			if (blockEntity != null) {
+				return blockEntityProvider.get(blockEntity, context);
+			}
+
+			return null;
+		}
 	}
 }
