@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.dimension;
 
+import static net.minecraft.entity.EntityType.COW;
 import static net.minecraft.server.command.CommandManager.literal;
 
 import com.mojang.brigadier.context.CommandContext;
@@ -23,6 +24,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandException;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.mob.EndermanEntity;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -40,6 +44,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public class FabricDimensionTest implements ModInitializer {
 	// The dimension options refer to the JSON-file in the dimension subfolder of the datapack,
@@ -64,6 +69,37 @@ public class FabricDimensionTest implements ModInitializer {
 		Registry.register(Registry.CHUNK_GENERATOR, new Identifier("fabric_dimension", "void"), VoidChunkGenerator.CODEC);
 
 		WORLD_KEY = RegistryKey.of(Registry.DIMENSION, new Identifier("fabric_dimension", "void"));
+
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			ServerWorld overworld = server.getWorld(World.OVERWORLD);
+			ServerWorld world = server.getWorld(WORLD_KEY);
+
+			if (world == null) {
+				throw new AssertionError("Test world doesn't exist.");
+			}
+
+			Entity entity = COW.create(overworld);
+
+			if(!entity.world.getRegistryKey().equals(World.OVERWORLD)) {
+				throw  new AssertionError("Entity starting world isn't the overworld");
+			}
+
+			TeleportTarget target = new TeleportTarget(Vec3d.ZERO, new Vec3d(1,1,1), 45f, 60f);
+
+			Entity teleported = FabricDimensions.teleport(entity, world, target);
+
+			if (teleported == null) {
+				throw new AssertionError("Entity didn't teleport");
+			}
+
+			if (!teleported.world.getRegistryKey().equals(WORLD_KEY)) {
+				throw new AssertionError("Target world not reached.");
+			}
+
+			if (!teleported.getPos().equals(target.position)) {
+				throw new AssertionError("Target Position not reached.");
+			}
+		});
 
 		CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) ->
 				dispatcher.register(literal("fabric_dimension_test").executes(FabricDimensionTest.this::swapTargeted))
