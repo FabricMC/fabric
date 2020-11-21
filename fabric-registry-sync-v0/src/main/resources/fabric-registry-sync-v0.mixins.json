@@ -3,11 +3,13 @@
   "package": "net.fabricmc.fabric.mixin.registry.sync",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "AccessorLevelStorageSession",
     "AccessorRegistry",
     "MixinBootstrap",
     "MixinDynamicRegistryManager",
     "MixinIdList",
     "MixinIdRegistry",
+    "MixinMain",
     "MixinPlayerManager",
     "MixinLevelStorageSession",
     "MixinRegistry",
