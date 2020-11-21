@@ -25,8 +25,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.block.Blocks;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.mob.EndermanEntity;
-import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
