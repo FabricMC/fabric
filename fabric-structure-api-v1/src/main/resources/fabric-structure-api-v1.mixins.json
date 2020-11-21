@@ -9,6 +9,7 @@
     "MixinChunkGeneratorSettings",
     "MixinStructuresConfig",
     "StructureFeatureAccessor",
+    "StructureManagerMixin",
     "StructuresConfigAccessor"
   ],
   "client": [
