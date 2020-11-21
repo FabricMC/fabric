@@ -78,7 +78,7 @@ public class FabricDimensionTest implements ModInitializer {
 
 			if (!entity.world.getRegistryKey().equals(World.OVERWORLD)) throw new AssertionError("Entity starting world isn't the overworld");
 
-			TeleportTarget target = new TeleportTarget(Vec3d.ZERO, new Vec3d(1,1,1), 45f, 60f);
+			TeleportTarget target = new TeleportTarget(Vec3d.ZERO, new Vec3d(1, 1, 1), 45f, 60f);
 
 			Entity teleported = FabricDimensions.teleport(entity, world, target);
 
