@@ -83,12 +83,12 @@ public final class ScreenTests implements ClientModInitializer {
 				DrawableHelper.drawTexture(matrices, (screen.width / 2) - 124, (screen.height / 4) + 96, 20, 20, 34, 9, 9, 9, 256, 256);
 			});
 
-			ScreenKeyboardEvents.getBeforeKeyPressedEvent(screen).register((key, scancode, modifiers) -> {
+			ScreenKeyboardEvents.getAllowKeyPressEvent(screen).register((key, scancode, modifiers) -> {
 				LOGGER.info("After Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
 				return false; // Let actions continue
 			});
 
-			ScreenKeyboardEvents.getAfterKeyPressedEvent(screen).register((key, scancode, modifiers) -> {
+			ScreenKeyboardEvents.getAfterKeyPressEvent(screen).register((key, scancode, modifiers) -> {
 				LOGGER.warn("Pressed, Code: {}, Scancode: {}, Modifiers: {}", key, scancode, modifiers);
 			});
 		}

@@ -48,17 +48,20 @@ abstract class MouseMixin {
 		// If someone changes the screen, the after event will likely have class cast exceptions or throw a NPE.
 		this.currentScreen = this.client.currentScreen;
 
-		if (ScreenMouseEvents.getBeforeMouseClickedEvent(this.currentScreen).invoker().beforeMouseClicked(mouseX, mouseY, button)) {
+		if (!ScreenMouseEvents.getAllowMouseClickEvent(this.currentScreen).invoker().allowMouseClick(mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
+			return;
 		}
+
+		ScreenMouseEvents.getBeforeMouseClickEvent(this.currentScreen).invoker().beforeMouseClick(mouseX, mouseY, button);
 	}
 
 	// private synthetic method_1611([ZDDI)V
 	@Inject(method = "method_1611([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseClicked(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseClickedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		ScreenMouseEvents.getAfterMouseClickedEvent(this.currentScreen).invoker().afterMouseClicked(mouseX, mouseY, button);
+		ScreenMouseEvents.getAfterMouseClickEvent(this.currentScreen).invoker().afterMouseClick(mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
@@ -69,17 +72,20 @@ abstract class MouseMixin {
 		// If someone changes the screen, the after event will likely have class cast exceptions or throw a NPE.
 		this.currentScreen = this.client.currentScreen;
 
-		if (ScreenMouseEvents.getBeforeMouseReleasedEvent(this.currentScreen).invoker().beforeMouseReleased(mouseX, mouseY, button)) {
+		if (!ScreenMouseEvents.getAllowMouseReleaseEvent(this.currentScreen).invoker().allowMouseRelease(mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
+			return;
 		}
+
+		ScreenMouseEvents.getBeforeMouseReleaseEvent(this.currentScreen).invoker().beforeMouseRelease(mouseX, mouseY, button);
 	}
 
 	// private synthetic method_1605([ZDDI)V
 	@Inject(method = "method_1605([ZDDI)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseReleased(DDI)Z", shift = At.Shift.AFTER))
 	private void afterMouseReleasedEvent(boolean[] resultHack, double mouseX, double mouseY, int button, CallbackInfo ci) {
-		ScreenMouseEvents.getAfterMouseReleasedEvent(this.currentScreen).invoker().afterMouseReleased(mouseX, mouseY, button);
+		ScreenMouseEvents.getAfterMouseReleaseEvent(this.currentScreen).invoker().afterMouseRelease(mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
@@ -92,16 +98,19 @@ abstract class MouseMixin {
 		// Apply same calculations to horizontal scroll as vertical scroll amount has
 		this.horizontalScrollAmount = this.client.options.discreteMouseScroll ? Math.signum(horizontal) : horizontal * this.client.options.mouseWheelSensitivity;
 
-		if (ScreenMouseEvents.getBeforeMouseScrolledEvent(this.currentScreen).invoker().beforeMouseScrolled(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount)) {
+		if (!ScreenMouseEvents.getAllowMouseScrollEvent(this.currentScreen).invoker().allowMouseScroll(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount)) {
 			this.currentScreen = null;
 			this.horizontalScrollAmount = null;
 			ci.cancel();
+			return;
 		}
+
+		ScreenMouseEvents.getBeforeMouseScrollEvent(this.currentScreen).invoker().beforeMouseScroll(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
 	}
 
 	@Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseScrolled(DDD)Z", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void afterMouseScrollEvent(long window, double horizontal, double vertical, CallbackInfo ci, double verticalAmount, double mouseX, double mouseY) {
-		ScreenMouseEvents.getAfterMouseScrolledEvent(this.currentScreen).invoker().afterMouseScrolled(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
+		ScreenMouseEvents.getAfterMouseScrollEvent(this.currentScreen).invoker().afterMouseScroll(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
 		this.currentScreen = null;
 		this.horizontalScrollAmount = null;
 	}

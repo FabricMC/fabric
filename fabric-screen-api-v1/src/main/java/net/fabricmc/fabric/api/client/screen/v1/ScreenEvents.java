@@ -58,7 +58,7 @@ public final class ScreenEvents {
 	 * public void onInitializeClient() {
 	 * 	ScreenEvents.BEFORE_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 	 * 		if (screen instanceof AbstractInventoryScreen) {
-	 * 			info.getAfterRenderEvent().register((matrices, mouseX, mouseY, tickDelta) -> {
+	 * 			ScreenEvents.getAfterRenderEvent(screen).register((matrices, mouseX, mouseY, tickDelta) -> {
 	 * 				...
 	 * 			});
 	 * 		}
@@ -86,7 +86,7 @@ public final class ScreenEvents {
 	 * <pre>{@code
 	 * ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 	 * 	if (screen instanceof TitleScreen) {
-	 * 		context.getButtons().add(new ButtonWidget(...));
+	 * 		Screens.getButtons(screen).add(new ButtonWidget(...));
 	 * 	}
 	 * });
 	 * }</pre>

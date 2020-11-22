@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.client.screen;
 
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
@@ -28,6 +30,7 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenMouseEvents;
 import net.fabricmc.fabric.api.event.Event;
 
+@ApiStatus.Internal
 @Environment(EnvType.CLIENT)
 public interface ScreenExtensions {
 	static ScreenExtensions getExtensions(Screen screen) {
@@ -48,26 +51,36 @@ public interface ScreenExtensions {
 
 	// Keyboard
 
-	Event<ScreenKeyboardEvents.BeforeKeyPressed> fabric_getBeforeKeyPressedEvent();
+	Event<ScreenKeyboardEvents.AllowKeyPress> fabric_getAllowKeyPressEvent();
 
-	Event<ScreenKeyboardEvents.AfterKeyPressed> fabric_getAfterKeyPressedEvent();
+	Event<ScreenKeyboardEvents.BeforeKeyPress> fabric_getBeforeKeyPressEvent();
 
-	Event<ScreenKeyboardEvents.BeforeKeyReleased> fabric_getBeforeKeyReleasedEvent();
+	Event<ScreenKeyboardEvents.AfterKeyPress> fabric_getAfterKeyPressEvent();
 
-	Event<ScreenKeyboardEvents.AfterKeyReleased> fabric_getAfterKeyReleasedEvent();
+	Event<ScreenKeyboardEvents.AllowKeyRelease> fabric_getAllowKeyReleaseEvent();
+
+	Event<ScreenKeyboardEvents.BeforeKeyRelease> fabric_getBeforeKeyReleaseEvent();
+
+	Event<ScreenKeyboardEvents.AfterKeyRelease> fabric_getAfterKeyReleaseEvent();
 
 	// Mouse
 
-	Event<ScreenMouseEvents.BeforeMouseClicked> fabric_getBeforeMouseClickedEvent();
+	Event<ScreenMouseEvents.AllowMouseClick> fabric_getAllowMouseClickEvent();
 
-	Event<ScreenMouseEvents.AfterMouseClicked> fabric_getAfterMouseClickedEvent();
+	Event<ScreenMouseEvents.BeforeMouseClick> fabric_getBeforeMouseClickEvent();
 
-	Event<ScreenMouseEvents.BeforeMouseReleased> fabric_getBeforeMouseReleasedEvent();
+	Event<ScreenMouseEvents.AfterMouseClick> fabric_getAfterMouseClickEvent();
 
-	Event<ScreenMouseEvents.AfterMouseReleased> fabric_getAfterMouseReleasedEvent();
+	Event<ScreenMouseEvents.AllowMouseRelease> fabric_getAllowMouseReleaseEvent();
 
-	Event<ScreenMouseEvents.BeforeMouseScrolled> fabric_getBeforeMouseScrolledEvent();
+	Event<ScreenMouseEvents.BeforeMouseRelease> fabric_getBeforeMouseReleaseEvent();
 
-	Event<ScreenMouseEvents.AfterMouseScrolled> fabric_getAfterMouseScrolledEvent();
+	Event<ScreenMouseEvents.AfterMouseRelease> fabric_getAfterMouseReleaseEvent();
+
+	Event<ScreenMouseEvents.AllowMouseScroll> fabric_getAllowMouseScrollEvent();
+
+	Event<ScreenMouseEvents.BeforeMouseScroll> fabric_getBeforeMouseScrollEvent();
+
+	Event<ScreenMouseEvents.AfterMouseScroll> fabric_getAfterMouseScrollEvent();
 }
 

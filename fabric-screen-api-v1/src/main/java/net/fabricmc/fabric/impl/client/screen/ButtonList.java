@@ -19,21 +19,25 @@ package net.fabricmc.fabric.impl.client.screen;
 import java.util.AbstractList;
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
 // TODO: When events for listening to addition of child elements are added, fire events from this list.
+@ApiStatus.Internal
 @Environment(EnvType.CLIENT)
 public final class ButtonList<T extends AbstractButtonWidget> extends AbstractList<T> {
-	private final ScreenExtensions extensions;
+	private final Screen screen;
 	private final List<T> buttons;
 	private final List<Element> children;
 
-	public ButtonList(ScreenExtensions extensions, List<T> buttons, List<Element> children) {
-		this.extensions = extensions;
+	public ButtonList(Screen screen, List<T> buttons, List<Element> children) {
+		this.screen = screen;
 		this.buttons = buttons;
 		this.children = children;
 	}

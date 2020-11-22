@@ -63,27 +63,37 @@ abstract class ScreenMixin implements ScreenExtensions {
 
 	// Keyboard
 	@Unique
-	private Event<ScreenKeyboardEvents.BeforeKeyPressed> beforeKeyPressedEvent;
+	private Event<ScreenKeyboardEvents.AllowKeyPress> allowKeyPressEvent;
 	@Unique
-	private Event<ScreenKeyboardEvents.AfterKeyPressed> afterKeyPressedEvent;
+	private Event<ScreenKeyboardEvents.BeforeKeyPress> beforeKeyPressEvent;
 	@Unique
-	private Event<ScreenKeyboardEvents.BeforeKeyReleased> beforeKeyReleasedEvent;
+	private Event<ScreenKeyboardEvents.AfterKeyPress> afterKeyPressEvent;
 	@Unique
-	private Event<ScreenKeyboardEvents.AfterKeyReleased> afterKeyReleasedEvent;
+	private Event<ScreenKeyboardEvents.AllowKeyRelease> allowKeyReleaseEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.BeforeKeyRelease> beforeKeyReleaseEvent;
+	@Unique
+	private Event<ScreenKeyboardEvents.AfterKeyRelease> afterKeyReleaseEvent;
 
 	// Mouse
 	@Unique
-	private Event<ScreenMouseEvents.BeforeMouseClicked> beforeMouseClickedEvent;
+	private Event<ScreenMouseEvents.AllowMouseClick> allowMouseClickEvent;
 	@Unique
-	private Event<ScreenMouseEvents.AfterMouseClicked> afterMouseClickedEvent;
+	private Event<ScreenMouseEvents.BeforeMouseClick> beforeMouseClickEvent;
 	@Unique
-	private Event<ScreenMouseEvents.BeforeMouseReleased> beforeMouseReleasedEvent;
+	private Event<ScreenMouseEvents.AfterMouseClick> afterMouseClickEvent;
 	@Unique
-	private Event<ScreenMouseEvents.AfterMouseReleased> afterMouseReleasedEvent;
+	private Event<ScreenMouseEvents.AllowMouseRelease> allowMouseReleaseEvent;
 	@Unique
-	private Event<ScreenMouseEvents.BeforeMouseScrolled> beforeMouseScrolledEvent;
+	private Event<ScreenMouseEvents.BeforeMouseRelease> beforeMouseReleaseEvent;
 	@Unique
-	private Event<ScreenMouseEvents.AfterMouseScrolled> afterMouseScrolledEvent;
+	private Event<ScreenMouseEvents.AfterMouseRelease> afterMouseReleaseEvent;
+	@Unique
+	private Event<ScreenMouseEvents.AllowMouseScroll> allowMouseScrollEvent;
+	@Unique
+	private Event<ScreenMouseEvents.BeforeMouseScroll> beforeMouseScrollEvent;
+	@Unique
+	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"))
 	private void beforeInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
@@ -96,18 +106,23 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.afterTickEvent = ScreenEventFactory.createAfterTickEvent();
 
 		// Keyboard
-		this.beforeKeyPressedEvent = ScreenEventFactory.createBeforeKeyPressedEvent();
-		this.afterKeyPressedEvent = ScreenEventFactory.createAfterKeyPressedEvent();
-		this.beforeKeyReleasedEvent = ScreenEventFactory.createBeforeKeyReleasedEvent();
-		this.afterKeyReleasedEvent = ScreenEventFactory.createAfterKeyReleasedEvent();
+		this.allowKeyPressEvent = ScreenEventFactory.createAllowKeyPressEvent();
+		this.beforeKeyPressEvent = ScreenEventFactory.createBeforeKeyPressEvent();
+		this.afterKeyPressEvent = ScreenEventFactory.createAfterKeyPressEvent();
+		this.allowKeyReleaseEvent = ScreenEventFactory.createAllowKeyReleaseEvent();
+		this.beforeKeyReleaseEvent = ScreenEventFactory.createBeforeKeyReleaseEvent();
+		this.afterKeyReleaseEvent = ScreenEventFactory.createAfterKeyReleaseEvent();
 
 		// Mouse
-		this.beforeMouseClickedEvent = ScreenEventFactory.createBeforeMouseClickedEvent();
-		this.afterMouseClickedEvent = ScreenEventFactory.createAfterMouseClickedEvent();
-		this.beforeMouseReleasedEvent = ScreenEventFactory.createBeforeMouseReleasedEvent();
-		this.afterMouseReleasedEvent = ScreenEventFactory.createAfterMouseReleasedEvent();
-		this.beforeMouseScrolledEvent = ScreenEventFactory.createBeforeMouseScrolledEvent();
-		this.afterMouseScrolledEvent = ScreenEventFactory.createAfterMouseScrolledEvent();
+		this.allowMouseClickEvent = ScreenEventFactory.createAllowMouseClickEvent();
+		this.beforeMouseClickEvent = ScreenEventFactory.createBeforeMouseClickEvent();
+		this.afterMouseClickEvent = ScreenEventFactory.createAfterMouseClickEvent();
+		this.allowMouseReleaseEvent = ScreenEventFactory.createAllowMouseReleaseEvent();
+		this.beforeMouseReleaseEvent = ScreenEventFactory.createBeforeMouseReleaseEvent();
+		this.afterMouseReleaseEvent = ScreenEventFactory.createAfterMouseReleaseEvent();
+		this.allowMouseScrollEvent = ScreenEventFactory.createAllowMouseScrollEvent();
+		this.beforeMouseScrollEvent = ScreenEventFactory.createBeforeMouseScrollEvent();
+		this.afterMouseScrollEvent = ScreenEventFactory.createAfterMouseScrollEvent();
 
 		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, width, height);
 	}
@@ -121,7 +136,7 @@ abstract class ScreenMixin implements ScreenExtensions {
 	public List<AbstractButtonWidget> fabric_getButtons() {
 		// Lazy init to make the list access safe after Screen#init
 		if (this.fabricButtons == null) {
-			this.fabricButtons = new ButtonList<>(this, this.buttons, this.children);
+			this.fabricButtons = new ButtonList<>((Screen) (Object) this, this.buttons, this.children);
 		}
 
 		return this.fabricButtons;
@@ -155,54 +170,79 @@ abstract class ScreenMixin implements ScreenExtensions {
 	// Keyboard
 
 	@Override
-	public Event<ScreenKeyboardEvents.BeforeKeyPressed> fabric_getBeforeKeyPressedEvent() {
-		return this.beforeKeyPressedEvent;
+	public Event<ScreenKeyboardEvents.AllowKeyPress> fabric_getAllowKeyPressEvent() {
+		return this.allowKeyPressEvent;
 	}
 
 	@Override
-	public Event<ScreenKeyboardEvents.AfterKeyPressed> fabric_getAfterKeyPressedEvent() {
-		return this.afterKeyPressedEvent;
+	public Event<ScreenKeyboardEvents.BeforeKeyPress> fabric_getBeforeKeyPressEvent() {
+		return this.beforeKeyPressEvent;
 	}
 
 	@Override
-	public Event<ScreenKeyboardEvents.BeforeKeyReleased> fabric_getBeforeKeyReleasedEvent() {
-		return this.beforeKeyReleasedEvent;
+	public Event<ScreenKeyboardEvents.AfterKeyPress> fabric_getAfterKeyPressEvent() {
+		return this.afterKeyPressEvent;
 	}
 
 	@Override
-	public Event<ScreenKeyboardEvents.AfterKeyReleased> fabric_getAfterKeyReleasedEvent() {
-		return this.afterKeyReleasedEvent;
+	public Event<ScreenKeyboardEvents.AllowKeyRelease> fabric_getAllowKeyReleaseEvent() {
+		return this.allowKeyReleaseEvent;
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.BeforeKeyRelease> fabric_getBeforeKeyReleaseEvent() {
+		return this.beforeKeyReleaseEvent;
+	}
+
+	@Override
+	public Event<ScreenKeyboardEvents.AfterKeyRelease> fabric_getAfterKeyReleaseEvent() {
+		return this.afterKeyReleaseEvent;
 	}
 
 	// Mouse
 
 	@Override
-	public Event<ScreenMouseEvents.BeforeMouseClicked> fabric_getBeforeMouseClickedEvent() {
-		return this.beforeMouseClickedEvent;
+	public Event<ScreenMouseEvents.AllowMouseClick> fabric_getAllowMouseClickEvent() {
+		return this.allowMouseClickEvent;
 	}
 
 	@Override
-	public Event<ScreenMouseEvents.AfterMouseClicked> fabric_getAfterMouseClickedEvent() {
-		return this.afterMouseClickedEvent;
+	public Event<ScreenMouseEvents.BeforeMouseClick> fabric_getBeforeMouseClickEvent() {
+		return this.beforeMouseClickEvent;
 	}
 
 	@Override
-	public Event<ScreenMouseEvents.BeforeMouseReleased> fabric_getBeforeMouseReleasedEvent() {
-		return this.beforeMouseReleasedEvent;
+	public Event<ScreenMouseEvents.AfterMouseClick> fabric_getAfterMouseClickEvent() {
+		return this.afterMouseClickEvent;
 	}
 
 	@Override
-	public Event<ScreenMouseEvents.AfterMouseReleased> fabric_getAfterMouseReleasedEvent() {
-		return this.afterMouseReleasedEvent;
+	public Event<ScreenMouseEvents.AllowMouseRelease> fabric_getAllowMouseReleaseEvent() {
+		return this.allowMouseReleaseEvent;
 	}
 
 	@Override
-	public Event<ScreenMouseEvents.BeforeMouseScrolled> fabric_getBeforeMouseScrolledEvent() {
-		return this.beforeMouseScrolledEvent;
+	public Event<ScreenMouseEvents.BeforeMouseRelease> fabric_getBeforeMouseReleaseEvent() {
+		return this.beforeMouseReleaseEvent;
 	}
 
 	@Override
-	public Event<ScreenMouseEvents.AfterMouseScrolled> fabric_getAfterMouseScrolledEvent() {
-		return this.afterMouseScrolledEvent;
+	public Event<ScreenMouseEvents.AfterMouseRelease> fabric_getAfterMouseReleaseEvent() {
+		return this.afterMouseReleaseEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.AllowMouseScroll> fabric_getAllowMouseScrollEvent() {
+		return this.allowMouseScrollEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.BeforeMouseScroll> fabric_getBeforeMouseScrollEvent() {
+		return this.beforeMouseScrollEvent;
+	}
+
+	@Override
+	public Event<ScreenMouseEvents.AfterMouseScroll> fabric_getAfterMouseScrollEvent() {
+		return this.afterMouseScrollEvent;
 	}
 }
