@@ -31,32 +31,6 @@ import net.fabricmc.fabric.mixin.event.lifecycle.WorldMixin;
 @Environment(EnvType.CLIENT)
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin extends WorldMixin {
-	// We override our injection on the clientworld so only the client's block entity invocations will run
-	/*@Override
-	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
-		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ClientWorld) (Object) this);
-	}
-
-	// We override our injection on the clientworld so only the client's block entity invocations will run
-	@Override
-	protected void onUnloadBlockEntity(BlockPos pos, CallbackInfo ci, BlockEntity blockEntity) {
-		ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ClientWorld) (Object) this);
-	}
-
-	@Override
-	protected void onRemoveBlockEntity(CallbackInfo ci, Profiler profiler, Iterator iterator, BlockEntity blockEntity) {
-		ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ClientWorld) (Object) this);
-	}
-
-	@Override
-	protected boolean onPurgeRemovedBlockEntities(List<BlockEntity> blockEntityList, Collection<BlockEntity> removals) {
-		for (BlockEntity removal : removals) {
-			ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removal, (ClientWorld) (Object) this);
-		}
-
-		return super.onPurgeRemovedBlockEntities(blockEntityList, removals); // Call super
-	}*/
-
 	// We override our injection on the clientworld so only the client world's tick invocations will run
 	@Override
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {

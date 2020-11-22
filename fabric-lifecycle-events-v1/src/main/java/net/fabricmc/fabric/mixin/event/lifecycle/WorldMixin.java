@@ -36,40 +36,6 @@ public abstract class WorldMixin {
 	@Shadow
 	public abstract Profiler getProfiler();
 
-	/*@Inject(method = "addBlockEntity", at = @At("TAIL"))
-	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
-		if (!this.isClient()) { // Only fire this event if we are a server world
-			ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) (Object) this);
-		}
-	}
-
-	// Mojang what hell, why do you need three ways to unload block entities
-	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", ordinal = 1), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	protected void onUnloadBlockEntity(BlockPos pos, CallbackInfo ci, BlockEntity blockEntity) {
-		if (!this.isClient()) { // Only fire this event if we are a server world
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ServerWorld) (Object) this);
-		}
-	}
-
-	@Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;removeBlockEntity(Lnet/minecraft/util/math/BlockPos;)V")), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	protected void onRemoveBlockEntity(CallbackInfo ci, Profiler profiler, Iterator iterator, BlockEntity blockEntity) {
-		if (!this.isClient()) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ServerWorld) (Object) this);
-		}
-	}
-
-	@Redirect(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;removeAll(Ljava/util/Collection;)Z", ordinal = 1))
-	protected boolean onPurgeRemovedBlockEntities(List<BlockEntity> blockEntityList, Collection<BlockEntity> removals) {
-		if (!this.isClient()) {
-			for (BlockEntity removal : removals) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removal, (ServerWorld) (Object) this);
-			}
-		}
-
-		// Mimic vanilla logic
-		return blockEntityList.removeAll(removals);
-	}*/
-
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
 		if (!this.isClient()) {

@@ -12,9 +12,13 @@
   "client": [
     "client.ClientChunkManagerMixin",
     "client.ClientPlayNetworkHandlerMixin",
-    "client.ClientWorldMixin",
     "client.ClientWorldEntityLoaderMixin",
-    "client.MinecraftClientMixin"
+    "client.ClientWorldMixin",
+    "client.MinecraftClientMixin",
+    "client.WorldChunkMixin"
+  ],
+  "server": [
+    "server.WorldChunkMixin"
   ],
   "injectors": {
     "defaultRequire": 1
