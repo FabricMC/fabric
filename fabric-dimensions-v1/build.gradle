@@ -4,7 +4,7 @@ version = getSubprojectVersion(project, "1.0.0")
 dependencies {
 	testmodCompile project(path: ':fabric-command-api-v1', configuration: 'dev')
 	testmodCompile project(path: ':fabric-resource-loader-v0', configuration: 'dev')
-	testmodCompile project(path: 'fabric-lifecycle-events-v1', configurations: 'dev')
+	testmodCompile project(path: ':fabric-lifecycle-events-v1', configurations: 'dev')
 }
 
 moduleDependencies(project, [
