@@ -41,6 +41,6 @@ abstract class TeleportCommandMixin {
 	 */
 	@Inject(method = "teleport", at = @At(value = "FIELD", target = "Lnet/minecraft/entity/Entity;removed:Z", opcode = Opcodes.PUTFIELD), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private static void afterEntityTeleportedToWorld(ServerCommandSource source, Entity originalEntity, ServerWorld destination, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> movementFlags, float yaw, float pitch, @Coerce Object facingLocation, CallbackInfo ci, float clampedYaw, float clampedPitch, Entity newEntity) {
-		EntityWorldChangeEvents.AFTER_ENTITY_CHANGED_WORLD.invoker().afterChangeWorld(originalEntity, newEntity, ((ServerWorld) originalEntity.world), destination);
+		EntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld(originalEntity, newEntity, ((ServerWorld) originalEntity.world), destination);
 	}
 }

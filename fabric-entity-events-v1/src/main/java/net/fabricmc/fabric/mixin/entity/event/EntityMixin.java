@@ -35,6 +35,6 @@ abstract class EntityMixin {
 
 	@Inject(method = "moveToWorld", at = @At(value = "RETURN", ordinal = 1))
 	private void afterWorldChanged(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
-		EntityWorldChangeEvents.AFTER_ENTITY_CHANGED_WORLD.invoker().afterChangeWorld((Entity) (Object) this, cir.getReturnValue(), (ServerWorld) this.world, (ServerWorld) cir.getReturnValue().world);
+		EntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, cir.getReturnValue(), (ServerWorld) this.world, (ServerWorld) cir.getReturnValue().world);
 	}
 }

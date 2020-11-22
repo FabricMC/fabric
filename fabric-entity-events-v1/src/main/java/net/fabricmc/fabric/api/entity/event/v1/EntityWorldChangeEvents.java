@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Events related to an entity being moved to another world.
  *
- * @apiNote For a {@link ServerPlayerEntity}, please use {@link EntityWorldChangeEvents#AFTER_PLAYER_CHANGED_WORLD}.
+ * @apiNote For a {@link ServerPlayerEntity}, please use {@link EntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD}.
  */
 public final class EntityWorldChangeEvents {
 	/**
@@ -36,10 +36,10 @@ public final class EntityWorldChangeEvents {
 	 * This event does not apply to the {@link ServerPlayerEntity} since players are physically moved to the new world instead of being copied over.
 	 *
 	 * <p>Mods may use this event for reference cleanup if entities are tracked by the mod.</p>
-	 * @see EntityWorldChangeEvents#AFTER_PLAYER_CHANGED_WORLD
+	 * @see EntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD
 	 */
-	public static final Event<EntityWorldChangeEvents.AfterEntity> AFTER_ENTITY_CHANGED_WORLD = EventFactory.createArrayBacked(EntityWorldChangeEvents.AfterEntity.class, callbacks -> (originalEntity, newEntity, origin, destination) -> {
-		for (AfterEntity callback : callbacks) {
+	public static final Event<AfterEntityChange> AFTER_ENTITY_CHANGE_WORLD = EventFactory.createArrayBacked(AfterEntityChange.class, callbacks -> (originalEntity, newEntity, origin, destination) -> {
+		for (AfterEntityChange callback : callbacks) {
 			callback.afterChangeWorld(originalEntity, newEntity, origin, destination);
 		}
 	});
@@ -47,23 +47,23 @@ public final class EntityWorldChangeEvents {
 	/**
 	 * An event which is called after a player has been moved to a different world.
 	 *
-	 * <p>This is similar to {@link EntityWorldChangeEvents#AFTER_ENTITY_CHANGED_WORLD} but is only called for players.
+	 * <p>This is similar to {@link EntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD} but is only called for players.
 	 * This is because the player is physically moved to the new world instead of being recreated at the destination.
-	 * @see EntityWorldChangeEvents#AFTER_ENTITY_CHANGED_WORLD
+	 * @see EntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD
 	 */
-	public static final Event<EntityWorldChangeEvents.AfterPlayer> AFTER_PLAYER_CHANGED_WORLD = EventFactory.createArrayBacked(EntityWorldChangeEvents.AfterPlayer.class, callbacks -> (player, origin, destination) -> {
-		for (AfterPlayer callback : callbacks) {
+	public static final Event<AfterPlayerChange> AFTER_PLAYER_CHANGE_WORLD = EventFactory.createArrayBacked(AfterPlayerChange.class, callbacks -> (player, origin, destination) -> {
+		for (AfterPlayerChange callback : callbacks) {
 			callback.afterChangeWorld(player, origin, destination);
 		}
 	});
 
 	@FunctionalInterface
-	public interface AfterEntity {
+	public interface AfterEntityChange {
 		/**
 		 * Called after an entity has been recreated at the destination when being moved to a different world.
 		 *
 		 * <p>Note this event is not called if the entity is a {@link ServerPlayerEntity}.
-		 * {@link EntityWorldChangeEvents.AfterPlayer} should be used to track when a player has changed worlds.
+		 * {@link AfterPlayerChange} should be used to track when a player has changed worlds.
 		 *
 		 * @param originalEntity the original entity
 		 * @param newEntity the new entity at the destination
@@ -74,7 +74,7 @@ public final class EntityWorldChangeEvents {
 	}
 
 	@FunctionalInterface
-	public interface AfterPlayer {
+	public interface AfterPlayerChange {
 		/**
 		 * Called after a player has been moved to different world.
 		 *

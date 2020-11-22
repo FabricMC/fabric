@@ -19,8 +19,6 @@ package net.fabricmc.fabric.test.entity.event;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.item.Items;
-
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.EntityCombatEvents;
 import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
@@ -35,17 +33,12 @@ public final class EntityEventTests implements ModInitializer {
 			LOGGER.info("Entity Killed: {}", killed);
 		});
 
-		EntityWorldChangeEvents.AFTER_PLAYER_CHANGED_WORLD.register((player, origin, destination) -> {
+		EntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> {
 			LOGGER.info("Moved player {}: [{} -> {}]", player, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
 		});
 
-		EntityWorldChangeEvents.AFTER_ENTITY_CHANGED_WORLD.register((originalEntity, newEntity, origin, destination) -> {
+		EntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.register((originalEntity, newEntity, origin, destination) -> {
 			LOGGER.info("Moved entity {} -> {}: [({} -> {}]", originalEntity, newEntity, origin.getRegistryKey().getValue(), destination.getRegistryKey().getValue());
-		});
-
-		// TODO: Does not work on impl?
-		ServerPlayerEvents.FIRST_JOIN.register(player -> {
-			player.inventory.insertStack(Items.BELL.getDefaultStack());
 		});
 
 		ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
