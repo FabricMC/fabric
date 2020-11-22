@@ -61,7 +61,9 @@ abstract class ClientConnectionMixin implements ChannelInfoHolder {
 		this.playChannels = Collections.newSetFromMap(new ConcurrentHashMap<>());
 	}
 
-	@Redirect(method = "exceptionCaught", remap = false, at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"))
+	// Must be fully qualified due to mixin not working in production without it
+	@SuppressWarnings("UnnecessaryQualifiedMemberReference")
+	@Redirect(method = "Lnet/minecraft/network/ClientConnection;exceptionCaught(Lio/netty/channel/ChannelHandlerContext;Ljava/lang/Throwable;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/ClientConnection;send(Lnet/minecraft/network/Packet;Lio/netty/util/concurrent/GenericFutureListener;)V"))
 	private void resendOnExceptionCaught(ClientConnection self, Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> listener) {
 		PacketListener handler = this.packetListener;
 

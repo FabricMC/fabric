@@ -45,6 +45,7 @@ public class ClientSidePacketRegistryImpl implements ClientSidePacketRegistry, P
 	public void sendToServer(Packet<?> packet, GenericFutureListener<? extends Future<? super Void>> completionListener) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			MinecraftClient.getInstance().getNetworkHandler().getConnection().send(packet, completionListener);
+			return;
 		}
 
 		throw new IllegalStateException("Cannot send packet to server while not in game!"); // TODO: Error message
