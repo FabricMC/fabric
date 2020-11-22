@@ -32,6 +32,8 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
 
 public final class NetworkingLoginQueryTest implements ModInitializer {
+	private static final boolean useLoginDelayTest = System.getProperty("fabric-networking-api-v1.loginDelayTest") != null;
+
 	@Override
 	public void onInitialize() {
 		ServerLoginConnectionEvents.LOGIN_QUERY_START.register(this::onLoginStart);
@@ -40,33 +42,41 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 		// login delaying example
 		ServerLoginNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (server, handler, understood, buf, synchronizer, sender) -> {
 			if (understood) {
-				FutureTask<?> future = new FutureTask<>(() -> {
-					for (int i = 0; i <= 10; i++) {
-						Thread.sleep(300);
-						NetworkingTestmods.LOGGER.info("Delayed login for number {} 300 milliseconds", i);
-					}
+				NetworkingTestmods.LOGGER.info("Understood response from client in {}", NetworkingPlayPacketTest.TEST_CHANNEL);
 
-					return null;
-				});
+				if (useLoginDelayTest) {
+					FutureTask<?> future = new FutureTask<>(() -> {
+						for (int i = 0; i <= 10; i++) {
+							Thread.sleep(300);
+							NetworkingTestmods.LOGGER.info("Delayed login for number {} 300 milliseconds", i);
+						}
 
-				// Execute the task on a worker thread as not to block the server thread
-				Util.getMainWorkerExecutor().execute(future);
-				synchronizer.waitFor(future);
+						return null;
+					});
+
+					// Execute the task on a worker thread as not to block the server thread
+					Util.getMainWorkerExecutor().execute(future);
+					synchronizer.waitFor(future);
+				}
+			} else {
+				NetworkingTestmods.LOGGER.info("Client did not understand response query message with channel name {}", NetworkingPlayPacketTest.TEST_CHANNEL);
 			}
 		});
 	}
 
 	private void delaySimply(ServerLoginNetworkHandler handler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
-		synchronizer.waitFor(CompletableFuture.runAsync(() -> {
-			NetworkingTestmods.LOGGER.info("Starting simple delay task for 3000 milliseconds");
+		if (useLoginDelayTest) {
+			synchronizer.waitFor(CompletableFuture.runAsync(() -> {
+				NetworkingTestmods.LOGGER.info("Starting simple delay task for 3000 milliseconds");
 
-			try {
-				Thread.sleep(3000);
-				NetworkingTestmods.LOGGER.info("Simple delay task completed");
-			} catch (InterruptedException e) {
-				NetworkingTestmods.LOGGER.error("Delay task caught exception", e);
-			}
-		}));
+				try {
+					Thread.sleep(3000);
+					NetworkingTestmods.LOGGER.info("Simple delay task completed");
+				} catch (InterruptedException e) {
+					NetworkingTestmods.LOGGER.error("Delay task caught exception", e);
+				}
+			}));
+		}
 	}
 
 	private void onLoginStart(ServerLoginNetworkHandler networkHandler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer) {
