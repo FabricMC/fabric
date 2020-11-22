@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.networking.keybindreciever;
 
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.KeybindText;
 import net.minecraft.text.LiteralText;
@@ -26,6 +27,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 
@@ -34,7 +36,7 @@ import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 public final class NetworkingKeybindPacketTest implements ModInitializer {
 	public static final Identifier KEYBINDING_PACKET_ID = NetworkingTestmods.id("keybind_press_test");
 
-	private static void receive(MinecraftServer server, ServerPlayerEntity player, PacketByteBuf buf, PacketSender responseSender) {
+	private static void receive(MinecraftServer server, ServerPlayerEntity player, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender responseSender) {
 		// TODO: Can we send chat off the server thread?
 		server.execute(() -> {
 			player.sendMessage(new LiteralText("So you pressed ").append(new KeybindText("fabric-networking-api-v1-testmod-keybind").styled(style -> style.withFormatting(Formatting.BLUE))), false);
@@ -43,12 +45,8 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// FIXME: DO NOT LET ME PR THIS BEFORE FIXING IT
-		//  VERIFY REG IN PLAY INIT PROPAGATES TO S2C packet
-		//ServerPlayConnectionEvents.PLAY_INIT.register((handler, sender, server) -> {
-		//	ServerPlayNetworking.register(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
-		//});
-
-		ServerPlayNetworking.registerGlobalReceiver(KEYBINDING_PACKET_ID, (server, player, handler, buf, responseSender) -> receive(server, player, buf, responseSender));
+		ServerPlayConnectionEvents.PLAY_INIT.register((handler, sender, server) -> {
+			ServerPlayNetworking.registerReceiver(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
+		});
 	}
 }

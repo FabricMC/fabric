@@ -52,8 +52,8 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		this.handler = handler;
 		this.client = client;
 
-		this.receiver.startSession(this);
 		ClientLoginConnectionEvents.LOGIN_INIT.invoker().onLoginStart(this.handler, this.client);
+		this.receiver.startSession(this);
 	}
 
 	public boolean handlePacket(LoginQueryRequestS2CPacket packet) {

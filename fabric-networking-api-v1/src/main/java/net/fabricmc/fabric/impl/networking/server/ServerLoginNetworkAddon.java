@@ -64,8 +64,8 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		this.server = ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 		this.queryIdFactory = QueryIdFactory.create();
 
-		this.receiver.startSession(this);
 		ServerLoginConnectionEvents.LOGIN_INIT.invoker().onLoginInit(handler, this.server);
+		this.receiver.startSession(this);
 	}
 
 	// return true if no longer ticks query
