@@ -26,23 +26,23 @@ There are events that indicate the beginning and end of the tick for the server 
 
 ## `ServerWorldEvents`
 
-Events related to the lifecycle of server worlds.
-Currently, this contains events related to loading and unload of server worlds.
+Events related to the lifecycle a `ServerWorld`.
+Currently, this contains events related to loading and unloading `ServerWorld`s.
 
 ## `ServerChunkEvents`
 
-Events related to the lifecycle of chunks in a server world.
+Events related to the lifecycle of chunks in a `ServerWorld`.
 Currently, this contains events related to loading and unloading chunks in a `ServerWorld`.
 
 ## `ServerEntityEvents`
 
-Events related to the lifecycle of entities in a server world.
-Currently, this only contains an event for an entity being loaded into a server world.
+Events related to the lifecycle of entities in a `ServerWorld`.
+Currently, this only contains an event for an entity being loaded into a `ServerWorld`.
 The unload event has not been implemented yet.
 
 ## `ServerBlockEntityEvents`
 
-Events related to the lifecycle of block entities in a server world.
+Events related to the lifecycle of block entities in a `ServerWorld`.
 Currently, this contains events related to loading and unloading block entities in a `ServerWorld`.
 
 # Client Events
@@ -69,10 +69,10 @@ Currently, this contains events related to loading and unloading chunks in a `Cl
 
 ## `ClientEntityEvents`
 
-Events related to the lifecycle of entities in a client world.
+Events related to the lifecycle of entities in a `ClientWorld`.
 Currently, this contains event for an entity being loaded into a `ClientWorld`.
 
 ## `ClientBlockEntityEvents`
 
-Events related to the lifecycle of block entities in a client world.
+Events related to the lifecycle of block entities in a `ClientWorld`.
 Currently, this contains events related to loading and unloading block entities in a `ClientWorld`.
