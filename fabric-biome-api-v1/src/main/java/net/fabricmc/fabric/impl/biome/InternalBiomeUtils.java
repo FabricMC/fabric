@@ -93,7 +93,7 @@ public final class InternalBiomeUtils {
 		return biome != null && biome.getCategory() == Biome.Category.OCEAN;
 	}
 
-	public static int searchForBiome(double reqWeightSum, int vanillaArrayWeight, List<ContinentalBiomeEntry> moddedBiomes) {
+	public static int searchForBiome(double reqWeightSum, int vanillaArrayWeight, List<WeightedBiomeEntry> moddedBiomes) {
 		reqWeightSum -= vanillaArrayWeight;
 		int low = 0;
 		int high = moddedBiomes.size() - 1;
@@ -152,7 +152,7 @@ public final class InternalBiomeUtils {
 		} else {
 			// Modded biome; use a binary search, and then transform accordingly.
 
-			ContinentalBiomeEntry found = picker.search(reqWeightSum - vanillaArrayWeight);
+			WeightedBiomeEntry found = picker.search(reqWeightSum - vanillaArrayWeight);
 
 			result.accept(transformBiome(random, found.getBiome(), climate));
 		}
