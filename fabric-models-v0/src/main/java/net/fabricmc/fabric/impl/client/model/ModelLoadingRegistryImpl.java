@@ -78,9 +78,9 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			return ((ModelLoaderHooks) loader).fabric_loadModel(id);
 		}
 
-		public void onModelPopulation(Consumer<ModelIdentifier> addModel) {
+		public void onModelPopulation(Consumer<Identifier> addModel) {
 			for (ModelAppender appender : modelAppenders) {
-				appender.appendAll(manager, addModel);
+				appender.appendAllIdentifiers(manager, addModel);
 			}
 		}
 

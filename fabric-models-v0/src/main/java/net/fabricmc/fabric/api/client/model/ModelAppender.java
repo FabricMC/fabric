@@ -20,8 +20,26 @@ import java.util.function.Consumer;
 
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
 @FunctionalInterface
 public interface ModelAppender {
+	/**
+	 * Provides an opportunity inform the game that you would like it to load and bake a model,
+	 * even if that model is not used by any blocks or items.
+	 * @param out Accepts paths to be loaded. Arguments that are {@link ModelIdentifier} will be
+	 *            loaded through the blockstate JSON system or, if the variant is {@code inventory}, the item model folder.
+	 *            Otherwise, the argument is directly loaded as a JSON.
+	 *            For example, <pre>new Identifier("mymod", "foo/bar")</pre> will request loading of the file
+	 *            <pre>/assets/mymod/models/foo/bar.json</pre>
+	 */
+	default void appendAllIdentifiers(ResourceManager manager, Consumer<Identifier> out) {
+		appendAll(manager, out::accept);
+	}
+
+	/**
+	 * @deprecated use {@link #appendAllIdentifiers}, which supports loading of plain {@link Identifier}s
+	 */
+	@Deprecated
 	void appendAll(ResourceManager manager, Consumer<ModelIdentifier> out);
 }
