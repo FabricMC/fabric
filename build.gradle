@@ -355,8 +355,6 @@ curseforge {
 	}
 }
 
-apply from: "https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle"
-
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
