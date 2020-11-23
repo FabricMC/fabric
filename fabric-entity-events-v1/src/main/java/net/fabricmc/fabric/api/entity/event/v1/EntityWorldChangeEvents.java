@@ -35,7 +35,8 @@ public final class EntityWorldChangeEvents {
 	 * <p>All entities are copied to the destination and the old entity removed.
 	 * This event does not apply to the {@link ServerPlayerEntity} since players are physically moved to the new world instead of being copied over.
 	 *
-	 * <p>Mods may use this event for reference cleanup if entities are tracked by the mod.</p>
+	 * <p>A mod may use this event for reference cleanup if it is tracking an entity's current world.
+	 *
 	 * @see EntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD
 	 */
 	public static final Event<AfterEntityChange> AFTER_ENTITY_CHANGE_WORLD = EventFactory.createArrayBacked(AfterEntityChange.class, callbacks -> (originalEntity, newEntity, origin, destination) -> {
@@ -49,6 +50,7 @@ public final class EntityWorldChangeEvents {
 	 *
 	 * <p>This is similar to {@link EntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD} but is only called for players.
 	 * This is because the player is physically moved to the new world instead of being recreated at the destination.
+	 *
 	 * @see EntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD
 	 */
 	public static final Event<AfterPlayerChange> AFTER_PLAYER_CHANGE_WORLD = EventFactory.createArrayBacked(AfterPlayerChange.class, callbacks -> (player, origin, destination) -> {

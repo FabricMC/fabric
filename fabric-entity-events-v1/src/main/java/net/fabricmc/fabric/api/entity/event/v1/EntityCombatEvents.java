@@ -29,10 +29,12 @@ import net.fabricmc.fabric.api.event.EventFactory;
 public final class EntityCombatEvents {
 	/**
 	 * An event that is called after an entity is directly responsible for killing another entity.
+	 *
+	 * @see Entity#onKilledOther(ServerWorld, LivingEntity)
 	 */
-	public static final Event<AfterKilledOtherEntity> AFTER_KILLED_OTHER_ENTITY = EventFactory.createArrayBacked(AfterKilledOtherEntity.class, callbacks -> (world, entity, killed) -> {
+	public static final Event<AfterKilledOtherEntity> AFTER_KILLED_OTHER_ENTITY = EventFactory.createArrayBacked(AfterKilledOtherEntity.class, callbacks -> (world, entity, killedEntity) -> {
 		for (AfterKilledOtherEntity callback : callbacks) {
-			callback.afterKilledOtherEntity(world, entity, killed);
+			callback.afterKilledOtherEntity(world, entity, killedEntity);
 		}
 	});
 
@@ -43,9 +45,9 @@ public final class EntityCombatEvents {
 		 *
 		 * @param world the world
 		 * @param entity the entity
-		 * @param killed the entity which was killed
+		 * @param killedEntity the entity which was killed by the {@code entity}
 		 */
-		void afterKilledOtherEntity(ServerWorld world, Entity entity, LivingEntity killed);
+		void afterKilledOtherEntity(ServerWorld world, Entity entity, LivingEntity killedEntity);
 	}
 
 	private EntityCombatEvents() {
