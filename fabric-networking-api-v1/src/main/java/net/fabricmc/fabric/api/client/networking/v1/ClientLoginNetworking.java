@@ -35,7 +35,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
-import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
 
 /**
  * Offers access to login stage client-side networking functionalities.
@@ -102,7 +101,7 @@ public final class ClientLoginNetworking {
 	 * @throws IllegalStateException if the client is not logging in
 	 */
 	public static boolean registerReceiver(Identifier channelName, LoginQueryRequestHandler queryHandler) throws IllegalStateException {
-		final ClientConnection connection = ((MinecraftClientAccessor) MinecraftClient.getInstance()).getConnection();
+		final ClientConnection connection = ClientNetworkingImpl.getLoginConnection();
 
 		if (connection != null) {
 			final PacketListener packetListener = connection.getPacketListener();
@@ -126,7 +125,7 @@ public final class ClientLoginNetworking {
 	 */
 	@Nullable
 	public static LoginQueryRequestHandler unregisterReceiver(Identifier channelName) throws IllegalStateException {
-		final ClientConnection connection = ((MinecraftClientAccessor) MinecraftClient.getInstance()).getConnection();
+		final ClientConnection connection = ClientNetworkingImpl.getLoginConnection();
 
 		if (connection != null) {
 			final PacketListener packetListener = connection.getPacketListener();

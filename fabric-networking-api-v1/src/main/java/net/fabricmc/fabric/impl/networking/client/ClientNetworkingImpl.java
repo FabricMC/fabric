@@ -21,8 +21,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ConnectScreen;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
@@ -33,9 +38,11 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
+import net.fabricmc.fabric.impl.networking.GlobalReceiverRegistry;
 import net.fabricmc.fabric.impl.networking.NetworkingImpl;
+import net.fabricmc.fabric.mixin.networking.accessor.ConnectScreenAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
 
 @Environment(EnvType.CLIENT)
 public final class ClientNetworkingImpl {
@@ -52,6 +59,28 @@ public final class ClientNetworkingImpl {
 
 	public static Packet<?> createPlayC2SPacket(Identifier channelName, PacketByteBuf buf) {
 		return new CustomPayloadC2SPacket(channelName, buf);
+	}
+
+	/**
+	 * Due to the way logging into a integrated or remote dedicated server will differ, we need to obtain the login client connection differently.
+	 */
+	@Nullable
+	public static ClientConnection getLoginConnection() {
+		final ClientConnection connection = ((MinecraftClientAccessor) MinecraftClient.getInstance()).getConnection();
+
+		// Check if we are connecting to an integrated server. This will set the field on MinecraftClient
+		if (connection != null) {
+			return connection;
+		} else {
+			// We are probably connecting to a remote server.
+			// Check if the ConnectScreen is the currentScreen to determine that:
+			if (MinecraftClient.getInstance().currentScreen instanceof ConnectScreen) {
+				return ((ConnectScreenAccessor) MinecraftClient.getInstance().currentScreen).getConnection();
+			}
+		}
+
+		// We are not connected to a server at all.
+		return null;
 	}
 
 	public static void clientInit() {

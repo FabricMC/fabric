@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.mixin.networking.accessor;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -27,6 +28,7 @@ public interface LoginQueryResponseC2SPacketAccessor {
 	@Accessor
 	int getQueryId();
 
+	@Nullable
 	@Accessor
 	PacketByteBuf getResponse();
 }

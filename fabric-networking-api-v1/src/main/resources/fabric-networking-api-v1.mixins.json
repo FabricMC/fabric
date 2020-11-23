@@ -16,6 +16,7 @@
     "accessor.ServerLoginNetworkHandlerAccessor"
   ],
   "client": [
+    "accessor.ConnectScreenAccessor",
     "accessor.MinecraftClientAccessor",
     "client.ClientLoginNetworkHandlerMixin",
     "client.ClientPlayNetworkHandlerMixin"
