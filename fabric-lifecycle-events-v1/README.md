@@ -22,7 +22,7 @@ This includes events which indicate a when a server is starting up, is in a data
 ## `ServerTickEvents`
 
 Contains events related to the ticking of a Minecraft server.
-There are events that signify the beginning and end of the tick for the server and each `ServerWorld`.
+There are events that indicate the beginning and end of the tick for the server and each `ServerWorld`.
 
 ## `ServerWorldEvents`
 
@@ -60,7 +60,7 @@ Currently, this contains events related to when the Minecraft Client is starting
 ## `ClientTickEvents`
 
 Events related to ticking of a Minecraft client.
-There are events that signify the beginning and end of the tick for the client and the `ClientWorld` if in game.
+There are events that indicate the beginning and end of the tick for the client and the `ClientWorld` if in game.
 
 ## `ClientChunkEvents`
 
