@@ -271,19 +271,26 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 			break;
 		}
 		case REMOTE: {
+			int maxId = -1;
+
 			for (Identifier id : getIds()) {
 				if (!remoteIndexedEntries.containsKey(id)) {
-					int newId = remoteIndexedEntries.values().stream()
-							.mapToInt(Integer::intValue)
-							.max()
-							.orElse(-1);
-
-					if (newId < 0) {
-						throw new RuntimeException("Failed to assign new id to client only registry entry");
+					if (maxId < 0) {
+						for (int value : remoteIndexedEntries.values()) {
+							if (value > maxId) {
+								maxId = value;
+							}
+						}
 					}
 
-					FABRIC_LOGGER.debug("An ID for {} was not sent by the server, assuming client only registry entry and assigning a new id: {}", id.toString(), newId + 1);
-					remoteIndexedEntries.put(id, newId + 1);
+					if (maxId < 0) {
+						throw new RemapException("Failed to assign new id to client only registry entry");
+					}
+
+					maxId++;
+
+					FABRIC_LOGGER.debug("An ID for {} was not sent by the server, assuming client only registry entry and assigning a new id ({}) in {}", id.toString(), maxId, getKey().getValue().toString());
+					remoteIndexedEntries.put(id, maxId);
 				}
 			}
 
