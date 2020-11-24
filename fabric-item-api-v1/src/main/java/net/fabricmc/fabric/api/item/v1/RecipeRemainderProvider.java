@@ -28,7 +28,7 @@ import net.minecraft.world.World;
 @FunctionalInterface
 public interface RecipeRemainderProvider {
 	/**
-	 * An {@link ItemStack} aware version of {@link Item#getRecipeRemainder().
+	 * An {@link ItemStack} aware version of {@link Item#getRecipeRemainder()}.
 	 *
 	 * @param original The input item stack.
 	 * @param inventory The inventory that the stack is in.

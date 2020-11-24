@@ -20,7 +20,6 @@ import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +55,7 @@ public final class FabricItemInternals {
 	public static DefaultedList<ItemStack> getRemainingStacks(Inventory inventory, RecipeType<?> type, World world, @Nullable BlockPos pos) {
 		DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
 
-		for(int i = 0; i < defaultedList.size(); ++i) {
+		for (int i = 0; i < defaultedList.size(); ++i) {
 			ItemStack stack = inventory.getStack(i);
 			Item item = stack.getItem();
 

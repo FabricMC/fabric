@@ -18,20 +18,13 @@ package net.fabricmc.fabric.api.item.v1;
 
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.inventory.Inventory;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
-import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 /**
  * Fabric's version of Item.Settings. Adds additional methods and hooks
