@@ -28,7 +28,7 @@ import net.fabricmc.fabric.test.provider.api.ItemExtractable;
 
 public class InventoryExtractableProvider implements BlockApiLookup.BlockEntityApiProvider<ItemExtractable, @NotNull Direction> {
 	@Override
-	public @Nullable ItemExtractable get(BlockEntity blockEntity, @NotNull Direction context) {
+	public @Nullable ItemExtractable get(@NotNull BlockEntity blockEntity, @NotNull Direction context) {
 		if (blockEntity instanceof Inventory) {
 			return new WrappedInventory((Inventory) blockEntity);
 		}

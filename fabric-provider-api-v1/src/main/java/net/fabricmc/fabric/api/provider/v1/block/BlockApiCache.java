@@ -18,27 +18,26 @@ package net.fabricmc.fabric.api.provider.v1.block;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.provider.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.provider.block.BlockApiLookupImpl;
 
 public interface BlockApiCache<T, C> {
+	@Nullable
 	T get(C context);
 
-	static <T, C> BlockApiCache<T, C> create(BlockApiLookup<T, C> lookup, World world, BlockPos pos) {
+	static <T, C> BlockApiCache<T, C> create(BlockApiLookup<T, C> lookup, ServerWorld world, BlockPos pos) {
 		Objects.requireNonNull(pos, "Pos cannot be null");
-
-		if (!(world instanceof ServerWorld)) {
-			throw new IllegalArgumentException("World must be a ServerWorld");
-		}
+		Objects.requireNonNull(world, "World cannot be null");
 
 		if (!(lookup instanceof BlockApiLookupImpl)) {
 			throw new IllegalArgumentException("BlockApiLookup must be a BlockApiLookupImpl");
 		}
 
-		return new BlockApiCacheImpl<>((BlockApiLookupImpl<T, C>) lookup, (ServerWorld) world, pos);
+		return new BlockApiCacheImpl<>((BlockApiLookupImpl<T, C>) lookup, world, pos);
 	}
 }

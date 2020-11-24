@@ -19,6 +19,7 @@ package net.fabricmc.fabric.test.provider;
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
@@ -39,17 +40,17 @@ public class ChuteBlockEntity extends BlockEntity implements Tickable {
 
 	@Override
 	public void tick() {
-		//noinspection ConstantConditions - Intellij intrinsics don't know what hasWorld makes getWorld evaluate to non-null
+		//noinspection ConstantConditions - Intellij intrinsics don't know that hasWorld makes getWorld evaluate to non-null
 		if (!this.hasWorld() || this.getWorld().isClient()) {
 			return;
 		}
 
 		if (cachedInsertable == null) {
-			cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, world, pos.offset(Direction.DOWN));
+			cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerWorld) world, pos.offset(Direction.DOWN));
 		}
 
 		if (cachedExtractable == null) {
-			cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, world, pos.offset(Direction.UP));
+			cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerWorld) world, pos.offset(Direction.UP));
 		}
 
 		if (moveDelay == 0) {

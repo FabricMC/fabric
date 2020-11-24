@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.impl.provider.block;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,6 +40,8 @@ import net.fabricmc.fabric.mixin.provider.BlockEntityTypeAccessor;
 public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final ApiProviderMap<Block, BlockApiProvider<T, C>> providerMap = ApiProviderMap.create();
+	private final List<BlockEntityApiProvider<T, C>> blockEntityFallbackProviders = new CopyOnWriteArrayList<>();
+	private final List<BlockApiProvider<T, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 	private final Identifier id;
 	private final ContextKey<C> contextKey;
 
@@ -54,8 +58,50 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		@Nullable
 		BlockApiProvider<T, C> provider = getProvider(world, pos);
 
-		if (provider != null) {
-			return provider.get(world, pos, context);
+		BlockEntity be = null;
+		boolean beQueried = false;
+		T instance = null;
+
+		// Query the providers at the position, caching the BlockEntity if possible
+		if (provider instanceof WrappedBlockEntityProvider) {
+			be = world.getBlockEntity(pos);
+			beQueried = true;
+
+			if (be != null) {
+				instance = ((WrappedBlockEntityProvider<T, C>) provider).blockEntityProvider.get(be, context);
+			}
+		} else if (provider != null) {
+			instance = provider.get(world, pos, context);
+		}
+
+		if (instance != null) {
+			return instance;
+		}
+
+		// Query the block entity fallback providers
+		if (blockEntityFallbackProviders.size() > 0) {
+			if (!beQueried) {
+				be = world.getBlockEntity(pos);
+			}
+
+			if (be != null) {
+				for (BlockEntityApiProvider<T, C> fallbackProvider : blockEntityFallbackProviders) {
+					instance = fallbackProvider.get(be, context);
+
+					if (instance != null) {
+						return instance;
+					}
+				}
+			}
+		}
+
+		// Query the block fallback providers
+		for (BlockApiProvider<T, C> fallbackProvider : fallbackProviders) {
+			instance = fallbackProvider.get(world, pos, context);
+
+			if (instance != null) {
+				return instance;
+			}
 		}
 
 		return null;
@@ -89,6 +135,20 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	}
 
 	@Override
+	public void registerBlockEntityFallback(BlockEntityApiProvider<T, C> fallbackProvider) {
+		Objects.requireNonNull(fallbackProvider, "BlockEntityApiProvider cannot be null");
+
+		blockEntityFallbackProviders.add(fallbackProvider);
+	}
+
+	@Override
+	public void registerBlockFallback(BlockApiProvider<T, C> fallbackProvider) {
+		Objects.requireNonNull(fallbackProvider, "BlockApiProvider cannot be null");
+
+		fallbackProviders.add(fallbackProvider);
+	}
+
+	@Override
 	public Identifier getApiId() {
 		return id;
 	}
@@ -104,6 +164,14 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		Objects.requireNonNull(pos, "Block pos cannot be null");
 
 		return providerMap.get(world.getBlockState(pos).getBlock());
+	}
+
+	public List<BlockEntityApiProvider<T, C>> getBlockEntityFallbackProviders() {
+		return blockEntityFallbackProviders;
+	}
+
+	public List<BlockApiProvider<T, C>> getFallbackProviders() {
+		return fallbackProviders;
 	}
 
 	public static class WrappedBlockEntityProvider<T, C> implements BlockApiProvider<T, C> {
