@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.client.model;
 import java.util.function.Function;
 
 import net.minecraft.resource.ResourceManager;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.impl.client.model.ModelLoadingRegistryImpl;
 
@@ -27,9 +28,15 @@ public interface ModelLoadingRegistry {
 
 	/**
 	 * Register a model appender, which can request loading additional models.
-	 *
-	 * @param appender
+	 * @see GeneralModelAppender
 	 */
+	void registerGeneralAppender(GeneralModelAppender appender);
+
+	/**
+	 * Register a model appender, which can request loading additional models.
+	 * @deprecated Use {@link #registerGeneralAppender(GeneralModelAppender)} instead, which supports loading of plain {@link Identifier}s
+	 */
+	@Deprecated
 	void registerAppender(ModelAppender appender);
 
 	/**
