@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "minecraft:gravel"
+    },
+    {
+      "tag": "fabric-item-api-v1-testmod:hammers"
+    }
+  ],
+  "result": {
+    "item": "minecraft:sand"
+  }
+}

@@ -16,11 +16,15 @@
 
 package net.fabricmc.fabric.test.item;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -31,5 +35,23 @@ public class FabricItemSettingsTests implements ModInitializer {
 		// Registers an item with a custom equipment slot.
 		Item testItem = new Item(new FabricItemSettings().group(ItemGroup.MISC).equipmentSlot(stack -> EquipmentSlot.CHEST));
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
+
+		Item hammerItem = new Item(new FabricItemSettings().group(ItemGroup.TOOLS).maxDamage(16).damageIfUsedInCrafting());
+		Item endHammerItem = new Item(new FabricItemSettings().group(ItemGroup.TOOLS).maxDamage(32).recipeRemainder(((original, inventory, type, world, pos) -> {
+			if (world == null || !world.getRegistryKey().equals(World.END)) {
+				return ItemStack.EMPTY;
+			}
+
+			ItemStack copy = original.copy();
+			copy.damage(1, ThreadLocalRandom.current(), null);
+
+			if (copy.getDamage() < copy.getMaxDamage()) {
+				return ItemStack.EMPTY;
+			}
+
+			return copy;
+		})));
+		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "hammer"), hammerItem);
+		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "end_hammer"), endHammerItem);
 	}
 }

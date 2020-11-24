@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "fabric-item-api-v1-testmod:item/netherite_hammer"
+  }
+}
