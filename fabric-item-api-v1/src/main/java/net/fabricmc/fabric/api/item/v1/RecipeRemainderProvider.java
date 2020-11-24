@@ -25,6 +25,14 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+/**
+ * Allows an item to conditionally specify the recipe remainder.
+ * The recipe remainder is an {@link ItemStack} instead of an {@link Item}.
+ * This can be used to allow your item to get damaged instead of
+ * getting removed when used in crafting.
+ *
+ * <p>Recipe remainder providers can be set with {@link FabricItemSettings#recipeRemainder(RecipeRemainderProvider)}</p>
+ */
 @FunctionalInterface
 public interface RecipeRemainderProvider {
 	/**
@@ -35,7 +43,7 @@ public interface RecipeRemainderProvider {
 	 * @param type The recipe type being used.
 	 * @param world The world in which the inventory is in.
 	 * @param pos The position at which the inventory is.
-	 * @return
+	 * @return the recipe remainder
 	 */
 	ItemStack getRecipeRemainder(ItemStack original, Inventory inventory, RecipeType<?> type, World world, @Nullable BlockPos pos);
 }
