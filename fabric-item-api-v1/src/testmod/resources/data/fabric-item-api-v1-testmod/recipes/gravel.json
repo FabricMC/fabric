@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
     {
-      "tag": "minecraft:cobblestone"
+      "item": "minecraft:cobblestone"
     },
     {
       "tag": "fabric-item-api-v1-testmod:hammers"
