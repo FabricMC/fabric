@@ -18,10 +18,20 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.RecipeType;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import net.fabricmc.fabric.api.item.v1.RecipeRemainderProvider;
 
 public final class FabricItemInternals {
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
@@ -39,12 +49,32 @@ public final class FabricItemInternals {
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
+			((ItemExtensions) item).fabric_setRecipeRemainderProvider(data.recipeRemainderProvider);
 		}
 	}
 
+	public static DefaultedList<ItemStack> getRemainingStacks(Inventory inventory, RecipeType<?> type, World world, @Nullable BlockPos pos) {
+		DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
+
+		for(int i = 0; i < defaultedList.size(); ++i) {
+			ItemStack stack = inventory.getStack(i);
+			Item item = stack.getItem();
+
+			if (((ItemExtensions) item).fabric_getRecipeRemainderProvider() != null) {
+				//noinspection ConstantConditions
+				defaultedList.set(i, ((ItemExtensions) item).fabric_getRecipeRemainderProvider().getRecipeRemainder(stack, inventory, type, world, pos));
+			} else if (stack.getItem().hasRecipeRemainder()) {
+				defaultedList.set(i, new ItemStack(item.getRecipeRemainder()));
+			}
+		}
+
+		return defaultedList;
+	}
+
 	public static final class ExtraData {
-		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
-		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		private @Nullable EquipmentSlotProvider equipmentSlotProvider;
+		private @Nullable CustomDamageHandler customDamageHandler;
+		private @Nullable RecipeRemainderProvider recipeRemainderProvider;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
@@ -52,6 +82,10 @@ public final class FabricItemInternals {
 
 		public void customDamage(CustomDamageHandler handler) {
 			this.customDamageHandler = handler;
+		}
+
+		public void recipeRemainderProvider(RecipeRemainderProvider recipeRemainderProvider) {
+			this.recipeRemainderProvider = recipeRemainderProvider;
 		}
 	}
 }

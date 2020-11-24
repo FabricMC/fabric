@@ -16,13 +16,22 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
+import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 /**
  * Fabric's version of Item.Settings. Adds additional methods and hooks
@@ -51,6 +60,43 @@ public class FabricItemSettings extends Item.Settings {
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
 		FabricItemInternals.computeExtraData(this).customDamage(handler);
 		return this;
+	}
+
+	/**
+	 * Sets the stack-aware recipe remainder provider of the item.
+	 * @see RecipeRemainderProvider
+	 */
+	public FabricItemSettings recipeRemainder(RecipeRemainderProvider provider) {
+		FabricItemInternals.computeExtraData(this).recipeRemainderProvider(provider);
+		return this;
+	}
+
+	/**
+	 * Sets the stack-aware recipe remainder to damage the item by 1 every time it is used in crafting.
+	 */
+	public FabricItemSettings damageIfUsedInCrafting() {
+		return this.damageIfUsedInCrafting(1);
+	}
+
+	/**
+	 * Sets the stack-aware recipe remainder to damage the item by a certain amount every time it is used in crafting.
+	 *
+	 * @param by the amount
+	 */
+	public FabricItemSettings damageIfUsedInCrafting(int by) {
+		return this.recipeRemainder((original, inventory, type, world, pos) -> {
+			if (!original.isDamageable()) {
+				return ItemStack.EMPTY;
+			}
+
+			ItemStack copy = original.copy();
+
+			if (!copy.damage(by, ThreadLocalRandom.current(), null)) {
+				return ItemStack.EMPTY;
+			}
+
+			return copy;
+		});
 	}
 
 	// Overrides of vanilla methods

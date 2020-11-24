@@ -3,9 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.item",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ItemStackMixin",
+    "AbstractFurnaceBlockEntityMixin",
     "ItemMixin",
-    "MobEntityMixin"
+    "ItemStackMixin",
+    "MobEntityMixin",
+    "RecipeManagerMixin"
   ],
   "client": [
     "client.ItemStackMixin"
