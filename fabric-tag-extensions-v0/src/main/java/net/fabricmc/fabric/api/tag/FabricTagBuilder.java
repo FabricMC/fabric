@@ -31,14 +31,20 @@ public interface FabricTagBuilder<T> {
 	void clearTagEntries();
 
 	/**
-	 * Add an optional object entry to the tag.
+	 * Add an optional entry of type {@code <T>} to the tag.
+	 * The object identified by {@code id} is not required to be present on load,
+	 * which is useful for integration with other mods.
 	 * @param id The ID of the object to add
+	 * @see net.minecraft.tag.Tag.Builder#add(Identifier, String) for the non-optional version of this method.
 	 */
 	void addOptionalObject(Identifier id);
 
 	/**
 	 * Add an optional tag entry to the tag.
+	 * The tag identified by {@code id} is not required to be present on load,
+	 * which is useful for integration with other mods.
 	 * @param id The ID of the tag to add
+	 * @see net.minecraft.tag.Tag.Builder#addTag(Identifier, String) for the non-optional version of this method.
 	 */
 	void addOptionalTag(Identifier id);
 }
