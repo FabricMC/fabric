@@ -92,7 +92,7 @@ public class FabricItemSettings extends Item.Settings {
 			ItemStack copy = original.copy();
 			copy.damage(by, ThreadLocalRandom.current(), null);
 
-			if (copy.getDamage() < copy.getMaxDamage()) {
+			if (copy.getDamage() >= copy.getMaxDamage()) {
 				return ItemStack.EMPTY;
 			}
 
