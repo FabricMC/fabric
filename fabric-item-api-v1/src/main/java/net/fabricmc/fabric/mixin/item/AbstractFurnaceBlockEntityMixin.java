@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -24,13 +26,40 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.inventory.SidedInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.recipe.AbstractCookingRecipe;
+import net.minecraft.recipe.Recipe;
+import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.collection.DefaultedList;
 
-@Mixin(AbstractFurnaceBlockEntity.class)
-public class AbstractFurnaceBlockEntityMixin {
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getRecipeRemainder()Lnet/minecraft/item/Item;"), locals = LocalCapture.PRINT)
-	public void setRemainder(CallbackInfo ci) {
+import net.fabricmc.fabric.impl.item.ItemExtensions;
 
+@Mixin(AbstractFurnaceBlockEntity.class)
+public abstract class AbstractFurnaceBlockEntityMixin extends BlockEntity implements SidedInventory {
+	@Shadow
+	protected DefaultedList<ItemStack> inventory;
+
+	@Shadow
+	@Final
+	protected RecipeType<? extends AbstractCookingRecipe> recipeType;
+
+	public AbstractFurnaceBlockEntityMixin(BlockEntityType<?> type) {
+		super(type);
+	}
+
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getRecipeRemainder()Lnet/minecraft/item/Item;"), locals = LocalCapture.PRINT)
+	public void setRemainder(CallbackInfo ci, boolean bl, boolean bl2, ItemStack itemStack, Recipe<?> recipe, Item item) {
+		if (((ItemExtensions) item).fabric_getRecipeRemainderProvider() != null) {
+			//noinspection ConstantConditions
+			this.inventory.set(1, ((ItemExtensions) item).fabric_getRecipeRemainderProvider().getRecipeRemainder(itemStack, this, this.recipeType, this.world, this.pos));
+		} else {
+			Item recipeRemainder = item.getRecipeRemainder();
+			this.inventory.set(1, recipeRemainder != null ? new ItemStack(recipeRemainder) : ItemStack.EMPTY);
+		}
 	}
 
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/collection/DefaultedList;set(ILjava/lang/Object;)Ljava/lang/Object;"))
