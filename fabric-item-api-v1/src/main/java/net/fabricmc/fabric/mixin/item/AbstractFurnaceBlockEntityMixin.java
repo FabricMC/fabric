@@ -51,7 +51,7 @@ public abstract class AbstractFurnaceBlockEntityMixin extends BlockEntity implem
 		super(type);
 	}
 
-	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getRecipeRemainder()Lnet/minecraft/item/Item;"), locals = LocalCapture.PRINT)
+	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/Item;getRecipeRemainder()Lnet/minecraft/item/Item;"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void setRemainder(CallbackInfo ci, boolean bl, boolean bl2, ItemStack itemStack, Recipe<?> recipe, Item item) {
 		if (((ItemExtensions) item).fabric_getRecipeRemainderProvider() != null) {
 			//noinspection ConstantConditions
