@@ -25,6 +25,8 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.impl.item.ItemExtensions;
+
 /**
  * Allows an item to conditionally specify the recipe remainder.
  * The recipe remainder is an {@link ItemStack} instead of an {@link Item}.
@@ -46,4 +48,29 @@ public interface RecipeRemainderProvider {
 	 * @return the recipe remainder
 	 */
 	ItemStack getRecipeRemainder(ItemStack original, Inventory inventory, RecipeType<?> type, World world, @Nullable BlockPos pos);
+
+	/**
+	 * Returns the recipe remainder of an item stack.
+	 * If the item's recipe remainder provider is null, the
+	 * vanilla recipe remainder is used.
+	 *
+	 * @param original The input item stack.
+	 * @param type The recipe type being used.
+	 * @param inventory The inventory that the stack is in.
+	 * @param world The world in which the inventory is in.
+	 * @param pos The position at which the inventory is.
+	 * @return the recipe remainder
+	 */
+	static ItemStack getRecipeRemainder(ItemStack original, RecipeType<?> type, Inventory inventory, World world, @Nullable BlockPos pos) {
+		Item item = original.getItem();
+
+		if (((ItemExtensions) item).fabric_getRecipeRemainderProvider() != null) {
+			//noinspection ConstantConditions
+			return ((ItemExtensions) item).fabric_getRecipeRemainderProvider().getRecipeRemainder(original, inventory, type, world, pos);
+		} else if (item.hasRecipeRemainder()) {
+			return new ItemStack(item.getRecipeRemainder());
+		}
+
+		return ItemStack.EMPTY;
+	}
 }

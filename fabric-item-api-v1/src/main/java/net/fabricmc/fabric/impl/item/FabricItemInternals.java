@@ -57,13 +57,10 @@ public final class FabricItemInternals {
 
 		for (int i = 0; i < defaultedList.size(); ++i) {
 			ItemStack stack = inventory.getStack(i);
-			Item item = stack.getItem();
+			ItemStack remainder = RecipeRemainderProvider.getRecipeRemainder(stack, type, inventory, world, pos);
 
-			if (((ItemExtensions) item).fabric_getRecipeRemainderProvider() != null) {
-				//noinspection ConstantConditions
-				defaultedList.set(i, ((ItemExtensions) item).fabric_getRecipeRemainderProvider().getRecipeRemainder(stack, inventory, type, world, pos));
-			} else if (stack.getItem().hasRecipeRemainder()) {
-				defaultedList.set(i, new ItemStack(item.getRecipeRemainder()));
+			if (!remainder.isEmpty()) {
+				defaultedList.set(i, remainder);
 			}
 		}
 
