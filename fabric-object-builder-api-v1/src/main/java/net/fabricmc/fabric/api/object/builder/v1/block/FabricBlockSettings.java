@@ -23,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.block.MaterialColor;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.Item;
 import net.minecraft.sound.BlockSoundGroup;
@@ -311,5 +312,29 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);
+	}
+
+	/**
+	 * Sets the block's render layer to {@link RenderLayer#getCutout()}
+	 */
+	public FabricBlockSettings cutout() {
+		FabricBlockInternals.computeExtraData(this).renderLayerType(FabricBlockInternals.RenderLayerType.CUTOUT);
+		return this;
+	}
+
+	/**
+	 * Sets the block's render layer to {@link RenderLayer#getCutoutMipped()}
+	 */
+	public FabricBlockSettings cutoutMipped() {
+		FabricBlockInternals.computeExtraData(this).renderLayerType(FabricBlockInternals.RenderLayerType.CUTOUT_MIPPED);
+		return this;
+	}
+
+	/**
+	 * Sets the block's render layer to {@link RenderLayer#getTranslucent()}
+	 */
+	public FabricBlockSettings translucent() {
+		FabricBlockInternals.computeExtraData(this).renderLayerType(FabricBlockInternals.RenderLayerType.TRANSLUCENT);
+		return this;
 	}
 }
