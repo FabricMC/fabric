@@ -16,11 +16,7 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import java.util.function.ToIntFunction;
-
 import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.BundleOccupancyProvider;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;

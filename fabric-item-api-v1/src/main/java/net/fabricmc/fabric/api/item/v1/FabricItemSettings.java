@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import java.util.function.ToIntFunction;
-
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.item.FoodComponent;
