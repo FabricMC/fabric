@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import java.util.function.ToIntFunction;
-
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -26,8 +24,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 
+import net.fabricmc.fabric.api.item.v1.BundleOccupancyProvider;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
@@ -42,7 +40,7 @@ abstract class ItemMixin implements ItemExtensions {
 	private CustomDamageHandler customDamageHandler;
 
 	@Unique
-	private ToIntFunction<ItemStack> bundleOccupancyFunction;
+	private BundleOccupancyProvider bundleOccupancyProvider;
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
@@ -50,13 +48,13 @@ abstract class ItemMixin implements ItemExtensions {
 	}
 
 	@Override
-	public @Nullable ToIntFunction<ItemStack> fabric_getBundleOccupancyFunction() {
-		return bundleOccupancyFunction;
+	public @Nullable BundleOccupancyProvider fabric_getBundleOccupancyProvider() {
+		return bundleOccupancyProvider;
 	}
 
 	@Override
-	public void fabric_setBundleOccupancyFunction(ToIntFunction<ItemStack> bundleOccupancyFunction) {
-		this.bundleOccupancyFunction = bundleOccupancyFunction;
+	public void fabric_setBundleOccupancyProvider(BundleOccupancyProvider bundleOccupancyProvider) {
+		this.bundleOccupancyProvider = bundleOccupancyProvider;
 	}
 
 	@Override

@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
+import net.fabricmc.fabric.api.item.v1.BundleOccupancyProvider;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
@@ -41,19 +42,19 @@ public final class FabricItemInternals {
 		ExtraData data = extraData.get(settings);
 
 		if (data != null) {
-			((ItemExtensions) item).fabric_setBundleOccupancyFunction(data.bundleOccupancyFunction);
+			((ItemExtensions) item).fabric_setBundleOccupancyProvider(data.bundleOccupancyProvider);
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
 		}
 	}
 
 	public static final class ExtraData {
-		private @Nullable ToIntFunction<ItemStack> bundleOccupancyFunction;
+		private @Nullable BundleOccupancyProvider bundleOccupancyProvider;
 		private @Nullable EquipmentSlotProvider equipmentSlotProvider;
 		private @Nullable CustomDamageHandler customDamageHandler;
 
-		public void bundleOccupancy(ToIntFunction<ItemStack> bundleOccupancyFunction) {
-			this.bundleOccupancyFunction = bundleOccupancyFunction;
+		public void bundleOccupancy(BundleOccupancyProvider bundleOccupancyFunction) {
+			this.bundleOccupancyProvider = bundleOccupancyProvider;
 		}
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {

@@ -33,9 +33,9 @@ public class BundleItemMixin {
 	private static void modifyItemOccupancy(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
 		Item item = stack.getItem();
 
-		if (((ItemExtensions) item).fabric_getBundleOccupancyFunction() != null) {
+		if (((ItemExtensions) item).fabric_getBundleOccupancyProvider() != null) {
 			//noinspection ConstantConditions
-			cir.setReturnValue(((ItemExtensions) item).fabric_getBundleOccupancyFunction().applyAsInt(stack));
+			cir.setReturnValue(((ItemExtensions) item).fabric_getBundleOccupancyProvider().getBundleOccupancy(stack));
 		}
 	}
 }

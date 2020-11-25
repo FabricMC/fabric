@@ -18,11 +18,14 @@ package net.fabricmc.fabric.api.item.v1;
 
 import java.util.function.ToIntFunction;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
+import net.minecraft.util.math.MathHelper;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 
@@ -38,18 +41,24 @@ public class FabricItemSettings extends Item.Settings {
 	 * Sets the bundle occupancy of the item.
 	 *
 	 * @param value The static bundle occupancy value.
+	 * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
 	 */
+	@ApiStatus.Experimental
+	@Deprecated
 	public FabricItemSettings bundleOccupancy(int value) {
-		return this.bundleOccupancy((stack) -> value);
+		return this.bundleOccupancy((stack) -> MathHelper.clamp(value, 1, 64));
 	}
 
 	/**
-	 * Sets the bundle occupancy function of the item.
+	 * Sets the bundle occupancy provider used to calculate the bundle occupancy of the item.
 	 *
-	 * @param bundleOccupancyFunction The dynamic bundle occupancy function.
+	 * @param bundleOccupancyProvider The dynamic bundle occupancy function.
+	 * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
 	 */
-	public FabricItemSettings bundleOccupancy(ToIntFunction<ItemStack> bundleOccupancyFunction) {
-		FabricItemInternals.computeExtraData(this).bundleOccupancy(bundleOccupancyFunction);
+	@ApiStatus.Experimental
+	@Deprecated
+	public FabricItemSettings bundleOccupancy(BundleOccupancyProvider bundleOccupancyProvider) {
+		FabricItemInternals.computeExtraData(this).bundleOccupancy(bundleOccupancyProvider);
 		return this;
 	}
 
