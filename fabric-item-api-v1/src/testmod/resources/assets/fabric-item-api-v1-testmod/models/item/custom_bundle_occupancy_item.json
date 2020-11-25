@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "minecraft:atlas/particles"
+    "layer0": "minecraft:painting/ba"
   }
 }

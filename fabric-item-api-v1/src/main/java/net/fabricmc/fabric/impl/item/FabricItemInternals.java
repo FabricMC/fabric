@@ -51,7 +51,7 @@ public final class FabricItemInternals {
 		private @Nullable EquipmentSlotProvider equipmentSlotProvider;
 		private @Nullable CustomDamageHandler customDamageHandler;
 
-		public void bundleOccupancy(BundleOccupancyProvider bundleOccupancyFunction) {
+		public void bundleOccupancy(BundleOccupancyProvider bundleOccupancyProvider) {
 			this.bundleOccupancyProvider = bundleOccupancyProvider;
 		}
 
