@@ -27,7 +27,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import net.minecraft.class_5617;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.EntityRenderers;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.EntityRenderer;
@@ -44,18 +44,18 @@ import net.fabricmc.fabric.impl.client.renderer.registry.EntityRendererRegistryI
 public abstract class MixinEntityRenderers {
 	@Shadow()
 	@Final
-	private static Map<EntityType<?>, class_5617<?>> field_27768;
+	private static Map<EntityType<?>, EntityRendererFactory<?>> rendererFactories;
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
 	@Inject(method = "<clinit>*", at = @At(value = "RETURN"))
 	private static void onRegisterRenderers(CallbackInfo info) {
-		EntityRendererRegistryImpl.setup(((t, factory) -> field_27768.put(t, factory)));
+		EntityRendererRegistryImpl.setup(((t, factory) -> rendererFactories.put(t, factory)));
 	}
 
-	// synthetic lambda in method_32176
+	// synthetic lambda in reloadEntityRenderers
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	@Redirect(method = "method_32174", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_5617;create(Lnet/minecraft/class_5617$class_5618;)Lnet/minecraft/client/render/entity/EntityRenderer;"))
-	private static EntityRenderer<?> createEntityRenderer(class_5617<?> entityRendererFactory, class_5617.class_5618 context, ImmutableMap.Builder builder, class_5617.class_5618 context2, EntityType<?> entityType) {
+	@Redirect(method = "method_32174", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRendererFactory;create(Lnet/minecraft/client/render/entity/EntityRendererFactory$Context;)Lnet/minecraft/client/render/entity/EntityRenderer;"))
+	private static EntityRenderer<?> createEntityRenderer(EntityRendererFactory<?> entityRendererFactory, EntityRendererFactory.Context context, ImmutableMap.Builder builder, EntityRendererFactory.Context context2, EntityType<?> entityType) {
 		EntityRenderer<?> entityRenderer = entityRendererFactory.create(context);
 
 		if (entityRenderer instanceof LivingEntityRenderer) { // Must be living for features
@@ -68,8 +68,8 @@ public abstract class MixinEntityRenderers {
 
 	// private static synthetic method_32175(Lcom/google/common/collect/ImmutableMap$Builder;Lnet/minecraft/class_5617$class_5618;Ljava/lang/String;Lnet/minecraft/class_5617;)V
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	@Redirect(method = "method_32175", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_5617;create(Lnet/minecraft/class_5617$class_5618;)Lnet/minecraft/client/render/entity/EntityRenderer;"))
-	private static EntityRenderer<? extends PlayerEntity> createPlayerEntityRenderer(class_5617<AbstractClientPlayerEntity> playerEntityRendererFactory, class_5617.class_5618 context, ImmutableMap.Builder builder, class_5617.class_5618 context2, String str, class_5617<AbstractClientPlayerEntity> playerEntityRendererFactory2) {
+	@Redirect(method = "method_32175", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/entity/EntityRendererFactory;create(Lnet/minecraft/client/render/entity/EntityRendererFactory$Context;)Lnet/minecraft/client/render/entity/EntityRenderer;"))
+	private static EntityRenderer<? extends PlayerEntity> createPlayerEntityRenderer(EntityRendererFactory<AbstractClientPlayerEntity> playerEntityRendererFactory, EntityRendererFactory.Context context, ImmutableMap.Builder builder, EntityRendererFactory.Context context2, String str, EntityRendererFactory<AbstractClientPlayerEntity> playerEntityRendererFactory2) {
 		EntityRenderer<? extends PlayerEntity> entityRenderer = playerEntityRendererFactory.create(context);
 
 		LivingEntityRendererAccessor accessor = (LivingEntityRendererAccessor) entityRenderer;

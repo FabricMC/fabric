@@ -24,7 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.item.Items;
-import net.minecraft.loot.ConstantLootTableRange;
+import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
 import net.minecraft.loot.LootGsons;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.condition.LootCondition;
@@ -59,7 +59,7 @@ public class LootTest implements ModInitializer {
 				LootPool pool = FabricLootPoolBuilder.builder()
 						.withEntry(ItemEntry.builder(Items.FEATHER).build())
 						.withEntry(entryFromString)
-						.rolls(ConstantLootTableRange.method_32448(1))
+						.rolls(ConstantLootNumberProvider.create(1))
 						.withCondition(SurvivesExplosionLootCondition.builder().build())
 						.build();
 

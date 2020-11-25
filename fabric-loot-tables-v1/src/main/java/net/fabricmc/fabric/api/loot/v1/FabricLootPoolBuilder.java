@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.loot.v1;
 
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.LootPool;
-import net.minecraft.class_5658;
+import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
@@ -34,7 +34,7 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	}
 
 	@Override
-	public FabricLootPoolBuilder rolls(class_5658 range) {
+	public FabricLootPoolBuilder rolls(LootNumberProvider range) {
 		super.rolls(range);
 		return this;
 	}

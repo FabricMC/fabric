@@ -19,7 +19,7 @@ package net.fabricmc.fabric.impl.client.renderer.registry;
 import java.util.HashMap;
 import java.util.function.BiConsumer;
 
-import net.minecraft.class_5617;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 
@@ -29,14 +29,14 @@ import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
  * Helper class for registering EntityRenderers.
  */
 public final class EntityRendererRegistryImpl implements EntityRendererRegistry {
-	private static HashMap<EntityType<?>, class_5617<?>> map = new HashMap<>();
-	private static BiConsumer<EntityType<?>, class_5617<?>> handler = (type, function) -> map.put(type, function);
+	private static HashMap<EntityType<?>, EntityRendererFactory<?>> map = new HashMap<>();
+	private static BiConsumer<EntityType<?>, EntityRendererFactory<?>> handler = (type, function) -> map.put(type, function);
 
-	public <T extends Entity> void register(EntityType<? extends T> entityType, class_5617<T> factory) {
+	public <T extends Entity> void register(EntityType<? extends T> entityType, EntityRendererFactory<T> factory) {
 		handler.accept(entityType, factory);
 	}
 
-	public static void setup(BiConsumer<EntityType<?>, class_5617<?>> vanillaHandler) {
+	public static void setup(BiConsumer<EntityType<?>, EntityRendererFactory<?>> vanillaHandler) {
 		map.forEach(vanillaHandler);
 		handler = vanillaHandler;
 	}
