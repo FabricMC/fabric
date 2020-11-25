@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.function.ToIntFunction;
+
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -32,6 +34,15 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
+	public FabricItemSettings bundleOccupancy(int value) {
+		return this.bundleOccupancy((stack) -> 64 / value);
+	}
+
+	public FabricItemSettings bundleOccupancy(ToIntFunction<ItemStack> bundleOccupancyFunction) {
+		FabricItemInternals.computeExtraData(this).bundleOccupancy(bundleOccupancyFunction);
+		return this;
+	}
+
 	/**
 	 * Sets the equipment slot provider of the item.
 	 *

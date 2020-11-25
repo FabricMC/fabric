@@ -17,8 +17,12 @@
 package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
+import java.util.function.ToIntFunction;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
@@ -37,14 +41,20 @@ public final class FabricItemInternals {
 		ExtraData data = extraData.get(settings);
 
 		if (data != null) {
+			((ItemExtensions) item).fabric_setBundleOccupancyFunction(data.bundleOccupancyFunction);
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
 		}
 	}
 
 	public static final class ExtraData {
-		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
-		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		private @Nullable ToIntFunction<ItemStack> bundleOccupancyFunction;
+		private @Nullable EquipmentSlotProvider equipmentSlotProvider;
+		private @Nullable CustomDamageHandler customDamageHandler;
+
+		public void bundleOccupancy(ToIntFunction<ItemStack> bundleOccupancyFunction) {
+			this.bundleOccupancyFunction = bundleOccupancyFunction;
+		}
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;

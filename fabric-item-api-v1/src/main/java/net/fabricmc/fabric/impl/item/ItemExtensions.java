@@ -16,12 +16,20 @@
 
 package net.fabricmc.fabric.impl.item;
 
+import java.util.function.ToIntFunction;
+
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.item.ItemStack;
+
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
 public interface ItemExtensions {
-	/* @Nullable */ EquipmentSlotProvider fabric_getEquipmentSlotProvider();
+	@Nullable ToIntFunction<ItemStack> fabric_getBundleOccupancyFunction();
+	void fabric_setBundleOccupancyFunction(ToIntFunction<ItemStack> bundleOccupancyFunction);
+	@Nullable EquipmentSlotProvider fabric_getEquipmentSlotProvider();
 	void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider);
-	/* @Nullable */ CustomDamageHandler fabric_getCustomDamageHandler();
+	@Nullable CustomDamageHandler fabric_getCustomDamageHandler();
 	void fabric_setCustomDamageHandler(CustomDamageHandler handler);
 }

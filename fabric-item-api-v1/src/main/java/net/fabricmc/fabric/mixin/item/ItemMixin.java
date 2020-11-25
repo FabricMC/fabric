@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import java.util.function.ToIntFunction;
+
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
@@ -37,9 +41,22 @@ abstract class ItemMixin implements ItemExtensions {
 	@Unique
 	private CustomDamageHandler customDamageHandler;
 
+	@Unique
+	private ToIntFunction<ItemStack> bundleOccupancyFunction;
+
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
 		FabricItemInternals.onBuild(settings, (Item) (Object) this);
+	}
+
+	@Override
+	public @Nullable ToIntFunction<ItemStack> fabric_getBundleOccupancyFunction() {
+		return bundleOccupancyFunction;
+	}
+
+	@Override
+	public void fabric_setBundleOccupancyFunction(ToIntFunction<ItemStack> bundleOccupancyFunction) {
+		this.bundleOccupancyFunction = bundleOccupancyFunction;
 	}
 
 	@Override
