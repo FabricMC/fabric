@@ -141,7 +141,7 @@ public interface WorldRenderContext {
 		 * will be {@code false} in later-stage event invocations. It (obviously)
 		 * also prevents the default outline render from running.
 		 *
-		 * <p>In {@code BLOCK_REDER} this prevents the default outline render
+		 * <p>In {@code BLOCK_RENDER} this prevents the default outline render
 		 * from running and {@link AfterBlockOutline#didCancelDefaultBlockOutline()}
 		 * will be {@code true} in later-stage event invocations.
 		 *
@@ -156,7 +156,7 @@ public interface WorldRenderContext {
 
 	/**
 	 * Used in {@code BLOCK_OUTLINE} to convey the parameters normally sent to
-	 * {@code Worldrenderer.drawBlockOutline}.
+	 * {@code WorldRenderer.drawBlockOutline}.
 	 */
 	public interface BlockOutline {
 		VertexConsumer vertexConsumer();

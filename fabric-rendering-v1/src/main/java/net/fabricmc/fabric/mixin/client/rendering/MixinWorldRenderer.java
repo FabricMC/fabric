@@ -159,7 +159,7 @@ public abstract class MixinWorldRenderer {
 	}
 
 	@Inject(method = "render", at = @At("RETURN"))
-	private void afternRender(CallbackInfo ci) {
+	private void afterRender(CallbackInfo ci) {
 		WorldRenderEvents.END.invoker().onEnd(context);
 	}
 
