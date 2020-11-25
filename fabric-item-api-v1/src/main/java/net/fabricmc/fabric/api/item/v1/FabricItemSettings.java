@@ -39,6 +39,7 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
 public class FabricItemSettings extends Item.Settings {
 	/**
 	 * Sets the bundle occupancy of the item.
+	 * THe actual bundle occupancy is {@code value} multiplied by the stack size.
 	 *
 	 * @param value The static bundle occupancy value.
 	 * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
@@ -46,13 +47,13 @@ public class FabricItemSettings extends Item.Settings {
 	@ApiStatus.Experimental
 	@Deprecated
 	public FabricItemSettings bundleOccupancy(int value) {
-		return this.bundleOccupancy((stack) -> MathHelper.clamp(value, 1, 64));
+		return this.bundleOccupancy((stack) -> MathHelper.clamp(value, 1, Integer.MAX_VALUE) * stack.getCount());
 	}
 
 	/**
 	 * Sets the bundle occupancy provider used to calculate the bundle occupancy of the item.
 	 *
-	 * @param bundleOccupancyProvider The dynamic bundle occupancy function.
+	 * @param bundleOccupancyProvider The bundle occupancy provider.
 	 * @deprecated Experimental feature, may be removed or changed without further notice: Snapshot feature.
 	 */
 	@ApiStatus.Experimental
