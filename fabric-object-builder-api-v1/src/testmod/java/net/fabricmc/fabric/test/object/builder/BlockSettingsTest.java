@@ -13,6 +13,6 @@ public class BlockSettingsTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// This block should not cause a crash on a dedicated server
-		Registry.register(Registry.BLOCK, id("cutout_block"), new Block(FabricBlockSettings.of(Material.STONE).cutout()));
+		Registry.register(Registry.BLOCK, id("cutout_block"), new Block(FabricBlockSettings.of(Material.STONE).nonOpaque().cutout()));
 	}
 }
