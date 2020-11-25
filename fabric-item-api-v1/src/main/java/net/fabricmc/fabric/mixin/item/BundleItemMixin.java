@@ -28,7 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
 
 @Mixin(BundleItem.class)
-public class BundleItemMixin {
+abstract class BundleItemMixin {
 	@Inject(method = "getItemOccupancy", at = @At("HEAD"), cancellable = true)
 	private static void modifyItemOccupancy(ItemStack stack, CallbackInfoReturnable<Integer> cir) {
 		Item item = stack.getItem();
