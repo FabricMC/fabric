@@ -315,7 +315,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Sets the block's render layer to {@link RenderLayer#getCutout()}
+	 * Sets the block's render layer to {@link RenderLayer#getCutout()}.
 	 */
 	public FabricBlockSettings cutout() {
 		FabricBlockInternals.computeExtraData(this).renderLayerType(FabricBlockInternals.RenderLayerType.CUTOUT);
@@ -323,7 +323,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Sets the block's render layer to {@link RenderLayer#getCutoutMipped()}
+	 * Sets the block's render layer to {@link RenderLayer#getCutoutMipped()}.
 	 */
 	public FabricBlockSettings cutoutMipped() {
 		FabricBlockInternals.computeExtraData(this).renderLayerType(FabricBlockInternals.RenderLayerType.CUTOUT_MIPPED);
@@ -331,7 +331,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Sets the block's render layer to {@link RenderLayer#getTranslucent()}
+	 * Sets the block's render layer to {@link RenderLayer#getTranslucent()}.
 	 */
 	public FabricBlockSettings translucent() {
 		FabricBlockInternals.computeExtraData(this).renderLayerType(FabricBlockInternals.RenderLayerType.TRANSLUCENT);
