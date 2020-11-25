@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.test.enchantment.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ItemMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
