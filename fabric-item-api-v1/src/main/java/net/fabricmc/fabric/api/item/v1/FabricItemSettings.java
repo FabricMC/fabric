@@ -34,10 +34,20 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
+	/**
+	 * Sets the bundle occupancy of the item.
+	 *
+	 * @param value The static bundle occupancy value.
+	 */
 	public FabricItemSettings bundleOccupancy(int value) {
-		return this.bundleOccupancy((stack) -> 64 / value);
+		return this.bundleOccupancy((stack) -> value);
 	}
 
+	/**
+	 * Sets the bundle occupancy function of the item.
+	 *
+	 * @param bundleOccupancyFunction The dynamic bundle occupancy function.
+	 */
 	public FabricItemSettings bundleOccupancy(ToIntFunction<ItemStack> bundleOccupancyFunction) {
 		FabricItemInternals.computeExtraData(this).bundleOccupancy(bundleOccupancyFunction);
 		return this;
