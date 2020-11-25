@@ -1,2 +1,7 @@
 archivesBaseName = "fabric-api-base"
 version = getSubprojectVersion(project, "0.2.0")
+
+dependencies {
+	testmodCompile project(path: ':fabric-command-api-v1', configuration: 'dev')
+	testmodCompile project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
+}

@@ -38,9 +38,9 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 
-import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.loader.api.ModContainer;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private static final Map<ResourceType, ResourceManagerHelperImpl> registryMap = new HashMap<>();
@@ -62,7 +62,6 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	 * @param container The mod container.
 	 * @param enabledByDefault True if enabled by default, else false.
 	 * @return True if successfully registered the resource pack, else false.
-	 *
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
 	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, boolean enabledByDefault) {
@@ -76,7 +75,13 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 		}
 
 		String name = id.getNamespace() + "/" + id.getPath();
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, name, enabledByDefault)));
+
+		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, enabledByDefault) {
+			@Override
+			public String getName() {
+				return name; // Built-in resource pack provided by a mod, the name is overriden.
+			}
+		}));
 
 		return true;
 	}

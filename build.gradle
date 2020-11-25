@@ -18,16 +18,18 @@ plugins {
 def ENV = System.getenv()
 
 class Globals {
-	static def baseVersion = "0.24.1"
-	static def mcVersion = "1.16.3"
-	static def yarnVersion = "+build.47"
-	static def loaderVersion = "0.10.3+build.211"
+	static def baseVersion = "0.26.3"
+	static def mcVersion = "1.16.4"
+	static def yarnVersion = "+build.1"
+	static def loaderVersion = "0.10.5+build.213"
 }
 
-version = Globals.baseVersion + "+" + (ENV.BUILD_NUMBER ? ("build." + ENV.BUILD_NUMBER) : "local") + "-" + getBranch()
+version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
+import net.fabricmc.loom.task.RunClientTask
+import net.fabricmc.loom.task.RunServerTask
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -44,8 +46,9 @@ def getSubprojectVersion(project, version) {
 }
 
 def getBranch() {
-	if (System.getenv().GIT_BRANCH) {
-		def branch = System.getenv().GIT_BRANCH
+	def ENV = System.getenv()
+	if (ENV.GITHUB_REF) {
+		def branch = ENV.GITHUB_REF
 		return branch.substring(branch.lastIndexOf("/") + 1)
 	}
 
@@ -57,14 +60,46 @@ def getBranch() {
 	return branch.substring(branch.lastIndexOf("/") + 1)
 }
 
+def moduleDependencies(project, List<String> depNames) {
+	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
+	project.dependencies {
+		deps.each {
+			compile it
+		}
+	}
+	project.publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				pom.withXml {
+					def depsNode = asNode().appendNode("dependencies")
+					deps.each {
+						def depNode = depsNode.appendNode("dependency")
+						depNode.appendNode("groupId", it.group)
+						depNode.appendNode("artifactId", it.name)
+						depNode.appendNode("version", it.version)
+						depNode.appendNode("scope", "compile")
+					}
+				}
+			}
+		}
+	}
+}
+
 allprojects {
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
 	apply plugin: "net.minecrell.licenser"
 
-	sourceCompatibility = 1.8
-	targetCompatibility = 1.8
+	tasks.withType(JavaCompile).configureEach {
+		def targetVersion = 8
+		if (JavaVersion.current().isJava9Compatible()) {
+			it.options.release = targetVersion
+		} else {
+			sourceCompatibility = JavaVersion.toVersion(targetVersion)
+			targetCompatibility = JavaVersion.toVersion(targetVersion)
+		}
+	}
 
 	group = "net.fabricmc.fabric-api"
 
@@ -73,6 +108,14 @@ allprojects {
 			compileClasspath += main.compileClasspath
 			runtimeClasspath += main.runtimeClasspath
 		}
+	}
+
+	task runTestmodClient(type: RunClientTask) {
+		classpath sourceSets.testmod.runtimeClasspath
+	}
+
+	task runTestmodServer(type: RunServerTask) {
+		classpath sourceSets.testmod.runtimeClasspath
 	}
 
 	dependencies {
@@ -173,6 +216,15 @@ task javadocJar(type: Jar) {
 
 build.dependsOn javadocJar
 
+// Runs a dedicated headless server with all test mods that closes once complete.
+task runAutoTestServer(type: RunServerTask) {
+	project.subprojects {
+		classpath it.sourceSets.testmod.runtimeClasspath
+	}
+	jvmArgs "-Dfabric.autoTest"
+	args "--nogui"
+}
+
 subprojects {
 	dependencies {
 		testmodCompile sourceSets.main.output
@@ -246,12 +298,13 @@ publishing {
 
 void setupRepositories(RepositoryHandler repositories) {
 	//repositories.mavenLocal() // uncomment for testing
-	if (project.hasProperty("mavenPass")) {
+	def ENV = System.getenv()
+	if (ENV.MAVEN_URL) {
 		repositories.maven {
-			url "http://mavenupload.modmuss50.me/"
+			url ENV.MAVEN_URL
 			credentials {
-				username "buildslave"
-				password project.getProperty("mavenPass")
+				username ENV.MAVEN_USERNAME
+				password ENV.MAVEN_PASSWORD
 			}
 		}
 	}
@@ -277,19 +330,19 @@ dependencies {
 }
 
 curseforge {
-	if (project.hasProperty("curse_api_key")) {
-		apiKey = project.getProperty("curse_api_key")
+	if (ENV.CURSEFORGE_API_KEY) {
+		apiKey = ENV.CURSEFORGE_API_KEY
 	}
 
 	project {
 		id = "306612"
 		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
 		releaseType = "release"
-		addGameVersion "1.16.3"
+		addGameVersion "1.16.4"
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER"
+			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
 		}
 
 		afterEvaluate {
@@ -302,22 +355,20 @@ curseforge {
 	}
 }
 
-apply from: "https://github.com/FabricMC/fabric-docs/raw/master/gradle/ideconfig.gradle"
-
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
 task github(dependsOn: remapMavenJar) {
 	onlyIf {
-		project.hasProperty("github_api_key")
+		ENV.GITHUB_TOKEN
 	}
 
 	doLast {
-		def github = GitHub.connectUsingOAuth(project.getProperty("github_api_key") as String)
-		def repository = github.getRepository("FabricMC/fabric")
+		def github = GitHub.connectUsingOAuth(ENV.GITHUB_TOKEN as String)
+		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
-		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion build $ENV.BUILD_NUMBER")
+		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
 		releaseBuilder.body("A changelog can be found at https://github.com/FabricMC/fabric/commits")
 		releaseBuilder.commitish(getBranch())
 
@@ -325,3 +376,19 @@ task github(dependsOn: remapMavenJar) {
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
 	}
 }
+
+// A task to ensure that the version being released has not already been released.
+task checkVersion {
+	doFirst {
+		def xml = new URL("https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/maven-metadata.xml").text
+		def metadata = new XmlSlurper().parseText(xml)
+		def versions = metadata.versioning.versions.version*.text();
+		if (versions.contains(version)) {
+			throw new RuntimeException("${version} has already been released!")
+		}
+	}
+}
+
+github.mustRunAfter checkVersion
+publish.mustRunAfter checkVersion
+project.tasks.curseforge.mustRunAfter checkVersion
