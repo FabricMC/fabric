@@ -16,7 +16,7 @@ These classes are located in `net.fabricmc.fabric.api.event.lifecycle.v1`.
 
 ## `ServerLifecycleEvents`
 
-Contains lifecycle events related to a Minecraft Server.
+Contains lifecycle events related to a Minecraft server.
 This includes events which indicate a when a server is starting up, is in a data pack reload or shutting down.
 
 ## `ServerTickEvents`
