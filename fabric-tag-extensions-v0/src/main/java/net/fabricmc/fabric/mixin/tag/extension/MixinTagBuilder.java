@@ -29,17 +29,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.tag.Tag;
-import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.tag.FabricTagBuilder;
 import net.fabricmc.fabric.impl.tag.extension.FabricTagHooks;
 
 @Mixin(Tag.Builder.class)
-public abstract class MixinTagBuilder<T> implements FabricTagBuilder<T> {
+public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	@Shadow
 	private List<Tag.TrackedEntry> entries;
-
-	@Shadow public abstract Tag.Builder add(Tag.Entry entry, String source);
 
 	@Unique
 	private int fabric_clearCount;
@@ -59,15 +56,5 @@ public abstract class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	public void clearTagEntries() {
 		entries.clear();
 		fabric_clearCount++;
-	}
-
-	@Override
-	public void addOptionalObject(Identifier id) {
-		add(new Tag.OptionalObjectEntry(id), "fabric-tag-extensions-v0");
-	}
-
-	@Override
-	public void addOptionalTag(Identifier id) {
-		add(new Tag.OptionalTagEntry(id), "fabric-tag-extensions-v0");
 	}
 }
