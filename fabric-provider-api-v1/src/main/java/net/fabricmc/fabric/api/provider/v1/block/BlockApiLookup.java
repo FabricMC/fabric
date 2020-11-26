@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 
 /**
  * An object that allows retrieving objects (called Apis) from blocks in a world.
- * To get an instance of this interface, have a look at {@link BlockApiLookupRegistry#getLookup}.
+ * Instances of this interface can be obtained through {@link BlockApiLookupRegistry#getLookup}.
  * <p>
  * When trying to {@link BlockApiLookup#get} an object, the block
  * or block entity at that position will be queried if it exists.
@@ -41,7 +41,7 @@ import net.minecraft.world.World;
  */
 public interface BlockApiLookup<T, C> {
 	/**
-	 * Retrieve an object from a block in the world. Consider
+	 * Retrieve an object from a block in the world. Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 * @param world The world
 	 * @param pos The position of the block
 	 * @param context Additional context for the query, defined by type parameter C
