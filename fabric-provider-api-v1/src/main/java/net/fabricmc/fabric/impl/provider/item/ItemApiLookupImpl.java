@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.impl.provider.item;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +34,8 @@ import net.fabricmc.fabric.api.provider.v1.item.ItemApiLookup;
 
 final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 	private static final Logger LOGGER = LogManager.getLogger();
-	private final ApiProviderMap<Item, ItemApiProvider<?, ?>> providerMap = ApiProviderMap.create();
+	private final ApiProviderMap<Item, ItemApiProvider<T, C>> providerMap = ApiProviderMap.create();
+	private final List<ItemApiProvider<T, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 
 	@Nullable
 	@Override
@@ -40,12 +43,21 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 		Objects.requireNonNull(stack, "World cannot be null");
 		// Providers have the final say whether a null context is allowed.
 
-		@SuppressWarnings("unchecked")
 		@Nullable
-		final ItemApiProvider<T, C> provider = (ItemApiProvider<T, C>) providerMap.get(stack.getItem());
+		final ItemApiProvider<T, C> provider = providerMap.get(stack.getItem());
 
 		if (provider != null) {
-			return provider.get(stack, context);
+			T instance = provider.get(stack, context);
+			if (instance != null) {
+				return instance;
+			}
+		}
+
+		for (ItemApiProvider<T, C> fallbackProvider : fallbackProviders) {
+			T instance = fallbackProvider.get(stack, context);
+			if (instance != null) {
+				return instance;
+			}
 		}
 
 		return null;
@@ -53,7 +65,7 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 
 	@Override
 	public void register(ItemApiProvider<T, C> provider, ItemConvertible... items) {
-		Objects.requireNonNull(provider);
+		Objects.requireNonNull(provider, "ItemApiProvider cannot be null");
 
 		for (ItemConvertible item : items) {
 			Objects.requireNonNull(item, "Passed item convertible cannot be null");
@@ -63,5 +75,12 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 				LOGGER.warn("Encountered duplicate API provider registration for item: " + Registry.ITEM.getId(item.asItem()));
 			}
 		}
+	}
+
+	@Override
+	public void registerFallback(ItemApiProvider<T, C> provider) {
+		Objects.requireNonNull(provider, "ItemApiProvider cannot be null");
+
+		fallbackProviders.add(provider);
 	}
 }

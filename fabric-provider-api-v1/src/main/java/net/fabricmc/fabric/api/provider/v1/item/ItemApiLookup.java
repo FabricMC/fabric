@@ -27,6 +27,8 @@ public interface ItemApiLookup<T, C> {
 
 	void register(ItemApiProvider<T, C> provider, ItemConvertible... items);
 
+	void registerFallback(ItemApiProvider<T, C> provider);
+
 	interface ItemApiProvider<T, C> {
 		@Nullable
 		T get(ItemStack stack, C context);
