@@ -48,6 +48,7 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 
 		if (provider != null) {
 			T instance = provider.get(stack, context);
+
 			if (instance != null) {
 				return instance;
 			}
@@ -55,6 +56,7 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 
 		for (ItemApiProvider<T, C> fallbackProvider : fallbackProviders) {
 			T instance = fallbackProvider.get(stack, context);
+
 			if (instance != null) {
 				return instance;
 			}

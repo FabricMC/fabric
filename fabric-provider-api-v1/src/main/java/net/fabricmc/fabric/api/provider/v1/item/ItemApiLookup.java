@@ -29,6 +29,7 @@ public interface ItemApiLookup<T, C> {
 
 	void registerFallback(ItemApiProvider<T, C> provider);
 
+	@FunctionalInterface
 	interface ItemApiProvider<T, C> {
 		@Nullable
 		T get(ItemStack stack, C context);

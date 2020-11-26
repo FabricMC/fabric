@@ -22,6 +22,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
@@ -43,7 +44,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 
 	@Nullable
 	@Override
-	public T get(World world, BlockPos pos, C context) {
+	public T get(@NotNull World world, @NotNull BlockPos pos, C context) {
 		// This call checks for null world and pos.
 		// Providers have the final say whether a null context is allowed.
 		@Nullable
@@ -99,8 +100,9 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	}
 
 	@Override
-	public void registerForBlocks(BlockApiProvider<T, C> provider, Block... blocks) {
+	public void registerForBlocks(@NotNull BlockApiProvider<T, C> provider, @NotNull Block... blocks) {
 		Objects.requireNonNull(provider, "BlockApiProvider cannot be null");
+		Objects.requireNonNull(blocks, "Block... cannot be null");
 
 		for (final Block block : blocks) {
 			Objects.requireNonNull(block, "encountered null block while registering a block API provider mapping");
@@ -114,6 +116,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	@Override
 	public void registerForBlockEntities(BlockEntityApiProvider<T, C> provider, BlockEntityType<?>... blockEntityTypes) {
 		Objects.requireNonNull(provider, "encountered null BlockEntityApiProvider");
+		Objects.requireNonNull(blockEntityTypes, "BlockEntityType... cannot be null");
 
 		for (final BlockEntityType<?> blockEntityType : blockEntityTypes) {
 			Objects.requireNonNull(blockEntityType, "encountered null block entity type while registering a block entity API provider mapping");
@@ -163,7 +166,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		}
 
 		@Override
-		public @Nullable T get(World world, BlockPos pos, C context) {
+		public @Nullable T get(@NotNull World world, @NotNull BlockPos pos, C context) {
 			@Nullable final BlockEntity blockEntity = world.getBlockEntity(pos);
 
 			if (blockEntity != null) {
