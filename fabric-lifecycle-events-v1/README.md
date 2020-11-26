@@ -1,6 +1,6 @@
 # Fabric Lifecycle Events (V1)
 
-Contains events which indicate the when the lifecycle of a Minecraft Client, Minecraft Server and objects which exist on the client and server have changed.
+Contains events which indicate the when the lifecycle of a Minecraft client, Minecraft server and objects which exist on the client and server have changed.
 
 ## Organization
 
