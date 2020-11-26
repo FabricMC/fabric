@@ -25,23 +25,14 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProviderMap;
-import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.api.provider.v1.item.ItemApiLookup;
 
 final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final ApiProviderMap<Item, ItemApiProvider<?, ?>> providerMap = ApiProviderMap.create();
-	private final Identifier id;
-	private final ContextKey<C> contextKey;
-
-	ItemApiLookupImpl(Identifier apiId, ContextKey<C> contextKey) {
-		this.id = apiId;
-		this.contextKey = contextKey;
-	}
 
 	@Nullable
 	@Override
@@ -72,15 +63,5 @@ final class ItemApiLookupImpl<T, C> implements ItemApiLookup<T, C> {
 				LOGGER.warn("Encountered duplicate API provider registration for item: " + Registry.ITEM.getId(item.asItem()));
 			}
 		}
-	}
-
-	@Override
-	public Identifier getApiId() {
-		return this.id;
-	}
-
-	@Override
-	public ContextKey<C> getContextKey() {
-		return this.contextKey;
 	}
 }

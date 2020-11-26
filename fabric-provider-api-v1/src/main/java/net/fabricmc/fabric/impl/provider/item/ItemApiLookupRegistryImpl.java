@@ -19,15 +19,14 @@ package net.fabricmc.fabric.impl.provider.item;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.provider.v1.ApiLookupMap;
-import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.api.provider.v1.item.ItemApiLookup;
 
 public final class ItemApiLookupRegistryImpl {
 	private static final ApiLookupMap<ItemApiLookupImpl<?, ?>> PROVIDERS = ApiLookupMap.create(ItemApiLookupImpl::new);
 
-	public static <T, C> ItemApiLookup<T, C> getLookup(Identifier key, ContextKey<C> contextKey) {
+	public static <T, C> ItemApiLookup<T, C> getLookup(Identifier lookupId, Class<T> apiClass, Class<C> contextClass) {
 		//noinspection unchecked
-		return (ItemApiLookup<T, C>) PROVIDERS.getLookup(key, contextKey);
+		return (ItemApiLookup<T, C>) PROVIDERS.getLookup(lookupId, apiClass, contextClass);
 	}
 
 	private ItemApiLookupRegistryImpl() {

@@ -18,33 +18,51 @@ package net.fabricmc.fabric.impl.provider;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.provider.v1.ApiLookup;
 import net.fabricmc.fabric.api.provider.v1.ApiLookupMap;
-import net.fabricmc.fabric.api.provider.v1.ContextKey;
 
-public final class ApiLookupMapImpl<L extends ApiLookup<?>> implements ApiLookupMap<L> {
-	private final Map<Identifier, Map<ContextKey<?>, L>> lookups = new Reference2ReferenceOpenHashMap<>();
-	private final LookupFactory<L> lookupFactory;
+public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
+	private final Map<Identifier, StoredLookup<L>> lookups = new Reference2ReferenceOpenHashMap<>();
+	private final Supplier<L> lookupFactory;
 
-	public ApiLookupMapImpl(LookupFactory<L> lookupFactory) {
+	public ApiLookupMapImpl(Supplier<L> lookupFactory) {
 		this.lookupFactory = lookupFactory;
 	}
 
 	@Override
-	public synchronized L getLookup(Identifier key, ContextKey<?> contextKey) {
-		lookups.putIfAbsent(key, new Reference2ReferenceOpenHashMap<>());
-		lookups.get(key).computeIfAbsent(contextKey, ctx -> lookupFactory.create(key, contextKey));
-		return lookups.get(key).get(contextKey);
+	public synchronized L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass) {
+		StoredLookup<L> storedLookup = lookups.computeIfAbsent(lookupId, id -> new StoredLookup<>(lookupFactory.get(), apiClass, contextClass));
+
+		if (storedLookup.apiClass != apiClass || storedLookup.contextClass != contextClass) {
+			throw new IllegalArgumentException(String.format(
+					"Lookup with id %s is already registered with api class %s and context class %s. It can't be registered with api class %s and context class %s",
+					lookupId, storedLookup.apiClass.getCanonicalName(), storedLookup.contextClass.getCanonicalName(), apiClass.getCanonicalName(), contextClass.getCanonicalName()
+					));
+		} else {
+			return storedLookup.lookup;
+		}
 	}
 
 	@Override
 	public synchronized Iterator<L> iterator() {
-		return lookups.values().stream().flatMap(apiLookups -> apiLookups.values().stream()).collect(Collectors.toList()).iterator();
+		return lookups.values().stream().map(storedLookup -> storedLookup.lookup).collect(Collectors.toList()).iterator();
+	}
+
+	private static class StoredLookup<L> {
+		private final L lookup;
+		private final Class<?> apiClass;
+		private final Class<?> contextClass;
+
+		private StoredLookup(L lookup, Class<?> apiClass, Class<?> contextClass) {
+			this.lookup = lookup;
+			this.apiClass = apiClass;
+			this.contextClass = contextClass;
+		}
 	}
 }

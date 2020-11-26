@@ -20,15 +20,15 @@ import java.util.Objects;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.impl.provider.item.ItemApiLookupRegistryImpl;
 
 public final class ItemApiLookupRegistry {
-	public static <T, C> ItemApiLookup<T, C> getLookup(Identifier apiId, ContextKey<C> contextKey) {
-		Objects.requireNonNull(apiId, "Id of API cannot be null");
-		Objects.requireNonNull(contextKey, "Context key cannot be null");
+	public static <T, C> ItemApiLookup<T, C> getLookup(Identifier lookupId, Class<T> apiClass, Class<C> contextClass) {
+		Objects.requireNonNull(lookupId, "Id of lookup cannot be null");
+		Objects.requireNonNull(apiClass, "Api class cannot be null");
+		Objects.requireNonNull(contextClass, "Context class cannot be null");
 
-		return ItemApiLookupRegistryImpl.getLookup(apiId, contextKey);
+		return ItemApiLookupRegistryImpl.getLookup(lookupId, apiClass, contextClass);
 	}
 
 	private ItemApiLookupRegistry() {

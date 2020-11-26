@@ -21,9 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.provider.v1.ApiLookup;
-
-public interface ItemApiLookup<T, C> extends ApiLookup<C> {
+public interface ItemApiLookup<T, C> {
 	@Nullable
 	T get(ItemStack stack, C context);
 

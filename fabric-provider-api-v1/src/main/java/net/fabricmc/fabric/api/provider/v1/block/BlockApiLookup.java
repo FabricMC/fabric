@@ -25,9 +25,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.provider.v1.ApiLookup;
-
-public interface BlockApiLookup<T, C> extends ApiLookup<C> {
+public interface BlockApiLookup<T, C> {
 	@Nullable
 	T get(World world, BlockPos pos, C context);
 

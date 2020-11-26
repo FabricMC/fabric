@@ -27,13 +27,11 @@ import org.jetbrains.annotations.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.provider.v1.ApiProviderMap;
-import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.mixin.provider.BlockEntityTypeAccessor;
 
@@ -42,13 +40,6 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	private final ApiProviderMap<Block, BlockApiProvider<T, C>> providerMap = ApiProviderMap.create();
 	private final List<BlockEntityApiProvider<T, C>> blockEntityFallbackProviders = new CopyOnWriteArrayList<>();
 	private final List<BlockApiProvider<T, C>> fallbackProviders = new CopyOnWriteArrayList<>();
-	private final Identifier id;
-	private final ContextKey<C> contextKey;
-
-	BlockApiLookupImpl(Identifier apiId, ContextKey<C> contextKey) {
-		this.id = apiId;
-		this.contextKey = contextKey;
-	}
 
 	@Nullable
 	@Override
@@ -146,16 +137,6 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		Objects.requireNonNull(fallbackProvider, "BlockApiProvider cannot be null");
 
 		fallbackProviders.add(fallbackProvider);
-	}
-
-	@Override
-	public Identifier getApiId() {
-		return id;
-	}
-
-	@Override
-	public ContextKey<C> getContextKey() {
-		return contextKey;
 	}
 
 	@Nullable

@@ -16,23 +16,19 @@
 
 package net.fabricmc.fabric.test.provider.api;
 
-import static net.fabricmc.fabric.test.provider.FabricProviderTest.MOD_ID;
-
 import org.jetbrains.annotations.NotNull;
 
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
-import net.fabricmc.fabric.api.provider.v1.ContextKey;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.provider.v1.block.BlockApiLookupRegistry;
 
 public final class ItemApis {
-	public static final Identifier INSERTABLE_ID = new Identifier(MOD_ID, "item_insertable");
-	public static final Identifier EXTRACTABLE_ID = new Identifier(MOD_ID, "item_extractable");
-	public static final ContextKey<@NotNull Direction> SIDED = ContextKey.of(Direction.class, new Identifier("fabric", "sided"));
-	public static final BlockApiLookup<ItemInsertable, @NotNull Direction> INSERTABLE = BlockApiLookupRegistry.getLookup(INSERTABLE_ID, SIDED);
-	public static final BlockApiLookup<ItemExtractable, @NotNull Direction> EXTRACTABLE = BlockApiLookupRegistry.getLookup(EXTRACTABLE_ID, SIDED);
+	public static final BlockApiLookup<ItemInsertable, @NotNull Direction> INSERTABLE =
+			BlockApiLookupRegistry.getLookup(new Identifier("testmod:item_insertable"), ItemInsertable.class, Direction.class);
+	public static final BlockApiLookup<ItemExtractable, @NotNull Direction> EXTRACTABLE =
+			BlockApiLookupRegistry.getLookup(new Identifier("testmod:item_extractable"), ItemExtractable.class, Direction.class);
 
 	private ItemApis() {
 	}
