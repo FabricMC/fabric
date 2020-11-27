@@ -50,11 +50,11 @@ public final class FabricItemUpdateAnimationHandlers {
 		Objects.requireNonNull(item, "Attempted to retrieve an Update Animation Handler for an invalid item!");
 		Objects.requireNonNull(item.asItem(), "Attempted to retrieve an Update Animation Handler for an invalid item!");
 
-		if (((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler() != null) {
+		if (((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_getUpdateAnimationHandler() != null) {
 			Identifier registryID = Registry.ITEM.getId(item.asItem());
 			throw new UnsupportedOperationException(String.format("Attempted to register an Item Update Animation Handler for %s, but one was already registered!", registryID.toString()));
 		} else {
-			((ItemUpdateAnimationHandlerExtensions) item).fabric_setUpdateAnimationHandler(handler);
+			((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_setUpdateAnimationHandler(handler);
 		}
 	}
 
@@ -71,7 +71,7 @@ public final class FabricItemUpdateAnimationHandlers {
 	public static UpdateAnimationHandler get(ItemConvertible item) {
 		Objects.requireNonNull(item, "Attempted to retrieve an Update Animation Handler for an invalid item!");
 		Objects.requireNonNull(item.asItem(), "Attempted to retrieve an Update Animation Handler for an invalid item!");
-		return ((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler();
+		return ((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_getUpdateAnimationHandler();
 	}
 
 	private FabricItemUpdateAnimationHandlers() {
