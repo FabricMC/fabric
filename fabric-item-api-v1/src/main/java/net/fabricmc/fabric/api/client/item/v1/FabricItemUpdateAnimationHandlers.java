@@ -46,7 +46,7 @@ public final class FabricItemUpdateAnimationHandlers {
 	public static UpdateAnimationHandler get(ItemConvertible item) {
 		Objects.requireNonNull(item, "Attempted to retrieve an Update Animation Handler for an invalid item!");
 		Objects.requireNonNull(item.asItem(), "Attempted to retrieve an Update Animation Handler for an invalid item!");
-		return ((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler();
+		return ((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_getUpdateAnimationHandler();
 	}
 
 	private FabricItemUpdateAnimationHandlers() {
