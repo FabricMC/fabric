@@ -70,7 +70,7 @@ public final class StateIdTracker<T, S> implements RegistryIdRemapCallback<T>, R
 	}
 
 	private void recalcStateMap() {
-		((RemovableIdList) stateList).fabric_clear();
+		((RemovableIdList<?>) stateList).fabric_clear();
 
 		Int2ObjectMap<T> sortedBlocks = new Int2ObjectRBTreeMap<>();
 

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.Contract;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedQuad;
@@ -56,6 +57,7 @@ public abstract class ModelHelper {
 	 * optionally including the null face. (Use &lt; or  &lt;= {@link #NULL_FACE_ID}
 	 * to exclude or include the null value, respectively.)
 	 */
+	@Contract("null -> null")
 	public static Direction faceFromIndex(int faceIndex) {
 		return FACES[faceIndex];
 	}
@@ -72,7 +74,7 @@ public abstract class ModelHelper {
 	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
 	 */
 	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
-		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEX));
+		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE));
 
 		@SuppressWarnings("unchecked")
 		final ImmutableList.Builder<BakedQuad>[] builders = new ImmutableList.Builder[7];

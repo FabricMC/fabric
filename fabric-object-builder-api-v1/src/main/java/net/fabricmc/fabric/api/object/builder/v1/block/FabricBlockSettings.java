@@ -50,6 +50,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	protected FabricBlockSettings(AbstractBlock.Settings settings) {
 		super(((AbstractBlockSettingsAccessor) settings).getMaterial(), ((AbstractBlockSettingsAccessor) settings).getMaterialColorFactory());
 		// Mostly Copied from vanilla's copy method
+		// Note: If new methods are added to Block settings, an accessor must be added here
 		AbstractBlockSettingsAccessor thisAccessor = (AbstractBlockSettingsAccessor) this;
 		AbstractBlockSettingsAccessor otherAccessor = (AbstractBlockSettingsAccessor) settings;
 
@@ -58,7 +59,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		this.resistance(otherAccessor.getResistance());
 		this.collidable(otherAccessor.getCollidable());
 		thisAccessor.setRandomTicks(otherAccessor.getRandomTicks());
-		this.lightLevel(otherAccessor.getLuminance());
+		this.luminance(otherAccessor.getLuminance());
 		thisAccessor.setMaterialColorFactory(otherAccessor.getMaterialColorFactory());
 		this.sounds(otherAccessor.getSoundGroup());
 		this.slipperiness(otherAccessor.getSlipperiness());
@@ -66,6 +67,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		thisAccessor.setDynamicBounds(otherAccessor.getDynamicBounds());
 		thisAccessor.setOpaque(otherAccessor.getOpaque());
 		thisAccessor.setIsAir(otherAccessor.getIsAir());
+		thisAccessor.setToolRequired(otherAccessor.isToolRequired());
 
 		// Now attempt to copy fabric specific data
 		BlockSettingsInternals otherInternals = (BlockSettingsInternals) settings;
@@ -132,9 +134,16 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 		return this;
 	}
 
-	@Override
+	/**
+	 * @deprecated Please use {@link FabricBlockSettings#luminance(ToIntFunction)}.
+	 */
 	public FabricBlockSettings lightLevel(ToIntFunction<BlockState> levelFunction) {
-		super.lightLevel(levelFunction);
+		return this.luminance(levelFunction);
+	}
+
+	@Override
+	public FabricBlockSettings luminance(ToIntFunction<BlockState> luminanceFunction) {
+		super.luminance(luminanceFunction);
 		return this;
 	}
 
@@ -223,8 +232,17 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 
 	/* FABRIC ADDITIONS*/
 
+	/**
+	 * @deprecated Please use {@link FabricBlockSettings#luminance(int)}.
+	 */
+	@Deprecated
 	public FabricBlockSettings lightLevel(int lightLevel) {
-		this.lightLevel(ignored -> lightLevel);
+		this.luminance(lightLevel);
+		return this;
+	}
+
+	public FabricBlockSettings luminance(int luminance) {
+		this.luminance(ignored -> luminance);
 		return this;
 	}
 
@@ -244,7 +262,7 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Make the material require tool to drop and slows down mining speed if the incorrect tool is used.
+	 * Make the block require tool to drop and slows down mining speed if the incorrect tool is used.
 	 */
 	@Override
 	public FabricBlockSettings requiresTool() {
@@ -279,8 +297,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link FabricMaterialBuilder#requiresTool()}.
+	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag, int miningLevel) {
 		FabricBlockInternals.computeExtraData(this).addMiningLevel(tag, miningLevel);
@@ -288,8 +306,8 @@ public class FabricBlockSettings extends AbstractBlock.Settings {
 	}
 
 	/**
-	 * Please make the material require a tool if you plan to disable drops and slow the breaking down using the
-	 * incorrect tool by using {@link FabricMaterialBuilder#requiresTool()}.
+	 * Please make the block require a tool if you plan to disable drops and slow the breaking down using the
+	 * incorrect tool by using {@link FabricBlockSettings#requiresTool()}.
 	 */
 	public FabricBlockSettings breakByTool(Tag<Item> tag) {
 		return this.breakByTool(tag, 0);

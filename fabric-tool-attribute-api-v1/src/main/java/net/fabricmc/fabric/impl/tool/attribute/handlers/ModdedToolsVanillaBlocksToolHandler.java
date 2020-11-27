@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -50,6 +52,7 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 		return (ToolItem) vanillaItems.get(miningLevel);
 	}
 
+	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
@@ -63,13 +66,13 @@ public class ModdedToolsVanillaBlocksToolHandler implements ToolManagerImpl.Tool
 			if (miningLevel < 0) return ActionResult.PASS;
 
 			ToolItem vanillaItem = getVanillaItem(miningLevel);
-			boolean effective = vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeedMultiplier(new ItemStack(vanillaItem), state) != 1.0F;
-			return effective ? ActionResult.SUCCESS : ActionResult.PASS;
+			return vanillaItem.isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 		}
 
 		return ActionResult.PASS;
 	}
 
+	@NotNull
 	@Override
 	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {

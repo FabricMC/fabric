@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -41,6 +43,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandler {
 	private final Item vanillaItem = Items.SHEARS;
 
+	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (ToolManagerImpl.entryNullable(state.getBlock()) != null) {
@@ -50,15 +53,16 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 			if (!(stack.getItem() instanceof ShearsItem)) {
-				return vanillaItem.isEffectiveOn(state) || vanillaItem.getMiningSpeedMultiplier(new ItemStack(vanillaItem), state) != 1.0F ? ActionResult.SUCCESS : ActionResult.PASS;
+				return vanillaItem.isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 			} else {
-				return stack.getItem().isEffectiveOn(state) || stack.getItem().getMiningSpeedMultiplier(stack, state) != 1.0F ? ActionResult.SUCCESS : ActionResult.PASS;
+				return stack.getItem().isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 		}
 
 		return ActionResult.PASS;
 	}
 
+	@NotNull
 	@Override
 	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		float speed = 1.0F;

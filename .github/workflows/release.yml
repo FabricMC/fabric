@@ -1,0 +1,18 @@
+name: Release
+on: [workflow_dispatch] # Manual trigger
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    container:
+      image: openjdk:15-jdk
+      options: --user root
+    steps:
+      - uses: actions/checkout@v1
+      - uses: gradle/wrapper-validation-action@v1
+      - run: ./gradlew checkVersion build publish curseforge github --stacktrace
+        env:
+          MAVEN_URL: ${{ secrets.MAVEN_URL }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          CURSEFORGE_API_KEY: ${{ secrets.CURSEFORGE_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GH_API_KEY }}

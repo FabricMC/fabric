@@ -16,8 +16,10 @@
 
 package net.fabricmc.fabric.mixin.registry.sync;
 
+import com.mojang.serialization.Lifecycle;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+import org.spongepowered.asm.mixin.gen.Invoker;
 
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
@@ -32,4 +34,7 @@ public interface AccessorRegistry<T> {
 
 	@Accessor()
 	RegistryKey<Registry<T>> getRegistryKey();
+
+	@Invoker
+	Lifecycle callGetEntryLifecycle(T object);
 }

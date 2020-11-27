@@ -67,7 +67,7 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void lightLevel(Settings settings, int lightLevel) {
-		((AbstractBlockSettingsAccessor) settings).invokeLightLevel(ignored -> lightLevel);
+		((AbstractBlockSettingsAccessor) settings).setLuminanceFunction(ignored -> lightLevel);
 	}
 
 	public static void breakInstantly(Settings settings) {

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.tool.attribute.handlers;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
@@ -34,6 +36,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
  * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
  */
 public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolHandler {
+	@NotNull
 	@Override
 	public ActionResult isEffectiveOn(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
@@ -50,11 +53,16 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 		return ActionResult.PASS;
 	}
 
+	@NotNull
 	@Override
 	public TypedActionResult<Float> getMiningSpeedMultiplier(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 		if (stack.getItem() instanceof DynamicAttributeTool) {
-			float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
-			if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
+			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
+
+			if (entry != null && entry.getMiningLevel(tag) >= 0) {
+				float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
+				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
+			}
 		}
 
 		return TypedActionResult.pass(1.0F);

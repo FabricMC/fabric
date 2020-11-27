@@ -40,7 +40,8 @@ public class ToolHandlers implements ModInitializer {
 						Items.WOODEN_PICKAXE,
 						Items.STONE_PICKAXE,
 						Items.IRON_PICKAXE,
-						Items.DIAMOND_PICKAXE
+						Items.DIAMOND_PICKAXE,
+						Items.NETHERITE_PICKAXE
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.AXES).register(new ModdedToolsVanillaBlocksToolHandler(
@@ -48,7 +49,8 @@ public class ToolHandlers implements ModInitializer {
 						Items.WOODEN_AXE,
 						Items.STONE_AXE,
 						Items.IRON_AXE,
-						Items.DIAMOND_AXE
+						Items.DIAMOND_AXE,
+						Items.NETHERITE_AXE
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.SHOVELS).register(new ModdedToolsVanillaBlocksToolHandler(
@@ -56,7 +58,8 @@ public class ToolHandlers implements ModInitializer {
 						Items.WOODEN_SHOVEL,
 						Items.STONE_SHOVEL,
 						Items.IRON_SHOVEL,
-						Items.DIAMOND_SHOVEL
+						Items.DIAMOND_SHOVEL,
+						Items.NETHERITE_SHOVEL
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.HOES).register(new ModdedToolsVanillaBlocksToolHandler(
@@ -64,7 +67,8 @@ public class ToolHandlers implements ModInitializer {
 						Items.WOODEN_HOE,
 						Items.STONE_HOE,
 						Items.IRON_HOE,
-						Items.DIAMOND_HOE
+						Items.DIAMOND_HOE,
+						Items.NETHERITE_HOE
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.SWORDS).register(new ModdedToolsVanillaBlocksToolHandler(
@@ -72,7 +76,8 @@ public class ToolHandlers implements ModInitializer {
 						Items.WOODEN_SWORD,
 						Items.STONE_SWORD,
 						Items.IRON_SWORD,
-						Items.DIAMOND_SWORD
+						Items.DIAMOND_SWORD,
+						Items.NETHERITE_SWORD
 				)
 		));
 		ToolManagerImpl.tag(FabricToolTags.SHEARS).register(new ShearsVanillaBlocksToolHandler());
