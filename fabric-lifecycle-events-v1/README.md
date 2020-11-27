@@ -1,6 +1,6 @@
 # Fabric Lifecycle Events (V1)
 
-Contains events which indicate the when the lifecycle of a Minecraft client, Minecraft server and objects which exist on the client and server have changed.
+Contains events which indicate when the lifecycle of a Minecraft client, Minecraft server and the lifecycle objects which exist on the client and server has changed.
 
 ## Organization
 
@@ -17,7 +17,7 @@ These classes are located in `net.fabricmc.fabric.api.event.lifecycle.v1`.
 ## `ServerLifecycleEvents`
 
 Contains lifecycle events related to a Minecraft server.
-This includes events which indicate a when a server is starting up, is in a data pack reload or shutting down.
+This includes events which indicate when a server is starting up, is in a data pack reload or shutting down.
 
 ## `ServerTickEvents`
 
