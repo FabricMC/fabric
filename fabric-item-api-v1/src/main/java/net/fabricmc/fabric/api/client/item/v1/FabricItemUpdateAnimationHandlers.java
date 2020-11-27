@@ -38,7 +38,7 @@ public final class FabricItemUpdateAnimationHandlers {
 			Identifier registryID = Registry.ITEM.getId(item.asItem());
 			throw new UnsupportedOperationException(String.format("Attempted to register an Item Update Animation Handler for %s, but one was already registered!", registryID.toString()));
 		} else {
-			((ItemUpdateAnimationHandlerExtensions) item).fabric_setUpdateAnimationHandler(handler);
+			((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_setUpdateAnimationHandler(handler);
 		}
 	}
 
