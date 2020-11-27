@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 interface QueryIdFactory {
 	static QueryIdFactory create() {
-		// todo incremental ids or randomized
 		return new QueryIdFactory() {
 			private final AtomicInteger currentId = new AtomicInteger();
 
