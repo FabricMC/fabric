@@ -30,6 +30,6 @@ import net.fabricmc.fabric.impl.content.registry.FuelRegistryImpl;
 public abstract class MixinClientPlayNetworkHandler {
 	@Inject(at = @At("TAIL"), method = "onSynchronizeTags")
 	private void onSynchronizeTagsHook(SynchronizeTagsS2CPacket packet, CallbackInfo info) {
-		FuelRegistryImpl.INSTANCE.onTagsReloaded();
+		FuelRegistryImpl.INSTANCE.resetCache();
 	}
 }

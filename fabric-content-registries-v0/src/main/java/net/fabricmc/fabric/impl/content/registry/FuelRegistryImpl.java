@@ -16,12 +16,10 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
-import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.Map;
-
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -34,29 +32,29 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
-public class FuelRegistryImpl implements FuelRegistry {
+public final class FuelRegistryImpl implements FuelRegistry {
 	public static final FuelRegistryImpl INSTANCE = new FuelRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
-	private Object2IntMap<Item> fuelTimeMap;
-	private boolean fuelTimeMapNeedsUpdate = true;
+	private volatile Map<Item, Integer> fuelTimeCache = null; // thread safe via copy-on-write mechanism
 
 	public FuelRegistryImpl() {
 		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
 			if (success) {
-				fuelTimeMapNeedsUpdate = true;
+				resetCache();
 			}
 		});
 	}
 
 	public Map<Item, Integer> getFuelTimes() {
-		if (fuelTimeMapNeedsUpdate) {
-			fuelTimeMapNeedsUpdate = false;
-			fuelTimeMap = new Object2IntOpenHashMap<>(AbstractFurnaceBlockEntity.createFuelTimeMap());
+		Map<Item, Integer> ret = fuelTimeCache;
+
+		if (ret == null) {
+			fuelTimeCache = ret = new IdentityHashMap<>(AbstractFurnaceBlockEntity.createFuelTimeMap()); // IdentityHashMap is faster than vanilla's LinkedHashMap and suitable for Item keys
 		}
 
-		return Collections.unmodifiableMap(fuelTimeMap);
+		return ret;
 	}
 
 	@Override
@@ -71,7 +69,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 		}
 
 		itemCookTimes.put(item, cookTime.intValue());
-		fuelTimeMapNeedsUpdate = true;
+		resetCache();
 	}
 
 	@Override
@@ -81,31 +79,31 @@ public class FuelRegistryImpl implements FuelRegistry {
 		}
 
 		tagCookTimes.put(tag, cookTime.intValue());
-		fuelTimeMapNeedsUpdate = true;
+		resetCache();
 	}
 
 	@Override
 	public void remove(ItemConvertible item) {
 		add(item, 0);
-		fuelTimeMapNeedsUpdate = true;
+		resetCache();
 	}
 
 	@Override
 	public void remove(Tag<Item> tag) {
 		add(tag, 0);
-		fuelTimeMapNeedsUpdate = true;
+		resetCache();
 	}
 
 	@Override
 	public void clear(ItemConvertible item) {
 		itemCookTimes.removeInt(item);
-		fuelTimeMapNeedsUpdate = true;
+		resetCache();
 	}
 
 	@Override
 	public void clear(Tag<Item> tag) {
 		tagCookTimes.removeInt(tag);
-		fuelTimeMapNeedsUpdate = true;
+		resetCache();
 	}
 
 	public void apply(Map<Item, Integer> map) {
@@ -143,7 +141,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 		return tag.toString();
 	}
 
-	public void onTagsReloaded() {
-		fuelTimeMapNeedsUpdate = true;
+	public void resetCache() {
+		fuelTimeCache = null;
 	}
 }
