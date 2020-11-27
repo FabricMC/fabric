@@ -34,7 +34,7 @@ public final class FabricItemUpdateAnimationHandlers {
 		Objects.requireNonNull(item, "Attempted to retrieve an Update Animation Handler for an invalid item!");
 		Objects.requireNonNull(item.asItem(), "Attempted to retrieve an Update Animation Handler for an invalid item!");
 
-		if (((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler() != null) {
+		if (((ItemUpdateAnimationHandlerExtensions) item.asItem()).fabric_getUpdateAnimationHandler() != null) {
 			Identifier registryID = Registry.ITEM.getId(item.asItem());
 			throw new UnsupportedOperationException(String.format("Attempted to register an Item Update Animation Handler for %s, but one was already registered!", registryID.toString()));
 		} else {
