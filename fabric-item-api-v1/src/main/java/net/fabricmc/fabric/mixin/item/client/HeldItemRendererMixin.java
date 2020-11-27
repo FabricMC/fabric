@@ -31,10 +31,7 @@ import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
 @Environment(EnvType.CLIENT)
 @Mixin(HeldItemRenderer.class)
 public class HeldItemRendererMixin {
-	@Redirect(
-			method = "updateHeldItems",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z")
-	)
+	@Redirect(method = "updateHeldItems", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;areEqual(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
 	private boolean areStacksEqual(ItemStack original, ItemStack updated) {
 		if (updated.getItem().equals(original.getItem())) {
 			UpdateAnimationHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(updated.getItem());

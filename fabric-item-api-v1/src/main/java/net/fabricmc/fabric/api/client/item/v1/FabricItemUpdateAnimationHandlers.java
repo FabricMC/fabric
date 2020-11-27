@@ -16,7 +16,9 @@
 
 package net.fabricmc.fabric.api.client.item.v1;
 
-import net.minecraft.item.Item;
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -25,17 +27,29 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerExtensions;
 
 @Environment(EnvType.CLIENT)
-public class FabricItemUpdateAnimationHandlers {
-	public static void register(Item item, UpdateAnimationHandler handler) {
+public final class FabricItemUpdateAnimationHandlers {
+	public static void register(ItemConvertible item, UpdateAnimationHandler handler) {
+		if (item == null || item.asItem() == null) {
+			throw new NullPointerException("Attempted to register an Update Animation Handler for an invalid item!");
+		}
+
 		if (((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler() != null) {
-			Identifier registryID = Registry.ITEM.getId(item);
+			Identifier registryID = Registry.ITEM.getId(item.asItem());
 			throw new UnsupportedOperationException(String.format("Attempted to register an Item Update Animation Handler for %s, but one was already registered!", registryID.toString()));
 		} else {
 			((ItemUpdateAnimationHandlerExtensions) item).fabric_setUpdateAnimationHandler(handler);
 		}
 	}
 
-	public static UpdateAnimationHandler get(Item item) {
+	@Nullable
+	public static UpdateAnimationHandler get(ItemConvertible item) {
+		if (item == null || item.asItem() == null) {
+			throw new NullPointerException("Attempted to retrieve an Update Animation Handler for an invalid item!");
+		}
+
 		return ((ItemUpdateAnimationHandlerExtensions) item).fabric_getUpdateAnimationHandler();
+	}
+
+	private FabricItemUpdateAnimationHandlers() {
 	}
 }

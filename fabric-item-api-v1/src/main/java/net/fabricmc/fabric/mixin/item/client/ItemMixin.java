@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.client.item.v1.UpdateAnimationHandler;
 import net.fabricmc.fabric.impl.client.ItemUpdateAnimationHandlerExtensions;
 
 @Mixin(Item.class)
-public class ItemMixin implements ItemUpdateAnimationHandlerExtensions {
+abstract class ItemMixin implements ItemUpdateAnimationHandlerExtensions {
 	@Unique
 	private UpdateAnimationHandler fabric_updateAnimationHandler = null;
 
