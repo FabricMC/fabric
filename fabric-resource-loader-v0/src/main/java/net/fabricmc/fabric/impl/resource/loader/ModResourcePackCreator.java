@@ -59,6 +59,10 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		ModResourcePackUtil.appendModResourcePacks(packs, type, null);
 
 		if (!packs.isEmpty()) {
+			// Make the resource pack profile for mod resource packs.
+			// Mod resource packs must always be enabled to avoid issues
+			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
+			// @TODO: "inserted on top" comment is deprecated, it does not guarantee the condition "applied before user resource packs".
 			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("Fabric Mods",
 					true, () -> new FabricModResourcePack(this.type, packs), factory, ResourcePackProfile.InsertionPosition.TOP,
 					RESOURCE_PACK_SOURCE);
@@ -67,19 +71,6 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 				consumer.accept(resourcePackProfile);
 			}
 		}
-
-		/*for (ModResourcePack pack : packs) {
-			// Make the resource pack profile for mod resource packs.
-			// Mod resource packs must always be enabled to avoid issues
-			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
-			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("fabric/" + ((ModResourcePack) pack).getFabricModMetadata().getId(),
-					true, () -> pack, factory, ResourcePackProfile.InsertionPosition.TOP,
-					RESOURCE_PACK_SOURCE);
-
-			if (resourcePackProfile != null) {
-				consumer.accept(resourcePackProfile);
-			}
-		}*/
 
 		// Register all built-in resource packs provided by mods.
 		ResourceManagerHelperImpl.registerBuiltinResourcePacks(this.type, consumer, factory);

@@ -36,6 +36,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
 
+/**
+ * Represents the Programmer Art resource pack with support for modded content.
+ *
+ * <p>Any vanilla resources are provided like in Vanilla through the original programmer art, any missing resources
+ * will be searched in the provided modded resource packs.
+ */
 @Environment(EnvType.CLIENT)
 public class ProgrammerArtResourcePack extends GroupResourcePack {
 	private final AbstractFileResourcePack originalResourcePack;

@@ -19,8 +19,7 @@
     "client.CreateWorldScreenMixin",
     "client.FontManagerResourceReloadListenerMixin",
     "client.GameOptionsMixin",
-    "client.KeyedResourceReloadListenerClientMixin",
-    "client.PackScreenMixin"
+    "client.KeyedResourceReloadListenerClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

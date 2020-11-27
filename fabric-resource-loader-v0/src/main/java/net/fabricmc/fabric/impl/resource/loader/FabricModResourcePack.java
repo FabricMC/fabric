@@ -33,6 +33,9 @@ import net.minecraft.resource.metadata.ResourceMetadataReader;
 import net.fabricmc.fabric.api.resource.ModResourcePack;
 import net.fabricmc.loader.api.FabricLoader;
 
+/**
+ * The Fabric mods resource pack, holds all the mod resource packs as one pack.
+ */
 public class FabricModResourcePack extends GroupResourcePack {
 	private final ResourceType type;
 
