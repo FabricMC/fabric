@@ -34,7 +34,7 @@ public class PackScreenMixin {
 		// Every mod resource packs should be hidden from the user.
 		// Registered built-in resource packs should not be hidden as they are optional for the user.
 		if (pack.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE) {
-			info.cancel();
+			//info.cancel();
 		}
 	}
 }

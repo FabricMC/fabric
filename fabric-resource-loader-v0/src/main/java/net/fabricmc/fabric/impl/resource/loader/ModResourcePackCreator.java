@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourcePackProfile;
 import net.minecraft.resource.ResourcePackProvider;
 import net.minecraft.resource.ResourcePackSource;
@@ -56,14 +55,20 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 		 */
 
 		// Build a list of mod resource packs.
-		List<ResourcePack> packs = new ArrayList<>();
-		ModResourcePackUtil.appendModResourcePacks(packs, type);
+		List<ModResourcePack> packs = new ArrayList<>();
+		ModResourcePackUtil.appendModResourcePacks(packs, type, null);
 
-		for (ResourcePack pack : packs) {
-			if (!(pack instanceof ModResourcePack)) {
-				throw new RuntimeException("Not a ModResourcePack!");
+		if (!packs.isEmpty()) {
+			ResourcePackProfile resourcePackProfile = ResourcePackProfile.of("Fabric Mods",
+					true, () -> new FabricModResourcePack(this.type, packs), factory, ResourcePackProfile.InsertionPosition.TOP,
+					RESOURCE_PACK_SOURCE);
+
+			if (resourcePackProfile != null) {
+				consumer.accept(resourcePackProfile);
 			}
+		}
 
+		/*for (ModResourcePack pack : packs) {
 			// Make the resource pack profile for mod resource packs.
 			// Mod resource packs must always be enabled to avoid issues
 			// and inserted on top to ensure that they are applied before user resource packs and after default/programmer art resource pack.
@@ -74,7 +79,7 @@ public class ModResourcePackCreator implements ResourcePackProvider {
 			if (resourcePackProfile != null) {
 				consumer.accept(resourcePackProfile);
 			}
-		}
+		}*/
 
 		// Register all built-in resource packs provided by mods.
 		ResourceManagerHelperImpl.registerBuiltinResourcePacks(this.type, consumer, factory);

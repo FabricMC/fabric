@@ -7,6 +7,8 @@
     "DefaultResourcePackMixin",
     "KeyedResourceReloadListenerMixin",
     "MinecraftServerMixin",
+    "NamespaceResourceManagerAccessor",
+    "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
     "ResourcePackManagerMixin",
     "ResourcePackManagerAccessor",
