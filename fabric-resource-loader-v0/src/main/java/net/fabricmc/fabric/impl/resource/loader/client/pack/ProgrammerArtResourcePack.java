@@ -47,7 +47,7 @@ public class ProgrammerArtResourcePack extends GroupResourcePack {
 	private final AbstractFileResourcePack originalResourcePack;
 
 	public ProgrammerArtResourcePack(AbstractFileResourcePack originalResourcePack, List<ModResourcePack> modResourcePacks) {
-		super(modResourcePacks);
+		super(ResourceType.CLIENT_RESOURCES, modResourcePacks);
 		this.originalResourcePack = originalResourcePack;
 	}
 

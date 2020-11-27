@@ -37,11 +37,8 @@ import net.fabricmc.loader.api.FabricLoader;
  * The Fabric mods resource pack, holds all the mod resource packs as one pack.
  */
 public class FabricModResourcePack extends GroupResourcePack {
-	private final ResourceType type;
-
 	public FabricModResourcePack(ResourceType type, List<ModResourcePack> packs) {
-		super(packs);
-		this.type = type;
+		super(type, packs);
 	}
 
 	@Override

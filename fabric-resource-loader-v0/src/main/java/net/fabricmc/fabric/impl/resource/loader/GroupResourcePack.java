@@ -18,12 +18,17 @@ package net.fabricmc.fabric.impl.resource.loader;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceImpl;
@@ -39,19 +44,29 @@ import net.fabricmc.fabric.mixin.resource.loader.NamespaceResourceManagerAccesso
  * Represents a group resource pack, holds multiple resource packs as one.
  */
 public abstract class GroupResourcePack implements ResourcePack {
-	protected List<ModResourcePack> packs;
+	protected final ResourceType type;
+	protected final List<ModResourcePack> packs;
+	protected final Object2ObjectMap<String, List<ModResourcePack>> namespacedPacks = new Object2ObjectOpenHashMap<>();
 
-	public GroupResourcePack(List<ModResourcePack> packs) {
+	public GroupResourcePack(ResourceType type, List<ModResourcePack> packs) {
+		this.type = type;
 		this.packs = packs;
+		this.packs.forEach(pack -> pack.getNamespaces(this.type)
+				.forEach(namespace -> this.namespacedPacks.computeIfAbsent(namespace, value -> new ArrayList<>())
+						.add(pack)));
 	}
 
 	@Override
 	public InputStream open(ResourceType type, Identifier id) throws IOException {
-		for (int i = this.packs.size() - 1; i >= 0; i--) {
-			ResourcePack pack = this.packs.get(i);
+		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
 
-			if (pack.contains(type, id)) {
-				return pack.open(type, id);
+		if (packs != null) {
+			for (int i = packs.size() - 1; i >= 0; i--) {
+				ResourcePack pack = packs.get(i);
+
+				if (pack.contains(type, id)) {
+					return pack.open(type, id);
+				}
 			}
 		}
 
@@ -61,10 +76,16 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 	@Override
 	public Collection<Identifier> findResources(ResourceType type, String namespace, String prefix, int maxDepth, Predicate<String> pathFilter) {
+		List<ModResourcePack> packs = this.namespacedPacks.get(namespace);
+
+		if (packs == null) {
+			return Collections.emptyList();
+		}
+
 		Set<Identifier> resources = new HashSet<>();
 
-		for (int i = this.packs.size() - 1; i >= 0; i--) {
-			ResourcePack pack = this.packs.get(i);
+		for (int i = packs.size() - 1; i >= 0; i--) {
+			ResourcePack pack = packs.get(i);
 			Collection<Identifier> modResources = pack.findResources(type, namespace, prefix, maxDepth, pathFilter);
 
 			resources.addAll(modResources);
@@ -75,8 +96,14 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 	@Override
 	public boolean contains(ResourceType type, Identifier id) {
-		for (int i = this.packs.size() - 1; i >= 0; i--) {
-			ResourcePack pack = this.packs.get(i);
+		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
+
+		if (packs == null) {
+			return false;
+		}
+
+		for (int i = packs.size() - 1; i >= 0; i--) {
+			ResourcePack pack = packs.get(i);
 
 			if (pack.contains(type, id)) {
 				return true;
@@ -88,18 +115,17 @@ public abstract class GroupResourcePack implements ResourcePack {
 
 	@Override
 	public Set<String> getNamespaces(ResourceType type) {
-		Set<String> namespaces = new HashSet<>();
-
-		for (int i = this.packs.size() - 1; i >= 0; i--) {
-			ResourcePack pack = this.packs.get(i);
-			namespaces.addAll(pack.getNamespaces(type));
-		}
-
-		return namespaces;
+		return this.namespacedPacks.keySet();
 	}
 
 	public void appendResources(NamespaceResourceManagerAccessor manager, Identifier id, List<Resource> resources) throws IOException {
-		for (ModResourcePack pack : this.packs) {
+		List<ModResourcePack> packs = this.namespacedPacks.get(id.getNamespace());
+
+		if (packs == null) {
+			return;
+		}
+
+		for (ModResourcePack pack : packs) {
 			if (pack.contains(manager.getType(), id)) {
 				InputStream inputStream = pack.contains(manager.getType(), id) ? manager.fabric$open(id, pack) : null;
 				resources.add(new ResourceImpl(pack.getName(), id, manager.fabric$open(id, pack), inputStream));
