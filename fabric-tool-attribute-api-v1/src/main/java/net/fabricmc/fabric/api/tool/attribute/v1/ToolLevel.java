@@ -59,7 +59,7 @@ public interface ToolLevel extends Comparable<ToolLevel> {
 		return ToolLevels.by(id, fallback);
 	}
 
-	ToolLevel NONE = of(-1.0F);
+	ToolLevel NONE = of(-1);
 	ToolLevel MINIMUM = of(0);
 	ToolLevel WOOD = ToolMaterials.WOOD::getMiningLevel;
 	ToolLevel STONE = ToolMaterials.STONE::getMiningLevel;

@@ -75,8 +75,8 @@ public interface DynamicAttributeTool {
 	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
 	 */
-	default float getToolMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-		return getMiningLevel(tag, state, stack, user);
+	default ToolLevel getToolMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
+		return ToolLevel.of(getMiningLevel(tag, state, stack, user));
 	}
 
 	/**
