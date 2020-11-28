@@ -16,10 +16,7 @@
 
 package net.fabricmc.fabric.impl.event.lifecycle;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.ModInitializer;
@@ -32,11 +29,11 @@ public final class LifecycleEventsImpl implements ModInitializer {
 	public void onInitialize() {
 		// Part of impl for block entity events
 		ServerChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-			((LoadedChunksCache) world).fabric_markLoaded(chunk.getPos());
+			((LoadedChunksCache) world).fabric_markLoaded(chunk);
 		});
 
 		ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
-			((LoadedChunksCache) world).fabric_markUnloaded(chunk.getPos());
+			((LoadedChunksCache) world).fabric_markUnloaded(chunk);
 		});
 
 		// Fire block entity unload events.
@@ -49,16 +46,7 @@ public final class LifecycleEventsImpl implements ModInitializer {
 
 		// We use the world unload event so worlds that are dynamically hot(un)loaded get block entity unload events fired when shut down.
 		ServerWorldEvents.UNLOAD.register((server, world) -> {
-			for (ChunkPos pos : ((LoadedChunksCache) world).fabric_getLoadedPositions()) {
-				// Do not create any chunks
-				@Nullable
-				final WorldChunk chunk = world.getChunkManager().getWorldChunk(pos.x, pos.z, false);
-
-				if (chunk == null) {
-					// FIXME: issue?
-					continue;
-				}
-
+			for (WorldChunk chunk : ((LoadedChunksCache) world).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
 					ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, world);
 				}

@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -69,16 +67,7 @@ public final class ServerBlockEntityLifecycleTests implements ModInitializer {
 				for (ServerWorld world : minecraftServer.getWorlds()) {
 					int worldEntities = 0;
 
-					for (ChunkPos pos : ((LoadedChunksCache) world).fabric_getLoadedPositions()) {
-						// Do not create any chunks in our tests
-						@Nullable
-						final WorldChunk chunk = world.getChunkManager().getWorldChunk(pos.x, pos.z, false);
-
-						if (chunk == null) {
-							// FIXME: issue?
-							continue;
-						}
-
+					for (WorldChunk chunk : ((LoadedChunksCache) world).fabric_getLoadedChunks()) {
 						worldEntities += chunk.getBlockEntities().size();
 					}
 

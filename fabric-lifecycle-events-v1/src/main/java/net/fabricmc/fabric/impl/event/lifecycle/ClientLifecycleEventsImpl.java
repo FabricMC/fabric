@@ -30,11 +30,11 @@ public final class ClientLifecycleEventsImpl implements ClientModInitializer {
 	public void onInitializeClient() {
 		// Part of impl for block entity events
 		ClientChunkEvents.CHUNK_LOAD.register((world, chunk) -> {
-			((LoadedChunksCache) world).fabric_markLoaded(chunk.getPos());
+			((LoadedChunksCache) world).fabric_markLoaded(chunk);
 		});
 
 		ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
-			((LoadedChunksCache) world).fabric_markUnloaded(chunk.getPos());
+			((LoadedChunksCache) world).fabric_markUnloaded(chunk);
 		});
 
 		ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {

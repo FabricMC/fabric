@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.WorldChunk;
 
@@ -66,16 +64,7 @@ public final class ClientBlockEntityLifecycleTests implements ClientModInitializ
 				if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
 					logger.info("[CLIENT] Tracked BlockEntities:" + this.clientBlockEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
 
-					for (ChunkPos pos : ((LoadedChunksCache) client.world).fabric_getLoadedPositions()) {
-						// Do not create any chunks in our tests
-						@Nullable
-						final WorldChunk chunk = client.world.getChunkManager().getWorldChunk(pos.x, pos.z, false);
-
-						if (chunk == null) {
-							// FIXME: issue?
-							continue;
-						}
-
+					for (WorldChunk chunk : ((LoadedChunksCache) client.world).fabric_getLoadedChunks()) {
 						blockEntities += chunk.getBlockEntities().size();
 					}
 

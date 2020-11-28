@@ -18,25 +18,21 @@ package net.fabricmc.fabric.impl.event.lifecycle;
 
 import java.util.Set;
 
-import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.WorldChunk;
 
 /**
  * A simple marker interface which holds references to chunks which block entities may be loaded or unloaded from.
  */
 public interface LoadedChunksCache {
-	Set<ChunkPos> fabric_getLoadedPositions();
+	Set<WorldChunk> fabric_getLoadedChunks();
 
 	/**
 	 * Marks a chunk as loaded in a world.
-	 *
-	 * @param pos the chunk pos
 	 */
-	void fabric_markLoaded(ChunkPos pos);
+	void fabric_markLoaded(WorldChunk chunk);
 
 	/**
 	 * Marks a chunk as unloaded in a world.
-	 *
-	 * @param pos the chunk pos
 	 */
-	void fabric_markUnloaded(ChunkPos pos);
+	void fabric_markUnloaded(WorldChunk chunk);
 }
