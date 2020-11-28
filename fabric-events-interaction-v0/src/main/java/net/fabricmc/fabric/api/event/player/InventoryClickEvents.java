@@ -83,7 +83,8 @@ public class InventoryClickEvents {
 		 * <ul>
 		 *     <li>{@code SUCCESS} cancels further processing and calls {@link Item#onStackClicked(ItemStack, Slot, ClickType, PlayerInventory)}</li>
 		 *     <li>{@code PASS} falls back to further processing</li>
-		 *     <li>{@code FAIL} cancels further processing and does not call {@link Item#onStackClicked(ItemStack, Slot, ClickType, PlayerInventory)}</li>
+		 *     <li>{@code CONSUME} cancels further processing, does not call {@link Item#onStackClicked(ItemStack, Slot, ClickType, PlayerInventory)} and returns {@code true}</li>
+		 *     <li>{@code FAIL} cancels further processing and does not call {@link Item#onStackClicked(ItemStack, Slot, ClickType, PlayerInventory)} and returns {@code false}</li>
 		 * </ul>
 		 * </p>
 		 *
@@ -105,9 +106,10 @@ public class InventoryClickEvents {
 		 * Called when the cursor stack clicks on another stack.
 		 * <p>Upon Return:
 		 * <ul>
-		 *     <li>{@code SUCCESS} cancels further processing and calls {@link Item#onClicked(ItemStack, ItemStack, Slot, ClickType, PlayerInventory)} </li>
+		 *     <li>{@code SUCCESS} cancels further processing and calls {@link Item#onClicked(ItemStack, ItemStack, Slot, ClickType, PlayerInventory)}</li>
 		 *     <li>{@code PASS} falls back to further processing</li>
-		 *     <li>{@code FAIL} cancels further processing and does not call {@link Item#onClicked(ItemStack, ItemStack, Slot, ClickType, PlayerInventory)} </li>
+		 *     <li>{@code CONSUME} cancels further processing and does not call {@link Item#onClicked(ItemStack, ItemStack, Slot, ClickType, PlayerInventory)} and returns {@code true}</li>
+		 *     <li>{@code FAIL} cancels further processing and does not call {@link Item#onClicked(ItemStack, ItemStack, Slot, ClickType, PlayerInventory)} and returns {@code false}</li>
 		 * </ul>
 		 * </p>
 		 * @param itemStack The stack clicked on

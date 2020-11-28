@@ -100,7 +100,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 						insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
 						cursorStack.decrement(1);
 					} else {
-						return ActionResult.FAIL;
+						return ActionResult.CONSUME;
 					}
 				}
 			} else if (isEmptyContainer(itemStack) && isFluidContainerItem(cursorStack)) {
@@ -112,6 +112,8 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 					insertOrSpawn(playerInventory, getFilledItemStack(itemStack));
 					itemStack.decrement(1);
 				}
+
+				return ActionResult.CONSUME;
 			}
 
 			return ActionResult.PASS;

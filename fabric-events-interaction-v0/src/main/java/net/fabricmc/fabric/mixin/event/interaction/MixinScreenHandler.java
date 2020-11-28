@@ -36,7 +36,11 @@ abstract class MixinScreenHandler {
 		ActionResult result = InventoryClickEvents.STACK_CLICKED.invoker().onStackClicked(itemStack, slot, (ScreenHandler) (Object) this, clickType, playerInventory.player, playerInventory);
 
 		if (result.isAccepted()) {
-			return itemStack.onStackClicked(slot, clickType, playerInventory);
+			if (result.shouldSwingHand()) {
+				return itemStack.onStackClicked(slot, clickType, playerInventory);
+			}
+
+			return true;
 		}
 
 		return false;
@@ -47,7 +51,11 @@ abstract class MixinScreenHandler {
 		ActionResult result = InventoryClickEvents.CLICKED.invoker().onClicked(itemStack, cursorStack, slot, (ScreenHandler) (Object) this, clickType, playerInventory.player, playerInventory);
 
 		if (result.isAccepted()) {
-			return itemStack.onClicked(itemStack, slot, clickType, playerInventory);
+			if (result.shouldSwingHand()) {
+				return itemStack.onClicked(itemStack, slot, clickType, playerInventory);
+			}
+
+			return true;
 		}
 
 		return false;
