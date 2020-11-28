@@ -61,7 +61,7 @@ public interface RecipeRemainderProvider {
 	 * @param pos The position at which the inventory is.
 	 * @return the recipe remainder
 	 */
-	static ItemStack getRecipeRemainder(ItemStack original, RecipeType<?> type, Inventory inventory, World world, @Nullable BlockPos pos) {
+	static ItemStack getRecipeRemainder(ItemStack original, @Nullable RecipeType<?> type, Inventory inventory, World world, @Nullable BlockPos pos) {
 		Item item = original.getItem();
 
 		if (((ItemExtensions) item).fabric_getRecipeRemainderProvider() != null) {
