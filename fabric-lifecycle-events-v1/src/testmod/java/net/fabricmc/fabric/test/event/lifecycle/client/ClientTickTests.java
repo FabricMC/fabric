@@ -29,8 +29,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 @Environment(EnvType.CLIENT)
-public class ClientTickTests implements ClientModInitializer {
-	private Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
+public final class ClientTickTests implements ClientModInitializer {
+	private final Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
 	private int ticks;
 
 	@Override

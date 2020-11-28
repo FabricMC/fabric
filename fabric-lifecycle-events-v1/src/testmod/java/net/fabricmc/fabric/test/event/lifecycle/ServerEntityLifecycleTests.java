@@ -29,9 +29,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 /**
  * Tests related to the lifecycle of entities.
  */
-public class ServerEntityLifecycleTests implements ModInitializer {
-	private static boolean PRINT_SERVER_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerEntityMessages") != null;
-	private List<Entity> serverEntities = new ArrayList<>();
+public final class ServerEntityLifecycleTests implements ModInitializer {
+	private static final boolean PRINT_SERVER_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerEntityMessages") != null;
+	private final List<Entity> serverEntities = new ArrayList<>();
 
 	@Override
 	public void onInitialize() {

@@ -37,9 +37,9 @@ import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
  * Tests related to the lifecycle of entities.
  */
 @Environment(EnvType.CLIENT)
-public class ClientEntityLifecycleTests implements ClientModInitializer {
-	private static boolean PRINT_CLIENT_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printClientEntityMessages") != null;
-	private List<Entity> clientEntities = new ArrayList<>();
+public final class ClientEntityLifecycleTests implements ClientModInitializer {
+	private static final boolean PRINT_CLIENT_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printClientEntityMessages") != null;
+	private final List<Entity> clientEntities = new ArrayList<>();
 	private int clientTicks;
 
 	@Override

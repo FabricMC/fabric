@@ -15,6 +15,14 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.event.lifecycle.LifecycleEventsImpl"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.event.lifecycle.ClientLifecycleEventsImpl"
+    ]
+  },
   "mixins": [
     "fabric-lifecycle-events-v1.mixins.json"
   ],

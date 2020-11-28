@@ -16,8 +16,12 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,55 +29,41 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
 @Mixin(World.class)
-public abstract class WorldMixin {
+public abstract class WorldMixin implements LoadedChunksCache {
 	@Shadow
 	public abstract boolean isClient();
 
 	@Shadow
 	public abstract Profiler getProfiler();
 
-	/*@Inject(method = "addBlockEntity", at = @At("TAIL"))
-	protected void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfoReturnable<Boolean> cir) {
-		if (!this.isClient()) { // Only fire this event if we are a server world
-			ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.invoker().onLoad(blockEntity, (ServerWorld) (Object) this);
-		}
-	}
-
-	// Mojang what hell, why do you need three ways to unload block entities
-	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z", ordinal = 1), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	protected void onUnloadBlockEntity(BlockPos pos, CallbackInfo ci, BlockEntity blockEntity) {
-		if (!this.isClient()) { // Only fire this event if we are a server world
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ServerWorld) (Object) this);
-		}
-	}
-
-	@Inject(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;remove(Ljava/lang/Object;)Z"), slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/Profiler;pop()V"), to = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;removeBlockEntity(Lnet/minecraft/util/math/BlockPos;)V")), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
-	protected void onRemoveBlockEntity(CallbackInfo ci, Profiler profiler, Iterator iterator, BlockEntity blockEntity) {
-		if (!this.isClient()) {
-			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, (ServerWorld) (Object) this);
-		}
-	}
-
-	@Redirect(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Ljava/util/List;removeAll(Ljava/util/Collection;)Z", ordinal = 1))
-	protected boolean onPurgeRemovedBlockEntities(List<BlockEntity> blockEntityList, Collection<BlockEntity> removals) {
-		if (!this.isClient()) {
-			for (BlockEntity removal : removals) {
-				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removal, (ServerWorld) (Object) this);
-			}
-		}
-
-		// Mimic vanilla logic
-		return blockEntityList.removeAll(removals);
-	}*/
+	@Unique
+	private final Set<WorldChunk> loadedChunks = new HashSet<>();
 
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
 	protected void tickWorldAfterBlockEntities(CallbackInfo ci) {
 		if (!this.isClient()) {
 			ServerTickEvents.END_WORLD_TICK.invoker().onEndTick((ServerWorld) (Object) this);
 		}
+	}
+
+	@Override
+	public Set<WorldChunk> fabric_getLoadedChunks() {
+		return this.loadedChunks;
+	}
+
+	@Override
+	public void fabric_markLoaded(WorldChunk chunk) {
+		this.loadedChunks.add(chunk);
+	}
+
+	@Override
+	public void fabric_markUnloaded(WorldChunk chunk) {
+		this.loadedChunks.remove(chunk);
 	}
 }
