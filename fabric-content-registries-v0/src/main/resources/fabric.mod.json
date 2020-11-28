@@ -18,6 +18,7 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
+    "fabric-lifecycle-events-v1": "*",
     "fabric-resource-loader-v0": "*"
   },
   "description": "Adds registries for vanilla mechanics that are missing them.",
