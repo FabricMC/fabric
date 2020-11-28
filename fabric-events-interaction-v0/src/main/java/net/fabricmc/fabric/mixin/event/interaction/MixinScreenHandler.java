@@ -24,17 +24,32 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.ClickType;
 
+import net.fabricmc.fabric.api.event.player.InventoryClickEvents;
+
 @Mixin(ScreenHandler.class)
-public class MixinScreenHandler {
+abstract class MixinScreenHandler {
 	@Redirect(method = "method_30010", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onStackClicked(Lnet/minecraft/screen/slot/Slot;Lnet/minecraft/util/ClickType;Lnet/minecraft/entity/player/PlayerInventory;)Z"))
 	public boolean interceptOnStackClicked(ItemStack itemStack, Slot slot, ClickType clickType, PlayerInventory playerInventory) {
+		ActionResult result = InventoryClickEvents.STACK_CLICKED.invoker().onStackClicked(itemStack, slot, (ScreenHandler) (Object) this, clickType, playerInventory.player, playerInventory);
+
+		if (result.isAccepted()) {
+			return itemStack.onStackClicked(slot, clickType, playerInventory);
+		}
+
 		return false;
 	}
 
 	@Redirect(method = "method_30010", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onClicked(Lnet/minecraft/item/ItemStack;Lnet/minecraft/screen/slot/Slot;Lnet/minecraft/util/ClickType;Lnet/minecraft/entity/player/PlayerInventory;)Z"))
 	public boolean interceptOnClicked(ItemStack itemStack, ItemStack other, Slot slot, ClickType clickType, PlayerInventory playerInventory) {
+		ActionResult result = InventoryClickEvents.CLICKED.invoker().onClicked(itemStack, other, slot, (ScreenHandler) (Object) this, clickType, playerInventory.player, playerInventory);
+
+		if (result.isAccepted()) {
+			return itemStack.onClicked(itemStack, slot, clickType, playerInventory);
+		}
+
 		return false;
 	}
 }
