@@ -100,6 +100,12 @@ public class ToolAttributeTest implements ModInitializer {
 	Item testDiamondDynamicLevelTater;
 	Block taterEffectiveBlock;
 
+	Item testStoneLevelTater;
+	Item testStoneDynamicLevelTater;
+	Item testDiamondLevelTater;
+	Item testDiamondDynamicLevelTater;
+	Block taterEffectiveBlock;
+
 	@Override
 	public void onInitialize() {
 		// Register a custom shovel that has a mining level of 2 (iron) dynamically.

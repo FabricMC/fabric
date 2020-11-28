@@ -157,10 +157,10 @@ public interface QuadEmitter extends MutableQuadView {
 			right = 1 - right;
 
 		case NORTH:
-			pos(0, right, top, depth);
-			pos(1, right, bottom, depth);
-			pos(2, left, bottom, depth);
-			pos(3, left, top, depth);
+			pos(0, 1 - left, top, depth);
+			pos(1, 1 - left, bottom, depth);
+			pos(2, 1 - right, bottom, depth);
+			pos(3, 1 - right, top, depth);
 			break;
 		}
 
