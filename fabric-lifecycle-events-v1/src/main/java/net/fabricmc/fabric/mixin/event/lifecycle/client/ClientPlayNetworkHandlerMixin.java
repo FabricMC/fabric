@@ -16,25 +16,31 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.packet.s2c.play.GameJoinS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerRespawnS2CPacket;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
+import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
-public abstract class ClientPlayNetworkHandlerMixin {
+abstract class ClientPlayNetworkHandlerMixin {
 	@Shadow
 	private ClientWorld world;
 
@@ -42,14 +48,24 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	private void onPlayerRespawn(PlayerRespawnS2CPacket packet, CallbackInfo ci) {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.world != null) {
-			for (Entity entity : world.getEntities()) {
+			for (Entity entity : this.world.getEntities()) {
 				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
 			}
 
-			/*for (BlockEntity blockEntity : world.blockEntities) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
-				// No need to clear the `tickingBlockEntities` list since it will be null in just an instant
-			}*/
+			for (ChunkPos pos : ((LoadedChunksCache) this.world).fabric_getLoadedPositions()) {
+				// Do not create any chunks
+				@Nullable
+				final WorldChunk chunk = this.world.getChunkManager().getWorldChunk(pos.x, pos.z, false);
+
+				if (chunk == null) {
+					// FIXME: issue?
+					continue;
+				}
+
+				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
+				}
+			}
 		}
 	}
 
@@ -67,10 +83,20 @@ public abstract class ClientPlayNetworkHandlerMixin {
 				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
 			}
 
-			/*for (BlockEntity blockEntity : world.blockEntities) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
-				// No need to clear the `tickingBlockEntities` list since it will be null in just an instant
-			}*/
+			for (ChunkPos pos : ((LoadedChunksCache) this.world).fabric_getLoadedPositions()) {
+				// Do not create any chunks
+				@Nullable
+				final WorldChunk chunk = this.world.getChunkManager().getWorldChunk(pos.x, pos.z, false);
+
+				if (chunk == null) {
+					// FIXME: issue?
+					continue;
+				}
+
+				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
+				}
+			}
 		}
 	}
 
@@ -79,14 +105,24 @@ public abstract class ClientPlayNetworkHandlerMixin {
 	private void onClearWorld(CallbackInfo ci) {
 		// If a world already exists, we need to unload all (block)entities in the world.
 		if (this.world != null) {
-			for (Entity entity : world.getEntities()) {
+			for (Entity entity : this.world.getEntities()) {
 				ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.world);
 			}
 
-			/*for (BlockEntity blockEntity : world.blockEntities) {
-				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
-				// No need to clear the `tickingBlockEntities` list since it will be null in just an instant
-			}*/
+			for (ChunkPos pos : ((LoadedChunksCache) this.world).fabric_getLoadedPositions()) {
+				// Do not create any chunks
+				@Nullable
+				final WorldChunk chunk = this.world.getChunkManager().getWorldChunk(pos.x, pos.z, false);
+
+				if (chunk == null) {
+					// FIXME: issue?
+					continue;
+				}
+
+				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+					ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, this.world);
+				}
+			}
 		}
 	}
 }

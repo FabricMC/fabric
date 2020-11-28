@@ -19,9 +19,20 @@ package net.fabricmc.fabric.test.event.lifecycle.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
+import net.fabricmc.fabric.test.event.lifecycle.ServerLifecycleTests;
 
 public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 	private static boolean PRINT_CLIENT_BLOCKENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printClientBlockEntityMessages") != null;
@@ -30,7 +41,7 @@ public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		/*final Logger logger = ServerLifecycleTests.LOGGER;
+		final Logger logger = ServerLifecycleTests.LOGGER;
 
 		ClientBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
 			this.clientBlockEntities.add(blockEntity);
@@ -50,11 +61,25 @@ public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (this.clientTicks++ % 200 == 0 && client.world != null) {
-				final int blockEntities = client.world.blockEntities.size();
+				int blockEntities = 0;
 
 				if (PRINT_CLIENT_BLOCKENTITY_MESSAGES) {
 					logger.info("[CLIENT] Tracked BlockEntities:" + this.clientBlockEntities.size() + " Ticked at: " + this.clientTicks + "ticks");
-					logger.info("[CLIENT] Actual BlockEntities: " + client.world.blockEntities.size());
+
+					for (ChunkPos pos : ((LoadedChunksCache) client.world).fabric_getLoadedPositions()) {
+						// Do not create any chunks in our tests
+						@Nullable
+						final WorldChunk chunk = client.world.getChunkManager().getWorldChunk(pos.x, pos.z, false);
+
+						if (chunk == null) {
+							// FIXME: issue?
+							continue;
+						}
+
+						blockEntities += chunk.getBlockEntities().size();
+					}
+
+					logger.info("[CLIENT] Actual BlockEntities: " + blockEntities);
 				}
 
 				if (blockEntities != this.clientBlockEntities.size()) {
@@ -66,13 +91,13 @@ public class ClientBlockEntityLifecycleTests implements ClientModInitializer {
 		});
 
 		ServerLifecycleEvents.SERVER_STOPPED.register(minecraftServer -> {
-			if (!minecraftServer.isDedicated()) { // fixme: Use ClientNetworking#PLAY_DISCONNECTED instead of the server stop callback for testing.
+			if (!minecraftServer.isDedicated()) { // fixme: Use ClientPlayConnectionEvents#DISCONNECT instead of the server stop callback for testing.
 				logger.info("[CLIENT] Disconnected. Tracking: " + this.clientBlockEntities.size() + " blockentities");
 
 				if (this.clientBlockEntities.size() != 0) {
 					logger.error("[CLIENT] Mismatch in tracked blockentities, expected 0");
 				}
 			}
-		});*/
+		});
 	}
 }

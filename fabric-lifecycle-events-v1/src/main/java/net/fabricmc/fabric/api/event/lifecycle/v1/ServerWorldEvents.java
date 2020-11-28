@@ -25,9 +25,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 public final class ServerWorldEvents {
 	/**
-	 * Called when a world is loaded by a Minecraft server.
+	 * Called just after a world is loaded by a Minecraft server.
 	 *
-	 * <p>For example, this can be used to load world specific metadata or initialize a {@link PersistentState} on a server world.
+	 * <p>This can be used to load world specific metadata or initialize a {@link PersistentState} on a server world.
 	 */
 	public static final Event<Load> LOAD = EventFactory.createArrayBacked(Load.class, callbacks -> (server, world) -> {
 		for (Load callback : callbacks) {
@@ -39,7 +39,7 @@ public final class ServerWorldEvents {
 	 * Called before a world is unloaded by a Minecraft server.
 	 *
 	 * <p>This typically occurs after a server has {@link ServerLifecycleEvents#SERVER_STOPPING started shutting down}.
-	 * Mods which allow dynamic world (un)registration should use this event so mods can let go of world handles when a world is removed.
+	 * Mods which allow dynamic world (un)registration should call this event so mods can let go of world handles when a world is removed.
 	 */
 	public static final Event<Unload> UNLOAD = EventFactory.createArrayBacked(Unload.class, callbacks -> (server, world) -> {
 		for (Unload callback : callbacks) {
