@@ -47,7 +47,7 @@ public interface RecipeRemainderProvider {
 	 * @param pos The position at which the inventory is.
 	 * @return the recipe remainder
 	 */
-	ItemStack getRecipeRemainder(ItemStack original, Inventory inventory, RecipeType<?> type, World world, @Nullable BlockPos pos);
+	ItemStack getRecipeRemainder(ItemStack original, Inventory inventory, @Nullable RecipeType<?> type, World world, @Nullable BlockPos pos);
 
 	/**
 	 * Returns the recipe remainder of an item stack.
