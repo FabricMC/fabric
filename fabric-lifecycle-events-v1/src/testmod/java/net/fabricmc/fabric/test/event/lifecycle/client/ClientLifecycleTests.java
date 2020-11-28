@@ -22,7 +22,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 
 @Environment(EnvType.CLIENT)
-public class ClientLifecycleTests implements ClientModInitializer {
+public final class ClientLifecycleTests implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		ClientLifecycleEvents.CLIENT_STARTED.register(client -> {

@@ -56,13 +56,13 @@ abstract class WorldChunkMixin {
 	 * Our goal is to place the inject JUST after the possibly removed block entity is stored onto the stack so we can use local capture:
 	 *
 	 *  INVOKEVIRTUAL net/minecraft/util/math/BlockPos.toImmutable ()Lnet/minecraft/util/math/BlockPos;
-     *  ALOAD 1
-     *  INVOKEINTERFACE java/util/Map.put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (itf)
-     *  CHECKCAST net/minecraft/block/entity/BlockEntity
-     *  ASTORE 3
-     *  <======== HERE
-     * L6
-	*/
+	 *  ALOAD 1
+	 *  INVOKEINTERFACE java/util/Map.put (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; (itf)
+	 *  CHECKCAST net/minecraft/block/entity/BlockEntity
+	 *  ASTORE 3
+	 *  <======== HERE
+	 * L6
+	 */
 	@Inject(method = "setBlockEntity", at = @At(value = "INVOKE", target = "Ljava/util/Map;put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", shift = At.Shift.BY, by = 3), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onLoadBlockEntity(BlockEntity blockEntity, CallbackInfo ci, BlockPos blockPos, @Nullable BlockEntity removedBlockEntity) {
 		// Only fire the load event if the block entity has actually changed
@@ -84,8 +84,7 @@ abstract class WorldChunkMixin {
 
 	@Redirect(method = "getBlockEntity(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/chunk/WorldChunk$CreationType;)Lnet/minecraft/block/entity/BlockEntity;", at = @At(value = "INVOKE", target = "Ljava/util/Map;remove(Ljava/lang/Object;)Ljava/lang/Object;"))
 	private <K, V> Object onRemoveBlockEntity(Map<K, V> map, K key) {
-		@Nullable
-		final V removed = map.remove(key);
+		@Nullable final V removed = map.remove(key);
 
 		if (removed != null && this.getWorld() instanceof ServerWorld) {
 			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload((BlockEntity) removed, (ServerWorld) this.getWorld());

@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class ServerResourceReloadTests implements ModInitializer {
+public final class ServerResourceReloadTests implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("LifecycleEventsTest");
 
 	@Override

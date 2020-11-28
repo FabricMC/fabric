@@ -26,8 +26,6 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkStatus;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.ModInitializer;
@@ -36,9 +34,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.impl.event.lifecycle.LoadedChunksCache;
 
-public class ServerBlockEntityLifecycleTests implements ModInitializer {
-	private static boolean PRINT_SERVER_BLOCKENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerBlockEntityMessages") != null;
-	private List<BlockEntity> serverBlockEntities = new ArrayList<>();
+public final class ServerBlockEntityLifecycleTests implements ModInitializer {
+	private static final boolean PRINT_SERVER_BLOCKENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerBlockEntityMessages") != null;
+	private final List<BlockEntity> serverBlockEntities = new ArrayList<>();
 
 	@Override
 	public void onInitialize() {

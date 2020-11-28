@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 /**
  * Tests related to the lifecycle of a server.
  */
-public class ServerLifecycleTests implements ModInitializer {
+public final class ServerLifecycleTests implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("LifecycleEventsTest");
 
 	@Override

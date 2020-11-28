@@ -28,8 +28,8 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 /**
  * Test related to ticking events on the server.
  */
-public class ServerTickTests implements ModInitializer {
-	private Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
+public final class ServerTickTests implements ModInitializer {
+	private final Map<RegistryKey<World>, Integer> tickTracker = new HashMap<>();
 
 	@Override
 	public void onInitialize() {
