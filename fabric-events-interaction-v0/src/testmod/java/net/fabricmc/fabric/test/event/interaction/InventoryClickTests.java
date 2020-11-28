@@ -96,10 +96,6 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 						ctx.empty().put(itemStack);
 						newCtx.insert(fill).put(cursorStack);
 					}
-
-					ItemStack newStack = getEmptyItemStack(cursorStack);
-					insertOrSpawn(playerInventory, newStack);
-					cursorStack.decrement(1);
 				} else {
 					if (ctx.canInsert(fill)) {
 						ctx.insert(fill).put(itemStack);
@@ -115,7 +111,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 
 				if (ctx.canDrain(am)) {
 					ctx.drain(am);
-					insertOrSpawn(playerInventory, getEmptyItemStack(itemStack));
+					insertOrSpawn(playerInventory, getFilledItemStack(itemStack));
 					itemStack.decrement(1);
 				}
 			}
@@ -148,6 +144,20 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		}
 	}
 
+	private static ItemStack getFilledItemStack(ItemStack in) {
+		ItemStack result;
+		
+		if (in.isOf(Items.BUCKET)) {
+			result = new ItemStack(Items.WATER_BUCKET);
+		} else if (in.isOf(Items.GLASS_BOTTLE)) {
+			result = new ItemStack(Items.POTION);
+		} else {
+			throw new IllegalArgumentException(String.format("Don't know how to convert item '%s' to its filled form", Registry.ITEM.getId(in.getItem())));
+		}
+		
+		return result;
+	}
+	
 	private static ItemStack getEmptyItemStack(ItemStack in) {
 		ItemStack result;
 
