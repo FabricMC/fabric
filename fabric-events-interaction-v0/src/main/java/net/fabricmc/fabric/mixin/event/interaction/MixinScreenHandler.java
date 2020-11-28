@@ -43,8 +43,8 @@ abstract class MixinScreenHandler {
 	}
 
 	@Redirect(method = "method_30010", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;onClicked(Lnet/minecraft/item/ItemStack;Lnet/minecraft/screen/slot/Slot;Lnet/minecraft/util/ClickType;Lnet/minecraft/entity/player/PlayerInventory;)Z"))
-	public boolean interceptOnClicked(ItemStack itemStack, ItemStack other, Slot slot, ClickType clickType, PlayerInventory playerInventory) {
-		ActionResult result = InventoryClickEvents.CLICKED.invoker().onClicked(itemStack, other, slot, (ScreenHandler) (Object) this, clickType, playerInventory.player, playerInventory);
+	public boolean interceptOnClicked(ItemStack itemStack, ItemStack cursorStack, Slot slot, ClickType clickType, PlayerInventory playerInventory) {
+		ActionResult result = InventoryClickEvents.CLICKED.invoker().onClicked(itemStack, cursorStack, slot, (ScreenHandler) (Object) this, clickType, playerInventory.player, playerInventory);
 
 		if (result.isAccepted()) {
 			return itemStack.onClicked(itemStack, slot, clickType, playerInventory);
