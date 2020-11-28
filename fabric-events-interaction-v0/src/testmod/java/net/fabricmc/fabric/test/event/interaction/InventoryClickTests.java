@@ -23,7 +23,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -38,9 +38,7 @@ import net.minecraft.util.ClickType;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -63,74 +61,65 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 				System.out.println("Right Clicked!");
 			} else if (clickType == ClickType.LEFT) {
 				System.out.println("Left Clicked!");
-			}
-
-			if (this.isInvalid(cursorStack)) {
 				return ActionResult.PASS;
 			}
 
-			// Insert fluid into itemStack
-			if (clickType == ClickType.RIGHT) {
-				if (itemStack.isOf(BIG_BUCKET) || itemStack.isOf(TINY_BUCKET)) {
-					Ctx ctx = Ctx.fromStack(itemStack);
+			// Here's some context
+			// itemStack is the stack that was clicked. This one is in a slot in the inventory
+			// cursorStack is the stack held by the cursor of the player. This one is not in a slot
+			//
+			// First, we check if itemStack is a FluidContainerItem (isFluidContainer)
+			// If it is, we check if cursorStack contains fluid (containsFluid)
+			// If both conditions match, we extract fluid from cursorStack and insert it into itemStack
+			//
+			// If itemStack isn't FluidContainerItem, we check if it is an empty container (isEmptyContainer)
+			// If it is, we check if cursorStack is a FluidContainerItem
+			// If both conditions match, we extract fluid from cursorStack and insert it to itemStack
+			//
+			// E.g.: cursorStack + itemStack -> outputs
+			// water bucket + big bucket (6480 gb) -> bucket + big bucket (8100 gb)
+			// big bucket (1620 gb) + glass bottle -> potion (water) + big bucket (1080 gb)
+			// big bucket (1620 gb) + small bucket (0 gb) -> big bucket (1440 gb) + small bucket (180 gb)
 
-					if (cursorStack.isOf(Items.POTION) || cursorStack.isOf(Items.WATER_BUCKET)) {
-						int am = this.getFill(cursorStack);
-
-						if (ctx.canInsert(am)) {
-							cursorStack.decrement(1);
-							ItemStack newStack = new ItemStack(cursorStack.isOf(Items.POTION) ? Items.GLASS_BOTTLE : Items.BUCKET);
-
-							if (!playerInventory.insertStack(newStack)) {
-								if (!player.world.isClient()) {
-									ItemScatterer.spawn(player.world, player.getX(), player.getY(), player.getZ(), newStack);
-								}
-							}
-
-							itemStack.putSubTag("Fluid", ctx.insert(am).toTag());
-						} else {
-							return ActionResult.FAIL;
-						}
-					} else if (cursorStack.isOf(TINY_BUCKET) || cursorStack.isOf(BIG_BUCKET)) {
-						Ctx otherCtx = Ctx.fromStack(cursorStack);
-
-						if(ctx.canInsert(otherCtx.getValue())) {
-							cursorStack.putSubTag("Fluid", otherCtx.drainAll().toTag());
-							itemStack.putSubTag("Fluid", ctx.insert(otherCtx.getValue()).toTag());
-						}
+			if (isFluidContainerItem(itemStack) && containsFluid(cursorStack)) {
+				int fill = getFill(cursorStack);
+				Ctx ctx = Ctx.fromStack(itemStack);
+				if (isFluidContainerItem(cursorStack)) {
+					Ctx newCtx = Ctx.fromStack(cursorStack);
+					int insertable = newCtx.getMaxInsertable();
+					if (fill > insertable) {
+						ctx.drain(insertable).put(itemStack);
+						newCtx.fill().put(cursorStack);
+					} else {
+						ctx.empty().put(itemStack);
+						newCtx.insert(fill).put(cursorStack);
 					}
-				} else if (itemStack.isOf(Items.GLASS_BOTTLE) || itemStack.isOf(Items.BUCKET)) {
-					if (itemStack.isOf(BIG_BUCKET)) {
-						int fill = cursorStack.isOf(Items.GLASS_BOTTLE) ? 540 : 1620;
-						Ctx ctx = Ctx.fromStack(cursorStack);
-
-						if (ctx.canDrain(fill)) {
-							itemStack.decrement(1);
-							ItemStack newStack = new ItemStack(cursorStack.isOf(Items.GLASS_BOTTLE) ? Items.POTION : Items.WATER_BUCKET);
-
-							if (newStack.isOf(Items.POTION)) {
-								PotionUtil.setPotion(newStack, Potions.WATER);
-							}
-
-							if (!playerInventory.insertStack(newStack)) {
-								if (!player.world.isClient()) {
-									ItemScatterer.spawn(player.world, player.getX(), player.getY(), player.getZ(), newStack);
-								}
-							}
-
-							cursorStack.putSubTag("Fluid", ctx.drain(fill).toTag());
-						} else {
-							return ActionResult.FAIL;
-						}
+					cursorStack.decrement(1);
+					ItemStack newStack = getEmptyItemStack(cursorStack);
+					insertOrSpawn(playerInventory, newStack);
+				} else {
+					if (ctx.canInsert(fill)) {
+						ctx.insert(fill);
+						cursorStack.decrement(1);
+						insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
+					} else {
+						return ActionResult.FAIL;
 					}
 				}
+			} else if (isEmptyContainer(itemStack) && isFluidContainerItem(cursorStack)) {
+				int am = getMaxCapacityOfEmpty(itemStack);
+				Ctx ctx = Ctx.fromStack(cursorStack);
+				if (ctx.canDrain(am)) {
+					ctx.drain(am);
+					cursorStack.decrement(1);
+					insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
+				}
 			}
-
 			return ActionResult.PASS;
 		});
 	}
 
-	private boolean isInvalid(ItemStack stack) {
+	private static boolean isInvalid(ItemStack stack) {
 		Item i = stack.getItem();
 
 		if (i instanceof FluidContainerItem) {
@@ -148,7 +137,53 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		return true;
 	}
 
-	private int getFill(ItemStack stack) {
+	private static void insertOrSpawn(PlayerInventory inv, ItemStack stack) {
+		if (!inv.insertStack(stack)) {
+			ItemScatterer.spawn(inv.player.world, inv.player.getX(), inv.player.getY(), inv.player.getZ(), stack);
+		}
+	}
+
+	private static ItemStack getEmptyItemStack(ItemStack in) {
+		ItemStack result;
+
+		if (in.isOf(Items.WATER_BUCKET)) {
+			result = new ItemStack(Items.BUCKET);
+		} else if (isValidPotion(in)) {
+			result = new ItemStack(Items.GLASS_BOTTLE);
+		} else {
+			throw new IllegalArgumentException(String.format("Don't know how to convert item '%s' to its empty form", Registry.ITEM.getId(in.getItem())));
+		}
+
+		return result;
+	}
+
+	private static boolean isEmptyContainer(ItemStack stack){
+		return stack.isOf(Items.GLASS_BOTTLE) || stack.isOf(Items.BUCKET);
+	}
+
+	private static boolean isFluidContainerItem(ItemStack stack) {
+		return stack.getItem() instanceof FluidContainerItem;
+	}
+
+	private static boolean isValidPotion(ItemStack stack) {
+		return stack.isOf(Items.POTION) && PotionUtil.getPotion(stack) != Potions.WATER;
+	}
+
+	private static boolean containsFluid(ItemStack stack) {
+		return isFluidContainerItem(stack) || isValidPotion(stack) || stack.isOf(Items.WATER_BUCKET);
+	}
+
+	private static int getMaxCapacityOfEmpty(ItemStack stack) {
+		if (stack.isOf(Items.GLASS_BOTTLE)) {
+			return 540;
+		} else if (stack.isOf(Items.BUCKET)) {
+			return 1620;
+		}
+
+		return -1;
+	}
+
+	private static int getFill(ItemStack stack) {
 		if (stack.isOf(Items.WATER_BUCKET)) {
 			return 1620;
 		} else if (stack.isOf(Items.POTION) && PotionUtil.getPotion(stack).equals(Potions.WATER)) {
@@ -164,7 +199,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 	@Override
 	public void onInitializeClient() {
 		ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-			if (this.isInvalid(stack)) {
+			if (isInvalid(stack)) {
 				return;
 			}
 
@@ -197,56 +232,14 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 			return Formatting.BLUE;
 		} else if (f > 0.4F) {
 			return Formatting.DARK_AQUA;
-		} else if (f != 0.0F) {
+		} else if (f > 0.1F) {
 			return Formatting.AQUA;
 		}
 
 		return Formatting.WHITE;
 	}
 
-	private static final class FluidContainerItem extends Item {
-		private final int max;
-
-		public FluidContainerItem(Settings settings, int max) {
-			super(settings);
-			this.max = max;
-		}
-
-		@Override
-		public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-			if (!stack.getOrCreateTag().contains("Fluid")) {
-				stack.putSubTag("Fluid", new Ctx(0, this.max).toTag());
-			}
-		}
-
-		@Override
-		public boolean isItemBarVisible(ItemStack stack) {
-			return true;
-		}
-
-		@Override
-		public boolean hasGlint(ItemStack stack) {
-			return true;
-		}
-
-		@Environment(EnvType.CLIENT)
-		@Override
-		public int getItemBarColor(ItemStack stack) {
-			return 0x0044FF;
-		}
-
-		@Environment(EnvType.CLIENT)
-		@Override
-		public int getItemBarStep(ItemStack stack) {
-			CompoundTag fluidTag =  (CompoundTag) stack.getOrCreateTag().get("Fluid");
-			if (fluidTag == null) {
-				return 0;
-			}
-			return MathHelper.floor((fluidTag.getInt("value") * 1.3F) / fluidTag.getInt("max"));
-		}
-	}
-
-	private static final class Ctx {
+	public static final class Ctx {
 		public static final Codec<Ctx> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.fieldOf("value").forGetter(Ctx::getValue),
 				Codec.INT.fieldOf("max").forGetter(Ctx::getMax)
@@ -254,7 +247,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		private final int value;
 		private final int max;
 
-		private Ctx(int value, int max) {
+		public Ctx(int value, int max) {
 			Preconditions.checkArgument(value >= 0, "value must not be negative");
 			Preconditions.checkArgument(max > 0, "max must be greater than zero");
 			this.value = value;
@@ -268,7 +261,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		public int getMax() {
 			return this.max;
 		}
-		
+
 		public CompoundTag toTag() {
 			return (CompoundTag) NbtOps.INSTANCE.withEncoder(CODEC).apply(this).getOrThrow(false, System.err::println);
 		}
@@ -281,8 +274,12 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 			return this.max >= (this.value + amount);
 		}
 
-		public Ctx drainAll() {
-			return new Ctx(this.max, 0);
+		public Ctx empty() {
+			return new Ctx(0, this.max);
+		}
+
+		public Ctx fill() {
+			return new Ctx(this.max, this.max);
 		}
 
 		public Ctx drain(int amount) {
@@ -291,6 +288,14 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 
 		public Ctx insert(int amount) {
 			return new Ctx(this.max, this.value + amount);
+		}
+
+		public int getMaxInsertable() {
+			return this.max - this.value;
+		}
+
+		public void put(ItemStack stack) {
+			stack.getOrCreateTag().put("Fluid", this.toTag());
 		}
 
 		public static Ctx fromTag(CompoundTag tag) {
