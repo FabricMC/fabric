@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.tool.attribute.v1;
 
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -44,6 +45,7 @@ public interface DynamicAttributeTool {
 	 * @deprecated Use {@link #getToolMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval
 	default int getMiningLevel(ItemStack stack, @Nullable LivingEntity user) {
 		return 0;
 	}
@@ -59,6 +61,7 @@ public interface DynamicAttributeTool {
 	 * @deprecated Use {@link #getToolMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to allow decimal values.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval
 	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		return getMiningLevel(stack, user);
 	}
@@ -85,6 +88,7 @@ public interface DynamicAttributeTool {
 	 * @deprecated Use {@link #getMiningSpeedMultiplier(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval
 	default float getMiningSpeedMultiplier(ItemStack stack, @Nullable LivingEntity user) {
 		return 1.0F;
 	}
