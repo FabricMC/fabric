@@ -97,12 +97,12 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 						newCtx.insert(fill).put(cursorStack);
 					}
 
-					cursorStack.decrement(1);
 					ItemStack newStack = getEmptyItemStack(cursorStack);
 					insertOrSpawn(playerInventory, newStack);
+					cursorStack.decrement(1);
 				} else {
 					if (ctx.canInsert(fill)) {
-						ctx.insert(fill);
+						ctx.insert(fill).put(itemStack);
 						insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
 						cursorStack.decrement(1);
 					} else {
@@ -115,8 +115,8 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 
 				if (ctx.canDrain(am)) {
 					ctx.drain(am);
-					cursorStack.decrement(1);
 					insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
+					cursorStack.decrement(1);
 				}
 			}
 
