@@ -93,4 +93,11 @@ abstract class WorldChunkMixin {
 
 		return removed;
 	}
+
+	@Inject(method = "removeBlockEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/BlockEntity;markRemoved()V"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
+	private void onRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Nullable BlockEntity removed) {
+		if (removed != null && this.getWorld() instanceof ServerWorld) {
+			ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(removed, (ServerWorld) this.getWorld());
+		}
+	}
 }

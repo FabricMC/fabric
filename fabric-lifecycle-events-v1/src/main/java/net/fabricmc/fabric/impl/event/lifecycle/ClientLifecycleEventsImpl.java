@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.impl.event.lifecycle;
 
+import net.minecraft.block.entity.BlockEntity;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientBlockEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientChunkEvents;
 
 @Environment(EnvType.CLIENT)
@@ -32,6 +35,12 @@ public final class ClientLifecycleEventsImpl implements ClientModInitializer {
 
 		ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
 			((LoadedChunksCache) world).fabric_markUnloaded(chunk.getPos());
+		});
+
+		ClientChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
+			for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+				ClientBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, world);
+			}
 		});
 	}
 }

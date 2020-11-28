@@ -39,6 +39,14 @@ public final class LifecycleEventsImpl implements ModInitializer {
 			((LoadedChunksCache) world).fabric_markUnloaded(chunk.getPos());
 		});
 
+		// Fire block entity unload events.
+		// This handles the edge case where going through a portal will cause block entities to unload without warning.
+		ServerChunkEvents.CHUNK_UNLOAD.register((world, chunk) -> {
+			for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
+				ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, world);
+			}
+		});
+
 		// We use the world unload event so worlds that are dynamically hot(un)loaded get block entity unload events fired when shut down.
 		ServerWorldEvents.UNLOAD.register((server, world) -> {
 			for (ChunkPos pos : ((LoadedChunksCache) world).fabric_getLoadedPositions()) {
