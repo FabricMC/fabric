@@ -18,6 +18,7 @@ package net.fabricmc.fabric.test.event.interaction;
 
 import java.util.Objects;
 
+import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -32,8 +33,11 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.text.LiteralText;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ClickType;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
@@ -43,6 +47,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.event.player.InventoryClickEvents;
 
 @SuppressWarnings("deprecation")
 public class InventoryClickTests implements ModInitializer, ClientModInitializer {
@@ -56,6 +61,11 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 
 		@Override
 		public boolean isItemBarVisible(ItemStack stack) {
+			return true;
+		}
+
+		@Override
+		public boolean hasGlint(ItemStack stack) {
 			return true;
 		}
 
@@ -85,18 +95,94 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 	public void onInitialize() {
 		Registry.register(Registry.ITEM, new Identifier("fabric-events-interaction-v0-testmod", "big_bucket"), BIG_BUCKET);
 		Registry.register(Registry.ITEM, new Identifier("fabric-events-interaction-v0-testmod", "tiny_bucket"), TINY_BUCKET);
+		InventoryClickEvents.CLICKED.register((itemStack, cursorStack, slot, screenHandler, clickType, player, playerInventory) -> {
+			if (!cursorStack.isOf(BIG_BUCKET) || !cursorStack.isOf(TINY_BUCKET) || !(cursorStack.isOf(Items.POTION) && PotionUtil.getPotion(cursorStack).equals(Potions.WATER)) || !cursorStack.isOf(Items.WATER_BUCKET) || !cursorStack.isOf(Items.GLASS_BOTTLE) || !cursorStack.isOf(Items.BUCKET)) {
+				return ActionResult.PASS;
+			}
+
+			// Insert fluid into itemStack
+			if (clickType == ClickType.RIGHT) {
+				if (itemStack.isOf(BIG_BUCKET) || itemStack.isOf(TINY_BUCKET)) {
+					Ctx ctx = Ctx.fromStack(itemStack);
+
+					if (cursorStack.isOf(Items.POTION) || cursorStack.isOf(Items.WATER_BUCKET)) {
+						int am = this.getFill(cursorStack);
+
+						if (ctx.canInsert(am)) {
+							cursorStack.decrement(1);
+							ItemStack newStack = new ItemStack(cursorStack.isOf(Items.POTION) ? Items.GLASS_BOTTLE : Items.BUCKET);
+
+							if (!playerInventory.insertStack(newStack)) {
+								if (!player.world.isClient()) {
+									ItemScatterer.spawn(player.world, player.getX(), player.getY(), player.getZ(), newStack);
+								}
+							}
+
+							itemStack.putSubTag("Fluid", ctx.insert(am).toTag());
+						} else {
+							return ActionResult.FAIL;
+						}
+					} else if (cursorStack.isOf(TINY_BUCKET) || cursorStack.isOf(BIG_BUCKET)) {
+						Ctx otherCtx = Ctx.fromStack(cursorStack);
+
+						if(ctx.canInsert(otherCtx.getValue())) {
+							cursorStack.putSubTag("Fluid", otherCtx.drainAll().toTag());
+							itemStack.putSubTag("Fluid", ctx.insert(otherCtx.getValue()).toTag());
+						}
+					}
+				} else if (itemStack.isOf(Items.GLASS_BOTTLE) || itemStack.isOf(Items.BUCKET)) {
+					if (itemStack.isOf(BIG_BUCKET)) {
+						int fill = cursorStack.isOf(Items.GLASS_BOTTLE) ? 540 : 1620;
+						Ctx ctx = Ctx.fromStack(cursorStack);
+
+						if (ctx.canDrain(fill)) {
+							itemStack.decrement(1);
+							ItemStack newStack = new ItemStack(cursorStack.isOf(Items.GLASS_BOTTLE) ? Items.POTION : Items.WATER_BUCKET);
+
+							if (newStack.isOf(Items.POTION)) {
+								PotionUtil.setPotion(newStack, Potions.WATER);
+							}
+
+							if (!playerInventory.insertStack(newStack)) {
+								if (!player.world.isClient()) {
+									ItemScatterer.spawn(player.world, player.getX(), player.getY(), player.getZ(), newStack);
+								}
+							}
+
+							cursorStack.putSubTag("Fluid", ctx.drain(fill).toTag());
+						} else {
+							return ActionResult.FAIL;
+						}
+					}
+				}
+			}
+
+			return ActionResult.PASS;
+		});
+	}
+
+	private int getFill(ItemStack stack) {
+		if (stack.isOf(Items.WATER_BUCKET)) {
+			return 1620;
+		} else if (stack.isOf(Items.POTION) && PotionUtil.getPotion(stack).equals(Potions.WATER)) {
+			return 540;
+		} else if (stack.isOf(BIG_BUCKET) || stack.isOf(TINY_BUCKET)) {
+			return Ctx.fromStack(stack).getValue();
+		}
+
+		return 0;
 	}
 
 	@Environment(EnvType.CLIENT)
 	@Override
 	public void onInitializeClient() {
 		ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-			if (!stack.isOf(BIG_BUCKET) || !stack.isOf(TINY_BUCKET) || !stack.isOf(Items.POTION) || !stack.isOf(Items.WATER_BUCKET) || !stack.isOf(Items.GLASS_BOTTLE) || !stack.isOf(Items.BUCKET)) {
+			if (!stack.isOf(BIG_BUCKET) || !stack.isOf(TINY_BUCKET) || !(stack.isOf(Items.POTION) && PotionUtil.getPotion(stack).equals(Potions.WATER)) || !stack.isOf(Items.WATER_BUCKET) || !stack.isOf(Items.GLASS_BOTTLE) || !stack.isOf(Items.BUCKET)) {
 				return;
 			}
 
 			if (!Screen.hasShiftDown() && !context.isAdvanced()) {
-				lines.add(new LiteralText("Press shift for fluid info").formatted(Formatting.YELLOW));
+				lines.add(new LiteralText("Press shift for fluid info").formatted(Formatting.GOLD));
 				return;
 			}
 
@@ -131,7 +217,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		return Formatting.WHITE;
 	}
 
-	private static class Ctx {
+	private static final class Ctx {
 		public static final Codec<Ctx> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 				Codec.INT.fieldOf("value").forGetter(Ctx::getValue),
 				Codec.INT.fieldOf("max").forGetter(Ctx::getMax)
@@ -140,6 +226,8 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		private final int max;
 
 		private Ctx(int value, int max) {
+			Preconditions.checkArgument(value >= 0, "value must not be negative");
+			Preconditions.checkArgument(max > 0, "max must be greater than zero");
 			this.value = value;
 			this.max = max;
 		}
@@ -155,7 +243,27 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		public CompoundTag toTag() {
 			return (CompoundTag) NbtOps.INSTANCE.withEncoder(CODEC).apply(this).getOrThrow(false, System.err::println);
 		}
-		
+
+		public boolean canDrain(int amount) {
+			return this.value >= amount;
+		}
+
+		public boolean canInsert(int amount) {
+			return this.max >= (this.value + amount);
+		}
+
+		public Ctx drainAll() {
+			return new Ctx(this.max, 0);
+		}
+
+		public Ctx drain(int amount) {
+			return new Ctx(this.max, this.value - amount);
+		}
+
+		public Ctx insert(int amount) {
+			return new Ctx(this.max, this.value + amount);
+		}
+
 		public static Ctx fromTag(CompoundTag tag) {
 			return NbtOps.INSTANCE.withParser(CODEC).apply(tag).getOrThrow(false, System.err::println);
 		}
