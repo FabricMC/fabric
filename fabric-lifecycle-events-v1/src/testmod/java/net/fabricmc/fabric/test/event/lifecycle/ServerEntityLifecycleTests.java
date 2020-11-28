@@ -23,9 +23,11 @@ import com.google.common.collect.Iterables;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 /**
@@ -58,7 +60,34 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 
 		ServerTickEvents.END_SERVER_TICK.register(server -> {
 			if (this.serverTicks++ % 200 == 0) {
-				final int entities = Iterables.toArray()
+				int entities = 0;
+
+				for (ServerWorld world : server.getWorlds()) {
+					final int worldEntities = Iterables.toArray(world.iterateEntities(), Entity.class).length;
+
+					if (PRINT_SERVER_ENTITY_MESSAGES) {
+						logger.info("[SERVER] Tracked Entities in " + world.getRegistryKey().toString() + " - " + worldEntities);
+					}
+
+					entities += worldEntities;
+				}
+
+				if (PRINT_SERVER_ENTITY_MESSAGES) {
+					logger.info("[SERVER] Actual Total Entities: " + entities);
+				}
+
+				if (entities != this.serverEntities.size()) {
+					// Always print mismatches
+					logger.error("[SERVER] Mismatch in tracked entities and actual entities");
+				}
+			}
+		});
+
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			logger.info("[SERVER] Disconnected. Tracking: " + this.serverEntities.size() + " entities");
+
+			if (this.serverEntities.size() != 0) {
+				logger.error("[SERVER] Mismatch in tracked entities, expected 0");
 			}
 		});
 	}
