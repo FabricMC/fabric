@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.test.event.interaction;
 
-import java.util.Objects;
+import java.util.Optional;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
@@ -32,6 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.tag.Tag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ClickType;
@@ -48,9 +49,11 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.event.player.InventoryClickEvents;
+import net.fabricmc.fabric.api.tag.TagRegistry;
 
 @SuppressWarnings("deprecation")
 public class InventoryClickTests implements ModInitializer, ClientModInitializer {
+	public static final Tag<Item> CLICKABLES = TagRegistry.item(new Identifier("fabric-events-interaction-v0-testmod", "clickables"));
 	public static final Item BIG_BUCKET = new Item(new Item.Settings().group(ItemGroup.MISC).maxCount(1)) {
 		@Override
 		public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
@@ -72,13 +75,16 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		@Environment(EnvType.CLIENT)
 		@Override
 		public int getItemBarColor(ItemStack stack) {
-			return 0x0000FF;
+			return 0x0044FF;
 		}
 
 		@Environment(EnvType.CLIENT)
 		@Override
 		public int getItemBarStep(ItemStack stack) {
-			CompoundTag fluidTag =  Objects.requireNonNull((CompoundTag) stack.getOrCreateTag().get("Fluid"));
+			CompoundTag fluidTag =  (CompoundTag) stack.getOrCreateTag().get("Fluid");
+			if (fluidTag == null) {
+				return 0;
+			}
 			return MathHelper.floor((fluidTag.getInt("value") * 1.3F) / fluidTag.getInt("max"));
 		}
 	};
@@ -96,7 +102,13 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		Registry.register(Registry.ITEM, new Identifier("fabric-events-interaction-v0-testmod", "big_bucket"), BIG_BUCKET);
 		Registry.register(Registry.ITEM, new Identifier("fabric-events-interaction-v0-testmod", "tiny_bucket"), TINY_BUCKET);
 		InventoryClickEvents.CLICKED.register((itemStack, cursorStack, slot, screenHandler, clickType, player, playerInventory) -> {
-			if (!cursorStack.isOf(BIG_BUCKET) || !cursorStack.isOf(TINY_BUCKET) || !(cursorStack.isOf(Items.POTION) && PotionUtil.getPotion(cursorStack).equals(Potions.WATER)) || !cursorStack.isOf(Items.WATER_BUCKET) || !cursorStack.isOf(Items.GLASS_BOTTLE) || !cursorStack.isOf(Items.BUCKET)) {
+			if (clickType == ClickType.RIGHT) {
+				System.out.println("Right Clicked!");
+			} else if (clickType == ClickType.LEFT) {
+				System.out.println("Left Clicked!");
+			}
+
+			if (this.isInvalid(cursorStack)) {
 				return ActionResult.PASS;
 			}
 
@@ -161,6 +173,11 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		});
 	}
 
+	private boolean isInvalid(ItemStack stack) {
+		boolean potion = stack.getItem() == Items.POTION && PotionUtil.getPotion(stack) == Potions.WATER;
+		return !stack.isIn(CLICKABLES) || !potion;
+	}
+
 	private int getFill(ItemStack stack) {
 		if (stack.isOf(Items.WATER_BUCKET)) {
 			return 1620;
@@ -177,7 +194,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 	@Override
 	public void onInitializeClient() {
 		ItemTooltipCallback.EVENT.register(((stack, context, lines) -> {
-			if (!stack.isOf(BIG_BUCKET) || !stack.isOf(TINY_BUCKET) || !(stack.isOf(Items.POTION) && PotionUtil.getPotion(stack).equals(Potions.WATER)) || !stack.isOf(Items.WATER_BUCKET) || !stack.isOf(Items.GLASS_BOTTLE) || !stack.isOf(Items.BUCKET)) {
+			if (this.isInvalid(stack)) {
 				return;
 			}
 
@@ -269,7 +286,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		}
 
 		public static Ctx fromStack(ItemStack stack) {
-			return fromTag(Objects.requireNonNull(stack.getSubTag("Fluid")));
+			return fromTag(Optional.ofNullable(stack.getSubTag("Fluid")).orElse(new Ctx(0, 1620).toTag()));
 		}
 	}
 }
