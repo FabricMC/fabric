@@ -34,5 +34,5 @@ public interface NamespaceResourceManagerAccessor {
 	ResourceType getType();
 
 	@Invoker("open")
-	InputStream fabric$open(Identifier id, ResourcePack pack) throws IOException;
+	InputStream fabric$accessor_open(Identifier id, ResourcePack pack) throws IOException;
 }
