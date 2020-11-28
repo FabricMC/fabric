@@ -32,7 +32,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
-import net.minecraft.tag.Tag;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ClickType;
@@ -49,53 +48,11 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.event.player.InventoryClickEvents;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 
 @SuppressWarnings("deprecation")
 public class InventoryClickTests implements ModInitializer, ClientModInitializer {
-	public static final Tag<Item> CLICKABLES = TagRegistry.item(new Identifier("fabric-events-interaction-v0-testmod", "clickables"));
-	public static final Item BIG_BUCKET = new Item(new Item.Settings().group(ItemGroup.MISC).maxCount(1)) {
-		@Override
-		public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-			if (!stack.getOrCreateTag().contains("Fluid")) {
-				stack.putSubTag("Fluid", new Ctx(0, 1620 * 10).toTag());
-			}
-		}
-
-		@Override
-		public boolean isItemBarVisible(ItemStack stack) {
-			return true;
-		}
-
-		@Override
-		public boolean hasGlint(ItemStack stack) {
-			return true;
-		}
-
-		@Environment(EnvType.CLIENT)
-		@Override
-		public int getItemBarColor(ItemStack stack) {
-			return 0x0044FF;
-		}
-
-		@Environment(EnvType.CLIENT)
-		@Override
-		public int getItemBarStep(ItemStack stack) {
-			CompoundTag fluidTag =  (CompoundTag) stack.getOrCreateTag().get("Fluid");
-			if (fluidTag == null) {
-				return 0;
-			}
-			return MathHelper.floor((fluidTag.getInt("value") * 1.3F) / fluidTag.getInt("max"));
-		}
-	};
-	public static final Item TINY_BUCKET = new Item(new Item.Settings().group(ItemGroup.MISC).maxCount(1)) {
-		@Override
-		public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
-			if (!stack.getOrCreateTag().contains("Fluid")) {
-				stack.putSubTag("Fluid", new Ctx(0, 1620 / 9).toTag());
-			}
-		}
-	};
+	public static final Item BIG_BUCKET = new FluidContainerItem(new Item.Settings().group(ItemGroup.MISC).maxCount(1), 1620 * 10);
+	public static final Item TINY_BUCKET = new FluidContainerItem(new Item.Settings().group(ItemGroup.MISC).maxCount(1), 1620 / 3);
 
 	@Override
 	public void onInitialize() {
@@ -174,8 +131,21 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 	}
 
 	private boolean isInvalid(ItemStack stack) {
-		boolean potion = stack.getItem() == Items.POTION && PotionUtil.getPotion(stack) == Potions.WATER;
-		return !stack.isIn(CLICKABLES) || !potion;
+		Item i = stack.getItem();
+
+		if (i instanceof FluidContainerItem) {
+			return false;
+		} else if (i == Items.GLASS_BOTTLE) {
+			return false;
+		} else if (i == Items.BUCKET) {
+			return false;
+		} else if (i == Items.WATER_BUCKET) {
+			return false;
+		} else if (i == Items.POTION)  {
+			return PotionUtil.getPotion(stack) != Potions.WATER;
+		}
+
+		return true;
 	}
 
 	private int getFill(ItemStack stack) {
@@ -232,6 +202,48 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		}
 
 		return Formatting.WHITE;
+	}
+
+	private static final class FluidContainerItem extends Item {
+		private final int max;
+
+		public FluidContainerItem(Settings settings, int max) {
+			super(settings);
+			this.max = max;
+		}
+
+		@Override
+		public void inventoryTick(ItemStack stack, World world, Entity entity, int slot, boolean selected) {
+			if (!stack.getOrCreateTag().contains("Fluid")) {
+				stack.putSubTag("Fluid", new Ctx(0, this.max).toTag());
+			}
+		}
+
+		@Override
+		public boolean isItemBarVisible(ItemStack stack) {
+			return true;
+		}
+
+		@Override
+		public boolean hasGlint(ItemStack stack) {
+			return true;
+		}
+
+		@Environment(EnvType.CLIENT)
+		@Override
+		public int getItemBarColor(ItemStack stack) {
+			return 0x0044FF;
+		}
+
+		@Environment(EnvType.CLIENT)
+		@Override
+		public int getItemBarStep(ItemStack stack) {
+			CompoundTag fluidTag =  (CompoundTag) stack.getOrCreateTag().get("Fluid");
+			if (fluidTag == null) {
+				return 0;
+			}
+			return MathHelper.floor((fluidTag.getInt("value") * 1.3F) / fluidTag.getInt("max"));
+		}
 	}
 
 	private static final class Ctx {

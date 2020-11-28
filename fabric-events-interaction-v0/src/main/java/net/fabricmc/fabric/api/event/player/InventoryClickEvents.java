@@ -53,7 +53,7 @@ public class InventoryClickEvents {
 			}
 		}
 
-		return ActionResult.PASS;
+		return ActionResult.SUCCESS;
 	}));
 
 	/**
@@ -70,7 +70,7 @@ public class InventoryClickEvents {
 			}
 		}
 
-		return ActionResult.PASS;
+		return ActionResult.SUCCESS;
 	}));
 
 	@ApiStatus.Experimental
