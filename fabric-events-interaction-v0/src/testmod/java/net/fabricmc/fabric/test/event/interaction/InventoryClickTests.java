@@ -103,8 +103,8 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 				} else {
 					if (ctx.canInsert(fill)) {
 						ctx.insert(fill);
-						cursorStack.decrement(1);
 						insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
+						cursorStack.decrement(1);
 					} else {
 						return ActionResult.FAIL;
 					}
