@@ -50,7 +50,7 @@ import net.minecraft.world.level.storage.LevelStorage;
  * dimension testmod, and no world directory. If the dimension is available (i.e. in /execute in, or via
  * the testmod's commands), then the bug is fixed and this Mixin can be removed.
  */
-@Mixin(value = Main.class, remap = false)
+@Mixin(value = Main.class)
 public class ServerBugfixMixin {
 	@Unique
 	private static LevelStorage.Session fabric_session;
@@ -61,25 +61,25 @@ public class ServerBugfixMixin {
 	@Unique
 	private static RegistryOps<Tag> fabric_registryOps;
 
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/registry/DynamicRegistryManager;create()Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;"), method = "main", remap = false, allow = 1)
+	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/registry/DynamicRegistryManager;create()Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;"), method = "main", allow = 1)
 	private static DynamicRegistryManager.Impl captureDynamicRegistry(DynamicRegistryManager.Impl value) {
 		fabric_dynamicRegistry = value;
 		return value;
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/storage/LevelStorage;createSession(Ljava/lang/String;)Lnet/minecraft/world/level/storage/LevelStorage$Session;"), method = "main", remap = false, allow = 1)
+	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/level/storage/LevelStorage;createSession(Ljava/lang/String;)Lnet/minecraft/world/level/storage/LevelStorage$Session;"), method = "main", allow = 1)
 	private static LevelStorage.Session captureSession(LevelStorage.Session value) {
 		fabric_session = value;
 		return value;
 	}
 
-	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;)Lnet/minecraft/util/dynamic/RegistryOps;"), method = "main", remap = false, allow = 1)
+	@ModifyVariable(at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;)Lnet/minecraft/util/dynamic/RegistryOps;"), method = "main", allow = 1)
 	private static RegistryOps<Tag> captureRegistryOps(RegistryOps<Tag> value) {
 		fabric_registryOps = value;
 		return value;
 	}
 
-	@Redirect(method = "main", at = @At(value = "NEW", target = "net/minecraft/world/level/LevelProperties"), remap = false, allow = 1)
+	@Redirect(method = "main", at = @At(value = "NEW", target = "net/minecraft/world/level/LevelProperties"), allow = 1)
 	private static LevelProperties onCreateNewLevelProperties(LevelInfo levelInfo, GeneratorOptions generatorOptions, Lifecycle lifecycle) {
 		DataPackSettings dataPackSettings = levelInfo.getDataPackSettings();
 
