@@ -30,8 +30,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.potion.PotionUtil;
-import net.minecraft.potion.Potions;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ClickType;
@@ -131,11 +129,9 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 			return false;
 		} else if (i == Items.WATER_BUCKET) {
 			return false;
-		} else if (i == Items.POTION)  {
-			return PotionUtil.getPotion(stack) != Potions.WATER;
 		}
 
-		return true;
+		return i != Items.POTION;
 	}
 
 	private static void insertOrSpawn(PlayerInventory inv, ItemStack stack) {
@@ -163,7 +159,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 
 		if (in.isOf(Items.WATER_BUCKET)) {
 			result = new ItemStack(Items.BUCKET);
-		} else if (isValidPotion(in)) {
+		} else if (in.isOf(Items.POTION)) {
 			result = new ItemStack(Items.GLASS_BOTTLE);
 		} else {
 			throw new IllegalArgumentException(String.format("Don't know how to convert item '%s' to its empty form", Registry.ITEM.getId(in.getItem())));
@@ -180,12 +176,8 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		return stack.getItem() instanceof FluidContainerItem;
 	}
 
-	private static boolean isValidPotion(ItemStack stack) {
-		return stack.isOf(Items.POTION) && PotionUtil.getPotion(stack) != Potions.WATER;
-	}
-
 	private static boolean containsFluid(ItemStack stack) {
-		return isFluidContainerItem(stack) || isValidPotion(stack) || stack.isOf(Items.WATER_BUCKET);
+		return isFluidContainerItem(stack) || stack.isOf(Items.POTION) || stack.isOf(Items.WATER_BUCKET);
 	}
 
 	private static int getMaxCapacityOfEmpty(ItemStack stack) {
@@ -201,7 +193,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 	private static int getFill(ItemStack stack) {
 		if (stack.isOf(Items.WATER_BUCKET)) {
 			return 1620;
-		} else if (stack.isOf(Items.POTION) && PotionUtil.getPotion(stack).equals(Potions.WATER)) {
+		} else if (stack.isOf(Items.POTION)) {
 			return 540;
 		} else if (stack.isOf(BIG_BUCKET) || stack.isOf(TINY_BUCKET)) {
 			return Ctx.fromStack(stack).getValue();
@@ -225,7 +217,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 
 			if (stack.isOf(Items.GLASS_BOTTLE)) {
 				lines.add(new LiteralText("Fluid: 0 / 540 globules"));
-			} else if (stack.isOf(Items.POTION) && PotionUtil.getPotion(stack).equals(Potions.WATER)) {
+			} else if (stack.isOf(Items.POTION)) {
 				lines.add(new LiteralText("Fluid: 540 / 540 globules").formatted(Formatting.DARK_BLUE));
 			} else if (stack.isOf(Items.BUCKET)) {
 				lines.add(new LiteralText("Fluid: 0 / 1620 globules"));
