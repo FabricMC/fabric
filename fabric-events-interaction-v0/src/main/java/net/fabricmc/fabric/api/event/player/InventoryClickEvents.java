@@ -46,7 +46,7 @@ public class InventoryClickEvents {
 	@Deprecated
 	public static final Event<StackClicked> STACK_CLICKED = EventFactory.createArrayBacked(StackClicked.class, listeners -> ((itemStack, slot, screenHandler, clickType, player, playerInventory) -> {
 		for (StackClicked listener : listeners) {
-			ActionResult result = listener.onStackClicked(itemStack, slot, screenHandler, clickType, player,playerInventory);
+			ActionResult result = listener.onStackClicked(itemStack, slot, screenHandler, clickType, player, playerInventory);
 
 			if (result != ActionResult.PASS) {
 				return result;
