@@ -84,9 +84,11 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 			if (isFluidContainerItem(itemStack) && containsFluid(cursorStack)) {
 				int fill = getFill(cursorStack);
 				Ctx ctx = Ctx.fromStack(itemStack);
+
 				if (isFluidContainerItem(cursorStack)) {
 					Ctx newCtx = Ctx.fromStack(cursorStack);
 					int insertable = newCtx.getMaxInsertable();
+
 					if (fill > insertable) {
 						ctx.drain(insertable).put(itemStack);
 						newCtx.fill().put(cursorStack);
@@ -94,6 +96,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 						ctx.empty().put(itemStack);
 						newCtx.insert(fill).put(cursorStack);
 					}
+
 					cursorStack.decrement(1);
 					ItemStack newStack = getEmptyItemStack(cursorStack);
 					insertOrSpawn(playerInventory, newStack);
@@ -109,12 +112,14 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 			} else if (isEmptyContainer(itemStack) && isFluidContainerItem(cursorStack)) {
 				int am = getMaxCapacityOfEmpty(itemStack);
 				Ctx ctx = Ctx.fromStack(cursorStack);
+
 				if (ctx.canDrain(am)) {
 					ctx.drain(am);
 					cursorStack.decrement(1);
 					insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
 				}
 			}
+
 			return ActionResult.PASS;
 		});
 	}
