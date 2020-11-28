@@ -18,6 +18,7 @@ package net.fabricmc.fabric.mixin.client.rendering;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -49,8 +50,8 @@ public abstract class MixinWorldRenderer {
 	@Shadow private ClientWorld world;
 	@Shadow private ShaderEffect transparencyShader;
 	@Shadow private MinecraftClient client;
-	private final WorldRenderContextImpl context = new WorldRenderContextImpl();
-	private boolean didRenderParticles;
+	@Unique private final WorldRenderContextImpl context = new WorldRenderContextImpl();
+	@Unique private boolean didRenderParticles;
 
 	@Inject(method = "render", at = @At("HEAD"))
 	private void beforeRender(MatrixStack matrices, float tickDelta, long limitTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightmapTextureManager lightmapTextureManager, Matrix4f matrix4f, CallbackInfo ci) {

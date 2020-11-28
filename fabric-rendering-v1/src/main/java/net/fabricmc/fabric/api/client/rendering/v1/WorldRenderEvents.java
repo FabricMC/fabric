@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.rendering.v1;
 
 import net.minecraft.client.render.WorldRenderer;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -28,6 +30,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>These events are not dependent on the Fabric rendering API or Indigo but work when those are present.
  */
+@Environment(EnvType.CLIENT)
 public final class WorldRenderEvents {
 	private WorldRenderEvents() { }
 
@@ -140,7 +143,7 @@ public final class WorldRenderEvents {
 	 * default outline effect benefits from being drawn at a later stage it can
 	 * be cancelled here and then drawn in {@link #AFTER_TRANSLUCENT} or {@link #LAST}
 	 * if desired. To facilitate this pattern, those events can check
-	 * {@link WorldRenderContext.AfterBlockOutline#didCancelDefaultBlockOutline()}.
+	 * {@link WorldRenderContext.PostBlockOutlineContext#didCancelDefaultBlockOutline()}.
 	 */
 	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, callbacks -> context -> {
 		for (final BlockOutline callback : callbacks) {

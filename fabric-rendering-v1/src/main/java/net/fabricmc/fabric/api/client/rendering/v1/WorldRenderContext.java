@@ -35,10 +35,14 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.profiler.Profiler;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 /**
  * Except as noted below, the properties exposed here match the parameters passed to
  * {@link WorldRenderer#render(MatrixStack, float, long, boolean, Camera, GameRenderer, LightmapTextureManager, Matrix4f)}.
  */
+@Environment(EnvType.CLIENT)
 public interface WorldRenderContext {
 	/**
 	 * The world renderer instance doing the rendering and invoking the event.
