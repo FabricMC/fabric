@@ -26,29 +26,8 @@ public class FluidContainerItem extends Item {
 	}
 
 	@Override
-	public boolean isItemBarVisible(ItemStack stack) {
-		return true;
-	}
-
-	@Override
 	public boolean hasGlint(ItemStack stack) {
 		return true;
-	}
-
-	@Environment(EnvType.CLIENT)
-	@Override
-	public int getItemBarColor(ItemStack stack) {
-		return 0x0044FF;
-	}
-
-	@Environment(EnvType.CLIENT)
-	@Override
-	public int getItemBarStep(ItemStack stack) {
-		CompoundTag fluidTag = (CompoundTag) stack.getOrCreateTag().get("Fluid");
-		if (fluidTag == null) {
-			return 0;
-		}
-		return MathHelper.floor((fluidTag.getInt("value") * 1.3F) / fluidTag.getInt("max"));
 	}
 
 	public int getMax() {
