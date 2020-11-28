@@ -52,7 +52,7 @@ public final class FabricItemInternals {
 		}
 	}
 
-	public static DefaultedList<ItemStack> getRemainingStacks(Inventory inventory, RecipeType<?> type, World world, @Nullable BlockPos pos) {
+	public static DefaultedList<ItemStack> getRemainingStacks(Inventory inventory, @Nullable RecipeType<?> type, World world, @Nullable BlockPos pos) {
 		DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);
 
 		for (int i = 0; i < defaultedList.size(); ++i) {
