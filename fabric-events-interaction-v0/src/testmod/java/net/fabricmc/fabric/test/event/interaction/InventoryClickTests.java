@@ -115,8 +115,8 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 
 				if (ctx.canDrain(am)) {
 					ctx.drain(am);
-					insertOrSpawn(playerInventory, getEmptyItemStack(cursorStack));
-					cursorStack.decrement(1);
+					insertOrSpawn(playerInventory, getEmptyItemStack(itemStack));
+					itemStack.decrement(1);
 				}
 			}
 
@@ -288,11 +288,11 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		}
 
 		public Ctx drain(int amount) {
-			return new Ctx(this.max, this.value - amount);
+			return new Ctx(this.value - amount, this.max);
 		}
 
 		public Ctx insert(int amount) {
-			return new Ctx(this.max, this.value + amount);
+			return new Ctx(this.value + amount, this.max);
 		}
 
 		public int getMaxInsertable() {
