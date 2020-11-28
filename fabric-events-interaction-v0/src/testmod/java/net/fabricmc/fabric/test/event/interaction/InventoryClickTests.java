@@ -308,7 +308,7 @@ public class InventoryClickTests implements ModInitializer, ClientModInitializer
 		}
 
 		public static Ctx fromStack(ItemStack stack) {
-			return fromTag(Optional.ofNullable(stack.getSubTag("Fluid")).orElse(new Ctx(0, 1620).toTag()));
+			return fromTag(Optional.ofNullable(stack.getSubTag("Fluid")).orElse(new Ctx(0, ((FluidContainerItem) stack.getItem()).getMax()).toTag()));
 		}
 	}
 }
