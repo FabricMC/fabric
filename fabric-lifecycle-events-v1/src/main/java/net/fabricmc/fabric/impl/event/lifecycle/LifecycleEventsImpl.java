@@ -17,11 +17,13 @@
 package net.fabricmc.fabric.impl.event.lifecycle;
 
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.Entity;
 import net.minecraft.world.chunk.WorldChunk;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerChunkEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 
 public final class LifecycleEventsImpl implements ModInitializer {
@@ -44,12 +46,16 @@ public final class LifecycleEventsImpl implements ModInitializer {
 			}
 		});
 
-		// We use the world unload event so worlds that are dynamically hot(un)loaded get block entity unload events fired when shut down.
+		// We use the world unload event so worlds that are dynamically hot(un)loaded get (block) entity unload events fired when shut down.
 		ServerWorldEvents.UNLOAD.register((server, world) -> {
 			for (WorldChunk chunk : ((LoadedChunksCache) world).fabric_getLoadedChunks()) {
 				for (BlockEntity blockEntity : chunk.getBlockEntities().values()) {
 					ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.invoker().onUnload(blockEntity, world);
 				}
+			}
+
+			for (Entity entity : world.iterateEntities()) {
+				ServerEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, world);
 			}
 		});
 	}
