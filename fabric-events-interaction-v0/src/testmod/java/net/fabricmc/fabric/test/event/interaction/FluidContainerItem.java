@@ -19,12 +19,7 @@ package net.fabricmc.fabric.test.event.interaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
-
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 
 public class FluidContainerItem extends Item {
 	private final int max;
