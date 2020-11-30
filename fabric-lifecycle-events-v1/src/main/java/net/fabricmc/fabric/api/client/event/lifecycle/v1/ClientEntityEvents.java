@@ -57,7 +57,7 @@ public final class ClientEntityEvents {
 	/**
 	 * Called when an Entity is about to be unloaded from a ClientWorld.
 	 *
-	 * <p>This event is called before the entity is removed from the world.
+	 * <p>This event is called before the entity is unloaded from the world.
 	 */
 	public static final Event<ClientEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ClientEntityEvents.Unload.class, callbacks -> (entity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {
