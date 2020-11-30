@@ -63,7 +63,7 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 				int entities = 0;
 
 				for (ServerWorld world : server.getWorlds()) {
-					final int worldEntities = Iterables.toArray(world.iterateEntities(), Entity.class).length;
+					final int worldEntities = Iterables.size(world.iterateEntities());
 
 					if (PRINT_SERVER_ENTITY_MESSAGES) {
 						logger.info("[SERVER] Tracked Entities in " + world.getRegistryKey().toString() + " - " + worldEntities);
