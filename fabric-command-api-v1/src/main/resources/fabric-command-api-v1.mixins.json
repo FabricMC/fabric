@@ -6,6 +6,8 @@
     "CommandManagerMixin"
   ],
   "client": [
+    "ClientPlayerEntityMixin",
+    "ClientPlayNetworkHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
