@@ -33,11 +33,14 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
 
 public class ClientCommandTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(ClientCommandTest.class);
-
+	
+	private static boolean tested = false;
+	
 	@Override
 	public void onInitialize() {
 		ClientCommandManager.INSTANCE.getDispatcher().register(
@@ -65,65 +68,73 @@ public class ClientCommandTest implements ModInitializer {
 									throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand().create();
 								})));
 
-		sendMessage("/command_a command_b 1234");
+		ClientTickEvents.START_WORLD_TICK.register(world -> {
+			if (tested) {
+				return;
+			}
+			
+			sendMessage("/command_a command_b 1234");
 
-		sendMessage("----------------------------");
+			sendMessage("----------------------------");
 
-		sendMessage("/command_a command_e");
+			sendMessage("/command_a command_e");
 
-		sendMessage("----------------------------");
+			sendMessage("----------------------------");
 
-		sendMessage("/command_a command_f");
+			sendMessage("/command_a command_f");
 
-		sendMessage("----------------------------");
+			sendMessage("----------------------------");
 
-		sendMessage("/command_a command_g");
+			sendMessage("/command_a command_g");
 
-		sendMessage("----------------------------");
+			sendMessage("----------------------------");
 
-		CommandNode<CommandSource> command_b_arg1 = MinecraftClient.getInstance().player.networkHandler
-				.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_b", "arg1"));
+			CommandNode<CommandSource> command_b_arg1 = MinecraftClient.getInstance().player.networkHandler
+					.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_b", "arg1"));
 
-		if (command_b_arg1 == null) {
-			throw new AssertionError("Expected to find 'arg1' on the networkHandler's command dispatcher. But it was not found.");
-		}
+			if (command_b_arg1 == null) {
+				throw new AssertionError("Expected to find 'arg1' on the networkHandler's command dispatcher. But it was not found.");
+			}
 
-		CommandNode<CommandSource> command_c = MinecraftClient.getInstance().player.networkHandler
-				.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_c"));
+			CommandNode<CommandSource> command_c = MinecraftClient.getInstance().player.networkHandler
+					.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_c"));
 
-		if (command_c == null) {
-			throw new AssertionError("Expected to find 'command_c' on the networkHandler's command dispatcher. But it was not found.");
-		}
+			if (command_c == null) {
+				throw new AssertionError("Expected to find 'command_c' on the networkHandler's command dispatcher. But it was not found.");
+			}
 
-		CommandNode<CommandSource> command_d = MinecraftClient.getInstance().player.networkHandler
-				.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_d"));
+			CommandNode<CommandSource> command_d = MinecraftClient.getInstance().player.networkHandler
+					.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_d"));
 
-		if (command_d != null) {
-			throw new AssertionError("Found 'command_d' on the networkHandler's command dispatcher. This should not happen!");
-		}
+			if (command_d != null) {
+				throw new AssertionError("Found 'command_d' on the networkHandler's command dispatcher. This should not happen!");
+			}
 
-		CommandNode<CommandSource> command_e = MinecraftClient.getInstance().player.networkHandler
-				.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_e"));
+			CommandNode<CommandSource> command_e = MinecraftClient.getInstance().player.networkHandler
+					.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_e"));
 
-		if (command_e == null) {
-			throw new AssertionError("Expected to find 'command_e' on the networkHandler's command dispatcher. But it was not found.");
-		}
+			if (command_e == null) {
+				throw new AssertionError("Expected to find 'command_e' on the networkHandler's command dispatcher. But it was not found.");
+			}
 
-		CommandNode<CommandSource> command_f = MinecraftClient.getInstance().player.networkHandler
-				.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_f"));
+			CommandNode<CommandSource> command_f = MinecraftClient.getInstance().player.networkHandler
+					.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_f"));
 
-		if (command_f == null) {
-			throw new AssertionError("Expected to find 'command_f' on the networkHandler's command dispatcher. But it was not found.");
-		}
+			if (command_f == null) {
+				throw new AssertionError("Expected to find 'command_f' on the networkHandler's command dispatcher. But it was not found.");
+			}
 
-		CommandNode<CommandSource> command_g = MinecraftClient.getInstance().player.networkHandler
-				.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_g"));
+			CommandNode<CommandSource> command_g = MinecraftClient.getInstance().player.networkHandler
+					.getCommandDispatcher().findNode(Arrays.asList("command_a", "command_g"));
 
-		if (command_g == null) {
-			throw new AssertionError("Expected to find 'command_g' on the networkHandler's command dispatcher. But it was not found.");
-		}
+			if (command_g == null) {
+				throw new AssertionError("Expected to find 'command_g' on the networkHandler's command dispatcher. But it was not found.");
+			}
 
-		LOGGER.info("The command tests have passed!");
+			LOGGER.info("The command tests have passed!");
+			
+			tested = true;
+		});
 	}
 
 	private void sendMessage(String message) {
