@@ -24,6 +24,9 @@ import com.mojang.brigadier.tree.CommandNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.literal;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
@@ -31,8 +34,6 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
-import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.literal;
 
 public class ClientCommandTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(ClientCommandTest.class);
