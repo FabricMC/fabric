@@ -24,18 +24,19 @@ public abstract class ClientPlayerEntityMixin {
         if (message.length() > 2 && message.charAt(0) == '/') {
             StringReader reader = new StringReader(message);
             reader.setCursor(1);
-            ParseResults<CommandSource> parse = ClientCommandManager.INSTANCE.getDispatcher().parse(reader, networkHandler.getCommandSource());
-
-            if (parse.getReader().canRead()) {
+            ParseResults<CommandSource> parse = 
+				ClientCommandManager.INSTANCE.getDispatcher().parse(reader, networkHandler.getCommandSource());
+			
+            if (parse.getReader().canRead()) {//try server
                 StringReader reader1 = new StringReader(message);
                 reader1.setCursor(1);
                 parse = networkHandler.getCommandDispatcher().parse(reader1, networkHandler.getCommandSource());
-                if (parse.getReader().canRead()) {
+                if (parse.getReader().canRead()) {//print error messages
                     ClientCommandManager.INSTANCE.execute(networkHandler.getCommandDispatcher(), parse);
 
                     callbackInfo.cancel();
                 }
-            } else {
+            } else {//excute command
                 ClientCommandManager.INSTANCE.execute(ClientCommandManager.INSTANCE.getDispatcher(), parse);
 
                 callbackInfo.cancel();
