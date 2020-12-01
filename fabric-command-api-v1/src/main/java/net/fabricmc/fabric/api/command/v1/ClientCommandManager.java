@@ -23,9 +23,9 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
-import net.minecraft.command.CommandSource;
+import net.fabricmc.fabric.impl.command.ClientCommandManagerImpl;
 
-import net.fabricmc.fabric.impl.command.v1.ClientCommandManagerImpl;
+import net.minecraft.command.CommandSource;
 
 public interface ClientCommandManager {
 	ClientCommandManager INSTANCE = new ClientCommandManagerImpl();
