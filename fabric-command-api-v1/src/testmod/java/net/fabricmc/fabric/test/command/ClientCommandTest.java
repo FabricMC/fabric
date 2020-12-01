@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test;
+package net.fabricmc.fabric.test.command;
+
+import java.util.Arrays;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -22,7 +24,8 @@ import com.mojang.brigadier.tree.CommandNode;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
+import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.literal;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
@@ -31,9 +34,6 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
-
-import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.argument;
-import static net.fabricmc.fabric.api.command.v1.ClientCommandManager.literal;
 
 public class ClientCommandTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(ClientCommandTest.class);
