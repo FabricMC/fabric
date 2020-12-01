@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
 
 public class ClientCommandTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(ClientCommandTest.class);
-	
+
 	private static boolean tested = false;
 
 	public static void onWorldStart() {
