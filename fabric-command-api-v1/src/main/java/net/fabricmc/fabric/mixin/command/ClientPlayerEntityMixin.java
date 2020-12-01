@@ -19,8 +19,6 @@ package net.fabricmc.fabric.mixin.command;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
 
-import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
-
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.command.CommandSource;
@@ -31,6 +29,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin {
@@ -50,6 +50,7 @@ public abstract class ClientPlayerEntityMixin {
 				StringReader reader1 = new StringReader(message);
 				reader1.setCursor(1);
 				parse = networkHandler.getCommandDispatcher().parse(reader1, networkHandler.getCommandSource());
+
 				if (parse.getReader().canRead()) {
 					ClientCommandManager.INSTANCE.execute(networkHandler.getCommandDispatcher(), parse);
 
