@@ -15,8 +15,5 @@
     "client": [
       "net.fabricmc.fabric.test.command.ClientCommandTest"
     ]
-  },
-  "mixins": [
-    "fabric-command-api-v1-testmod.mixins.json"
-  ]
+  }
 }
