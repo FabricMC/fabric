@@ -19,6 +19,8 @@ package net.fabricmc.fabric.impl.command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
@@ -35,9 +37,6 @@ import net.minecraft.util.Util;
 import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 public class ClientCommandManagerImpl implements ClientCommandManager {
 	private static final Logger LOGGER = LogManager.getLogger();
