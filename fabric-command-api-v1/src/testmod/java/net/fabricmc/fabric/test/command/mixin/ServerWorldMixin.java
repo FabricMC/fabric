@@ -26,6 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.server.world.ServerWorld;
 
+import net.fabricmc.fabric.test.command.ClientCommandTest;
+
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin {
 	@Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/server/world/ServerWorld;inBlockTick:Z", opcode = 181, ordinal = 0, shift = Shift.AFTER))
