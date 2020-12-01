@@ -38,15 +38,7 @@ import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
 public class ClientCommandTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(ClientCommandTest.class);
 
-	private static boolean tested = false;
-
 	public static void onWorldStart() {
-		if (tested) {
-			return;
-		}
-
-		tested = true;
-
 		sendMessage("/command_a command_b 1234");
 
 		sendMessage("----------------------------");
@@ -138,5 +130,7 @@ public class ClientCommandTest implements ModInitializer {
 								.executes(context -> {
 									throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.dispatcherUnknownCommand().create();
 								})));
+
+		LOGGER.info("The command tests have passed! Please make sure you execute these commands for extra safety.");
 	}
 }
