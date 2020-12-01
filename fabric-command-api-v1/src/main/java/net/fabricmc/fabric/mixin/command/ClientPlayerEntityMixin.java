@@ -19,18 +19,18 @@ package net.fabricmc.fabric.mixin.command;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.StringReader;
 
-import net.minecraft.client.network.ClientPlayNetworkHandler;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.command.CommandSource;
-
-import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
-
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.command.CommandSource;
+
+import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
 
 @Mixin(ClientPlayerEntity.class)
 public abstract class ClientPlayerEntityMixin {
