@@ -34,10 +34,10 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.text.TranslatableText;
 
+import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
 
 public class ClientCommandManagerImpl implements ClientCommandManager {
 	private static final Logger LOGGER = LogManager.getLogger();
