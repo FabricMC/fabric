@@ -20,8 +20,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 
-import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
-
 import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
@@ -38,6 +36,8 @@ import net.minecraft.text.TranslatableText;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.fabricmc.fabric.api.command.v1.ClientCommandManager;
 
 public class ClientCommandManagerImpl implements ClientCommandManager {
 	private static final Logger LOGGER = LogManager.getLogger();
@@ -66,6 +66,7 @@ public class ClientCommandManagerImpl implements ClientCommandManager {
 			sendError(Texts.toText(e.getRawMessage()));
 
 			String input = e.getInput();
+
 			if (input != null && e.getCursor() >= 0) {
 				int i = Math.min(input.length(), e.getCursor());
 
@@ -97,6 +98,7 @@ public class ClientCommandManagerImpl implements ClientCommandManager {
 				LOGGER.error("Command exception: {}", parseResults.getReader().getString(), e);
 
 				StackTraceElement[] stackTraceElements = e.getStackTrace();
+
 				for (int j = 0; j < Math.min(stackTraceElements.length, 3); ++j) {
 					text.append("\n\n")
 							.append(stackTraceElements[j].getMethodName())
