@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.provider.v1.block;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -86,17 +87,17 @@ public interface BlockApiLookup<T, C> {
 	@FunctionalInterface
 	interface BlockApiProvider<T, C> {
 		/**
-		 * Return an object of type {@code T} if available in the world at the given pos with the given context, or {@link null} otherwise.
+		 * Return an object of type {@code T} if available in the world at the given pos with the given context, or {@code null} otherwise.
 		 * @return An object of type {@code T} if available, or {@code null} otherwise.
 		 */
 		@Nullable
-		T get(World world, BlockPos pos, C context);
+		T get(World world, BlockPos pos, BlockState state, C context);
 	}
 
 	@FunctionalInterface
 	interface BlockEntityApiProvider<T, C> {
 		/**
-		 * Return an object of type {@code T} if available in the given block entity with the given context, or {@link null} otherwise.
+		 * Return an object of type {@code T} if available in the given block entity with the given context, or {@code null} otherwise.
 		 * @return An object of type {@code T} if available, or {@code null} otherwise.
 		 */
 		@Nullable

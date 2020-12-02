@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.math.BlockPos;
@@ -47,8 +48,9 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	public T get(@NotNull World world, @NotNull BlockPos pos, C context) {
 		// This call checks for null world and pos.
 		// Providers have the final say whether a null context is allowed.
+		BlockState state = world.getBlockState(pos);
 		@Nullable
-		BlockApiProvider<T, C> provider = getProvider(world, pos);
+		BlockApiProvider<T, C> provider = getProvider(state.getBlock());
 
 		BlockEntity be = null;
 		boolean beQueried = false;
@@ -63,7 +65,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 				instance = ((WrappedBlockEntityProvider<T, C>) provider).blockEntityProvider.get(be, context);
 			}
 		} else if (provider != null) {
-			instance = provider.get(world, pos, context);
+			instance = provider.get(world, pos, state, context);
 		}
 
 		if (instance != null) {
@@ -89,7 +91,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 
 		// Query the block fallback providers
 		for (BlockApiProvider<T, C> fallbackProvider : fallbackProviders) {
-			instance = fallbackProvider.get(world, pos, context);
+			instance = fallbackProvider.get(world, pos, state, context);
 
 			if (instance != null) {
 				return instance;
@@ -143,11 +145,8 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	}
 
 	@Nullable
-	public BlockApiProvider<T, C> getProvider(World world, BlockPos pos) {
-		Objects.requireNonNull(world, "World cannot be null");
-		Objects.requireNonNull(pos, "Block pos cannot be null");
-
-		return providerMap.get(world.getBlockState(pos).getBlock());
+	public BlockApiProvider<T, C> getProvider(Block block) {
+		return providerMap.get(block);
 	}
 
 	public List<BlockEntityApiProvider<T, C>> getBlockEntityFallbackProviders() {
@@ -166,7 +165,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		}
 
 		@Override
-		public @Nullable T get(@NotNull World world, @NotNull BlockPos pos, C context) {
+		public @Nullable T get(World world, BlockPos pos, BlockState state, C context) {
 			@Nullable final BlockEntity blockEntity = world.getBlockEntity(pos);
 
 			if (blockEntity != null) {

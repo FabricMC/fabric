@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.provider.block;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -53,16 +54,19 @@ public class BlockApiCacheImpl<T, C> implements BlockApiCache<T, C> {
 	@Nullable
 	@Override
 	public T get(C context) {
+		BlockState state = null;
+
 		// Cache BE provider and BE if possible, otherwise query using the regular block provider
 		if (cachedProvider == null) {
-			BlockApiLookup.BlockApiProvider<T, C> provider = lookup.getProvider(world, pos);
+			state = world.getBlockState(pos);
+			BlockApiLookup.BlockApiProvider<T, C> provider = lookup.getProvider(state.getBlock());
 
 			if (provider instanceof BlockApiLookupImpl.WrappedBlockEntityProvider) {
 				cachedProvider = ((BlockApiLookupImpl.WrappedBlockEntityProvider<T, C>) provider).blockEntityProvider;
 				cachedBlockEntity = world.getBlockEntity(pos);
 				blockEntityCacheValid = true;
 			} else if (provider != null) {
-				T instance = provider.get(world, pos, context);
+				T instance = provider.get(world, pos, state, context);
 
 				if (instance != null) {
 					return instance;
@@ -95,7 +99,11 @@ public class BlockApiCacheImpl<T, C> implements BlockApiCache<T, C> {
 		}
 
 		for (BlockApiLookup.BlockApiProvider<T, C> fallbackProvider : lookup.getFallbackProviders()) {
-			T instance = fallbackProvider.get(world, pos, context);
+			if (state == null) {
+				state = world.getBlockState(pos);
+			}
+
+			T instance = fallbackProvider.get(world, pos, state, context);
 
 			if (instance != null) {
 				return instance;
