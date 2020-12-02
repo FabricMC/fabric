@@ -34,7 +34,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
@@ -285,11 +285,11 @@ public class AoCalculator {
 	}
 
 	/** used exclusively in irregular face to avoid new heap allocations each call. */
-	private final Vector3f vertexNormal = new Vector3f();
+	private final Vec3f vertexNormal = new Vec3f();
 
 	private void irregularFace(MutableQuadViewImpl quad) {
-		final Vector3f faceNorm = quad.faceNormal();
-		Vector3f normal;
+		final Vec3f faceNorm = quad.faceNormal();
+		Vec3f normal;
 		final float[] w = this.w;
 		final float[] aoResult = this.ao;
 		final int[] lightResult = this.light;

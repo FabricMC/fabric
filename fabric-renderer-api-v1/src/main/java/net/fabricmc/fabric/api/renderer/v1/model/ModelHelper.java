@@ -27,7 +27,7 @@ import net.minecraft.client.render.model.BakedQuad;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.render.model.json.Transformation;
 import net.minecraft.client.texture.SpriteAtlasTexture;
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.renderer.v1.mesh.Mesh;
@@ -74,7 +74,7 @@ public abstract class ModelHelper {
 	 * <p>Retrieves sprites from the block texture atlas via {@link SpriteFinder}.
 	 */
 	public static List<BakedQuad>[] toQuadLists(Mesh mesh) {
-		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().method_24153(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE));
+		SpriteFinder finder = SpriteFinder.get(MinecraftClient.getInstance().getBakedModelManager().getAtlas(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE));
 
 		@SuppressWarnings("unchecked")
 		final ImmutableList.Builder<BakedQuad>[] builders = new ImmutableList.Builder[7];
@@ -111,10 +111,10 @@ public abstract class ModelHelper {
 	 * This means you can use values from a vanilla JSON file as inputs to this method.
 	 */
 	private static Transformation makeTransform(float rotationX, float rotationY, float rotationZ, float translationX, float translationY, float translationZ, float scaleX, float scaleY, float scaleZ) {
-		Vector3f translation = new Vector3f(translationX, translationY, translationZ);
+		Vec3f translation = new Vec3f(translationX, translationY, translationZ);
 		translation.scale(0.0625f);
 		translation.clamp(-5.0F, 5.0F);
-		return new Transformation(new Vector3f(rotationX, rotationY, rotationZ), translation, new Vector3f(scaleX, scaleY, scaleZ));
+		return new Transformation(new Vec3f(rotationX, rotationY, rotationZ), translation, new Vec3f(scaleX, scaleY, scaleZ));
 	}
 
 	public static final Transformation TRANSFORM_BLOCK_GUI = makeTransform(30, 225, 0, 0, 0, 0, 0.625f, 0.625f, 0.625f);

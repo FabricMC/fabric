@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.mixin.tag.extension;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Either;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -41,10 +42,10 @@ public class MixinTagBuilder<T> implements FabricTagBuilder<T> {
 	@Unique
 	private int fabric_clearCount;
 
-	@Redirect(method = "build", at = @At(value = "INVOKE", target = "Ljava/util/Optional;of(Ljava/lang/Object;)Ljava/util/Optional;"))
-	private Optional<?> build(Object tagObj) {
+	@Redirect(method = "build", at = @At(value = "INVOKE", target = "Lcom/mojang/datafixers/util/Either;right(Ljava/lang/Object;)Lcom/mojang/datafixers/util/Either;"))
+	private Either<Collection<Tag.TrackedEntry>, Object> build(Object tagObj) {
 		((FabricTagHooks) tagObj).fabric_setExtraData(fabric_clearCount);
-		return Optional.of(tagObj);
+		return Either.right(tagObj);
 	}
 
 	@Inject(at = @At(value = "INVOKE", target = "Ljava/util/List;clear()V"), method = "read")

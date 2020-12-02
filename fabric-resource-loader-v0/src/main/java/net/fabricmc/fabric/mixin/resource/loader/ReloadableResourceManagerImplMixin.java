@@ -30,6 +30,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.resource.ReloadableResourceManagerImpl;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.ResourcePack;
+import net.minecraft.resource.ResourceReloadMonitor;
+import net.minecraft.util.Unit;
 
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 
@@ -39,8 +42,12 @@ public class ReloadableResourceManagerImplMixin {
 	@Shadow
 	private ResourceType type;
 
-	@Inject(at = @At("HEAD"), method = "beginReloadInner")
-	public void reload(Executor var1, Executor var2, List<ResourceReloadListener> listeners, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
-		ResourceManagerHelperImpl.sort(type, listeners);
+	@Shadow
+	@Final
+	private List<ResourceReloadListener> listeners;
+
+	@Inject(at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false), method = "beginMonitoredReload")
+	public void reload(Executor prepareExecutor, Executor applyExecutor, CompletableFuture<Unit> initialStage, List<ResourcePack> packs, CallbackInfoReturnable<ResourceReloadMonitor> info) {
+		ResourceManagerHelperImpl.sort(type, this.listeners);
 	}
 }

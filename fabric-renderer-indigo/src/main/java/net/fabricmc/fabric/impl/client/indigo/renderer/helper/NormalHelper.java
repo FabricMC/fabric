@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.client.indigo.renderer.helper;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.minecraft.client.util.math.Vector3f;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3i;
@@ -50,7 +50,7 @@ public abstract class NormalHelper {
 	/**
 	 * Version of {@link #packNormal(float, float, float, float)} that accepts a vector type.
 	 */
-	public static int packNormal(Vector3f normal, float w) {
+	public static int packNormal(Vec3f normal, float w) {
 		return packNormal(normal.getX(), normal.getY(), normal.getZ(), w);
 	}
 
@@ -71,7 +71,7 @@ public abstract class NormalHelper {
 	 * <p>Will work with triangles also. Assumes counter-clockwise winding order, which is the norm.
 	 * Expects convex quads with all points co-planar.
 	 */
-	public static void computeFaceNormal(@NotNull Vector3f saveTo, QuadView q) {
+	public static void computeFaceNormal(@NotNull Vec3f saveTo, QuadView q) {
 		final Direction nominalFace = q.nominalFace();
 
 		if (GeometryHelper.isQuadParallelToFace(nominalFace, q)) {

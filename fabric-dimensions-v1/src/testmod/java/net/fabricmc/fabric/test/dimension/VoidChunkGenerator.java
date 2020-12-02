@@ -20,7 +20,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.WorldAccess;
@@ -74,7 +73,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	public BlockView getColumnSample(int x, int z) {
-		return new VerticalBlockSample(new BlockState[0]);
+	public VerticalBlockSample getColumnSample(int x, int z) {
+		return new VerticalBlockSample(0, new BlockState[0]);
 	}
 }

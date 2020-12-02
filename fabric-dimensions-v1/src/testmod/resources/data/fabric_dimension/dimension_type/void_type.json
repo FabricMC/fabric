@@ -10,5 +10,7 @@
   "has_raids" : false,
   "respawn_anchor_works": false,
   "bed_works" : false,
-  "piglin_safe" : false
+  "piglin_safe" : false,
+  "height": 256,
+  "min_y": 0
 }
