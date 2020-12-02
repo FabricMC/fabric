@@ -138,10 +138,10 @@ allprojects {
 
 	jar {
 		manifest {
-        attributes 'Implementation-Title': 'FabricAPI',
-                'Implementation-Version': project.version,
-                'Main-Class': 'net.fabricmc.fabric.APIWarning'
-    }
+			attributes 'Implementation-Title': 'FabricAPI',
+					'Implementation-Version': project.version,
+					'Main-Class': 'net.fabricmc.fabric.impl.launch.APIWarning'
+		}
 		classifier = "dev"
 	}
 
