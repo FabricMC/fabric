@@ -18,7 +18,7 @@ package net.fabricmc.fabric.impl.launch;
 
 import javax.swing.JOptionPane;
 
-public class APIWarning {
+public final class APIWarning {
 	public static void main(String[] args) {
 		String st = "Fabric API is not meant to be run.\nPlease place this file in your mods folder.";
 		JOptionPane.showMessageDialog(null, st);
