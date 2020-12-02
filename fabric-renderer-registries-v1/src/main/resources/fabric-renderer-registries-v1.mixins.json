@@ -3,6 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.client.renderer.registry",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "EntityModelLayersAccessor",
+    "EntityModelsMixin",
     "LivingEntityRendererAccessor",
     "MixinBlockEntityRenderers",
     "MixinEntityRenderers"
