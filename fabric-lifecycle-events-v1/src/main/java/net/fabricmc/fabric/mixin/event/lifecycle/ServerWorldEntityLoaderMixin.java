@@ -36,9 +36,13 @@ abstract class ServerWorldEntityLoaderMixin {
 	@Final
 	private ServerWorld field_26936;
 
-	// onLoadEntity
 	@Inject(method = "onLoadEntity(Lnet/minecraft/entity/Entity;)V", at = @At("TAIL"))
 	private void invokeEntityLoadEvent(Entity entity, CallbackInfo ci) {
 		ServerEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, this.field_26936);
+	}
+
+	@Inject(method = "onUnloadEntity(Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
+	private void invokeEntityUnloadEvent(Entity entity, CallbackInfo info) {
+		ServerEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.field_26936);
 	}
 }

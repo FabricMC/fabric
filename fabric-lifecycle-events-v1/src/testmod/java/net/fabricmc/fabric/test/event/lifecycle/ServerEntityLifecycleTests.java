@@ -19,12 +19,16 @@ package net.fabricmc.fabric.test.event.lifecycle;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.collect.Iterables;
 import org.apache.logging.log4j.Logger;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 
 /**
  * Tests related to the lifecycle of entities.
@@ -32,6 +36,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 public final class ServerEntityLifecycleTests implements ModInitializer {
 	private static final boolean PRINT_SERVER_ENTITY_MESSAGES = System.getProperty("fabric-lifecycle-events-testmod.printServerEntityMessages") != null;
 	private final List<Entity> serverEntities = new ArrayList<>();
+	private int serverTicks = 0;
 
 	@Override
 	public void onInitialize() {
@@ -42,6 +47,47 @@ public final class ServerEntityLifecycleTests implements ModInitializer {
 
 			if (PRINT_SERVER_ENTITY_MESSAGES) {
 				logger.info("[SERVER] LOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+			}
+		});
+
+		ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+			this.serverEntities.remove(entity);
+
+			if (PRINT_SERVER_ENTITY_MESSAGES) {
+				logger.info("[SERVER] UNLOADED " + entity.toString() + " - Entities: " + this.serverEntities.size());
+			}
+		});
+
+		ServerTickEvents.END_SERVER_TICK.register(server -> {
+			if (this.serverTicks++ % 200 == 0) {
+				int entities = 0;
+
+				for (ServerWorld world : server.getWorlds()) {
+					final int worldEntities = Iterables.size(world.iterateEntities());
+
+					if (PRINT_SERVER_ENTITY_MESSAGES) {
+						logger.info("[SERVER] Tracked Entities in " + world.getRegistryKey().toString() + " - " + worldEntities);
+					}
+
+					entities += worldEntities;
+				}
+
+				if (PRINT_SERVER_ENTITY_MESSAGES) {
+					logger.info("[SERVER] Actual Total Entities: " + entities);
+				}
+
+				if (entities != this.serverEntities.size()) {
+					// Always print mismatches
+					logger.error("[SERVER] Mismatch in tracked entities and actual entities");
+				}
+			}
+		});
+
+		ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
+			logger.info("[SERVER] Disconnected. Tracking: " + this.serverEntities.size() + " entities");
+
+			if (this.serverEntities.size() != 0) {
+				logger.error("[SERVER] Mismatch in tracked entities, expected 0");
 			}
 		});
 	}

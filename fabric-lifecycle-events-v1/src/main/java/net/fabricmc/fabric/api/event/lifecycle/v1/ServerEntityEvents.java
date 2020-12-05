@@ -31,8 +31,6 @@ public final class ServerEntityEvents {
 	 * Called when an Entity is loaded into a ServerWorld.
 	 *
 	 * <p>When this event is called, the entity is already in the world.
-	 *
-	 * <p>Note there is no corresponding unload event because entity unloads cannot be reliably tracked.
 	 */
 	public static final Event<ServerEntityEvents.Load> ENTITY_LOAD = EventFactory.createArrayBacked(ServerEntityEvents.Load.class, callbacks -> (entity, world) -> {
 		if (EventFactory.isProfilingEnabled()) {
@@ -53,8 +51,37 @@ public final class ServerEntityEvents {
 		}
 	});
 
+	/**
+	 * Called when an Entity is unloaded from a ServerWorld.
+	 *
+	 * <p>This event is called before the entity is removed from the world.
+	 */
+	public static final Event<ServerEntityEvents.Unload> ENTITY_UNLOAD = EventFactory.createArrayBacked(ServerEntityEvents.Unload.class, callbacks -> (entity, world) -> {
+		if (EventFactory.isProfilingEnabled()) {
+			final Profiler profiler = world.getProfiler();
+			profiler.push("fabricServerEntityUnload");
+
+			for (ServerEntityEvents.Unload callback : callbacks) {
+				profiler.push(EventFactory.getHandlerName(callback));
+				callback.onUnload(entity, world);
+				profiler.pop();
+			}
+
+			profiler.pop();
+		} else {
+			for (ServerEntityEvents.Unload callback : callbacks) {
+				callback.onUnload(entity, world);
+			}
+		}
+	});
+
 	@FunctionalInterface
 	public interface Load {
 		void onLoad(Entity entity, ServerWorld world);
+	}
+
+	@FunctionalInterface
+	public interface Unload {
+		void onUnload(Entity entity, ServerWorld world);
 	}
 }
