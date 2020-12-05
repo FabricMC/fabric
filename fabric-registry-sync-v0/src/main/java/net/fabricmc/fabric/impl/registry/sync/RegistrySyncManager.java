@@ -43,9 +43,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.thread.ThreadExecutor;
 
-import net.fabricmc.fabric.api.network.PacketContext;
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public final class RegistrySyncManager {
 	static final boolean DEBUG = System.getProperty("fabric.registry.debug", "false").equalsIgnoreCase("true");
@@ -61,15 +61,15 @@ public final class RegistrySyncManager {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(toTag(true));
 
-		return ServerSidePacketRegistry.INSTANCE.toPacket(ID, buf);
+		return ServerPlayNetworking.createS2CPacket(ID, buf);
 	}
 
-	public static void receivePacket(PacketContext context, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
+	public static void receivePacket(ThreadExecutor<?> executor, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {
 		CompoundTag compound = buf.readCompoundTag();
 
 		if (accept) {
 			try {
-				context.getTaskQueue().submit(() -> {
+				executor.submit(() -> {
 					if (compound == null) {
 						errorHandler.accept(new RemapException("Received null compound tag in sync packet!"));
 						return null;
