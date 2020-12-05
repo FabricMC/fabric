@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import it.unimi.dsi.fastutil.objects.ReferenceArraySet;
+import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -80,12 +80,14 @@ public abstract class WorldMixin {
 		}
 
 		// Mimic vanilla logic - with some perf boosts
-		// Allocating a set when dealing with huge amounts of loaded block entities and then using removeIf is more performant than List#removeAll
-		final Set<BlockEntity> removalSet = new ReferenceArraySet<>(removals);
-		return blockEntityList.removeIf(removalSet::contains);
+		// Gate perf boost behind a minimum amount of removals
+		if (removals.size() <= 4) {
+			return blockEntityList.removeAll(removals);
+		}
 
-		// Original code
-		// return blockEntityList.removeAll(removals);
+		// Allocating a set when dealing with huge amounts of loaded block entities and then using removeIf is more performant than List#removeAll
+		final Set<BlockEntity> removalSet = new ReferenceOpenHashSet<>(removals);
+		return blockEntityList.removeAll(removalSet);
 	}
 
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
