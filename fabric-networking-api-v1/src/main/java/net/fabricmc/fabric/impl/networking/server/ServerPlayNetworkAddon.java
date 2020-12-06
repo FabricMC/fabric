@@ -69,6 +69,11 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	 * @return true if the packet has been handled
 	 */
 	public boolean handle(CustomPayloadC2SPacket packet) {
+		// Do not handle the packet on game thread
+		if (this.server.isOnThread()) {
+			return false;
+		}
+
 		CustomPayloadC2SPacketAccessor access = (CustomPayloadC2SPacketAccessor) packet;
 		return this.handle(access.getChannel(), access.getData());
 	}

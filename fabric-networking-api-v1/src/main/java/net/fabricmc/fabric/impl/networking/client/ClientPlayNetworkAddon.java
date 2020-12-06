@@ -71,6 +71,11 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	 * @return true if the packet has been handled
 	 */
 	public boolean handle(CustomPayloadS2CPacket packet) {
+		// Do not handle the packet on game thread
+		if (this.client.isOnThread()) {
+			return false;
+		}
+
 		PacketByteBuf buf = packet.getData();
 
 		try {
