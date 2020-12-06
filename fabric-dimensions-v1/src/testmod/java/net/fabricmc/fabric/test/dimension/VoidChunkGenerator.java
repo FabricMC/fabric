@@ -37,7 +37,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 
 	public static final Codec<VoidChunkGenerator> CODEC = RecordCodecBuilder.create((instance) ->
 			instance.group(
-					BiomeSource.field_24713.fieldOf("biome_source")
+					BiomeSource.CODEC.fieldOf("biome_source")
 							.forGetter((generator) -> generator.biomeSource),
 					Codec.BOOL.fieldOf("custom_bool")
 							.forGetter((generator) -> generator.customBool)
@@ -51,7 +51,7 @@ public class VoidChunkGenerator extends ChunkGenerator {
 	}
 
 	@Override
-	protected Codec<? extends ChunkGenerator> method_28506() {
+	protected Codec<? extends ChunkGenerator> getCodec() {
 		return CODEC;
 	}
 

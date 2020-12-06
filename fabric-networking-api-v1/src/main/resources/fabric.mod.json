@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-networking-api-v1",
+  "name": "Fabric Networking API (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-networking-api-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.networking.NetworkingImpl::init"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl::clientInit"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.4.0",
+    "fabric-api-base": "*"
+  },
+  "description": "Low-level, vanilla protocol oriented networking hooks.",
+  "mixins": [
+    "fabric-networking-api-v1.mixins.json"
+  ]
+}

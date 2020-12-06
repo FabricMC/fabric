@@ -31,14 +31,12 @@ import net.minecraft.text.LiteralText;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.server.ServerTickCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
-public class CommandTest implements ModInitializer {
+public final class CommandTest implements ModInitializer {
 	private static final Logger LOGGER = LogManager.getLogger(CommandTest.class);
 	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_INTEGRATED = new SimpleCommandExceptionType(new LiteralText("This command was registered incorrectly. Should only be present on an integrated server but was ran on a dedicated server!"));
 	private static final SimpleCommandExceptionType WRONG_SIDE_SHOULD_BE_DEDICATED = new SimpleCommandExceptionType(new LiteralText("This command was registered incorrectly. Should only be present on an dedicated server but was ran on an integrated server!"));
-
-	private boolean hasTested = false;
 
 	@Override
 	public void onInitialize() {
@@ -55,50 +53,44 @@ public class CommandTest implements ModInitializer {
 			}
 		});
 
-		// Use the ServerTickCallback to verify the commands actually exist in the command dispatcher.
-		ServerTickCallback.EVENT.register(server -> {
-			// Don't run the test more than once
-			if (this.hasTested) {
-				return;
-			}
-
+		ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+			// Verify the commands actually exist in the command dispatcher.
 			final boolean dedicated = server.isDedicated();
 			final RootCommandNode<ServerCommandSource> rootNode = server.getCommandManager().getDispatcher().getRoot();
 
 			// Now we climb the tree
-			final CommandNode<ServerCommandSource> fabric_common_test_command = rootNode.getChild("fabric_common_test_command");
-			final CommandNode<ServerCommandSource> fabric_dedicated_test_command = rootNode.getChild("fabric_dedicated_test_command");
-			final CommandNode<ServerCommandSource> fabric_integrated_test_command = rootNode.getChild("fabric_integrated_test_command");
+			final CommandNode<ServerCommandSource> fabricCommonTestCommand = rootNode.getChild("fabric_common_test_command");
+			final CommandNode<ServerCommandSource> fabricDedicatedTestCommand = rootNode.getChild("fabric_dedicated_test_command");
+			final CommandNode<ServerCommandSource> fabricIntegratedTestCommand = rootNode.getChild("fabric_integrated_test_command");
 
 			// Verify the common command exists
-			if (fabric_common_test_command == null) {
+			if (fabricCommonTestCommand == null) {
 				throw new AssertionError("Expected to find 'fabric_common_test_command' on the server's command dispatcher. But it was not found.");
 			}
 
 			if (dedicated) {
 				// Verify we don't have the integrated command
-				if (fabric_integrated_test_command != null) {
+				if (fabricIntegratedTestCommand != null) {
 					throw new AssertionError("Found 'fabric_integrated_test_command' on the dedicated server's command dispatcher. This should not happen!");
 				}
 
 				// Verify we have the dedicated command
-				if (fabric_dedicated_test_command == null) {
+				if (fabricDedicatedTestCommand == null) {
 					throw new AssertionError("Expected to find 'fabric_dedicated_test_command' on the dedicated server's command dispatcher. But it was not found.");
 				}
 			} else {
 				// Verify we don't have the dedicated command
-				if (fabric_dedicated_test_command != null) {
+				if (fabricDedicatedTestCommand != null) {
 					throw new AssertionError("Found 'fabric_dedicated_test_command' on the integrated server's command dispatcher. This should not happen!");
 				}
 
 				// Verify we have the integrated command
-				if (fabric_integrated_test_command == null) {
+				if (fabricIntegratedTestCommand == null) {
 					throw new AssertionError("Expected to find 'fabric_integrated_test_command' on the integrated server's command dispatcher. But it was not found.");
 				}
 			}
 
 			// Success!
-			this.hasTested = true;
 			CommandTest.LOGGER.info("The command tests have passed! Please make sure you execute the three commands for extra safety.");
 		});
 	}

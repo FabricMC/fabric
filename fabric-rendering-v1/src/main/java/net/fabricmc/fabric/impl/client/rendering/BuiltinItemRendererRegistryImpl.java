@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.jetbrains.annotations.Nullable;
+
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.registry.Registry;
@@ -33,21 +35,15 @@ import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendererRegistry {
 	public static final BuiltinItemRendererRegistryImpl INSTANCE = new BuiltinItemRendererRegistryImpl();
 
-	private static final Map<Item, BuiltinItemRenderer> RENDERERS = new HashMap<>();
+	private static final Map<Item, DynamicItemRenderer> RENDERERS = new HashMap<>();
 
 	private BuiltinItemRendererRegistryImpl() {
 	}
 
 	@Override
 	public void register(Item item, BuiltinItemRenderer renderer) {
-		Objects.requireNonNull(item, "item is null");
 		Objects.requireNonNull(renderer, "renderer is null");
-
-		if (RENDERERS.containsKey(item)) {
-			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item) + " already has a builtin renderer!");
-		}
-
-		RENDERERS.put(item, renderer);
+		this.register(item, (stack, mode, matrices, vertexConsumers, light, overlay) -> renderer.render(stack, matrices, vertexConsumers, light, overlay));
 	}
 
 	@Override
@@ -56,8 +52,19 @@ public final class BuiltinItemRendererRegistryImpl implements BuiltinItemRendere
 		register(item.asItem(), renderer);
 	}
 
-	/* @Nullable */
-	public static BuiltinItemRenderer getRenderer(Item item) {
+	@Override
+	public void register(ItemConvertible item, DynamicItemRenderer renderer) {
+		Objects.requireNonNull(item, "item is null");
+		Objects.requireNonNull(item.asItem(), "item is null");
+		Objects.requireNonNull(renderer, "renderer is null");
+
+		if (RENDERERS.putIfAbsent(item.asItem(), renderer) != null) {
+			throw new IllegalArgumentException("Item " + Registry.ITEM.getId(item.asItem()) + " already has a builtin renderer!");
+		}
+	}
+
+	@Nullable
+	public static DynamicItemRenderer getRenderer(Item item) {
 		return RENDERERS.get(item);
 	}
 }

@@ -1,10 +1,12 @@
 archivesBaseName = "fabric-dimensions-v1"
-version = getSubprojectVersion(project, "1.0.0")
+version = getSubprojectVersion(project, "2.0.1")
 
 dependencies {
-	compile project(path: ':fabric-api-base', configuration: 'dev')
-	compile project(path: ':fabric-networking-v0', configuration: 'dev')
-	compile project(path: ':fabric-registry-sync-v0', configuration: 'dev')
-
 	testmodCompile project(path: ':fabric-command-api-v1', configuration: 'dev')
+	testmodCompile project(path: ':fabric-resource-loader-v0', configuration: 'dev')
+	testmodCompile project(path: ':fabric-lifecycle-events-v1', configuration: 'dev')
 }
+
+moduleDependencies(project, [
+		'fabric-api-base'
+])

@@ -1,7 +1,8 @@
 archivesBaseName = "fabric-content-registries-v0"
-version = getSubprojectVersion(project, "0.1.9")
+version = getSubprojectVersion(project, "0.2.0")
 
-dependencies {
-	compile project(path: ':fabric-api-base', configuration: 'dev')
-	compile project(path: ':fabric-resource-loader-v0', configuration: 'dev')
-}
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-lifecycle-events-v1',
+		'fabric-resource-loader-v0'
+])
