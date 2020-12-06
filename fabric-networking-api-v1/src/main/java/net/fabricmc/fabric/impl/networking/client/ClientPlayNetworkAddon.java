@@ -49,16 +49,14 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection);
-	}
 
-	// also expose sendRegistration
-
-	public void onServerReady() {
 		// Register global receivers
 		for (Map.Entry<Identifier, ClientPlayNetworking.PlayChannelHandler> entry : ClientNetworkingImpl.PLAY.getHandlers().entrySet()) {
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
+	}
 
+	public void onServerReady() {
 		this.sendChannelRegistrationPacket();
 		this.canSendPackets = true;
 
