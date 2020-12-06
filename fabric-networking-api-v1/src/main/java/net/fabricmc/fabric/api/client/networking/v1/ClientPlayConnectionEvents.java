@@ -33,11 +33,22 @@ public final class ClientPlayConnectionEvents {
 	/**
 	 * An event for the initialization of the client play network handler.
 	 *
+	 * <p>No packets should be sent when this event is invoked.
+	 */
+	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, client) -> {
+		for (PlayInit callback : callbacks) {
+			callback.onPlayInit(handler, client);
+		}
+	});
+
+	/**
+	 * An event for notification when the client play network handler is ready to send packets to the server.
+	 *
 	 * <p>At this stage, the network handler is ready to send packets to the server.
 	 */
-	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, sender, client) -> {
-		for (PlayInit callback : callbacks) {
-			callback.onPlayInit(handler, sender, client);
+	public static final Event<PlayReady> PLAY_READY = EventFactory.createArrayBacked(PlayReady.class, callbacks -> (handler, sender, client) -> {
+		for (PlayReady callback : callbacks) {
+			callback.onPlayReady(handler, sender, client);
 		}
 	});
 
@@ -58,7 +69,13 @@ public final class ClientPlayConnectionEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface PlayInit {
-		void onPlayInit(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
+		void onPlayInit(ClientPlayNetworkHandler handler, MinecraftClient client);
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface PlayReady {
+		void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
 	}
 
 	@Environment(EnvType.CLIENT)

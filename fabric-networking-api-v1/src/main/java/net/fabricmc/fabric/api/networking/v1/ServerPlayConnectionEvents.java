@@ -29,18 +29,29 @@ public final class ServerPlayConnectionEvents {
 	/**
 	 * An event for the initialization of the server play network handler.
 	 *
+	 * <p>No packets should be sent when this event is invoked.
+	 */
+	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, server) -> {
+		for (PlayInit callback : callbacks) {
+			callback.onPlayInit(handler, server);
+		}
+	});
+
+	/**
+	 * An event for notification when the server play network handler is ready to send packets to the client.
+	 *
 	 * <p>At this stage, the network handler is ready to send packets to the client.
 	 */
-	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, sender, server) -> {
-		for (PlayInit callback : callbacks) {
-			callback.onPlayInit(handler, sender, server);
+	public static final Event<PlayReady> PLAY_READY = EventFactory.createArrayBacked(PlayReady.class, callbacks -> (handler, sender, server) -> {
+		for (PlayReady callback : callbacks) {
+			callback.onPlayReady(handler, sender, server);
 		}
 	});
 
 	/**
 	 * An event for the disconnection of the server play network handler.
 	 *
-	 * <p>No packets should be sent when this event is invoked.</p>
+	 * <p>No packets should be sent when this event is invoked.
 	 */
 	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, server) -> {
 		for (PlayDisconnect callback : callbacks) {
@@ -53,7 +64,12 @@ public final class ServerPlayConnectionEvents {
 
 	@FunctionalInterface
 	public interface PlayInit {
-		void onPlayInit(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
+		void onPlayInit(ServerPlayNetworkHandler handler, MinecraftServer server);
+	}
+
+	@FunctionalInterface
+	public interface PlayReady {
+		void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
 	}
 
 	@FunctionalInterface

@@ -54,13 +54,15 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		for (Map.Entry<Identifier, ClientPlayNetworking.PlayChannelHandler> entry : ClientNetworkingImpl.PLAY.getHandlers().entrySet()) {
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
+
+		ClientPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(handler, this.client);
 	}
 
 	public void onServerReady() {
 		this.sendChannelRegistrationPacket();
 		this.canSendPackets = true;
 
-		ClientPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(this.handler, this, this.client);
+		ClientPlayConnectionEvents.PLAY_READY.invoker().onPlayReady(this.handler, this, this.client);
 		this.receiver.startSession(this);
 	}
 
