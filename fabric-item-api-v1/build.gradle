@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-item-api-v1"
 version = getSubprojectVersion(project, "1.2.0")
 
+minecraft {
+	accessWidener = file("src/main/resources/fabric-item-api-v1.accesswidener")
+}
+
 moduleDependencies(project, [
 		'fabric-api-base'
 ])
