@@ -64,7 +64,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 		this.server = ((ServerLoginNetworkHandlerAccessor) handler).getServer();
 		this.queryIdFactory = QueryIdFactory.create();
 
-		ServerLoginConnectionEvents.LOGIN_INIT.invoker().onLoginInit(handler, this.server);
+		ServerLoginConnectionEvents.INIT.invoker().onLoginInit(handler, this.server);
 		this.receiver.startSession(this);
 	}
 
@@ -79,7 +79,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 				ServerLoginNetworking.registerReceiver(this.handler, entry.getKey(), entry.getValue());
 			}
 
-			ServerLoginConnectionEvents.LOGIN_QUERY_START.invoker().onLoginStart(this.handler, this.server, this, this.waits::add);
+			ServerLoginConnectionEvents.QUERY_START.invoker().onLoginStart(this.handler, this.server, this, this.waits::add);
 			this.firstQueryTick = false;
 		}
 
@@ -200,7 +200,7 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 
 	@Override
 	public void invokeDisconnectEvent() {
-		ServerLoginConnectionEvents.LOGIN_DISCONNECT.invoker().onLoginDisconnect(this.handler, this.server);
+		ServerLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.server);
 		this.receiver.endSession(this);
 	}
 

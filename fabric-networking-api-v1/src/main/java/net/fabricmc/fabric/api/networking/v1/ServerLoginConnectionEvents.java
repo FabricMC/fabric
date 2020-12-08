@@ -32,8 +32,8 @@ public final class ServerLoginConnectionEvents {
 	 *
 	 * @see ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 */
-	public static final Event<LoginInit> LOGIN_INIT = EventFactory.createArrayBacked(LoginInit.class, callbacks -> (handler, server) -> {
-		for (LoginInit callback : callbacks) {
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, server) -> {
+		for (Init callback : callbacks) {
 			callback.onLoginInit(handler, server);
 		}
 	});
@@ -46,8 +46,8 @@ public final class ServerLoginConnectionEvents {
 	 *
 	 * <p>You may send login queries to the connected client using the provided {@link PacketSender}.
 	 */
-	public static final Event<LoginQueryStart> LOGIN_QUERY_START = EventFactory.createArrayBacked(LoginQueryStart.class, callbacks -> (handler, server, sender, synchronizer) -> {
-		for (LoginQueryStart callback : callbacks) {
+	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (handler, server, sender, synchronizer) -> {
+		for (QueryStart callback : callbacks) {
 			callback.onLoginStart(handler, server, sender, synchronizer);
 		}
 	});
@@ -57,8 +57,8 @@ public final class ServerLoginConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<LoginDisconnect> LOGIN_DISCONNECT = EventFactory.createArrayBacked(LoginDisconnect.class, callbacks -> (handler, server) -> {
-		for (LoginDisconnect callback : callbacks) {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, server) -> {
+		for (Disconnect callback : callbacks) {
 			callback.onLoginDisconnect(handler, server);
 		}
 	});
@@ -67,26 +67,26 @@ public final class ServerLoginConnectionEvents {
 	}
 
 	/**
-	 * @see ServerLoginConnectionEvents#LOGIN_INIT
+	 * @see ServerLoginConnectionEvents#INIT
 	 */
 	@FunctionalInterface
-	public interface LoginInit {
+	public interface Init {
 		void onLoginInit(ServerLoginNetworkHandler handler, MinecraftServer server);
 	}
 
 	/**
-	 * @see ServerLoginConnectionEvents#LOGIN_QUERY_START
+	 * @see ServerLoginConnectionEvents#QUERY_START
 	 */
 	@FunctionalInterface
-	public interface LoginQueryStart {
+	public interface QueryStart {
 		void onLoginStart(ServerLoginNetworkHandler handler, MinecraftServer server, PacketSender sender, ServerLoginNetworking.LoginSynchronizer synchronizer);
 	}
 
 	/**
-	 * @see ServerLoginConnectionEvents#LOGIN_DISCONNECT
+	 * @see ServerLoginConnectionEvents#DISCONNECT
 	 */
 	@FunctionalInterface
-	public interface LoginDisconnect {
+	public interface Disconnect {
 		void onLoginDisconnect(ServerLoginNetworkHandler handler, MinecraftServer server);
 	}
 }

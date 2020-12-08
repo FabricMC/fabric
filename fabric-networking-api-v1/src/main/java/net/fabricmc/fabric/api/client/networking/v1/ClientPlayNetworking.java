@@ -96,12 +96,12 @@ public final class ClientPlayNetworking {
 	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * <p>For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
-	 * login query has been received, you should use {@link ClientPlayConnectionEvents#PLAY_INIT} to register the channel handler.
+	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
 	 *
 	 * @param channelName the id of the channel
 	 * @return false if a handler is already registered to the channel
 	 * @throws IllegalStateException if the client is not connected to a server
-	 * @see ClientPlayConnectionEvents#PLAY_INIT
+	 * @see ClientPlayConnectionEvents#INIT
 	 */
 	public static boolean registerReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {

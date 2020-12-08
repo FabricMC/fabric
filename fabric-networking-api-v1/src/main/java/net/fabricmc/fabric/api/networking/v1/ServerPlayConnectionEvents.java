@@ -32,8 +32,8 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, Identifier, ServerPlayNetworking.PlayChannelHandler)
 	 */
-	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, server) -> {
-		for (PlayInit callback : callbacks) {
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, server) -> {
+		for (Init callback : callbacks) {
 			callback.onPlayInit(handler, server);
 		}
 	});
@@ -43,8 +43,8 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the client.
 	 */
-	public static final Event<PlayJoin> PLAY_JOIN = EventFactory.createArrayBacked(PlayJoin.class, callbacks -> (handler, sender, server) -> {
-		for (PlayJoin callback : callbacks) {
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (handler, sender, server) -> {
+		for (Join callback : callbacks) {
 			callback.onPlayReady(handler, sender, server);
 		}
 	});
@@ -54,8 +54,8 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, server) -> {
-		for (PlayDisconnect callback : callbacks) {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, server) -> {
+		for (Disconnect callback : callbacks) {
 			callback.onPlayDisconnect(handler, server);
 		}
 	});
@@ -64,17 +64,17 @@ public final class ServerPlayConnectionEvents {
 	}
 
 	@FunctionalInterface
-	public interface PlayInit {
+	public interface Init {
 		void onPlayInit(ServerPlayNetworkHandler handler, MinecraftServer server);
 	}
 
 	@FunctionalInterface
-	public interface PlayJoin {
+	public interface Join {
 		void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
 	}
 
 	@FunctionalInterface
-	public interface PlayDisconnect {
+	public interface Disconnect {
 		void onPlayDisconnect(ServerPlayNetworkHandler handler, MinecraftServer server);
 	}
 }

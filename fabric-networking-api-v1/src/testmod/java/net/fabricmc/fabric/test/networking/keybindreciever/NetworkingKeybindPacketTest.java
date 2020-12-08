@@ -45,7 +45,7 @@ public final class NetworkingKeybindPacketTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerPlayConnectionEvents.PLAY_INIT.register((handler, server) -> {
+		ServerPlayConnectionEvents.INIT.register((handler, server) -> {
 			ServerPlayNetworking.registerReceiver(handler, KEYBINDING_PACKET_ID, NetworkingKeybindPacketTest::receive);
 		});
 	}

@@ -57,11 +57,11 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
 
-		ClientPlayConnectionEvents.PLAY_INIT.invoker().onPlayInit(handler, this.client);
+		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(handler, this.client);
 	}
 
 	public void onServerReady() {
-		ClientPlayConnectionEvents.PLAY_JOIN.invoker().onPlayReady(this.handler, this, this.client);
+		ClientPlayConnectionEvents.JOIN.invoker().onPlayReady(this.handler, this, this.client);
 
 		// The client cannot send any packets, including `minecraft:register` until after GameJoinS2CPacket is received.
 		this.sendInitialChannelRegistrationPacket();
@@ -142,7 +142,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	public void invokeDisconnectEvent() {
-		ClientPlayConnectionEvents.PLAY_DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
+		ClientPlayConnectionEvents.DISCONNECT.invoker().onPlayDisconnect(this.handler, this.client);
 		this.receiver.endSession(this);
 	}
 

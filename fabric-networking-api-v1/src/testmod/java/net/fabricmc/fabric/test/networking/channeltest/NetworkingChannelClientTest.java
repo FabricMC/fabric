@@ -64,11 +64,11 @@ public final class NetworkingChannelClientTest implements ClientModInitializer {
 		});
 
 		// State destruction on disconnection:
-		ClientLoginConnectionEvents.LOGIN_DISCONNECT.register((handler, client) -> {
+		ClientLoginConnectionEvents.DISCONNECT.register((handler, client) -> {
 			SUPPORTED_C2S_CHANNELS.clear();
 		});
 
-		ClientPlayConnectionEvents.PLAY_DISCONNECT.register((handler, client) -> {
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
 			SUPPORTED_C2S_CHANNELS.clear();
 		});
 	}

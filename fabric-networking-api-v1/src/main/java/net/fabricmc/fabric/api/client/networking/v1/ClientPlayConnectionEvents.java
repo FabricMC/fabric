@@ -36,8 +36,8 @@ public final class ClientPlayConnectionEvents {
 	 *
 	 * @see ClientPlayNetworking#registerReceiver(Identifier, ClientPlayNetworking.PlayChannelHandler)
 	 */
-	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, client) -> {
-		for (PlayInit callback : callbacks) {
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, client) -> {
+		for (Init callback : callbacks) {
 			callback.onPlayInit(handler, client);
 		}
 	});
@@ -48,8 +48,8 @@ public final class ClientPlayConnectionEvents {
 	 * <p>At this stage, the network handler is ready to send packets to the server.
 	 * Since the client's local state has been setup.
 	 */
-	public static final Event<PlayJoin> PLAY_JOIN = EventFactory.createArrayBacked(PlayJoin.class, callbacks -> (handler, sender, client) -> {
-		for (PlayJoin callback : callbacks) {
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (handler, sender, client) -> {
+		for (Join callback : callbacks) {
 			callback.onPlayReady(handler, sender, client);
 		}
 	});
@@ -59,8 +59,8 @@ public final class ClientPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, client) -> {
-		for (PlayDisconnect callback : callbacks) {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, client) -> {
+		for (Disconnect callback : callbacks) {
 			callback.onPlayDisconnect(handler, client);
 		}
 	});
@@ -70,19 +70,19 @@ public final class ClientPlayConnectionEvents {
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayInit {
+	public interface Init {
 		void onPlayInit(ClientPlayNetworkHandler handler, MinecraftClient client);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayJoin {
+	public interface Join {
 		void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayDisconnect {
+	public interface Disconnect {
 		void onPlayDisconnect(ClientPlayNetworkHandler handler, MinecraftClient client);
 	}
 }
