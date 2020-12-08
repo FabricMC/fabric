@@ -16,10 +16,12 @@
 
 package net.fabricmc.fabric.impl.command.client;
 
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.DISPATCHER;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
+import com.mojang.brigadier.AmbiguityConsumer;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
@@ -37,15 +39,12 @@ import net.minecraft.text.TranslatableText;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.command.v1.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 
 @Environment(EnvType.CLIENT)
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final char PREFIX = '/';
-
-	private static CommandDispatcher<FabricClientCommandSource> dispatcher = null;
 
 	/**
 	 * Executes a client-sided command from a message.
@@ -62,7 +61,6 @@ public final class ClientCommandInternals {
 			return false; // Incorrect prefix, won't execute anything.
 		}
 
-		CommandDispatcher<FabricClientCommandSource> dispatcher = getDispatcher();
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		// The interface is implemented on ClientCommandSource with a mixin.
@@ -72,7 +70,7 @@ public final class ClientCommandInternals {
 		client.getProfiler().push(message);
 
 		try {
-			dispatcher.execute(message.substring(1), commandSource);
+			DISPATCHER.execute(message.substring(1), commandSource);
 			return true;
 		} catch (CommandSyntaxException e) {
 			LOGGER.warn("Syntax exception for client-sided command '{}'", message, e);
@@ -120,30 +118,20 @@ public final class ClientCommandInternals {
 		return context != null ? new TranslatableText("command.context.parse_error", message, context) : message;
 	}
 
-	public static CommandDispatcher<FabricClientCommandSource> getDispatcher() {
-		return Objects.requireNonNull(dispatcher, "Client command dispatcher not built!");
-	}
-
-	public static void buildDispatchers() {
-		// This should only be called once at the end of the client constructor.
-		if (dispatcher != null) {
-			throw new IllegalStateException("Dispatchers have already been built!");
-		}
-
-		LOGGER.debug("Building client-side command dispatcher");
-
-		dispatcher = new CommandDispatcher<>();
-		ClientCommandRegistrationCallback.EVENT.invoker().register(dispatcher);
+	/**
+	 * Runs checks such as {@link CommandDispatcher#findAmbiguities(AmbiguityConsumer)} on the command dispatcher.
+	 */
+	public static void checkDispatcher() {
 		// noinspection CodeBlock2Expr
-		dispatcher.findAmbiguities((parent, child, sibling, inputs) -> {
-			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", dispatcher.getPath(child), dispatcher.getPath(sibling), inputs);
+		DISPATCHER.findAmbiguities((parent, child, sibling, inputs) -> {
+			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", DISPATCHER.getPath(child), DISPATCHER.getPath(sibling), inputs);
 		});
 	}
 
 	public static void addCommands(CommandDispatcher<FabricClientCommandSource> target, FabricClientCommandSource source) {
 		Map<CommandNode<FabricClientCommandSource>, CommandNode<FabricClientCommandSource>> originalToCopy = new HashMap<>();
-		originalToCopy.put(getDispatcher().getRoot(), target.getRoot());
-		copyChildren(getDispatcher().getRoot(), target.getRoot(), source, originalToCopy);
+		originalToCopy.put(DISPATCHER.getRoot(), target.getRoot());
+		copyChildren(DISPATCHER.getRoot(), target.getRoot(), source, originalToCopy);
 	}
 
 	/**

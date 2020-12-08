@@ -16,19 +16,51 @@
 
 package net.fabricmc.fabric.api.client.command.v1;
 
+import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
 /**
- * Provides helper methods for constructing argument builders
- * for client-sided commands.
+ * Manages client-sided commands and provides some related helper methods.
  *
- * <p>This is an alternative to the server-side helper methods in
- * {@link net.minecraft.server.command.CommandManager}.
+ * <p>Client-sided commands are fully executed on the client,
+ * so players can use them in both singleplayer and multiplayer.
+ *
+ * <p>Registrations can be done in the {@link #DISPATCHER} during a {@link net.fabricmc.api.ClientModInitializer}'s
+ * initialization. (See example below.)
+ *
+ * <p>The commands are run on the client game thread by default.
+ * Avoid doing any heavy calculations here as that can freeze the game's rendering.
+ * For example, you can move heavy code to another thread.
+ *
+ * <p>This class also has alternatives to the server-side helper methods in
+ * {@link net.minecraft.server.command.CommandManager}:
+ * {@link #literal(String)} and {@link #argument(String, ArgumentType)}.
+ *
+ * <h2>Example command</h2>
+ * <pre>
+ * {@code
+ * ClientCommandManager.DISPATCHER.register(
+ * 	ClientCommandManager.literal("hello").executes(context -> {
+ * 		context.getSource().sendFeedback(new LiteralText("Hello, world!"));
+ * 		return 0;
+ * 	})
+ * );
+ * }
+ * </pre>
  */
-public final class ClientArgumentBuilders {
-	private ClientArgumentBuilders() {
+@Environment(EnvType.CLIENT)
+public final class ClientCommandManager {
+	/**
+	 * The command dispatcher that handles client command registration and execution.
+	 */
+	public static final CommandDispatcher<FabricClientCommandSource> DISPATCHER = new CommandDispatcher<>();
+
+	private ClientCommandManager() {
 	}
 
 	/**
