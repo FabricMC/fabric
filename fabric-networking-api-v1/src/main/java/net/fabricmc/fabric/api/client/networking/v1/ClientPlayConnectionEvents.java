@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,9 +32,9 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 @Environment(EnvType.CLIENT)
 public final class ClientPlayConnectionEvents {
 	/**
-	 * An event for the initialization of the client play network handler.
+	 * Event indicating a connection entered the PLAY state, ready for registering channel handlers.
 	 *
-	 * <p>No packets should be sent when this event is invoked.
+	 * @see ClientPlayNetworking#registerReceiver(Identifier, ClientPlayNetworking.PlayChannelHandler)
 	 */
 	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, client) -> {
 		for (PlayInit callback : callbacks) {
@@ -45,9 +46,10 @@ public final class ClientPlayConnectionEvents {
 	 * An event for notification when the client play network handler is ready to send packets to the server.
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the server.
+	 * Since the client's local state has been setup.
 	 */
-	public static final Event<PlayReady> PLAY_READY = EventFactory.createArrayBacked(PlayReady.class, callbacks -> (handler, sender, client) -> {
-		for (PlayReady callback : callbacks) {
+	public static final Event<PlayJoin> PLAY_JOIN = EventFactory.createArrayBacked(PlayJoin.class, callbacks -> (handler, sender, client) -> {
+		for (PlayJoin callback : callbacks) {
 			callback.onPlayReady(handler, sender, client);
 		}
 	});
@@ -74,7 +76,7 @@ public final class ClientPlayConnectionEvents {
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayReady {
+	public interface PlayJoin {
 		void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
 	}
 

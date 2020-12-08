@@ -28,11 +28,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public final class ServerLoginConnectionEvents {
 	/**
-	 * An event for the initialization of the server login network handler.
-	 * This event may be used to register {@link ServerLoginNetworking.LoginQueryResponseHandler login query response handlers}
-	 * using {@link ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}.
+	 * Event indicating a connection entered the LOGIN state, ready for registering query response handlers.
 	 *
-	 * <p>No packets should be sent when this event is invoked.
+	 * @see ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
 	 */
 	public static final Event<LoginInit> LOGIN_INIT = EventFactory.createArrayBacked(LoginInit.class, callbacks -> (handler, server) -> {
 		for (LoginInit callback : callbacks) {

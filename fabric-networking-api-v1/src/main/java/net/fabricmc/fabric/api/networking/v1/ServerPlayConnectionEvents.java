@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -27,9 +28,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public final class ServerPlayConnectionEvents {
 	/**
-	 * An event for the initialization of the server play network handler.
+	 * Event indicating a connection entered the PLAY state, ready for registering channel handlers.
 	 *
-	 * <p>No packets should be sent when this event is invoked.
+	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, Identifier, ServerPlayNetworking.PlayChannelHandler)
 	 */
 	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, server) -> {
 		for (PlayInit callback : callbacks) {
@@ -42,8 +43,8 @@ public final class ServerPlayConnectionEvents {
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the client.
 	 */
-	public static final Event<PlayReady> PLAY_READY = EventFactory.createArrayBacked(PlayReady.class, callbacks -> (handler, sender, server) -> {
-		for (PlayReady callback : callbacks) {
+	public static final Event<PlayJoin> PLAY_JOIN = EventFactory.createArrayBacked(PlayJoin.class, callbacks -> (handler, sender, server) -> {
+		for (PlayJoin callback : callbacks) {
 			callback.onPlayReady(handler, sender, server);
 		}
 	});
@@ -68,7 +69,7 @@ public final class ServerPlayConnectionEvents {
 	}
 
 	@FunctionalInterface
-	public interface PlayReady {
+	public interface PlayJoin {
 		void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
 	}
 

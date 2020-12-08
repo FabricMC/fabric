@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,11 +31,11 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Environment(EnvType.CLIENT)
 public final class ClientLoginConnectionEvents {
 	/**
-	 * An event for when the client's login process has begun.
+	 * Event indicating a connection entered the LOGIN state, ready for registering query request handlers.
 	 * This event may be used by mods to prepare their client side state.
 	 * This event does not guarantee that a login attempt will be successful.
 	 *
-	 * <p>No packets should be sent when this event is invoked.
+	 * @see ClientLoginNetworking#registerReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
 	 */
 	public static final Event<LoginInit> LOGIN_INIT = EventFactory.createArrayBacked(LoginInit.class, callbacks -> (handler, client) -> {
 		for (LoginInit callback : callbacks) {

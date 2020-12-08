@@ -48,7 +48,7 @@ public final class ServerPlayNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
@@ -64,7 +64,7 @@ public final class ServerPlayNetworking {
 	 * Removes the handler of a channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
-	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channel} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
@@ -88,14 +88,20 @@ public final class ServerPlayNetworking {
 
 	/**
 	 * Registers a handler to a channel.
+	 * This method differs from {@link ServerPlayNetworking#registerGlobalReceiver(Identifier, PlayChannelHandler)} since
+	 * the channel handler will only be applied to the player represented by the {@link ServerPlayNetworkHandler}.
+	 *
+	 * <p>For example, if you only register a receiver using this method when a {@linkplain ServerLoginNetworking#registerGlobalReceiver(Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
+	 * login response has been received, you should use {@link ServerPlayConnectionEvents#PLAY_INIT} to register the channel handler.
 	 *
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ServerPlayNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
 	 * @return false if a handler is already registered to the channel name
+	 * @see ServerPlayConnectionEvents#PLAY_INIT
 	 */
 	public static boolean registerReceiver(ServerPlayNetworkHandler networkHandler, Identifier channelName, PlayChannelHandler channelHandler) {
 		Objects.requireNonNull(networkHandler, "Network handler cannot be null");
@@ -106,7 +112,7 @@ public final class ServerPlayNetworking {
 	/**
 	 * Removes the handler of a channel.
 	 *
-	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name

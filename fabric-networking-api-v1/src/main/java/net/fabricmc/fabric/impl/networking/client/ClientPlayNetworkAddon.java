@@ -40,7 +40,7 @@ import net.fabricmc.fabric.impl.networking.NetworkingImpl;
 public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<ClientPlayNetworking.PlayChannelHandler> {
 	private final ClientPlayNetworkHandler handler;
 	private final MinecraftClient client;
-	private boolean canSendPackets;
+	private boolean sentInitialRegisterPacket;
 
 	public ClientPlayNetworkAddon(ClientPlayNetworkHandler handler, MinecraftClient client) {
 		super(ClientNetworkingImpl.PLAY, handler.getConnection(), "ClientPlayNetworkAddon for " + handler.getProfile().getName());
@@ -50,8 +50,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 		// Must register pending channels via lateinit
 		this.registerPendingChannels((ChannelInfoHolder) this.connection);
 
-		// Register global receivers
-		for (Map.Entry<Identifier, ClientPlayNetworking.PlayChannelHandler> entry : ClientNetworkingImpl.PLAY.getHandlers().entrySet()) {
+		// Register global receivers and attach to session
+		this.receiver.startSession(this);
+
+		for (Map.Entry<Identifier, ClientPlayNetworking.PlayChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
 
@@ -59,11 +61,11 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	}
 
 	public void onServerReady() {
-		this.sendChannelRegistrationPacket();
-		this.canSendPackets = true;
+		ClientPlayConnectionEvents.PLAY_JOIN.invoker().onPlayReady(this.handler, this, this.client);
 
-		ClientPlayConnectionEvents.PLAY_READY.invoker().onPlayReady(this.handler, this, this.client);
-		this.receiver.startSession(this);
+		// The client cannot send any packets, including `minecraft:register` until after GameJoinS2CPacket is received.
+		this.sendInitialChannelRegistrationPacket();
+		this.sentInitialRegisterPacket = true;
 	}
 
 	/**
@@ -117,7 +119,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void handleRegistration(Identifier channelName) {
 		// If we can already send packets, immediately send the register packet for this channel
-		if (this.canSendPackets) {
+		if (this.sentInitialRegisterPacket) {
 			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
 
 			if (buf != null) {
@@ -129,7 +131,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 	@Override
 	protected void handleUnregistration(Identifier channelName) {
 		// If we can already send packets, immediately send the unregister packet for this channel
-		if (this.canSendPackets) {
+		if (this.sentInitialRegisterPacket) {
 			final PacketByteBuf buf = this.createRegistrationPacket(Collections.singleton(channelName));
 
 			if (buf != null) {
