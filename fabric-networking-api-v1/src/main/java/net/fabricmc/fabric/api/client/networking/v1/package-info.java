@@ -23,7 +23,7 @@
  * <p>For events related to connection to a server see {@link net.fabricmc.fabric.api.client.networking.v1.ClientLoginConnectionEvents} for login stage
  * or {@link net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents} for play stage.
  *
- * <p>For events related to the ability of a server to receive packets on a channel of a specific name see {@link net.fabricmc.fabric.api.client.networking.v1.S2CPlayChannelEvents}.
+ * <p>For events related to the ability of a server to receive packets on a channel of a specific name see {@link net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents}.
  */
 
 package net.fabricmc.fabric.api.client.networking.v1;

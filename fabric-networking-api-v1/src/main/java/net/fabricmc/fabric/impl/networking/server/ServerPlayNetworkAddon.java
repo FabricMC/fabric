@@ -27,7 +27,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.networking.v1.C2SPlayChannelEvents;
+import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
@@ -103,12 +103,12 @@ public final class ServerPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-		C2SPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.server, ids);
+		S2CPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.server, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-		C2SPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.server, ids);
+		S2CPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.server, ids);
 	}
 
 	@Override

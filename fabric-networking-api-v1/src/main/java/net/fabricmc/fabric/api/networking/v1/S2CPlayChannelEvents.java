@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Offers access to events related to the indication of a connected client's ability to receive packets in certain channels.
  */
-public final class C2SPlayChannelEvents {
+public final class S2CPlayChannelEvents {
 	/**
 	 * An event for the server play network handler receiving an update indicating the connected client's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
@@ -49,11 +49,11 @@ public final class C2SPlayChannelEvents {
 		}
 	});
 
-	private C2SPlayChannelEvents() {
+	private S2CPlayChannelEvents() {
 	}
 
 	/**
-	 * @see C2SPlayChannelEvents#REGISTER
+	 * @see S2CPlayChannelEvents#REGISTER
 	 */
 	@FunctionalInterface
 	public interface Register {
@@ -61,7 +61,7 @@ public final class C2SPlayChannelEvents {
 	}
 
 	/**
-	 * @see C2SPlayChannelEvents#UNREGISTER
+	 * @see S2CPlayChannelEvents#UNREGISTER
 	 */
 	@FunctionalInterface
 	public interface Unregister {
