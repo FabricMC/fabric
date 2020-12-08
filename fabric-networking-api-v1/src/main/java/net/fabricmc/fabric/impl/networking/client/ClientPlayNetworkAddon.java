@@ -52,7 +52,10 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 		// Register global receivers and attach to session
 		this.receiver.startSession(this);
+	}
 
+	@Override
+	public void lateInit() {
 		for (Map.Entry<Identifier, ClientPlayNetworking.PlayChannelHandler> entry : this.receiver.getHandlers().entrySet()) {
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}

@@ -52,6 +52,8 @@ abstract class ServerPlayNetworkHandlerMixin implements ServerPlayNetworkHandler
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ServerPlayNetworkAddon((ServerPlayNetworkHandler) (Object) this, this.server);
+		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
+		this.addon.lateInit();
 	}
 
 	@Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)

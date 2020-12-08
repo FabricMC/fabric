@@ -47,6 +47,8 @@ abstract class ClientPlayNetworkHandlerMixin implements ClientPlayNetworkHandler
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ClientPlayNetworkAddon((ClientPlayNetworkHandler) (Object) this, this.client);
+		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
+		this.addon.lateInit();
 	}
 
 	@Inject(method = "onGameJoin", at = @At("RETURN"))
