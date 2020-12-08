@@ -30,7 +30,7 @@ public final class ServerLoginConnectionEvents {
 	/**
 	 * Event indicating a connection entered the LOGIN state, ready for registering query response handlers.
 	 *
-	 * @see ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)}
+	 * @see ServerLoginNetworking#registerReceiver(ServerLoginNetworkHandler, Identifier, ServerLoginNetworking.LoginQueryResponseHandler)
 	 */
 	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, server) -> {
 		for (Init callback : callbacks) {
