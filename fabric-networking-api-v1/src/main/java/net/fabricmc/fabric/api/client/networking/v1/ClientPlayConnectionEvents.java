@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,13 +32,25 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
 @Environment(EnvType.CLIENT)
 public final class ClientPlayConnectionEvents {
 	/**
-	 * An event for the initialization of the client play network handler.
+	 * Event indicating a connection entered the PLAY state, ready for registering channel handlers.
+	 *
+	 * @see ClientPlayNetworking#registerReceiver(Identifier, ClientPlayNetworking.PlayChannelHandler)
+	 */
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, client) -> {
+		for (Init callback : callbacks) {
+			callback.onPlayInit(handler, client);
+		}
+	});
+
+	/**
+	 * An event for notification when the client play network handler is ready to send packets to the server.
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the server.
+	 * Since the client's local state has been setup.
 	 */
-	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, sender, client) -> {
-		for (PlayInit callback : callbacks) {
-			callback.onPlayInit(handler, sender, client);
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (handler, sender, client) -> {
+		for (Join callback : callbacks) {
+			callback.onPlayReady(handler, sender, client);
 		}
 	});
 
@@ -46,8 +59,8 @@ public final class ClientPlayConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, client) -> {
-		for (PlayDisconnect callback : callbacks) {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, client) -> {
+		for (Disconnect callback : callbacks) {
 			callback.onPlayDisconnect(handler, client);
 		}
 	});
@@ -57,13 +70,19 @@ public final class ClientPlayConnectionEvents {
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayInit {
-		void onPlayInit(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
+	public interface Init {
+		void onPlayInit(ClientPlayNetworkHandler handler, MinecraftClient client);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface PlayDisconnect {
+	public interface Join {
+		void onPlayReady(ClientPlayNetworkHandler handler, PacketSender sender, MinecraftClient client);
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface Disconnect {
 		void onPlayDisconnect(ClientPlayNetworkHandler handler, MinecraftClient client);
 	}
 }

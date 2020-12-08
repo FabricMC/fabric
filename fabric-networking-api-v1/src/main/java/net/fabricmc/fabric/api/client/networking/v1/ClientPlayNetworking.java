@@ -51,7 +51,7 @@ public final class ClientPlayNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * @param channelName the id of the channel
 	 * @param channelHandler the handler
@@ -67,7 +67,7 @@ public final class ClientPlayNetworking {
 	 * Removes the handler of a channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
-	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channel} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
@@ -93,11 +93,15 @@ public final class ClientPlayNetworking {
 	 * Registers a handler to a channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.
+	 *
+	 * <p>For example, if you only register a receiver using this method when a {@linkplain ClientLoginNetworking#registerGlobalReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)}
+	 * login query has been received, you should use {@link ClientPlayConnectionEvents#INIT} to register the channel handler.
 	 *
 	 * @param channelName the id of the channel
 	 * @return false if a handler is already registered to the channel
 	 * @throws IllegalStateException if the client is not connected to a server
+	 * @see ClientPlayConnectionEvents#INIT
 	 */
 	public static boolean registerReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
@@ -110,7 +114,7 @@ public final class ClientPlayNetworking {
 	/**
 	 * Removes the handler of a channel.
 	 *
-	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
@@ -157,15 +161,15 @@ public final class ClientPlayNetworking {
 	 * Checks if the connected server declared the ability to receive a packet on a specified channel name.
 	 *
 	 * @param channelName the channel name
-	 * @return True if the connected server has declared the ability to receive a packet on the specified channel
-	 * @throws IllegalStateException if the client is not connected to a server
+	 * @return True if the connected server has declared the ability to receive a packet on the specified channel.
+	 * False if the client is not in game.
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(channelName);
 		}
 
-		throw new IllegalStateException("Cannot check whether the server can receive a packet while not in game!");
+		return false;
 	}
 
 	/**

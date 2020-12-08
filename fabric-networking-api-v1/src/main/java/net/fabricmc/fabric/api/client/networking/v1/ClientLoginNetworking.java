@@ -51,7 +51,7 @@ public final class ClientLoginNetworking {
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
 	 * <p>If a handler is already registered to the {@code channel}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterGlobalReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * @param channelName the id of the channel
 	 * @param queryHandler the handler
@@ -67,7 +67,7 @@ public final class ClientLoginNetworking {
 	 * Removes the handler of a query request channel.
 	 * A global receiver is registered to all connections, in the present and future.
 	 *
-	 * <p>The {@code channel} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channel} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel
@@ -93,7 +93,7 @@ public final class ClientLoginNetworking {
 	 * Registers a handler to a query request channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(Identifier)} to unregister the existing handler.
 	 *
 	 * @param channelName the id of the channel
 	 * @param queryHandler the handler
@@ -117,7 +117,7 @@ public final class ClientLoginNetworking {
 	/**
 	 * Removes the handler of a query request channel.
 	 *
-	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name

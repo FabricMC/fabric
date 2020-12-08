@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.client.networking.v1;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientLoginNetworkHandler;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -30,14 +31,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Environment(EnvType.CLIENT)
 public final class ClientLoginConnectionEvents {
 	/**
-	 * An event for when the client's login process has begun.
+	 * Event indicating a connection entered the LOGIN state, ready for registering query request handlers.
 	 * This event may be used by mods to prepare their client side state.
 	 * This event does not guarantee that a login attempt will be successful.
 	 *
-	 * <p>No packets should be sent when this event is invoked.
+	 * @see ClientLoginNetworking#registerReceiver(Identifier, ClientLoginNetworking.LoginQueryRequestHandler)
 	 */
-	public static final Event<LoginInit> LOGIN_INIT = EventFactory.createArrayBacked(LoginInit.class, callbacks -> (handler, client) -> {
-		for (LoginInit callback : callbacks) {
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, client) -> {
+		for (Init callback : callbacks) {
 			callback.onLoginStart(handler, client);
 		}
 	});
@@ -56,8 +57,8 @@ public final class ClientLoginConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<LoginQueryStart> LOGIN_QUERY_START = EventFactory.createArrayBacked(LoginQueryStart.class, callbacks -> (handler, client) -> {
-		for (LoginQueryStart callback : callbacks) {
+	public static final Event<QueryStart> QUERY_START = EventFactory.createArrayBacked(QueryStart.class, callbacks -> (handler, client) -> {
+		for (QueryStart callback : callbacks) {
 			callback.onLoginQueryStart(handler, client);
 		}
 	});
@@ -67,8 +68,8 @@ public final class ClientLoginConnectionEvents {
 	 *
 	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<LoginDisconnect> LOGIN_DISCONNECT = EventFactory.createArrayBacked(LoginDisconnect.class, callbacks -> (handler, client) -> {
-		for (LoginDisconnect callback : callbacks) {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, client) -> {
+		for (Disconnect callback : callbacks) {
 			callback.onLoginDisconnect(handler, client);
 		}
 	});
@@ -77,29 +78,29 @@ public final class ClientLoginConnectionEvents {
 	}
 
 	/**
-	 * @see ClientLoginConnectionEvents#LOGIN_INIT
+	 * @see ClientLoginConnectionEvents#INIT
 	 */
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface LoginInit {
+	public interface Init {
 		void onLoginStart(ClientLoginNetworkHandler handler, MinecraftClient client);
 	}
 
 	/**
-	 * @see ClientLoginConnectionEvents#LOGIN_QUERY_START
+	 * @see ClientLoginConnectionEvents#QUERY_START
 	 */
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface LoginQueryStart {
+	public interface QueryStart {
 		void onLoginQueryStart(ClientLoginNetworkHandler handler, MinecraftClient client);
 	}
 
 	/**
-	 * @see ClientLoginConnectionEvents#LOGIN_DISCONNECT
+	 * @see ClientLoginConnectionEvents#DISCONNECT
 	 */
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
-	public interface LoginDisconnect {
+	public interface Disconnect {
 		void onLoginDisconnect(ClientLoginNetworkHandler handler, MinecraftClient client);
 	}
 }

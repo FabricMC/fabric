@@ -36,8 +36,8 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerLoginConnectionEvents.LOGIN_QUERY_START.register(this::onLoginStart);
-		ServerLoginConnectionEvents.LOGIN_QUERY_START.register(this::delaySimply);
+		ServerLoginConnectionEvents.QUERY_START.register(this::onLoginStart);
+		ServerLoginConnectionEvents.QUERY_START.register(this::delaySimply);
 
 		// login delaying example
 		ServerLoginNetworking.registerGlobalReceiver(NetworkingPlayPacketTest.TEST_CHANNEL, (server, handler, understood, buf, synchronizer, sender) -> {

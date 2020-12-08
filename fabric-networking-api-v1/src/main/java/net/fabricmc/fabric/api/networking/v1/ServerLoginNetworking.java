@@ -88,7 +88,7 @@ public final class ServerLoginNetworking {
 	 * Registers a handler to a query response channel.
 	 *
 	 * <p>If a handler is already registered to the {@code channelName}, this method will return {@code false}, and no change will be made.
-	 * Use {@link #unregisterReceiver(ServerLoginNetworkHandler, Identifier)} to unregister the existing handler.</p>
+	 * Use {@link #unregisterReceiver(ServerLoginNetworkHandler, Identifier)} to unregister the existing handler.
 	 *
 	 * @param networkHandler the handler
 	 * @param channelName the id of the channel
@@ -104,7 +104,7 @@ public final class ServerLoginNetworking {
 	/**
 	 * Removes the handler of a query response channel.
 	 *
-	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.</p>
+	 * <p>The {@code channelName} is guaranteed not to have a handler after this call.
 	 *
 	 * @param channelName the id of the channel
 	 * @return the previous handler, or {@code null} if no handler was bound to the channel name
