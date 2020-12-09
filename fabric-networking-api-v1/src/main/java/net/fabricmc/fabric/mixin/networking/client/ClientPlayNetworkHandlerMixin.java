@@ -31,6 +31,7 @@ import net.minecraft.text.Text;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkHandlerExtensions;
 
@@ -48,6 +49,7 @@ abstract class ClientPlayNetworkHandlerMixin implements ClientPlayNetworkHandler
 	private void initAddon(CallbackInfo ci) {
 		this.addon = new ClientPlayNetworkAddon((ClientPlayNetworkHandler) (Object) this, this.client);
 		// A bit of a hack but it allows the field above to be set in case someone registers handlers during INIT event which refers to said field
+		ClientNetworkingImpl.setClientPlayAddon(this.addon);
 		this.addon.lateInit();
 	}
 

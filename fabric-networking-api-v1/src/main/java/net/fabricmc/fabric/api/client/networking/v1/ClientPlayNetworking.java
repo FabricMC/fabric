@@ -32,6 +32,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.client.ClientNetworkingImpl;
+import net.fabricmc.fabric.impl.networking.client.ClientPlayNetworkAddon;
 
 /**
  * Offers access to play stage client-side networking functionalities.
@@ -104,8 +105,10 @@ public final class ClientPlayNetworking {
 	 * @see ClientPlayConnectionEvents#INIT
 	 */
 	public static boolean registerReceiver(Identifier channelName, PlayChannelHandler channelHandler) {
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).registerChannel(channelName, channelHandler);
+		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
+
+		if (addon != null) {
+			return addon.registerChannel(channelName, channelHandler);
 		}
 
 		throw new IllegalStateException("Cannot register receiver while not in game!");
@@ -122,8 +125,10 @@ public final class ClientPlayNetworking {
 	 */
 	@Nullable
 	public static PlayChannelHandler unregisterReceiver(Identifier channelName) throws IllegalStateException {
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).unregisterChannel(channelName);
+		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
+
+		if (addon != null) {
+			return addon.unregisterChannel(channelName);
 		}
 
 		throw new IllegalStateException("Cannot unregister receiver while not in game!");
@@ -136,8 +141,10 @@ public final class ClientPlayNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	public static Set<Identifier> getReceived() throws IllegalStateException {
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getReceivableChannels();
+		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
+
+		if (addon != null) {
+			return addon.getReceivableChannels();
 		}
 
 		throw new IllegalStateException("Cannot get a list of channels the client can receive packets on while not in game!");
@@ -150,8 +157,10 @@ public final class ClientPlayNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	public static Set<Identifier> getSendable() throws IllegalStateException {
-		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
-			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels();
+		final ClientPlayNetworkAddon addon = ClientNetworkingImpl.getClientPlayAddon();
+
+		if (addon != null) {
+			return addon.getSendableChannels();
 		}
 
 		throw new IllegalStateException("Cannot get a list of channels the server can receive packets on while not in game!");
@@ -165,6 +174,7 @@ public final class ClientPlayNetworking {
 	 * False if the client is not in game.
 	 */
 	public static boolean canSend(Identifier channelName) throws IllegalArgumentException {
+		// You cant send without a client player, so this is fine
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler()).getSendableChannels().contains(channelName);
 		}
@@ -193,6 +203,7 @@ public final class ClientPlayNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	public static PacketSender getSender() throws IllegalStateException {
+		// You cant send without a client player, so this is fine
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler());
 		}
@@ -208,6 +219,7 @@ public final class ClientPlayNetworking {
 	 * @throws IllegalStateException if the client is not connected to a server
 	 */
 	public static void send(Identifier channelName, PacketByteBuf buf) throws IllegalStateException {
+		// You cant send without a client player, so this is fine
 		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
 			MinecraftClient.getInstance().getNetworkHandler().sendPacket(createC2SPacket(channelName, buf));
 			return;

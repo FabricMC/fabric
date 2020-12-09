@@ -29,7 +29,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.networking.v1.S2CPlayChannelEvents;
+import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.AbstractChanneledNetworkAddon;
@@ -60,7 +60,7 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 			this.registerChannel(entry.getKey(), entry.getValue());
 		}
 
-		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(handler, this.client);
+		ClientPlayConnectionEvents.INIT.invoker().onPlayInit(this.handler, this.client);
 	}
 
 	public void onServerReady() {
@@ -111,12 +111,12 @@ public final class ClientPlayNetworkAddon extends AbstractChanneledNetworkAddon<
 
 	@Override
 	protected void invokeRegisterEvent(List<Identifier> ids) {
-		S2CPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.client, ids);
+		C2SPlayChannelEvents.REGISTER.invoker().onChannelRegister(this.handler, this, this.client, ids);
 	}
 
 	@Override
 	protected void invokeUnregisterEvent(List<Identifier> ids) {
-		S2CPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
+		C2SPlayChannelEvents.UNREGISTER.invoker().onChannelUnregister(this.handler, this, this.client, ids);
 	}
 
 	@Override
