@@ -38,9 +38,9 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
  *
  * <p>The primary entrypoint into a screen is when it is being opened, this is signified by an event {@link ScreenEvents#BEFORE_INIT before} and {@link ScreenEvents#AFTER_INIT after} initialization of the screen.
  *
+ * @see Screens
  * @see ScreenKeyboardEvents
  * @see ScreenMouseEvents
- * @see Screens
  */
 @Environment(EnvType.CLIENT)
 public final class ScreenEvents {
