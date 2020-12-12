@@ -31,7 +31,7 @@ public class FabricRegistryClientInit implements ClientModInitializer {
 	public void onInitializeClient() {
 		ClientPlayNetworking.registerGlobalReceiver(RegistrySyncManager.ID, (client, handler, buf, responseSender) -> {
 			// if not hosting server, apply packet
-			RegistrySyncManager.receivePacket(client, buf, RegistrySyncManager.DEBUG || client.isInSingleplayer(), (e) -> {
+			RegistrySyncManager.receivePacket(client, buf, RegistrySyncManager.DEBUG || !client.isInSingleplayer(), (e) -> {
 				LOGGER.error("Registry remapping failed!", e);
 
 				client.execute(() -> {
