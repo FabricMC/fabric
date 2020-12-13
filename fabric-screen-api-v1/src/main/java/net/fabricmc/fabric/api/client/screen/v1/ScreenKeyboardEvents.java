@@ -26,14 +26,14 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
 /**
- * Events related to use of the keyboard in a {@link Screen screen}.
+ * Events related to use of the keyboard in a {@link Screen}.
  *
  * @see ScreenEvents
  */
 @Environment(EnvType.CLIENT)
 public final class ScreenKeyboardEvents {
 	/**
-	 * An event that is called before a key press is processed for a screen.
+	 * An event that checks if a key press should be allowed.
 	 *
 	 * @return the event
 	 */
@@ -43,6 +43,11 @@ public final class ScreenKeyboardEvents {
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowKeyPressEvent();
 	}
 
+	/**
+	 * An event that is called before a key press is processed for a screen.
+	 *
+	 * @return the event
+	 */
 	public static Event<BeforeKeyPress> getBeforeKeyPressEvent(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
@@ -61,7 +66,7 @@ public final class ScreenKeyboardEvents {
 	}
 
 	/**
-	 * An event that is called after the release of a key is processed for a screen.
+	 * An event that checks if a pressed key should be allowed to release.
 	 *
 	 * @return the event
 	 */
@@ -71,6 +76,11 @@ public final class ScreenKeyboardEvents {
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowKeyReleaseEvent();
 	}
 
+	/**
+	 * An event that is called after the release of a key is processed for a screen.
+	 *
+	 * @return the event
+	 */
 	public static Event<BeforeKeyRelease> getBeforeKeyReleaseEvent(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
@@ -94,36 +104,92 @@ public final class ScreenKeyboardEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AllowKeyPress {
+		/**
+		 * Checks if a key should be allowed to be pressed.
+		 *
+		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param scancode the unique/platform-specific scan code of the keyboard input
+		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @return whether the key press should be processed
+		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
 		boolean allowKeyPress(int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeKeyPress {
+		/**
+		 * Called before a key press is handled.
+		 *
+		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param scancode the unique/platform-specific scan code of the keyboard input
+		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
 		void beforeKeyPress(int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterKeyPress {
+		/**
+		 * Called after a key press is handled.
+		 *
+		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param scancode the unique/platform-specific scan code of the keyboard input
+		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
 		void afterKeyPress(int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AllowKeyRelease {
+		/**
+		 * Checks if a pressed key should be allowed to be released.
+		 *
+		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param scancode the unique/platform-specific scan code of the keyboard input
+		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @return whether the key press should be released
+		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
 		boolean allowKeyRelease(int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeKeyRelease {
+		/**
+		 * Called before a pressed key has been released.
+		 *
+		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param scancode the unique/platform-specific scan code of the keyboard input
+		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
 		void beforeKeyRelease(int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterKeyRelease {
+		/**
+		 * Called after a pressed key has been released.
+		 *
+		 * @param key the named key code which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}
+		 * @param scancode the unique/platform-specific scan code of the keyboard input
+		 * @param modifiers a GLFW bitfield describing the modifier keys that are held down
+		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
+		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
+		 */
 		void afterKeyRelease(int key, int scancode, int modifiers);
 	}
 }

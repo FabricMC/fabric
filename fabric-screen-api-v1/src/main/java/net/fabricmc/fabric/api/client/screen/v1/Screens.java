@@ -39,7 +39,7 @@ public final class Screens {
 	/**
 	 * Gets all of a screen's button widgets.
 	 * The provided list allows for addition and removal of buttons from the screen.
-	 * This method should be preferred over adding direct to a screen's {@link Screen#children() child elements}.
+	 * This method should be preferred over adding buttons directly to a screen's {@link Screen#children() child elements}.
 	 *
 	 * @return a list of all of a screen's buttons
 	 */

@@ -26,14 +26,14 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 
 /**
- * Events related to use of the mouse in a {@link Screen screen}.
+ * Events related to use of the mouse in a {@link Screen}.
  *
  * @see ScreenEvents
  */
 @Environment(EnvType.CLIENT)
 public final class ScreenMouseEvents {
 	/**
-	 * An event that checks if the mouse click should be allowed in a screen.
+	 * An event that checks if the mouse click should be allowed.
 	 *
 	 * @return the event
 	 */
@@ -180,6 +180,8 @@ public final class ScreenMouseEvents {
 	@FunctionalInterface
 	public interface AllowMouseRelease {
 		/**
+		 * Checks if the mouse click should be allowed to release in a screen.
+		 *
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
@@ -192,6 +194,8 @@ public final class ScreenMouseEvents {
 	@FunctionalInterface
 	public interface BeforeMouseRelease {
 		/**
+		 * Called before a mouse click has released in a screen.
+		 *
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
@@ -204,6 +208,8 @@ public final class ScreenMouseEvents {
 	@FunctionalInterface
 	public interface AfterMouseRelease {
 		/**
+		 * Called after a mouse click has released in a screen.
+		 *
 		 * @param mouseX the x position of the mouse
 		 * @param mouseY the y position of the mouse
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
