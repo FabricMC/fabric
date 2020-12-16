@@ -33,6 +33,18 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
  * that make large-scale changes to rendering maintain compatibility by calling any broken even invokers directly.
  *
+ * <p>The order of events each frame is as follows:
+ * <ul><li>START
+ * <li>AFTER_SETUP
+ * <li>BEFORE_ENTITIES
+ * <li>AFTER_ENTITIES
+ * <li>BEFORE_BLOCK_OUTLINE
+ * <li>BLOCK_OUTLINE  (If not cancelled in BEFORE_BLOCK_OUTLINE)
+ * <li>BEFORE_DEBUG_RENDER
+ * <li>AFTER_TRANSLUCENT
+ * <li>LAST
+ * <li>END</ul>
+ *
  * <p>These events are not dependent on the Fabric rendering API or Indigo but work when those are present.
  */
 @Environment(EnvType.CLIENT)
