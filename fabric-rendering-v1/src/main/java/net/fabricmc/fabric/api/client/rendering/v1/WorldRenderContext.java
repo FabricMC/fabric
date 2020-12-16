@@ -119,6 +119,7 @@ public interface WorldRenderContext {
 	 * Used in {@code BLOCK_OUTLINE} to convey the parameters normally sent to
 	 * {@code WorldRenderer.drawBlockOutline}.
 	 */
+	@Environment(EnvType.CLIENT)
 	public interface BlockOutlineContext {
 		VertexConsumer vertexConsumer();
 
