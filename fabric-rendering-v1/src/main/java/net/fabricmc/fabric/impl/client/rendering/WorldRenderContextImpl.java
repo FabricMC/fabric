@@ -60,7 +60,7 @@ public final class WorldRenderContextImpl implements WorldRenderContext.BlockOut
 	private BlockPos blockPos;
 	private BlockState blockState;
 
-	public boolean renderBlockOutline;
+	public boolean renderBlockOutline = true;
 
 	public void prepare(
 			WorldRenderer worldRenderer,
