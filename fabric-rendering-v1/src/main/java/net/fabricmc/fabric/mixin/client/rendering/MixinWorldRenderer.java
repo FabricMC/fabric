@@ -94,23 +94,19 @@ public abstract class MixinWorldRenderer {
 			)
 	)
 	private void beforeRenderOutline(CallbackInfo ci) {
-		context.setHitResult(client.crosshairTarget);
-		WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(context);
+		context.renderBlockOutline = WorldRenderEvents.BEFORE_BLOCK_OUTLINE.invoker().beforeBlockOutline(context, client.crosshairTarget);
 	}
 
 	@Inject(method = "drawBlockOutline", at = @At("HEAD"), cancellable = true)
 	private void onDrawBlockOutline(MatrixStack matrixStack, VertexConsumer vertexConsumer, Entity entity, double cameraX, double cameraY, double cameraZ, BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
-		if (context.didCancelDefaultBlockOutline()) {
-			// Was cancelled before we got here, so does not count as
-			// cancelled in later events, per contract of the API.
-			context.resetDefaultBlockOutline();
+		if (!context.renderBlockOutline) {
+			// Was cancelled before we got here, so do not
+			// fire the BLOCK_OUTLINE event per contract of the API.
 			ci.cancel();
 		} else {
 			context.prepareBlockOutline(vertexConsumer, entity, cameraX, cameraY, cameraZ, blockPos, blockState);
-			WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context);
 
-			// If default outline render was cancelled we leave that indicator intact
-			if (context.didCancelDefaultBlockOutline()) {
+			if (!WorldRenderEvents.BLOCK_OUTLINE.invoker().onBlockOutline(context, context)) {
 				ci.cancel();
 			}
 		}
