@@ -75,7 +75,7 @@ public class PersistentDynamicRegistryHandler {
 			biomeRegistryData = existingTag.getCompound(Registry.BIOME_KEY.getValue().toString());
 		}
 
-		MutableRegistry<?> registry = dynamicRegistryManager.get(Registry.BIOME_KEY);
+		MutableRegistry<?> registry = (MutableRegistry<?>) dynamicRegistryManager.get(Registry.BIOME_KEY);
 		CompoundTag biomeIdMap = remapRegistry(Registry.BIOME_KEY.getValue(), registry, biomeRegistryData);
 		registries.put(Registry.BIOME_KEY.getValue().toString(), biomeIdMap);
 

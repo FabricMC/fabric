@@ -114,7 +114,7 @@ public class BiomeModificationImpl {
 		BiomeModificationTracker modificationTracker = (BiomeModificationTracker) (Object) impl;
 		Set<RegistryKey<Biome>> modifiedBiomes = modificationTracker.fabric_getModifiedBiomes();
 
-		MutableRegistry<Biome> biomes = impl.get(Registry.BIOME_KEY);
+		Registry<Biome> biomes = impl.get(Registry.BIOME_KEY);
 
 		// Build a list of all biome keys in ascending order of their raw-id to get a consistent result in case
 		// someone does something stupid.

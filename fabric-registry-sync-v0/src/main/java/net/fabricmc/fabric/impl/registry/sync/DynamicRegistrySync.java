@@ -53,7 +53,7 @@ public class DynamicRegistrySync {
 	private static <T> void setupSync(Registry<T> source, DynamicRegistryManager.Impl template) {
 		@SuppressWarnings("unchecked") AccessorRegistry<T> sourceAccessor = (AccessorRegistry<T>) source;
 		RegistryKey<? extends Registry<T>> sourceKey = source.getKey();
-		MutableRegistry<T> target = template.get(sourceKey);
+		MutableRegistry<T> target = (MutableRegistry<T>) template.get(sourceKey);
 
 		RegistryEntryAddedCallback.event(source).register((rawId, id, object) -> {
 			LOGGER.trace("Synchronizing {} from built-in registry {} into built-in dynamic registry manager template.",
