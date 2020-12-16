@@ -31,7 +31,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Mods should use these events to introduce custom rendering during {@link WorldRenderer#render(net.minecraft.client.util.math.MatrixStack, float, long, boolean, net.minecraft.client.render.Camera, net.minecraft.client.render.GameRenderer, net.minecraft.client.render.LightmapTextureManager, net.minecraft.util.math.Matrix4f)}
  * without adding complicated and conflict-prone injections there.  Using these events also enables 3rd-party renderers
- * that make large-scale changes to rendering maintain compatibility by calling any broken even invokers directly.
+ * that make large-scale changes to rendering maintain compatibility by calling any broken event invokers directly.
  *
  * <p>The order of events each frame is as follows:
  * <ul><li>START
