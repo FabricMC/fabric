@@ -255,26 +255,31 @@ public final class WorldRenderEvents {
 		}
 	});
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Start {
 		void onStart(WorldRenderContext context);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterSetup {
 		void afterSetup(WorldRenderContext context);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeEntities {
 		void beforeEntities(WorldRenderContext context);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterEntities {
 		void afterEntities(WorldRenderContext context);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeBlockOutline {
 		/**
@@ -290,26 +295,31 @@ public final class WorldRenderEvents {
 		boolean beforeBlockOutline(WorldRenderContext context, @Nullable HitResult hitResult);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BlockOutline {
 		boolean onBlockOutline(WorldRenderContext worldRenderContext, BlockOutlineContext blockOutlieContext);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface DebugRender {
 		void beforeDebugRender(WorldRenderContext context);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterTranslucent {
 		void afterTranslucent(WorldRenderContext context);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Last {
 		void onLast(WorldRenderContext context);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface End {
 		void onEnd(WorldRenderContext context);
