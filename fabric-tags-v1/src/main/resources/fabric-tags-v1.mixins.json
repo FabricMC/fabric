@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.tags.extension",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "common.bookshelf.EnchantmentScreenHandlerMixin",
+    "common.elytra.LivingEntityMixin",
+    "common.elytra.PlayerEntityMixin",
+    "common.totem.LivingEntityMixin"
+  ],
+  "client": [
+    "client.bookshelf.EnchantingTableBlockMixin",
+    "client.elytra.CapeFeatureRendererMixin",
+    "client.elytra.ClientPlayerEntityMixin",
+    "client.elytra.ElytraFeatureRendererMixin",
+    "client.totem.ClientPlayNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
