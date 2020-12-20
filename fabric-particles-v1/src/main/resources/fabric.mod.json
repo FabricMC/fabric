@@ -3,6 +3,7 @@
   "id": "fabric-particles-v1",
   "version": "${version}",
   "license": "Apache-2.0",
+  "icon": "assets/fabric-particles-v1/icon.png",
   "depends": {
     "fabricloader": ">=0.4.0"
   },
