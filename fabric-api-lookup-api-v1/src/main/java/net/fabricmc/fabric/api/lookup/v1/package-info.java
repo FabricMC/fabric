@@ -40,11 +40,17 @@
  * </ul>
  * </p>
  *
+ * <p>
+ * <pre>{@code
+ * example
+ * }</pre>
+ * </p>
+ *
  * <p><h2>Retrieving Apis from custom game objects</h2>
  * <ul>
  *     <li>To make a custom Api lookup implementation easier, this modules provide {@link net.fabricmc.fabric.api.lookup.v1.ApiProviderMap ApiProviderMap} to help with
  *     the fast handling of providers.</li>
- *     <li>This module also provides an {@link net.fabricmc.fabric.api.lookup.v1.ApiLookupMap ApiLookupMap} to ease the creation of a registry
+ *     <li>This module also provides an {@link net.fabricmc.fabric.api.lookup.v1.ApiLookupMap ApiLookupMap} to assist with the creation of a registry
  *     for a custom Api lookup.</li>
  * </ul>
  * </p>

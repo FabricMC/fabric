@@ -26,10 +26,20 @@ import net.minecraft.util.math.BlockPos;
 import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
+/**
+ * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster Api access.
+ */
 public interface BlockApiCache<T, C> {
+	/**
+	 * Retrieve an Api from a block in the world, using the world and the position passed at creation time.
+	 */
 	@Nullable
 	T get(C context);
 
+	/**
+	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same Api as the passed
+	 * lookup.
+	 */
 	static <T, C> BlockApiCache<T, C> create(BlockApiLookup<T, C> lookup, ServerWorld world, BlockPos pos) {
 		Objects.requireNonNull(pos, "Pos cannot be null");
 		Objects.requireNonNull(world, "World cannot be null");

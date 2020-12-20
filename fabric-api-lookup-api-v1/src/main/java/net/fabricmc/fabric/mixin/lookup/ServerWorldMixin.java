@@ -23,6 +23,7 @@ import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2ReferenceOpenHashMap;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -32,24 +33,29 @@ import net.fabricmc.fabric.impl.lookup.block.ServerWorldCache;
 
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin implements ServerWorldCache {
-	private final Map<BlockPos, List<WeakReference<BlockApiCacheImpl<?, ?>>>> api_provider_caches = new Object2ReferenceOpenHashMap<>();
+	@Unique
+	private final Map<BlockPos, List<WeakReference<BlockApiCacheImpl<?, ?>>>> api_lookup_caches = new Object2ReferenceOpenHashMap<>();
+	// This field ensures that the api_lookup_caches map is iterated over every now and then to clean up
+	@Unique
+	private int api_lookup_accessesWithoutCleanup = 0;
 
 	@Override
 	public void api_provider_registerCache(BlockPos pos, BlockApiCacheImpl<?, ?> cache) {
-		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = api_provider_caches.computeIfAbsent(pos.toImmutable(), ignored -> new ArrayList<>());
+		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = api_lookup_caches.computeIfAbsent(pos.toImmutable(), ignored -> new ArrayList<>());
 		caches.removeIf(weakReference -> weakReference.get() == null);
 		caches.add(new WeakReference<>(cache));
+		api_lookup_accessesWithoutCleanup++;
 	}
 
 	@Override
 	public void api_provider_invalidateCache(BlockPos pos) {
-		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = api_provider_caches.get(pos);
+		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = api_lookup_caches.get(pos);
 
 		if (caches != null) {
 			caches.removeIf(weakReference -> weakReference.get() == null);
 
 			if (caches.size() == 0) {
-				api_provider_caches.remove(pos);
+				api_lookup_caches.remove(pos);
 			} else {
 				caches.forEach(weakReference -> {
 					BlockApiCacheImpl<?, ?> cache = weakReference.get();
@@ -59,6 +65,16 @@ public class ServerWorldMixin implements ServerWorldCache {
 					}
 				});
 			}
+		}
+
+		api_lookup_accessesWithoutCleanup++;
+
+		if (api_lookup_accessesWithoutCleanup > 2 * api_lookup_caches.size()) {
+			api_lookup_caches.entrySet().removeIf(entry -> {
+				entry.getValue().removeIf(weakReference -> weakReference.get() == null);
+				return entry.getValue().isEmpty();
+			});
+			api_lookup_accessesWithoutCleanup = 0;
 		}
 	}
 }

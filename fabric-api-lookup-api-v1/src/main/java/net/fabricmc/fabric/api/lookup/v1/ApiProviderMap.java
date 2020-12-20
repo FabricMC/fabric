@@ -21,19 +21,28 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.impl.lookup.ApiProviderHashMap;
 
 /**
- * The building block for creating your own Lookup.
- * You should store an instance of this interface in every instance of the Lookup.
- * This map allows very fast lock-free concurrent reads, and uses a copy-on-write strategy for writes.
- * This means in particular that writes are very expensive.
- * Note that keys are compared by reference (==) and not using .equals!
+ * A fast copy-on-write map, meant to store Api providers. This is meant to be used by implementors of Api lookups.
+ * @param <K> The key type of the map, compared by reference ({@code ==}).
+ * @param <V> The value type of the map.
+ * @apiNote This map allows very fast lock-free concurrent reads, but in exchange writes are very expensive and should not be too frequent.
+ * @apiNote Keys are compared by reference ({@code ==}) and not using {@link Object#equals}.
  */
 public interface ApiProviderMap<K, V> {
+	/**
+	 * Create a new instance.
+	 */
 	static <K, V> ApiProviderMap<K, V> create() {
 		return new ApiProviderHashMap<>();
 	}
 
+	/**
+	 * @see java.util.Map#get Map.get()
+	 */
 	@Nullable
 	V get(K key);
 
+	/**
+	 * @see java.util.Map#putIfAbsent Map.putIfAbsent()
+	 */
 	V putIfAbsent(K key, V provider);
 }

@@ -42,11 +42,11 @@ import net.minecraft.world.World;
  */
 public interface BlockApiLookup<T, C> {
 	/**
-	 * Retrieve an object from a block in the world. Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
+	 * Retrieve an Api from a block in the world. Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 * @param world The world
 	 * @param pos The position of the block
 	 * @param context Additional context for the query, defined by type parameter C
-	 * @return The retrieved object, or {@code null} if no object was found
+	 * @return The retrieved Api, or {@code null} if no Api was found
 	 */
 	@Nullable
 	T get(World world, BlockPos pos, C context);

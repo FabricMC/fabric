@@ -106,6 +106,10 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		Objects.requireNonNull(provider, "BlockApiProvider cannot be null");
 		Objects.requireNonNull(blocks, "Block... cannot be null");
 
+		if (blocks.length == 0) {
+			throw new IllegalArgumentException("Must register at least one Block instance with a BlockApiProvider");
+		}
+
 		for (final Block block : blocks) {
 			Objects.requireNonNull(block, "encountered null block while registering a block API provider mapping");
 
@@ -119,6 +123,10 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	public void registerForBlockEntities(BlockEntityApiProvider<T, C> provider, BlockEntityType<?>... blockEntityTypes) {
 		Objects.requireNonNull(provider, "encountered null BlockEntityApiProvider");
 		Objects.requireNonNull(blockEntityTypes, "BlockEntityType... cannot be null");
+
+		if (blockEntityTypes.length == 0) {
+			throw new IllegalArgumentException("Must register at least one BlockEntityType instance with a BlockEntityApiProvider");
+		}
 
 		for (final BlockEntityType<?> blockEntityType : blockEntityTypes) {
 			Objects.requireNonNull(blockEntityType, "encountered null block entity type while registering a block entity API provider mapping");
