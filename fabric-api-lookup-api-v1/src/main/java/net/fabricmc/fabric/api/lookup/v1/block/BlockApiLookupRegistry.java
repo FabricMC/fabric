@@ -24,6 +24,9 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupRegistryImpl;
 
 /**
  * Access to {@link BlockApiLookup} instances.
+ * <p>
+ * See {@link BlockApiLookup} for more information and example code.
+ * </p>
  */
 public final class BlockApiLookupRegistry {
 	/**

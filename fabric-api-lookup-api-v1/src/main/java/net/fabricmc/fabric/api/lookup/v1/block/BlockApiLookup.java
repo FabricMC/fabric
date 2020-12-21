@@ -35,7 +35,72 @@ import net.minecraft.world.World;
  * Then, if no object is found that way, the generic fallback providers are queried.
  * </p>
  * <p>
- * If you are going to query Apis a lot, consider using {@link BlockApiCache}, it may drastically improve performance.
+ * Note: If you are going to query Apis a lot, consider using {@link BlockApiCache}, it may drastically improve performance.
+ * </p>
+ * <p><h3>Usage Example</h3>
+ * Let us pretend we have the following interface that we would like to attach to some blocks depending on the direction.
+ * <pre>
+ * public interface FluidContainer {
+ *     boolean containsFluids(); // return true if not empty
+ * }</pre>
+ * Let us first create a static {@code BlockApiLookup} instance that will manage the registration and the query.
+ * <pre>
+ * public class Whatever {
+ *     public static final BlockApiLookup&lt;FluidContainer, Direction&gt; FLUID_CONTAINER =
+ *         BlockApiLookupRegistry.getLookup(new Identifier("mymod:fluid_container"), FluidContainer.class, Direction.class);
+ * }</pre>
+ * Using that, we can query instances of {@code FluidContainer}:
+ * <pre>
+ * FluidContainer container = Whatever.FLUID_CONTAINER.get(world, pos, direction);
+ * if (container != null) {
+ *     // Do something with the container
+ *     if (container.containsFluids()) {
+ *         System.out.println("It contains fluids!");
+ *     }
+ * }</pre>
+ * For the query to return a useful result, an Api must be registered.
+ * <pre>
+ * // With a block entity, the preferred way
+ * Whatever.FLUID_CONTAINER.registerForBlockEntities((blockEntity, direction) -> {
+ *     if (blockEntity instanceof YourBlockEntity) {
+ *         // return your FluidContainer, ideally a field in the block entity, or null if there is none.
+ *     }
+ *     return null;
+ * }, BLOCK_ENTITY_TYPE_1, BLOCK_ENTITY_TYPE_2);
+ *
+ * // Without a block entity
+ * Whatever.FLUID_CONTAINER.registerForBlocks((world, pos, blockState, direction) -> {
+ *     // return a FluidContainer for your block, or null if there is none
+ * }, BLOCK_INSTANCE, ANOTHER_BLOCK_INSTANCE); // register as many blocks as you want
+ *
+ * // Block entity fallback, for example to interface with another mod's FluidInventory
+ * Whatever.FLUID_CONTAINER.registerBlockEntityFallback((blockEntity, direction) -> {
+ *     if (blockEntity instanceof FluidInventory) {
+ *         // return wrapper
+ *     }
+ *     return null;
+ * });
+ *
+ * // General fallback, to interface with anything, for example another BlockApiLookup
+ * Whatever.FLUID_CONTAINER.registerBlockFallback((world,pos,blockState,direction)->{
+ *     // return something if available, or null
+ * });</pre>
+ * </p>
+ *
+ * <p><h3>Improving performance</h3></p>
+ * When performing queries every tick, it is recommended to use {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache BlockApiCache&lt;T, C&gt;}
+ * instead of directly querying the {@code BlockApiLookup}.
+ * <pre>
+ * // 1) create and store an instance
+ * BlockApiCache<FluidContainer, Direction> cache = BlockApiCache.create(Whatever.FLUID_CONTAINER, serverWorld, pos);
+ *
+ * // 2) use it later, the block entity instance will be cached among other things
+ * FluidContainer container = cache.get(direction);
+ * if (container != null) {
+ *     // ...
+ * }
+ *
+ * // no need to destroy the cache, the garbage collector will take care of it</pre>
  * </p>
  * @param <T> The type of the queried object
  * @param <C> The type of the additional context object

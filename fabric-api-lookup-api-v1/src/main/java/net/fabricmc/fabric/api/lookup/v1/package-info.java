@@ -17,6 +17,9 @@
 /**
  * <h1>The Api Lookup, version 1.</h1>
  *
+ * <p>This module allows Api instances to be associated with game objects without specifying how the association is implemented.
+ * This is useful when the same Api could be implemented more than once or implemented in different ways.</p>
+ *
  * <p><h2>Definitions and purpose</h2>
  * <ul>
  *     <li>What we call an <i>Api</i> is any object that can be offered or queried, possibly by different mods, to be used in an agreed-upon manner.
@@ -28,15 +31,16 @@
  *
  * <p><h2>Retrieving Apis from blocks in the world</h2>
  * <ul>
- *     <li>A block query for an Api is an operation that takes a world, a block position, and additional context of type {@code T}, and uses that
- *     to retrieve an object of type {@code T}, or {@code null} if there was no such object. An instance of {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup BlockApiLookup&lt;T, C&gt;}
- *     provides a {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get get()} function that does exactly that. It also allows registering Apis for blocks,
+ *     <li>A block query for an Api is an operation that takes a world, a block position, and additional context of type {@code C}, and uses that
+ *     to retrieve an object of type {@code T}, or {@code null} if there was no such object.</li>
+ *     <li>An instance of {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup BlockApiLookup&lt;T, C&gt;}
+ *     provides a {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get get()} function that does exactly that.</li>
+ *     <li>It also allows registering Apis for blocks,
  *     because for the query to work the Api must be registered first. Registration primarily happens through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlocks registerForBlocks()}
  *     and {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlockEntities registerForBlockEntities()}.</li>
- *     <li>{@code BlockApiLookup} instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry#getLookup BlockApiLookupRegistry#getLookup()}.
+ * 	   <li>{@code BlockApiLookup} instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry#getLookup BlockApiLookupRegistry#getLookup()}.
  *     For optimal performance, it is better to store them in a {@code public static final} field instead of querying them multiple times.</li>
- *     <li>Speaking of performance, a lot of block Api queries can happen every tick, and {@code BlockApiLookup} may not be fast enough. In that case,
- *     {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache BlockApiCache&lt;T, C&gt;} can be used instead.</li>
+ *     <li>See {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup BlockApiLookup} for example code.</li>
  * </ul>
  * </p>
  *

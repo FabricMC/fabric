@@ -28,6 +28,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
 /**
  * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster Api access.
+ * See {@link BlockApiLookup} for more information and example code.
  */
 public interface BlockApiCache<T, C> {
 	/**
