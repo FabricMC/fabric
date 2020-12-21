@@ -31,11 +31,11 @@ import net.minecraft.world.World;
  * <p>
  * When trying to {@link BlockApiLookup#get} an object, the block
  * or block entity at that position will be queried if it exists.
- * If it doesn't exist, or if it returns no object (i.e. {@code null}), the fallback block entity providers are queried in order.
+ * If it doesn't exist, or if it returns {@code null}, the fallback block entity providers are queried in order.
  * Then, if no object is found that way, the generic fallback providers are queried.
  * </p>
  * <p>
- * If you are going to query objects a lot, consider using {@link BlockApiCache}, it may improve performance a lot.
+ * If you are going to query Apis a lot, consider using {@link BlockApiCache}, it may drastically improve performance.
  * </p>
  * @param <T> The type of the queried object
  * @param <C> The type of the additional context object
@@ -87,8 +87,7 @@ public interface BlockApiLookup<T, C> {
 	@FunctionalInterface
 	interface BlockApiProvider<T, C> {
 		/**
-		 * Return an object of type {@code T} if available in the world at the given pos with the given context, or {@code null} otherwise.
-		 * @return An object of type {@code T} if available, or {@code null} otherwise.
+		 * Return an Api of type {@code T} if available in the world at the given pos with the given context, or {@code null} otherwise.
 		 */
 		@Nullable
 		T get(World world, BlockPos pos, BlockState state, C context);
@@ -97,8 +96,7 @@ public interface BlockApiLookup<T, C> {
 	@FunctionalInterface
 	interface BlockEntityApiProvider<T, C> {
 		/**
-		 * Return an object of type {@code T} if available in the given block entity with the given context, or {@code null} otherwise.
-		 * @return An object of type {@code T} if available, or {@code null} otherwise.
+		 * Return an Api of type {@code T} if available in the given block entity with the given context, or {@code null} otherwise.
 		 */
 		@Nullable
 		T get(BlockEntity blockEntity, C context);

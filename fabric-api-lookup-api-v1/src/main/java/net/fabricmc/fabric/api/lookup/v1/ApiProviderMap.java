@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import net.fabricmc.fabric.impl.lookup.ApiProviderHashMap;
 
 /**
- * A fast copy-on-write map, meant to store Api providers. This is meant to be used by implementors of Api lookups.
+ * A fast copy-on-write map. This is meant to be used by implementors of Api lookups to store Api providers.
  * @param <K> The key type of the map, compared by reference ({@code ==}).
  * @param <V> The value type of the map.
  * @apiNote This map allows very fast lock-free concurrent reads, but in exchange writes are very expensive and should not be too frequent.

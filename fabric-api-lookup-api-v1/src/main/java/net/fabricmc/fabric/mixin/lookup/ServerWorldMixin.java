@@ -32,6 +32,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.lookup.block.ServerWorldCache;
 
 @Mixin(ServerWorld.class)
+@SuppressWarnings("unused")
 public class ServerWorldMixin implements ServerWorldCache {
 	@Unique
 	private final Map<BlockPos, List<WeakReference<BlockApiCacheImpl<?, ?>>>> api_lookup_caches = new Object2ReferenceOpenHashMap<>();

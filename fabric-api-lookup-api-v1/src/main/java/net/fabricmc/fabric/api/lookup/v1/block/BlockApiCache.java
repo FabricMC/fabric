@@ -37,7 +37,7 @@ public interface BlockApiCache<T, C> {
 	T get(C context);
 
 	/**
-	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same Api as the passed
+	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same Apis as the passed
 	 * lookup.
 	 */
 	static <T, C> BlockApiCache<T, C> create(BlockApiLookup<T, C> lookup, ServerWorld world, BlockPos pos) {
