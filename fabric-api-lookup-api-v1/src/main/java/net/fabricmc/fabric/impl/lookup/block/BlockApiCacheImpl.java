@@ -27,16 +27,18 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 
-/**
- * Implementation of a cache for block entities.
- */
 public class BlockApiCacheImpl<T, C> implements BlockApiCache<T, C> {
 	private final BlockApiLookupImpl<T, C> lookup;
 	private final ServerWorld world;
 	private final BlockPos pos;
-	private BlockEntity cachedBlockEntity = null;
+	// We always cache the block entity, even if it's null. We rely on BE load and unload events to invalidate the cache when necessary.
+	// blockEntityCacheValid maintains whether the cache is valid or not.
 	private boolean blockEntityCacheValid = false;
-	private BlockApiLookup.BlockEntityApiProvider<T, C> cachedProvider = null;
+	private BlockEntity cachedBlockEntity = null;
+	// We also cache the BlockApiProvider at the target position. We check if the block state has changed to invalidate the cache.
+	// lastState maintains for which block state the cachedProvider is valid.
+	private BlockState lastState = null;
+	private BlockApiLookup.BlockApiProvider<T, C> cachedProvider = null;
 
 	public BlockApiCacheImpl(BlockApiLookupImpl<T, C> lookup, ServerWorld world, BlockPos pos) {
 		((ServerWorldCache) world).api_provider_registerCache(pos, this);
@@ -48,62 +50,52 @@ public class BlockApiCacheImpl<T, C> implements BlockApiCache<T, C> {
 	public void invalidate() {
 		blockEntityCacheValid = false;
 		cachedBlockEntity = null;
+		lastState = null;
 		cachedProvider = null;
 	}
 
 	@Nullable
 	@Override
-	public T get(C context) {
-		BlockState state = null;
-
-		// Cache BE provider and BE if possible, otherwise query using the regular block provider
-		if (cachedProvider == null) {
-			state = world.getBlockState(pos);
-			BlockApiLookup.BlockApiProvider<T, C> provider = lookup.getProvider(state.getBlock());
-
-			if (provider instanceof BlockApiLookupImpl.WrappedBlockEntityProvider) {
-				cachedProvider = ((BlockApiLookupImpl.WrappedBlockEntityProvider<T, C>) provider).blockEntityProvider;
-				cachedBlockEntity = world.getBlockEntity(pos);
-				blockEntityCacheValid = true;
-			} else if (provider != null) {
-				T instance = provider.get(world, pos, state, context);
-
-				if (instance != null) {
-					return instance;
-				}
-			}
+	public T get(@Nullable BlockState state, C context) {
+		// Get block entity
+		if (!blockEntityCacheValid) {
+			cachedBlockEntity = world.getBlockEntity(pos);
+			blockEntityCacheValid = true;
 		}
 
-		// Query using the cached block entity provider
-		if (cachedProvider != null && cachedBlockEntity != null) {
-			T instance = cachedProvider.get(cachedBlockEntity, context);
-
-			if (instance != null) {
-				return instance;
-			}
-		}
-
-		for (BlockApiLookup.BlockEntityApiProvider<T, C> fallbackProvider : lookup.getBlockEntityFallbackProviders()) {
-			if (!blockEntityCacheValid) {
-				cachedBlockEntity = world.getBlockEntity(pos);
-				blockEntityCacheValid = true;
-			}
-
+		// Get block state
+		if (state == null) {
 			if (cachedBlockEntity != null) {
-				T instance = fallbackProvider.get(cachedBlockEntity, context);
-
-				if (instance != null) {
-					return instance;
-				}
-			}
-		}
-
-		for (BlockApiLookup.BlockApiProvider<T, C> fallbackProvider : lookup.getFallbackProviders()) {
-			if (state == null) {
+				state = cachedBlockEntity.getCachedState();
+			} else {
 				state = world.getBlockState(pos);
 			}
+		}
 
-			T instance = fallbackProvider.get(world, pos, state, context);
+		// Get provider
+		if (lastState != state) {
+			cachedProvider = lookup.getProvider(state.getBlock());
+			lastState = state;
+		}
+
+		// Query the provider
+		T instance = null;
+
+		if (cachedProvider != null) {
+			if (cachedProvider instanceof BlockApiLookupImpl.WrappedBlockEntityProvider) {
+				instance = ((BlockApiLookupImpl.WrappedBlockEntityProvider<T, C>) cachedProvider).blockEntityProvider.get(cachedBlockEntity, context);
+			} else {
+				instance = cachedProvider.get(world, pos, state, context);
+			}
+		}
+
+		if (instance != null) {
+			return instance;
+		}
+
+		// Query the fallback providers
+		for (BlockApiLookup.FallbackApiProvider<T, C> fallbackProvider : lookup.getFallbackProviders()) {
+			instance = fallbackProvider.get(world, pos, state, cachedBlockEntity, context);
 
 			if (instance != null) {
 				return instance;

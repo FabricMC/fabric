@@ -31,8 +31,7 @@ import net.minecraft.world.World;
  * <p>
  * When trying to {@link BlockApiLookup#get} an object, the block
  * or block entity at that position will be queried if it exists.
- * If it doesn't exist, or if it returns {@code null}, the fallback block entity providers are queried in order.
- * Then, if no object is found that way, the generic fallback providers are queried.
+ * If it doesn't exist, or if it returns {@code null}, the fallback providers are queried in order.
  * </p>
  * <p>
  * Note: If you are going to query Apis a lot, consider using {@link BlockApiCache}, it may drastically improve performance.
@@ -69,12 +68,12 @@ import net.minecraft.world.World;
  * }, BLOCK_ENTITY_TYPE_1, BLOCK_ENTITY_TYPE_2);
  *
  * // Without a block entity
- * Whatever.FLUID_CONTAINER.registerForBlocks((world, pos, blockState, direction) -> {
+ * Whatever.FLUID_CONTAINER.registerForBlocks((world, pos, state, direction) -> {
  *     // return a FluidContainer for your block, or null if there is none
  * }, BLOCK_INSTANCE, ANOTHER_BLOCK_INSTANCE); // register as many blocks as you want
  *
  * // Block entity fallback, for example to interface with another mod's FluidInventory
- * Whatever.FLUID_CONTAINER.registerBlockEntityFallback((blockEntity, direction) -> {
+ * Whatever.FLUID_CONTAINER.registerFallback((world, pos, state, blockEntity, direction) -> {
  *     if (blockEntity instanceof FluidInventory) {
  *         // return wrapper
  *     }
@@ -82,13 +81,13 @@ import net.minecraft.world.World;
  * });
  *
  * // General fallback, to interface with anything, for example another BlockApiLookup
- * Whatever.FLUID_CONTAINER.registerBlockFallback((world,pos,blockState,direction)->{
+ * Whatever.FLUID_CONTAINER.registerBlockFallback((world, pos, state, blockEntity, direction) -> {
  *     // return something if available, or null
  * });</pre>
  * </p>
  *
  * <p><h3>Improving performance</h3>
- * When performing queries every tick, it is recommended to use {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache BlockApiCache&lt;T, C&gt;}
+ * When performing queries every tick, it is recommended to use {@link BlockApiCache BlockApiCache&lt;T, C&gt;}
  * instead of directly querying the {@code BlockApiLookup}.
  * <pre>
  * // 1) create and store an instance
@@ -100,7 +99,20 @@ import net.minecraft.world.World;
  *     // ...
  * }
  *
+ * // 2bis) if the caller is able to cache the block state as well, for example by listening to neighbor updates,
+ * /        that will further improve performance.
+ * FluidContainer container = cache.get(direction, cachedBlockState);
+ * if (container != null) {
+ *     // ...
+ * }
+ *
  * // no need to destroy the cache, the garbage collector will take care of it</pre>
+ * </p>
+ *
+ * <p><h3>Generic context types</h3>
+ * Note that {@code FluidContainer} and {@code Direction} were completely arbitrary in this example.
+ * We can define any {@code BlockApiLookup&lt;T, C&gt;}, where {@code T} is the type of the queried Api, and {@code C} is the type of the additional context
+ * (the direction parameter in the previous example). If no context is necessary, {@code Void} should be used, and {@code null} instances should be passed.
  * </p>
  * @param <T> The type of the queried object
  * @param <C> The type of the additional context object
@@ -108,13 +120,30 @@ import net.minecraft.world.World;
 public interface BlockApiLookup<T, C> {
 	/**
 	 * Retrieve an Api from a block in the world. Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
+	 * <p>
+	 * Note: If the block state or the block entity is known, it is more efficient to use {@link BlockApiLookup#get(World, BlockPos, BlockState, BlockEntity, Object)}.
+	 * </p>
 	 * @param world The world
 	 * @param pos The position of the block
 	 * @param context Additional context for the query, defined by type parameter C
 	 * @return The retrieved Api, or {@code null} if no Api was found
 	 */
 	@Nullable
-	T get(World world, BlockPos pos, C context);
+	default T get(World world, BlockPos pos, C context) {
+		return get(world, pos, null, null, context);
+	}
+
+	/**
+	 * Retrieve an Api from a block in the world. Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
+	 * @param world The world
+	 * @param pos The position of the block
+	 * @param context Additional context for the query, defined by type parameter C
+	 * @param state The block state at the target position, or null if unknown
+	 * @param blockEntity The block entity at the target position if it is known, or null otherwise
+	 * @return The retrieved Api, or {@code null} if no Api was found
+	 */
+	@Nullable
+	T get(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context);
 
 	/**
 	 * Register a {@link BlockApiProvider} for some blocks.
@@ -134,20 +163,12 @@ public interface BlockApiLookup<T, C> {
 	void registerForBlockEntities(BlockEntityApiProvider<T, C> provider, BlockEntityType<?>... blockEntityTypes);
 
 	/**
-	 * Register a fallback provider for all block entities. It will be invoked if no object was found using the regular providers.
+	 * Register a fallback provider for all blocks. It will be invoked if no object was found using the regular providers.
 	 * This may have a big performance impact on all queries, use cautiously.
 	 * @param fallbackProvider The fallback provider
 	 * @throws NullPointerException If the provider is null
 	 */
-	void registerBlockEntityFallback(BlockEntityApiProvider<T, C> fallbackProvider);
-
-	/**
-	 * Register a fallback provider for all blocks. It will be invoked if no object was found using the regular providers or
-	 * the fallback block entity providers. This may have a big performance impact on all queries, use cautiously.
-	 * @param fallbackProvider The fallback provider
-	 * @throws NullPointerException If the provider is null
-	 */
-	void registerBlockFallback(BlockApiProvider<T, C> fallbackProvider);
+	void registerFallback(FallbackApiProvider<T, C> fallbackProvider);
 
 	@FunctionalInterface
 	interface BlockApiProvider<T, C> {
@@ -165,5 +186,15 @@ public interface BlockApiLookup<T, C> {
 		 */
 		@Nullable
 		T get(BlockEntity blockEntity, C context);
+	}
+
+	@FunctionalInterface
+	interface FallbackApiProvider<T, C> {
+		/**
+		 * Return an Api of type {@code T} if available with the given context, or {@code null} otherwise.
+		 * The block entity will be passed if available.
+		 */
+		@Nullable
+		T get(World world, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, C context);
 	}
 }

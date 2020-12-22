@@ -18,6 +18,9 @@ package net.fabricmc.fabric.api.lookup.v1.block;
 
 import java.util.Objects;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.server.world.ServerWorld;
@@ -30,17 +33,30 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster Api access.
  * See {@link BlockApiLookup} for example code.
  * <p>
- * This object improves the performance of Api accesses by caching the block entity at the target position.
- * If a provider was directly registered for that block entity using {@link BlockApiLookup#registerForBlockEntities},
- * the provider is cached as well, and the query becomes equivalent to {@code cachedProvider.get(cachedBlockEntity, context)}.
+ * {@link BlockApiLookup#get(World, BlockPos, BlockState, BlockEntity, Object) BlockApiLookup#get()} looks up
+ * the block state, the block entity, and the Api provider registered for the target block.<br/>
+ * This object caches the block entity at the target position, and the last used Api provider, removing those queries.
+ * If a block entity is available or if the block state is passed as a parameter, the block state doesn't have to be looked up either.
  * </p>
  */
 public interface BlockApiCache<T, C> {
 	/**
 	 * Retrieve an Api from a block in the world, using the world and the position passed at creation time.
+	 * <p>
+	 * Note: if the block state is known, it is more efficient to use {@link BlockApiCache#get(BlockState, Object)}.
+	 * </p>
 	 */
 	@Nullable
-	T get(C context);
+	default T get(C context) {
+		return get(null, context);
+	}
+
+	/**
+	 * Retrieve an Api from a block in the world, using the world and the position passed at creation time.
+	 * @param state The block state at the target position, or null if unknown
+	 */
+	@Nullable
+	T get(@Nullable BlockState state, C context);
 
 	/**
 	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same Apis as the passed
