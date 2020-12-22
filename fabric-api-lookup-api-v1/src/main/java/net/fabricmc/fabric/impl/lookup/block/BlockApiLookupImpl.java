@@ -70,7 +70,6 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		if (provider instanceof WrappedBlockEntityProvider) {
 			if (blockEntity != null) {
 				instance = ((WrappedBlockEntityProvider<T, C>) provider).blockEntityProvider.get(blockEntity, context);
-
 			}
 		} else if (provider != null) {
 			instance = provider.get(world, pos, state, context);
