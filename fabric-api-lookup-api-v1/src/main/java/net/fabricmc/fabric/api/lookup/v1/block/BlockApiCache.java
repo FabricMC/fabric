@@ -28,7 +28,12 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
 /**
  * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster Api access.
- * See {@link BlockApiLookup} for more information and example code.
+ * See {@link BlockApiLookup} for example code.
+ * <p>
+ * This object improves the performance of Api accesses by caching the block entity at the target position.
+ * If a provider was directly registered for that block entity using {@link BlockApiLookup#registerForBlockEntities},
+ * the provider is cached as well, and the query becomes equivalent to {@code cachedProvider.get(cachedBlockEntity, context)}.
+ * </p>
  */
 public interface BlockApiCache<T, C> {
 	/**

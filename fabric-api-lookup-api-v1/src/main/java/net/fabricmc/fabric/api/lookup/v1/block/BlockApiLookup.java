@@ -87,12 +87,12 @@ import net.minecraft.world.World;
  * });</pre>
  * </p>
  *
- * <p><h3>Improving performance</h3></p>
+ * <p><h3>Improving performance</h3>
  * When performing queries every tick, it is recommended to use {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache BlockApiCache&lt;T, C&gt;}
  * instead of directly querying the {@code BlockApiLookup}.
  * <pre>
  * // 1) create and store an instance
- * BlockApiCache<FluidContainer, Direction> cache = BlockApiCache.create(Whatever.FLUID_CONTAINER, serverWorld, pos);
+ * BlockApiCache&lt;FluidContainer, Direction&gt; cache = BlockApiCache.create(Whatever.FLUID_CONTAINER, serverWorld, pos);
  *
  * // 2) use it later, the block entity instance will be cached among other things
  * FluidContainer container = cache.get(direction);
