@@ -54,7 +54,7 @@ Set<String> apiModules = [
 
 // Add each module as a dependency
 apiModules.forEach {
-    modImplementation(fabricApi.module(it, FABRIC_API_VERSION))
+    include(modImplementation(fabricApi.module(it, FABRIC_API_VERSION)))
 }
 ```
 
