@@ -20,8 +20,10 @@ import java.util.Collection;
 
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.networking.v1.C2SPlayChannelEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.networking.v1.S2CPlayChannelEvents;
 
 /**
  * Event for listening to packet type registration and unregistration notifications
@@ -29,8 +31,15 @@ import net.fabricmc.fabric.api.event.EventFactory;
  *
  * <p>Registrations received will be for <em>client -&gt; server</em> packets
  * that the sending server can understand.
+ *
+ * @deprecated Please migrate to {@link C2SPlayChannelEvents} since this was incorrectly named.
  */
+@Deprecated
 public interface S2CPacketTypeCallback {
+	/**
+	 * @deprecated Please migrate to {@link S2CPlayChannelEvents#REGISTER}.
+	 */
+	@Deprecated
 	Event<S2CPacketTypeCallback> REGISTERED = EventFactory.createArrayBacked(
 			S2CPacketTypeCallback.class,
 			(callbacks) -> (types) -> {
@@ -40,6 +49,10 @@ public interface S2CPacketTypeCallback {
 			}
 	);
 
+	/**
+	 * @deprecated Please migrate to {@link S2CPlayChannelEvents#UNREGISTER}.
+	 */
+	@Deprecated
 	Event<S2CPacketTypeCallback> UNREGISTERED = EventFactory.createArrayBacked(
 			S2CPacketTypeCallback.class,
 			(callbacks) -> (types) -> {

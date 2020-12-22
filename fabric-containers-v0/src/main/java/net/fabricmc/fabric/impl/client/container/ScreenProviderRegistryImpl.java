@@ -32,7 +32,6 @@ import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.fabricmc.fabric.api.container.ContainerFactory;
 import net.fabricmc.fabric.api.network.ClientSidePacketRegistry;
 import net.fabricmc.fabric.impl.container.ContainerProviderImpl;
-import net.fabricmc.fabric.impl.networking.PacketTypes;
 
 public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	/**
@@ -68,7 +67,7 @@ public class ScreenProviderRegistryImpl implements ScreenProviderRegistry {
 	}
 
 	public static void init() {
-		ClientSidePacketRegistry.INSTANCE.register(PacketTypes.OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
+		ClientSidePacketRegistry.INSTANCE.register(ContainerProviderImpl.OPEN_CONTAINER, (packetContext, packetByteBuf) -> {
 			Identifier identifier = packetByteBuf.readIdentifier();
 			int syncId = packetByteBuf.readUnsignedByte();
 			packetByteBuf.retain();
