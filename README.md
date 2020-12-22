@@ -69,7 +69,7 @@ setOf(
     "fabric-networking-v0"
 ).forEach {
     // Add each module as a dependency
-    include(modImplementation(fabricApi.module(it, FABRIC_API_VERSION)))
+    modImplementation(fabricApi.module(it, FABRIC_API_VERSION))
 }
 ```
 
