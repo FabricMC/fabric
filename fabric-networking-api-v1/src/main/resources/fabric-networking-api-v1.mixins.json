@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.networking",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "ClientConnectionMixin",
+    "EntityTrackerEntryMixin",
+    "PlayerManagerMixin",
+    "ServerLoginNetworkHandlerMixin",
+    "ServerPlayNetworkHandlerMixin",
+    "ThreadedAnvilChunkStorageMixin",
+    "accessor.CustomPayloadC2SPacketAccessor",
+    "accessor.EntityTrackerAccessor",
+    "accessor.LoginQueryRequestS2CPacketAccessor",
+    "accessor.LoginQueryResponseC2SPacketAccessor",
+    "accessor.ServerLoginNetworkHandlerAccessor"
+  ],
+  "client": [
+    "accessor.ConnectScreenAccessor",
+    "accessor.MinecraftClientAccessor",
+    "client.ClientLoginNetworkHandlerMixin",
+    "client.ClientPlayNetworkHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
