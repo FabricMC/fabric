@@ -39,7 +39,7 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION"
 modImplementation("net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION")
 ```
 
-Alternatively, modules from Fabric API can be specified individually as shown below:
+Alternatively, modules from Fabric API can be specified individually as shown below (including module jar to your mod jar):
 
 ### Groovy DSL
 
@@ -69,7 +69,7 @@ setOf(
     "fabric-networking-v0"
 ).forEach {
     // Add each module as a dependency
-    modImplementation(fabricApi.module(it, FABRIC_API_VERSION))
+    include(modImplementation(fabricApi.module(it, FABRIC_API_VERSION)))
 }
 ```
 
