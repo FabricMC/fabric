@@ -41,11 +41,11 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 
 		ServerTickEvents.START_WORLD_TICK.register(world -> {
 			if (!clientResources) {
-				throw new RuntimeException("Client reload listener was not called.");
+				throw new AssertionError("Client reload listener was not called.");
 			}
 
 			if (!serverResources) {
-				throw new RuntimeException("Server reload listener was not called.");
+				throw new AssertionError("Server reload listener was not called.");
 			}
 		});
 	}
@@ -60,7 +60,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 			@Override
 			public void apply(ResourceManager manager) {
 				if (!clientResources) {
-					throw new RuntimeException("Second reload listener was called before the first!");
+					throw new AssertionError("Second reload listener was called before the first!");
 				}
 			}
 
@@ -93,7 +93,7 @@ public class ResourceReloadListenerTestMod implements ModInitializer {
 			@Override
 			public void apply(ResourceManager manager) {
 				if (!serverResources) {
-					throw new RuntimeException("Second reload listener was called before the first!");
+					throw new AssertionError("Second reload listener was called before the first!");
 				}
 			}
 
