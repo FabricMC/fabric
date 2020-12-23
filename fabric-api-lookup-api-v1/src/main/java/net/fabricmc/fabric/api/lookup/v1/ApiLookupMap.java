@@ -25,15 +25,15 @@ import net.fabricmc.fabric.impl.lookup.ApiLookupMapImpl;
 
 /**
  * Access to generic Api lookup instances. This is is meant to be used by implementors of Api lookup registries.
- * <p>
- * Note: To store a lookup class with type parameters {@code <T, C>}, it is recommended to store it as {@code <?, ?>}
- * and perform an unchecked cast on queries internally.
- * </p>
+ *
+ * <p>Note: To store a lookup class with type parameters {@code <T, C>}, it is recommended to store it as {@code <?, ?>} and perform an unchecked cast on queries internally.
+ *
  * @param <L> The type of the lookup.
  */
 public interface ApiLookupMap<L> extends Iterable<L> {
 	/**
 	 * Create a new instance.
+	 *
 	 * @param lookupFactory The factory for the Api lookups.
 	 */
 	static <L> ApiLookupMap<L> create(Supplier<L> lookupFactory) {
@@ -44,6 +44,7 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 
 	/**
 	 * Retrieve the Api lookup associated with an identifier.
+	 *
 	 * @param lookupId The unique identifier of the lookup.
 	 * @param apiClass The class of the queried Api.
 	 * @param contextClass The class of the queried additional context.

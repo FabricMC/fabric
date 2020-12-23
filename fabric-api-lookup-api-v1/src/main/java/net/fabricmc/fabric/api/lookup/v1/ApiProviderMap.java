@@ -22,12 +22,10 @@ import net.fabricmc.fabric.impl.lookup.ApiProviderHashMap;
 
 /**
  * A fast copy-on-write map. This is meant to be used by implementors of Api lookups to store Api providers.
- * <p>
- * Note: This map allows very fast lock-free concurrent reads, but in exchange writes are very expensive and should not be too frequent.
- * </p>
- * <p>
- * Note: Keys are compared by reference ({@code ==}) and not using {@link Object#equals}.
- * </p>
+ *
+ * <p>Note: This map allows very fast lock-free concurrent reads, but in exchange writes are very expensive and should not be too frequent.
+ * Also keys are compared by reference ({@code ==}) and not using {@link Object#equals}.
+ *
  * @param <K> The key type of the map, compared by reference ({@code ==}).
  * @param <V> The value type of the map.
  */
@@ -40,13 +38,13 @@ public interface ApiProviderMap<K, V> {
 	}
 
 	/**
-	 * @see java.util.Map#get Map.get()
+	 * @see java.util.Map#get
 	 */
 	@Nullable
 	V get(K key);
 
 	/**
-	 * @see java.util.Map#putIfAbsent Map.putIfAbsent()
+	 * @see java.util.Map#putIfAbsent
 	 */
 	V putIfAbsent(K key, V provider);
 }

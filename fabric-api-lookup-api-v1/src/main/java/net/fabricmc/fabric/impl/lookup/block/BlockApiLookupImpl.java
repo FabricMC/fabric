@@ -144,16 +144,17 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		return fallbackProviders;
 	}
 
-	public static class WrappedBlockEntityProvider<T, C> implements BlockApiProvider<T, C> {
-		public final BlockEntityApiProvider<T, C> blockEntityProvider;
+	static final class WrappedBlockEntityProvider<T, C> implements BlockApiProvider<T, C> {
+		final BlockEntityApiProvider<T, C> blockEntityProvider;
 
-		public WrappedBlockEntityProvider(BlockEntityApiProvider<T, C> blockEntityProvider) {
+		WrappedBlockEntityProvider(BlockEntityApiProvider<T, C> blockEntityProvider) {
 			this.blockEntityProvider = blockEntityProvider;
 		}
 
 		@Override
 		public @Nullable T get(World world, BlockPos pos, BlockState state, C context) {
-			throw new UnsupportedOperationException();
+			// implementations refer to block entity provider field
+			throw new UnsupportedOperationException("This should never be called!");
 		}
 	}
 }

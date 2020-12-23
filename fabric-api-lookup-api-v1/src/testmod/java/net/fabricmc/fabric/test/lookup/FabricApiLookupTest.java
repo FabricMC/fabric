@@ -31,8 +31,7 @@ import net.fabricmc.fabric.test.lookup.compat.InventoryExtractableProvider;
 import net.fabricmc.fabric.test.lookup.compat.InventoryInsertableProvider;
 
 public class FabricApiLookupTest implements ModInitializer {
-	public static final String MOD_ID = "fabric-provider-api-v1-testmod";
-
+	public static final String MOD_ID = "fabric-lookup-api-v1-testmod";
 	public static final ChuteBlock CHUTE_BLOCK = new ChuteBlock(FabricBlockSettings.of(Material.METAL));
 	public static final BlockItem CHUTE_ITEM = new BlockItem(CHUTE_BLOCK, new Item.Settings().group(ItemGroup.MISC));
 	public static BlockEntityType<ChuteBlockEntity> CHUTE_BLOCK_ENTITY_TYPE;

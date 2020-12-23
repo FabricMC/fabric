@@ -39,14 +39,20 @@ public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 	public synchronized L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass) {
 		StoredLookup<L> storedLookup = lookups.computeIfAbsent(lookupId, id -> new StoredLookup<>(lookupFactory.get(), apiClass, contextClass));
 
-		if (storedLookup.apiClass != apiClass || storedLookup.contextClass != contextClass) {
-			throw new IllegalArgumentException(String.format(
-					"Lookup with id %s is already registered with api class %s and context class %s. It can't be registered with api class %s and context class %s",
-					lookupId, storedLookup.apiClass.getCanonicalName(), storedLookup.contextClass.getCanonicalName(), apiClass.getCanonicalName(), contextClass.getCanonicalName()
-					));
-		} else {
+		if (storedLookup.apiClass == apiClass && storedLookup.contextClass == contextClass) {
 			return storedLookup.lookup;
 		}
+
+		final String errorMessage = String.format(
+				"Lookup with id %s is already registered with api class %s and context class %s. It can't be registered with api class %s and context class %s",
+				lookupId,
+				storedLookup.apiClass.getCanonicalName(),
+				storedLookup.contextClass.getCanonicalName(),
+				apiClass.getCanonicalName(),
+				contextClass.getCanonicalName()
+		);
+
+		throw new IllegalArgumentException(errorMessage);
 	}
 
 	@Override

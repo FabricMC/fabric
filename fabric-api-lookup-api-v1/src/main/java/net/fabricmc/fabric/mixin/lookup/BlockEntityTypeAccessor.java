@@ -26,6 +26,6 @@ import net.minecraft.block.entity.BlockEntityType;
 
 @Mixin(BlockEntityType.class)
 public interface BlockEntityTypeAccessor {
-	@Accessor
+	@Accessor("blocks")
 	Set<Block> getBlocks();
 }

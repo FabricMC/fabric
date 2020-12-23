@@ -38,6 +38,7 @@ public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V> {
 		Map<K, V> lookupsCopy = new Reference2ReferenceOpenHashMap<>(lookups);
 		V result = lookupsCopy.putIfAbsent(key, provider);
 		lookups = lookupsCopy;
+
 		return result;
 	}
 }

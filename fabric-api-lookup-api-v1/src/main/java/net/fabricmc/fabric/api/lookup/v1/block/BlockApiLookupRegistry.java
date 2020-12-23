@@ -24,13 +24,13 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupRegistryImpl;
 
 /**
  * Access to {@link BlockApiLookup} instances.
- * <p>
- * See {@link BlockApiLookup} for more information and example code.
- * </p>
+ *
+ * @see BlockApiLookup
  */
 public final class BlockApiLookupRegistry {
 	/**
 	 * Retrieve the {@link BlockApiLookup} associated with an identifier.
+	 *
 	 * @param lookupId The unique identifier of the lookup.
 	 * @param apiClass The class of the queried Api.
 	 * @param contextClass The class of the queried additional context.

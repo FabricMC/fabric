@@ -32,31 +32,32 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.lookup.block.ServerWorldCache;
 
 @Mixin(ServerWorld.class)
-@SuppressWarnings("unused")
-public class ServerWorldMixin implements ServerWorldCache {
+abstract class ServerWorldMixin implements ServerWorldCache {
 	@Unique
-	private final Map<BlockPos, List<WeakReference<BlockApiCacheImpl<?, ?>>>> api_lookup_caches = new Object2ReferenceOpenHashMap<>();
-	// This field ensures that the api_lookup_caches map is iterated over every now and then to clean up
+	private final Map<BlockPos, List<WeakReference<BlockApiCacheImpl<?, ?>>>> apiLookupCaches = new Object2ReferenceOpenHashMap<>();
+	/**
+	 * Ensures that the apiLookupCaches map is iterated over every once in a while to clean up caches.
+	 */
 	@Unique
-	private int api_lookup_accessesWithoutCleanup = 0;
+	private int apiLookupAccessesWithoutCleanup = 0;
 
 	@Override
-	public void api_provider_registerCache(BlockPos pos, BlockApiCacheImpl<?, ?> cache) {
-		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = api_lookup_caches.computeIfAbsent(pos.toImmutable(), ignored -> new ArrayList<>());
+	public void fabric_registerCache(BlockPos pos, BlockApiCacheImpl<?, ?> cache) {
+		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = apiLookupCaches.computeIfAbsent(pos.toImmutable(), ignored -> new ArrayList<>());
 		caches.removeIf(weakReference -> weakReference.get() == null);
 		caches.add(new WeakReference<>(cache));
-		api_lookup_accessesWithoutCleanup++;
+		apiLookupAccessesWithoutCleanup++;
 	}
 
 	@Override
-	public void api_provider_invalidateCache(BlockPos pos) {
-		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = api_lookup_caches.get(pos);
+	public void fabric_invalidateCache(BlockPos pos) {
+		List<WeakReference<BlockApiCacheImpl<?, ?>>> caches = apiLookupCaches.get(pos);
 
 		if (caches != null) {
 			caches.removeIf(weakReference -> weakReference.get() == null);
 
 			if (caches.size() == 0) {
-				api_lookup_caches.remove(pos);
+				apiLookupCaches.remove(pos);
 			} else {
 				caches.forEach(weakReference -> {
 					BlockApiCacheImpl<?, ?> cache = weakReference.get();
@@ -68,14 +69,16 @@ public class ServerWorldMixin implements ServerWorldCache {
 			}
 		}
 
-		api_lookup_accessesWithoutCleanup++;
+		apiLookupAccessesWithoutCleanup++;
 
-		if (api_lookup_accessesWithoutCleanup > 2 * api_lookup_caches.size()) {
-			api_lookup_caches.entrySet().removeIf(entry -> {
+		// Try to invalidate GC'd lookups from the cache after 2 * the number of cached lookups
+		if (apiLookupAccessesWithoutCleanup > 2 * apiLookupCaches.size()) {
+			apiLookupCaches.entrySet().removeIf(entry -> {
 				entry.getValue().removeIf(weakReference -> weakReference.get() == null);
 				return entry.getValue().isEmpty();
 			});
-			api_lookup_accessesWithoutCleanup = 0;
+
+			apiLookupAccessesWithoutCleanup = 0;
 		}
 	}
 }

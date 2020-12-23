@@ -27,21 +27,25 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerBlockEntityEvents;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 
-public class BlockApiCacheImpl<T, C> implements BlockApiCache<T, C> {
+public final class BlockApiCacheImpl<T, C> implements BlockApiCache<T, C> {
 	private final BlockApiLookupImpl<T, C> lookup;
 	private final ServerWorld world;
 	private final BlockPos pos;
-	// We always cache the block entity, even if it's null. We rely on BE load and unload events to invalidate the cache when necessary.
-	// blockEntityCacheValid maintains whether the cache is valid or not.
+	/**
+	 * We always cache the block entity, even if it's null. We rely on BE load and unload events to invalidate the cache when necessary.
+	 * blockEntityCacheValid maintains whether the cache is valid or not.
+	 */
 	private boolean blockEntityCacheValid = false;
 	private BlockEntity cachedBlockEntity = null;
-	// We also cache the BlockApiProvider at the target position. We check if the block state has changed to invalidate the cache.
-	// lastState maintains for which block state the cachedProvider is valid.
+	/**
+	 * We also cache the BlockApiProvider at the target position. We check if the block state has changed to invalidate the cache.
+	 * lastState maintains for which block state the cachedProvider is valid.
+	 */
 	private BlockState lastState = null;
 	private BlockApiLookup.BlockApiProvider<T, C> cachedProvider = null;
 
 	public BlockApiCacheImpl(BlockApiLookupImpl<T, C> lookup, ServerWorld world, BlockPos pos) {
-		((ServerWorldCache) world).api_provider_registerCache(pos, this);
+		((ServerWorldCache) world).fabric_registerCache(pos, this);
 		this.lookup = lookup;
 		this.world = world;
 		this.pos = pos.toImmutable();
@@ -107,10 +111,11 @@ public class BlockApiCacheImpl<T, C> implements BlockApiCache<T, C> {
 
 	static {
 		ServerBlockEntityEvents.BLOCK_ENTITY_LOAD.register((blockEntity, world) -> {
-			((ServerWorldCache) world).api_provider_invalidateCache(blockEntity.getPos());
+			((ServerWorldCache) world).fabric_invalidateCache(blockEntity.getPos());
 		});
+
 		ServerBlockEntityEvents.BLOCK_ENTITY_UNLOAD.register((blockEntity, world) -> {
-			((ServerWorldCache) world).api_provider_invalidateCache(blockEntity.getPos());
+			((ServerWorldCache) world).fabric_invalidateCache(blockEntity.getPos());
 		});
 	}
 }
