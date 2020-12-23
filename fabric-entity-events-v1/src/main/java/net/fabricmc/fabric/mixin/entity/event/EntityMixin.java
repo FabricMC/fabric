@@ -26,7 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 
 @Mixin(Entity.class)
 abstract class EntityMixin {
@@ -35,6 +35,6 @@ abstract class EntityMixin {
 
 	@Inject(method = "moveToWorld", at = @At(value = "RETURN", ordinal = 1))
 	private void afterWorldChanged(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
-		EntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, cir.getReturnValue(), (ServerWorld) this.world, (ServerWorld) cir.getReturnValue().world);
+		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, cir.getReturnValue(), (ServerWorld) this.world, (ServerWorld) cir.getReturnValue().world);
 	}
 }

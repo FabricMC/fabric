@@ -27,8 +27,8 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
-import net.fabricmc.fabric.api.entity.event.v1.EntityCombatEvents;
-import net.fabricmc.fabric.api.entity.event.v1.EntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(ServerPlayerEntity.class)
@@ -48,7 +48,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 		// If the damage source that killed the player was an entity, then fire the event.
 		if (attacker != null) {
 			attacker.onKilledOther(this.getServerWorld(), (ServerPlayerEntity) (Object) this);
-			EntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getServerWorld(), attacker, (ServerPlayerEntity) (Object) this);
+			ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(this.getServerWorld(), attacker, (ServerPlayerEntity) (Object) this);
 		}
 	}
 
@@ -58,7 +58,7 @@ abstract class ServerPlayerEntityMixin extends LivingEntityMixin {
 	 */
 	@Inject(method = "worldChanged(Lnet/minecraft/server/world/ServerWorld;)V", at = @At("TAIL"))
 	private void afterWorldChanged(ServerWorld origin, CallbackInfo ci) {
-		EntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.getServerWorld());
+		ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.invoker().afterChangeWorld((ServerPlayerEntity) (Object) this, origin, this.getServerWorld());
 	}
 
 	@Inject(method = "copyFrom", at = @At("TAIL"))

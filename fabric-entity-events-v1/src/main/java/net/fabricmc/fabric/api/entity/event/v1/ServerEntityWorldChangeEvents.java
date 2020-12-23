@@ -26,9 +26,9 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Events related to an entity being moved to another world.
  *
- * @apiNote For a {@link ServerPlayerEntity}, please use {@link EntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD}.
+ * @apiNote For a {@link ServerPlayerEntity}, please use {@link ServerEntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD}.
  */
-public final class EntityWorldChangeEvents {
+public final class ServerEntityWorldChangeEvents {
 	/**
 	 * An event which is called after an entity has been moved to a different world.
 	 *
@@ -37,7 +37,7 @@ public final class EntityWorldChangeEvents {
 	 *
 	 * <p>A mod may use this event for reference cleanup if it is tracking an entity's current world.
 	 *
-	 * @see EntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD
+	 * @see ServerEntityWorldChangeEvents#AFTER_PLAYER_CHANGE_WORLD
 	 */
 	public static final Event<AfterEntityChange> AFTER_ENTITY_CHANGE_WORLD = EventFactory.createArrayBacked(AfterEntityChange.class, callbacks -> (originalEntity, newEntity, origin, destination) -> {
 		for (AfterEntityChange callback : callbacks) {
@@ -48,10 +48,10 @@ public final class EntityWorldChangeEvents {
 	/**
 	 * An event which is called after a player has been moved to a different world.
 	 *
-	 * <p>This is similar to {@link EntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD} but is only called for players.
+	 * <p>This is similar to {@link ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD} but is only called for players.
 	 * This is because the player is physically moved to the new world instead of being recreated at the destination.
 	 *
-	 * @see EntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD
+	 * @see ServerEntityWorldChangeEvents#AFTER_ENTITY_CHANGE_WORLD
 	 */
 	public static final Event<AfterPlayerChange> AFTER_PLAYER_CHANGE_WORLD = EventFactory.createArrayBacked(AfterPlayerChange.class, callbacks -> (player, origin, destination) -> {
 		for (AfterPlayerChange callback : callbacks) {
@@ -87,6 +87,6 @@ public final class EntityWorldChangeEvents {
 		void afterChangeWorld(ServerPlayerEntity player, ServerWorld origin, ServerWorld destination);
 	}
 
-	private EntityWorldChangeEvents() {
+	private ServerEntityWorldChangeEvents() {
 	}
 }

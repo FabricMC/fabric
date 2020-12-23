@@ -26,7 +26,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 /**
  * Events related to entities in combat.
  */
-public final class EntityCombatEvents {
+public final class ServerEntityCombatEvents {
 	/**
 	 * An event that is called after an entity is directly responsible for killing another entity.
 	 *
@@ -50,6 +50,6 @@ public final class EntityCombatEvents {
 		void afterKilledOtherEntity(ServerWorld world, Entity entity, LivingEntity killedEntity);
 	}
 
-	private EntityCombatEvents() {
+	private ServerEntityCombatEvents() {
 	}
 }

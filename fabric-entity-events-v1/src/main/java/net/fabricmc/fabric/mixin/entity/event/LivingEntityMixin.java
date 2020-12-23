@@ -27,12 +27,12 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.world.ServerWorld;
 
-import net.fabricmc.fabric.api.entity.event.v1.EntityCombatEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin extends EntityMixin {
 	@Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;onKilledOther(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/LivingEntity;)V", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private void onEntityKilledOther(DamageSource source, CallbackInfo ci, Entity attacker) {
-		EntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(((ServerWorld) this.world), attacker, (LivingEntity) (Object) this);
+		ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.invoker().afterKilledOtherEntity(((ServerWorld) this.world), attacker, (LivingEntity) (Object) this);
 	}
 }
