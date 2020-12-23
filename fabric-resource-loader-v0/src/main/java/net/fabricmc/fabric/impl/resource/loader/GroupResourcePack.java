@@ -125,10 +125,12 @@ public abstract class GroupResourcePack implements ResourcePack {
 			return;
 		}
 
+		Identifier metadataId = NamespaceResourceManagerAccessor.fabric$accessor_getMetadataPath(id);
+
 		for (ModResourcePack pack : packs) {
 			if (pack.contains(manager.getType(), id)) {
-				InputStream inputStream = pack.contains(manager.getType(), id) ? manager.fabric$accessor_open(id, pack) : null;
-				resources.add(new ResourceImpl(pack.getName(), id, manager.fabric$accessor_open(id, pack), inputStream));
+				InputStream metadataInputStream = pack.contains(manager.getType(), metadataId) ? manager.fabric$accessor_open(metadataId, pack) : null;
+				resources.add(new ResourceImpl(pack.getName(), id, manager.fabric$accessor_open(id, pack), metadataInputStream));
 			}
 		}
 	}
