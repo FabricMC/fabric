@@ -20,6 +20,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.client.render.WorldRenderer;
@@ -27,7 +29,7 @@ import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.resource.language.LanguageManager;
-import net.minecraft.client.sound.SoundLoader;
+import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
@@ -36,11 +38,13 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 @Mixin({
 		/* public */
-		SoundLoader.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
+		SoundManager.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
 		/* private */
 		WorldRenderer.class, BlockRenderManager.class, ItemRenderer.class
 })
 public abstract class KeyedResourceReloadListenerClientMixin implements IdentifiableResourceReloadListener {
+	private static final Logger FABRIC_LOGGER = LogManager.getLogger();
+
 	private Identifier fabric$id;
 	private Collection<Identifier> fabric$dependencies;
 
@@ -50,7 +54,7 @@ public abstract class KeyedResourceReloadListenerClientMixin implements Identifi
 		if (this.fabric$id == null) {
 			Object self = this;
 
-			if (self instanceof SoundLoader) {
+			if (self instanceof SoundManager) {
 				this.fabric$id = ResourceReloadListenerKeys.SOUNDS;
 			} else if (self instanceof BakedModelManager) {
 				this.fabric$id = ResourceReloadListenerKeys.MODELS;
@@ -58,7 +62,14 @@ public abstract class KeyedResourceReloadListenerClientMixin implements Identifi
 				this.fabric$id = ResourceReloadListenerKeys.LANGUAGES;
 			} else if (self instanceof TextureManager) {
 				this.fabric$id = ResourceReloadListenerKeys.TEXTURES;
+			} else if (self instanceof ItemRenderer) {
+				this.fabric$id = ResourceReloadListenerKeys.ITEM_RENDERER;
+			} else if (self instanceof BlockRenderManager) {
+				this.fabric$id = ResourceReloadListenerKeys.BLOCK_RENDERER;
+			} else if (self instanceof WorldRenderer) {
+				this.fabric$id = ResourceReloadListenerKeys.WORLD_RENDERER;
 			} else {
+				FABRIC_LOGGER.debug("No resource reload listener key specified for " + self.getClass().getName());
 				this.fabric$id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
