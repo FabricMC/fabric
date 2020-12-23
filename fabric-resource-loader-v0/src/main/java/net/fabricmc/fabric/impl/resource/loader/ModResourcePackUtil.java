@@ -38,7 +38,6 @@ import net.fabricmc.loader.api.metadata.ModMetadata;
  * Internal utilities for managing resource packs.
  */
 public final class ModResourcePackUtil {
-
 	private ModResourcePackUtil() {
 	}
 

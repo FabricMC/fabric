@@ -23,10 +23,10 @@ import java.nio.file.Files;
 import java.util.List;
 
 import com.google.common.base.Charsets;
-import net.minecraft.SharedConstants;
 import org.apache.commons.io.IOUtils;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.SharedConstants;
 import net.minecraft.resource.AbstractFileResourcePack;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.resource.metadata.ResourceMetadataReader;
