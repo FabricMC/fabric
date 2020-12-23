@@ -43,7 +43,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.util.ThreadExecutor;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
@@ -69,7 +69,7 @@ public final class RegistrySyncManager {
 
 		if (accept) {
 			try {
-				executor.submit(() -> {
+				executor.executeFuture(() -> {
 					if (compound == null) {
 						errorHandler.accept(new RemapException("Received null compound tag in sync packet!"));
 						return null;

@@ -27,7 +27,7 @@ import net.minecraft.util.PacketByteBuf;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.util.ThreadExecutor;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.network.PacketConsumer;

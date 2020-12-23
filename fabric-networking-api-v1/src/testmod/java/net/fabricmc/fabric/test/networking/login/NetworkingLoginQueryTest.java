@@ -21,7 +21,7 @@ import java.util.concurrent.FutureTask;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
-import net.minecraft.util.Util;
+import net.minecraft.util.SystemUtil;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.ServerLoginConnectionEvents;
@@ -55,7 +55,7 @@ public final class NetworkingLoginQueryTest implements ModInitializer {
 					});
 
 					// Execute the task on a worker thread as not to block the server thread
-					Util.getServerWorkerExecutor().execute(future);
+					SystemUtil.getServerWorkerExecutor().execute(future);
 					synchronizer.waitFor(future);
 				}
 			} else {

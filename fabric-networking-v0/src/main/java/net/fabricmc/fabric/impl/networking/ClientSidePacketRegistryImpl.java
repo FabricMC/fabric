@@ -26,7 +26,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.Packet;
 import net.minecraft.util.PacketByteBuf;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.thread.ThreadExecutor;
+import net.minecraft.util.ThreadExecutor;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
