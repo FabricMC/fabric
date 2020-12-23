@@ -30,9 +30,6 @@ public final class ResourceReloadListenerKeys {
 	public static final Identifier MODELS = new Identifier("minecraft:models");
 	public static final Identifier LANGUAGES = new Identifier("minecraft:languages");
 	public static final Identifier TEXTURES = new Identifier("minecraft:textures");
-	public static final Identifier ITEM_RENDERER = new Identifier("minecraft:item_renderer");
-	public static final Identifier BLOCK_RENDERER = new Identifier("minecraft:block_renderer");
-	public static final Identifier WORLD_RENDERER = new Identifier("minecraft:world_renderer");
 
 	// server
 	public static final Identifier TAGS = new Identifier("minecraft:tags");

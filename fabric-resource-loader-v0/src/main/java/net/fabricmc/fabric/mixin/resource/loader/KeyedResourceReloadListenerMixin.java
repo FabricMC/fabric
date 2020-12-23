@@ -20,8 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Locale;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.loot.LootManager;
@@ -40,8 +38,6 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 		/* private */
 })
 public abstract class KeyedResourceReloadListenerMixin implements IdentifiableResourceReloadListener {
-	private final Logger FABRIC_LOGGER = LogManager.getLogger();
-
 	private Identifier fabric$id;
 	private Collection<Identifier> fabric$dependencies;
 
@@ -62,7 +58,6 @@ public abstract class KeyedResourceReloadListenerMixin implements IdentifiableRe
 			} else if (self instanceof TagManagerLoader) {
 				this.fabric$id = ResourceReloadListenerKeys.TAGS;
 			} else {
-				FABRIC_LOGGER.debug("No resource reload listener key specified for " + self.getClass().getName());
 				this.fabric$id = new Identifier("minecraft", "private/" + self.getClass().getSimpleName().toLowerCase(Locale.ROOT));
 			}
 		}
