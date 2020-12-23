@@ -35,4 +35,9 @@ public interface NamespaceResourceManagerAccessor {
 
 	@Invoker("open")
 	InputStream fabric$accessor_open(Identifier id, ResourcePack pack) throws IOException;
+
+	@Invoker("getMetadataPath")
+	static Identifier fabric$accessor_getMetadataPath(Identifier id) {
+		throw new UnsupportedOperationException("Invoker injection failed.");
+	}
 }
