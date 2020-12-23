@@ -48,7 +48,7 @@ public class GameOptionsMixin {
 			for (ResourcePackProfile profile : profiles) {
 				ResourcePack pack = profile.createResourcePack();
 				if (profile.getSource() == ModResourcePackCreator.RESOURCE_PACK_SOURCE
-						|| (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).shouldBeEnabledByDefault())) {
+						|| (pack instanceof ModNioResourcePack && ((ModNioResourcePack) pack).getActivationType().isEnabledByDefault())) {
 					this.resourcePacks.add(profile.getName());
 				}
 			}
