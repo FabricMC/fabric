@@ -51,7 +51,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
 	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();
 
-	public static ResourceManagerHelper get(ResourceType type) {
+	public static ResourceManagerHelperImpl get(ResourceType type) {
 		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
 	}
 
@@ -114,7 +114,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	}
 
 	public static void sort(ResourceType type, List<ResourceReloadListener> listeners) {
-		ResourceManagerHelperImpl instance = registryMap.get(type);
+		ResourceManagerHelperImpl instance = get(type);
 
 		if (instance != null) {
 			instance.sort(listeners);

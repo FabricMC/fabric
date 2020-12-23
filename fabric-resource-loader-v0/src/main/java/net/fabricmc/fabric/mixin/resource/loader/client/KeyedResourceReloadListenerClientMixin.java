@@ -27,7 +27,7 @@ import net.minecraft.client.render.block.BlockRenderManager;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.client.resource.language.LanguageManager;
-import net.minecraft.client.sound.SoundLoader;
+import net.minecraft.client.sound.SoundManager;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.util.Identifier;
 
@@ -36,7 +36,7 @@ import net.fabricmc.fabric.api.resource.ResourceReloadListenerKeys;
 
 @Mixin({
 		/* public */
-		SoundLoader.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
+		SoundManager.class, BakedModelManager.class, LanguageManager.class, TextureManager.class,
 		/* private */
 		WorldRenderer.class, BlockRenderManager.class, ItemRenderer.class
 })
@@ -50,7 +50,7 @@ public abstract class KeyedResourceReloadListenerClientMixin implements Identifi
 		if (this.fabric$id == null) {
 			Object self = this;
 
-			if (self instanceof SoundLoader) {
+			if (self instanceof SoundManager) {
 				this.fabric$id = ResourceReloadListenerKeys.SOUNDS;
 			} else if (self instanceof BakedModelManager) {
 				this.fabric$id = ResourceReloadListenerKeys.MODELS;
