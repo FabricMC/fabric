@@ -70,7 +70,7 @@ public final class ScreenEvents {
 	 * This event can also indicate that the previous screen has been changed.
 	 * @see ScreenEvents#AFTER_INIT
 	 */
-	public static final Event<ScreenEvents.BeforeInit> BEFORE_INIT = EventFactory.createArrayBacked(ScreenEvents.BeforeInit.class, callbacks -> (client, screen, scaledWidth, scaledHeight) -> {
+	public static final Event<BeforeInit> BEFORE_INIT = EventFactory.createArrayBacked(BeforeInit.class, callbacks -> (client, screen, scaledWidth, scaledHeight) -> {
 		for (BeforeInit callback : callbacks) {
 			callback.beforeInit(client, screen, scaledWidth, scaledHeight);
 		}
