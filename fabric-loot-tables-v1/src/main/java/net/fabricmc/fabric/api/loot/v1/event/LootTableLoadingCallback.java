@@ -28,9 +28,13 @@ import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
 /**
  * An event handler that is called when loot tables are loaded.
  * Use {@link #EVENT} to register instances.
+ *
+ * @deprecated Replaced with {@link net.fabricmc.fabric.api.loot.v2.LootTableLoadingCallback}.
  */
+@Deprecated
 @FunctionalInterface
 public interface LootTableLoadingCallback {
+	@Deprecated
 	@FunctionalInterface
 	interface LootTableSetter {
 		void set(LootTable supplier);

@@ -19,15 +19,18 @@ package net.fabricmc.fabric.api.loot.v1;
 import java.util.List;
 
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
+import net.minecraft.loot.provider.number.LootNumberProvider;
 
 /**
  * An interface implemented by all {@code net.minecraft.loot.LootPool} instances when
  * Fabric API is present. Contains accessors for various fields.
+ *
+ * @deprecated Replaced with transitive access wideners in Fabric Loot Table API (v2).
  */
+@Deprecated
 public interface FabricLootPool {
 	default LootPool asVanilla() {
 		return (LootPool) this;

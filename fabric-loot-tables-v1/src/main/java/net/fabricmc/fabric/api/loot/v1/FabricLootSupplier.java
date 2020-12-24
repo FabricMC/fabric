@@ -24,9 +24,12 @@ import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
 /**
- * An interface implemented by all {@code net.minecraft.loot.LootSupplier} instances when
+ * An interface implemented by all {@link LootTable} instances when
  * Fabric API is present. Contains accessors for various fields.
+ *
+ * @deprecated Replaced with transitive access wideners in Fabric Loot Table API (v2).
  */
+@Deprecated
 public interface FabricLootSupplier {
 	default LootTable asVanilla() {
 		return (LootTable) this;
@@ -34,5 +37,7 @@ public interface FabricLootSupplier {
 
 	List<LootPool> getPools();
 	List<LootFunction> getFunctions();
-	LootContextType getType();
+	default LootContextType getType() {
+		return asVanilla().getType(); // Vanilla has this now
+	}
 }

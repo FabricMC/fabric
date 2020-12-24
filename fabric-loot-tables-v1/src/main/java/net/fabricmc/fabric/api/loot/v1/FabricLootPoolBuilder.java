@@ -22,11 +22,11 @@ import net.minecraft.loot.provider.number.LootNumberProvider;
 import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.table.LootPoolBuilderHooks;
-
-public class FabricLootPoolBuilder extends LootPool.Builder {
-	private final LootPoolBuilderHooks extended = (LootPoolBuilderHooks) this;
-
+/**
+ * @deprecated Replaced with {@link net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder}.
+ */
+@Deprecated
+public class FabricLootPoolBuilder extends net.fabricmc.fabric.api.loot.v2.FabricLootPoolBuilder {
 	private FabricLootPoolBuilder() { }
 
 	private FabricLootPoolBuilder(LootPool pool) {
@@ -58,17 +58,17 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	}
 
 	public FabricLootPoolBuilder withEntry(LootPoolEntry entry) {
-		extended.getEntries().add(entry);
+		super.with(entry);
 		return this;
 	}
 
 	public FabricLootPoolBuilder withCondition(LootCondition condition) {
-		extended.getConditions().add(condition);
+		super.conditionally(condition);
 		return this;
 	}
 
 	public FabricLootPoolBuilder withFunction(LootFunction function) {
-		extended.getFunctions().add(function);
+		super.apply(function);
 		return this;
 	}
 
@@ -89,13 +89,13 @@ public class FabricLootPoolBuilder extends LootPool.Builder {
 	 * <p>If {@code copyRolls} is true, the {@link FabricLootPool#getRolls rolls} of the pool are also copied.
 	 */
 	public FabricLootPoolBuilder copyFrom(LootPool pool, boolean copyRolls) {
-		FabricLootPool extendedPool = (FabricLootPool) pool;
-		extended.getConditions().addAll(extendedPool.getConditions());
-		extended.getFunctions().addAll(extendedPool.getFunctions());
-		extended.getEntries().addAll(extendedPool.getEntries());
+		FabricLootPool extended = (FabricLootPool) pool;
+		with(extended.getEntries());
+		conditionally(extended.getConditions());
+		apply(extended.getFunctions());
 
 		if (copyRolls) {
-			rolls(extendedPool.getRolls());
+			rolls(extended.getRolls());
 		}
 
 		return this;

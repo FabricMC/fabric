@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.loot.v1;
+package net.fabricmc.fabric.impl.loot.table;
 
 import java.util.Collection;
 
@@ -23,88 +23,78 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContextType;
 import net.minecraft.loot.function.LootFunction;
 
-import net.fabricmc.fabric.mixin.loot.table.LootSupplierBuilderHooks;
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplier;
+import net.fabricmc.fabric.api.loot.v1.FabricLootSupplierBuilder;
+import net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder;
 
 /**
- * @deprecated Replaced with {@link net.fabricmc.fabric.api.loot.v2.FabricLootTableBuilder}.
+ * A {@link FabricLootSupplierBuilder} that delegates all methods to a v2 {@link FabricLootTableBuilder}.
+ * Used for hooking the two {@code LootTableLoadingCallback} interfaces together.
  */
-@Deprecated
-public class FabricLootSupplierBuilder extends LootTable.Builder {
-	private final LootSupplierBuilderHooks extended = (LootSupplierBuilderHooks) this;
+public class DelegatingLootTableBuilder extends FabricLootSupplierBuilder {
+	private final FabricLootTableBuilder parent;
 
-	protected FabricLootSupplierBuilder() { }
-
-	private FabricLootSupplierBuilder(LootTable supplier) {
-		copyFrom(supplier, true);
+	public DelegatingLootTableBuilder(FabricLootTableBuilder parent) {
+		this.parent = parent;
 	}
 
 	@Override
 	public FabricLootSupplierBuilder pool(LootPool.Builder pool) {
-		super.pool(pool);
+		parent.pool(pool);
 		return this;
 	}
 
 	@Override
 	public FabricLootSupplierBuilder type(LootContextType type) {
-		super.type(type);
+		parent.type(type);
 		return this;
 	}
 
 	@Override
 	public FabricLootSupplierBuilder apply(LootFunction.Builder function) {
-		super.apply(function);
+		parent.apply(function);
 		return this;
 	}
 
+	@Override
 	public FabricLootSupplierBuilder withPool(LootPool pool) {
-		extended.getPools().add(pool);
+		parent.pool(pool);
 		return this;
 	}
 
+	@Override
 	public FabricLootSupplierBuilder withFunction(LootFunction function) {
-		extended.getFunctions().add(function);
+		parent.apply(function);
 		return this;
 	}
 
+	@Override
 	public FabricLootSupplierBuilder withPools(Collection<LootPool> pools) {
-		pools.forEach(this::withPool);
+		parent.pools(pools);
 		return this;
 	}
 
+	@Override
 	public FabricLootSupplierBuilder withFunctions(Collection<LootFunction> functions) {
-		functions.forEach(this::withFunction);
+		parent.apply(functions);
 		return this;
 	}
 
-	/**
-	 * Copies the pools and functions of the {@code supplier} to this builder.
-	 * This is equal to {@code copyFrom(supplier, false)}.
-	 */
-	public FabricLootSupplierBuilder copyFrom(LootTable supplier) {
-		return copyFrom(supplier, false);
-	}
-
-	/**
-	 * Copies the pools and functions of the {@code supplier} to this builder.
-	 * If {@code copyType} is true, the {@link FabricLootSupplier#getType type} of the supplier is also copied.
-	 */
+	@Override
 	public FabricLootSupplierBuilder copyFrom(LootTable supplier, boolean copyType) {
-		FabricLootSupplier extendedSupplier = (FabricLootSupplier) supplier;
-		extended.getPools().addAll(extendedSupplier.getPools());
-		extended.getFunctions().addAll(extendedSupplier.getFunctions());
+		FabricLootSupplier extended = (FabricLootSupplier) supplier;
+		parent.pools(extended.getPools());
+		parent.apply(extended.getFunctions());
 
 		if (copyType) {
-			type(extendedSupplier.getType());
+			parent.type(supplier.getType());
 		}
 
 		return this;
 	}
 
-	public static FabricLootSupplierBuilder builder() {
-		return new FabricLootSupplierBuilder();
-	}
-
-	public static FabricLootSupplierBuilder of(LootTable supplier) {
-		return new FabricLootSupplierBuilder(supplier);
+	@Override
+	public LootTable build() {
+		return parent.build();
 	}
 }

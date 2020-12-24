@@ -16,17 +16,21 @@
 
 package net.fabricmc.fabric.impl.loot.table;
 
-import net.minecraft.loot.entry.LootPoolEntry;
-import net.minecraft.loot.entry.LootPoolEntryType;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonSerializer;
-import net.minecraft.util.registry.Registry;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.loot.v1.event.LootTableLoadingCallback;
 
-public final class LootEntryTypeRegistryImpl implements net.fabricmc.fabric.api.loot.v1.LootEntryTypeRegistry {
-	public LootEntryTypeRegistryImpl() { }
-
+public final class LootTablesV1Init implements ModInitializer {
 	@Override
-	public void register(Identifier id, JsonSerializer<? extends LootPoolEntry> serializer) {
-		Registry.register(Registry.LOOT_POOL_ENTRY_TYPE, id, new LootPoolEntryType(serializer));
+	public void onInitialize() {
+		// Hook up the v1 callbacks to the v2 event
+		net.fabricmc.fabric.api.loot.v2.LootTableLoadingCallback.EVENT.register((resourceManager, lootManager, id, tableBuilder, setter) -> {
+			LootTableLoadingCallback.EVENT.invoker().onLootTableLoading(
+					resourceManager,
+					lootManager,
+					id,
+					new DelegatingLootTableBuilder(tableBuilder),
+					setter::set
+			);
+		});
 	}
 }
