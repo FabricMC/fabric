@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-particles-v1"
 version = getSubprojectVersion(project, "0.2.2")
 
+module {
+	stable()
+}
+
 moduleDependencies(project, [
 		'fabric-api-base',
 		'fabric-textures-v0'

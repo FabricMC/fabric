@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-blockrenderlayer-v1"
 version = getSubprojectVersion(project, "1.1.4")
 
+module {
+	stable()
+}
+
 moduleDependencies(project, [
         'fabric-api-base'
 ])

@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-lifecycle-events-v1"
 version = getSubprojectVersion(project, "1.2.0")
 
+module {
+	stable()
+}
+
 moduleDependencies(project, [
 		'fabric-api-base'
 ])

@@ -1,6 +1,10 @@
 archivesBaseName = "fabric-game-rule-api-v1"
 version = getSubprojectVersion(project, "1.0.3")
 
+module {
+	stable()
+}
+
 minecraft {
 	accessWidener = file("src/main/resources/fabric-game-rule-api-v1.accesswidener")
 }

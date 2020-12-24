@@ -10,7 +10,7 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id "fabric-loom" version "0.5.43" apply false
-	id "net.minecrell.licenser" version "0.4.1"
+	id "org.cadixdev.licenser" version "0.5.0"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
@@ -28,6 +28,8 @@ version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + 
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
+import net.fabricmc.gradle.ApiModuleExtension
+import net.fabricmc.gradle.ModuleType
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
 
@@ -85,11 +87,19 @@ def moduleDependencies(project, List<String> depNames) {
 	}
 }
 
+private def createModuleExtension(Project project) {
+	project.extensions.create("module", ApiModuleExtension)
+}
+
+ModuleType getModuleType(Project project) {
+	return project.extensions.getByType(ApiModuleExtension).moduleType
+}
+
 allprojects {
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
-	apply plugin: "net.minecrell.licenser"
+	apply plugin: "org.cadixdev.licenser"
 
 	tasks.withType(JavaCompile).configureEach {
 		def targetVersion = 8
@@ -226,6 +236,16 @@ task runAutoTestServer(type: RunServerTask) {
 }
 
 subprojects {
+	createModuleExtension(project)
+
+	afterEvaluate {
+		def moduleType = getModuleType(project)
+
+		if (moduleType == null) {
+			logger.warn(String.format("Module \"%s\" does not have a module type specified!", project))
+		}
+	}
+
 	dependencies {
 		testmodCompile sourceSets.main.output
 	}

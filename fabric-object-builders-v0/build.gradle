@@ -1,5 +1,9 @@
-archivesBaseName = "fabric-object-builders"
+archivesBaseName = "fabric-object-builders-v0"
 version = getSubprojectVersion(project, "0.7.1")
+
+module {
+	deprecated()
+}
 
 moduleDependencies(project, [
 		'fabric-api-base',
