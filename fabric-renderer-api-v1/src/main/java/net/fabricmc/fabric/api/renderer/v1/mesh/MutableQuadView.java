@@ -251,7 +251,7 @@ public interface MutableQuadView extends QuadView {
 	/**
 	 * Set sprite atlas coordinates. Behavior for {@code spriteIndex > 0} is currently undefined.
 	 *
-	 * Only use this function if you already have a {@link Vec2f}.
+	 * <p>Only use this function if you already have a {@link Vec2f}.
 	 * Otherwise, see {@link MutableQuadView#sprite(int, int, float, float)}.
 	 */
 	default MutableQuadView sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
