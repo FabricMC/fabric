@@ -72,12 +72,23 @@ public class FabricItemSettings extends Item.Settings {
 	}
 
 	/**
+	 * Sets the stack-aware recipe remainder to return the item itself.
+	 */
+	public FabricItemSettings returnSelfInCrafting() {
+		return this.damageIfUsedInCrafting(0);
+	}
+
+	/**
 	 * Sets the stack-aware recipe remainder to damage the item by a certain amount every time it is used in crafting.
 	 *
 	 * @param by the amount
 	 */
 	public FabricItemSettings damageIfUsedInCrafting(int by) {
 		return this.recipeRemainder((original, inventory, type, world, pos) -> {
+			if (by == 0) {
+				return original;
+			}
+
 			if (!original.isDamageable()) {
 				return ItemStack.EMPTY;
 			}
