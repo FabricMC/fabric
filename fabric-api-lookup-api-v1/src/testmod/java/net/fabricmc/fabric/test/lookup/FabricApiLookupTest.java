@@ -16,17 +16,23 @@
 
 package net.fabricmc.fabric.test.lookup;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.block.Material;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.test.lookup.api.ItemApis;
+import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 import net.fabricmc.fabric.test.lookup.compat.InventoryExtractableProvider;
 import net.fabricmc.fabric.test.lookup.compat.InventoryInsertableProvider;
 
@@ -48,5 +54,34 @@ public class FabricApiLookupTest implements ModInitializer {
 
 		ItemApis.INSERTABLE.registerForBlockEntities(insertableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
 		ItemApis.EXTRACTABLE.registerForBlockEntities(extractableProvider, BlockEntityType.CHEST, BlockEntityType.DISPENSER, BlockEntityType.DROPPER, BlockEntityType.HOPPER);
+
+		testLookupRegistry();
+	}
+
+	private static void testLookupRegistry() {
+		BlockApiLookup<ItemInsertable, @NotNull Direction> insertable2 = BlockApiLookupRegistry.getLookup(new Identifier("testmod:item_insertable"), ItemInsertable.class, Direction.class);
+
+		if (insertable2 != ItemApis.INSERTABLE) {
+			throw new AssertionError("The registry should have returned the same instance.");
+		}
+
+		ensureException(() -> {
+			BlockApiLookup<Void, Void> wrongInsertable = BlockApiLookupRegistry.getLookup(new Identifier("testmod:item_insertable"), Void.class, Void.class);
+			wrongInsertable.registerFallback((world, pos, state, be, nocontext) -> null);
+		}, "The registry should have prevented creation of another instance with different classes, but same id.");
+	}
+
+	private static void ensureException(Runnable runnable, String message) {
+		boolean failed = false;
+
+		try {
+			runnable.run();
+		} catch (Throwable t) {
+			failed = true;
+		}
+
+		if (!failed) {
+			throw new AssertionError(message);
+		}
 	}
 }

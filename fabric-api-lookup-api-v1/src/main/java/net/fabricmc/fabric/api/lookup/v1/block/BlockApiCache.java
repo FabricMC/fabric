@@ -45,7 +45,7 @@ public interface BlockApiCache<T, C> {
 	/**
 	 * Retrieve an Api from a block in the world, using the world and the position passed at creation time.
 	 *
-	 * @apiNote if the block state is known, it is more efficient to use {@link BlockApiCache#get(BlockState, Object)}.
+	 * <p>Note: If the block state is known, it is more efficient to use {@link BlockApiCache#get(BlockState, Object)}.</p>
 	 */
 	@Nullable
 	default T get(C context) {

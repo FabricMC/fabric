@@ -22,11 +22,11 @@ import net.fabricmc.fabric.api.lookup.v1.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 
 public final class BlockApiLookupRegistryImpl {
-	private static final ApiLookupMap<BlockApiLookupImpl<?, ?>> PROVIDERS = ApiLookupMap.create(BlockApiLookupImpl::new);
+	private static final ApiLookupMap<BlockApiLookupImpl<?, ?>> LOOKUPS = ApiLookupMap.create(BlockApiLookupImpl::new);
 
+	@SuppressWarnings("unchecked")
 	public static <T, C> BlockApiLookup<T, C> getLookup(Identifier lookupId, Class<T> apiClass, Class<C> contextClass) {
-		//noinspection unchecked
-		return (BlockApiLookup<T, C>) PROVIDERS.getLookup(lookupId, apiClass, contextClass);
+		return (BlockApiLookup<T, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
 	}
 
 	private BlockApiLookupRegistryImpl() {

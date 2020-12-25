@@ -16,19 +16,18 @@
 
 package net.fabricmc.fabric.impl.lookup;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.lookup.v1.ApiLookupMap;
 
 public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
-	private final Map<Identifier, StoredLookup<L>> lookups = new Reference2ReferenceOpenHashMap<>();
+	private final Map<Identifier, StoredLookup<L>> lookups = new HashMap<>();
 	private final Supplier<L> lookupFactory;
 
 	public ApiLookupMapImpl(Supplier<L> lookupFactory) {
@@ -44,7 +43,7 @@ public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 		}
 
 		final String errorMessage = String.format(
-				"Lookup with id %s is already registered with api class %s and context class %s. It can't be registered with api class %s and context class %s",
+				"Lookup with id %s is already registered with api class %s and context class %s. It can't be registered with api class %s and context class %s.",
 				lookupId,
 				storedLookup.apiClass.getCanonicalName(),
 				storedLookup.contextClass.getCanonicalName(),

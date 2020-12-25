@@ -101,7 +101,7 @@ import net.minecraft.world.World;
  * }
  *
  * // 2bis) if the caller is able to cache the block state as well, for example by listening to neighbor updates,
- * /        that will further improve performance.
+ * //       that will further improve performance.
  * FluidContainer container = cache.get(direction, cachedBlockState);
  * if (container != null) {
  *     // ...
