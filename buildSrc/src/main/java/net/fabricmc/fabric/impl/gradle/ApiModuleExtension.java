@@ -14,10 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.gradle;
+package net.fabricmc.fabric.impl.gradle;
 
-public enum ModuleType {
-	DEPRECATED,
-	EXPERIMENTAL,
-	STABLE
+public class ApiModuleExtension {
+	private ModuleType moduleType;
+
+	public ModuleType getModuleType() {
+		return this.moduleType;
+	}
+
+	public void deprecated() {
+		this.moduleType = ModuleType.DEPRECATED;
+	}
+
+	public void experimental() {
+		this.moduleType = ModuleType.EXPERIMENTAL;
+	}
+
+	public void stable() {
+		this.moduleType = ModuleType.STABLE;
+	}
 }

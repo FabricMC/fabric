@@ -28,8 +28,8 @@ version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + 
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
-import net.fabricmc.gradle.ApiModuleExtension
-import net.fabricmc.gradle.ModuleType
+import net.fabricmc.fabric.impl.gradle.ApiModuleExtension
+import net.fabricmc.fabric.impl.gradle.ModuleType
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
 
