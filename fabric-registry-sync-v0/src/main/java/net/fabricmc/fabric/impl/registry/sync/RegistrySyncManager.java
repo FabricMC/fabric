@@ -46,6 +46,7 @@ import net.minecraft.util.thread.ThreadExecutor;
 
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
 public final class RegistrySyncManager {
@@ -53,14 +54,20 @@ public final class RegistrySyncManager {
 	public static final Identifier ID = new Identifier("fabric", "registry/sync");
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
+	@Nullable
+	static PacketByteBuf registrySyncPacket;
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
 
 	private RegistrySyncManager() { }
 
-	/* @Nullable */
-	public static PacketByteBuf createData() {
+	@Nullable
+	public static PacketByteBuf getOrCreateData() {
+		if (registrySyncPacket != null) {
+			return PacketByteBufs.duplicate(registrySyncPacket);
+		}
+
 		LOGGER.debug("Creating registry sync packet");
 
 		CompoundTag tag = toTag(true, null);
@@ -72,7 +79,9 @@ public final class RegistrySyncManager {
 		PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
 		buf.writeCompoundTag(tag);
 
-		return ServerPlayNetworking.createS2CPacket(ID, buf);
+		registrySyncPacket = buf;
+
+		return PacketByteBufs.duplicate(registrySyncPacket);
 	}
 
 	public static void receivePacket(ThreadExecutor<?> executor, PacketByteBuf buf, boolean accept, Consumer<Exception> errorHandler) {

@@ -27,27 +27,19 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import net.fabricmc.fabric.api.network.ServerSidePacketRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;
 
 @Mixin(PlayerManager.class)
 public abstract class MixinPlayerManager {
-	@Unique
-	private volatile PacketByteBuf currentSyncData;
-
 	@Inject(method = "onPlayerConnect", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/DifficultyS2CPacket;<init>(Lnet/minecraft/world/Difficulty;Z)V"))
 	public void onPlayerConnect(ClientConnection connection, ServerPlayerEntity player, CallbackInfo info) {
 		// TODO: If integrated and local, don't send the packet (it's ignored)
 		// TODO: Refactor out into network + move registry hook to event
-		PacketByteBuf data = this.currentSyncData;
-
-		// Cover registry changes
-		if (data == null) {
-			this.currentSyncData = data = RegistrySyncManager.createData();
-		}
+		final PacketByteBuf data = RegistrySyncManager.getOrCreateData();
 
 		if (data != null) {
-			player.networkHandler.sendPacket(ServerSidePacketRegistry.INSTANCE.toPacket(RegistrySyncManager.ID, new PacketByteBuf(data.duplicate())));
+			ServerPlayNetworking.send(player, RegistrySyncManager.ID, data);
 		}
 	}
 }

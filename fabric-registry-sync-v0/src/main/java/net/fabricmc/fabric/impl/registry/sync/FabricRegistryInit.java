@@ -16,11 +16,17 @@
 
 package net.fabricmc.fabric.impl.registry.sync;
 
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.RegistryAttribute;
 import net.fabricmc.fabric.api.event.registry.RegistryAttributeHolder;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryRemovedCallback;
+import net.fabricmc.fabric.mixin.registry.sync.AccessorRegistry;
 
 public class FabricRegistryInit implements ModInitializer {
 	@Override
@@ -172,5 +178,23 @@ public class FabricRegistryInit implements ModInitializer {
 
 		// Doesnt seem to be serialised or synced.
 		RegistryAttributeHolder.get(Registry.LOOT_CONDITION_TYPE);
+
+		// Invalidate cached packet on server shutdown.
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+			RegistrySyncManager.registrySyncPacket = null;
+		});
+
+		// Invalidate cached packet when registry contents change
+		RegistryEntryAddedCallback.event(AccessorRegistry.getROOT()).register(this::invalidateCachedPacket);
+		RegistryEntryRemovedCallback.event(AccessorRegistry.getROOT()).register(this::invalidateCachedPacket);
+
+		for (MutableRegistry<?> registry : AccessorRegistry.getROOT()) {
+			RegistryEntryAddedCallback.event(registry).register(this::invalidateCachedPacket);
+			RegistryEntryRemovedCallback.event(registry).register(this::invalidateCachedPacket);
+		}
+	}
+
+	private void invalidateCachedPacket(int rawId, Identifier id, Object object) {
+		RegistrySyncManager.registrySyncPacket = null;
 	}
 }
