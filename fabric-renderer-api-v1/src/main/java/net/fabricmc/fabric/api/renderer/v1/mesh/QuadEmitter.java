@@ -19,6 +19,7 @@ package net.fabricmc.fabric.api.renderer.v1.mesh;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec2f;
 
 import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
@@ -90,6 +91,10 @@ public interface QuadEmitter extends MutableQuadView {
 	@Override
 	QuadEmitter sprite(int vertexIndex, int spriteIndex, float u, float v);
 
+	/* Avoid using this function unless you aleady have a Vec2f */
+	@Override
+	QuadEmitter sprite(int vertexIndex, int spriteIndex, Vec2f uv);
+	
 	default QuadEmitter spriteUnitSquare(int spriteIndex) {
 		sprite(0, spriteIndex, 0, 0);
 		sprite(1, spriteIndex, 0, 1);
