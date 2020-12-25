@@ -94,13 +94,13 @@ public interface QuadEmitter extends MutableQuadView {
 	/**
 	 * Set sprite atlas coordinates. Behavior for {@code spriteIndex > 0} is currently undefined.
 	 *
-	 * Only use this function if you already have a {@link Vec2f}.
+	 * <p>Only use this function if you already have a {@link Vec2f}.
 	 * Otherwise, see {@link QuadEmitter#sprite(int, int, float, float)}.
 	 */
 	default QuadEmitter sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
 		return sprite(vertexIndex, spriteIndex, uv.x, uv.y);
 	}
-	
+
 	default QuadEmitter spriteUnitSquare(int spriteIndex) {
 		sprite(0, spriteIndex, 0, 0);
 		sprite(1, spriteIndex, 0, 1);
