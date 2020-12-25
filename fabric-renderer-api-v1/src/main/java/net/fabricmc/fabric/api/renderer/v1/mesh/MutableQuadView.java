@@ -254,7 +254,7 @@ public interface MutableQuadView extends QuadView {
 	 * Only use this function if you already have a {@link Vec2f}.
 	 * Otherwise, see {@link MutableQuadView#sprite(int, int, float, float)}.
 	 */
-	default QuadEmitter sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
+	default MutableQuadView sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
 		return sprite(vertexIndex, spriteIndex, uv.x, uv.y);
 	}
 	
