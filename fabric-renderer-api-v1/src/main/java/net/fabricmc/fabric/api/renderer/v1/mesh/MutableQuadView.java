@@ -257,7 +257,7 @@ public interface MutableQuadView extends QuadView {
 	default MutableQuadView sprite(int vertexIndex, int spriteIndex, Vec2f uv) {
 		return sprite(vertexIndex, spriteIndex, uv.x, uv.y);
 	}
-	
+
 	/**
 	 * Assigns sprite atlas u,v coordinates to this quad for the given sprite.
 	 * Can handle UV locking, rotation, interpolation, etc. Control this behavior
