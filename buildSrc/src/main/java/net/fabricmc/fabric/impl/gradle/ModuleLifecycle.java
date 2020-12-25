@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.impl.gradle;
 
-public enum ModuleType {
+public enum ModuleLifecycle {
 	DEPRECATED,
 	EXPERIMENTAL,
 	STABLE

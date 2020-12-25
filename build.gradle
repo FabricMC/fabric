@@ -29,7 +29,7 @@ logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
 import net.fabricmc.fabric.impl.gradle.ApiModuleExtension
-import net.fabricmc.fabric.impl.gradle.ModuleType
+import net.fabricmc.fabric.impl.gradle.ModuleLifecycle
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
 
@@ -91,8 +91,8 @@ private def createModuleExtension(Project project) {
 	project.extensions.create("module", ApiModuleExtension)
 }
 
-ModuleType getModuleType(Project project) {
-	return project.extensions.getByType(ApiModuleExtension).moduleType
+ModuleLifecycle getLifecycle(Project project) {
+	return project.extensions.getByType(ApiModuleExtension).lifecycle
 }
 
 allprojects {
@@ -239,7 +239,7 @@ subprojects {
 	createModuleExtension(project)
 
 	afterEvaluate {
-		def moduleType = getModuleType(project)
+		def moduleType = getLifecycle(project)
 
 		if (moduleType == null) {
 			logger.warn(String.format("Module \"%s\" does not have a module type specified!", project))

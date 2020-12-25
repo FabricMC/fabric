@@ -17,21 +17,21 @@
 package net.fabricmc.fabric.impl.gradle;
 
 public class ApiModuleExtension {
-	private ModuleType moduleType;
+	private ModuleLifecycle moduleLifecycle;
 
-	public ModuleType getModuleType() {
-		return this.moduleType;
+	public ModuleLifecycle getLifecycle() {
+		return this.moduleLifecycle;
 	}
 
 	public void deprecated() {
-		this.moduleType = ModuleType.DEPRECATED;
+		this.moduleLifecycle = ModuleLifecycle.DEPRECATED;
 	}
 
 	public void experimental() {
-		this.moduleType = ModuleType.EXPERIMENTAL;
+		this.moduleLifecycle = ModuleLifecycle.EXPERIMENTAL;
 	}
 
 	public void stable() {
-		this.moduleType = ModuleType.STABLE;
+		this.moduleLifecycle = ModuleLifecycle.STABLE;
 	}
 }
