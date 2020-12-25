@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.event.lifecycle.v1;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -51,13 +52,39 @@ public final class ClientLifecycleEvents {
 		}
 	});
 
+	/**
+	 * Called when the current player in the Minecraft game is moved to a different world.
+	 * This occurs before the client's {@link MinecraftClient#world current world} is disposed and a new world is created.
+	 */
+	public static final Event<ChangeWorld> CHANGE_WORLD = EventFactory.createArrayBacked(ChangeWorld.class, callbacks -> (client, world, destination) -> {
+		for (ChangeWorld callback : callbacks) {
+			callback.onChangeWorld(client, world, destination);
+		}
+	});
+
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface ClientStarted {
 		void onClientStarted(MinecraftClient client);
 	}
 
+	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface ClientStopping {
 		void onClientStopping(MinecraftClient client);
+	}
+
+	@Environment(EnvType.CLIENT)
+	@FunctionalInterface
+	public interface ChangeWorld {
+		/**
+		 * Called when the current player in the Minecraft game is moved to a different world.
+		 * A mod may use this event for reference cleanup on the current world.
+		 *
+		 * @param client the Minecraft client
+		 * @param origin the world the player is currently in
+		 * @param destination the world the player is being moved to
+		 */
+		void onChangeWorld(MinecraftClient client, ClientWorld origin, ClientWorld destination);
 	}
 }

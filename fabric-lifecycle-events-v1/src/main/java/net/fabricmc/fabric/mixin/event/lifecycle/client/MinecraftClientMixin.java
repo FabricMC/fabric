@@ -16,12 +16,15 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.world.ClientWorld;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -31,6 +34,10 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 @Environment(EnvType.CLIENT)
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
+	@Shadow
+	@Nullable
+	public ClientWorld world;
+
 	@Inject(at = @At("HEAD"), method = "tick")
 	private void onStartTick(CallbackInfo info) {
 		ClientTickEvents.START_CLIENT_TICK.invoker().onStartTick((MinecraftClient) (Object) this);
@@ -50,5 +57,12 @@ public abstract class MinecraftClientMixin {
 	@Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/MinecraftClient;thread:Ljava/lang/Thread;", shift = At.Shift.AFTER), method = "run")
 	private void onStart(CallbackInfo ci) {
 		ClientLifecycleEvents.CLIENT_STARTED.invoker().onClientStarted((MinecraftClient) (Object) this);
+	}
+
+	@Inject(method = "joinWorld", at = @At("HEAD"))
+	private void onJoinWorld(ClientWorld world, CallbackInfo ci) {
+		if (this.world != null) {
+			ClientLifecycleEvents.CHANGE_WORLD.invoker().onChangeWorld((MinecraftClient) (Object) this, this.world, world);
+		}
 	}
 }
