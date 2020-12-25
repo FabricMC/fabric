@@ -53,8 +53,8 @@ public final class ClientLifecycleEvents {
 	});
 
 	/**
-	 * Called when the current player in the Minecraft game is moved to a different world.
-	 * This occurs before the client's {@link MinecraftClient#world current world} is disposed and a new world is created.
+	 * Called when the current player in the Minecraft game has moved to a different world.
+	 * This occurs when a new world has been created, but before the client's {@link MinecraftClient#world current world} is disposed.
 	 */
 	public static final Event<ChangeWorld> CHANGE_WORLD = EventFactory.createArrayBacked(ChangeWorld.class, callbacks -> (client, world, destination) -> {
 		for (ChangeWorld callback : callbacks) {
@@ -78,7 +78,7 @@ public final class ClientLifecycleEvents {
 	@FunctionalInterface
 	public interface ChangeWorld {
 		/**
-		 * Called when the current player in the Minecraft game is moved to a different world.
+		 * Called when the current player in the Minecraft game has moved to a different world.
 		 * A mod may use this event for reference cleanup on the current world.
 		 *
 		 * @param client the Minecraft client
