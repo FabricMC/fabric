@@ -17,13 +17,6 @@ plugins {
 
 def ENV = System.getenv()
 
-class Globals {
-	static def baseVersion = "0.28.4"
-	static def mcVersion = "1.16.4"
-	static def yarnVersion = "+build.1"
-	static def loaderVersion = "0.10.5+build.213"
-}
-
 version = Versions.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
