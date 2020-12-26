@@ -4,6 +4,7 @@ import groovy.json.JsonSlurper
 import org.gradle.api.GradleException
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPlugin
+import org.gradle.api.publish.maven.MavenPublication
 import org.gradle.api.tasks.SourceSet
 
 import java.nio.ByteBuffer
@@ -36,7 +37,35 @@ class ApiModuleExtension {
 	}
 
 	private void configureForMain(Project project, SourceSet sourceSet, Map<String, Object> json) {
-		configure(project, sourceSet, json)
+		// Dependencies
+		def rawDeps = json.depends as Map<String, String>
+		rawDeps.remove("fabricloader")
+		rawDeps.remove("minecraft")
+		def dependencies = rawDeps.keySet().iterator().collect { project.dependencies.project(path: ":$it", configuration: "dev") }
+
+		dependencies.each {
+			project.logger.debug(String.format("Resolving dependency \"%s\" for project \"%s\"", it, project.name))
+			project.dependencies.add(sourceSet.getTaskName(null, JavaPlugin.COMPILE_CONFIGURATION_NAME), it)
+		}
+
+		// Configure publishing to add dependencies to pom
+		project.publishing {
+			publications {
+				mavenJava(MavenPublication) {
+					pom.withXml {
+						def depsNode = asNode().appendNode("dependencies")
+
+						dependencies.each {
+							def depNode = depsNode.appendNode("dependency")
+							depNode.appendNode("groupId", it.group)
+							depNode.appendNode("artifactId", it.name)
+							depNode.appendNode("version", it.version)
+							depNode.appendNode("scope", "compile")
+						}
+					}
+				}
+			}
+		}
 
 		// Derive archivesBaseName from mod id.
 		project.archivesBaseName = json.id as String
@@ -67,17 +96,13 @@ class ApiModuleExtension {
 
 	private void configure(Project project, SourceSet sourceSet, Map<String, Object> json) {
 		// Dependencies
-		json.depends.iterator().each { Map.Entry<String, ?> it ->
-			// No need to resolve loader or Minecraft
-			if (it.key == "fabricloader" || it.key == "minecraft") {
-				return
-			}
+		def dependencies = json.depends as Map<String, String>
+		dependencies.remove("fabricloader")
+		dependencies.remove("minecraft")
 
-			project.logger.debug(String.format("Resolving dependency \"%s\" for project \"%s\"", it.key, project.name))
-			project.dependencies.add(
-					sourceSet.getTaskName(null, JavaPlugin.COMPILE_CONFIGURATION_NAME),
-					project.dependencies.project(path: ":${it.key}", configuration: "dev")
-			)
+		dependencies.keySet().iterator().collect { project.dependencies.project(path: ":$it", configuration: "dev") }.each {
+			project.logger.debug(String.format("Resolving dependency \"%s\" for project \"%s\"", it, project.name))
+			project.dependencies.add(sourceSet.getTaskName(null, JavaPlugin.COMPILE_CONFIGURATION_NAME), it)
 		}
 	}
 

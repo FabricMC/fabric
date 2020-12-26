@@ -11,6 +11,7 @@
     ]
   },
   "depends": {
+    "fabric-api-base": "",
     "fabric-command-api-v1": "*",
     "fabric-lifecycle-events-v1": "*"
   }

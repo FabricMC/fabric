@@ -22,24 +22,8 @@ logger.lifecycle("Building Fabric: " + version)
 
 import net.fabricmc.fabric.impl.gradle.ApiModuleExtension
 import net.fabricmc.fabric.impl.gradle.Versions
-import org.apache.commons.codec.digest.DigestUtils
-
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
-
-def getSubprojectVersion(project, version) {
-	if (grgit == null) {
-		return version + "+nogit"
-	}
-
-	def latestCommits = grgit.log(paths: [project.name], maxCommits: 1)
-
-	if (latestCommits.isEmpty()) {
-		return version + "+uncommited"
-	}
-
-	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Versions.mcVersion).substring(0, 2)
-}
 
 def getBranch() {
 	def ENV = System.getenv()
@@ -54,31 +38,6 @@ def getBranch() {
 
 	def branch = grgit.branch.current().name
 	return branch.substring(branch.lastIndexOf("/") + 1)
-}
-
-def moduleDependencies(project, List<String> depNames) {
-	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
-	project.dependencies {
-		deps.each {
-			compile it
-		}
-	}
-	project.publishing {
-		publications {
-			mavenJava(MavenPublication) {
-				pom.withXml {
-					def depsNode = asNode().appendNode("dependencies")
-					deps.each {
-						def depNode = depsNode.appendNode("dependency")
-						depNode.appendNode("groupId", it.group)
-						depNode.appendNode("artifactId", it.name)
-						depNode.appendNode("version", it.version)
-						depNode.appendNode("scope", "compile")
-					}
-				}
-			}
-		}
-	}
 }
 
 allprojects {

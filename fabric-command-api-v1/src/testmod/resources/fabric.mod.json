@@ -6,7 +6,8 @@
   "environment": "*",
   "license": "Apache-2.0",
   "depends": {
-    "fabric-command-api-v1": "*"
+    "fabric-command-api-v1": "*",
+    "fabric-lifecycle-events-v1": "*"
   },
   "entrypoints": {
     "main": [
