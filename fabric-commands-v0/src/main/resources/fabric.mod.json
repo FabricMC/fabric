@@ -21,6 +21,7 @@
     "fabric-command-api-v1": "*"
   },
   "description": "Deprecated. Please migrate to v1",
-  "mixins": [
-  ]
+  "custom": {
+    "fabric-api:lifecycle": "deprecated"
+  }
 }

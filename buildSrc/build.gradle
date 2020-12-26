@@ -8,6 +8,10 @@ repositories {
 	mavenCentral()
 }
 
+dependencies {
+	//implementation ""
+}
+
 license {
 	header project.file("../HEADER")
 	include "**/*.java"

@@ -24,12 +24,13 @@ class Globals {
 	static def loaderVersion = "0.10.5+build.213"
 }
 
-version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
+version = Versions.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
-import org.apache.commons.codec.digest.DigestUtils
 import net.fabricmc.fabric.impl.gradle.ApiModuleExtension
-import net.fabricmc.fabric.impl.gradle.ModuleLifecycle
+import net.fabricmc.fabric.impl.gradle.Versions
+import org.apache.commons.codec.digest.DigestUtils
+
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
 
@@ -44,7 +45,7 @@ def getSubprojectVersion(project, version) {
 		return version + "+uncommited"
 	}
 
-	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Globals.mcVersion).substring(0, 2)
+	return version + "+" + latestCommits.get(0).id.substring(0, 8) + DigestUtils.sha256Hex(Versions.mcVersion).substring(0, 2)
 }
 
 def getBranch() {
@@ -87,14 +88,6 @@ def moduleDependencies(project, List<String> depNames) {
 	}
 }
 
-private def createModuleExtension(Project project) {
-	project.extensions.create("module", ApiModuleExtension)
-}
-
-ModuleLifecycle getLifecycle(Project project) {
-	return project.extensions.getByType(ApiModuleExtension).lifecycle
-}
-
 allprojects {
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
@@ -129,9 +122,9 @@ allprojects {
 	}
 
 	dependencies {
-		minecraft "com.mojang:minecraft:$Globals.mcVersion"
-		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
+		minecraft "com.mojang:minecraft:$Versions.mcVersion"
+		mappings "net.fabricmc:yarn:${Versions.mcVersion}${Versions.yarnVersion}:v2"
+		modCompile "net.fabricmc:fabric-loader:${Versions.loaderVersion}"
 	}
 
 	configurations {
@@ -236,15 +229,10 @@ task runAutoTestServer(type: RunServerTask) {
 }
 
 subprojects {
-	createModuleExtension(project)
+	// Setup module stuff
+	project.extensions.create("api", ApiModuleExtension).setup(project)
 
-	afterEvaluate {
-		def moduleType = getLifecycle(project)
-
-		if (moduleType == null) {
-			logger.warn(String.format("Module \"%s\" does not have a module type specified!", project))
-		}
-	}
+	// Dependencies and publish
 
 	dependencies {
 		testmodCompile sourceSets.main.output
@@ -362,7 +350,7 @@ curseforge {
 		addGameVersion "Fabric"
 
 		mainArtifact(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")) {
-			displayName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
+			displayName = "[$Versions.mcVersion] Fabric API $Versions.baseVersion"
 		}
 
 		afterEvaluate {
@@ -378,6 +366,10 @@ curseforge {
 import org.kohsuke.github.GHReleaseBuilder
 import org.kohsuke.github.GitHub
 
+import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+
 task github(dependsOn: remapMavenJar) {
 	onlyIf {
 		ENV.GITHUB_TOKEN
@@ -388,7 +380,7 @@ task github(dependsOn: remapMavenJar) {
 		def repository = github.getRepository(ENV.GITHUB_REPOSITORY)
 
 		def releaseBuilder = new GHReleaseBuilder(repository, version as String)
-		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
+		releaseBuilder.name("[$Versions.mcVersion] Fabric API $Versions.baseVersion")
 		releaseBuilder.body("A changelog can be found at https://github.com/FabricMC/fabric/commits")
 		releaseBuilder.commitish(getBranch())
 

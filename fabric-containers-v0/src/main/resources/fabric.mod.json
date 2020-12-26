@@ -29,5 +29,8 @@
     "client": [
       "net.fabricmc.fabric.impl.client.container.ScreenProviderRegistryImpl::init"
     ]
+  },
+  "custom": {
+    "fabric-api:lifecycle": "deprecated"
   }
 }

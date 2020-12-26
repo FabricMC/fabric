@@ -9,6 +9,9 @@ tab_width = 4
 [*.gradle]
 indent_style = tab
 
+[*.groovy]
+indent_style = tab
+
 [*.java]
 indent_style = tab
 

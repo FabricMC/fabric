@@ -9,5 +9,9 @@
     "main": [
       "net.fabricmc.fabric.test.base.FabricApiBaseTestInit"
     ]
+  },
+  "depends": {
+    "fabric-command-api-v1": "*",
+    "fabric-lifecycle-events-v1": "*"
   }
 }
