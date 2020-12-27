@@ -27,14 +27,14 @@ public interface ModelLoadingRegistry {
 	ModelLoadingRegistry INSTANCE = ModelLoadingRegistryImpl.INSTANCE;
 
 	/**
-	 * Register a model appender, which can request loading additional models.
-	 * @see GeneralModelAppender
+	 * Register a model provider, which can request loading additional models.
+	 * @see ExtraModelProvider
 	 */
-	void registerGeneralAppender(GeneralModelAppender appender);
+	void registerModelProvider(ExtraModelProvider appender);
 
 	/**
 	 * Register a model appender, which can request loading additional models.
-	 * @deprecated Use {@link #registerGeneralAppender(GeneralModelAppender)} instead, which supports loading of plain {@link Identifier}s
+	 * @deprecated Use {@link #registerModelProvider(ExtraModelProvider)} instead, which supports loading of plain {@link Identifier}s
 	 */
 	@Deprecated
 	void registerAppender(ModelAppender appender);

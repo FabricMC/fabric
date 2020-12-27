@@ -23,16 +23,11 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 /**
- * @deprecated use {@link GeneralModelAppender}, which supports loading of plain {@link Identifier}s
+ * @deprecated use {@link ExtraModelProvider}, which supports loading of plain {@link Identifier}s
  */
 @Deprecated
 @FunctionalInterface
-public interface ModelAppender extends GeneralModelAppender {
-	@Override
-	default void appendAllIdentifiers(ResourceManager manager, Consumer<Identifier> out) {
-		appendAll(manager, out::accept);
-	}
-
+public interface ModelAppender {
 	@Deprecated
 	void appendAll(ResourceManager manager, Consumer<ModelIdentifier> out);
 }

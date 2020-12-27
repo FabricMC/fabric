@@ -23,7 +23,7 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
 @FunctionalInterface
-public interface GeneralModelAppender {
+public interface ExtraModelProvider {
 	/**
 	 * Provides an opportunity inform the game that you would like it to load and bake a model,
 	 * even if that model is not used by any blocks or items.
@@ -33,5 +33,5 @@ public interface GeneralModelAppender {
 	 *            For example, <pre>new Identifier("mymod", "foo/bar")</pre> will request loading of the file
 	 *            <pre>/assets/mymod/models/foo/bar.json</pre>
 	 */
-	void appendAllIdentifiers(ResourceManager manager, Consumer<Identifier> out);
+	void provideExtraModels(ResourceManager manager, Consumer<Identifier> out);
 }
