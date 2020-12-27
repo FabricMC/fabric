@@ -23,22 +23,22 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkManager;
 
-import net.fabricmc.fabric.impl.networking.server.EntityTrackerStorageAccessor;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 
 /**
  * Helper streams for looking up players on a server.
  *
  * <p>In general, most of these methods will only function with a {@link ServerWorld} instance.
+ *
+ * @deprecated Please use {@link PlayerLookup} instead.
  */
+@Deprecated
 public final class PlayerStream {
 	private PlayerStream() { }
 
@@ -52,7 +52,7 @@ public final class PlayerStream {
 
 	public static Stream<PlayerEntity> world(World world) {
 		if (world instanceof ServerWorld) {
-			// noinspection unchecked
+			// noinspection unchecked,rawtypes
 			return ((Stream) ((ServerWorld) world).getPlayers().stream());
 		} else {
 			throw new RuntimeException("Only supported on ServerWorld!");
@@ -60,14 +60,12 @@ public final class PlayerStream {
 	}
 
 	public static Stream<PlayerEntity> watching(World world, ChunkPos pos) {
-		ChunkManager manager = world.getChunkManager();
-
-		if (!(manager instanceof ServerChunkManager)) {
-			throw new RuntimeException("Only supported on ServerWorld!");
-		} else {
-			//noinspection unchecked
-			return ((Stream) ((ServerChunkManager) manager).threadedAnvilChunkStorage.getPlayersWatchingChunk(pos, false));
+		if (world instanceof ServerWorld) {
+			//noinspection unchecked,rawtypes
+			return (Stream) PlayerLookup.tracking((ServerWorld) world, pos).stream();
 		}
+
+		throw new RuntimeException("Only supported on ServerWorld!");
 	}
 
 	/**
@@ -77,19 +75,8 @@ public final class PlayerStream {
 	 */
 	@SuppressWarnings("JavaDoc")
 	public static Stream<PlayerEntity> watching(Entity entity) {
-		ChunkManager manager = entity.getEntityWorld().getChunkManager();
-
-		if (manager instanceof ServerChunkManager) {
-			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;
-
-			if (storage instanceof EntityTrackerStorageAccessor) {
-				//noinspection unchecked
-				return ((Stream) ((EntityTrackerStorageAccessor) storage).fabric_getTrackingPlayers(entity));
-			}
-		}
-
-		// fallback
-		return watching(entity.getEntityWorld(), new ChunkPos((int) (entity.getX() / 16.0D), (int) (entity.getZ() / 16.0D)));
+		//noinspection unchecked,rawtypes
+		return (Stream) PlayerLookup.tracking(entity).stream();
 	}
 
 	public static Stream<PlayerEntity> watching(BlockEntity entity) {

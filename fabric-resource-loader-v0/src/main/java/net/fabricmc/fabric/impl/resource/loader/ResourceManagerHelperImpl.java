@@ -40,6 +40,7 @@ import net.minecraft.util.Pair;
 
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.ModContainer;
 
 public class ResourceManagerHelperImpl implements ResourceManagerHelper {
@@ -50,21 +51,22 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	private final Set<Identifier> addedListenerIds = new HashSet<>();
 	private final Set<IdentifiableResourceReloadListener> addedListeners = new LinkedHashSet<>();
 
-	public static ResourceManagerHelper get(ResourceType type) {
+	public static ResourceManagerHelperImpl get(ResourceType type) {
 		return registryMap.computeIfAbsent(type, (t) -> new ResourceManagerHelperImpl());
 	}
 
 	/**
 	 * Registers a built-in resource pack. Internal implementation.
 	 *
-	 * @param id The identifier of the resource pack.
-	 * @param subPath The sub path in the mod resources.
-	 * @param container The mod container.
-	 * @param enabledByDefault True if enabled by default, else false.
-	 * @return True if successfully registered the resource pack, else false.
+	 * @param id             the identifier of the resource pack
+	 * @param subPath        the sub path in the mod resources
+	 * @param container      the mod container
+	 * @param activationType the activation type of the resource pack
+	 * @return {@code true} if successfully registered the resource pack, else {@code false}
+	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, ModContainer, ResourcePackActivationType)
 	 * @see ResourceManagerHelper#registerBuiltinResourcePack(Identifier, String, ModContainer, boolean)
 	 */
-	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, boolean enabledByDefault) {
+	public static boolean registerBuiltinResourcePack(Identifier id, String subPath, ModContainer container, ResourcePackActivationType activationType) {
 		String separator = container.getRootPath().getFileSystem().getSeparator();
 		subPath = subPath.replace("/", separator);
 
@@ -76,7 +78,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 
 		String name = id.getNamespace() + "/" + id.getPath();
 
-		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, enabledByDefault) {
+		builtinResourcePacks.add(new Pair<>(name, new ModNioResourcePack(container.getMetadata(), resourcePackPath, null, activationType) {
 			@Override
 			public String getName() {
 				return name; // Built-in resource pack provided by a mod, the name is overriden.
@@ -89,10 +91,13 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	public static void registerBuiltinResourcePacks(ResourceType resourceType, Consumer<ResourcePackProfile> consumer, ResourcePackProfile.Factory factory) {
 		// Loop through each registered built-in resource packs and add them if valid.
 		for (Pair<String, ModNioResourcePack> entry : builtinResourcePacks) {
+			ModNioResourcePack pack = entry.getRight();
+
 			// Add the built-in pack only if namespaces for the specified resource type are present.
-			if (!entry.getRight().getNamespaces(resourceType).isEmpty()) {
+			if (!pack.getNamespaces(resourceType).isEmpty()) {
 				// Make the resource pack profile for built-in pack, should never be always enabled.
-				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(), false,
+				ResourcePackProfile profile = ResourcePackProfile.of(entry.getLeft(),
+						pack.getActivationType() == ResourcePackActivationType.ALWAYS_ENABLED,
 						entry::getRight, factory, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.PACK_SOURCE_BUILTIN);
 				if (profile != null) {
 					consumer.accept(profile);
@@ -102,7 +107,7 @@ public class ResourceManagerHelperImpl implements ResourceManagerHelper {
 	}
 
 	public static void sort(ResourceType type, List<ResourceReloadListener> listeners) {
-		ResourceManagerHelperImpl instance = registryMap.get(type);
+		ResourceManagerHelperImpl instance = get(type);
 
 		if (instance != null) {
 			instance.sort(listeners);

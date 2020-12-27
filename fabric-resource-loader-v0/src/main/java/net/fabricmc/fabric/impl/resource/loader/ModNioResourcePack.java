@@ -40,6 +40,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 
 import net.fabricmc.fabric.api.resource.ModResourcePack;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 
 public class ModNioResourcePack extends AbstractFileResourcePack implements ModResourcePack {
@@ -50,17 +51,16 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 	private final boolean cacheable;
 	private final AutoCloseable closer;
 	private final String separator;
-	private final boolean defaultEnabled;
+	private final ResourcePackActivationType activationType;
 
-	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer, boolean defaultEnabled) {
+	public ModNioResourcePack(ModMetadata modInfo, Path path, AutoCloseable closer, ResourcePackActivationType activationType) {
 		super(null);
 		this.modInfo = modInfo;
 		this.basePath = path.toAbsolutePath().normalize();
 		this.cacheable = false; /* TODO */
 		this.closer = closer;
 		this.separator = basePath.getFileSystem().getSeparator();
-		// Specific to registered built-in resource packs.
-		this.defaultEnabled = defaultEnabled;
+		this.activationType = activationType;
 	}
 
 	private Path getPath(String filename) {
@@ -201,8 +201,8 @@ public class ModNioResourcePack extends AbstractFileResourcePack implements ModR
 		return modInfo;
 	}
 
-	public boolean shouldBeEnabledByDefault() {
-		return this.defaultEnabled;
+	public ResourcePackActivationType getActivationType() {
+		return this.activationType;
 	}
 
 	@Override
