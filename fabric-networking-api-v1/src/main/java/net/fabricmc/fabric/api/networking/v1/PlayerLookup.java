@@ -33,8 +33,10 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.chunk.ChunkManager;
+import net.minecraft.class_5629;
 
-import net.fabricmc.fabric.impl.networking.ThreadedAnvilChunkStorageTrackingExtensions;
+import net.fabricmc.fabric.mixin.networking.accessor.EntityTrackerAccessor;
+import net.fabricmc.fabric.mixin.networking.accessor.ThreadedAnvilChunkStorageAccessor;
 
 /**
  * For example, a block entity may use the methods in this class to send a packet to all clients which can see the block entity in order notify clients about a change.
@@ -111,9 +113,15 @@ public final class PlayerLookup {
 
 		if (manager instanceof ServerChunkManager) {
 			ThreadedAnvilChunkStorage storage = ((ServerChunkManager) manager).threadedAnvilChunkStorage;
+			EntityTrackerAccessor tracker = ((ThreadedAnvilChunkStorageAccessor) storage).getEntityTrackers().get(entity.getEntityId());
 
 			// return an immutable collection to guard against accidental removals.
-			return Collections.unmodifiableCollection(((ThreadedAnvilChunkStorageTrackingExtensions) storage).fabric_getTrackingPlayers(entity));
+			if (tracker != null) {
+				return Collections.unmodifiableCollection(tracker.getPlayersTracking()
+						.stream().map(class_5629::method_32311).collect(Collectors.toSet()));
+			}
+
+			return Collections.emptySet();
 		}
 
 		throw new IllegalArgumentException("Only supported on server worlds!");

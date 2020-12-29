@@ -21,10 +21,10 @@ import java.util.Set;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.class_5629;
 
 @Mixin(targets = "net/minecraft/server/world/ThreadedAnvilChunkStorage$EntityTracker")
 public interface EntityTrackerAccessor {
 	@Accessor
-	Set<ServerPlayerEntity> getPlayersTracking();
+	Set<class_5629> getPlayersTracking();
 }
