@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.networking;
+package net.fabricmc.fabric.mixin.networking.accessor;
 
-import java.util.Collection;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ThreadedAnvilChunkStorage;
 
-public interface ThreadedAnvilChunkStorageTrackingExtensions {
-	Collection<ServerPlayerEntity> fabric_getTrackingPlayers(Entity entity);
+@Mixin(ThreadedAnvilChunkStorage.class)
+public interface ThreadedAnvilChunkStorageAccessor {
+	@Accessor
+	Int2ObjectMap<EntityTrackerAccessor> getEntityTrackers();
 }
