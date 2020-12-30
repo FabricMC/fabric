@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: FabricMC Discord
+    url: https://discord.gg/v6v4pMv
+    about: Please ask here for help with installing Fabric.
+  - name: GitHub Discussions
+    url: https://github.com/FabricMC/fabric/discussions
+    about: Please look here for frequently asked questions and questions on how to use Fabric API.
