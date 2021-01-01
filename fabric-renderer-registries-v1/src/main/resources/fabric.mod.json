@@ -23,5 +23,8 @@
   "description": "Registries for entity and block renderers.",
   "mixins": [
     "fabric-renderer-registries-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

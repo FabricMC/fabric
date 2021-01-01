@@ -21,5 +21,8 @@
   "description": "Adds Fabric-related debug info to crash reports.",
   "mixins": [
     "fabric-crash-report-info-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

@@ -24,5 +24,8 @@
   "mixins": [
     "fabric-renderer-api-v1.mixins.json",
     "fabric-renderer-api-v1.debughud.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

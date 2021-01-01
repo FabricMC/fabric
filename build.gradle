@@ -392,3 +392,31 @@ task checkVersion {
 github.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
+
+// Validate all submodules specify a module lifecycle:
+task validateModuleLifecycles {
+	subprojects {
+		def json = new JsonSlurper().parse(project.file("src/main/resources/fabric.mod.json")) as Map<String, Map<String, String>>;
+
+		if (json.custom == null) {
+			throw new GradleException()
+		}
+
+		if (json.custom.get("fabric-api:module-lifecycle") == null) {
+			throw new GradleException()
+		}
+
+		// Validate the lifecycle value
+		switch (json.custom.get("fabric-api:module-lifecycle")) {
+		case "stable":
+		case "experimental":
+		case "deprecated":
+				break;
+		default:
+				throw new GradleException();
+		}
+	}
+}
+
+// Hook it up to `check` task
+project.tasks.check.dependsOn validateModuleLifecycles

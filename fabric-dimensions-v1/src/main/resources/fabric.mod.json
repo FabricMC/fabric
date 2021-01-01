@@ -12,5 +12,8 @@
   },
   "mixins": [
     "fabric-dimensions-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "experimental"
+  }
 }

@@ -22,5 +22,8 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "description": "Hooks for items"
+  "description": "Hooks for items",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
