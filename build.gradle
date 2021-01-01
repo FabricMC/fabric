@@ -13,6 +13,7 @@ plugins {
 	id "net.minecrell.licenser" version "0.4.1"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "org.ajoberstar.git-publish" version "3.0.0"
 }
 
 def ENV = System.getenv()
@@ -389,6 +390,64 @@ task checkVersion {
 	}
 }
 
+// Authentication is provided by GRGIT_PASS and GRGIT_USER enviro. variables.
+// GRGIT_PASS can be authentication token
+// See https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token#using-a-token-on-the-command-line
+def versionMapRepo = "https://github.com/dexman545/fabric-api-version-map.git" //TODO use official repo
+gitPublish {
+	repoUri = versionMapRepo
+	branch = "main"
+	commitMessage = "Automated addition of new api version from FabricMC repo"
+
+	preserve {
+		include "README.md"
+		include "LICENSE"
+		include "apiVersions.properties"
+		include ".gitignore"
+	}
+}
+
+task updateVersionMap(dependsOn: gitPublishReset) {
+	doLast {
+		def propFile = file("${buildDir}/gitPublish/apiVersions.properties")
+		def mc2Api = new Properties()
+		if (!propFile.exists()) return
+		propFile.withReader {mc2Api.load(it)}
+		String list = mc2Api.getProperty(Globals.mcVersion, "")
+		String separator = list.isEmpty() ? " " : ", "
+		mc2Api.setProperty(Globals.mcVersion, list + separator + version)
+
+		// Do not use Properties#store as it shuffles the file
+		boolean hasVersion = false
+		List<String> outLines = new ArrayList<>();
+		propFile.eachLine {
+			String[] parsed = it.split("=")
+			if (parsed[0].trim() == Globals.mcVersion) {
+				hasVersion = true
+				it = Globals.mcVersion + " = " + list + separator + version
+			}
+			outLines.add(it)
+		}
+
+		propFile.withWriter {
+			if (!hasVersion) { // Add new versions to top of file
+				it.write(Globals.mcVersion + " = " + list + separator + version)
+				it.newLine()
+			}
+			for (String ln : outLines) {
+				it.write(ln)
+				it.newLine()
+			}
+		}
+	}
+}
+
+task publishVersionMap(dependsOn: updateVersionMap) {
+
+}
+
 github.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
+updateVersionMap.mustRunAfter gitPublishReset
+publishVersionMap.finalizedBy gitPublishCommit, gitPublishPush
