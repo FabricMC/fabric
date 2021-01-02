@@ -38,5 +38,5 @@ public interface UpdateAnimationHandler {
 	 * @return  whether or not the item update animation should play
 	 */
 	@Environment(EnvType.CLIENT)
-	boolean shouldRunAnimationUpdate(ItemStack original, ItemStack updated);
+	boolean updateAnimation(ItemStack original, ItemStack updated);
 }

@@ -37,7 +37,7 @@ public class HeldItemRendererMixin {
 			UpdateAnimationHandler updateAnimationHandler = FabricItemUpdateAnimationHandlers.get(updated.getItem());
 
 			if (updateAnimationHandler != null) {
-				return !updateAnimationHandler.shouldRunAnimationUpdate(original, updated);
+				return !updateAnimationHandler.updateAnimation(original, updated);
 			}
 		}
 
