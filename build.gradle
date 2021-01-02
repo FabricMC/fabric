@@ -28,6 +28,7 @@ version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + 
 logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
+import net.fabricmc.fabric.impl.gradle.ValidateModuleTask
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
 
@@ -394,29 +395,7 @@ publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
 
 // Validate all submodules specify a module lifecycle:
-task validateModuleLifecycles {
-	subprojects {
-		def json = new JsonSlurper().parse(project.file("src/main/resources/fabric.mod.json")) as Map<String, Map<String, String>>;
-
-		if (json.custom == null) {
-			throw new GradleException()
-		}
-
-		if (json.custom.get("fabric-api:module-lifecycle") == null) {
-			throw new GradleException()
-		}
-
-		// Validate the lifecycle value
-		switch (json.custom.get("fabric-api:module-lifecycle")) {
-		case "stable":
-		case "experimental":
-		case "deprecated":
-				break;
-		default:
-				throw new GradleException();
-		}
-	}
-}
+task validateModules(type: ValidateModuleTask)
 
 // Hook it up to `check` task
-project.tasks.check.dependsOn validateModuleLifecycles
+project.tasks.check.dependsOn validateModules
