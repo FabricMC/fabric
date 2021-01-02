@@ -394,8 +394,10 @@ github.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
 
-// Validate all submodules specify a module lifecycle:
-task validateModules(type: ValidateModuleTask)
+// Module validation
+subprojects {
+	task validateModules(type: ValidateModuleTask)
 
-// Hook it up to `check` task
-project.tasks.check.dependsOn validateModules
+	// Hook it up to `check` task
+	project.tasks.check.dependsOn validateModules
+}
