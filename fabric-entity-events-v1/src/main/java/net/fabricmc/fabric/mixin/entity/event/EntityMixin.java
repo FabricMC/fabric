@@ -39,6 +39,10 @@ abstract class EntityMixin {
 	 */
 	@Inject(method = "moveToWorld", at = @At(value = "RETURN", ordinal = 2))
 	private void afterWorldChanged(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
-		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, cir.getReturnValue(), (ServerWorld) this.world, (ServerWorld) cir.getReturnValue().world);
+		// Ret will only have an entity if entity was successfully created
+		Entity ret = cir.getReturnValue();
+		if (ret != null) {
+			ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, ret, (ServerWorld) this.world, (ServerWorld) ret.world);
+		}
 	}
 }
