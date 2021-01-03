@@ -33,7 +33,11 @@ abstract class EntityMixin {
 	@Shadow
 	public World world;
 
-	@Inject(method = "moveToWorld", at = @At(value = "RETURN", ordinal = 1))
+	/**
+	 * Select ordinal 2 for the "happy path" of teleportation (this.world instanceof ServerWorld, !this.removed, teleportTarget != null).
+	 * The returned entity can still be null if it is unable to be created by {@link net.minecraft.entity.EntityType#create(World)}.
+	 */
+	@Inject(method = "moveToWorld", at = @At(value = "RETURN", ordinal = 2))
 	private void afterWorldChanged(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
 		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, cir.getReturnValue(), (ServerWorld) this.world, (ServerWorld) cir.getReturnValue().world);
 	}
