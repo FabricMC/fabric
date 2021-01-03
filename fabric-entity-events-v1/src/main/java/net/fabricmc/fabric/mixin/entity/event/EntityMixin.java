@@ -33,8 +33,13 @@ abstract class EntityMixin {
 	@Shadow
 	public World world;
 
-	@Inject(method = "moveToWorld", at = @At(value = "RETURN", ordinal = 1))
+	@Inject(method = "moveToWorld", at = @At("RETURN"))
 	private void afterWorldChanged(ServerWorld destination, CallbackInfoReturnable<Entity> cir) {
-		ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, cir.getReturnValue(), (ServerWorld) this.world, (ServerWorld) cir.getReturnValue().world);
+		// Ret will only have an entity if the teleport worked (entity not removed, teleportTarget was valid, entity was successfully created)
+		Entity ret = cir.getReturnValue();
+
+		if (ret != null) {
+			ServerEntityWorldChangeEvents.AFTER_ENTITY_CHANGE_WORLD.invoker().afterChangeWorld((Entity) (Object) this, ret, (ServerWorld) this.world, (ServerWorld) ret.world);
+		}
 	}
 }
