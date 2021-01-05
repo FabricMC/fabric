@@ -1,9 +1,6 @@
 buildscript {
 	dependencies {
 		classpath 'org.kohsuke:github-api:1.114'
-		// This is an awful hack since buildscript cant seem to find groovy-json
-		//classpath localGroovy()
-		//classpath 'org.codehaus.groovy:groovy-json:2.5.12'
 	}
 }
 
@@ -18,14 +15,6 @@ plugins {
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
-// Verify the buildscript's groovy runtime matches the groovy-json version
-if (GroovySystem.version != "2.5.12") {
-	throw new GradleException("Please update \"groovy-json\" in buildscript dependencies to \"${GroovySystem.version}\"!");
-}
-
-// Apply auxiliary buildscripts
-apply from: "gradle/module-validation.gradle"
-
 def ENV = System.getenv()
 
 class Globals {
@@ -38,7 +27,6 @@ class Globals {
 version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
 logger.lifecycle("Building Fabric: " + version)
 
-import groovy.json.JsonSlurper
 import org.apache.commons.codec.digest.DigestUtils
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
@@ -191,6 +179,10 @@ allprojects {
 		toolVersion = "8.31"
 	}
 }
+
+// Apply auxiliary buildscripts to submodules
+// This must be done after all plugins are applied to subprojects
+apply from: "gradle/module-validation.gradle"
 
 javadoc {
 	options {
