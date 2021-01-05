@@ -8,7 +8,8 @@
     "LivingEntityMixin"
   ],
   "client": [
-    "client.ItemStackMixin"
+    "client.ItemStackMixin",
+    "client.TooltipComponentMixin"
   ],
   "injectors": {
     "defaultRequire": 1
