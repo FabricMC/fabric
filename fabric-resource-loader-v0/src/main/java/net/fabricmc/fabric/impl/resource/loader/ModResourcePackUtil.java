@@ -59,7 +59,7 @@ public final class ModResourcePackUtil {
 			Path path = container.getRootPath();
 
 			if (subPath != null) {
-				Path childPath = path.resolve(subPath.replaceAll("/", path.getFileSystem().getSeparator())).toAbsolutePath().normalize();
+				Path childPath = path.resolve(subPath.replace("/", path.getFileSystem().getSeparator())).toAbsolutePath().normalize();
 
 				if (!childPath.startsWith(path) || !Files.exists(childPath)) {
 					continue;

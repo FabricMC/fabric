@@ -23,11 +23,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.resource.Resource;
@@ -46,7 +46,7 @@ import net.fabricmc.fabric.mixin.resource.loader.NamespaceResourceManagerAccesso
 public abstract class GroupResourcePack implements ResourcePack {
 	protected final ResourceType type;
 	protected final List<ModResourcePack> packs;
-	protected final Object2ObjectMap<String, List<ModResourcePack>> namespacedPacks = new Object2ObjectOpenHashMap<>();
+	protected final Map<String, List<ModResourcePack>> namespacedPacks = new Object2ObjectOpenHashMap<>();
 
 	public GroupResourcePack(ResourceType type, List<ModResourcePack> packs) {
 		this.type = type;
