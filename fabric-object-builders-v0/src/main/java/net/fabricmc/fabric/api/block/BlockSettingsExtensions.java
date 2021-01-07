@@ -23,6 +23,7 @@ import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolLevel;
 import net.fabricmc.fabric.impl.object.builder.FabricBlockInternals;
 import net.fabricmc.fabric.mixin.object.builder.AbstractBlockSettingsAccessor;
 
@@ -39,7 +40,7 @@ public final class BlockSettingsExtensions {
 	}
 
 	public static void breakByTool(Settings settings, Tag<Item> tag, int miningLevel) {
-		FabricBlockInternals.computeExtraData(settings).addMiningLevel(tag, miningLevel);
+		FabricBlockInternals.computeExtraData(settings).addMiningLevel(tag, ToolLevel.of(miningLevel));
 	}
 
 	public static void hardness(Settings settings, float hardness) {

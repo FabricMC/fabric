@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.tool.attribute.v1;
 
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Multimap;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -41,9 +42,10 @@ public interface DynamicAttributeTool {
 	 * @param stack The item stack being used to mine the block
 	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
-	 * @deprecated Use {@link #getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
+	 * @deprecated Use {@link #getToolMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval
 	default int getMiningLevel(ItemStack stack, @Nullable LivingEntity user) {
 		return 0;
 	}
@@ -56,9 +58,25 @@ public interface DynamicAttributeTool {
 	 * @param stack The item stack being used to mine the block
 	 * @param user  The current user of the tool, or null if there isn't any
 	 * @return The mining level of the item. 3 is equal to a diamond pick.
+	 * @deprecated Use {@link #getToolMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} to allow decimal values.
 	 */
+	@Deprecated
+	@ApiStatus.ScheduledForRemoval
 	default int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
 		return getMiningLevel(stack, user);
+	}
+
+	/**
+	 * Determines the mining level of the passed stack, which is used for calculating what blocks this tool is allowed to break.
+	 *
+	 * @param tag   The tool tag the item stack is being compared to
+	 * @param state The block to mine
+	 * @param stack The item stack being used to mine the block
+	 * @param user  The current user of the tool, or null if there isn't any
+	 * @return The mining level of the item. 3 is equal to a diamond pick.
+	 */
+	default ToolLevel getToolMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, @Nullable LivingEntity user) {
+		return ToolLevel.of(getMiningLevel(tag, state, stack, user));
 	}
 
 	/**
@@ -70,6 +88,7 @@ public interface DynamicAttributeTool {
 	 * @deprecated Use {@link #getMiningSpeedMultiplier(Tag, BlockState, ItemStack, LivingEntity)} to detect tag and block.
 	 */
 	@Deprecated
+	@ApiStatus.ScheduledForRemoval
 	default float getMiningSpeedMultiplier(ItemStack stack, @Nullable LivingEntity user) {
 		return 1.0F;
 	}

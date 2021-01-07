@@ -31,7 +31,7 @@ import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
 
 /**
  * This handler handles items that are an subclass of {@link DynamicAttributeTool} by comparing their mining level
- * using {@link DynamicAttributeTool#getMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} and the block mining level.
+ * using {@link DynamicAttributeTool#getToolMiningLevel(Tag, BlockState, ItemStack, LivingEntity)} and the block mining level.
  *
  * <p>Only applicable to modded blocks that are registered, as only they have the registered required mining level.</p>
  */
@@ -43,8 +43,8 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
 			if (entry != null) {
-				int miningLevel = ((DynamicAttributeTool) stack.getItem()).getMiningLevel(tag, state, stack, user);
-				int requiredMiningLevel = entry.getMiningLevel(tag);
+				float miningLevel = ((DynamicAttributeTool) stack.getItem()).getToolMiningLevel(tag, state, stack, user);
+				float requiredMiningLevel = entry.getMiningLevel(tag).getLevel();
 
 				return requiredMiningLevel >= 0 && miningLevel >= 0 && miningLevel >= requiredMiningLevel ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
@@ -59,7 +59,7 @@ public class ModdedToolsModdedBlocksToolHandler implements ToolManagerImpl.ToolH
 		if (stack.getItem() instanceof DynamicAttributeTool) {
 			ToolManagerImpl.Entry entry = ToolManagerImpl.entryNullable(state.getBlock());
 
-			if (entry != null && entry.getMiningLevel(tag) >= 0) {
+			if (entry != null && entry.getMiningLevel(tag).getLevel() >= 0) {
 				float multiplier = ((DynamicAttributeTool) stack.getItem()).getMiningSpeedMultiplier(tag, state, stack, user);
 				if (multiplier != 1.0F) return TypedActionResult.success(multiplier);
 			}

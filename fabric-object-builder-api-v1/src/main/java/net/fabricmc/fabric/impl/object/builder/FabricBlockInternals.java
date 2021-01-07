@@ -25,7 +25,8 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.tag.Tag;
 
-import net.fabricmc.fabric.impl.tool.attribute.ToolManagerImpl;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolLevel;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 
 public final class FabricBlockInternals {
 	private FabricBlockInternals() {
@@ -47,11 +48,11 @@ public final class FabricBlockInternals {
 
 		if (data != null) {
 			if (data.breakByHand != null) {
-				ToolManagerImpl.entry(block).setBreakByHand(data.breakByHand);
+				ToolManager.setBlockBreakByHand(block, data.breakByHand);
 			}
 
 			for (MiningLevel tml : data.miningLevels) {
-				ToolManagerImpl.entry(block).putBreakByTool(tml.tag, tml.level);
+				ToolManager.setBlockBreakLevel(block, tml.tag, tml.level);
 			}
 		}
 	}
@@ -68,16 +69,16 @@ public final class FabricBlockInternals {
 			this.breakByHand = breakByHand;
 		}
 
-		public void addMiningLevel(Tag<Item> tag, int level) {
+		public void addMiningLevel(Tag<Item> tag, ToolLevel level) {
 			miningLevels.add(new MiningLevel(tag, level));
 		}
 	}
 
 	public static final class MiningLevel {
 		private final Tag<Item> tag;
-		private final int level;
+		private final ToolLevel level;
 
-		MiningLevel(Tag<Item> tag, int level) {
+		MiningLevel(Tag<Item> tag, ToolLevel level) {
 			this.tag = tag;
 			this.level = level;
 		}

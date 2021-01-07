@@ -18,7 +18,8 @@
   "depends": {
     "fabricloader": ">=0.8.2",
     "fabric-api-base": "*",
-    "fabric-object-builder-api-v1": "*"
+    "fabric-object-builder-api-v1": "*",
+    "fabric-tool-attribute-api-v1": "*"
   },
   "description": "Legacy builders for objects vanilla has locked down, superseded by fabric-object-builder-api-v1.",
   "mixins": [

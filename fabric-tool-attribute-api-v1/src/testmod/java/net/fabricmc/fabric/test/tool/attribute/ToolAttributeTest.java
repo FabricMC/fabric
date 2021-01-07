@@ -26,8 +26,11 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PickaxeItem;
 import net.minecraft.item.ToolItem;
+import net.minecraft.item.ToolMaterial;
 import net.minecraft.item.ToolMaterials;
+import net.minecraft.recipe.Ingredient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.tag.Tag;
@@ -40,13 +43,47 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
+import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolMaterial;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.api.tool.attribute.v1.ToolLevel;
 
 public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
 	private static final float TOOL_BREAK_SPEED = 10.0F;
 	// A custom tool type, taters
 	private static final Tag<Item> TATER = TagRegistry.item(new Identifier("fabric-tool-attribute-api-v1-testmod", "taters"));
+	private static final ToolLevel TIN_LEVEL = ToolLevel.by(new Identifier("fabric-tool-attribute-api-v1-testmod", "tin"));
+	private static final ToolMaterial TIN_MATERIAL = new FabricToolMaterial() {
+		@Override
+		public ToolLevel getToolLevel() {
+			return TIN_LEVEL;
+		}
+
+		@Override
+		public int getDurability() {
+			return 500;
+		}
+
+		@Override
+		public float getMiningSpeedMultiplier() {
+			return 4;
+		}
+
+		@Override
+		public float getAttackDamage() {
+			return 1;
+		}
+
+		@Override
+		public int getEnchantability() {
+			return 30;
+		}
+
+		@Override
+		public Ingredient getRepairIngredient() {
+			return Ingredient.EMPTY;
+		}
+	};
 
 	private boolean hasValidated = false;
 
@@ -54,6 +91,14 @@ public class ToolAttributeTest implements ModInitializer {
 	Block stoneBlock;
 	Item testShovel;
 	Item testPickaxe;
+	Item tinPickaxe;
+	Item tinDynamicPickaxe;
+
+	Item testStoneLevelTater;
+	Item testStoneDynamicLevelTater;
+	Item testDiamondLevelTater;
+	Item testDiamondDynamicLevelTater;
+	Block taterEffectiveBlock;
 
 	Item testStoneLevelTater;
 	Item testStoneDynamicLevelTater;
@@ -64,13 +109,18 @@ public class ToolAttributeTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		// Register a custom shovel that has a mining level of 2 (iron) dynamically.
-		testShovel = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_shovel"), new TestTool(new Item.Settings(), FabricToolTags.SHOVELS, 2));
-		//Register a custom pickaxe that has a mining level of 2 (iron) dynamically.
-		testPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_pickaxe"), new TestTool(new Item.Settings(), FabricToolTags.PICKAXES, 2));
+		testShovel = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_shovel"), new TestTool(new Item.Settings(), FabricToolTags.SHOVELS, ToolLevel.IRON));
+		// Register a custom pickaxe that has a mining level of 2 (iron) dynamically.
+		testPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_pickaxe"), new TestTool(new Item.Settings(), FabricToolTags.PICKAXES, ToolLevel.IRON));
+		// Register a custom pickaxe that has a mining level of 1.5 (tin).
+		tinPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "tin_pickaxe"), new PickaxeItem(TIN_MATERIAL, 1, -2.8F, new Item.Settings()) {
+		});
+		// Register a custom pickaxe that has a mining level of 1.5 (tin) dynamically.
+		tinDynamicPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "tin_dynamic_pickaxe"), new TestTool(new Item.Settings(), FabricToolTags.PICKAXES, TIN_LEVEL));
 		// Register a block that requires a shovel that is as strong or stronger than an iron one.
 		gravelBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"),
 				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MaterialColor.SAND).build(), MaterialColor.STONE)
-						.breakByTool(FabricToolTags.SHOVELS, 2)
+						.breakByTool(FabricToolTags.SHOVELS, ToolLevel.IRON)
 						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.GRAVEL)));
@@ -78,7 +128,7 @@ public class ToolAttributeTest implements ModInitializer {
 		// Register a block that requires a pickaxe that is as strong or stronger than an iron one.
 		stoneBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_stone_block"),
 				new Block(FabricBlockSettings.of(Material.STONE, MaterialColor.STONE)
-						.breakByTool(FabricToolTags.PICKAXES, 2)
+						.breakByTool(FabricToolTags.PICKAXES, ToolLevel.IRON)
 						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.STONE)));
@@ -87,15 +137,15 @@ public class ToolAttributeTest implements ModInitializer {
 		// Register a tater that has a mining level of 1 (stone).
 		testStoneLevelTater = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_stone_level_tater"), new ToolItem(ToolMaterials.STONE, new Item.Settings()));
 		// Register a tater that has a mining level of 1 (stone) dynamically.
-		testStoneDynamicLevelTater = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_stone_dynamic_level_tater"), new TestTool(new Item.Settings(), TATER, 1));
+		testStoneDynamicLevelTater = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_stone_dynamic_level_tater"), new TestTool(new Item.Settings(), TATER, ToolLevel.STONE));
 		//Register a tater that has a mining level of 3 (diamond).
 		testDiamondLevelTater = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_diamond_level_tater"), new ToolItem(ToolMaterials.DIAMOND, new Item.Settings()));
 		//Register a tater that has a mining level of 3 (diamond) dynamically.
-		testDiamondDynamicLevelTater = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_diamond_dynamic_level_tater"), new TestTool(new Item.Settings(), TATER, 3));
+		testDiamondDynamicLevelTater = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_diamond_dynamic_level_tater"), new TestTool(new Item.Settings(), TATER, ToolLevel.DIAMOND));
 
 		taterEffectiveBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "tater_effective_block"),
 				new Block(FabricBlockSettings.of(Material.ORGANIC_PRODUCT, MaterialColor.ORANGE)
-						.breakByTool(TATER, 2) // requires iron tater
+						.breakByTool(TATER, ToolLevel.IRON) // requires iron tater
 						.requiresTool()
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.CROP)));
@@ -171,21 +221,21 @@ public class ToolAttributeTest implements ModInitializer {
 
 	private static class TestTool extends Item implements DynamicAttributeTool {
 		final Tag<Item> toolType;
-		final int miningLevel;
+		final ToolLevel miningLevel;
 
-		private TestTool(Settings settings, Tag<Item> toolType, int miningLevel) {
+		private TestTool(Settings settings, Tag<Item> toolType, ToolLevel miningLevel) {
 			super(settings);
 			this.toolType = toolType;
 			this.miningLevel = miningLevel;
 		}
 
 		@Override
-		public int getMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
+		public float getToolMiningLevel(Tag<Item> tag, BlockState state, ItemStack stack, LivingEntity user) {
 			if (tag.equals(toolType)) {
-				return this.miningLevel;
+				return this.miningLevel.getLevel();
 			}
 
-			return 0;
+			return ToolLevel.NONE.getLevel();
 		}
 
 		@Override
