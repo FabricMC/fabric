@@ -49,7 +49,7 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 	 * @param apiClass The class of the queried Api.
 	 * @param contextClass The class of the queried additional context.
 	 * @return The unique lookup with the passed lookupId.
-	 * @throws IllegalArgumentException if another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
+	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
 	L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass);
 }

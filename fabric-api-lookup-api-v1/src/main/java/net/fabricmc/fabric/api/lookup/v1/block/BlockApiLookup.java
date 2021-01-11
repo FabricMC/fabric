@@ -115,8 +115,8 @@ import net.minecraft.world.World;
  * (the direction parameter in the previous example).
  * If no context is necessary, {@code Void} should be used, and {@code null} instances should be passed.
  *
- * @param <T> The type of the queried object
- * @param <C> The type of the additional context object
+ * @param <T> The type of the queried object.
+ * @param <C> The type of the additional context object.
  */
 public interface BlockApiLookup<T, C> {
 	/**
@@ -124,10 +124,10 @@ public interface BlockApiLookup<T, C> {
 	 *
 	 * <p>Note: If the block state or the block entity is known, it is more efficient to use {@link BlockApiLookup#get(World, BlockPos, BlockState, BlockEntity, Object)}.
 	 *
-	 * @param world The world
-	 * @param pos The position of the block
-	 * @param context Additional context for the query, defined by type parameter C
-	 * @return The retrieved Api, or {@code null} if no Api was found
+	 * @param world The world.
+	 * @param pos The position of the block.
+	 * @param context Additional context for the query, defined by type parameter C.
+	 * @return The retrieved Api, or {@code null} if no Api was found.
 	 */
 	@Nullable
 	default T get(World world, BlockPos pos, C context) {
@@ -137,12 +137,12 @@ public interface BlockApiLookup<T, C> {
 	/**
 	 * Retrieve an Api from a block in the world. Consider using {@link BlockApiCache} if you are doing frequent queries at the same position.
 	 *
-	 * @param world The world
-	 * @param pos The position of the block
-	 * @param context Additional context for the query, defined by type parameter C
-	 * @param state The block state at the target position, or null if unknown
-	 * @param blockEntity The block entity at the target position if it is known, or null otherwise
-	 * @return The retrieved Api, or {@code null} if no Api was found
+	 * @param world The world.
+	 * @param pos The position of the block.
+	 * @param context Additional context for the query, defined by type parameter C.
+	 * @param state The block state at the target position, or null if unknown.
+	 * @param blockEntity The block entity at the target position if it is known, or null otherwise.
+	 * @return The retrieved Api, or {@code null} if no Api was found.
 	 */
 	@Nullable
 	T get(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context);
@@ -151,18 +151,18 @@ public interface BlockApiLookup<T, C> {
 	 * Register a {@link BlockApiProvider} for some blocks.
 	 * If you need to register a provider for a BlockEntity, please use {@link BlockApiLookup#registerForBlockEntities} instead.
 	 *
-	 * @param provider The provider
-	 * @param blocks The blocks
-	 * @throws NullPointerException If the provider or one of the blocks is null
+	 * @param provider The provider.
+	 * @param blocks The blocks.
+	 * @throws NullPointerException If the provider or one of the blocks is null.
 	 */
 	void registerForBlocks(BlockApiProvider<T, C> provider, Block... blocks);
 
 	/**
 	 * Register a {@link BlockEntityApiProvider} for some block entities.
 	 *
-	 * @param provider The provider
-	 * @param blockEntityTypes The block entity types
-	 * @throws NullPointerException If the provider or one of the block entity types is null
+	 * @param provider The provider.
+	 * @param blockEntityTypes The block entity types.
+	 * @throws NullPointerException If the provider or one of the block entity types is null.
 	 */
 	void registerForBlockEntities(BlockEntityApiProvider<T, C> provider, BlockEntityType<?>... blockEntityTypes);
 
@@ -170,8 +170,8 @@ public interface BlockApiLookup<T, C> {
 	 * Register a fallback provider for all blocks. It will be invoked if no object was found using the regular providers.
 	 * This may have a big performance impact on all queries, use cautiously.
 	 *
-	 * @param fallbackProvider The fallback provider
-	 * @throws NullPointerException If the provider is null
+	 * @param fallbackProvider The fallback provider.
+	 * @throws NullPointerException If the provider is null.
 	 */
 	void registerFallback(FallbackApiProvider<T, C> fallbackProvider);
 

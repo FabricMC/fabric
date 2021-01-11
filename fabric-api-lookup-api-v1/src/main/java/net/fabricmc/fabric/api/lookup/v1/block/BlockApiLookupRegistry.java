@@ -37,7 +37,7 @@ public final class BlockApiLookupRegistry {
 	 * @param <T> The type of the queried Api.
 	 * @param <C> The type of the additional context.
 	 * @return The unique lookup with the passed lookupId.
-	 * @throws IllegalArgumentException if another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
+	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
 	public static <T, C> BlockApiLookup<T, C> getLookup(Identifier lookupId, Class<T> apiClass, Class<C> contextClass) {
 		Objects.requireNonNull(apiClass, "Id of API cannot be null");
