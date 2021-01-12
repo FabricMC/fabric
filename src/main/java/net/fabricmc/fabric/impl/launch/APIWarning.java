@@ -16,15 +16,27 @@
 
 package net.fabricmc.fabric.impl.launch;
 
+import java.awt.GraphicsEnvironment;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public final class APIWarning {
 	public static void main(String[] args) {
 		Locale defaultLocale = Locale.getDefault();
-		ResourceBundle WarningAPI = ResourceBundle.getBundle("lang/WarningAPI", defaultLocale);
-		JOptionPane.showMessageDialog(null, WarningAPI.getString("api.warning"));
+		String message = ResourceBundle.getBundle("lang/WarningAPI", defaultLocale).getString("api.warning");
+		if (GraphicsEnvironment.isHeadless()) {
+			System.err.println(message);
+		} else {
+			try {
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			} catch (ReflectiveOperationException | UnsupportedLookAndFeelException ignored) {
+				// Ignored
+			}
+			JOptionPane.showMessageDialog(null, message);
+		}
 	}
 }
