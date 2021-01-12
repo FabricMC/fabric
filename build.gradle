@@ -101,6 +101,14 @@ allprojects {
 		}
 	}
 
+	tasks.withType(Jar).configureEach {
+		manifest {
+			attributes 'Implementation-Title': 'FabricAPI',
+					'Implementation-Version': project.version,
+					'Main-Class': 'net.fabricmc.fabric.impl.launch.APIWarning'
+		}
+	}
+
 	group = "net.fabricmc.fabric-api"
 
 	sourceSets {
@@ -137,21 +145,11 @@ allprojects {
 	}
 
 	jar {
-		manifest {
-			attributes 'Implementation-Title': 'FabricAPI',
-					'Implementation-Version': project.version,
-					'Main-Class': 'net.fabricmc.fabric.impl.launch.APIWarning'
-		}
 		classifier = "dev"
 	}
 
 	afterEvaluate {
 		remapJar {
-			manifest {
-				attributes 'Implementation-Title': 'FabricAPI',
-						'Implementation-Version': project.version,
-						'Main-Class': 'net.fabricmc.fabric.impl.launch.APIWarning'
-			}
 			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
 			archiveName = "${archivesBaseName}-${version}.jar"
 		}

@@ -16,11 +16,15 @@
 
 package net.fabricmc.fabric.impl.launch;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 import javax.swing.JOptionPane;
 
 public final class APIWarning {
 	public static void main(String[] args) {
-		String st = "Fabric API is not meant to be run.\nPlease place this file in your mods folder.";
-		JOptionPane.showMessageDialog(null, st);
+		Locale defaultLocale = Locale.getDefault();
+		ResourceBundle WarningAPI = ResourceBundle.getBundle("lang/WarningAPI", defaultLocale);
+		JOptionPane.showMessageDialog(null, WarningAPI.getString("api.warning"));
 	}
 }
