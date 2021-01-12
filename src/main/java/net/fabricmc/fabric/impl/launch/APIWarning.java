@@ -31,7 +31,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public final class APIWarning {
 	public static void main(String[] args) {
-		final ResourceBundle WarningAPI = ResourceBundle.getBundle("lang/WarningAPI", Locale.getDefault(), new ResourceBundle.Control() {
+		final ResourceBundle warningApi = ResourceBundle.getBundle("lang/WarningAPI", Locale.getDefault(), new ResourceBundle.Control() {
 			@Override
 			public ResourceBundle newBundle(String baseName, Locale locale, String format, ClassLoader loader, boolean reload) throws IllegalAccessException, InstantiationException, IOException {
 				final String bundleName = toBundleName(baseName, locale);
@@ -50,7 +50,7 @@ public final class APIWarning {
 					return super.newBundle(baseName, locale, format, loader, reload);
 			}
 		});
-		String message = WarningAPI.getString("api.warning");
+		String message = warningApi.getString("api.warning");
 
 		if (GraphicsEnvironment.isHeadless()) {
 			System.err.println(message);
