@@ -39,8 +39,8 @@ import net.fabricmc.fabric.mixin.object.builder.SensorTypeAccessor;
  * <p>A memory module is used to store brain task results and intermediary data.
  * Each task can check the stored value of each presented memory module in a given entity.
  */
-public final class EntityBrainHelpers {
-	private EntityBrainHelpers() {
+public final class EntityBrainHelper {
+	private EntityBrainHelper() {
 	}
 
 	/**
