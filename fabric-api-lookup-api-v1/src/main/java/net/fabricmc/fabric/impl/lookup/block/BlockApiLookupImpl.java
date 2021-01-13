@@ -37,7 +37,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 
 public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
-	private static final Logger LOGGER = LogManager.getLogger();
+	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1");
 	private final ApiProviderMap<Block, BlockApiProvider<T, C>> providerMap = ApiProviderMap.create();
 	private final List<FallbackApiProvider<T, C>> fallbackProviders = new CopyOnWriteArrayList<>();
 

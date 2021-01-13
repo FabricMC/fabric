@@ -36,7 +36,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * <p>{@link BlockApiLookup#get(World, BlockPos, BlockState, BlockEntity, Object) BlockApiLookup#get()} looks up
  * the block state, the block entity, and the Api provider registered for the target block.
  *
- * <br>This object caches the block entity at the target position, and the last used Api provider, removing those queries.
+ * <p>This object caches the block entity at the target position, and the last used Api provider, removing those queries.
  * If a block entity is available or if the block state is passed as a parameter, the block state doesn't have to be looked up either.
  *
  * @see BlockApiLookup
