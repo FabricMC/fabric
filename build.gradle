@@ -1,6 +1,6 @@
 buildscript {
 	dependencies {
-		classpath 'org.kohsuke:github-api:1.114'
+		classpath 'org.kohsuke:github-api:1.117'
 	}
 }
 
@@ -10,8 +10,8 @@ plugins {
 	id "idea"
 	id "maven-publish"
 	id "fabric-loom" version "0.5.43" apply false
-	id "net.minecrell.licenser" version "0.4.1"
-	id "org.ajoberstar.grgit" version "3.1.1"
+	id "org.cadixdev.licenser" version "0.5.0"
+	id "org.ajoberstar.grgit" version "4.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
@@ -89,7 +89,7 @@ allprojects {
 	apply plugin: "checkstyle"
 	apply plugin: "maven-publish"
 	apply plugin: "fabric-loom"
-	apply plugin: "net.minecrell.licenser"
+	apply plugin: "org.cadixdev.licenser"
 
 	tasks.withType(JavaCompile).configureEach {
 		def targetVersion = 8
