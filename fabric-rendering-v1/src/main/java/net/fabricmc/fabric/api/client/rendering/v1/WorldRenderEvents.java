@@ -175,11 +175,11 @@ public final class WorldRenderEvents {
 	 * be accomplished by mixin to the block outline render routine itself, typically
 	 * by targeting {@link WorldRenderer#drawShapeOutline}.
 	 */
-	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, (worldRenderContext, blockOutlieContext) -> true, callbacks -> (worldRenderContext, blockOutlieContext) -> {
+	public static final Event<BlockOutline> BLOCK_OUTLINE = EventFactory.createArrayBacked(BlockOutline.class, (worldRenderContext, blockOutlineContext) -> true, callbacks -> (worldRenderContext, blockOutlineContext) -> {
 		boolean shouldRender = true;
 
 		for (final BlockOutline callback : callbacks) {
-			if (!callback.onBlockOutline(worldRenderContext, blockOutlieContext)) {
+			if (!callback.onBlockOutline(worldRenderContext, blockOutlineContext)) {
 				shouldRender = false;
 			}
 		}
@@ -298,7 +298,7 @@ public final class WorldRenderEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BlockOutline {
-		boolean onBlockOutline(WorldRenderContext worldRenderContext, BlockOutlineContext blockOutlieContext);
+		boolean onBlockOutline(WorldRenderContext worldRenderContext, BlockOutlineContext blockOutlineContext);
 	}
 
 	@Environment(EnvType.CLIENT)
