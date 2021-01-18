@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.api.event.client.input;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.util.InputUtil;
+import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
+import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil.Key;
 
-public final class KeyEvent extends GenericKeyEvent {
+public final class KeybindEvent extends GenericKeyEvent {
 	public final int code;
 	public final int scancode;
 	public final int action;
 	public final int mods;
-	public final Key key;
+	public final KeyBinding keybind;
 
-	public KeyEvent(int code, int scancode, int action, int mods) {
+	public KeybindEvent(int code, int scancode, int action, int mods, KeyBinding keybind) {
 		this.code = code;
 		this.scancode = scancode;
 		this.action = action;
 		this.mods = mods;
-		this.key = InputUtil.fromKeyCode(code, scancode);
+		this.keybind = keybind;
 	}
 
 	@Override
@@ -58,6 +59,10 @@ public final class KeyEvent extends GenericKeyEvent {
 
 	@Override
 	public Key getKey() {
-		return this.key;
+		return ((KeyBindingMixin)this.keybind).getBoundKey();
+	}
+
+	public KeyBinding getKeybind() {
+		return this.keybind;
 	}
 }

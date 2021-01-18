@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client;
+package net.fabricmc.fabric.impl.client.input;
 
 import java.nio.DoubleBuffer;
 
@@ -23,7 +23,7 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 
-import net.fabricmc.fabric.api.client.FabricKeyboard;
+import net.fabricmc.fabric.api.client.input.v1.FabricKeyboard;
 
 public class FabricMouseImpl {
 	public static FabricMouseImpl INSTANCE = new FabricMouseImpl();

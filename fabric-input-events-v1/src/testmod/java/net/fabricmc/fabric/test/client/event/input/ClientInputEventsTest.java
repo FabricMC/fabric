@@ -20,8 +20,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.FabricMouse;
-import net.fabricmc.fabric.api.client.event.input.ClientInputEvents;
+import net.fabricmc.fabric.api.client.input.v1.FabricMouse;
+import net.fabricmc.fabric.api.event.client.input.ClientInputEvents;
 
 public class ClientInputEventsTest implements ModInitializer {
 	public static final Logger LOGGER = LogManager.getLogger("ClientInputEventsTest");

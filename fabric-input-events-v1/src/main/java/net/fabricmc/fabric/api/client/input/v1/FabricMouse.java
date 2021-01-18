@@ -14,21 +14,31 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.api.client.input.v1;
 
-public class CharEvent {
-	public final int codepoint;
-	public final int mods;
+import net.fabricmc.fabric.impl.client.input.FabricMouseImpl;
 
-	public CharEvent(int codepoint, int mods) {
-		this.codepoint = codepoint;
-		this.mods = mods;
+public final class FabricMouse {
+	private FabricMouse() {
 	}
 
-	public int getCodepoint() {
-		return this.codepoint;
+	public static double getX() {
+		return FabricMouseImpl.INSTANCE.getX();
 	}
-	public int getMods() {
-		return this.mods;
+
+	public static double getY() {
+		return FabricMouseImpl.INSTANCE.getY();
+	}
+
+	public static int getPressedButtons() {
+		return FabricMouseImpl.INSTANCE.getPressedButtons();
+	}
+
+	public static boolean isButtonPressed(int button) {
+		return FabricMouseImpl.INSTANCE.isButtonPressed(button);
+	}
+
+	public static int getMods() {
+		return FabricMouseImpl.INSTANCE.getMods();
 	}
 }

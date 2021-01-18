@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.api.event.client.input;
 
 public abstract class GenericMouseEvent {
 	public final double cursorX;

@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client;
+package net.fabricmc.fabric.api.event.client.input;
 
-import net.minecraft.client.util.InputUtil.Key;
-import net.fabricmc.fabric.impl.client.FabricKeyboardImpl;
+public class CharEvent {
+	public final int codepoint;
+	public final int mods;
 
-public final class FabricKeyboard {
-	private FabricKeyboard() {
+	public CharEvent(int codepoint, int mods) {
+		this.codepoint = codepoint;
+		this.mods = mods;
 	}
 
-	public static boolean isKeyPressed(int keycode, int scancode) {
-		return FabricKeyboardImpl.INSTANCE.isKeyPressed(keycode, scancode);
+	public int getCodepoint() {
+		return this.codepoint;
 	}
-
-	public static boolean isKeyPressed(Key key) {
-		return FabricKeyboardImpl.INSTANCE.isKeyPressed(key);
-	}
-
-	public static int getMods() {
-		return FabricKeyboardImpl.INSTANCE.getMods();
+	public int getMods() {
+		return this.mods;
 	}
 }

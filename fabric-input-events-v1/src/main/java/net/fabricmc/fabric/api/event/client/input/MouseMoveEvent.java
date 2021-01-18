@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.api.event.client.input;
 
-import net.fabricmc.fabric.api.client.FabricMouse;
+import net.fabricmc.fabric.api.client.input.v1.FabricMouse;
 
 public class MouseMoveEvent extends GenericMouseEvent {
 	public final double x;

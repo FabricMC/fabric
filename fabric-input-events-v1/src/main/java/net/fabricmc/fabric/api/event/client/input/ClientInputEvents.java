@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.api.event.client.input;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -14,12 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.impl.client.input;
 
-import net.fabricmc.fabric.api.client.FabricMouse;
+import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.InputUtil.Key;
 
-public class MouseScrollEvent extends GenericMouseEvent {
-	public MouseScrollEvent(double scrollX, double scrollY) {
-		super(FabricMouse.getX(), FabricMouse.getY(), 0.0, 0.0, FabricMouse.getPressedButtons(), FabricMouse.getMods(), scrollX, scrollY);
+public class FabricKeyboardImpl {
+	public static FabricKeyboardImpl INSTANCE = new FabricKeyboardImpl();
+
+	private int mods = 0;
+
+	private FabricKeyboardImpl() {
+	}
+
+	public boolean isKeyPressed(int keycode, int scancode) {
+		return InputUtil.isKeyPressed(keycode, scancode);
+	}
+
+	public boolean isKeyPressed(Key key) {
+		return InputUtil.isKeyPressed(key.getCode(), -1);
+	}
+
+	public int getMods() {
+		return this.mods;
+	}
+
+	public void updateMods(int mods) {
+		this.mods = mods;
 	}
 }

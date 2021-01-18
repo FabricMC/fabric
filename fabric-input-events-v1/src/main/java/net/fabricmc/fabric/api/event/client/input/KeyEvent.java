@@ -14,31 +14,50 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.api.event.client.input;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
-import net.fabricmc.fabric.api.client.FabricMouse;
-import net.fabricmc.fabric.mixin.event.input.client.InputUtilTypeMixin;
-
-public class MouseButtonEvent extends GenericMouseEvent {
-	private static final Int2ObjectMap<Key> map = ((InputUtilTypeMixin) (Object) InputUtil.Type.MOUSE).getMap();
-
-	public final int button;
+public final class KeyEvent extends GenericKeyEvent {
+	public final int code;
+	public final int scancode;
 	public final int action;
 	public final int mods;
+	public final Key key;
 
-	public MouseButtonEvent(int button, int action, int mods) {
-		super(FabricMouse.getX(), FabricMouse.getY(), 0.0, 0.0, FabricMouse.getPressedButtons(), FabricMouse.getMods());
-		this.button = button;
+	public KeyEvent(int code, int scancode, int action, int mods) {
+		this.code = code;
+		this.scancode = scancode;
 		this.action = action;
 		this.mods = mods;
+		this.key = InputUtil.fromKeyCode(code, scancode);
 	}
 
+	@Override
+	public int getCode() {
+		return this.code;
+	}
+
+	@Override
+	public int getScancode() {
+		return this.scancode;
+	}
+
+	@Override
+	public int getMods() {
+		return this.mods;
+	}
+
+	@Override
+	public boolean isPressed() {
+		return this.action != GLFW.GLFW_RELEASE;
+	}
+
+	@Override
 	public Key getKey() {
-		return map.get(this.button);
+		return this.key;
 	}
 }

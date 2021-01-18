@@ -33,14 +33,14 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
-import net.fabricmc.fabric.api.client.event.input.CharEvent;
-import net.fabricmc.fabric.api.client.event.input.ClientInputEvents;
-import net.fabricmc.fabric.api.client.event.input.KeyEvent;
-import net.fabricmc.fabric.api.client.event.input.KeybindEvent;
-import net.fabricmc.fabric.api.client.event.input.MouseButtonEvent;
-import net.fabricmc.fabric.api.client.event.input.MouseMoveEvent;
-import net.fabricmc.fabric.api.client.event.input.MouseScrollEvent;
-import net.fabricmc.fabric.impl.client.FabricKeyboardImpl;
+import net.fabricmc.fabric.api.event.client.input.CharEvent;
+import net.fabricmc.fabric.api.event.client.input.ClientInputEvents;
+import net.fabricmc.fabric.api.event.client.input.KeyEvent;
+import net.fabricmc.fabric.api.event.client.input.KeybindEvent;
+import net.fabricmc.fabric.api.event.client.input.MouseButtonEvent;
+import net.fabricmc.fabric.api.event.client.input.MouseMoveEvent;
+import net.fabricmc.fabric.api.event.client.input.MouseScrollEvent;
+import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 
 @Mixin(InputUtil.class)
 public class InputUtilMixin {

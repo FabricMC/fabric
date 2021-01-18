@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client.event.input;
+package net.fabricmc.fabric.api.event.client.input;
 
-import net.minecraft.client.util.InputUtil.Key;
+import net.fabricmc.fabric.api.client.input.v1.FabricMouse;
 
-public abstract class GenericKeyEvent {
-	public abstract int getCode();
-	public abstract int getScancode();
-	public abstract int getMods();
-	public abstract boolean isPressed();
-	public abstract Key getKey();
+public class MouseScrollEvent extends GenericMouseEvent {
+	public MouseScrollEvent(double scrollX, double scrollY) {
+		super(FabricMouse.getX(), FabricMouse.getY(), 0.0, 0.0, FabricMouse.getPressedButtons(), FabricMouse.getMods(), scrollX, scrollY);
+	}
 }

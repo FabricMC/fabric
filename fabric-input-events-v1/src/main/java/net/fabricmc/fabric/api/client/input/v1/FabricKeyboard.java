@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.client;
+package net.fabricmc.fabric.api.client.input.v1;
 
-import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
+import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 
-public class FabricKeyboardImpl {
-	public static FabricKeyboardImpl INSTANCE = new FabricKeyboardImpl();
-
-	private int mods = 0;
-
-	private FabricKeyboardImpl() {
+public final class FabricKeyboard {
+	private FabricKeyboard() {
 	}
 
-	public boolean isKeyPressed(int keycode, int scancode) {
-		return InputUtil.isKeyPressed(keycode, scancode);
+	public static boolean isKeyPressed(int keycode, int scancode) {
+		return FabricKeyboardImpl.INSTANCE.isKeyPressed(keycode, scancode);
 	}
 
-	public boolean isKeyPressed(Key key) {
-		return InputUtil.isKeyPressed(key.getCode(), -1);
+	public static boolean isKeyPressed(Key key) {
+		return FabricKeyboardImpl.INSTANCE.isKeyPressed(key);
 	}
 
-	public int getMods() {
-		return this.mods;
-	}
-
-	public void updateMods(int mods) {
-		this.mods = mods;
+	public static int getMods() {
+		return FabricKeyboardImpl.INSTANCE.getMods();
 	}
 }

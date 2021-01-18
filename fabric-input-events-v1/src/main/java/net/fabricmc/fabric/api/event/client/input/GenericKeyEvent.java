@@ -14,31 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.client;
+package net.fabricmc.fabric.api.event.client.input;
 
-import net.fabricmc.fabric.impl.client.FabricMouseImpl;
+import net.minecraft.client.util.InputUtil.Key;
 
-public final class FabricMouse {
-	private FabricMouse() {
-	}
-
-	public static double getX() {
-		return FabricMouseImpl.INSTANCE.getX();
-	}
-
-	public static double getY() {
-		return FabricMouseImpl.INSTANCE.getY();
-	}
-
-	public static int getPressedButtons() {
-		return FabricMouseImpl.INSTANCE.getPressedButtons();
-	}
-
-	public static boolean isButtonPressed(int button) {
-		return FabricMouseImpl.INSTANCE.isButtonPressed(button);
-	}
-
-	public static int getMods() {
-		return FabricMouseImpl.INSTANCE.getMods();
-	}
+public abstract class GenericKeyEvent {
+	public abstract int getCode();
+	public abstract int getScancode();
+	public abstract int getMods();
+	public abstract boolean isPressed();
+	public abstract Key getKey();
 }
