@@ -45,7 +45,7 @@ import net.minecraft.client.util.InputUtil;
 public class InputUtilMixin {
 	@ModifyVariable(method="setKeyboardCallbacks(JLorg/lwjgl/glfw/GLFWKeyCallbackI;Lorg/lwjgl/glfw/GLFWCharModsCallbackI;)V", at=@At("HEAD"), index=2)
 	private static GLFWKeyCallbackI fabric_changeKeyCb(GLFWKeyCallbackI keyCb) {
-		return (long window, int code, int scancode, int action, int mods) -> {
+		return (window, code, scancode, action, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
 			KeyEvent key = new KeyEvent(code, scancode, action, mods);
 			switch (action) {
@@ -80,7 +80,7 @@ public class InputUtilMixin {
 	}
 	@ModifyVariable(method="setKeyboardCallbacks(JLorg/lwjgl/glfw/GLFWKeyCallbackI;Lorg/lwjgl/glfw/GLFWCharModsCallbackI;)V", at=@At("HEAD"), index=3)
 	private static GLFWCharModsCallbackI fabric_changeCharModsCb(GLFWCharModsCallbackI charModsCb) {
-		return (long window, int codepoint, int mods) -> {
+		return (window, codepoint, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
 			ClientInputEvents.CHAR_TYPED.invoker().onChar(new CharEvent(codepoint, mods));
 			charModsCb.invoke(window, codepoint, mods);
@@ -93,7 +93,7 @@ public class InputUtilMixin {
 
 	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=2)
 	private static GLFWCursorPosCallbackI fabric_changeCursorPosCb(GLFWCursorPosCallbackI cursorPosCb) {
-		return (long window, double x, double y) -> {
+		return (window, x, y) -> {
 			double dx = fabric_hasMoved ? x - fabric_lastX : 0.0;
 			double dy = fabric_hasMoved ? y - fabric_lastY : 0.0;
 			ClientInputEvents.MOUSE_MOVED.invoker().onMouseMoved(new MouseMoveEvent(x, y, dx, dy));
@@ -105,7 +105,7 @@ public class InputUtilMixin {
 	}
 	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=3)
 	private static GLFWMouseButtonCallbackI fabric_changeMouseButtonCb(GLFWMouseButtonCallbackI mouseButtonCb) {
-		return (long window, int button, int action, int mods) -> {
+		return (window, button, action, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
 			MouseButtonEvent mouse = new MouseButtonEvent(button, action, mods);
 			switch (action) {
@@ -134,7 +134,7 @@ public class InputUtilMixin {
 	}
 	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=4)
 	private static GLFWScrollCallbackI fabric_changeScrollCb(GLFWScrollCallbackI scrollCb) {
-		return (long window, double dx, double dy) -> {
+		return (window, dx, dy) -> {
 			MouseScrollEvent mouse = new MouseScrollEvent(dx, dy);
 			ClientInputEvents.MOUSE_WHEEL_SCROLLED.invoker().onMouseScrolled(mouse);
 			scrollCb.invoke(window, dx, dy);
@@ -142,7 +142,7 @@ public class InputUtilMixin {
 	}
 	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=5)
 	private static GLFWDropCallbackI fabric_changeDropCb(GLFWDropCallbackI dropCb) {
-		return (long window, int count, long names) -> {
+		return (window, count, names) -> {
 			String[] paths = new String[count];
             for (int i = 0; i < count; ++i) {
                 paths[i] = GLFWDropCallback.getName(names, i);
