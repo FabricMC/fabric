@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.api.client.input.v1;
 
 import net.minecraft.client.util.InputUtil.Key;
+
 import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 
 public final class FabricKeyboard {
