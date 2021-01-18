@@ -36,6 +36,7 @@ public abstract class GenericMouseEvent {
 		this.scrollX = scrollX;
 		this.scrollY = scrollY;
 	}
+
 	public GenericMouseEvent(double x, double y, double dx, double dy, int buttons, int mods) {
 		this(x, y, dx, dy, buttons, mods, 0.0, 0.0);
 	}
