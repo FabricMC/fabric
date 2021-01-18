@@ -18,9 +18,10 @@ package net.fabricmc.fabric.api.event.client.input;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil.Key;
+
+import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
 
 public final class KeybindEvent extends GenericKeyEvent {
 	public final int code;
@@ -59,7 +60,7 @@ public final class KeybindEvent extends GenericKeyEvent {
 
 	@Override
 	public Key getKey() {
-		return ((KeyBindingMixin)this.keybind).getBoundKey();
+		return ((KeyBindingMixin) this.keybind).getBoundKey();
 	}
 
 	public KeyBinding getKeybind() {
