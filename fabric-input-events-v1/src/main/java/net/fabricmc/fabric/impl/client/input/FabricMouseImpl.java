@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.input;
 
-import java.nio.DoubleBuffer;
-
 import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.MinecraftClient;
