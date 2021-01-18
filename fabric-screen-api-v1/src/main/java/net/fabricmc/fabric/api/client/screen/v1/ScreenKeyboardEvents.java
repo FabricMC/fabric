@@ -28,6 +28,14 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /**
  * Events related to use of the keyboard in a {@link Screen}.
  *
+ * <p>These events are registered to the screen instance.
+ * When a screen is {@link ScreenEvents#BEFORE_INIT (re)initialized} all event subscriptions will disappear.
+ * Therefore when using these events you should remember to register any events you wish to listen to when the screen is initialized.
+ *
+ * <p>Events are fired in the following order:
+ * <pre>{@code AllowX -> BeforeX -> AfterX}</pre>
+ * If the result of the Allow event is false, then Before and After are not called.
+ *
  * @see ScreenEvents
  */
 @Environment(EnvType.CLIENT)
@@ -37,7 +45,7 @@ public final class ScreenKeyboardEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AllowKeyPress> getAllowKeyPressEvent(Screen screen) {
+	public static Event<AllowKeyPress> allowKeyPress(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowKeyPressEvent();
@@ -48,7 +56,7 @@ public final class ScreenKeyboardEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeKeyPress> getBeforeKeyPressEvent(Screen screen) {
+	public static Event<BeforeKeyPress> beforeKeyPress(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeKeyPressEvent();
@@ -59,7 +67,7 @@ public final class ScreenKeyboardEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterKeyPress> getAfterKeyPressEvent(Screen screen) {
+	public static Event<AfterKeyPress> afterKeyPress(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterKeyPressEvent();
@@ -70,7 +78,7 @@ public final class ScreenKeyboardEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AllowKeyRelease> getAllowKeyReleaseEvent(Screen screen) {
+	public static Event<AllowKeyRelease> allowKeyRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowKeyReleaseEvent();
@@ -81,7 +89,7 @@ public final class ScreenKeyboardEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeKeyRelease> getBeforeKeyReleaseEvent(Screen screen) {
+	public static Event<BeforeKeyRelease> beforeKeyRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeKeyReleaseEvent();
@@ -92,7 +100,7 @@ public final class ScreenKeyboardEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterKeyRelease> getAfterKeyReleaseEvent(Screen screen) {
+	public static Event<AfterKeyRelease> afterKeyRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterKeyReleaseEvent();

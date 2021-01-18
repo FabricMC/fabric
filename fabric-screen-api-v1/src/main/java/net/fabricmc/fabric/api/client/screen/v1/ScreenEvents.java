@@ -32,7 +32,9 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /**
  * Holds events related to {@link Screen}s.
  *
- * <p>The events that are obtained by use of methods and all events in {@link ScreenKeyboardEvents} and {@link ScreenMouseEvents} are registered to their corresponding screen instances.
+ * <p>Some events require a screen instance in order to obtain an event instance.
+ * The events that require a screen instance can be identified by the use of a method passing a screen instance.
+ * All events in {@link ScreenKeyboardEvents} and {@link ScreenMouseEvents} require a screen instance.
  * This registration model is used since a screen being (re)initialized will reset the screen to it's default state, therefore reverting all changes a mod developer may have applied to a screen.
  * Furthermore this design was chosen to reduce the amount of wasted iterations of events as a mod developer would only need to register screen events for rendering, ticking, keyboards and mice if needed on a per instance basis.
  *
@@ -110,7 +112,7 @@ public final class ScreenEvents {
 	 * <p>This event is typically used to undo any screen specific state changes such as setting the keyboard to receive {@link net.minecraft.client.Keyboard#setRepeatEvents(boolean) repeat events} or terminate threads spawned by a screen.
 	 * This event may precede initialization events {@link ScreenEvents#BEFORE_INIT} but there is no guarantee that event will be called immediately afterwards.
 	 */
-	public static Event<Remove> getRemoveEvent(Screen screen) {
+	public static Event<Remove> remove(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getRemoveEvent();
@@ -121,7 +123,7 @@ public final class ScreenEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeRender> getBeforeRenderEvent(Screen screen) {
+	public static Event<BeforeRender> beforeRender(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeRenderEvent();
@@ -132,7 +134,7 @@ public final class ScreenEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterRender> getAfterRenderEvent(Screen screen) {
+	public static Event<AfterRender> afterRender(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterRenderEvent();
@@ -143,7 +145,7 @@ public final class ScreenEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeTick> getBeforeTickEvent(Screen screen) {
+	public static Event<BeforeTick> beforeTick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeTickEvent();
@@ -154,7 +156,7 @@ public final class ScreenEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterTick> getAfterTickEvent(Screen screen) {
+	public static Event<AfterTick> afterTick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterTickEvent();

@@ -28,6 +28,14 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /**
  * Events related to use of the mouse in a {@link Screen}.
  *
+ * <p>These events are registered to the screen instance.
+ * When a screen is {@link ScreenEvents#BEFORE_INIT (re)initialized} all event subscriptions will disappear.
+ * Therefore when using these events you should remember to register any events you wish to listen to when the screen is initialized.
+ *
+ * <p>Events are fired in the following order:
+ * <pre>{@code AllowX -> BeforeX -> AfterX}</pre>
+ * If the result of the Allow event is false, then Before and After are not called.
+ *
  * @see ScreenEvents
  */
 @Environment(EnvType.CLIENT)
@@ -37,7 +45,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AllowMouseClick> getAllowMouseClickEvent(Screen screen) {
+	public static Event<AllowMouseClick> allowMouseClick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseClickEvent();
@@ -48,7 +56,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeMouseClick> getBeforeMouseClickEvent(Screen screen) {
+	public static Event<BeforeMouseClick> beforeMouseClick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseClickEvent();
@@ -59,7 +67,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterMouseClick> getAfterMouseClickEvent(Screen screen) {
+	public static Event<AfterMouseClick> afterMouseClick(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterMouseClickEvent();
@@ -70,7 +78,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AllowMouseRelease> getAllowMouseReleaseEvent(Screen screen) {
+	public static Event<AllowMouseRelease> allowMouseRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseReleaseEvent();
@@ -81,7 +89,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeMouseRelease> getBeforeMouseReleaseEvent(Screen screen) {
+	public static Event<BeforeMouseRelease> beforeMouseRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseReleaseEvent();
@@ -92,7 +100,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterMouseRelease> getAfterMouseReleaseEvent(Screen screen) {
+	public static Event<AfterMouseRelease> afterMouseRelease(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterMouseReleaseEvent();
@@ -105,7 +113,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AllowMouseScroll> getAllowMouseScrollEvent(Screen screen) {
+	public static Event<AllowMouseScroll> allowMouseScroll(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAllowMouseScrollEvent();
@@ -118,7 +126,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<BeforeMouseScroll> getBeforeMouseScrollEvent(Screen screen) {
+	public static Event<BeforeMouseScroll> beforeMouseScroll(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getBeforeMouseScrollEvent();
@@ -131,7 +139,7 @@ public final class ScreenMouseEvents {
 	 *
 	 * @return the event
 	 */
-	public static Event<AfterMouseScroll> getAfterMouseScrollEvent(Screen screen) {
+	public static Event<AfterMouseScroll> afterMouseScroll(Screen screen) {
 		Objects.requireNonNull(screen, "Screen cannot be null");
 
 		return ScreenExtensions.getExtensions(screen).fabric_getAfterMouseScrollEvent();
