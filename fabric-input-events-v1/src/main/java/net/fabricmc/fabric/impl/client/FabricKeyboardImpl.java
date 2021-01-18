@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.impl.client;
 
-import net.fabricmc.fabric.api.client.FabricKeyboard;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
@@ -43,5 +42,4 @@ public class FabricKeyboardImpl {
 	public void updateMods(int mods) {
 		this.mods = mods;
 	}
-
 }
