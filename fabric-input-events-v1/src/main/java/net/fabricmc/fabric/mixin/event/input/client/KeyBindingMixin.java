@@ -28,10 +28,10 @@ import net.minecraft.client.util.InputUtil.Key;
 @Mixin(KeyBinding.class)
 public interface KeyBindingMixin {
 	@Accessor("keyToBindings")
-	public static Map<InputUtil.Key, KeyBinding> getKeyToBindings() {
+	static Map<InputUtil.Key, KeyBinding> getKeyToBindings() {
 		throw new AssertionError("Untransformed accessor!");
 	}
 
 	@Accessor("boundKey")
-	public Key getBoundKey();
+	Key getBoundKey();
 }
