@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.event;
 
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
