@@ -28,6 +28,7 @@ public class CharEvent {
 	public int getCodepoint() {
 		return this.codepoint;
 	}
+
 	public int getMods() {
 		return this.mods;
 	}
