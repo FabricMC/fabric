@@ -48,23 +48,24 @@ public class FabricMouseImpl implements FabricMouse {
 		if (client == null)
 			return;
 		Window window = client.getWindow();
-		GLFW.glfwGetCursorPos(window.getHandle(), fabric_x, fabric_y);
+		long handle = window.getHandle();
+		GLFW.glfwGetCursorPos(handle, fabric_x, fabric_y);
 		this.buttons = 0;
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_1) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_1);
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_2) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_2) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_2);
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_3) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_3) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_3);
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_4) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_4) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_4);
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_5) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_5) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_5);
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_6) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_6) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_6);
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_7) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_7) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_7);
-		if (GLFW.glfwGetMouseButton(window.getHandle(), GLFW.GLFW_MOUSE_BUTTON_8) == GLFW.GLFW_PRESS)
+		if (GLFW.glfwGetMouseButton(handle, GLFW.GLFW_MOUSE_BUTTON_8) == GLFW.GLFW_PRESS)
 			this.buttons |= (1 << GLFW.GLFW_MOUSE_BUTTON_8);
 		this.mods = FabricKeyboard.getMods();
 	}
