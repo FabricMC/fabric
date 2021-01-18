@@ -43,7 +43,7 @@ import net.minecraft.client.util.InputUtil;
 
 @Mixin(InputUtil.class)
 public class InputUtilMixin {
-	@ModifyVariable(method="setKeyboardCallbacks(JLorg/lwjgl/glfw/GLFWKeyCallbackI;Lorg/lwjgl/glfw/GLFWCharModsCallbackI;)V", at=@At("HEAD"), index=2)
+	@ModifyVariable(method = "setKeyboardCallbacks(JLorg/lwjgl/glfw/GLFWKeyCallbackI;Lorg/lwjgl/glfw/GLFWCharModsCallbackI;)V", at = @At("HEAD"), index = 2)
 	private static GLFWKeyCallbackI changeKeyCb(GLFWKeyCallbackI keyCb) {
 		return (window, code, scancode, action, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
@@ -78,7 +78,7 @@ public class InputUtilMixin {
 			keyCb.invoke(window, code, scancode, action, mods);
 		};
 	}
-	@ModifyVariable(method="setKeyboardCallbacks(JLorg/lwjgl/glfw/GLFWKeyCallbackI;Lorg/lwjgl/glfw/GLFWCharModsCallbackI;)V", at=@At("HEAD"), index=3)
+	@ModifyVariable(method = "setKeyboardCallbacks(JLorg/lwjgl/glfw/GLFWKeyCallbackI;Lorg/lwjgl/glfw/GLFWCharModsCallbackI;)V", at = @At("HEAD"), index = 3)
 	private static GLFWCharModsCallbackI changeCharModsCb(GLFWCharModsCallbackI charModsCb) {
 		return (window, codepoint, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
@@ -91,7 +91,7 @@ public class InputUtilMixin {
 	private static double lastX = 0.0;
 	private static double lastY = 0.0;
 
-	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=2)
+	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 2)
 	private static GLFWCursorPosCallbackI changeCursorPosCb(GLFWCursorPosCallbackI cursorPosCb) {
 		return (window, x, y) -> {
 			double dx = hasMoved ? x - lastX : 0.0;
@@ -103,7 +103,7 @@ public class InputUtilMixin {
 			hasMoved = true;
 		};
 	}
-	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=3)
+	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 3)
 	private static GLFWMouseButtonCallbackI changeMouseButtonCb(GLFWMouseButtonCallbackI mouseButtonCb) {
 		return (window, button, action, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
@@ -132,7 +132,7 @@ public class InputUtilMixin {
 			mouseButtonCb.invoke(window, button, action, mods);
 		};
 	}
-	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=4)
+	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 4)
 	private static GLFWScrollCallbackI changeScrollCb(GLFWScrollCallbackI scrollCb) {
 		return (window, dx, dy) -> {
 			MouseScrollEvent mouse = new MouseScrollEvent(dx, dy);
@@ -140,7 +140,7 @@ public class InputUtilMixin {
 			scrollCb.invoke(window, dx, dy);
 		};
 	}
-	@ModifyVariable(method="setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at=@At("HEAD"), index=5)
+	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 5)
 	private static GLFWDropCallbackI changeDropCb(GLFWDropCallbackI dropCb) {
 		return (window, count, names) -> {
 			String[] paths = new String[count];
