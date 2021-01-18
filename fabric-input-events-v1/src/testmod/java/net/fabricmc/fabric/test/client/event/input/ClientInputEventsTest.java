@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.client.FabricMouse;
 import net.fabricmc.fabric.api.client.event.input.ClientInputEvents;
 
 public class ClientInputEventsTest implements ModInitializer {
