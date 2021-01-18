@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-input-events-v0-testmod",
+  "name": "Fabric Input Events (v0) Test Mod",
+  "version": "0.1.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-input-events-v0": "*"
+  },
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.test.client.event.input.ClientInputEventsTest"
+    ]
+  }
+}

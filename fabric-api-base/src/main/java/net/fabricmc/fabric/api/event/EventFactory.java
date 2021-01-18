@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.event;
 
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import net.fabricmc.fabric.impl.base.event.EventFactoryImpl;
@@ -73,6 +75,52 @@ public final class EventFactory {
 	// TODO: Deprecate this once we have working codegen
 	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
 		return EventFactoryImpl.createArrayBacked(type, emptyInvoker, invokerFactory);
+	}
+
+	/**
+	 * Create a simple "array-backed" Event instance.
+	 *
+	 * @param eventT         The event class type.
+	 * @param listenerT      The listener class type.
+	 * @param make           Factory function for turning consuemrs into listeners
+	 * @param execute        Function for executing listeners
+	 * @param <T>            The event type.
+	 * @param <F>            The listener type.
+	 * @return The Event instance.
+	 */
+	public static <T, F> Event<F>
+	createSimpleArrayBacked(Class<T> eventT, Class<F> listenerT, Function<Consumer<T>, F> make, Function<F, Consumer<T>> execute) {
+		return EventFactoryImpl.createArrayBacked(listenerT, callbacks -> {
+			return make.apply(event -> {
+				for (F callback : callbacks) {
+					execute.apply(callback).accept(event);
+				}
+			});
+		});
+	}
+
+	/**
+	 * Create a simple "array-backed" Event instance.
+	 *
+	 * @param eventA         The first event class type.
+	 * @param eventB         The second event class type.
+	 * @param listenerT      The listener class type.
+	 * @param make           Factory function for turning consuemrs into listeners
+	 * @param execute        Function for executing listeners
+	 * @param <A>            The first event type.
+	 * @param <B>            The second event type.
+	 * @param <F>            The listener type.
+	 * @return The Event instance.
+	 */
+	public static <A, B, F> Event<F>
+	createSimpleArrayBacked(Class<A> eventA, Class<B> eventB, Class<F> listenerT, Function<BiConsumer<A, B>, F> make, Function<F, Function<A, Consumer<B>>> execute) {
+		return EventFactoryImpl.createArrayBacked(listenerT, callbacks -> {
+			return make.apply((a, b) -> {
+				for (F callback : callbacks) {
+					execute.apply(callback).apply(a).accept(b);
+				}
+			});
+		});
 	}
 
 	/**

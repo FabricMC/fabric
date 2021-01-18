@@ -1,0 +1,6 @@
+archivesBaseName = "fabric-input-events-v0"
+version = getSubprojectVersion(project, "0.1.0")
+
+moduleDependencies(project, [
+		'fabric-api-base'
+])
