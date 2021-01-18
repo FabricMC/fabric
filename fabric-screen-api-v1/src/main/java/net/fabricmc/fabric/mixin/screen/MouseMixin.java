@@ -52,14 +52,14 @@ abstract class MouseMixin {
 			return;
 		}
 
-		if (!ScreenMouseEvents.allowMouseClick(this.currentScreen).invoker().allowMouseClick(mouseX, mouseY, button)) {
+		if (!ScreenMouseEvents.allowMouseClick(this.currentScreen).invoker().allowMouseClick(this.currentScreen, mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
 			return;
 		}
 
-		ScreenMouseEvents.beforeMouseClick(this.currentScreen).invoker().beforeMouseClick(mouseX, mouseY, button);
+		ScreenMouseEvents.beforeMouseClick(this.currentScreen).invoker().beforeMouseClick(this.currentScreen, mouseX, mouseY, button);
 	}
 
 	// private synthetic method_1611([ZDDI)V
@@ -69,7 +69,7 @@ abstract class MouseMixin {
 			return;
 		}
 
-		ScreenMouseEvents.afterMouseClick(this.currentScreen).invoker().afterMouseClick(mouseX, mouseY, button);
+		ScreenMouseEvents.afterMouseClick(this.currentScreen).invoker().afterMouseClick(this.currentScreen, mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
@@ -84,14 +84,14 @@ abstract class MouseMixin {
 			return;
 		}
 
-		if (!ScreenMouseEvents.allowMouseRelease(this.currentScreen).invoker().allowMouseRelease(mouseX, mouseY, button)) {
+		if (!ScreenMouseEvents.allowMouseRelease(this.currentScreen).invoker().allowMouseRelease(this.currentScreen, mouseX, mouseY, button)) {
 			resultHack[0] = true; // Set this press action as handled.
 			this.currentScreen = null;
 			ci.cancel(); // Exit the lambda
 			return;
 		}
 
-		ScreenMouseEvents.beforeMouseRelease(this.currentScreen).invoker().beforeMouseRelease(mouseX, mouseY, button);
+		ScreenMouseEvents.beforeMouseRelease(this.currentScreen).invoker().beforeMouseRelease(this.currentScreen, mouseX, mouseY, button);
 	}
 
 	// private synthetic method_1605([ZDDI)V
@@ -101,7 +101,7 @@ abstract class MouseMixin {
 			return;
 		}
 
-		ScreenMouseEvents.afterMouseRelease(this.currentScreen).invoker().afterMouseRelease(mouseX, mouseY, button);
+		ScreenMouseEvents.afterMouseRelease(this.currentScreen).invoker().afterMouseRelease(this.currentScreen, mouseX, mouseY, button);
 		this.currentScreen = null;
 	}
 
@@ -118,14 +118,14 @@ abstract class MouseMixin {
 		// Apply same calculations to horizontal scroll as vertical scroll amount has
 		this.horizontalScrollAmount = this.client.options.discreteMouseScroll ? Math.signum(horizontal) : horizontal * this.client.options.mouseWheelSensitivity;
 
-		if (!ScreenMouseEvents.allowMouseScroll(this.currentScreen).invoker().allowMouseScroll(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount)) {
+		if (!ScreenMouseEvents.allowMouseScroll(this.currentScreen).invoker().allowMouseScroll(this.currentScreen, mouseX, mouseY, this.horizontalScrollAmount, verticalAmount)) {
 			this.currentScreen = null;
 			this.horizontalScrollAmount = null;
 			ci.cancel();
 			return;
 		}
 
-		ScreenMouseEvents.beforeMouseScroll(this.currentScreen).invoker().beforeMouseScroll(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
+		ScreenMouseEvents.beforeMouseScroll(this.currentScreen).invoker().beforeMouseScroll(this.currentScreen, mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
 	}
 
 	@Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/Screen;mouseScrolled(DDD)Z", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
@@ -134,7 +134,7 @@ abstract class MouseMixin {
 			return;
 		}
 
-		ScreenMouseEvents.afterMouseScroll(this.currentScreen).invoker().afterMouseScroll(mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
+		ScreenMouseEvents.afterMouseScroll(this.currentScreen).invoker().afterMouseScroll(this.currentScreen, mouseX, mouseY, this.horizontalScrollAmount, verticalAmount);
 		this.currentScreen = null;
 		this.horizontalScrollAmount = null;
 	}

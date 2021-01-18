@@ -28,9 +28,9 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /**
  * Events related to use of the keyboard in a {@link Screen}.
  *
- * <p>These events are registered to the screen instance.
- * When a screen is {@link ScreenEvents#BEFORE_INIT (re)initialized} all event subscriptions will disappear.
- * Therefore when using these events you should remember to register any events you wish to listen to when the screen is initialized.
+ * <p>All of these events work on top of a specific screen instance.
+ * Subscriptions will only last as long as the screen itself, they'll disappear once the screen gets refreshed, closed or replaced.
+ * Use {@link ScreenEvents#BEFORE_INIT} to register the desired events every time it is necessary.
  *
  * <p>Events are fired in the following order:
  * <pre>{@code AllowX -> BeforeX -> AfterX}</pre>
@@ -122,7 +122,7 @@ public final class ScreenKeyboardEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		boolean allowKeyPress(int key, int scancode, int modifiers);
+		boolean allowKeyPress(Screen screen, int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -137,7 +137,7 @@ public final class ScreenKeyboardEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void beforeKeyPress(int key, int scancode, int modifiers);
+		void beforeKeyPress(Screen screen, int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -152,7 +152,7 @@ public final class ScreenKeyboardEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void afterKeyPress(int key, int scancode, int modifiers);
+		void afterKeyPress(Screen screen, int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -168,7 +168,7 @@ public final class ScreenKeyboardEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		boolean allowKeyRelease(int key, int scancode, int modifiers);
+		boolean allowKeyRelease(Screen screen, int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -183,7 +183,7 @@ public final class ScreenKeyboardEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void beforeKeyRelease(int key, int scancode, int modifiers);
+		void beforeKeyRelease(Screen screen, int key, int scancode, int modifiers);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -198,6 +198,6 @@ public final class ScreenKeyboardEvents {
 		 * @see org.lwjgl.glfw.GLFW#GLFW_KEY_Q
 		 * @see <a href="https://www.glfw.org/docs/3.3/group__mods.html">Modifier key flags</a>
 		 */
-		void afterKeyRelease(int key, int scancode, int modifiers);
+		void afterKeyRelease(Screen screen, int key, int scancode, int modifiers);
 	}
 }

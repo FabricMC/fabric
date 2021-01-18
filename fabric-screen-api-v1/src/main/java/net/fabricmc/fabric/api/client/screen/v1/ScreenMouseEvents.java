@@ -28,9 +28,9 @@ import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
 /**
  * Events related to use of the mouse in a {@link Screen}.
  *
- * <p>These events are registered to the screen instance.
- * When a screen is {@link ScreenEvents#BEFORE_INIT (re)initialized} all event subscriptions will disappear.
- * Therefore when using these events you should remember to register any events you wish to listen to when the screen is initialized.
+ * <p>All of these events work on top of a specific screen instance.
+ * Subscriptions will only last as long as the screen itself, they'll disappear once the screen gets refreshed, closed or replaced.
+ * Use {@link ScreenEvents#BEFORE_INIT} to register the desired events every time it is necessary.
  *
  * <p>Events are fired in the following order:
  * <pre>{@code AllowX -> BeforeX -> AfterX}</pre>
@@ -157,7 +157,7 @@ public final class ScreenMouseEvents {
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseClick(double mouseX, double mouseY, int button);
+		boolean allowMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -169,7 +169,7 @@ public final class ScreenMouseEvents {
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseClick(double mouseX, double mouseY, int button);
+		void beforeMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -181,7 +181,7 @@ public final class ScreenMouseEvents {
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseClick(double mouseX, double mouseY, int button);
+		void afterMouseClick(Screen screen, double mouseX, double mouseY, int button);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -195,7 +195,7 @@ public final class ScreenMouseEvents {
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		boolean allowMouseRelease(double mouseX, double mouseY, int button);
+		boolean allowMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -209,7 +209,7 @@ public final class ScreenMouseEvents {
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void beforeMouseRelease(double mouseX, double mouseY, int button);
+		void beforeMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -223,7 +223,7 @@ public final class ScreenMouseEvents {
 		 * @param button the button number, which can be identified by the constants in {@link org.lwjgl.glfw.GLFW GLFW}.
 		 * @see org.lwjgl.glfw.GLFW#GLFW_MOUSE_BUTTON_1
 		 */
-		void afterMouseRelease(double mouseX, double mouseY, int button);
+		void afterMouseRelease(Screen screen, double mouseX, double mouseY, int button);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -238,7 +238,7 @@ public final class ScreenMouseEvents {
 		 * @param verticalAmount the vertical scroll amount
 		 * @return whether the mouse should be allowed to scroll
 		 */
-		boolean allowMouseScroll(double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+		boolean allowMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -252,7 +252,7 @@ public final class ScreenMouseEvents {
 		 * @param horizontalAmount the horizontal scroll amount
 		 * @param verticalAmount the vertical scroll amount
 		 */
-		void beforeMouseScroll(double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+		void beforeMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -266,6 +266,6 @@ public final class ScreenMouseEvents {
 		 * @param horizontalAmount the horizontal scroll amount
 		 * @param verticalAmount the vertical scroll amount
 		 */
-		void afterMouseScroll(double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
+		void afterMouseScroll(Screen screen, double mouseX, double mouseY, double horizontalAmount, double verticalAmount);
 	}
 }

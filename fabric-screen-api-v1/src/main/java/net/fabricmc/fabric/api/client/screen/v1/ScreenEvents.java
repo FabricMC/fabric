@@ -177,31 +177,31 @@ public final class ScreenEvents {
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface Remove {
-		void onRemove();
+		void onRemove(Screen screen);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeRender {
-		void beforeRender(MatrixStack matrices, int mouseX, int mouseY, float tickDelta);
+		void beforeRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterRender {
-		void afterRender(MatrixStack matrices, int mouseX, int mouseY, float tickDelta);
+		void afterRender(Screen screen, MatrixStack matrices, int mouseX, int mouseY, float tickDelta);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface BeforeTick {
-		void beforeTick();
+		void beforeTick(Screen screen);
 	}
 
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
 	public interface AfterTick {
-		void afterTick();
+		void afterTick(Screen screen);
 	}
 
 	private ScreenEvents() {
