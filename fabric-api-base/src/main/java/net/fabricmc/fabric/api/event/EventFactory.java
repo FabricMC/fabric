@@ -88,8 +88,8 @@ public final class EventFactory {
 	 * @param <F>            The listener type.
 	 * @return The Event instance.
 	 */
-	public static <T, F> Event<F>
-	createSimpleArrayBacked(Class<T> eventT, Class<F> listenerT, Function<Consumer<T>, F> make, Function<F, Consumer<T>> execute) {
+	public static <T, F> Event<F> createSimpleArrayBacked(Class<T> eventT, Class<F> listenerT,
+			Function<Consumer<T>, F> make, Function<F, Consumer<T>> execute) {
 		return EventFactoryImpl.createArrayBacked(listenerT, callbacks -> {
 			return make.apply(event -> {
 				for (F callback : callbacks) {
@@ -112,8 +112,8 @@ public final class EventFactory {
 	 * @param <F>            The listener type.
 	 * @return The Event instance.
 	 */
-	public static <A, B, F> Event<F>
-	createSimpleArrayBacked(Class<A> eventA, Class<B> eventB, Class<F> listenerT, Function<BiConsumer<A, B>, F> make, Function<F, Function<A, Consumer<B>>> execute) {
+	public static <A, B, F> Event<F> createSimpleArrayBacked(Class<A> eventA, Class<B> eventB, Class<F> listenerT,
+			Function<BiConsumer<A, B>, F> make, Function<F, Function<A, Consumer<B>>> execute) {
 		return EventFactoryImpl.createArrayBacked(listenerT, callbacks -> {
 			return make.apply((a, b) -> {
 				for (F callback : callbacks) {
