@@ -31,7 +31,7 @@ public class FabricMouseImpl {
 	private double x = 0.0;
 	private double y = 0.0;
 	private int buttons = 0;
-	private int mods = 0;
+	private int modKeys = 0;
 	private final double[] current_x = new double[1];
 	private final double[] current_y = new double[1];
 
@@ -54,8 +54,8 @@ public class FabricMouseImpl {
 		return (this.buttons & (1 << button)) != 0;
 	}
 
-	public int getMods() {
-		return this.mods;
+	public int getModKeys() {
+		return this.modKeys;
 	}
 
 	public void update() {
@@ -79,7 +79,7 @@ public class FabricMouseImpl {
 		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_6);
 		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_7);
 		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_8);
-		this.mods = FabricKeyboard.getMods();
+		this.modKeys = FabricKeyboard.getModKeys();
 	}
 
 	private int checkAndAddButton(long handle, int buttons, int button) {

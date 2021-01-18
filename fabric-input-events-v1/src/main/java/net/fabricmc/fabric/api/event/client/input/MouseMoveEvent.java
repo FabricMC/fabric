@@ -25,7 +25,7 @@ public class MouseMoveEvent extends GenericMouseEvent {
 	public final double dy;
 
 	public MouseMoveEvent(double x, double y, double dx, double dy) {
-		super(x, y, dx, dy, FabricMouse.getPressedButtons(), FabricMouse.getMods());
+		super(x, y, dx, dy, FabricMouse.getPressedButtons(), FabricMouse.getModKeys());
 		this.x = x;
 		this.y = y;
 		this.dx = dx;

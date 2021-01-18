@@ -32,7 +32,7 @@ public final class FabricKeyboard {
 		return FabricKeyboardImpl.INSTANCE.isKeyPressed(key);
 	}
 
-	public static int getMods() {
-		return FabricKeyboardImpl.INSTANCE.getMods();
+	public static int getModKeys() {
+		return FabricKeyboardImpl.INSTANCE.getModKeys();
 	}
 }

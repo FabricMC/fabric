@@ -27,14 +27,14 @@ public final class KeybindEvent extends GenericKeyEvent {
 	public final int code;
 	public final int scancode;
 	public final int action;
-	public final int mods;
+	public final int modKeys;
 	public final KeyBinding keybind;
 
-	public KeybindEvent(int code, int scancode, int action, int mods, KeyBinding keybind) {
+	public KeybindEvent(int code, int scancode, int action, int modKeys, KeyBinding keybind) {
 		this.code = code;
 		this.scancode = scancode;
 		this.action = action;
-		this.mods = mods;
+		this.modKeys = modKeys;
 		this.keybind = keybind;
 	}
 
@@ -49,8 +49,8 @@ public final class KeybindEvent extends GenericKeyEvent {
 	}
 
 	@Override
-	public int getMods() {
-		return this.mods;
+	public int getModKeys() {
+		return this.modKeys;
 	}
 
 	@Override

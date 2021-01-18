@@ -20,6 +20,6 @@ import net.fabricmc.fabric.api.client.input.v1.FabricMouse;
 
 public class MouseScrollEvent extends GenericMouseEvent {
 	public MouseScrollEvent(double scrollX, double scrollY) {
-		super(FabricMouse.getX(), FabricMouse.getY(), 0.0, 0.0, FabricMouse.getPressedButtons(), FabricMouse.getMods(), scrollX, scrollY);
+		super(FabricMouse.getX(), FabricMouse.getY(), 0.0, 0.0, FabricMouse.getPressedButtons(), FabricMouse.getModKeys(), scrollX, scrollY);
 	}
 }

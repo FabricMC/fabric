@@ -18,18 +18,18 @@ package net.fabricmc.fabric.api.event.client.input;
 
 public class CharEvent {
 	public final int codepoint;
-	public final int mods;
+	public final int modKeys;
 
-	public CharEvent(int codepoint, int mods) {
+	public CharEvent(int codepoint, int modKeys) {
 		this.codepoint = codepoint;
-		this.mods = mods;
+		this.modKeys = modKeys;
 	}
 
 	public int getCodepoint() {
 		return this.codepoint;
 	}
 
-	public int getMods() {
-		return this.mods;
+	public int getModKeys() {
+		return this.modKeys;
 	}
 }

@@ -22,7 +22,7 @@ import net.minecraft.client.util.InputUtil.Key;
 public class FabricKeyboardImpl {
 	public static FabricKeyboardImpl INSTANCE = new FabricKeyboardImpl();
 
-	private int mods = 0;
+	private int modKeys = 0;
 
 	private FabricKeyboardImpl() {
 	}
@@ -35,11 +35,11 @@ public class FabricKeyboardImpl {
 		return InputUtil.isKeyPressed(key.getCode(), -1);
 	}
 
-	public int getMods() {
-		return this.mods;
+	public int getModKeys() {
+		return this.modKeys;
 	}
 
-	public void updateMods(int mods) {
-		this.mods = mods;
+	public void updateModKeys(int modKeys) {
+		this.modKeys = modKeys;
 	}
 }

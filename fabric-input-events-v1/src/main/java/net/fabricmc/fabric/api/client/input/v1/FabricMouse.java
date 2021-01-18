@@ -38,7 +38,7 @@ public final class FabricMouse {
 		return FabricMouseImpl.INSTANCE.isButtonPressed(button);
 	}
 
-	public static int getMods() {
-		return FabricMouseImpl.INSTANCE.getMods();
+	public static int getModKeys() {
+		return FabricMouseImpl.INSTANCE.getModKeys();
 	}
 }

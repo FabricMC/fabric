@@ -22,22 +22,22 @@ public abstract class GenericMouseEvent {
 	public final double cursorDeltaX;
 	public final double cursorDeltaY;
 	public final int pressedButtons;
-	public final int pressedMods;
+	public final int pressedModKeys;
 	public final double scrollX;
 	public final double scrollY;
 
-	public GenericMouseEvent(double x, double y, double dx, double dy, int buttons, int mods, double scrollX, double scrollY) {
+	public GenericMouseEvent(double x, double y, double dx, double dy, int buttons, int modKeys, double scrollX, double scrollY) {
 		this.cursorX = x;
 		this.cursorY = y;
 		this.cursorDeltaX = dx;
 		this.cursorDeltaY = dy;
 		this.pressedButtons = buttons;
-		this.pressedMods = mods;
+		this.pressedModKeys = modKeys;
 		this.scrollX = scrollX;
 		this.scrollY = scrollY;
 	}
 
-	public GenericMouseEvent(double x, double y, double dx, double dy, int buttons, int mods) {
-		this(x, y, dx, dy, buttons, mods, 0.0, 0.0);
+	public GenericMouseEvent(double x, double y, double dx, double dy, int buttons, int modKeys) {
+		this(x, y, dx, dy, buttons, modKeys, 0.0, 0.0);
 	}
 }

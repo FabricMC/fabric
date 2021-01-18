@@ -25,14 +25,14 @@ public final class KeyEvent extends GenericKeyEvent {
 	public final int code;
 	public final int scancode;
 	public final int action;
-	public final int mods;
+	public final int modKeys;
 	public final Key key;
 
-	public KeyEvent(int code, int scancode, int action, int mods) {
+	public KeyEvent(int code, int scancode, int action, int modKeys) {
 		this.code = code;
 		this.scancode = scancode;
 		this.action = action;
-		this.mods = mods;
+		this.modKeys = modKeys;
 		this.key = InputUtil.fromKeyCode(code, scancode);
 	}
 
@@ -47,8 +47,8 @@ public final class KeyEvent extends GenericKeyEvent {
 	}
 
 	@Override
-	public int getMods() {
-		return this.mods;
+	public int getModKeys() {
+		return this.modKeys;
 	}
 
 	@Override
