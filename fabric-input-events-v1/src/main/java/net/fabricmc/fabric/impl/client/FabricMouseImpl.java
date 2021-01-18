@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.client.FabricMouse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 
-public class FabricMouseImpl implements FabricMouse {
+public class FabricMouseImpl {
 	public static FabricMouseImpl INSTANCE = new FabricMouseImpl();
 
 	private double x = 0.0;
@@ -38,24 +38,19 @@ public class FabricMouseImpl implements FabricMouse {
 	private FabricMouseImpl() {
 	}
 
-	@Override
-	public double impl_getX() {
+	public double getX() {
 		return this.x;
 	}
-	@Override
-	public double impl_getY() {
+	public double getY() {
 		return this.y;
 	}
-	@Override
-	public int impl_getPressedButtons() {
+	public int getPressedButtons() {
 		return this.buttons;
 	}
-	@Override
-	public boolean impl_isButtonPressed(int button) {
+	public boolean isButtonPressed(int button) {
 		return (this.buttons & (1 << button)) != 0;
 	}
-	@Override
-	public int impl_getMods() {
+	public int getMods() {
 		return this.mods;
 	}
 
