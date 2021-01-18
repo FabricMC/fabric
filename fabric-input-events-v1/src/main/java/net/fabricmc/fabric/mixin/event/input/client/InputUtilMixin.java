@@ -41,6 +41,7 @@ import net.fabricmc.fabric.api.event.client.input.MouseButtonEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseMoveEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseScrollEvent;
 import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
+import net.fabricmc.fabric.impl.client.input.FabricMouseImpl;
 
 @Mixin(InputUtil.class)
 public class InputUtilMixin {
@@ -48,6 +49,7 @@ public class InputUtilMixin {
 	private static GLFWKeyCallbackI changeKeyCb(GLFWKeyCallbackI keyCb) {
 		return (window, code, scancode, action, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
+			FabricMouseImpl.INSTANCE.update();
 			KeyEvent key = new KeyEvent(code, scancode, action, mods);
 			switch (action) {
 			case GLFW.GLFW_PRESS:
@@ -87,6 +89,7 @@ public class InputUtilMixin {
 	private static GLFWCharModsCallbackI changeCharModsCb(GLFWCharModsCallbackI charModsCb) {
 		return (window, codepoint, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
+			FabricMouseImpl.INSTANCE.update();
 			ClientInputEvents.CHAR_TYPED.invoker().onChar(new CharEvent(codepoint, mods));
 			charModsCb.invoke(window, codepoint, mods);
 		};
@@ -99,6 +102,7 @@ public class InputUtilMixin {
 	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 2)
 	private static GLFWCursorPosCallbackI changeCursorPosCb(GLFWCursorPosCallbackI cursorPosCb) {
 		return (window, x, y) -> {
+			FabricMouseImpl.INSTANCE.update();
 			double dx = hasMoved ? x - lastX : 0.0;
 			double dy = hasMoved ? y - lastY : 0.0;
 			ClientInputEvents.MOUSE_MOVED.invoker().onMouseMoved(new MouseMoveEvent(x, y, dx, dy));
@@ -113,6 +117,7 @@ public class InputUtilMixin {
 	private static GLFWMouseButtonCallbackI changeMouseButtonCb(GLFWMouseButtonCallbackI mouseButtonCb) {
 		return (window, button, action, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
+			FabricMouseImpl.INSTANCE.update();
 			MouseButtonEvent mouse = new MouseButtonEvent(button, action, mods);
 
 			switch (action) {
