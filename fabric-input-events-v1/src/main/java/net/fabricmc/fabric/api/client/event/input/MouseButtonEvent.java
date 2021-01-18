@@ -17,13 +17,15 @@
 package net.fabricmc.fabric.api.client.event.input;
 
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.fabric.api.client.FabricMouse;
-import net.fabricmc.fabric.mixin.event.input.client.InputUtilTypeMixin;
+
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
+import net.fabricmc.fabric.api.client.FabricMouse;
+import net.fabricmc.fabric.mixin.event.input.client.InputUtilTypeMixin;
+
 public class MouseButtonEvent extends GenericMouseEvent {
-	private static final Int2ObjectMap<Key> map = ((InputUtilTypeMixin)(Object)InputUtil.Type.MOUSE).getMap();
+	private static final Int2ObjectMap<Key> map = ((InputUtilTypeMixin) (Object) InputUtil.Type.MOUSE).getMap();
 
 	public final int button;
 	public final int action;
