@@ -29,7 +29,7 @@ import net.minecraft.client.util.InputUtil.Key;
 public interface KeyBindingMixin {
 	@Accessor("keyToBindings")
 	public static Map<InputUtil.Key, KeyBinding> fabric_getKeyToBindings() {
-		throw new AssertionError();
+		throw new AssertionError("Untransformed accessor!");
 	}
 
 	@Accessor("boundKey")
