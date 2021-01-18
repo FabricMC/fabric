@@ -30,6 +30,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil;
+
 import net.fabricmc.fabric.api.client.event.input.CharEvent;
 import net.fabricmc.fabric.api.client.event.input.ClientInputEvents;
 import net.fabricmc.fabric.api.client.event.input.KeyEvent;
@@ -38,8 +41,6 @@ import net.fabricmc.fabric.api.client.event.input.MouseButtonEvent;
 import net.fabricmc.fabric.api.client.event.input.MouseMoveEvent;
 import net.fabricmc.fabric.api.client.event.input.MouseScrollEvent;
 import net.fabricmc.fabric.impl.client.FabricKeyboardImpl;
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.util.InputUtil;
 
 @Mixin(InputUtil.class)
 public class InputUtilMixin {
@@ -59,8 +60,10 @@ public class InputUtilMixin {
 				ClientInputEvents.KEY_REPEATED.invoker().onKey(key);
 				break;
 			}
+
 			Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
 			KeyBinding binding = keyToBindings.get(key.getKey());
+
 			if (binding != null) {
 				KeybindEvent keybind = new KeybindEvent(code, scancode, action, mods, binding);
 				switch (action) {
@@ -75,9 +78,11 @@ public class InputUtilMixin {
 					break;
 				}
 			}
+
 			keyCb.invoke(window, code, scancode, action, mods);
 		};
 	}
+
 	@ModifyVariable(method = "setKeyboardCallbacks(JLorg/lwjgl/glfw/GLFWKeyCallbackI;Lorg/lwjgl/glfw/GLFWCharModsCallbackI;)V", at = @At("HEAD"), index = 3)
 	private static GLFWCharModsCallbackI changeCharModsCb(GLFWCharModsCallbackI charModsCb) {
 		return (window, codepoint, mods) -> {
@@ -103,11 +108,13 @@ public class InputUtilMixin {
 			hasMoved = true;
 		};
 	}
+
 	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 3)
 	private static GLFWMouseButtonCallbackI changeMouseButtonCb(GLFWMouseButtonCallbackI mouseButtonCb) {
 		return (window, button, action, mods) -> {
 			FabricKeyboardImpl.INSTANCE.updateMods(mods);
 			MouseButtonEvent mouse = new MouseButtonEvent(button, action, mods);
+
 			switch (action) {
 			case GLFW.GLFW_PRESS:
 				ClientInputEvents.MOUSE_BUTTON_PRESSED.invoker().onMouseButton(mouse);
@@ -116,8 +123,10 @@ public class InputUtilMixin {
 				ClientInputEvents.MOUSE_BUTTON_RELEASED.invoker().onMouseButton(mouse);
 				break;
 			}
+
 			Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
 			KeyBinding binding = keyToBindings.get(mouse.getKey());
+
 			if (binding != null) {
 				KeybindEvent keybind = new KeybindEvent(button, -1, action, mods, binding);
 				switch (action) {
@@ -129,9 +138,11 @@ public class InputUtilMixin {
 					break;
 				}
 			}
+
 			mouseButtonCb.invoke(window, button, action, mods);
 		};
 	}
+
 	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 4)
 	private static GLFWScrollCallbackI changeScrollCb(GLFWScrollCallbackI scrollCb) {
 		return (window, dx, dy) -> {
@@ -140,13 +151,16 @@ public class InputUtilMixin {
 			scrollCb.invoke(window, dx, dy);
 		};
 	}
+
 	@ModifyVariable(method = "setMouseCallbacks(JLorg/lwjgl/glfw/GLFWCursorPosCallbackI;Lorg/lwjgl/glfw/GLFWMouseButtonCallbackI;Lorg/lwjgl/glfw/GLFWScrollCallbackI;Lorg/lwjgl/glfw/GLFWDropCallbackI;)V", at = @At("HEAD"), index = 5)
 	private static GLFWDropCallbackI changeDropCb(GLFWDropCallbackI dropCb) {
 		return (window, count, names) -> {
 			String[] paths = new String[count];
-            for (int i = 0; i < count; ++i) {
-                paths[i] = GLFWDropCallback.getName(names, i);
+
+			for (int i = 0; i < count; ++i) {
+				paths[i] = GLFWDropCallback.getName(names, i);
 			}
+
 			ClientInputEvents.FILE_DROPPED.invoker().onFilesDropped(paths);
 			dropCb.invoke(window, count, names);
 		};
