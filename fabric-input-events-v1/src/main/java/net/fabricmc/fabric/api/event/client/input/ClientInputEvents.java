@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.event.client.input;
 
+import java.util.function.Consumer;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
@@ -23,54 +25,66 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 @Environment(EnvType.CLIENT)
 public final class ClientInputEvents {
-	public static final Event<KeyState> KEY_PRESSED
-			= EventFactory.createSimpleArrayBacked(KeyEvent.class, KeyState.class,
-				listener -> key -> listener.accept(key),
-				listener -> key -> listener.onKey(key));
-	public static final Event<KeyState> KEY_RELEASED
-			= EventFactory.createSimpleArrayBacked(KeyEvent.class, KeyState.class,
-				listener -> key -> listener.accept(key),
-				listener -> key -> listener.onKey(key));
-	public static final Event<KeyState> KEY_REPEATED
-			= EventFactory.createSimpleArrayBacked(KeyEvent.class, KeyState.class,
-				listener -> key -> listener.accept(key),
-				listener -> key -> listener.onKey(key));
-	public static final Event<KeybindState> KEYBIND_PRESSED
-			= EventFactory.createSimpleArrayBacked(KeybindEvent.class, KeybindState.class,
-				listener -> key -> listener.accept(key),
-				listener -> key -> listener.onKeybind(key));
-	public static final Event<KeybindState> KEYBIND_RELEASED
-			= EventFactory.createSimpleArrayBacked(KeybindEvent.class, KeybindState.class,
-				listener -> key -> listener.accept(key),
-				listener -> key -> listener.onKeybind(key));
-	public static final Event<KeybindState> KEYBIND_REPEATED
-			= EventFactory.createSimpleArrayBacked(KeybindEvent.class, KeybindState.class,
-				listener -> key -> listener.accept(key),
-				listener -> key -> listener.onKeybind(key));
-	public static final Event<CharState> CHAR_TYPED
-			= EventFactory.createSimpleArrayBacked(CharEvent.class, CharState.class,
-				listener -> key -> listener.accept(key),
-				listener -> key -> listener.onChar(key));
-	public static final Event<MouseMove> MOUSE_MOVED
-			= EventFactory.createSimpleArrayBacked(MouseMoveEvent.class, MouseMove.class,
-				listener -> mouse -> listener.accept(mouse),
-				listener -> mouse -> listener.onMouseMoved(mouse));
-	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED
-			= EventFactory.createSimpleArrayBacked(MouseButtonEvent.class, MouseButtonState.class,
-				listener -> mouse -> listener.accept(mouse),
-				listener -> mouse -> listener.onMouseButton(mouse));
-	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED
-			= EventFactory.createSimpleArrayBacked(MouseButtonEvent.class, MouseButtonState.class,
-				listener -> mouse -> listener.accept(mouse),
-				listener -> mouse -> listener.onMouseButton(mouse));
-	public static final Event<MouseScroll> MOUSE_WHEEL_SCROLLED
-			= EventFactory.createSimpleArrayBacked(MouseScrollEvent.class, MouseScroll.class,
-				listener -> mouse -> listener.accept(mouse),
-				listener -> mouse -> listener.onMouseScrolled(mouse));
-	public static final Event<FileDrop> FILE_DROPPED
-			= EventFactory.createSimpleArrayBacked(String[].class, FileDrop.class,
-				listener -> paths -> listener.accept(paths),
-				listener -> paths -> listener.onFilesDropped(paths));
+	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
+		for (KeyState listener : listeners) {
+			listener.onKey(key);
+		}
+	});
+	public static final Event<KeyState> KEY_RELEASED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
+		for (KeyState listener : listeners) {
+			listener.onKey(key);
+		}
+	});
+	public static final Event<KeyState> KEY_REPEATED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
+		for (KeyState listener : listeners) {
+			listener.onKey(key);
+		}
+	});
+	public static final Event<KeybindState> KEYBIND_PRESSED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
+		for (KeybindState listener : listeners) {
+			listener.onKeybind(key);
+		}
+	});
+	public static final Event<KeybindState> KEYBIND_RELEASED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
+		for (KeybindState listener : listeners) {
+			listener.onKeybind(key);
+		}
+	});
+	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
+		for (KeybindState listener : listeners) {
+			listener.onKeybind(key);
+		}
+	});
+	public static final Event<CharState> CHAR_TYPED = EventFactory.createArrayBacked(CharState.class, listeners -> chr -> {
+		for (CharState listener : listeners) {
+			listener.onChar(chr);
+		}
+	});
+	public static final Event<MouseMove> MOUSE_MOVED = EventFactory.createArrayBacked(MouseMove.class, listeners -> mouse -> {
+		for (MouseMove listener : listeners) {
+			listener.onMouseMoved(mouse);
+		}
+	});
+	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> mouse -> {
+		for (MouseButtonState listener : listeners) {
+			listener.onMouseButton(mouse);
+		}
+	});
+	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> mouse -> {
+		for (MouseButtonState listener : listeners) {
+			listener.onMouseButton(mouse);
+		}
+	});
+	public static final Event<MouseScroll> MOUSE_WHEEL_SCROLLED = EventFactory.createArrayBacked(MouseScroll.class, listeners -> mouse -> {
+		for (MouseScroll listener : listeners) {
+			listener.onMouseScrolled(mouse);
+		}
+	});
+	public static final Event<FileDrop> FILE_DROPPED = EventFactory.createArrayBacked(FileDrop.class, listeners -> paths -> {
+		for (FileDrop listener : listeners) {
+			listener.onFilesDropped(paths);
+		}
+	});
 
 	@FunctionalInterface
 	public interface KeyState {
@@ -78,13 +92,13 @@ public final class ClientInputEvents {
 	}
 
 	@FunctionalInterface
-	public interface CharState {
-		void onChar(CharEvent key);
+	public interface KeybindState {
+		void onKeybind(KeybindEvent key);
 	}
 
 	@FunctionalInterface
-	public interface KeybindState {
-		void onKeybind(KeybindEvent key);
+	public interface CharState {
+		void onChar(CharEvent key);
 	}
 
 	@FunctionalInterface
