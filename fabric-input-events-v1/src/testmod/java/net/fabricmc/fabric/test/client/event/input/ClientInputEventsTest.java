@@ -50,6 +50,7 @@ public class ClientInputEventsTest implements ModInitializer {
 		});
 		ClientInputEvents.MOUSE_MOVED.register(mouse -> {
 			LOGGER.info("moved to {},{} (delta {},{})", mouse.x, mouse.y, mouse.dx, mouse.dy);
+			LOGGER.info("mouse position is now {},{}", FabricMouse.getX(), FabricMouse.getY());
 		});
 		ClientInputEvents.MOUSE_BUTTON_PRESSED.register(mouse -> {
 			LOGGER.info("pressed {}", mouse.getKey().getTranslationKey());
