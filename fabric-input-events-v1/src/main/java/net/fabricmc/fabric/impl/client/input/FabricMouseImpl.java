@@ -60,9 +60,11 @@ public class FabricMouseImpl {
 
 	public void update() {
 		MinecraftClient client = MinecraftClient.getInstance();
+
 		if (client == null) {
 			return;
 		}
+
 		Window window = client.getWindow();
 		long handle = window.getHandle();
 		GLFW.glfwGetCursorPos(handle, current_x, current_y);
@@ -84,6 +86,7 @@ public class FabricMouseImpl {
 		if (GLFW.glfwGetMouseButton(handle, button) == GLFW.GLFW_PRESS) {
 			return this.buttons | (1 << button);
 		}
+
 		return this.buttons;
 	}
 }
