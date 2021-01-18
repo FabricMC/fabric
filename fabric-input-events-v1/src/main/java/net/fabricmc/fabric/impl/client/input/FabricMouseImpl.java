@@ -32,8 +32,8 @@ public class FabricMouseImpl {
 	private double y = 0.0;
 	private int buttons = 0;
 	private int mods = 0;
-	private final DoubleBuffer current_x = DoubleBuffer.allocate(1);
-	private final DoubleBuffer current_y = DoubleBuffer.allocate(1);
+	private final double[] current_x = new double[1];
+	private final double[] current_y = new double[1];
 
 	private FabricMouseImpl() {
 	}
@@ -68,8 +68,8 @@ public class FabricMouseImpl {
 		Window window = client.getWindow();
 		long handle = window.getHandle();
 		GLFW.glfwGetCursorPos(handle, current_x, current_y);
-		this.x = current_x.get();
-		this.y = current_y.get();
+		this.x = current_x[0];
+		this.y = current_y[0];
 		this.buttons = 0;
 		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_1);
 		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_2);
