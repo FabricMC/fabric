@@ -21,7 +21,6 @@ import java.nio.DoubleBuffer;
 import org.lwjgl.glfw.GLFW;
 
 import net.fabricmc.fabric.api.client.FabricKeyboard;
-import net.fabricmc.fabric.api.client.FabricMouse;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 
