@@ -26,5 +26,5 @@ import net.minecraft.client.util.InputUtil.Key;
 @Mixin(InputUtil.Type.class)
 public interface InputUtilTypeMixin {
 	@Accessor("map")
-	public Int2ObjectMap<Key> fabric_getMap();
+	public Int2ObjectMap<Key> getMap();
 }

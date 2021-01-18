@@ -28,10 +28,10 @@ import net.minecraft.client.util.InputUtil.Key;
 @Mixin(KeyBinding.class)
 public interface KeyBindingMixin {
 	@Accessor("keyToBindings")
-	public static Map<InputUtil.Key, KeyBinding> fabric_getKeyToBindings() {
+	public static Map<InputUtil.Key, KeyBinding> getKeyToBindings() {
 		throw new AssertionError();
 	}
 
 	@Accessor("boundKey")
-	public Key fabric_getBoundKey();
+	public Key getBoundKey();
 }

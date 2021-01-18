@@ -59,7 +59,7 @@ public final class KeybindEvent extends GenericKeyEvent {
 
 	@Override
 	public Key getKey() {
-		return ((KeyBindingMixin)this.keybind).fabric_getBoundKey();
+		return ((KeyBindingMixin)this.keybind).getBoundKey();
 	}
 
 	public KeyBinding getKeybind() {

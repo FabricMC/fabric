@@ -23,7 +23,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
 public class MouseButtonEvent extends GenericMouseEvent {
-	private static final Int2ObjectMap<Key> map = ((InputUtilTypeMixin)(Object)InputUtil.Type.MOUSE).fabric_getMap();
+	private static final Int2ObjectMap<Key> map = ((InputUtilTypeMixin)(Object)InputUtil.Type.MOUSE).getMap();
 
 	public final int button;
 	public final int action;
