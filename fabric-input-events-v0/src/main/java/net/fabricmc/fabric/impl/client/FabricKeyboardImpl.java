@@ -27,4 +27,8 @@ public class FabricKeyboardImpl implements FabricKeyboard {
 		return this.mods;
 	}
 
+	public void updateMods(int mods) {
+		this.mods = mods;
+	}
+
 }
