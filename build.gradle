@@ -180,6 +180,10 @@ allprojects {
 	}
 }
 
+// Apply auxiliary buildscripts to submodules
+// This must be done after all plugins are applied to subprojects
+apply from: "gradle/module-validation.gradle"
+
 javadoc {
 	options {
 		source = "8"

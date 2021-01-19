@@ -24,5 +24,8 @@
   "description": "Adds registries for vanilla mechanics that are missing them.",
   "mixins": [
     "fabric-content-registries-v0.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

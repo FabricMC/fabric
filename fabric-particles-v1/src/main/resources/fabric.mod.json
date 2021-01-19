@@ -21,5 +21,8 @@
   "description": "Hooks for registering custom particles.",
   "mixins": [
     "fabric-particles-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
