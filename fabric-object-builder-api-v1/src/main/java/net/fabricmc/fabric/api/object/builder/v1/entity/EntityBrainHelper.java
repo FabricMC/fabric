@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.mojang.serialization.Codec;
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.ai.brain.Activity;
 import net.minecraft.entity.ai.brain.MemoryModuleType;
@@ -83,9 +84,7 @@ public final class EntityBrainHelper {
 	 * @return a new {@link MemoryModuleType}.
 	 */
 	public static <U> MemoryModuleType<U> registerMemoryModuleType(Identifier id) {
-		Objects.requireNonNull(id, "Memory module ID cannot be null");
-
-		return Registry.register(Registry.MEMORY_MODULE_TYPE, id, MemoryModuleTypeAccessor.init(Optional.empty()));
+		return registerMemoryModuleType(id, null);
 	}
 
 	/**
@@ -96,9 +95,9 @@ public final class EntityBrainHelper {
 	 * @return a new {@link MemoryModuleType}.
 	 * @implNote codec can be null, though then the shortcut method should be used instead.
 	 */
-	public static <U> MemoryModuleType<U> registerMemoryModuleType(Identifier id, Codec<U> codec) {
+	public static <U> MemoryModuleType<U> registerMemoryModuleType(Identifier id, @Nullable Codec<U> codec) {
 		Objects.requireNonNull(id, "Memory module ID cannot be null");
 
-		return Registry.register(Registry.MEMORY_MODULE_TYPE, id, MemoryModuleTypeAccessor.init(Optional.of(codec)));
+		return Registry.register(Registry.MEMORY_MODULE_TYPE, id, MemoryModuleTypeAccessor.init(Optional.ofNullable(codec)));
 	}
 }
