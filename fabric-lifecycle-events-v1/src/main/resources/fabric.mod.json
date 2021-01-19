@@ -22,5 +22,8 @@
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*"
   },
-  "description": "Events for the game's lifecycle."
+  "description": "Events for the game's lifecycle.",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

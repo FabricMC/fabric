@@ -28,5 +28,8 @@
     "client": [
       "net.fabricmc.fabric.impl.registry.sync.FabricRegistryClientInit"
     ]
+  },
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
   }
 }

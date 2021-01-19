@@ -28,5 +28,8 @@
   "description": "Dynamic atttributes for tools.",
   "mixins": [
     "fabric-tool-attribute-api-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

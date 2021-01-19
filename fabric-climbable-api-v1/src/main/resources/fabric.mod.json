@@ -23,5 +23,8 @@
   "description": "Re-implements the minecraft:climbable tag from 1.16+ back in 1.15",
   "mixins": [
     "fabric-climbable-api-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

@@ -22,5 +22,8 @@
   "description": "Hooks and registries for rendering-related things.",
   "mixins": [
     "fabric-rendering-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
