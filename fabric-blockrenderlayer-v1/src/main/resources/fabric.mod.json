@@ -23,5 +23,8 @@
   "description": "Registration utility for block and fluid render layers.",
   "mixins": [
     "fabric-blockrenderlayer-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

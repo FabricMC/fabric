@@ -19,5 +19,8 @@
     "fabricloader": ">=0.4.0",
     "fabric-key-binding-api-v1": "*"
   },
-  "description": "Keybinding registry API."
+  "description": "Keybinding registry API.",
+  "custom": {
+    "fabric-api:module-lifecycle": "deprecated"
+  }
 }

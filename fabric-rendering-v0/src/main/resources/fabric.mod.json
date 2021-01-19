@@ -26,5 +26,8 @@
     "fabric-api-base": "*",
     "fabric-rendering-v1": "*"
   },
-  "description": "Hooks and registries for rendering-related things."
+  "description": "Hooks and registries for rendering-related things.",
+  "custom": {
+    "fabric-api:module-lifecycle": "deprecated"
+  }
 }
