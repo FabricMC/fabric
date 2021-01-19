@@ -22,5 +22,8 @@
   "mixins": [
     "fabric-dynamic-registry-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-dynamic-registry-api-v1.accesswidener"
+  "accessWidener": "fabric-dynamic-registry-api-v1.accesswidener",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
