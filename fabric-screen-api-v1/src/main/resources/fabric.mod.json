@@ -22,5 +22,8 @@
   "description": "Adds screen related hooks.",
   "mixins": [
     "fabric-screen-api-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
