@@ -23,5 +23,8 @@
   "description": "A universal way to expose and query Apis",
   "mixins": [
     "fabric-api-lookup-api-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
