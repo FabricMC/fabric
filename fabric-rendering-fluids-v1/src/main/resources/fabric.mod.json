@@ -25,5 +25,8 @@
   "description": "Hooks for registering fluid renders.",
   "mixins": [
     "fabric-rendering-fluids-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

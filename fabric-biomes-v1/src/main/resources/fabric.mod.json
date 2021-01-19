@@ -21,5 +21,8 @@
   "description": "Hooks for adding biomes to the default world generator.",
   "mixins": [
     "fabric-biomes-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }
