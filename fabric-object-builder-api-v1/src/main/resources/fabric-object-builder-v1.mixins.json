@@ -6,6 +6,7 @@
     "AbstractBlockAccessor",
     "AbstractBlockSettingsAccessor",
     "AbstractBlockSettingsMixin",
+    "ActivityAccessor",
     "CriteriaAccessor",
     "DefaultAttributeRegistryAccessor",
     "DefaultAttributeRegistryMixin",
