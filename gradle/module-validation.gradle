@@ -38,12 +38,18 @@ class ValidateModuleTask extends DefaultTask {
 			throw new GradleException("Module ${project} does not have a custom value containing module lifecycle!")
 		}
 
-		if (json.custom.get("fabric-api:module-lifecycle") == null) {
+		def moduleLifecycle = json.custom.get("fabric-api:module-lifecycle")
+
+		if (moduleLifecycle == null) {
 			throw new GradleException("Module ${project} does not have module lifecycle in custom values!")
 		}
 
+		if (!moduleLifecycle instanceof String) {
+			throw new GradleException("Module ${project} has an invalid module lifecycle value. The value must be a string but read a ${moduleLifecycle.class}")
+		}
+
 		// Validate the lifecycle value
-		switch (json.custom.get("fabric-api:module-lifecycle")) {
+		switch (moduleLifecycle) {
 			case "stable":
 			case "experimental":
 			case "deprecated":
