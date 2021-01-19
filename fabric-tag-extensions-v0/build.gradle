@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-tag-extensions-v0"
-version = getSubprojectVersion(project, "1.1.0")
+version = getSubprojectVersion(project, "1.1.1")
 
 moduleDependencies(project, [
 		'fabric-api-base',

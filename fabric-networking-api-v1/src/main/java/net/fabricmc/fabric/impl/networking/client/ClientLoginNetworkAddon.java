@@ -52,7 +52,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 		this.handler = handler;
 		this.client = client;
 
-		ClientLoginConnectionEvents.LOGIN_INIT.invoker().onLoginStart(this.handler, this.client);
+		ClientLoginConnectionEvents.INIT.invoker().onLoginStart(this.handler, this.client);
 		this.receiver.startSession(this);
 	}
 
@@ -70,7 +70,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 				ClientLoginNetworking.registerReceiver(entry.getKey(), entry.getValue());
 			}
 
-			ClientLoginConnectionEvents.LOGIN_QUERY_START.invoker().onLoginQueryStart(this.handler, this.client);
+			ClientLoginConnectionEvents.QUERY_START.invoker().onLoginQueryStart(this.handler, this.client);
 			this.firstResponse = false;
 		}
 
@@ -113,7 +113,7 @@ public final class ClientLoginNetworkAddon extends AbstractNetworkAddon<ClientLo
 
 	@Override
 	public void invokeDisconnectEvent() {
-		ClientLoginConnectionEvents.LOGIN_DISCONNECT.invoker().onLoginDisconnect(this.handler, this.client);
+		ClientLoginConnectionEvents.DISCONNECT.invoker().onLoginDisconnect(this.handler, this.client);
 		this.receiver.endSession(this);
 	}
 

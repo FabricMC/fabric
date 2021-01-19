@@ -32,7 +32,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketSender;
  * Offers access to events related to the indication of a connected server's ability to receive packets in certain channels.
  */
 @Environment(EnvType.CLIENT)
-public final class S2CPlayChannelEvents {
+public final class C2SPlayChannelEvents {
 	/**
 	 * An event for the client play network handler receiving an update indicating the connected server's ability to receive packets in certain channels.
 	 * This event may be invoked at any time after login and up to disconnection.
@@ -53,11 +53,11 @@ public final class S2CPlayChannelEvents {
 		}
 	});
 
-	private S2CPlayChannelEvents() {
+	private C2SPlayChannelEvents() {
 	}
 
 	/**
-	 * @see S2CPlayChannelEvents#REGISTER
+	 * @see C2SPlayChannelEvents#REGISTER
 	 */
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface
@@ -66,7 +66,7 @@ public final class S2CPlayChannelEvents {
 	}
 
 	/**
-	 * @see S2CPlayChannelEvents#UNREGISTER
+	 * @see C2SPlayChannelEvents#UNREGISTER
 	 */
 	@Environment(EnvType.CLIENT)
 	@FunctionalInterface

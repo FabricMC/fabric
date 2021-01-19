@@ -50,7 +50,7 @@ public final class NetworkingImpl {
 
 	public static void init() {
 		// Login setup
-		ServerLoginConnectionEvents.LOGIN_QUERY_START.register((handler, server, sender, synchronizer) -> {
+		ServerLoginConnectionEvents.QUERY_START.register((handler, server, sender, synchronizer) -> {
 			// Send early registration packet
 			PacketByteBuf buf = PacketByteBufs.create();
 			Collection<Identifier> channelsNames = ServerPlayNetworking.getGlobalReceivers();

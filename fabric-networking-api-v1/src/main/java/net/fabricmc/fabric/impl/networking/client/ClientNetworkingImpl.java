@@ -36,6 +36,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.networking.v1.ClientLoginNetworking;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.impl.networking.ChannelInfoHolder;
@@ -48,6 +49,7 @@ import net.fabricmc.fabric.mixin.networking.accessor.MinecraftClientAccessor;
 public final class ClientNetworkingImpl {
 	public static final GlobalReceiverRegistry<ClientLoginNetworking.LoginQueryRequestHandler> LOGIN = new GlobalReceiverRegistry<>();
 	public static final GlobalReceiverRegistry<ClientPlayNetworking.PlayChannelHandler> PLAY = new GlobalReceiverRegistry<>();
+	private static ClientPlayNetworkAddon currentPlayAddon;
 
 	public static ClientPlayNetworkAddon getAddon(ClientPlayNetworkHandler handler) {
 		return ((ClientPlayNetworkHandlerExtensions) handler).getAddon();
@@ -83,7 +85,34 @@ public final class ClientNetworkingImpl {
 		return null;
 	}
 
+	@Nullable
+	public static ClientPlayNetworkAddon getClientPlayAddon() {
+		// Since Minecraft can be a bit weird, we need to check for the play addon in a few ways:
+		// If the client's player is set this will work
+		if (MinecraftClient.getInstance().getNetworkHandler() != null) {
+			currentPlayAddon = null; // Shouldn't need this anymore
+			return ClientNetworkingImpl.getAddon(MinecraftClient.getInstance().getNetworkHandler());
+		}
+
+		// We haven't hit the end of onGameJoin yet, use our backing field here to access the network handler
+		if (currentPlayAddon != null) {
+			return currentPlayAddon;
+		}
+
+		// We are not in play stage
+		return null;
+	}
+
+	public static void setClientPlayAddon(ClientPlayNetworkAddon addon) {
+		currentPlayAddon = addon;
+	}
+
 	public static void clientInit() {
+		// Reference cleanup for the locally stored addon if we are disconnected
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+			currentPlayAddon = null;
+		});
+
 		// Register a login query handler for early channel registration.
 		ClientLoginNetworking.registerGlobalReceiver(NetworkingImpl.EARLY_REGISTRATION_CHANNEL, (client, handler, buf, listenerAdder) -> {
 			int n = buf.readVarInt();

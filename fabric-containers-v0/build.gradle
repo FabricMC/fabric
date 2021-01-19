@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-containers-v0"
-version = getSubprojectVersion(project, "0.1.8")
+version = getSubprojectVersion(project, "0.1.10")
 
 moduleDependencies(project, [
 		'fabric-api-base',

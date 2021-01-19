@@ -7,6 +7,8 @@
     "DefaultResourcePackMixin",
     "KeyedResourceReloadListenerMixin",
     "MinecraftServerMixin",
+    "NamespaceResourceManagerAccessor",
+    "NamespaceResourceManagerMixin",
     "ReloadableResourceManagerImplMixin",
     "ResourcePackManagerMixin",
     "ResourcePackManagerAccessor",
@@ -17,8 +19,7 @@
     "client.CreateWorldScreenMixin",
     "client.FontManagerResourceReloadListenerMixin",
     "client.GameOptionsMixin",
-    "client.KeyedResourceReloadListenerClientMixin",
-    "client.PackScreenMixin"
+    "client.KeyedResourceReloadListenerClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -17,11 +17,10 @@
 package net.fabricmc.fabric.impl.client.model;
 
 import net.minecraft.client.render.model.UnbakedModel;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 public interface ModelLoaderHooks {
-	void fabric_addModel(ModelIdentifier id);
+	void fabric_addModel(Identifier id);
 
 	UnbakedModel fabric_loadModel(Identifier id);
 }

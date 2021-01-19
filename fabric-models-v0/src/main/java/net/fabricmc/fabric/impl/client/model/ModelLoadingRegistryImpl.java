@@ -35,6 +35,7 @@ import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 
+import net.fabricmc.fabric.api.client.model.ExtraModelProvider;
 import net.fabricmc.fabric.api.client.model.ModelAppender;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.client.model.ModelProviderContext;
@@ -57,7 +58,7 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 		private final ResourceManager manager;
 		private final List<ModelVariantProvider> modelVariantProviders;
 		private final List<ModelResourceProvider> modelResourceProviders;
-		private final List<ModelAppender> modelAppenders;
+		private final List<ExtraModelProvider> modelAppenders;
 		private ModelLoader loader;
 
 		private LoaderInstance(ModelLoadingRegistryImpl i, ModelLoader loader, ResourceManager manager) {
@@ -78,9 +79,9 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 			return ((ModelLoaderHooks) loader).fabric_loadModel(id);
 		}
 
-		public void onModelPopulation(Consumer<ModelIdentifier> addModel) {
-			for (ModelAppender appender : modelAppenders) {
-				appender.appendAll(manager, addModel);
+		public void onModelPopulation(Consumer<Identifier> addModel) {
+			for (ExtraModelProvider appender : modelAppenders) {
+				appender.provideExtraModels(manager, addModel);
 			}
 		}
 
@@ -181,11 +182,16 @@ public class ModelLoadingRegistryImpl implements ModelLoadingRegistry {
 
 	private final List<Function<ResourceManager, ModelVariantProvider>> variantProviderSuppliers = new ArrayList<>();
 	private final List<Function<ResourceManager, ModelResourceProvider>> resourceProviderSuppliers = new ArrayList<>();
-	private final List<ModelAppender> appenders = new ArrayList<>();
+	private final List<ExtraModelProvider> appenders = new ArrayList<>();
+
+	@Override
+	public void registerModelProvider(ExtraModelProvider appender) {
+		appenders.add(appender);
+	}
 
 	@Override
 	public void registerAppender(ModelAppender appender) {
-		appenders.add(appender);
+		registerModelProvider((manager, consumer) -> appender.appendAll(manager, consumer::accept));
 	}
 
 	@Override

@@ -22,5 +22,8 @@
   "description": "Hooks for manipulating loot tables.",
   "mixins": [
     "fabric-loot-tables-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

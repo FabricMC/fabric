@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-entity-events-v1",
+  "name": "Fabric Entity Events (v1)",
+  "version": "${version}",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "icon": "assets/fabric-entity-events-v1/icon.png",
+  "contact": {
+    "homepage": "https://fabricmc.net",
+    "irc": "irc://irc.esper.net:6667/fabric",
+    "issues": "https://github.com/FabricMC/fabric/issues",
+    "sources": "https://github.com/FabricMC/fabric"
+  },
+  "authors": [
+    "FabricMC"
+  ],
+  "depends": {
+    "fabricloader": ">=0.8.2"
+  },
+  "description": "Events to hook into entities.",
+  "mixins": [
+    "fabric-entity-events-v1.mixins.json"
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
+}

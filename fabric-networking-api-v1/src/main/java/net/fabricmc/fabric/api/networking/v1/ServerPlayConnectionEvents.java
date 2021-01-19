@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.networking.v1;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
@@ -27,23 +28,34 @@ import net.fabricmc.fabric.api.event.EventFactory;
  */
 public final class ServerPlayConnectionEvents {
 	/**
-	 * An event for the initialization of the server play network handler.
+	 * Event indicating a connection entered the PLAY state, ready for registering channel handlers.
+	 *
+	 * @see ServerPlayNetworking#registerReceiver(ServerPlayNetworkHandler, Identifier, ServerPlayNetworking.PlayChannelHandler)
+	 */
+	public static final Event<Init> INIT = EventFactory.createArrayBacked(Init.class, callbacks -> (handler, server) -> {
+		for (Init callback : callbacks) {
+			callback.onPlayInit(handler, server);
+		}
+	});
+
+	/**
+	 * An event for notification when the server play network handler is ready to send packets to the client.
 	 *
 	 * <p>At this stage, the network handler is ready to send packets to the client.
 	 */
-	public static final Event<PlayInit> PLAY_INIT = EventFactory.createArrayBacked(PlayInit.class, callbacks -> (handler, sender, server) -> {
-		for (PlayInit callback : callbacks) {
-			callback.onPlayInit(handler, sender, server);
+	public static final Event<Join> JOIN = EventFactory.createArrayBacked(Join.class, callbacks -> (handler, sender, server) -> {
+		for (Join callback : callbacks) {
+			callback.onPlayReady(handler, sender, server);
 		}
 	});
 
 	/**
 	 * An event for the disconnection of the server play network handler.
 	 *
-	 * <p>No packets should be sent when this event is invoked.</p>
+	 * <p>No packets should be sent when this event is invoked.
 	 */
-	public static final Event<PlayDisconnect> PLAY_DISCONNECT = EventFactory.createArrayBacked(PlayDisconnect.class, callbacks -> (handler, server) -> {
-		for (PlayDisconnect callback : callbacks) {
+	public static final Event<Disconnect> DISCONNECT = EventFactory.createArrayBacked(Disconnect.class, callbacks -> (handler, server) -> {
+		for (Disconnect callback : callbacks) {
 			callback.onPlayDisconnect(handler, server);
 		}
 	});
@@ -52,12 +64,17 @@ public final class ServerPlayConnectionEvents {
 	}
 
 	@FunctionalInterface
-	public interface PlayInit {
-		void onPlayInit(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
+	public interface Init {
+		void onPlayInit(ServerPlayNetworkHandler handler, MinecraftServer server);
 	}
 
 	@FunctionalInterface
-	public interface PlayDisconnect {
+	public interface Join {
+		void onPlayReady(ServerPlayNetworkHandler handler, PacketSender sender, MinecraftServer server);
+	}
+
+	@FunctionalInterface
+	public interface Disconnect {
 		void onPlayDisconnect(ServerPlayNetworkHandler handler, MinecraftServer server);
 	}
 }
