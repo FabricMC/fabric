@@ -3,6 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.event.input",
   "compatibilityLevel": "JAVA_8",
   "client": [
+    "client.accessor.GenericMouseEventAccessor",
+    "client.accessor.KeybindEventAccessor",
+    "client.accessor.KeyEventAccessor",
+    "client.accessor.MouseButtonEventAccessor",
+    "client.accessor.MouseMoveEventAccessor",
     "client.InputUtilTypeMixin",
     "client.KeyBindingMixin",
     "client.KeyboardMixin",

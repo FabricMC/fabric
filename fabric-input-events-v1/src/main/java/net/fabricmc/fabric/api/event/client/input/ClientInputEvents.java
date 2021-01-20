@@ -77,9 +77,9 @@ public final class ClientInputEvents {
 	 * <p>CHAR_TYPED events need not have a corresponding KEY_PRESSED event,
 	 * for example when pressing dead keys or using an Emoji menu.
 	 */
-	public static final Event<CharState> CHAR_TYPED = EventFactory.createArrayBacked(CharState.class, listeners -> chr -> {
+	public static final Event<CharState> CHAR_TYPED = EventFactory.createArrayBacked(CharState.class, listeners -> (codepoint, modKeys) -> {
 		for (CharState listener : listeners) {
-			listener.onChar(chr);
+			listener.onChar(codepoint, modKeys);
 		}
 	});
 	/**
@@ -135,7 +135,7 @@ public final class ClientInputEvents {
 
 	@FunctionalInterface
 	public interface CharState {
-		void onChar(CharEvent key);
+		void onChar(int codepoint, int modKeys);
 	}
 
 	@FunctionalInterface

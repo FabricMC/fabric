@@ -46,8 +46,8 @@ public class ClientInputEventsTest implements ModInitializer {
 		ClientInputEvents.KEYBIND_REPEATED.register(key -> {
 			LOGGER.info("repeated {}", key.getKeybind().getTranslationKey());
 		});
-		ClientInputEvents.CHAR_TYPED.register(key -> {
-			LOGGER.info("typed U+{}", String.format("%04x", key.codepoint));
+		ClientInputEvents.CHAR_TYPED.register((codepoint, modKeys) -> {
+			LOGGER.info("typed U+{}", String.format("%04x", codepoint));
 		});
 		ClientInputEvents.MOUSE_MOVED.register(mouse -> {
 			LOGGER.info("moved to {},{} (delta {},{})", mouse.x, mouse.y, mouse.dx, mouse.dy);
