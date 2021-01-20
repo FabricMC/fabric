@@ -33,7 +33,7 @@ import net.fabricmc.fabric.api.event.client.input.MouseMoveEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseScrollEvent;
 import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
 
-public final class InputCallbacks {
+public final class InputCallbacksImpl {
 	public static void onKey(long window, int code, int scancode, int action, int modKeys) {
 		FabricKeyboardImpl.INSTANCE.updateModKeys(modKeys);
 		FabricMouseImpl.INSTANCE.update();

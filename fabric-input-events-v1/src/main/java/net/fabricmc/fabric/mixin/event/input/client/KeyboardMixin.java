@@ -23,17 +23,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Keyboard;
 
-import net.fabricmc.fabric.impl.client.input.InputCallbacks;
+import net.fabricmc.fabric.impl.client.input.InputCallbacksImpl;
 
 @Mixin(Keyboard.class)
 public class KeyboardMixin {
 	@Inject(method = "method_22678(JIIII)V", at = @At("HEAD"))
 	void onKey(long handle, int code, int scancode, int action, int mods, CallbackInfo ci) {
-		InputCallbacks.onKey(handle, code, scancode, action, mods);
+		InputCallbacksImpl.onKey(handle, code, scancode, action, mods);
 	}
 
 	@Inject(method = "method_22677(JII)V", at = @At("HEAD"))
 	void onChar(long handle, int codepoint, int mods, CallbackInfo ci) {
-		InputCallbacks.onChar(handle, codepoint, mods);
+		InputCallbacksImpl.onChar(handle, codepoint, mods);
 	}
 }
