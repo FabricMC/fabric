@@ -25,7 +25,7 @@ public final class FabricKeyboard {
 	}
 
 	/**
-	 * Check if the given key is currently being pressed
+	 * Check if the given key is currently being pressed.
 	 *
 	 * @param keycode the GLFW.GLFW_KEY code, or -1 if unknown
 	 * @param scancode the (system-specific) scancode, or -1 if unknown
@@ -35,7 +35,7 @@ public final class FabricKeyboard {
 	}
 
 	/**
-	 * Check if the given key is currently being pressed
+	 * Check if the given key is currently being pressed.
 	 *
 	 * @param Key the key to check
 	 */
@@ -44,7 +44,7 @@ public final class FabricKeyboard {
 	}
 
 	/**
-	 * Get the GLFW.GLFW_MOD modifier keys currently being pressed
+	 * Get the GLFW.GLFW_MOD modifier keys currently being pressed.
 	 */
 	public static int getModKeys() {
 		return FabricKeyboardImpl.getModKeys();

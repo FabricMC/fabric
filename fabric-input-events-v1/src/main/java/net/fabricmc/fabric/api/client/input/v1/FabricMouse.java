@@ -24,28 +24,28 @@ public final class FabricMouse {
 	}
 
 	/**
-	 * Get the current X position of the mouse
+	 * Get the current X position of the mouse.
 	 */
 	public static double getX() {
 		return FabricMouseImpl.getX();
 	}
 
 	/**
-	 * Get the current Y position of the mouse
+	 * Get the current Y position of the mouse.
 	 */
 	public static double getY() {
 		return FabricMouseImpl.getY();
 	}
 
 	/**
-	 * Get a bitmask of the mouse buttons currently being pressed
+	 * Get a bitmask of the mouse buttons currently being pressed.
 	 */
 	public static int getPressedButtons() {
 		return FabricMouseImpl.getPressedButtons();
 	}
 
 	/**
-	 * Check if the given mosue button is currently being pressed
+	 * Check if the given mosue button is currently being pressed.
 	 *
 	 * @param button the GLFW.GLFW_MOUSE_BUTTON to check
 	 */
@@ -54,7 +54,7 @@ public final class FabricMouse {
 	}
 
 	/**
-	 * Get the GLFW.GLFW_MOD modifier keys currently being pressed
+	 * Get the GLFW.GLFW_MOD modifier keys currently being pressed.
 	 */
 	public static int getModKeys() {
 		return FabricKeyboardImpl.getModKeys();

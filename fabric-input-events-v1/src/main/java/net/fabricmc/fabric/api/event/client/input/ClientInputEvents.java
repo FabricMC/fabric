@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Environment(EnvType.CLIENT)
 public final class ClientInputEvents {
 	/**
-	 * Called when the player presses a key
+	 * Called when the player presses a key.
 	 */
 	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
 		for (KeyState listener : listeners) {
@@ -32,7 +32,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player releases a key
+	 * Called when the player releases a key.
 	 */
 	public static final Event<KeyState> KEY_RELEASED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
 		for (KeyState listener : listeners) {
@@ -40,7 +40,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player holds a key for a while
+	 * Called when the player holds a key for a while.
 	 */
 	public static final Event<KeyState> KEY_REPEATED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
 		for (KeyState listener : listeners) {
@@ -48,7 +48,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player presses a key that is bound to some keybind
+	 * Called when the player presses a key that is bound to some keybind.
 	 */
 	public static final Event<KeybindState> KEYBIND_PRESSED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
 		for (KeybindState listener : listeners) {
@@ -56,7 +56,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player releases a key that is bound to some keybind
+	 * Called when the player releases a key that is bound to some keybind.
 	 */
 	public static final Event<KeybindState> KEYBIND_RELEASED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
 		for (KeybindState listener : listeners) {
@@ -64,7 +64,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player presses a key that is bound to some keybind for a while
+	 * Called when the player presses a key that is bound to some keybind for a while.
 	 */
 	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
 		for (KeybindState listener : listeners) {
@@ -72,9 +72,9 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player types a character in some way
+	 * Called when the player types a character in some way.
 	 *
-	 * <p> CHAR_TYPED events need not have a corresponding KEY_PRESSED event,
+	 * <p>CHAR_TYPED events need not have a corresponding KEY_PRESSED event,
 	 * for example when pressing dead keys or using an Emoji menu.
 	 */
 	public static final Event<CharState> CHAR_TYPED = EventFactory.createArrayBacked(CharState.class, listeners -> chr -> {
@@ -83,7 +83,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player moves their mouse
+	 * Called when the player moves their mouse.
 	 */
 	public static final Event<MouseMove> MOUSE_MOVED = EventFactory.createArrayBacked(MouseMove.class, listeners -> mouse -> {
 		for (MouseMove listener : listeners) {
@@ -91,7 +91,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player presses a button on their mouse
+	 * Called when the player presses a button on their mouse.
 	 */
 	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> mouse -> {
 		for (MouseButtonState listener : listeners) {
@@ -99,7 +99,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player releases a button on their mouse
+	 * Called when the player releases a button on their mouse.
 	 */
 	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> mouse -> {
 		for (MouseButtonState listener : listeners) {
@@ -107,7 +107,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player scrolls their mouse wheel
+	 * Called when the player scrolls their mouse wheel.
 	 */
 	public static final Event<MouseScroll> MOUSE_WHEEL_SCROLLED = EventFactory.createArrayBacked(MouseScroll.class, listeners -> mouse -> {
 		for (MouseScroll listener : listeners) {
@@ -115,7 +115,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player drops a file into the Minecraft window
+	 * Called when the player drops a file into the Minecraft window.
 	 */
 	public static final Event<FileDrop> FILE_DROPPED = EventFactory.createArrayBacked(FileDrop.class, listeners -> paths -> {
 		for (FileDrop listener : listeners) {
