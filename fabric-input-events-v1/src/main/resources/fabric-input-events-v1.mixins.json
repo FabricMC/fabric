@@ -3,9 +3,10 @@
   "package": "net.fabricmc.fabric.mixin.event.input",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "client.InputUtilMixin",
     "client.InputUtilTypeMixin",
-    "client.KeyBindingMixin"
+    "client.KeyBindingMixin",
+    "client.KeyboardMixin",
+    "client.MouseMixin"
   ],
   "injectors": {
     "defaultRequire": 1
