@@ -85,7 +85,7 @@ public abstract class WorldMixin {
 			return blockEntityList.removeAll(removals);
 		}
 
-		// Allocating a set when dealing with huge amounts of loaded block entities and then using removeIf is more performant than List#removeAll
+		// List -> List.removeAll is slower than reallocating the List as a Set and then doing a Set -> List.removalAll when dealing with large amounts of loaded block entities.
 		final Set<BlockEntity> removalSet = new ReferenceOpenHashSet<>(removals);
 		return blockEntityList.removeAll(removalSet);
 	}
