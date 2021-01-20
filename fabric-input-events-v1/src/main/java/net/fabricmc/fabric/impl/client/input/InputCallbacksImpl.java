@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWDropCallback;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -32,6 +33,7 @@ import net.fabricmc.fabric.api.event.client.input.KeybindEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseButtonEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseMoveEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseScrollEvent;
+import net.fabricmc.fabric.mixin.event.input.client.InputUtilTypeMixin;
 import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.KeyEventAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.KeybindEventAccessor;
@@ -43,7 +45,7 @@ public final class InputCallbacksImpl {
 	private static final KeyEvent sharedKeyEvent = new KeyEvent(-1, -1, GLFW.GLFW_RELEASE, 0);
 	private static final KeybindEvent sharedKeybindEvent = new KeybindEvent(-1, -1, GLFW.GLFW_RELEASE, 0, null, null);
 	private static final MouseMoveEvent sharedMouseMoveEvent = new MouseMoveEvent(0.0, 0.0, 0.0, 0.0);
-	private static final MouseButtonEvent sharedMouseButtonEvent = new MouseButtonEvent(0, GLFW.GLFW_RELEASE, 0);
+	private static final MouseButtonEvent sharedMouseButtonEvent = new MouseButtonEvent(0, GLFW.GLFW_RELEASE, 0, null);
 	private static final MouseScrollEvent sharedMouseScrollEvent = new MouseScrollEvent(0.0, 0.0);
 
 	private static KeyEvent createKeyEvent(int code, int scancode, int action, int modKeys) {
@@ -83,11 +85,12 @@ public final class InputCallbacksImpl {
 		return sharedMouseMoveEvent;
 	}
 
-	private static MouseButtonEvent createMouseButtonEvent(int button, int action, int modKeys) {
+	private static MouseButtonEvent createMouseButtonEvent(int button, int action, int modKeys, Key key) {
 		MouseButtonEventAccessor accessor = (MouseButtonEventAccessor) (Object) sharedMouseButtonEvent;
 		accessor.setButton(button);
 		accessor.setAction(action);
 		accessor.setModKeys(modKeys);
+		accessor.setKey(key);
 		GenericMouseEventAccessor genericAccessor = (GenericMouseEventAccessor) (Object) sharedMouseScrollEvent;
 		genericAccessor.setPressedButtons(button);
 		genericAccessor.setPressedModKeys(modKeys);
@@ -164,10 +167,15 @@ public final class InputCallbacksImpl {
 		hasMoved = true;
 	}
 
+	private static final Int2ObjectMap<Key> buttonToKey = ((InputUtilTypeMixin) (Object) InputUtil.Type.MOUSE).getMap();
+	private static final Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
+
 	public static void onMouseButton(long window, int button, int action, int modKeys) {
 		FabricKeyboardImpl.updateModKeys(modKeys);
 		FabricMouseImpl.update();
-		MouseButtonEvent mouse = createMouseButtonEvent(button, action, modKeys);
+		Key key = buttonToKey.get(button);
+		KeyBinding binding = keyToBindings.get(key);
+		MouseButtonEvent mouse = createMouseButtonEvent(button, action, modKeys, key);
 
 		switch (action) {
 		case GLFW.GLFW_PRESS:
@@ -177,10 +185,6 @@ public final class InputCallbacksImpl {
 			ClientInputEvents.MOUSE_BUTTON_RELEASED.invoker().onMouseButton(mouse);
 			break;
 		}
-
-		Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
-		Key key = mouse.getKey();
-		KeyBinding binding = keyToBindings.get(key);
 
 		if (binding != null) {
 			KeybindEvent keybind = createKeybindEvent(button, -1, action, modKeys, key, binding);

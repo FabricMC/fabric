@@ -19,6 +19,8 @@ package net.fabricmc.fabric.mixin.event.input.client.accessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
+import net.minecraft.client.util.InputUtil.Key;
+
 import net.fabricmc.fabric.api.event.client.input.MouseButtonEvent;
 
 @Mixin(MouseButtonEvent.class)
@@ -31,4 +33,7 @@ public interface MouseButtonEventAccessor {
 
 	@Accessor
 	void setModKeys(int modKeys);
+
+	@Accessor
+	void setKey(Key key);
 }
