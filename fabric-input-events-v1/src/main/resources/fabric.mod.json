@@ -23,5 +23,8 @@
   "description": "Events for player pressing input keys or moving the mouse.",
   "mixins": [
     "fabric-input-events-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "experimental"
+  }
 }
