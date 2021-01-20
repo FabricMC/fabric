@@ -24,13 +24,10 @@ import org.lwjgl.system.MemoryStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.Window;
 
-import net.fabricmc.fabric.api.client.input.v1.FabricKeyboard;
-
 public final class FabricMouseImpl {
 	private static double x = 0.0;
 	private static double y = 0.0;
 	private static int buttons = 0;
-	private static int modKeys = 0;
 
 	private FabricMouseImpl() {
 	}
@@ -49,10 +46,6 @@ public final class FabricMouseImpl {
 
 	public static boolean isButtonPressed(int button) {
 		return (FabricMouseImpl.buttons & (1 << button)) != 0;
-	}
-
-	public static int getModKeys() {
-		return FabricMouseImpl.modKeys;
 	}
 
 	public static void update() {
@@ -83,7 +76,6 @@ public final class FabricMouseImpl {
 		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_7);
 		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_8);
 		FabricMouseImpl.buttons = buttons;
-		FabricMouseImpl.modKeys = FabricKeyboard.getModKeys();
 	}
 
 	private static int checkAndAddButton(long handle, int buttons, int button) {

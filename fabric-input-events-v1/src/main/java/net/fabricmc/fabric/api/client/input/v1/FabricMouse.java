@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.input.v1;
 
+import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 import net.fabricmc.fabric.impl.client.input.FabricMouseImpl;
 
 public final class FabricMouse {
@@ -56,6 +57,6 @@ public final class FabricMouse {
 	 * Get the GLFW.GLFW_MOD modifier keys currently being pressed
 	 */
 	public static int getModKeys() {
-		return FabricMouseImpl.getModKeys();
+		return FabricKeyboardImpl.getModKeys();
 	}
 }
