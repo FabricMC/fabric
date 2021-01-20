@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.input.client;
+package net.fabricmc.fabric.mixin.event.input.client.accessor;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -24,7 +24,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
 @Mixin(InputUtil.Type.class)
-public interface InputUtilTypeMixin {
+public interface InputUtilTypeAccessor {
 	@Accessor("map")
 	Int2ObjectMap<Key> getMap();
 }

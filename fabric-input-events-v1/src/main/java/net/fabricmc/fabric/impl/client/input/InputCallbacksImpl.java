@@ -33,8 +33,8 @@ import net.fabricmc.fabric.api.event.client.input.KeybindEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseButtonEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseMoveEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseScrollEvent;
-import net.fabricmc.fabric.mixin.event.input.client.InputUtilTypeMixin;
 import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
+import net.fabricmc.fabric.mixin.event.input.client.accessor.InputUtilTypeAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.KeyEventAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.KeybindEventAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.MouseButtonEventAccessor;
@@ -167,7 +167,7 @@ public final class InputCallbacksImpl {
 		hasMoved = true;
 	}
 
-	private static final Int2ObjectMap<Key> buttonToKey = ((InputUtilTypeMixin) (Object) InputUtil.Type.MOUSE).getMap();
+	private static final Int2ObjectMap<Key> buttonToKey = ((InputUtilTypeAccessor) (Object) InputUtil.Type.MOUSE).getMap();
 	private static final Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
 
 	public static void onMouseButton(long window, int button, int action, int modKeys) {
