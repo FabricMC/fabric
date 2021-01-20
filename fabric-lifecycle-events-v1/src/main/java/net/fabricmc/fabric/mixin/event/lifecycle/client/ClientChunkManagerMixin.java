@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.mixin.event.lifecycle.client;
 
+import java.util.BitSet;
+
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -45,7 +47,7 @@ public abstract class ClientChunkManagerMixin {
 	private ClientWorld world;
 
 	@Inject(method = "loadChunkFromPacket", at = @At("TAIL"))
-	private void onChunkLoad(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, int verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info) {
+	private void onChunkLoad(int x, int z, @Nullable BiomeArray biomes, PacketByteBuf buf, CompoundTag tag, BitSet verticalStripBitmask, CallbackInfoReturnable<WorldChunk> info) {
 		ClientChunkEvents.CHUNK_LOAD.invoker().onChunkLoad(this.world, info.getReturnValue());
 	}
 

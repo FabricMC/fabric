@@ -42,15 +42,15 @@ import net.fabricmc.fabric.mixin.resource.loader.ResourcePackManagerAccessor;
 @Mixin(CreateWorldScreen.class)
 public class CreateWorldScreenMixin {
 	@Shadow
-	private ResourcePackManager field_25792;
+	private ResourcePackManager packManager;
 
 	@Inject(method = "method_30296", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourcePackManager;scanPacks()V", shift = At.Shift.BEFORE))
 	private void onScanPacks(CallbackInfoReturnable<Pair<File, ResourcePackManager>> cir) {
 		// Allow to display built-in data packs in the data pack selection screen at world creation.
-		((ResourcePackManagerAccessor) this.field_25792).getProviders().add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
+		((ResourcePackManagerAccessor) this.packManager).getProviders().add(new ModResourcePackCreator(ResourceType.SERVER_DATA));
 	}
 
-	@ModifyArg(method = "method_31130", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/resource/DataPackSettings;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
+	@ModifyArg(method = "create", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screen/world/CreateWorldScreen;<init>(Lnet/minecraft/client/gui/screen/Screen;Lnet/minecraft/resource/DataPackSettings;Lnet/minecraft/client/gui/screen/world/MoreOptionsDialog;)V"), index = 1)
 	private static DataPackSettings onNew(DataPackSettings settings) {
 		ModResourcePackCreator modResourcePackCreator = new ModResourcePackCreator(ResourceType.SERVER_DATA);
 		List<ResourcePackProfile> moddedResourcePacks = new ArrayList<>();

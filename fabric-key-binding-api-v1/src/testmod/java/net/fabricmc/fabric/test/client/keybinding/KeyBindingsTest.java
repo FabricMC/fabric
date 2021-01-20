@@ -18,8 +18,8 @@ package net.fabricmc.fabric.test.client.keybinding;
 
 import org.lwjgl.glfw.GLFW;
 
-import net.minecraft.client.options.KeyBinding;
-import net.minecraft.client.options.StickyKeyBinding;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.option.StickyKeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.LiteralText;
 

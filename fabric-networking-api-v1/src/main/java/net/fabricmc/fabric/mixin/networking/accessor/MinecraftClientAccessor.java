@@ -30,6 +30,6 @@ import net.fabricmc.api.Environment;
 @Mixin(MinecraftClient.class)
 public interface MinecraftClientAccessor {
 	@Nullable
-	@Accessor
+	@Accessor("integratedServerConnection")
 	ClientConnection getConnection();
 }

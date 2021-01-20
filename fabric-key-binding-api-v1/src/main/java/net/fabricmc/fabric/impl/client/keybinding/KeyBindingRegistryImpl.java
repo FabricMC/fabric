@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.option.KeyBinding;
 
 import net.fabricmc.fabric.mixin.client.keybinding.KeyBindingAccessor;
 

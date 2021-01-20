@@ -69,7 +69,7 @@ public class ToolAttributeTest implements ModInitializer {
 		testPickaxe = Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "test_pickaxe"), new TestTool(new Item.Settings(), FabricToolTags.PICKAXES, 2));
 		// Register a block that requires a shovel that is as strong or stronger than an iron one.
 		gravelBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"),
-				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MapColor.SAND).build(), MapColor.STONE)
+				new Block(FabricBlockSettings.of(new FabricMaterialBuilder(MapColor.PALE_YELLOW).build(), MapColor.STONE_GRAY)
 						.breakByTool(FabricToolTags.SHOVELS, 2)
 						.requiresTool()
 						.strength(0.6F)
@@ -77,7 +77,7 @@ public class ToolAttributeTest implements ModInitializer {
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_gravel_block"), new BlockItem(gravelBlock, new Item.Settings()));
 		// Register a block that requires a pickaxe that is as strong or stronger than an iron one.
 		stoneBlock = Registry.register(Registry.BLOCK, new Identifier("fabric-tool-attribute-api-v1-testmod", "hardened_stone_block"),
-				new Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE)
+				new Block(FabricBlockSettings.of(Material.STONE, MapColor.STONE_GRAY)
 						.breakByTool(FabricToolTags.PICKAXES, 2)
 						.requiresTool()
 						.strength(0.6F)
@@ -159,7 +159,7 @@ public class ToolAttributeTest implements ModInitializer {
 	}
 
 	private void testToolOnBlock(ItemStack item, Block block, boolean inEffective, float inSpeed) {
-		boolean effective = item.isEffectiveOn(block.getDefaultState());
+		boolean effective = item.isSuitableFor(block.getDefaultState());
 		float speed = item.getMiningSpeedMultiplier(block.getDefaultState());
 
 		if (inEffective != effective) {

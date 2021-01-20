@@ -53,9 +53,9 @@ public class ShearsVanillaBlocksToolHandler implements ToolManagerImpl.ToolHandl
 
 		if (!(stack.getItem() instanceof DynamicAttributeTool)) {
 			if (!(stack.getItem() instanceof ShearsItem)) {
-				return vanillaItem.isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
+				return vanillaItem.isSuitableFor(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 			} else {
-				return stack.getItem().isEffectiveOn(state) ? ActionResult.SUCCESS : ActionResult.PASS;
+				return stack.getItem().isSuitableFor(state) ? ActionResult.SUCCESS : ActionResult.PASS;
 			}
 		}
 

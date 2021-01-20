@@ -38,7 +38,7 @@ public final class ToolManager {
 	 * @return whether the tool is effective
 	 */
 	public static boolean handleIsEffectiveOn(BlockState state, ItemStack stack, @Nullable LivingEntity user) {
-		return stack.isEffectiveOn(state) || handleIsEffectiveOnIgnoresVanilla(state, stack, user, false);
+		return stack.isSuitableFor(state) || handleIsEffectiveOnIgnoresVanilla(state, stack, user, false);
 	}
 
 	/**

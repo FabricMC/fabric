@@ -40,7 +40,7 @@ public abstract class MixinItemStack {
 	@Shadow
 	public abstract Item getItem();
 
-	@Inject(at = @At("RETURN"), method = "isEffectiveOn", cancellable = true)
+	@Inject(at = @At("RETURN"), method = "isSuitableFor", cancellable = true)
 	public void isEffectiveOn(BlockState state, CallbackInfoReturnable<Boolean> info) {
 		info.setReturnValue(ToolManager.handleIsEffectiveOnIgnoresVanilla(state, (ItemStack) (Object) this, null, info.getReturnValueZ()));
 	}
