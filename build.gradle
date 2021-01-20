@@ -13,7 +13,6 @@ plugins {
 	id "net.minecrell.licenser" version "0.4.1"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
-	id "org.ajoberstar.git-publish" version "3.0.0"
 }
 
 def ENV = System.getenv()
@@ -31,6 +30,7 @@ logger.lifecycle("Building Fabric: " + version)
 import org.apache.commons.codec.digest.DigestUtils
 import net.fabricmc.loom.task.RunClientTask
 import net.fabricmc.loom.task.RunServerTask
+import org.ajoberstar.grgit.Grgit
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -393,23 +393,26 @@ task checkVersion {
 // Authentication is provided by GRGIT_PASS and GRGIT_USER enviro. variables.
 // GRGIT_PASS can be authentication token
 // See https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token#using-a-token-on-the-command-line
-def versionMapRepo = "https://github.com/dexman545/fabric-api-version-map.git" //TODO use official repo
-gitPublish {
-	repoUri = versionMapRepo
-	branch = "main"
-	commitMessage = "Automated addition of new api version from FabricMC repo"
-
-	preserve {
-		include "README.md"
-		include "LICENSE"
-		include "apiVersions.properties"
-		include ".gitignore"
+task updateVersionMap() {
+	onlyIf {
+		ENV.GRGIT_PASS
 	}
-}
-
-task updateVersionMap(dependsOn: gitPublishReset) {
 	doLast {
-		def propFile = file("${buildDir}/gitPublish/apiVersions.properties")
+		Grgit repo
+		if (!buildDir.toPath().resolve('fabric-api-version-map').toFile().exists()) {
+			//noinspection GroovyAccessibility, GroovyAssignabilityCheck
+			repo = grgit.clone {
+				dir = buildDir.toPath().resolve('fabric-api-version-map').toFile()
+				uri = "https://github.com/dexman545/fabric-api-version-map.git" //TODO use official repo
+			} as Grgit
+		} else {
+			//noinspection GroovyAccessibility, GroovyAssignabilityCheck
+			repo = grgit.open {
+				dir = buildDir.toPath().resolve('fabric-api-version-map').toFile()
+			} as Grgit
+		}
+
+		def propFile = file("${buildDir}/fabric-api-version-map/apiVersions.properties")
 		def mc2Api = new Properties()
 		if (!propFile.exists()) return
 		propFile.withReader {mc2Api.load(it)}
@@ -419,7 +422,7 @@ task updateVersionMap(dependsOn: gitPublishReset) {
 
 		// Do not use Properties#store as it shuffles the file
 		boolean hasVersion = false
-		List<String> outLines = new ArrayList<>();
+		List<String> outLines = new ArrayList<>()
 		propFile.eachLine {
 			String[] parsed = it.split("=")
 			if (parsed[0].trim() == Globals.mcVersion) {
@@ -439,15 +442,13 @@ task updateVersionMap(dependsOn: gitPublishReset) {
 				it.newLine()
 			}
 		}
+		repo.commit(message: 'Automated update', all: true)
+		repo.push()
+		repo.close()
+		buildDir.toPath().resolve('fabric-api-version-map').toFile().deleteDir() // Clean it up
 	}
-}
-
-task publishVersionMap(dependsOn: updateVersionMap) {
-
 }
 
 github.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
-updateVersionMap.mustRunAfter gitPublishReset
-publishVersionMap.finalizedBy gitPublishCommit, gitPublishPush
