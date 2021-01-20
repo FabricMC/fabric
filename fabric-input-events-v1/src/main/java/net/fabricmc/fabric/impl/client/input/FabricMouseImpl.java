@@ -26,38 +26,36 @@ import net.minecraft.client.util.Window;
 
 import net.fabricmc.fabric.api.client.input.v1.FabricKeyboard;
 
-public class FabricMouseImpl {
-	public static FabricMouseImpl INSTANCE = new FabricMouseImpl();
-
-	private double x = 0.0;
-	private double y = 0.0;
-	private int buttons = 0;
-	private int modKeys = 0;
+public final class FabricMouseImpl {
+	private static double x = 0.0;
+	private static double y = 0.0;
+	private static int buttons = 0;
+	private static int modKeys = 0;
 
 	private FabricMouseImpl() {
 	}
 
-	public double getX() {
-		return this.x;
+	public static double getX() {
+		return FabricMouseImpl.x;
 	}
 
-	public double getY() {
-		return this.y;
+	public static double getY() {
+		return FabricMouseImpl.y;
 	}
 
-	public int getPressedButtons() {
-		return this.buttons;
+	public static int getPressedButtons() {
+		return FabricMouseImpl.buttons;
 	}
 
-	public boolean isButtonPressed(int button) {
-		return (this.buttons & (1 << button)) != 0;
+	public static boolean isButtonPressed(int button) {
+		return (FabricMouseImpl.buttons & (1 << button)) != 0;
 	}
 
-	public int getModKeys() {
-		return this.modKeys;
+	public static int getModKeys() {
+		return FabricMouseImpl.modKeys;
 	}
 
-	public void update() {
+	public static void update() {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		if (client == null) {
@@ -71,27 +69,28 @@ public class FabricMouseImpl {
 			DoubleBuffer current_x = stack.callocDouble(1);
 			DoubleBuffer current_y = stack.callocDouble(1);
 			GLFW.glfwGetCursorPos(handle, current_x, current_y);
-			this.x = current_x.get();
-			this.y = current_y.get();
+			FabricMouseImpl.x = current_x.get();
+			FabricMouseImpl.y = current_y.get();
 		}
 
-		this.buttons = 0;
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_1);
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_2);
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_3);
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_4);
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_5);
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_6);
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_7);
-		this.buttons = checkAndAddButton(handle, this.buttons, GLFW.GLFW_MOUSE_BUTTON_8);
-		this.modKeys = FabricKeyboard.getModKeys();
+		int buttons = 0;
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_1);
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_2);
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_3);
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_4);
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_5);
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_6);
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_7);
+		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_8);
+		FabricMouseImpl.buttons = buttons;
+		FabricMouseImpl.modKeys = FabricKeyboard.getModKeys();
 	}
 
-	private int checkAndAddButton(long handle, int buttons, int button) {
+	private static int checkAndAddButton(long handle, int buttons, int button) {
 		if (GLFW.glfwGetMouseButton(handle, button) == GLFW.GLFW_PRESS) {
-			return this.buttons | (1 << button);
+			return buttons | (1 << button);
 		}
 
-		return this.buttons;
+		return buttons;
 	}
 }

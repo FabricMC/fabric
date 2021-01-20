@@ -35,8 +35,8 @@ import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
 
 public final class InputCallbacksImpl {
 	public static void onKey(long window, int code, int scancode, int action, int modKeys) {
-		FabricKeyboardImpl.INSTANCE.updateModKeys(modKeys);
-		FabricMouseImpl.INSTANCE.update();
+		FabricKeyboardImpl.updateModKeys(modKeys);
+		FabricMouseImpl.update();
 		KeyEvent key = new KeyEvent(code, scancode, action, modKeys);
 		switch (action) {
 		case GLFW.GLFW_PRESS:
@@ -70,8 +70,8 @@ public final class InputCallbacksImpl {
 	}
 
 	public static void onChar(long window, int codepoint, int modKeys) {
-		FabricKeyboardImpl.INSTANCE.updateModKeys(modKeys);
-		FabricMouseImpl.INSTANCE.update();
+		FabricKeyboardImpl.updateModKeys(modKeys);
+		FabricMouseImpl.update();
 		ClientInputEvents.CHAR_TYPED.invoker().onChar(new CharEvent(codepoint, modKeys));
 	}
 
@@ -80,7 +80,7 @@ public final class InputCallbacksImpl {
 	private static double lastY = 0.0;
 
 	public static void onMouseMoved(long window, double x, double y) {
-		FabricMouseImpl.INSTANCE.update();
+		FabricMouseImpl.update();
 		double dx = hasMoved ? x - lastX : 0.0;
 		double dy = hasMoved ? y - lastY : 0.0;
 		ClientInputEvents.MOUSE_MOVED.invoker().onMouseMoved(new MouseMoveEvent(x, y, dx, dy));
@@ -90,8 +90,8 @@ public final class InputCallbacksImpl {
 	}
 
 	public static void onMouseButton(long window, int button, int action, int modKeys) {
-		FabricKeyboardImpl.INSTANCE.updateModKeys(modKeys);
-		FabricMouseImpl.INSTANCE.update();
+		FabricKeyboardImpl.updateModKeys(modKeys);
+		FabricMouseImpl.update();
 		MouseButtonEvent mouse = new MouseButtonEvent(button, action, modKeys);
 
 		switch (action) {

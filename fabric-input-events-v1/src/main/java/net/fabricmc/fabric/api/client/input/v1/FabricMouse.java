@@ -23,22 +23,22 @@ public final class FabricMouse {
 	}
 
 	public static double getX() {
-		return FabricMouseImpl.INSTANCE.getX();
+		return FabricMouseImpl.getX();
 	}
 
 	public static double getY() {
-		return FabricMouseImpl.INSTANCE.getY();
+		return FabricMouseImpl.getY();
 	}
 
 	public static int getPressedButtons() {
-		return FabricMouseImpl.INSTANCE.getPressedButtons();
+		return FabricMouseImpl.getPressedButtons();
 	}
 
 	public static boolean isButtonPressed(int button) {
-		return FabricMouseImpl.INSTANCE.isButtonPressed(button);
+		return FabricMouseImpl.isButtonPressed(button);
 	}
 
 	public static int getModKeys() {
-		return FabricMouseImpl.INSTANCE.getModKeys();
+		return FabricMouseImpl.getModKeys();
 	}
 }

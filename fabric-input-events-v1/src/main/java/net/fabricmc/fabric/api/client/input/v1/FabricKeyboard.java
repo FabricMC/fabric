@@ -25,14 +25,14 @@ public final class FabricKeyboard {
 	}
 
 	public static boolean isKeyPressed(int keycode, int scancode) {
-		return FabricKeyboardImpl.INSTANCE.isKeyPressed(keycode, scancode);
+		return FabricKeyboardImpl.isKeyPressed(keycode, scancode);
 	}
 
 	public static boolean isKeyPressed(Key key) {
-		return FabricKeyboardImpl.INSTANCE.isKeyPressed(key);
+		return FabricKeyboardImpl.isKeyPressed(key);
 	}
 
 	public static int getModKeys() {
-		return FabricKeyboardImpl.INSTANCE.getModKeys();
+		return FabricKeyboardImpl.getModKeys();
 	}
 }

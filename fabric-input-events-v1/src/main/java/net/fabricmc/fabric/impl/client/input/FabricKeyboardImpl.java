@@ -20,26 +20,24 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
 public class FabricKeyboardImpl {
-	public static FabricKeyboardImpl INSTANCE = new FabricKeyboardImpl();
-
-	private int modKeys = 0;
+	private static int modKeys = 0;
 
 	private FabricKeyboardImpl() {
 	}
 
-	public boolean isKeyPressed(int keycode, int scancode) {
+	public static boolean isKeyPressed(int keycode, int scancode) {
 		return InputUtil.isKeyPressed(keycode, scancode);
 	}
 
-	public boolean isKeyPressed(Key key) {
+	public static boolean isKeyPressed(Key key) {
 		return InputUtil.isKeyPressed(key.getCode(), -1);
 	}
 
-	public int getModKeys() {
-		return this.modKeys;
+	public static int getModKeys() {
+		return FabricKeyboardImpl.modKeys;
 	}
 
-	public void updateModKeys(int modKeys) {
-		this.modKeys = modKeys;
+	public static void updateModKeys(int modKeys) {
+		FabricKeyboardImpl.modKeys = modKeys;
 	}
 }
