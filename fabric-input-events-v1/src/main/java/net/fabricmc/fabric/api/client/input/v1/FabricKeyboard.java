@@ -24,14 +24,28 @@ public final class FabricKeyboard {
 	private FabricKeyboard() {
 	}
 
+	/**
+	 * Check if the given key is currently being pressed
+	 *
+	 * @param keycode the GLFW.GLFW_KEY code, or -1 if unknown
+	 * @param scancode the (system-specific) scancode, or -1 if unknown
+	 */
 	public static boolean isKeyPressed(int keycode, int scancode) {
 		return FabricKeyboardImpl.isKeyPressed(keycode, scancode);
 	}
 
+	/**
+	 * Check if the given key is currently being pressed
+	 *
+	 * @param Key the key to check
+	 */
 	public static boolean isKeyPressed(Key key) {
 		return FabricKeyboardImpl.isKeyPressed(key);
 	}
 
+	/**
+	 * Get the GLFW.GLFW_MOD modifier keys currently being pressed
+	 */
 	public static int getModKeys() {
 		return FabricKeyboardImpl.getModKeys();
 	}
