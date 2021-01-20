@@ -29,16 +29,18 @@ public class MouseButtonEvent extends GenericMouseEvent {
 
 	public final int button;
 	public final int action;
+	public final Key key;
 	public final int modKeys;
 
 	public MouseButtonEvent(int button, int action, int modKeys) {
 		super(FabricMouse.getX(), FabricMouse.getY(), 0.0, 0.0, FabricMouse.getPressedButtons(), FabricMouse.getModKeys());
 		this.button = button;
 		this.action = action;
+		this.key = map.get(this.button);
 		this.modKeys = modKeys;
 	}
 
 	public Key getKey() {
-		return map.get(this.button);
+		return this.key;
 	}
 }

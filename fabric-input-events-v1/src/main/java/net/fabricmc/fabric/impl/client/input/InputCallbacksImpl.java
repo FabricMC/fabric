@@ -23,6 +23,7 @@ import org.lwjgl.glfw.GLFWDropCallback;
 
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.util.InputUtil.Key;
 
 import net.fabricmc.fabric.api.client.input.v1.FabricMouse;
 import net.fabricmc.fabric.api.event.client.input.ClientInputEvents;
@@ -40,7 +41,7 @@ import net.fabricmc.fabric.mixin.event.input.client.accessor.GenericMouseEventAc
 
 public final class InputCallbacksImpl {
 	private static final KeyEvent sharedKeyEvent = new KeyEvent(-1, -1, GLFW.GLFW_RELEASE, 0);
-	private static final KeybindEvent sharedKeybindEvent = new KeybindEvent(-1, -1, GLFW.GLFW_RELEASE, 0, null);
+	private static final KeybindEvent sharedKeybindEvent = new KeybindEvent(-1, -1, GLFW.GLFW_RELEASE, 0, null, null);
 	private static final MouseMoveEvent sharedMouseMoveEvent = new MouseMoveEvent(0.0, 0.0, 0.0, 0.0);
 	private static final MouseButtonEvent sharedMouseButtonEvent = new MouseButtonEvent(0, GLFW.GLFW_RELEASE, 0);
 	private static final MouseScrollEvent sharedMouseScrollEvent = new MouseScrollEvent(0.0, 0.0);
@@ -55,12 +56,13 @@ public final class InputCallbacksImpl {
 		return sharedKeyEvent;
 	}
 
-	private static KeybindEvent createKeybindEvent(int code, int scancode, int action, int modKeys, KeyBinding keybind) {
+	private static KeybindEvent createKeybindEvent(int code, int scancode, int action, int modKeys, Key key, KeyBinding keybind) {
 		KeybindEventAccessor accessor = (KeybindEventAccessor) (Object) sharedKeybindEvent;
 		accessor.setCode(code);
 		accessor.setScancode(scancode);
 		accessor.setAction(action);
 		accessor.setModKeys(modKeys);
+		accessor.setKey(key);
 		accessor.setKeybind(keybind);
 		return sharedKeybindEvent;
 	}
@@ -108,24 +110,25 @@ public final class InputCallbacksImpl {
 	public static void onKey(long window, int code, int scancode, int action, int modKeys) {
 		FabricKeyboardImpl.updateModKeys(modKeys);
 		FabricMouseImpl.update();
-		KeyEvent key = createKeyEvent(code, scancode, action, modKeys);
+		KeyEvent keyEvent = createKeyEvent(code, scancode, action, modKeys);
 		switch (action) {
 		case GLFW.GLFW_PRESS:
-			ClientInputEvents.KEY_PRESSED.invoker().onKey(key);
+			ClientInputEvents.KEY_PRESSED.invoker().onKey(keyEvent);
 			break;
 		case GLFW.GLFW_RELEASE:
-			ClientInputEvents.KEY_RELEASED.invoker().onKey(key);
+			ClientInputEvents.KEY_RELEASED.invoker().onKey(keyEvent);
 			break;
 		case GLFW.GLFW_REPEAT:
-			ClientInputEvents.KEY_REPEATED.invoker().onKey(key);
+			ClientInputEvents.KEY_REPEATED.invoker().onKey(keyEvent);
 			break;
 		}
 
 		Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
-		KeyBinding binding = keyToBindings.get(key.getKey());
+		Key key = keyEvent.getKey();
+		KeyBinding binding = keyToBindings.get(key);
 
 		if (binding != null) {
-			KeybindEvent keybind = createKeybindEvent(code, scancode, action, modKeys, binding);
+			KeybindEvent keybind = createKeybindEvent(code, scancode, action, modKeys, key, binding);
 			switch (action) {
 			case GLFW.GLFW_PRESS:
 				ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(keybind);
@@ -176,10 +179,11 @@ public final class InputCallbacksImpl {
 		}
 
 		Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
-		KeyBinding binding = keyToBindings.get(mouse.getKey());
+		Key key = mouse.getKey();
+		KeyBinding binding = keyToBindings.get(key);
 
 		if (binding != null) {
-			KeybindEvent keybind = createKeybindEvent(button, -1, action, modKeys, binding);
+			KeybindEvent keybind = createKeybindEvent(button, -1, action, modKeys, key, binding);
 			switch (action) {
 			case GLFW.GLFW_PRESS:
 				ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(keybind);

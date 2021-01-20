@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil.Key;
 
 import net.fabricmc.fabric.api.event.client.input.KeybindEvent;
 
@@ -39,4 +40,7 @@ public interface KeybindEventAccessor {
 
 	@Accessor
 	void setKeybind(KeyBinding keybind);
+
+	@Accessor
+	void setKey(Key key);
 }

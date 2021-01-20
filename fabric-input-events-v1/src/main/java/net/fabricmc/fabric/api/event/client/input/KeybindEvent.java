@@ -21,20 +21,20 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.options.KeyBinding;
 import net.minecraft.client.util.InputUtil.Key;
 
-import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
-
 public final class KeybindEvent extends GenericKeyEvent {
 	public final int code;
 	public final int scancode;
 	public final int action;
 	public final int modKeys;
+	public final Key key;
 	public final KeyBinding keybind;
 
-	public KeybindEvent(int code, int scancode, int action, int modKeys, KeyBinding keybind) {
+	public KeybindEvent(int code, int scancode, int action, int modKeys, Key key, KeyBinding keybind) {
 		this.code = code;
 		this.scancode = scancode;
 		this.action = action;
 		this.modKeys = modKeys;
+		this.key = key;
 		this.keybind = keybind;
 	}
 
@@ -60,7 +60,7 @@ public final class KeybindEvent extends GenericKeyEvent {
 
 	@Override
 	public Key getKey() {
-		return ((KeyBindingMixin) this.keybind).getBoundKey();
+		return this.key;
 	}
 
 	public KeyBinding getKeybind() {
