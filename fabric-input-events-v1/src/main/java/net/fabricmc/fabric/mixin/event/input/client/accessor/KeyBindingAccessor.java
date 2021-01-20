@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.event.input.client;
+package net.fabricmc.fabric.mixin.event.input.client.accessor;
 
 import java.util.Map;
 
@@ -26,7 +26,7 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
 @Mixin(KeyBinding.class)
-public interface KeyBindingMixin {
+public interface KeyBindingAccessor {
 	@Accessor("keyToBindings")
 	static Map<InputUtil.Key, KeyBinding> getKeyToBindings() {
 		throw new AssertionError("Untransformed accessor!");

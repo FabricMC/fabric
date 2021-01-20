@@ -33,10 +33,10 @@ import net.fabricmc.fabric.api.event.client.input.KeybindEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseButtonEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseMoveEvent;
 import net.fabricmc.fabric.api.event.client.input.MouseScrollEvent;
-import net.fabricmc.fabric.mixin.event.input.client.KeyBindingMixin;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.InputUtilTypeAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.KeyEventAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.KeybindEventAccessor;
+import net.fabricmc.fabric.mixin.event.input.client.accessor.KeyBindingAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.MouseButtonEventAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.MouseMoveEventAccessor;
 import net.fabricmc.fabric.mixin.event.input.client.accessor.GenericMouseEventAccessor;
@@ -126,7 +126,7 @@ public final class InputCallbacksImpl {
 			break;
 		}
 
-		Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
+		Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingAccessor.getKeyToBindings();
 		Key key = keyEvent.getKey();
 		KeyBinding binding = keyToBindings.get(key);
 
@@ -168,7 +168,7 @@ public final class InputCallbacksImpl {
 	}
 
 	private static final Int2ObjectMap<Key> buttonToKey = ((InputUtilTypeAccessor) (Object) InputUtil.Type.MOUSE).getMap();
-	private static final Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingMixin.getKeyToBindings();
+	private static final Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingAccessor.getKeyToBindings();
 
 	public static void onMouseButton(long window, int button, int action, int modKeys) {
 		FabricKeyboardImpl.updateModKeys(modKeys);
