@@ -37,7 +37,7 @@ public final class FabricKeyboard {
 	/**
 	 * Check if the given key is currently being pressed.
 	 *
-	 * @param Key the key to check
+	 * @param key the key to check
 	 */
 	public static boolean isKeyPressed(Key key) {
 		return FabricKeyboardImpl.isKeyPressed(key);
