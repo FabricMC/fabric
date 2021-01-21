@@ -23,6 +23,12 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 
+/**
+ * Retrieve the state of the keyboard keys.
+ *
+ * <p>Note that, unlike {@link net.minecraft.client.Keyboard}, the state is up to date
+ * even inside Screen handlers and input event listeners.
+ */
 @Environment(EnvType.CLIENT)
 public final class FabricKeyboard {
 	private FabricKeyboard() {

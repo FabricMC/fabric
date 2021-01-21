@@ -21,6 +21,12 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 import net.fabricmc.fabric.impl.client.input.FabricMouseImpl;
 
+/**
+ * Retrieve the state of the mouse buttons and the position of the cursor.
+ *
+ * <p>Note that, unlike {@link net.minecraft.client.Mouse}, the state is up to date
+ * even inside Screen handlers and input event listeners.
+ */
 @Environment(EnvType.CLIENT)
 public final class FabricMouse {
 	private FabricMouse() {
