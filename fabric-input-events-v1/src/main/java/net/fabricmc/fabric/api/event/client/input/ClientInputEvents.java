@@ -67,7 +67,7 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
-	 * Called when the player presses a key that is bound to some keybind for a while.
+	 * Called when the player holds a key that is bound to some keybind for a while.
 	 */
 	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, action, modKeys, key, binding) -> {
 		for (KeybindState listener : listeners) {
