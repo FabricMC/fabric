@@ -45,7 +45,7 @@ public final class FabricMouse {
 	}
 
 	/**
-	 * Check if the given mosue button is currently being pressed.
+	 * Check if the given mouse button is currently being pressed.
 	 *
 	 * @param button the GLFW.GLFW_MOUSE_BUTTON to check
 	 */
