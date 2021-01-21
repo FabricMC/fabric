@@ -44,6 +44,17 @@ public abstract class Event<T> {
 	}
 
 	/**
+	 * Some events can be optimized away if nobody is listening. If an Event
+	 * implementation can quickly check for this condition, it may override this
+	 * method to return false in that case.
+	 *
+	 * @return True if the event might have any listeners.
+	 */
+	public boolean hasListeners() {
+		return true;
+	}
+
+	/**
 	 * Register a listener to the event.
 	 *
 	 * @param listener The desired listener.

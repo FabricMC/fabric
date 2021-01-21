@@ -51,6 +51,11 @@ class ArrayBackedEvent<T> extends Event<T> {
 	}
 
 	@Override
+	public boolean hasListeners() {
+		return handlers.length != 0;
+	}
+
+	@Override
 	public void register(T listener) {
 		if (listener == null) {
 			throw new NullPointerException("Tried to register a null listener!");

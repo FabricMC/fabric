@@ -34,33 +34,44 @@ public final class InputCallbacksImpl {
 	public static void onKey(long window, int code, int scancode, int action, int modKeys) {
 		FabricKeyboardImpl.updateModKeys(modKeys);
 
-		Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingAccessor.getKeyToBindings();
-		Key key = InputUtil.fromKeyCode(code, scancode);
-		KeyBinding binding = keyToBindings.get(key);
+		ClientInputEvents.KEY.invoker().onKeyChanged(code, scancode, action, modKeys);
 
-		switch (action) {
-		case GLFW.GLFW_PRESS:
-			ClientInputEvents.KEY_PRESSED.invoker().onKey(code, scancode, action, modKeys, key);
-			break;
-		case GLFW.GLFW_RELEASE:
-			ClientInputEvents.KEY_RELEASED.invoker().onKey(code, scancode, action, modKeys, key);
-			break;
-		case GLFW.GLFW_REPEAT:
-			ClientInputEvents.KEY_REPEATED.invoker().onKey(code, scancode, action, modKeys, key);
-			break;
-		}
+		boolean hasListeners = ClientInputEvents.KEY_PRESSED.hasListeners()
+							|| ClientInputEvents.KEY_RELEASED.hasListeners()
+							|| ClientInputEvents.KEY_REPEATED.hasListeners()
+							|| ClientInputEvents.KEYBIND_PRESSED.hasListeners()
+							|| ClientInputEvents.KEYBIND_RELEASED.hasListeners()
+							|| ClientInputEvents.KEYBIND_REPEATED.hasListeners();
 
-		if (binding != null) {
+		if (hasListeners) {
+			Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingAccessor.getKeyToBindings();
+			Key key = InputUtil.fromKeyCode(code, scancode);
+			KeyBinding binding = keyToBindings.get(key);
+
 			switch (action) {
 			case GLFW.GLFW_PRESS:
-				ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+				ClientInputEvents.KEY_PRESSED.invoker().onKey(code, scancode, action, modKeys, key);
 				break;
 			case GLFW.GLFW_RELEASE:
-				ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+				ClientInputEvents.KEY_RELEASED.invoker().onKey(code, scancode, action, modKeys, key);
 				break;
 			case GLFW.GLFW_REPEAT:
-				ClientInputEvents.KEYBIND_REPEATED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+				ClientInputEvents.KEY_REPEATED.invoker().onKey(code, scancode, action, modKeys, key);
 				break;
+			}
+
+			if (binding != null) {
+				switch (action) {
+				case GLFW.GLFW_PRESS:
+					ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+					break;
+				case GLFW.GLFW_RELEASE:
+					ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+					break;
+				case GLFW.GLFW_REPEAT:
+					ClientInputEvents.KEYBIND_REPEATED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+					break;
+				}
 			}
 		}
 	}
@@ -90,26 +101,36 @@ public final class InputCallbacksImpl {
 	public static void onMouseButton(long window, int button, int action, int modKeys) {
 		FabricKeyboardImpl.updateModKeys(modKeys);
 		FabricMouseImpl.updateButton(button, action != GLFW.GLFW_RELEASE);
-		Key key = buttonToKey.get(button);
-		KeyBinding binding = keyToBindings.get(key);
 
-		switch (action) {
-		case GLFW.GLFW_PRESS:
-			ClientInputEvents.MOUSE_BUTTON_PRESSED.invoker().onMouseButton(button, action, modKeys, key);
-			break;
-		case GLFW.GLFW_RELEASE:
-			ClientInputEvents.MOUSE_BUTTON_RELEASED.invoker().onMouseButton(button, action, modKeys, key);
-			break;
-		}
+		ClientInputEvents.MOUSE_BUTTON.invoker().onMouseButtonChanged(button, action, modKeys);
 
-		if (binding != null) {
+		boolean hasListeners = ClientInputEvents.MOUSE_BUTTON_PRESSED.hasListeners()
+							|| ClientInputEvents.MOUSE_BUTTON_RELEASED.hasListeners()
+							|| ClientInputEvents.KEYBIND_PRESSED.hasListeners()
+							|| ClientInputEvents.KEYBIND_RELEASED.hasListeners();
+
+		if (hasListeners) {
+			Key key = buttonToKey.get(button);
+			KeyBinding binding = keyToBindings.get(key);
+
 			switch (action) {
 			case GLFW.GLFW_PRESS:
-				ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(button, -1, action, modKeys, key, binding);
+				ClientInputEvents.MOUSE_BUTTON_PRESSED.invoker().onMouseButton(button, action, modKeys, key);
 				break;
 			case GLFW.GLFW_RELEASE:
-				ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(button, -1, action, modKeys, key, binding);
+				ClientInputEvents.MOUSE_BUTTON_RELEASED.invoker().onMouseButton(button, action, modKeys, key);
 				break;
+			}
+
+			if (binding != null) {
+				switch (action) {
+				case GLFW.GLFW_PRESS:
+					ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(button, -1, action, modKeys, key, binding);
+					break;
+				case GLFW.GLFW_RELEASE:
+					ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(button, -1, action, modKeys, key, binding);
+					break;
+				}
 			}
 		}
 	}

@@ -27,6 +27,14 @@ import net.fabricmc.fabric.api.event.EventFactory;
 @Environment(EnvType.CLIENT)
 public final class ClientInputEvents {
 	/**
+	 * Called when the player presses, releases, or holds a key.
+	 */
+	public static final Event<KeyChanged> KEY = EventFactory.createArrayBacked(KeyChanged.class, listeners -> (code, scancode, action, modKeys) -> {
+		for (KeyChanged listener : listeners) {
+			listener.onKeyChanged(code, scancode, action, modKeys);
+		}
+	});
+	/**
 	 * Called when the player presses a key.
 	 */
 	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, action, modKeys, key) -> {
@@ -94,6 +102,14 @@ public final class ClientInputEvents {
 		}
 	});
 	/**
+	 * Called when the player presses or releases a button on their mouse.
+	 */
+	public static final Event<MouseButtonChanged> MOUSE_BUTTON = EventFactory.createArrayBacked(MouseButtonChanged.class, listeners -> (button, action, modKeys) -> {
+		for (MouseButtonChanged listener : listeners) {
+			listener.onMouseButtonChanged(button, action, modKeys);
+		}
+	});
+	/**
 	 * Called when the player presses a button on their mouse.
 	 */
 	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, action, modKeys, key) -> {
@@ -127,6 +143,11 @@ public final class ClientInputEvents {
 	});
 
 	@FunctionalInterface
+	public interface KeyChanged {
+		void onKeyChanged(int code, int scancode, int action, int modKeys);
+	}
+
+	@FunctionalInterface
 	public interface KeyState {
 		void onKey(int code, int scancode, int action, int modKeys, Key key);
 	}
@@ -144,6 +165,11 @@ public final class ClientInputEvents {
 	@FunctionalInterface
 	public interface MouseMove {
 		void onMouseMoved(double x, double y, double dx, double dy);
+	}
+
+	@FunctionalInterface
+	public interface MouseButtonChanged {
+		void onMouseButtonChanged(int button, int action, int modKeys);
 	}
 
 	@FunctionalInterface
