@@ -20,7 +20,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.input.v1.FabricMouse;
 import net.fabricmc.fabric.api.event.client.input.ClientInputEvents;
 
 public class ClientInputEventsTest implements ModInitializer {
@@ -28,39 +27,38 @@ public class ClientInputEventsTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ClientInputEvents.KEY_PRESSED.register(key -> {
-			LOGGER.info("pressed {}", key.getKey().getTranslationKey());
+		ClientInputEvents.KEY_PRESSED.register((code, scancode, action, modKeys, key) -> {
+			LOGGER.info("pressed {}", key.getTranslationKey());
 		});
-		ClientInputEvents.KEY_RELEASED.register(key -> {
-			LOGGER.info("released {}", key.getKey().getTranslationKey());
+		ClientInputEvents.KEY_RELEASED.register((code, scancode, action, modKeys, key) -> {
+			LOGGER.info("released {}", key.getTranslationKey());
 		});
-		ClientInputEvents.KEY_REPEATED.register(key -> {
-			LOGGER.info("repeated {}", key.getKey().getTranslationKey());
+		ClientInputEvents.KEY_REPEATED.register((code, scancode, action, modKeys, key) -> {
+			LOGGER.info("repeated {}", key.getTranslationKey());
 		});
-		ClientInputEvents.KEYBIND_PRESSED.register(key -> {
-			LOGGER.info("pressed {}", key.getKeybind().getTranslationKey());
+		ClientInputEvents.KEYBIND_PRESSED.register((code, scancode, action, modKeys, key, binding) -> {
+			LOGGER.info("pressed {}", binding.getTranslationKey());
 		});
-		ClientInputEvents.KEYBIND_RELEASED.register(key -> {
-			LOGGER.info("released {}", key.getKeybind().getTranslationKey());
+		ClientInputEvents.KEYBIND_RELEASED.register((code, scancode, action, modKeys, key, binding) -> {
+			LOGGER.info("released {}", binding.getTranslationKey());
 		});
-		ClientInputEvents.KEYBIND_REPEATED.register(key -> {
-			LOGGER.info("repeated {}", key.getKeybind().getTranslationKey());
+		ClientInputEvents.KEYBIND_REPEATED.register((code, scancode, action, modKeys, key, binding) -> {
+			LOGGER.info("repeated {}", binding.getTranslationKey());
 		});
 		ClientInputEvents.CHAR_TYPED.register((codepoint, modKeys) -> {
 			LOGGER.info("typed U+{}", String.format("%04x", codepoint));
 		});
-		ClientInputEvents.MOUSE_MOVED.register(mouse -> {
-			LOGGER.info("moved to {},{} (delta {},{})", mouse.x, mouse.y, mouse.dx, mouse.dy);
-			LOGGER.info("mouse position is now {},{}", FabricMouse.getX(), FabricMouse.getY());
+		ClientInputEvents.MOUSE_MOVED.register((x, y, dx, dy) -> {
+			LOGGER.info("moved to {},{} (delta {},{})", x, y, dx, dy);
 		});
-		ClientInputEvents.MOUSE_BUTTON_PRESSED.register(mouse -> {
-			LOGGER.info("pressed {}", mouse.getKey().getTranslationKey());
+		ClientInputEvents.MOUSE_BUTTON_PRESSED.register((button, action, modKeys, key) -> {
+			LOGGER.info("pressed {}", key.getTranslationKey());
 		});
-		ClientInputEvents.MOUSE_BUTTON_RELEASED.register(mouse -> {
-			LOGGER.info("released {}", mouse.getKey().getTranslationKey());
+		ClientInputEvents.MOUSE_BUTTON_RELEASED.register((button, action, modKeys, key) -> {
+			LOGGER.info("released {}", key.getTranslationKey());
 		});
-		ClientInputEvents.MOUSE_WHEEL_SCROLLED.register(mouse -> {
-			LOGGER.info("scrolled by {},{}", mouse.scrollX, mouse.scrollY);
+		ClientInputEvents.MOUSE_WHEEL_SCROLLED.register((scrollX, scrollY) -> {
+			LOGGER.info("scrolled by {},{}", scrollX, scrollY);
 		});
 	}
 }

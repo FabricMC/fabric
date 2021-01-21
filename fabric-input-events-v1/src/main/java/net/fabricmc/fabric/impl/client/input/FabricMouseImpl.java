@@ -48,7 +48,20 @@ public final class FabricMouseImpl {
 		return (FabricMouseImpl.buttons & (1 << button)) != 0;
 	}
 
-	public static void update() {
+	public static void updatePosition(int x, int y) {
+		FabricMouseImpl.x = x;
+		FabricMouseImpl.y = y;
+	}
+
+	public static void updateButton(int button, boolean pressed) {
+		if (pressed) {
+			FabricMouseImpl.buttons |= (1 << button);
+		} else {
+			FabricMouseImpl.buttons &= ~(1 << button);
+		}
+	}
+
+	public static void queryPosition() {
 		MinecraftClient client = MinecraftClient.getInstance();
 
 		if (client == null) {
@@ -65,24 +78,5 @@ public final class FabricMouseImpl {
 			FabricMouseImpl.x = current_x.get();
 			FabricMouseImpl.y = current_y.get();
 		}
-
-		int buttons = 0;
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_1);
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_2);
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_3);
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_4);
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_5);
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_6);
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_7);
-		buttons = checkAndAddButton(handle, buttons, GLFW.GLFW_MOUSE_BUTTON_8);
-		FabricMouseImpl.buttons = buttons;
-	}
-
-	private static int checkAndAddButton(long handle, int buttons, int button) {
-		if (GLFW.glfwGetMouseButton(handle, button) == GLFW.GLFW_PRESS) {
-			return buttons | (1 << button);
-		}
-
-		return buttons;
 	}
 }

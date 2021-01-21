@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.api.event.client.input;
 
+import net.minecraft.client.options.KeyBinding;
+import net.minecraft.client.util.InputUtil.Key;
+
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.event.Event;
@@ -26,49 +29,49 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player presses a key.
 	 */
-	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
+	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, action, modKeys, key) -> {
 		for (KeyState listener : listeners) {
-			listener.onKey(key);
+			listener.onKey(code, scancode, action, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player releases a key.
 	 */
-	public static final Event<KeyState> KEY_RELEASED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
+	public static final Event<KeyState> KEY_RELEASED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, action, modKeys, key) -> {
 		for (KeyState listener : listeners) {
-			listener.onKey(key);
+			listener.onKey(code, scancode, action, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player holds a key for a while.
 	 */
-	public static final Event<KeyState> KEY_REPEATED = EventFactory.createArrayBacked(KeyState.class, listeners -> key -> {
+	public static final Event<KeyState> KEY_REPEATED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, action, modKeys, key) -> {
 		for (KeyState listener : listeners) {
-			listener.onKey(key);
+			listener.onKey(code, scancode, action, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player presses a key that is bound to some keybind.
 	 */
-	public static final Event<KeybindState> KEYBIND_PRESSED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
+	public static final Event<KeybindState> KEYBIND_PRESSED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, action, modKeys, key, binding) -> {
 		for (KeybindState listener : listeners) {
-			listener.onKeybind(key);
+			listener.onKeybind(code, scancode, action, modKeys, key, binding);
 		}
 	});
 	/**
 	 * Called when the player releases a key that is bound to some keybind.
 	 */
-	public static final Event<KeybindState> KEYBIND_RELEASED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
+	public static final Event<KeybindState> KEYBIND_RELEASED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, action, modKeys, key, binding) -> {
 		for (KeybindState listener : listeners) {
-			listener.onKeybind(key);
+			listener.onKeybind(code, scancode, action, modKeys, key, binding);
 		}
 	});
 	/**
 	 * Called when the player presses a key that is bound to some keybind for a while.
 	 */
-	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> key -> {
+	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, action, modKeys, key, binding) -> {
 		for (KeybindState listener : listeners) {
-			listener.onKeybind(key);
+			listener.onKeybind(code, scancode, action, modKeys, key, binding);
 		}
 	});
 	/**
@@ -85,33 +88,33 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player moves their mouse.
 	 */
-	public static final Event<MouseMove> MOUSE_MOVED = EventFactory.createArrayBacked(MouseMove.class, listeners -> mouse -> {
+	public static final Event<MouseMove> MOUSE_MOVED = EventFactory.createArrayBacked(MouseMove.class, listeners -> (x, y, dx, dy) -> {
 		for (MouseMove listener : listeners) {
-			listener.onMouseMoved(mouse);
+			listener.onMouseMoved(x, y, dx, dy);
 		}
 	});
 	/**
 	 * Called when the player presses a button on their mouse.
 	 */
-	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> mouse -> {
+	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, action, modKeys, key) -> {
 		for (MouseButtonState listener : listeners) {
-			listener.onMouseButton(mouse);
+			listener.onMouseButton(button, action, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player releases a button on their mouse.
 	 */
-	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> mouse -> {
+	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, action, modKeys, key) -> {
 		for (MouseButtonState listener : listeners) {
-			listener.onMouseButton(mouse);
+			listener.onMouseButton(button, action, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player scrolls their mouse wheel.
 	 */
-	public static final Event<MouseScroll> MOUSE_WHEEL_SCROLLED = EventFactory.createArrayBacked(MouseScroll.class, listeners -> mouse -> {
+	public static final Event<MouseScroll> MOUSE_WHEEL_SCROLLED = EventFactory.createArrayBacked(MouseScroll.class, listeners -> (dx, dy) -> {
 		for (MouseScroll listener : listeners) {
-			listener.onMouseScrolled(mouse);
+			listener.onMouseScrolled(dx, dy);
 		}
 	});
 	/**
@@ -125,12 +128,12 @@ public final class ClientInputEvents {
 
 	@FunctionalInterface
 	public interface KeyState {
-		void onKey(KeyEvent key);
+		void onKey(int code, int scancode, int action, int modKeys, Key key);
 	}
 
 	@FunctionalInterface
 	public interface KeybindState {
-		void onKeybind(KeybindEvent key);
+		void onKeybind(int code, int scancode, int action, int modKeys, Key key, KeyBinding binding);
 	}
 
 	@FunctionalInterface
@@ -140,17 +143,17 @@ public final class ClientInputEvents {
 
 	@FunctionalInterface
 	public interface MouseMove {
-		void onMouseMoved(MouseMoveEvent mouse);
+		void onMouseMoved(double x, double y, double dx, double dy);
 	}
 
 	@FunctionalInterface
 	public interface MouseButtonState {
-		void onMouseButton(MouseButtonEvent mouse);
+		void onMouseButton(int button, int action, int modKeys, Key key);
 	}
 
 	@FunctionalInterface
 	public interface MouseScroll {
-		void onMouseScrolled(MouseScrollEvent mouse);
+		void onMouseScrolled(double dx, double dy);
 	}
 
 	@FunctionalInterface
