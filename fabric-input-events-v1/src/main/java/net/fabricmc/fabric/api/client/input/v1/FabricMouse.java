@@ -16,9 +16,12 @@
 
 package net.fabricmc.fabric.api.client.input.v1;
 
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 import net.fabricmc.fabric.impl.client.input.FabricMouseImpl;
 
+@Environment(EnvType.CLIENT)
 public final class FabricMouse {
 	private FabricMouse() {
 	}

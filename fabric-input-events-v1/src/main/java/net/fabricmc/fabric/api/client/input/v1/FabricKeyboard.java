@@ -18,8 +18,11 @@ package net.fabricmc.fabric.api.client.input.v1;
 
 import net.minecraft.client.util.InputUtil.Key;
 
+import net.fabricmc.api.Environment;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 
+@Environment(EnvType.CLIENT)
 public final class FabricKeyboard {
 	private FabricKeyboard() {
 	}
