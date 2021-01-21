@@ -37,49 +37,49 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player presses a key.
 	 */
-	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, action, modKeys, key) -> {
+	public static final Event<KeyState> KEY_PRESSED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, modKeys, key) -> {
 		for (KeyState listener : listeners) {
-			listener.onKey(code, scancode, action, modKeys, key);
+			listener.onKey(code, scancode, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player releases a key.
 	 */
-	public static final Event<KeyState> KEY_RELEASED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, action, modKeys, key) -> {
+	public static final Event<KeyState> KEY_RELEASED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, modKeys, key) -> {
 		for (KeyState listener : listeners) {
-			listener.onKey(code, scancode, action, modKeys, key);
+			listener.onKey(code, scancode, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player holds a key for a while.
 	 */
-	public static final Event<KeyState> KEY_REPEATED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, action, modKeys, key) -> {
+	public static final Event<KeyState> KEY_REPEATED = EventFactory.createArrayBacked(KeyState.class, listeners -> (code, scancode, modKeys, key) -> {
 		for (KeyState listener : listeners) {
-			listener.onKey(code, scancode, action, modKeys, key);
+			listener.onKey(code, scancode, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player presses a key that is bound to some keybind.
 	 */
-	public static final Event<KeybindState> KEYBIND_PRESSED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, action, modKeys, key, binding) -> {
+	public static final Event<KeybindState> KEYBIND_PRESSED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, modKeys, key, binding) -> {
 		for (KeybindState listener : listeners) {
-			listener.onKeybind(code, scancode, action, modKeys, key, binding);
+			listener.onKeybind(code, scancode, modKeys, key, binding);
 		}
 	});
 	/**
 	 * Called when the player releases a key that is bound to some keybind.
 	 */
-	public static final Event<KeybindState> KEYBIND_RELEASED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, action, modKeys, key, binding) -> {
+	public static final Event<KeybindState> KEYBIND_RELEASED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, modKeys, key, binding) -> {
 		for (KeybindState listener : listeners) {
-			listener.onKeybind(code, scancode, action, modKeys, key, binding);
+			listener.onKeybind(code, scancode, modKeys, key, binding);
 		}
 	});
 	/**
 	 * Called when the player holds a key that is bound to some keybind for a while.
 	 */
-	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, action, modKeys, key, binding) -> {
+	public static final Event<KeybindState> KEYBIND_REPEATED = EventFactory.createArrayBacked(KeybindState.class, listeners -> (code, scancode, modKeys, key, binding) -> {
 		for (KeybindState listener : listeners) {
-			listener.onKeybind(code, scancode, action, modKeys, key, binding);
+			listener.onKeybind(code, scancode, modKeys, key, binding);
 		}
 	});
 	/**
@@ -112,17 +112,17 @@ public final class ClientInputEvents {
 	/**
 	 * Called when the player presses a button on their mouse.
 	 */
-	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, action, modKeys, key) -> {
+	public static final Event<MouseButtonState> MOUSE_BUTTON_PRESSED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, modKeys, key) -> {
 		for (MouseButtonState listener : listeners) {
-			listener.onMouseButton(button, action, modKeys, key);
+			listener.onMouseButton(button, modKeys, key);
 		}
 	});
 	/**
 	 * Called when the player releases a button on their mouse.
 	 */
-	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, action, modKeys, key) -> {
+	public static final Event<MouseButtonState> MOUSE_BUTTON_RELEASED = EventFactory.createArrayBacked(MouseButtonState.class, listeners -> (button, modKeys, key) -> {
 		for (MouseButtonState listener : listeners) {
-			listener.onMouseButton(button, action, modKeys, key);
+			listener.onMouseButton(button, modKeys, key);
 		}
 	});
 	/**
@@ -149,12 +149,12 @@ public final class ClientInputEvents {
 
 	@FunctionalInterface
 	public interface KeyState {
-		void onKey(int code, int scancode, int action, int modKeys, Key key);
+		void onKey(int code, int scancode, int modKeys, Key key);
 	}
 
 	@FunctionalInterface
 	public interface KeybindState {
-		void onKeybind(int code, int scancode, int action, int modKeys, Key key, KeyBinding binding);
+		void onKeybind(int code, int scancode, int modKeys, Key key, KeyBinding binding);
 	}
 
 	@FunctionalInterface
@@ -174,7 +174,7 @@ public final class ClientInputEvents {
 
 	@FunctionalInterface
 	public interface MouseButtonState {
-		void onMouseButton(int button, int action, int modKeys, Key key);
+		void onMouseButton(int button, int modKeys, Key key);
 	}
 
 	@FunctionalInterface

@@ -27,22 +27,22 @@ public class ClientInputEventsTest implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ClientInputEvents.KEY_PRESSED.register((code, scancode, action, modKeys, key) -> {
+		ClientInputEvents.KEY_PRESSED.register((code, scancode, modKeys, key) -> {
 			LOGGER.info("pressed {}", key.getTranslationKey());
 		});
-		ClientInputEvents.KEY_RELEASED.register((code, scancode, action, modKeys, key) -> {
+		ClientInputEvents.KEY_RELEASED.register((code, scancode, modKeys, key) -> {
 			LOGGER.info("released {}", key.getTranslationKey());
 		});
-		ClientInputEvents.KEY_REPEATED.register((code, scancode, action, modKeys, key) -> {
+		ClientInputEvents.KEY_REPEATED.register((code, scancode, modKeys, key) -> {
 			LOGGER.info("repeated {}", key.getTranslationKey());
 		});
-		ClientInputEvents.KEYBIND_PRESSED.register((code, scancode, action, modKeys, key, binding) -> {
+		ClientInputEvents.KEYBIND_PRESSED.register((code, scancode, modKeys, key, binding) -> {
 			LOGGER.info("pressed {}", binding.getTranslationKey());
 		});
-		ClientInputEvents.KEYBIND_RELEASED.register((code, scancode, action, modKeys, key, binding) -> {
+		ClientInputEvents.KEYBIND_RELEASED.register((code, scancode, modKeys, key, binding) -> {
 			LOGGER.info("released {}", binding.getTranslationKey());
 		});
-		ClientInputEvents.KEYBIND_REPEATED.register((code, scancode, action, modKeys, key, binding) -> {
+		ClientInputEvents.KEYBIND_REPEATED.register((code, scancode, modKeys, key, binding) -> {
 			LOGGER.info("repeated {}", binding.getTranslationKey());
 		});
 		ClientInputEvents.CHAR_TYPED.register((codepoint, modKeys) -> {
@@ -51,10 +51,10 @@ public class ClientInputEventsTest implements ModInitializer {
 		ClientInputEvents.MOUSE_MOVED.register((x, y, dx, dy) -> {
 			LOGGER.info("moved to {},{} (delta {},{})", x, y, dx, dy);
 		});
-		ClientInputEvents.MOUSE_BUTTON_PRESSED.register((button, action, modKeys, key) -> {
+		ClientInputEvents.MOUSE_BUTTON_PRESSED.register((button, modKeys, key) -> {
 			LOGGER.info("pressed {}", key.getTranslationKey());
 		});
-		ClientInputEvents.MOUSE_BUTTON_RELEASED.register((button, action, modKeys, key) -> {
+		ClientInputEvents.MOUSE_BUTTON_RELEASED.register((button, modKeys, key) -> {
 			LOGGER.info("released {}", key.getTranslationKey());
 		});
 		ClientInputEvents.MOUSE_WHEEL_SCROLLED.register((scrollX, scrollY) -> {

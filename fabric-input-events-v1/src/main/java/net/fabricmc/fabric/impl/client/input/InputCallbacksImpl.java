@@ -50,26 +50,26 @@ public final class InputCallbacksImpl {
 
 			switch (action) {
 			case GLFW.GLFW_PRESS:
-				ClientInputEvents.KEY_PRESSED.invoker().onKey(code, scancode, action, modKeys, key);
+				ClientInputEvents.KEY_PRESSED.invoker().onKey(code, scancode, modKeys, key);
 				break;
 			case GLFW.GLFW_RELEASE:
-				ClientInputEvents.KEY_RELEASED.invoker().onKey(code, scancode, action, modKeys, key);
+				ClientInputEvents.KEY_RELEASED.invoker().onKey(code, scancode, modKeys, key);
 				break;
 			case GLFW.GLFW_REPEAT:
-				ClientInputEvents.KEY_REPEATED.invoker().onKey(code, scancode, action, modKeys, key);
+				ClientInputEvents.KEY_REPEATED.invoker().onKey(code, scancode, modKeys, key);
 				break;
 			}
 
 			if (binding != null) {
 				switch (action) {
 				case GLFW.GLFW_PRESS:
-					ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+					ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(code, scancode, modKeys, key, binding);
 					break;
 				case GLFW.GLFW_RELEASE:
-					ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+					ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(code, scancode, modKeys, key, binding);
 					break;
 				case GLFW.GLFW_REPEAT:
-					ClientInputEvents.KEYBIND_REPEATED.invoker().onKeybind(code, scancode, action, modKeys, key, binding);
+					ClientInputEvents.KEYBIND_REPEATED.invoker().onKeybind(code, scancode, modKeys, key, binding);
 					break;
 				}
 			}
@@ -115,20 +115,20 @@ public final class InputCallbacksImpl {
 
 			switch (action) {
 			case GLFW.GLFW_PRESS:
-				ClientInputEvents.MOUSE_BUTTON_PRESSED.invoker().onMouseButton(button, action, modKeys, key);
+				ClientInputEvents.MOUSE_BUTTON_PRESSED.invoker().onMouseButton(button, modKeys, key);
 				break;
 			case GLFW.GLFW_RELEASE:
-				ClientInputEvents.MOUSE_BUTTON_RELEASED.invoker().onMouseButton(button, action, modKeys, key);
+				ClientInputEvents.MOUSE_BUTTON_RELEASED.invoker().onMouseButton(button, modKeys, key);
 				break;
 			}
 
 			if (binding != null) {
 				switch (action) {
 				case GLFW.GLFW_PRESS:
-					ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(button, -1, action, modKeys, key, binding);
+					ClientInputEvents.KEYBIND_PRESSED.invoker().onKeybind(button, -1, modKeys, key, binding);
 					break;
 				case GLFW.GLFW_RELEASE:
-					ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(button, -1, action, modKeys, key, binding);
+					ClientInputEvents.KEYBIND_RELEASED.invoker().onKeybind(button, -1, modKeys, key, binding);
 					break;
 				}
 			}
