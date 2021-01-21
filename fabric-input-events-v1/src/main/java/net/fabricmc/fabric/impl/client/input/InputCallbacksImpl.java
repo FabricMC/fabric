@@ -75,7 +75,7 @@ public final class InputCallbacksImpl {
 	private static double lastY = 0.0;
 
 	public static void onMouseMoved(long window, double x, double y) {
-		FabricMouseImpl.queryPosition();
+		FabricMouseImpl.updatePosition(x, y);
 		double dx = hasMoved ? x - lastX : 0.0;
 		double dy = hasMoved ? y - lastY : 0.0;
 		ClientInputEvents.MOUSE_MOVED.invoker().onMouseMoved(x, y, dx, dy);

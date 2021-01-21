@@ -48,7 +48,7 @@ public final class FabricMouseImpl {
 		return (FabricMouseImpl.buttons & (1 << button)) != 0;
 	}
 
-	public static void updatePosition(int x, int y) {
+	public static void updatePosition(double x, double y) {
 		FabricMouseImpl.x = x;
 		FabricMouseImpl.y = y;
 	}
