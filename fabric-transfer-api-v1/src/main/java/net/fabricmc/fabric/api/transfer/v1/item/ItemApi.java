@@ -14,18 +14,25 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.lookup.item;
+package net.fabricmc.fabric.api.transfer.v1.item;
 
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.math.Direction;
 
-import net.minecraft.item.Item;
-import net.minecraft.nbt.CompoundTag;
-
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
+import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.impl.transfer.item.ItemApiImpl;
 
-class ItemKeyCache {
-	static ItemKey get(Item item, @Nullable CompoundTag tag) {
-		// TODO: actually cache things
-		return new ItemKeyImpl(item, tag);
+public class ItemApi {
+	public static final BlockApiLookup<Storage<ItemKey>, Direction> SIDED =
+			BlockApiLookupRegistry.getLookup(new Identifier("fabric:sided_item_api"), Storage.asClass(), Direction.class);
+
+	private ItemApi() {
+	}
+
+	static {
+		ItemApiImpl.loadCompat();
 	}
 }
