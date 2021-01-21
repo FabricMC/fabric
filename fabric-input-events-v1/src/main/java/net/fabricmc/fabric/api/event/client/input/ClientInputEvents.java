@@ -25,7 +25,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * Events related to user input
+ * Events related to user input.
  */
 @Environment(EnvType.CLIENT)
 public final class ClientInputEvents {
