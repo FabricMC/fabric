@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.client.input.v1;
 
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
 import net.fabricmc.api.Environment;
@@ -34,7 +35,7 @@ public final class FabricKeyboard {
 	 * @param scancode the (system-specific) scancode, or -1 if unknown
 	 */
 	public static boolean isKeyPressed(int keycode, int scancode) {
-		return FabricKeyboardImpl.isKeyPressed(keycode, scancode);
+		return InputUtil.isKeyPressed(keycode, scancode);
 	}
 
 	/**
@@ -43,7 +44,7 @@ public final class FabricKeyboard {
 	 * @param key the key to check
 	 */
 	public static boolean isKeyPressed(Key key) {
-		return FabricKeyboardImpl.isKeyPressed(key);
+		return InputUtil.isKeyPressed(key.getCode(), -1);
 	}
 
 	/**
