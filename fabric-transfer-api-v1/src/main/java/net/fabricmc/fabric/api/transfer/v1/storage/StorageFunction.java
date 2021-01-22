@@ -19,6 +19,9 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.transfer.FabricTransferApi;
 
+/**
+ * A function that can be used to either insert or extract a resource, depending on the context.
+ */
 public interface StorageFunction<T> {
 	long apply(T resource, long amount, Transaction tx);
 	long apply(T resource, long numerator, long denominator, Transaction tx);
@@ -27,8 +30,19 @@ public interface StorageFunction<T> {
 		return false;
 	}
 
+	/**
+	 * Return an empty storage function, i.e. one that always returns zero.
+	 */
 	@SuppressWarnings("unchecked")
 	static <T> StorageFunction<T> empty() {
 		return FabricTransferApi.EMPTY;
+	}
+
+	/**
+	 * Return an identity storage function, i.e. one that always returns the passed amount.
+	 */
+	@SuppressWarnings("unchecked")
+	static <T> StorageFunction<T> identity() {
+		return FabricTransferApi.IDENTITY;
 	}
 }

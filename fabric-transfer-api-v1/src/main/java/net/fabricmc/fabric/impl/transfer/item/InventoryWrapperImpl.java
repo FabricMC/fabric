@@ -37,6 +37,7 @@ import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 
 // TODO: better insertion logic? (check if the item already exists in a non-empty slot before inserting it into an empty slot)
 public class InventoryWrapperImpl {
@@ -154,8 +155,8 @@ public class InventoryWrapperImpl {
 		}
 
 		@Override
-		public void onClose(ItemStack state, boolean success) {
-			if (!success) {
+		public void onClose(ItemStack state, TransactionResult result) {
+			if (result.wasAborted()) {
 				inventory.setStack(slot, state);
 			}
 		}

@@ -14,22 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.transfer.v1.fluid;
+package net.fabricmc.fabric.api.transfer.v1.transaction;
 
-import com.google.common.base.Preconditions;
+public enum TransactionResult {
+	ABORTED,
+	COMMITTED;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-
-public class FluidPreconditions {
-	public static void notEmpty(Fluid fluid) {
-		if (fluid == Fluids.EMPTY) {
-			throw new IllegalArgumentException("Fluid may not be empty.");
-		}
+	public boolean wasAborted() {
+		return this == ABORTED;
 	}
 
-	public static void notNegativeNotEmpty(Fluid fluid, long amount) {
-		FluidPreconditions.notEmpty(fluid);
-		Preconditions.checkArgument(amount >= 0);
+	public boolean wasCommitted() {
+		return this == COMMITTED;
 	}
 }

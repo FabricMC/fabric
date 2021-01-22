@@ -22,6 +22,7 @@ import java.util.Map;
 
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 
 public class TransactionImpl implements Transaction {
 	private static Thread serverThread = null;
@@ -73,7 +74,7 @@ public class TransactionImpl implements Transaction {
 
 		// notify participants
 		for (Map.Entry<Participant, Object> entry : stateStorage.entrySet()) {
-			entry.getKey().onClose(entry.getValue(), success);
+			entry.getKey().onClose(entry.getValue(), success ? TransactionResult.COMMITTED : TransactionResult.ABORTED);
 		}
 
 		// if root and success, call onFinalSuccess

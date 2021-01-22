@@ -46,7 +46,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	}
 
 	@Override
-	public boolean forEach(Visitor<T> visitor) {
+	public boolean forEach(Visitor<T> visitor) { // TODO: put this in a helper? (I used it in MI)
 		for (S part : parts) {
 			if (part.forEach(visitor)) {
 				return true;

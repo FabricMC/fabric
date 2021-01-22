@@ -31,7 +31,7 @@ public interface Participant<State> {
 	/**
 	 * This will be called when a transaction is closed if the participant was enlisted.
 	 */
-	void onClose(State state, boolean success);
+	void onClose(State state, TransactionResult result);
 
 	/**
 	 * This will be called at the end of the outermost transaction if it is successful, exactly once per participant

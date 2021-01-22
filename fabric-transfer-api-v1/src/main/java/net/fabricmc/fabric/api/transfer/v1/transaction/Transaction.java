@@ -38,6 +38,7 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionImpl;
  *     which will only be called on success for the root transaction.</li>
  * </ul></p>
  */
+// TODO: use abort instead of rollback
 public interface Transaction extends AutoCloseable {
 	/**
 	 * Rollback all changes that happened during this transaction.

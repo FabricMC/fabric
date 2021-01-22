@@ -20,6 +20,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 // TODO: validate that passed integers are >= 0
+@FunctionalInterface
 public interface IntegerStorageFunction<T> extends StorageFunction<T> {
 	@Override
 	default long apply(T resource, long numerator, long denominator, Transaction tx) {

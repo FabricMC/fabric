@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
+import com.google.common.base.Preconditions;
+
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 
 public class ItemPreconditions {
@@ -23,5 +25,10 @@ public class ItemPreconditions {
 		if (key.isEmpty()) {
 			throw new IllegalArgumentException("ItemKey may not be empty.");
 		}
+	}
+
+	public static void notNegativeNotEmpty(ItemKey key, long amount) {
+		ItemPreconditions.notEmpty(key);
+		Preconditions.checkArgument(amount >= 0);
 	}
 }

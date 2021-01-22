@@ -39,4 +39,17 @@ public class FabricTransferApi {
 			return true;
 		}
 	};
+
+	@SuppressWarnings("rawtypes")
+	public static final StorageFunction IDENTITY = new StorageFunction() {
+		@Override
+		public long apply(Object resource, long amount, Transaction tx) {
+			return amount;
+		}
+
+		@Override
+		public long apply(Object resource, long numerator, long denominator, Transaction tx) {
+			return numerator;
+		}
+	};
 }
