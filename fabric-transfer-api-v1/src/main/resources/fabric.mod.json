@@ -22,6 +22,11 @@
     "fabric-lifecycle-events-v1": "*"
   },
   "description": "A common interface for the transfer of fluids, items, and other game resources.",
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.transfer.TransferApiImpl"
+    ]
+  },
   "custom": {
     "fabric-api:module-lifecycle": "stable"
   }

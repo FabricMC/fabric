@@ -21,6 +21,10 @@ import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class Movement {
+	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount) {
+		return move(from, to.insertionFunction(), filter, maxAmount);
+	}
+
 	public static <T> long move(Storage<T> from, StorageFunction<T> to, Predicate<T> filter, long maxAmount) {
 		long[] totalMoved = new long[] { 0 };
 		from.forEach(view -> {

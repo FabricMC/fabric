@@ -18,7 +18,7 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
 
 import net.fabricmc.fabric.api.transfer.v1.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.impl.transfer.FabricTransferApi;
+import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * An object that can store resources.
@@ -50,7 +50,7 @@ public interface Storage<T> {
 			throw new IllegalStateException("getVersion() may not be called during a transaction.");
 		}
 
-		return FabricTransferApi.version++;
+		return TransferApiImpl.version++;
 	}
 
 	/**

@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 
-// sadly doesn't support versioning :(
+// TODO: remove this class altogether
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	private final List<S> parts;
 	private final StorageFunction<T> insertionFunction;
