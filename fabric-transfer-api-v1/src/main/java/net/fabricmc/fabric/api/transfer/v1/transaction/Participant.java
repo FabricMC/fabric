@@ -18,20 +18,22 @@ package net.fabricmc.fabric.api.transfer.v1.transaction;
 
 /**
  * An object that can take part atomically in a {@link Transaction}.
+ * @param <S> The type of the state stored in the transaction for this participant.
  * @see Transaction
  */
-public interface Participant<State> {
+public interface Participant<S> {
 	/**
 	 * Return the state to be put in the Transaction for this participant.
 	 * This will be called every time a participant is enlisted for the first time in a transaction.
-	 * <p>Note: Returning {@code null} is allowed.</p>
+	 *
+	 * <p>Note: Returning {@code null} is allowed.
 	 */
-	State onEnlist();
+	S onEnlist();
 
 	/**
 	 * This will be called when a transaction is closed if the participant was enlisted.
 	 */
-	void onClose(State state, TransactionResult result);
+	void onClose(S state, TransactionResult result);
 
 	/**
 	 * This will be called at the end of the outermost transaction if it is successful, exactly once per participant

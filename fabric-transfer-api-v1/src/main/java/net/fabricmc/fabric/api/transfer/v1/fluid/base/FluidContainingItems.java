@@ -22,17 +22,13 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.impl.transfer.fluid.SimpleFluidContainingItem;
 
-public class FluidContainingItems {
+public final class FluidContainingItems {
 	public static ItemApiLookup.ItemApiProvider<Storage<Fluid>, ContainerItemContext> getFullItemProvider(
 			Item emptyVariant, Fluid fluid, long numerator, long denominator) {
 		ItemPreconditions.notEmpty(emptyVariant);
@@ -40,64 +36,5 @@ public class FluidContainingItems {
 		Preconditions.checkArgument(numerator > 0);
 		Preconditions.checkArgument(denominator > 0);
 		return (itemKey, ctx) -> new SimpleFluidContainingItem(ctx, itemKey, emptyVariant, fluid, numerator, denominator);
-	}
-
-	private static class SimpleFluidContainingItem implements Storage<Fluid>, FixedDenominatorStorageView<Fluid> {
-		private final Fluid fluid;
-		private final long numerator;
-		private final long denominator;
-		private final StorageFunction<Fluid> extractionFunction;
-
-		private SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, Item emptyVariant, Fluid fluid, long numerator, long denominator) {
-			this.fluid = fluid;
-			this.numerator = numerator;
-			this.denominator = denominator;
-			ItemKey targetKey = ItemKey.of(emptyVariant, sourceKey.copyTag());
-			this.extractionFunction = new FixedDenominatorStorageFunction<Fluid>() {
-				@Override
-				public long denominator() {
-					return denominator;
-				}
-
-				@Override
-				public long applyFixedDenominator(Fluid resource, long maxAmount, Transaction tx) {
-					FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
-
-					if (maxAmount >= numerator && resource == fluid && ctx.getCount(tx) > 0) {
-						if (ctx.transform(1, targetKey, tx)) {
-							return numerator;
-						}
-					}
-
-					return 0;
-				}
-			};
-		}
-
-		@Override
-		public Fluid resource() {
-			return fluid;
-		}
-
-		@Override
-		public long denominator() {
-			return denominator;
-		}
-
-		@Override
-		public long amountFixedDenominator() {
-			return numerator;
-		}
-
-		@Override
-		public StorageFunction<Fluid> extractionFunction() {
-			return extractionFunction;
-		}
-
-		@Override
-		public boolean forEach(Visitor<Fluid> visitor) {
-			// note: fluid may not be empty, so no need to check
-			return visitor.visit(this);
-		}
 	}
 }

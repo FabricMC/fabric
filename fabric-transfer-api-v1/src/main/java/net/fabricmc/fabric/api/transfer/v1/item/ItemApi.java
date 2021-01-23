@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
-public class ItemApi {
+public final class ItemApi {
 	public static final BlockApiLookup<Storage<ItemKey>, Direction> SIDED =
 			BlockApiLookupRegistry.getLookup(new Identifier("fabric:sided_item_api"), Storage.asClass(), Direction.class);
 

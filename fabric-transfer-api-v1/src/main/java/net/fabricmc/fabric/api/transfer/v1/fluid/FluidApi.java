@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.base.FluidContainingItems;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
-public class FluidApi {
+public final class FluidApi {
 	public static final BlockApiLookup<Storage<Fluid>, Direction> SIDED =
 			BlockApiLookupRegistry.getLookup(new Identifier("fabric:sided_fluid_api"), Storage.asClass(), Direction.class);
 
