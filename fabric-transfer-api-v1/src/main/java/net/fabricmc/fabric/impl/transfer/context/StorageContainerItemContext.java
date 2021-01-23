@@ -34,7 +34,7 @@ public class StorageContainerItemContext implements ContainerItemContext {
 
 	@Override
 	public long getCount(Transaction tx) {
-		try (Transaction nested = Transaction.open()) {
+		try (Transaction nested = tx.openNested()) {
 			return storage.extractionFunction().apply(boundKey, Integer.MAX_VALUE, nested);
 		}
 	}
@@ -43,7 +43,7 @@ public class StorageContainerItemContext implements ContainerItemContext {
 	public boolean transform(long count, ItemKey into, Transaction tx) {
 		Preconditions.checkArgument(count <= getCount(tx));
 
-		try (Transaction nested = Transaction.open()) {
+		try (Transaction nested = tx.openNested()) {
 			if (storage.extractionFunction().apply(boundKey, count, nested) != count) {
 				throw new AssertionError("Bad implementation.");
 			}

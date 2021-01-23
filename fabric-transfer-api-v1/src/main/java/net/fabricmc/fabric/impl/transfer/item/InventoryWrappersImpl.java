@@ -167,7 +167,7 @@ public class InventoryWrappersImpl {
 		}
 
 		@Override
-		public void onFinalSuccess() {
+		public void onFinalCommit() {
 			inventory.markDirty();
 
 			// TODO: is this necessary for player inventories?
@@ -292,7 +292,7 @@ public class InventoryWrappersImpl {
 			}
 
 			@Override
-			public void onFinalSuccess() {
+			public void onFinalCommit() {
 				// drop the stacks
 				for (int i = 0; i < droppedKeys.size(); ++i) {
 					ItemKey key = droppedKeys.get(i);
@@ -389,7 +389,7 @@ public class InventoryWrappersImpl {
 			}
 
 			@Override
-			public void onFinalSuccess() {
+			public void onFinalCommit() {
 				playerInventory.markDirty();
 			}
 		}

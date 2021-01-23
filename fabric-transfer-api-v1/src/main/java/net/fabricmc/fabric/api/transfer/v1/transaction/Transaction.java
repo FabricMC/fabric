@@ -21,29 +21,36 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionImpl;
 /**
  * A global operation where {@linkplain Participant participants} guarantee atomicity:
  * either the whole operation succeeds, or it is completely cancelled.
- * <p>Transactions may only happen on the server thread, and they are global.
- * If a transaction is already open, opening a new transaction will create a nested transaction.
- * <ul>
- *     <li>Transaction state can be viewed as a stack.</li>
- *     <li>Nested transactions can be committed or rolled back like a regular transaction,
- *     but if a transaction is rolled back all its nested transactions will be rolled back as well,
- *     even if they were committed.</li>
- *     <li>In practice, this means that when a participant enlists itself in a transaction,
- *     the transaction manager ensures that it's enlisted in all the transactions in the stack.
- *     It is guaranteed that {@link Participant#onEnlist} will be called for a parent transaction
- *     before it's called for a child transaction.</li>
- *     <li>{@link Participant#onClose} will be called for every closed transaction,
- *     but a committed nested transaction may be aborted later.
- *     As such, it is better to defer irreversible success until {@link Participant#onFinalSuccess} is called,
- *     which will only be called on success for the root transaction.</li>
- * </ul></p>
+ * In that case, we say that is is aborted.
+ *
+ * <p>It is possible to open a transaction when anoter transaction is active, using {@link openNested}.
+ * In that case, we say that the new transaction is nested in the outer transaction.
+ * Transaction state can be viewed as a stack.
+ * Nested transactions can be committed or rolled back like a regular transaction,
+ * but if a transaction is rolled back all its nested transactions will be rolled back as well,
+ * even if they were committed
+ *
+ * <p>In practice, this means that when a participant enlists itself in a transaction,
+ * the transaction manager ensures that it's enlisted in all the transactions in the stack.
+ * It is guaranteed that {@link Participant#onEnlist} will be called for a parent transaction
+ * before it's called for a child transaction.
+ *
+ * <p>{@link Participant#onClose} will be called for every closed transaction,
+ * but a committed nested transaction may be aborted later.
+ * As such, it is better to defer irreversible success until {@link Participant#onFinalCommit} is called,
+ * which will only be called on success for the root transaction.
+ *
+ * <p>Only one outermost transaction can be open at any given time.
+ * Attempts to open a new outer transaction from the thread of the active transaction will throw a RuntimeException.
+ * Attempts to open a new outer transaction from another thread will block until the active transaction is closed.
+ * The server thread is scheduled before the other threads when possible.
+ * Still, try to keep the transaction work on the other threads minimal.
  */
-// TODO: use abort instead of rollback
 public interface Transaction extends AutoCloseable {
 	/**
-	 * Rollback all changes that happened during this transaction.
+	 * Abort all changes that happened during this transaction.
 	 */
-	void rollback();
+	void abort();
 
 	/**
 	 * Validate all changes that happened during this transaction.
@@ -51,10 +58,15 @@ public interface Transaction extends AutoCloseable {
 	void commit();
 
 	/**
-	 * Rollback, called automatically at the end of try-with-resources.
+	 * Abort if open, called automatically at the end of try-with-resources.
 	 */
 	@Override
 	void close();
+
+	/**
+	 * Open a nested transaction.
+	 */
+	Transaction openNested();
 
 	/**
 	 * Enlist the participant in the current transaction and all its parents if there is an open transaction,
@@ -67,14 +79,14 @@ public interface Transaction extends AutoCloseable {
 	/**
 	 * Open a new transaction.
 	 * It must always be used in a try-with-resources block.
-	 * If the transaction is not rolled back or committed when it is closed, it will be rolled back.
+	 * If the transaction is not aborted or committed when it is closed, it will be rolled aborted.
 	 */
-	static Transaction open() {
-		return TransactionImpl.open();
+	static Transaction openOuter() {
+		return TransactionImpl.openOuter();
 	}
 
 	/**
-	 * Return whether a transaction is currently open.
+	 * Return whether a transaction is currently open <b>in the current thread</b>.
 	 */
 	static boolean isOpen() {
 		return TransactionImpl.isOpen();

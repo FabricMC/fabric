@@ -37,6 +37,6 @@ public interface Participant<State> {
 	 * This will be called at the end of the outermost transaction if it is successful, exactly once per participant
 	 * involved in the transaction. Block updates should be deferred until then.
 	 */
-	default void onFinalSuccess() {
+	default void onFinalCommit() {
 	}
 }

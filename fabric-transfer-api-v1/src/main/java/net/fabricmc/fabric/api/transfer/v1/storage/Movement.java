@@ -26,6 +26,18 @@ public class Movement {
 	}
 
 	public static <T> long move(Storage<T> from, StorageFunction<T> to, Predicate<T> filter, long maxAmount, long denominator) {
+		try (Transaction moveTransaction = Transaction.openOuter()) {
+			long result = move(from, to, filter, maxAmount, denominator, moveTransaction);
+			moveTransaction.commit();
+			return result;
+		}
+	}
+
+	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, long denominator, Transaction transaction) {
+		return move(from, to.insertionFunction(), filter, maxAmount, denominator, transaction);
+	}
+
+	public static <T> long move(Storage<T> from, StorageFunction<T> to, Predicate<T> filter, long maxAmount, long denominator, Transaction transaction) {
 		long[] totalMoved = new long[] { 0 };
 		from.forEach(view -> {
 			T resource = view.resource();
@@ -33,19 +45,19 @@ public class Movement {
 			long maxExtracted;
 
 			// check how much can be extracted
-			try (Transaction tx = Transaction.open()) {
-				maxExtracted = view.extractionFunction().apply(resource, maxAmount - totalMoved[0], denominator, tx);
-				tx.rollback();
+			try (Transaction extractionTestTransaction = transaction.openNested()) {
+				maxExtracted = view.extractionFunction().apply(resource, maxAmount - totalMoved[0], denominator, extractionTestTransaction);
+				extractionTestTransaction.abort();
 			}
 
-			try (Transaction tx = Transaction.open()) {
+			try (Transaction transferTransaction = transaction.openNested()) {
 				// check how much can be inserted
-				long accepted = to.apply(resource, maxExtracted, tx);
+				long accepted = to.apply(resource, maxExtracted, transferTransaction);
 
 				// extract it, or rollback if the amounts don't match
-				if (from.extractionFunction().apply(resource, accepted, denominator, tx) == accepted) {
+				if (from.extractionFunction().apply(resource, accepted, denominator, transferTransaction) == accepted) {
 					totalMoved[0] += accepted;
-					tx.commit();
+					transferTransaction.commit();
 				}
 			}
 

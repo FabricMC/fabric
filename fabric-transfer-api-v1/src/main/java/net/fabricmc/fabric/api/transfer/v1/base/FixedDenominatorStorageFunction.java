@@ -49,7 +49,7 @@ public interface FixedDenominatorStorageFunction<T> extends StorageFunction<T> {
 			// the first try uses commonAmount, and returns if it is successful
 			// the second try uses the rounded-down amount returned by the first try
 			for (int tries = 0; tries < 2 && commonAmount > 0; ++tries) {
-				try (Transaction subtx = Transaction.open()) {
+				try (Transaction subtx = tx.openNested()) {
 					// try to apply with the common amount
 					long result = applyFixedDenominator(resource, commonAmount * ownFactor, subtx);
 
