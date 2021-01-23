@@ -61,7 +61,7 @@ public class FluidContainingItems {
 
 				@Override
 				public long applyFixedDenominator(Fluid resource, long maxAmount, Transaction tx) {
-					FluidPreconditions.notNegativeNotEmpty(resource, maxAmount);
+					FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
 
 					if (maxAmount >= numerator && resource == fluid && ctx.getCount(tx) > 0) {
 						if (ctx.transform(1, targetKey, tx)) {

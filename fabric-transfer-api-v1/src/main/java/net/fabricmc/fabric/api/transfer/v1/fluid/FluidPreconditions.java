@@ -28,7 +28,7 @@ public class FluidPreconditions {
 		}
 	}
 
-	public static void notNegativeNotEmpty(Fluid fluid, long amount) {
+	public static void notEmptyNotNegative(Fluid fluid, long amount) {
 		FluidPreconditions.notEmpty(fluid);
 		Preconditions.checkArgument(amount >= 0);
 	}
