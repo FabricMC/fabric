@@ -32,6 +32,7 @@ public interface FixedDenominatorStorageFunction<T> extends StorageFunction<T> {
 
 	@Override
 	default long apply(T resource, long numerator, long denominator, Transaction tx) {
+		// TODO: gracefully handle overflow
 		long ownDenom = denominator();
 
 		if (denominator % ownDenom == 0) {

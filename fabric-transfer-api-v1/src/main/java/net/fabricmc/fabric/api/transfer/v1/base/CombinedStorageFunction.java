@@ -22,6 +22,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
+// TODO: check overflow?
 public class CombinedStorageFunction<T> implements StorageFunction<T> {
 	private final List<StorageFunction<T>> parts;
 

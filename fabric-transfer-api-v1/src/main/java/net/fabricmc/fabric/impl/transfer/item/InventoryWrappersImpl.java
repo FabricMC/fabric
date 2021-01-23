@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
 
 import com.google.common.primitives.Ints;
 
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
@@ -33,14 +34,16 @@ import net.fabricmc.fabric.api.transfer.v1.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageView;
 import net.fabricmc.fabric.api.transfer.v1.base.PredicateStorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryWrapper;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 
 // TODO: better insertion logic? (check if the item already exists in a non-empty slot before inserting it into an empty slot)
-public class InventoryWrapperImpl {
+public class InventoryWrappersImpl {
 	public static List<Storage<ItemKey>> ofInventory(Inventory inventory) {
 		List<Storage<ItemKey>> result = new ArrayList<>(7); // 6 directions + null
 
@@ -48,7 +51,8 @@ public class InventoryWrapperImpl {
 		List<SlotWrapper> slots = IntStream.range(0, inventory.size())
 				.mapToObj(i -> new SlotWrapper(inventory, i))
 				.collect(Collectors.toList());
-		Storage<ItemKey> fullWrapper = new CombinedStorage<>(slots);
+		Storage<ItemKey> fullWrapper = inventory instanceof PlayerInventory
+				? new PlayerInventoryWrapperImpl(slots, (PlayerInventory) inventory) : new CombinedStorage<>(slots);
 
 		if (inventory instanceof SidedInventory) {
 			// sided logic, only use the slots returned by SidedInventory#getAvailableSlots, and check canInsert/canExtract
@@ -82,6 +86,7 @@ public class InventoryWrapperImpl {
 			this.inventory = inventory;
 			this.slot = slot;
 			this.insertionFunction = (itemKey, longCount, tx) -> {
+				// TODO: clean this up
 				ItemPreconditions.notEmpty(itemKey);
 				int count = Math.min(Ints.saturatedCast(longCount), inventory.getMaxCountPerStack());
 				ItemStack stack = inventory.getStack(slot);
@@ -164,6 +169,16 @@ public class InventoryWrapperImpl {
 		@Override
 		public void onFinalSuccess() {
 			inventory.markDirty();
+
+			// TODO: is this necessary for player inventories?
+			/*if (inventory instanceof PlayerInventory) {
+				PlayerInventory playerInventory = (PlayerInventory) inventory;
+
+				if (playerInventory.player instanceof ServerPlayerEntity) {
+					ServerPlayerEntity player = (ServerPlayerEntity) playerInventory.player;
+					player.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(-2, slot, inventory.getStack(slot)));
+				}
+			}*/
 		}
 	}
 
@@ -194,6 +209,189 @@ public class InventoryWrapperImpl {
 		@Override
 		public boolean forEach(Visitor<ItemKey> visitor) {
 			return slotWrapper.forEach(visitor);
+		}
+	}
+
+	// Wraps a PlayerInventory with an extra function to be used as an `offerOrDrop` replacement.
+	private static class PlayerInventoryWrapperImpl extends CombinedStorage<ItemKey, SlotWrapper> implements PlayerInventoryWrapper {
+		private final PlayerInventory playerInventory;
+		private final OfferOrDropFunction offerOrDropFunction;
+		private final CursorSlotWrapper cursorSlotWrapper;
+
+		private PlayerInventoryWrapperImpl(List<SlotWrapper> parts, PlayerInventory playerInventory) {
+			super(parts);
+			this.playerInventory = playerInventory;
+			this.offerOrDropFunction = new OfferOrDropFunction();
+			this.cursorSlotWrapper = new CursorSlotWrapper();
+		}
+
+		@Override
+		public StorageFunction<ItemKey> offerOrDropFunction() {
+			return offerOrDropFunction;
+		}
+
+		@Override
+		public Storage<ItemKey> slotWrapper(int slot) {
+			return parts.get(slot);
+		}
+
+		@Override
+		public Storage<ItemKey> cursorSlotWrapper() {
+			return cursorSlotWrapper;
+		}
+
+		private class OfferOrDropFunction implements IntegerStorageFunction<ItemKey>, Participant<Integer> {
+			private final List<ItemKey> droppedKeys = new ArrayList<>();
+			private final List<Long> droppedCounts = new ArrayList<>();
+
+			@Override
+			public long apply(ItemKey resource, long amount, Transaction tx) {
+				ItemPreconditions.notEmptyNotNegative(resource, amount);
+
+				// Always succeeds, but the actual modification has to happen server-side.
+				if (playerInventory.player.world.isClient()) return amount;
+
+				long initialAmount = amount;
+
+				for (int iteration = 0; iteration < 2; iteration++) {
+					boolean allowEmptySlots = iteration == 1;
+
+					for (SlotWrapper slot : parts) {
+						if (!slot.inventory.getStack(slot.slot).isEmpty() || allowEmptySlots) {
+							amount -= slot.insertionFunction.apply(resource, amount, tx);
+						}
+					}
+				}
+
+				// Drop leftover in the world
+				if (amount > 0) {
+					tx.enlist(this);
+					droppedKeys.add(resource);
+					droppedCounts.add(amount);
+				}
+
+				return initialAmount; // always fully succeeds
+			}
+
+			@Override
+			public Integer onEnlist() {
+				return droppedKeys.size();
+			}
+
+			@Override
+			public void onClose(Integer integer, TransactionResult result) {
+				if (result.wasAborted()) {
+					int previousSize = integer;
+
+					// effectively cancel dropping the stacks
+					while (droppedKeys.size() > previousSize) {
+						droppedKeys.remove(droppedKeys.size() - 1);
+						droppedCounts.remove(droppedCounts.size() - 1);
+					}
+				}
+			}
+
+			@Override
+			public void onFinalSuccess() {
+				// drop the stacks
+				for (int i = 0; i < droppedKeys.size(); ++i) {
+					ItemKey key = droppedKeys.get(i);
+
+					while (droppedCounts.get(i) > 0) {
+						int dropped = (int) Math.min(key.getItem().getMaxCount(), droppedCounts.get(i));
+						playerInventory.player.dropStack(key.toStack(dropped));
+						droppedCounts.set(i, droppedCounts.get(i) - dropped);
+					}
+				}
+
+				droppedKeys.clear();
+				droppedCounts.clear();
+			}
+		}
+
+		private class CursorSlotWrapper implements Storage<ItemKey>, IntegerStorageView<ItemKey>, Participant<ItemStack> {
+			private final StorageFunction<ItemKey> insertionFunction;
+			private final StorageFunction<ItemKey> extractionFunction;
+
+			private CursorSlotWrapper() {
+				this.insertionFunction = (IntegerStorageFunction<ItemKey>) (itemKey, count, tx) -> {
+					ItemPreconditions.notEmptyNotNegative(itemKey, count);
+					ItemStack stack = playerInventory.getCursorStack();
+					int inserted = (int) Math.min(count, Math.min(64, itemKey.getItem().getMaxCount()) - stack.getCount());
+
+					if (stack.isEmpty()) {
+						ItemStack keyStack = itemKey.toStack(inserted);
+						tx.enlist(this);
+						playerInventory.setCursorStack(keyStack);
+						return inserted;
+					} else if (itemKey.matches(stack)) {
+						tx.enlist(this);
+						stack.increment(inserted);
+						return inserted;
+					}
+
+					return 0;
+				};
+				this.extractionFunction = (IntegerStorageFunction<ItemKey>) (itemKey, maxCount, tx) -> {
+					ItemPreconditions.notEmptyNotNegative(itemKey, maxCount);
+					ItemStack stack = playerInventory.getCursorStack();
+
+					if (itemKey.matches(stack)) {
+						int extracted = (int) Math.min(stack.getCount(), maxCount);
+						tx.enlist(this);
+						stack.decrement(extracted);
+						return extracted;
+					}
+
+					return 0;
+				};
+			}
+
+			@Override
+			public StorageFunction<ItemKey> insertionFunction() {
+				return insertionFunction;
+			}
+
+			@Override
+			public StorageFunction<ItemKey> extractionFunction() {
+				return extractionFunction;
+			}
+
+			@Override
+			public boolean forEach(Visitor<ItemKey> visitor) {
+				if (!playerInventory.getCursorStack().isEmpty()) {
+					return visitor.visit(this);
+				}
+
+				return false;
+			}
+
+			@Override
+			public ItemKey resource() {
+				return ItemKey.of(playerInventory.getCursorStack());
+			}
+
+			@Override
+			public long amount() {
+				return playerInventory.getCursorStack().getCount();
+			}
+
+			@Override
+			public ItemStack onEnlist() {
+				return playerInventory.getCursorStack().copy();
+			}
+
+			@Override
+			public void onClose(ItemStack previousStack, TransactionResult result) {
+				if (result.wasAborted()) {
+					playerInventory.setCursorStack(previousStack);
+				}
+			}
+
+			@Override
+			public void onFinalSuccess() {
+				playerInventory.markDirty();
+			}
 		}
 	}
 }

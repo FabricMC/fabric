@@ -17,13 +17,14 @@
 package net.fabricmc.fabric.api.transfer.v1.context;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.impl.transfer.context.PlayerEntityContainerItemContext;
+import net.fabricmc.fabric.impl.transfer.context.StorageContainerItemContext;
 
 /**
  * A context for interaction with item-provided apis, bound to a specific ItemKey that must match that
@@ -36,35 +37,32 @@ public interface ContainerItemContext {
 	/**
 	 * Get the current count. If the ItemKey is not present anymore, return 0 instead.
 	 */
-	int getCount();
+	long getCount(Transaction transaction);
 
 	/**
 	 * Transform some of the bound items into another item key.
 	 * @param count How much to transform, must be positive.
-	 * @param into The target item key.
-	 * @return whether the transformation was successful
-	 * @throws RuntimeException If the passed count is zero or negative.
+	 * @param into The target item key. If empty, delete the items instead.
+	 * @return How many items were successfully transformed.
 	 * @throws RuntimeException If there aren't enough items to replace, that is if {@link ContainerItemContext#getCount this.getCount()} < count.
 	 */
-	boolean transform(int count, ItemKey into, Transaction transaction);
+	// TODO: consider using an enum instead of a boolean? what about TransactionResult?
+	boolean transform(long count, ItemKey into, Transaction transaction);
 
-	StorageFunction<ItemKey> insertionFunction();
+	///** TODO: is this necessary?
+	// * Return a function to add extra items to the storage.
+	// */
+	//StorageFunction<ItemKey> insertionFunction();
 
 	static ContainerItemContext ofPlayerHand(PlayerEntity player, Hand hand) {
-		//return PlayerEntityContainerItemContext.ofHand(player, hand);
-		throw new RuntimeException("NYI"); // TODO
+		return PlayerEntityContainerItemContext.ofHand(player, hand);
 	}
 
 	static ContainerItemContext ofPlayerCursor(PlayerEntity player) {
-		//return PlayerEntityContainerItemContext.ofCursor(player);
-		throw new RuntimeException("NYI"); // TODO
+		return PlayerEntityContainerItemContext.ofCursor(player);
 	}
 
-	/**
-	 * A context for single stack, that will mutate it directly.
-	 */
-	static ContainerItemContext ofStack(ItemStack stack) {
-		//return new StackContainerItemContext(stack);
-		throw new RuntimeException("NYI"); // TODO
+	static ContainerItemContext ofStorage(ItemKey boundKey, Storage<ItemKey> storage) {
+		return new StorageContainerItemContext(boundKey, storage);
 	}
 }

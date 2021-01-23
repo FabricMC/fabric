@@ -17,6 +17,8 @@
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
@@ -25,6 +27,7 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookupRegistry;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.base.FluidContainingItems;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 
 public class FluidApi {
@@ -38,6 +41,12 @@ public class FluidApi {
 	}
 
 	static {
-		// TODO compat with cauldrons and fluid containing items (and use it for buckets and bottles)
+		// Register compat for full vanilla items
+		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.WATER, 1, 1), Items.WATER_BUCKET);
+		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.LAVA, 1, 1), Items.LAVA_BUCKET);
+		// TODO: potion nightmare for bottle compat
+		// TODO: compat for empty item using registry
+		// TODO: cauldron compat
+		// TODO 1.17: cauldron registry for modded cauldrons
 	}
 }

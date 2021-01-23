@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.transfer.v1.base;
+package net.fabricmc.fabric.api.transfer.v1.item;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 
-public interface FixedDenominatorStorageView<T> extends StorageView<T> {
-	@Override
-	long denominator();
-	long amountFixedDenominator();
-
-	@Override
-	default long amount() {
-		return amountFixedDenominator() / denominator();
-	}
-
-	// TODO: check overflow
-	@Override
-	default long amount(long denominator) {
-		return amountFixedDenominator() * denominator / denominator();
-	}
+/**
+ * A wrapper around a PlayerInventory.
+ */
+public interface PlayerInventoryWrapper extends Storage<ItemKey> {
+	StorageFunction<ItemKey> offerOrDropFunction();
+	Storage<ItemKey> slotWrapper(int slot);
+	Storage<ItemKey> cursorSlotWrapper();
 }

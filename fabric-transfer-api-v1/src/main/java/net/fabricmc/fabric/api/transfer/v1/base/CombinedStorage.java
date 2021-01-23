@@ -23,11 +23,10 @@ import java.util.stream.Collectors;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 
-// TODO: remove this class altogether
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
-	private final List<S> parts;
-	private final StorageFunction<T> insertionFunction;
-	private final StorageFunction<T> extractionFunction;
+	protected final List<S> parts;
+	protected final StorageFunction<T> insertionFunction;
+	protected final StorageFunction<T> extractionFunction;
 
 	public CombinedStorage(List<S> parts) {
 		this.parts = new ArrayList<>(parts);
@@ -46,7 +45,7 @@ public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
 	}
 
 	@Override
-	public boolean forEach(Visitor<T> visitor) { // TODO: put this in a helper? (I used it in MI)
+	public boolean forEach(Visitor<T> visitor) {
 		for (S part : parts) {
 			if (part.forEach(visitor)) {
 				return true;

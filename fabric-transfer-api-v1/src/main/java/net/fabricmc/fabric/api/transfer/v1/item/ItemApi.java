@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.ChestBlock;
+import net.minecraft.block.InventoryProvider;
+import net.minecraft.block.entity.ChestBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
@@ -23,7 +28,6 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.impl.transfer.item.ItemApiImpl;
 
 public class ItemApi {
 	public static final BlockApiLookup<Storage<ItemKey>, Direction> SIDED =
@@ -33,6 +37,22 @@ public class ItemApi {
 	}
 
 	static {
-		ItemApiImpl.loadCompat();
+		// Load generic vanilla api fallback
+		ItemApi.SIDED.registerFallback((world, pos, state, blockEntity, direction) -> {
+			Block block = state.getBlock();
+			Inventory inventory = null;
+
+			if (block instanceof InventoryProvider) {
+				inventory = ((InventoryProvider) block).getInventory(state, world, pos);
+			} else if (blockEntity instanceof Inventory) {
+				inventory = (Inventory) blockEntity;
+
+				if (blockEntity instanceof ChestBlockEntity && block instanceof ChestBlock) {
+					inventory = ChestBlock.getInventory((ChestBlock) block, state, world, pos, true);
+				}
+			}
+
+			return inventory == null ? null : InventoryWrappers.of(inventory, direction);
+		});
 	}
 }
