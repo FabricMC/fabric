@@ -92,6 +92,7 @@ public class TransactionImpl implements Transaction {
 		// clear things up
 		stateStorage.clear();
 		stackPointer--;
+		isOpen = false;
 		allowAccess = true;
 
 		// release locks
