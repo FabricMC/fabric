@@ -116,7 +116,7 @@ public class TransactionImpl implements Transaction {
 
 	@Override
 	public void close() {
-		if (isOpen()) {
+		if (isOpen() && isOpen) { // check that a transaction is open on this thread and that this transaction is open.
 			abort();
 		}
 	}
@@ -130,7 +130,9 @@ public class TransactionImpl implements Transaction {
 			STACK.add(new TransactionImpl());
 		}
 
-		return STACK.get(stackPointer);
+		TransactionImpl current = STACK.get(stackPointer);
+		current.isOpen = true;
+		return current;
 	}
 
 	@Override
@@ -159,8 +161,9 @@ public class TransactionImpl implements Transaction {
 
 		// open transaction, STACK always has at least one element.
 		stackPointer = 0;
-		STACK.get(stackPointer).isOpen = true;
-		return STACK.get(stackPointer);
+		TransactionImpl current = STACK.get(stackPointer);
+		current.isOpen = true;
+		return current;
 	}
 
 	public static boolean isOpen() {
