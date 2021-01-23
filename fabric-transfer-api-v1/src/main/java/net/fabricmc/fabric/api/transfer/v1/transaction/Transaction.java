@@ -21,9 +21,9 @@ import net.fabricmc.fabric.impl.transfer.transaction.TransactionImpl;
 /**
  * A global operation where {@linkplain Participant participants} guarantee atomicity:
  * either the whole operation succeeds, or it is completely cancelled.
- * In that case, we say that is is aborted.
+ * In that case, we say that it is aborted.
  *
- * <p>It is possible to open a transaction when anoter transaction is active, using {@link openNested}.
+ * <p>It is possible to open a transaction when anoter transaction is active, using {@link #openNested}.
  * In that case, we say that the new transaction is nested in the outer transaction.
  * Transaction state can be viewed as a stack.
  * Nested transactions can be committed or rolled back like a regular transaction,
