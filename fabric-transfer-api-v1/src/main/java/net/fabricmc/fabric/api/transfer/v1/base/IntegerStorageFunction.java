@@ -16,15 +16,11 @@
 
 package net.fabricmc.fabric.api.transfer.v1.base;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-
 // TODO: validate that passed integers are >= 0
 @FunctionalInterface
-public interface IntegerStorageFunction<T> extends StorageFunction<T> {
+public interface IntegerStorageFunction<T> extends FixedDenominatorStorageFunction<T> {
 	@Override
-	default long apply(T resource, long numerator, long denominator, Transaction tx) {
-		long whole = numerator / denominator;
-		return numerator - denominator * (whole - apply(resource, whole, tx));
+	default long denominator() {
+		return 1;
 	}
 }

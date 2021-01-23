@@ -21,27 +21,18 @@ import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class PredicateStorageFunction<T> implements StorageFunction<T> {
+public final class FilteredStorageFunction<T> implements StorageFunction<T> {
 	private final StorageFunction<T> inner;
-	private final Predicate<T> predicate;
+	private final Predicate<T> filter;
 
-	public PredicateStorageFunction(StorageFunction<T> inner, Predicate<T> predicate) {
+	public FilteredStorageFunction(StorageFunction<T> inner, Predicate<T> filter) {
 		this.inner = inner;
-		this.predicate = predicate;
-	}
-
-	@Override
-	public long apply(T resource, long amount, Transaction tx) {
-		if (predicate.test(resource)) {
-			return inner.apply(resource, amount, tx);
-		} else {
-			return 0;
-		}
+		this.filter = filter;
 	}
 
 	@Override
 	public long apply(T resource, long numerator, long denominator, Transaction tx) {
-		if (predicate.test(resource)) {
+		if (filter.test(resource)) {
 			return inner.apply(resource, numerator, denominator, tx);
 		} else {
 			return 0;

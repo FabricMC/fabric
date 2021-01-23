@@ -49,11 +49,6 @@ public interface ContainerItemContext {
 	// TODO: consider using an enum instead of a boolean? what about TransactionResult?
 	boolean transform(long count, ItemKey into, Transaction transaction);
 
-	///** TODO: is this necessary?
-	// * Return a function to add extra items to the storage.
-	// */
-	//StorageFunction<ItemKey> insertionFunction();
-
 	static ContainerItemContext ofPlayerHand(PlayerEntity player, Hand hand) {
 		return PlayerEntityContainerItemContext.ofHand(player, hand);
 	}

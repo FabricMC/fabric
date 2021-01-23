@@ -31,17 +31,6 @@ public class CombinedStorageFunction<T> implements StorageFunction<T> {
 	}
 
 	@Override
-	public long apply(T resource, long amount, Transaction tx) {
-		long total = 0;
-
-		for (StorageFunction<T> part : parts) {
-			total += part.apply(resource, amount - total, tx);
-		}
-
-		return total;
-	}
-
-	@Override
 	public long apply(T resource, long numerator, long denominator, Transaction tx) {
 		long total = 0;
 
@@ -50,5 +39,17 @@ public class CombinedStorageFunction<T> implements StorageFunction<T> {
 		}
 
 		return total;
+	}
+
+	// TODO: should this be cached in the ctor?
+	@Override
+	public boolean isEmpty() {
+		for (StorageFunction<T> part : parts) {
+			if (!part.isEmpty()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

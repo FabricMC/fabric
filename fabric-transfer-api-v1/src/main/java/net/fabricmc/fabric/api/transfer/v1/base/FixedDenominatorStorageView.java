@@ -23,11 +23,6 @@ public interface FixedDenominatorStorageView<T> extends StorageView<T> {
 	long denominator();
 	long amountFixedDenominator();
 
-	@Override
-	default long amount() {
-		return amountFixedDenominator() / denominator();
-	}
-
 	// TODO: check overflow
 	@Override
 	default long amount(long denominator) {

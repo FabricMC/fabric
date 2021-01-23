@@ -61,7 +61,7 @@ public class PlayerEntityContainerItemContext implements ContainerItemContext {
 		long[] count = new long[] {0};
 		slot.forEach(view -> {
 			if (view.resource().equals(boundKey)) {
-				count[0] = view.amount();
+				count[0] = view.amount(1);
 			}
 
 			return true;
@@ -73,11 +73,11 @@ public class PlayerEntityContainerItemContext implements ContainerItemContext {
 	public boolean transform(long count, ItemKey into, Transaction tx) {
 		Preconditions.checkArgument(count <= getCount(tx), "Can't transform items that are not available.");
 
-		if (slot.extractionFunction().apply(boundKey, count, tx) != count) {
+		if (slot.extractionFunction().apply(boundKey, count, 1, tx) != count) {
 			throw new AssertionError("Implementation error.");
 		}
 
-		if (!into.isEmpty() && insertionFunction.apply(into, count, tx) != count) {
+		if (!into.isEmpty() && insertionFunction.apply(into, count, 1, tx) != count) {
 			throw new AssertionError("Implementation error.");
 		}
 

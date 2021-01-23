@@ -31,9 +31,9 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.base.CombinedStorage;
+import net.fabricmc.fabric.api.transfer.v1.base.FilteredStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageView;
-import net.fabricmc.fabric.api.transfer.v1.base.PredicateStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryWrapper;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -150,7 +150,7 @@ public class InventoryWrappersImpl {
 		}
 
 		@Override
-		public long amount() {
+		public long amountFixedDenominator() {
 			return inventory.getStack(slot).getCount();
 		}
 
@@ -190,9 +190,9 @@ public class InventoryWrappersImpl {
 
 		private SidedSlotWrapper(SlotWrapper slotWrapper, SidedInventory sidedInventory, Direction direction) {
 			this.slotWrapper = slotWrapper;
-			this.insertionFunction = new PredicateStorageFunction<>(slotWrapper.insertionFunction,
+			this.insertionFunction = new FilteredStorageFunction<>(slotWrapper.insertionFunction,
 					itemKey -> sidedInventory.canInsert(slotWrapper.slot, itemKey.toStack(), direction));
-			this.extractionFunction = new PredicateStorageFunction<>(slotWrapper.extractionFunction,
+			this.extractionFunction = new FilteredStorageFunction<>(slotWrapper.extractionFunction,
 					itemKey -> sidedInventory.canExtract(slotWrapper.slot, itemKey.toStack(), direction));
 		}
 
@@ -245,7 +245,7 @@ public class InventoryWrappersImpl {
 			private final List<Long> droppedCounts = new ArrayList<>();
 
 			@Override
-			public long apply(ItemKey resource, long amount, Transaction tx) {
+			public long applyFixedDenominator(ItemKey resource, long amount, Transaction tx) {
 				ItemPreconditions.notEmptyNotNegative(resource, amount);
 
 				// Always succeeds, but the actual modification has to happen server-side.
@@ -258,7 +258,7 @@ public class InventoryWrappersImpl {
 
 					for (SlotWrapper slot : parts) {
 						if (!slot.inventory.getStack(slot.slot).isEmpty() || allowEmptySlots) {
-							amount -= slot.insertionFunction.apply(resource, amount, tx);
+							amount -= slot.insertionFunction.apply(resource, amount, 1, tx);
 						}
 					}
 				}
@@ -372,7 +372,7 @@ public class InventoryWrappersImpl {
 			}
 
 			@Override
-			public long amount() {
+			public long amountFixedDenominator() {
 				return playerInventory.getCursorStack().getCount();
 			}
 

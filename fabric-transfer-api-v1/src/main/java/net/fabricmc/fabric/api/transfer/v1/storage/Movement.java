@@ -52,7 +52,7 @@ public class Movement {
 
 			try (Transaction transferTransaction = transaction.openNested()) {
 				// check how much can be inserted
-				long accepted = to.apply(resource, maxExtracted, transferTransaction);
+				long accepted = to.apply(resource, maxExtracted, denominator, transferTransaction);
 
 				// extract it, or rollback if the amounts don't match
 				if (from.extractionFunction().apply(resource, accepted, denominator, transferTransaction) == accepted) {

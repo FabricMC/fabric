@@ -16,15 +16,7 @@
 
 package net.fabricmc.fabric.api.transfer.v1.base;
 
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-
-public interface IntegerStorageView<T> extends StorageView<T> {
-	// TODO: check overflow
-	@Override
-	default long amount(long denominator) {
-		return amount() * denominator;
-	}
-
+public interface IntegerStorageView<T> extends FixedDenominatorStorageView<T> {
 	@Override
 	default long denominator() {
 		return 1;

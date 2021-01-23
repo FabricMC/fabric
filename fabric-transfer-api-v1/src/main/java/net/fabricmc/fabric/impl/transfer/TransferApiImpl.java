@@ -28,11 +28,6 @@ public class TransferApiImpl implements ModInitializer {
 	@SuppressWarnings("rawtypes")
 	public static final StorageFunction EMPTY = new StorageFunction() {
 		@Override
-		public long apply(Object resource, long amount, Transaction tx) {
-			return 0;
-		}
-
-		@Override
 		public long apply(Object resource, long numerator, long denominator, Transaction tx) {
 			return 0;
 		}
@@ -44,17 +39,7 @@ public class TransferApiImpl implements ModInitializer {
 	};
 
 	@SuppressWarnings("rawtypes")
-	public static final StorageFunction IDENTITY = new StorageFunction() {
-		@Override
-		public long apply(Object resource, long amount, Transaction tx) {
-			return amount;
-		}
-
-		@Override
-		public long apply(Object resource, long numerator, long denominator, Transaction tx) {
-			return numerator;
-		}
-	};
+	public static final StorageFunction IDENTITY = (resource, numerator, denominator, tx) -> numerator;
 
 	@Override
 	public void onInitialize() {
