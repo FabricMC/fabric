@@ -31,9 +31,9 @@ public final class FilteredStorageFunction<T> implements StorageFunction<T> {
 	}
 
 	@Override
-	public long apply(T resource, long numerator, long denominator, Transaction tx) {
+	public long apply(T resource, long numerator, Transaction tx) {
 		if (filter.test(resource)) {
-			return inner.apply(resource, numerator, denominator, tx);
+			return inner.apply(resource, numerator, tx);
 		} else {
 			return 0;
 		}

@@ -20,43 +20,31 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.FixedDenominatorStorageView;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 
-public class SimpleFluidContainingItem implements Storage<Fluid>, FixedDenominatorStorageView<Fluid> {
+public class SimpleFluidContainingItem implements Storage<Fluid>, StorageView<Fluid> {
 	private final Fluid fluid;
-	private final long numerator;
-	private final long denominator;
+	private final long amount;
 	private final StorageFunction<Fluid> extractionFunction;
 
-	public SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, Item emptyVariant, Fluid fluid, long numerator, long denominator) {
+	public SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, Item emptyVariant, Fluid fluid, long amount) {
 		this.fluid = fluid;
-		this.numerator = numerator;
-		this.denominator = denominator;
+		this.amount = amount;
 		ItemKey targetKey = ItemKey.of(emptyVariant, sourceKey.copyTag());
-		this.extractionFunction = new FixedDenominatorStorageFunction<Fluid>() {
-			@Override
-			public long denominator() {
-				return denominator;
-			}
+		this.extractionFunction = (resource, maxAmount, tx) -> {
+			FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
 
-			@Override
-			public long applyFixedDenominator(Fluid resource, long maxAmount, Transaction tx) {
-				FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
-
-				if (maxAmount >= numerator && resource == fluid && ctx.getCount(tx) > 0) {
-					if (ctx.transform(1, targetKey, tx)) {
-						return numerator;
-					}
+			if (maxAmount >= amount && resource == fluid && ctx.getCount(tx) > 0) {
+				if (ctx.transform(1, targetKey, tx)) {
+					return amount;
 				}
-
-				return 0;
 			}
+
+			return 0;
 		};
 	}
 
@@ -66,13 +54,8 @@ public class SimpleFluidContainingItem implements Storage<Fluid>, FixedDenominat
 	}
 
 	@Override
-	public long denominator() {
-		return denominator;
-	}
-
-	@Override
-	public long amountFixedDenominator() {
-		return numerator;
+	public long amount() {
+		return amount;
 	}
 
 	@Override

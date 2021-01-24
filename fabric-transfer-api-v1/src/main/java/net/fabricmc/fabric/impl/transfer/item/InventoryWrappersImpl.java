@@ -32,12 +32,11 @@ import net.minecraft.util.math.Direction;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.base.CombinedStorage;
 import net.fabricmc.fabric.api.transfer.v1.base.FilteredStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.base.IntegerStorageView;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryWrapper;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
@@ -76,11 +75,11 @@ public class InventoryWrappersImpl {
 	}
 
 	// Wraps a single slot of an unsided Inventory.
-	private static class SlotWrapper implements Storage<ItemKey>, IntegerStorageView<ItemKey>, Participant<ItemStack> {
+	private static class SlotWrapper implements Storage<ItemKey>, StorageView<ItemKey>, Participant<ItemStack> {
 		private final Inventory inventory;
 		private final int slot;
-		private final IntegerStorageFunction<ItemKey> insertionFunction;
-		private final IntegerStorageFunction<ItemKey> extractionFunction;
+		private final StorageFunction<ItemKey> insertionFunction;
+		private final StorageFunction<ItemKey> extractionFunction;
 
 		private SlotWrapper(Inventory inventory, int slot) {
 			this.inventory = inventory;
@@ -126,7 +125,7 @@ public class InventoryWrappersImpl {
 			};
 		}
 
-		public IntegerStorageFunction<ItemKey> insertionFunction() {
+		public StorageFunction<ItemKey> insertionFunction() {
 			return insertionFunction;
 		}
 
@@ -150,7 +149,7 @@ public class InventoryWrappersImpl {
 		}
 
 		@Override
-		public long amountFixedDenominator() {
+		public long amount() {
 			return inventory.getStack(slot).getCount();
 		}
 
@@ -240,34 +239,34 @@ public class InventoryWrappersImpl {
 			return cursorSlotWrapper;
 		}
 
-		private class OfferOrDropFunction implements IntegerStorageFunction<ItemKey>, Participant<Integer> {
+		private class OfferOrDropFunction implements StorageFunction<ItemKey>, Participant<Integer> {
 			private final List<ItemKey> droppedKeys = new ArrayList<>();
 			private final List<Long> droppedCounts = new ArrayList<>();
 
 			@Override
-			public long applyFixedDenominator(ItemKey resource, long amount, Transaction tx) {
-				ItemPreconditions.notEmptyNotNegative(resource, amount);
+			public long apply(ItemKey resource, long maxAmount, Transaction tx) {
+				ItemPreconditions.notEmptyNotNegative(resource, maxAmount);
 
 				// Always succeeds, but the actual modification has to happen server-side.
-				if (playerInventory.player.world.isClient()) return amount;
+				if (playerInventory.player.world.isClient()) return maxAmount;
 
-				long initialAmount = amount;
+				long initialAmount = maxAmount;
 
 				for (int iteration = 0; iteration < 2; iteration++) {
 					boolean allowEmptySlots = iteration == 1;
 
 					for (SlotWrapper slot : parts) {
 						if (!slot.inventory.getStack(slot.slot).isEmpty() || allowEmptySlots) {
-							amount -= slot.insertionFunction.apply(resource, amount, 1, tx);
+							maxAmount -= slot.insertionFunction.apply(resource, maxAmount, tx);
 						}
 					}
 				}
 
 				// Drop leftover in the world
-				if (amount > 0) {
+				if (maxAmount > 0) {
 					tx.enlist(this);
 					droppedKeys.add(resource);
-					droppedCounts.add(amount);
+					droppedCounts.add(maxAmount);
 				}
 
 				return initialAmount; // always fully succeeds
@@ -309,12 +308,12 @@ public class InventoryWrappersImpl {
 			}
 		}
 
-		private class CursorSlotWrapper implements Storage<ItemKey>, IntegerStorageView<ItemKey>, Participant<ItemStack> {
+		private class CursorSlotWrapper implements Storage<ItemKey>, StorageView<ItemKey>, Participant<ItemStack> {
 			private final StorageFunction<ItemKey> insertionFunction;
 			private final StorageFunction<ItemKey> extractionFunction;
 
 			private CursorSlotWrapper() {
-				this.insertionFunction = (IntegerStorageFunction<ItemKey>) (itemKey, count, tx) -> {
+				this.insertionFunction = (itemKey, count, tx) -> {
 					ItemPreconditions.notEmptyNotNegative(itemKey, count);
 					ItemStack stack = playerInventory.getCursorStack();
 					int inserted = (int) Math.min(count, Math.min(64, itemKey.getItem().getMaxCount()) - stack.getCount());
@@ -332,7 +331,7 @@ public class InventoryWrappersImpl {
 
 					return 0;
 				};
-				this.extractionFunction = (IntegerStorageFunction<ItemKey>) (itemKey, maxCount, tx) -> {
+				this.extractionFunction = (itemKey, maxCount, tx) -> {
 					ItemPreconditions.notEmptyNotNegative(itemKey, maxCount);
 					ItemStack stack = playerInventory.getCursorStack();
 
@@ -372,7 +371,7 @@ public class InventoryWrappersImpl {
 			}
 
 			@Override
-			public long amountFixedDenominator() {
+			public long amount() {
 				return playerInventory.getCursorStack().getCount();
 			}
 

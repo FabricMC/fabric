@@ -42,8 +42,8 @@ public final class FluidApi {
 
 	static {
 		// Register compat for full vanilla items
-		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.WATER, 1, 1), Items.WATER_BUCKET);
-		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.LAVA, 1, 1), Items.LAVA_BUCKET);
+		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.WATER, FluidConstants.BUCKET), Items.WATER_BUCKET);
+		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.LAVA, FluidConstants.BUCKET), Items.LAVA_BUCKET);
 		// TODO: potion nightmare for bottle compat
 		// TODO: compat for empty item using registry
 		// TODO: cauldron compat

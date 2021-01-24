@@ -22,7 +22,7 @@ import java.util.List;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-// TODO: check overflow?
+// TODO: check >= 0
 public class CombinedStorageFunction<T> implements StorageFunction<T> {
 	private final List<StorageFunction<T>> parts;
 
@@ -31,11 +31,11 @@ public class CombinedStorageFunction<T> implements StorageFunction<T> {
 	}
 
 	@Override
-	public long apply(T resource, long numerator, long denominator, Transaction tx) {
+	public long apply(T resource, long maxAmount, Transaction tx) {
 		long total = 0;
 
 		for (StorageFunction<T> part : parts) {
-			total += part.apply(resource, numerator - total, denominator, tx);
+			total += part.apply(resource, maxAmount - total, tx);
 		}
 
 		return total;

@@ -23,7 +23,7 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
  * A function that can be used to operate on a resource, for example to insert or extract, depending on the context.
  */
 public interface StorageFunction<T> {
-	long apply(T resource, long numerator, long denominator, Transaction tx);
+	long apply(T resource, long maxAmount, Transaction tx);
 
 	default boolean isEmpty() {
 		return false;

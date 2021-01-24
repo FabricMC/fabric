@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.transfer.v1.base;
+package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-// TODO: validate that passed integers are >= 0
-@FunctionalInterface
-public interface IntegerStorageFunction<T> extends FixedDenominatorStorageFunction<T> {
-	@Override
-	default long denominator() {
-		return 1;
+public final class FluidConstants {
+	public static final long BUCKET = 81000;
+	public static final long BOTTLE = 27000;
+	public static final long INGOT = 9000;
+	public static final long NUGGET = 1000;
+
+	private FluidConstants() {
 	}
 }

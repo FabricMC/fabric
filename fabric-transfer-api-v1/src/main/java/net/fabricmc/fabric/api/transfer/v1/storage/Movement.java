@@ -21,23 +21,23 @@ import java.util.function.Predicate;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class Movement {
-	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, long denominator) {
-		return move(from, to.insertionFunction(), filter, maxAmount, denominator);
+	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount) {
+		return move(from, to.insertionFunction(), filter, maxAmount);
 	}
 
-	public static <T> long move(Storage<T> from, StorageFunction<T> to, Predicate<T> filter, long maxAmount, long denominator) {
+	public static <T> long move(Storage<T> from, StorageFunction<T> to, Predicate<T> filter, long maxAmount) {
 		try (Transaction moveTransaction = Transaction.openOuter()) {
-			long result = move(from, to, filter, maxAmount, denominator, moveTransaction);
+			long result = move(from, to, filter, maxAmount, moveTransaction);
 			moveTransaction.commit();
 			return result;
 		}
 	}
 
-	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, long denominator, Transaction transaction) {
-		return move(from, to.insertionFunction(), filter, maxAmount, denominator, transaction);
+	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount, Transaction transaction) {
+		return move(from, to.insertionFunction(), filter, maxAmount, transaction);
 	}
 
-	public static <T> long move(Storage<T> from, StorageFunction<T> to, Predicate<T> filter, long maxAmount, long denominator, Transaction transaction) {
+	public static <T> long move(Storage<T> from, StorageFunction<T> to, Predicate<T> filter, long maxAmount, Transaction transaction) {
 		long[] totalMoved = new long[] { 0 };
 		from.forEach(view -> {
 			T resource = view.resource();
@@ -46,16 +46,16 @@ public class Movement {
 
 			// check how much can be extracted
 			try (Transaction extractionTestTransaction = transaction.openNested()) {
-				maxExtracted = view.extractionFunction().apply(resource, maxAmount - totalMoved[0], denominator, extractionTestTransaction);
+				maxExtracted = view.extractionFunction().apply(resource, maxAmount - totalMoved[0], extractionTestTransaction);
 				extractionTestTransaction.abort();
 			}
 
 			try (Transaction transferTransaction = transaction.openNested()) {
 				// check how much can be inserted
-				long accepted = to.apply(resource, maxExtracted, denominator, transferTransaction);
+				long accepted = to.apply(resource, maxExtracted, transferTransaction);
 
 				// extract it, or rollback if the amounts don't match
-				if (from.extractionFunction().apply(resource, accepted, denominator, transferTransaction) == accepted) {
+				if (from.extractionFunction().apply(resource, accepted, transferTransaction) == accepted) {
 					totalMoved[0] += accepted;
 					transferTransaction.commit();
 				}

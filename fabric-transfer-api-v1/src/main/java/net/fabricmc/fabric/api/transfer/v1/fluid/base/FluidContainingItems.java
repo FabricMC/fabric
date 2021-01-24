@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid.base;
 
-import com.google.common.base.Preconditions;
-
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.Item;
 
@@ -30,11 +28,9 @@ import net.fabricmc.fabric.impl.transfer.fluid.SimpleFluidContainingItem;
 
 public final class FluidContainingItems {
 	public static ItemApiLookup.ItemApiProvider<Storage<Fluid>, ContainerItemContext> getFullItemProvider(
-			Item emptyVariant, Fluid fluid, long numerator, long denominator) {
+			Item emptyVariant, Fluid fluid, long amount) {
 		ItemPreconditions.notEmpty(emptyVariant);
-		FluidPreconditions.notEmpty(fluid);
-		Preconditions.checkArgument(numerator > 0);
-		Preconditions.checkArgument(denominator > 0);
-		return (itemKey, ctx) -> new SimpleFluidContainingItem(ctx, itemKey, emptyVariant, fluid, numerator, denominator);
+		FluidPreconditions.notEmptyNotNegative(fluid, amount);
+		return (itemKey, ctx) -> new SimpleFluidContainingItem(ctx, itemKey, emptyVariant, fluid, amount);
 	}
 }

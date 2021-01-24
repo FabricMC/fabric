@@ -22,6 +22,5 @@ public interface StorageView<T> {
 	}
 
 	T resource();
-	long amount(long denominator);
-	long denominator();
+	long amount();
 }
