@@ -23,7 +23,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 /**
  * Helper functions to move resources between two {@link Storage}s.
  */
-public class Movement {
+public final class Movement {
 	public static <T> long move(Storage<T> from, Storage<T> to, Predicate<T> filter, long maxAmount) {
 		try (Transaction moveTransaction = Transaction.openOuter()) {
 			long result = move(from, to, filter, maxAmount, moveTransaction);

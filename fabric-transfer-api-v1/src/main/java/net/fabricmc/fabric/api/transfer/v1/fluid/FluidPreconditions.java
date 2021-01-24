@@ -35,4 +35,7 @@ public class FluidPreconditions {
 		FluidPreconditions.notEmpty(fluid);
 		Preconditions.checkArgument(amount >= 0);
 	}
+
+	private FluidPreconditions() {
+	}
 }
