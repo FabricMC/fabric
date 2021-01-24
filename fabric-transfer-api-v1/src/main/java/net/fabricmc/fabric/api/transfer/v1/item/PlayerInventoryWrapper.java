@@ -18,13 +18,14 @@ package net.fabricmc.fabric.api.transfer.v1.item;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
  * A wrapper around a PlayerInventory.
  */
-public interface PlayerInventoryWrapper extends Storage<ItemKey> {
-	StorageFunction<ItemKey> offerOrDropFunction();
+// TODO: this careful consideration to decide which wrappers are necessary
+public interface PlayerInventoryWrapper {
+	long offerOrDrop(ItemKey key, long maxAmount, Transaction transaction);
 	Storage<ItemKey> slotWrapper(int slot);
 	Storage<ItemKey> cursorSlotWrapper();
 }

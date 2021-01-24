@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+
 /**
  * A view of a single stored resource in a {@link Storage}, for use with {@link Storage.Visitor#accept}.
  *
@@ -24,13 +26,10 @@ package net.fabricmc.fabric.api.transfer.v1.storage;
  */
 public interface StorageView<T> {
 	/**
-	 * Return a {@link StorageFunction} that can directly extract from this view.
-	 * If the view is available, it is expected that extracting directly from the view will be much faster than
-	 * through {@link Storage#extractionFunction}.
+	 * Try to extract a resource from this view.
+	 * @return The amount that was extracted.
 	 */
-	default StorageFunction<T> extractionFunction() {
-		return StorageFunction.empty();
-	}
+	long extract(T resource, long maxAmount, Transaction transaction);
 
 	/**
 	 * @return The resource stored in this view.

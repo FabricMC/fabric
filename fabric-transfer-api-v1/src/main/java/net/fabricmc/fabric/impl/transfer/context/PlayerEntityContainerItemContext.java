@@ -16,44 +16,40 @@
 
 package net.fabricmc.fabric.impl.transfer.context;
 
-import java.util.Arrays;
-
 import com.google.common.base.Preconditions;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-import net.fabricmc.fabric.api.transfer.v1.base.CombinedStorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryWrappers;
 import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryWrapper;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class PlayerEntityContainerItemContext implements ContainerItemContext {
 	private final ItemKey boundKey;
 	private final Storage<ItemKey> slot;
-	private final StorageFunction<ItemKey> insertionFunction;
+	private final PlayerInventoryWrapper wrapper;
 
 	public static ContainerItemContext ofHand(PlayerEntity player, Hand hand) {
 		PlayerInventoryWrapper wrapper = InventoryWrappers.ofPlayerInventory(player.inventory);
 		int slot = hand == Hand.MAIN_HAND ? player.inventory.selectedSlot : 40;
 		return new PlayerEntityContainerItemContext(
-				ItemKey.of(player.inventory.getStack(slot)), wrapper.slotWrapper(slot), wrapper.offerOrDropFunction());
+				ItemKey.of(player.inventory.getStack(slot)), wrapper.slotWrapper(slot), wrapper);
 	}
 
 	public static ContainerItemContext ofCursor(PlayerEntity player) {
 		PlayerInventoryWrapper wrapper = InventoryWrappers.ofPlayerInventory(player.inventory);
 		return new PlayerEntityContainerItemContext(
-				ItemKey.of(player.inventory.getCursorStack()), wrapper.cursorSlotWrapper(), wrapper.offerOrDropFunction());
+				ItemKey.of(player.inventory.getCursorStack()), wrapper.cursorSlotWrapper(), wrapper);
 	}
 
-	private PlayerEntityContainerItemContext(ItemKey boundKey, Storage<ItemKey> slot, StorageFunction<ItemKey> offerOrDrop) {
+	private PlayerEntityContainerItemContext(ItemKey boundKey, Storage<ItemKey> slot, PlayerInventoryWrapper wrapper) {
 		this.boundKey = boundKey;
 		this.slot = slot;
-		this.insertionFunction = new CombinedStorageFunction<>(Arrays.asList(slot.insertionFunction(), offerOrDrop));
+		this.wrapper = wrapper;
 	}
 
 	@Override
@@ -65,7 +61,7 @@ public class PlayerEntityContainerItemContext implements ContainerItemContext {
 			}
 
 			return true;
-		});
+		}, tx);
 		return count[0];
 	}
 
@@ -73,14 +69,21 @@ public class PlayerEntityContainerItemContext implements ContainerItemContext {
 	public boolean transform(long count, ItemKey into, Transaction tx) {
 		Preconditions.checkArgument(count <= getCount(tx), "Can't transform items that are not available.");
 
-		if (slot.extractionFunction().apply(boundKey, count, tx) != count) {
+		if (slot.extract(boundKey, count, tx) != count) {
 			throw new AssertionError("Implementation error.");
 		}
 
-		if (!into.isEmpty() && insertionFunction.apply(into, count, tx) != count) {
+		if (!into.isEmpty() && internalInsert(into, count, tx) != count) {
 			throw new AssertionError("Implementation error.");
 		}
 
 		return true;
+	}
+
+	private long internalInsert(ItemKey into, long count, Transaction tx) {
+		long initialCount = count;
+		count -= slot.insert(into, count, tx);
+		count -= wrapper.offerOrDrop(into, count, tx);
+		return initialCount - count;
 	}
 }

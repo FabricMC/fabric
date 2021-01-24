@@ -18,28 +18,10 @@ package net.fabricmc.fabric.impl.transfer;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.impl.transfer.transaction.TransactionImpl;
 
 public class TransferApiImpl implements ModInitializer {
 	public static int version = 0;
-
-	@SuppressWarnings("rawtypes")
-	public static final StorageFunction EMPTY = new StorageFunction() {
-		@Override
-		public long apply(Object resource, long maxAmount, Transaction tx) {
-			return 0;
-		}
-
-		@Override
-		public boolean isEmpty() {
-			return true;
-		}
-	};
-
-	@SuppressWarnings("rawtypes")
-	public static final StorageFunction IDENTITY = (resource, maxAmount, tx) -> maxAmount;
 
 	@Override
 	public void onInitialize() {

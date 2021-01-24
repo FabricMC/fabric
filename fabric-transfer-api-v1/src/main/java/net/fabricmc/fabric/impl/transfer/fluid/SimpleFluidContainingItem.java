@@ -23,29 +23,20 @@ import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageFunction;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class SimpleFluidContainingItem implements Storage<Fluid>, StorageView<Fluid> {
 	private final Fluid fluid;
 	private final long amount;
-	private final StorageFunction<Fluid> extractionFunction;
+	private final ItemKey targetKey;
+	private final ContainerItemContext ctx;
 
 	public SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, Item emptyVariant, Fluid fluid, long amount) {
 		this.fluid = fluid;
 		this.amount = amount;
-		ItemKey targetKey = ItemKey.of(emptyVariant, sourceKey.copyTag());
-		this.extractionFunction = (resource, maxAmount, tx) -> {
-			FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
-
-			if (maxAmount >= amount && resource == fluid && ctx.getCount(tx) > 0) {
-				if (ctx.transform(1, targetKey, tx)) {
-					return amount;
-				}
-			}
-
-			return 0;
-		};
+		this.targetKey = ItemKey.of(emptyVariant, sourceKey.copyTag());
+		this.ctx = ctx;
 	}
 
 	@Override
@@ -59,12 +50,35 @@ public class SimpleFluidContainingItem implements Storage<Fluid>, StorageView<Fl
 	}
 
 	@Override
-	public StorageFunction<Fluid> extractionFunction() {
-		return extractionFunction;
+	public boolean supportsInsertion() {
+		return false;
 	}
 
 	@Override
-	public boolean forEach(Visitor<Fluid> visitor) {
+	public long insert(Fluid resource, long maxAmount, Transaction transaction) {
+		return 0;
+	}
+
+	@Override
+	public boolean supportsExtraction() {
+		return true;
+	}
+
+	@Override
+	public long extract(Fluid resource, long maxAmount, Transaction transaction) {
+		FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
+
+		if (maxAmount >= amount && resource == fluid && ctx.getCount(transaction) > 0) {
+			if (ctx.transform(1, targetKey, transaction)) {
+				return amount;
+			}
+		}
+
+		return 0;
+	}
+
+	@Override
+	public boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
 		// note: fluid may not be empty, so no need to check
 		return visitor.accept(this);
 	}

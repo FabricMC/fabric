@@ -23,29 +23,54 @@ import net.fabricmc.fabric.impl.transfer.TransferApiImpl;
 
 /**
  * An object that can store resources.
+ *
+ * <p><b>Important note:</b> Unless otherwise specified, all transfer functions take a non-empty resource
+ * and a non-negative maximum amount as parameters.
+ * Implementations are encouraged to throw an exception if these preconditions are violated.
+ *
+ * <p>For transfer functions, the returned amount must be non-negative, and smaller than the passed maximum amount.
+ * Consumers of these functions are encourage to throw an exception if these postconditions are violated.
  * @param <T> The type of the stored resources.
  */
 public interface Storage<T> {
-	default StorageFunction<T> insertionFunction() {
-		return StorageFunction.empty();
-	}
-	default StorageFunction<T> extractionFunction() {
-		return StorageFunction.empty();
-	}
+	/**
+	 * Return whether this storage supports insertion, meaning that {@link #insert} will not always return 0.
+	 */
+	boolean supportsInsertion();
+
+	/**
+	 * Try to insert a resource into this storage.
+	 * @return The amount that was inserted.
+	 */
+	long insert(T resource, long maxAmount, Transaction transaction);
+
+	/**
+	 * Return whether this storage supports extraction, meaning that {@link #extract} will not always return 0.
+	 */
+	boolean supportsExtraction();
+
+	/**
+	 * Try to extract a resource from this storage.
+	 * @return The amount that was extracted.
+	 */
+	long extract(T resource, long maxAmount, Transaction transaction);
 
 	/**
 	 * Iterate through the contents of this storage.
 	 *
-	 * <p>Note that this function is not re-entrant: the implementation may throw an exception if
+	 * <p>Note: This function is not re-entrant: the implementation may throw an exception if
 	 * {@code forEach} is called from within the visitor.
+	 *
+	 * <p>Note: This function should not call {@link Transaction#openNested} directly,
+	 * as the visitor might use the passed transaction directly for transfer operations.
 	 * @return True if the visit was stopped by the visitor.
 	 * @see Visitor
 	 */
-	boolean forEach(Visitor<T> visitor);
+	boolean forEach(Visitor<T> visitor, Transaction transaction);
 
 	/**
 	 * An integer representing the current version of the storage.
-	 * It <em>must</em> change if the state of the storage has changed,
+	 * It <b>must</b> change if the state of the storage has changed,
 	 * but it may also change even if the state of the storage hasn't changed.
 	 *
 	 * <p>Note: It is not valid to call this during a transaction,
