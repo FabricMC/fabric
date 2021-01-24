@@ -21,6 +21,9 @@ import com.google.common.base.Preconditions;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 
+/**
+ * Preconditions for fluid transfer.
+ */
 public class FluidPreconditions {
 	public static void notEmpty(Fluid fluid) {
 		if (fluid == Fluids.EMPTY) {

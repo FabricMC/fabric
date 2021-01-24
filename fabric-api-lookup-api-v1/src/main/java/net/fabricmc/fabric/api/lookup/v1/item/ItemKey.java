@@ -18,6 +18,7 @@ package net.fabricmc.fabric.api.lookup.v1.item;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -31,7 +32,10 @@ import net.fabricmc.fabric.impl.lookup.item.ItemKeyImpl;
 
 /**
  * The immutable combination of an item and additional NBT data. Compare using {@link ItemKey#equals}.
+ *
+ * <p>Do not implement.
  */
+@ApiStatus.NonExtendable
 public interface ItemKey {
 	ItemKey EMPTY = ItemKeyImpl.of(Items.AIR, null);
 

@@ -22,6 +22,7 @@ import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.util.math.Direction;
@@ -30,7 +31,7 @@ import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.impl.transfer.item.InventoryWrappersImpl;
 
-public class InventoryWrappers {
+public final class InventoryWrappers {
 	// List<Storage<ItemKey>> has 7 values.
 	// The 6 first for the various directions, and the last element for a null direction.
 	private static final WeakHashMap<Inventory, List<Storage<ItemKey>>> WRAPPERS = new WeakHashMap<>();
@@ -40,6 +41,10 @@ public class InventoryWrappers {
 		List<Storage<ItemKey>> storages = WRAPPERS.computeIfAbsent(inventory, InventoryWrappersImpl::ofInventory);
 
 		return direction != null ? storages.get(direction.ordinal()) : storages.get(6);
+	}
+
+	public static PlayerInventoryWrapper ofPlayer(PlayerEntity player) {
+		return ofPlayerInventory(player.inventory);
 	}
 
 	public static PlayerInventoryWrapper ofPlayerInventory(PlayerInventory playerInventory) {

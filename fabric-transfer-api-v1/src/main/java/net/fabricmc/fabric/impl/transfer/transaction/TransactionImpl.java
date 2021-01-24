@@ -48,7 +48,7 @@ public class TransactionImpl implements Transaction {
 
 	public static void setServerThread(Thread serverThread) {
 		if (innerLock.isLocked()) {
-			throw new AssertionError("Something is terribly wrong.");
+			throw new AssertionError("Trying to change server thread while a transaction is open.");
 		}
 
 		TransactionImpl.serverThread = serverThread;
@@ -57,7 +57,9 @@ public class TransactionImpl implements Transaction {
 	// validate that Transaction instance methods are valid to call.
 	private void validateCurrent() {
 		if (!innerLock.isHeldByCurrentThread()) {
-			throw new IllegalStateException("Transaction operations are not allowed on this thread.");
+			throw new IllegalStateException(String.format(
+					"Transaction operations are already ongoing on another thread.\nCurrent thread: %s.\n",
+					Thread.currentThread().getName()));
 		}
 
 		if (!allowAccess) {

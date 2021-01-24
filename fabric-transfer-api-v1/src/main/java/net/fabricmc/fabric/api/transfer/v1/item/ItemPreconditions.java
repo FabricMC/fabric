@@ -23,7 +23,10 @@ import net.minecraft.item.Items;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 
-public class ItemPreconditions {
+/**
+ * Preconditions for item transfer.
+ */
+public final class ItemPreconditions {
 	public static void notEmpty(ItemKey key) {
 		if (key == null || key.isEmpty()) {
 			throw new IllegalArgumentException("ItemKey may not be empty or null.");
@@ -39,5 +42,8 @@ public class ItemPreconditions {
 	public static void notEmptyNotNegative(ItemKey key, long amount) {
 		ItemPreconditions.notEmpty(key);
 		Preconditions.checkArgument(amount >= 0);
+	}
+
+	private ItemPreconditions() {
 	}
 }
