@@ -66,6 +66,6 @@ public class SimpleFluidContainingItem implements Storage<Fluid>, StorageView<Fl
 	@Override
 	public boolean forEach(Visitor<Fluid> visitor) {
 		// note: fluid may not be empty, so no need to check
-		return visitor.visit(this);
+		return visitor.accept(this);
 	}
 }

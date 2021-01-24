@@ -137,7 +137,7 @@ public class InventoryWrappersImpl {
 		@Override
 		public boolean forEach(Visitor<ItemKey> visitor) {
 			if (!inventory.getStack(slot).isEmpty()) {
-				return visitor.visit(this);
+				return visitor.accept(this);
 			}
 
 			return false;
@@ -359,7 +359,7 @@ public class InventoryWrappersImpl {
 			@Override
 			public boolean forEach(Visitor<ItemKey> visitor) {
 				if (!playerInventory.getCursorStack().isEmpty()) {
-					return visitor.visit(this);
+					return visitor.accept(this);
 				}
 
 				return false;

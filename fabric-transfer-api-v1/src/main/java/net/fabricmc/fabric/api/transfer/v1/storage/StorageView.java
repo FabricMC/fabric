@@ -16,11 +16,29 @@
 
 package net.fabricmc.fabric.api.transfer.v1.storage;
 
+/**
+ * A view of a single stored resource in a {@link Storage}, for use with {@link Storage.Visitor#accept}.
+ *
+ * <p>Note that views passed to {@link Storage.Visitor#accept} may never be empty.
+ * @param <T> The type of the stored resource.
+ */
 public interface StorageView<T> {
+	/**
+	 * Return a {@link StorageFunction} that can directly extract from this view.
+	 * If the view is available, it is expected that extracting directly from the view will be much faster than
+	 * through {@link Storage#extractionFunction}.
+	 */
 	default StorageFunction<T> extractionFunction() {
 		return StorageFunction.empty();
 	}
 
+	/**
+	 * @return The resource stored in this view.
+	 */
 	T resource();
+
+	/**
+	 * @return The amount of {@link #resource} stored in this view.
+	 */
 	long amount();
 }
