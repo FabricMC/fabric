@@ -16,37 +16,54 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
-import java.util.List;
 import java.util.Objects;
-import java.util.WeakHashMap;
 
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.impl.transfer.item.InventoryWrappersImpl;
 
+/**
+ * Wraps {@link Inventory} and {@link PlayerInventory} as {@link Storage} implementations.
+ */
 public final class InventoryWrappers {
-	// List<Storage<ItemKey>> has 7 values.
-	// The 6 first for the various directions, and the last element for a null direction.
-	private static final WeakHashMap<Inventory, List<Storage<ItemKey>>> WRAPPERS = new WeakHashMap<>();
-
+	/**
+	 * Return a wrapper around an {@link Inventory} or a {@link SidedInventory}.
+	 *
+	 * <p>Note: If the inventory is a {@link PlayerInventory}, this function will return a wrapper around all
+	 * the slots of the player inventory except the cursor stack.
+	 * This may cause insertion to insert arbitrary items into equipment slots or other unexpected behavior.
+	 * To prevent this, {@link PlayerInventoryWrapper}'s specialized functions should be used instead.
+	 *
+	 * @param inventory The inventory to wrap.
+	 * @param direction The direction to use if the access is sided, or {@code null} if the access is not sided.
+	 */
+	// TODO: should we throw if we receive a PlayerInventory? (it's probably a mistake)
 	public static Storage<ItemKey> of(Inventory inventory, @Nullable Direction direction) {
 		Objects.requireNonNull(inventory, "Null inventory is not supported.");
-		List<Storage<ItemKey>> storages = WRAPPERS.computeIfAbsent(inventory, InventoryWrappersImpl::ofInventory);
-
-		return direction != null ? storages.get(direction.ordinal()) : storages.get(6);
+		return InventoryWrappersImpl.of(inventory, direction);
 	}
 
+	/**
+	 * Return a wrapper around the inventory of a player.
+	 * @see PlayerInventoryWrapper
+	 */
 	public static PlayerInventoryWrapper ofPlayer(PlayerEntity player) {
+		Objects.requireNonNull(player, "Null player is not supported.");
 		return ofPlayerInventory(player.inventory);
 	}
 
+	/**
+	 * Return a wrapper around the inventory of a player.
+	 * @see PlayerInventoryWrapper
+	 */
 	public static PlayerInventoryWrapper ofPlayerInventory(PlayerInventory playerInventory) {
 		return (PlayerInventoryWrapper) of(playerInventory, null);
 	}

@@ -16,16 +16,33 @@
 
 package net.fabricmc.fabric.api.transfer.v1.item;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 /**
  * A wrapper around a PlayerInventory.
+ *
+ * <p>Do not implement. Obtain an instance through {@link InventoryWrappers#ofPlayerInventory} instead.
  */
-// TODO: this careful consideration to decide which wrappers are necessary
+@ApiStatus.NonExtendable
 public interface PlayerInventoryWrapper {
-	long offerOrDrop(ItemKey key, long maxAmount, Transaction transaction);
-	Storage<ItemKey> slotWrapper(int slot);
+	/**
+	 * Return a wrapper around a specific slot of the player inventory.
+	 *
+	 * <p>Slots 0 to 35 are for the main inventory, slots 36 to 39 are for the armor, and slot 40 is the offhand slot.
+	 */
+	Storage<ItemKey> slotWrapper(int index);
+
+	/**
+	 * Return a wrapper around the cursor slot of the player inventory.
+	 */
 	Storage<ItemKey> cursorSlotWrapper();
+
+	/**
+	 * Add items to the inventory if possible, and drop any leftover items in the world.
+	 */
+	void offerOrDrop(ItemKey key, long amount, Transaction transaction);
 }

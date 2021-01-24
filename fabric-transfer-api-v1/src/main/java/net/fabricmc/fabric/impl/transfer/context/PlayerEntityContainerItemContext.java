@@ -73,17 +73,11 @@ public class PlayerEntityContainerItemContext implements ContainerItemContext {
 			throw new AssertionError("Implementation error.");
 		}
 
-		if (!into.isEmpty() && internalInsert(into, count, tx) != count) {
-			throw new AssertionError("Implementation error.");
+		if (!into.isEmpty()) {
+			count -= slot.insert(into, count, tx);
+			wrapper.offerOrDrop(into, count, tx);
 		}
 
 		return true;
-	}
-
-	private long internalInsert(ItemKey into, long count, Transaction tx) {
-		long initialCount = count;
-		count -= slot.insert(into, count, tx);
-		count -= wrapper.offerOrDrop(into, count, tx);
-		return initialCount - count;
 	}
 }
