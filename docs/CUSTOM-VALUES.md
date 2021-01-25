@@ -11,7 +11,8 @@ Custom values provided by Fabric API are for use by other mods.
 ## `fabric-api:module-lifecycle`
 
 Specifies the lifecycle of a fabric api module.
-This may be used by other mods to determine 
+This may be used by other mods to determine the current lifecycle of a fabric api module, such as if a module is experimental
+and may be subject to unannounced changes.
 
 **Type:** Json String
 
