@@ -37,11 +37,11 @@ public final class InputCallbacksImpl {
 		ClientInputEvents.KEY.invoker().onKeyChanged(code, scancode, action, modKeys);
 
 		boolean hasListeners = ClientInputEvents.KEY_PRESSED.hasListeners()
-							|| ClientInputEvents.KEY_RELEASED.hasListeners()
-							|| ClientInputEvents.KEY_REPEATED.hasListeners()
-							|| ClientInputEvents.KEYBIND_PRESSED.hasListeners()
-							|| ClientInputEvents.KEYBIND_RELEASED.hasListeners()
-							|| ClientInputEvents.KEYBIND_REPEATED.hasListeners();
+				|| ClientInputEvents.KEY_RELEASED.hasListeners()
+				|| ClientInputEvents.KEY_REPEATED.hasListeners()
+				|| ClientInputEvents.KEYBIND_PRESSED.hasListeners()
+				|| ClientInputEvents.KEYBIND_RELEASED.hasListeners()
+				|| ClientInputEvents.KEYBIND_REPEATED.hasListeners();
 
 		if (hasListeners) {
 			Map<InputUtil.Key, KeyBinding> keyToBindings = KeyBindingAccessor.getKeyToBindings();
@@ -105,9 +105,9 @@ public final class InputCallbacksImpl {
 		ClientInputEvents.MOUSE_BUTTON.invoker().onMouseButtonChanged(button, action, modKeys);
 
 		boolean hasListeners = ClientInputEvents.MOUSE_BUTTON_PRESSED.hasListeners()
-							|| ClientInputEvents.MOUSE_BUTTON_RELEASED.hasListeners()
-							|| ClientInputEvents.KEYBIND_PRESSED.hasListeners()
-							|| ClientInputEvents.KEYBIND_RELEASED.hasListeners();
+				|| ClientInputEvents.MOUSE_BUTTON_RELEASED.hasListeners()
+				|| ClientInputEvents.KEYBIND_PRESSED.hasListeners()
+				|| ClientInputEvents.KEYBIND_RELEASED.hasListeners();
 
 		if (hasListeners) {
 			Key key = buttonToKey.get(button);
