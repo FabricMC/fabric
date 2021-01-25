@@ -13,6 +13,7 @@ plugins {
 	id "net.minecrell.licenser" version "0.4.1"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "1.1.0"
 }
 
 def ENV = System.getenv()
@@ -22,6 +23,7 @@ class Globals {
 	static def mcVersion = "21w03a"
 	static def yarnVersion = "+build.1"
 	static def loaderVersion = "0.10.5+build.213"
+	static def preRelease = true
 }
 
 version = Globals.baseVersion + "+" + (ENV.GITHUB_RUN_NUMBER ? "" : "local-") + getBranch()
@@ -341,7 +343,7 @@ curseforge {
 	project {
 		id = "306612"
 		changelog = "A changelog can be found at https://github.com/FabricMC/fabric/commits"
-		releaseType = "beta"
+		releaseType = Globals.preRelease ? "beta" : "release"
 		addGameVersion "1.17"
 		addGameVersion "Fabric"
 
@@ -375,10 +377,28 @@ task github(dependsOn: remapMavenJar) {
 		releaseBuilder.name("[$Globals.mcVersion] Fabric API $Globals.baseVersion")
 		releaseBuilder.body("A changelog can be found at https://github.com/FabricMC/fabric/commits")
 		releaseBuilder.commitish(getBranch())
+		releaseBuilder.prerelease(Globals.preRelease)
 
 		def ghRelease = releaseBuilder.create()
 		ghRelease.uploadAsset(file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar"), "application/java-archive");
 	}
+}
+
+task modrinth(type: com.modrinth.minotaur.TaskModrinthUpload, dependsOn: remapMavenJar) {
+	onlyIf {
+		ENV.MODRINTH_TOKEN
+	}
+
+	token = ENV.MODRINTH_TOKEN
+	projectId = "P7dR8mSH"
+	versionNumber = version
+	versionName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
+	releaseType = Globals.preRelease ? "beta" : "release"
+
+	uploadFile = file("${project.buildDir}/libs/${archivesBaseName}-${version}.jar")
+
+	addGameVersion(Globals.mcVersion)
+	addLoader('fabric')
 }
 
 // A task to ensure that the version being released has not already been released.
@@ -394,5 +414,6 @@ task checkVersion {
 }
 
 github.mustRunAfter checkVersion
+modrinth.mustRunAfter checkVersion
 publish.mustRunAfter checkVersion
 project.tasks.curseforge.mustRunAfter checkVersion
