@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidApi;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.InsertionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class EmptyItemsRegistry {
@@ -58,7 +58,7 @@ public class EmptyItemsRegistry {
 			return new EmptyItemStorage(itemKey, context);
 		}
 
-		private class EmptyItemStorage implements ExtractionOnlyStorage<Fluid> {
+		private class EmptyItemStorage implements InsertionOnlyStorage<Fluid> {
 			private final ItemKey initialKey;
 			private final ContainerItemContext ctx;
 
@@ -68,7 +68,7 @@ public class EmptyItemsRegistry {
 			}
 
 			@Override
-			public long extract(Fluid fluid, long maxAmount, Transaction transaction) {
+			public long insert(Fluid fluid, long maxAmount, Transaction transaction) {
 				FluidPreconditions.notEmptyNotNegative(fluid, maxAmount);
 
 				if (ctx.getCount(transaction) == 0) return 0;
