@@ -13,6 +13,7 @@ plugins {
 	id "net.minecrell.licenser" version "0.4.1"
 	id "org.ajoberstar.grgit" version "3.1.1"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "1.1.0"
 }
 
 def ENV = System.getenv()
@@ -356,6 +357,21 @@ curseforge {
 
 	options {
 		forgeGradleIntegration = false
+	}
+}
+
+import com.modrinth.minotaur.TaskModrinthUpload
+task modrinth(type: TaskModrinthUpload) {
+	if (ENV.MODRINTH_API_TOKEN) token = ENV.MODRINTH_API_TOKEN
+	projectId = "P7dR8mSH"
+	versionNumber = "v${version}"
+	uploadFile = remapJar
+	addGameVersion("1.16.5")
+	addLoader("fabric")
+	versionName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
+
+	afterEvaluate {
+		modrinth.dependsOn("remapJar")
 	}
 }
 
