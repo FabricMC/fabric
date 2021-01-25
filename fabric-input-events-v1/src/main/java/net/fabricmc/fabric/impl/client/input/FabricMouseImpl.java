@@ -16,14 +16,6 @@
 
 package net.fabricmc.fabric.impl.client.input;
 
-import java.nio.DoubleBuffer;
-
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.system.MemoryStack;
-
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.Window;
-
 public final class FabricMouseImpl {
 	private static double x = 0.0;
 	private static double y = 0.0;
@@ -58,25 +50,6 @@ public final class FabricMouseImpl {
 			FabricMouseImpl.buttons |= (1 << button);
 		} else {
 			FabricMouseImpl.buttons &= ~(1 << button);
-		}
-	}
-
-	public static void queryPosition() {
-		MinecraftClient client = MinecraftClient.getInstance();
-
-		if (client == null) {
-			return;
-		}
-
-		Window window = client.getWindow();
-		long handle = window.getHandle();
-
-		try (MemoryStack stack = MemoryStack.stackPush()) {
-			DoubleBuffer current_x = stack.callocDouble(1);
-			DoubleBuffer current_y = stack.callocDouble(1);
-			GLFW.glfwGetCursorPos(handle, current_x, current_y);
-			FabricMouseImpl.x = current_x.get();
-			FabricMouseImpl.y = current_y.get();
 		}
 	}
 }
