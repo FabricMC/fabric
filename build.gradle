@@ -366,8 +366,11 @@ task modrinth(type: TaskModrinthUpload) {
 	projectId = "P7dR8mSH"
 	versionNumber = "v${version}"
 	uploadFile = remapJar
+	// Possibly add -sources, -dev and -sources-dev here?
+	
 	addGameVersion("1.16.5")
 	addLoader("fabric")
+	
 	versionName = "[$Globals.mcVersion] Fabric API $Globals.baseVersion"
 
 	afterEvaluate {
