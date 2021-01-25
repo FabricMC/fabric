@@ -17,7 +17,7 @@ For support and discussion for both developers and users, visit [the Fabric Disc
 
 Make sure you have install fabric loader first. More information about installing Fabric Loader can be found [here](https://fabricmc.net/use/).
 
-To use Fabric API, download it from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api) or [GitHub Releases](https://github.com/FabricMC/fabric/releases).
+To use Fabric API, download it from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api), [GitHub Releases](https://github.com/FabricMC/fabric/releases) or [Modrinth](https://modrinth.com/mod/fabric-api).
 
 The downloaded jar file should be placed in your `mods` folder.
 
