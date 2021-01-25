@@ -36,7 +36,7 @@ import net.fabricmc.fabric.mixin.client.renderer.registry.EntityModelLayersAcces
 @Deprecated
 @ApiStatus.Experimental
 @Environment(EnvType.CLIENT)
-public final class EntityModelLayerHelper {
+public final class EntityModelLayerRegistry {
 	/**
 	 * Registers an entity model layer and registers a provider for a {@linkplain TexturedModelData}.
 	 *
@@ -54,7 +54,7 @@ public final class EntityModelLayerHelper {
 		EntityModelLayersAccessor.getLayers().add(modelLayer);
 	}
 
-	private EntityModelLayerHelper() {
+	private EntityModelLayerRegistry() {
 	}
 
 	@FunctionalInterface

@@ -23,11 +23,11 @@ import net.minecraft.client.render.entity.model.EntityModelLayer;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerHelper;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 
 @Environment(EnvType.CLIENT)
 public final class EntityModelLayerImpl {
-	public static final Map<EntityModelLayer, EntityModelLayerHelper.TexturedModelDataProvider> PROVIDERS = new HashMap<>();
+	public static final Map<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> PROVIDERS = new HashMap<>();
 
 	private EntityModelLayerImpl() {
 	}

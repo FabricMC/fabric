@@ -29,14 +29,14 @@ import net.minecraft.client.model.TexturedModelData;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.render.entity.model.EntityModels;
 
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerHelper;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.impl.client.renderer.registry.EntityModelLayerImpl;
 
 @Mixin(EntityModels.class)
 abstract class EntityModelsMixin {
 	@Inject(method = "getModels", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/ImmutableMap$Builder;build()Lcom/google/common/collect/ImmutableMap;"), locals = LocalCapture.CAPTURE_FAILEXCEPTION)
 	private static void registerExtraModelData(CallbackInfoReturnable<Map<EntityModelLayer, TexturedModelData>> info, ImmutableMap.Builder<EntityModelLayer, TexturedModelData> builder) {
-		for (Map.Entry<EntityModelLayer, EntityModelLayerHelper.TexturedModelDataProvider> entry : EntityModelLayerImpl.PROVIDERS.entrySet()) {
+		for (Map.Entry<EntityModelLayer, EntityModelLayerRegistry.TexturedModelDataProvider> entry : EntityModelLayerImpl.PROVIDERS.entrySet()) {
 			builder.put(entry.getKey(), entry.getValue().createModelData());
 		}
 	}
