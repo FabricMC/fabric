@@ -22,11 +22,11 @@ import net.minecraft.item.Item;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ExtractionOnlyStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
-public class SimpleFluidContainingItem implements Storage<Fluid>, StorageView<Fluid> {
+public class SimpleFluidContainingItem implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid> {
 	private final Fluid fluid;
 	private final long amount;
 	private final ItemKey targetKey;
@@ -47,21 +47,6 @@ public class SimpleFluidContainingItem implements Storage<Fluid>, StorageView<Fl
 	@Override
 	public long amount() {
 		return amount;
-	}
-
-	@Override
-	public boolean supportsInsertion() {
-		return false;
-	}
-
-	@Override
-	public long insert(Fluid resource, long maxAmount, Transaction transaction) {
-		return 0;
-	}
-
-	@Override
-	public boolean supportsExtraction() {
-		return true;
 	}
 
 	@Override

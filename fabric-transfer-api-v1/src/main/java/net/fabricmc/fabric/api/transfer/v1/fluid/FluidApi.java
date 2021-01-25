@@ -16,9 +16,10 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
+import com.google.common.base.Preconditions;
+
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Items;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
@@ -27,8 +28,11 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookupRegistry;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.base.FluidContainingItems;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.impl.transfer.fluid.EmptyItemsRegistry;
+import net.fabricmc.fabric.impl.transfer.fluid.FluidApiImpl;
+import net.fabricmc.fabric.impl.transfer.fluid.SimpleFluidContainingItem;
 
 public final class FluidApi {
 	public static final BlockApiLookup<Storage<Fluid>, Direction> SIDED =
@@ -37,16 +41,42 @@ public final class FluidApi {
 	public static final ItemApiLookup<Storage<Fluid>, ContainerItemContext> ITEM =
 			ItemApiLookupRegistry.getLookup(new Identifier("fabric:fluid_api"), Storage.asClass(), ContainerItemContext.class);
 
+	/**
+	 * Register an item that contains a fluid and can be emptied of it entirely.
+	 * @param fullItem The item that contains the fluid.
+	 * @param emptyItem The emptied item.
+	 * @param fluid The contained fluid. May not be empty.
+	 * @param amount The amount of fluid in the full item. Must be positive.
+	 */
+	// TODO: document conflicts
+	public static void registerFullItem(Item fullItem, Item emptyItem, Fluid fluid, long amount) {
+		ItemPreconditions.notEmpty(fullItem);
+		FluidPreconditions.notEmpty(fluid);
+		Preconditions.checkArgument(amount > 0);
+
+		ITEM.register((key, ctx) -> new SimpleFluidContainingItem(ctx, key, emptyItem, fluid, amount), fullItem);
+	}
+
+	/**
+	 * Register an item that is empty, and may be filled with some fluid entirely.
+	 */
+	// TODO: document params and conflicts
+	// TODO: pick parameter order, probably the same for both methods?
+	public static void registerEmptyItem(Item emptyItem, Item fullItem, Fluid fluid, long amount) {
+		ItemPreconditions.notEmpty(emptyItem);
+		ItemPreconditions.notEmpty(fullItem);
+		FluidPreconditions.notEmpty(fluid);
+		Preconditions.checkArgument(amount > 0);
+
+		EmptyItemsRegistry.registerEmptyItem(emptyItem, fullItem, fluid, amount);
+	}
+
+	// TODO: potion handling
+
 	private FluidApi() {
 	}
 
 	static {
-		// Register compat for full vanilla items
-		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.WATER, FluidConstants.BUCKET), Items.WATER_BUCKET);
-		ITEM.register(FluidContainingItems.getFullItemProvider(Items.BUCKET, Fluids.LAVA, FluidConstants.BUCKET), Items.LAVA_BUCKET);
-		// TODO: potion nightmare for bottle compat
-		// TODO: compat for empty item using registry
-		// TODO: cauldron compat
-		// TODO 1.17: cauldron registry for modded cauldrons
+		FluidApiImpl.init();
 	}
 }
