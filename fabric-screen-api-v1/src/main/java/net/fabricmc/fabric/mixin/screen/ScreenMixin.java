@@ -30,6 +30,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.impl.client.screen.ScreenExtensions;
@@ -95,9 +96,26 @@ abstract class ScreenMixin implements ScreenExtensions {
 	@Unique
 	private Event<ScreenMouseEvents.AfterMouseScroll> afterMouseScrollEvent;
 
+	@Inject(method = "<init>", at = @At("RETURN"))
+	private void construct(Text title, CallbackInfo ci) {
+		initEvents();
+	}
+
 	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("HEAD"))
 	private void beforeInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
 		// All elements are repopulated on the screen, so we need to reinitialize all events
+		initEvents();
+
+		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, width, height);
+	}
+
+	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
+	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
+		ScreenEvents.AFTER_INIT.invoker().afterInit(client, (Screen) (Object) this, width, height);
+	}
+
+	@Unique
+	private void initEvents() {
 		this.fabricButtons = null;
 		this.removeEvent = ScreenEventFactory.createRemoveEvent();
 		this.beforeRenderEvent = ScreenEventFactory.createBeforeRenderEvent();
@@ -123,13 +141,6 @@ abstract class ScreenMixin implements ScreenExtensions {
 		this.allowMouseScrollEvent = ScreenEventFactory.createAllowMouseScrollEvent();
 		this.beforeMouseScrollEvent = ScreenEventFactory.createBeforeMouseScrollEvent();
 		this.afterMouseScrollEvent = ScreenEventFactory.createAfterMouseScrollEvent();
-
-		ScreenEvents.BEFORE_INIT.invoker().beforeInit(client, (Screen) (Object) this, width, height);
-	}
-
-	@Inject(method = "init(Lnet/minecraft/client/MinecraftClient;II)V", at = @At("TAIL"))
-	private void afterInitScreen(MinecraftClient client, int width, int height, CallbackInfo ci) {
-		ScreenEvents.AFTER_INIT.invoker().afterInit(client, (Screen) (Object) this, width, height);
 	}
 
 	@Override
