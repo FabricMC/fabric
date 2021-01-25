@@ -35,26 +35,4 @@ All Fabric API modules
 
 Custom values consumed by Fabric API are specified by other mods.
 These may be used to enable/disable features in fabric api.
-
-## Fabric Renderer Indigo
-
-### `fabric-renderer-api-v1:contains_renderer`
-
-If a mod contains this custom value, the default indigo renderer will be disabled.
-This is intended for mods which implement the rendering api.
-
-**Type:** Any
-
-**Presence:**
-A mod which implements the rendering api.
-
-### `fabric-renderer-indigo:force_compatibility`
-
-If a mod contains this value AND no mod has set `fabric-renderer-api-v1:contains_renderer`, the Indigo renderer implementation will use a compatability mode.
-
-This will disable vanilla block tesselation and ensures vertex format compatibility.
-
-**Type:** Any
-
-**Presence:**
-A mod which requires vanilla vertex format compatability.
+These custom values are documented in each module which consumes these types of custom values.
