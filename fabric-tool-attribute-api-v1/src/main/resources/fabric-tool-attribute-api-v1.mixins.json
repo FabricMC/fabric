@@ -4,8 +4,14 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BambooBlockMixin",
+    "BeehivePumpkinBlockMixin",
+    "DispenserBlockMixin",
+    "EfficiencyEnchantmentMixin",
     "MixinItemStack",
-    "MixinLivingEntity"
+    "MixinLivingEntity",
+    "MooshroomEntityMixin",
+    "SheepSnowGolemEntityMixin",
+    "TripwireBlockMixin"
   ],
   "injectors": {
     "defaultRequire": 1
