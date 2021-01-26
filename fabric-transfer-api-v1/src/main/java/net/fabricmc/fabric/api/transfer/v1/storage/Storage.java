@@ -36,7 +36,9 @@ public interface Storage<T> {
 	/**
 	 * Return whether this storage supports insertion, meaning that {@link #insert} will not always return 0.
 	 */
-	boolean supportsInsertion();
+	default boolean supportsInsertion() {
+		return true;
+	}
 
 	/**
 	 * Try to insert a resource into this storage.
@@ -47,7 +49,9 @@ public interface Storage<T> {
 	/**
 	 * Return whether this storage supports extraction, meaning that {@link #extract} will not always return 0.
 	 */
-	boolean supportsExtraction();
+	default boolean supportsExtraction() {
+		return true;
+	}
 
 	/**
 	 * Try to extract a resource from this storage.

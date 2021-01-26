@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.transfer.fluid;
 
+import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.BucketItem;
 import net.minecraft.item.Item;
@@ -51,5 +52,7 @@ public class FluidApiImpl {
 		// register bucket compat
 		Registry.FLUID.forEach(FluidApiImpl::registerFluid);
 		RegistryEntryAddedCallback.event(Registry.FLUID).register((rawId, id, fluid) -> registerFluid(fluid));
+		// register cauldron compat
+		FluidApi.SIDED.registerForBlocks((world, pos, state, context) -> CauldronWrapper.get(world, pos), Blocks.CAULDRON);
 	}
 }
