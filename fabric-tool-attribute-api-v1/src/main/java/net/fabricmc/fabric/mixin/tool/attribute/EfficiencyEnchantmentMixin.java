@@ -27,7 +27,7 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
 
 @Mixin(EfficiencyEnchantment.class)
-public class EfficiencyEnchantmentMixin {
+public abstract class EfficiencyEnchantmentMixin {
 	@Inject(method = "isAcceptableItem", at = @At("HEAD"), cancellable = true)
 	private void isAcceptableItem(ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
 		if (stack.getItem().isIn(FabricToolTags.SHEARS)) {
