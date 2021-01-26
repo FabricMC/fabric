@@ -47,7 +47,7 @@ public final class APIWarning {
 					e.printStackTrace();
 				}
 
-					return super.newBundle(baseName, locale, format, loader, reload);
+				return super.newBundle(baseName, locale, format, loader, reload);
 			}
 		});
 		String message = warningApi.getString("api.warning");
