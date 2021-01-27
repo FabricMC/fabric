@@ -16,6 +16,7 @@ include 'fabric-api-base'
 
 include 'fabric-biome-api-v1'
 include 'fabric-blockrenderlayer-v1'
+include 'fabric-combat-api-v1'
 include 'fabric-commands-v0'
 include 'fabric-command-api-v1'
 include 'fabric-containers-v0'

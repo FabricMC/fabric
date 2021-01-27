@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.combat",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "AbstractSkeletonEntityMixin",
+    "BowAttackGoalMixin",
+    "BowAttackMixin",
+    "BowItemMixin",
+    "EntityUseBowMixin",
+    "ProjectileUtilMixin"
+  ],
+  "client": [
+    "client.HeldItemRendererMixin",
+    "client.SkeletonEntityModelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
