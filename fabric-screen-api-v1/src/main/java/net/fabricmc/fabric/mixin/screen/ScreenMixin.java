@@ -142,107 +142,116 @@ abstract class ScreenMixin implements ScreenExtensions {
 		return this.fabricButtons;
 	}
 
+	@Unique
+	private <T> Event<T> ensureEventsAreInitialised(Event<T> event) {
+		if (event == null) {
+			throw new IllegalStateException(String.format("[fabric-screen-api-v1] The current screen (%s) has not been correctly initialised, please send this crash log to the mod author. This is usually caused by the screen not calling super.init(Lnet/minecraft/client/MinecraftClient;II)V", this.getClass().getSuperclass().getName()));
+		}
+
+		return event;
+	}
+
 	@Override
 	public Event<ScreenEvents.Remove> fabric_getRemoveEvent() {
-		return this.removeEvent;
+		return ensureEventsAreInitialised(this.removeEvent);
 	}
 
 	@Override
 	public Event<ScreenEvents.BeforeTick> fabric_getBeforeTickEvent() {
-		return this.beforeTickEvent;
+		return ensureEventsAreInitialised(this.beforeTickEvent);
 	}
 
 	@Override
 	public Event<ScreenEvents.AfterTick> fabric_getAfterTickEvent() {
-		return this.afterTickEvent;
+		return ensureEventsAreInitialised(this.afterTickEvent);
 	}
 
 	@Override
 	public Event<ScreenEvents.BeforeRender> fabric_getBeforeRenderEvent() {
-		return this.beforeRenderEvent;
+		return ensureEventsAreInitialised(this.beforeRenderEvent);
 	}
 
 	@Override
 	public Event<ScreenEvents.AfterRender> fabric_getAfterRenderEvent() {
-		return this.afterRenderEvent;
+		return ensureEventsAreInitialised(this.afterRenderEvent);
 	}
 
 	// Keyboard
 
 	@Override
 	public Event<ScreenKeyboardEvents.AllowKeyPress> fabric_getAllowKeyPressEvent() {
-		return this.allowKeyPressEvent;
+		return ensureEventsAreInitialised(this.allowKeyPressEvent);
 	}
 
 	@Override
 	public Event<ScreenKeyboardEvents.BeforeKeyPress> fabric_getBeforeKeyPressEvent() {
-		return this.beforeKeyPressEvent;
+		return ensureEventsAreInitialised(this.beforeKeyPressEvent);
 	}
 
 	@Override
 	public Event<ScreenKeyboardEvents.AfterKeyPress> fabric_getAfterKeyPressEvent() {
-		return this.afterKeyPressEvent;
+		return ensureEventsAreInitialised(this.afterKeyPressEvent);
 	}
 
 	@Override
 	public Event<ScreenKeyboardEvents.AllowKeyRelease> fabric_getAllowKeyReleaseEvent() {
-		return this.allowKeyReleaseEvent;
+		return ensureEventsAreInitialised(this.allowKeyReleaseEvent);
 	}
 
 	@Override
 	public Event<ScreenKeyboardEvents.BeforeKeyRelease> fabric_getBeforeKeyReleaseEvent() {
-		return this.beforeKeyReleaseEvent;
+		return ensureEventsAreInitialised(this.beforeKeyReleaseEvent);
 	}
 
 	@Override
 	public Event<ScreenKeyboardEvents.AfterKeyRelease> fabric_getAfterKeyReleaseEvent() {
-		return this.afterKeyReleaseEvent;
+		return ensureEventsAreInitialised(this.afterKeyReleaseEvent);
 	}
 
 	// Mouse
 
 	@Override
 	public Event<ScreenMouseEvents.AllowMouseClick> fabric_getAllowMouseClickEvent() {
-		return this.allowMouseClickEvent;
+		return ensureEventsAreInitialised(this.allowMouseClickEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.BeforeMouseClick> fabric_getBeforeMouseClickEvent() {
-		return this.beforeMouseClickEvent;
+		return ensureEventsAreInitialised(this.beforeMouseClickEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.AfterMouseClick> fabric_getAfterMouseClickEvent() {
-		return this.afterMouseClickEvent;
+		return ensureEventsAreInitialised(this.afterMouseClickEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.AllowMouseRelease> fabric_getAllowMouseReleaseEvent() {
-		return this.allowMouseReleaseEvent;
+		return ensureEventsAreInitialised(this.allowMouseReleaseEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.BeforeMouseRelease> fabric_getBeforeMouseReleaseEvent() {
-		return this.beforeMouseReleaseEvent;
+		return ensureEventsAreInitialised(this.beforeMouseReleaseEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.AfterMouseRelease> fabric_getAfterMouseReleaseEvent() {
-		return this.afterMouseReleaseEvent;
+		return ensureEventsAreInitialised(this.afterMouseReleaseEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.AllowMouseScroll> fabric_getAllowMouseScrollEvent() {
-		return this.allowMouseScrollEvent;
+		return ensureEventsAreInitialised(this.allowMouseScrollEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.BeforeMouseScroll> fabric_getBeforeMouseScrollEvent() {
-		return this.beforeMouseScrollEvent;
+		return ensureEventsAreInitialised(this.beforeMouseScrollEvent);
 	}
 
 	@Override
 	public Event<ScreenMouseEvents.AfterMouseScroll> fabric_getAfterMouseScrollEvent() {
-		return this.afterMouseScrollEvent;
+		return ensureEventsAreInitialised(this.afterMouseScrollEvent);
 	}
 }
