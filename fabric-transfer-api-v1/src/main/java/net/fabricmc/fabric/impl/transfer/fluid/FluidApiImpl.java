@@ -33,7 +33,7 @@ public class FluidApiImpl {
 		// load static, called by the mod initializer
 	}
 
-	private static void registerFluid(Fluid fluid) {
+	private static void onFluidRegistered(Fluid fluid) {
 		if (fluid == null) return;
 		Item item = fluid.getBucketItem();
 
@@ -42,16 +42,15 @@ public class FluidApiImpl {
 			Fluid bucketFluid = ((BucketItemAccessor) bucketItem).getFluid();
 
 			if (fluid == bucketFluid) {
-				FluidApi.registerFullItem(bucketItem, Items.BUCKET, fluid, FluidConstants.BUCKET);
-				FluidApi.registerEmptyItem(Items.BUCKET, bucketItem, fluid, FluidConstants.BUCKET);
+				FluidApi.registerEmptyAndFullItems(Items.BUCKET, fluid, FluidConstants.BUCKET, bucketItem);
 			}
 		}
 	}
 
 	static {
 		// register bucket compat
-		Registry.FLUID.forEach(FluidApiImpl::registerFluid);
-		RegistryEntryAddedCallback.event(Registry.FLUID).register((rawId, id, fluid) -> registerFluid(fluid));
+		Registry.FLUID.forEach(FluidApiImpl::onFluidRegistered);
+		RegistryEntryAddedCallback.event(Registry.FLUID).register((rawId, id, fluid) -> onFluidRegistered(fluid));
 		// register cauldron compat
 		FluidApi.SIDED.registerForBlocks((world, pos, state, context) -> CauldronWrapper.get(world, pos), Blocks.CAULDRON);
 	}

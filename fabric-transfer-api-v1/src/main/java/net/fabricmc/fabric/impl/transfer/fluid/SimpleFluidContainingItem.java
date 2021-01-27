@@ -16,8 +16,9 @@
 
 package net.fabricmc.fabric.impl.transfer.fluid;
 
+import java.util.function.Function;
+
 import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -27,16 +28,18 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class SimpleFluidContainingItem implements ExtractionOnlyStorage<Fluid>, StorageView<Fluid> {
+	private final ContainerItemContext ctx;
+	private final ItemKey sourceKey;
 	private final Fluid fluid;
 	private final long amount;
-	private final ItemKey targetKey;
-	private final ContainerItemContext ctx;
+	private final Function<ItemKey, ItemKey> keyMapping;
 
-	public SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, Item emptyVariant, Fluid fluid, long amount) {
+	public SimpleFluidContainingItem(ContainerItemContext ctx, ItemKey sourceKey, Fluid fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
+		this.ctx = ctx;
+		this.sourceKey = sourceKey;
 		this.fluid = fluid;
 		this.amount = amount;
-		this.targetKey = ItemKey.of(emptyVariant, sourceKey.copyTag());
-		this.ctx = ctx;
+		this.keyMapping = keyMapping;
 	}
 
 	@Override
@@ -54,7 +57,7 @@ public class SimpleFluidContainingItem implements ExtractionOnlyStorage<Fluid>, 
 		FluidPreconditions.notEmptyNotNegative(resource, maxAmount);
 
 		if (maxAmount >= amount && resource == fluid && ctx.getCount(transaction) > 0) {
-			if (ctx.transform(1, targetKey, transaction)) {
+			if (ctx.transform(1, keyMapping.apply(sourceKey), transaction)) {
 				return amount;
 			}
 		}

@@ -36,10 +36,10 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 
 // Maintainer note: this will need updating to 1.17 to allow registering modded cauldrons.
-public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Participant<Integer> {
+class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Participant<Integer> {
 	private static final Map<WorldLocation, CauldronWrapper> WRAPPERS = new WeakHashMap<>();
 
-	public static CauldronWrapper get(World world, BlockPos pos) {
+	static CauldronWrapper get(World world, BlockPos pos) {
 		WorldLocation location = new WorldLocation(world, pos.toImmutable());
 		WRAPPERS.computeIfAbsent(location, CauldronWrapper::new);
 		return WRAPPERS.get(location);
@@ -53,7 +53,7 @@ public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Part
 	private BlockState initialBlockState;
 	private BlockState finalBlockState;
 
-	public CauldronWrapper(WorldLocation location) {
+	CauldronWrapper(WorldLocation location) {
 		this.location = location;
 	}
 

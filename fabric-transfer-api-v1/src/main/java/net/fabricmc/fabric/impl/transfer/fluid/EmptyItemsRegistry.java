@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.transfer.fluid;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +37,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 public class EmptyItemsRegistry {
 	private static final Map<Item, EmptyItemProvider> PROVIDERS = new IdentityHashMap<>();
 
-	public static synchronized void registerEmptyItem(Item emptyItem, Item fullItem, Fluid fluid, long amount) {
+	public static synchronized void registerEmptyItem(Item emptyItem, Fluid fluid, long amount, Function<ItemKey, ItemKey> keyMapping) {
 		PROVIDERS.computeIfAbsent(emptyItem, item -> {
 			EmptyItemProvider provider = new EmptyItemProvider();
 			FluidApi.ITEM.register(provider, emptyItem);
@@ -46,7 +47,7 @@ public class EmptyItemsRegistry {
 
 		// We use a copy-on-write strategy to register the fluid filling if possible
 		Map<Fluid, FillInfo> copy = new IdentityHashMap<>(provider.acceptedFluids);
-		copy.putIfAbsent(fluid, new FillInfo(fullItem, amount));
+		copy.putIfAbsent(fluid, new FillInfo(amount, keyMapping));
 		provider.acceptedFluids = copy;
 	}
 
@@ -76,9 +77,7 @@ public class EmptyItemsRegistry {
 				if (fillInfo == null) return 0;
 
 				if (maxAmount >= fillInfo.amount) {
-					ItemKey target = ItemKey.of(fillInfo.fullItem, initialKey.copyTag());
-
-					if (ctx.transform(1, target, transaction)) {
+					if (ctx.transform(1, fillInfo.keyMapping.apply(initialKey), transaction)) {
 						return fillInfo.amount;
 					}
 				}
@@ -94,12 +93,12 @@ public class EmptyItemsRegistry {
 	}
 
 	private static class FillInfo {
-		private final Item fullItem;
 		private final long amount;
+		private final Function<ItemKey, ItemKey> keyMapping;
 
-		private FillInfo(Item fullItem, long amount) {
-			this.fullItem = fullItem;
+		private FillInfo(long amount, Function<ItemKey, ItemKey> keyMapping) {
 			this.amount = amount;
+			this.keyMapping = keyMapping;
 		}
 	}
 }
