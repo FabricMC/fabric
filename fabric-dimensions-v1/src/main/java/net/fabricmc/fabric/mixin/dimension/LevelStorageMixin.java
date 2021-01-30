@@ -49,7 +49,6 @@ import net.minecraft.world.level.storage.LevelStorage;
 @Mixin(LevelStorage.class)
 abstract class LevelStorageMixin {
 	/*
-	 * Why?
 	 * When the custom dimension is removed, DimensionGeneratorSettings.CODEC fails to fully parse the Dynamic<T>,
 	 * so the DataResult<DimensionGeneratorSettings> only return the Either#Right part of the result,
 	 * which only includes the overworld.
