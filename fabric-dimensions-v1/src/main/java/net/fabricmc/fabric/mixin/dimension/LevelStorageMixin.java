@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.mixin.dimension;
 
+import java.util.Iterator;
+import java.util.Map;
+
 import com.mojang.datafixers.DataFixer;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
@@ -28,6 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
 import net.minecraft.util.registry.Registry;
@@ -35,6 +39,8 @@ import net.minecraft.util.registry.RegistryLookupCodec;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GeneratorOptions;
 import net.minecraft.world.level.storage.LevelStorage;
+
+import net.fabricmc.fabric.impl.dimension.CompoundTagExtensions;
 
 /*
  * This is a bug fix.
@@ -84,18 +90,23 @@ abstract class LevelStorageMixin {
 
 		CompoundTag dimensions = properties.getCompound("WorldGenSettings").getCompound("dimensions");
 
-		for (String key : dimensions.getKeys()) {
+		// We need access to the iterator in the compound tag since we want to avoid any CMEs
+		Iterator<Map.Entry<String, Tag>> entryIterator = ((CompoundTagExtensions) dimensions).fabric_entries();
+
+		while (entryIterator.hasNext()) {
+			Map.Entry<String, Tag> entry = entryIterator.next();
+
 			Identifier identifier;
 
 			try {
-				identifier = new Identifier(key);
+				identifier = new Identifier(entry.getKey());
 			} catch (InvalidIdentifierException e) {
 				throw new RuntimeException("Failed to fix generator properties because of invalid dimension identifier", e);
 			}
 
 			// Dimension is not in registry, remove it from the compound tag so DFU does not freak out
 			if (!dimensionRegistry.containsId(identifier)) {
-				dimensions.remove(key);
+				entryIterator.remove();
 			}
 		}
 	}

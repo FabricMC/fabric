@@ -3,6 +3,7 @@
   "package": "net.fabricmc.fabric.mixin.dimension",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "CompoundTagMixin",
     "EntityMixin",
     "LevelStorageMixin",
     "ServerBugfixMixin"
