@@ -59,12 +59,12 @@ public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 		return lookups.values().stream().map(storedLookup -> storedLookup.lookup).collect(Collectors.toList()).iterator();
 	}
 
-	private static class StoredLookup<L> {
-		private final L lookup;
-		private final Class<?> apiClass;
-		private final Class<?> contextClass;
+	private static final class StoredLookup<L> {
+		final L lookup;
+		final Class<?> apiClass;
+		final Class<?> contextClass;
 
-		private StoredLookup(L lookup, Class<?> apiClass, Class<?> contextClass) {
+		StoredLookup(L lookup, Class<?> apiClass, Class<?> contextClass) {
 			this.lookup = lookup;
 			this.apiClass = apiClass;
 			this.contextClass = contextClass;
