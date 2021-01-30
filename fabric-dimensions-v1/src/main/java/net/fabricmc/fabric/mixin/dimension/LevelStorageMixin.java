@@ -83,8 +83,7 @@ abstract class LevelStorageMixin {
 			return new RuntimeException("Failed to get the dimension registry");
 		}).getFirst();
 
-		CompoundTag worldGenSettingsTag = properties.getCompound("WorldGenSettings");
-		CompoundTag dimensions = worldGenSettingsTag.getCompound("dimensions");
+		CompoundTag dimensions = properties.getCompound("WorldGenSettings").getCompound("dimensions");
 
 		for (String key : dimensions.getKeys()) {
 			Identifier identifier;
