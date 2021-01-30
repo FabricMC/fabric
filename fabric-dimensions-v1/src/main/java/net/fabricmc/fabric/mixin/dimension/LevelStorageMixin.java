@@ -95,12 +95,8 @@ abstract class LevelStorageMixin {
 				throw new RuntimeException("Failed to fix generator properties because of invalid dimension identifier", e);
 			}
 
-			// Lookup the dimension
-			@Nullable
-			DimensionType dimension = dimensionRegistry.getOrEmpty(identifier).orElse(null);
-
 			// Dimension is not in registry, remove it from the compound tag so DFU does not freak out
-			if (dimension == null) {
+			if (!dimensionRegistry.containsId(identifier)) {
 				dimensions.remove(key);
 			}
 		}
