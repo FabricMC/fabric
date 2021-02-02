@@ -55,7 +55,7 @@ public class MixinMultipartBakedModel implements FabricBakedModel {
 
 	@Override
 	public void emitBlockQuads(BlockRenderView blockView, BlockState state, BlockPos pos, Supplier<Random> randomSupplier, RenderContext context) {
-		BitSet bitSet = (BitSet) this.stateCache.get(state);
+		BitSet bitSet = this.stateCache.get(state);
 
 		if (bitSet == null) {
 			bitSet = new BitSet();
