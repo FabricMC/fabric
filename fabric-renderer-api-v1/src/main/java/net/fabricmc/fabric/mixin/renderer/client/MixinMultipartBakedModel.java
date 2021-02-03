@@ -57,7 +57,7 @@ public class MixinMultipartBakedModel implements FabricBakedModel {
 
 	@Override
 	public boolean isVanillaAdapter() {
-		return false;
+		return isVanilla;
 	}
 
 	@Inject(at = @At("RETURN"), method = "<init>")
