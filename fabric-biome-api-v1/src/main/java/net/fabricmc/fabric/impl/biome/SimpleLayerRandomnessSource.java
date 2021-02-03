@@ -16,16 +16,15 @@
 
 package net.fabricmc.fabric.impl.biome;
 
-import java.util.Random;
-
 import net.minecraft.util.math.noise.PerlinNoiseSampler;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
+import net.minecraft.world.gen.ChunkRandom;
 
 public class SimpleLayerRandomnessSource implements LayerRandomnessSource {
 	private final PerlinNoiseSampler sampler;
 
 	public SimpleLayerRandomnessSource(long seed) {
-		Random random = new Random(seed);
+		ChunkRandom random = new ChunkRandom(seed);
 		this.sampler = new PerlinNoiseSampler(random);
 	}
 

@@ -35,6 +35,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.StructureWorldAccess;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStep;
@@ -80,10 +81,10 @@ public class StructureTest {
 			}
 
 			@Override
-			public void init(DynamicRegistryManager dynamicRegistryManager, ChunkGenerator chunkGenerator, StructureManager structureManager, int chunkX, int chunkZ, Biome biome, DefaultFeatureConfig featureConfig) {
+			public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, int chunkX, int chunkZ, Biome biome, DefaultFeatureConfig config, HeightLimitView heightLimitView) {
 				int blockX = chunkX * 16;
 				int blockZ = chunkZ * 16;
-				int blockY = chunkGenerator.getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG);
+				int blockY = chunkGenerator.getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
 				TestStructureGenerator generator = new TestStructureGenerator(random, blockX, blockY, blockZ);
 				this.children.add(generator);
