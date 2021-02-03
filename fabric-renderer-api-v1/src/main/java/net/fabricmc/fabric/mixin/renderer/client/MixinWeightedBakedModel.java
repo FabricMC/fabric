@@ -23,6 +23,10 @@ import java.util.function.Supplier;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.WeightedBakedModel;
@@ -43,10 +47,23 @@ public class MixinWeightedBakedModel implements FabricBakedModel {
 	@Shadow
 	@Final
 	private List models; // WeightedBakedModel.Entry is not visible
+	@Unique
+	boolean isVanilla = true;
+
+	@SuppressWarnings("rawtypes")
+	@Inject(at = @At("RETURN"), method = "<init>")
+	private void onInit(List models, CallbackInfo cb) {
+		for (int i = 0; i < models.size(); i++) {
+			if (!((FabricBakedModel) ((WeightedBakedModelEntryAccessor) models.get(i)).getModel()).isVanillaAdapter()) {
+				isVanilla = false;
+				break;
+			}
+		}
+	}
 
 	@Override
 	public boolean isVanillaAdapter() {
-		return false;
+		return isVanilla;
 	}
 
 	@Override

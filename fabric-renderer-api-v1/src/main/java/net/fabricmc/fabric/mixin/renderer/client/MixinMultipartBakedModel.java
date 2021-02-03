@@ -27,6 +27,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.model.BakedModel;
@@ -48,9 +52,22 @@ public class MixinMultipartBakedModel implements FabricBakedModel {
 	@Final
 	private Map<BlockState, BitSet> stateCache;
 
+	@Unique
+	boolean isVanilla = true;
+
 	@Override
 	public boolean isVanillaAdapter() {
 		return false;
+	}
+
+	@Inject(at = @At("RETURN"), method = "<init>")
+	private void onInit(List<Pair<Predicate<BlockState>, BakedModel>> components, CallbackInfo cb) {
+		for (Pair<Predicate<BlockState>, BakedModel> component : components) {
+			if (!((FabricBakedModel) component.getRight()).isVanillaAdapter()) {
+				isVanilla = false;
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -79,8 +96,6 @@ public class MixinMultipartBakedModel implements FabricBakedModel {
 
 	@Override
 	public void emitItemQuads(ItemStack stack, Supplier<Random> randomSupplier, RenderContext context) {
-		// Vanilla doesn't render MultipartBakedModel's as the BlockState in getQuads
-		// will be null
-		// Also it doesn't use MultipartBakedModel's for items anyways
+		// Vanilla doesn't use MultipartBakedModel for items.
 	}
 }
