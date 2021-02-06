@@ -50,11 +50,10 @@ public class MixinWeightedBakedModel implements FabricBakedModel {
 	@Unique
 	boolean isVanilla = true;
 
-	@SuppressWarnings("rawtypes")
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void onInit(List models, CallbackInfo cb) {
+	private void onInit(List<WeightedBakedModelEntryAccessor> models, CallbackInfo cb) {
 		for (int i = 0; i < models.size(); i++) {
-			if (!((FabricBakedModel) ((WeightedBakedModelEntryAccessor) models.get(i)).getModel()).isVanillaAdapter()) {
+			if (!((FabricBakedModel) models.get(i).getModel()).isVanillaAdapter()) {
 				isVanilla = false;
 				break;
 			}
