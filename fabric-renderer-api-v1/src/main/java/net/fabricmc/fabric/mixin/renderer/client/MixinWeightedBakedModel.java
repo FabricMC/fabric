@@ -43,10 +43,9 @@ public class MixinWeightedBakedModel implements FabricBakedModel {
 	@Shadow
 	@Final
 	private int totalWeight;
-	@SuppressWarnings("rawtypes")
 	@Shadow
 	@Final
-	private List models; // WeightedBakedModel.Entry is not visible
+	private List<WeightedPicker.Entry> models; // WeightedBakedModel.Entry is not visible
 	@Unique
 	boolean isVanilla = true;
 
