@@ -155,8 +155,8 @@ public final class ClientCommandInternals {
 
 			ArgumentBuilder<FabricClientCommandSource, ?> builder = child.createBuilder();
 
-			// Reset the builder
-			builder.requires(it -> true);
+			// Reset the unnecessary non-completion stuff from the builder
+			builder.requires(it -> true); // This is checked with the if check above.
 
 			if (builder.getCommand() != null) {
 				builder.executes(context -> 0);
