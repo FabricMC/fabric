@@ -27,11 +27,13 @@ import net.fabricmc.fabric.impl.client.input.InputCallbacksImpl;
 
 @Mixin(Keyboard.class)
 public class KeyboardMixin {
+	// this is a lambda in setup(long) calling this.onKey(...)
 	@Inject(method = "method_22678(JIIII)V", at = @At("HEAD"))
 	void onKey(long handle, int code, int scancode, int action, int mods, CallbackInfo ci) {
 		InputCallbacksImpl.onKey(handle, code, scancode, action, mods);
 	}
 
+	// this is a lambda in setup(long) calling this.onChar(...)
 	@Inject(method = "method_22677(JII)V", at = @At("HEAD"))
 	void onChar(long handle, int codepoint, int mods, CallbackInfo ci) {
 		InputCallbacksImpl.onChar(handle, codepoint, mods);

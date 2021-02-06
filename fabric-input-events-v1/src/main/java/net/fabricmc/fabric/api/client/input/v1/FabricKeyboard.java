@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.api.client.input.v1;
 
+import org.lwjgl.glfw.GLFW;
+
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.InputUtil.Key;
 
-import net.fabricmc.api.Environment;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.impl.client.input.FabricKeyboardImpl;
 
 /**
@@ -37,7 +39,7 @@ public final class FabricKeyboard {
 	/**
 	 * Check if the given key is currently being pressed.
 	 *
-	 * @param keycode the GLFW.GLFW_KEY code, or -1 if unknown
+	 * @param keycode  the {@link GLFW}.GLFW_KEY code, or -1 if unknown
 	 * @param scancode the (system-specific) scancode, or -1 if unknown
 	 */
 	public static boolean isKeyPressed(int keycode, int scancode) {
