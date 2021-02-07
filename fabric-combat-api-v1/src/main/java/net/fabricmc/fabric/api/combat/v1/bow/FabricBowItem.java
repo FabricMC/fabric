@@ -16,26 +16,21 @@
 
 package net.fabricmc.fabric.api.combat.v1.bow;
 
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
-
 /**
- * An interface to implement for all custom bows in fabric. <br>
- *
- * @implNote This is meant to be used on a BowItem class. Unless similar functionality is implemented on your custom item, most functionality will not work.
- * @see SimpleBowItem
+ * This is the default implementation for {@link FabricBowExtensions}, allowing for the easy creation of new bows with no new modded functionality.
  */
-public interface BowExtensions extends ShotProjectileEvents.ProjectileFromBow {
-	/**
-	 * Returns the pull progress of the bow between 0 and 1.
-	 *
-	 * @param useTicks The number of ticks the bow has been pulled.
-	 * @param bowStack The ItemStack for the bow
-	 * @return The progress of the pull from 0.0f to 1.0f.
-	 */
-	default float getCustomPullProgress(int useTicks, ItemStack bowStack) {
-		return BowItem.getPullProgress(useTicks);
+public class FabricBowItem extends BowItem implements FabricBowExtensions {
+	public FabricBowItem(Settings settings) {
+		super(settings);
+	}
+
+	@Override
+	public PersistentProjectileEntity onProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) {
+		return persistentProjectileEntity;
 	}
 }

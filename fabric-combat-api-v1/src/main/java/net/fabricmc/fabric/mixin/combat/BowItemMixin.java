@@ -34,28 +34,31 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
-import net.fabricmc.fabric.api.combat.v1.bow.BowExtensions;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(BowItem.class)
-public class BowItemMixin {
+public abstract class BowItemMixin {
 	@Unique
 	private PersistentProjectileEntity shotProjectile;
 
 	// Allows custom bows to modify the projectile shot by bows
+	// Two mixins are needed for this in order to capture the locals
 	@Inject(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
-	public void onStoppedUsing(ItemStack bowStack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack arrowStack, int i, float pullProgress, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
+	public void onStoppedUsing_modifyArrow(ItemStack bowStack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack arrowStack, int i, float pullProgress, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
 		shotProjectile = ShotProjectileEvents.BOW_SHOT_PROJECTILE.invoker().onProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
 	}
 
+	// Actually modifies the projectile
 	@ModifyVariable(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"))
-	public PersistentProjectileEntity onStoppedUsing(PersistentProjectileEntity persistentProjectileEntity) {
+	public PersistentProjectileEntity onStoppedUsing_replaceArrow(PersistentProjectileEntity persistentProjectileEntity) {
 		return shotProjectile;
 	}
 
+	// Modifies the pull progress if a custom bow is used
 	@Redirect(method = "onStoppedUsing", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/BowItem;getPullProgress(I)F"))
 	private float redirectPullProgress(int useTicks, ItemStack bowStack, World world, LivingEntity user, int remainingUseTicks) {
-		if (this instanceof BowExtensions) {
-			return ((BowExtensions) this).getCustomPullProgress(useTicks, bowStack);
+		if (this instanceof FabricBowExtensions) {
+			return ((FabricBowExtensions) this).getCustomPullProgress(useTicks, bowStack);
 		}
 
 		return BowItem.getPullProgress(useTicks);

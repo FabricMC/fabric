@@ -35,6 +35,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
 
+// Will need to be updated if more bow-attacking mobs are added
 @Mixin({AbstractSkeletonEntity.class, IllusionerEntity.class})
 public abstract class BowAttackMixin extends MobEntity implements RangedAttackMob {
 	protected BowAttackMixin(EntityType<? extends MobEntity> entityType, World world) {

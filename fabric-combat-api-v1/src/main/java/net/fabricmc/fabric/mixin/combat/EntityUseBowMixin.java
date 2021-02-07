@@ -25,13 +25,13 @@ import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.RangedWeaponItem;
 
-import net.fabricmc.fabric.api.combat.v1.bow.BowExtensions;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(AbstractSkeletonEntity.class)
-public class EntityUseBowMixin {
+public abstract class EntityUseBowMixin {
 	// Allows Entities that use bows to shoot custom bows.
 	@Inject(method = "canUseRangedWeapon", at = @At("HEAD"), cancellable = true)
 	public void canUseRangedWeapon(RangedWeaponItem weapon, CallbackInfoReturnable<Boolean> cir) {
-		cir.setReturnValue(weapon instanceof BowItem || weapon instanceof BowExtensions);
+		cir.setReturnValue(weapon instanceof BowItem || weapon instanceof FabricBowExtensions);
 	}
 }

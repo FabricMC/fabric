@@ -25,17 +25,19 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.combat.v1.bow.BowExtensions;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(SkeletonEntityModel.class)
-public class SkeletonEntityModelMixin {
+public abstract class SkeletonEntityModelMixin {
+	// Allows Skeletons to visually shoot custom bows by returning true
 	@Redirect(method = "animateModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item animateModel(ItemStack heldItemStack) {
-		return heldItemStack.getItem() instanceof BowExtensions ? Items.BOW : heldItemStack.getItem();
+		return heldItemStack.getItem() instanceof FabricBowExtensions ? Items.BOW : heldItemStack.getItem();
 	}
 
+	// Allows Skeletons to visually shoot custom bows by returning true
 	@Redirect(method = "setAngles", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item setAngles(ItemStack heldItemStack) {
-		return heldItemStack.getItem() instanceof BowExtensions ? Items.BOW : heldItemStack.getItem();
+		return heldItemStack.getItem() instanceof FabricBowExtensions ? Items.BOW : heldItemStack.getItem();
 	}
 }

@@ -29,7 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.combat.v1.bow.BowExtensions;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(AbstractSkeletonEntity.class)
 public abstract class AbstractSkeletonEntityMixin extends MobEntity implements RangedAttackMob {
@@ -37,9 +37,9 @@ public abstract class AbstractSkeletonEntityMixin extends MobEntity implements R
 		super(entityType, world);
 	}
 
-	// Allows Skeletons to shoot custom bows
+	// Allows Skeletons to shoot custom bows by returning true
 	@Redirect(method = "updateAttackType", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
 	private Item updateAttackType(ItemStack itemStack) {
-		return itemStack.getItem() instanceof BowExtensions ? Items.BOW : itemStack.getItem();
+		return itemStack.getItem() instanceof FabricBowExtensions ? Items.BOW : itemStack.getItem();
 	}
 }

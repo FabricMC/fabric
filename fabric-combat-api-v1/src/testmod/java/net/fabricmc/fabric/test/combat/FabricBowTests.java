@@ -26,11 +26,11 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
-import net.fabricmc.fabric.api.combat.v1.bow.BowExtensions;
-import net.fabricmc.fabric.api.combat.v1.bow.SimpleBowItem;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowItem;
 
 public class FabricBowTests implements ModInitializer {
-	public static final Item TEST_BOW = new SimpleBowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
+	public static final Item TEST_BOW = new FabricBowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
 		@Override
 		public PersistentProjectileEntity onProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) {
 			if (bowStack.getItem() == this) {
@@ -45,6 +45,6 @@ public class FabricBowTests implements ModInitializer {
 	public void onInitialize() {
 		// Registers a custom bow.
 		Registry.register(Registry.ITEM, new Identifier("fabric-combat-api-v1-testmod", "test_bow"), TEST_BOW);
-		ShotProjectileEvents.BOW_SHOT_PROJECTILE.register(((BowExtensions) TEST_BOW));
+		ShotProjectileEvents.BOW_SHOT_PROJECTILE.register((FabricBowExtensions) TEST_BOW);
 	}
 }

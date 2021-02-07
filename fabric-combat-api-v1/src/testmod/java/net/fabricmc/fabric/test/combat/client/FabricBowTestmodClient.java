@@ -26,10 +26,10 @@ import net.fabricmc.fabric.test.combat.FabricBowTests;
 public class FabricBowTestmodClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		registerBow(FabricBowTests.TEST_BOW);
+		registerBowModelPredicates(FabricBowTests.TEST_BOW);
 	}
 
-	public static void registerBow(Item bow) {
+	public static void registerBowModelPredicates(Item bow) {
 		FabricModelPredicateProviderRegistry.register(bow, new Identifier("pull"), (itemStack, clientWorld, livingEntity) -> {
 			if (livingEntity == null) {
 				return 0.0F;

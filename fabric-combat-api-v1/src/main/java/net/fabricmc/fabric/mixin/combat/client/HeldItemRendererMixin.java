@@ -25,13 +25,13 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.combat.v1.bow.BowExtensions;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(HeldItemRenderer.class)
-public class HeldItemRendererMixin {
+public abstract class HeldItemRendererMixin {
 	// Make sure that the custom items are rendered in the correct place based on the current swing progress of the hand
 	@Redirect(method = "renderItem(FLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider$Immediate;Lnet/minecraft/client/network/ClientPlayerEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", ordinal = 0))
 	private Item renderItem(ItemStack heldItem) {
-		return heldItem.getItem() instanceof BowExtensions ? Items.BOW : heldItem.getItem(); // return bow for rendering
+		return heldItem.getItem() instanceof FabricBowExtensions ? Items.BOW : heldItem.getItem(); // return bow for rendering
 	}
 }

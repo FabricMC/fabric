@@ -27,17 +27,17 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.Hand;
 
-import net.fabricmc.fabric.api.combat.v1.bow.BowExtensions;
+import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(ProjectileUtil.class)
-public class ProjectileUtilMixin {
+public abstract class ProjectileUtilMixin {
 	// Because the uses of this method are hardcoded, checking each hand for the Fabric interfaces of the items is needed.
 	// Note: this does not cancel for the vanilla items unless they are holding a custom implementation of the items
 	@Inject(method = "getHandPossiblyHolding", at = @At(value = "HEAD"), cancellable = true)
 	private static void getHandPossiblyHolding(LivingEntity entity, Item item, CallbackInfoReturnable<Hand> cir) {
 		for (Hand hand : Hand.values()) {
 			if (item == Items.BOW) { // Make sure we only check for bows when searching for bows and allow for other items like crossbows in future
-				if (entity.getStackInHand(hand).getItem() instanceof BowExtensions) {
+				if (entity.getStackInHand(hand).getItem() instanceof FabricBowExtensions) {
 					cir.setReturnValue(hand);
 					return;
 				}

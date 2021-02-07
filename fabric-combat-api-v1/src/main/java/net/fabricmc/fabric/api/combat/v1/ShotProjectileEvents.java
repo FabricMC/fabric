@@ -23,8 +23,11 @@ import net.minecraft.item.ItemStack;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
-public interface ShotProjectileEvents {
-	Event<ProjectileFromBow> BOW_SHOT_PROJECTILE = EventFactory.createArrayBacked(ProjectileFromBow.class, callbacks -> (ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) -> {
+public final class ShotProjectileEvents {
+	private ShotProjectileEvents() {
+	}
+
+	public static final Event<ProjectileFromBow> BOW_SHOT_PROJECTILE = EventFactory.createArrayBacked(ProjectileFromBow.class, callbacks -> (ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) -> {
 		for (ProjectileFromBow callback : callbacks) {
 			persistentProjectileEntity = callback.onProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
 		}
@@ -32,7 +35,7 @@ public interface ShotProjectileEvents {
 		return persistentProjectileEntity;
 	});
 
-	interface ProjectileFromBow {
+	public interface ProjectileFromBow {
 		/**
 		 * In this method you can modify the behavior of arrows shot from your custom bow. Applies all of the vanilla arrow modifiers first.
 		 *
