@@ -32,12 +32,8 @@ import net.fabricmc.fabric.api.combat.v1.bow.FabricBowItem;
 public class FabricBowTests implements ModInitializer {
 	public static final Item TEST_BOW = new FabricBowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
 		@Override
-		public PersistentProjectileEntity onProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) {
-			if (bowStack.getItem() == this) {
-				persistentProjectileEntity.setPunch(100);
-			}
-
-			return persistentProjectileEntity;
+		public void onProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) {
+			persistentProjectileEntity.setPunch(100);
 		}
 	};
 
@@ -45,6 +41,6 @@ public class FabricBowTests implements ModInitializer {
 	public void onInitialize() {
 		// Registers a custom bow.
 		Registry.register(Registry.ITEM, new Identifier("fabric-combat-api-v1-testmod", "test_bow"), TEST_BOW);
-		ShotProjectileEvents.BOW_SHOT_PROJECTILE.register((FabricBowExtensions) TEST_BOW);
+		ShotProjectileEvents.BOW_MODIFY_SHOT_PROJECTILE.register((FabricBowExtensions) TEST_BOW);
 	}
 }

@@ -45,7 +45,8 @@ public abstract class BowItemMixin {
 	// Two mixins are needed for this in order to capture the locals
 	@Inject(method = "onStoppedUsing(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/entity/LivingEntity;I)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
 	public void onStoppedUsing_modifyArrow(ItemStack bowStack, World world, LivingEntity user, int remainingUseTicks, CallbackInfo info, PlayerEntity playerEntity, boolean bl, ItemStack arrowStack, int i, float pullProgress, boolean bl2, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
-		shotProjectile = ShotProjectileEvents.BOW_SHOT_PROJECTILE.invoker().onProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
+		shotProjectile = ShotProjectileEvents.BOW_REPLACE_SHOT_PROJECTILE.invoker().replaceProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
+		ShotProjectileEvents.BOW_MODIFY_SHOT_PROJECTILE.invoker().modifyProjectileShot(bowStack, arrowStack, user, pullProgress, shotProjectile);
 	}
 
 	// Actually modifies the projectile

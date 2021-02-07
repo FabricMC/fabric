@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
  *
  * @see FabricBowItem
  */
-public interface FabricBowExtensions extends ShotProjectileEvents.ProjectileFromBow {
+public interface FabricBowExtensions extends ShotProjectileEvents.ModifyProjectileFromBow {
 	/**
 	 * Returns the pull progress of the bow between 0 and 1.
 	 *

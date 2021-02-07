@@ -47,8 +47,9 @@ public abstract class BowAttackMixin extends MobEntity implements RangedAttackMo
 		ItemStack bowStack = this.getStackInHand(ProjectileUtil.getHandPossiblyHolding(this, Items.BOW));
 		ItemStack arrowStack = this.getArrowType(bowStack);
 
-		persistentProjectileEntity = ShotProjectileEvents.BOW_SHOT_PROJECTILE.invoker().onProjectileShot(bowStack, arrowStack, this, pullProgress, (PersistentProjectileEntity) persistentProjectileEntity);
+		PersistentProjectileEntity replacedPersistentProjectileEntity = ShotProjectileEvents.BOW_REPLACE_SHOT_PROJECTILE.invoker().replaceProjectileShot(bowStack, arrowStack, this, pullProgress, (PersistentProjectileEntity) persistentProjectileEntity);
+		ShotProjectileEvents.BOW_MODIFY_SHOT_PROJECTILE.invoker().modifyProjectileShot(bowStack, arrowStack, this, pullProgress, replacedPersistentProjectileEntity);
 
-		return world.spawnEntity(persistentProjectileEntity);
+		return world.spawnEntity(replacedPersistentProjectileEntity);
 	}
 }

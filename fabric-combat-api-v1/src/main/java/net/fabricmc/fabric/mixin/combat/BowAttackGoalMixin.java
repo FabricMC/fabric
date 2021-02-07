@@ -24,17 +24,19 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.entity.ai.RangedAttackMob;
 import net.minecraft.entity.ai.goal.BowAttackGoal;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.item.BowItem;
 
 import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(BowAttackGoal.class)
-public abstract class BowAttackGoalMixin {
+public abstract class BowAttackGoalMixin<T extends HostileEntity & RangedAttackMob> extends Goal {
 	@Shadow
 	@Final
-	private HostileEntity actor;
+	private T actor;
 
 	// Confirms that an entity is using a bow by returning true
 	@Inject(method = "isHoldingBow()Z", at = @At("HEAD"), cancellable = true)

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.combat.v1.bow;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.BowItem;
@@ -30,7 +32,12 @@ public class FabricBowItem extends BowItem implements FabricBowExtensions {
 	}
 
 	@Override
-	public PersistentProjectileEntity onProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) {
-		return persistentProjectileEntity;
+	public final void modifyProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, @NotNull PersistentProjectileEntity persistentProjectileEntity) {
+		if (bowStack.getItem() == this) {
+			onProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
+		}
+	}
+
+	public void onProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, PersistentProjectileEntity persistentProjectileEntity) {
 	}
 }
