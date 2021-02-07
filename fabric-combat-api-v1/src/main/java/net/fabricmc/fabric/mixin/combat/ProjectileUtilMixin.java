@@ -31,11 +31,13 @@ import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(ProjectileUtil.class)
 public abstract class ProjectileUtilMixin {
+	private static final Hand[] HANDS = {Hand.MAIN_HAND, Hand.OFF_HAND}; // Cache the hands to not create the hands array each time the loop is run
+
 	// Because the uses of this method are hardcoded, checking each hand for the Fabric interfaces of the items is needed.
 	// Note: this does not cancel for the vanilla items unless they are holding a custom implementation of the items
 	@Inject(method = "getHandPossiblyHolding", at = @At(value = "HEAD"), cancellable = true)
 	private static void getHandPossiblyHolding(LivingEntity entity, Item item, CallbackInfoReturnable<Hand> cir) {
-		for (Hand hand : Hand.values()) {
+		for (Hand hand : HANDS) {
 			if (item == Items.BOW) { // Make sure we only check for bows when searching for bows and allow for other items like crossbows in future
 				if (entity.getStackInHand(hand).getItem() instanceof FabricBowExtensions) {
 					cir.setReturnValue(hand);

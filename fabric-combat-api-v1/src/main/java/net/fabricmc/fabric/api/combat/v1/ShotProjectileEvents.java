@@ -22,7 +22,6 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.combat.v1.bow.FabricBowItem;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
@@ -35,13 +34,7 @@ public final class ShotProjectileEvents {
 	 */
 	public static final Event<ModifyProjectileFromBow> BOW_MODIFY_SHOT_PROJECTILE = EventFactory.createArrayBacked(ModifyProjectileFromBow.class, callbacks -> (bowStack, arrowStack, user, pullProgress, persistentProjectileEntity) -> {
 		for (ModifyProjectileFromBow callback : callbacks) {
-			if (callback instanceof FabricBowItem) {
-				if (callback == bowStack.getItem()) {
-					callback.modifyProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
-				}
-			} else {
-				callback.modifyProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
-			}
+			callback.modifyProjectileShot(bowStack, arrowStack, user, pullProgress, persistentProjectileEntity);
 		}
 	});
 
