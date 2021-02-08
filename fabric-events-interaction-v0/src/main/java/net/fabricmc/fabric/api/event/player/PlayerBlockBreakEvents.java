@@ -22,9 +22,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.client.interaction.v1.event.player.ClientPlayerBlockBreakEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
+import net.fabricmc.fabric.api.interaction.v1.event.player.ServerPlayerBlockBreakEvents;
 
+/**
+ * @deprecated Please migrate to {@link ServerPlayerBlockBreakEvents} or {@link ClientPlayerBlockBreakEvents}.
+ */
+@Deprecated
 public final class PlayerBlockBreakEvents {
 	private PlayerBlockBreakEvents() { }
 

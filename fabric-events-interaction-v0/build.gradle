@@ -2,5 +2,6 @@ archivesBaseName = "fabric-events-interaction-v0"
 version = getSubprojectVersion(project, "0.4.2")
 
 moduleDependencies(project, [
-		'fabric-api-base'
+		'fabric-api-base',
+		'fabric-interaction-events-v1'
 ])

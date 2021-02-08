@@ -137,7 +137,6 @@ public class MixinClientPlayerInteractionManager {
 			}
 
 			info.setReturnValue(result);
-			info.cancel();
 			return;
 		}
 	}

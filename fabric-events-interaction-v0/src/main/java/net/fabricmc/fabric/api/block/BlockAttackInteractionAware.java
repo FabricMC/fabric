@@ -24,7 +24,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
 /**
- * Convienence interface for blocks which listen to "break interactions" (left-click).
+ * Convenience interface for blocks which listen to "break interactions" (left-click).
  */
 public interface BlockAttackInteractionAware {
 	/**

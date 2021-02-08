@@ -18,21 +18,24 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "fabric-api-base": "*",
+    "fabric-interaction-events-v1": "*",
     "minecraft": ">=1.15-alpha.19.37.a"
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouter"
+      "net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouter",
+      "net.fabricmc.fabric.impl.event.interaction.LegacyInteractionEventsRouter"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouterClient"
+      "net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouterClient",
+      "net.fabricmc.fabric.impl.event.interaction.LegacyClientInteractionEventsRouter"
     ]
   },
-  "description": "Events for player interaction with blocks and entities.",
+  "description": "Legacy events for player interaction with blocks and entities, superseded by fabric-interaction-events-v1",
   "mixins": [
     "fabric-events-interaction-v0.mixins.json"
   ],
   "custom": {
-    "fabric-api:module-lifecycle": "stable"
+    "fabric-api:module-lifecycle": "deprecated"
   }
 }
