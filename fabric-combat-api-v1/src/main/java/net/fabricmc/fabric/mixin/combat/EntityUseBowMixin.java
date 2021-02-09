@@ -29,7 +29,7 @@ import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
 
 @Mixin(AbstractSkeletonEntity.class)
 public abstract class EntityUseBowMixin {
-	// Allows Entities that use bows to shoot custom bows.
+	// Allows Entities that use bows to use custom bows.
 	@Inject(method = "canUseRangedWeapon", at = @At("HEAD"), cancellable = true)
 	public void canUseRangedWeapon(RangedWeaponItem weapon, CallbackInfoReturnable<Boolean> cir) {
 		cir.setReturnValue(weapon instanceof BowItem || weapon instanceof FabricBowExtensions);
