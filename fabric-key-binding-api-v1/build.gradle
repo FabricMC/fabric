@@ -1,5 +1,5 @@
 archivesBaseName = "fabric-key-binding-api-v1"
-version = getSubprojectVersion(project, "1.0.3")
+version = getSubprojectVersion(project, "1.0.4")
 
 dependencies {
 	testmodCompile project(path: ':fabric-api-base', configuration: 'dev')
