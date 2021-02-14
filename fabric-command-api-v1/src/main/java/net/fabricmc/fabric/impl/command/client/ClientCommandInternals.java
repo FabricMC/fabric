@@ -73,9 +73,10 @@ public final class ClientCommandInternals {
 			DISPATCHER.execute(message.substring(1), commandSource);
 			return true;
 		} catch (CommandSyntaxException e) {
-			LOGGER.warn("Syntax exception for client-sided command '{}'", message, e);
+			boolean ignored = isIgnoredException(e.getType());
+			LOGGER.log(ignored ? Level.DEBUG : Level.WARN, "Syntax exception for client-sided command '{}'", message, e);
 
-			if (isIgnoredException(e.getType())) {
+			if (ignored) {
 				return false;
 			}
 
