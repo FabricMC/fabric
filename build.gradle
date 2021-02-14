@@ -66,7 +66,7 @@ def moduleDependencies(project, List<String> depNames) {
 	def deps = depNames.iterator().collect { project.dependencies.project(path: ":$it", configuration: 'dev') }
 	project.dependencies {
 		deps.each {
-			compile it
+			implementation it
 		}
 	}
 	project.publishing {
@@ -123,7 +123,7 @@ allprojects {
 	dependencies {
 		minecraft "com.mojang:minecraft:$Globals.mcVersion"
 		mappings "net.fabricmc:yarn:${Globals.mcVersion}${Globals.yarnVersion}:v2"
-		modCompile "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
+		modImplementation "net.fabricmc:fabric-loader:${Globals.loaderVersion}"
 	}
 
 	configurations {
@@ -144,8 +144,8 @@ allprojects {
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
-			archiveName = "${archivesBaseName}-${version}.jar"
+			input = file("${project.buildDir}/libs/$archivesBaseName-${archiveVersion}-dev.jar")
+			archiveFileName = "${archivesBaseName}-${archiveVersion}.jar"
 		}
 
 		artifacts {
@@ -233,7 +233,7 @@ task runAutoTestServer(type: RunServerTask) {
 
 subprojects {
 	dependencies {
-		testmodCompile sourceSets.main.output
+		testmodImplementation sourceSets.main.output
 	}
 
 	task remapMavenJar(type: Copy, dependsOn: remapJar) {
@@ -267,8 +267,8 @@ subprojects {
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
 	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${version}-dev.jar")
-		archiveName = "${archivesBaseName}-${version}-maven.jar"
+		input = file("${project.buildDir}/libs/${archivesBaseName}-${archiveVersion}-dev.jar")
+		archiveFileName = "${archivesBaseName}-${archiveVersion}-maven.jar"
 		addNestedDependencies = false
 	}
 }
@@ -327,10 +327,10 @@ sourceSets {
 dependencies {
 	afterEvaluate {
 		subprojects.each {
-			compile project(path: ":${it.name}", configuration: "dev")
+			implementation project(path: ":${it.name}", configuration: "dev")
 			include project("${it.name}:")
 
-			testmodCompile project("${it.name}:").sourceSets.testmod.output
+			testmodImplementation project("${it.name}:").sourceSets.testmod.output
 		}
 	}
 }
