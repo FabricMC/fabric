@@ -30,6 +30,6 @@ import net.fabricmc.fabric.impl.command.client.ClientCommandInternals;
 abstract class MinecraftClientMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(RunArgs args, CallbackInfo info) {
-		ClientCommandInternals.checkDispatcher();
+		ClientCommandInternals.finalizeInit();
 	}
 }

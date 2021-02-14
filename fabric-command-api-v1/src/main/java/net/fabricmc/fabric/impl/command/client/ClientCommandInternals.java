@@ -17,13 +17,22 @@
 package net.fabricmc.fabric.impl.command.client;
 
 import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.DISPATCHER;
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.argument;
+import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.literal;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import com.google.common.collect.Iterables;
 import com.mojang.brigadier.AmbiguityConsumer;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.ParseResults;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.context.ParsedCommandNode;
 import com.mojang.brigadier.exceptions.BuiltInExceptionProvider;
 import com.mojang.brigadier.exceptions.CommandExceptionType;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
@@ -34,6 +43,7 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.command.CommandException;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.Texts;
 import net.minecraft.text.TranslatableText;
@@ -41,11 +51,13 @@ import net.minecraft.text.TranslatableText;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
+import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 
 @Environment(EnvType.CLIENT)
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final char PREFIX = '/';
+	private static final String API_COMMAND_NAME = "fcc";
 
 	/**
 	 * Executes a client-sided command from a message.
@@ -121,13 +133,48 @@ public final class ClientCommandInternals {
 	}
 
 	/**
-	 * Runs checks such as {@link CommandDispatcher#findAmbiguities(AmbiguityConsumer)} on the command dispatcher.
+	 * Runs final initialization tasks such as {@link CommandDispatcher#findAmbiguities(AmbiguityConsumer)}
+	 * on the command dispatcher. Also registers a {@code /fcc help} command if there are other commands present.
 	 */
-	public static void checkDispatcher() {
+	public static void finalizeInit() {
+		if (!DISPATCHER.getRoot().getChildren().isEmpty()) {
+			// Register a help command if there are other commands
+			LiteralArgumentBuilder<FabricClientCommandSource> help = literal("help");
+			help.executes(ClientCommandInternals::executeRootHelp);
+			help.then(argument("command", StringArgumentType.greedyString()).executes(ClientCommandInternals::executeArgumentHelp));
+
+			DISPATCHER.register(literal(API_COMMAND_NAME).then(help));
+		}
+
 		// noinspection CodeBlock2Expr
 		DISPATCHER.findAmbiguities((parent, child, sibling, inputs) -> {
 			LOGGER.warn("Ambiguity between arguments {} and {} with inputs: {}", DISPATCHER.getPath(child), DISPATCHER.getPath(sibling), inputs);
 		});
+	}
+
+	private static int executeRootHelp(CommandContext<FabricClientCommandSource> context) {
+		return executeHelp(DISPATCHER.getRoot(), context);
+	}
+
+	private static int executeArgumentHelp(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+		ParseResults<FabricClientCommandSource> parseResults = DISPATCHER.parse(StringArgumentType.getString(context, "command"), context.getSource());
+		List<ParsedCommandNode<FabricClientCommandSource>> nodes = parseResults.getContext().getNodes();
+
+		if (nodes.isEmpty()) {
+			throw HelpCommandAccessor.getFailedException().create();
+		}
+
+		return executeHelp(Iterables.getLast(nodes).getNode(), context);
+	}
+
+	private static int executeHelp(CommandNode<FabricClientCommandSource> startNode, CommandContext<FabricClientCommandSource> context) {
+		Map<CommandNode<FabricClientCommandSource>, String> commands = DISPATCHER.getSmartUsage(startNode, context.getSource());
+
+		for (String command : commands.values()) {
+			context.getSource().sendFeedback(new LiteralText("/" + command));
+		}
+
+		return commands.size();
 	}
 
 	public static void addCommands(CommandDispatcher<FabricClientCommandSource> target, FabricClientCommandSource source) {
