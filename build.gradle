@@ -144,8 +144,8 @@ allprojects {
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
-			archiveFileName = "${archivesBaseName}-${archiveVersion}.jar"
+			input = file("${project.buildDir}/libs/$archivesBaseName-${archiveVersion.get()}-dev.jar")
+			archiveFileName = "${archivesBaseName}-${archiveVersion.get()}.jar"
 		}
 
 		artifacts {
@@ -267,8 +267,8 @@ subprojects {
 
 task remapMavenJar(type: net.fabricmc.loom.task.RemapJarTask, dependsOn: jar) {
 	afterEvaluate {
-		input = file("${project.buildDir}/libs/${archivesBaseName}-${archiveVersion}-dev.jar")
-		archiveFileName = "${archivesBaseName}-${archiveVersion}-maven.jar"
+		input = file("${project.buildDir}/libs/${archivesBaseName}-${archiveVersion.get()}-dev.jar")
+		archiveFileName = "${archivesBaseName}-${archiveVersion.get()}-maven.jar"
 		addNestedDependencies = false
 	}
 }
