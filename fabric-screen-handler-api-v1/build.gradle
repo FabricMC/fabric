@@ -11,5 +11,5 @@ dependencies {
 
 moduleDependencies(project, [
 		'fabric-api-base',
-		'fabric-networking-v0'
+		'fabric-networking-api-v1'
 ])

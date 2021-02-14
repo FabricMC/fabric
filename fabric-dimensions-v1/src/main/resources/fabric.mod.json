@@ -6,9 +6,7 @@
   "depends": {
     "fabricloader": ">=0.4.0",
     "minecraft": ">=1.16-rc.3",
-    "fabric-api-base": "*",
-    "fabric-registry-sync-v0": "*",
-    "fabric-networking-v0": "*"
+    "fabric-api-base": "*"
   },
   "mixins": [
     "fabric-dimensions-v1.mixins.json"
