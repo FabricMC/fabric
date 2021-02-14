@@ -83,6 +83,9 @@ public final class ClientCommandInternals {
 		client.getProfiler().push(message);
 
 		try {
+			// TODO: Check for server commands before executing.
+			//   This requires parsing the command, checking if they match a server command
+			//   and then executing the command with the parse results.
 			DISPATCHER.execute(message.substring(1), commandSource);
 			return true;
 		} catch (CommandSyntaxException e) {
