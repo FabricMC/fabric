@@ -144,7 +144,7 @@ allprojects {
 
 	afterEvaluate {
 		remapJar {
-			input = file("${project.buildDir}/libs/$archivesBaseName-${archiveVersion}-dev.jar")
+			input = file("${project.buildDir}/libs/$archivesBaseName-${version}-dev.jar")
 			archiveFileName = "${archivesBaseName}-${archiveVersion}.jar"
 		}
 
