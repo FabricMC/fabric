@@ -53,7 +53,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		clear();
 	}
 
-    @Override
+	@Override
 	public MutableQuadViewImpl clear() {
 		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isGeometryInvalid = true;
