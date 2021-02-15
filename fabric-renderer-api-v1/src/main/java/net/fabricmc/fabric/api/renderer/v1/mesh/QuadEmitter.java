@@ -178,6 +178,8 @@ public interface QuadEmitter extends MutableQuadView {
 		return this;
 	}
 
+	QuadEmitter clear();
+
 	/**
 	 * In static mesh building, causes quad to be appended to the mesh being built.
 	 * In a dynamic render context, create a new quad to be output to rendering.

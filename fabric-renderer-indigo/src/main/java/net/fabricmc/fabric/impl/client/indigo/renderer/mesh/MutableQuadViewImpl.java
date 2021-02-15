@@ -53,7 +53,8 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		clear();
 	}
 
-	public void clear() {
+    @Override
+	public MutableQuadViewImpl clear() {
 		System.arraycopy(EMPTY, 0, data, baseIndex, EncodingFormat.TOTAL_STRIDE);
 		isGeometryInvalid = true;
 		nominalFace = null;
@@ -62,6 +63,7 @@ public abstract class MutableQuadViewImpl extends QuadViewImpl implements QuadEm
 		colorIndex(-1);
 		cullFace(null);
 		material(IndigoRenderer.MATERIAL_STANDARD);
+		return this;
 	}
 
 	@Override

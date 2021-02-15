@@ -265,4 +265,11 @@ public interface MutableQuadView extends QuadView {
 	 * Behavior for {@code spriteIndex > 0} is currently undefined.
 	 */
 	MutableQuadView spriteBake(int spriteIndex, Sprite sprite, int bakeFlags);
+
+    /**
+     * Resets the current instance to default values. The instance will be in
+     * the same state after clearing as an equivalent {@link QuadEmitter} would be
+     * after emitting.
+     */
+	MutableQuadView clear();
 }
