@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import java.util.concurrent.ThreadLocalRandom;
-
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -94,9 +92,8 @@ public class FabricItemSettings extends Item.Settings {
 			}
 
 			ItemStack copy = original.copy();
-			copy.damage(by, ThreadLocalRandom.current(), null);
 
-			if (copy.getDamage() >= copy.getMaxDamage()) {
+			if (copy.damage(by, world.random, null)) {
 				return ItemStack.EMPTY;
 			}
 
