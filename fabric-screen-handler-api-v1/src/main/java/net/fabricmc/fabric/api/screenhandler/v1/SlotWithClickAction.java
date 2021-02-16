@@ -21,7 +21,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ClickType;
 
 /**
- * An interface for slots that consume a click action.
+ * An interface for {@link net.minecraft.screen.slot.Slot}s that consume a click action.
  * Slot click actions are called before item click actions, and returning true will neglect to have them called whatsoever.
  */
 public interface SlotWithClickAction {
