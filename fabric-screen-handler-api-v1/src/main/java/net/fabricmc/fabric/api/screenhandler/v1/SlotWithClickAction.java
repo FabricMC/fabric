@@ -22,6 +22,8 @@ import net.minecraft.util.ClickType;
 
 /**
  * An interface for {@link net.minecraft.screen.slot.Slot}s that consume a click action.
+ * Implementing {@link SlotWithClickAction} on a {@link net.minecraft.screen.slot.Slot} will allow that slot to have complex behavior when clicked.
+ * This can include mutating the slot or the held item stack.
  * Slot click actions are called before item click actions, and returning true will neglect to have them called whatsoever.
  */
 public interface SlotWithClickAction {
