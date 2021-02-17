@@ -57,7 +57,8 @@ import net.fabricmc.fabric.mixin.command.HelpCommandAccessor;
 public final class ClientCommandInternals {
 	private static final Logger LOGGER = LogManager.getLogger();
 	private static final char PREFIX = '/';
-	private static final String API_COMMAND_NAME = "fcc";
+	private static final String API_COMMAND_NAME = "fabric-command-api-v1:client";
+	private static final String SHORT_API_COMMAND_NAME = "fcc";
 
 	/**
 	 * Executes a client-sided command from a message.
@@ -141,12 +142,14 @@ public final class ClientCommandInternals {
 	 */
 	public static void finalizeInit() {
 		if (!DISPATCHER.getRoot().getChildren().isEmpty()) {
-			// Register a help command if there are other commands
+			// Register an API command if there are other commands;
+			// these helpers are not needed if there are no client commands
 			LiteralArgumentBuilder<FabricClientCommandSource> help = literal("help");
 			help.executes(ClientCommandInternals::executeRootHelp);
 			help.then(argument("command", StringArgumentType.greedyString()).executes(ClientCommandInternals::executeArgumentHelp));
 
-			DISPATCHER.register(literal(API_COMMAND_NAME).then(help));
+			CommandNode<FabricClientCommandSource> mainNode = DISPATCHER.register(literal(API_COMMAND_NAME).then(help));
+			DISPATCHER.register(literal(SHORT_API_COMMAND_NAME).redirect(mainNode));
 		}
 
 		// noinspection CodeBlock2Expr
