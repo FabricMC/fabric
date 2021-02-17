@@ -30,7 +30,7 @@ final class BagInventory implements ImplementedInventory {
 		CompoundTag tag = stack.getSubTag("Items");
 
 		if (tag != null) {
-			Inventories.fromTag(tag, items);
+			Inventories.readNbt(tag, items);
 		}
 	}
 
@@ -42,6 +42,6 @@ final class BagInventory implements ImplementedInventory {
 	@Override
 	public void markDirty() {
 		CompoundTag tag = stack.getOrCreateSubTag("Items");
-		Inventories.toTag(tag, items);
+		Inventories.writeNbt(tag, items);
 	}
 }

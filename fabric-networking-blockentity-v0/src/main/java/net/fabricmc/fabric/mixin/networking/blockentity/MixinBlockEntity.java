@@ -64,7 +64,7 @@ public abstract class MixinBlockEntity {
 		}
 	}
 
-	@Inject(at = @At("RETURN"), method = "toInitialChunkDataTag", cancellable = true)
+	@Inject(at = @At("RETURN"), method = "toInitialChunkDataNbt", cancellable = true)
 	public void toInitialChunkDataTag(CallbackInfoReturnable<CompoundTag> info) {
 		Object self = this;
 

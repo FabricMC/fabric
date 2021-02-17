@@ -31,7 +31,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 
 @Environment(EnvType.CLIENT)
-@Mixin(targets = "net/minecraft/client/world/ClientWorld$EntityLoader")
+@Mixin(targets = "net/minecraft/client/world/ClientWorld$ClientEntityHandler")
 abstract class ClientWorldEntityLoaderMixin {
 	// final synthetic Lnet/minecraft/client/world/ClientWorld; field_27735
 	@SuppressWarnings("ShadowTarget")
@@ -40,13 +40,13 @@ abstract class ClientWorldEntityLoaderMixin {
 	private ClientWorld field_27735;
 
 	// Call our load event after vanilla has loaded the entity
-	@Inject(method = "onLoadEntity(Lnet/minecraft/entity/Entity;)V", at = @At("TAIL"))
+	@Inject(method = "startTracking(Lnet/minecraft/entity/Entity;)V", at = @At("TAIL"))
 	private void invokeLoadEntity(Entity entity, CallbackInfo ci) {
 		ClientEntityEvents.ENTITY_LOAD.invoker().onLoad(entity, this.field_27735);
 	}
 
 	// Call our unload event before vanilla does.
-	@Inject(method = "onUnloadEntity(Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
+	@Inject(method = "stopTracking(Lnet/minecraft/entity/Entity;)V", at = @At("HEAD"))
 	private void invokeUnloadEntity(Entity entity, CallbackInfo ci) {
 		ClientEntityEvents.ENTITY_UNLOAD.invoker().onUnload(entity, this.field_27735);
 	}
