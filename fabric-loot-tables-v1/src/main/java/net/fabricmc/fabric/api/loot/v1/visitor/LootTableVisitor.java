@@ -5,7 +5,7 @@ public interface LootTableVisitor {
 
 	void visitPool(LootNode.LootPoolNode pool);
 
-	void visitEntry(LootNode.EntryNode entry);
+	void visitLootEntry(LootNode.LootEntryNode lootEntry);
 
 	void visitCombinedEntry(LootNode.CombinedEntryNode combinedEntry);
 

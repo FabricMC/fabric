@@ -17,21 +17,21 @@ public interface LootNode {
 		}
 	}
 
-	interface EntryNode extends LootNode {
+	interface LootEntryNode extends LootNode {
 		@Override
 		default void visit(LootTableVisitor visitor) {
-			visitor.visitEntry(this);
+			visitor.visitLootEntry(this);
 		}
 	}
 
-	interface CombinedEntryNode extends EntryNode {
+	interface CombinedEntryNode extends LootEntryNode {
 		@Override
 		default void visit(LootTableVisitor visitor) {
 			visitor.visitCombinedEntry(this);
 		}
 	}
 
-	interface LeafEntryNode extends EntryNode {
+	interface LeafEntryNode extends LootEntryNode {
 		@Override
 		default void visit(LootTableVisitor visitor) {
 			visitor.visitLeafEntry(this);
