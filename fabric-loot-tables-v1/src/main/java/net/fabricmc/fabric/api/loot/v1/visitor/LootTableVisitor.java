@@ -26,4 +26,6 @@ public interface LootTableVisitor {
 	void visitSequenceEntry(LootNode.SequenceEntryNode sequenceEntry);
 
 	void visitTagEntry(LootNode.TagEntryNode tagEntry);
+
+	void visitLootCondition(LootNode.LootConditionNode lootCondition);
 }

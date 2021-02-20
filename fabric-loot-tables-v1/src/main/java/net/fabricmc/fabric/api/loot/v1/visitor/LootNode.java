@@ -93,4 +93,11 @@ public interface LootNode {
 			visitor.visitTagEntry(this);
 		}
 	}
+
+	interface LootConditionNode extends LootNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitLootCondition(this);
+		}
+	}
 }
