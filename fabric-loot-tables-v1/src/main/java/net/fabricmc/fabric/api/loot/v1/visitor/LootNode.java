@@ -17,14 +17,80 @@ public interface LootNode {
 		}
 	}
 
-	interface AlternativeEntryNode extends LootNode {
+	interface EntryNode extends LootNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitEntry(this);
+		}
+	}
+
+	interface CombinedEntryNode extends EntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitCombinedEntry(this);
+		}
+	}
+
+	interface LeafEntryNode extends EntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitLeafEntry(this);
+		}
+	}
+
+	interface AlternativeEntryNode extends CombinedEntryNode {
 		@Override
 		default void visit(LootTableVisitor visitor) {
 			visitor.visitAlternativeEntry(this);
 		}
 	}
 
-	interface CombinedEntryNode extends LootNode {
+	interface DynamicEntryNode extends LeafEntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitDynamicEntry(this);
+		}
+	}
 
+	interface EmptyEntryNode extends LeafEntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitEmptyEntry(this);
+		}
+	}
+
+	interface GroupEntryNode extends CombinedEntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitGroupEntry(this);
+		}
+	}
+
+	interface ItemEntryNode extends LeafEntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitItemEntry(this);
+		}
+	}
+
+	interface LootTableEntryNode extends LeafEntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitLootTableEntry(this);
+		}
+	}
+
+	interface SequenceEntryNode extends CombinedEntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitSequenceEntry(this);
+		}
+	}
+
+	interface TagEntryNode extends LeafEntryNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitTagEntry(this);
+		}
 	}
 }
