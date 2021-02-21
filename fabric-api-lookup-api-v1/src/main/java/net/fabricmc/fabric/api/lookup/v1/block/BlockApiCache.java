@@ -18,11 +18,10 @@ package net.fabricmc.fabric.api.lookup.v1.block;
 
 import java.util.Objects;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 
@@ -30,25 +29,23 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiCacheImpl;
 import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 
 /**
- * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster Api access.
+ * A {@link BlockApiLookup} bound to a {@link ServerWorld} and a position, providing much faster API access.
  * Refer to {@link BlockApiLookup} for example code.
  *
- * <p>{@link BlockApiLookup#get(World, BlockPos, BlockState, BlockEntity, Object) BlockApiLookup#get()} looks up
- * the block state, the block entity, and the Api provider registered for the target block.
- *
- * <p>This object caches the block entity at the target position, and the last used Api provider, removing those queries.
+ * <p>This object caches the block entity at the target position, and the last used API provider, removing those queries.
  * If a block entity is available or if the block state is passed as a parameter, the block state doesn't have to be looked up either.
  *
  * @see BlockApiLookup
  */
-public interface BlockApiCache<T, C> {
+@ApiStatus.NonExtendable
+public interface BlockApiCache<A, C> {
 	/**
 	 * Retrieve an Api from a block in the world, using the world and the position passed at creation time.
 	 *
 	 * <p>Note: If the block state is known, it is more efficient to use {@link BlockApiCache#get(BlockState, Object)}.
 	 */
 	@Nullable
-	default T get(C context) {
+	default A get(C context) {
 		return get(null, context);
 	}
 
@@ -58,19 +55,19 @@ public interface BlockApiCache<T, C> {
 	 * @param state The block state at the target position, or null if unknown.
 	 */
 	@Nullable
-	T get(@Nullable BlockState state, C context);
+	A get(@Nullable BlockState state, C context);
 
 	/**
 	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same Apis as the passed lookup.
 	 */
-	static <T, C> BlockApiCache<T, C> create(BlockApiLookup<T, C> lookup, ServerWorld world, BlockPos pos) {
+	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerWorld world, BlockPos pos) {
 		Objects.requireNonNull(pos, "Pos cannot be null");
 		Objects.requireNonNull(world, "World cannot be null");
 
 		if (!(lookup instanceof BlockApiLookupImpl)) {
-			throw new IllegalArgumentException("Cannot cache foreign implementation of BlockApiLookup. Use `BlockApiLookupRegistry.getLookup(Identifier, Class<T>, Class<C>);` to get the block api lookup");
+			throw new IllegalArgumentException("Cannot cache foreign implementation of BlockApiLookup. Use `BlockApiLookup#get(Identifier, Class<A>, Class<C>);` to get the block API lookup.");
 		}
 
-		return new BlockApiCacheImpl<>((BlockApiLookupImpl<T, C>) lookup, world, pos);
+		return new BlockApiCacheImpl<>((BlockApiLookupImpl<A, C>) lookup, world, pos);
 	}
 }

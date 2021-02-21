@@ -14,35 +14,34 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.lookup;
+package net.fabricmc.fabric.impl.lookup.custom;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.api.lookup.v1.ApiLookupMap;
+import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 
 public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 	private final Map<Identifier, StoredLookup<L>> lookups = new HashMap<>();
-	private final Supplier<L> lookupFactory;
+	private final LookupFactory<L> lookupFactory;
 
-	public ApiLookupMapImpl(Supplier<L> lookupFactory) {
+	public ApiLookupMapImpl(LookupFactory<L> lookupFactory) {
 		this.lookupFactory = lookupFactory;
 	}
 
 	@Override
 	public synchronized L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass) {
-		StoredLookup<L> storedLookup = lookups.computeIfAbsent(lookupId, id -> new StoredLookup<>(lookupFactory.get(), apiClass, contextClass));
+		StoredLookup<L> storedLookup = lookups.computeIfAbsent(lookupId, id -> new StoredLookup<>(lookupFactory.get(apiClass, contextClass), apiClass, contextClass));
 
 		if (storedLookup.apiClass == apiClass && storedLookup.contextClass == contextClass) {
 			return storedLookup.lookup;
 		}
 
-		final String errorMessage = String.format(
+		String errorMessage = String.format(
 				"Lookup with id %s is already registered with api class %s and context class %s. It can't be registered with api class %s and context class %s.",
 				lookupId,
 				storedLookup.apiClass.getCanonicalName(),

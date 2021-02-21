@@ -22,13 +22,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookupRegistry;
 
 public final class ItemApis {
 	public static final BlockApiLookup<ItemInsertable, @NotNull Direction> INSERTABLE =
-			BlockApiLookupRegistry.getLookup(new Identifier("testmod:item_insertable"), ItemInsertable.class, Direction.class);
+			BlockApiLookup.get(new Identifier("testmod:item_insertable"), ItemInsertable.class, Direction.class);
 	public static final BlockApiLookup<ItemExtractable, @NotNull Direction> EXTRACTABLE =
-			BlockApiLookupRegistry.getLookup(new Identifier("testmod:item_extractable"), ItemExtractable.class, Direction.class);
+			BlockApiLookup.get(new Identifier("testmod:item_extractable"), ItemExtractable.class, Direction.class);
 
 	private ItemApis() {
 	}

@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.compat;
+package net.fabricmc.fabric.test.lookup;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
+public class CobbleGenBlock extends Block implements BlockEntityProvider {
+	public CobbleGenBlock(Settings settings) {
+		super(settings);
+	}
 
-public class InventoryInsertableProvider implements BlockApiLookup.BlockEntityApiProvider<ItemInsertable, @NotNull Direction> {
 	@Override
-	public @Nullable ItemInsertable get(BlockEntity blockEntity, @NotNull Direction context) {
-		if (blockEntity instanceof Inventory) {
-			return new WrappedInventory((Inventory) blockEntity);
-		}
-
-		return null;
+	public @Nullable BlockEntity createBlockEntity(BlockView world) {
+		return new CobbleGenBlockEntity();
 	}
 }

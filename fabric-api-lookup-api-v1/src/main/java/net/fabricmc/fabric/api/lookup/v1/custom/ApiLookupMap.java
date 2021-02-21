@@ -14,29 +14,37 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.lookup.v1;
+package net.fabricmc.fabric.api.lookup.v1.custom;
 
 import java.util.Objects;
-import java.util.function.Supplier;
+
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.util.Identifier;
 
-import net.fabricmc.fabric.impl.lookup.ApiLookupMapImpl;
+import net.fabricmc.fabric.impl.lookup.custom.ApiLookupMapImpl;
 
 /**
- * Access to generic Api lookup instances. This is is meant to be used by implementors of Api lookup registries.
+ * A a map meant to be used as the backing storage for custom {@code ApiLookup} instances,
+ * to implement a custom equivalent of {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get BlockApiLookup#get}.
  *
- * <p>Note: To store a lookup class with type parameters {@code <T, C>}, it is recommended to store it as {@code <?, ?>} and perform an unchecked cast on queries internally.
+ * <pre>{@code
  *
- * @param <L> The type of the lookup.
+ * }</pre>
+ *
+ * <p>Note: To store a lookup class with type parameters <code>&lt;A, C&gt;</code>,
+ * it is recommended to store it as <code>&lt;?, ?&gt;</code> and perform an unchecked cast on queries internally.
+ *
+ * @param <L> The type of the lookup, similar to the existing .
  */
+@ApiStatus.NonExtendable
 public interface ApiLookupMap<L> extends Iterable<L> {
 	/**
 	 * Create a new instance.
 	 *
 	 * @param lookupFactory The factory for the Api lookups.
 	 */
-	static <L> ApiLookupMap<L> create(Supplier<L> lookupFactory) {
+	static <L> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
 		Objects.requireNonNull(lookupFactory, "Lookup factory cannot be null");
 
 		return new ApiLookupMapImpl<>(lookupFactory);
@@ -52,4 +60,8 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 	 * @throws IllegalArgumentException If another {@code apiClass} or another {@code contextClass} was already registered with the same identifier.
 	 */
 	L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass);
+
+	interface LookupFactory<L> {
+		L get(Class<?> apiClass, Class<?> contextClass);
+	}
 }

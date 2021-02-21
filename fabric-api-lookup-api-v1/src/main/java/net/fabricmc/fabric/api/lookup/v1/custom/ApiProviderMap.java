@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.lookup.v1;
+package net.fabricmc.fabric.api.lookup.v1.custom;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.impl.lookup.ApiProviderHashMap;
+import net.fabricmc.fabric.impl.lookup.custom.ApiProviderHashMap;
 
 /**
- * A fast copy-on-write map. This is meant to be used by implementors of Api lookups to store Api providers.
+ * A fast thread-safe copy-on-write map meant to be used as the backing storage for registered providers.
  *
  * <p>Note: This map allows very fast lock-free concurrent reads, but in exchange writes are very expensive and should not be too frequent.
- * Also keys are compared by reference ({@code ==}) and not using {@link Object#equals}.
+ * Also, keys are compared by reference ({@code ==}) and not using {@link Object#equals}.
  *
  * @param <K> The key type of the map, compared by reference ({@code ==}).
  * @param <V> The value type of the map.
  */
+@ApiStatus.NonExtendable
 public interface ApiProviderMap<K, V> {
 	/**
 	 * Create a new instance.

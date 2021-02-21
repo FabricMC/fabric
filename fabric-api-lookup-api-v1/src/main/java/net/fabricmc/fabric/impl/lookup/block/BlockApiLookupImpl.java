@@ -28,22 +28,37 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.lookup.v1.ApiProviderMap;
+import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
+import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 
-public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
-	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1");
-	private final ApiProviderMap<Block, BlockApiProvider<T, C>> providerMap = ApiProviderMap.create();
-	private final List<FallbackApiProvider<T, C>> fallbackProviders = new CopyOnWriteArrayList<>();
+public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
+	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/block");
+	private static final ApiLookupMap<BlockApiLookupImpl<?, ?>> LOOKUPS = ApiLookupMap.create(BlockApiLookupImpl::new);
+
+	@SuppressWarnings("unchecked")
+	public static <A, C> BlockApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
+		return (BlockApiLookup<A, C>) LOOKUPS.getLookup(lookupId, apiClass, contextClass);
+	}
+
+	private final Class<A> apiClass;
+	private final ApiProviderMap<Block, BlockApiProvider<A, C>> providerMap = ApiProviderMap.create();
+	private final List<BlockApiProvider<A, C>> fallbackProviders = new CopyOnWriteArrayList<>();
+
+	@SuppressWarnings("unchecked")
+	private BlockApiLookupImpl(Class<?> apiClass, Class<?> contextClass) {
+		this.apiClass = (Class<A>) apiClass;
+	}
 
 	@Nullable
 	@Override
-	public T get(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
+	public A find(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
 		// This call checks for null world and pos.
 		// Providers have the final say whether a null context is allowed.
 
@@ -63,16 +78,11 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		}
 
 		@Nullable
-		BlockApiProvider<T, C> provider = getProvider(state.getBlock());
-		T instance = null;
+		BlockApiProvider<A, C> provider = getProvider(state.getBlock());
+		A instance = null;
 
-		// Query the providers at the position
-		if (provider instanceof WrappedBlockEntityProvider) {
-			if (blockEntity != null) {
-				instance = ((WrappedBlockEntityProvider<T, C>) provider).blockEntityProvider.get(blockEntity, context);
-			}
-		} else if (provider != null) {
-			instance = provider.get(world, pos, state, context);
+		if (provider != null) {
+			instance = provider.get(world, pos, state, blockEntity, context);
 		}
 
 		if (instance != null) {
@@ -80,7 +90,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		}
 
 		// Query the fallback providers
-		for (FallbackApiProvider<T, C> fallbackProvider : fallbackProviders) {
+		for (BlockApiProvider<A, C> fallbackProvider : fallbackProviders) {
 			instance = fallbackProvider.get(world, pos, state, blockEntity, context);
 
 			if (instance != null) {
@@ -91,8 +101,30 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public void registerForBlocks(BlockApiProvider<T, C> provider, Block... blocks) {
+	public void registerSelf(BlockEntityType<?>... blockEntityTypes) {
+		Objects.requireNonNull(blockEntityTypes, "BlockEntityType... cannot be null");
+
+		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
+			BlockEntity blockEntity = blockEntityType.instantiate();
+			Objects.requireNonNull(blockEntity, "Instantiated block entity cannot be null");
+
+			if (!apiClass.isAssignableFrom(blockEntity.getClass())) {
+				String errorMessage = String.format(
+						"Failed to register self-implementing block entities. API class %s is not assignable from block entity class %s.",
+						apiClass.getCanonicalName(),
+						blockEntity.getClass().getCanonicalName()
+				);
+				throw new IllegalArgumentException(errorMessage);
+			}
+		}
+
+		registerForBlockEntities((blockEntity, context) -> (A) blockEntity, blockEntityTypes);
+	}
+
+	@Override
+	public void registerForBlocks(BlockApiProvider<A, C> provider, Block... blocks) {
 		Objects.requireNonNull(provider, "BlockApiProvider cannot be null");
 		Objects.requireNonNull(blocks, "Block... cannot be null");
 
@@ -100,7 +132,7 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 			throw new IllegalArgumentException("Must register at least one Block instance with a BlockApiProvider");
 		}
 
-		for (final Block block : blocks) {
+		for (Block block : blocks) {
 			Objects.requireNonNull(block, "encountered null block while registering a block API provider mapping");
 
 			if (providerMap.putIfAbsent(block, provider) != null) {
@@ -110,51 +142,43 @@ public final class BlockApiLookupImpl<T, C> implements BlockApiLookup<T, C> {
 	}
 
 	@Override
-	public void registerForBlockEntities(BlockEntityApiProvider<T, C> provider, BlockEntityType<?>... blockEntityTypes) {
-		Objects.requireNonNull(provider, "encountered null BlockEntityApiProvider");
+	public void registerForBlockEntities(BlockEntityApiProvider<A, C> provider, BlockEntityType<?>... blockEntityTypes) {
+		Objects.requireNonNull(provider, "BlockApiProvider cannot be null");
 		Objects.requireNonNull(blockEntityTypes, "BlockEntityType... cannot be null");
 
 		if (blockEntityTypes.length == 0) {
 			throw new IllegalArgumentException("Must register at least one BlockEntityType instance with a BlockEntityApiProvider");
 		}
 
-		for (final BlockEntityType<?> blockEntityType : blockEntityTypes) {
-			Objects.requireNonNull(blockEntityType, "encountered null block entity type while registering a block entity API provider mapping");
+		BlockApiProvider<A, C> nullCheckedProvider = (world, pos, state, blockEntity, context) -> {
+			if (blockEntity == null) {
+				return null;
+			} else {
+				return provider.get(blockEntity, context);
+			}
+		};
 
-			final Block[] blocks = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0]);
-			final BlockApiProvider<T, C> blockProvider = new WrappedBlockEntityProvider<>(provider);
+		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
+			Objects.requireNonNull(blockEntityType, "Encountered null block entity type while registering a block entity API provider mapping");
 
-			registerForBlocks(blockProvider, blocks);
+			Block[] blocks = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0]);
+			registerForBlocks(nullCheckedProvider, blocks);
 		}
 	}
 
 	@Override
-	public void registerFallback(FallbackApiProvider<T, C> fallbackProvider) {
-		Objects.requireNonNull(fallbackProvider, "FallbackApiProvider cannot be null");
+	public void registerFallback(BlockApiProvider<A, C> fallbackProvider) {
+		Objects.requireNonNull(fallbackProvider, "BlockApiProvider cannot be null");
 
 		fallbackProviders.add(fallbackProvider);
 	}
 
 	@Nullable
-	public BlockApiProvider<T, C> getProvider(Block block) {
+	public BlockApiProvider<A, C> getProvider(Block block) {
 		return providerMap.get(block);
 	}
 
-	public List<FallbackApiProvider<T, C>> getFallbackProviders() {
+	public List<BlockApiProvider<A, C>> getFallbackProviders() {
 		return fallbackProviders;
-	}
-
-	static final class WrappedBlockEntityProvider<T, C> implements BlockApiProvider<T, C> {
-		final BlockEntityApiProvider<T, C> blockEntityProvider;
-
-		WrappedBlockEntityProvider(BlockEntityApiProvider<T, C> blockEntityProvider) {
-			this.blockEntityProvider = blockEntityProvider;
-		}
-
-		@Override
-		public @Nullable T get(World world, BlockPos pos, BlockState state, C context) {
-			// implementations refer to block entity provider field
-			throw new UnsupportedOperationException("This should never be called!");
-		}
 	}
 }

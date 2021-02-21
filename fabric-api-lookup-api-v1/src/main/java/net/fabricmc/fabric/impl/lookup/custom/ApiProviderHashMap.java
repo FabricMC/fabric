@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.lookup;
+package net.fabricmc.fabric.impl.lookup.custom;
 
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Reference2ReferenceOpenHashMap;
 import org.jetbrains.annotations.Nullable;
 
-import net.fabricmc.fabric.api.lookup.v1.ApiProviderMap;
+import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 
 public final class ApiProviderHashMap<K, V> implements ApiProviderMap<K, V> {
 	private volatile Map<K, V> lookups = new Reference2ReferenceOpenHashMap<>();

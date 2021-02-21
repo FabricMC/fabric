@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "fabric-api-lookup-api-v1",
-  "name": "Fabric Api Lookup API (v1)",
+  "name": "Fabric API Lookup API (v1)",
   "version": "${version}",
   "environment": "*",
   "license": "Apache-2.0",
@@ -20,7 +20,7 @@
     "fabric-api-base": "*",
     "fabric-lifecycle-events-v1": "*"
   },
-  "description": "A universal way to expose and query Apis",
+  "description": "A universal way to expose and query APIs",
   "mixins": [
     "fabric-api-lookup-api-v1.mixins.json"
   ],

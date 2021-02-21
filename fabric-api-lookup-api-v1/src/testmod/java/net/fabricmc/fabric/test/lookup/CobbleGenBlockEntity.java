@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.lookup.compat;
+package net.fabricmc.fabric.test.lookup;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import java.util.function.Predicate;
 
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.util.math.Direction;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
-import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
+import net.fabricmc.fabric.test.lookup.api.ItemExtractable;
 
-public class InventoryInsertableProvider implements BlockApiLookup.BlockEntityApiProvider<ItemInsertable, @NotNull Direction> {
+public class CobbleGenBlockEntity extends BlockEntity implements ItemExtractable {
+	public CobbleGenBlockEntity() {
+		super(FabricApiLookupTest.COBBLE_GEN_BLOCK_ENTITY_TYPE);
+	}
+
 	@Override
-	public @Nullable ItemInsertable get(BlockEntity blockEntity, @NotNull Direction context) {
-		if (blockEntity instanceof Inventory) {
-			return new WrappedInventory((Inventory) blockEntity);
-		}
+	public ItemStack tryExtract(int maxCount, Predicate<ItemStack> filter, boolean simulate) {
+		ItemStack cobble = new ItemStack(Items.COBBLESTONE);
 
-		return null;
+		if (filter.test(cobble)) {
+			return cobble;
+		} else {
+			return ItemStack.EMPTY;
+		}
 	}
 }

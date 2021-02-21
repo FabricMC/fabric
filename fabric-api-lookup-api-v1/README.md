@@ -1,28 +1,30 @@
-#  Fabric Api Lookup API (v1)
-This module allows Api instances to be associated with game objects without specifying how the association is implemented.
-This is useful when the same Api could be implemented more than once or implemented in different ways.
+#  Fabric API Lookup API (v1)
+This module allows API instances to be associated with game objects without specifying how the association is implemented.
+This is useful when the same API could be implemented more than once or implemented in different ways.
+See also the [package-info.java file](src/main/java/net/fabricmc/fabric/api/lookup/v1/package-info.java).
 
-* What we call an Api is any object that can be offered or queried, possibly by different mods, to be used in an agreed-upon manner.
-* In this module, such objects are represented by the generic type `T`.
-  This module allows flexible retrieving of such Apis from blocks in the world.
-* It also provides building blocks for defining ways of retrieving Apis from other game objects.
+* What we call an API is any object that can be offered or queried, possibly by different mods, to be used in an agreed-upon manner.
+* This module allows flexible retrieving of such APIs from blocks in the world, represented by the generic type `A`.
+* It also provides building blocks for defining custom ways of retrieving APIs from other game objects.
 
-# Retrieving Apis from blocks
-## `BlockApiLookup`
-The primary way of querying Api instances for blocks in the world.
-It exposes a `get` function to retrieve an Api instance, and multiple `register*` functions to register Apis for blocks and block entities.
+# Retrieving APIs from blocks
+See the javadoc of `BlockApiLookup` for a full usage example.
 
-The javadoc of this class contains a full usage example.
+## [`BlockApiLookup`](src/main/java/net/fabricmc/fabric/api/lookup/v1/block/BlockApiLookup.java)
+The primary way of querying API instances for blocks in the world.
+It exposes a `find` function to retrieve an API instance, and multiple `register*` functions to register Apis for blocks and block entities.
 
-## `BlockApiLookupRegistry`
-Provides access to `BlockApiLookup` instances.
+Instances can be obtained using the `get` function.
 
-## `BlockApiCache`
+## [`BlockApiCache`](src/main/java/net/fabricmc/fabric/api/lookup/v1/block/BlockApiCache.java)
 A `BlockApiLookup` bound to a position and a server world, allowing much faster repeated Api queries.
 
-# Retrieving Apis from other game objects
-## `ApiLookupMap`
-A map to store `*ApiLookup`s, allowing easy implementations of `*ApiLookupRegistry`s.
+# Retrieving APIs from custom objects
+The subpackage `custom` provides helper classes to accelerate implementations of `ApiLookup`s for custom objects,
+similar to the existing `BlockApiLookup`, but with different query parameters.
 
-## `ApiProviderMap`
-A copy-on-write map to store Api providers, for easy and efficient implementations of `*ApiLookup`s.
+## [`ApiLookupMap`](src/main/java/net/fabricmc/fabric/api/lookup/v1/custom/ApiLookupMap.java)
+A map meant to be used as the backing storage for custom `ApiLookup` instances, to implement a custom equivalent of `BlockApiLookup#get`.
+
+## [`ApiProviderMap`](src/main/java/net/fabricmc/fabric/api/lookup/v1/custom/ApiProviderMap.java)
+A fast thread-safe copy-on-write map meant to be used as the backing storage for registered providers.
