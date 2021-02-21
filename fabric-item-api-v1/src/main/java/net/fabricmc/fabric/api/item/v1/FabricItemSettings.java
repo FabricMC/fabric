@@ -55,7 +55,6 @@ public class FabricItemSettings extends Item.Settings {
 
 	/**
 	 * Sets the stack-aware recipe remainder provider of the item.
-	 * @see RecipeRemainderProvider
 	 */
 	public FabricItemSettings recipeRemainder(RecipeRemainderProvider provider) {
 		FabricItemInternals.computeExtraData(this).recipeRemainderProvider(provider);
@@ -82,11 +81,11 @@ public class FabricItemSettings extends Item.Settings {
 	 * @param by the amount
 	 */
 	public FabricItemSettings damageIfUsedInCrafting(int by) {
-		return this.recipeRemainder((original, inventory, type, world, pos) -> {
-			if (by == 0) {
-				return original;
-			}
+		if (by == 0) {
+			return this.recipeRemainder((original, inventory, type, world, pos) -> original);
+		}
 
+		return this.recipeRemainder((original, inventory, type, world, pos) -> {
 			if (!original.isDamageable()) {
 				return ItemStack.EMPTY;
 			}

@@ -33,32 +33,32 @@ import net.fabricmc.fabric.impl.item.ItemExtensions;
  * This can be used to allow your item to get damaged instead of
  * getting removed when used in crafting.
  *
- * <p>Recipe remainder providers can be set with {@link FabricItemSettings#recipeRemainder(RecipeRemainderProvider)}</p>
+ * <p>Recipe remainder providers can be set with {@link FabricItemSettings#recipeRemainder(RecipeRemainderProvider)}.</p>
  */
 @FunctionalInterface
 public interface RecipeRemainderProvider {
 	/**
 	 * An {@link ItemStack} aware version of {@link Item#getRecipeRemainder()}.
 	 *
-	 * @param original The input item stack.
-	 * @param inventory The inventory that the stack is in.
-	 * @param type The recipe type being used.
-	 * @param world The world in which the inventory is in.
-	 * @param pos The position at which the inventory is.
+	 * @param original the input item stack
+	 * @param inventory the inventory that the stack is in
+	 * @param type the recipe type being used
+	 * @param world the world in which the inventory is in
+	 * @param pos the position at which the inventory is
 	 * @return the recipe remainder
 	 */
 	ItemStack getRecipeRemainder(ItemStack original, Inventory inventory, @Nullable RecipeType<?> type, World world, @Nullable BlockPos pos);
 
 	/**
 	 * Returns the recipe remainder of an item stack.
-	 * If the item's recipe remainder provider is null, the
+	 * If the item's recipe remainder provider is {@code null}, the
 	 * vanilla recipe remainder is used.
 	 *
-	 * @param original The input item stack.
-	 * @param type The recipe type being used.
-	 * @param inventory The inventory that the stack is in.
-	 * @param world The world in which the inventory is in.
-	 * @param pos The position at which the inventory is.
+	 * @param original the input item stack
+	 * @param type the recipe type being used
+	 * @param inventory the inventory that the stack is in
+	 * @param world the world in which the inventory is in
+	 * @param pos the position at which the inventory is
 	 * @return the recipe remainder
 	 */
 	static ItemStack getRecipeRemainder(ItemStack original, @Nullable RecipeType<?> type, Inventory inventory, World world, @Nullable BlockPos pos) {
