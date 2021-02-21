@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "fabric-config-api-v1-testmod",
+  "name": "Fabric Config API (v1) Test Mod",
+  "version": "1.0.0",
+  "environment": "*",
+  "license": "Apache-2.0",
+  "depends": {
+    "fabric-config-api-v1": "*"
+  },
+  "entrypoints": {
+    "config": [
+      "net.fabricmc.fabric.test.config.ConfigTest",
+      "net.fabricmc.fabric.test.config.ConfigTest2",
+      "net.fabricmc.fabric.test.config.ConfigTest3",
+      "net.fabricmc.fabric.test.config.ConfigTest4"
+    ]
+  },
+  "mixins": [
+    "fabric-config-api-v1-test.mixins.json"
+  ]
+}

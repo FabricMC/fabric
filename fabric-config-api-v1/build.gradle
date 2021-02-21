@@ -1,0 +1,8 @@
+archivesBaseName = "fabric-config-api-v1"
+version = getSubprojectVersion(project, "1.0.0")
+
+moduleDependencies(project, [
+		'fabric-api-base',
+		'fabric-networking-api-v1',
+		'fabric-resource-loader-v0'
+])

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.config",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinMinecraftServer"
+  ],
+  "client": [
+    "MixinServerInfo"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
