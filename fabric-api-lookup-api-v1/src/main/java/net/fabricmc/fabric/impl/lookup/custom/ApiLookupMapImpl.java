@@ -19,6 +19,7 @@ package net.fabricmc.fabric.impl.lookup.custom;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import net.minecraft.util.Identifier;
@@ -35,6 +36,10 @@ public final class ApiLookupMapImpl<L> implements ApiLookupMap<L> {
 
 	@Override
 	public synchronized L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass) {
+		Objects.requireNonNull(lookupId, "Lookup Identifier may not be null.");
+		Objects.requireNonNull(apiClass, "API class may not be null.");
+		Objects.requireNonNull(contextClass, "Context class may not be null.");
+
 		StoredLookup<L> storedLookup = lookups.computeIfAbsent(lookupId, id -> new StoredLookup<>(lookupFactory.get(apiClass, contextClass), apiClass, contextClass));
 
 		if (storedLookup.apiClass == apiClass && storedLookup.contextClass == contextClass) {

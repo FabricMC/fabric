@@ -40,7 +40,7 @@ import net.fabricmc.fabric.mixin.lookup.BlockEntityTypeAccessor;
 
 public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/block");
-	private static final ApiLookupMap<BlockApiLookupImpl<?, ?>> LOOKUPS = ApiLookupMap.create(BlockApiLookupImpl::new);
+	private static final ApiLookupMap<BlockApiLookup<?, ?>> LOOKUPS = ApiLookupMap.create(BlockApiLookupImpl::new);
 
 	@SuppressWarnings("unchecked")
 	public static <A, C> BlockApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
@@ -82,7 +82,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		A instance = null;
 
 		if (provider != null) {
-			instance = provider.get(world, pos, state, blockEntity, context);
+			instance = provider.find(world, pos, state, blockEntity, context);
 		}
 
 		if (instance != null) {
@@ -91,7 +91,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 
 		// Query the fallback providers
 		for (BlockApiProvider<A, C> fallbackProvider : fallbackProviders) {
-			instance = fallbackProvider.get(world, pos, state, blockEntity, context);
+			instance = fallbackProvider.find(world, pos, state, blockEntity, context);
 
 			if (instance != null) {
 				return instance;
@@ -154,7 +154,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 			if (blockEntity == null) {
 				return null;
 			} else {
-				return provider.get(blockEntity, context);
+				return provider.find(blockEntity, context);
 			}
 		};
 

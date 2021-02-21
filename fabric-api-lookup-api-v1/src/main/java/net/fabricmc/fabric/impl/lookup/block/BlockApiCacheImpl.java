@@ -60,7 +60,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 
 	@Nullable
 	@Override
-	public A get(@Nullable BlockState state, C context) {
+	public A find(@Nullable BlockState state, C context) {
 		// Get block entity
 		if (!blockEntityCacheValid) {
 			cachedBlockEntity = world.getBlockEntity(pos);
@@ -86,7 +86,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 		A instance = null;
 
 		if (cachedProvider != null) {
-			instance = cachedProvider.get(world, pos, state, cachedBlockEntity, context);
+			instance = cachedProvider.find(world, pos, state, cachedBlockEntity, context);
 		}
 
 		if (instance != null) {
@@ -95,7 +95,7 @@ public final class BlockApiCacheImpl<A, C> implements BlockApiCache<A, C> {
 
 		// Query the fallback providers
 		for (BlockApiLookup.BlockApiProvider<A, C> fallbackProvider : lookup.getFallbackProviders()) {
-			instance = fallbackProvider.get(world, pos, state, cachedBlockEntity, context);
+			instance = fallbackProvider.find(world, pos, state, cachedBlockEntity, context);
 
 			if (instance != null) {
 				return instance;

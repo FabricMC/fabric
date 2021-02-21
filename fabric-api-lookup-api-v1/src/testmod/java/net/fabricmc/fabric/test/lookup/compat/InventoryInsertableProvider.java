@@ -28,7 +28,7 @@ import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 
 public class InventoryInsertableProvider implements BlockApiLookup.BlockEntityApiProvider<ItemInsertable, @NotNull Direction> {
 	@Override
-	public @Nullable ItemInsertable get(BlockEntity blockEntity, @NotNull Direction context) {
+	public @Nullable ItemInsertable find(BlockEntity blockEntity, @NotNull Direction context) {
 		if (blockEntity instanceof Inventory) {
 			return new WrappedInventory((Inventory) blockEntity);
 		}

@@ -17,7 +17,7 @@ It exposes a `find` function to retrieve an API instance, and multiple `register
 Instances can be obtained using the `get` function.
 
 ## [`BlockApiCache`](src/main/java/net/fabricmc/fabric/api/lookup/v1/block/BlockApiCache.java)
-A `BlockApiLookup` bound to a position and a server world, allowing much faster repeated Api queries.
+A `BlockApiLookup` bound to a position and a server world, allowing much faster repeated API queries.
 
 # Retrieving APIs from custom objects
 The subpackage `custom` provides helper classes to accelerate implementations of `ApiLookup`s for custom objects,

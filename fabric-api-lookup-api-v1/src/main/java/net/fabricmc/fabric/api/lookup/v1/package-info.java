@@ -35,7 +35,8 @@
  *     <li>An instance of {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup BlockApiLookup&lt;A, C&gt;}
  *     provides a {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#find find()} function that does exactly that.</li>
  *     <li>It also allows registering APIs for blocks, because for the query to work the API must be registered first.
- *     Registration primarily happens through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlocks registerForBlocks()}
+ *     Registration primarily happens through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerSelf registerSelf()},
+ *     {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlocks registerForBlocks()}
  *     and {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#registerForBlockEntities registerForBlockEntities()}.</li>
  * 	   <li>{@code BlockApiLookup} instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get BlockApiLookup#get()}.
  *     For optimal performance, it is better to store them in a {@code public static final} field instead of querying them multiple times.</li>
@@ -50,6 +51,7 @@
  *     <li>{@link net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap ApiLookupMap} is a map meant to be used as the backing storage for custom {@code ApiLookup} instances,
  *     to implement a custom equivalent of {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get BlockApiLookup#get}.</li>
  *     <li>{@link net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap ApiProviderMap} is a fast thread-safe copy-on-write map meant to be used as the backing storage for registered providers.</li>
+ *     <li>See {@link net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap ApiLookupMap} for example code.</li>
  * </ul>
  * </p>
  */

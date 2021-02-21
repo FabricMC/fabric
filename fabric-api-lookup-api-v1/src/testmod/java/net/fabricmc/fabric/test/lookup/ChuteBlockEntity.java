@@ -54,8 +54,8 @@ public class ChuteBlockEntity extends BlockEntity implements Tickable {
 		}
 
 		if (moveDelay == 0) {
-			ItemExtractable from = cachedExtractable.get(Direction.DOWN);
-			ItemInsertable to = cachedInsertable.get(Direction.UP);
+			ItemExtractable from = cachedExtractable.find(Direction.DOWN);
+			ItemInsertable to = cachedInsertable.find(Direction.UP);
 
 			if (from != null && to != null) {
 				ItemUtils.move(from, to, 1);

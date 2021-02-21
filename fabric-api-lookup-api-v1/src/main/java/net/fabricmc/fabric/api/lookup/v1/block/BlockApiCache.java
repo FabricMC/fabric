@@ -40,25 +40,30 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
 @ApiStatus.NonExtendable
 public interface BlockApiCache<A, C> {
 	/**
-	 * Retrieve an Api from a block in the world, using the world and the position passed at creation time.
+	 * Attempt to retrieve an API from a block in the world, using the world and the position passed at creation time.
 	 *
-	 * <p>Note: If the block state is known, it is more efficient to use {@link BlockApiCache#get(BlockState, Object)}.
+	 * <p>Note: If the block state is known, it is more efficient to use {@link BlockApiCache#find(BlockState, Object)}.
+	 *
+	 * @param context Additional context for the query, defined by type parameter C.
+	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	default A get(C context) {
-		return get(null, context);
+	default A find(C context) {
+		return find(null, context);
 	}
 
 	/**
-	 * Retrieve an Api from a block in the world, using the world and the position passed at creation time.
+	 * Attempt to retrieve an API from a block in the world, using the world and the position passed at creation time.
 	 *
 	 * @param state The block state at the target position, or null if unknown.
+	 * @param context Additional context for the query, defined by type parameter C.
+	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	A get(@Nullable BlockState state, C context);
+	A find(@Nullable BlockState state, C context);
 
 	/**
-	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same Apis as the passed lookup.
+	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same API as the passed lookup.
 	 */
 	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerWorld world, BlockPos pos) {
 		Objects.requireNonNull(pos, "Pos cannot be null");
