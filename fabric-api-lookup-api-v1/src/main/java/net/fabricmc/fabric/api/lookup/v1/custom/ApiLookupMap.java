@@ -97,7 +97,7 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 	/**
 	 * Create a new instance.
 	 *
-	 * @param lookupFactory The factory for the API lookups.
+	 * @param lookupFactory The factory that is used to create API lookup instances.
 	 */
 	static <L> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
 		Objects.requireNonNull(lookupFactory, "Lookup factory cannot be null");
@@ -118,6 +118,12 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 	L getLookup(Identifier lookupId, Class<?> apiClass, Class<?> contextClass);
 
 	interface LookupFactory<L> {
+		/**
+		 * Create a new API lookup implementation.
+		 *
+		 * @param apiClass The API class passed to {@link #getLookup}.
+		 * @param contextClass The context class passed to {@link #getLookup}.
+		 */
 		L get(Class<?> apiClass, Class<?> contextClass);
 	}
 }
