@@ -189,7 +189,7 @@ public interface LootNode {
 	interface ReferenceConditionNode extends LootConditionNode {
 		@Override
 		default void visit(LootTableVisitor visitor) {
-
+			visitor.visitReferenceCondition(this);
 		}
 	}
 
