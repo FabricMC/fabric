@@ -78,7 +78,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *     // ...
  * }
  * MyApi.FLUID_CONTAINER.registerForBlockEntities((blockEntity, direction) -> {
- *     if (direction == Direction.DOWN) { // only expose from the top
+ *     if (direction == Direction.UP) { // only expose from the top
  *         // return a field
  *         return ((MyBlockEntity) blockEntity).upContainer;
  *     } else {
@@ -110,7 +110,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  *
  * <pre>{@code
  * // 1) create and store an instance
- * BlockApiCache&lt;FluidContainer, Direction&gt; cache = BlockApiCache.create(MyApi.FLUID_CONTAINER, serverWorld, pos);
+ * BlockApiCache<FluidContainer, Direction> cache = BlockApiCache.create(MyApi.FLUID_CONTAINER, serverWorld, pos);
  *
  * // 2) use it later, the block entity instance will be cached among other things
  * FluidContainer container = cache.find(direction);

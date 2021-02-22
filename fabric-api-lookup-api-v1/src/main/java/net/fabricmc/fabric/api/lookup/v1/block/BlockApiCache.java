@@ -35,6 +35,8 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * <p>This object caches the block entity at the target position, and the last used API provider, removing those queries.
  * If a block entity is available or if the block state is passed as a parameter, the block state doesn't have to be looked up either.
  *
+ * @param <A> The type of the API.
+ * @param <C> The type of the additional context object.
  * @see BlockApiLookup
  */
 @ApiStatus.NonExtendable
