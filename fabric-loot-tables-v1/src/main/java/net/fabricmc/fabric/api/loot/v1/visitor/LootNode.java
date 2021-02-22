@@ -100,4 +100,124 @@ public interface LootNode {
 			visitor.visitLootCondition(this);
 		}
 	}
+
+	interface AlternativeConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitAlternativeCondition(this);
+		}
+	}
+
+	// Not currently used.
+	interface AndConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitAndCondition(this);
+		}
+	}
+
+	interface BlockStatePropertyConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitBlockStatePropertyCondition(this);
+		}
+	}
+
+	interface DamageSourcePropertiesConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitDamageSourcePropertiesCondition(this);
+		}
+	}
+
+	interface EntityPropertiesConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitEntityPropertiesCondition(this);
+		}
+	}
+
+	interface EntityScoresConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitEntityScoresCondition(this);
+		}
+	}
+
+	interface InvertedConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitInvertedCondition(this);
+		}
+	}
+
+	interface KilledByPlayerConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitKilledByPlayerCondition(this);
+		}
+	}
+
+	interface LocationCheckConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitLocationCheckCondition(this);
+		}
+	}
+
+	interface MatchToolConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitMatchToolCondition(this);
+		}
+	}
+
+	interface RandomChanceConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitRandomChanceCondition(this);
+		}
+	}
+
+	interface RandomChanceWithLootingConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitRandomChanceWithLooting(this);
+		}
+	}
+
+	interface ReferenceConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+
+		}
+	}
+
+	interface SurvivesExplosionConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitSurvivesExplosionCondition(this);
+		}
+	}
+
+	interface TableBonusConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitTableBonusCondition(this);
+		}
+	}
+
+	interface TimeCheckConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitTimeCheckCondition(this);
+		}
+	}
+
+	interface WeatherCheckConditionNode extends LootConditionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+			visitor.visitWeatherCheckCondition(this);
+		}
+	}
 }
