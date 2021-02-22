@@ -26,7 +26,7 @@ import net.fabricmc.fabric.test.renderer.simple.RendererTest;
 public final class RendererClientTest implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
-		ModelLoadingRegistry.INSTANCE.registerResourceProvider(_manager -> new FrameModelResourceProvider());
+		ModelLoadingRegistry.INSTANCE.registerResourceProvider(manager -> new FrameModelResourceProvider());
 		BlockRenderLayerMap.INSTANCE.putBlock(RendererTest.FRAME, RenderLayer.getCutoutMipped());
 	}
 }
