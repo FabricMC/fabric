@@ -279,8 +279,8 @@ public class SyncConfigValuesImpl implements ModInitializer, ClientModInitialize
 		PacketByteBuf peerBuf = new PacketByteBuf(Unpooled.buffer());
 
 		peerBuf.writeUuid(except.getUuid());
-
-		peerBuf.writeString(buf.readString(32767));
+		peerBuf.writeString(buf.readString(32767)); // Config definition id
+		peerBuf.writeString(buf.readString(32767)); // Config version string
 
 		int n = buf.readVarInt();
 
@@ -299,10 +299,17 @@ public class SyncConfigValuesImpl implements ModInitializer, ClientModInitialize
 		UUID playerId = buf.readUuid();
 
 		ConfigDefinition<R> configDefinition = ConfigManager.getDefinition(buf.readString());
+		SemanticVersion version;
 
-		// We won't save the config values on the server if the definition is null, but we'll still forward it to other
-		// players in the case of peer to peer syncing.
-		if (configDefinition != null && client.getCurrentServerEntry() != null) {
+		try {
+			version = SemanticVersion.parse(buf.readString());
+		} catch (VersionParsingException ignored) {
+			version = null;
+		}
+
+		if (configDefinition != null && client.getCurrentServerEntry() != null && version != null
+				// We'll only save config values for configs with the same major version
+				&& configDefinition.getVersion().getVersionComponent(0) == version.getVersionComponent(0)) {
 			byte[] bytes = buf.readByteArray();
 			InputStream inputStream = new ByteArrayInputStream(bytes);
 			ValueContainer valueContainer = ((ValueContainerProvider) client.getCurrentServerEntry()).getPlayerValueContainer(playerId);

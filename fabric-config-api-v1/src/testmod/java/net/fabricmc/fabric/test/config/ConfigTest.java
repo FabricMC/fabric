@@ -16,30 +16,29 @@
 
 package net.fabricmc.fabric.test.config;
 
-import java.util.Locale;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-import org.jetbrains.annotations.NotNull;
-
-import net.fabricmc.fabric.api.config.v1.GsonSerializer;
-import net.fabricmc.loader.api.config.data.Constraint;
-import net.fabricmc.loader.api.config.entrypoint.ConfigInitializer;
-import net.fabricmc.loader.api.config.serialization.TomlSerializer;
-import net.fabricmc.loader.api.config.util.Table;
-import net.fabricmc.loader.api.config.serialization.AbstractTreeSerializer;
 import net.fabricmc.fabric.api.config.v1.DataTypes;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
 import net.fabricmc.fabric.api.config.v1.SyncType;
 import net.fabricmc.loader.api.config.ConfigSerializer;
 import net.fabricmc.loader.api.config.SaveType;
+import net.fabricmc.loader.api.config.data.Constraint;
 import net.fabricmc.loader.api.config.data.DataCollector;
 import net.fabricmc.loader.api.config.data.DataType;
+import net.fabricmc.loader.api.config.entrypoint.ConfigInitializer;
+import net.fabricmc.loader.api.config.serialization.TomlSerializer;
+import net.fabricmc.loader.api.config.serialization.toml.TomlElement;
+import net.fabricmc.loader.api.config.util.Table;
 import net.fabricmc.loader.api.config.value.ConfigValueCollector;
 import net.fabricmc.loader.api.config.value.ValueKey;
+import org.jetbrains.annotations.NotNull;
 
-public class ConfigTest implements ConfigInitializer {
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+
+public class ConfigTest implements ConfigInitializer<Map<String, TomlElement>> {
+	private static final Random RANDOM = new Random();
+
 	private static final Constraint<Color> NO_ALPHA = new Constraint<Color>("fabric:bounds/color") {
 		@Override
 		public boolean passes(Color value) {
@@ -71,7 +70,7 @@ public class ConfigTest implements ConfigInitializer {
 			.with(DataTypes.SYNC_TYPE, SyncType.INFO)
 			.build();
 
-	public static final ValueKey<Color> MY_FAVORITE_COLOR = new ValueKey.Builder<>(() -> new Color(0xFFFFFF))
+	public static final ValueKey<Color> MY_FAVORITE_COLOR = new ValueKey.Builder<>(() -> new Color(RANDOM.nextInt(0xFFFFFF)))
 			.with(NO_ALPHA)
 				.with(DataTypes.SYNC_TYPE, SyncType.P2P, SyncType.INFO)
 			.build();
@@ -82,7 +81,7 @@ public class ConfigTest implements ConfigInitializer {
 			.build();
 
 	@Override
-	public @NotNull ConfigSerializer getSerializer() {
+	public @NotNull ConfigSerializer<Map<String, TomlElement>> getSerializer() {
 		return CustomTomlSerializer.INSTANCE;
 	}
 
@@ -109,37 +108,8 @@ public class ConfigTest implements ConfigInitializer {
 		collector.add(DataType.COMMENT, "This is a third comment");
 	}
 
-	private static class CustomJsonSerializer extends GsonSerializer {
-		private static final ConfigSerializer INSTANCE = new CustomJsonSerializer();
-
-		CustomJsonSerializer() {
-			super(new Gson());
-			this.addSerializer(Color.class, new ColorSerializer());
-		}
-	}
-
-	private static class ColorSerializer implements AbstractTreeSerializer.ValueSerializer<JsonElement, JsonPrimitive, Color> {
-		@Override
-		public JsonPrimitive serialize(Color value) {
-			if (value.value == -1) {
-				return new JsonPrimitive("0xFFFFFFFF");
-			} else {
-				return new JsonPrimitive("0x" + Integer.toUnsignedString(value.value, 16).toUpperCase(Locale.ROOT));
-			}
-		}
-
-		@Override
-		public Color deserialize(JsonElement representation) {
-			if (representation.getAsString().equalsIgnoreCase("0xFFFFFFFF")) {
-				return new Color(-1);
-			} else {
-				return new Color(Integer.parseUnsignedInt(representation.getAsString().substring(2), 16));
-			}
-		}
-	}
-
 	private static class CustomTomlSerializer extends TomlSerializer {
-		static final ConfigSerializer INSTANCE = new CustomTomlSerializer();
+		static final TomlSerializer INSTANCE = new CustomTomlSerializer();
 
 		private CustomTomlSerializer() {
 			this.addSerializer(Color.class, ColorSerializer.INSTANCE);

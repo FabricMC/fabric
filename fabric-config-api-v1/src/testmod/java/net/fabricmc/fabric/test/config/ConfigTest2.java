@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.config;
 
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
 import net.fabricmc.fabric.api.config.v1.GsonSerializer;
@@ -29,7 +30,7 @@ import net.fabricmc.loader.api.config.SaveType;
 import net.fabricmc.loader.api.config.value.ConfigValueCollector;
 import net.fabricmc.loader.api.config.value.ValueKey;
 
-public class ConfigTest2 implements ConfigInitializer {
+public class ConfigTest2 implements ConfigInitializer<JsonObject> {
 	public static final ValueKey<Integer> MY_FAVORITE_NUMBER = new ValueKey.Builder<>(() -> 7)
 			.with(new Bounds.Int(0, 10))
 			.with(DataType.COMMENT, "Like seriously, all other numbers suck.")
@@ -38,12 +39,11 @@ public class ConfigTest2 implements ConfigInitializer {
 	public static final ValueKey<String> MY_FAVORITE_FRUIT = new ValueKey.Builder<>(() -> "Strawberry")
 			.build();
 
-	public static final ValueKey<Array<String>> MY_FAVORITE_CITIES = new ValueKey.Builder<>(() -> {
-		return new Array<>(String.class, () -> "(none)");
-	}).build();
+	public static final ValueKey<Array<String>> MY_FAVORITE_CITIES = new ValueKey.Builder<>(() ->
+			new Array<>(String.class, () -> "(none)")).build();
 
 	@Override
-	public @NotNull ConfigSerializer getSerializer() {
+	public @NotNull ConfigSerializer<JsonObject> getSerializer() {
 		return GsonSerializer.DEFAULT;
 	}
 

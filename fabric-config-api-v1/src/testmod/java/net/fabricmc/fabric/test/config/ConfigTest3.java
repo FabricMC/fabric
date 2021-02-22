@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.config;
 
+import net.fabricmc.loader.api.config.serialization.toml.TomlElement;
 import org.jetbrains.annotations.NotNull;
 
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
@@ -29,7 +30,9 @@ import net.fabricmc.loader.api.config.util.Array;
 import net.fabricmc.loader.api.config.value.ConfigValueCollector;
 import net.fabricmc.loader.api.config.value.ValueKey;
 
-public class ConfigTest3 implements ConfigInitializer {
+import java.util.Map;
+
+public class ConfigTest3 implements ConfigInitializer<Map<String, TomlElement>> {
 	public static final ValueKey<Integer> MY_FAVORITE_NUMBER = new ValueKey.Builder<>(() -> 7)
 			.with(new Bounds.Int(0, 10))
 			.with(DataType.COMMENT, "Like seriously, all other numbers suck.")
@@ -43,7 +46,7 @@ public class ConfigTest3 implements ConfigInitializer {
 	}).build();
 
 	@Override
-	public @NotNull ConfigSerializer getSerializer() {
+	public @NotNull ConfigSerializer<Map<String, TomlElement>> getSerializer() {
 		return TomlSerializer.INSTANCE;
 	}
 
