@@ -3,7 +3,9 @@
   "package": "net.fabricmc.fabric.mixin.config",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "GameProfileAccessor",
     "MixinMinecraftServer",
+    "MixinServerLoginNetworkHandler",
     "MixinServerPlayNetworkHandler"
   ],
   "client": [

@@ -16,11 +16,13 @@
 
 package net.fabricmc.fabric.impl.config;
 
+import java.util.UUID;
+
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 public interface ConfigValueSender {
-	<R> void send(String configDefinition, ServerPlayerEntity except, PacketByteBuf peerBuf);
+	<R> void send(String configDefinition, UUID except, PacketByteBuf peerBuf);
 	void sendCached(ServerPlayerEntity player);
 	void drop(ServerPlayerEntity player);
 }

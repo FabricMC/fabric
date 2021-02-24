@@ -1,0 +1,4 @@
+{
+  "fabric.config.invalid_version": "Invalid version for config '%s': %s. Present: %s. Expected matching major versions.",
+  "fabric.config.version_parse": "Error parsing config '%s' version %s."
+}

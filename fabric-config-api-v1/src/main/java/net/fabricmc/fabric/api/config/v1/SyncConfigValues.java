@@ -23,6 +23,7 @@ import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.config.ConfigDefinition;
+import net.fabricmc.fabric.impl.networking.server.ServerPlayNetworkHandlerExtensions;
 
 public class SyncConfigValues {
 	@Environment(EnvType.CLIENT)
@@ -31,6 +32,6 @@ public class SyncConfigValues {
 	}
 
 	private static <R> void sendConfigValues(ConfigDefinition<R> configDefinition, ServerPlayerEntity player, ValueContainer valueContainer) {
-		ConfigSenders.sendToPlayer(configDefinition, player, valueContainer);
+		ConfigSenders.sendToPlayer(configDefinition, ((ServerPlayNetworkHandlerExtensions) player.networkHandler).getAddon(), valueContainer);
 	}
 }

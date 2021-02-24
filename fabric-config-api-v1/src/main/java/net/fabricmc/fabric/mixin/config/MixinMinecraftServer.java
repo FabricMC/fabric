@@ -92,11 +92,11 @@ public abstract class MixinMinecraftServer implements ValueContainerProvider, Co
 	}
 
 	@Override
-	public <R> void send(String configDefinition, ServerPlayerEntity except, PacketByteBuf peerBuf) {
-		cachedConfigPackets.compute(except.getUuid(), (k, v) -> new HashMap<>()).put(configDefinition, peerBuf);
+	public <R> void send(String configDefinition, UUID except, PacketByteBuf peerBuf) {
+		cachedConfigPackets.compute(except, (k, v) -> new HashMap<>()).put(configDefinition, peerBuf);
 
 		PlayerLookup.all(((MinecraftServer) (Object) this)).forEach(player -> {
-			if (player != except) {
+			if (!player.getUuid().equals(except)) {
 				ServerPlayNetworking.send(player, ConfigNetworking.USER_CONFIG, peerBuf);
 			}
 		});

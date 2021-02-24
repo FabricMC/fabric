@@ -46,6 +46,7 @@ public class UserConfigTest extends Config<Map<String, TomlElement>> {
 			// This can be useful for contexts where the absolute minimal performance impact is required
 			// i.e. renderers like Canvas, that might access a config value several thousand times per frame
 			.with((oldValue, newValue) -> EASY_FIELD_ACCESSIBLE_CONFIG_VALUE = newValue)
+			.with((oldValue, newValue) -> System.out.printf("My favorite number is not %d!%n", newValue))
 			.build();
 
 	private static final Constraint<Color> NO_ALPHA = new Constraint<Color>("fabric:bounds/color") {

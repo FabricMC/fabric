@@ -20,6 +20,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import io.netty.buffer.Unpooled;
@@ -28,11 +29,9 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -45,7 +44,6 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.config.ConfigValueSender;
 import net.fabricmc.loader.api.config.ConfigDefinition;
-import net.fabricmc.loader.api.config.ConfigManager;
 import net.fabricmc.loader.api.config.data.SaveType;
 import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.loader.api.config.value.ValueKey;
@@ -74,11 +72,11 @@ public class ConfigSenders {
 		}
 	}
 
-	public static <R> void sendToPlayer(ConfigDefinition<R> configDefinition, ServerPlayerEntity player, ValueContainer valueContainer) {
+	public static <R> void sendToPlayer(ConfigDefinition<R> configDefinition, PacketSender sender, ValueContainer valueContainer) {
 		PacketByteBuf buf = toPacket(configDefinition, valueContainer);
 
 		if (buf != null) {
-			ServerPlayNetworking.send(player, ConfigNetworking.SYNC_CONFIG, buf);
+			sender.sendPacket(ConfigNetworking.SYNC_CONFIG, buf);
 		}
 	}
 
@@ -90,7 +88,7 @@ public class ConfigSenders {
 		}
 	}
 
-	private static <R> @Nullable PacketByteBuf toPacket(ConfigDefinition<R> configDefinition, ValueContainer valueContainer) {
+	public static <R> @Nullable PacketByteBuf toPacket(ConfigDefinition<R> configDefinition, ValueContainer valueContainer) {
 		SaveType saveType = configDefinition.getSaveType();
 
 		Predicate<ValueKey<?>> predicate = key -> true;
@@ -146,21 +144,12 @@ public class ConfigSenders {
 		return null;
 	}
 
-	public static <R> void sendConfigValues(String configDefinition, ServerPlayerEntity except, PacketByteBuf buf) {
+	public static <R> void sendConfigValues(MinecraftServer server, String configDefinition, UUID except, PacketByteBuf buf) {
 		PacketByteBuf peerBuf = new PacketByteBuf(Unpooled.buffer());
 
-		peerBuf.writeUuid(except.getUuid());
+		peerBuf.writeUuid(except);
 		peerBuf.writeBytes(buf);
 
-		((ConfigValueSender) except.server).send(configDefinition, except, peerBuf);
-	}
-
-	public static void sendConfigValues(ClientPlayNetworkHandler clientPlayNetworkHandler, PacketSender packetSender, MinecraftClient client) {
-		if (!client.isIntegratedServerRunning() && client.getCurrentServerEntry() == null) return;
-		ValueContainer valueContainer = ValueContainer.ROOT;
-
-		for (ConfigDefinition<?> configDefinition : ConfigManager.getConfigKeys()) {
-			sendToServer(configDefinition, valueContainer);
-		}
+		((ConfigValueSender) server).send(configDefinition, except, peerBuf);
 	}
 }

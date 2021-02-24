@@ -28,6 +28,8 @@ import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
 import net.fabricmc.loader.api.config.value.ValueKey;
 import net.fabricmc.loader.api.config.data.SaveType;
 import net.fabricmc.loader.api.config.serialization.ConfigSerializer;
+import net.fabricmc.fabric.api.config.v1.FabricDataTypes;
+import net.fabricmc.fabric.api.config.v1.SyncType;
 
 public class LevelConfigTest extends Config<JsonObject> {
 	public static final ValueKey<String> MY_FAVORITE_FRUIT = new ValueKey.Builder<>(() -> "Strawberry")
@@ -35,6 +37,7 @@ public class LevelConfigTest extends Config<JsonObject> {
 
 	public static final ValueKey<Array<String>> MY_FAVORITE_CITIES = new ValueKey.Builder<>(() ->
 			new Array<>(String.class, () -> "(none)"))
+			.with(FabricDataTypes.SYNC_TYPE, SyncType.INFO)
 			.build();
 
 	@Override
@@ -44,7 +47,7 @@ public class LevelConfigTest extends Config<JsonObject> {
 
 	@Override
 	public @NotNull SaveType getSaveType() {
-		return FabricSaveTypes.USER;
+		return FabricSaveTypes.LEVEL;
 	}
 
 	@Override
