@@ -18,10 +18,8 @@ package net.fabricmc.fabric.mixin.registry.sync;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -273,24 +271,28 @@ public abstract class MixinIdRegistry<T> extends Registry<T> implements Remappab
 			break;
 		}
 		case REMOTE: {
-			// TODO: Is this what mods really want?
-			Set<Identifier> droppedIds = new HashSet<>();
+			int maxId = -1;
 
 			for (Identifier id : getIds()) {
 				if (!remoteIndexedEntries.containsKey(id)) {
-					T object = get(id);
-					int rid = getRawId(object);
+					if (maxId < 0) {
+						for (int value : remoteIndexedEntries.values()) {
+							if (value > maxId) {
+								maxId = value;
+							}
+						}
+					}
 
-					droppedIds.add(id);
+					if (maxId < 0) {
+						throw new RemapException("Failed to assign new id to client only registry entry");
+					}
 
-					// Emit RemoveObject events for removed objects.
-					fabric_getRemoveObjectEvent().invoker().onEntryRemoved(rid, id, object);
+					maxId++;
+
+					FABRIC_LOGGER.debug("An ID for {} was not sent by the server, assuming client only registry entry and assigning a new id ({}) in {}", id.toString(), maxId, getKey().getValue().toString());
+					remoteIndexedEntries.put(id, maxId);
 				}
 			}
-
-			// note: indexedEntries cannot be safely remove()d from
-			idToEntry.keySet().removeAll(droppedIds);
-			keyToEntry.keySet().removeIf(registryKey -> droppedIds.contains(registryKey.getValue()));
 
 			break;
 		}

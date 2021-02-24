@@ -17,7 +17,7 @@ For support and discussion for both developers and users, visit [the Fabric Disc
 
 Make sure you have install fabric loader first. More information about installing Fabric Loader can be found [here](https://fabricmc.net/use/).
 
-To use Fabric API, download it from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api) or [GitHub Releases](https://github.com/FabricMC/fabric/releases).
+To use Fabric API, download it from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api), [GitHub Releases](https://github.com/FabricMC/fabric/releases) or [Modrinth](https://modrinth.com/mod/fabric-api).
 
 The downloaded jar file should be placed in your `mods` folder.
 
@@ -39,7 +39,7 @@ modImplementation "net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION"
 modImplementation("net.fabricmc.fabric-api:fabric-api:FABRIC_API_VERSION")
 ```
 
-Alternatively, modules from Fabric API can be specified individually as shown below:
+Alternatively, modules from Fabric API can be specified individually as shown below (including module jar to your mod jar):
 
 ### Groovy DSL
 
@@ -49,12 +49,12 @@ Set<String> apiModules = [
     "fabric-api-base",
     "fabric-command-api-v1",
     "fabric-lifecycle-events-v1",
-    "fabric-networking-v0"
+    "fabric-networking-api-v1"
 ]
 
 // Add each module as a dependency
 apiModules.forEach {
-    modImplementation(fabricApi.module(it, FABRIC_API_VERSION))
+    include(modImplementation(fabricApi.module(it, FABRIC_API_VERSION)))
 }
 ```
 
@@ -66,7 +66,7 @@ setOf(
     "fabric-api-base",
     "fabric-command-api-v1",
     "fabric-lifecycle-events-v1",
-    "fabric-networking-v0"
+    "fabric-networking-api-v1"
 ).forEach {
     // Add each module as a dependency
     modImplementation(fabricApi.module(it, FABRIC_API_VERSION))

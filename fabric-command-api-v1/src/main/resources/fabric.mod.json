@@ -22,5 +22,8 @@
   "description": "Adds command-related hooks.",
   "mixins": [
     "fabric-command-api-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

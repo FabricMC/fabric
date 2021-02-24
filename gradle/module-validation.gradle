@@ -1,0 +1,61 @@
+import groovy.json.JsonSlurper
+
+/*
+ * This buildscript contains tasks related to the validation of each module in fabric api.
+ *
+ * Right now this task verifies each Fabric API module has a module lifecycle specified.
+ * More functionality will probably be added in the future.
+ */
+
+subprojects {
+	// Create the task
+	task validateModules(type: ValidateModuleTask)
+}
+
+/**
+ * Verifies that each module has the required custom values for module lifecycle in it's FMJ.
+ *
+ * <p>Example:
+ * <pre>{@code
+ * "custom": {
+ *   "fabric-api:module-lifecycle": "stable"
+ * }
+ * }</pre>
+ */
+class ValidateModuleTask extends DefaultTask {
+	ValidateModuleTask() {
+		group = "verification"
+
+		// Hook up validation to check task
+		project.tasks.check.dependsOn(this)
+	}
+
+	@TaskAction
+	void validate() {
+		def json = new JsonSlurper().parse(project.file("src/main/resources/fabric.mod.json") as File) as Map<String, Map<String, String>>;
+
+		if (json.custom == null) {
+			throw new GradleException("Module ${project} does not have a custom value containing module lifecycle!")
+		}
+
+		def moduleLifecycle = json.custom.get("fabric-api:module-lifecycle")
+
+		if (moduleLifecycle == null) {
+			throw new GradleException("Module ${project} does not have module lifecycle in custom values!")
+		}
+
+		if (!moduleLifecycle instanceof String) {
+			throw new GradleException("Module ${project} has an invalid module lifecycle value. The value must be a string but read a ${moduleLifecycle.class}")
+		}
+
+		// Validate the lifecycle value
+		switch (moduleLifecycle) {
+			case "stable":
+			case "experimental":
+			case "deprecated":
+				break;
+			default:
+				throw new GradleException("Module ${project} has an invalid module lifecycle ${json.custom.get('fabric-api:module-lifecycle')}");
+		}
+	}
+}

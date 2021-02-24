@@ -23,6 +23,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.util.Identifier;
 import net.minecraft.network.PacketByteBuf;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
 
 /**
@@ -32,7 +33,10 @@ import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
  *
  * <ul><li>registering client-side packet receivers (server -&gt; client packets)
  * <li>sending packets to the server (client -&gt; server packets).</ul>
+ *
+ * @deprecated Please migrate to {@link ClientPlayNetworking}.
  */
+@Deprecated
 public interface ClientSidePacketRegistry extends PacketRegistry {
 	ClientSidePacketRegistry INSTANCE = new ClientSidePacketRegistryImpl();
 

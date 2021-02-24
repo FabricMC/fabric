@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.impl.content.registry;
 
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
@@ -28,20 +29,38 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.tag.Tag;
 
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 // TODO: Clamp values to 32767 (+ add hook for mods which extend the limit to disable the check?)
-public class FuelRegistryImpl implements FuelRegistry {
+public final class FuelRegistryImpl implements FuelRegistry {
 	public static final FuelRegistryImpl INSTANCE = new FuelRegistryImpl();
 	private static final Logger LOGGER = LogManager.getLogger();
 	private final Object2IntMap<ItemConvertible> itemCookTimes = new Object2IntLinkedOpenHashMap<>();
 	private final Object2IntMap<Tag<Item>> tagCookTimes = new Object2IntLinkedOpenHashMap<>();
+	private volatile Map<Item, Integer> fuelTimeCache = null; // thread safe via copy-on-write mechanism
 
-	public FuelRegistryImpl() { }
+	public FuelRegistryImpl() {
+		ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, serverResourceManager, success) -> {
+			if (success) {
+				resetCache();
+			}
+		});
+	}
+
+	public Map<Item, Integer> getFuelTimes() {
+		Map<Item, Integer> ret = fuelTimeCache;
+
+		if (ret == null) {
+			fuelTimeCache = ret = new IdentityHashMap<>(AbstractFurnaceBlockEntity.createFuelTimeMap()); // IdentityHashMap is faster than vanilla's LinkedHashMap and suitable for Item keys
+		}
+
+		return ret;
+	}
 
 	@Override
 	public Integer get(ItemConvertible item) {
-		return AbstractFurnaceBlockEntity.createFuelTimeMap().get(item.asItem());
+		return getFuelTimes().get(item.asItem());
 	}
 
 	@Override
@@ -51,6 +70,7 @@ public class FuelRegistryImpl implements FuelRegistry {
 		}
 
 		itemCookTimes.put(item, cookTime.intValue());
+		resetCache();
 	}
 
 	@Override
@@ -60,26 +80,31 @@ public class FuelRegistryImpl implements FuelRegistry {
 		}
 
 		tagCookTimes.put(tag, cookTime.intValue());
+		resetCache();
 	}
 
 	@Override
 	public void remove(ItemConvertible item) {
 		add(item, 0);
+		resetCache();
 	}
 
 	@Override
 	public void remove(Tag<Item> tag) {
 		add(tag, 0);
+		resetCache();
 	}
 
 	@Override
 	public void clear(ItemConvertible item) {
 		itemCookTimes.removeInt(item);
+		resetCache();
 	}
 
 	@Override
 	public void clear(Tag<Item> tag) {
 		tagCookTimes.removeInt(tag);
+		resetCache();
 	}
 
 	public void apply(Map<Item, Integer> map) {
@@ -115,5 +140,9 @@ public class FuelRegistryImpl implements FuelRegistry {
 		}
 
 		return tag.toString();
+	}
+
+	public void resetCache() {
+		fuelTimeCache = null;
 	}
 }

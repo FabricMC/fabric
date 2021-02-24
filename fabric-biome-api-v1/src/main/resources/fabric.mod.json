@@ -23,5 +23,8 @@
   "mixins": [
     "fabric-biome-api-v1.mixins.json"
   ],
-  "accessWidener" : "fabric-biome-api-v1.accesswidener"
+  "accessWidener" : "fabric-biome-api-v1.accesswidener",
+  "custom": {
+    "fabric-api:module-lifecycle": "experimental"
+  }
 }

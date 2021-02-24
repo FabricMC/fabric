@@ -19,6 +19,7 @@ package net.fabricmc.fabric.mixin.resource.loader;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,9 +29,11 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.resource.ReloadableResourceManagerImpl;
+import net.minecraft.resource.ResourcePack;
 import net.minecraft.resource.ResourceReloadListener;
 import net.minecraft.resource.ResourceType;
 
+import net.fabricmc.fabric.impl.resource.loader.GroupResourcePack;
 import net.fabricmc.fabric.impl.resource.loader.ResourceManagerHelperImpl;
 
 @Mixin(ReloadableResourceManagerImpl.class)
@@ -40,7 +43,20 @@ public class ReloadableResourceManagerImplMixin {
 	private ResourceType type;
 
 	@Inject(at = @At("HEAD"), method = "beginReloadInner")
-	public void reload(Executor var1, Executor var2, List<ResourceReloadListener> listeners, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
+	private void reload(Executor var1, Executor var2, List<ResourceReloadListener> listeners, CompletableFuture future, CallbackInfoReturnable<CompletableFuture> info) {
 		ResourceManagerHelperImpl.sort(type, listeners);
+	}
+
+	// private static synthetic method_29491(Ljava/util/List;)Ljava/lang/Object;
+	// Supplier lambda in beginMonitoredReload method.
+	@Inject(method = "method_29491", at = @At("HEAD"), cancellable = true)
+	private static void getResourcePackNames(List<ResourcePack> packs, CallbackInfoReturnable<String> cir) {
+		cir.setReturnValue(packs.stream().map(pack -> {
+			if (pack instanceof GroupResourcePack) {
+				return ((GroupResourcePack) pack).getFullName();
+			} else {
+				return pack.getName();
+			}
+		}).collect(Collectors.joining(", ")));
 	}
 }

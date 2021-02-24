@@ -21,5 +21,8 @@
     "fabric-tag-extensions-v0": "*",
     "fabric-tool-attribute-api-v1": "*"
   },
-  "description": "Block mining level tags for tools. Deprecated and replaced by fabric-tool-attribute-v1."
+  "description": "Block mining level tags for tools. Deprecated and replaced by fabric-tool-attribute-v1.",
+  "custom": {
+    "fabric-api:module-lifecycle": "deprecated"
+  }
 }
