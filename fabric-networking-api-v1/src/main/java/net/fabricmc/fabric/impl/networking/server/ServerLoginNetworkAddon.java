@@ -162,7 +162,14 @@ public final class ServerLoginNetworkAddon extends AbstractNetworkAddon<ServerLo
 	@Override
 	public Packet<?> createPacket(Identifier channelName, PacketByteBuf buf) {
 		int queryId = this.queryIdFactory.nextId();
-		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket();
+
+		// Create the packet with a dummy packet buffer and then overwrite the contents after, a bit of a hack but should be ok.
+		PacketByteBuf dummy = PacketByteBufs.create();
+		dummy.writeVarInt(-1);
+		dummy.writeIdentifier(new Identifier("fabric", "temp"));
+		dummy.writeByte(1);
+
+		LoginQueryRequestS2CPacket ret = new LoginQueryRequestS2CPacket(dummy);
 		// The constructor for creating a non-empty response was removed by proguard
 		LoginQueryRequestS2CPacketAccessor access = (LoginQueryRequestS2CPacketAccessor) ret;
 		access.setQueryId(queryId);

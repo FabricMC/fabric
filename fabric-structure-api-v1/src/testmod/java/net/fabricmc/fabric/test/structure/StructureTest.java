@@ -76,14 +76,14 @@ public class StructureTest {
 		}
 
 		public static class Start extends StructureStart<DefaultFeatureConfig> {
-			public Start(StructureFeature<DefaultFeatureConfig> feature, int chunkX, int chunkZ, BlockBox box, int references, long seed) {
-				super(feature, chunkX, chunkZ, box, references, seed);
+			public Start(StructureFeature<DefaultFeatureConfig> feature, ChunkPos chunkPos, BlockBox blockBox, int i, long l) {
+				super(feature, chunkPos, blockBox, i, l);
 			}
 
 			@Override
-			public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, int chunkX, int chunkZ, Biome biome, DefaultFeatureConfig config, HeightLimitView heightLimitView) {
-				int blockX = chunkX * 16;
-				int blockZ = chunkZ * 16;
+			public void init(DynamicRegistryManager registryManager, ChunkGenerator chunkGenerator, StructureManager manager, ChunkPos chunkPos, Biome biome, DefaultFeatureConfig featureConfig, HeightLimitView heightLimitView) {
+				int blockX = chunkPos.getStartX();
+				int blockZ = chunkPos.getStartZ();
 				int blockY = chunkGenerator.getHeight(blockX, blockZ, Heightmap.Type.WORLD_SURFACE_WG, heightLimitView);
 
 				TestStructureGenerator generator = new TestStructureGenerator(random, blockX, blockY, blockZ);
