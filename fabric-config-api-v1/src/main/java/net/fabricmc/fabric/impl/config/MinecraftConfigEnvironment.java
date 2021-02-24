@@ -20,6 +20,11 @@ import java.util.function.Consumer;
 
 import net.minecraft.client.MinecraftClient;
 
+import net.fabricmc.fabric.api.config.v1.Translator;
+import net.fabricmc.loader.api.config.ConfigDefinition;
+import net.fabricmc.loader.api.config.ConfigManager;
+import net.fabricmc.loader.api.config.data.DataType;
+import net.fabricmc.loader.api.config.value.ValueKey;
 import net.fabricmc.loader.api.config.SaveType;
 import net.fabricmc.loader.api.config.entrypoint.ConfigEnvironment;
 import net.fabricmc.loader.api.config.entrypoint.ConfigPostInitializer;
@@ -50,6 +55,12 @@ public class MinecraftConfigEnvironment implements ConfigPostInitializer, Config
 
 			return null;
 		});
+
+		for (ConfigDefinition<?> config : ConfigManager.getConfigKeys()) {
+			for (ValueKey<?> valueKey : config) {
+				valueKey.add(DataType.COMMENT, Translator.getComments(valueKey.toString()));
+			}
+		}
 	}
 
 	@Override

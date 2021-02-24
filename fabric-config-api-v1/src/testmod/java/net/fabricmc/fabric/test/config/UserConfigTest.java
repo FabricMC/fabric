@@ -16,7 +16,14 @@
 
 package net.fabricmc.fabric.test.config;
 
-import net.fabricmc.fabric.api.config.v1.DataTypes;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.loader.api.config.entrypoint.Config;
+import net.fabricmc.fabric.api.config.v1.FabricDataTypes;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
 import net.fabricmc.fabric.api.config.v1.SyncType;
 import net.fabricmc.loader.api.config.ConfigSerializer;
@@ -24,19 +31,12 @@ import net.fabricmc.loader.api.config.SaveType;
 import net.fabricmc.loader.api.config.data.Constraint;
 import net.fabricmc.loader.api.config.data.DataCollector;
 import net.fabricmc.loader.api.config.data.DataType;
-import net.fabricmc.loader.api.config.entrypoint.ConfigInitializer;
-import net.fabricmc.loader.api.config.serialization.TomlSerializer;
+import net.fabricmc.loader.api.config.serialization.TOMLSerializer;
 import net.fabricmc.loader.api.config.serialization.toml.TomlElement;
 import net.fabricmc.loader.api.config.util.Table;
-import net.fabricmc.loader.api.config.value.ConfigValueCollector;
 import net.fabricmc.loader.api.config.value.ValueKey;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.Locale;
-import java.util.Map;
-import java.util.Random;
-
-public class ConfigTest implements ConfigInitializer<Map<String, TomlElement>> {
+public class UserConfigTest extends Config<Map<String, TomlElement>> {
 	private static final Random RANDOM = new Random();
 
 	private static final Constraint<Color> NO_ALPHA = new Constraint<Color>("fabric:bounds/color") {
@@ -67,38 +67,27 @@ public class ConfigTest implements ConfigInitializer<Map<String, TomlElement>> {
 
 	public static final ValueKey<String> MY_FAVORITE_FRUIT = new ValueKey.Builder<>(() -> "Strawberry")
 			.with(DataType.COMMENT, "So much delicious flavor!")
-			.with(DataTypes.SYNC_TYPE, SyncType.INFO)
+			.with(FabricDataTypes.SYNC_TYPE, SyncType.INFO)
 			.build();
 
 	public static final ValueKey<Color> MY_FAVORITE_COLOR = new ValueKey.Builder<>(() -> new Color(RANDOM.nextInt(0xFFFFFF)))
 			.with(NO_ALPHA)
-				.with(DataTypes.SYNC_TYPE, SyncType.P2P, SyncType.INFO)
+				.with(FabricDataTypes.SYNC_TYPE, SyncType.P2P, SyncType.INFO)
 			.build();
 
 	public static final ValueKey<Table<Color>> TAGS = new ValueKey.CollectionBuilder<>(() -> new Table<>(Color.class, () -> new Color(-1)))
 			.constraint(NO_ALPHA)
-			.with(DataTypes.SYNC_TYPE, SyncType.P2P, SyncType.INFO)
+			.with(FabricDataTypes.SYNC_TYPE, SyncType.P2P, SyncType.INFO)
 			.build();
 
 	@Override
 	public @NotNull ConfigSerializer<Map<String, TomlElement>> getSerializer() {
-		return CustomTomlSerializer.INSTANCE;
+		return CustomTOMLSerializer.INSTANCE;
 	}
 
 	@Override
 	public @NotNull SaveType getSaveType() {
 		return FabricSaveTypes.USER;
-	}
-
-	@Override
-	public void addConfigValues(@NotNull ConfigValueCollector collector) {
-		collector.addConfigValue(MY_FAVORITE_NUMBER, "favorite_number");
-		collector.addConfigValue(MY_FAVORITE_NUMBER2, "favorite_number_2");
-		collector.addConfigValue(MY_FAVORITE_NUMBER3, "favorite_number_3");
-		collector.addConfigValue(MY_FAVORITE_NUMBER4, "favorite_number_4");
-		collector.addConfigValue(MY_FAVORITE_FRUIT, "favorite_fruit");
-		collector.addConfigValue(MY_FAVORITE_COLOR, "favorite_color");
-		collector.addConfigValue(TAGS, "tags");
 	}
 
 	@Override
@@ -108,10 +97,10 @@ public class ConfigTest implements ConfigInitializer<Map<String, TomlElement>> {
 		collector.add(DataType.COMMENT, "This is a third comment");
 	}
 
-	private static class CustomTomlSerializer extends TomlSerializer {
-		static final TomlSerializer INSTANCE = new CustomTomlSerializer();
+	private static class CustomTOMLSerializer extends TOMLSerializer {
+		static final TOMLSerializer INSTANCE = new CustomTOMLSerializer();
 
-		private CustomTomlSerializer() {
+		private CustomTOMLSerializer() {
 			this.addSerializer(Color.class, ColorSerializer.INSTANCE);
 		}
 

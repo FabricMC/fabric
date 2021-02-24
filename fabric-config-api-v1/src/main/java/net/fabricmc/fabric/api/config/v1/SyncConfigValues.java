@@ -16,14 +16,21 @@
 
 package net.fabricmc.fabric.api.config.v1;
 
+import net.minecraft.server.network.ServerPlayerEntity;
+
+import net.fabricmc.fabric.impl.config.networking.ConfigSenders;
+import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.impl.config.SyncConfigValuesImpl;
 import net.fabricmc.loader.api.config.ConfigDefinition;
 
 public class SyncConfigValues {
 	@Environment(EnvType.CLIENT)
-	public static void sendConfigValues(ConfigDefinition configDefinition) {
-		SyncConfigValuesImpl.sendConfigValues(configDefinition);
+	public static void sendConfigValues(ConfigDefinition<?> configDefinition, ValueContainer valueContainer) {
+		ConfigSenders.sendToServer(configDefinition, valueContainer);
+	}
+
+	private static <R> void sendConfigValues(ConfigDefinition<R> configDefinition, ServerPlayerEntity player, ValueContainer valueContainer) {
+		ConfigSenders.sendToPlayer(configDefinition, player, valueContainer);
 	}
 }

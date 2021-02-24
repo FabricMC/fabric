@@ -16,59 +16,50 @@
 
 package net.fabricmc.fabric.test.config;
 
-import net.fabricmc.loader.api.config.serialization.toml.TomlElement;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
+import net.fabricmc.loader.api.config.entrypoint.Config;
+import net.fabricmc.fabric.api.config.v1.GsonSerializer;
+import net.fabricmc.loader.api.config.util.Array;
+import net.fabricmc.loader.api.config.data.DataCollector;
+import net.fabricmc.loader.api.config.data.DataType;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
 import net.fabricmc.loader.api.config.ConfigSerializer;
 import net.fabricmc.loader.api.config.SaveType;
-import net.fabricmc.loader.api.config.data.DataCollector;
-import net.fabricmc.loader.api.config.data.DataType;
-import net.fabricmc.loader.api.config.entrypoint.ConfigInitializer;
-import net.fabricmc.loader.api.config.serialization.TomlSerializer;
-import net.fabricmc.loader.api.config.util.Array;
-import net.fabricmc.loader.api.config.value.ConfigValueCollector;
 import net.fabricmc.loader.api.config.value.ValueKey;
 
-import java.util.Map;
+public class LevelConfigTest extends Config<JsonObject> {
+	public static int EASY_FIELD_ACCESSIBLE_CONFIG_VALUE;
 
-public class ConfigTest3 implements ConfigInitializer<Map<String, TomlElement>> {
 	public static final ValueKey<Integer> MY_FAVORITE_NUMBER = new ValueKey.Builder<>(() -> 7)
 			.with(new Bounds.Int(0, 10))
 			.with(DataType.COMMENT, "Like seriously, all other numbers suck.")
+			// This can be useful for contexts where the absolute minimal performance impact is required
+			// i.e. renderers like Canvas, that might access a config value several thousand times per frame
+			.with((oldValue, newValue) -> EASY_FIELD_ACCESSIBLE_CONFIG_VALUE = newValue)
 			.build();
 
 	public static final ValueKey<String> MY_FAVORITE_FRUIT = new ValueKey.Builder<>(() -> "Strawberry")
 			.build();
 
-	public static final ValueKey<Array<String>> MY_FAVORITE_CITIES = new ValueKey.Builder<>(() -> {
-		return new Array<>(String.class, () -> "(none)");
-	}).build();
+	public static final ValueKey<Array<String>> MY_FAVORITE_CITIES = new ValueKey.Builder<>(() ->
+			new Array<>(String.class, () -> "(none)"))
+			.build();
 
 	@Override
-	public @NotNull ConfigSerializer<Map<String, TomlElement>> getSerializer() {
-		return TomlSerializer.INSTANCE;
+	public @NotNull ConfigSerializer<JsonObject> getSerializer() {
+		return GsonSerializer.DEFAULT;
 	}
 
 	@Override
 	public @NotNull SaveType getSaveType() {
-		return FabricSaveTypes.LEVEL;
+		return FabricSaveTypes.USER;
 	}
 
 	@Override
 	public @NotNull String getName() {
-		return "config3";
-	}
-
-	@Override
-	public void addConfigValues(@NotNull ConfigValueCollector collector) {
-		collector.addConfigValue(MY_FAVORITE_NUMBER, "favorite_number");
-		collector.addConfigValue(MY_FAVORITE_FRUIT, "favorite_fruit");
-		collector.addConfigValue(MY_FAVORITE_CITIES, "favorite_cities");
-
-		for (int i = 0; i < 10; ++i) {
-			collector.addConfigValue(new ValueKey.Builder<>(() -> 0).build(), "test", "value" + i);
-		}
+		return "config2";
 	}
 
 	@Override

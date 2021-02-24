@@ -34,7 +34,7 @@ import net.minecraft.world.World;
 
 import net.fabricmc.fabric.test.config.Color;
 import net.fabricmc.loader.api.config.util.Table;
-import net.fabricmc.fabric.test.config.ConfigTest;
+import net.fabricmc.fabric.test.config.UserConfigTest;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity {
@@ -46,12 +46,12 @@ public abstract class PlayerEntityMixin extends LivingEntity {
 	private void setNameColor(CallbackInfoReturnable<Text> cir) {
 		if (this.getScoreboardTeam() == null) {
 			MutableText text = ((MutableText) cir.getReturnValue()).styled(style -> style.withColor(TextColor.fromRgb(
-					ConfigTest.MY_FAVORITE_COLOR.getValue(this.getUuid()).value
+					UserConfigTest.MY_FAVORITE_COLOR.getValue(this.getUuid()).value
 			)));
 
 			MutableText tags = new LiteralText("");
 
-			for (Table.Entry<String, Color> entry : ConfigTest.TAGS.getValue(this.getUuid())) {
+			for (Table.Entry<String, Color> entry : UserConfigTest.TAGS.getValue(this.getUuid())) {
 				tags.append(new LiteralText("[").styled(style -> Style.EMPTY)
 						.append(new LiteralText(entry.getKey())
 								.styled(style -> style.withColor(TextColor.fromRgb(entry.getValue().value))))

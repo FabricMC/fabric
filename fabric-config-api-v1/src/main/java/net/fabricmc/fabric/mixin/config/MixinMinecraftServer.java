@@ -46,15 +46,14 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.SaveProperties;
 import net.minecraft.world.level.storage.LevelStorage;
 
+import net.fabricmc.fabric.impl.config.networking.ConfigNetworking;
 import net.fabricmc.fabric.api.config.v1.ClientUtil;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
-import net.fabricmc.loader.api.config.ConfigDefinition;
 import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.loader.api.config.value.ValueContainerProvider;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.config.ConfigValueSender;
-import net.fabricmc.fabric.impl.config.SyncConfigValuesImpl;
 
 @Mixin(MinecraftServer.class)
 public abstract class MixinMinecraftServer implements ValueContainerProvider, ConfigValueSender {
@@ -63,7 +62,7 @@ public abstract class MixinMinecraftServer implements ValueContainerProvider, Co
 
 	@Unique private Map<UUID, ValueContainer> playerValueContainers;
 	@Unique private ValueContainer valueContainer;
-	@Unique private Map<UUID, Map<ConfigDefinition, PacketByteBuf>> cachedConfigPackets;
+	@Unique private Map<UUID, Map<String, PacketByteBuf>> cachedConfigPackets;
 
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
@@ -93,12 +92,12 @@ public abstract class MixinMinecraftServer implements ValueContainerProvider, Co
 	}
 
 	@Override
-	public <R> void send(ConfigDefinition<R> configDefinition, ServerPlayerEntity except, PacketByteBuf peerBuf) {
+	public <R> void send(String configDefinition, ServerPlayerEntity except, PacketByteBuf peerBuf) {
 		cachedConfigPackets.compute(except.getUuid(), (k, v) -> new HashMap<>()).put(configDefinition, peerBuf);
 
 		PlayerLookup.all(((MinecraftServer) (Object) this)).forEach(player -> {
 			if (player != except) {
-				ServerPlayNetworking.send(player, SyncConfigValuesImpl.USER_CONFIG_VALUES, peerBuf);
+				ServerPlayNetworking.send(player, ConfigNetworking.USER_CONFIG, peerBuf);
 			}
 		});
 	}
@@ -110,10 +109,10 @@ public abstract class MixinMinecraftServer implements ValueContainerProvider, Co
 
 	@Override
 	public void sendCached(ServerPlayerEntity player) {
-		for (Map.Entry<UUID, Map<ConfigDefinition, PacketByteBuf>> entry : cachedConfigPackets.entrySet()) {
+		for (Map.Entry<UUID, Map<String, PacketByteBuf>> entry : cachedConfigPackets.entrySet()) {
 			if (!entry.getKey().equals(player.getUuid())) {
 				entry.getValue().values().forEach(buf -> {
-					ServerPlayNetworking.send(player, SyncConfigValuesImpl.USER_CONFIG_VALUES, buf);
+					ServerPlayNetworking.send(player, ConfigNetworking.USER_CONFIG, buf);
 				});
 			}
 		}

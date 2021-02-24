@@ -65,8 +65,10 @@ public class GsonSerializer extends AbstractTreeSerializer<JsonElement, JsonObje
 
 	@Override
 	public @Nullable SemanticVersion getVersion(InputStream inputStream) throws IOException, VersionParsingException {
-		String s = this.getRepresentation(inputStream).get("version").getAsString();
-		return s == null ? null : SemanticVersion.parse(s);
+		JsonElement s = this.getRepresentation(inputStream).get("version");
+		return s != null && s.isJsonPrimitive() && s.getAsJsonPrimitive().isString()
+				? SemanticVersion.parse(s.getAsString())
+				: null;
 	}
 
 	@Override

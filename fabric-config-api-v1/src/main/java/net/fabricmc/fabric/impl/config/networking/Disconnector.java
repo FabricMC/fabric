@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.config;
+package net.fabricmc.fabric.impl.config.networking;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 
-public interface ConfigValueSender {
-	<R> void send(String configDefinition, ServerPlayerEntity except, PacketByteBuf peerBuf);
-	void sendCached(ServerPlayerEntity player);
-	void drop(ServerPlayerEntity player);
+public interface Disconnector {
+	void config_disconnect(Text text);
 }

@@ -33,6 +33,7 @@ import net.minecraft.client.network.ServerInfo;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.config.SaveType;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
 import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.loader.api.config.value.ValueContainerProvider;
@@ -46,7 +47,7 @@ public class MixinServerInfo implements ValueContainerProvider {
 	@Inject(method = "<init>", at = @At("TAIL"))
 	private void init(String name, String address, boolean local, CallbackInfo ci) {
 		this.playerValueContainers = new HashMap<>();
-		this.valueContainer = ValueContainer.of(null, FabricSaveTypes.USER);
+		this.valueContainer = ValueContainer.of(null, FabricSaveTypes.LEVEL, SaveType.ROOT);
 	}
 
 	@Override

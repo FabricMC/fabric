@@ -22,10 +22,10 @@
   "description": "Hooks for registering and dealing with configs.",
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.impl.config.SyncConfigValuesImpl"
+      "net.fabricmc.fabric.impl.config.networking.ConfigNetworking"
     ],
     "client": [
-      "net.fabricmc.fabric.impl.config.SyncConfigValuesImpl"
+      "net.fabricmc.fabric.impl.config.networking.ConfigNetworking"
     ],
     "config": [
       "net.fabricmc.fabric.impl.config.MinecraftConfigEnvironment"

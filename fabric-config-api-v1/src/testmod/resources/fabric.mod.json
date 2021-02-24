@@ -10,10 +10,8 @@
   },
   "entrypoints": {
     "config": [
-      "net.fabricmc.fabric.test.config.ConfigTest",
-      "net.fabricmc.fabric.test.config.ConfigTest2",
-      "net.fabricmc.fabric.test.config.ConfigTest3",
-      "net.fabricmc.fabric.test.config.ConfigTest4"
+      "net.fabricmc.fabric.test.config.LevelConfigTest",
+      "net.fabricmc.fabric.test.config.UserConfigTest"
     ]
   },
   "mixins": [

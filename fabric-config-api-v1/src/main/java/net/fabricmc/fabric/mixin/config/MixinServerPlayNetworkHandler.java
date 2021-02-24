@@ -14,7 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.config.v1;
+package net.fabricmc.fabric.mixin.config;
 
-public class FabricConfigFlags {
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.text.Text;
+
+import net.fabricmc.fabric.impl.config.networking.Disconnector;
+
+@Mixin(ServerPlayNetworkHandler.class)
+public abstract class MixinServerPlayNetworkHandler implements Disconnector {
+	@Shadow
+	public abstract void disconnect(Text reason);
+
+	@Override
+	public void config_disconnect(Text text) {
+		this.disconnect(text);
+	}
 }

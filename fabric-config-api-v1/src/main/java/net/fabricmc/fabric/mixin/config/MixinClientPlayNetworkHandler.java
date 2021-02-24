@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.impl.config;
+package net.fabricmc.fabric.mixin.config;
 
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.server.network.ServerPlayerEntity;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 
-public interface ConfigValueSender {
-	<R> void send(String configDefinition, ServerPlayerEntity except, PacketByteBuf peerBuf);
-	void sendCached(ServerPlayerEntity player);
-	void drop(ServerPlayerEntity player);
+import net.minecraft.client.network.ClientPlayNetworkHandler;
+import net.minecraft.text.Text;
+
+import net.fabricmc.fabric.impl.config.networking.Disconnector;
+
+@Mixin(ClientPlayNetworkHandler.class)
+public abstract class MixinClientPlayNetworkHandler implements Disconnector {
+	@Shadow
+	public abstract void onDisconnected(Text reason);
+
+	@Override
+	public void config_disconnect(Text text) {
+		this.onDisconnected(text);
+	}
 }
