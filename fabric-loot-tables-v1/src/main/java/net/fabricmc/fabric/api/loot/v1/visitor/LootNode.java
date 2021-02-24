@@ -220,4 +220,18 @@ public interface LootNode {
 			visitor.visitWeatherCheckCondition(this);
 		}
 	}
+
+	interface LootFunctionNode extends LootNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+
+		}
+	}
+
+	interface ConditionalLootFunctionNode extends LootFunctionNode {
+		@Override
+		default void visit(LootTableVisitor visitor) {
+
+		}
+	}
 }
