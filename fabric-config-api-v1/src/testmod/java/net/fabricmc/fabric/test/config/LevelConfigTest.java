@@ -25,21 +25,11 @@ import net.fabricmc.loader.api.config.util.Array;
 import net.fabricmc.loader.api.config.data.DataCollector;
 import net.fabricmc.loader.api.config.data.DataType;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
-import net.fabricmc.loader.api.config.ConfigSerializer;
-import net.fabricmc.loader.api.config.SaveType;
 import net.fabricmc.loader.api.config.value.ValueKey;
+import net.fabricmc.loader.api.config.data.SaveType;
+import net.fabricmc.loader.api.config.serialization.ConfigSerializer;
 
 public class LevelConfigTest extends Config<JsonObject> {
-	public static int EASY_FIELD_ACCESSIBLE_CONFIG_VALUE;
-
-	public static final ValueKey<Integer> MY_FAVORITE_NUMBER = new ValueKey.Builder<>(() -> 7)
-			.with(new Bounds.Int(0, 10))
-			.with(DataType.COMMENT, "Like seriously, all other numbers suck.")
-			// This can be useful for contexts where the absolute minimal performance impact is required
-			// i.e. renderers like Canvas, that might access a config value several thousand times per frame
-			.with((oldValue, newValue) -> EASY_FIELD_ACCESSIBLE_CONFIG_VALUE = newValue)
-			.build();
-
 	public static final ValueKey<String> MY_FAVORITE_FRUIT = new ValueKey.Builder<>(() -> "Strawberry")
 			.build();
 
@@ -59,7 +49,7 @@ public class LevelConfigTest extends Config<JsonObject> {
 
 	@Override
 	public @NotNull String getName() {
-		return "config2";
+		return "level_config";
 	}
 
 	@Override

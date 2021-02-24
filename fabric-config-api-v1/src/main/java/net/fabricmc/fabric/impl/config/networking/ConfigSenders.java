@@ -46,10 +46,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.config.ConfigValueSender;
 import net.fabricmc.loader.api.config.ConfigDefinition;
 import net.fabricmc.loader.api.config.ConfigManager;
-import net.fabricmc.loader.api.config.ConfigSerializer;
-import net.fabricmc.loader.api.config.SaveType;
+import net.fabricmc.loader.api.config.data.SaveType;
 import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.loader.api.config.value.ValueKey;
+import net.fabricmc.loader.api.config.serialization.ConfigSerializer;
 
 public class ConfigSenders {
 	private static final Logger LOGGER = LogManager.getLogger();

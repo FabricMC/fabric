@@ -16,7 +16,7 @@
 
 package net.fabricmc.fabric.api.config.v1;
 
-import net.fabricmc.loader.api.config.SaveType;
+import net.fabricmc.loader.api.config.data.SaveType;
 
 public class FabricSaveTypes {
 	public static final SaveType USER = new SaveType("fabric", "user");

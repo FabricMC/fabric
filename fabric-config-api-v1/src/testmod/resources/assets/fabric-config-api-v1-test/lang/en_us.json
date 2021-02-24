@@ -1,7 +1,4 @@
 {
-  "fabric-config-api-v1-testmod:fancy_test/test_int.comment.1": "This is a comment",
-  "fabric-config-api-v1-testmod:fancy_test/test_int.comment.2": "This is another one",
-  "fabric-config-api-v1-testmod:fancy_test/test_int.comment.3": "This is a third comment",
-  "fabric-config-api-v1-testmod:fancy_test/test_str_array.comment.2345": "Even this array has comments!",
-  "fabric-config-api-v1-testmod:fancy_test/test_str_array.comment.151235": "So\nmany\ncomments"
+  "fabric-config-api-v1-testmod:user_config.comment": "This config was added dynamically from a lang file!",
+  "fabric-config-api-v1-testmod:user_config/my_favorite_number.comment": "Like seriously, all other numbers suck."
 }

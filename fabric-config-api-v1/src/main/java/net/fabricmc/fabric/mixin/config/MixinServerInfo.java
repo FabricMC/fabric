@@ -33,7 +33,7 @@ import net.minecraft.client.network.ServerInfo;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.config.SaveType;
+import net.fabricmc.loader.api.config.data.SaveType;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
 import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.loader.api.config.value.ValueContainerProvider;

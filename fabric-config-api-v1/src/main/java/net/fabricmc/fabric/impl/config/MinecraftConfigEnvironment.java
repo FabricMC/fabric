@@ -25,13 +25,13 @@ import net.fabricmc.loader.api.config.ConfigDefinition;
 import net.fabricmc.loader.api.config.ConfigManager;
 import net.fabricmc.loader.api.config.data.DataType;
 import net.fabricmc.loader.api.config.value.ValueKey;
-import net.fabricmc.loader.api.config.SaveType;
 import net.fabricmc.loader.api.config.entrypoint.ConfigEnvironment;
 import net.fabricmc.loader.api.config.entrypoint.ConfigPostInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.config.v1.FabricSaveTypes;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.config.value.ValueContainerProvider;
+import net.fabricmc.loader.api.config.data.SaveType;
 
 public class MinecraftConfigEnvironment implements ConfigPostInitializer, ConfigEnvironment {
 	@Override
@@ -57,6 +57,8 @@ public class MinecraftConfigEnvironment implements ConfigPostInitializer, Config
 		});
 
 		for (ConfigDefinition<?> config : ConfigManager.getConfigKeys()) {
+			config.add(DataType.COMMENT, Translator.getComments(config.toString()));
+
 			for (ValueKey<?> valueKey : config) {
 				valueKey.add(DataType.COMMENT, Translator.getComments(valueKey.toString()));
 			}

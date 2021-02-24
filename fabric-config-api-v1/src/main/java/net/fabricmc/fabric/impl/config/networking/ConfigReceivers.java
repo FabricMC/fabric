@@ -42,7 +42,7 @@ import net.fabricmc.loader.api.SemanticVersion;
 import net.fabricmc.loader.api.VersionParsingException;
 import net.fabricmc.loader.api.config.ConfigDefinition;
 import net.fabricmc.loader.api.config.ConfigManager;
-import net.fabricmc.loader.api.config.SaveType;
+import net.fabricmc.loader.api.config.data.SaveType;
 import net.fabricmc.loader.api.config.value.ValueContainer;
 import net.fabricmc.loader.api.config.value.ValueContainerProvider;
 import net.fabricmc.loader.config.ValueContainerProviders;
@@ -64,6 +64,7 @@ public class ConfigReceivers {
 		read(buf, s -> container, (Disconnector) clientPlayNetworkHandler);
 	}
 
+	@Environment(EnvType.CLIENT)
 	static <R> void receiveConfigValues(MinecraftServer server, ServerPlayerEntity sender, ServerPlayNetworkHandler handler, PacketByteBuf buf, PacketSender packetSender) {
 		buf.markReaderIndex();
 
