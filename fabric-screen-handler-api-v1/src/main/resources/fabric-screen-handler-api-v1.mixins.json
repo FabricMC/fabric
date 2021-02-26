@@ -3,8 +3,8 @@
   "package": "net.fabricmc.fabric.mixin.screenhandler",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "ServerPlayerEntityMixin",
-    "ItemStackMixin"
+    "ItemStackMixin",
+    "ServerPlayerEntityMixin"
   ],
   "client": [
   ],
