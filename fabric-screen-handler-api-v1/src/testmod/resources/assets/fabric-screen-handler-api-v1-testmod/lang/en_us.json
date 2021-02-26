@@ -1,5 +1,6 @@
 {
   "block.fabric-screen-handler-api-v1-testmod.box": "Box",
   "item.fabric-screen-handler-api-v1-testmod.bag": "Bag",
+  "item.fabric-screen-handler-api-v1-testmod.trash": "Trash",
   "item.fabric-screen-handler-api-v1-testmod.positioned_bag": "Positioned Bag"
 }

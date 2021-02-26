@@ -28,14 +28,18 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlock;
 import net.fabricmc.fabric.test.screenhandler.block.BoxBlockEntity;
+import net.fabricmc.fabric.test.screenhandler.client.TrashScreen;
 import net.fabricmc.fabric.test.screenhandler.item.BagItem;
 import net.fabricmc.fabric.test.screenhandler.item.PositionedBagItem;
+import net.fabricmc.fabric.test.screenhandler.item.TrashItem;
 import net.fabricmc.fabric.test.screenhandler.screen.BagScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.BoxScreenHandler;
 import net.fabricmc.fabric.test.screenhandler.screen.PositionedBagScreenHandler;
+import net.fabricmc.fabric.test.screenhandler.screen.TrashScreenHandler;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 
 public class ScreenHandlerTest implements ModInitializer {
@@ -43,12 +47,14 @@ public class ScreenHandlerTest implements ModInitializer {
 
 	public static final Item BAG = new BagItem(new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
 	public static final Item POSITIONED_BAG = new PositionedBagItem(new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
+	public static final Item TRASH = new TrashItem(new Item.Settings().group(ItemGroup.TOOLS).maxCount(1));
 	public static final Block BOX = new BoxBlock(AbstractBlock.Settings.copy(Blocks.OAK_WOOD));
 	public static final Item BOX_ITEM = new BlockItem(BOX, new Item.Settings().group(ItemGroup.DECORATIONS));
 	public static final BlockEntityType<BoxBlockEntity> BOX_ENTITY = FabricBlockEntityTypeBuilder.create(BoxBlockEntity::new, BOX).build();
 	public static final ScreenHandlerType<BagScreenHandler> BAG_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(id("bag"), BagScreenHandler::new);
 	public static final ScreenHandlerType<PositionedBagScreenHandler> POSITIONED_BAG_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(id("positioned_bag"), PositionedBagScreenHandler::new);
 	public static final ScreenHandlerType<BoxScreenHandler> BOX_SCREEN_HANDLER = ScreenHandlerRegistry.registerExtended(id("box"), BoxScreenHandler::new);
+	public static final ScreenHandlerType<TrashScreenHandler> TRASH_SCREEN_HANDLER = ScreenHandlerRegistry.registerSimple(id("trash"), TrashScreenHandler::new);
 
 	public static Identifier id(String path) {
 		return new Identifier(ID, path);
@@ -58,8 +64,10 @@ public class ScreenHandlerTest implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(Registry.ITEM, id("bag"), BAG);
 		Registry.register(Registry.ITEM, id("positioned_bag"), POSITIONED_BAG);
+		Registry.register(Registry.ITEM, id("trash"), TRASH);
 		Registry.register(Registry.BLOCK, id("box"), BOX);
 		Registry.register(Registry.ITEM, id("box"), BOX_ITEM);
 		Registry.register(Registry.BLOCK_ENTITY_TYPE, id("box"), BOX_ENTITY);
+		ScreenRegistry.register(TRASH_SCREEN_HANDLER, TrashScreen::new);
 	}
 }
