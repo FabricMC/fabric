@@ -29,14 +29,15 @@ import net.fabricmc.fabric.api.screenhandler.v1.SlotWithClickAction;
 import net.fabricmc.fabric.test.screenhandler.ScreenHandlerTest;
 
 public class TrashScreenHandler extends ScreenHandler {
-
 	public TrashScreenHandler(int syncId, PlayerInventory playerInventory) {
 		super(ScreenHandlerTest.TRASH_SCREEN_HANDLER, syncId);
 		this.addSlot(new TrashSlot(new SimpleInventory(1), 0, 80, 20));
+
 		for (int x = 0; x < 9; x++) {
 			for (int y = 0; y < 3; y++) {
 				this.addSlot(new Slot(playerInventory, x + y * 9 + 9, 8 + x * 18, 51 + y * 18));
 			}
+
 			this.addSlot(new Slot(playerInventory, x, 8 + x * 18, 109));
 		}
 	}
@@ -47,8 +48,7 @@ public class TrashScreenHandler extends ScreenHandler {
 	}
 
 	class TrashSlot extends Slot implements SlotWithClickAction {
-
-		public TrashSlot(Inventory inventory, int index, int x, int y) {
+		TrashSlot(Inventory inventory, int index, int x, int y) {
 			super(inventory, index, x, y);
 		}
 
