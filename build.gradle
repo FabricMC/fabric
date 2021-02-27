@@ -118,12 +118,14 @@ allprojects {
 		runs {
 			testmodClient {
 				client()
-				ideConfigGenerated false
+				ideConfigGenerated project.rootProject == project
+				name = "Testmod Client"
 				source sourceSets.testmod
 			}
 			testmodServer {
 				server()
-				ideConfigGenerated false
+				ideConfigGenerated project.rootProject == project
+				name = "Testmod Server"
 				source sourceSets.testmod
 			}
 		}
