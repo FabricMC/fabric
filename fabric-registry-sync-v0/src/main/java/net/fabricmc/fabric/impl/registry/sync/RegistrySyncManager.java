@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +56,7 @@ public final class RegistrySyncManager {
 	static final Identifier ID = new Identifier("fabric", "registry/sync");
 	private static final Logger LOGGER = LogManager.getLogger("FabricRegistrySync");
 	private static final boolean DEBUG_WRITE_REGISTRY_DATA = System.getProperty("fabric.registry.debug.writeContentsAsCsv", "false").equalsIgnoreCase("true");
+	private static final Map<Registry<?>, Set<Identifier>> SERVER_ONLY_REGISTRY_IDS = new HashMap<>();
 
 	//Set to true after vanilla's bootstrap has completed
 	public static boolean postBootstrap = false;
@@ -213,6 +217,15 @@ public final class RegistrySyncManager {
 						}
 					}
 
+					if (isClientSync) {
+						Set<Identifier> idsToSkip = SERVER_ONLY_REGISTRY_IDS.get(registry);
+
+						if (idsToSkip != null && idsToSkip.contains(id))  {
+							LOGGER.warn("[fabric-registry-sync] Not syncing " + id + " in " + registry + " to the client as it is was registered server only.");
+							continue;
+						}
+					}
+
 					registryTag.putInt(id.toString(), rawId);
 				}
 
@@ -303,5 +316,15 @@ public final class RegistrySyncManager {
 
 	public static void bootstrapRegistries() {
 		postBootstrap = true;
+	}
+
+	public static void addServerOnlyRegistryId(Registry<?> registry, Identifier identifier) {
+		Set<Identifier> identifiers = SERVER_ONLY_REGISTRY_IDS.computeIfAbsent(registry, (r) -> new HashSet<>());
+
+		if (identifiers.contains(identifier)) {
+			throw new IllegalStateException(identifier + " has already been been marked as server only in " + registry);
+		}
+
+		identifiers.add(identifier);
 	}
 }
