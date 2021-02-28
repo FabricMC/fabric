@@ -36,19 +36,19 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(targets = "net/minecraft/server/network/ServerPlayNetworkHandler$1")
 public abstract class MixinServerPlayNetworkHandler implements PlayerInteractEntityC2SPacket.class_5908 {
-	@Shadow(aliases = {"field_28963"})
-	public ServerPlayNetworkHandler serverPlayNetworkHandler;
+	@Shadow
+	public ServerPlayNetworkHandler field_28963;
 
-	@Shadow(aliases = {"field_28962"})
-	public Entity entity;
+	@Shadow
+	public Entity field_28962;
 
 	@Inject(method = "method_34220", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Hand hand, Vec3d hitPosition, CallbackInfo info) {
-		PlayerEntity player = serverPlayNetworkHandler.player;
+		PlayerEntity player = field_28963.player;
 		World world = player.getEntityWorld();
 
-		EntityHitResult hitResult = new EntityHitResult(entity, hitPosition.add(entity.getX(), entity.getY(), entity.getZ()));
-		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, entity, hitResult);
+		EntityHitResult hitResult = new EntityHitResult(field_28962, hitPosition.add(field_28962.getX(), field_28962.getY(), field_28962.getZ()));
+		ActionResult result = UseEntityCallback.EVENT.invoker().interact(player, world, hand, field_28962, hitResult);
 
 		if (result != ActionResult.PASS) {
 			info.cancel();
