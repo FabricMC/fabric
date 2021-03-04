@@ -18,6 +18,7 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
+import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
@@ -25,6 +26,7 @@ import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
 public final class FabricItemInternals {
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
+	private static int fuelCookTime = -1;
 
 	private FabricItemInternals() {
 	}
@@ -33,12 +35,20 @@ public final class FabricItemInternals {
 		return extraData.computeIfAbsent(settings, s -> new ExtraData());
 	}
 
+	public static void setFuelCookTime(int cookTime) {
+		fuelCookTime = cookTime;
+	}
+
 	public static void onBuild(Item.Settings settings, Item item) {
 		ExtraData data = extraData.get(settings);
 
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
+		}
+
+		if (fuelCookTime != -1) {
+			FuelRegistry.INSTANCE.add(item, fuelCookTime);
 		}
 	}
 

@@ -53,6 +53,18 @@ public class FabricItemSettings extends Item.Settings {
 		return this;
 	}
 
+	/**
+	 * Sets this item as a fuel, with a provided {@code cookTime}.
+	 *
+	 * @param cookTime the number of ticks before this item will be consumed in a furnace
+	 * @return this builder
+	 * @see net.fabricmc.fabric.api.registry.FuelRegistry
+	 */
+	public FabricItemSettings fuel(int cookTime) {
+		FabricItemInternals.setFuelCookTime(cookTime);
+		return this;
+	}
+
 	// Overrides of vanilla methods
 
 	@Override
