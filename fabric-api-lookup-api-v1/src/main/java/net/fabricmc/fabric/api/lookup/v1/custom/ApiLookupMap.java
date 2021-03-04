@@ -100,7 +100,7 @@ public interface ApiLookupMap<L> extends Iterable<L> {
 	 * @param lookupFactory The factory that is used to create API lookup instances.
 	 */
 	static <L> ApiLookupMap<L> create(LookupFactory<L> lookupFactory) {
-		Objects.requireNonNull(lookupFactory, "Lookup factory cannot be null");
+		Objects.requireNonNull(lookupFactory, "Lookup factory may not be null.");
 
 		return new ApiLookupMapImpl<>(lookupFactory);
 	}
