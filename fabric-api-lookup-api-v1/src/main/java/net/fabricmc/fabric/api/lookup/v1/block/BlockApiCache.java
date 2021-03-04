@@ -68,11 +68,11 @@ public interface BlockApiCache<A, C> {
 	 * Create a new instance bound to the passed {@link ServerWorld} and position, and querying the same API as the passed lookup.
 	 */
 	static <A, C> BlockApiCache<A, C> create(BlockApiLookup<A, C> lookup, ServerWorld world, BlockPos pos) {
-		Objects.requireNonNull(pos, "Pos cannot be null");
-		Objects.requireNonNull(world, "World cannot be null");
+		Objects.requireNonNull(pos, "BlockPos may not be null.");
+		Objects.requireNonNull(world, "ServerWorld may not be null.");
 
 		if (!(lookup instanceof BlockApiLookupImpl)) {
-			throw new IllegalArgumentException("Cannot cache foreign implementation of BlockApiLookup. Use `BlockApiLookup#get(Identifier, Class<A>, Class<C>);` to get the block API lookup.");
+			throw new IllegalArgumentException("Cannot cache foreign implementation of BlockApiLookup. Use `BlockApiLookup#get(Identifier, Class<A>, Class<C>);` to get instances.");
 		}
 
 		return new BlockApiCacheImpl<>((BlockApiLookupImpl<A, C>) lookup, world, pos);

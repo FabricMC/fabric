@@ -59,8 +59,8 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	@Nullable
 	@Override
 	public A find(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
-		Objects.requireNonNull(world, "World cannot be null");
-		Objects.requireNonNull(pos, "Pos cannot be null");
+		Objects.requireNonNull(world, "World may not be null.");
+		Objects.requireNonNull(pos, "BlockPos may not be null.");
 		// Providers have the final say whether a null context is allowed.
 
 		// Get the block state and the block entity
@@ -105,11 +105,9 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void registerSelf(BlockEntityType<?>... blockEntityTypes) {
-		Objects.requireNonNull(blockEntityTypes, "BlockEntityType... cannot be null");
-
 		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
 			BlockEntity blockEntity = blockEntityType.instantiate();
-			Objects.requireNonNull(blockEntity, "Instantiated block entity cannot be null");
+			Objects.requireNonNull(blockEntity, "Instantiated block entity may not be null.");
 
 			if (!apiClass.isAssignableFrom(blockEntity.getClass())) {
 				String errorMessage = String.format(
@@ -126,15 +124,14 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 
 	@Override
 	public void registerForBlocks(BlockApiProvider<A, C> provider, Block... blocks) {
-		Objects.requireNonNull(provider, "BlockApiProvider cannot be null");
-		Objects.requireNonNull(blocks, "Block... cannot be null");
+		Objects.requireNonNull(provider, "BlockApiProvider may not be null.");
 
 		if (blocks.length == 0) {
-			throw new IllegalArgumentException("Must register at least one Block instance with a BlockApiProvider");
+			throw new IllegalArgumentException("Must register at least one Block instance with a BlockApiProvider.");
 		}
 
 		for (Block block : blocks) {
-			Objects.requireNonNull(block, "Encountered null block while registering a block API provider mapping");
+			Objects.requireNonNull(block, "Encountered null block while registering a block API provider mapping.");
 
 			if (providerMap.putIfAbsent(block, provider) != null) {
 				LOGGER.warn("Encountered duplicate API provider registration for block: " + Registry.BLOCK.getId(block));
@@ -144,11 +141,10 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 
 	@Override
 	public void registerForBlockEntities(BlockEntityApiProvider<A, C> provider, BlockEntityType<?>... blockEntityTypes) {
-		Objects.requireNonNull(provider, "BlockApiProvider cannot be null");
-		Objects.requireNonNull(blockEntityTypes, "BlockEntityType... cannot be null");
+		Objects.requireNonNull(provider, "BlockEntityApiProvider may not be null.");
 
 		if (blockEntityTypes.length == 0) {
-			throw new IllegalArgumentException("Must register at least one BlockEntityType instance with a BlockEntityApiProvider");
+			throw new IllegalArgumentException("Must register at least one BlockEntityType instance with a BlockEntityApiProvider.");
 		}
 
 		BlockApiProvider<A, C> nullCheckedProvider = (world, pos, state, blockEntity, context) -> {
@@ -160,7 +156,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		};
 
 		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
-			Objects.requireNonNull(blockEntityType, "Encountered null block entity type while registering a block entity API provider mapping");
+			Objects.requireNonNull(blockEntityType, "Encountered null block entity type while registering a block entity API provider mapping.");
 
 			Block[] blocks = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().toArray(new Block[0]);
 			registerForBlocks(nullCheckedProvider, blocks);
@@ -169,7 +165,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 
 	@Override
 	public void registerFallback(BlockApiProvider<A, C> fallbackProvider) {
-		Objects.requireNonNull(fallbackProvider, "BlockApiProvider cannot be null");
+		Objects.requireNonNull(fallbackProvider, "BlockApiProvider may not be null.");
 
 		fallbackProviders.add(fallbackProvider);
 	}
