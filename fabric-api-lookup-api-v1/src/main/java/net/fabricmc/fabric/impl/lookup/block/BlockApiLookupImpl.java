@@ -59,7 +59,8 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	@Nullable
 	@Override
 	public A find(World world, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity, C context) {
-		// This call checks for null world and pos.
+		Objects.requireNonNull(world, "World cannot be null");
+		Objects.requireNonNull(pos, "Pos cannot be null");
 		// Providers have the final say whether a null context is allowed.
 
 		// Get the block state and the block entity
@@ -133,7 +134,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 		}
 
 		for (Block block : blocks) {
-			Objects.requireNonNull(block, "encountered null block while registering a block API provider mapping");
+			Objects.requireNonNull(block, "Encountered null block while registering a block API provider mapping");
 
 			if (providerMap.putIfAbsent(block, provider) != null) {
 				LOGGER.warn("Encountered duplicate API provider registration for block: " + Registry.BLOCK.getId(block));
