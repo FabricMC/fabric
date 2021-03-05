@@ -20,7 +20,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-content-registries-v0": "*"
   },
   "description": "Hooks for items",
   "custom": {

@@ -41,8 +41,8 @@ public final class FabricItemInternals {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
 
-			if (data.fuelCookTime != -1) {
-				FuelRegistry.INSTANCE.add(item, data.fuelCookTime);
+			if (data.fuelBurnTime != -1) {
+				FuelRegistry.INSTANCE.add(item, data.fuelBurnTime);
 			}
 		}
 	}
@@ -50,7 +50,7 @@ public final class FabricItemInternals {
 	public static final class ExtraData {
 		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
 		private /* @Nullable */ CustomDamageHandler customDamageHandler;
-		private int fuelCookTime = -1;
+		private int fuelBurnTime = -1;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
@@ -60,8 +60,8 @@ public final class FabricItemInternals {
 			this.customDamageHandler = handler;
 		}
 
-		public void fuel(int cookTime) {
-			this.fuelCookTime = cookTime;
+		public void fuel(int burnTime) {
+			this.fuelBurnTime = burnTime;
 		}
 	}
 }
