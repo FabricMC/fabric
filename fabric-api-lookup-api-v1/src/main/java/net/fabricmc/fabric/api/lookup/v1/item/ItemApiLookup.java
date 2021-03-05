@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.api.lookup.v1.item;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.util.Identifier;
@@ -23,6 +24,7 @@ import net.minecraft.item.ItemConvertible;
 
 import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 
+@ApiStatus.NonExtendable
 public interface ItemApiLookup<A, C> {
 	static <A, C> ItemApiLookup<A, C> get(Identifier lookupId, Class<A> apiClass, Class<C> contextClass) {
 		return ItemApiLookupImpl.get(lookupId, apiClass, contextClass);

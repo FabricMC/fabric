@@ -18,6 +18,8 @@ package net.fabricmc.fabric.impl.lookup.item;
 
 import java.util.Objects;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
@@ -41,6 +43,8 @@ public class ItemKeyImpl implements ItemKey {
 			return new ItemKeyImpl(item, tag);
 		}
 	}
+
+	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/item");
 
 	private final Item item;
 	private final @Nullable CompoundTag tag;
@@ -111,25 +115,35 @@ public class ItemKeyImpl implements ItemKey {
 	}
 
 	public static ItemKey fromNbt(CompoundTag tag) {
-		if (tag == null) {
-			return ItemKey.EMPTY;
+		try {
+			Item item = Registry.ITEM.get(new Identifier(tag.getString("item")));
+			CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
+			return of(item, aTag);
+		} catch (RuntimeException runtimeException) {
+			LOGGER.debug("Tried to load an invalid ItemKey from NBT: {}", tag, runtimeException);
+			return ItemKey.empty();
 		}
-
-		Item item = Registry.ITEM.get(new Identifier(tag.getString("item")));
-		CompoundTag aTag = tag.contains("tag") ? tag.getCompound("tag") : null;
-		return of(item, aTag);
 	}
 
 	@Override
 	public void toPacket(PacketByteBuf buf) {
-		buf.writeVarInt(Registry.ITEM.getRawId(item));
-		buf.writeCompoundTag(tag);
+		if (isEmpty()) {
+			buf.writeBoolean(false);
+		} else {
+			buf.writeBoolean(true);
+			buf.writeVarInt(Item.getRawId(item));
+			buf.writeCompoundTag(tag);
+		}
 	}
 
 	public static ItemKey fromPacket(PacketByteBuf buf) {
-		Item item = Registry.ITEM.get(buf.readVarInt());
-		CompoundTag tag = buf.readCompoundTag();
-		return of(item, tag);
+		if (!buf.readBoolean()) {
+			return ItemKey.empty();
+		} else {
+			Item item = Item.byRawId(buf.readVarInt());
+			CompoundTag tag = buf.readCompoundTag();
+			return of(item, tag);
+		}
 	}
 
 	@Override
