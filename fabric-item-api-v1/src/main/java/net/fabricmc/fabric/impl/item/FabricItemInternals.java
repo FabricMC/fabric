@@ -26,7 +26,6 @@ import net.fabricmc.fabric.api.registry.FuelRegistry;
 
 public final class FabricItemInternals {
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
-	private static int fuelCookTime = -1;
 
 	private FabricItemInternals() {
 	}
@@ -35,26 +34,23 @@ public final class FabricItemInternals {
 		return extraData.computeIfAbsent(settings, s -> new ExtraData());
 	}
 
-	public static void setFuelCookTime(int cookTime) {
-		fuelCookTime = cookTime;
-	}
-
 	public static void onBuild(Item.Settings settings, Item item) {
 		ExtraData data = extraData.get(settings);
 
 		if (data != null) {
 			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
 			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
-		}
 
-		if (fuelCookTime != -1) {
-			FuelRegistry.INSTANCE.add(item, fuelCookTime);
+			if (data.fuelCookTime != -1) {
+				FuelRegistry.INSTANCE.add(item, data.fuelCookTime);
+			}
 		}
 	}
 
 	public static final class ExtraData {
 		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
 		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		private int fuelCookTime = -1;
 
 		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
 			this.equipmentSlotProvider = equipmentSlotProvider;
@@ -62,6 +58,10 @@ public final class FabricItemInternals {
 
 		public void customDamage(CustomDamageHandler handler) {
 			this.customDamageHandler = handler;
+		}
+
+		public void fuel(int cookTime) {
+			this.fuelCookTime = cookTime;
 		}
 	}
 }

@@ -61,7 +61,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @see net.fabricmc.fabric.api.registry.FuelRegistry
 	 */
 	public FabricItemSettings fuel(int cookTime) {
-		FabricItemInternals.setFuelCookTime(cookTime);
+		FabricItemInternals.computeExtraData(this).fuel(cookTime);
 		return this;
 	}
 
