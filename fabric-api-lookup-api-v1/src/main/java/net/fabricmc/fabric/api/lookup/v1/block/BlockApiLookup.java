@@ -100,7 +100,7 @@ import net.fabricmc.fabric.impl.lookup.block.BlockApiLookupImpl;
  * });
  *
  * // General fallback, to interface with anything, for example another BlockApiLookup.
- * MyApi.FLUID_CONTAINER.registerBlockFallback((world, pos, state, blockEntity, direction) -> {
+ * MyApi.FLUID_CONTAINER.registerFallback((world, pos, state, blockEntity, direction) -> {
  *     // return something if available, or null
  * });}</pre>
  *
