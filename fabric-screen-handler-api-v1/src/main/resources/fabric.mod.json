@@ -18,7 +18,7 @@
   "depends": {
     "fabricloader": ">=0.8.0",
     "fabric-api-base": "*",
-    "fabric-networking-v0": "*"
+    "fabric-networking-api-v1": "*"
   },
   "entrypoints": {
     "client": ["net.fabricmc.fabric.impl.screenhandler.client.ClientNetworking"]
@@ -27,5 +27,8 @@
   "mixins": [
     "fabric-screen-handler-api-v1.mixins.json"
   ],
-  "accessWidener": "fabric-screen-handler-api-v1.accesswidener"
+  "accessWidener": "fabric-screen-handler-api-v1.accesswidener",
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

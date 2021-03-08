@@ -15,12 +15,21 @@
   "authors": [
     "FabricMC"
   ],
+  "entrypoints": {
+    "main": [
+      "net.fabricmc.fabric.impl.networking.OldNetworkingHooks"
+    ],
+    "client": [
+      "net.fabricmc.fabric.impl.networking.OldClientNetworkingHooks"
+    ]
+  },
   "depends": {
     "fabricloader": ">=0.4.0",
-    "fabric-api-base": "*"
+    "fabric-api-base": "*",
+    "fabric-networking-api-v1": "*"
   },
-  "description": "Networking packet hooks and registries.",
-  "mixins": [
-    "fabric-networking-v0.mixins.json"
-  ]
+  "description": "Legacy Networking packet hooks and registries, superseded by fabric-networking-api-v1.",
+  "custom": {
+    "fabric-api:module-lifecycle": "deprecated"
+  }
 }

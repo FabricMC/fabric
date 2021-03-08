@@ -28,6 +28,8 @@ import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 
 /**
  * This defines the instance made available to models for buffering vertex data at render time.
+ *
+ * <p>Only the renderer should implement or extend this interface.
  */
 public interface RenderContext {
 	/**
@@ -70,8 +72,6 @@ public interface RenderContext {
 	 *
 	 * <p>Meshes are never mutated by the transformer - only buffered quads. This ensures thread-safe
 	 * use of meshes/models across multiple chunk builders.
-	 *
-	 * <p>Only the renderer should implement or extend this interface.
 	 */
 	void pushTransform(QuadTransform transform);
 

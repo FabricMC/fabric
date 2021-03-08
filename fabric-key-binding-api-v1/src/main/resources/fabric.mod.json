@@ -21,5 +21,8 @@
   "description": "Key Binding registry API.",
   "mixins": [
     "fabric-key-binding-api-v1.mixins.json"
-  ]
+  ],
+  "custom": {
+    "fabric-api:module-lifecycle": "stable"
+  }
 }

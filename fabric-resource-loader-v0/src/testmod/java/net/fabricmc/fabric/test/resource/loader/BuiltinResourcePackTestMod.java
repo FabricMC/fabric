@@ -23,6 +23,7 @@ import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.loader.api.FabricLoader;
 
 public class BuiltinResourcePackTestMod implements ModInitializer {
@@ -34,7 +35,8 @@ public class BuiltinResourcePackTestMod implements ModInitializer {
 	public void onInitialize() {
 		// Should always be present as it's **this** mod.
 		FabricLoader.getInstance().getModContainer(MODID)
-				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test"), "resourcepacks/test", container, false))
+				.map(container -> ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MODID, "test"),
+						container, ResourcePackActivationType.NORMAL))
 				.filter(success -> !success).ifPresent(success -> LOGGER.warn("Could not register built-in resource pack."));
 	}
 }

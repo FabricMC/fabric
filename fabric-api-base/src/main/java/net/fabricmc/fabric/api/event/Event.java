@@ -28,7 +28,7 @@ public abstract class Event<T> {
 	 * always refer to an instance containing all code that should be
 	 * executed upon event emission.
 	 */
-	protected T invoker;
+	protected volatile T invoker;
 
 	/**
 	 * Returns the invoker instance.
