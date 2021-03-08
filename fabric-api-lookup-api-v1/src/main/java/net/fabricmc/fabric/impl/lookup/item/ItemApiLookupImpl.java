@@ -32,7 +32,6 @@ import net.minecraft.util.registry.Registry;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiLookupMap;
 import net.fabricmc.fabric.api.lookup.v1.custom.ApiProviderMap;
 import net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup;
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
 
 public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	private static final Logger LOGGER = LogManager.getLogger("fabric-api-lookup-api-v1/item");
@@ -53,14 +52,14 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	}
 
 	@Override
-	public @Nullable A find(ItemKey itemKey, C context) {
-		Objects.requireNonNull(itemKey, "ItemKey cannot be null");
+	public @Nullable A find(Item item, C context) {
+		Objects.requireNonNull(item, "Item may not be null.");
 
 		@Nullable
-		ItemApiProvider<A, C> provider = providerMap.get(itemKey.getItem());
+		ItemApiProvider<A, C> provider = providerMap.get(item);
 
 		if (provider != null) {
-			A instance = provider.find(itemKey, context);
+			A instance = provider.find(item, context);
 
 			if (instance != null) {
 				return instance;
@@ -68,7 +67,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		}
 
 		for (ItemApiProvider<A, C> fallbackProvider : fallbackProviders) {
-			A instance = fallbackProvider.find(itemKey, context);
+			A instance = fallbackProvider.find(item, context);
 
 			if (instance != null) {
 				return instance;
@@ -94,12 +93,12 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 			}
 		}
 
-		registerForItems((key, context) -> (A) key.getItem(), items);
+		registerForItems((item, context) -> (A) item, items);
 	}
 
 	@Override
 	public void registerForItems(ItemApiProvider<A, C> provider, ItemConvertible... items) {
-		Objects.requireNonNull(provider, "ItemApiProvider cannot be null");
+		Objects.requireNonNull(provider, "ItemApiProvider may not be null.");
 
 		if (items.length == 0) {
 			throw new IllegalArgumentException("Must register at least one ItemConvertible instance with an ItemApiProvider.");
@@ -116,9 +115,9 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	}
 
 	@Override
-	public void registerFallback(ItemApiProvider<A, C> provider) {
-		Objects.requireNonNull(provider, "ItemApiProvider cannot be null");
+	public void registerFallback(ItemApiProvider<A, C> fallbackProvider) {
+		Objects.requireNonNull(fallbackProvider, "ItemApiProvider may not be null.");
 
-		fallbackProviders.add(provider);
+		fallbackProviders.add(fallbackProvider);
 	}
 }

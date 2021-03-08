@@ -39,8 +39,9 @@ public class FabricItemApiLookupTest {
 		Registry.register(Registry.ITEM, new Identifier(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
-		Inspectable.LOOKUP.registerForItems((itemKey, context) -> () -> {
-			ItemStack stack = itemKey.toStack();
+		Inspectable.LOOKUP.registerForItems((item, tag) -> () -> {
+			ItemStack stack = new ItemStack(item);
+			stack.setTag(tag);
 
 			if (stack.hasCustomName()) {
 				return stack.getName();
@@ -51,9 +52,9 @@ public class FabricItemApiLookupTest {
 		// Test registerSelf
 		Inspectable.LOOKUP.registerSelf(HELLO_ITEM);
 		// Tools report their mining level
-		Inspectable.LOOKUP.registerFallback((itemKey, context) -> {
-			if (itemKey.getItem() instanceof ToolItem) {
-				return () -> new LiteralText("Tool mining level: " + ((ToolItem) itemKey.getItem()).getMaterial().getMiningLevel());
+		Inspectable.LOOKUP.registerFallback((item, tag) -> {
+			if (item instanceof ToolItem) {
+				return () -> new LiteralText("Tool mining level: " + ((ToolItem) item).getMaterial().getMiningLevel());
 			} else {
 				return null;
 			}

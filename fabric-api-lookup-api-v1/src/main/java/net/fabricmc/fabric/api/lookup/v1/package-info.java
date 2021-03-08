@@ -23,7 +23,7 @@
  * <p><h2>Definitions and purpose</h2>
  * <ul>
  *     <li>What we call an <i>API</i> is any object that can be offered or queried, possibly by different mods, to be used in an agreed-upon manner.</li>
- *     <li>This module allows flexible retrieving of such APIs from blocks in the world, represented by the generic type {@code A}.</li>
+ *     <li>This module allows flexible retrieving of such APIs, represented by the generic type {@code A}, from blocks in the world or from items.</li>
  *     <li>It also provides building blocks for defining custom ways of retrieving APIs from other game objects.</li>
  * </ul>
  * </p>
@@ -41,6 +41,21 @@
  * 	   <li>{@code BlockApiLookup} instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup#get BlockApiLookup#get()}.
  *     For optimal performance, it is better to store them in a {@code public static final} field instead of querying them multiple times.</li>
  *     <li>See {@link net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup BlockApiLookup} for example code.</li>
+ * </ul>
+ * </p>
+ *
+ * <p><h2>Retrieving APIs from items</h2>
+ * <ul>
+ *     <li>Item API queries work similarly to block queries.</li>
+ *     <li>An item query for an API is an operation that takes an item, and additional context of type {@code C}, and uses that
+ *     to find an object of type {@code A}, {@code null} if there was no such object.</li>
+ *     <li>{@link net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup ItemApiLookup&lt;A, C&gt;} instances
+ *     provide a {@link net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup#find find()} function that does exactly that,
+ *     and registration happens primarily through {@link net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup#registerSelf registerSelf()} and
+ *     {@link net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup#registerForItems registerForItems()}.</li>
+ *     <li>These instances can be accessed through {@link net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup#get ItemApiLookup#get()}
+ *     and should be stored in a {@code public static final} field.</li>
+ *     <li>See {@link net.fabricmc.fabric.api.lookup.v1.item.ItemApiLookup ItemApiLookup} for example code.</li>
  * </ul>
  * </p>
  *

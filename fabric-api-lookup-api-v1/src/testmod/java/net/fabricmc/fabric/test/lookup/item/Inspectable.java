@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.test.lookup.item;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -30,6 +33,6 @@ public interface Inspectable {
 	 */
 	Text inspect();
 
-	ItemApiLookup<Inspectable, Void> LOOKUP =
-			ItemApiLookup.get(new Identifier("testmod:inspectable"), Inspectable.class, Void.class);
+	ItemApiLookup<Inspectable, @Nullable CompoundTag> LOOKUP =
+			ItemApiLookup.get(new Identifier("testmod:inspectable"), Inspectable.class, CompoundTag.class);
 }

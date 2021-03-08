@@ -26,8 +26,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.lookup.v1.item.ItemKey;
-
 public class InspectorBlock extends Block {
 	public InspectorBlock(Settings settings) {
 		super(settings);
@@ -36,7 +34,7 @@ public class InspectorBlock extends Block {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		ItemStack stack = player.getStackInHand(hand);
-		Inspectable inspectable = Inspectable.LOOKUP.find(ItemKey.of(stack), null);
+		Inspectable inspectable = Inspectable.LOOKUP.find(stack.getItem(), stack.getTag());
 
 		if (inspectable != null) {
 			if (!world.isClient()) {
