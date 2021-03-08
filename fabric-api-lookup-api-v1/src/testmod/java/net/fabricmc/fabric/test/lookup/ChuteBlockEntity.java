@@ -18,9 +18,11 @@ package net.fabricmc.fabric.test.lookup;
 
 import org.jetbrains.annotations.NotNull;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiCache;
@@ -29,41 +31,39 @@ import net.fabricmc.fabric.test.lookup.api.ItemExtractable;
 import net.fabricmc.fabric.test.lookup.api.ItemInsertable;
 import net.fabricmc.fabric.test.lookup.api.ItemUtils;
 
-public class ChuteBlockEntity extends BlockEntity implements Tickable {
+public class ChuteBlockEntity extends BlockEntity {
 	private int moveDelay = 0;
 	private BlockApiCache<ItemInsertable, @NotNull Direction> cachedInsertable = null;
 	private BlockApiCache<ItemExtractable, @NotNull Direction> cachedExtractable = null;
 
-	public ChuteBlockEntity() {
-		super(FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE);
+	public ChuteBlockEntity(BlockPos pos, BlockState state) {
+		super(FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, pos, state);
 	}
 
-	@Override
-	public void tick() {
-		//noinspection ConstantConditions - Intellij intrinsics don't know that hasWorld makes getWorld evaluate to non-null
-		if (!this.hasWorld() || this.getWorld().isClient()) {
+	public static void serverTick(World world, BlockPos pos, BlockState blockState, ChuteBlockEntity blockEntity) {
+		if (!blockEntity.hasWorld()) {
 			return;
 		}
 
-		if (cachedInsertable == null) {
-			cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerWorld) world, pos.offset(Direction.DOWN));
+		if (blockEntity.cachedInsertable == null) {
+			blockEntity.cachedInsertable = BlockApiCache.create(ItemApis.INSERTABLE, (ServerWorld) world, pos.offset(Direction.DOWN));
 		}
 
-		if (cachedExtractable == null) {
-			cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerWorld) world, pos.offset(Direction.UP));
+		if (blockEntity.cachedExtractable == null) {
+			blockEntity.cachedExtractable = BlockApiCache.create(ItemApis.EXTRACTABLE, (ServerWorld) world, pos.offset(Direction.UP));
 		}
 
-		if (moveDelay == 0) {
-			ItemExtractable from = cachedExtractable.find(Direction.DOWN);
-			ItemInsertable to = cachedInsertable.find(Direction.UP);
+		if (blockEntity.moveDelay == 0) {
+			ItemExtractable from = blockEntity.cachedExtractable.find(Direction.DOWN);
+			ItemInsertable to = blockEntity.cachedInsertable.find(Direction.UP);
 
 			if (from != null && to != null) {
 				ItemUtils.move(from, to, 1);
 			}
 
-			moveDelay = 20;
+			blockEntity.moveDelay = 20;
 		}
 
-		--moveDelay;
+		--blockEntity.moveDelay;
 	}
 }

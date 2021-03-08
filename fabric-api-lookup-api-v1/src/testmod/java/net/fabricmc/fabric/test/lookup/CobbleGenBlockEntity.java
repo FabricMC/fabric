@@ -18,15 +18,17 @@ package net.fabricmc.fabric.test.lookup;
 
 import java.util.function.Predicate;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.util.math.BlockPos;
 
 import net.fabricmc.fabric.test.lookup.api.ItemExtractable;
 
 public class CobbleGenBlockEntity extends BlockEntity implements ItemExtractable {
-	public CobbleGenBlockEntity() {
-		super(FabricApiLookupTest.COBBLE_GEN_BLOCK_ENTITY_TYPE);
+	public CobbleGenBlockEntity(BlockPos pos, BlockState state) {
+		super(FabricApiLookupTest.COBBLE_GEN_BLOCK_ENTITY_TYPE, pos, state);
 	}
 
 	@Override

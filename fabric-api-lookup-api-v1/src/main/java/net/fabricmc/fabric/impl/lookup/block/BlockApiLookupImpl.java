@@ -69,7 +69,7 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 				state = world.getBlockState(pos);
 			}
 
-			if (state.getBlock().hasBlockEntity()) {
+			if (state.hasBlockEntity()) {
 				blockEntity = world.getBlockEntity(pos);
 			}
 		} else {
@@ -106,7 +106,9 @@ public final class BlockApiLookupImpl<A, C> implements BlockApiLookup<A, C> {
 	@Override
 	public void registerSelf(BlockEntityType<?>... blockEntityTypes) {
 		for (BlockEntityType<?> blockEntityType : blockEntityTypes) {
-			BlockEntity blockEntity = blockEntityType.instantiate();
+			Block supportBlock = ((BlockEntityTypeAccessor) blockEntityType).getBlocks().iterator().next();
+			Objects.requireNonNull(supportBlock, "Could not get a support block for block entity type.");
+			BlockEntity blockEntity = blockEntityType.instantiate(BlockPos.ORIGIN, supportBlock.getDefaultState());
 			Objects.requireNonNull(blockEntity, "Instantiated block entity may not be null.");
 
 			if (!apiClass.isAssignableFrom(blockEntity.getClass())) {

@@ -18,18 +18,19 @@ package net.fabricmc.fabric.test.lookup;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.world.BlockView;
 
-public class CobbleGenBlock extends Block implements BlockEntityProvider {
+public class CobbleGenBlock extends BlockWithEntity {
 	public CobbleGenBlock(Settings settings) {
 		super(settings);
 	}
 
+	@Nullable
 	@Override
-	public @Nullable BlockEntity createBlockEntity(BlockView world) {
-		return new CobbleGenBlockEntity();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new CobbleGenBlockEntity(pos, state);
 	}
 }

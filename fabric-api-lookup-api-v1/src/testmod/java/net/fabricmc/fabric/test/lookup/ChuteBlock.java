@@ -18,18 +18,28 @@ package net.fabricmc.fabric.test.lookup;
 
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.world.BlockView;
 
-public class ChuteBlock extends Block implements BlockEntityProvider {
+public class ChuteBlock extends BlockWithEntity {
 	public ChuteBlock(Settings settings) {
 		super(settings);
 	}
 
+	@Nullable
 	@Override
-	public @Nullable BlockEntity createBlockEntity(BlockView world) {
-		return new ChuteBlockEntity();
+	public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+		return new ChuteBlockEntity(pos, state);
+	}
+
+	@Nullable
+	@Override
+	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+		return world.isClient ? null : checkType(type, FabricApiLookupTest.CHUTE_BLOCK_ENTITY_TYPE, ChuteBlockEntity::serverTick);
 	}
 }
