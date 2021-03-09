@@ -17,34 +17,52 @@
 package net.fabricmc.fabric.impl.transfer.transaction;
 
 import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
+import com.google.common.base.Preconditions;
+
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 
 public class TransactionImpl implements Transaction {
 	private static Thread serverThread = null;
-	// outer lock: non-server threads contend on this one first.
+	// Outer lock: non-server threads contend on this one first.
 	private static final ReentrantLock outerLock = new ReentrantLock();
-	// inner lock: the server thread directly contends on this one with the non-server thread who owns the outerLock.
+	// Inner lock: the server thread directly contends on this one with the non-server thread who owns the outerLock.
 	private static final ReentrantLock innerLock = new ReentrantLock();
-
+	// The transaction stack, objects are reused so it may contain more objects than the transaction depth would suggest.
 	private static final ArrayList<TransactionImpl> STACK = new ArrayList<>();
-	private static int stackPointer = -1;
-	// flag to prevent transaction functions from being called from within a transaction function.
-	// for example, to make sure that transaction functions are not called from Participant.onEnlist().
-	private static boolean allowAccess = true;
+	// The current transaction depth.
+	private static int currentDepth = -1;
 
-	static {
-		STACK.add(new TransactionImpl());
+	private static void acquireLock() {
+		if (Thread.currentThread() != serverThread) outerLock.lock();
+		innerLock.lock();
 	}
 
-	@SuppressWarnings("rawtypes")
-	private final IdentityHashMap<Participant, Object> stateStorage = new IdentityHashMap<>();
-	private boolean isOpen = false;
+	private static void releaseLock() {
+		innerLock.unlock();
+		if (Thread.currentThread() != serverThread) outerLock.unlock();
+	}
+
+	public static Transaction openOuter() {
+		if (isOpen()) {
+			throw new IllegalStateException("An outer transaction is already active on this thread.");
+		}
+
+		acquireLock();
+
+		// open transaction, STACK always has at least one element.
+		currentDepth = 0;
+		TransactionImpl current = STACK.get(currentDepth);
+		current.isOpen = true;
+		return current;
+	}
+
+	public static boolean isOpen() {
+		return innerLock.isHeldByCurrentThread();
+	}
 
 	public static void setServerThread(Thread serverThread) {
 		if (innerLock.isLocked()) {
@@ -54,56 +72,70 @@ public class TransactionImpl implements Transaction {
 		TransactionImpl.serverThread = serverThread;
 	}
 
-	// validate that Transaction instance methods are valid to call.
-	private void validateCurrent() {
+	TransactionImpl(int nestingDepth) {
+		this.nestingDepth = nestingDepth;
+	}
+
+	private final int nestingDepth;
+	private final List<CloseCallback> closeCallbacks = new ArrayList<>();
+	private boolean isOpen = false;
+
+	// Validate that this is the correct thread for transaction operations.
+	private static void validateCurrentThread() {
 		if (!innerLock.isHeldByCurrentThread()) {
 			throw new IllegalStateException(String.format(
 					"Transaction operations are already ongoing on another thread.\nCurrent thread: %s.\n",
 					Thread.currentThread().getName()));
 		}
+	}
 
-		if (!allowAccess) {
-			throw new IllegalStateException("Transaction operations are not allowed at the moment.");
-		}
+	// Validate that this transaction is the current one, and that this is called on the correct thread.
+	private void validateCurrentTransaction() {
+		validateCurrentThread();
 
-		if (STACK.get(stackPointer) != this) {
-			throw new IllegalStateException("Transaction operations must be applied to the most recent open transaction.");
-		}
-
-		if (!isOpen) {
-			throw new IllegalStateException("Transaction operations cannot be applied to a closed transaction.");
+		if (STACK.get(currentDepth) != this) {
+			throw new IllegalStateException("Transaction operation can only be applied to the current transaction.");
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	// Validate that this transaction is open.
+	private void validateOpen() {
+		if (!isOpen) {
+			throw new IllegalStateException("Transaction operation cannot be applied to a closed transaction.");
+		}
+	}
+
+	@Override
+	public Transaction openNested() {
+		validateCurrentTransaction();
+		validateOpen();
+		currentDepth++;
+
+		if (currentDepth == STACK.size()) {
+			STACK.add(new TransactionImpl(currentDepth));
+		}
+
+		TransactionImpl current = STACK.get(currentDepth);
+		current.isOpen = true;
+		return current;
+	}
+
 	private void close(TransactionResult result) {
-		validateCurrent();
+		validateCurrentTransaction();
+		validateOpen();
 		// block transaction operations
-		allowAccess = false;
-
-		// notify participants
-		for (Map.Entry<Participant, Object> entry : stateStorage.entrySet()) {
-			entry.getKey().onClose(entry.getValue(), result);
-		}
-
-		// if root and success, call onFinalSuccess
-		if (stackPointer == 0 && result.wasCommitted()) {
-			stateStorage.keySet().forEach(Participant::onFinalCommit);
-		}
-
-		// clear things up
-		stateStorage.clear();
-		stackPointer--;
 		isOpen = false;
-		allowAccess = true;
 
-		// release locks
-		if (stackPointer == -1) {
-			innerLock.unlock();
+		// invoke callbacks in reverse order
+		for (int i = closeCallbacks.size()-1; i >= 0; i--) {
+			closeCallbacks.get(i).onClose(this, result);
+		}
 
-			if (Thread.currentThread() != serverThread) {
-				outerLock.unlock();
-			}
+		closeCallbacks.clear();
+		currentDepth--;
+
+		if (currentDepth == -1) {
+			releaseLock();
 		}
 	}
 
@@ -125,51 +157,29 @@ public class TransactionImpl implements Transaction {
 	}
 
 	@Override
-	public Transaction openNested() {
-		validateCurrent();
-		stackPointer++;
-
-		if (stackPointer == STACK.size()) {
-			STACK.add(new TransactionImpl());
-		}
-
-		TransactionImpl current = STACK.get(stackPointer);
-		current.isOpen = true;
-		return current;
+	public int nestingDepth() {
+		validateCurrentThread();
+		return nestingDepth;
 	}
 
 	@Override
-	public void enlist(Participant<?> participant) {
-		validateCurrent();
-		allowAccess = false;
+	public Transaction getOpenTransaction(int nestingDepth) {
+		Preconditions.checkArgument(nestingDepth >= 0, "Nesting depth may not be negative.");
+		validateCurrentThread();
 
-		for (int i = 0; i <= stackPointer; ++i) {
-			STACK.get(i).stateStorage.computeIfAbsent(participant, Participant::onEnlist);
+		if (nestingDepth > currentDepth) {
+			throw new IndexOutOfBoundsException("There is no open transaction for nesting depth " + nestingDepth);
 		}
 
-		allowAccess = true;
+		TransactionImpl transaction = STACK.get(nestingDepth);
+		transaction.validateOpen();
+		return transaction;
 	}
 
-	public static Transaction openOuter() {
-		if (isOpen()) {
-			throw new IllegalStateException("An outer transaction is already active on this thread.");
-		}
-
-		// acquire lock
-		if (Thread.currentThread() != serverThread) {
-			outerLock.lock();
-		}
-
-		innerLock.lock();
-
-		// open transaction, STACK always has at least one element.
-		stackPointer = 0;
-		TransactionImpl current = STACK.get(stackPointer);
-		current.isOpen = true;
-		return current;
-	}
-
-	public static boolean isOpen() {
-		return innerLock.isHeldByCurrentThread();
+	@Override
+	public void addCloseCallback(CloseCallback closeCallback) {
+		validateCurrentThread();
+		validateOpen();
+		closeCallbacks.add(closeCallback);
 	}
 }

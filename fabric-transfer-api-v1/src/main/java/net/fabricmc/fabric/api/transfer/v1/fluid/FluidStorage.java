@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.transfer.v1.fluid;
 
-import net.fabricmc.fabric.impl.transfer.fluid.CauldronWrapper;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.Identifier;
@@ -24,6 +23,7 @@ import net.minecraft.util.math.Direction;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.impl.transfer.fluid.CauldronWrapper;
 
 public final class FluidStorage {
 	public static final BlockApiLookup<Storage<Fluid>, Direction> SIDED =

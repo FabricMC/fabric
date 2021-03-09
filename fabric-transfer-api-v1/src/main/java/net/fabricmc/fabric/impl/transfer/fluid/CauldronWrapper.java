@@ -31,12 +31,11 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Participant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
 
 // Maintainer note: this will need updating for 1.17 to allow registering modded cauldrons.
-public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Participant<Integer> {
+public class CauldronWrapper extends SnapshotParticipant<Integer> implements Storage<Fluid>, StorageView<Fluid> {
 	private static final Map<WorldLocation, CauldronWrapper> WRAPPERS = new WeakHashMap<>();
 
 	public static CauldronWrapper get(World world, BlockPos pos) {
@@ -46,12 +45,6 @@ public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Part
 	}
 
 	private final WorldLocation location;
-	// To make sure we only update neighbors if the level changed, we store the initial level of the cauldron.
-	// Only if the level changed do we update neighbors in onFinalCommit,
-	// and only if the block state wasn't changed by another onCommit.
-	private int transactionDepth = 0;
-	private BlockState initialBlockState;
-	private BlockState finalBlockState;
 
 	CauldronWrapper(WorldLocation location) {
 		this.location = location;
@@ -68,7 +61,7 @@ public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Part
 			int levelsInserted = (int) Math.min(maxAmount / FluidConstants.BOTTLE, 3 - level);
 
 			if (levelsInserted > 0) {
-				transaction.enlist(this);
+				updateSnapshots(transaction);
 				location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, level + levelsInserted), 0);
 			}
 		}
@@ -87,7 +80,7 @@ public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Part
 			int levelsExtracted = (int) Math.min(maxAmount / FluidConstants.BOTTLE, level);
 
 			if (levelsExtracted > 0) {
-				transaction.enlist(this);
+				updateSnapshots(transaction);
 				location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, level - levelsExtracted), 0);
 			}
 		}
@@ -121,31 +114,18 @@ public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Part
 	}
 
 	@Override
-	public Integer onEnlist() {
-		int level = (int) (amount() / FluidConstants.BOTTLE);
-
-		if (transactionDepth == 0) {
-			// When this is called, we have already checked that the block is a cauldron.
-			initialBlockState = location.world.getBlockState(location.pos);
-		}
-
-		transactionDepth++;
-		return level;
+	public Integer createSnapshot() {
+		return (int) (amount() / FluidConstants.BOTTLE);
 	}
 
 	@Override
-	public void onClose(Integer savedLevel, TransactionResult result) {
-		transactionDepth--;
+	public void readSnapshot(Integer savedLevel) {
 		BlockState state = location.world.getBlockState(location.pos);
 
-		if (result.wasAborted()) {
-			if (state.isOf(Blocks.CAULDRON)) {
-				location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, savedLevel), 0);
-			} else {
-				throw new RuntimeException(String.format("There is no cauldron anymore at location %s.", location));
-			}
-		} else if (transactionDepth == 0) {
-			finalBlockState = state;
+		if (state.isOf(Blocks.CAULDRON)) {
+			location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, savedLevel), 0);
+		} else {
+			// TODO: what should we do? crash? warn?
 		}
 	}
 
@@ -153,12 +133,9 @@ public class CauldronWrapper implements Storage<Fluid>, StorageView<Fluid>, Part
 	public void onFinalCommit() {
 		BlockState state = location.world.getBlockState(location.pos);
 
-		// only send the update if the cauldron is still there, and it was changed
-		if (state != initialBlockState && state == finalBlockState) {
-			// revert, without notification
-			location.world.setBlockState(location.pos, initialBlockState, 0);
-			// then update, with notification this time
-			location.world.setBlockState(location.pos, finalBlockState);
+		// Only send the update if the cauldron is still there
+		if (state.isOf(Blocks.CAULDRON)) {
+			location.world.updateNeighbors(location.pos, null);
 		}
 	}
 }
