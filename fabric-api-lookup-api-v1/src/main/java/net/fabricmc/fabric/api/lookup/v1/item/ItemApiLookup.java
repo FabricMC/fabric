@@ -108,9 +108,10 @@ public interface ItemApiLookup<A, C> {
 	/**
 	 * Attempt to retrieve an API from an item stack.
 	 *
-	 * <p>Note: An API may or may not allow the item stack to be modified by the provider or the returned instance.
-	 * To know if it is allowed or not, implementors should refer to the documentation of the API itself,
-	 * and API authors are encouraged to document this behavior.
+	 * <p>Note: An API may or may not allow the item stack to be modified by the returned instance.
+	 * API authors are strongly encouraged to document this behavior so that implementors can refer
+	 * to the API documentation.
+	 * <br>While providers may capture a reference to the stack, it is expected that they do not modify it directly.
 	 *
 	 * @param itemStack The item stack.
 	 * @param context Additional context for the query, defined by type parameter C.
@@ -148,9 +149,10 @@ public interface ItemApiLookup<A, C> {
 		/**
 		 * Return an API of type {@code A} if available for the given item stack with the given context, or {@code null} otherwise.
 		 *
-		 * <p>Note: An API may or may not allow the item stack to be modified by the provider or the returned instance.
-		 * To know if it is allowed or not, implementors should refer to the documentation of the API itself,
-		 * and API authors are encouraged to document this behavior.
+		 * <p>Note: An API may or may not allow the item stack to be modified by the returned instance.
+		 * API authors are strongly encouraged to document this behavior so that implementors can refer
+		 * to the API documentation.
+		 * <br>While providers may capture a reference to the stack, it is expected that they do not modify it directly.
 		 *
 		 * @param itemStack The item stack.
 		 * @param context Additional context passed to the query.
