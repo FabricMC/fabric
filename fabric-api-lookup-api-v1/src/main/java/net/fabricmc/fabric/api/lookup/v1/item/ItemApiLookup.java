@@ -108,6 +108,10 @@ public interface ItemApiLookup<A, C> {
 	/**
 	 * Attempt to retrieve an API from an item stack.
 	 *
+	 * <p>Note: An API may or may not allow the item stack to be modified by the provider or the returned instance.
+	 * To know if it is allowed or not, implementors should refer to the documentation of the API itself,
+	 * and API authors are encouraged to document this behavior.
+	 *
 	 * @param itemStack The item stack.
 	 * @param context Additional context for the query, defined by type parameter C.
 	 * @return The retrieved API, or {@code null} if no API was found.
@@ -140,15 +144,19 @@ public interface ItemApiLookup<A, C> {
 	void registerFallback(ItemApiProvider<A, C> fallbackProvider);
 
 	@FunctionalInterface
-	interface ItemApiProvider<T, C> {
+	interface ItemApiProvider<A, C> {
 		/**
 		 * Return an API of type {@code A} if available for the given item stack with the given context, or {@code null} otherwise.
+		 *
+		 * <p>Note: An API may or may not allow the item stack to be modified by the provider or the returned instance.
+		 * To know if it is allowed or not, implementors should refer to the documentation of the API itself,
+		 * and API authors are encouraged to document this behavior.
 		 *
 		 * @param itemStack The item stack.
 		 * @param context Additional context passed to the query.
 		 * @return An API of type {@code A}, or {@code null} if no API is available.
 		 */
 		@Nullable
-		T find(ItemStack itemStack, C context);
+		A find(ItemStack itemStack, C context);
 	}
 }

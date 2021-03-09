@@ -54,7 +54,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 
 	@Override
 	public @Nullable A find(ItemStack itemStack, C context) {
-		Objects.requireNonNull(itemStack, "Item stack may not be null.");
+		Objects.requireNonNull(itemStack, "ItemStack may not be null.");
 
 		@Nullable
 		ItemApiProvider<A, C> provider = providerMap.get(itemStack.getItem());

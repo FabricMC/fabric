@@ -49,7 +49,7 @@ public class FabricItemApiLookupTest {
 		// Test registerSelf
 		Inspectable.LOOKUP.registerSelf(HELLO_ITEM);
 		// Tools report their mining level
-		Inspectable.LOOKUP.registerFallback((stack, tag) -> {
+		Inspectable.LOOKUP.registerFallback((stack, ignored) -> {
 			Item item = stack.getItem();
 
 			if (item instanceof ToolItem) {
