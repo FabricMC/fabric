@@ -1,4 +1,4 @@
-package net.fabricmc.fabric.api.tool.attribute.v1;
+package net.fabricmc.fabric.impl.tool.attribute;
 
 import org.jetbrains.annotations.Nullable;
 

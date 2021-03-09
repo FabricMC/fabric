@@ -41,7 +41,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
-import net.fabricmc.fabric.api.tool.attribute.v1.ItemStackContext;
+import net.fabricmc.fabric.impl.tool.attribute.ItemStackContext;
 import net.fabricmc.fabric.api.tool.attribute.v1.ToolManager;
 
 @Mixin(ItemStack.class)

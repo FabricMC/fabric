@@ -19,7 +19,7 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.tool.attribute.v1.ItemStackContext;
+import net.fabricmc.fabric.impl.tool.attribute.ItemStackContext;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
