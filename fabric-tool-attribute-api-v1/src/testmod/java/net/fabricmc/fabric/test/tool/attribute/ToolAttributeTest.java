@@ -41,6 +41,9 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricMaterialBuilder;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.api.tool.attribute.v1.DynamicAttributeTool;
 import net.fabricmc.fabric.api.tool.attribute.v1.FabricToolTags;
+import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicCancelItem;
+import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicSwordItem;
+import net.fabricmc.fabric.test.tool.attribute.item.TestDynamicToolItem;
 
 public class ToolAttributeTest implements ModInitializer {
 	private static final float DEFAULT_BREAK_SPEED = 1.0F;
@@ -100,6 +103,14 @@ public class ToolAttributeTest implements ModInitializer {
 						.strength(0.6F)
 						.sounds(BlockSoundGroup.CROP)));
 		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "tater_effective_block"), new BlockItem(taterEffectiveBlock, new Item.Settings()));
+
+		// DYNAMIC ATTRIBUTE MODIFIERS
+		// The Dynamic Sword tests to make sure standard vanilla attributes can co-exist with dynamic attributes.
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "dynamic_sword"), new TestDynamicSwordItem(new Item.Settings()));
+		// The Dynamic Tool ensures a tool can have dynamic attributes (with no vanilla atributes). It applies 2 layers of speed reduction to the player.
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "dynamic_tool"), new TestDynamicToolItem(new Item.Settings()));
+		// Test cancels-out attributes
+		Registry.register(Registry.ITEM, new Identifier("fabric-tool-attribute-api-v1-testmod", "cancel_item"), new TestDynamicCancelItem(new Item.Settings()));
 
 		ServerTickEvents.START_SERVER_TICK.register(this::validate);
 	}
