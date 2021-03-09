@@ -19,7 +19,7 @@ package net.fabricmc.fabric.test.lookup.item;
 import static net.fabricmc.fabric.test.lookup.FabricApiLookupTest.ensureException;
 
 import net.minecraft.block.Material;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
 import net.minecraft.text.LiteralText;
@@ -39,10 +39,7 @@ public class FabricItemApiLookupTest {
 		Registry.register(Registry.ITEM, new Identifier(FabricApiLookupTest.MOD_ID, "hello"), HELLO_ITEM);
 
 		// Diamonds and diamond blocks can be inspected and will also print their name.
-		Inspectable.LOOKUP.registerForItems((item, tag) -> () -> {
-			ItemStack stack = new ItemStack(item);
-			stack.setTag(tag);
-
+		Inspectable.LOOKUP.registerForItems((stack, ignored) -> () -> {
 			if (stack.hasCustomName()) {
 				return stack.getName();
 			} else {
@@ -52,7 +49,9 @@ public class FabricItemApiLookupTest {
 		// Test registerSelf
 		Inspectable.LOOKUP.registerSelf(HELLO_ITEM);
 		// Tools report their mining level
-		Inspectable.LOOKUP.registerFallback((item, tag) -> {
+		Inspectable.LOOKUP.registerFallback((stack, tag) -> {
+			Item item = stack.getItem();
+
 			if (item instanceof ToolItem) {
 				return () -> new LiteralText("Tool mining level: " + ((ToolItem) item).getMaterial().getMiningLevel());
 			} else {

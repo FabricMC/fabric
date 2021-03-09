@@ -19,38 +19,39 @@ package net.fabricmc.fabric.api.lookup.v1.item;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.Identifier;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
 
 /**
- * An object that allows retrieving APIs from blocks in a world.
+ * An object that allows retrieving APIs from item stacks.
  * Instances of this interface can be obtained through {@link #get}.
  *
- * <p>When trying to {@link #find} an API for an item, the provider registered for that item will be queried if it exists.
+ * <p>When trying to {@link #find} an API for an item stack, the provider registered for the item of the stack will be queried if it exists.
  * If it doesn't exist, or if it returns {@code null}, the fallback providers will be queried in order.
  *
  * <p><h3>Usage Example</h3>
  * Let us reuse {@code FluidContainer} from {@linkplain BlockApiLookup the BlockApiLookup example}.
- * We will query {@code FluidContainer} instances from (item, tag) pairs.
+ * We will query {@code FluidContainer} instances from the stack directly.
+ * We need no context, so we will use {@code Void}.
  *
  * <pre>{@code
  * public interface FluidContainer {
  *     boolean containsFluids(); // return true if not empty
  * }}</pre>
- * We need to create the ItemApiLookup, with context type {@code @Nullable CompoundTag}.
+ * We need to create the ItemApiLookup:
  *
  * <pre>{@code
  * public final class MyApi {
- *     public static final ItemApiLookup<FluidContainer, @Nullable CompoundTag> FLUID_CONTAINER_ITEM = ItemApiLookup.get(new Identifier("mymod:fluid_container"), FluidContainer.class, CompoundTag.class);
+ *     public static final ItemApiLookup<FluidContainer, Void> FLUID_CONTAINER_ITEM = ItemApiLookup.get(new Identifier("mymod:fluid_container"), FluidContainer.class, Void.class);
  * }}</pre>
  * API instances are easy to access:
  *
  * <pre>{@code
- * FluidContainer container = MyApi.FLUID_CONTAINER_ITEM.find(item, tag);
+ * FluidContainer container = MyApi.FLUID_CONTAINER_ITEM.find(itemStack, null); // Void is always null
  * if (container != null) {
  *     // Do something with the container
  *     if (container.containsFluids()) {
@@ -70,20 +71,21 @@ import net.fabricmc.fabric.impl.lookup.item.ItemApiLookupImpl;
  * MyApi.FLUID_CONTAINER_ITEM.registerSelf(INFINITE_WATER_ITEM);
  *
  * // Otherwise, registerForItems can be used.
- * MyApi.FLUID_CONTAINER_ITEM.registerForItems((item, tag) -> {
+ * MyApi.FLUID_CONTAINER_ITEM.registerForItems((itemStack, ignored) -> {
  *     // return a FluidContainer for your item, or null if there is none
+ *     // the second parameter is Void in this case, so it's always null and can be ignored
  * }, ITEM_INSTANCE, ANOTHER_ITEM_INSTANCE); // register as many items as you want
  *
  * // General fallback, to interface with anything, for example another ItemApiLookup.
- * MyApi.FLUID_CONTAINER_ITEM.registerFallback((item, tag) -> {
+ * MyApi.FLUID_CONTAINER_ITEM.registerFallback((itemStack, ignored) -> {
  *     // return something if available, or null
  * });}</pre>
  *
  * <p><h3>Generic context types</h3>
- * Note that {@code FluidContainer} and {@code @Nullable CompoundTag} were completely arbitrary in this example.
+ * Note that {@code FluidContainer} and {@code Void} were completely arbitrary in this example.
  * We can define any {@code ItemApiLookup&lt;A, C&gt;}, where {@code A} is the type of the queried API, and {@code C} is the type of the additional context
- * (the tag parameter in the previous example).
- * If no context is necessary, {@code Void} should be used, and {@code null} instances should be passed.
+ * (the void parameter in the previous example).
+ * If no context is necessary, {@code Void} should be used, and {@code null} instances should be passed, like we did in the example.
  *
  * @param <A> The type of the API.
  * @param <C> The type of the additional context object.
@@ -104,14 +106,14 @@ public interface ItemApiLookup<A, C> {
 	}
 
 	/**
-	 * Attempt to retrieve an API from an item.
+	 * Attempt to retrieve an API from an item stack.
 	 *
-	 * @param item The item.
+	 * @param itemStack The item stack.
 	 * @param context Additional context for the query, defined by type parameter C.
 	 * @return The retrieved API, or {@code null} if no API was found.
 	 */
 	@Nullable
-	A find(Item item, C context);
+	A find(ItemStack itemStack, C context);
 
 	/**
 	 * Expose the API for the passed items directly implementing it.
@@ -140,13 +142,13 @@ public interface ItemApiLookup<A, C> {
 	@FunctionalInterface
 	interface ItemApiProvider<T, C> {
 		/**
-		 * Return an API of type {@code A} if available for the given item with the given context, or {@code null} otherwise.
+		 * Return an API of type {@code A} if available for the given item stack with the given context, or {@code null} otherwise.
 		 *
-		 * @param item The queried item.
+		 * @param itemStack The item stack.
 		 * @param context Additional context passed to the query.
 		 * @return An API of type {@code A}, or {@code null} if no API is available.
 		 */
 		@Nullable
-		T find(Item item, C context);
+		T find(ItemStack itemStack, C context);
 	}
 }

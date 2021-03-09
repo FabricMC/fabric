@@ -4,7 +4,7 @@ This is useful when the same API could be implemented more than once or implemen
 See also the [package-info.java file](src/main/java/net/fabricmc/fabric/api/lookup/v1/package-info.java).
 
 * What we call an API is any object that can be offered or queried, possibly by different mods, to be used in an agreed-upon manner.
-* This module allows flexible retrieving of such APIs, represented by the generic type `A`, from blocks in the world or from items.
+* This module allows flexible retrieving of such APIs, represented by the generic type `A`, from blocks in the world or from item stacks.
 * It also provides building blocks for defining custom ways of retrieving APIs from other game objects.
 
 # Retrieving APIs from blocks
@@ -23,7 +23,7 @@ A `BlockApiLookup` bound to a position and a server world, allowing much faster 
 See the javadoc of `ItemApiLookup` for a full usage example.
 
 ## [`ItemApiLookup`](src/main/java/net/fabricmc/fabric/api/lookup/v1/item/ItemApiLookup.java)
-The way to query API instances from items.
+The way to query API instances from item stacks.
 It exposes a `find` function to retrieve an API instance, and multiple `register*` functions to register APIs for items.
 
 # Retrieving APIs from custom objects

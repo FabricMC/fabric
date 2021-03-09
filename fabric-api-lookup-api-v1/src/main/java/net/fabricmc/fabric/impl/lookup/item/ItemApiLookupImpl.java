@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -52,14 +53,14 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 	}
 
 	@Override
-	public @Nullable A find(Item item, C context) {
-		Objects.requireNonNull(item, "Item may not be null.");
+	public @Nullable A find(ItemStack itemStack, C context) {
+		Objects.requireNonNull(itemStack, "Item stack may not be null.");
 
 		@Nullable
-		ItemApiProvider<A, C> provider = providerMap.get(item);
+		ItemApiProvider<A, C> provider = providerMap.get(itemStack.getItem());
 
 		if (provider != null) {
-			A instance = provider.find(item, context);
+			A instance = provider.find(itemStack, context);
 
 			if (instance != null) {
 				return instance;
@@ -67,7 +68,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 		}
 
 		for (ItemApiProvider<A, C> fallbackProvider : fallbackProviders) {
-			A instance = fallbackProvider.find(item, context);
+			A instance = fallbackProvider.find(itemStack, context);
 
 			if (instance != null) {
 				return instance;
@@ -93,7 +94,7 @@ public class ItemApiLookupImpl<A, C> implements ItemApiLookup<A, C> {
 			}
 		}
 
-		registerForItems((item, context) -> (A) item, items);
+		registerForItems((itemStack, context) -> (A) itemStack.getItem(), items);
 	}
 
 	@Override

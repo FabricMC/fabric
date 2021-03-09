@@ -34,7 +34,7 @@ public class InspectorBlock extends Block {
 	@Override
 	public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
 		ItemStack stack = player.getStackInHand(hand);
-		Inspectable inspectable = Inspectable.LOOKUP.find(stack.getItem(), stack.getTag());
+		Inspectable inspectable = Inspectable.LOOKUP.find(stack, null);
 
 		if (inspectable != null) {
 			if (!world.isClient()) {
