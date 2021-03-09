@@ -20,10 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
-import com.google.common.base.Preconditions;
-
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionResult;
 
 public class TransactionImpl implements Transaction {
 	private static Thread serverThread = null;
@@ -120,7 +117,7 @@ public class TransactionImpl implements Transaction {
 		return current;
 	}
 
-	private void close(TransactionResult result) {
+	private void close(Result result) {
 		validateCurrentTransaction();
 		validateOpen();
 		// block transaction operations
@@ -141,12 +138,12 @@ public class TransactionImpl implements Transaction {
 
 	@Override
 	public void abort() {
-		close(TransactionResult.ABORTED);
+		close(Result.ABORTED);
 	}
 
 	@Override
 	public void commit() {
-		close(TransactionResult.COMMITTED);
+		close(Result.COMMITTED);
 	}
 
 	@Override
@@ -164,8 +161,11 @@ public class TransactionImpl implements Transaction {
 
 	@Override
 	public Transaction getOpenTransaction(int nestingDepth) {
-		Preconditions.checkArgument(nestingDepth >= 0, "Nesting depth may not be negative.");
 		validateCurrentThread();
+
+		if (nestingDepth < 0) {
+			throw new IndexOutOfBoundsException("Nesting depth may not be negative.");
+		}
 
 		if (nestingDepth > currentDepth) {
 			throw new IndexOutOfBoundsException("There is no open transaction for nesting depth " + nestingDepth);

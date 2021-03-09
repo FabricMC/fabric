@@ -24,7 +24,7 @@ import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 
 public class CombinedStorage<T, S extends Storage<T>> implements Storage<T> {
-	protected final List<S> parts;
+	public final List<S> parts;
 
 	public CombinedStorage(List<S> parts) {
 		this.parts = parts;

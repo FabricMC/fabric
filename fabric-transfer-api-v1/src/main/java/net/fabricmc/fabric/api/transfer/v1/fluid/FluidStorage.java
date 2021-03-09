@@ -25,7 +25,14 @@ import net.fabricmc.fabric.api.lookup.v1.block.BlockApiLookup;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.impl.transfer.fluid.CauldronWrapper;
 
+/**
+ * Access to {@link Storage Storage&lt;Fluid&gt;} instances.
+ */
 public final class FluidStorage {
+	/**
+	 * Sided block access to fluid storages. The Direction parameter may never be null.
+	 * Refer to {@link BlockApiLookup} for documentation on how to use this field.
+	 */
 	public static final BlockApiLookup<Storage<Fluid>, Direction> SIDED =
 			BlockApiLookup.get(new Identifier("fabric:sided_fluid_storage"), Storage.asClass(), Direction.class);
 
