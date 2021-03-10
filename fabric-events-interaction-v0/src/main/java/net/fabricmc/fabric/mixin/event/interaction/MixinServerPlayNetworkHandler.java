@@ -35,14 +35,14 @@ import net.minecraft.world.World;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 
 @Mixin(targets = "net/minecraft/server/network/ServerPlayNetworkHandler$1")
-public abstract class MixinServerPlayNetworkHandler implements PlayerInteractEntityC2SPacket.class_5908 {
+public abstract class MixinServerPlayNetworkHandler implements PlayerInteractEntityC2SPacket.Handler {
 	@Shadow
 	public ServerPlayNetworkHandler field_28963;
 
 	@Shadow
 	public Entity field_28962;
 
-	@Inject(method = "method_34220", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "interactAt", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Hand hand, Vec3d hitPosition, CallbackInfo info) {
 		PlayerEntity player = field_28963.player;
 		World world = player.getEntityWorld();

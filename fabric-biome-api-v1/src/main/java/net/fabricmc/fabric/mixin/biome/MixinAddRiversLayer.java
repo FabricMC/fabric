@@ -27,7 +27,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeKeys;
 import net.minecraft.world.biome.BuiltinBiomes;
-import net.minecraft.world.biome.layer.AddRiversLayer;
+import net.minecraft.world.biome.layer.ApplyRiverLayer;
 import net.minecraft.world.biome.layer.util.LayerRandomnessSource;
 import net.minecraft.world.biome.layer.util.LayerSampler;
 
@@ -38,7 +38,7 @@ import net.fabricmc.fabric.impl.biome.InternalBiomeUtils;
 /**
  * Sets river biomes specified with {@link OverworldBiomes#setRiverBiome(RegistryKey, RegistryKey)}.
  */
-@Mixin(AddRiversLayer.class)
+@Mixin(ApplyRiverLayer.class)
 public class MixinAddRiversLayer {
 	@Inject(at = @At("HEAD"), method = "sample", cancellable = true)
 	private void sample(LayerRandomnessSource rand, LayerSampler landSampler, LayerSampler riverSampler, int x, int z, CallbackInfoReturnable<Integer> info) {

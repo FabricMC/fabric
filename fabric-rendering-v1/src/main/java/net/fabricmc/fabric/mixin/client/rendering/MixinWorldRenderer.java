@@ -70,7 +70,7 @@ public abstract class MixinWorldRenderer {
 			method = "render",
 			at = @At(
 				value = "INVOKE",
-				target = "Lnet/minecraft/client/render/WorldRenderer;renderLayer(Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/util/math/MatrixStack;DDD)V",
+				target = "Lnet/minecraft/client/render/WorldRenderer;renderLayer(Lnet/minecraft/client/render/RenderLayer;Lnet/minecraft/client/util/math/MatrixStack;DDDLnet/minecraft/util/math/Matrix4f;)V",
 				ordinal = 2,
 				shift = Shift.AFTER
 			)
@@ -136,7 +136,7 @@ public abstract class MixinWorldRenderer {
 		didRenderParticles = true;
 	}
 
-	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;pushMatrix()V"))
+	@Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;push()V"))
 	private void beforeClouds(CallbackInfo ci) {
 		if (didRenderParticles) {
 			didRenderParticles = false;

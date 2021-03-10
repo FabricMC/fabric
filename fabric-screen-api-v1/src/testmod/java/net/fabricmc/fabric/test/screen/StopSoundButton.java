@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -35,9 +37,8 @@ class StopSoundButton extends AbstractPressableButtonWidget {
 
 	@Override
 	public void render(MatrixStack matrices, int mouseX, int mouseY, float tickDelta) {
-		MinecraftClient client = MinecraftClient.getInstance();
 		// Render the armor icon to test
-		client.getTextureManager().bindTexture(InGameHud.GUI_ICONS_TEXTURE);
+		RenderSystem.setShaderTexture(0, InGameHud.GUI_ICONS_TEXTURE);
 		DrawableHelper.drawTexture(matrices, this.x, this.y, this.width, this.height, 43, 27, 9, 9, 256, 256);
 
 		if (this.isMouseOver(mouseX, mouseY)) {
