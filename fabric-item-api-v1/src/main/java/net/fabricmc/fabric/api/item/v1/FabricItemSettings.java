@@ -23,7 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * Fabric's version of Item.Settings. Adds additional methods and hooks
@@ -67,7 +66,7 @@ public class FabricItemSettings extends Item.Settings {
 	}
 
 	/**
-	 * Gets a custom setting of the item
+	 * Gets a custom setting of the item.
 	 *
 	 * @param type the type of the setting
 	 * @param <T> the type of the setting

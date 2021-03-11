@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.test.item;
 
-import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -25,6 +24,7 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
 
 public class FabricItemSettingsTests implements ModInitializer {
 	public static final CustomItemSettingType<String> CUSTOM_DATA_TEST = CustomItemSettingType.of(() -> null);

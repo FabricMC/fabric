@@ -18,9 +18,9 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
-import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
 import net.minecraft.item.Item;
 
+import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
