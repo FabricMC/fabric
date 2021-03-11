@@ -16,12 +16,13 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
-import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
+
+import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
 
 public interface ItemExtensions {
-	/* @Nullable */ EquipmentSlotProvider fabric_getEquipmentSlotProvider();
-	void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider);
-	/* @Nullable */ CustomDamageHandler fabric_getCustomDamageHandler();
-	void fabric_setCustomDamageHandler(CustomDamageHandler handler);
+	@NotNull Map<CustomItemSettingType<?>, Object> fabric_getCustomItemSettings();
+	<T> T fabric_getCustomItemSetting(CustomItemSettingType<T> type);
 }

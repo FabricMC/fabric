@@ -65,17 +65,6 @@ public class FabricItemSettings extends Item.Settings {
 		return this;
 	}
 
-	/**
-	 * Gets a custom setting of the item.
-	 *
-	 * @param type the type of the setting
-	 * @param <T> the type of the setting
-	 * @return the value of the setting if present, default otherwise
-	 */
-	public <T> T getCustomSetting(CustomItemSettingType<T> type) {
-		return FabricItemInternals.getSetting(this, type);
-	}
-
 	// Overrides of vanilla methods
 
 	@Override

@@ -16,6 +16,10 @@
 
 package net.fabricmc.fabric.mixin.item;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -24,18 +28,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
-import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
+import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
 
 @Mixin(Item.class)
-abstract class ItemMixin implements ItemExtensions {
+class ItemMixin implements ItemExtensions {
 	@Unique
-	private EquipmentSlotProvider equipmentSlotProvider;
-
-	@Unique
-	private CustomDamageHandler customDamageHandler;
+	private final HashMap<CustomItemSettingType<?>, Object> customItemSettings = new HashMap<>();
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
@@ -43,22 +43,13 @@ abstract class ItemMixin implements ItemExtensions {
 	}
 
 	@Override
-	public EquipmentSlotProvider fabric_getEquipmentSlotProvider() {
-		return equipmentSlotProvider;
+	public @NotNull Map<CustomItemSettingType<?>, Object> fabric_getCustomItemSettings() {
+		return this.customItemSettings;
 	}
 
 	@Override
-	public void fabric_setEquipmentSlotProvider(EquipmentSlotProvider equipmentSlotProvider) {
-		this.equipmentSlotProvider = equipmentSlotProvider;
-	}
-
-	@Override
-	public CustomDamageHandler fabric_getCustomDamageHandler() {
-		return customDamageHandler;
-	}
-
-	@Override
-	public void fabric_setCustomDamageHandler(CustomDamageHandler handler) {
-		this.customDamageHandler = handler;
+	@SuppressWarnings("unchecked")
+	public <T> @NotNull T fabric_getCustomItemSetting(CustomItemSettingType<T> type) {
+		return (T) this.customItemSettings.computeIfAbsent(type, CustomItemSettingType::getDefaultValue);
 	}
 }

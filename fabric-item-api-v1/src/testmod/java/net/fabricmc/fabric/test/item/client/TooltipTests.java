@@ -22,7 +22,7 @@ import net.minecraft.util.Formatting;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.test.item.CustomSettingExtension;
+import net.fabricmc.fabric.test.item.FabricItemSettingsTests;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 
 @Environment(EnvType.CLIENT)
@@ -33,7 +33,7 @@ public class TooltipTests implements ClientModInitializer {
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			lines.add(new LiteralText("Fancy Tooltips").formatted(Formatting.LIGHT_PURPLE));
 
-			String string = ((CustomSettingExtension) stack.getItem()).getTestString();
+			String string = FabricItemSettingsTests.CUSTOM_DATA_TEST.getValue(stack.getItem());
 
 			if (string != null) {
 				lines.add(new LiteralText(string));

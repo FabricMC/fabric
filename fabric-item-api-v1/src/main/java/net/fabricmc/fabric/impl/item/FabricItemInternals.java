@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.impl.item;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.minecraft.item.Item;
@@ -28,7 +30,7 @@ public final class FabricItemInternals {
 	public static final CustomItemSettingType<EquipmentSlotProvider> EQUIPMENT_SLOT_PROVIDER = CustomItemSettingType.of(() -> null);
 	public static final CustomItemSettingType<CustomDamageHandler> CUSTOM_DAMAGE_HANDLER = CustomItemSettingType.of(() -> null);
 
-	private static final WeakHashMap<Item.Settings, WeakHashMap<CustomItemSettingType<?>, Object>> customSettings = new WeakHashMap<>();
+	private static final Map<Item.Settings, Map<CustomItemSettingType<?>, Object>> customSettings = new WeakHashMap<>();
 
 	private FabricItemInternals() {
 	}
@@ -37,14 +39,12 @@ public final class FabricItemInternals {
 		customSettings.computeIfAbsent(settings, s -> new WeakHashMap<>()).put(settingType, settingValue);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T getSetting(Item.Settings settings, CustomItemSettingType<T> settingType) {
-		return (T) customSettings.computeIfAbsent(settings, s -> new WeakHashMap<>())
-				.computeIfAbsent(settingType, CustomItemSettingType::getDefaultValue);
+	public static <T> T getSetting(Item item, CustomItemSettingType<T> settingType) {
+		return ((ItemExtensions) item).fabric_getCustomItemSetting(settingType);
 	}
 
 	public static void onBuild(Item.Settings settings, ItemExtensions item) {
-		item.fabric_setEquipmentSlotProvider(EQUIPMENT_SLOT_PROVIDER.getValue(settings));
-		item.fabric_setCustomDamageHandler(CUSTOM_DAMAGE_HANDLER.getValue(settings));
+		Map<CustomItemSettingType<?>, Object> customItemSettings = item.fabric_getCustomItemSettings();
+		customItemSettings.putAll(customSettings.getOrDefault(settings, Collections.emptyMap()));
 	}
 }

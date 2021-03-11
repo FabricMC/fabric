@@ -87,12 +87,13 @@ public final class CustomItemSettingType<T> {
 	}
 
 	/**
-	 * Returns the current value of this setting for the given {@link Item.Settings}.
+	 * Returns the current value of this setting for the given {@link Item}.
+	 * Should only be called after or within item construction.
 	 *
-	 * @param settings the item stetings
+	 * @param item the item
 	 * @return the current setting if present, the default setting if not
 	 */
-	public T getValue(Item.Settings settings) {
-		return FabricItemInternals.getSetting(settings, this);
+	public T getValue(Item item) {
+		return FabricItemInternals.getSetting(item, this);
 	}
 }
