@@ -16,6 +16,11 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
+import java.util.Map;
+import java.util.WeakHashMap;
+
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -32,6 +37,8 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
+	private final Map<CustomItemSetting<?>, Object> customSettings = new WeakHashMap<>();
+
 	/**
 	 * Sets the equipment slot provider of the item.
 	 *
@@ -39,7 +46,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		FabricItemInternals.setCustomSetting(this, FabricItemInternals.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
+		this.customSettings.put(FabricItemInternals.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
 		return this;
 	}
 
@@ -49,7 +56,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
-		FabricItemInternals.setCustomSetting(this, FabricItemInternals.CUSTOM_DAMAGE_HANDLER, handler);
+		this.customSettings.put(FabricItemInternals.CUSTOM_DAMAGE_HANDLER, handler);
 		return this;
 	}
 
@@ -61,8 +68,13 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public <T> FabricItemSettings customSetting(CustomItemSetting<T> setting, T value) {
-		FabricItemInternals.setCustomSetting(this, setting, value);
+		this.customSettings.put(setting, value);
 		return this;
+	}
+
+	@ApiStatus.Internal
+	public Map<CustomItemSetting<?>, ?> getCustomSettings() {
+		return this.customSettings;
 	}
 
 	// Overrides of vanilla methods

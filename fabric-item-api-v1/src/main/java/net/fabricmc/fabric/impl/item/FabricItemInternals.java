@@ -16,13 +16,12 @@
 
 package net.fabricmc.fabric.impl.item;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomItemSetting;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
@@ -30,13 +29,7 @@ public final class FabricItemInternals {
 	public static final CustomItemSetting<EquipmentSlotProvider> EQUIPMENT_SLOT_PROVIDER = CustomItemSetting.of(() -> null);
 	public static final CustomItemSetting<CustomDamageHandler> CUSTOM_DAMAGE_HANDLER = CustomItemSetting.of(() -> null);
 
-	private static final Map<Item.Settings, Map<CustomItemSetting<?>, Object>> customSettings = new WeakHashMap<>();
-
 	private FabricItemInternals() {
-	}
-
-	public static <T> void setCustomSetting(Item.Settings settings, CustomItemSetting<T> setting, T value) {
-		customSettings.computeIfAbsent(settings, s -> new WeakHashMap<>()).put(setting, value);
 	}
 
 	public static <T> T getSetting(Item item, CustomItemSetting<T> setting) {
@@ -44,7 +37,9 @@ public final class FabricItemInternals {
 	}
 
 	public static void onBuild(Item.Settings settings, ItemExtensions item) {
-		Map<CustomItemSetting<?>, Object> customItemSettings = item.fabric_getCustomItemSettings();
-		customItemSettings.putAll(customSettings.getOrDefault(settings, Collections.emptyMap()));
+		if (settings instanceof FabricItemSettings) {
+			Map<CustomItemSetting<?>, Object> customItemSettings = item.fabric_getCustomItemSettings();
+			customItemSettings.putAll(((FabricItemSettings) settings).getCustomSettings());
+		}
 	}
 }
