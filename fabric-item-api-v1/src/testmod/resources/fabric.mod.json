@@ -5,18 +5,20 @@
   "version": "1.0.0",
   "environment": "*",
   "license": "Apache-2.0",
+  "mixins": [
+    "fabric-item-api-v1-testmod.mixins.json"
+  ],
   "depends": {
     "fabric-item-api-v1": "*"
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.item.FabricItemSettingsTests"
+      "net.fabricmc.fabric.test.item.FabricItemSettingsTests",
+      "net.fabricmc.fabric.test.item.CustomDamageTest"
+
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
-    ],
-    "main": [
-      "net.fabricmc.fabric.test.item.CustomDamageTest"
     ]
   }
 }

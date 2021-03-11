@@ -23,6 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Fabric's version of Item.Settings. Adds additional methods and hooks
@@ -39,7 +40,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		FabricItemInternals.computeExtraData(this).equipmentSlot(equipmentSlotProvider);
+		FabricItemInternals.computeExtraData(this).customSetting(FabricItemInternals.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
 		return this;
 	}
 
@@ -49,8 +50,31 @@ public class FabricItemSettings extends Item.Settings {
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
-		FabricItemInternals.computeExtraData(this).customDamage(handler);
+		FabricItemInternals.computeExtraData(this).customSetting(FabricItemInternals.CUSTOM_DAMAGE_HANDLER, handler);
 		return this;
+	}
+
+	/**
+	 * Sets a custom setting of the item.
+
+	 * @param type the unique type for this setting
+	 * @param setting the object containing the setting itself
+	 * @return this builder
+	 */
+	public <T> FabricItemSettings customSetting(CustomItemSettingType<T> type, T setting) {
+		FabricItemInternals.computeExtraData(this).customSetting(type, setting);
+		return this;
+	}
+
+	/**
+	 * Gets a custom setting of the item
+	 *
+	 * @param type the type of the setting
+	 * @param <T> the type of the setting
+	 * @return the value of the setting if present, default otherwise
+	 */
+	public <T> T getCustomSetting(CustomItemSettingType<T> type) {
+		return FabricItemInternals.computeExtraData(this).getCustomSetting(type);
 	}
 
 	// Overrides of vanilla methods

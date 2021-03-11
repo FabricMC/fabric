@@ -16,6 +16,7 @@
 
 package net.fabricmc.fabric.test.item.client;
 
+import net.fabricmc.fabric.test.item.CustomSettingExtension;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Formatting;
 
@@ -31,6 +32,12 @@ public class TooltipTests implements ClientModInitializer {
 		// Adds a tooltip to all items so testing can be verified easily.
 		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			lines.add(new LiteralText("Fancy Tooltips").formatted(Formatting.LIGHT_PURPLE));
+
+			String string = ((CustomSettingExtension) stack.getItem()).getTestString();
+
+			if (string != null) {
+				lines.add(new LiteralText(string));
+			}
 		});
 	}
 }

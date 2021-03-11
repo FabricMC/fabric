@@ -39,7 +39,7 @@ abstract class ItemMixin implements ItemExtensions {
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
-		FabricItemInternals.onBuild(settings, (Item) (Object) this);
+		FabricItemInternals.onBuild(settings,this);
 	}
 
 	@Override

@@ -18,12 +18,16 @@ package net.fabricmc.fabric.impl.item;
 
 import java.util.WeakHashMap;
 
+import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomDamageHandler;
 import net.fabricmc.fabric.api.item.v1.EquipmentSlotProvider;
 
 public final class FabricItemInternals {
+	public static final CustomItemSettingType<EquipmentSlotProvider> EQUIPMENT_SLOT_PROVIDER = CustomItemSettingType.of(() -> null);
+	public static final CustomItemSettingType<CustomDamageHandler> CUSTOM_DAMAGE_HANDLER = CustomItemSettingType.of(() -> null);
+
 	private static final WeakHashMap<Item.Settings, ExtraData> extraData = new WeakHashMap<>();
 
 	private FabricItemInternals() {
@@ -33,25 +37,25 @@ public final class FabricItemInternals {
 		return extraData.computeIfAbsent(settings, s -> new ExtraData());
 	}
 
-	public static void onBuild(Item.Settings settings, Item item) {
+	public static void onBuild(Item.Settings settings, ItemExtensions item) {
 		ExtraData data = extraData.get(settings);
 
 		if (data != null) {
-			((ItemExtensions) item).fabric_setEquipmentSlotProvider(data.equipmentSlotProvider);
-			((ItemExtensions) item).fabric_setCustomDamageHandler(data.customDamageHandler);
+			item.fabric_setEquipmentSlotProvider(data.getCustomSetting(EQUIPMENT_SLOT_PROVIDER));
+			item.fabric_setCustomDamageHandler(data.getCustomSetting(CUSTOM_DAMAGE_HANDLER));
 		}
 	}
 
 	public static final class ExtraData {
-		private /* @Nullable */ EquipmentSlotProvider equipmentSlotProvider;
-		private /* @Nullable */ CustomDamageHandler customDamageHandler;
+		private final WeakHashMap<CustomItemSettingType<?>, Object> settings = new WeakHashMap<>();
 
-		public void equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-			this.equipmentSlotProvider = equipmentSlotProvider;
+		public <T> void customSetting(CustomItemSettingType<T> type, T setting) {
+			this.settings.put(type, setting);
 		}
 
-		public void customDamage(CustomDamageHandler handler) {
-			this.customDamageHandler = handler;
+		@SuppressWarnings("unchecked")
+		public <T> T getCustomSetting(CustomItemSettingType<T> type) {
+			return (T) this.settings.computeIfAbsent(type, CustomItemSettingType::getDefaultValue);
 		}
 	}
 }
