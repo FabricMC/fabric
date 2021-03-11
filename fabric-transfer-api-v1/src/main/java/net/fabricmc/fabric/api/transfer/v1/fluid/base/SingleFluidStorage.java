@@ -1,0 +1,147 @@
+package net.fabricmc.fabric.api.transfer.v1.fluid.base;
+
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidPreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.fabricmc.fabric.api.transfer.v1.transaction.base.SnapshotParticipant;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+
+/**
+ * A storage that can store a single fluid at any given time.
+ * Implementors should at least override {@link #getCapacity}, and probably {@link #markDirty} as well.
+ *
+ * <p>{@link #canInsert} and {@link #canExtract} can be used for more precise control over which fluids may be inserted or
+ * extracted.
+ * If one of these two functions is overridden to always return false, implementors may also wish to override
+ * {@link #supportsInsertion} and/or {@link #supportsExtraction}.
+ */
+public abstract class SingleFluidStorage extends SnapshotParticipant<SingleFluidStorage.State> implements Storage<Fluid>, StorageView<Fluid> {
+	public Fluid fluid;
+	public long amount;
+	private int version = 0;
+
+	/**
+	 * Implement if you want.
+	 */
+	protected void markDirty() {
+	}
+
+	/**
+	 * @return True if the passed non-empty fluid can be inserted, false otherwise.
+	 */
+	protected boolean canInsert(Fluid fluid) {
+		return true;
+	}
+
+	/**
+	 * @return True if the passed non-empty fluid can be extracted, false otherwise.
+	 */
+	protected boolean canExtract(Fluid fluid) {
+		return true;
+	}
+
+	/**
+	 * @return The maximum capacity of this storage for the passed non-empty fluid.
+	 */
+	protected abstract long getCapacity(Fluid fluid);
+
+	@Override
+	public final Fluid resource() {
+		return fluid;
+	}
+
+	@Override
+	public final long amount() {
+		return fluid == Fluids.EMPTY ? 0 : amount;
+	}
+
+	@Override
+	public final long insert(Fluid insertedFluid, long maxAmount, Transaction transaction) {
+		FluidPreconditions.notEmptyNotNegative(insertedFluid, maxAmount);
+
+		if ((insertedFluid == fluid || fluid == Fluids.EMPTY) && canInsert(insertedFluid)) {
+			long insertedAmount = Math.min(maxAmount, getCapacity(insertedFluid) - amount);
+
+			if (insertedAmount > 0) {
+				updateSnapshots(transaction);
+
+				// Just in case.
+				if (fluid == Fluids.EMPTY) {
+					amount = 0;
+				}
+
+				amount += insertedAmount;
+				fluid = insertedFluid;
+			}
+
+			return insertedAmount;
+		}
+
+		return 0;
+	}
+
+	@Override
+	public final long extract(Fluid extractedFluid, long maxAmount, Transaction transaction) {
+		FluidPreconditions.notEmptyNotNegative(extractedFluid, maxAmount);
+
+		if (extractedFluid == fluid && canExtract(extractedFluid)) {
+			long extractedAmount = Math.min(maxAmount, amount);
+
+			if (extractedAmount > 0) {
+				updateSnapshots(transaction);
+				amount -= extractedAmount;
+
+				if (amount == 0) {
+					fluid = Fluids.EMPTY;
+				}
+			}
+
+			return extractedAmount;
+		}
+
+		return 0;
+	}
+
+	@Override
+	public final boolean forEach(Visitor<Fluid> visitor, Transaction transaction) {
+		if (amount() > 0) {
+			return visitor.accept(this);
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public final int getVersion() {
+		return version;
+	}
+
+	@Override
+	protected final State createSnapshot() {
+		return new State(fluid, amount);
+	}
+
+	@Override
+	protected final void readSnapshot(State snapshot) {
+		this.fluid = snapshot.fluid;
+		this.amount = snapshot.amount;
+	}
+
+	@Override
+	protected final void onFinalCommit() {
+		version++;
+		markDirty();
+	}
+
+	protected static class State {
+		final Fluid fluid;
+		final long amount;
+
+		State(Fluid fluid, long amount) {
+			this.fluid = fluid;
+			this.amount = amount;
+		}
+	}
+}

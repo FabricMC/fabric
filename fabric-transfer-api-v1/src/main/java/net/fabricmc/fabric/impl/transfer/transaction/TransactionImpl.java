@@ -50,7 +50,10 @@ public class TransactionImpl implements Transaction {
 
 		acquireLock();
 
-		// open transaction, STACK always has at least one element.
+		if (STACK.size() == 0) {
+			STACK.add(new TransactionImpl(0));
+		}
+
 		currentDepth = 0;
 		TransactionImpl current = STACK.get(currentDepth);
 		current.isOpen = true;

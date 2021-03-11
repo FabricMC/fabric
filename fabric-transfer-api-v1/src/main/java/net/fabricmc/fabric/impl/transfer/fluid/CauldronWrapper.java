@@ -45,9 +45,16 @@ public class CauldronWrapper extends SnapshotParticipant<Integer> implements Sto
 	}
 
 	private final WorldLocation location;
+	// this is the last released snapshot, which means it's the first snapshot ever saved when onFinalCommit() is called.
+	private int lastReleasedSnapshot;
 
 	CauldronWrapper(WorldLocation location) {
 		this.location = location;
+	}
+
+	@Override
+	protected void releaseSnapshot(Integer snapshot) {
+		lastReleasedSnapshot = snapshot;
 	}
 
 	@Override
@@ -64,6 +71,8 @@ public class CauldronWrapper extends SnapshotParticipant<Integer> implements Sto
 				updateSnapshots(transaction);
 				location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, level + levelsInserted), 0);
 			}
+
+			return levelsInserted * FluidConstants.BOTTLE;
 		}
 
 		return 0;
@@ -83,6 +92,8 @@ public class CauldronWrapper extends SnapshotParticipant<Integer> implements Sto
 				updateSnapshots(transaction);
 				location.world.setBlockState(location.pos, state.with(CauldronBlock.LEVEL, level - levelsExtracted), 0);
 			}
+
+			return levelsExtracted * FluidConstants.BOTTLE;
 		}
 
 		return 0;
@@ -132,10 +143,14 @@ public class CauldronWrapper extends SnapshotParticipant<Integer> implements Sto
 	@Override
 	public void onFinalCommit() {
 		BlockState state = location.world.getBlockState(location.pos);
+		BlockState originalState = state.with(CauldronBlock.LEVEL, lastReleasedSnapshot);
 
 		// Only send the update if the cauldron is still there
-		if (state.isOf(Blocks.CAULDRON)) {
-			location.world.updateNeighbors(location.pos, null);
+		if (state.isOf(Blocks.CAULDRON) && originalState != state) {
+			// Revert change
+			location.world.setBlockState(location.pos, originalState, 0);
+			// Then do the actual change with normal block updates
+			location.world.setBlockState(location.pos, state);
 		}
 	}
 }

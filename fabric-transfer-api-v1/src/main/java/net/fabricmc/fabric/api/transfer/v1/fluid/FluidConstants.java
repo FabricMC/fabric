@@ -26,6 +26,16 @@ public final class FluidConstants {
 	public static final long NUGGET = 1000;
 	public static final long DROPLET = 1;
 
+	public static long fromBuckets(long numerator, long denominator) {
+		long total = numerator * BUCKET;
+
+		if (total % denominator != 0) {
+			throw new IllegalArgumentException("Not a valid number of droplets!");
+		} else {
+			return total / denominator;
+		}
+	}
+
 	private FluidConstants() {
 	}
 }

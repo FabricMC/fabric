@@ -70,6 +70,7 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 		snapshots.set(transaction.nestingDepth(), null);
 
 		if (result.wasAborted()) {
+			readSnapshot(snapshot);
 			releaseSnapshot(snapshot);
 		} else if (transaction.nestingDepth() > 0) {
 			T oldSnapshot = snapshots.set(transaction.nestingDepth()-1, snapshot);
@@ -80,7 +81,6 @@ public abstract class SnapshotParticipant<T> implements Transaction.CloseCallbac
 				transaction.getOpenTransaction(transaction.nestingDepth()-1).addCloseCallback(this);
 			}
 		} else {
-			readSnapshot(snapshot);
 			releaseSnapshot(snapshot);
 			// TODO: should onFinalCommit be deferred until after all `onClose` actions are run?
 			onFinalCommit();
