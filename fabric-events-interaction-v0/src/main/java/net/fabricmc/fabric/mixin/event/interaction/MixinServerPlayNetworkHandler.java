@@ -42,7 +42,7 @@ public abstract class MixinServerPlayNetworkHandler implements PlayerInteractEnt
 	@Shadow
 	public Entity field_28962;
 
-	@Inject(method = "interactAt", at = @At(value = "HEAD"), cancellable = true)
+	@Inject(method = "interactAt(Lnet/minecraft/util/Hand;Lnet/minecraft/util/math/Vec3d;)V", at = @At(value = "HEAD"), cancellable = true)
 	public void onPlayerInteractEntity(Hand hand, Vec3d hitPosition, CallbackInfo info) {
 		PlayerEntity player = field_28963.player;
 		World world = player.getEntityWorld();
