@@ -33,52 +33,52 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  *
  * @param <T> the type of the setting to be attached
  */
-public final class CustomItemSettingType<T> {
+public final class CustomItemSetting<T> {
 	private final Supplier<@NotNull T> defaultValue;
 
-	private CustomItemSettingType(Supplier<@NotNull T> defaultValue) {
+	private CustomItemSetting(Supplier<@NotNull T> defaultValue) {
 		this.defaultValue = defaultValue;
 	}
 
 	// There are a lot of these for convenience sake.
-	public static <T> CustomItemSettingType<T> of(Supplier<T> defaultValue) {
-		return new CustomItemSettingType<>(defaultValue);
+	public static <T> CustomItemSetting<T> of(Supplier<T> defaultValue) {
+		return new CustomItemSetting<>(defaultValue);
 	}
 
-	public static CustomItemSettingType<Integer> of(int defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Integer> of(int defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<Long> of(long defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Long> of(long defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<Float> of(float defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Float> of(float defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<Double> of(double defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Double> of(double defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<Boolean> of(boolean defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Boolean> of(boolean defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<Byte> of(byte defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Byte> of(byte defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<Short> of(short defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Short> of(short defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<Character> of(char defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<Character> of(char defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
-	public static CustomItemSettingType<String> of(String defaultValue) {
-		return new CustomItemSettingType<>(() -> defaultValue);
+	public static CustomItemSetting<String> of(String defaultValue) {
+		return new CustomItemSetting<>(() -> defaultValue);
 	}
 
 	@ApiStatus.Internal

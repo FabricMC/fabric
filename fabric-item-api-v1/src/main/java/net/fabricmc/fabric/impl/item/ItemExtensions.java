@@ -20,9 +20,9 @@ import java.util.Map;
 
 import org.jetbrains.annotations.NotNull;
 
-import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
+import net.fabricmc.fabric.api.item.v1.CustomItemSetting;
 
 public interface ItemExtensions {
-	@NotNull Map<CustomItemSettingType<?>, Object> fabric_getCustomItemSettings();
-	<T> T fabric_getCustomItemSetting(CustomItemSettingType<T> type);
+	@NotNull Map<CustomItemSetting<?>, Object> fabric_getCustomItemSettings();
+	<T> T fabric_getCustomItemSetting(CustomItemSetting<T> type);
 }

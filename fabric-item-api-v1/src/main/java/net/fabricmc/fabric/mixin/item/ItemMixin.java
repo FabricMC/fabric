@@ -30,12 +30,12 @@ import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.impl.item.FabricItemInternals;
 import net.fabricmc.fabric.impl.item.ItemExtensions;
-import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
+import net.fabricmc.fabric.api.item.v1.CustomItemSetting;
 
 @Mixin(Item.class)
 class ItemMixin implements ItemExtensions {
 	@Unique
-	private final HashMap<CustomItemSettingType<?>, Object> customItemSettings = new HashMap<>();
+	private final HashMap<CustomItemSetting<?>, Object> customItemSettings = new HashMap<>();
 
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
@@ -43,13 +43,13 @@ class ItemMixin implements ItemExtensions {
 	}
 
 	@Override
-	public @NotNull Map<CustomItemSettingType<?>, Object> fabric_getCustomItemSettings() {
+	public @NotNull Map<CustomItemSetting<?>, Object> fabric_getCustomItemSettings() {
 		return this.customItemSettings;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <T> @NotNull T fabric_getCustomItemSetting(CustomItemSettingType<T> type) {
-		return (T) this.customItemSettings.computeIfAbsent(type, CustomItemSettingType::getDefaultValue);
+	public <T> @NotNull T fabric_getCustomItemSetting(CustomItemSetting<T> type) {
+		return (T) this.customItemSettings.computeIfAbsent(type, CustomItemSetting::getDefaultValue);
 	}
 }

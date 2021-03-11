@@ -24,10 +24,10 @@ import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.fabric.api.item.v1.CustomItemSettingType;
+import net.fabricmc.fabric.api.item.v1.CustomItemSetting;
 
 public class FabricItemSettingsTests implements ModInitializer {
-	public static final CustomItemSettingType<String> CUSTOM_DATA_TEST = CustomItemSettingType.of(() -> null);
+	public static final CustomItemSetting<String> CUSTOM_DATA_TEST = CustomItemSetting.of(() -> null);
 
 	@Override
 	public void onInitialize() {

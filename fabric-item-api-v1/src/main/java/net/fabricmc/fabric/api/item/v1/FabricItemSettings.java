@@ -56,12 +56,12 @@ public class FabricItemSettings extends Item.Settings {
 	/**
 	 * Sets a custom setting of the item.
 
-	 * @param type the unique type for this setting
-	 * @param setting the object containing the setting itself
+	 * @param setting the unique type for this setting
+	 * @param value the object containing the setting itself
 	 * @return this builder
 	 */
-	public <T> FabricItemSettings customSetting(CustomItemSettingType<T> type, T setting) {
-		FabricItemInternals.setCustomSetting(this, type, setting);
+	public <T> FabricItemSettings customSetting(CustomItemSetting<T> setting, T value) {
+		FabricItemInternals.setCustomSetting(this, setting, value);
 		return this;
 	}
 
