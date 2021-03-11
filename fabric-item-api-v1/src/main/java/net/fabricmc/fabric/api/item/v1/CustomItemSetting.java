@@ -34,7 +34,7 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * @param <T> the type of the setting to be attached
  */
 public final class CustomItemSetting<T> {
-	private final Supplier<@NotNull T> defaultValue;
+	private final Supplier<T> defaultValue;
 
 	private CustomItemSetting(Supplier<@NotNull T> defaultValue) {
 		this.defaultValue = defaultValue;
