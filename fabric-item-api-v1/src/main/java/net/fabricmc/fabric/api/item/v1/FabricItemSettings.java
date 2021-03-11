@@ -39,7 +39,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		FabricItemInternals.computeExtraData(this).customSetting(FabricItemInternals.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
+		FabricItemInternals.setCustomSetting(this, FabricItemInternals.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
 		return this;
 	}
 
@@ -49,7 +49,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
-		FabricItemInternals.computeExtraData(this).customSetting(FabricItemInternals.CUSTOM_DAMAGE_HANDLER, handler);
+		FabricItemInternals.setCustomSetting(this, FabricItemInternals.CUSTOM_DAMAGE_HANDLER, handler);
 		return this;
 	}
 
@@ -61,7 +61,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public <T> FabricItemSettings customSetting(CustomItemSettingType<T> type, T setting) {
-		FabricItemInternals.computeExtraData(this).customSetting(type, setting);
+		FabricItemInternals.setCustomSetting(this, type, setting);
 		return this;
 	}
 
@@ -73,7 +73,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return the value of the setting if present, default otherwise
 	 */
 	public <T> T getCustomSetting(CustomItemSettingType<T> type) {
-		return FabricItemInternals.computeExtraData(this).getCustomSetting(type);
+		return FabricItemInternals.getSetting(this, type);
 	}
 
 	// Overrides of vanilla methods

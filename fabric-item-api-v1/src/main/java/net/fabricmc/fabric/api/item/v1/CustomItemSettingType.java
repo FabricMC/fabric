@@ -93,6 +93,6 @@ public final class CustomItemSettingType<T> {
 	 * @return the current setting if present, the default setting if not
 	 */
 	public T getValue(Item.Settings settings) {
-		return FabricItemInternals.computeExtraData(settings).getCustomSetting(this);
+		return FabricItemInternals.getSetting(settings, this);
 	}
 }
