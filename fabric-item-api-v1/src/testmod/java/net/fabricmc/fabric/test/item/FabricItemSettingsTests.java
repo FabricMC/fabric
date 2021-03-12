@@ -27,7 +27,7 @@ import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.item.v1.CustomItemSetting;
 
 public class FabricItemSettingsTests implements ModInitializer {
-	public static final CustomItemSetting<String> CUSTOM_DATA_TEST = CustomItemSetting.of(() -> null);
+	public static final CustomItemSetting<String> CUSTOM_DATA_TEST = CustomItemSetting.create(() -> null);
 
 	@Override
 	public void onInitialize() {

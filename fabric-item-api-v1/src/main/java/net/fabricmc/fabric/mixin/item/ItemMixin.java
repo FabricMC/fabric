@@ -16,40 +16,19 @@
 
 package net.fabricmc.fabric.mixin.item;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.jetbrains.annotations.NotNull;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.impl.item.FabricItemInternals;
-import net.fabricmc.fabric.impl.item.ItemExtensions;
-import net.fabricmc.fabric.api.item.v1.CustomItemSetting;
+import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
 
 @Mixin(Item.class)
-class ItemMixin implements ItemExtensions {
-	@Unique
-	private final HashMap<CustomItemSetting<?>, Object> customItemSettings = new HashMap<>();
-
+class ItemMixin {
 	@Inject(method = "<init>", at = @At("RETURN"))
 	private void onConstruct(Item.Settings settings, CallbackInfo info) {
-		FabricItemInternals.onBuild(settings, this);
-	}
-
-	@Override
-	public @NotNull Map<CustomItemSetting<?>, Object> fabric_getCustomItemSettings() {
-		return this.customItemSettings;
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> @NotNull T fabric_getCustomItemSetting(CustomItemSetting<T> type) {
-		return (T) this.customItemSettings.computeIfAbsent(type, CustomItemSetting::getDefaultValue);
+		CustomItemSettingImpl.onBuild(settings, (Item) (Object) this);
 	}
 }

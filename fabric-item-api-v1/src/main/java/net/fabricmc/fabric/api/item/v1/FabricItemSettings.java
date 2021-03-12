@@ -16,18 +16,13 @@
 
 package net.fabricmc.fabric.api.item.v1;
 
-import java.util.Map;
-import java.util.WeakHashMap;
-
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Rarity;
 
-import net.fabricmc.fabric.impl.item.FabricItemInternals;
+import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
 
 /**
  * Fabric's version of Item.Settings. Adds additional methods and hooks
@@ -37,8 +32,6 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * {@code new FabricItemSettings()}.
  */
 public class FabricItemSettings extends Item.Settings {
-	private final Map<CustomItemSetting<?>, Object> customSettings = new WeakHashMap<>();
-
 	/**
 	 * Sets the equipment slot provider of the item.
 	 *
@@ -46,7 +39,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		this.customSettings.put(FabricItemInternals.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
+		((CustomItemSettingImpl<EquipmentSlotProvider>) CustomItemSettingImpl.EQUIPMENT_SLOT_PROVIDER).set(this, equipmentSlotProvider);
 		return this;
 	}
 
@@ -56,7 +49,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
-		this.customSettings.put(FabricItemInternals.CUSTOM_DAMAGE_HANDLER, handler);
+		((CustomItemSettingImpl<CustomDamageHandler>) CustomItemSettingImpl.CUSTOM_DAMAGE_HANDLER).set(this, handler);
 		return this;
 	}
 
@@ -68,13 +61,8 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public <T> FabricItemSettings customSetting(CustomItemSetting<T> setting, T value) {
-		this.customSettings.put(setting, value);
+		((CustomItemSettingImpl<T>) setting).set(this, value);
 		return this;
-	}
-
-	@ApiStatus.Internal
-	public Map<CustomItemSetting<?>, ?> getCustomSettings() {
-		return this.customSettings;
 	}
 
 	// Overrides of vanilla methods

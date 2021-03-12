@@ -22,7 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.item.Item;
 
-import net.fabricmc.fabric.impl.item.FabricItemInternals;
+import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
 
 /**
  * A type of setting that can be passed to item constructors.
@@ -30,61 +30,12 @@ import net.fabricmc.fabric.impl.item.FabricItemInternals;
  * to items in a way that is compatible with other mods that add
  * settings to items.
  *
+ * <p>Values of this setting can be retrieved from an item using {@link CustomItemSetting#getValue(Item)}</p>
+ *
  * @param <T> the type of the setting to be attached
  */
-public final class CustomItemSetting<T> {
-	private final Supplier<T> defaultValue;
-
-	private CustomItemSetting(Supplier<T> defaultValue) {
-		this.defaultValue = defaultValue;
-	}
-
-	// There are a lot of these for convenience sake.
-	public static <T> CustomItemSetting<T> of(Supplier<T> defaultValue) {
-		return new CustomItemSetting<>(defaultValue);
-	}
-
-	public static CustomItemSetting<Integer> of(int defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<Long> of(long defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<Float> of(float defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<Double> of(double defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<Boolean> of(boolean defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<Byte> of(byte defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<Short> of(short defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<Character> of(char defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	public static CustomItemSetting<String> of(String defaultValue) {
-		return new CustomItemSetting<>(() -> defaultValue);
-	}
-
-	@ApiStatus.Internal
-	public T getDefaultValue() {
-		return defaultValue.get();
-	}
-
+@ApiStatus.NonExtendable
+public interface CustomItemSetting<T> {
 	/**
 	 * Returns the current value of this setting for the given {@link Item}.
 	 * Should only be called after or within item construction.
@@ -92,7 +43,34 @@ public final class CustomItemSetting<T> {
 	 * @param item the item
 	 * @return the current setting if present, the default setting if not
 	 */
-	public T getValue(Item item) {
-		return FabricItemInternals.getSetting(item, this);
+	T getValue(Item item);
+
+	// There are a lot of these for convenience sake.
+	static <T> CustomItemSetting<T> create(Supplier<T> defaultValue) {
+		return new CustomItemSettingImpl<>(defaultValue);
+	}
+
+	static CustomItemSetting<Integer> create(int defaultValue) {
+		return new CustomItemSettingImpl<>(() -> defaultValue);
+	}
+
+	static CustomItemSetting<Long> create(long defaultValue) {
+		return new CustomItemSettingImpl<>(() -> defaultValue);
+	}
+
+	static CustomItemSetting<Float> create(float defaultValue) {
+		return new CustomItemSettingImpl<>(() -> defaultValue);
+	}
+
+	static CustomItemSetting<Double> create(double defaultValue) {
+		return new CustomItemSettingImpl<>(() -> defaultValue);
+	}
+
+	static CustomItemSetting<Boolean> create(boolean defaultValue) {
+		return new CustomItemSettingImpl<>(() -> defaultValue);
+	}
+
+	static CustomItemSetting<String> create(String defaultValue) {
+		return new CustomItemSettingImpl<>(() -> defaultValue);
 	}
 }
