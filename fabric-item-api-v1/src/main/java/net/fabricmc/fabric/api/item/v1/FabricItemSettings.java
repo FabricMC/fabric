@@ -39,8 +39,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @return this builder
 	 */
 	public FabricItemSettings equipmentSlot(EquipmentSlotProvider equipmentSlotProvider) {
-		((CustomItemSettingImpl<EquipmentSlotProvider>) CustomItemSettingImpl.EQUIPMENT_SLOT_PROVIDER).set(this, equipmentSlotProvider);
-		return this;
+		return custom(CustomItemSettingImpl.EQUIPMENT_SLOT_PROVIDER, equipmentSlotProvider);
 	}
 
 	/**
@@ -49,8 +48,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @see CustomDamageHandler
 	 */
 	public FabricItemSettings customDamage(CustomDamageHandler handler) {
-		((CustomItemSettingImpl<CustomDamageHandler>) CustomItemSettingImpl.CUSTOM_DAMAGE_HANDLER).set(this, handler);
-		return this;
+		return this.custom(CustomItemSettingImpl.CUSTOM_DAMAGE_HANDLER, handler);
 	}
 
 	/**

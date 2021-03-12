@@ -45,32 +45,13 @@ public interface CustomItemSetting<T> {
 	 */
 	T getValue(Item item);
 
-	// There are a lot of these for convenience sake.
+	/**
+	 * Creates a new CustomItemSetting with the given default value.
+	 *
+	 * @param defaultValue the value all items that do not explicitly set this setting will have.
+	 * @return a new CustomItemSetting
+	 */
 	static <T> CustomItemSetting<T> create(Supplier<T> defaultValue) {
 		return new CustomItemSettingImpl<>(defaultValue);
-	}
-
-	static CustomItemSetting<Integer> create(int defaultValue) {
-		return new CustomItemSettingImpl<>(() -> defaultValue);
-	}
-
-	static CustomItemSetting<Long> create(long defaultValue) {
-		return new CustomItemSettingImpl<>(() -> defaultValue);
-	}
-
-	static CustomItemSetting<Float> create(float defaultValue) {
-		return new CustomItemSettingImpl<>(() -> defaultValue);
-	}
-
-	static CustomItemSetting<Double> create(double defaultValue) {
-		return new CustomItemSettingImpl<>(() -> defaultValue);
-	}
-
-	static CustomItemSetting<Boolean> create(boolean defaultValue) {
-		return new CustomItemSettingImpl<>(() -> defaultValue);
-	}
-
-	static CustomItemSetting<String> create(String defaultValue) {
-		return new CustomItemSettingImpl<>(() -> defaultValue);
 	}
 }
