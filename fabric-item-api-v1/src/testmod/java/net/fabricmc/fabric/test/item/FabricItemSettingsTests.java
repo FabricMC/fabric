@@ -35,7 +35,7 @@ public class FabricItemSettingsTests implements ModInitializer {
 		Item testItem = new Item(new FabricItemSettings().group(ItemGroup.MISC).equipmentSlot(stack -> EquipmentSlot.CHEST));
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item"), testItem);
 
-		Item testItem2 = new Item(new FabricItemSettings().group(ItemGroup.MISC).customSetting(CUSTOM_DATA_TEST, "Look at me! I have a custom setting!"));
+		Item testItem2 = new Item(new FabricItemSettings().group(ItemGroup.MISC).custom(CUSTOM_DATA_TEST, "Look at me! I have a custom setting!"));
 		Registry.register(Registry.ITEM, new Identifier("fabric-item-api-v1-testmod", "test_item2"), testItem2);
 	}
 }

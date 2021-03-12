@@ -60,7 +60,7 @@ public class FabricItemSettings extends Item.Settings {
 	 * @param value the object containing the setting itself
 	 * @return this builder
 	 */
-	public <T> FabricItemSettings customSetting(CustomItemSetting<T> setting, T value) {
+	public <T> FabricItemSettings custom(CustomItemSetting<T> setting, T value) {
 		((CustomItemSettingImpl<T>) setting).set(this, value);
 		return this;
 	}
