@@ -1,7 +1,0 @@
-archivesBaseName = "fabric-containers-v0"
-version = getSubprojectVersion(project, "0.1.12")
-
-moduleDependencies(project, [
-		'fabric-api-base',
-		'fabric-networking-api-v1'
-])
