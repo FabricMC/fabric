@@ -49,7 +49,7 @@ Set<String> apiModules = [
     "fabric-api-base",
     "fabric-command-api-v1",
     "fabric-lifecycle-events-v1",
-    "fabric-networking-v0"
+    "fabric-networking-api-v1"
 ]
 
 // Add each module as a dependency
@@ -66,7 +66,7 @@ setOf(
     "fabric-api-base",
     "fabric-command-api-v1",
     "fabric-lifecycle-events-v1",
-    "fabric-networking-v0"
+    "fabric-networking-api-v1"
 ).forEach {
     // Add each module as a dependency
     modImplementation(fabricApi.module(it, FABRIC_API_VERSION))
