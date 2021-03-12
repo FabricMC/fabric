@@ -30,7 +30,26 @@ import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
  * to items in a way that is compatible with other mods that add
  * settings to items.
  *
- * <p>Values of this setting can be retrieved from an item using {@link CustomItemSetting#getValue(Item)}</p>
+ * <p>Values of this setting can be retrieved from an item using {@link CustomItemSetting#getValue(Item)}
+ *
+ * <p>Users that wish to expose a custom setting for use in other mods should do so by exposing
+ * the CustomItemSetting instance.
+ *
+ * <pre>{@code
+ * public static final CustomItemSetting<String> CUSTOM_TOOLTIP = CustomItemSetting.create(() -> null);
+ *
+ * @Override
+ * public void onInitializeClient() {
+ *     ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
+ *         String tooltip = CUSTOM_TOOLTIP.getValue(stack.getItem());
+ *
+ *         if (tooltip != null) {
+ *             lines.add(new LiteralText(tooltip));
+ *         }
+ *     }
+ * }}</pre>
+ *
+ * <p>Do not implement. Use {@link CustomItemSetting#create(Supplier)} to retrieve an instance.
  *
  * @param <T> the type of the setting to be attached
  */
