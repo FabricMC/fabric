@@ -38,7 +38,7 @@ public final class EventFactoryImpl {
 		ARRAY_BACKED_EVENTS.forEach(ArrayBackedEvent::update);
 	}
 
-	public static <T> Event<T> createUnbad(Class<? super T> type, Function<T[], T> invokerFactory) {
+	public static <T> Event<T> createArrayBackedUsingTheFactoryEveryTime(Class<? super T> type, Function<T[], T> invokerFactory) {
 		ArrayBackedEvent<T> event = new ArrayBackedEvent<>(type, invokerFactory);
 		ARRAY_BACKED_EVENTS.add(event);
 		return event;

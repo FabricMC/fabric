@@ -48,7 +48,7 @@ public final class EventFactory {
 	/**
 	 * Create an "array-backed" Event instance.
 	 * The factory will be used for any number of listeners.
-	 * Consider using {@link #createUnbad the more optimized overload} if you need a slight performance increase
+	 * Consider using {@link #createArrayBackedCustomEmptyInvoker(Class, Object, Function)}  the more optimized overload} if you need a slight performance increase
 	 * when there are 0 or 1 listeners.
 	 *
 	 * @param type           The listener class type.
@@ -56,8 +56,8 @@ public final class EventFactory {
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
 	 */
-	public static <T> Event<T> createUnbad(Class<? super T> type, Function<T[], T> invokerFactory) {
-		return EventFactoryImpl.createUnbad(type, invokerFactory);
+	public static <T> Event<T> createArrayBackedUsingTheFactoryEveryTime(Class<? super T> type, Function<T[], T> invokerFactory) {
+		return EventFactoryImpl.createArrayBackedUsingTheFactoryEveryTime(type, invokerFactory);
 	}
 
 	/**
@@ -65,7 +65,7 @@ public final class EventFactory {
 	 * The empty invoker will be used when there are no listeners,
 	 * and when there is only one listener, it will be used directly.
 	 * The factory will only be used when there are at least two listeners.
-	 * Consider using {@link #createUnbad} if this optimization is unsuitable or unneeded.
+	 * Consider using {@link #createArrayBackedUsingTheFactoryEveryTime} if this optimization is unsuitable or unneeded.
 	 *
 	 * @param type           The listener class type.
 	 * @param emptyInvoker   The custom empty invoker.
@@ -73,8 +73,8 @@ public final class EventFactory {
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
 	 */
-	public static <T> Event<T> createUnbad(Class<? super T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
-		return createUnbad(type, invokers -> {
+	public static <T> Event<T> createArrayBackedCustomEmptyInvoker(Class<? super T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
+		return createArrayBackedUsingTheFactoryEveryTime(type, invokers -> {
 			if (invokers.length == 0) {
 				return emptyInvoker;
 			} else if (invokers.length == 1) {
@@ -94,11 +94,11 @@ public final class EventFactory {
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
-	 * @deprecated Use {@link #createUnbad(Class, Function) createUnbad}.
+	 * @deprecated Use {@link #createArrayBackedUsingTheFactoryEveryTime(Class, Function) createUnbad}.
 	 */
 	@Deprecated
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
-		return createUnbad(type, invokers -> {
+		return createArrayBackedUsingTheFactoryEveryTime(type, invokers -> {
 			if (invokers.length == 1) {
 				return invokers[0];
 			} else {
@@ -121,11 +121,11 @@ public final class EventFactory {
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
-	 * @deprecated Use {@link #createUnbad(Class, Object, Function)} instead.
+	 * @deprecated Use {@link #createArrayBackedCustomEmptyInvoker(Class, Object, Function)} instead.
 	 */
 	@Deprecated
 	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
-		return createUnbad(type, emptyInvoker, invokerFactory);
+		return createArrayBackedCustomEmptyInvoker(type, emptyInvoker, invokerFactory);
 	}
 
 	/**
