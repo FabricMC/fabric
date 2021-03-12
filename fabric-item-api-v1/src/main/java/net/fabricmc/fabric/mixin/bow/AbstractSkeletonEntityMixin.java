@@ -14,30 +14,32 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.item.client;
+package net.fabricmc.fabric.mixin.bow;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
-import net.minecraft.client.render.entity.model.SkeletonEntityModel;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ai.RangedAttackMob;
+import net.minecraft.entity.mob.AbstractSkeletonEntity;
+import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.world.World;
 
 import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
 
-@Mixin(SkeletonEntityModel.class)
-public abstract class SkeletonEntityModelMixin {
-	// Allows Skeletons to visually shoot custom bows by returning true
-	@Redirect(method = "animateModel", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
-	private Item animateModel(ItemStack heldItemStack) {
-		return heldItemStack.getItem() instanceof FabricBowExtensions ? Items.BOW : heldItemStack.getItem();
+@Mixin(AbstractSkeletonEntity.class)
+public abstract class AbstractSkeletonEntityMixin extends MobEntity implements RangedAttackMob {
+	protected AbstractSkeletonEntityMixin(EntityType<? extends MobEntity> entityType, World world) {
+		super(entityType, world);
 	}
 
-	// Allows Skeletons to visually shoot custom bows by returning true
-	@Redirect(method = "setAngles", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
-	private Item setAngles(ItemStack heldItemStack) {
-		return heldItemStack.getItem() instanceof FabricBowExtensions ? Items.BOW : heldItemStack.getItem();
+	// Allows Skeletons to shoot custom bows by returning true
+	@Redirect(method = "updateAttackType", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;"))
+	private Item updateAttackType(ItemStack itemStack) {
+		return itemStack.getItem() instanceof FabricBowExtensions ? Items.BOW : itemStack.getItem();
 	}
 }

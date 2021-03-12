@@ -5,18 +5,11 @@
   "mixins": [
     "ItemStackMixin",
     "ItemMixin",
-    "MobEntityMixin",
-    "AbstractSkeletonEntityMixin",
-    "BowAttackGoalMixin",
-    "BowAttackMixin",
-    "BowItemMixin",
-    "EntityUseBowMixin",
-    "ProjectileUtilMixin"
+    "MobEntityMixin"
   ],
   "client": [
-    "client.ItemStackMixin",
     "client.HeldItemRendererMixin",
-    "client.SkeletonEntityModelMixin"
+    "client.ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1
