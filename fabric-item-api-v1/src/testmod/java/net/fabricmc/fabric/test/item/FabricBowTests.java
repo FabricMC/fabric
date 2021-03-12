@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.combat;
+package net.fabricmc.fabric.test.item;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
@@ -25,9 +25,9 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
-import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
-import net.fabricmc.fabric.api.combat.v1.bow.FabricBowItem;
+import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
+import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
+import net.fabricmc.fabric.api.item.v1.bow.FabricBowItem;
 
 public class FabricBowTests implements ModInitializer {
 	public static final Item TEST_BOW = new FabricBowItem(new Item.Settings().group(ItemGroup.COMBAT)) {

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.combat;
+package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,7 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
+import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
 
 // Will need to be updated if more bow-attacking mobs are added
 @Mixin({AbstractSkeletonEntity.class, IllusionerEntity.class})

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.combat.v1.bow;
+package net.fabricmc.fabric.api.item.v1.bow;
 
 import org.jetbrains.annotations.NotNull;
 

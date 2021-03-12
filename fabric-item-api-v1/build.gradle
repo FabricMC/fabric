@@ -4,3 +4,7 @@ version = getSubprojectVersion(project, "1.2.1")
 moduleDependencies(project, [
 		'fabric-api-base'
 ])
+
+dependencies {
+	testmodCompile project(path: ':fabric-object-builder-api-v1', configuration: 'dev')
+}

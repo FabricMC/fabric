@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.combat.client;
+package net.fabricmc.fabric.mixin.item.client;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +25,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
-import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
+import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
 
 @Mixin(HeldItemRenderer.class)
 public abstract class HeldItemRendererMixin {

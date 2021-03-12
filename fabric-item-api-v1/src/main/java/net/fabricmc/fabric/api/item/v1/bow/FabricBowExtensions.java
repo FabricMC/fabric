@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.api.combat.v1.bow;
+package net.fabricmc.fabric.api.item.v1.bow;
 
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 
-import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
+import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
 
 /**
  * An interface to implement for all custom bows in fabric. <br>

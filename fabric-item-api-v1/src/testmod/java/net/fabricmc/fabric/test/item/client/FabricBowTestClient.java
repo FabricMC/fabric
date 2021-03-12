@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.test.combat.client;
+package net.fabricmc.fabric.test.item.client;
 
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
-import net.fabricmc.fabric.test.combat.FabricBowTests;
+import net.fabricmc.fabric.test.item.FabricBowTests;
 
-public class FabricBowTestmodClient implements ClientModInitializer {
+public class FabricBowTestClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient() {
 		registerBowModelPredicates(FabricBowTests.TEST_BOW);

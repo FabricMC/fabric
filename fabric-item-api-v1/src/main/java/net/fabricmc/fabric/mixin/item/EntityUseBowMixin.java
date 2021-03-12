@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.combat;
+package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,7 +25,7 @@ import net.minecraft.entity.mob.AbstractSkeletonEntity;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.RangedWeaponItem;
 
-import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
+import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
 
 @Mixin(AbstractSkeletonEntity.class)
 public abstract class EntityUseBowMixin {

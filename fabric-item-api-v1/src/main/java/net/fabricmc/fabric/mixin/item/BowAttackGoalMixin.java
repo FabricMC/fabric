@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.combat;
+package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,7 @@ import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.item.BowItem;
 
-import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
+import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
 
 @Mixin(BowAttackGoal.class)
 public abstract class BowAttackGoalMixin<T extends HostileEntity & RangedAttackMob> extends Goal {

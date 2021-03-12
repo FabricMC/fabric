@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.fabricmc.fabric.mixin.combat;
+package net.fabricmc.fabric.mixin.item;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -33,8 +33,8 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-import net.fabricmc.fabric.api.combat.v1.ShotProjectileEvents;
-import net.fabricmc.fabric.api.combat.v1.bow.FabricBowExtensions;
+import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
+import net.fabricmc.fabric.api.item.v1.bow.FabricBowExtensions;
 
 @Mixin(BowItem.class)
 public abstract class BowItemMixin {
