@@ -10,7 +10,7 @@ plugins {
 	id "eclipse"
 	id "idea"
 	id "maven-publish"
-	id "fabric-loom" version "0.6.local" apply false
+	id "fabric-loom" version "0.7.local" apply false
 	id "org.cadixdev.licenser" version "0.5.0"
 	id "org.ajoberstar.grgit" version "4.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
@@ -33,6 +33,7 @@ logger.lifecycle("Building Fabric: " + version)
 
 import org.apache.commons.codec.digest.DigestUtils
 import net.fabricmc.loom.task.RemapJarTask
+import net.fabricmc.loom.task.RemapSourcesJarTask
 
 def getSubprojectVersion(project, version) {
 	if (grgit == null) {
@@ -150,13 +151,33 @@ allprojects {
 	}
 
 	jar {
-		archiveClassifier.set "dev"
+		archiveClassifier = "dev"
 	}
+
+	task testmodJar(type: Jar) {
+		from sourceSets.testmod.output
+		archiveClassifier = "testmod-dev"
+	}
+
+	task remapTestmodJar(type: RemapJarTask, dependsOn: testmodJar) {
+		input=  testmodJar.getArchiveFile()
+		archiveClassifier = "testmod"
+		classpath sourceSets.testmod.compileClasspath
+		addNestedDependencies = false
+	}
+
+	task testmodSourceJar(type: Jar, dependsOn: classes) {
+		classifier = 'testmodSources'
+		from sourceSets.testmod.allSource
+	}
+
+	// Gets setup fully in loom
+	task remapTestmodSourcesJar(type: RemapSourcesJarTask)
 
 	afterEvaluate {
 		remapJar {
 			input = file("${project.buildDir}/libs/$archivesBaseName-${archiveVersion.get()}-dev.jar")
-			archiveFileName.set "${archivesBaseName}-${archiveVersion.get()}.jar"
+			archiveFileName = "${archivesBaseName}-${archiveVersion.get()}.jar"
 		}
 
 		artifacts {
@@ -175,6 +196,17 @@ allprojects {
 			header rootProject.file("HEADER")
 			include "**/*.java"
 		}
+
+		// Setup batched remap for testmod jars. Not really a supported api in loom so copy this at your own risk.
+		net.fabricmc.loom.configuration.RemapConfiguration.setupRemap(
+				project,
+				"testmodJar",
+				"testmodSourceJar",
+				"remapTestmodJar",
+				"remapTestmodSourcesJar",
+				"remapAllTestmodJars",
+				"remapAllTestmodSources"
+		)
 	}
 
 	task sourcesJar(type: Jar, dependsOn: classes) {
@@ -281,25 +313,25 @@ subprojects {
 
 	javadoc.enabled = false
 
-	task testmodJar(type: Jar) {
-		from sourceSets.testmod.output
-		archiveClassifier.set "testmod-dev"
-	}
-
-	task remapTestmodJar(type: RemapJarTask, dependsOn: testmodJar) {
-		input.set testmodJar.getArchiveFile()
-		archiveClassifier.set "testmod"
-		classpath sourceSets.testmod.compileClasspath
-		addNestedDependencies = false
+	if (file("src/testmod").exists()) {
+		afterEvaluate {
+			project.rootProject.remapTestmodJar {
+				include remapTestmodJar.archivePath
+			}
+		}
 	}
 }
 
 task remapMavenJar(type: RemapJarTask, dependsOn: jar) {
 	afterEvaluate {
 		input = file("${project.buildDir}/libs/${archivesBaseName}-${archiveVersion.get()}-dev.jar")
-		archiveFileName.set "${archivesBaseName}-${archiveVersion.get()}-maven.jar"
+		archiveFileName = "${archivesBaseName}-${archiveVersion.get()}-maven.jar"
 		addNestedDependencies = false
 	}
+}
+
+remapTestmodJar {
+	addDefaultNestedDependencies = false
 }
 
 publishing {
