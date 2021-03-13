@@ -31,15 +31,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
 
+import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
 import net.fabricmc.fabric.api.item.v1.crossbow.FabricCrossbowExtensions;
 
 @Mixin(CrossbowItem.class)
 public abstract class CrossbowItemMixin {
-	@Inject(method = "createArrow", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILSOFT)
+	@Inject(method = "createArrow", at = @At(value = "RETURN"), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
 	private static void createArrow(World world, LivingEntity entity, ItemStack crossbow, ItemStack projectileStack, CallbackInfoReturnable<PersistentProjectileEntity> cir, ArrowItem arrowItem, PersistentProjectileEntity persistentProjectileEntity) {
-		if ((crossbow.getItem() instanceof FabricCrossbowExtensions)) {
-			((FabricCrossbowExtensions) crossbow.getItem()).modifyShotProjectile(crossbow, entity, projectileStack, persistentProjectileEntity);
-		}
+		persistentProjectileEntity = ShotProjectileEvents.CROSSBOW_REPLACE_SHOT_PROJECTILE.invoker().replaceProjectileShot(crossbow, projectileStack, entity, persistentProjectileEntity);
+		ShotProjectileEvents.CROSSBOW_MODIFY_SHOT_PROJECTILE.invoker().modifyProjectileShot(crossbow, projectileStack, entity, persistentProjectileEntity);
+		cir.setReturnValue(persistentProjectileEntity);
 	}
 
 	//Redirecting this method in order to get the item stack and shooting entity

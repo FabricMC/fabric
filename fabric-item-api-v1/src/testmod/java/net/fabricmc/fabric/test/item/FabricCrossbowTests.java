@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.item;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.Item;
@@ -30,7 +32,7 @@ import net.fabricmc.fabric.api.item.v1.crossbow.SimpleCrossbowItem;
 public class FabricCrossbowTests implements ModInitializer {
 	public static final Item TEST_CROSSBOW = new SimpleCrossbowItem(new Item.Settings().group(ItemGroup.COMBAT)) {
 		@Override
-		public void modifyShotProjectile(ItemStack crossbowStack, LivingEntity entity, ItemStack projectileStack, PersistentProjectileEntity persistentProjectileEntity) {
+		public void modifyProjectileShot(ItemStack crossbowStack, ItemStack projectileStack, LivingEntity entity, @NotNull PersistentProjectileEntity persistentProjectileEntity) {
 			persistentProjectileEntity.setDamage(1000);
 		}
 

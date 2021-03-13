@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.item.v1.crossbow;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.CrossbowItem;
@@ -30,6 +32,12 @@ public class SimpleCrossbowItem extends CrossbowItem implements FabricCrossbowEx
 	}
 
 	@Override
-	public void modifyShotProjectile(ItemStack crossbowStack, LivingEntity entity, ItemStack projectileStack, PersistentProjectileEntity persistentProjectileEntity) {
+	public void modifyProjectileShot(ItemStack crossbowStack, ItemStack projectileStack, LivingEntity user, @NotNull PersistentProjectileEntity persistentProjectileEntity) {
+		if (crossbowStack.getItem() == this) {
+			onProjectileShot(crossbowStack, projectileStack, user, persistentProjectileEntity);
+		}
+	}
+
+	public void onProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, PersistentProjectileEntity persistentProjectileEntity) {
 	}
 }

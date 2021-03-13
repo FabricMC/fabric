@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.item.v1.crossbow;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.projectile.PersistentProjectileEntity;
 import net.minecraft.item.CrossbowItem;
@@ -23,23 +25,25 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 
+import net.fabricmc.fabric.api.item.v1.ShotProjectileEvents;
+
 /**
  * An interface to implement on all custom crossbows. <br>
  * Note: This is meant to be used on a CrossbowItem class, otherwise the functionality won't work
  *
  * @see SimpleCrossbowItem
  */
-public interface FabricCrossbowExtensions {
+public interface FabricCrossbowExtensions extends ShotProjectileEvents.ModifyProjectileFromCrossbow {
 	/**
 	 * Allows editing of the projectile entity shot from the crossbow. Applies all crossbow
 	 * projectile properties first.
 	 *
 	 * @param crossbowStack              The ItemStack for the crossbow
-	 * @param entity                     The entity shooting the crossbow
 	 * @param projectileStack            The stack for the projectile
+	 * @param entity                     The entity shooting the crossbow
 	 * @param persistentProjectileEntity The projectile entity to be shot
 	 */
-	void modifyShotProjectile(ItemStack crossbowStack, LivingEntity entity, ItemStack projectileStack, PersistentProjectileEntity persistentProjectileEntity);
+	void modifyProjectileShot(ItemStack crossbowStack, ItemStack projectileStack, LivingEntity entity, @NotNull PersistentProjectileEntity persistentProjectileEntity);
 
 	/**
 	 * Allows modifying the speed of the crossbow projectile. <br>
