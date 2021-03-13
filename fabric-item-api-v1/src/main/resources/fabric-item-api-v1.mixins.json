@@ -5,7 +5,8 @@
   "mixins": [
     "ItemStackMixin",
     "ItemMixin",
-    "MobEntityMixin"
+    "MobEntityMixin",
+    "ProjectileUtilMixin"
   ],
   "client": [
     "client.HeldItemRendererMixin",
