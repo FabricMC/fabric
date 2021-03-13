@@ -16,8 +16,6 @@
 
 package net.fabricmc.fabric.api.recipe.v1;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.recipe.Recipe;
 
 import net.fabricmc.fabric.api.recipe.v1.event.RecipeLoadingCallback;
@@ -30,7 +28,6 @@ import net.fabricmc.fabric.impl.recipe.RecipeManagerImpl;
  * @since 1.0.0
  */
 public class RecipeManagerHelper {
-	@ApiStatus.Internal
 	private RecipeManagerHelper() {
 		throw new UnsupportedOperationException("Someone tampered with the universe.");
 	}

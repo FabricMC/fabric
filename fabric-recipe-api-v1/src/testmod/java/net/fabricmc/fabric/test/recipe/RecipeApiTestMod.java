@@ -52,12 +52,13 @@ public class RecipeApiTestMod implements ModInitializer {
 						DefaultedList.copyOf(Ingredient.EMPTY, Ingredient.ofItems(Items.STICK))));
 
 		RecipeManagerHelper.registerDynamicRecipes(handler -> {
-			handler.register(new ShapedRecipe(new Identifier(NAMESPACE, "test2"), "",
-					2, 2,
-					DefaultedList.copyOf(Ingredient.EMPTY,
-							Ingredient.ofItems(Items.IRON_INGOT), Ingredient.ofItems(Items.GOLD_INGOT),
-							Ingredient.ofItems(Items.COAL), Ingredient.ofItems(Items.CHARCOAL)),
-					pickRandomStack()));
+			handler.register(new Identifier(NAMESPACE, "test2"),
+					id -> new ShapedRecipe(id, "",
+							2, 2,
+							DefaultedList.copyOf(Ingredient.EMPTY,
+									Ingredient.ofItems(Items.IRON_INGOT), Ingredient.ofItems(Items.GOLD_INGOT),
+									Ingredient.ofItems(Items.COAL), Ingredient.ofItems(Items.CHARCOAL)),
+							pickRandomStack()));
 		});
 	}
 

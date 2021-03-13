@@ -17,6 +17,7 @@
 package net.fabricmc.fabric.impl.recipe;
 
 import java.util.Map;
+import java.util.function.Function;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
@@ -41,29 +42,24 @@ public class RecipeManagerImpl {
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static void registerStaticRecipes(Recipe<?> recipe) {
-		if (STATIC_RECIPES.containsKey(recipe.getId())) {
+		if (STATIC_RECIPES.put(recipe.getId(), recipe) != null) {
 			throw new IllegalStateException("Cannot register " + recipe.getId()
 					+ " as another recipe with the same identifier already exists.");
 		}
-
-		STATIC_RECIPES.put(recipe.getId(), recipe);
 	}
 
 	public static void apply(Map<Identifier, JsonElement> map,
 							Map<RecipeType<?>, ImmutableMap.Builder<Identifier, Recipe<?>>> builderMap) {
 		RecipeHandlerImpl handler = new RecipeHandlerImpl(map, builderMap);
 		RecipeLoadingCallback.EVENT.invoker().onRecipeLoading(handler);
+		STATIC_RECIPES.values().forEach(handler::register);
 		LOGGER.info("Registered {} custom recipes.", handler.registered);
-	}
-
-	static {
-		RecipeLoadingCallback.EVENT.register(handler -> STATIC_RECIPES.values().forEach(handler::register));
 	}
 
 	private static class RecipeHandlerImpl implements RecipeLoadingCallback.RecipeHandler {
 		private final Map<Identifier, JsonElement> resourceMap;
 		private final Map<RecipeType<?>, ImmutableMap.Builder<Identifier, Recipe<?>>> builderMap;
-		private int registered = 0;
+		int registered = 0;
 
 		private RecipeHandlerImpl(Map<Identifier, JsonElement> resourceMap,
 								Map<RecipeType<?>, ImmutableMap.Builder<Identifier, Recipe<?>>> builderMap) {
@@ -71,23 +67,30 @@ public class RecipeManagerImpl {
 			this.builderMap = builderMap;
 		}
 
-		@Override
-		public boolean register(Recipe<?> recipe) {
-			// Add the recipe only if nothing already provides the recipe.
-			if (this.canRegister(recipe.getId())) {
+		void register(Recipe<?> recipe) {
+			if (!this.resourceMap.containsKey(recipe.getId())) {
 				ImmutableMap.Builder<Identifier, Recipe<?>> recipeBuilder =
 						this.builderMap.computeIfAbsent(recipe.getType(), o -> ImmutableMap.builder());
 				recipeBuilder.put(recipe.getId(), recipe);
 				this.registered++;
-				return true;
 			}
-
-			return false;
 		}
 
 		@Override
-		public boolean canRegister(Identifier id) {
-			return !this.resourceMap.containsKey(id);
+		public void register(Identifier id, Function<Identifier, Recipe<?>> factory) {
+			// Add the recipe only if nothing already provides the recipe.
+			if (!this.resourceMap.containsKey(id)) {
+				Recipe<?> recipe = factory.apply(id);
+
+				if (!id.equals(recipe.getId())) {
+					throw new IllegalStateException("The recipe " + recipe.getId() + " tried to be registered as " + id);
+				}
+
+				ImmutableMap.Builder<Identifier, Recipe<?>> recipeBuilder =
+						this.builderMap.computeIfAbsent(recipe.getType(), o -> ImmutableMap.builder());
+				recipeBuilder.put(recipe.getId(), recipe);
+				this.registered++;
+			}
 		}
 	}
 }

@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.recipe.v1.event;
 
+import java.util.function.Function;
+
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 
@@ -53,17 +55,11 @@ public interface RecipeLoadingCallback {
 		/**
 		 * Registers a recipe into the {@linkplain net.minecraft.recipe.RecipeManager}.
 		 *
-		 * @param recipe the recipe to register
-		 * @return {@code true} if the recipe has been registered, else {@code false}
-		 */
-		boolean register(Recipe<?> recipe);
-
-		/**
-		 * Returns whether the a recipe with the given identifier can be registered.
+		 * <p>The recipe factory is only called if the recipe can be registered.</p>
 		 *
-		 * @param id the recipe identifier
-		 * @return {@code true} if the recipe can be registered, else {@code false}
+		 * @param id identifier of the recipe
+		 * @param factory the recipe factory
 		 */
-		boolean canRegister(Identifier id);
+		void register(Identifier id, Function<Identifier, Recipe<?>> factory);
 	}
 }
