@@ -44,7 +44,7 @@ public class RecipeManagerHelper {
 	 * @throws IllegalStateException if another recipe with the same identifier is already registered
 	 */
 	public static Recipe<?> registerStaticRecipe(Recipe<?> recipe) {
-		RecipeManagerImpl.registerStaticRecipes(recipe);
+		RecipeManagerImpl.registerStaticRecipe(recipe);
 		return recipe;
 	}
 

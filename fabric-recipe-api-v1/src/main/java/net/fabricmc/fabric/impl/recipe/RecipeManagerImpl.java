@@ -41,7 +41,7 @@ public class RecipeManagerImpl {
 	private static final Map<Identifier, Recipe<?>> STATIC_RECIPES = new Object2ObjectOpenHashMap<>();
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public static void registerStaticRecipes(Recipe<?> recipe) {
+	public static void registerStaticRecipe(Recipe<?> recipe) {
 		if (STATIC_RECIPES.put(recipe.getId(), recipe) != null) {
 			throw new IllegalStateException("Cannot register " + recipe.getId()
 					+ " as another recipe with the same identifier already exists.");
