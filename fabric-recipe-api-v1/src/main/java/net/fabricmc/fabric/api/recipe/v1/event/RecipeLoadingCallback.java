@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.recipe.v1.event;
 
 import java.util.function.Function;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.Identifier;
 
@@ -51,6 +53,10 @@ public interface RecipeLoadingCallback {
 	 */
 	void onRecipeLoading(RecipeHandler handler);
 
+	/**
+	 * This interface should not be extended by users.
+	 */
+	@ApiStatus.NonExtendable
 	interface RecipeHandler {
 		/**
 		 * Registers a recipe into the {@linkplain net.minecraft.recipe.RecipeManager}.
