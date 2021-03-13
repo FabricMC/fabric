@@ -49,7 +49,7 @@ public final class EventFactory {
 	 * Create an "array-backed" Event instance.
 	 * The factory will be used to create the invoker for any number of listeners.
 	 *
-	 * Consider using {@linkplain #createArrayBacked(Class, Object, Function) a custom empty invoker}
+	 * <p>Consider using {@linkplain #createArrayBacked(Class, Object, Function) a custom empty invoker}
 	 * if performance of this event is critical.
 	 *
 	 * @param type           The listener class type.
