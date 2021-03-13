@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.fabricmc.fabric.mixin.crossbow",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "CrossbowItemMixin",
+    "EntityUseCrossbowMixin"
+  ],
+  "client": [
+    "client.PlayerEntityRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
