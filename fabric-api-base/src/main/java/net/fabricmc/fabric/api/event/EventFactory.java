@@ -47,70 +47,25 @@ public final class EventFactory {
 
 	/**
 	 * Create an "array-backed" Event instance.
-	 * The factory will be used for any number of listeners.
-	 * Consider using {@link #createArrayBackedCustomEmptyInvoker(Class, Object, Function)}  the more optimized overload} if you need a slight performance increase
-	 * when there are 0 or 1 listeners.
+	 * The factory will be used to create the invoker for any number of listeners.
+	 *
+	 * Consider using {@linkplain #createArrayBacked(Class, Object, Function) a custom empty invoker}
+	 * if performance of this event is critical.
 	 *
 	 * @param type           The listener class type.
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
 	 */
-	public static <T> Event<T> createArrayBackedUsingTheFactoryEveryTime(Class<? super T> type, Function<T[], T> invokerFactory) {
-		return EventFactoryImpl.createArrayBackedUsingTheFactoryEveryTime(type, invokerFactory);
-	}
-
-	/**
-	 * Create an "array-backed" Event instance, with a custom empty invoker.
-	 * The empty invoker will be used when there are no listeners,
-	 * and when there is only one listener, it will be used directly.
-	 * The factory will only be used when there are at least two listeners.
-	 * Consider using {@link #createArrayBackedUsingTheFactoryEveryTime} if this optimization is unsuitable or unneeded.
-	 *
-	 * @param type           The listener class type.
-	 * @param emptyInvoker   The custom empty invoker.
-	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
-	 * @param <T>            The listener type.
-	 * @return The Event instance.
-	 */
-	public static <T> Event<T> createArrayBackedCustomEmptyInvoker(Class<? super T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
-		return createArrayBackedUsingTheFactoryEveryTime(type, invokers -> {
-			if (invokers.length == 0) {
-				return emptyInvoker;
-			} else if (invokers.length == 1) {
-				return invokers[0];
-			} else {
-				return invokerFactory.apply(invokers);
-			}
-		});
-	}
-
-	/**
-	 * Create an "array-backed" Event instance.
-	 * The factory will be used when there are zero listeners, or at least two.
-	 * If there is only one listener, that one will be used as the invoker, and the factory will not be used!
-	 *
-	 * @param type           The listener class type.
-	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
-	 * @param <T>            The listener type.
-	 * @return The Event instance.
-	 * @deprecated Use {@link #createArrayBackedUsingTheFactoryEveryTime(Class, Function) createUnbad}.
-	 */
-	@Deprecated
 	public static <T> Event<T> createArrayBacked(Class<? super T> type, Function<T[], T> invokerFactory) {
-		return createArrayBackedUsingTheFactoryEveryTime(type, invokers -> {
-			if (invokers.length == 1) {
-				return invokers[0];
-			} else {
-				return invokerFactory.apply(invokers);
-			}
-		});
+		return EventFactoryImpl.createArrayBacked(type, invokerFactory);
 	}
 
 	/**
 	 * Create an "array-backed" Event instance with a custom empty invoker.
+	 * If there is no listener, the custom invoker will be used.
+	 * If there is only one listener, that one will be used as the invoker.
 	 * The factory will only be used when there at least two invokers.
-	 * If there is only one listener, that one will be used as the invoker, and the factory will not be used!
 	 *
 	 * <p>Having a custom empty invoker (of type (...) -&gt; {}) increases performance
 	 * relative to iterating over an empty array; however, it only really matters
@@ -121,11 +76,17 @@ public final class EventFactory {
 	 * @param invokerFactory The invoker factory, combining multiple listeners into one instance.
 	 * @param <T>            The listener type.
 	 * @return The Event instance.
-	 * @deprecated Use {@link #createArrayBackedCustomEmptyInvoker(Class, Object, Function)} instead.
 	 */
-	@Deprecated
 	public static <T> Event<T> createArrayBacked(Class<T> type, T emptyInvoker, Function<T[], T> invokerFactory) {
-		return createArrayBackedCustomEmptyInvoker(type, emptyInvoker, invokerFactory);
+		return createArrayBacked(type, invokers -> {
+			if (invokers.length == 0) {
+				return emptyInvoker;
+			} else if (invokers.length == 1) {
+				return invokers[0];
+			} else {
+				return invokerFactory.apply(invokers);
+			}
+		});
 	}
 
 	/**
