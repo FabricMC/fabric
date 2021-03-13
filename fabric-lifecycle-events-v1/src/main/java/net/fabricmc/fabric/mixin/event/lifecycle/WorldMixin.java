@@ -81,13 +81,8 @@ public abstract class WorldMixin {
 
 		// Mimic vanilla logic - with some perf boosts
 		// Gate perf boost behind a minimum amount of removals
-		if (removals.size() <= 4) {
-			return blockEntityList.removeAll(removals);
-		}
-
 		// List -> List.removeAll is slower than reallocating the List as a Set and then doing a Set -> List.removalAll when dealing with large amounts of loaded block entities.
-		final Set<BlockEntity> removalSet = new ReferenceOpenHashSet<>(removals);
-		return blockEntityList.removeAll(removalSet);
+		return blockEntityList.removeAll(removals.size() <= 4 ? removals : new ReferenceOpenHashSet<>(removals));
 	}
 
 	@Inject(at = @At("RETURN"), method = "tickBlockEntities")
