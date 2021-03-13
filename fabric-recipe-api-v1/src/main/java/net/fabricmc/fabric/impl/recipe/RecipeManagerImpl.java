@@ -33,7 +33,7 @@ import net.minecraft.util.Identifier;
 import net.fabricmc.fabric.api.recipe.v1.event.RecipeLoadingCallback;
 
 @ApiStatus.Internal
-public class RecipeManagerImpl {
+public final class RecipeManagerImpl {
 	/**
 	 * Stores the static recipes which are added to the {@link net.minecraft.recipe.RecipeManager} when recipes are
 	 * loaded.

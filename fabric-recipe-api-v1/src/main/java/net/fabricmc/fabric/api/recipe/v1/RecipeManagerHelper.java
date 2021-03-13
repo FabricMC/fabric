@@ -27,7 +27,7 @@ import net.fabricmc.fabric.impl.recipe.RecipeManagerImpl;
  * @version 1.0.0
  * @since 1.0.0
  */
-public class RecipeManagerHelper {
+public final class RecipeManagerHelper {
 	private RecipeManagerHelper() {
 		throw new UnsupportedOperationException("Someone tampered with the universe.");
 	}
