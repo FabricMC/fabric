@@ -55,6 +55,8 @@ public class RecipeManagerMixin {
 		RecipeManagerImpl.apply(map, builderMap);
 	}
 
+	// Use an inject instead of a redirect. A redirect is technically impossible as it will not allow a
+	// Map<Identifier, Recipe<?>> as return type.
 	@Inject(
 			method = "method_20703", // synthetic method in the toImmutableMap in the apply method.
 			at = @At(value = "HEAD"),
