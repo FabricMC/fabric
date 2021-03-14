@@ -48,7 +48,7 @@ public final class RecipeManagerImpl {
 	}
 
 	public static void registerStaticRecipe(Recipe<?> recipe) {
-		if (STATIC_RECIPES.put(recipe.getId(), recipe) != null) {
+		if (STATIC_RECIPES.putIfAbsent(recipe.getId(), recipe) != null) {
 			throw new IllegalArgumentException("Cannot register " + recipe.getId()
 					+ " as another recipe with the same identifier already exists.");
 		}
