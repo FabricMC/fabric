@@ -16,9 +16,11 @@
 
 package net.fabricmc.fabric.impl.recipe;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -41,6 +43,7 @@ public final class RecipeManagerImpl {
 	 * loaded.
 	 */
 	private static final Map<Identifier, Recipe<?>> STATIC_RECIPES = new Object2ObjectOpenHashMap<>();
+	private static final boolean DEBUG_MODE = Boolean.getBoolean("fabric-recipe-api-v1--debug");
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private RecipeManagerImpl() {
@@ -85,6 +88,10 @@ public final class RecipeManagerImpl {
 						this.builderMap.computeIfAbsent(recipe.getType(), o -> ImmutableMap.builder());
 				recipeBuilder.put(recipe.getId(), recipe);
 				this.registered++;
+
+				if (DEBUG_MODE) {
+					LOGGER.info("Added recipe {} with type {} in register phase.", recipe.getId(), recipe.getType());
+				}
 			}
 		}
 
@@ -102,6 +109,10 @@ public final class RecipeManagerImpl {
 						this.builderMap.computeIfAbsent(recipe.getType(), o -> ImmutableMap.builder());
 				recipeBuilder.put(recipe.getId(), recipe);
 				this.registered++;
+
+				if (DEBUG_MODE) {
+					LOGGER.info("Added recipe {} with type {} in register phase.", id, recipe.getType());
+				}
 			}
 		}
 	}
@@ -132,10 +143,23 @@ public final class RecipeManagerImpl {
 			RecipeType<?> oldType = this.getTypeOf(recipe.getId());
 
 			if (oldType == null) {
+				if (DEBUG_MODE) {
+					LOGGER.info("Add new recipe {} with type {} in modify phase.", recipe.getId(), recipe.getType());
+				}
+
 				this.add(recipe);
 			} else if (oldType == recipe.getType()) {
+				if (DEBUG_MODE) {
+					LOGGER.info("Replace recipe {} with same type {} in modify phase.", recipe.getId(), recipe.getType());
+				}
+
 				this.recipes.get(oldType).put(recipe.getId(), recipe);
 			} else {
+				if (DEBUG_MODE) {
+					LOGGER.info("Replace new recipe {} with type {} (and old type {}) in modify phase.",
+							recipe.getId(), recipe.getType(), oldType);
+				}
+
 				this.recipes.get(oldType).remove(recipe.getId());
 				this.add(recipe);
 			}
@@ -193,6 +217,22 @@ public final class RecipeManagerImpl {
 			if (recipes == null) return null;
 
 			return (T) recipes.get(id);
+		}
+
+		@Override
+		public Map<RecipeType<?>, Map<Identifier, Recipe<?>>> getRecipes() {
+			return this.recipes;
+		}
+
+		@Override
+		public Collection<Recipe<?>> getRecipesOfType(RecipeType<?> type) {
+			Map<Identifier, Recipe<?>> recipes = this.recipes.get(type);
+
+			if (recipes == null) {
+				return ImmutableList.of();
+			}
+
+			return recipes.values();
 		}
 	}
 }

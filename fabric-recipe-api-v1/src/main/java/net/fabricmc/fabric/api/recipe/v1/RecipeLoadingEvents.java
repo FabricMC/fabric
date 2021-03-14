@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.recipe.v1;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.Function;
 
 import org.jetbrains.annotations.ApiStatus;
@@ -151,6 +153,21 @@ public final class RecipeLoadingEvents {
 			 * @return the recipe if present and of the correct type, else {@code null}
 			 */
 			@Nullable <T extends Recipe<?>> T getRecipe(Identifier id, RecipeType<T> type);
+
+			/**
+			 * Returns all registered recipes.
+			 *
+			 * @return the registered recipes
+			 */
+			Map<RecipeType<?>, Map<Identifier, Recipe<?>>> getRecipes();
+
+			/**
+			 * Returns all registered recipes of the specified type.
+			 *
+			 * @param type the recipe type
+			 * @return all registered recipes of the specified type
+			 */
+			Collection<Recipe<?>> getRecipesOfType(RecipeType<?> type);
 		}
 	}
 }

@@ -23,14 +23,12 @@ import java.util.Random;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.recipe.ShapelessRecipe;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.collection.DefaultedList;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.recipe.v1.RecipeManagerHelper;
+import net.fabricmc.fabric.api.recipe.v1.VanillaRecipeBuilders;
 
 public class RecipeApiTestMod implements ModInitializer {
 	public static final String NAMESPACE = "fabric-recipe-api-v1-testmod";
@@ -47,28 +45,30 @@ public class RecipeApiTestMod implements ModInitializer {
 	public void onInitialize() {
 		// Recipe with stick -> diamond
 		RecipeManagerHelper.registerStaticRecipe(
-				new ShapelessRecipe(new Identifier(NAMESPACE, "test1"), "",
-						new ItemStack(Items.DIAMOND),
-						DefaultedList.copyOf(Ingredient.EMPTY, Ingredient.ofItems(Items.STICK))));
+				VanillaRecipeBuilders.shapelessRecipe(new ItemStack(Items.DIAMOND))
+						.ingredient(Items.STICK)
+						.build(new Identifier(NAMESPACE, "test1"), ""));
 
 		RecipeManagerHelper.registerDynamicRecipes(handler -> {
 			handler.register(new Identifier(NAMESPACE, "test2"),
-					id -> new ShapedRecipe(id, "",
-							2, 2,
-							DefaultedList.copyOf(Ingredient.EMPTY,
-									Ingredient.ofItems(Items.IRON_INGOT), Ingredient.ofItems(Items.GOLD_INGOT),
-									Ingredient.ofItems(Items.COAL), Ingredient.ofItems(Items.CHARCOAL)),
-							pickRandomStack()));
+					id -> VanillaRecipeBuilders.shapedRecipe(new String[] {"IG", "C#"})
+							.ingredient('I', Items.IRON_INGOT)
+							.ingredient('G', Items.GOLD_INGOT)
+							.ingredient('C', Items.COAL)
+							.ingredient('#', Items.CHARCOAL)
+							.output(pickRandomStack())
+							.build(id, ""));
 		});
 
 		RecipeManagerHelper.modifyRecipes(handler -> {
-			handler.replace(new ShapelessRecipe(new Identifier("acacia_button"), "",
-					new ItemStack(Items.NETHER_STAR),
-					DefaultedList.copyOf(Ingredient.EMPTY, Ingredient.ofItems(Items.ACACIA_PLANKS))));
-			handler.replace(new ShapedRecipe(new Identifier("oak_button"), "",
-					1, 2,
-					DefaultedList.copyOf(Ingredient.EMPTY, Ingredient.ofItems(Items.ACACIA_PLANKS), Ingredient.ofItems(Items.COAL)),
-					new ItemStack(Items.NETHER_BRICK)));
+			handler.replace(VanillaRecipeBuilders.shapelessRecipe(new ItemStack(Items.NETHER_STAR))
+					.ingredient(Items.ACACIA_PLANKS)
+					.build(new Identifier("acacia_button"), ""));
+			handler.replace(VanillaRecipeBuilders.shapedRecipe(new String[] {"A", "C"})
+					.ingredient('A', ItemTags.PLANKS)
+					.ingredient('C', Items.COAL)
+					.output(new ItemStack(Items.NETHER_BRICK))
+					.build(new Identifier("oak_button"), ""));
 		});
 	}
 
