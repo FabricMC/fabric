@@ -16,16 +16,16 @@
 
 package net.fabricmc.fabric.mixin.recipe;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.objects.Object2CharMap;
 import it.unimi.dsi.fastutil.objects.Object2CharOpenHashMap;
 import org.spongepowered.asm.mixin.Mixin;
 
+import net.minecraft.advancement.criterion.CriterionConditions;
+import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.recipe.v1.serializer.FabricRecipeSerializer;
 
@@ -33,15 +33,12 @@ import net.fabricmc.fabric.api.recipe.v1.serializer.FabricRecipeSerializer;
 public abstract class ShapedRecipeSerializerMixin implements FabricRecipeSerializer<ShapedRecipe> {
 	@Override
 	public JsonObject toJson(ShapedRecipe recipe) {
-		JsonObject root = new JsonObject();
-		root.addProperty("type", "minecraft:crafting_shaped");
+		ShapedRecipeJsonFactory factory = new ShapedRecipeJsonFactory(recipe.getOutput().getItem(), recipe.getOutput().getCount());
 
-		if (!recipe.getGroup().isEmpty()) {
-			root.addProperty("group", recipe.getGroup());
-		}
+		factory.criterion("dummy", null);
 
-		JsonArray pattern = new JsonArray();
-		root.add("pattern", pattern);
+		factory.group(recipe.getGroup());
+
 		DefaultedList<Ingredient> recipeIngredients = recipe.getPreviewInputs();
 		Object2CharMap<Ingredient> ingredients = new Object2CharOpenHashMap<>();
 		ingredients.defaultReturnValue(' ');
@@ -58,7 +55,7 @@ public abstract class ShapedRecipeSerializerMixin implements FabricRecipeSeriali
 
 		for (int i = 0; i < recipeIngredients.size(); i++) {
 			if (i != 0 && i % recipe.getWidth() == 0) {
-				pattern.add(patternLine.toString());
+				factory.pattern(patternLine.toString());
 				patternLine.setLength(0);
 			}
 
@@ -66,18 +63,12 @@ public abstract class ShapedRecipeSerializerMixin implements FabricRecipeSeriali
 			patternLine.append(ingredients.getChar(ingredient));
 		}
 
-		pattern.add(patternLine.toString());
+		factory.pattern(patternLine.toString());
 
-		JsonObject key = new JsonObject();
-		root.add("key", key);
+		ingredients.forEach(((ingredient, keyName) -> factory.input(keyName, ingredient)));
 
-		ingredients.forEach(((ingredient, keyName) -> key.add(String.valueOf(keyName), ingredient.toJson())));
-
-		JsonObject result = new JsonObject();
-		result.addProperty("item", Registry.ITEM.getId(recipe.getOutput().getItem()).toString());
-		result.addProperty("count", recipe.getOutput().getCount());
-		root.add("result", result);
-
-		return root;
+		JsonObject[] root = new JsonObject[1];
+		factory.offerTo(provider -> root[0] = provider.toJson());
+		return root[0];
 	}
 }

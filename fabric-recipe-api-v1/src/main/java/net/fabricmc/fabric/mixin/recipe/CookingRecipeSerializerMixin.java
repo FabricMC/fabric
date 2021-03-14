@@ -19,10 +19,9 @@ package net.fabricmc.fabric.mixin.recipe;
 import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Mixin;
 
+import net.minecraft.data.server.recipe.CookingRecipeJsonFactory;
 import net.minecraft.recipe.AbstractCookingRecipe;
 import net.minecraft.recipe.CookingRecipeSerializer;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.recipe.v1.serializer.FabricRecipeSerializer;
 
@@ -30,29 +29,9 @@ import net.fabricmc.fabric.api.recipe.v1.serializer.FabricRecipeSerializer;
 public abstract class CookingRecipeSerializerMixin<T extends AbstractCookingRecipe> implements FabricRecipeSerializer<T> {
 	@Override
 	public JsonObject toJson(T recipe) {
-		Identifier typeId = Registry.RECIPE_SERIALIZER.getId(this);
-
-		if (typeId == null) {
-			throw new IllegalStateException("Tried to serialize recipe with an unregistered recipe serializer.");
-		}
-
-		JsonObject root = new JsonObject();
-		root.addProperty("type", typeId.toString());
-
-		if (!recipe.getGroup().isEmpty()) {
-			root.addProperty("group", recipe.getGroup());
-		}
-
-		root.add("ingredient", recipe.getPreviewInputs().get(0).toJson());
-
-		JsonObject result = new JsonObject();
-		result.addProperty("item", Registry.ITEM.getId(recipe.getOutput().getItem()).toString());
-		result.addProperty("count", recipe.getOutput().getCount());
-		root.add("result", result);
-
-		root.addProperty("cookingtime", recipe.getCookTime());
-		root.addProperty("experience", recipe.getExperience());
-
-		return root;
+		return new CookingRecipeJsonFactory.CookingRecipeJsonProvider(recipe.getId(), recipe.getGroup(),
+				recipe.getPreviewInputs().get(0), recipe.getOutput().getItem(),
+				recipe.getExperience(), recipe.getCookTime(), null, null, this)
+				.toJson();
 	}
 }

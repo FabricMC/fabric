@@ -16,13 +16,11 @@
 
 package net.fabricmc.fabric.mixin.recipe;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.recipe.Ingredient;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory.ShapelessRecipeJsonProvider;
 import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.util.registry.Registry;
 
 import net.fabricmc.fabric.api.recipe.v1.serializer.FabricRecipeSerializer;
 
@@ -30,25 +28,7 @@ import net.fabricmc.fabric.api.recipe.v1.serializer.FabricRecipeSerializer;
 public abstract class ShapelessRecipeSerializerMixin implements FabricRecipeSerializer<ShapelessRecipe> {
 	@Override
 	public JsonObject toJson(ShapelessRecipe recipe) {
-		JsonObject root = new JsonObject();
-		root.addProperty("type", "minecraft:crafting_shapeless");
-
-		if (!recipe.getGroup().isEmpty()) {
-			root.addProperty("group", recipe.getGroup());
-		}
-
-		JsonArray ingredients = new JsonArray();
-		root.add("ingredients", ingredients);
-
-		for (Ingredient ingredient : recipe.getPreviewInputs()) {
-			ingredients.add(ingredient.toJson());
-		}
-
-		JsonObject result = new JsonObject();
-		result.addProperty("item", Registry.ITEM.getId(recipe.getOutput().getItem()).toString());
-		result.addProperty("count", recipe.getOutput().getCount());
-		root.add("result", result);
-
-		return root;
+		return new ShapelessRecipeJsonProvider(recipe.getId(), recipe.getOutput().getItem(), recipe.getOutput().getCount(),
+				recipe.getGroup(), recipe.getPreviewInputs(), null, null).toJson();
 	}
 }
