@@ -27,11 +27,12 @@
  *
  * <p><h3>{@link net.fabricmc.fabric.api.recipe.v1.RecipeManagerHelper RecipeManagerHelper}</h3>
  * The {@link net.fabricmc.fabric.api.recipe.v1.RecipeManagerHelper RecipeManagerHelper} is a helper class focused
- * around the {@link net.minecraft.recipe.RecipeManager}, it allows you to register static and dynamic recipes.
+ * around the {@link net.minecraft.recipe.RecipeManager}, it allows you to register static and dynamic recipes,
+ * it also allows you to replace recipes.
  * </p>
  *
- * <p><h3>{@link net.fabricmc.fabric.api.recipe.v1.RecipeLoadingEvents RecipeLoadingCallback}</h3>
- * It is an event which is triggered when recipes are loaded, it allows you to register dynamic recipes.</p>
+ * <p><h3>{@link net.fabricmc.fabric.api.recipe.v1.RecipeLoadingEvents RecipeLoadingEvents}</h3>
+ * Contains some events to register and modify recipes.</p>
  */
 
 package net.fabricmc.fabric.api.recipe.v1;

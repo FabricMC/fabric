@@ -98,12 +98,14 @@ public final class RecipeLoadingEvents {
 		 */
 		void onRecipeModify(RecipeHandler handler);
 
+		/**
+		 * This interface should not be extended by users.
+		 */
 		@ApiStatus.NonExtendable
 		interface RecipeHandler {
 			/**
 			 * Replaces a recipe in the {@link net.minecraft.recipe.RecipeManager}.
 			 *
-			 * @param id     identifier of the recipe to replace
 			 * @param recipe the recipe
 			 */
 			void replace(Recipe<?> recipe);

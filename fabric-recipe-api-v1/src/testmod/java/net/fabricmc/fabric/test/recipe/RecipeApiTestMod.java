@@ -24,6 +24,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
+import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.util.Identifier;
@@ -62,7 +63,7 @@ public class RecipeApiTestMod implements ModInitializer {
 							pickRandomStack()));
 		});
 
-		RecipeLoadingEvents.MODIFY.register(handler -> {
+		RecipeManagerHelper.modifyRecipes(handler -> {
 			handler.replace(new ShapelessRecipe(new Identifier("acacia_button"), "",
 					new ItemStack(Items.NETHER_STAR),
 					DefaultedList.copyOf(Ingredient.EMPTY, Ingredient.ofItems(Items.ACACIA_PLANKS))));
