@@ -24,14 +24,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeManager;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.ShapelessRecipe;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.recipe.v1.RecipeLoadingEvents;
 import net.fabricmc.fabric.api.recipe.v1.RecipeManagerHelper;
 
 public class RecipeApiTestMod implements ModInitializer {
