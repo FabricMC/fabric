@@ -30,6 +30,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.recipe.v1.RecipeLoadingEvents;
 import net.fabricmc.fabric.api.recipe.v1.RecipeManagerHelper;
 
 public class RecipeApiTestMod implements ModInitializer {
@@ -59,6 +60,16 @@ public class RecipeApiTestMod implements ModInitializer {
 									Ingredient.ofItems(Items.IRON_INGOT), Ingredient.ofItems(Items.GOLD_INGOT),
 									Ingredient.ofItems(Items.COAL), Ingredient.ofItems(Items.CHARCOAL)),
 							pickRandomStack()));
+		});
+
+		RecipeLoadingEvents.MODIFY.register(handler -> {
+			handler.replace(new ShapelessRecipe(new Identifier("acacia_button"), "",
+					new ItemStack(Items.NETHER_STAR),
+					DefaultedList.copyOf(Ingredient.EMPTY, Ingredient.ofItems(Items.ACACIA_PLANKS))));
+			handler.replace(new ShapedRecipe(new Identifier("oak_button"), "",
+					1, 2,
+					DefaultedList.copyOf(Ingredient.EMPTY, Ingredient.ofItems(Items.ACACIA_PLANKS), Ingredient.ofItems(Items.COAL)),
+					new ItemStack(Items.NETHER_BRICK)));
 		});
 	}
 

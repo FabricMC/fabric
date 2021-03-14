@@ -30,7 +30,7 @@
  * around the {@link net.minecraft.recipe.RecipeManager}, it allows you to register static and dynamic recipes.
  * </p>
  *
- * <p><h3>{@link net.fabricmc.fabric.api.recipe.v1.event.RecipeLoadingCallback RecipeLoadingCallback}</h3>
+ * <p><h3>{@link net.fabricmc.fabric.api.recipe.v1.RecipeLoadingEvents RecipeLoadingCallback}</h3>
  * It is an event which is triggered when recipes are loaded, it allows you to register dynamic recipes.</p>
  */
 

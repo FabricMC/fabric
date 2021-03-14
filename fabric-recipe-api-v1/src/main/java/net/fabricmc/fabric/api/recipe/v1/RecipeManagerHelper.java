@@ -18,7 +18,6 @@ package net.fabricmc.fabric.api.recipe.v1;
 
 import net.minecraft.recipe.Recipe;
 
-import net.fabricmc.fabric.api.recipe.v1.event.RecipeLoadingCallback;
 import net.fabricmc.fabric.impl.recipe.RecipeManagerImpl;
 
 /**
@@ -49,12 +48,21 @@ public final class RecipeManagerHelper {
 	}
 
 	/**
-	 * Register a dynamic recipes provider.
+	 * Registers a dynamic recipes provider.
 	 * <p>The dynamic recipes provider is called when the recipes are loaded.</p>
 	 *
 	 * @param callback the dynamic recipes provider
 	 */
-	public static void registerDynamicRecipes(RecipeLoadingCallback callback) {
-		RecipeLoadingCallback.EVENT.register(callback);
+	public static void registerDynamicRecipes(RecipeLoadingEvents.RecipeLoadingCallback callback) {
+		RecipeLoadingEvents.REGISTER.register(callback);
+	}
+
+	/**
+	 * Modifies recipes in the {@link net.minecraft.recipe.RecipeManager}.
+	 *
+	 * @param callback the recipe modifier
+	 */
+	public static void modifyRecipes(RecipeLoadingEvents.RecipeModifyCallback callback) {
+		RecipeLoadingEvents.MODIFY.register(callback);
 	}
 }
