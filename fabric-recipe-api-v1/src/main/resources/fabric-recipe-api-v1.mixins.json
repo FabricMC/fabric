@@ -3,7 +3,11 @@
   "package": "net.fabricmc.fabric.mixin.recipe",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "RecipeManagerMixin"
+    "CookingRecipeSerializerMixin",
+    "CuttingRecipeSerializerMixin",
+    "RecipeManagerMixin",
+    "ShapedRecipeSerializerMixin",
+    "ShapelessRecipeSerializerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

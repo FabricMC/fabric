@@ -16,6 +16,13 @@
 
 package net.fabricmc.fabric.impl.recipe;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
@@ -23,6 +30,9 @@ import java.util.function.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.internal.Streams;
+import com.google.gson.stream.JsonWriter;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +45,7 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.util.Identifier;
 
 import net.fabricmc.fabric.api.recipe.v1.RecipeLoadingEvents;
+import net.fabricmc.fabric.api.recipe.v1.serializer.FabricRecipeSerializer;
 
 @ApiStatus.Internal
 public final class RecipeManagerImpl {
@@ -44,6 +55,7 @@ public final class RecipeManagerImpl {
 	 */
 	private static final Map<Identifier, Recipe<?>> STATIC_RECIPES = new Object2ObjectOpenHashMap<>();
 	private static final boolean DEBUG_MODE = Boolean.getBoolean("fabric-recipe-api-v1--debug");
+	private static final boolean DUMP_MODE = Boolean.getBoolean("fabric-recipe-api-v1--dump");
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	private RecipeManagerImpl() {
@@ -69,6 +81,65 @@ public final class RecipeManagerImpl {
 		ModifyRecipeHandlerImpl handler = new ModifyRecipeHandlerImpl(recipeManager, recipes);
 		RecipeLoadingEvents.MODIFY.invoker().onRecipeModify(handler);
 		LOGGER.info("Modified {} recipes.", handler.counter);
+
+		if (DUMP_MODE) {
+			dump(recipes.values());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static void dump(Collection<Map<Identifier, Recipe<?>>> recipes) {
+		Path debugPath = Paths.get("debug", "fabric-recipe-api-v1").normalize();
+
+		if (!Files.exists(debugPath)) {
+			try {
+				Files.createDirectories(debugPath);
+			} catch (IOException e) {
+				LOGGER.error("Failed to create debug directory for recipe dumping.", e);
+				return;
+			}
+		}
+
+		for (Map<Identifier, Recipe<?>> map : recipes) {
+			for (Recipe<?> recipe : map.values()) {
+				if (!(recipe.getSerializer() instanceof FabricRecipeSerializer)) break;
+
+				FabricRecipeSerializer<Recipe<?>> serializer = (FabricRecipeSerializer<Recipe<?>>) recipe.getSerializer();
+				JsonObject serialized = serializer.toJson(recipe);
+
+				Path path = debugPath.resolve(recipe.getId().getNamespace() + "/recipes/" + recipe.getId().getPath() + ".json");
+				Path parent = path.getParent();
+
+				if (!Files.exists(parent)) {
+					try {
+						Files.createDirectories(parent);
+					} catch (IOException e) {
+						LOGGER.error("Failed to create parent recipe directory {}. Cannot dump recipe {}.",
+								parent, recipe.getId(), e);
+						continue;
+					}
+				}
+
+				StringWriter stringWriter = new StringWriter();
+				JsonWriter jsonWriter = new JsonWriter(stringWriter);
+				jsonWriter.setLenient(true);
+				jsonWriter.setIndent("  ");
+
+				try {
+					Streams.write(serialized, jsonWriter);
+					Files.write(path, stringWriter.toString().getBytes(StandardCharsets.UTF_8),
+							StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+				} catch (IOException e) {
+					LOGGER.error("Failed to write JSON for recipe {}.", recipe.getId(), e);
+				} finally {
+					try {
+						jsonWriter.close();
+					} catch (IOException e) {
+						LOGGER.error("Failed to close JSON writer for recipe {}.", recipe.getId(), e);
+					}
+				}
+			}
+		}
 	}
 
 	private static class RegisterRecipeHandlerImpl implements RecipeLoadingEvents.RecipeLoadingCallback.RecipeHandler {
