@@ -10,13 +10,12 @@
   },
   "entrypoints": {
     "main": [
-      "net.fabricmc.fabric.test.item.FabricItemSettingsTests"
+      "net.fabricmc.fabric.test.item.FabricItemSettingsTests",
+      "net.fabricmc.fabric.test.item.CustomDamageTest",
+      "net.fabricmc.fabric.test.item.FabricElytraTests"
     ],
     "client": [
       "net.fabricmc.fabric.test.item.client.TooltipTests"
-    ],
-    "main": [
-      "net.fabricmc.fabric.test.item.CustomDamageTest"
     ]
   }
 }
