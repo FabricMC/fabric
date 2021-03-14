@@ -22,11 +22,11 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonElement;
 import org.jetbrains.annotations.ApiStatus;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.recipe.Recipe;
@@ -55,22 +55,21 @@ public class RecipeManagerMixin {
 		RecipeManagerImpl.apply(map, builderMap);
 	}
 
-	// Use an inject instead of a redirect. A redirect is technically impossible as it will not allow a
-	// Map<Identifier, Recipe<?>> as return type.
-	@Inject(
-			method = "method_20703", // synthetic method in the toImmutableMap in the apply method.
-			at = @At(value = "HEAD"),
-			cancellable = true
-	)
-	private static void onImmutableMapBuilder(Map.Entry<RecipeType<?>, ImmutableMap.Builder<Identifier, Recipe<?>>> entry,
-									CallbackInfoReturnable<Map<Identifier, Recipe<?>>> cir) {
+	/**
+	 * Synthetic method in {@link RecipeManager#apply(Map, ResourceManager, Profiler)} as an argument of {@code toImmutableMap}.
+	 *
+	 * @author Fabric API
+	 * @reason Replaces immutable maps for mutable maps instead.
+	 */
+	@Overwrite
+	private static Map<Identifier, Recipe<?>> method_20703(Map.Entry<RecipeType<?>, ImmutableMap.Builder<Identifier, Recipe<?>>> entry) {
 		// This is cursed. Do not look.
-		cir.setReturnValue(ImmutableMapBuilderUtil.specialBuild(entry.getValue()));
+		return ImmutableMapBuilderUtil.specialBuild(entry.getValue());
 	}
 
 	@Inject(
 			method = "apply",
-			at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;)V")
+			at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;info(Ljava/lang/String;Ljava/lang/Object;)V", remap = false)
 	)
 	private void onReloadEnd(Map<Identifier, JsonElement> map, ResourceManager resourceManager, Profiler profiler,
 							CallbackInfo ci) {
