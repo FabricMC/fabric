@@ -21,7 +21,6 @@ import it.unimi.dsi.fastutil.objects.Object2CharMap;
 import it.unimi.dsi.fastutil.objects.Object2CharOpenHashMap;
 import org.spongepowered.asm.mixin.Mixin;
 
-import net.minecraft.advancement.criterion.CriterionConditions;
 import net.minecraft.data.server.recipe.ShapedRecipeJsonFactory;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.ShapedRecipe;
