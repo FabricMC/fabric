@@ -58,12 +58,12 @@ public final class ShotProjectileEvents {
 		/**
 		 * In this method you can replace the arrow shot from your custom bow. Applies all of the vanilla arrow modifiers first.
 		 *
-		 * @param bowStack                   The ItemStack for the Bow Item
-		 * @param arrowStack                 The ItemStack for the arrows
-		 * @param user                       The user of the bow
-		 * @param pullProgress               The pull progress of the bow from 0.0 to 1.0
-		 * @param persistentProjectileEntity The arrow entity to be spawned
-		 * @return The arrow entity, either new or modified
+		 * @param bowStack                   the ItemStack for the Bow Item
+		 * @param arrowStack                 the ItemStack for the arrows
+		 * @param user                       the user of the bow
+		 * @param pullProgress               the pull progress of the bow from 0.0 to 1.0
+		 * @param persistentProjectileEntity the arrow entity to be spawned
+		 * @return the arrow entity, either new or {@code null} to signify no changes occurred
 		 */
 		PersistentProjectileEntity replaceProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, @NotNull PersistentProjectileEntity persistentProjectileEntity);
 	}
@@ -72,11 +72,11 @@ public final class ShotProjectileEvents {
 		/**
 		 * In this method you can modify the behavior of arrows shot from your custom bow. Applies all of the vanilla arrow modifiers first.
 		 *
-		 * @param bowStack                   The ItemStack for the Bow Item
-		 * @param arrowStack                 The ItemStack for the arrows
-		 * @param user                       The user of the bow
-		 * @param pullProgress               The pull progress of the bow from 0.0 to 1.0
-		 * @param persistentProjectileEntity The arrow entity to be spawned
+		 * @param bowStack                   the ItemStack for the Bow Item
+		 * @param arrowStack                 the ItemStack for the arrows
+		 * @param user                       the user of the bow
+		 * @param pullProgress               the pull progress of the bow from 0.0 to 1.0
+		 * @param persistentProjectileEntity the arrow entity to be spawned
 		 */
 		void modifyProjectileShot(ItemStack bowStack, ItemStack arrowStack, LivingEntity user, float pullProgress, @NotNull PersistentProjectileEntity persistentProjectileEntity);
 	}

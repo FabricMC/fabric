@@ -31,9 +31,9 @@ public interface FabricBowExtensions extends ShotProjectileEvents.ModifyProjecti
 	/**
 	 * Returns the pull progress of the bow between 0 and 1.
 	 *
-	 * @param useTicks The number of ticks the bow has been pulled.
-	 * @param bowStack The ItemStack for the bow
-	 * @return The progress of the pull from 0.0f to 1.0f.
+	 * @param useTicks the number of ticks the bow has been pulled.
+	 * @param bowStack the ItemStack for the bow
+	 * @return the progress of the pull from {@code 0.0f} to {@code 1.0f}.
 	 */
 	default float getCustomPullProgress(int useTicks, ItemStack bowStack) {
 		return BowItem.getPullProgress(useTicks);
