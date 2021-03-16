@@ -58,11 +58,11 @@ public final class ShotProjectileEvents {
 		/**
 		 * In this method you can replace the arrow shot from your custom crossbow. Applies all of the vanilla arrow modifiers first.
 		 *
-		 * @param crossbowStack              The ItemStack for the Crossbow Item
-		 * @param projectileStack            The ItemStack for the projectile currently being shot
-		 * @param user                       The user of the crossbow
-		 * @param persistentProjectileEntity The arrow entity to be spawned
-		 * @return The new projectile entity. Return null if you do not change the entity.
+		 * @param crossbowStack              the ItemStack for the Crossbow Item
+		 * @param projectileStack            the ItemStack for the projectile currently being shot
+		 * @param user                       the user of the crossbow
+		 * @param persistentProjectileEntity the arrow entity to be spawned
+		 * @return the new projectile entity. Return null if you do not change the entity.
 		 */
 		PersistentProjectileEntity replaceProjectileShot(ItemStack crossbowStack, ItemStack projectileStack, LivingEntity user, @NotNull PersistentProjectileEntity persistentProjectileEntity);
 	}
@@ -71,10 +71,10 @@ public final class ShotProjectileEvents {
 		/**
 		 * In this method you can modify the behavior of arrows shot from your custom crossbow. Applies all of the vanilla arrow modifiers first.
 		 *
-		 * @param crossbowStack              The ItemStack for the Crossbow Item
-		 * @param projectileStack            The ItemStack for the projectile currently being shot
-		 * @param user                       The user of the crossbow
-		 * @param persistentProjectileEntity The arrow entity to be spawned
+		 * @param crossbowStack              the ItemStack for the Crossbow Item
+		 * @param projectileStack            the ItemStack for the projectile currently being shot
+		 * @param user                       the user of the crossbow
+		 * @param persistentProjectileEntity the arrow entity to be spawned
 		 */
 		void modifyProjectileShot(ItemStack crossbowStack, ItemStack projectileStack, LivingEntity user, @NotNull PersistentProjectileEntity persistentProjectileEntity);
 	}

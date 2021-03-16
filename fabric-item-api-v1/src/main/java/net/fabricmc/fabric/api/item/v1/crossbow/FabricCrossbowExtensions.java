@@ -38,10 +38,10 @@ public interface FabricCrossbowExtensions extends ShotProjectileEvents.ModifyPro
 	 * Allows editing of the projectile entity shot from the crossbow. Applies all crossbow
 	 * projectile properties first.
 	 *
-	 * @param crossbowStack              The ItemStack for the crossbow
-	 * @param projectileStack            The stack for the projectile
-	 * @param entity                     The entity shooting the crossbow
-	 * @param persistentProjectileEntity The projectile entity to be shot
+	 * @param crossbowStack              the ItemStack for the crossbow
+	 * @param projectileStack            the stack for the projectile
+	 * @param entity                     the entity shooting the crossbow
+	 * @param persistentProjectileEntity the projectile entity to be shot
 	 */
 	void modifyProjectileShot(ItemStack crossbowStack, ItemStack projectileStack, LivingEntity entity, @NotNull PersistentProjectileEntity persistentProjectileEntity);
 
@@ -50,9 +50,9 @@ public interface FabricCrossbowExtensions extends ShotProjectileEvents.ModifyPro
 	 * To get the projectile from the crossbow, call {@link CrossbowItem#hasProjectile(ItemStack, Item)} passing in {@code stack} and the {@link Item} for the projectile. <br>
 	 * The default implementation follows the vanilla values for the projectiles
 	 *
-	 * @param stack  The ItemStack for the crossbow
-	 * @param entity The Entity shooting the crossbow
-	 * @return The speed of the projectile
+	 * @param stack  the ItemStack for the crossbow
+	 * @param entity the Entity shooting the crossbow
+	 * @return the speed of the projectile
 	 */
 	default float getProjectileSpeed(ItemStack stack, LivingEntity entity) {
 		return stack.getItem() == Items.CROSSBOW && CrossbowItem.hasProjectile(stack, Items.FIREWORK_ROCKET) ? 1.6F : 3.15F;
