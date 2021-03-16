@@ -27,8 +27,8 @@ public interface FabricElytraExtensions {
 	/**
 	 * Returns if the elytra is usable based on its stack and user.
 	 *
-	 * @param stack The stack for the elytra item
-	 * @param user  The user of the elytra
+	 * @param stack the stack for the elytra item
+	 * @param user  the user of the elytra
 	 * @return {@code true} if the elytra is usable
 	 */
 	default boolean isUsable(ItemStack stack, LivingEntity user) {
