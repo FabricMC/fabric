@@ -37,20 +37,20 @@ import net.fabricmc.fabric.impl.biome.modification.BiomeModificationImpl;
  *     <li>{@link DynamicRegistryManager#create()} is used to create a dynamic registry manager with just
  *     entries from {@link net.minecraft.util.registry.BuiltinRegistries}</li>
  *     <li>Sometimes, Vanilla Minecraft will stop here, and use the {@link DynamicRegistryManager} as-is (examples: server.properties parsing, world creation screen).</li>
- *     <li>{@link RegistryOps#of(DynamicOps, ResourceManager, DynamicRegistryManager.Impl)} gets called with the manager, and a
+ *     <li>{@link RegistryOps#of(DynamicOps, ResourceManager, DynamicRegistryManager)} gets called with the manager, and a
  *     resource manager that contains the loaded data packs. This will pull in all worldgen objects from datapacks into the
  *     dynamic registry manager.</li>
  *     <li>After the worldgen objects are pulled in from the datapacks, this mixin will call the biome modification callback.</li>
  *     <li>In most cases, Vanilla will stop here and now use the dynamic registy manager to instantiate a server.</li>
  *     <li>Sometimes, i.e. when using the "re-create world feature", and a datapack throws an error, Vanilla will sometimes
- *     repeat the {@link RegistryOps#of(DynamicOps, ResourceManager, DynamicRegistryManager.Impl)} call on the same
+ *     repeat the {@link RegistryOps#of(DynamicOps, ResourceManager, DynamicRegistryManager)} call on the same
  *     dynamic registry manager. We guard against this using {@link net.fabricmc.fabric.impl.biome.modification.BiomeModificationTracker}.</li>
  * </ol>
  */
 @Mixin(RegistryOps.class)
 public class RegistryOpsMixin {
-	@Inject(method = "of", at = @At("RETURN"))
-	private static <T> void afterCreation(DynamicOps<T> delegate, ResourceManager resourceManager, DynamicRegistryManager.Impl impl, CallbackInfoReturnable<RegistryOps<T>> ci) {
-		BiomeModificationImpl.INSTANCE.modifyBiomes(impl);
+	@Inject(method = "of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;", at = @At("RETURN"))
+	private static <T> void afterCreation(DynamicOps<T> delegate, ResourceManager resourceManager, DynamicRegistryManager impl, CallbackInfoReturnable<RegistryOps<T>> ci) {
+		BiomeModificationImpl.INSTANCE.modifyBiomes((DynamicRegistryManager.Impl) impl);
 	}
 }

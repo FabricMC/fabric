@@ -46,10 +46,10 @@ public class MixinMain {
 		return session;
 	}
 
-	@Redirect(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;)Lnet/minecraft/util/dynamic/RegistryOps;"))
-	private static RegistryOps<Tag> ofRegistryOps(DynamicOps<Tag> delegate, ResourceManager resourceManager, DynamicRegistryManager.Impl impl) {
+	@Redirect(method = "main", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/dynamic/RegistryOps;of(Lcom/mojang/serialization/DynamicOps;Lnet/minecraft/resource/ResourceManager;Lnet/minecraft/util/registry/DynamicRegistryManager;)Lnet/minecraft/util/dynamic/RegistryOps;"))
+	private static RegistryOps<Tag> ofRegistryOps(DynamicOps<Tag> delegate, ResourceManager resourceManager, DynamicRegistryManager impl) {
 		RegistryOps<Tag> registryOps = RegistryOps.of(delegate, resourceManager, impl);
-		PersistentDynamicRegistryHandler.remapDynamicRegistries(impl, fabric_saveDir);
+		PersistentDynamicRegistryHandler.remapDynamicRegistries((DynamicRegistryManager.Impl) impl, fabric_saveDir);
 		return registryOps;
 	}
 }

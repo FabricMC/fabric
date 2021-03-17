@@ -28,6 +28,7 @@ import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.StructurePieceWithDimensions;
 import net.minecraft.structure.StructureStart;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -98,7 +99,7 @@ public class StructureTest {
 			super(PIECE, random, x, y, z, 48, 16, 48);
 		}
 
-		protected TestStructureGenerator(StructureManager structureManager, CompoundTag compoundTag) {
+		protected TestStructureGenerator(ServerWorld serverWorld, CompoundTag compoundTag) {
 			super(PIECE, compoundTag);
 		}
 
