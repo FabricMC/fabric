@@ -22,7 +22,7 @@ import java.util.List;
 import net.minecraft.server.MinecraftServer;
 
 /**
- * Allows the scheduling of events after a specified number of server ticks
+ * Allows the scheduling of events after a specified number of server ticks.
  */
 public class ServerTaskScheduler {
 	static {
@@ -33,7 +33,7 @@ public class ServerTaskScheduler {
 	private static final List<Pair<Integer, List<ServerTickEvents.StartTick>>> executables = new ArrayList<>();
 
 	/**
-	 * Adds a new event to be run after the specified {@code delayTicks}
+	 * Adds a new event to be run after the specified {@code delayTicks}.
 	 * @param executable the event to be run
 	 * @param delayTicks the number of ticks to wait to run the event
 	 */
@@ -53,7 +53,7 @@ public class ServerTaskScheduler {
 	}
 
 	/**
-	 * Adds a new event to be run the next tick
+	 * Adds a new event to be run the next tick.
 	 * @param executable the event to be run
 	 */
 	public static void execute(ServerTickEvents.StartTick executable) {
