@@ -25,7 +25,8 @@ import net.minecraft.item.ItemStack;
  */
 public interface FabricElytraExtensions {
 	/**
-	 * Returns if the elytra is usable based on its stack and user.
+	 * Returns {@code true} if this item allows flight based on its stack and user, and {@code false} otherwise.
+	 * This function will be called when a player attempts to start elytra flight, and will also be called every tick during elytra flight to make sure it is still allowed.
 	 *
 	 * @param stack the stack for the elytra item
 	 * @param user  the user of the elytra
