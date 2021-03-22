@@ -17,10 +17,11 @@
 package net.fabricmc.fabric.mixin.structure;
 
 import com.google.common.collect.BiMap;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
+
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
 
 @Mixin(SimpleRegistry.class)
 public interface SimpleRegistryAccessor {

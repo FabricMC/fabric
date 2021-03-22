@@ -16,13 +16,15 @@
 
 package net.fabricmc.fabric.api.structure.v1;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.mojang.datafixers.util.Pair;
-import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
+
 import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.structure.pool.StructurePoolElement;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
 /*
  * Represents a modifiable structure pool that would have several helper methods for modders.

@@ -16,21 +16,23 @@
 
 package net.fabricmc.fabric.mixin.structure;
 
-import net.fabricmc.fabric.api.structure.v1.FabricStructurePool;
-import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.util.dynamic.RegistryOps;
-import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
+import java.util.Map;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
-import java.util.Map;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.util.dynamic.RegistryOps;
+import net.minecraft.util.registry.DynamicRegistryManager;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.util.registry.SimpleRegistry;
+
+import net.fabricmc.fabric.api.structure.v1.FabricStructurePool;
+import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
 
 @Mixin(DynamicRegistryManager.class)
 public abstract class MixinDynamicRegistryManager {
