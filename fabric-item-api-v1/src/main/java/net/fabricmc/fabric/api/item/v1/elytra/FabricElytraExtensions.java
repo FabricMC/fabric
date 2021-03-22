@@ -21,7 +21,8 @@ import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 
 /**
- * An interface to implement on all custom elytras.
+ * An interface that allows implementing items to enable elytra flight for players, when equipped in the chest equipment slot.
+ While being used, the item will be damaged <b>every 20 ticks</b> through {@link ItemStack#damage(int,LivingEntity,Consumer)}.
  */
 public interface FabricElytraExtensions {
 	/**
