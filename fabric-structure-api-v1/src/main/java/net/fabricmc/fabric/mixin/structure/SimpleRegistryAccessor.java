@@ -25,8 +25,6 @@ import net.minecraft.util.registry.SimpleRegistry;
 
 @Mixin(SimpleRegistry.class)
 public interface SimpleRegistryAccessor {
-
 	@Accessor("keyToEntry")
 	<T> BiMap<RegistryKey<T>, T> getKeyToEntry();
-
 }

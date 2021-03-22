@@ -28,9 +28,10 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * 	if (structurePool.getStructurePool().getId().getPath().equals("village/common/butcher_animals")) {
  * 		structurePool.addStructurePoolElement(StructurePoolElement.method_30425("village/common/animals/pigs_1").apply(StructurePool.Projection.RIGID), 2);
  *    }
- * });
+ * });}
  * </pre></p>
  */
+
 public interface StructurePoolAddCallback {
 
 	/*

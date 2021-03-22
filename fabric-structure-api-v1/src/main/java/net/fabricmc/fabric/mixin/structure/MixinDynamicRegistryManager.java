@@ -36,7 +36,6 @@ import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
 
 @Mixin(DynamicRegistryManager.class)
 public abstract class MixinDynamicRegistryManager {
-
 	@Inject(method = "load(Lnet/minecraft/util/dynamic/RegistryOps;Lnet/minecraft/util/registry/DynamicRegistryManager$Impl;Lnet/minecraft/util/registry/DynamicRegistryManager$Info;)V", at = @At(value = "TAIL"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
 	private static <E> void load(RegistryOps<?> ops, DynamicRegistryManager.Impl manager, DynamicRegistryManager.Info<E> info, CallbackInfo ci, RegistryKey<? extends Registry<E>> registryKey, SimpleRegistry<E> simpleRegistry) {
 		if (registryKey.getValue().toString().contains("template_pool")) {
