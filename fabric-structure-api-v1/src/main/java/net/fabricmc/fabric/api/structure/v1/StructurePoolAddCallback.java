@@ -20,7 +20,7 @@ import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
- * A callback for newly added structure pools
+ * A callback for newly added structure pools.
  *
  * <p>Example usage:
  * <pre>{@code
