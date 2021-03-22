@@ -19,9 +19,6 @@ package net.fabricmc.fabric.test.structure;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
-import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
-import net.minecraft.structure.pool.StructurePool;
-import net.minecraft.structure.pool.StructurePoolElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +28,8 @@ import net.minecraft.structure.StructureManager;
 import net.minecraft.structure.StructurePieceType;
 import net.minecraft.structure.StructurePieceWithDimensions;
 import net.minecraft.structure.StructureStart;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.structure.pool.StructurePoolElement;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -48,13 +47,13 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.StructureFeature;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructureBuilder;
+import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
 
 public class StructureTest {
-	private static final Logger LOGGER = LogManager.getLogger();
-
 	public static final StructureFeature<DefaultFeatureConfig> STRUCTURE = new TestStructureFeature(DefaultFeatureConfig.CODEC);
 	public static final ConfiguredStructureFeature<DefaultFeatureConfig, ? extends StructureFeature<DefaultFeatureConfig>> CONFIGURED_STRUCTURE = STRUCTURE.configure(new DefaultFeatureConfig());
 	public static final StructurePieceType PIECE = TestStructureGenerator::new;
+	private static final Logger LOGGER = LogManager.getLogger();
 
 	static {
 		LOGGER.info("Registering test structure");
