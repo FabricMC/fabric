@@ -19,6 +19,9 @@ package net.fabricmc.fabric.test.structure;
 import java.util.Random;
 
 import com.mojang.serialization.Codec;
+import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
+import net.minecraft.structure.pool.StructurePool;
+import net.minecraft.structure.pool.StructurePoolElement;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -62,6 +65,13 @@ public class StructureTest {
 				.adjustsSurface()
 				.register();
 		Registry.register(Registry.STRUCTURE_PIECE, new Identifier("fabric", "test_structure_piece"), PIECE);
+
+		LOGGER.info("Testing StructurePoolAddCallback");
+		StructurePoolAddCallback.EVENT.register(structurePool -> {
+			if (structurePool.getStructurePool().getId().getPath().equals("village/common/butcher_animals")) {
+				structurePool.addStructurePoolElement(StructurePoolElement.method_30425("village/common/animals/pigs_1").apply(StructurePool.Projection.RIGID), 2);
+			}
+		});
 	}
 
 	public static class TestStructureFeature extends StructureFeature<DefaultFeatureConfig> {
