@@ -31,7 +31,6 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * });}
  * </pre></p>
  */
-
 public interface StructurePoolAddCallback {
 	/*
 	 * Called when Structure Pools are reloaded at datapack reload time
