@@ -34,7 +34,7 @@ public class FabricStructurePool {
 	}
 
 	/**
-	 * Adds a new {@code StructurePoolElement} to the {@code StructurePool}.
+	 * Adds a new {@link StructurePoolElement} to the {@link StructurePool}.
 	 * See the alternative {@linkplain #addStructurePoolElement(StructurePoolElement, int)}  for details.
 	 *
 	 * @param element    The element you want to add.
