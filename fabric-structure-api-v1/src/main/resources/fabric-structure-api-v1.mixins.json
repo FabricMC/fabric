@@ -9,7 +9,6 @@
     "MixinChunkGeneratorSettings",
     "MixinDynamicRegistryManager",
     "MixinStructuresConfig",
-    "SimpleRegistryAccessor",
     "StructureFeatureAccessor",
     "StructureManagerMixin",
     "StructurePoolAccessor",

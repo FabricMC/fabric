@@ -26,10 +26,8 @@ import net.minecraft.structure.pool.StructurePool;
 import net.minecraft.util.dynamic.RegistryOps;
 import net.minecraft.util.registry.BuiltinRegistries;
 import net.minecraft.util.registry.DynamicRegistryManager;
-import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 
 import net.fabricmc.fabric.api.structure.v1.FabricStructurePool;
 import net.fabricmc.fabric.api.structure.v1.StructurePoolAddCallback;
