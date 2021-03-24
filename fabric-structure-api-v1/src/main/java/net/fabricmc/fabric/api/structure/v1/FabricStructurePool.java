@@ -24,7 +24,7 @@ import net.minecraft.structure.pool.StructurePoolElement;
 import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
 /**
- * Represents a modifiable structure pool that would have several helper methods for modders.
+ * Represents a modifiable structure pool that has several helper methods for modders.
  */
 public class FabricStructurePool {
 	private final StructurePool underlying;
