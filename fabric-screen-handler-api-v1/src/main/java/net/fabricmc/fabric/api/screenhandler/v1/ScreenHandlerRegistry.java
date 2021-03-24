@@ -72,18 +72,42 @@ public final class ScreenHandlerRegistry {
 	}
 
 	/**
+	 * Creates a new {@code ScreenHandlerType} that creates client-sided screen handlers using the factory.
+	 *
+	 * @param factory the client-sided screen handler factory
+	 * @param <T>     the screen handler type
+	 * @return the created type object
+	 */
+	public static <T extends ScreenHandler> ScreenHandlerType<T> createSimple(SimpleClientHandlerFactory<T> factory) {
+		// Wrap our factory in vanilla's factory; it will not be public for users.
+		// noinspection Convert2MethodRef - Must be a lambda or else dedicated server will crash
+		return new ScreenHandlerType<>((syncId, inventory) -> factory.create(syncId, inventory));
+	}
+
+	/**
+	 * Creates a new {@code ScreenHandlerType} that creates client-sided screen handlers with additional
+	 * networked opening data.
+	 *
+	 * <p>These screen handlers must be opened with a {@link ExtendedScreenHandlerFactory}.
+	 *
+	 * @param factory the client-sided screen handler factory
+	 * @param <T>     the screen handler type
+	 * @return the created type object
+	 */
+	public static <T extends ScreenHandler> ScreenHandlerType<T> createExtended(ExtendedClientHandlerFactory<T> factory) {
+		return new ExtendedScreenHandlerType<>(factory);
+	}
+
+	/**
 	 * Creates and registers a new {@code ScreenHandlerType} that creates client-sided screen handlers using the factory.
 	 *
 	 * @param id      the registry ID
 	 * @param factory the client-sided screen handler factory
 	 * @param <T>     the screen handler type
-	 * @return the created type object
+	 * @return the registered type object
 	 */
 	public static <T extends ScreenHandler> ScreenHandlerType<T> registerSimple(Identifier id, SimpleClientHandlerFactory<T> factory) {
-		// Wrap our factory in vanilla's factory; it will not be public for users.
-		// noinspection Convert2MethodRef - Must be a lambda or else dedicated server will crash
-		ScreenHandlerType<T> type = new ScreenHandlerType<>((syncId, inventory) -> factory.create(syncId, inventory));
-		return Registry.register(Registry.SCREEN_HANDLER, id, type);
+		return Registry.register(Registry.SCREEN_HANDLER, id, createSimple(factory));
 	}
 
 	/**
@@ -95,11 +119,10 @@ public final class ScreenHandlerRegistry {
 	 * @param id      the registry ID
 	 * @param factory the client-sided screen handler factory
 	 * @param <T>     the screen handler type
-	 * @return the created type object
+	 * @return the registered type object
 	 */
 	public static <T extends ScreenHandler> ScreenHandlerType<T> registerExtended(Identifier id, ExtendedClientHandlerFactory<T> factory) {
-		ScreenHandlerType<T> type = new ExtendedScreenHandlerType<>(factory);
-		return Registry.register(Registry.SCREEN_HANDLER, id, type);
+		return Registry.register(Registry.SCREEN_HANDLER, id, createExtended(factory));
 	}
 
 	/**
