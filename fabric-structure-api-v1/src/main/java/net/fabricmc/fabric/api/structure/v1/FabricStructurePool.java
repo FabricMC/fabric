@@ -59,8 +59,8 @@ public class FabricStructurePool {
 	}
 
 	/**
-	 * Allows you to get the {@code StructurePool} itself.
-	 * @return The underlying {@code StructurePool}.
+	 * Allows you to get the {@link StructurePool} itself.
+	 * @return The underlying {@link StructurePool}.
 	 */
 	public StructurePool getUnderlying() {
 		return underlying;
