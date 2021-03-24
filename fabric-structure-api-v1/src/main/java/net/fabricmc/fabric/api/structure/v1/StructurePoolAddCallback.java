@@ -28,7 +28,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * <p>Example usage:
  * <pre>{@code
  * StructurePoolAddCallback.EVENT.register(structurePool -> {
- * 	if (structurePool.getStructurePool().getId().getPath().equals("village/common/butcher_animals")) {
+ * 	if (structurePool.getUnderlying().getId().getPath().equals("village/common/butcher_animals")) {
  * 		structurePool.addStructurePoolElement(StructurePoolElement.method_30425("village/common/animals/pigs_1").apply(StructurePool.Projection.RIGID), 2);
  *    }
  * });}
