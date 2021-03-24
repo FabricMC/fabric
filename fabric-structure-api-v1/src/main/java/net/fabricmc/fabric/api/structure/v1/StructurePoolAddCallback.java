@@ -21,7 +21,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * A callback for newly added structure pools.
- * Word of warning: Mods may be editing on the structure pool from user configured resource pack
+ *
+ * <p><strong>Word of warning</strong>: Mods may be editing on the structure pool from user configured resource pack
  * than what's from the builtin minecraft resources.
  *
  * <p>Example usage:
