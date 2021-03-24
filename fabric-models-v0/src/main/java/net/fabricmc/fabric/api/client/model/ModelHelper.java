@@ -31,9 +31,9 @@ public final class ModelHelper {
 	 * Models loaded using {@link ExtraModelProvider} do not have a corresponding ModelIdentifier, so that method cannot be used to retrieve them.
 	 * The Identifier that was used to load them can be used in this method to retrieve them.
 	 *
-	 * @param manager The manager that holds models.
-	 * @param id The id of the model.
-	 * @return The model.
+	 * @param manager the manager that holds models
+	 * @param id the id of the model
+	 * @return the model
 	 */
 	@Nullable
 	public static BakedModel getModel(BakedModelManager manager, Identifier id) {
