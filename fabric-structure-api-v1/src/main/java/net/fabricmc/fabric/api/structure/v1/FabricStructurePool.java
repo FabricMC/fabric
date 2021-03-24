@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.api.structure.v1;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.mojang.datafixers.util.Pair;
 
 import net.minecraft.structure.pool.StructurePool;
@@ -26,33 +23,46 @@ import net.minecraft.structure.pool.StructurePoolElement;
 
 import net.fabricmc.fabric.mixin.structure.StructurePoolAccessor;
 
-/*
+/**
  * Represents a modifiable structure pool that would have several helper methods for modders.
  */
 public class FabricStructurePool {
-	private final StructurePool pool;
+	private final StructurePool underlying;
 
 	public FabricStructurePool(StructurePool underlying) {
-		this.pool = underlying;
+		this.underlying = underlying;
 	}
 
+	/**
+	 * Adds a new {@code StructurePoolElement} to the {@code StructurePool}.
+	 * See the alternative {@linkplain #addStructurePoolElement(StructurePoolElement, int)}  for details.
+	 *
+	 * @param element    The element you want to add.
+	 */
 	public void addStructurePoolElement(StructurePoolElement element) {
 		addStructurePoolElement(element, 1);
 	}
 
+	/**
+	 * Adds a new {@code StructurePoolElement} to the {@code StructurePool}.
+	 * @param element    The element you want to add.
+	 * @param weight     Minecraft handles weight by adding it that amount of times into the StructurePool#elements.
+	 */
 	public void addStructurePoolElement(StructurePoolElement element, int weight) {
 		//adds to elementCounts list
-		List<Pair<StructurePoolElement, Integer>> list = new ArrayList<>(((StructurePoolAccessor) pool).getElementCounts());
-		list.add(Pair.of(element, weight));
-		((StructurePoolAccessor) pool).setElementCounts(list);
+		((StructurePoolAccessor) underlying).getElementCounts().add(Pair.of(element, weight));
 
 		//adds to elements list
 		for (int i = 0; i < weight; i++) {
-			((StructurePoolAccessor) pool).getElements().add(element);
+			((StructurePoolAccessor) underlying).getElements().add(element);
 		}
 	}
 
-	public StructurePool getStructurePool() {
-		return pool;
+	/**
+	 * Allows you to get the {@code StructurePool} itself.
+	 * @return The underlying {@code StructurePool}.
+	 */
+	public StructurePool getUnderlying() {
+		return underlying;
 	}
 }

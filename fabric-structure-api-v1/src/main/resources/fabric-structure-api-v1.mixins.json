@@ -7,9 +7,12 @@
     "ChunkSerializerMixin",
     "FlatChunkGeneratorConfigAccessor",
     "MixinChunkGeneratorSettings",
+    "MixinDynamicRegistryManager",
     "MixinStructuresConfig",
+    "SimpleRegistryAccessor",
     "StructureFeatureAccessor",
     "StructureManagerMixin",
+    "StructurePoolAccessor",
     "StructuresConfigAccessor"
   ],
   "client": [

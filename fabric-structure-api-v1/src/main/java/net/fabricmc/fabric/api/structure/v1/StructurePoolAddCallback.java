@@ -21,6 +21,8 @@ import net.fabricmc.fabric.api.event.EventFactory;
 
 /**
  * A callback for newly added structure pools.
+ * Word of warning: Mods may be editing on the structure pool from user configured resource pack
+ * than what's from the builtin minecraft resources.
  *
  * <p>Example usage:
  * <pre>{@code
@@ -32,16 +34,16 @@ import net.fabricmc.fabric.api.event.EventFactory;
  * </pre></p>
  */
 public interface StructurePoolAddCallback {
-	/*
+	/**
 	 * Called when Structure Pools are reloaded at datapack reload time
 	 */
 	Event<StructurePoolAddCallback> EVENT = EventFactory.createArrayBacked(StructurePoolAddCallback.class,
 			listeners -> initialPool -> {
 				for (StructurePoolAddCallback listener : listeners) {
-					listener.add(initialPool);
+					listener.onAdd(initialPool);
 				}
 			}
 	);
 
-	void add(FabricStructurePool initialPool);
+	void onAdd(FabricStructurePool initialPool);
 }
