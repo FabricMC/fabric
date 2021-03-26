@@ -18,8 +18,6 @@ package net.fabricmc.fabric.api.item.v1;
 
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.ApiStatus;
-
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
@@ -52,6 +50,7 @@ import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
  * }}</pre>
  *
  * <p>You should probably not implement this interface, unless you have a very highly specialized use case.
+ *
  * <p>Use {@link CustomItemSetting#create(Supplier)} to retrieve an instance of Fabric API's default implementation.
  *
  * @param <T> the type of the setting to be attached
