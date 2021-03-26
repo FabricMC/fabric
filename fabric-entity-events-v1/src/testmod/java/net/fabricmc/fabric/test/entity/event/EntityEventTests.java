@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -47,6 +49,15 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> {
 			LOGGER.info("Respawned {}, [{}, {}]", oldPlayer.getGameProfile().getName(), oldPlayer.getServerWorld().getRegistryKey().getValue(), newPlayer.getServerWorld().getRegistryKey().getValue());
+		});
+
+		ServerPlayerEvents.BEFORE_DEATH.register((player, source, amount) -> {
+			LOGGER.info("{} is going to die to {} damage from {} damage source", player.getGameProfile().getName(), amount, source.getName());
+			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.APPLE) {
+				player.setHealth(3.0f);
+				return false;
+			}
+			return true;
 		});
 	}
 }

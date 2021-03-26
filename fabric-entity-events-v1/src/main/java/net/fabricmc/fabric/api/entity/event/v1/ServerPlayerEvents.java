@@ -16,6 +16,8 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
+import net.fabricmc.fabric.api.util.TriState;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
 import net.fabricmc.fabric.api.event.Event;
@@ -45,6 +47,20 @@ public final class ServerPlayerEvents {
 		}
 	});
 
+	/**
+	 * An event that is called when a player takes fatal damage.
+	 *
+	 * <p>Mods can cancel this to keep the player alive.
+	 */
+	public static final Event<BeforeDeath> BEFORE_DEATH = EventFactory.createArrayBacked(BeforeDeath.class, callbacks -> (oldPlayer, damageSource, amount) -> {
+		boolean result = true;
+		for (BeforeDeath callback : callbacks) {
+			result &= callback.beforeDeath(oldPlayer, damageSource, amount);
+		}
+		return result;
+	});
+
+
 	@FunctionalInterface
 	public interface CopyFrom {
 		/**
@@ -67,6 +83,19 @@ public final class ServerPlayerEvents {
 		 * @param alive whether the old player is still alive
 		 */
 		void afterRespawn(ServerPlayerEntity oldPlayer, ServerPlayerEntity newPlayer, boolean alive);
+	}
+
+	@FunctionalInterface
+	public interface BeforeDeath {
+		/**
+		 * Called when a player takes fatal damage.
+		 *
+		 * @param player the player
+		 * @param source the fatal damage source
+		 * @param amount the amount of damage that has killed the player
+		 * @return whether or not the player should die
+		 */
+		boolean beforeDeath(ServerPlayerEntity player, DamageSource source, float amount);
 	}
 
 	private ServerPlayerEvents() {
