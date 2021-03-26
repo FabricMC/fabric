@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.item.v1;
 
 import java.util.function.Supplier;
 
+import org.jetbrains.annotations.NotNull;
+
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.impl.item.CustomItemSettingImpl;
@@ -71,7 +73,7 @@ public interface CustomItemSetting<T> {
 	 * @param settings the item settings to modify
 	 * @param value the updated value of this setting
 	 */
-	void set(Item.Settings settings, T value);
+	void set(@NotNull Item.Settings settings, T value);
 
 	/**
 	 * Signals to this CustomItemSetting to associate its value in the {@link Item.Settings} instance with an Item.
@@ -81,7 +83,7 @@ public interface CustomItemSetting<T> {
 	 * @param settings the item settings to draw a value from
 	 * @param item the item to have its value set
 	 */
-	void build(Item.Settings settings, Item item);
+	void build(@NotNull Item.Settings settings, Item item);
 
 	/**
 	 * Creates a new CustomItemSetting with the given default value.
