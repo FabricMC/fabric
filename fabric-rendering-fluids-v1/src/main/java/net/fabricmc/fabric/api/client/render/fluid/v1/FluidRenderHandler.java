@@ -40,8 +40,7 @@ public interface FluidRenderHandler {
 	 * {@link TransparentBlock} or {@link LeavesBlock}. It is also only rendered on the
 	 * outside of the fluid block, whereas the other two sprites are rendered on both
 	 * sides. When the "overlay" sprite is used, only the top left quarter is actually
-	 * used for rendering. The section used is also reflected horizontally before
-	 * rendering.
+	 * used for rendering. This section is also reflected horizontally before rendering.
 	 *
 	 * @param view  The world view pertaining to the fluid. May be null!
 	 * @param pos   The position of the fluid in the world. May be null!
