@@ -25,8 +25,6 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.NotNull;
-
 import net.minecraft.item.Item;
 
 import net.fabricmc.fabric.api.item.v1.CustomItemSetting;
@@ -57,13 +55,17 @@ public class CustomItemSettingImpl<T> implements CustomItemSetting<T> {
 	}
 
 	@Override
-	public void set(@NotNull Item.Settings settings, T value) {
+	public void set(Item.Settings settings, T value) {
+		Objects.requireNonNull(settings);
+
 		this.customSettings.put(settings, value);
 		CUSTOM_SETTINGS.computeIfAbsent(settings, s -> new HashSet<>()).add(this);
 	}
 
 	@Override
-	public void build(@NotNull Item.Settings settings, Item item) {
+	public void build(Item.Settings settings, Item item) {
+		Objects.requireNonNull(settings);
+
 		this.customItemSettings.put(item, this.customSettings.getOrDefault(settings, this.defaultValue.get()));
 	}
 
