@@ -18,6 +18,8 @@ package net.fabricmc.fabric.api.client.render.fluid.v1;
 
 import org.jetbrains.annotations.Nullable;
 
+import net.minecraft.block.LeavesBlock;
+import net.minecraft.block.TransparentBlock;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
@@ -34,11 +36,21 @@ public interface FluidRenderHandler {
 	 *
 	 * <p>The "fabric-textures" module contains sprite rendering facilities, which may come in handy here.
 	 *
+	 * <p>The "overlay" sprite is rendered instead of the "flowing" sprite when behind
+	 * {@link TransparentBlock} or {@link LeavesBlock}. It is also only rendered on the
+	 * outside of the fluid block, whereas the other two sprites are rendered on both
+	 * sides. When the "overlay" sprite is used, only the top left quarter is actually
+	 * used for rendering. The section used is also reflected horizontally before
+	 * rendering.
+	 *
 	 * @param view  The world view pertaining to the fluid. May be null!
 	 * @param pos   The position of the fluid in the world. May be null!
 	 * @param state The current state of the fluid.
-	 * @return An array of size two: the first entry contains the "still" sprite,
-	 * while the second entry contains the "flowing" sprite.
+	 * @return An array of size two or three. The first entry contains the "still" sprite,
+	 * while the second entry contains the "flowing" sprite. If the array is of size two,
+	 * the default behavior for the "overlay" sprite is used. If the array is of size three,
+	 * the third entry contains the "overlay" sprite. If it is null, no "overlay" sprite is
+	 * used.
 	 */
 	Sprite[] getFluidSprites(@Nullable BlockRenderView view, @Nullable BlockPos pos, FluidState state);
 

@@ -16,6 +16,9 @@
 
 package net.fabricmc.fabric.impl.client.rendering.fluid;
 
+import org.jetbrains.annotations.Nullable;
+
+import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockRenderView;
@@ -27,11 +30,16 @@ public class FluidRendererHookContainer {
 	public BlockPos pos;
 	public FluidState state;
 	public FluidRenderHandler handler;
+	public boolean customOverlayBehavior;
+	@Nullable
+	public Sprite customOverlaySprite;
 
 	public void clear() {
 		view = null;
 		pos = null;
 		state = null;
 		handler = null;
+		customOverlayBehavior = false;
+		customOverlaySprite = null;
 	}
 }
