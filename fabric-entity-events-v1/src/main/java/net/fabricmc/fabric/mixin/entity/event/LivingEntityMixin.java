@@ -16,9 +16,6 @@
 
 package net.fabricmc.fabric.mixin.entity.event;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,9 +27,12 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin extends EntityMixin {
@@ -48,8 +48,10 @@ abstract class LivingEntityMixin extends EntityMixin {
 
 	@Redirect(method = "damage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;isDead()Z", ordinal = 1))
 	boolean beforePlayerKilled(LivingEntity livingEntity, DamageSource source, float amount) {
-		if (livingEntity instanceof PlayerEntity)
+		if (livingEntity instanceof PlayerEntity) {
 			return isDead() && ServerPlayerEvents.BEFORE_DEATH.invoker().beforeDeath((ServerPlayerEntity) livingEntity, source, amount);
+		}
+
 		return isDead();
 	}
 }

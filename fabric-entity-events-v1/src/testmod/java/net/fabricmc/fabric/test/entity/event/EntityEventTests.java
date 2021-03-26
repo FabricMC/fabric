@@ -16,10 +16,11 @@
 
 package net.fabricmc.fabric.test.entity.event;
 
-import net.minecraft.item.Items;
-import net.minecraft.util.Hand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import net.minecraft.item.Items;
+import net.minecraft.util.Hand;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
@@ -53,10 +54,12 @@ public final class EntityEventTests implements ModInitializer {
 
 		ServerPlayerEvents.BEFORE_DEATH.register((player, source, amount) -> {
 			LOGGER.info("{} is going to die to {} damage from {} damage source", player.getGameProfile().getName(), amount, source.getName());
+
 			if (player.getStackInHand(Hand.MAIN_HAND).getItem() == Items.APPLE) {
 				player.setHealth(3.0f);
 				return false;
 			}
+
 			return true;
 		});
 	}

@@ -16,7 +16,6 @@
 
 package net.fabricmc.fabric.api.entity.event.v1;
 
-import net.fabricmc.fabric.api.util.TriState;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
@@ -54,12 +53,13 @@ public final class ServerPlayerEvents {
 	 */
 	public static final Event<BeforeDeath> BEFORE_DEATH = EventFactory.createArrayBacked(BeforeDeath.class, callbacks -> (oldPlayer, damageSource, amount) -> {
 		boolean result = true;
+
 		for (BeforeDeath callback : callbacks) {
 			result &= callback.beforeDeath(oldPlayer, damageSource, amount);
 		}
+
 		return result;
 	});
-
 
 	@FunctionalInterface
 	public interface CopyFrom {
