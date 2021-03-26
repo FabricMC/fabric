@@ -59,7 +59,7 @@ public class CustomItemSettingImpl<T> implements CustomItemSetting<T> {
 		CUSTOM_SETTINGS.computeIfAbsent(settings, s -> new HashSet<>()).add(this);
 	}
 
-	private void build(Item.Settings settings, Item item) {
+	public void build(Item.Settings settings, Item item) {
 		this.customItemSettings.put(item, this.customSettings.getOrDefault(settings, this.defaultValue.get()));
 	}
 
